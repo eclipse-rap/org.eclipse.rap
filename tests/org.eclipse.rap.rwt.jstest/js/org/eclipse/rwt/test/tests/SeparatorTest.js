@@ -16,8 +16,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SeparatorTest", {
   members : {
 
     testCreateByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -28,8 +28,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SeparatorTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof org.eclipse.swt.widgets.Separator );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -40,8 +40,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SeparatorTest", {
     },
 
     testCreateByProtocolVerical : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -52,16 +52,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SeparatorTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._line.hasState( "rwt_VERTICAL" ) );
       shell.destroy();
       widget.destroy();
     },
 
     testCreateByProtocolWithShadowIn : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -72,16 +72,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SeparatorTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._line.hasState( "rwt_SHADOW_IN" ) );
       shell.destroy();
       widget.destroy();
     },
 
     testCreateByProtocolWithShadowOut : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -92,8 +92,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SeparatorTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._line.hasState( "rwt_SHADOW_OUT" ) );
       shell.destroy();
       widget.destroy();

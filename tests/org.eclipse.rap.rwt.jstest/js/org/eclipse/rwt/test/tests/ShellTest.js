@@ -15,7 +15,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
   members : {
 
     testDisplayOverlayBackground : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       // first check that the default theme for overlay has no background set
       var tv = new org.eclipse.swt.theme.ThemeValues( {} );
       var backgroundColor = tv.getCssColor( "Shell-DisplayOverlay", 
@@ -34,7 +34,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.setActive( true );
       shell.setSpace( 50, 300, 50, 200 );
       shell.setVisibility( true );
-      testUtil.flush();
+      TestUtil.flush();
       // Check for overlay background-image to be "blank.gif", as IE needs
       // this to capture mouse events. 
       var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
@@ -44,13 +44,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
 //    assertEquals( "static/image/blank.gif", overlay.getBackgroundImage() );
       shell.doClose();
       overlay.hide(); // not done by doClose because this is the only shell
-      testUtil.flush();
+      TestUtil.flush();
       shell.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
     
     testDisplayOverlayCopyStates : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       shell.addState( "rwt_APPLICATION_MODAL" );
       shell.addState( "rwt_myTest" );
@@ -59,7 +59,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.setActive( true );
       shell.setSpace( 50, 300, 50, 200 );
       shell.setVisibility( true );
-      testUtil.flush();
+      TestUtil.flush();
       // Check for overlay to have the same states as the shell 
       var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
       assertTrue( overlay.isSeeable() );
@@ -67,13 +67,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       assertTrue( overlay.hasState( "rwt_myTest" ) );
       shell.doClose();
       overlay.hide(); // not done by doClose because this is the only shell
-      testUtil.flush();
+      TestUtil.flush();
       shell.destroy();
-      testUtil.flush();      
+      TestUtil.flush();      
     },
 
     testDisplayOverlayAddStates : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       shell.addState( "rwt_APPLICATION_MODAL" );
       shell.initialize();
@@ -81,7 +81,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.setActive( true );
       shell.setSpace( 50, 300, 50, 200 );
       shell.setVisibility( true );
-      testUtil.flush();
+      TestUtil.flush();
       // Check for overlay to have the same states as the shell 
       var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
       assertTrue( overlay.isSeeable() );
@@ -92,13 +92,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       assertFalse( overlay.hasState( "rwt_myTest" ) );
       shell.doClose();
       overlay.hide(); // not done by doClose because this is the only shell
-      testUtil.flush();
+      TestUtil.flush();
       shell.destroy();
-      testUtil.flush();      
+      TestUtil.flush();      
     },
     
     testDisplayOverlayMultipleShells : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
       var visibilityChanges = 0;
       overlay.addEventListener( "changeVisibility", function( event) {
@@ -111,7 +111,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.setActive( true );
       shell.setSpace( 50, 300, 50, 200 );
       shell.setVisibility( true );
-      testUtil.flush();
+      TestUtil.flush();
       var shell2 = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       shell2.addState( "rwt_APPLICATION_MODAL" );
       shell2.initialize();
@@ -120,7 +120,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell2.setActive( true );
       shell2.setSpace( 100, 300, 50, 200 );
       shell2.setVisibility( true );
-      testUtil.flush();
+      TestUtil.flush();
       shell.addState( "rwt_myTest1" );
       shell2.addState( "rwt_myTest2b" );
       // check for Z-index and states for shell2
@@ -132,7 +132,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       assertTrue( overlay.hasState( "rwt_myTest2b" ) );
       // close shell2, check for Z-index and states for shell1
       shell2.doClose();
-      testUtil.flush();
+      TestUtil.flush();
       shell.addState( "rwt_myTest1b" );
       assertTrue( overlay.isSeeable() );
       assertTrue( overlay.getZIndex() < shell.getZIndex() );
@@ -143,13 +143,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.doClose();
       overlay.hide(); // not done by doClose because this is the only shell
       assertEquals( 2, visibilityChanges ); // to prevent unwanted animations
-      testUtil.flush();
+      TestUtil.flush();
       shell.destroy();
-      testUtil.flush();            
+      TestUtil.flush();            
     },
 
     testCustomVariant : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       var variant = "variant_myCustomVariant";
       shell.addState( variant );

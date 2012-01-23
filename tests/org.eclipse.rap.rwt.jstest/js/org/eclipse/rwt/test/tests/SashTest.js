@@ -16,8 +16,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
   members : {
 
     testCreateSashByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -28,8 +28,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof org.eclipse.swt.widgets.Sash );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -40,8 +40,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
     },
 
     testCreateSashHorizontalByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -52,8 +52,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof org.eclipse.swt.widgets.Sash );
       assertEquals( "horizontal", widget.getOrientation() );
       shell.destroy();

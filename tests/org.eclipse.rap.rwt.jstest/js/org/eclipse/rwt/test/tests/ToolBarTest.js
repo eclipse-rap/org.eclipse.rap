@@ -15,14 +15,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
   
   construct : function() {
     this.base( arguments );
-    this.testUtil = org.eclipse.rwt.test.fixture.TestUtil;        
+    this.TestUtil = org.eclipse.rwt.test.fixture.TestUtil;        
   },
   
   members : {
 
     testCreateTooBarByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -33,8 +33,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof org.eclipse.rwt.widgets.ToolBar );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -45,8 +45,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testCreateTooBarWithFlatByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -57,8 +57,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_HORIZONTAL" ) );
       assertTrue( widget.hasState( "rwt_FLAT" ) );
       shell.destroy();
@@ -66,8 +66,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testCreatePushTooItemByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
       assertTrue( widget instanceof org.eclipse.rwt.widgets.ToolItem );
@@ -82,8 +82,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testCreateRadioTooItemByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget =  this._createToolItemByProtocol( "w4", "w3", [ "RADIO" ] );
       assertTrue( widget instanceof org.eclipse.rwt.widgets.ToolItem );
@@ -98,8 +98,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testCreateCheckTooItemByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget =  this._createToolItemByProtocol( "w4", "w3", [ "CHECK" ] );
       assertTrue( widget instanceof org.eclipse.rwt.widgets.ToolItem );
@@ -114,8 +114,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testCreateDropDownTooItemByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget =  this._createToolItemByProtocol( "w4", "w3", [ "DROP_DOWN" ] );
       assertTrue( widget instanceof org.eclipse.rwt.widgets.ToolItem );
@@ -130,8 +130,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testCreateSeparatorTooItemByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [ "FLAT" ] );
       var widget =  this._createToolItemByProtocol( "w4", "w3", [ "SEPARATOR" ] );
       assertTrue( widget instanceof org.eclipse.rwt.widgets.ToolSeparator );
@@ -146,8 +146,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testCreateVerticalSeparatorTooItemByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [ "VERTICAL" ] );
       var widget =  this._createToolItemByProtocol( "w4", "w3", [ "SEPARATOR" ] );
       assertTrue( widget instanceof org.eclipse.rwt.widgets.ToolSeparator );
@@ -161,8 +161,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testCreateTooItemWithIndexByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var pushToolItem = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
       var radioToolItem = this._createToolItemByProtocol( "w4", "w3", [ "RADIO" ] );
@@ -179,25 +179,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testCreateDestroyTooItemByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
       org.eclipse.rwt.protocol.Processor.processOperation( {
         "target" : "w4",
         "action" : "destroy"
       } );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( widget.isDisposed() );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      assertEquals( undefined, objectManager.getObject( "w4" ) );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      assertEquals( undefined, ObjectManager.getObject( "w4" ) );
       shell.destroy();
       toolbar.destroy();
     },
 
     testSetBoundsByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
       this._setPropertyByProtocol( "w4", { "bounds" : [ 1, 2, 3, 4 ] } );
@@ -211,8 +211,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetVisibleByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
       this._setPropertyByProtocol( "w4", { "visible" : false } );
@@ -223,8 +223,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetEnabledByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
       this._setPropertyByProtocol( "w4", { "enabled" : false } );
@@ -235,8 +235,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetToolTipByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
       this._setPropertyByProtocol( "w4", { "toolTip" : "hello blue world" } );
@@ -248,8 +248,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetCustomVariantByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
       this._setPropertyByProtocol( "w4", { "customVariant" : "variant_blue" } );
@@ -260,8 +260,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetImageByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
       this._setPropertyByProtocol( "w4", { "image" : [ "image.png", 10, 20 ] } );
@@ -274,8 +274,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetHotImageByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
       this._setPropertyByProtocol( "w4", { "hotImage" : [ "image.png", 10, 20 ] } );
@@ -288,8 +288,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetControlByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [ "FLAT" ] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "SEPARATOR" ] );
       this._setPropertyByProtocol( "w4", { "control" : "w5" } );
@@ -300,8 +300,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetSelectionByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "CHECK" ] );
       this._setPropertyByProtocol( "w4", { "selection" : true } );
@@ -312,8 +312,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetNoRadioGroupByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [ "NO_RADIO_GROUP" ] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "RADIO" ] );
       assertTrue( widget.getNoRadioGroup() );
@@ -323,8 +323,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testSetHasSelectionListenerByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "RADIO" ] );
       this._setListenerByProtocol( "w4", { "selection" : true } );
@@ -346,19 +346,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       qx.ui.core.Widget.flushGlobalQueues();
       var lineStyle = item.getCellNode( 3 ).style;
       org.eclipse.swt.WidgetManager.getInstance().add( item, "w1" );
-      this.testUtil.clearRequestLog();
+      this.TestUtil.clearRequestLog();
       item.setHasSelectionListener( true );
-      this.testUtil.fakeMouseClick( item, 103, 103 );
-      assertEquals( 1, this.testUtil.getRequestsSend() );
-      var msg = this.testUtil.getMessage();
+      this.TestUtil.fakeMouseClick( item, 103, 103 );
+      assertEquals( 1, this.TestUtil.getRequestsSend() );
+      var msg = this.TestUtil.getMessage();
       assertContains( "widgetSelected=w1",  msg );
       assertContainsNot( "detail=arrow", msg );
-      this.testUtil.clearRequestLog();
-      this.testUtil.fakeMouseClick( item, 103 + parseInt( lineStyle.left ), 103 );
-      assertEquals( 1, this.testUtil.getRequestsSend() );
-      var msg = this.testUtil.getMessage();
+      this.TestUtil.clearRequestLog();
+      this.TestUtil.fakeMouseClick( item, 103 + parseInt( lineStyle.left ), 103 );
+      assertEquals( 1, this.TestUtil.getRequestsSend() );
+      var msg = this.TestUtil.getMessage();
       assertContains( "detail=arrow", msg );
-      this.testUtil.clearRequestLog();
+      this.TestUtil.clearRequestLog();
       item.destroy();
       this.item = null;
     },
@@ -378,7 +378,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
         qx.ui.core.Widget.flushGlobalQueues();
         var down = item.getCellNode( 4 );
         assertEquals( "0px", down.style.lineHeight );
-        this.testUtil.hoverFromTo( document.body, item.getElement() );
+        this.TestUtil.hoverFromTo( document.body, item.getElement() );
         qx.ui.core.Widget.flushGlobalQueues();
         assertEquals( "0px", down.style.lineHeight );
         item.destroy();
@@ -427,39 +427,39 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.setText( "hallo" );
       item.setImage( "test1.jpg" );
       item.addToDocument();
-      this.testUtil.flush();
+      this.TestUtil.flush();
       assertTrue( item.isSeeable() );
       var node = item.getCellNode( 1 );
       assertContains( 
         "test1.jpg",
-        this.testUtil.getCssBackgroundImage ( node )
+        this.TestUtil.getCssBackgroundImage ( node )
       );
-      this.testUtil.mouseOver( item );      
-      this.testUtil.flush();
+      this.TestUtil.mouseOver( item );      
+      this.TestUtil.flush();
       assertContains( 
         "test1.jpg",
-        this.testUtil.getCssBackgroundImage ( node )
+        this.TestUtil.getCssBackgroundImage ( node )
       );      
-      this.testUtil.mouseOut( item );      
+      this.TestUtil.mouseOut( item );      
       item.setHotImage( "test2.jpg" );
-      this.testUtil.flush();
+      this.TestUtil.flush();
       assertContains( 
         "test1.jpg",
-        this.testUtil.getCssBackgroundImage ( node )
+        this.TestUtil.getCssBackgroundImage ( node )
       );
-      this.testUtil.mouseOver( item );      
-      this.testUtil.flush();
+      this.TestUtil.mouseOver( item );      
+      this.TestUtil.flush();
       assertTrue( item.hasState( "over" ) );
       this.item = item;
       assertContains( 
         "test2.jpg",
-        this.testUtil.getCssBackgroundImage ( node )
+        this.TestUtil.getCssBackgroundImage ( node )
       );      
-      this.testUtil.mouseOut( item );      
-      this.testUtil.flush();
+      this.TestUtil.mouseOut( item );      
+      this.TestUtil.flush();
       assertContains( 
         "test1.jpg",
-        this.testUtil.getCssBackgroundImage ( node )
+        this.TestUtil.getCssBackgroundImage ( node )
       );      
       item.destroy();
     },
@@ -477,7 +477,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     testKeyboardControlActivateOnHover : function() {
       this.createDefaultToolBar();
       assertFalse( this.toolItem3.hasState( "over" ) );
-      this.testUtil.mouseOver( this.toolItem3 );
+      this.TestUtil.mouseOver( this.toolItem3 );
       assertTrue( this.toolItem3.hasState( "over" ) );
       this.toolBar.focus();
       assertTrue( this.toolBar.isFocused() );
@@ -490,7 +490,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.createDefaultToolBar();
       this.toolBar.focus();
       assertTrue( this.toolItem1.hasState( "over" ) );
-      this.testUtil.mouseOver( this.toolItem3 );
+      this.TestUtil.mouseOver( this.toolItem3 );
       assertFalse( this.toolItem1.hasState( "over" ) );
       assertTrue( this.toolItem3.hasState( "over" ) );
       this.disposeToolBar();
@@ -510,10 +510,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.createDefaultToolBar();
       this.toolBar.focus();
       assertTrue( this.toolItem1.hasState( "over" ) );
-      this.testUtil.press( this.toolBar, "Left" );
+      this.TestUtil.press( this.toolBar, "Left" );
       assertFalse( this.toolItem1.hasState( "over" ) );
       assertTrue( this.toolItem3.hasState( "over" ) );
-      this.testUtil.press( this.toolBar, "Left" );
+      this.TestUtil.press( this.toolBar, "Left" );
       assertTrue( this.toolItem1.hasState( "over" ) );
       assertFalse( this.toolItem3.hasState( "over" ) );
       this.disposeToolBar();      
@@ -523,10 +523,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.createDefaultToolBar();
       this.toolBar.focus();
       assertTrue( this.toolItem1.hasState( "over" ) );
-      this.testUtil.press( this.toolBar, "Right" );
+      this.TestUtil.press( this.toolBar, "Right" );
       assertFalse( this.toolItem1.hasState( "over" ) );
       assertTrue( this.toolItem3.hasState( "over" ) );
-      this.testUtil.press( this.toolBar, "Right" );
+      this.TestUtil.press( this.toolBar, "Right" );
       assertTrue( this.toolItem1.hasState( "over" ) );
       assertFalse( this.toolItem3.hasState( "over" ) );
       this.disposeToolBar();      
@@ -540,7 +540,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       } );
       this.toolBar.focus();
       assertTrue( this.toolItem1.hasState( "over" ) );
-      this.testUtil.press( this.toolBar, "Enter" );      
+      this.TestUtil.press( this.toolBar, "Enter" );      
       assertTrue( executed );
       this.disposeToolBar();      
     },
@@ -555,7 +555,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       var text = new org.eclipse.rwt.widgets.Text( false );
       this.toolBar.addAt( text, 4 );
       text.setSpace( 21, 30, 0, 20 );
-      this.testUtil.flush();
+      this.TestUtil.flush();
       this.toolBar.focus();
       assertTrue( this.toolItem1.hasState( "over" ) );
       var executed = false;
@@ -563,7 +563,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
         executed = true;
       } );
       text.focus();
-      this.testUtil.pressOnce( text, "Enter" );
+      this.TestUtil.pressOnce( text, "Enter" );
       assertFalse( executed );
       text.dispose();
       this.disposeToolBar();
@@ -587,7 +587,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.toolBar.addAt( this.toolItem3, 3 );
       this.toolItem2.setEnabled( false );
       this.toolBar.addToDocument();
-      this.testUtil.flush();
+      this.TestUtil.flush();
     },
     
     disposeToolBar : function() {

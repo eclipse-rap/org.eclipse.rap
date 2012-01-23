@@ -15,8 +15,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
   members : {
 
     testCreateComboByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -27,8 +27,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof org.eclipse.swt.widgets.Combo );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -38,8 +38,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testCreateCComboByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -51,8 +51,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "ccombo" : true
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof org.eclipse.swt.widgets.Combo );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -63,8 +63,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testSetItemHeightByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -76,8 +76,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "itemHeight" : 18
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 18, widget._itemHeight );
       assertEquals( 90, widget._getListMaxHeight() );
       shell.destroy();
@@ -85,8 +85,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testSetVisibleItemCountByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -98,8 +98,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "visibleItemCount" : 3
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 3, widget._visibleItemCount );
       assertEquals( 60, widget._getListMaxHeight() );
       shell.destroy();
@@ -107,8 +107,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testSetItemsByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -120,8 +120,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "items" : [ "a", "b", "c" ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       var items = widget._list.getItems();
       assertEquals( 3, widget._list.getItemsCount() );
       assertEquals( "a", items[ 0 ].getLabel() );
@@ -132,8 +132,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testSetItemsEscapeTextByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -145,8 +145,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "items" : [ "  foo &\nbar " ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       var items = widget._list.getItems();
       assertEquals( 1, widget._list.getItemsCount() );
       assertEquals( "&nbsp; foo &amp; bar&nbsp;", items[ 0 ].getLabel() );
@@ -155,8 +155,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testSetListVisibleByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -169,16 +169,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "listVisible" : true
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._dropped );
       shell.destroy();
       widget.destroy();
     },
 
     testSetSelectionIndexByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -191,8 +191,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "selectionIndex" : 1
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       var items = widget._list.getItems();
       assertIdentical( items[ 1 ], widget._selected );
       shell.destroy();
@@ -200,8 +200,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testSetEditableByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -213,8 +213,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "editable" : false
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertFalse( widget._editable );
       assertTrue( widget._field.getReadOnly() );
       shell.destroy();
@@ -222,8 +222,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testSetTextByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -235,16 +235,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "text" : "foo"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( "foo", widget._field.getValue() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetSelectionByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -255,7 +255,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "parent" : "w2"
         }
       } );
-      testUtil.flush();
+      TestUtil.flush();
       processor.processOperation( {
         "target" : "w3",
         "action" : "set",
@@ -264,8 +264,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "selection" : [ 2, 5 ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 2, widget._selectionStart );
       assertEquals( 3, widget._selectionLength );
       shell.destroy();
@@ -273,8 +273,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testSetTextLimitByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -286,16 +286,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "textLimit" : 10
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 10, widget._field.getMaxLength() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetHasSelectionListenerByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -306,17 +306,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "parent" : "w2"
         }
       } );
-      testUtil.protocolListen( "w3", { "selection" : true } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      TestUtil.protocolListen( "w3", { "selection" : true } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
       widget.destroy();
     },
 
     testSetHasModifyListenerByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -327,9 +327,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "parent" : "w2"
         }
       } );
-      testUtil.protocolListen( "w3", { "modify" : true } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      TestUtil.protocolListen( "w3", { "modify" : true } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasModifyListener );
       assertTrue( widget._hasVerifyModifyListener() );
       shell.destroy();
@@ -337,8 +337,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testSetHasVerifyListenerByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -349,9 +349,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "parent" : "w2"
         }
       } );
-      testUtil.protocolListen( "w3", { "verify" : true } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      TestUtil.protocolListen( "w3", { "verify" : true } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasVerifyListener );
       assertTrue( widget._hasVerifyModifyListener() );
       shell.destroy();
@@ -359,43 +359,43 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testCreateDispose : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       assertTrue( combo instanceof org.eclipse.swt.widgets.Combo );
       combo.destroy();
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( combo.isDisposed() );
       combo.destroy();
     },
     
     testOpenList : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       combo.setListVisible( true );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( combo._list.isSeeable() );
       assertEquals( "hidden", combo._list.getOverflow() );
       combo.destroy();
     },
 
     testCloseListOnBlur : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       combo.focus();
       combo.setListVisible( true );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( combo._list.isSeeable() );
       combo.blur();
-      testUtil.flush();
+      TestUtil.flush();
       assertFalse( combo._list.isSeeable() );
       combo.destroy();
     },
 
     testItems : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       combo.setListVisible( true );
-      testUtil.flush();
+      TestUtil.flush();
       var items = this._getItems( combo );
       assertEquals( 6, items.length );
       assertEquals( "Eiffel", items[ 0 ].getLabel() );
@@ -404,10 +404,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testSelectItem : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       combo.setListVisible( true );
-      testUtil.flush();
+      TestUtil.flush();
       combo.select( 1 );
       assertEquals( "Java", combo._field.getValue() );
       assertEquals( "Java", combo._list.getSelectedItems()[ 0 ].getLabel() );
@@ -415,53 +415,53 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testHoverClickItem : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       combo.setListVisible( true );
-      testUtil.flush();
+      TestUtil.flush();
       var items = this._getItems( combo );
-      testUtil.mouseOver( items[ 1 ] );
+      TestUtil.mouseOver( items[ 1 ] );
       assertEquals( "Java", combo._list.getSelectedItems()[ 0 ].getLabel() )
-      testUtil.click( items[ 1 ] );
+      TestUtil.click( items[ 1 ] );
       assertEquals( "Java", combo._field.getValue() );
       combo.destroy();      
     },
     
     testScrollBarClick : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       combo.setListVisible( true );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( combo._list._vertScrollBar.isSeeable() );
-      testUtil.click( combo._list._vertScrollBar._thumb );
+      TestUtil.click( combo._list._vertScrollBar._thumb );
       assertTrue( combo._list.isSeeable() );
       combo.destroy();
     },
 
     testFieldClick : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
-      testUtil.click( combo._field );
-      testUtil.flush();
+      TestUtil.click( combo._field );
+      TestUtil.flush();
       assertTrue( combo._list.isSeeable() );
-      testUtil.click( combo._list._vertScrollBar._thumb );
-      testUtil.click( combo._field );
-      testUtil.flush();
+      TestUtil.click( combo._list._vertScrollBar._thumb );
+      TestUtil.click( combo._field );
+      TestUtil.flush();
       assertFalse( combo._list.isSeeable() );
       combo.destroy();
     },
 
     // bug 343532
     testEventRedispatch : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       var otherCombo = this._createDefaultCombo();
       otherCombo.setSpace( 239, 81, 36, 23 );
       combo.setListVisible( true );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( combo._list.isSeeable() );
-      testUtil.click( otherCombo._field );
-      testUtil.flush();
+      TestUtil.click( otherCombo._field );
+      TestUtil.flush();
       assertFalse( combo._list.isSeeable() );
       assertFalse( otherCombo._list.isSeeable() );
       combo.destroy();
@@ -470,18 +470,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
 
     // bug 343557
     testEventRedispatch_2 : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       combo.setListVisible( true );
       var checkbox = new org.eclipse.rwt.widgets.Button( "check" );
       checkbox.addState( "rwt_CHECK" );
       checkbox.addToDocument();
       checkbox.setEnabled( false );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( combo._list.isSeeable() );
       assertFalse( checkbox.getEnabled() );
       assertFalse( checkbox.hasState( "selected" ) );
-      testUtil.click( checkbox );
+      TestUtil.click( checkbox );
       assertFalse( combo._list.isSeeable() );
       assertFalse( checkbox.hasState( "selected" ) );
       combo.destroy();
@@ -489,46 +489,46 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testButtonClick : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
-      testUtil.click( combo._button );
-      testUtil.flush();
+      TestUtil.click( combo._button );
+      TestUtil.flush();
       assertTrue( combo._list.isSeeable() );
-      testUtil.click( combo._list._vertScrollBar._thumb );
-      testUtil.click( combo._button );
-      testUtil.flush();
+      TestUtil.click( combo._list._vertScrollBar._thumb );
+      TestUtil.click( combo._button );
+      TestUtil.flush();
       assertFalse( combo._list.isSeeable() );
       combo.destroy();
     },
 
     testListPopUpBehavior : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
-      testUtil.click( combo._field );
-      testUtil.flush();
-      testUtil.click( combo._list._vertScrollBar._thumb );
+      TestUtil.click( combo._field );
+      TestUtil.flush();
+      TestUtil.click( combo._list._vertScrollBar._thumb );
       assertTrue( combo._list.isSeeable() );
-      testUtil.click( testUtil.getDocument() );
+      TestUtil.click( TestUtil.getDocument() );
       assertFalse( combo._list.isSeeable() );
-      testUtil.click( combo._field );
-      testUtil.flush();
+      TestUtil.click( combo._field );
+      TestUtil.flush();
       assertTrue( combo._list.isSeeable() );
       combo.destroy();
     },
    
     testListHeight : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       combo.setItems( [ "Eiffel", "Java", "Python" ] );
       var correctHeight = 19 * 3 + combo._list.getFrameHeight();
       combo.setListVisible( true );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( correctHeight, combo._list.getHeight() );
       combo.destroy();
     },
 
     testListSelection : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       combo.select( 1 );
       combo._setListSelection( combo._list.getItems()[ 5 ] );
@@ -539,11 +539,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testScrollToSelectedItem : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       combo.select( 5 );
       combo.setListVisible( true );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( combo._list._clientArea.isSeeable() );
       assertEquals( "Smalltalk", combo._list.getSelectedItems()[ 0 ].getLabel() );
       assertEquals( 19, combo._list._clientArea.getScrollTop() );
@@ -551,67 +551,67 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testSelectionByArrowKeys : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       combo.setEditable( true );
       combo.select( 3 );
-      testUtil.flush();
+      TestUtil.flush();
       combo.focus();
-      testUtil.keyDown( combo._field.getElement(), "Down" );
+      TestUtil.keyDown( combo._field.getElement(), "Down" );
       assertEquals( "Simula", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      testUtil.keyDown( combo._field.getElement(), "Up" );
+      TestUtil.keyDown( combo._field.getElement(), "Up" );
       assertEquals( "Ruby", combo._list.getSelectedItems()[ 0 ].getLabel() );
       combo.destroy();
     },
 
     testPageUpOnNotCreatedList : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       combo.setEditable( true );
       combo.select( 3 );
-      testUtil.flush();
+      TestUtil.flush();
       combo.focus();
-      testUtil.keyDown( combo._field.getElement(), "PageUp" );
+      TestUtil.keyDown( combo._field.getElement(), "PageUp" );
       assertEquals( "Ruby", combo._list.getSelectedItems()[ 0 ].getLabel() );
       combo.destroy();
     },
 
     testPageDownOnNotCreatedList : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       combo.setEditable( true );
       combo.select( 3 );
-      testUtil.flush();
+      TestUtil.flush();
       combo.focus();
-      testUtil.keyDown( combo._field.getElement(), "PageDown" );
+      TestUtil.keyDown( combo._field.getElement(), "PageDown" );
       assertEquals( "Ruby", combo._list.getSelectedItems()[ 0 ].getLabel() );
       combo.destroy();
     },
 
     testSelectionByKeyboardReadOnly : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       combo.setEditable( false );
-      testUtil.flush();
+      TestUtil.flush();
       combo.focus();
-      testUtil.keyDown( combo._field.getElement(), "R" );
+      TestUtil.keyDown( combo._field.getElement(), "R" );
       assertEquals( "Ruby", combo._list.getSelectedItems()[ 0 ].getLabel() );
       combo.destroy();
     },
 
     testSelectionByKeyboardEditable : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       combo.setEditable( true );
-      testUtil.flush();
+      TestUtil.flush();
       combo.focus();
-      testUtil.keyDown( combo._field.getElement(), "R" );
+      TestUtil.keyDown( combo._field.getElement(), "R" );
       assertEquals( 0, combo._list.getSelectedItems().length );
       combo.destroy();
     },
     
     testFiresItemsChangedEvent : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = new org.eclipse.swt.widgets.Combo();
       var log = 0;
       combo.addEventListener( "itemsChanged", function() {
@@ -620,14 +620,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
 
       combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
       combo.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       
       assertEquals( 1, log );
       combo.destroy();
     },
 
     testFiresSelectionChangedEvent : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = new org.eclipse.swt.widgets.Combo();
       var log = 0;
       combo.addEventListener( "selectionChanged", function() {
@@ -636,7 +636,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       
       combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
       combo.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       combo._setSelected( combo._list.getItems()[ 3 ] );
       
       assertEquals( 1, log );
@@ -682,7 +682,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     // Helpers
 
     _createDefaultCombo : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = new org.eclipse.swt.widgets.Combo();
       combo.setSpace( 239, 81, 6, 23 );
       combo.setItemHeight( 19 );
@@ -690,7 +690,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
       combo.setVisibleItemCount( 5 ); 
       combo.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       return combo;
     },
 

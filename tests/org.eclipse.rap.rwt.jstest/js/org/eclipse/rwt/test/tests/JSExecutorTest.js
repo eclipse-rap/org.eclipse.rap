@@ -16,8 +16,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.JSExecutorTest", {
   members : {
 
     testJSExecutorExists : function() {
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var externalBrowser = objectManager.getObject( "jsex" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var externalBrowser = ObjectManager.getObject( "jsex" );
       assertTrue( externalBrowser instanceof org.eclipse.rwt.JSExecutor );
     },
 
@@ -29,13 +29,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.JSExecutorTest", {
         "type" : "rwt.JSExecutor",
         "properties" : {}
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      assertIdentical( jsExecutor, objectManager.getObject( "jsex" ) );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      assertIdentical( jsExecutor, ObjectManager.getObject( "jsex" ) );
     },
 
     testExecuteByProtocol : function() {
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var uiCallBack = objectManager.getObject( "jsex" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var uiCallBack = ObjectManager.getObject( "jsex" );
       org.eclipse.rwt.protocol.Processor.processOperation( {
         "target" : "jsex",
         "action" : "call",

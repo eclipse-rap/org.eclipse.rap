@@ -16,8 +16,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
   members : {
 
     testCreateLinkByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -28,8 +28,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof org.eclipse.swt.widgets.Link );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -42,8 +42,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
     },
 
     testSetTextByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -55,8 +55,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
           "text" : [ [ "text1 ", null ], [ "link1", 0 ], [ " text2 ", null ], [ "link2", 1 ] ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       var expected 
         = "text1 "
         + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"0\">link1</span>"
@@ -69,8 +69,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
     },
 
     testSetTextWithLineBreaksByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -82,8 +82,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
           "text" : [ [ "text\ntext ", null ], [ "link\nlink", 0 ] ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       var expected 
         = "text<br/>text "
         + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"0\">link<br/>link</span>";
@@ -94,8 +94,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
     },
 
     testSetTextEscapedByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -107,8 +107,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
           "text" : [ [ "foo && <> \" bar ", null ], [ "foo && <> \" bar", 0 ] ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       var expected 
         = "foo &amp;&amp; &lt;&gt; &quot; bar "
         + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"0\">"
@@ -120,8 +120,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
     },
 
     testSetHasSelectionListenerByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -132,9 +132,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
           "parent" : "w2"
         }
       } );
-      testUtil.protocolListen( "w3", { "selection" : true } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      TestUtil.protocolListen( "w3", { "selection" : true } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
       widget.destroy();

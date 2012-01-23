@@ -451,20 +451,20 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     // internals - backgroundShape
 
     _prepareBackgroundShape : function() {
-      var util = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
       if( this._gfxData ) {
         var backgroundShape = this._gfxData.backgroundShape;
         if( this._gfxBackgroundEnabled ) {
           if( backgroundShape === undefined ) {
-            this._gfxData.backgroundShape = util.createShape( "roundrect" );
+            this._gfxData.backgroundShape = GraphicsUtil.createShape( "roundrect" );
           }
           if( !this._gfxData.backgroundInsert ) {
             var shape = this._gfxData.backgroundShape;
-            util.addToCanvas( this._gfxCanvas, shape );
+            GraphicsUtil.addToCanvas( this._gfxCanvas, shape );
             this._gfxData.backgroundInsert = true;
           }
         } else if( this._gfxData.backgroundInsert ) {
-          util.removeFromCanvas( this._gfxCanvas, backgroundShape );
+          GraphicsUtil.removeFromCanvas( this._gfxCanvas, backgroundShape );
           this._gfxData.backgroundInsert = false;
         }
       }
@@ -473,21 +473,21 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     _renderGfxBackground : function() {
       this._prepareBackgroundShape();
       var fillType = this.getGfxProperty( "fillType" );
-      var util = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
       if( fillType == "gradient" ) {
         var gradient = this.getGfxProperty( "gradient" );
-        util.setFillGradient( this._gfxData.backgroundShape, gradient );
+        GraphicsUtil.setFillGradient( this._gfxData.backgroundShape, gradient );
       } else if( fillType == "image" ) {
         var image = this.getGfxProperty( "backgroundImage" );
         image = typeof image == "undefined" ? null : image;
         var size = this._getImageSize( image );
-        util.setFillPattern( this._gfxData.backgroundShape, image, size[ 0 ], size[ 1 ] );
+        GraphicsUtil.setFillPattern( this._gfxData.backgroundShape, image, size[ 0 ], size[ 1 ] );
       } else { //assume fillType is "solid"
         var color = this.getGfxProperty( "backgroundColor" );
         if( color && ( color === "transparent" || color.slice( 0, 4 ) === "rgba" ) ) {
           color = null;
         }
-        util.setFillColor( this._gfxData.backgroundShape, color );
+        GraphicsUtil.setFillColor( this._gfxData.backgroundShape, color );
       }
     },
 
@@ -551,8 +551,8 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         rectWidth = Math.max( 0, rectWidth );
         rectHeight = Math.max( 0, rectHeight );
         var shape = this._gfxData.backgroundShape;
-        var util = org.eclipse.rwt.GraphicsUtil;
-        util.setRoundRectLayout( shape, left, top, rectWidth, rectHeight, radii );
+        var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+        GraphicsUtil.setRoundRectLayout( shape, left, top, rectWidth, rectHeight, radii );
       }
     },
 
@@ -560,12 +560,12 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     // internal - shadowShape
 
     _prepareShadowShape : function() {
-      var util = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
       if( this._gfxData ) {
         if( this._gfxShadowEnabled ) {
           if( this._gfxData.shadowShape === undefined ) {
             this._createShadowShape();
-            var canvasNode = util.getCanvasNode( this._gfxCanvas );
+            var canvasNode = GraphicsUtil.getCanvasNode( this._gfxCanvas );
             org.eclipse.rwt.HtmlUtil.setPointerEvents( canvasNode, "none" );
           }
           var shape = this._gfxData.shadowShape;
@@ -574,13 +574,13 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
             if( this._gfxData.backgroundInsert ) {
               before = this._gfxData.backgroundShape;
             }
-            util.addToCanvas( this._gfxCanvas, shape, before );
+            GraphicsUtil.addToCanvas( this._gfxCanvas, shape, before );
             this._gfxData.shadowInsert = true;
           }
         } else if( this._gfxData.shadowInsert ) {
-          util.removeFromCanvas( this._gfxCanvas, this._gfxData.shadowShape );
+          GraphicsUtil.removeFromCanvas( this._gfxCanvas, this._gfxData.shadowShape );
           // disable overflow:
-          util.enableOverflow( this._gfxCanvas, 0, 0, null, null );
+          GraphicsUtil.enableOverflow( this._gfxCanvas, 0, 0, null, null );
           delete this._gfxData.shadowInsert;
         }
       }
@@ -588,8 +588,8 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
 
     _createShadowShape : function() {
       var shape = null;
-      var util = org.eclipse.rwt.GraphicsUtil;
-      var shape = util.createShape( "roundrect" );
+      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      var shape = GraphicsUtil.createShape( "roundrect" );
       this._gfxData.shadowShape = shape;
       return shape;
     },
@@ -597,17 +597,17 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     _renderGfxShadow : function() {
       this._prepareShadowShape();
       if( this._gfxShadowEnabled ) {
-        var util = org.eclipse.rwt.GraphicsUtil;
+        var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
         var shadow = this.getGfxProperty( "shadow" );
         var shape = this._gfxData.shadowShape;
-        util.setBlur( shape, shadow[ 3 ] );
-        util.setFillColor( shape, shadow[ 5 ] );
-        util.setOpacity( shape, shadow[ 6 ] );
+        GraphicsUtil.setBlur( shape, shadow[ 3 ] );
+        GraphicsUtil.setFillColor( shape, shadow[ 5 ] );
+        GraphicsUtil.setOpacity( shape, shadow[ 6 ] );
       }
     },
 
     _layoutShadowShape : function() {
-      var util = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
       var rect = [ this.getBoxWidth(), this.getBoxHeight() ];
       var rectDimension = [ this.getBoxWidth(), this.getBoxHeight() ];
       var oldDimension = this.getGfxProperty( "shadowLayouted" );
@@ -631,12 +631,12 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         var overflowWidth = width + overflowRight;
         var overflowHeight = height + overflowBottom;
         // overflow-area must be defined every time:
-        util.enableOverflow( this._gfxCanvas,
+        GraphicsUtil.enableOverflow( this._gfxCanvas,
                              overflowLeft,
                              overflowTop,
                              overflowWidth,
                              overflowHeight );
-        util.setRoundRectLayout( shape, left, top, width, height, radii );
+        GraphicsUtil.setRoundRectLayout( shape, left, top, width, height, radii );
       }
     },
 

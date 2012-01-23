@@ -17,12 +17,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.IFrameTest", {
     testIFrameDimension : function() {
       var platform = org.eclipse.rwt.Client.getPlatform();
       if( platform !== "ios" ) {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var iframe = new qx.ui.embed.Iframe();
         iframe.addToDocument();
         iframe.setWidth( 300 );
         iframe.setHeight( 400 );
-        testUtil.flush();
+        TestUtil.flush();
         var node = iframe.getIframeNode();
         var widgetNode = iframe.getElement();
         assertEquals( "100%", node.width );

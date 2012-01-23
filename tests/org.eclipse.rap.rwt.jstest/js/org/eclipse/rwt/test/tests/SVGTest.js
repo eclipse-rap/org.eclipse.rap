@@ -16,13 +16,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
     TARGETENGINE : [ "gecko", "webkit", "newmshtml" ],
 
     testDrawShapeInWidget : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var parent = new qx.ui.basic.Terminator();
       parent.setLocation( 10, 10 );
       parent.setDimension( 400, 400 );
       parent.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var parentNode = parent._getTargetNode();
       var canvas = gfxUtil.createCanvas();
       var shape = gfxUtil.createShape( "rect" );
@@ -35,13 +35,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       assertEquals( null, gfxUtil.getFillType( shape ) );
       assertTrue( gfxUtil.getDisplay( shape ) );
       parent.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
     
     testFillColor : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
-      testUtil.flush();
+      TestUtil.flush();
       var parentNode = document.body;
       var canvas = gfxUtil.createCanvas();
       var shape = gfxUtil.createShape( "rect" );
@@ -60,9 +60,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
     },
 
     testFillGradient : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
-      testUtil.flush();
+      TestUtil.flush();
       var parentNode = document.body;
       var canvas = gfxUtil.createCanvas();
       var shape = gfxUtil.createShape( "rect" );
@@ -89,9 +89,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
     },
 
     testFillGradientHorizontal : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
-      testUtil.flush();
+      TestUtil.flush();
       var parentNode = document.body;
       var canvas = gfxUtil.createCanvas();
       var shape = gfxUtil.createShape( "rect" );
@@ -115,9 +115,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
     },
 
     testChangeGradientOrientation : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
-      testUtil.flush();
+      TestUtil.flush();
       var parentNode = document.body;
       var canvas = gfxUtil.createCanvas();
       var shape = gfxUtil.createShape( "rect" );
@@ -150,7 +150,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
     },
 
     testDrawRoundRect : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
@@ -167,7 +167,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
     },
 
     testDrawRoundRectOneRadiusOnlyMinimalMize : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
@@ -187,7 +187,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
     },
 
     testDrawRoundRectOneRadiusOnlyTooSmall : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
@@ -207,13 +207,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
     },
 
     testDisplay : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var parent = new qx.ui.basic.Terminator();
       parent.setLocation( 10, 10 );
       parent.setDimension( 400, 400 );
       parent.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var parentNode = parent._getTargetNode();
       var canvas = gfxUtil.createCanvas();
       var shape = gfxUtil.createShape( "rect" );
@@ -225,11 +225,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       assertEquals( "none", shape.node.getAttribute( "display" ) );
       assertFalse( gfxUtil.getDisplay( shape ) );
       parent.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testFillPattern : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
@@ -258,7 +258,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
     },
 
     testBlurFilter : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
@@ -289,7 +289,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
     },
 
     testOpacity : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
@@ -306,7 +306,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
     },
     
     testNodeOrder : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var parent = document.body;
       canvas = gfxUtil.createCanvas();
@@ -326,7 +326,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
     },
     
     testEnableOverflow : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var parent = document.body;
       canvas = gfxUtil.createCanvas();

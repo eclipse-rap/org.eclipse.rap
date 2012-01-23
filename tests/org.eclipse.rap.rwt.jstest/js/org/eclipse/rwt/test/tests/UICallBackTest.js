@@ -16,14 +16,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.UICallBackTest", {
   members : {
 
     testUICallBackExists : function() {
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var uiCallBack = objectManager.getObject( "uicb" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var uiCallBack = ObjectManager.getObject( "uicb" );
       assertTrue( uiCallBack instanceof org.eclipse.rwt.UICallBack );
     },
 
     testSetActiveByProtocol : function() {
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var uiCallBack = objectManager.getObject( "uicb" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var uiCallBack = ObjectManager.getObject( "uicb" );
       org.eclipse.rwt.protocol.Processor.processOperation( {
         "target" : "uicb",
         "action" : "set",
@@ -35,17 +35,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.UICallBackTest", {
     },
 
     testSendUIRequestByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.initRequestLog();
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var uiCallBack = objectManager.getObject( "uicb" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.initRequestLog();
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var uiCallBack = ObjectManager.getObject( "uicb" );
       org.eclipse.rwt.protocol.Processor.processOperation( {
         "target" : "uicb",
         "action" : "call",
         "method" : "sendUIRequest",
         "properties" : null
       } );
-      assertEquals( 1, testUtil.getRequestsSend() );
+      assertEquals( 1, TestUtil.getRequestsSend() );
     }
 
   }

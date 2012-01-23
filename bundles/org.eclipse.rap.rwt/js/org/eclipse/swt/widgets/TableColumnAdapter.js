@@ -38,9 +38,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.TableColumn", {
 
   propertyHandler : {
     "text" : function( widget, value ) {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      var text = encodingUtil.escapeText( value, false );
-      text = encodingUtil.replaceNewLines( text, "<br/>" );
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var text = EncodingUtil.escapeText( value, false );
+      text = EncodingUtil.replaceNewLines( text, "<br/>" );
       widget.setLabel( text );
     },
     "image" : function( widget, value ) {

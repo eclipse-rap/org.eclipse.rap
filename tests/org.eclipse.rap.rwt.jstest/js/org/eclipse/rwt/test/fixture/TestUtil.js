@@ -574,7 +574,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
 
   fakeWheel : function( widget, value ) {
     if( !widget._isCreated ) {
-      throw( "Error in testUtil.fakeMouseEvent: widget is not created" );
+      throw( "Error in TestUtil.fakeMouseEvent: widget is not created" );
     }
     var target = widget._getTargetNode();
     var type =   qx.core.Variant.isSet( "qx.client", "gecko" ) 
@@ -597,7 +597,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
 
   fakeMouseEvent : function( widget, type, left, top ) {
     if( !widget._isCreated ) {
-      throw( "Error in testUtil.fakeMouseEvent: widget is not created" );
+      throw( "Error in TestUtil.fakeMouseEvent: widget is not created" );
     }
     var button = qx.event.type.MouseEvent.buttons.left;
     var target = widget._getTargetNode();
@@ -676,11 +676,11 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     var server = org.eclipse.rwt.test.fixture.RAPServer.getInstance();
     org.eclipse.rwt.test.fixture.TestUtil.clearRequestLog();
     server.setRequestHandler( function( message ) {
-      testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil._requestLog.push( message );
-      if( testUtil._response !== null ) {
-        testUtil._response();
-        testUtil._response = null;
+      TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil._requestLog.push( message );
+      if( TestUtil._response !== null ) {
+        TestUtil._response();
+        TestUtil._response = null;
       }
       return "";
     } );
@@ -711,8 +711,8 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     var handler = org.eclipse.rwt.ErrorHandler;
     org.eclipse.rwt.test.fixture.TestUtil.clearErrorPage();
     handler.showError = function( content ) {
-      testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil._errorPage = content;
+      TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil._errorPage = content;
     };
   },
 

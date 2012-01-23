@@ -791,14 +791,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
     },
 
     _getDummyWidget : function( targetId ) {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var result = new qx.ui.basic.Terminator();
       result.addToDocument();
       result.setLeft( 10 );
       result.setTop( 10 );
       result.setWidth( 100 );
       result.setHeight( 20 ); 
-      testUtil.flush();
+      TestUtil.flush();
       if( typeof targetId === "string" ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         widgetManager.add( result, targetId, true, "dummyType" );

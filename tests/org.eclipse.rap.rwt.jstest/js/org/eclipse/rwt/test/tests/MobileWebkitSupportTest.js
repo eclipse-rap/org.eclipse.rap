@@ -204,12 +204,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     
     // See Bug 323803 -  [ipad] Browser-widget/iframe broken  
     testIFrameDimensionBug : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var iframe = new qx.ui.embed.Iframe();
       iframe.addToDocument();
       iframe.setWidth( 300 );
       iframe.setHeight( 400 );
-      testUtil.flush();
+      TestUtil.flush();
       var node = iframe.getIframeNode();
       var widgetNode = iframe.getElement();
       assertEquals( 300, parseInt( widgetNode.style.width ) );
@@ -225,11 +225,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
     
     testTextFocus : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = new org.eclipse.rwt.widgets.Text( false );
       org.eclipse.swt.TextUtil.initialize( text );
       text.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       assertFalse( text.isFocused() );
       var node = text._inputElement;
       this.touch( node, "touchstart" );
@@ -237,10 +237,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       text.addEventListener( "mouseover", function(){
         over = true;
       } );
-      testUtil.fakeMouseEventDOM( node, "mouseover", 1, 0, 0, 0, true );
+      TestUtil.fakeMouseEventDOM( node, "mouseover", 1, 0, 0, 0, true );
       if( !over ) {
         // the ipad will only send a mousedown if mouseover is not processed
-        testUtil.fakeMouseEventDOM( node, "mousedown", 1, 0, 0, 0, true );
+        TestUtil.fakeMouseEventDOM( node, "mousedown", 1, 0, 0, 0, true );
       }
       assertTrue( text.isFocused() );
     },
@@ -250,38 +250,38 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     // Events
     
     testPreventNativeMouseEvents : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var counter = 0;
       widget.addEventListener( "mousedown", function(){ counter++; } );
       var node = widget._getTargetNode();
-      testUtil.fakeMouseEventDOM( node, "mousedown", 1, 0, 0, 0, true );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", 1, 0, 0, 0, true );
       assertEquals( 0, counter );
       widget.destroy();
       this.resetMobileWebkitSupport();
     },
     
     testAllowNativeMouseWheelEvents : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var counter = 0;
       widget.addEventListener( "mousewheel", function(){ counter++; } );
       var node = widget._getTargetNode();
-      testUtil.fakeMouseEventDOM( node, "mousewheel", 1, 0, 0, 0, true );
+      TestUtil.fakeMouseEventDOM( node, "mousewheel", 1, 0, 0, 0, true );
       assertEquals( 1, counter );
       widget.destroy();
       this.resetMobileWebkitSupport();
     },
     
     testTouchStartCreatesMouseDown : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();      
+      TestUtil.flush();      
       var log = [];
       var logger = function( event ){ 
         log.push( event.getType() ); 
@@ -295,10 +295,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
     
     testTouchEndCreatesMouseUp : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();      
+      TestUtil.flush();      
       var log = [];
       var logger = function( event ){ 
         log.push( event.getType() ); 
@@ -313,21 +313,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
     
     testTouchToolTips : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
       widget.setToolTip( toolTip );
       widget.setUserData( "toolTipText", "foo" );
-      testUtil.flush();
+      TestUtil.flush();
       var node = widget._getTargetNode();
       this.touch( node, "touchstart" );
-      testUtil.forceInterval( toolTip._showTimer );
+      TestUtil.forceInterval( toolTip._showTimer );
       assertTrue( toolTip.getVisibility() );
       this.touch( node, "touchend" );
       assertFalse( toolTip.getVisibility() );
       this.touch( node, "touchstart" );
-      testUtil.forceInterval( toolTip._showTimer );
+      TestUtil.forceInterval( toolTip._showTimer );
       assertTrue( toolTip.getVisibility() );
       this.touch( node, "touchend" );
       assertFalse( toolTip.getVisibility() );
@@ -337,10 +337,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
     
     testMouseOver : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();      
+      TestUtil.flush();      
       var log = [];
       var logger = function( event ){ 
         log.push( event.getType() ); 
@@ -359,10 +359,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     
     testMouseOut : function() {
       this.resetMobileWebkitSupport();
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();      
+      TestUtil.flush();      
       var log = [];
       var logger = function( event ){ 
         log.push( event.getType() ); 
@@ -379,10 +379,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
     
     testCoordinatesMouseDownUp : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();      
+      TestUtil.flush();      
       var log = [];
       var logger = function( event ){ 
         log.push( event.getPageX(), event.getPageY() ); 
@@ -398,10 +398,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
     
     testPreventTapZoom : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var prevented = false; 
       widget.addEventListener( "mouseup", function( event ) {
         prevented = event.getDomEvent().originalEvent.prevented === true;
@@ -416,10 +416,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testClick : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();      
+      TestUtil.flush();      
       var log = [];
       var logger = function( event ){ 
         log.push( event.getType() ); 
@@ -436,10 +436,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
     
     testNoClickOnDifferentTargets : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();      
+      TestUtil.flush();      
       var log = [];
       var logger = function( event ){ 
         log.push( event.getType() ); 
@@ -583,11 +583,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
     
     testCancelOnGesture : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var doc = qx.ui.core.ClientDocument.getInstance();
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();      
+      TestUtil.flush();      
       var widgetLog = [];
       var widgetLogger = function( event ){ 
         widgetLog.push( event.getType() );
@@ -621,11 +621,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
     
     testCancelOnSwipe : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var doc = qx.ui.core.ClientDocument.getInstance();
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();      
+      TestUtil.flush();      
       var widgetLog = [];
       var widgetLogger = function( event ){ 
         widgetLog.push( event.getType() );
@@ -668,10 +668,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
     
     testDoubleClick : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();      
+      TestUtil.flush();      
       var log = [];
       var logger = function( event ){ 
         log.push( event.getType() ); 
@@ -700,10 +700,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
     
     testNoDoubeClickDifferentTarget : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();      
+      TestUtil.flush();      
       var log = [];
       var logger = function( event ){ 
         log.push( event.getType() ); 
@@ -724,10 +724,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testNoDoubleClickTooSlow : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();      
+      TestUtil.flush();      
       var log = [];
       var logger = function( event ){ 
         log.push( event.getType() ); 
@@ -750,10 +750,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     
     testPreventDefaultAtFullscreen : function() {
       this.fakeFullscreen();
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var log = [];
       var logger = function( event ) {
         log.push( event.getDomEvent().originalEvent.prevented );
@@ -774,10 +774,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     
     testNotZoomedPreventDefaultOnSwipe : function() {
       this.fakeZoom( false );
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var log = [];
       var logger = function( event ) {
         log.push( event.getDomEvent().originalEvent );
@@ -793,10 +793,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     
     testZoomedNotPreventDefaultOnSwipe : function() {
       this.fakeZoom( true );
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var log = [];
       var logger = function( event ) {
         log.push( event.getDomEvent().originalEvent );

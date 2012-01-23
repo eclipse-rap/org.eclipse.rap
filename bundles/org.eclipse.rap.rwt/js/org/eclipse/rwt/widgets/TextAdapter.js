@@ -43,10 +43,10 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Text", {
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
     "text" : function( widget, value ) {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      var text = encodingUtil.truncateAtZero( value );
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var text = EncodingUtil.truncateAtZero( value );
       if( !widget.hasState( "rwt_MULTI" ) ) {
-        text = encodingUtil.replaceNewLines( text, " " );
+        text = EncodingUtil.replaceNewLines( text, " " );
       }
       widget.setValue( text );
     },

@@ -27,11 +27,11 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Link", {
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
     "text" : function( widget, value ) {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       widget.clear();
       for (var i = 0; i < value.length; i++ ) {
-        var text = encodingUtil.escapeText( value[ i ][ 0 ], false );
-        text = encodingUtil.replaceNewLines( text, "<br/>" );
+        var text = EncodingUtil.escapeText( value[ i ][ 0 ], false );
+        text = EncodingUtil.replaceNewLines( text, "<br/>" );
         var index = value[ i ][ 1 ];
         if( index !== null ) {
           widget.addLink( text, index );

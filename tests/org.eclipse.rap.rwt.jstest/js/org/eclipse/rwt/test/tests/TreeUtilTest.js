@@ -29,9 +29,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     },
 
     testAddToParent : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var container = this._createSplitContainer();
-      var parent = testUtil.getDocument();
+      var parent = TestUtil.getDocument();
       parent.add( container );
       assertIdentical( parent, container.getSubContainer( 0 ).getParent() );
       assertIdentical( parent, container.getSubContainer( 1 ).getParent() );
@@ -39,11 +39,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     },
 
     testDestroy : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var container = this._createSplitContainer();
-      testUtil.getDocument().add( container );
+      TestUtil.getDocument().add( container );
       container.destroy();
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( container.getSubContainer( 0 ).isDisposed() );
       assertTrue( container.getSubContainer( 1 ).isDisposed() );
     },
@@ -120,7 +120,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     },
 
     testGetTopHeight : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var container = this._createSplitContainer();
       container.setTop( 30 );
       container.setHeight( 300 );
@@ -130,12 +130,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     },
 
     testSetWidth : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var container = this._createSplitContainer();
       container.setWidth( 100 );
       container.renderAll();
-      testUtil.flush();
-      testUtil.flush();
+      TestUtil.flush();
+      TestUtil.flush();
       var sub1 = container.getSubContainer( 0 );
       var sub2 = container.getSubContainer( 1 );
       assertEquals( 60, sub1.getWidth() );
@@ -191,11 +191,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     },
 
     testScrollLeftRightContainer : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var container = this._createSplitContainer();
       container.setRowWidth( 200 );
       container.renderAll();
-      testUtil.flush();
+      TestUtil.flush();
       container.setScrollLeft( 20 );
       var sub1 = container.getSubContainer( 0 );
       var sub2 = container.getSubContainer( 1 );
@@ -208,7 +208,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     // Tests with "real" Tree
 
     testCreateMinimalTreeWithFixedColumns : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = new org.eclipse.rwt.widgets.Tree( { 
         "appearance": "table",
         "splitContainer" : true
@@ -219,18 +219,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       assertIdentical( tree, tree._rowContainer.getSubContainer( 1 ).getParent() );
       assertNull( tree, tree._rowContainer.getSubContainer( 2 ) );
       tree.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       tree.destroy();
     },
 
     testIgnoreFixedColumnsWithoutSplitContainer : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = new org.eclipse.rwt.widgets.Tree( { 
         "appearance": "table"
       } );
       org.eclipse.rwt.TreeUtil.setFixedColumns( tree, 3 );      
       tree.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( tree._rowContainer instanceof org.eclipse.rwt.widgets.TreeRowContainer );
       tree.destroy();
     },
@@ -244,26 +244,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     },
 
     testChangeFixedColumns : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       assertEquals( 2, tree.getRowContainer().getFixedColumns() );
       var containerEl = tree.getRowContainer().getSubContainer( 0 ).getElement();
       var orgWidth = parseInt( containerEl.style.width );
       org.eclipse.rwt.TreeUtil.setFixedColumns( tree, 3 );
       assertEquals( 3, tree.getRowContainer().getFixedColumns() );
-      testUtil.flush();
+      TestUtil.flush();
       var newWidth = parseInt( containerEl.style.width );
       assertTrue( newWidth > orgWidth ); 
       tree.destroy();
     },
 
     testRenderSplitItem : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       tree.setItemCount( 1 );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       item.setTexts( [ "c0", "c1", "c2", "c3", "c4" ] );
-      testUtil.flush();
+      TestUtil.flush();
       var rowLeft = tree._rowContainer.getSubContainer( 0 ).getChildren()[ 0 ];
       var rowRight = tree._rowContainer.getSubContainer( 1 ).getChildren()[ 0 ];
       assertEquals( 2, rowLeft._getTargetNode().childNodes.length );
@@ -274,58 +274,58 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     },
 
     testSplitSelectionClickLeft : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       tree.setItemCount( 1 );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
-      testUtil.flush();
+      TestUtil.flush();
       assertFalse( tree.isItemSelected( item ) );
-      testUtil.clickDOM( tree._rowContainer.getSubContainer( 0 )._children[ 0 ]._getTargetNode() ); 
-      testUtil.flush();
+      TestUtil.clickDOM( tree._rowContainer.getSubContainer( 0 )._children[ 0 ]._getTargetNode() ); 
+      TestUtil.flush();
       assertTrue( tree.isItemSelected( item ) );
       tree.destroy();
     },
 
     testSplitSelectionClickRight : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       tree.setItemCount( 1 );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
-      testUtil.flush();
+      TestUtil.flush();
       assertFalse( tree.isItemSelected( item ) );
-      testUtil.clickDOM( tree._rowContainer.getSubContainer( 1 )._children[ 0 ]._getTargetNode() ); 
-      testUtil.flush();
+      TestUtil.clickDOM( tree._rowContainer.getSubContainer( 1 )._children[ 0 ]._getTargetNode() ); 
+      TestUtil.flush();
       assertTrue( tree.isItemSelected( item ) );
       tree.destroy();
     },
 
     testSplitSelectionByServer : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       tree.setItemCount( 1 );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
-      testUtil.flush();
+      TestUtil.flush();
       assertFalse( tree.isItemSelected( item ) );
       org.eclipse.swt.EventUtil.setSuspended( true );
       tree.selectItem( item ); 
       org.eclipse.swt.EventUtil.setSuspended( false );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( tree.isItemSelected( item ) );
       tree.destroy();
     },
 
     testSyncHoverItem : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       tree.setItemCount( 1 );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       item.setTexts( [ "bla" ] );
       item.setImages( [ "bla.jpg" ] );
-      testUtil.flush();
+      TestUtil.flush();
       var rowNode = tree._rowContainer.getSubContainer( 0 )._children[ 0 ]._getTargetNode();
-      testUtil.hoverFromTo( document.body, rowNode );
-      testUtil.hoverFromTo( rowNode, rowNode.firstChild );
-      testUtil.forceInterval( tree._rowContainer.getSubContainer( 1 )._asyncTimer );
+      TestUtil.hoverFromTo( document.body, rowNode );
+      TestUtil.hoverFromTo( rowNode, rowNode.firstChild );
+      TestUtil.forceInterval( tree._rowContainer.getSubContainer( 1 )._asyncTimer );
       assertIdentical( item, tree._rowContainer.getSubContainer( 0 ).getHoverItem() );
       assertIdentical( item, tree._rowContainer.getSubContainer( 1 ).getHoverItem() );
       assertTrue( tree._rowContainer.getSubContainer( 1 ).getChildren()[ 0 ].hasState( "over" ) );
@@ -333,7 +333,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     },
 
     testCellToolTipOnFixedColumns : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       widgetManager.add( tree, "w3", true );
@@ -349,17 +349,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       tree.setItemCount( 1 ); 
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       widgetManager.add( item, "w45", true );
-      testUtil.flush();
-      testUtil.prepareTimerUse();
-      testUtil.initRequestLog();
+      TestUtil.flush();
+      TestUtil.prepareTimerUse();
+      TestUtil.initRequestLog();
       tree.setScrollLeft( 20 );      
       var leftButton = qx.event.type.MouseEvent.buttons.left;
       var node = tree._rowContainer.getSubContainer( 1 ).getChildren()[ 0 ].getElement();
-      testUtil.fakeMouseEventDOM( node, "mouseover", leftButton, 6, 11 );
-      testUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 6, 11 );
-      testUtil.forceInterval( tree._cellToolTip._showTimer );
-      var msg = testUtil.getMessage();
-      assertEquals( 1, testUtil.getRequestsSend() );
+      TestUtil.fakeMouseEventDOM( node, "mouseover", leftButton, 6, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 6, 11 );
+      TestUtil.forceInterval( tree._cellToolTip._showTimer );
+      var msg = TestUtil.getMessage();
+      assertEquals( 1, TestUtil.getRequestsSend() );
       var param1 = "org.eclipse.swt.events.cellToolTipTextRequested=w3";
       var param2 = "org.eclipse.swt.events.cellToolTipTextRequested.cell=w45%2C1";
       assertTrue( msg.indexOf( param1 ) != -1 );
@@ -368,7 +368,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     },
 
     testCellToolTipOnNonFixedColumns : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       widgetManager.add( tree, "w3", true );
@@ -384,17 +384,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       tree.setItemCount( 1 ); 
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       widgetManager.add( item, "w45", true );
-      testUtil.flush();
-      testUtil.prepareTimerUse();
-      testUtil.initRequestLog();
+      TestUtil.flush();
+      TestUtil.prepareTimerUse();
+      TestUtil.initRequestLog();
       tree.setScrollLeft( 20 );      
       var leftButton = qx.event.type.MouseEvent.buttons.left;
       var node = tree._rowContainer.getSubContainer( 1 ).getChildren()[ 0 ].getElement();
-      testUtil.fakeMouseEventDOM( node, "mouseover", leftButton, 16, 11 );
-      testUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 16, 11 );
-      testUtil.forceInterval( tree._cellToolTip._showTimer );
-      var msg = testUtil.getMessage();
-      assertEquals( 1, testUtil.getRequestsSend() );
+      TestUtil.fakeMouseEventDOM( node, "mouseover", leftButton, 16, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 16, 11 );
+      TestUtil.forceInterval( tree._cellToolTip._showTimer );
+      var msg = TestUtil.getMessage();
+      assertEquals( 1, TestUtil.getRequestsSend() );
       var param1 = "org.eclipse.swt.events.cellToolTipTextRequested=w3";
       var param2 = "org.eclipse.swt.events.cellToolTipTextRequested.cell=w45%2C4";
       assertTrue( msg.indexOf( param1 ) != -1 );
@@ -403,7 +403,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     },
 
     testLinesVisibleForSplitTree : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       for( var i = 0; i < 5; i++ ) {
         var column = new org.eclipse.swt.widgets.TableColumn( tree );
@@ -415,7 +415,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
         }
       }
       tree.setLinesVisible( true );
-      testUtil.flush();
+      TestUtil.flush();
       var border = tree._rowContainer.getSubContainer( 0 )._getHorizontalGridBorder();      
       var row = tree._rowContainer.getSubContainer( 0 )._children[ 0 ];
       assertTrue( tree.hasState( "linesvisible" ) );
@@ -424,15 +424,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     },
 
     testVerticalGridLayoutOnSplitTree : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
-      testUtil.flush();
+      TestUtil.flush();
       var cont1 = tree.getRowContainer().getSubContainer( 0 )._getTargetNode();
       var cont2 = tree.getRowContainer().getSubContainer( 1 )._getTargetNode();
       var offset1 = cont1.childNodes.length;
       var offset2 = cont2.childNodes.length;
       tree.setLinesVisible( true );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( offset1 + 2, cont1.childNodes.length );
       assertEquals( offset2 + 3, cont2.childNodes.length ); // column count is 5
       assertEquals( 49, parseInt( cont1.childNodes[ offset1 ].style.left ) );
@@ -444,17 +444,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     },
 
     testVerticalGridLayoutOnChangeFixedColumns : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
-      testUtil.flush();
+      TestUtil.flush();
       var cont1 = tree.getRowContainer().getSubContainer( 0 )._getTargetNode();
       var cont2 = tree.getRowContainer().getSubContainer( 1 )._getTargetNode();
       var offset1 = cont1.childNodes.length;
       var offset2 = cont2.childNodes.length;
       tree.setLinesVisible( true );
-      testUtil.flush();
+      TestUtil.flush();
       org.eclipse.rwt.TreeUtil.setFixedColumns( tree, 0 );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( offset1, cont1.childNodes.length );
       assertEquals( offset2 + 5, cont2.childNodes.length ); // column count is 5
       tree.destroy();
@@ -465,7 +465,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     
     _createSplitContainer : function() {
       // column order: 2,0 - 1,3,4
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var argsMap = { "splitContainer" : true };
       var result = org.eclipse.rwt.TreeUtil.createTreeRowContainer( argsMap );
       result.setFixedColumns( 2 );
@@ -483,14 +483,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       config.itemImageWidth = [ 4, 5, 6, 7, 8 ];
       config.itemTextLeft = [ 33, 64, 5, 96, 127];   
       config.itemTextWidth = [ 3, 4, 5, 6, 7 ];
-      testUtil.getDocument().add( result );   
-      testUtil.flush();
+      TestUtil.getDocument().add( result );   
+      TestUtil.flush();
       result.renderAll();
       return result;
     },
 
     _createSplitTree : function( noflush, option, arg ) {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var args = {
         "appearance" : "table",
         "splitContainer" : true 
@@ -521,7 +521,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       tree.setItemMetrics( 5, 120, 24, 126, 8, 127, 7 );      
       tree.addToDocument();
       if( !noflush ) {
-        testUtil.flush();
+        TestUtil.flush();
       }
       return tree;
     },

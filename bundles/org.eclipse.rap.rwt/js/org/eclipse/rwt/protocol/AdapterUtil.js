@@ -106,9 +106,9 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     },
     "toolTip" : function( widget, value ) {
       if( value != null && value != "" ) {
-        var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-        var text = encodingUtil.escapeText( value, false );
-        text = encodingUtil.replaceNewLines( text, "<br/>" );
+        var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+        var text = EncodingUtil.escapeText( value, false );
+        text = EncodingUtil.replaceNewLines( text, "<br/>" );
         widget.setUserData( "toolTipText", text );
         var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance()
         widget.setToolTip( toolTip );

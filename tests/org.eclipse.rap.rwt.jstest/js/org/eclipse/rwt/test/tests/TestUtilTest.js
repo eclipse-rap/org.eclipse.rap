@@ -31,7 +31,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testGetElementBounds : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = document.createElement( "div" );
       var child = document.createElement( "div" );
       parent.style.width = "100px";
@@ -41,7 +41,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       child.style.left = "30px";
       child.style.width = "50px";
       child.style.height = "70px";
-      var bounds = testUtil.getElementBounds( child );
+      var bounds = TestUtil.getElementBounds( child );
       var expected = {
         "top" : 20,
         "left" : 30,
@@ -55,7 +55,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     
     
     testGetElementBoundsNoLeftTop : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = document.createElement( "div" );
       var child = document.createElement( "div" );
       parent.style.width = "100px";
@@ -63,7 +63,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       parent.appendChild( child );
       child.style.width = "50px";
       child.style.height = "70px";
-      var bounds = testUtil.getElementBounds( child );
+      var bounds = TestUtil.getElementBounds( child );
       var expected = {
         "top" : 0,
         "left" : 0,
@@ -76,7 +76,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
     
     testGetElementBoundsUsingRightBottom : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = document.createElement( "div" );
       var child = document.createElement( "div" );
       parent.style.width = "100px";
@@ -86,7 +86,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       child.style.bottom = "30px";
       child.style.width = "50px";
       child.style.height = "70px";
-      var bounds = testUtil.getElementBounds( child );
+      var bounds = TestUtil.getElementBounds( child );
       var expected = {
         "top" : 100,
         "left" : 30,
@@ -99,7 +99,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
     
     testGetElementLayout : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = document.createElement( "div" );
       var child = document.createElement( "div" );
       parent.style.width = "100px";
@@ -109,17 +109,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       child.style.left = "30px";
       child.style.width = "50px";
       child.style.height = "70px";
-      var bounds = testUtil.getElementLayout( child );
+      var bounds = TestUtil.getElementLayout( child );
       var expected = [ 30, 20, 50, 70 ];
       assertEquals( expected, bounds );
     },
    
     testGetElementBoundsNoParent : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var child = document.createElement( "div" );
       var log = [];
       try {
-        testUtil.getElementBounds( child );
+        TestUtil.getElementBounds( child );
       } catch( ex ) {
         log.push( ex );
       }
@@ -127,7 +127,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
    
     testGetElementBoundsNoPercantageOnChild : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = document.createElement( "div" );
       var child = document.createElement( "div" );
       parent.style.width = "100%";
@@ -139,7 +139,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       child.style.height = "70px";
       var log = [];
       try {
-        testUtil.getElementBounds( child );
+        TestUtil.getElementBounds( child );
       } catch( ex ) {
         log.push( ex );
       }
@@ -147,7 +147,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
    
     testGetElementBoundsNoPercantageOnParent : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = document.createElement( "div" );
       var child = document.createElement( "div" );
       parent.style.width = "100px";
@@ -159,7 +159,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       child.style.height = "70px";
       var log = [];
       try {
-        testUtil.getElementBounds( child );
+        TestUtil.getElementBounds( child );
       } catch( ex ) {
         log.push( ex );
       }
@@ -167,7 +167,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
     
     testGetElementBoundsWidthImage : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = document.createElement( "div" );
       var child = document.createElement( "div" );
       parent.style.width = "100px";
@@ -179,7 +179,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       child.style.height = "70px";
       child.style.backgroundRepeat = "no-repeat";
       child.style.backgroundPosition = "center";
-      var bounds = testUtil.getElementBounds( child );
+      var bounds = TestUtil.getElementBounds( child );
       var expected = {
         "top" : 20,
         "left" : 30,
@@ -192,7 +192,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },   
     
     testGetElementBoundsWidthBorder : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = document.createElement( "div" );
       var child = document.createElement( "div" );
       parent.style.width = "100px";
@@ -203,7 +203,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       child.style.left = "30px";
       child.style.width = "50px";
       child.style.height = "70px";
-      var bounds = testUtil.getElementBounds( child );
+      var bounds = TestUtil.getElementBounds( child );
       var expected = {
         "top" : 20,
         "left" : 30,
@@ -216,7 +216,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testGetElementBoundsWidthDifferentEdges : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = document.createElement( "div" );
       var child = document.createElement( "div" );
       parent.style.width = "100px";
@@ -227,7 +227,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       child.style.left = "30px";
       child.style.width = "50px";
       child.style.height = "70px";
-      var bounds = testUtil.getElementBounds( child );
+      var bounds = TestUtil.getElementBounds( child );
       var expected = {
         "top" : 20,
         "left" : 30,
@@ -241,17 +241,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     
     testGetCssBackgroundImage : function() {
       // TODO : test for IE-filter
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var div = document.createElement( "div" );
       div.style.backgroundImage = "url( test.gif )";
-      var result = testUtil.getCssBackgroundImage( div );
+      var result = TestUtil.getCssBackgroundImage( div );
       assertEquals( result.length - 8, result.indexOf( "test.gif" ) );
     },
     
     testFakeAppearance : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
-      testUtil.fakeAppearance( "my-appearance", {
+      TestUtil.fakeAppearance( "my-appearance", {
         style : function( states ) {
           return {
             backgroundImage : "my-appearance.gif"
@@ -265,10 +265,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
     
     testOverwriteAppearance : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new org.eclipse.rwt.widgets.Button( "push" );
       assertEquals( "push-button", widget.getAppearance() );
-      testUtil.fakeAppearance( "push-button", {
+      TestUtil.fakeAppearance( "push-button", {
         style : function( states ) {
           return {
             backgroundImage : "my-appearance.gif"
@@ -281,15 +281,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
     
     testDeleteFakeAppearance : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.fakeAppearance( "my-appearance", {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.fakeAppearance( "my-appearance", {
         style : function( states ) {
           return {
             backgroundImage : "my-appearance.gif"
           };
         }
       } );
-      testUtil.restoreAppearance();
+      TestUtil.restoreAppearance();
       var widget = new qx.ui.basic.Terminator();
       try{
         widget.setAppearance( "my-appearance" );
@@ -301,10 +301,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testRestoreAppearance : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new org.eclipse.rwt.widgets.Button( "push" );
       assertEquals( "push-button", widget.getAppearance() );
-      testUtil.fakeAppearance( "push-button", {
+      TestUtil.fakeAppearance( "push-button", {
         style : function( states ) {
           return {
             backgroundImage : "my-appearance.gif"
@@ -312,52 +312,52 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
         }
       } );
       widget._renderAppearance();
-      testUtil.restoreAppearance();
+      TestUtil.restoreAppearance();
       widget._renderAppearance();
       assertNull( widget.getBackgroundImage() );
       widget.destroy();
     },
     
     testFakeWheel : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var log = [];
       widget.addEventListener( "mousewheel", function( evt ) {
         log.push( evt.getWheelDelta() );
       } );
-      testUtil.fakeWheel( widget, 2 );
-      testUtil.fakeWheel( widget, -3 );
+      TestUtil.fakeWheel( widget, 2 );
+      TestUtil.fakeWheel( widget, -3 );
       assertEquals( [ 2, -3 ], log );
       widget.destroy();
     },
     
     testFakeMouseEventDomModifier : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var log = [];
       widget.addEventListener( "mousedown", function( evt ) {
         log.push( evt.getModifiers() );
       } );
       var node = widget._getTargetNode();
       var left = qx.event.type.MouseEvent.buttons.left;
-      testUtil.fakeMouseEventDOM( node, "mousedown", left, 0, 0, 0 );
-      testUtil.fakeMouseEventDOM( node, "mousedown", left, 0, 0, 1 );
-      testUtil.fakeMouseEventDOM( node, "mousedown", left, 0, 0, 2 );
-      testUtil.fakeMouseEventDOM( node, "mousedown", left, 0, 0, 4 );
-      testUtil.fakeMouseEventDOM( node, "mousedown", left, 0, 0, 7 );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", left, 0, 0, 0 );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", left, 0, 0, 1 );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", left, 0, 0, 2 );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", left, 0, 0, 4 );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", left, 0, 0, 7 );
       assertEquals( [ 0, 1, 2, 4, 7 ], log );
       widget.destroy();
     },
     
     testGetElementFontShorthand : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var el = document.createElement( "div" );
       el.style.font = "10px italic bold Arial";
-      var font = testUtil.getElementFont( el );
+      var font = TestUtil.getElementFont( el );
       assertTrue( font.indexOf( "10px" ) != -1 );
       assertTrue( font.indexOf( "Arial" ) != -1 );
       assertTrue( font.indexOf( "italic" ) != -1 );
@@ -365,14 +365,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testGetElementFontSingleProps : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var el = document.createElement( "div" );
       el.style.font = "10px italic bold Arial";
       el.style.fontFamily = "Arial";
       el.style.fontSize = "10px";
       el.style.fontStyle = "italic";
       el.style.fontWeight = "bold";
-      var font = testUtil.getElementFont( el );      
+      var font = TestUtil.getElementFont( el );      
       assertTrue( font.indexOf( "10px" ) != -1 );
       assertTrue( font.indexOf( "Arial" ) != -1 );
       assertTrue( font.indexOf( "italic" ) != -1 );
@@ -380,101 +380,101 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testDoubleClick : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var log = [];
       widget.addEventListener( "click" , function() { log.push( "click" ); } );
       widget.addEventListener( "dblclick" , function() { 
         log.push( "dblclick" ); 
       } );
-      testUtil.doubleClick( widget );
+      TestUtil.doubleClick( widget );
       assertEquals( [ "click", "click", "dblclick" ], log );
       widget.destroy();
     },
     
     testSendKeyPress : qx.core.Variant.select("qx.client",  {
       "gecko|opera" : function() {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        assertTrue( testUtil._sendKeyPress( "a" ) );
-        assertTrue( testUtil._sendKeyPress( "A" ) );
-        assertTrue( testUtil._sendKeyPress( 65 ) );
-        assertTrue( testUtil._sendKeyPress( "Enter" ) );
-        assertTrue( testUtil._sendKeyPress( 13 ) );
-        assertTrue( testUtil._sendKeyPress( "F1" ) );
-        assertTrue( testUtil._sendKeyPress( 112 ) );
-        assertTrue( testUtil._sendKeyPress( "Space" ) );
-        assertTrue( testUtil._sendKeyPress( 32 ) );
-        assertTrue( testUtil._sendKeyPress( "Escape" ) );
-        assertTrue( testUtil._sendKeyPress( 27 ) );
-        assertTrue( testUtil._sendKeyPress( "Tab" ) );
-        assertTrue( testUtil._sendKeyPress( 9 ) );
-        assertTrue( testUtil._sendKeyPress( "Backspace" ) );
-        assertTrue( testUtil._sendKeyPress( 8 ) );
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        assertTrue( TestUtil._sendKeyPress( "a" ) );
+        assertTrue( TestUtil._sendKeyPress( "A" ) );
+        assertTrue( TestUtil._sendKeyPress( 65 ) );
+        assertTrue( TestUtil._sendKeyPress( "Enter" ) );
+        assertTrue( TestUtil._sendKeyPress( 13 ) );
+        assertTrue( TestUtil._sendKeyPress( "F1" ) );
+        assertTrue( TestUtil._sendKeyPress( 112 ) );
+        assertTrue( TestUtil._sendKeyPress( "Space" ) );
+        assertTrue( TestUtil._sendKeyPress( 32 ) );
+        assertTrue( TestUtil._sendKeyPress( "Escape" ) );
+        assertTrue( TestUtil._sendKeyPress( 27 ) );
+        assertTrue( TestUtil._sendKeyPress( "Tab" ) );
+        assertTrue( TestUtil._sendKeyPress( 9 ) );
+        assertTrue( TestUtil._sendKeyPress( "Backspace" ) );
+        assertTrue( TestUtil._sendKeyPress( 8 ) );
         if( org.eclipse.rwt.Client.isOpera() ) {
-          assertFalse( testUtil._sendKeyPress( "Win" ) ); 
-          assertFalse( testUtil._sendKeyPress( 91 ) );
+          assertFalse( TestUtil._sendKeyPress( "Win" ) ); 
+          assertFalse( TestUtil._sendKeyPress( 91 ) );
         } else {
-          assertTrue( testUtil._sendKeyPress( "Win" ) ); // opera false
-          assertTrue( testUtil._sendKeyPress( 91 ) );
+          assertTrue( TestUtil._sendKeyPress( "Win" ) ); // opera false
+          assertTrue( TestUtil._sendKeyPress( 91 ) );
         }
-        assertTrue( testUtil._sendKeyPress( "Left" ) );
-        assertTrue( testUtil._sendKeyPress( 37 ) );
-        assertTrue( testUtil._sendKeyPress( "Apps" ) );
-        assertTrue( testUtil._sendKeyPress( 93 ) );
-        assertFalse( testUtil._sendKeyPress( "Shift" ) );
-        assertFalse( testUtil._sendKeyPress( 16 ) );
-        assertFalse( testUtil._sendKeyPress( "Control" ) );
-        assertFalse( testUtil._sendKeyPress( 17 ) );
-        assertFalse( testUtil._sendKeyPress( "Alt" ) );
-        assertFalse( testUtil._sendKeyPress( 18 ) );
+        assertTrue( TestUtil._sendKeyPress( "Left" ) );
+        assertTrue( TestUtil._sendKeyPress( 37 ) );
+        assertTrue( TestUtil._sendKeyPress( "Apps" ) );
+        assertTrue( TestUtil._sendKeyPress( 93 ) );
+        assertFalse( TestUtil._sendKeyPress( "Shift" ) );
+        assertFalse( TestUtil._sendKeyPress( 16 ) );
+        assertFalse( TestUtil._sendKeyPress( "Control" ) );
+        assertFalse( TestUtil._sendKeyPress( 17 ) );
+        assertFalse( TestUtil._sendKeyPress( "Alt" ) );
+        assertFalse( TestUtil._sendKeyPress( 18 ) );
       },
       "default" : function() {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        assertTrue( testUtil._sendKeyPress( "a" ) );
-        assertTrue( testUtil._sendKeyPress( "A" ) );
-        assertTrue( testUtil._sendKeyPress( 65 ) );
-        assertTrue( testUtil._sendKeyPress( "Enter" ) );
-        assertTrue( testUtil._sendKeyPress( 13 ) );
-        assertFalse( testUtil._sendKeyPress( "F1" ) );
-        assertFalse( testUtil._sendKeyPress( 112 ) );
-        assertTrue( testUtil._sendKeyPress( "Space" ) );
-        assertTrue( testUtil._sendKeyPress( 32 ) );
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        assertTrue( TestUtil._sendKeyPress( "a" ) );
+        assertTrue( TestUtil._sendKeyPress( "A" ) );
+        assertTrue( TestUtil._sendKeyPress( 65 ) );
+        assertTrue( TestUtil._sendKeyPress( "Enter" ) );
+        assertTrue( TestUtil._sendKeyPress( 13 ) );
+        assertFalse( TestUtil._sendKeyPress( "F1" ) );
+        assertFalse( TestUtil._sendKeyPress( 112 ) );
+        assertTrue( TestUtil._sendKeyPress( "Space" ) );
+        assertTrue( TestUtil._sendKeyPress( 32 ) );
         if( org.eclipse.rwt.Client.isWebkit() ) {
-          assertFalse( testUtil._sendKeyPress( "Escape" ) );
-          assertFalse( testUtil._sendKeyPress( 27 ) );
+          assertFalse( TestUtil._sendKeyPress( "Escape" ) );
+          assertFalse( TestUtil._sendKeyPress( 27 ) );
         } else {
-          assertTrue( testUtil._sendKeyPress( "Escape" ) );
-          assertTrue( testUtil._sendKeyPress( 27 ) );
+          assertTrue( TestUtil._sendKeyPress( "Escape" ) );
+          assertTrue( TestUtil._sendKeyPress( 27 ) );
         }
-        assertFalse( testUtil._sendKeyPress( "Tab" ) );
-        assertFalse( testUtil._sendKeyPress( 9 ) );
-        assertFalse( testUtil._sendKeyPress( "Backspace" ) );
-        assertFalse( testUtil._sendKeyPress( 8 ) ); 
-        assertFalse( testUtil._sendKeyPress( "Win" ) );
-        assertFalse( testUtil._sendKeyPress( 91 ) );
-        assertFalse( testUtil._sendKeyPress( "Left" ) );
-        assertFalse( testUtil._sendKeyPress( 37 ) );
-        assertFalse( testUtil._sendKeyPress( "Apps" ) );
-        assertFalse( testUtil._sendKeyPress( 93 ) );
-        assertFalse( testUtil._sendKeyPress( "Shift" ) );
-        assertFalse( testUtil._sendKeyPress( 16 ) );
-        assertFalse( testUtil._sendKeyPress( "Control" ) );
-        assertFalse( testUtil._sendKeyPress( 17 ) );
-        assertFalse( testUtil._sendKeyPress( "Alt" ) );
-        assertFalse( testUtil._sendKeyPress( 18 ) );
+        assertFalse( TestUtil._sendKeyPress( "Tab" ) );
+        assertFalse( TestUtil._sendKeyPress( 9 ) );
+        assertFalse( TestUtil._sendKeyPress( "Backspace" ) );
+        assertFalse( TestUtil._sendKeyPress( 8 ) ); 
+        assertFalse( TestUtil._sendKeyPress( "Win" ) );
+        assertFalse( TestUtil._sendKeyPress( 91 ) );
+        assertFalse( TestUtil._sendKeyPress( "Left" ) );
+        assertFalse( TestUtil._sendKeyPress( 37 ) );
+        assertFalse( TestUtil._sendKeyPress( "Apps" ) );
+        assertFalse( TestUtil._sendKeyPress( 93 ) );
+        assertFalse( TestUtil._sendKeyPress( "Shift" ) );
+        assertFalse( TestUtil._sendKeyPress( 16 ) );
+        assertFalse( TestUtil._sendKeyPress( "Control" ) );
+        assertFalse( TestUtil._sendKeyPress( 17 ) );
+        assertFalse( TestUtil._sendKeyPress( "Alt" ) );
+        assertFalse( TestUtil._sendKeyPress( 18 ) );
       }
     } ),
    
     testPressPrintable : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var log = this._addKeyLogger( widget, true, true, false );
       widget.focus();
-      testUtil.press( widget, "x" );
+      TestUtil.press( widget, "x" );
       // NOTE [tb] : the identifier is always uppercase
       var expected = [ "keydown", "X", "keypress", "X", "keyup", "X", ];
       assertEquals( expected, log );
@@ -482,26 +482,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },    
    
     testPressPrintableSpecialChar : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var log = this._addKeyLogger( widget, true, true, false );
       widget.focus();
-      testUtil.press( widget, "Space" );
+      TestUtil.press( widget, "Space" );
       var expected = [ "keydown", "Space", "keypress", "Space", "keyup", "Space", ];
       assertEquals( expected, log );
       widget.destroy();
     },    
    
     testPressPrintableSpecialCharNoKeyInput : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var log = this._addKeyLogger( widget, true, true, false );
       widget.focus();
-      testUtil.press( widget, "Enter" );
+      TestUtil.press( widget, "Enter" );
       var expected = [ "keydown", "Enter", "keypress", "Enter" ];
       if( qx.core.Variant.isSet( "qx.client", "opera" ) ) {
         expected.push( "keyup", "Enter" );
@@ -513,13 +513,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },    
 
     testPressNonPrintable : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var log = this._addKeyLogger( widget, true, true, false );
       widget.focus();
-      testUtil.press( widget, "Left" );
+      TestUtil.press( widget, "Left" );
       // NOTE [tb] : the identifier is currently always uppercase
       var expected 
         = [ "keydown", "Left", "keypress", "Left", "keyup", "Left", ];
@@ -528,17 +528,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testPressEnter : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var log = [];
       widget.addEventListener( "keypress", function( event ) {
         log.push( event.getDomEvent().keyCode );
         log.push( event.getDomEvent().charCode );
       } );
       widget.focus();
-      testUtil.press( widget, "Enter" );
+      TestUtil.press( widget, "Enter" );
       var expected = qx.core.Variant.select( "qx.client", {
         "webkit" : [ 13, 13 ],
         "mshtml|opera|newmshtml" : [ 13, undefined ],
@@ -549,12 +549,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testShiftPress : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var log = this._addKeyLogger( widget, false, false, true );
-      testUtil.shiftPress( widget, "x" );
+      TestUtil.shiftPress( widget, "x" );
       var shift = qx.event.type.DomEvent.SHIFT_MASK;
       var expected = [ shift, shift, shift ];
       assertEquals( expected, log );
@@ -562,12 +562,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
     
     testCtrlPress : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var log = this._addKeyLogger( widget, false, false, true );
-      testUtil.ctrlPress( widget, "x" );
+      TestUtil.ctrlPress( widget, "x" );
       var ctrl = qx.event.type.DomEvent.CTRL_MASK;
       var expected = [ ctrl, ctrl, ctrl ];
       assertEquals( expected, log );
@@ -575,12 +575,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
     
     testAltPress : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var log = this._addKeyLogger( widget, false, false, true );
-      testUtil.altPress( widget, "x" );
+      TestUtil.altPress( widget, "x" );
       var alt = qx.event.type.DomEvent.ALT_MASK;
       var expected = [ alt, alt, alt ];
       assertEquals( expected, log );
@@ -588,12 +588,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
     
     testHoverFromTo : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget1 = new qx.ui.basic.Terminator();
       var widget2 = new qx.ui.basic.Terminator();
       widget1.addToDocument();
       widget2.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var node1 = widget1._getTargetNode(); 
       var node2 = widget2._getTargetNode(); 
       var log = [];
@@ -605,7 +605,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       widget1.addEventListener( "mouseout", handler );
       widget2.addEventListener( "mouseover", handler );
       widget2.addEventListener( "mouseout", handler );
-      testUtil.hoverFromTo( node1, node2 );
+      TestUtil.hoverFromTo( node1, node2 );
       var expected = [
         "mouseout",
         widget1,
@@ -621,15 +621,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     
     testStore : [
       function() {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         assertTrue( "Test1", true );
-        testUtil.store( 1 );
+        TestUtil.store( 1 );
       },
       function( value1, value2 ) {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         assertEquals( 1, value1 );
         assertIdentical( undefined, value2 );
-        testUtil.store( 1, 2 );
+        TestUtil.store( 1, 2 );
       },
       function( value1, value2 ) {
         assertEquals( 1, value1 );
@@ -640,7 +640,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     testDelayTest : [
       // NOTE: accuarcy of timeout is about 16-32 ms
       function() {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var store = { 
           x : 0,
           inc : function( delay ) {
@@ -651,27 +651,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
           }
         };
         store.inc( 40 );
-        testUtil.delayTest( 70 );
-        testUtil.store( store );
+        TestUtil.delayTest( 70 );
+        TestUtil.store( store );
       },
       function( store ) {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         assertEquals( "delayed at least 40ms", 1, store.x );
         store.inc( 70 );
-        testUtil.delayTest( 30 );
-        testUtil.store( store );
+        TestUtil.delayTest( 30 );
+        TestUtil.store( store );
       },
       function( store ) {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         assertEquals( "delayed less than 70ms", 1, store.x );
-        testUtil.delayTest( 60 );
-        testUtil.store( store );
+        TestUtil.delayTest( 60 );
+        TestUtil.store( store );
       },
       function( store ) {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         assertEquals( "sum of delay greater 70ms", 2, store.x );
         store.inc( 50 );
-        testUtil.store( store );
+        TestUtil.store( store );
       },
       function( store ) {
         assertEquals( "no more delay", 2, store.x );
@@ -679,10 +679,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     ],
     
     testScheduleResponse : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.initRequestLog();
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.initRequestLog();
       var x = 1;
-      testUtil.scheduleResponse( function(){
+      TestUtil.scheduleResponse( function(){
         x = 2;
       } );
       org.eclipse.swt.Request.getInstance().send();        
@@ -693,16 +693,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
     
     testCatchErrorPage : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.clearErrorPage();
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.clearErrorPage();
       org.eclipse.rwt.ErrorHandler.showError( "foobar" );
-      assertEquals( "foobar", testUtil.getErrorPage() );
-      testUtil.clearErrorPage();
-      assertNull( testUtil.getErrorPage() );
+      assertEquals( "foobar", TestUtil.getErrorPage() );
+      TestUtil.clearErrorPage();
+      assertNull( TestUtil.getErrorPage() );
     },
     
     testCleanUpKeyUtil : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var prevented = false;
       var preventDefault = function() {
@@ -714,12 +714,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       widget.focus();
       var bindings = { "66" : true };
       keyUtil.setKeyBindings( bindings );
-      testUtil.press( widget, "a", false, 0 );
-      testUtil.press( widget, "b", false, 0 );
-      testUtil.press( widget, "c", false, 0 );
-      testUtil.forceTimerOnce();
+      TestUtil.press( widget, "a", false, 0 );
+      TestUtil.press( widget, "b", false, 0 );
+      TestUtil.press( widget, "c", false, 0 );
+      TestUtil.forceTimerOnce();
       assertIdentical( bindings, keyUtil._keyBindings );
-      testUtil.cleanUpKeyUtil();
+      TestUtil.cleanUpKeyUtil();
       assertEquals( {}, keyUtil._keyBindings );
       widget.destroy();
     },
@@ -728,24 +728,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     // Protocol related
 
     testCreateShellByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       assertTrue( shell instanceof org.eclipse.swt.widgets.Shell );
       shell.destroy();
     },
 
     testProtocolListen : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
-      testUtil.protocolListen( "w2", { "shell" : true } );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      TestUtil.protocolListen( "w2", { "shell" : true } );
       assertTrue( shell._hasShellListener );
       shell.destroy();
     },
 
     testProtocolSet : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
-      testUtil.protocolSet( "w2", { "customVariant" : "variant_blue" } );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      TestUtil.protocolSet( "w2", { "customVariant" : "variant_blue" } );
       assertTrue( shell.hasState( "variant_blue" ) );
       shell.destroy();
     },

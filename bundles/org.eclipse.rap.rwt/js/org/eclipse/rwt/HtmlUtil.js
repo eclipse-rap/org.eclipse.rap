@@ -229,13 +229,13 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
     _passEventsThrough : function( target, value ) {
       // TODO [tb] : This is a very limited implementation that allowes
       // to click "through" the elmement, but won't handle hover and cursor.
-      var util = qx.html.EventRegistration;
+      var EventRegistration = qx.html.EventRegistration;
       var types = org.eclipse.rwt.EventHandler._mouseEventTypes;
       var handler = this._passEventThroughHandler;
       if( value === "none" ) {
         this.setStyleProperty( target, "cursor", "default" );
         for( var i = 0; i < types.length; i++ ) {
-          util.addEventListener( target, types[ i ], handler );
+          EventRegistration.addEventListener( target, types[ i ], handler );
         }
       } else {
         // TODO
@@ -243,15 +243,15 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
     },
     
     _passEventThroughHandler : function() {
-      var util = org.eclipse.rwt.EventHandlerUtil;
-      var domEvent = util.getDomEvent( arguments );
-      var domTarget = util.getDomTarget( domEvent );
+      var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+      var domEvent = EventHandlerUtil.getDomEvent( arguments );
+      var domTarget = EventHandlerUtil.getDomTarget( domEvent );
       var type = domEvent.type;
       domTarget.style.display = "none";
       var newTarget 
         = document.elementFromPoint( domEvent.clientX, domEvent.clientY );
       domEvent.cancelBubble = true;
-      util.stopDomEvent( domEvent );
+      EventHandlerUtil.stopDomEvent( domEvent );
       if(    newTarget
           && type !== "mousemove" 
           && type !== "mouseover" 

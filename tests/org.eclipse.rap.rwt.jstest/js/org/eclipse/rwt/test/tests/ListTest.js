@@ -16,8 +16,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
   members : {
 
     testCreateListByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -28,8 +28,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof org.eclipse.swt.widgets.List );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -39,8 +39,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testCreateListWithMultiByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -51,16 +51,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.getManager().getMultiSelection() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetItemsByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -72,8 +72,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "items" : [ "a", "b", "c" ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       var items = widget.getItems();
       assertEquals( 3, widget.getItemsCount() );
       assertEquals( "a", items[ 0 ].getLabel() );
@@ -84,8 +84,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetItemsEscapeTextByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -97,8 +97,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "items" : [ "  foo &\nbar " ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       var items = widget.getItems();
       assertEquals( "&nbsp; foo &amp; bar&nbsp;", items[ 0 ].getLabel() );
       shell.destroy();
@@ -106,8 +106,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetSingleSelectionIndicesByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -120,8 +120,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "selectionIndices" : [ 2 ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       var items = widget.getSelectedItems();
       assertEquals( 1, items.length );
       assertEquals( "c", items[ 0 ].getLabel() );
@@ -130,8 +130,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetMultiSelectionIndicesByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -144,8 +144,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "selectionIndices" : [ 0, 2 ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       var items = widget.getSelectedItems();
       assertEquals( 2, items.length );
       assertEquals( "a", items[ 0 ].getLabel() );
@@ -155,8 +155,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetAllSelectionIndicesByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -169,8 +169,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "selectionIndices" : [ 0, 1, 2 ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       var items = widget.getSelectedItems();
       assertEquals( 3, items.length );
       assertEquals( "a", items[ 0 ].getLabel() );
@@ -181,8 +181,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetTopIndexByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -195,16 +195,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "topIndex" : 2
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 2, widget._topIndex );
       shell.destroy();
       widget.destroy();
     },
 
     testSetFocusIndexByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -217,8 +217,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "focusIndex" : 2
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       var focusItem = widget.getManager().getLeadItem();
       assertEquals( "c", focusItem.getLabel() );
       shell.destroy();
@@ -226,8 +226,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetScrollBarsVisibleByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -239,8 +239,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "scrollBarsVisible" : [ false, false ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertFalse( widget._horzScrollBar.getDisplay() );
       assertFalse( widget._vertScrollBar.getDisplay() );
       shell.destroy();
@@ -248,8 +248,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetItemDimensionsByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -261,8 +261,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "itemDimensions" : [ 10, 20 ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 10, widget._itemWidth );
       assertEquals( 20, widget._itemHeight );
       shell.destroy();
@@ -270,8 +270,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSetHasSelectionListenerByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -282,28 +282,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "parent" : "w2"
         }
       } );
-      testUtil.protocolListen( "w3", { "selection" : true } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      TestUtil.protocolListen( "w3", { "selection" : true } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
       widget.destroy();
     },
 
     testCreateDispose : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       assertTrue( list instanceof org.eclipse.swt.widgets.List );
       list.destroy();
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( list.isDisposed() );
     },
     
     testSetItems : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 3 );
-      testUtil.flush();
+      TestUtil.flush();
       var items = this._getItems( list );
       assertEquals( 3, items.length );
       assertEquals( "item0", items[ 0 ].getLabel() );
@@ -313,44 +313,44 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testHoverItem : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       this._fakeAppearance();
       var list = this._createDefaultList();
       this._addItems( list, 3 );
-      testUtil.flush();
+      TestUtil.flush();
       var items = this._getItems( list );
-      assertEquals( "white", testUtil.getCssBackgroundColor( items[ 1 ] ) );
-      testUtil.mouseOver( items[ 1 ] );
+      assertEquals( "white", TestUtil.getCssBackgroundColor( items[ 1 ] ) );
+      TestUtil.mouseOver( items[ 1 ] );
       assertTrue( items[ 1 ].hasState( "over" ) );
-      assertEquals( "green", testUtil.getCssBackgroundColor( items[ 1 ] ) );
-      testUtil.mouseOut( items[ 1 ] );
+      assertEquals( "green", TestUtil.getCssBackgroundColor( items[ 1 ] ) );
+      TestUtil.mouseOut( items[ 1 ] );
       assertFalse( items[ 1 ].hasState( "over" ) );
-      assertEquals( "white", testUtil.getCssBackgroundColor( items[ 1 ] ) );
+      assertEquals( "white", TestUtil.getCssBackgroundColor( items[ 1 ] ) );
       list.destroy();
     },
 
     testHoverEvenItem : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       this._fakeAppearance();
       var list = this._createDefaultList();
       this._addItems( list, 3 );
-      testUtil.flush();
+      TestUtil.flush();
       var items = this._getItems( list );
-      assertEquals( "blue", testUtil.getCssBackgroundColor( items[ 0 ] ) );
-      testUtil.mouseOver( items[ 0 ] );
+      assertEquals( "blue", TestUtil.getCssBackgroundColor( items[ 0 ] ) );
+      TestUtil.mouseOver( items[ 0 ] );
       assertTrue( items[ 0 ].hasState( "over" ) );
-      assertEquals( "red", testUtil.getCssBackgroundColor( items[ 0 ] ) );
-      testUtil.mouseOut( items[ 0 ] );
+      assertEquals( "red", TestUtil.getCssBackgroundColor( items[ 0 ] ) );
+      TestUtil.mouseOut( items[ 0 ] );
       assertFalse( items[ 0 ].hasState( "over" ) );
-      assertEquals( "blue", testUtil.getCssBackgroundColor( items[ 0 ] ) );
+      assertEquals( "blue", TestUtil.getCssBackgroundColor( items[ 0 ] ) );
       list.destroy();
     },
 
     testSelectItem : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 3 );
-      testUtil.flush();
+      TestUtil.flush();
       list.selectItem( 2 );
       var selection = this._getSelection( list ); 
       assertEquals( 1, selection.length );
@@ -359,11 +359,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
     
     testSelectItemByCharacter : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setItems( [ "Akira", "Boogiepop", "C something", "Daria" ] );
-      testUtil.flush();
-      testUtil.press( list, "c" )
+      TestUtil.flush();
+      TestUtil.press( list, "c" )
       var selection = this._getSelection( list ); 
       assertEquals( 1, selection.length );
       assertEquals( "C something", selection[ 0 ].getLabel() );
@@ -371,10 +371,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSelectItems : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 3 );
-      testUtil.flush();
+      TestUtil.flush();
       list.selectItems( [ 1, 2 ] );
       var selection = this._getSelection( list ); 
       assertEquals( 2, selection.length );
@@ -384,10 +384,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSelectAll : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 3 );
-      testUtil.flush();
+      TestUtil.flush();
       list.selectAll();
       var selection = this._getSelection( list ); 
       assertEquals( 3, selection.length );
@@ -398,21 +398,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
     
     testFocusItem : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setItems( [ "item0", "item1", "item2" ] );
       list.focusItem( 1 );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( "item1", this._getLeadItem( list ).getLabel() );
       list.selectAll();
       list.destroy();
     },
     
     testSetTopIndex : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 300 );
-      testUtil.flush();
+      TestUtil.flush();
       list.setTopIndex( 40 );
       assertEquals( 40, this._getTopItemIndex( list ) );
       list.selectAll();
@@ -420,33 +420,33 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
     
     testSendSelection : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setItems( [ "item0", "item1", "item2" ] );
-      testUtil.flush();
+      TestUtil.flush();
       var item = this._getItems( list )[ 1 ];
       list.setHasSelectionListener( true );
       org.eclipse.swt.WidgetManager.getInstance().add( list, "w3" );
-      testUtil.click( item );
-      assertEquals( 1, testUtil.getRequestsSend() );
-      assertTrue( testUtil.getMessage().indexOf( "w3.selection=1" ) != -1 );
+      TestUtil.click( item );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertTrue( TestUtil.getMessage().indexOf( "w3.selection=1" ) != -1 );
       list.selectAll();
       list.destroy();
     },
     
     testSetItemDimensions : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setItemDimensions( 200, 20 );
       this._addItems( list, 3 );
-      testUtil.flush();
+      TestUtil.flush();
       var items = this._getItems( list );
       assertEquals( 200, items[ 0 ].getWidth() );
       assertEquals( 20, items[ 0 ].getHeight() );
       assertEquals( 20, list._vertScrollBar._increment );
       assertEquals( 20, list._vertScrollBar._increment );
       list.setItemDimensions( 100, 30 );
-      testUtil.flush();
+      TestUtil.flush();
       items = this._getItems( list );
       assertEquals( 100, items[ 0 ].getWidth() );
       assertEquals( 30, items[ 0 ].getHeight() );
@@ -455,23 +455,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testSendDefaultSelected : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setItems( [ "item0", "item1", "item2" ] );
-      testUtil.flush();
+      TestUtil.flush();
       var item = this._getItems( list )[ 1 ];
       list.setHasSelectionListener( true );
       org.eclipse.swt.WidgetManager.getInstance().add( list, "w3" );
-      testUtil.doubleClick( item );
-      assertEquals( 2, testUtil.getRequestsSend() );
-      var msg = testUtil.getRequestLog()[ 1 ];
+      TestUtil.doubleClick( item );
+      assertEquals( 2, TestUtil.getRequestsSend() );
+      var msg = TestUtil.getRequestLog()[ 1 ];
       assertTrue( msg.indexOf( "widgetDefaultSelected=w3" ) != -1 );
       list.selectAll();
       list.destroy();
     },
 
     testBasicLayout : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       var client = list._clientArea;
       var hbar = list._horzScrollBar;
@@ -480,9 +480,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       assertIdentical( list, client.getParent() );
       assertIdentical( list, hbar.getParent() );
       assertIdentical( list, vbar.getParent() );
-      var clientBounds = testUtil.getElementBounds( client.getElement() );
-      var hbarBounds = testUtil.getElementBounds( hbar.getElement() );
-      var vbarBounds = testUtil.getElementBounds( vbar.getElement() );
+      var clientBounds = TestUtil.getElementBounds( client.getElement() );
+      var hbarBounds = TestUtil.getElementBounds( hbar.getElement() );
+      var vbarBounds = TestUtil.getElementBounds( vbar.getElement() );
       assertEquals( 0, clientBounds.left );
       assertEquals( 0, clientBounds.top );
       assertEquals( barWidth, clientBounds.right );
@@ -497,60 +497,60 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
     
     testScrollBarVisibility : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setScrollBarsVisible( false, false );
-      testUtil.flush()
+      TestUtil.flush()
       assertFalse( this._isScrollbarVisible( list, true ) );
       assertFalse( this._isScrollbarVisible( list, false ) );
       list.setScrollBarsVisible( true, false );
-      testUtil.flush()
+      TestUtil.flush()
       assertTrue( this._isScrollbarVisible( list, true ) );
       assertFalse( this._isScrollbarVisible( list, false ) );
       list.setScrollBarsVisible( false, true );
-      testUtil.flush()
+      TestUtil.flush()
       assertFalse( this._isScrollbarVisible( list, true ) );
       assertTrue( this._isScrollbarVisible( list, false ) );
       list.setScrollBarsVisible( true, true );
-      testUtil.flush()
+      TestUtil.flush()
       assertTrue( this._isScrollbarVisible( list, true ) );
       assertTrue( this._isScrollbarVisible( list, false ) );
       list.destroy();
     },
     
     testRelayoutOnScrollBarShowHide : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setScrollBarsVisible( false, true );
-      testUtil.flush();
+      TestUtil.flush();
       var client = list._clientArea;
-      var clientBounds = testUtil.getElementBounds( client.getElement() );
+      var clientBounds = TestUtil.getElementBounds( client.getElement() );
       list.setScrollBarsVisible( true, false );
-      testUtil.flush();
-      newClientBounds = testUtil.getElementBounds( client.getElement() );
+      TestUtil.flush();
+      newClientBounds = TestUtil.getElementBounds( client.getElement() );
       assertTrue( clientBounds.width < newClientBounds.width );
       assertTrue( clientBounds.height > newClientBounds.height );
       list.destroy();
     },
 
     testScrollBarMaximum : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 10 );
       list.setItemDimensions( 240, 25 )
       var item = list._clientArea.getFirstChild();
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( 240, list._horzScrollBar.getMaximum() );
       assertEquals( 250, list._vertScrollBar.getMaximum() );
       list.destroy();
     },
 
     testScrollProgramatically : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 70 );
       list.setItemDimensions( 500, 20 );
-      testUtil.flush();
+      TestUtil.flush();
       list.setHBarSelection( 10 );
       list.setVBarSelection( 20 );
       var position = this._getScrollPosition( list );
@@ -559,11 +559,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testScrollWhileInvisible : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setItemDimensions( 500, 20 );
       this._addItems( list, 70 );
-      testUtil.flush();
+      TestUtil.flush();
       list.hide();
       list.setHBarSelection( 10 );
       list.setVBarSelection( 20 );
@@ -574,7 +574,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
 //    testDispose: function() {
-//      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+//      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 //      var list = this._createDefaultList();
 //      this._setScrollDimension( list, 200, 200 );
 //      list.setHBarSelection( 10 );
@@ -584,7 +584,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 //      var vbar = list._vertScrollBar;
 //      var scrollNode = clientArea._getTargetNode();
 //      list.destroy();
-//      testUtil.flush();
+//      TestUtil.flush();
 //      assertNull( list._horzScrollBar );
 //      assertNull( list._vertScrollBar );
 //      assertNull( list._clientArea );
@@ -601,24 +601,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 //    },
 
     testInitialPosition : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList( true );
       list.setHBarSelection( 10 );
       list.setVBarSelection( 20 );
       this._addItems( list, 70 );
       list.setItemDimensions( 500, 20 );
-      testUtil.flush();
+      TestUtil.flush();
       var position = this._getScrollPosition( list );
       assertEquals( [ 10, 20 ], position );
       list.destroy();      
     },
 
     testSyncScrollBars : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 70 );
       list.setItemDimensions( 500, 20 );
-      testUtil.flush();
+      TestUtil.flush();
       list._clientArea.setScrollLeft( 10 ); 
       list._clientArea.setScrollTop( 20 );
       list._onscroll( {} );
@@ -628,29 +628,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testNoScrollStyle : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 70 );
       list.setItemDimensions( 500, 20 );
       list.setScrollBarsVisible( false, false );
-      testUtil.flush();
+      TestUtil.flush();
       list._clientArea.setScrollLeft( 50 );
       list._clientArea.setScrollTop( 70 );
       list._onscroll( {} );
-      testUtil.forceTimerOnce();
+      TestUtil.forceTimerOnce();
       var position = this._getScrollPosition( list );
       assertEquals( [ 0, 0 ], position );      
       list.destroy();      
     },
 
     testOnlyHScrollStyle : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 70 );
       list.setItemDimensions( 500, 20 );
       list.setScrollBarsVisible( true, false );
-      testUtil.flush();
-      testUtil.flush();
+      TestUtil.flush();
+      TestUtil.flush();
       list._clientArea.setScrollLeft( 50 );
       list._clientArea.setScrollTop( 70 );
       list._onscroll( {} );
@@ -660,12 +660,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     testOnlyVScrollStyle : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 70 );
       list.setItemDimensions( 500, 20 );
       list.setScrollBarsVisible( false, true );
-      testUtil.flush();
+      TestUtil.flush();
       list._clientArea.setScrollLeft( 50 );
       list._clientArea.setScrollTop( 70 );
       list._onscroll( {} );
@@ -678,12 +678,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     // test apply subelement IDs
     
     testApplyListItemIds_renderHtmlIdsActivated : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
 
       qx.ui.core.Widget._renderHtmlIds = true;
       list.setItems( [ "item1", "item2", "item3"] );
-      testUtil.flush();
+      TestUtil.flush();
 
       var listItemId = list.getHtmlAttribute( "id" ) + "-listitem-" + "0";
       assertEquals( listItemId, list.getItems()[ 0 ].getHtmlAttribute( "id" ) );
@@ -691,12 +691,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
     
     testApplyListItemIds_renderHtmlIdsDeactivated : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
 
       qx.ui.core.Widget._renderHtmlIds = false;
       list.setItems( [ "item1", "item2", "item3"] );
-      testUtil.flush();
+      TestUtil.flush();
       
       assertEquals( "", list.getItems()[ 0 ].getHtmlAttribute( "id" ) );
       list.destroy();
@@ -706,13 +706,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     // Helpers
     
     _createDefaultList : function( noflush ) {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = new org.eclipse.swt.widgets.List( true );
       list.setItemDimensions( 100, 20 );
       list.addToDocument(),
       list.setSpace( 5, 238, 5, 436 );
       if( noflush !== true ) {
-        testUtil.flush();
+        TestUtil.flush();
       }
       return list;
     },
@@ -757,7 +757,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
     
     _fakeAppearance : function() {
-      testUtil.fakeAppearance( "list-item", {
+      TestUtil.fakeAppearance( "list-item", {
         style : function( states ) {
           var result = {
             height : "auto",

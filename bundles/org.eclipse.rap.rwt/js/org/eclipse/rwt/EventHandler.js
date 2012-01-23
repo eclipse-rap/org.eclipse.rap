@@ -156,23 +156,23 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     
     _onKeyEvent : function() {
       try {
-        var util = org.eclipse.rwt.EventHandlerUtil;
-        var event = util.getDomEvent( arguments );
-        var keyCode = util.getKeyCode( event );
-        var charCode = util.getCharCode( event );
+        var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+        var event = EventHandlerUtil.getDomEvent( arguments );
+        var keyCode = EventHandlerUtil.getKeyCode( event );
+        var charCode = EventHandlerUtil.getCharCode( event );
         if( typeof this._filter[ "domKeyevent" ] !== "undefined" ) {
           var context = this._filter[ "domKeyevent" ][ 1 ];
           var func = this._filter[ "domKeyevent" ][ 0 ];
           func.call( context, event.type, keyCode, charCode, event );
         }
-        var pseudoTypes = util.getEventPseudoTypes( event, keyCode, charCode );
+        var pseudoTypes = EventHandlerUtil.getEventPseudoTypes( event, keyCode, charCode );
         for( var i = 0; i < pseudoTypes.length; i++ ) {
           this._onkeyevent_post( event, pseudoTypes[ i ], keyCode, charCode );
         }
-        if( util.mustRestoreKeypress( event, pseudoTypes ) ) {
+        if( EventHandlerUtil.mustRestoreKeypress( event, pseudoTypes ) ) {
           this._onkeyevent_post( event, "keypress", keyCode, charCode );
         }
-        util.saveData( event, keyCode, charCode );
+        EventHandlerUtil.saveData( event, keyCode, charCode );
       } catch( ex ) {
         org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
@@ -192,14 +192,14 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     },
     
     _processKeyEvent : function( vDomEvent, vType, vKeyCode, vCharCode ) {
-      var util = org.eclipse.rwt.EventHandlerUtil;
+      var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
       var keyIdentifier;
       if( !isNaN( vKeyCode ) && vKeyCode !== 0 ) {
-        keyIdentifier = util.keyCodeToIdentifier( vKeyCode );
+        keyIdentifier = EventHandlerUtil.keyCodeToIdentifier( vKeyCode );
       } else {
-        keyIdentifier = util.charCodeToIdentifier( vCharCode );
+        keyIdentifier = EventHandlerUtil.charCodeToIdentifier( vCharCode );
       }
-      var vDomTarget = util.getDomTarget( vDomEvent );
+      var vDomTarget = EventHandlerUtil.getDomTarget( vDomEvent );
       var vTarget = this._getKeyEventTarget();
       var vKeyEventObject = new qx.event.type.KeyEvent( vType, 
                                                         vDomEvent, 
@@ -226,7 +226,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
               // selection allowed
             break;
             default:
-             util.stopDomEvent(vDomEvent);
+             EventHandlerUtil.stopDomEvent(vDomEvent);
             break;
           }
         }
@@ -259,9 +259,9 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     // TODO [tb] : refactor to work like _onKeyEvent
     _processMouseEvent : qx.core.Variant.select("qx.client",  {
       "mshtml" : function() {
-        var util = org.eclipse.rwt.EventHandlerUtil;
-        var vDomEvent = util.getDomEvent( arguments );
-        var vDomTarget = util.getDomTarget( vDomEvent );
+        var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+        var vDomEvent = EventHandlerUtil.getDomEvent( arguments );
+        var vDomTarget = EventHandlerUtil.getDomTarget( vDomEvent );
         var vType = vDomEvent.type;
         if( vType == "mousemove" ) {
           if( this._mouseIsDown && vDomEvent.button == 0 ) {
@@ -305,8 +305,8 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       },
 
       "default" : function( vDomEvent ) {
-        var util = org.eclipse.rwt.EventHandlerUtil;
-        var vDomTarget = util.getDomTarget( vDomEvent );
+        var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+        var vDomTarget = EventHandlerUtil.getDomTarget( vDomEvent );
         var vType = vDomEvent.type;
         switch(vType) {
           case "DOMMouseScroll":
@@ -325,10 +325,10 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
 
     _onmouseevent_post : function( vDomEvent, vType, vDomTarget ) {
       var eventConsumed = false;
-      var util = org.eclipse.rwt.EventHandlerUtil;
+      var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
       var vCaptureTarget = this.getCaptureWidget();
-      var vOriginalTarget = util.getOriginalTargetObject( vDomTarget );
-      var vTarget = util.getTargetObject( null, vOriginalTarget, true );
+      var vOriginalTarget = EventHandlerUtil.getOriginalTargetObject( vDomTarget );
+      var vTarget = EventHandlerUtil.getTargetObject( null, vOriginalTarget, true );
       if( !vTarget ) {
         return;
       }
@@ -338,7 +338,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         if( this._allowContextMenu( vOriginalTarget, vDomTarget ) ) {
           eventConsumed = true;
         } else {
-          util.stopDomEvent( vDomEvent );
+          EventHandlerUtil.stopDomEvent( vDomEvent );
         } 
       }
       if( vDispatchTarget.getEnabled() && vType == "mousedown" ) {
@@ -359,7 +359,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       }
       // handle related target object
       if( vType == "mouseover" || vType == "mouseout" ) {
-        var vRelatedTarget = util.getRelatedTargetObjectFromEvent( vDomEvent );
+        var vRelatedTarget = EventHandlerUtil.getRelatedTargetObjectFromEvent( vDomEvent );
         var elementEventType = vType == "mouseover" ? "elementOver" : "elementOut";
         this._fireElementHoverEvents( elementEventType,
                                       vDomEvent,
@@ -458,11 +458,11 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
 
     _ondragevent : function( vEvent ) {
       try {
-        var util = org.eclipse.rwt.EventHandlerUtil;
+        var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
         if( !vEvent ) {
           vEvent = window.event;
         }
-        util.stopDomEvent( vEvent );
+        EventHandlerUtil.stopDomEvent( vEvent );
       } catch( ex ) {
         org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
@@ -473,13 +473,13 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
 
     _onselectevent : function( ) {
       try {
-        var util = org.eclipse.rwt.EventHandlerUtil;
-        var e = util.getDomEvent( arguments );
-        var target = util.getOriginalTargetObjectFromEvent( e );
+        var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+        var e = EventHandlerUtil.getDomEvent( arguments );
+        var target = EventHandlerUtil.getOriginalTargetObjectFromEvent( e );
         while( target )       {
           if( target.getSelectable() != null ) {
             if ( !target.getSelectable() ) {
-              util.stopDomEvent( e );
+              EventHandlerUtil.stopDomEvent( e );
             }
             break;
           }

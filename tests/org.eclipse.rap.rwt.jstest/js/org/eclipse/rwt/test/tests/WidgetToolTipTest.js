@@ -13,11 +13,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
   
   construct : function() {
     this.base( arguments );
-    this.testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-    this.testUtil.prepareTimerUse();
+    this.TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    this.TestUtil.prepareTimerUse();
     this.manager = qx.ui.popup.ToolTipManager.getInstance();
     this.wm = org.eclipse.swt.WidgetManager.getInstance();        
-    this.testUtil.flush();
+    this.TestUtil.flush();
     this.toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
   },
   
@@ -30,7 +30,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       this.widget2 = new qx.ui.basic.Label( "Hello World 2" );
       this.widget1.addToDocument();
       this.widget2.addToDocument();
-      this.testUtil.flush();            
+      this.TestUtil.flush();            
       this.wm.setToolTip( this.widget1, "test1" );
       this.wm.setToolTip( this.widget2, "test2" );            
       var widget = this.widget1;
@@ -59,13 +59,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       this.widget2.setParent( null );
       this.widget1.dispose();
       this.widget2.dispose();
-      this.testUtil.flush();      
+      this.TestUtil.flush();      
     },
     
     testUpdateWigetToolTipTextWhileToolTipBound : function() {
       this.widget1 = new qx.ui.basic.Label( "Hello World 1" );
       this.widget1.addToDocument();
-      this.testUtil.flush();      
+      this.TestUtil.flush();      
       this.wm.setToolTip( this.widget1, "test1" );            
       var widget = this.widget1;
       var event = {
@@ -78,7 +78,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertEquals( "test2", this.toolTip._atom.getLabel() );      
       this.widget1.setParent( null );
       this.widget1.dispose();
-      this.testUtil.flush();
+      this.TestUtil.flush();
     }
   }
   

@@ -16,8 +16,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
   members : {
 
     testCreateScaleByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -28,8 +28,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof org.eclipse.swt.widgets.Scale );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -40,8 +40,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
     },
 
     testCreateScaleHorizontalByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -52,8 +52,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof org.eclipse.swt.widgets.Scale );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -64,8 +64,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
     },
 
     testSetMinimumByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -77,16 +77,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "minimum" : 50
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 50, widget._minimum );
       shell.destroy();
       widget.destroy();
     },
 
     testSetMaximumByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -98,16 +98,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "maximum" : 150
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 150, widget._maximum );
       shell.destroy();
       widget.destroy();
     },
 
     testSetSelectionByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -119,16 +119,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "selection" : 50
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 50, widget._selection );
       shell.destroy();
       widget.destroy();
     },
 
     testSetIncrementByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -140,16 +140,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "increment" : 5
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 5, widget._increment );
       shell.destroy();
       widget.destroy();
     },
 
     testSetPageIncrementByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -161,16 +161,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "pageIncrement" : 20
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 20, widget._pageIncrement );
       shell.destroy();
       widget.destroy();
     },
 
     testSetHasSelectionListenerByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -181,18 +181,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "parent" : "w2"
         }
       } );
-      testUtil.protocolListen( "w3", { "selection" : true } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      TestUtil.protocolListen( "w3", { "selection" : true } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
       widget.destroy();
     },
     
     testFiresSelectionChangedEvent : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var scale = new org.eclipse.swt.widgets.Scale();
-      testUtil.flush();
+      TestUtil.flush();
 
       var log = 0;
       scale.addEventListener( "selectionChanged", function() {
@@ -204,9 +204,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
     },
     
     testFiresMinimumChangedEvent : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var scale = new org.eclipse.swt.widgets.Scale();
-      testUtil.flush();
+      TestUtil.flush();
       
       var log = 0;
       scale.addEventListener( "minimumChanged", function() {
@@ -218,9 +218,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
     },
     
     testFiresMaximumChangedEvent : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var scale = new org.eclipse.swt.widgets.Scale();
-      testUtil.flush();
+      TestUtil.flush();
       
       var log = 0;
       scale.addEventListener( "maximumChanged", function() {

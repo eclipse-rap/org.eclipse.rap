@@ -15,11 +15,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
   members : {
 
     testCreateAndDisposeGC : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( canvas.isCreated() );
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       var context = gc._context;
@@ -30,7 +30,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       assertIdentical( node.childNodes[ 1 ], gc._textCanvas );
       canvas.destroy();
       gc.dispose();
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( canvas.isDisposed() );
       assertTrue( gc.isDisposed() );
       assertNull( gc._canvas );
@@ -40,12 +40,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
     },
 
     testCreateGCByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       this._createGCByProtocol();
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var shell = objectManager.getObject( "w2" );
-      var canvas = objectManager.getObject( "w3" );
-      var gc = objectManager.getObject( "w4" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var shell = ObjectManager.getObject( "w2" );
+      var canvas = ObjectManager.getObject( "w3" );
+      var gc = ObjectManager.getObject( "w4" );
       assertTrue( canvas instanceof org.eclipse.swt.widgets.Composite );
       assertTrue( gc instanceof org.eclipse.swt.graphics.GC );
       assertIdentical( shell, canvas.getParent() );
@@ -57,13 +57,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
     },
 
     testDisposeGCByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       this._createGCByProtocol();
-      testUtil.flush();
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var shell = objectManager.getObject( "w2" );
-      canvas = objectManager.getObject( "w3" );
-      var gc = objectManager.getObject( "w4" );
+      TestUtil.flush();
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var shell = ObjectManager.getObject( "w2" );
+      canvas = ObjectManager.getObject( "w3" );
+      var gc = ObjectManager.getObject( "w4" );
       assertTrue( gc instanceof org.eclipse.swt.graphics.GC );
       var node = canvas._getTargetNode();
       assertTrue( node.childNodes.length > 1 );
@@ -86,7 +86,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 //    testHandleOnAppear : qx.core.Variant.select( "qx.client", {
 //      "default" : function() {},
 //      "mshtml" : function() {
-//        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+//        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 //        var graphicsUtil = org.eclipse.rwt.GraphicsUtil;
 //        var border = new org.eclipse.rwt.Border( 3, "rounded", "#FF00F0", [ 0, 1, 2, 3 ] );
 //        var parent = new org.eclipse.swt.widgets.Composite();
@@ -99,13 +99,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 //        graphicsUtil.handleAppear = function( canvas ) {
 //          log.push( canvas );
 //        };
-//        testUtil.flush();
+//        TestUtil.flush();
 //        assertEquals( 1, log.length );
 //        canvas.setBorder( border );
-//        testUtil.flush();
+//        TestUtil.flush();
 //        assertEquals( 2, log.length );
 //        parent.setBorder( border );
-//        testUtil.flush();
+//        TestUtil.flush();
 //        assertEquals( 3, log.length );
 //        graphicsUtil.handleAppear = orgAppear;
 //        canvas.destroy();
@@ -113,7 +113,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 //    } ),
     
     testCreateGCBeforeControl : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
@@ -124,22 +124,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       var context = gc._context;
       assertNotNull( context );
       assertEquals( "function", typeof context.beginPath );
-      testUtil.flush();
+      TestUtil.flush();
       var node = canvas._getTargetNode();
       assertIdentical( node.childNodes[ 0 ], gc._canvas );
       assertIdentical( node.childNodes[ 1 ], gc._textCanvas );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
     
     testCanvasWithChildren : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       var widget = new qx.ui.basic.Terminator();
       widget.setParent( canvas );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( canvas.isCreated() );
       var node = canvas._getTargetNode();
       assertIdentical( node.childNodes[ 0 ], widget.getElement() );
@@ -148,15 +148,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       assertIdentical( node.childNodes[ 1 ], gc._textCanvas );
       assertIdentical( node.childNodes[ 2 ], widget.getElement() );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
     
     testSetAndResetFields : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       this._setProperty( gc, "strokeStyle", [ 1, 2, 3 ] );
       this._setProperty( gc, "fillStyle", [ 4, 5, 6 ] );
@@ -182,15 +182,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       assertEquals( "miter", gc._context.lineJoin );
       assertEquals( "10px Arial", gc._context.font );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testSaveAndRestoreFields : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       this._setProperty( gc, "strokeStyle", [ 1,2,3 ] );
       this._setProperty( gc, "fillStyle", [ 4, 5, 6 ] );
@@ -220,15 +220,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       // [if] Font restore is not using by RAP. Not supported in FF 3.0.
       // assertEquals( "italic bold 16px Arial", gc._context.font );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
     
     testDrawText : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", [ 255, 255, 255 ], [ 0, 0, 0 ] );
       assertEquals( 0, gc._textCanvas.childNodes.length );
@@ -244,7 +244,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       gc.init( 300, 300, "10px Arial", [ 255, 255, 255 ], [ 0, 0, 0 ] );
       assertEquals( 0, gc._textCanvas.childNodes.length );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     // Tests ported from GCOperationWriter_Test#testProcessText...
@@ -283,7 +283,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
     // Helper
     
     _createGCByProtocol : function() {
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",

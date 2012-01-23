@@ -140,7 +140,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
     },
 
     getRelatedTargetObjectFromEvent : function( vDomEvent ) {
-      var util = org.eclipse.rwt.EventHandlerUtil;
+      var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
       var target = vDomEvent.relatedTarget;
       if( !target ) {
         if( vDomEvent.type == "mouseover" ) {
@@ -149,7 +149,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
           target = vDomEvent.toElement;
         }
       }
-      return util.getTargetObject( target );
+      return EventHandlerUtil.getTargetObject( target );
     },
 
     getTargetObject : function( vNode, vObject, allowDisabled ) {

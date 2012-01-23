@@ -16,81 +16,81 @@ qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
   members : {
     
     testSetStylePropertyOnWidget : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var htmlUtil = org.eclipse.rwt.HtmlUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var HtmlUtil = org.eclipse.rwt.HtmlUtil;
       var red = "red";
       var widget = this._createWidget();
-      htmlUtil.setStyleProperty( widget, "backgroundColor", red);
-      assertEquals( red, testUtil.getCssBackgroundColor( widget ) );
+      HtmlUtil.setStyleProperty( widget, "backgroundColor", red);
+      assertEquals( red, TestUtil.getCssBackgroundColor( widget ) );
       widget.destroy();
     },
     
     testSetStylePropertyOnElement : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var htmlUtil = org.eclipse.rwt.HtmlUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var HtmlUtil = org.eclipse.rwt.HtmlUtil;
       var red = "red";
       var element = document.createElement( "div" );
-      htmlUtil.setStyleProperty( element, "backgroundColor", red );
+      HtmlUtil.setStyleProperty( element, "backgroundColor", red );
       assertEquals( red, element.style.backgroundColor );
     },
     
     testRemoveStylePropertyOnWidget : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var htmlUtil = org.eclipse.rwt.HtmlUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var HtmlUtil = org.eclipse.rwt.HtmlUtil;
       var red = "red";
       var widget = this._createWidget();
-      htmlUtil.setStyleProperty( widget, "backgroundColor", red );
-      htmlUtil.removeStyleProperty( widget, "backgroundColor" );
-      assertNull( testUtil.getCssBackgroundColor( widget ) );
+      HtmlUtil.setStyleProperty( widget, "backgroundColor", red );
+      HtmlUtil.removeStyleProperty( widget, "backgroundColor" );
+      assertNull( TestUtil.getCssBackgroundColor( widget ) );
       widget.destroy();
     },
 
     testRemoveStylePropertyOnElement : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var htmlUtil = org.eclipse.rwt.HtmlUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var HtmlUtil = org.eclipse.rwt.HtmlUtil;
       var red = "red";
       var element = document.createElement( "div" );
-      htmlUtil.setStyleProperty( element, "backgroundColor", red );
-      htmlUtil.removeStyleProperty( element, "backgroundColor" );
+      HtmlUtil.setStyleProperty( element, "backgroundColor", red );
+      HtmlUtil.removeStyleProperty( element, "backgroundColor" );
       assertEquals( "", element.style.backgroundColor );
     },
     
     testSetStylePropertyOnWidgetBeforeCreate : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var htmlUtil = org.eclipse.rwt.HtmlUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var HtmlUtil = org.eclipse.rwt.HtmlUtil;
       var widget = this._createWidget( true );
       var red = "red";
-      htmlUtil.setStyleProperty( widget, "color", red );
-      testUtil.flush();
+      HtmlUtil.setStyleProperty( widget, "color", red );
+      TestUtil.flush();
       assertEquals( red, widget._style.color );
       widget.destroy();
     },
     
     testRemoveStylePropertyOnWidgetBeforeCreate : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var htmlUtil = org.eclipse.rwt.HtmlUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var HtmlUtil = org.eclipse.rwt.HtmlUtil;
       var red = "red";
       var widget = this._createWidget( true );
-      htmlUtil.setStyleProperty( widget, "color", red );
-      htmlUtil.removeStyleProperty( widget, "color" );
-      testUtil.flush();
+      HtmlUtil.setStyleProperty( widget, "color", red );
+      HtmlUtil.removeStyleProperty( widget, "color" );
+      TestUtil.flush();
       assertTrue( widget._style.color == "" );
       widget.destroy();
     },
 
     testSetOpacity : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var htmlUtil = org.eclipse.rwt.HtmlUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var HtmlUtil = org.eclipse.rwt.HtmlUtil;
       var element = document.createElement( "div" );
       var widget = this._createWidget();
-      htmlUtil.setOpacity( element, 0.5 );
-      htmlUtil.setOpacity( widget, 0.5 );
-      assertTrue( testUtil.hasElementOpacity( element ) );
-      assertTrue( testUtil.hasElementOpacity( widget.getElement() ) );
-      htmlUtil.setOpacity( element, 1 );
-      htmlUtil.setOpacity( widget, 1 );
-      assertFalse( testUtil.hasElementOpacity( element ) );
-      assertFalse( testUtil.hasElementOpacity( widget.getElement() ) );
+      HtmlUtil.setOpacity( element, 0.5 );
+      HtmlUtil.setOpacity( widget, 0.5 );
+      assertTrue( TestUtil.hasElementOpacity( element ) );
+      assertTrue( TestUtil.hasElementOpacity( widget.getElement() ) );
+      HtmlUtil.setOpacity( element, 1 );
+      HtmlUtil.setOpacity( widget, 1 );
+      assertFalse( TestUtil.hasElementOpacity( element ) );
+      assertFalse( TestUtil.hasElementOpacity( widget.getElement() ) );
       var css1 = element.style.cssText.toLowerCase();
       var css2 = widget.getElement().style.cssText.toLowerCase();
       // additional check for IE:
@@ -100,16 +100,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
     },
     
     testSetOpacityBeforeWidgetCreation : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var htmlUtil = org.eclipse.rwt.HtmlUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widgetNormal = this._createWidget( true );
       var widgetTransp = this._createWidget( true );
       widgetNormal.setOpacity( 0.5 );
       widgetTransp.setOpacity( 0.5 );
       widgetNormal.setOpacity( 1 );
-      testUtil.flush();
-      assertFalse( testUtil.hasElementOpacity( widgetNormal.getElement() ) );
-      assertTrue( testUtil.hasElementOpacity( widgetTransp.getElement() ) );
+      TestUtil.flush();
+      assertFalse( TestUtil.hasElementOpacity( widgetNormal.getElement() ) );
+      assertTrue( TestUtil.hasElementOpacity( widgetTransp.getElement() ) );
       // additional check for IE:
       var css = widgetNormal.getElement().style.cssText.toLowerCase();
       assertTrue( css.indexOf( "filter" ) == -1 );
@@ -118,12 +117,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
     },
 
     testSetRemoveTextShadow : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var htmlUtil = org.eclipse.rwt.HtmlUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this._createWidget( true );
       var shadow = [ false, 1, 1, 0, 0, "#ff0000", 0.5 ];
       widget.setTextShadow( shadow );
-      testUtil.flush();
+      TestUtil.flush();
       var element = widget.getElement();
       var css = element.style.cssText.toLowerCase();
       var isMshtml = org.eclipse.rwt.Client.isMshtml() || org.eclipse.rwt.Client.isNewMshtml();
@@ -133,7 +131,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
         assertTrue( css.indexOf( "text-shadow:" ) !== -1 );
       }
       widget.setTextShadow( null );
-      testUtil.flush();
+      TestUtil.flush();
       css = element.style.cssText.toLowerCase();
       assertTrue( css.indexOf( "text-shadow:" ) === -1 );
       widget.destroy();

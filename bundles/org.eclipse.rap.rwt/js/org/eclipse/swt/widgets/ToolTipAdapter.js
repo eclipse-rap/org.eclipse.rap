@@ -47,14 +47,14 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.ToolTip", {
       widget.setHideAfterTimeout( value );
     },
     "text" : function( widget, value ) {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      var text = encodingUtil.escapeText( value, false );
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var text = EncodingUtil.escapeText( value, false );
       widget.setText( text );
     },
     "message" : function( widget, value ) {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      var text = encodingUtil.escapeText( value, false );
-      text = encodingUtil.replaceNewLines( text, "<br/>" );
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var text = EncodingUtil.escapeText( value, false );
+      text = EncodingUtil.replaceNewLines( text, "<br/>" );
       widget.setMessage( text );
     },
     "location" : function( widget, value ) {

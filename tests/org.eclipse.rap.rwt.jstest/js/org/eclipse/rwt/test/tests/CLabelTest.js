@@ -16,8 +16,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CLabelTest", {
   members : {
 
     testCreateCLabelByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -28,8 +28,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CLabelTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof qx.ui.basic.Atom );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -49,8 +49,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CLabelTest", {
     },
 
     testCreateCLabelWithShadowInByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -61,16 +61,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CLabelTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_SHADOW_IN" ) );
       shell.destroy();
       widget.destroy();
     },
 
     testSetTextByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -82,8 +82,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CLabelTest", {
           "text" : "  foo && <\n> \" bar "
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       var labelObject = widget.getLabelObject();
       assertEquals( "&nbsp; foo &amp; &lt;<br/>&gt; &quot; bar&nbsp;", labelObject.getText() );
       shell.destroy();
@@ -91,8 +91,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CLabelTest", {
     },
 
     testSetImageByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -104,16 +104,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CLabelTest", {
           "image" : [ "image.png", 10, 20 ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( "image.png", widget.getIcon() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetAlignmentByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -125,8 +125,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CLabelTest", {
           "alignment" : "right"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( "right", widget.getLabelObject().getTextAlign() );
       assertEquals( "right", widget.getHorizontalChildrenAlign() );
       shell.destroy();
@@ -134,8 +134,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CLabelTest", {
     },
 
     testSettMarginByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -150,8 +150,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CLabelTest", {
           "bottomMargin" : 4
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 1, widget.getPaddingLeft() );
       assertEquals( 2, widget.getPaddingTop() );
       assertEquals( 3, widget.getPaddingRight() );

@@ -15,12 +15,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
   members : {
         
     testRenderComplexBorder : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this._createWidget();
       var element = widget.getElement();
       assertIdentical( element, widget._getTargetNode() );
       widget.setBorder( this._getComplexBorder() );
-      testUtil.flush();
+      TestUtil.flush();
       var isGecko = org.eclipse.rwt.Client.isGecko();
       if( isGecko ) {        
         assertIdentical( element, widget._getTargetNode() );
@@ -31,14 +31,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
     
     testLayoutTargetNodeWithNoBorder : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this._createWidget();
       widget.prepareEnhancedBorder();
-      testUtil.flush();
+      TestUtil.flush();
       var targetNode = widget._getTargetNode();
       var isMshtml = org.eclipse.rwt.Client.isMshtml();
       if( isMshtml ) {
-        var bounds = testUtil.getElementBounds( targetNode )
+        var bounds = TestUtil.getElementBounds( targetNode )
         var expected = {
           "top" : 0,
           "left" : 0,
@@ -57,15 +57,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     
     testLayoutTargetNodeWithComplexBorder : function() {
       // NOTE: layouting with rounded border in GraphicsMixinTest
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this._createWidget();
       widget.setBorder( this._getComplexBorder() );
       widget.prepareEnhancedBorder();
-      testUtil.flush();
+      TestUtil.flush();
       var targetNode = widget._getTargetNode();
       var isMshtml = org.eclipse.rwt.Client.isMshtml();
       if( isMshtml ) {
-        var bounds = testUtil.getElementBounds( targetNode )
+        var bounds = TestUtil.getElementBounds( targetNode )
         var expected = {
           "top" : 0,
           "left" : 0,
@@ -83,7 +83,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
     
     testInsertDomEvent : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = new qx.ui.layout.CanvasLayout();
       parent.addToDocument();
       var child1 = new qx.ui.basic.Terminator();
@@ -99,10 +99,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       parent.addEventListener( "insertDom", logger );
       child1.addEventListener( "insertDom", logger );
       child2.addEventListener( "insertDom", logger );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( [ parent, child1 ], log );
       child2.setDisplay( true );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( [ parent, child1, child2 ], log );
       parent.destroy();
       child1.destroy();
@@ -110,7 +110,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testNoInsertDomEventOnParentInsert : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent1 = new qx.ui.layout.CanvasLayout();
       parent1.addToDocument();
       var child1 = new qx.ui.basic.Terminator();
@@ -122,7 +122,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         log.push( "parent" );
       } );
       child1.setParent( parent1 );
-      testUtil.flush();
+      TestUtil.flush();
       assertIdentical( parent1._getTargetNode(), child1.getElement().parentNode );
       assertEquals( 2, log.length );
       assertIdentical( "parent", log[ 0 ] );
@@ -132,10 +132,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testInsertDomEventLazy : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = new qx.ui.layout.CanvasLayout();
       parent.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       // Note: parent must be seeable for the lazy queue to be used in Widget.js
       assertTrue( parent.isSeeable() ); 
       // Note: we need at least 3 siblings for the documentFragment to be used
@@ -150,7 +150,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         log.push( event.getTarget().getElement().parentNode );
       }
       child1.addEventListener( "insertDom", logger );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( [ parent.getElement() ], log );
       parent.destroy();
       child1.destroy();
@@ -159,7 +159,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
     
     testInsertDomEventFastQueue : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = new qx.ui.layout.CanvasLayout();
       parent.addToDocument();
       var child = new qx.ui.basic.Terminator();
@@ -169,7 +169,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         log.push( event.getTarget().getElement().parentNode );
       }
       child.addEventListener( "insertDom", logger );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( [ parent.getElement() ], log );
       parent.destroy();
       child.destroy();
@@ -177,10 +177,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
 	  // See Bug 359665 - "Background transparent don't work in IE"
     testNoInsertDomEventOnRoundedBorderRender : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = new qx.ui.layout.CanvasLayout();
       parent.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var child = new qx.ui.basic.Terminator();
       var log = [];
       var logger = function( event ) {
@@ -189,7 +189,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       child.addEventListener( "insertDom", logger );
       child.setParent( parent );
       parent.setBorder( new org.eclipse.rwt.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] ) );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( 1, log.length );
       assertIdentical( parent._getTargetNode(), log[ 0 ] );
       parent.destroy();
@@ -197,23 +197,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testRemoveDom : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = new qx.ui.layout.CanvasLayout();
       parent.addToDocument();
       var child = new qx.ui.basic.Terminator();
       child.setParent( parent );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( child.isInDom() );
-      testUtil.flush();
+      TestUtil.flush();
       child.setDisplay( false );
-      testUtil.flush();
+      TestUtil.flush();
       assertFalse( child.isInDom() );
       parent.destroy();
       child.destroy();
     },
     
     testInsertDomEventOnPrepareEnhancedBorder : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = new qx.ui.layout.CanvasLayout();
       parent.addToDocument();
       var child = new qx.ui.basic.Terminator();
@@ -224,7 +224,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
       parent.addEventListener( "insertDom", logger );
       child.addEventListener( "insertDom", logger );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( [ parent, child ], log );
       parent.prepareEnhancedBorder();
       assertEquals( [ parent, child, parent, child ], log );
@@ -256,11 +256,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
     
     testDisposeWidgetRenderAdapterWithWidget : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       var adapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
       widget.destroy();
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( adapter.isDisposed() );
     },
     
@@ -350,10 +350,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     testRenderSimpleBackgroundGradient : function() {
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = this._createWidget();
         widget.setBackgroundGradient( gradient );
-        testUtil.flush();
+        TestUtil.flush();
         var result = this._getCssGradient( widget.getElement() );
         var expected1 = "gradient(-90deg, rgb(255, 0, 255) 0%, rgb(0, 255, 0) 100%)";
         var expected2 = "gradient(linear, 0% 0%, 0% 100%, from(rgb(255, 0, 255)), to(rgb(0, 255, 0)))";
@@ -365,14 +365,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     testRemoveBackgroundGradient : function() {
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = this._createWidget();
         widget.setBackgroundGradient( gradient );
-        testUtil.flush();
+        TestUtil.flush();
         var result = this._getCssGradient( widget.getElement() );
         assertFalse( result === "" );
         widget.setBackgroundGradient( null );
-        testUtil.flush();
+        TestUtil.flush();
         var result = this._getCssGradient( widget.getElement() );
         assertTrue( result === "" );
         widget.destroy();
@@ -382,16 +382,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     testRemoveBackgroundGradientAndRestoreBakgroundColor : function() {
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = this._createWidget();
         widget.setBackgroundColor( "red" );
-        testUtil.flush();
-        assertEquals( "red", testUtil.getCssBackgroundColor( widget ) );
+        TestUtil.flush();
+        assertEquals( "red", TestUtil.getCssBackgroundColor( widget ) );
         widget.setBackgroundGradient( gradient );
-        testUtil.flush();
+        TestUtil.flush();
         widget.setBackgroundGradient( null );
-        testUtil.flush();
-        assertEquals( "red", testUtil.getCssBackgroundColor( widget ) );
+        TestUtil.flush();
+        assertEquals( "red", TestUtil.getCssBackgroundColor( widget ) );
         widget.destroy();
       }
     },
@@ -399,16 +399,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     testRemoveBackgroundGradientAndRestoreBakgroundImage : function() {
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = this._createWidget();
         widget.setBackgroundImage( "bla.png" );
-        testUtil.flush();
-        assertTrue( testUtil.getCssBackgroundImage( widget.getElement() ).indexOf( "bla.png" ) !== -1 );
+        TestUtil.flush();
+        assertTrue( TestUtil.getCssBackgroundImage( widget.getElement() ).indexOf( "bla.png" ) !== -1 );
         widget.setBackgroundGradient( gradient );
-        testUtil.flush();
+        TestUtil.flush();
         widget.setBackgroundGradient( null );
-        testUtil.flush();
-        assertTrue( testUtil.getCssBackgroundImage( widget.getElement() ).indexOf( "bla.png" ) !== -1 );
+        TestUtil.flush();
+        assertTrue( TestUtil.getCssBackgroundImage( widget.getElement() ).indexOf( "bla.png" ) !== -1 );
         widget.destroy();
       }
     },
@@ -417,10 +417,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
         gradient.horizontal = true;
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = this._createWidget();
         widget.setBackgroundGradient( gradient );
-        testUtil.flush();
+        TestUtil.flush();
         var result = this._getCssGradient( widget.getElement() );
         var expected1 = "gradient(0deg, rgb(255, 0, 255) 0%, rgb(0, 255, 0) 100%)";
         var expected2 = "gradient(linear, 0% 0%, 100% 0%, from(rgb(255, 0, 255)), to(rgb(0, 255, 0)))";
@@ -436,10 +436,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
           [ 0.33, "rgb(255, 128, 255)" ],
           [ 1, "rgb(0, 255, 0)" ] 
         ];
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = this._createWidget();
         widget.setBackgroundGradient( gradient );
-        testUtil.flush();
+        TestUtil.flush();
         var result = this._getCssGradient( widget.getElement() );
         var expected1 =   "gradient(-90deg, rgb(255, 0, 255) 0%, " 
                         + "rgb(255, 128, 255) 33%, rgb(0, 255, 0) 100%)";
@@ -462,10 +462,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 //      ]
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var shadow = [ false, 3, 5, 1, 0, "#090807", 0.4 ];
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = this._createWidget();
         widget.setShadow( shadow );
-        testUtil.flush();
+        TestUtil.flush();
         var result = this._getCssShadow( widget.getElement() );
         var expected;
         if( org.eclipse.rwt.Client.isWebkit() ) {
@@ -484,10 +484,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     testRenderBoxShadowInset : function() {
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var shadow = [ true, 3, 5, 1, 0, "#090807", 0.4 ];
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = this._createWidget();
         widget.setShadow( shadow );
-        testUtil.flush();
+        TestUtil.flush();
         var result = this._getCssShadow( widget.getElement() );
         assertTrue( result.indexOf( "inset" ) !== -1 );
         widget.destroy();
@@ -497,12 +497,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     testRemoveBoxShadow : function() {
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var shadow = [ false, 3, 5, 1, 0, "#090807", 0.4 ];
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = this._createWidget();
         widget.setShadow( shadow );
-        testUtil.flush();
+        TestUtil.flush();
         widget.setShadow( null );
-        testUtil.flush();
+        TestUtil.flush();
         var result = this._getCssShadow( widget.getElement() );
         assertEquals( "", result );
         widget.destroy();
@@ -512,7 +512,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     testBackgroundColorTransparent : qx.core.Variant.select( "qx.client", {
       "default" : function() {},
       "newmshtml" : function() {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = this._createWidget();
         assertEquals( "rgba(0, 0, 0, 0)", widget._style.backgroundColor );
         widget.setBackgroundColor( "red" );
@@ -557,12 +557,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     // Helper
     
     _createWidget : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
       widget.setWidth( 100 );        
       widget.setHeight( 100 );
-      testUtil.flush();
+      TestUtil.flush();
       return widget;
     },
     

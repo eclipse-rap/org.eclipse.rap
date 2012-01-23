@@ -45,54 +45,54 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
 
     testCompositeBackgroundInitial : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var composite = new org.eclipse.swt.widgets.Composite();
         composite.setBackgroundColor( null );
         composite.setBackgroundImage( null );
         composite.addToDocument();
-        testUtil.flush();
+        TestUtil.flush();
         var image = composite._getTargetNode().style.backgroundImage;
         assertTrue( image.indexOf( "blank.gif" ) != -1 );
         composite.destroy();
-        testUtil.flush();
+        TestUtil.flush();
       },
       "default" : function(){}
     } ),
         
     testCompositeBackgroundFromColor : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var composite = new org.eclipse.swt.widgets.Composite();
         composite.setBackgroundColor( "green" );
         composite.setBackgroundImage( null );
         composite.addToDocument();
-        testUtil.flush();
+        TestUtil.flush();
         var image = composite._getTargetNode().style.backgroundImage;
         assertEquals( "", image );
         composite.setBackgroundColor( null );
         image = composite._getTargetNode().style.backgroundImage;
         assertTrue( image.indexOf( "blank.gif" ) != -1 );
         composite.destroy();
-        testUtil.flush();
+        TestUtil.flush();
       },
       "default" : function(){}
     } ),
         
     testCompositeBackgroundFromImage : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var composite = new org.eclipse.swt.widgets.Composite();
         composite.setBackgroundColor( null );
         composite.setBackgroundImage( "bla.jpg" );
         composite.addToDocument();
-        testUtil.flush();
+        TestUtil.flush();
         var image = composite._getTargetNode().style.backgroundImage;
         assertEquals( "url(bla.jpg)", image );
         composite.setBackgroundImage( null );
         image = composite._getTargetNode().style.backgroundImage;
         assertTrue( image.indexOf( "blank.gif" ) != -1 );
         composite.destroy();
-        testUtil.flush();
+        TestUtil.flush();
       },
       "default" : function(){}
     } )

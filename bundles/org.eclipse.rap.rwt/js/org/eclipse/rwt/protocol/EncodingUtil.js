@@ -116,14 +116,14 @@ org.eclipse.rwt.protocol.EncodingUtil = {
   _getEscapeResolverMnemonics : function() { 
     if( this._escapeResolverMnemonics ===  null ) {
       this._getEscapeResolver(); // implicitly create default resolver
-      var util = this;
+      var EncodingUtil = this;
       this._escapeResolverMnemonics = function( match ) {
         var result;
-        if( match === "&" && !util._mnemonicFound ) {
+        if( match === "&" && !EncodingUtil._mnemonicFound ) {
           result = "";
-          util._mnemonicFound = true;
+          EncodingUtil._mnemonicFound = true;
         } else {
-          result = util._escapeResolver( match );
+          result = EncodingUtil._escapeResolver( match );
         }
         return result;
       };
@@ -133,9 +133,9 @@ org.eclipse.rwt.protocol.EncodingUtil = {
 
   _getEscapeResolver : function() {
     if( this._escapeResolver === null ) {
-      var util = this;
+      var EncodingUtil = this;
       this._escapeResolver = function( match ) {
-        return util._escapeMap[ match ];
+        return EncodingUtil._escapeMap[ match ];
       };
     }
     return this._escapeResolver;

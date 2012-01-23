@@ -15,7 +15,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
   members : {        
     
     testOverOutEventsOrder : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this.createDefaultWidget();
       var targetNode = widget._getTargetNode();
       assertEquals( 2, targetNode.childNodes.length );
@@ -32,11 +32,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.addEventListener( "mouseout", handler );
       widget.addEventListener( "elementOver", handler );
       widget.addEventListener( "elementOut", handler );
-      testUtil.hoverFromTo( document.body, targetNode );
-      testUtil.hoverFromTo( targetNode, node1 );
-      testUtil.hoverFromTo( node1, node2 );
-      testUtil.hoverFromTo( node2, targetNode );
-      testUtil.hoverFromTo( targetNode, document.body );
+      TestUtil.hoverFromTo( document.body, targetNode );
+      TestUtil.hoverFromTo( targetNode, node1 );
+      TestUtil.hoverFromTo( node1, node2 );
+      TestUtil.hoverFromTo( node2, targetNode );
+      TestUtil.hoverFromTo( targetNode, document.body );
       var expected = [
         "elementOver", 
         "mouseover",
@@ -54,7 +54,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
     },
 
     testOverOutEventsTarget : function() {
-    	var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    	var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this.createDefaultWidget();
       var targetNode = widget._getTargetNode();
       assertEquals( 2, targetNode.childNodes.length );
@@ -68,11 +68,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.addEventListener( "mouseout", handler );
       widget.addEventListener( "elementOver", handler );
       widget.addEventListener( "elementOut", handler );
-      testUtil.hoverFromTo( document.body, targetNode );
-      testUtil.hoverFromTo( targetNode, node1 );
-      testUtil.hoverFromTo( node1, node2 );
-      testUtil.hoverFromTo( node2, targetNode );
-      testUtil.hoverFromTo( targetNode, document.body );
+      TestUtil.hoverFromTo( document.body, targetNode );
+      TestUtil.hoverFromTo( targetNode, node1 );
+      TestUtil.hoverFromTo( node1, node2 );
+      TestUtil.hoverFromTo( node2, targetNode );
+      TestUtil.hoverFromTo( targetNode, document.body );
       var expected = [
         targetNode, 
         targetNode,
@@ -90,7 +90,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
     },
 
     testOverOutEventsRelatedTarget : function() {
-    	var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    	var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this.createDefaultWidget();
       var targetNode = widget._getTargetNode();
       assertEquals( 2, targetNode.childNodes.length );
@@ -104,11 +104,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.addEventListener( "mouseout", handler );
       widget.addEventListener( "elementOver", handler );
       widget.addEventListener( "elementOut", handler );
-      testUtil.hoverFromTo( document.body, targetNode );
-      testUtil.hoverFromTo( targetNode, node1 );
-      testUtil.hoverFromTo( node1, node2 );
-      testUtil.hoverFromTo( node2, targetNode );
-      testUtil.hoverFromTo( targetNode, document.body );
+      TestUtil.hoverFromTo( document.body, targetNode );
+      TestUtil.hoverFromTo( targetNode, node1 );
+      TestUtil.hoverFromTo( node1, node2 );
+      TestUtil.hoverFromTo( node2, targetNode );
+      TestUtil.hoverFromTo( targetNode, document.body );
       var expected = [
         document.body, 
         document.body,
@@ -127,7 +127,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
     
     testClickFix : qx.core.Variant.select( "qx.client", {
       "gecko" : function() {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = this.createDefaultWidget();
         var targetNode = widget._getTargetNode();
         assertEquals( 2, targetNode.childNodes.length );
@@ -141,8 +141,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
         widget.addEventListener( "mouseup", handler );
         widget.addEventListener( "click", handler );
         var left = qx.event.type.MouseEvent.buttons.left;
-        testUtil.fakeMouseEventDOM( node1, "mousedown", left );
-        testUtil.fakeMouseEventDOM( node2, "mouseup", left );
+        TestUtil.fakeMouseEventDOM( node1, "mousedown", left );
+        TestUtil.fakeMouseEventDOM( node2, "mouseup", left );
         var expected = [ "mousedown", "mouseup", "click" ];
         assertEquals( expected, log );
       },
@@ -151,7 +151,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
     
     testDoubleClickWithRightMouseButton : qx.core.Variant.select( "qx.client", {
       "default" : function() {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = this.createDefaultWidget();
         var node = widget._getTargetNode();
         var log = [];
@@ -160,13 +160,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
         };
         widget.addEventListener( "dblclick", handler );
         var right = qx.event.type.MouseEvent.buttons.right;
-        testUtil.fakeMouseEventDOM( node, "mousedown", right );
-        testUtil.fakeMouseEventDOM( node, "mouseup", right );
-        testUtil.fakeMouseEventDOM( node, "click", right );
-        testUtil.fakeMouseEventDOM( node, "mousedown", right );
-        testUtil.fakeMouseEventDOM( node, "mouseup", right );
-        testUtil.fakeMouseEventDOM( node, "click", right );
-        testUtil.fakeMouseEventDOM( node, "dblclick", right );
+        TestUtil.fakeMouseEventDOM( node, "mousedown", right );
+        TestUtil.fakeMouseEventDOM( node, "mouseup", right );
+        TestUtil.fakeMouseEventDOM( node, "click", right );
+        TestUtil.fakeMouseEventDOM( node, "mousedown", right );
+        TestUtil.fakeMouseEventDOM( node, "mouseup", right );
+        TestUtil.fakeMouseEventDOM( node, "click", right );
+        TestUtil.fakeMouseEventDOM( node, "dblclick", right );
         var expected = [];
         assertEquals( expected, log );
       },
@@ -174,7 +174,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
     } ),
     
 //    testMissingMouseUp : function() {
-//      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+//      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 //      var widget = this.createDefaultWidget();
 //      var targetNode = widget._getTargetNode();
 //      var log = [];
@@ -184,34 +184,34 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 //      widget.addEventListener( "mousedown", handler );
 //      widget.addEventListener( "mouseup", handler );
 //      widget.addEventListener( "mousemove", handler );
-//      testUtil.fakeMouseEventDOM( targetNode, "mousedown" );
-//      testUtil.fakeMouseEventDOM( targetNode, "mousemove", 0 );
+//      TestUtil.fakeMouseEventDOM( targetNode, "mousedown" );
+//      TestUtil.fakeMouseEventDOM( targetNode, "mousemove", 0 );
 //      assertEquals( [ "mousedown", "mouseup", "mousemove" ], log );
 //      widget.destroy();
 //    },
 //    
     testKeyDownCharCode : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       widget.focus();
       var log = [];
       widget.addEventListener( "keypress", function( event ) {
         log.push( event.getCharCode() );
         log.push( event.getKeyIdentifier() );
       } );
-      testUtil.keyDown( widget._getTargetNode(), "x" );
+      TestUtil.keyDown( widget._getTargetNode(), "x" );
       var expected = [ 120, "X" ];
       assertEquals( expected, log );
       widget.destroy();
     },
 
     testKeyPressEnter : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       widget.focus();
       var log = [];
       widget.addEventListener( "keypress", function( event ) {
@@ -219,17 +219,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
         log.push( event.getCharCode() );
         log.push( event.getKeyIdentifier() );
       } );
-      testUtil.keyDown( widget._getTargetNode(), "Enter" );
+      TestUtil.keyDown( widget._getTargetNode(), "Enter" );
       var expected = [ 13, 0, "Enter" ];
       assertEquals( expected, log );
       widget.destroy();
     },
 
     testKeyPressEscape : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       widget.focus();
       var log = [];
       widget.addEventListener( "keypress", function( event ) {
@@ -237,50 +237,50 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
         log.push( event.getCharCode() );
         log.push( event.getKeyIdentifier() );
       } );
-      testUtil.press( widget, "Escape", 0 );
+      TestUtil.press( widget, "Escape", 0 );
       var expected = [ 27, 0, "Escape" ];
       assertEquals( expected, log );
       widget.destroy();
     },
 
     testKeyDownPrintable : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       widget.focus();
       var log = this._addKeyLogger( widget, true, false, false );
-      testUtil.keyDown( widget._getTargetNode(), "x" );
+      TestUtil.keyDown( widget._getTargetNode(), "x" );
       var expected = [ "keydown", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
     },
 
     testCancelKeyDownPrintable : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
       widget.addEventListener( "keydown", function( event ) {
         event.preventDefault();
       } );
-      testUtil.flush();
+      TestUtil.flush();
       widget.focus();
       var log = this._addKeyLogger( widget, true, false, false );
-      testUtil.keyDown( widget._getTargetNode(), "x" );
+      TestUtil.keyDown( widget._getTargetNode(), "x" );
       var expected = [ "keydown", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
     },
 
     testKeyHoldPrintable : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       widget.focus();
       var log = this._addKeyLogger( widget, true, false, false );
-      testUtil.keyDown( widget._getTargetNode(), "x" );
-      testUtil.keyHold( widget._getTargetNode(), "x" );
+      TestUtil.keyDown( widget._getTargetNode(), "x" );
+      TestUtil.keyHold( widget._getTargetNode(), "x" );
       var expected = [ "keydown", "keypress", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
@@ -288,122 +288,122 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testKeyUp : function() {
       // See Bug 335753
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       widget.focus();
-      testUtil.keyDown( widget._getTargetNode(), "x" );
+      TestUtil.keyDown( widget._getTargetNode(), "x" );
       var log = this._addKeyLogger( widget, true, false, false );
-      testUtil.keyUp( widget._getTargetNode(), "x" );
+      TestUtil.keyUp( widget._getTargetNode(), "x" );
       var expected = [ "keyup" ];
       assertEquals( expected, log );
       widget.destroy();
     },    
 
     testKeyUpNumber : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       widget.focus();
-      testUtil.keyDown( widget._getTargetNode(), "1" );
+      TestUtil.keyDown( widget._getTargetNode(), "1" );
       var log = this._addKeyLogger( widget, true, true, false );
-      testUtil.keyUp( widget._getTargetNode(), "1" );
+      TestUtil.keyUp( widget._getTargetNode(), "1" );
       var expected = [ "keyup", "1" ];
       assertEquals( expected, log );
       widget.destroy();
     },    
   
     testKeyDownNonPrintable : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       widget.focus();
       var log = this._addKeyLogger( widget, true, false, false );
-      testUtil.keyDown( widget._getTargetNode(), "Left" );
+      TestUtil.keyDown( widget._getTargetNode(), "Left" );
       var expected = [ "keydown", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
     },    
     
     testKeyHoldNonPrintable : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       widget.focus();
       var log = this._addKeyLogger( widget, true, false, false );
-      testUtil.keyDown( widget._getTargetNode(), "Left" );
-      testUtil.keyHold( widget._getTargetNode(), "Left" );
+      TestUtil.keyDown( widget._getTargetNode(), "Left" );
+      TestUtil.keyHold( widget._getTargetNode(), "Left" );
       var expected = [ "keydown", "keypress", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
     },    
     
     testKeyDownPrintableSpecialChar : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       widget.focus();
       var log = this._addKeyLogger( widget, true, false, false );
-      testUtil.keyDown( widget._getTargetNode(), "Space" );
+      TestUtil.keyDown( widget._getTargetNode(), "Space" );
       var expected = [ "keydown", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
     },    
 
     testKeyHoldPrintableSpecialChar : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       widget.focus();
       var log = this._addKeyLogger( widget, true, false, false );
-      testUtil.keyDown( widget._getTargetNode(), "Space" );
-      testUtil.keyHold( widget._getTargetNode(), "Space" );
+      TestUtil.keyDown( widget._getTargetNode(), "Space" );
+      TestUtil.keyHold( widget._getTargetNode(), "Space" );
       var expected = [ "keydown", "keypress", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
     },
 
     testKeyDownPrintableSpecialCharNoKeyInput : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       widget.focus();
       var log = this._addKeyLogger( widget, true, false, false );
-      testUtil.keyDown( widget._getTargetNode(), "Enter" );
+      TestUtil.keyDown( widget._getTargetNode(), "Enter" );
       var expected = [ "keydown", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
     },    
     
     testKeyHoldPrintableSpecialCharNoKeyInput : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       widget.focus();
       var log = this._addKeyLogger( widget, true, false, false );
-      testUtil.keyDown( widget._getTargetNode(), "Enter" );
-      testUtil.keyHold( widget._getTargetNode(), "Enter" );
+      TestUtil.keyDown( widget._getTargetNode(), "Enter" );
+      TestUtil.keyHold( widget._getTargetNode(), "Enter" );
       var expected = [ "keydown", "keypress", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
     },
     
     testKeyDownModifier : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       widget.focus();
       var log = this._addKeyLogger( widget, true, false, false );
-      testUtil.keyDown( widget._getTargetNode(), "Shift" );
+      TestUtil.keyDown( widget._getTargetNode(), "Shift" );
       var expected = qx.core.Variant.select( "qx.client", {
         "default" : [ "keydown", "keypress" ],
         "gecko|opera" : [ "keydown" ]
@@ -413,14 +413,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
     },    
     
     testKeyHoldModifier : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       widget.focus();
       var log = this._addKeyLogger( widget, true, false, false );
-      testUtil.keyDown( widget._getTargetNode(), "Shift" );
-      testUtil.keyHold( widget._getTargetNode(), "Shift" );
+      TestUtil.keyDown( widget._getTargetNode(), "Shift" );
+      TestUtil.keyHold( widget._getTargetNode(), "Shift" );
       var expected = qx.core.Variant.select( "qx.client", {
         "default" : [ "keydown", "keypress", "keypress" ],
         "gecko" : [ "keydown" ],
@@ -432,46 +432,46 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
  
     testCatchMouseEventError : function(){
       var widget = new qx.ui.basic.Terminator();
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       widget.addToDocument();
       widget.addEventListener( "click", function() {
         var foo = null;
         foo.bar();
       } );
-      testUtil.flush();
-      testUtil.initErrorPageLog();
+      TestUtil.flush();
+      TestUtil.initErrorPageLog();
       try { 
-        testUtil.click( widget );
+        TestUtil.click( widget );
         fail();
       } catch( ex ) {
         // expected
       }
-      assertNotNull( testUtil.getErrorPage() );
+      assertNotNull( TestUtil.getErrorPage() );
       widget.destroy();
     },
  
     testCatchKeyEventError : function() {
       var widget = new qx.ui.basic.Terminator();
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       widget.addToDocument();
       widget.addEventListener( "keydown", function() {
         var foo = null;
         foo.bar();
       } );
-      testUtil.flush();
-      testUtil.initErrorPageLog();
+      TestUtil.flush();
+      TestUtil.initErrorPageLog();
       try{ 
-        testUtil.press( widget, "a" );
+        TestUtil.press( widget, "a" );
         fail();
       } catch( ex ) {
         // expected
       }
-      assertNotNull( testUtil.getErrorPage() );
+      assertNotNull( TestUtil.getErrorPage() );
       widget.destroy();
     },
 
     testFocusWithoutCapturedWidget : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget1 = new qx.ui.basic.Terminator();
       widget1.setFocused( true );
       widget1.setTabIndex( 1 );
@@ -479,17 +479,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget2.setTabIndex( 1 );
       widget1.addToDocument();
       widget2.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var node = widget2._getTargetNode();
       var right = qx.event.type.MouseEvent.buttons.right;
-      testUtil.fakeMouseEventDOM( node, "mousedown", right );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", right );
       assertTrue( widget2.getFocused() );
       widget1.destroy();
       widget2.destroy();
     },
 
     testFocusWithCapturedWidget : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget1 = new qx.ui.basic.Terminator();
       widget1.setFocused( true );
       widget1.setTabIndex( 1 );
@@ -498,32 +498,32 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget2.setTabIndex( 1 );
       widget1.addToDocument();
       widget2.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var node = widget2._getTargetNode();
       var right = qx.event.type.MouseEvent.buttons.right;
-      testUtil.fakeMouseEventDOM( node, "mousedown", right );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", right );
       assertFalse( widget2.getFocused() );
       widget1.destroy();
       widget2.destroy();
     },
     
     testNativeMenuConsumesEvent : function(){
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = new org.eclipse.rwt.widgets.Text( false );
       text.addToDocument();
       org.eclipse.swt.TextUtil.initialize( text );
       text.setSpace( 0, 50, 0, 21 );
-      testUtil.flush();
+      TestUtil.flush();
       text.focus();
       var log = [];
       text.addEventListener( "contextmenu", function( event ) {
         log.push( event );
       } );
       var right = qx.event.type.MouseEvent.buttons.right;
-      testUtil.fakeMouseEventDOM( text.getElement(), "contextmenu", right );
+      TestUtil.fakeMouseEventDOM( text.getElement(), "contextmenu", right );
       assertEquals( 1, log.length );
   
-      testUtil.fakeMouseEventDOM( text._inputElement, "contextmenu", right );
+      TestUtil.fakeMouseEventDOM( text._inputElement, "contextmenu", right );
       assertEquals( 1, log.length );
       
       text.destroy();

@@ -18,12 +18,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
     TARGETENGINE : [ "mshtml" ],
     
     testStrokeProperties : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var VML = org.eclipse.rwt.VML;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
       var vmlCanvas = gc._context._canvas;
@@ -48,16 +48,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       assertEquals( "round", shape.stroke.endcap ); 
       assertEquals( "bevel", shape.stroke.joinstyle ); 
       canvas.destroy();
-      testUtil.flush();      
+      TestUtil.flush();      
     },
     
     testFillProperties : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var VML = org.eclipse.rwt.VML;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
       var vmlCanvas = gc._context._canvas;
@@ -74,15 +74,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       assertEquals( [ 1, 2, 3 ], qx.util.ColorUtil.stringToRgb( VML.getFillColor( shape ) ) );
       assertTrue( shape.node.style.filter.indexOf( "opacity=50" ) != -1 );
       canvas.destroy();
-      testUtil.flush();      
+      TestUtil.flush();      
     },
     
     testInit : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       var vmlCanvas = gc._context._canvas;
       gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
@@ -91,29 +91,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       gc.init( 400, 500, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
       assertEquals( 0, vmlCanvas.node.childNodes.length );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testDrawLine : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
       gc.draw( [ [ "beginPath" ], [ "moveTo", 10.5, 10.5 ], [ "lineTo", 20.5, 10.5 ], [ "stroke" ] ] );
       assertEquals( "m100,100 l200,100 e", this._getLastPath( gc ) );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testDrawPoint : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       context = gc._context;
       gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
@@ -124,15 +124,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       assertEquals( expected, path );
       assertTrue( gc._canvas.lastChild.fill.on );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
     
     testDrawRectangle : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       context = gc._context;
       gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
@@ -140,15 +140,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       var expected = "m100,200 l400,200,400,600,100,600 xe";
       assertEquals( expected, this._getLastPath( gc ) );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testDrawRoundRectangle : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       context = gc._context;
       gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
@@ -156,15 +156,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       var expected =   "m15,95 l15,275 qb15,335 l45,335,185,335 qb215,335 l215,275,215,95 qb215,35 l185,35,45,35 qb15,35 l15,95 e";
       assertEquals( expected, this._getLastPath( gc ) );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testFillGradientRectangle : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       context = gc._context;
       gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
@@ -176,15 +176,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       assertEquals( 270, gc._canvas.lastChild.fill.angle );
       assertEquals( "blue", gc._canvas.lastChild.fill.color2.value );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
     
     testDrawArc : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
       //gc.drawArc( 100, 100, 60, 30, 180, 180, true );
@@ -204,15 +204,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       var expected = "m995,1145 ae1295,1145,300,150,11796300,11796300 e";
       assertEquals( expected, this._getLastPath( gc ) );      
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testDrawPolyline : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
       gc.draw( [
@@ -226,16 +226,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       var expected = "m95,95 l995,695,695,995,95,95 e";
       assertEquals( expected, this._getLastPath( gc ) );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
     
     testDrawImage : function() {
       // NOTE: drawImage can not be tested directly, test "setImageData" instead
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
       var vmlCanvas = gc._context._canvas;
@@ -258,15 +258,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       assertEquals( 3, Math.round( shape.node.cropBottom * 10 ) );
       assertEquals( 4, Math.round( shape.node.cropLeft * 10 ) );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testRestoreColorsOnDomInsert : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       var vmlCanvas = gc._context._canvas;
       gc._initFields( "10px Arial", [ 1, 2, 3 ], [ 4, 5, 6 ] );
@@ -280,15 +280,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       assertEquals( [ 1, 2, 3 ], qx.util.ColorUtil.stringToRgb( node1.fill.color.value ) );
       assertEquals( [ 4, 5, 6 ], qx.util.ColorUtil.stringToRgb( node2.stroke.color.value ) );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testRestoreStrokeWeightOnDomInsert : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       var vmlCanvas = gc._context._canvas;
       gc._initFields( "10px Arial", [ 1, 2, 3 ], [ 4, 5, 6 ] );
@@ -299,7 +299,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       canvas.setBackgroundGradient( [ [ 0, "red" ], [ 1, "green" ] ] );
       assertEquals( 3, node.stroke.weight );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
     
     /////////

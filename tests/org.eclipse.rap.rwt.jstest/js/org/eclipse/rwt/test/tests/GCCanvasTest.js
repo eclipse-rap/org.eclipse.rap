@@ -19,11 +19,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
     // NOTE: drawImage can not be tested 
 
     testInit : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.draw( [ [ "beginPath" ], [ "moveTo", 10, 10 ], [ "lineTo", 20, 10 ], [ "stroke" ] ] );
@@ -33,7 +33,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       assertEquals( 500, parseInt( gc._canvas.height ) );
       assertEquals( 500, parseInt( gc._canvas.style.height ) );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
     
     // Note on "isPointInPath": This method is used to test if the given
@@ -44,11 +44,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
     // on a path are "in" the path or not. 
 
     testDrawLine : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.draw( [ [ "beginPath" ], [ "moveTo", 10.5, 10.5 ], [ "lineTo", 20.5, 10.5 ], [ "stroke" ] ] );
@@ -60,15 +60,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       assertTrue( context.isPointInPath( 19, 11 ) );
       assertFalse( context.isPointInPath( 21, 10 ) );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testDrawArc : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
 
@@ -100,7 +100,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       assertFalse( context.isPointInPath( 158, 122 ) );
       assertFalse( context.isPointInPath( 130, 131 ) );
       canvas.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     }
     
 

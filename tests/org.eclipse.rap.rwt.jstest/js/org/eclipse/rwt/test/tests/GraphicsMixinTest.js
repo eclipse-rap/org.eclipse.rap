@@ -24,7 +24,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     TARGETENGINE : org.eclipse.rwt.Client.supportsCss3() ? [ "none" ] : undefined,
 
     testSetGradient : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var shell = this._createShell();
       assertTrue( shell.isSeeable() );      
@@ -34,54 +34,54 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       assertTrue( this.usesGfxBackground( shell ) );
       assertTrue( gfxUtil.getFillType( shape ) == "gradient" );
       shell.setBackgroundGradient( null );
-      testUtil.flush();
+      TestUtil.flush();
       assertFalse( this.usesGfxBackground( shell ) );
       shell.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testSetAndRemoveGradient : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var shell = this._createWidget( true );
       assertFalse( shell.isSeeable() );      
       assertFalse( this.usesGfxBackground( shell ) );
       shell.setBackgroundGradient( this.gradient );
       shell.setBackgroundGradient( null );
-      testUtil.flush();
+      TestUtil.flush();
       assertFalse( this.usesGfxBackground( shell ) );
       shell.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testSetGradientWhileNotInDOM : function() {    
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var shell = this._createShell();
       shell.setParent( null );
-      testUtil.flush();
+      TestUtil.flush();
       shell.setBackgroundGradient( this.gradient );
       shell.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var shape = shell._gfxData.backgroundShape;
       assertTrue( this.usesGfxBackground( shell ) );
       assertTrue( gfxUtil.getFillType( shape ) == "gradient" );
       shell.setParent( null );
-      testUtil.flush();
+      TestUtil.flush();
       shell.setBackgroundGradient( null );
       shell.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       assertFalse( this.usesGfxBackground( shell ) );
       shell.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testSetSolidFillAfterBorder : function() {    
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var shell = this._createShell();
       shell.setBorder( this.gfxBorder );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( this.usesGfxBackground( shell ) );
       var shape = shell._gfxData.backgroundShape;
       assertNull( gfxUtil.getFillType( shape ) );
@@ -89,100 +89,100 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       assertEquals( "color", gfxUtil.getFillType( shape ) );
       assertEquals( "green", gfxUtil.getFillColor( shape ) );
       shell.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testSetSolidFillBeforeBorder : function() {    
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var shell = this._createShell();
       shell.setBackgroundColor( "green" );
       shell.setBorder( this.gfxBorder );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( this.usesGfxBackground( shell ) );
       var shape = shell._gfxData.backgroundShape;
       assertEquals( "color", gfxUtil.getFillType( shape ) );
       assertEquals( "green", gfxUtil.getFillColor( shape ) );
       shell.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testRestoreBackgroundColor : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var shell = this._createShell();
       shell.setBackgroundColor( "#008000" );          
-      var result = qx.util.ColorUtil.stringToRgb( testUtil.getCssBackgroundColor( shell ) );
+      var result = qx.util.ColorUtil.stringToRgb( TestUtil.getCssBackgroundColor( shell ) );
       assertEquals( [ 0, 128, 0 ], result );
       shell.setBackgroundGradient( this.gradient );
-      assertNull( testUtil.getCssBackgroundColor( shell ) );
+      assertNull( TestUtil.getCssBackgroundColor( shell ) );
       shell.setBackgroundGradient( null );
-      result = qx.util.ColorUtil.stringToRgb( testUtil.getCssBackgroundColor( shell ) );
+      result = qx.util.ColorUtil.stringToRgb( TestUtil.getCssBackgroundColor( shell ) );
       assertEquals( [ 0, 128, 0 ], result );
       shell.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testCssBorder : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var shell = this._createShell();
       var node = shell.getElement();
       shell.setBorder( this.cssBorder );
-      testUtil.flush();
-      assertTrue( testUtil.hasCssBorder( node ) );
+      TestUtil.flush();
+      assertTrue( TestUtil.hasCssBorder( node ) );
       shell.setBorder( this.gfxBorder );
-      testUtil.flush();
+      TestUtil.flush();
       qx.ui.core.Widget.flushGlobalQueues();
-      assertFalse( testUtil.hasCssBorder( node ) );      
+      assertFalse( TestUtil.hasCssBorder( node ) );      
       shell.setBorder( this.cssBorder );
-      testUtil.flush();
-      assertTrue( testUtil.hasCssBorder( node ) );
+      TestUtil.flush();
+      assertTrue( TestUtil.hasCssBorder( node ) );
       shell.setBorder( null );
-      testUtil.flush();
-      assertFalse( testUtil.hasCssBorder( node ) );
+      TestUtil.flush();
+      assertFalse( TestUtil.hasCssBorder( node ) );
       shell.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testPadding : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var widget = this._createWidget();
       widget.setBorder( this.gfxBorder );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( widget.getElement() !== widget._getTargetNode() );
       assertEquals( [ 1, 1, 1, 1 ], this.getFakePadding( widget ) );
       assertEquals( [ 1, 1, 1, 1 ], this.getBorderCache( widget ) );
       widget.setBorder( new org.eclipse.rwt.Border( 0, "rounded", "black", 0 ) );
-      testUtil.flush();      
+      TestUtil.flush();      
       assertEquals ( [ 0, 0, 0, 0 ], this.getFakePadding( widget ) );
       assertEquals ( [ 0, 0, 0, 0 ], this.getBorderCache( widget ) );
       widget.setBorder( new org.eclipse.rwt.Border( [ 4, 0, 3, 0 ], "rounded", "black", 0 ) );
-      testUtil.flush();      
+      TestUtil.flush();      
       assertEquals ( [ 4, 0, 3, 0 ], this.getFakePadding( widget ) );      
       assertEquals ( [ 4, 0, 3, 0 ], this.getBorderCache( widget ) );      
       widget.setBackgroundGradient( this.gradient );
       widget.setBorder( null );
-      testUtil.flush();
+      TestUtil.flush();
       // NOTE: since the layouting for targetNode is queued in the first flush, a second is needed
-      testUtil.flush(); 
+      TestUtil.flush(); 
       assertEquals ( [ 0, 0, 0, 0 ], this.getBorderCache( widget ) );      
       assertEquals ( [ 0, 0, 0, 0 ], this.getFakePadding( widget ) );
       widget.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testComplexBorderWithGradient: function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var engine = org.eclipse.rwt.Client.getEngine();
       var widget = this._createWidget();
       widget.setBorder( new org.eclipse.rwt.Border( [ 0, 1, 2, 3 ], "complex", "red", "blue" ) );
-      testUtil.flush();
-      testUtil.flush();
+      TestUtil.flush();
+      TestUtil.flush();
       widget.setBackgroundGradient( this.gradient );
-      testUtil.flush();
+      TestUtil.flush();
       if( engine === "mshtml" ) {
         assertEquals ( [ 0, 2, 2, 0 ], this.getFakePadding( widget ) );      
       } else {
@@ -205,105 +205,105 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       assertEquals( expected1, this._getPath( shape ) );
       widget.setWidth( 120 );
       widget.setHeight( 150 );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( expected2, this._getPath( shape ) );
       widget.destroy();
     },
     
     testRoundedBorderWidth : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var widget = this._createWidget();
       gfxBorder = new org.eclipse.rwt.Border( 0, "rounded", "black", 3 );
       widget.setBorder( gfxBorder ); 
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( this.usesGfxBorder( widget ) );
       var shape = widget._gfxData.backgroundShape;
       assertEquals( 0, gfxUtil.getStrokeWidth( shape ) );
       gfxBorder = new org.eclipse.rwt.Border( 2, "rounded", "black", 0 );
       widget._applyBorder( gfxBorder );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( 2, gfxUtil.getStrokeWidth( shape ) );
       gfxBorder = new org.eclipse.rwt.Border( [ 1, 2, 3, 4 ], "rounded", "black", 0 );
       widget._applyBorder( gfxBorder );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( 4, gfxUtil.getStrokeWidth( shape ) );
       widget.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testRoundedBorderColor : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var widget = this._createWidget();
       var gfxBorder = new org.eclipse.rwt.Border( 2, "rounded", "red", 3 );
       widget.setBorder( gfxBorder ); 
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( this.usesGfxBorder( widget ) );
       var shape = widget._gfxData.backgroundShape;
       assertEquals( "red", gfxUtil.getStrokeColor( shape ) );
       widget.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testOutline : function() {
       // in Safari the outline must always be set because the default 
       // outline is visually incompatible with SVG (glitch)
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var shell = this._createShell();
       var gfxBorder = new org.eclipse.rwt.Border( 1, "rounded", "black", 4 );
       shell.setBorder( gfxBorder );
       shell.setHideFocus( false );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( this.widgetContainsCanvas( shell ) );
       shell.blur();
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( shell.getElement().style.outline != "" );
       shell.focus();
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( shell.getElement().style.outline != "");
       shell.setHideFocus( true );
       shell.blur();
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( shell.getElement().style.outline != "" );
       shell.focus();
-      testUtil.flush();     
+      TestUtil.flush();     
       assertTrue( shell.getElement().style.outline != "" );
       shell.destroy();
-      testUtil.flush();     
+      TestUtil.flush();     
     },
 
     testGfxRadiusInvisibleEdges : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] ); 
       widget.addToDocument();
       widget.setLocation( 0, 0 );
       widget.setDimension( 100, 100 );
       var gfxBorder = new org.eclipse.rwt.Border( [ 1, 0, 0, 1 ], "rounded", "black", 5 );
       widget.setBorder( gfxBorder ); 
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( this.usesGfxBorder( widget ) );
       var radii = widget.getGfxProperty( "borderRadii", radii );
       assertEquals( [ 5, 0, 0, 0 ], radii );
       widget.destroy();
-      testUtil.flush();      
+      TestUtil.flush();      
     },
 
     testGfxRadiusInvisibleBorder : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] ); 
       widget.addToDocument();
       widget.setLocation( 0, 0 );
       widget.setDimension( 100, 100 );
       var gfxBorder = new org.eclipse.rwt.Border( 1, "rounded", "black", 5 );
       widget.setBorder( gfxBorder ); 
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( this.usesGfxBorder( widget ) );
       var radii = widget.getGfxProperty( "borderRadii", radii );
       assertEquals( [ 5, 5, 5, 5 ], radii );
       widget.destroy();
-      testUtil.flush();      
+      TestUtil.flush();      
     },
 
     testGfxBackgroundImage : function() {
@@ -324,24 +324,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     },
 
     testGfxBackgroundColorToImage : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var shell = this._createShell();
       shell.setBackgroundColor( "green" );
       shell.setBorder( this.gfxBorder );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( this.usesGfxBackground( shell ) );
       var shape = shell._gfxData.backgroundShape;
       assertEquals( "color", gfxUtil.getFillType( shape ) );
       shell.setBackgroundImage( "bla.jpg" );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( gfxUtil.getFillType( shape ) == "pattern" );
       shell.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testOnCanvasAppearOnWidgetInsert : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget1 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
       var widget2 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
       var log = [];
@@ -352,14 +352,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       widget1.setBorder( this.gfxBorder );
       widget2.setBorder( this.gfxBorder );
       widget2.setVisibility( false );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( [ "widget1", "widget2" ], log );
       widget1.destroy();
       widget2.destroy();
     },
 
     testOnCanvasAppearOnSetDisplay : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget1 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
       var widget2 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
       var log = [];
@@ -370,20 +370,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       widget1.setBorder( this.gfxBorder );
       widget2.setBorder( this.gfxBorder );
       widget2.setVisibility( false );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( [ "widget1", "widget2" ], log );
       widget1.setDisplay( false );
       widget2.setDisplay( false );
-      testUtil.flush();
+      TestUtil.flush();
       widget1.setDisplay( true );
       widget2.setDisplay( true );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( [ "widget1", "widget2", "widget1", "widget2" ], log );
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testOnCanvasAppearOnEnhancedBorder : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var shell = this._createShell();
       var widget1 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
@@ -396,31 +396,31 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       widget1.setBorder( this.gfxBorder );
       widget2.setBorder( this.gfxBorder );
       widget2.setVisibility( false );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( [ "widget1", "widget2" ], log );
       shell.setBackgroundColor( "green" );
       shell.setBorder( this.gfxBorder );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( [ "widget1", "widget2", "widget1", "widget2" ], log );
       shell.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testOpacityWidthEnhancedBorder : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var widget = this._createWidget();
       assertTrue( widget.isSeeable() );      
       assertTrue( widget.getElement() === widget._getTargetNode() );
       widget.setOpacity( 0.5 );
-      assertTrue( testUtil.hasElementOpacity( widget.getElement() ) );
+      assertTrue( TestUtil.hasElementOpacity( widget.getElement() ) );
       widget.setBackgroundGradient( this.gradient );
       assertTrue( widget.getElement() !== widget._getTargetNode() );
-      assertTrue( testUtil.hasElementOpacity( widget.getElement() ) );
-      assertFalse( testUtil.hasElementOpacity( widget._getTargetNode() ) );
+      assertTrue( TestUtil.hasElementOpacity( widget.getElement() ) );
+      assertFalse( TestUtil.hasElementOpacity( widget._getTargetNode() ) );
       widget.setOpacity( 1 );
-      assertFalse( testUtil.hasElementOpacity( widget.getElement() ) );
-      assertFalse( testUtil.hasElementOpacity( widget._getTargetNode() ) );
+      assertFalse( TestUtil.hasElementOpacity( widget.getElement() ) );
+      assertFalse( TestUtil.hasElementOpacity( widget._getTargetNode() ) );
       widget.destroy();
     },
 
@@ -467,7 +467,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     testSetBackgroundImageOverwritesGradient : function() {
       // Note: a gradient and background-image can note be set at the same
       // time via CSS, but when using CSS and Java-API.  
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] ); 
       var gfxBorder = new org.eclipse.rwt.Border( 1, "rounded", "black", 5 );
       widget.addToDocument();
@@ -476,7 +476,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       widget.setBorder( gfxBorder ); 
       widget.setBackgroundImage( "bla.jpg" );
       widget.setBackgroundGradient( this.gradient );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( this.usesGfxBackground( widget ) );
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var shape = widget._gfxData.backgroundShape;
@@ -485,16 +485,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     },
 
     testChangeBackgroundImageWhileBackgoundGradientSet : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] ); 
       widget.addToDocument();
       widget.setLocation( 0, 0 );
       widget.setDimension( 100, 100 );
       widget.setBackgroundGradient( this.gradient );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( "initally uses gfx", this.usesGfxBackground( widget ) );      
       widget.setBackgroundImage( "bla.jpg" );
-      testUtil.flush();
+      TestUtil.flush();
       assertFalse( "no more gfx", this.usesGfxBackground( widget ) );
       var src = widget._getTargetNode().style.backgroundImage;
       assertTrue( "normal background", src.indexOf( "bla.jpg" ) != -1 );
@@ -586,14 +586,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     testSetShadowAndGradient : function() {
       if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {
         var gfxUtil = org.eclipse.rwt.GraphicsUtil;
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
         var childOffset = isMshtml ? 0 : 1;// Count defs-node
         var widget = this._createWidget();
         widget.setShadow( [ false, 10, 10, 10, 3, "#ff00ff", 1 ] );
-        testUtil.flush();
+        TestUtil.flush();
         widget.setBackgroundGradient( this.gradient );
-        testUtil.flush();
+        TestUtil.flush();
         var canvasNode = this._getCanvasGroupNode( widget._gfxCanvas );
         var shadow = widget._gfxData.shadowShape.node;
         var background = widget._gfxData.backgroundShape.node;
@@ -604,7 +604,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
         assertIdentical( background, canvasNode.childNodes[ 1 + childOffset ] );
         assertTrue( this._getPath( widget._gfxData.backgroundShape ).length > 0 );
         widget.setBackgroundGradient( null );
-        testUtil.flush();
+        TestUtil.flush();
         assertFalse( background.parentNode === canvasNode );
         assertIdentical( canvasNode, shadow.parentNode );
         assertEquals( 1 + childOffset, canvasNode.childNodes.length );
@@ -615,10 +615,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     testSetShadowBeforeCreate : function() {
       if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {
         var gfxUtil = org.eclipse.rwt.GraphicsUtil;
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = this._createWidget( true );
         widget.setShadow( [ false, 10, 10, 10, 3, "#ff00ff", 1 ] );
-        testUtil.flush();
+        TestUtil.flush();
         var canvas = this._getCanvasGroupNode( widget._gfxCanvas );
         var shadow = widget._gfxData.shadowShape.node;
         assertIdentical( canvas, shadow.parentNode );
@@ -629,10 +629,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     testRemoveGradientSetShadow : function() {
       if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {
         var gfxUtil = org.eclipse.rwt.GraphicsUtil;
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = this._createWidget();
         widget.setBackgroundGradient( this.gradient );
-        testUtil.flush();
+        TestUtil.flush();
         var canvas = this._getCanvasGroupNode( widget._gfxCanvas );
         var background = widget._gfxData.backgroundShape.node;
         assertTrue( canvas === background.parentNode );
@@ -671,12 +671,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     
     testBasicShadowLayout : function() {
       if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var gfxUtil = org.eclipse.rwt.GraphicsUtil;
         var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
         var widget = this._createWidget();
         widget.setShadow( [ false, 0, 0, 0, 0, "#000000", 1 ] );
-        testUtil.flush();
+        TestUtil.flush();
         var shape = widget._gfxData.shadowShape;
         var expected1;
         var expected2;
@@ -690,7 +690,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
         assertEquals( expected1, this._getPath( shape ) );
         widget.setWidth( 120 );
         widget.setHeight( 150 );
-        testUtil.flush();
+        TestUtil.flush();
         assertEquals( expected2, this._getPath( shape ) );
         widget.destroy();
       }
@@ -698,14 +698,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     
     testRoundedShadowLayout : function() {
       if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var gfxUtil = org.eclipse.rwt.GraphicsUtil;
         var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
         var widget = this._createWidget();
         widget.setShadow( [ false, 0, 0, 0, 0, "#000000", 1 ] );
         var gfxBorder = new org.eclipse.rwt.Border( 1, "rounded", "black", 5 );
         widget.setBorder( gfxBorder );
-        testUtil.flush(); 
+        TestUtil.flush(); 
         var shape = widget._gfxData.shadowShape;
         var expected1;
         var expected2;
@@ -718,7 +718,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
         }
         assertEquals( expected1, this._getPath( shape ) );
         widget.setBorder( null );
-        testUtil.flush();
+        TestUtil.flush();
         assertEquals( expected2, this._getPath( shape ) );
         widget.destroy();
       }
@@ -726,12 +726,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
 
     testShiftShadowLayout : function() {
       if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var gfxUtil = org.eclipse.rwt.GraphicsUtil;
         var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
         var widget = this._createWidget();
         widget.setShadow( [ false, 3, 5, 0, 0, "#000000", 1 ] );
-        testUtil.flush();
+        TestUtil.flush();
         var shape = widget._gfxData.shadowShape;
         var expected1;
         var expected2;
@@ -746,7 +746,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
         assertEquals( expected1, this._getPath( shape ) );
         widget.setWidth( 120 );
         widget.setHeight( 150 );
-        testUtil.flush();
+        TestUtil.flush();
         assertEquals( expected2, this._getPath( shape ) );
         widget.destroy();
       }
@@ -757,25 +757,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       },
       "default" : function(){
         if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {  
-          var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+          var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
           var gfxUtil = org.eclipse.rwt.GraphicsUtil;
           var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
           var widget = this._createWidget();
           widget.setShadow( [ false, -3, -5, 4, 0, "#000000", 1 ] );
-          testUtil.flush();
+          TestUtil.flush();
           var canvas = widget._gfxCanvas;
           assertEquals( "108px", canvas.node.style.width );
           assertEquals( "109px", canvas.node.style.height );
           assertEquals( "-7px", canvas.node.style.left );
           assertEquals( "-9px", canvas.node.style.top );
           widget.setShadow( [ false, 3, 5, 2, 0, "#000000", 1 ] );
-          testUtil.flush();
+          TestUtil.flush();
           assertTrue( canvas.node.style.left == "0px" );
           assertTrue( canvas.node.style.top == "0px" );
           assertTrue( canvas.node.style.width == "105px" );
           assertTrue( canvas.node.style.height == "107px" );
           widget.setShadow( null );
-          testUtil.flush();
+          TestUtil.flush();
           assertTrue( canvas.node.style.left == "0px" );
           assertTrue( canvas.node.style.top == "0px" );
           assertTrue( canvas.node.style.width == "100%" );
@@ -791,13 +791,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
           var gfxUtil = org.eclipse.rwt.GraphicsUtil;
           var widget = this._createWidget();
           widget.setBorder( this.gfxBorder );
-          testUtil.flush();
+          TestUtil.flush();
           assertTrue( this.widgetContainsCanvas( widget ) );
           widget.setBorder( null );
-          testUtil.flush();
+          TestUtil.flush();
           assertFalse( this.widgetContainsCanvas( widget ) );
           widget.setWidth( 400 );
-          testUtil.flush();
+          TestUtil.flush();
           assertEquals( "400px", widget._getTargetNode().style.width );
           widget.destroy();
         }
@@ -807,16 +807,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     
     // See Bug 342311
     testPrepareShapeBug : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var button = new org.eclipse.rwt.widgets.Button( "push" );
       var gfxBorder = new org.eclipse.rwt.Border( 1, "rounded", "black", 3 )
       button.setText( "Hello World!" );
       button.addToDocument();
       button.setBackgroundGradient( null );
       button.setBorder( gfxBorder );
-      testUtil.flush();
+      TestUtil.flush();
       button.setBorder( null );
-      testUtil.flush();
+      TestUtil.flush();
       button.setBackgroundGradient( this.gradient );
       // succeeds by not crashing
       button.destroy();
@@ -838,13 +838,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     },
 
     _createWidget : function( noFlush ) {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var result = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
       result.addToDocument();
       result.setLocation( 0, 0 );
       result.setDimension( 100, 100 );
       if( !noFlush ) {
-        testUtil.flush();
+        TestUtil.flush();
       }
       return result;
     },

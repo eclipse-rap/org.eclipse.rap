@@ -103,9 +103,9 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
         // NOTE : Prefered when keypress might not be fired, e.g. browser shortcuts that
         //        are not or can not be prevented/canceled. Key might not repeat in that case.
         //        Not to be used when charcode might be unkown (e.g. shift + char, special char)-
-        var eventUtil = org.eclipse.rwt.EventHandlerUtil;
-        var result =    eventUtil.isNonPrintableKeyCode( keyCode )
-                     || eventUtil.isSpecialKeyCode( keyCode );
+        var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+        var result =    EventHandlerUtil.isNonPrintableKeyCode( keyCode )
+                     || EventHandlerUtil.isSpecialKeyCode( keyCode );
         if( !result && ( domEvent.altKey || domEvent.ctrlKey ) ) {
           result = this._isAlphaNumeric( keyCode );
         }

@@ -15,8 +15,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
   members : {
 
     testCreateScrolledCompositeByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -27,8 +27,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof org.eclipse.swt.custom.ScrolledComposite );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -41,8 +41,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
 
     testSetBoundsByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -54,8 +54,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
           "bounds" : [ 1, 2, 3, 4 ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 1, widget.getLeft() );
       assertEquals( 2, widget.getTop() );
       assertEquals( 3, widget.getWidth() );
@@ -67,8 +67,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
 
     testSetOriginByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -80,8 +80,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
           "origin" : [ 1, 2 ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 1, widget._horzScrollBar.getValue() );
       assertEquals( 2, widget._vertScrollBar.getValue() );
       shell.destroy();
@@ -89,8 +89,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
 
     testSetShowFocusedControlByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -102,16 +102,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
           "showFocusedControl" : true
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._showFocusedControl );
       shell.destroy();
       widget.destroy();
     },
 
     testSetScrollBarsVisibleByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -123,8 +123,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
           "scrollBarsVisible" : [ false, false ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertFalse( widget._horzScrollBar.getDisplay() );
       assertFalse( widget._vertScrollBar.getDisplay() );
       shell.destroy();
@@ -132,8 +132,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
 
     testSetHasSelectionListenerByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -144,16 +144,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
           "parent" : "w2"
         }
       } );
-      testUtil.protocolListen( "w3", { "scrollBarsSelection" : true } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      TestUtil.protocolListen( "w3", { "scrollBarsSelection" : true } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
       widget.destroy();
     },
 
     testSetParent : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var composite = this._createComposite();
       wm.add( composite, "w3", true );
@@ -170,7 +170,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
     
     testBasicLayout : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = this._createComposite();
       var client = composite._clientArea;
       var hbar = composite._horzScrollBar;
@@ -179,9 +179,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       assertIdentical( composite, client.getParent() );
       assertIdentical( composite, hbar.getParent() );
       assertIdentical( composite, vbar.getParent() );
-      var clientBounds = testUtil.getElementBounds( client.getElement() );
-      var hbarBounds = testUtil.getElementBounds( hbar.getElement() );
-      var vbarBounds = testUtil.getElementBounds( vbar.getElement() );
+      var clientBounds = TestUtil.getElementBounds( client.getElement() );
+      var hbarBounds = TestUtil.getElementBounds( hbar.getElement() );
+      var vbarBounds = TestUtil.getElementBounds( vbar.getElement() );
       assertEquals( 0, clientBounds.left );
       assertEquals( 0, clientBounds.top );
       assertEquals( barWidth, clientBounds.right );
@@ -196,7 +196,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
     
     testHideNativeScrollbars : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = this._createComposite();
       var client = composite._clientArea;
       var hbar = composite._horzScrollBar;
@@ -204,8 +204,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var barWidth = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
       assertEquals( "scroll", client._getTargetNode().style.overflow );
       assertEquals( "hidden", client.getElement().style.overflow );
-      var elementBounds = testUtil.getElementBounds( client.getElement() );
-      var targetBounds = testUtil.getElementBounds( client._getTargetNode() );
+      var elementBounds = TestUtil.getElementBounds( client.getElement() );
+      var targetBounds = TestUtil.getElementBounds( client._getTargetNode() );
       if( org.eclipse.rwt.Client.isNewMshtml() ) {
         assertEquals( elementBounds.width + ( barWidth * 2 ), targetBounds.width );
         assertEquals( elementBounds.height + ( barWidth * 2 ), targetBounds.height );
@@ -217,37 +217,37 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
             
     testScrollBarVisibility : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = this._createComposite();
       composite.setScrollBarsVisible( false, false );
-      testUtil.flush()
+      TestUtil.flush()
       assertFalse( this._isScrollbarVisible( composite, true ) );
       assertFalse( this._isScrollbarVisible( composite, false ) );
       composite.setScrollBarsVisible( true, false );
-      testUtil.flush()
+      TestUtil.flush()
       assertTrue( this._isScrollbarVisible( composite, true ) );
       assertFalse( this._isScrollbarVisible( composite, false ) );
       composite.setScrollBarsVisible( false, true );
-      testUtil.flush()
+      TestUtil.flush()
       assertFalse( this._isScrollbarVisible( composite, true ) );
       assertTrue( this._isScrollbarVisible( composite, false ) );
       composite.setScrollBarsVisible( true, true );
-      testUtil.flush()
+      TestUtil.flush()
       assertTrue( this._isScrollbarVisible( composite, true ) );
       assertTrue( this._isScrollbarVisible( composite, false ) );
       composite.destroy();
     },
     
     testRelayoutOnScrollBarShowHide : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = this._createComposite();
       composite.setScrollBarsVisible( false, true );
-      testUtil.flush();
+      TestUtil.flush();
       var client = composite._clientArea;
-      var clientBounds = testUtil.getElementBounds( client.getElement() );
+      var clientBounds = TestUtil.getElementBounds( client.getElement() );
       composite.setScrollBarsVisible( true, false );
-      testUtil.flush();
-      newClientBounds = testUtil.getElementBounds( client.getElement() );
+      TestUtil.flush();
+      newClientBounds = TestUtil.getElementBounds( client.getElement() );
       assertTrue( clientBounds.width < newClientBounds.width );
       assertTrue( clientBounds.height > newClientBounds.height );
       composite.destroy();
@@ -287,7 +287,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
 
     testDispose: function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = this._createComposite();
       this._setScrollDimension( composite, 200, 200 );
       composite.setHBarSelection( 10 );
@@ -297,7 +297,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var vbar = composite._vertScrollBar;
       var scrollNode = clientArea._getTargetNode();
       composite.destroy();
-      testUtil.flush();
+      TestUtil.flush();
       assertNull( composite._horzScrollBar );
       assertNull( composite._vertScrollBar );
       assertNull( composite._clientArea );
@@ -327,12 +327,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
 
     testInitialPosition : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = this._createComposite( true );
       composite.setHBarSelection( 10 );
       composite.setVBarSelection( 20 );
       this._setScrollDimension( composite, 200, 200, true );
-      testUtil.flush();
+      TestUtil.flush();
       var position = this._getScrollPosition( composite );
       assertEquals( [ 10, 20 ], position );
       composite.destroy();      
@@ -344,10 +344,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
 
     testSyncScrollBars : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = this._createComposite();
       this._setScrollDimension( composite, 200, 200 );
-      testUtil.prepareTimerUse();
+      TestUtil.prepareTimerUse();
       composite.setHasSelectionListener( true );
       composite._clientArea.setScrollLeft( 10 ); 
       composite._clientArea.setScrollTop( 20 );
@@ -358,53 +358,53 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
 
     testSendChanges : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = this._createComposite();
       this._setScrollDimension( composite, 200, 200 );
-      testUtil.prepareTimerUse();
+      TestUtil.prepareTimerUse();
       composite.setHasSelectionListener( true );
       org.eclipse.swt.WidgetManager.getInstance().add( composite, "w3" );
       // set directly, otherwise the changes are not sent
       composite._clientArea.setScrollLeft( 10 ); 
       composite._clientArea.setScrollTop( 20 );
       composite._onscroll( {} ); // The dom event would be fired after the test
-      testUtil.forceTimerOnce();
-      assertEquals( 1, testUtil.getRequestsSend() );
-      var msg = testUtil.getMessage();
+      TestUtil.forceTimerOnce();
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var msg = TestUtil.getMessage();
       assertTrue( msg.indexOf( "w3.horizontalBar.selection=10" ) != -1 );
       assertTrue( msg.indexOf( "w3.verticalBar.selection=20" ) != -1 );      
       composite.destroy();
     },
 
     testBlockScrolling : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = this._createComposite();
       this._setScrollDimension( composite, 200, 200 );
       composite.setHBarSelection( 10 );
       composite.setVBarSelection( 20 );
       var position = this._getScrollPosition( composite );
       assertEquals( [ 10, 20 ], position );      
-      testUtil.prepareTimerUse();
+      TestUtil.prepareTimerUse();
       composite.setHasSelectionListener( true );
       var child = new qx.ui.basic.Terminator();
       child.setParent( composite._clientArea );
       child.setLeft( 0 );
       child.setTop( 0 );
-      testUtil.flush();
+      TestUtil.flush();
       child.focus();
       composite._clientArea.setScrollLeft( 50 );
       composite._clientArea.setScrollTop( 70 );
       composite._onscroll( {} );
-      testUtil.forceTimerOnce();
-      assertEquals( 0, testUtil.getRequestsSend() );
+      TestUtil.forceTimerOnce();
+      assertEquals( 0, TestUtil.getRequestsSend() );
       var position = this._getScrollPosition( composite );
       assertEquals( [ 10, 20 ], position );      
       composite.destroy();      
     },
 
     testNoScrollStyle : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.prepareTimerUse();
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.prepareTimerUse();
       var composite = this._createComposite();
       composite.setHasSelectionListener( true );
       this._setScrollDimension( composite, 200, 200 );
@@ -412,34 +412,34 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       composite._clientArea.setScrollLeft( 50 );
       composite._clientArea.setScrollTop( 70 );
       composite._onscroll( {} );
-      testUtil.forceTimerOnce();
-      assertEquals( 0, testUtil.getRequestsSend() );
+      TestUtil.forceTimerOnce();
+      assertEquals( 0, TestUtil.getRequestsSend() );
       var position = this._getScrollPosition( composite );
       assertEquals( [ 0, 0 ], position );      
       composite.destroy();      
     },
 
     testOnlyHScrollStyle : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.prepareTimerUse();
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.prepareTimerUse();
       var composite = this._createComposite();
       composite.setHasSelectionListener( true );
       this._setScrollDimension( composite, 200, 200 );
       composite.setScrollBarsVisible( true, false );
-      testUtil.flush();
+      TestUtil.flush();
       composite._clientArea.setScrollLeft( 50 );
       composite._clientArea.setScrollTop( 70 );
       composite._onscroll( {} );
       var position = this._getScrollPosition( composite );
       assertEquals( [ 50, 0 ], position );
-      testUtil.forceTimerOnce();
-      assertEquals( 1, testUtil.getRequestsSend() );
+      TestUtil.forceTimerOnce();
+      assertEquals( 1, TestUtil.getRequestsSend() );
       composite.destroy();      
     },
 
     testOnlyVScrollStyle : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.prepareTimerUse();
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.prepareTimerUse();
       var composite = this._createComposite();
       composite.setHasSelectionListener( true );
       this._setScrollDimension( composite, 200, 200 );
@@ -447,8 +447,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       composite._clientArea.setScrollLeft( 50 );
       composite._clientArea.setScrollTop( 70 );
       composite._onscroll( {} );
-      testUtil.forceTimerOnce();
-      assertEquals( 1, testUtil.getRequestsSend() );
+      TestUtil.forceTimerOnce();
+      assertEquals( 1, TestUtil.getRequestsSend() );
       var position = this._getScrollPosition( composite );
       assertEquals( [ 0, 70 ], position );      
       composite.destroy();      
@@ -457,7 +457,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     testAddMultiple : function() {
       // Setting multiple children is possible, but not supported.
       // This just ensures there are no bad errors
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = this._createComposite();
       var child1 = new qx.ui.basic.Terminator();
       var child2 = new qx.ui.basic.Terminator();
@@ -475,7 +475,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
     
     testResize : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = this._createComposite();
       var client = composite._clientArea;
       var hbar = composite._horzScrollBar;
@@ -483,8 +483,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var barWidth = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
       assertEquals( "scroll", client._getTargetNode().style.overflow );
       assertEquals( "hidden", client.getElement().style.overflow );
-      var elementBounds = testUtil.getElementBounds( client.getElement() );
-      var targetBounds = testUtil.getElementBounds( client._getTargetNode() );
+      var elementBounds = TestUtil.getElementBounds( client.getElement() );
+      var targetBounds = TestUtil.getElementBounds( client._getTargetNode() );
       if( org.eclipse.rwt.Client.isNewMshtml() ) {
         assertEquals( elementBounds.width + ( barWidth * 2 ), targetBounds.width );
         assertEquals( elementBounds.height + ( barWidth * 2 ), targetBounds.height );
@@ -495,16 +495,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       composite.setWidth( 200 );
       composite.setHeight( 200 );
       composite.setScrollBarsVisible( false, false );
-      testUtil.flush();
-      var elementBounds = testUtil.getElementBounds( client.getElement() );
-      var targetBounds = testUtil.getElementBounds( client._getTargetNode() );
+      TestUtil.flush();
+      var elementBounds = TestUtil.getElementBounds( client.getElement() );
+      var targetBounds = TestUtil.getElementBounds( client._getTargetNode() );
       assertEquals( elementBounds.width, targetBounds.width );
       assertEquals( elementBounds.height, targetBounds.height );
       composite.destroy();
     },
 
     testSetContentLocationByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var processor = org.eclipse.rwt.protocol.Processor;
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var composite = this._createComposite();
@@ -529,7 +529,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     // Helper
 
     _createComposite : function( noflush ) {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = new org.eclipse.swt.custom.ScrolledComposite();
       composite.setLeft( 10 );
       composite.setTop( 10 );
@@ -537,7 +537,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       composite.setHeight( 100 );
       composite.addToDocument();
       if( noflush !== true ) {
-        testUtil.flush();
+        TestUtil.flush();
       }
       return composite;
     },
@@ -558,7 +558,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
     
     _setScrollDimension : function( composite, width, height, noflush ) {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var child;
       if( composite._content ) {
         child = composite._content;
@@ -573,7 +573,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
         child.setHeight( height );
       }
       if( noflush !== true ) {
-        testUtil.flush();
+        TestUtil.flush();
       }
     }
     

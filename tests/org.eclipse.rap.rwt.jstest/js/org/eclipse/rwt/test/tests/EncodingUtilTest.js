@@ -19,10 +19,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EncodingUtilTest", {
     // Tests ported from WidgetLCAUtil_Test#testEscapeTest
     
     testEscapeTextWithNull : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       try {
-        encodingUtil.escapeText( null, true );
-        encodingUtil.escapeText( null, true );
+        EncodingUtil.escapeText( null, true );
+        EncodingUtil.escapeText( null, true );
         fail();
       } catch( e ) {
         // expected
@@ -30,180 +30,180 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EncodingUtilTest", {
     },
     
     testEscapeTextNoChanges : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      assertEquals( "Test", encodingUtil.escapeText( "Test", false ) );
-      assertEquals( "Test", encodingUtil.escapeText( "Test", true ) );
-      assertEquals( "", encodingUtil.escapeText( "", false ) );
-      assertEquals( "", encodingUtil.escapeText( "", true ) );
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      assertEquals( "Test", EncodingUtil.escapeText( "Test", false ) );
+      assertEquals( "Test", EncodingUtil.escapeText( "Test", true ) );
+      assertEquals( "", EncodingUtil.escapeText( "", false ) );
+      assertEquals( "", EncodingUtil.escapeText( "", true ) );
     },
 
     testEscapeBrackets : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      assertEquals( "&lt;", encodingUtil.escapeText( "<", false ) );
-      assertEquals( "&gt;", encodingUtil.escapeText( ">", false ) );
-      assertEquals( "&lt;&lt;&lt;", encodingUtil.escapeText( "<<<", false ) );
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      assertEquals( "&lt;", EncodingUtil.escapeText( "<", false ) );
+      assertEquals( "&gt;", EncodingUtil.escapeText( ">", false ) );
+      assertEquals( "&lt;&lt;&lt;", EncodingUtil.escapeText( "<<<", false ) );
       var expected = "&lt;File &gt;";
-      assertEquals( expected, encodingUtil.escapeText( "<File >", false ) );
-      assertEquals( expected, encodingUtil.escapeText( "<File >", true ) );
+      assertEquals( expected, EncodingUtil.escapeText( "<File >", false ) );
+      assertEquals( expected, EncodingUtil.escapeText( "<File >", true ) );
     },
 
     testEscapeAmps : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      assertEquals( "&amp;&amp;&amp;File", encodingUtil.escapeText( "&&&File", false ) );
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      assertEquals( "&amp;&amp;&amp;File", EncodingUtil.escapeText( "&&&File", false ) );
     },
 
     testEscapeMnemonics : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      assertEquals( "Open &amp; Close", encodingUtil.escapeText( "Open && Close", true ) );
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      assertEquals( "Open &amp; Close", EncodingUtil.escapeText( "Open && Close", true ) );
       assertEquals( "E&lt;s&gt;ca'pe&quot; &amp; me",
-                    encodingUtil.escapeText( "&E<s>ca'pe\" && me", true ) );
+                    EncodingUtil.escapeText( "&E<s>ca'pe\" && me", true ) );
       // Explicitly call it twice to check that _mnemonicFound is reset
       assertEquals( "E&lt;s&gt;ca'pe&quot; &amp; me",
-                    encodingUtil.escapeText( "&E<s>ca'pe\" && me", true ) );
+                    EncodingUtil.escapeText( "&E<s>ca'pe\" && me", true ) );
     },
 
     testEscapeQuotes : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      assertEquals( "&quot;File&quot;", encodingUtil.escapeText( "\"File\"", false ) );
-      assertEquals( "&quot;&quot;File", encodingUtil.escapeText( "\"\"File", false ) );
-      assertEquals( "&quot;File&quot;", encodingUtil.escapeText( "\"File\"", true ) );
-      assertEquals( "&quot;&quot;File", encodingUtil.escapeText( "\"\"File", true ) );
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      assertEquals( "&quot;File&quot;", EncodingUtil.escapeText( "\"File\"", false ) );
+      assertEquals( "&quot;&quot;File", EncodingUtil.escapeText( "\"\"File", false ) );
+      assertEquals( "&quot;File&quot;", EncodingUtil.escapeText( "\"File\"", true ) );
+      assertEquals( "&quot;&quot;File", EncodingUtil.escapeText( "\"\"File", true ) );
     },
 
     testDontEscapeBackslash: function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      assertEquals( "Test\\", encodingUtil.escapeText( "Test\\", false ) );
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      assertEquals( "Test\\", EncodingUtil.escapeText( "Test\\", false ) );
     },
 
     testTruncateAtZero : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       assertEquals( String.fromCharCode( 0 ), "\000" );
-      assertEquals( "foo ", encodingUtil.escapeText( "foo \000 bar", false ) );
-      assertEquals( "foo", encodingUtil.escapeText( "foo\000", false ) );
-      assertEquals( "", encodingUtil.escapeText( "\000foo", false ) );
-      assertEquals( "&lt;foo", encodingUtil.escapeText( "<foo\000>", false ) );
-      assertEquals( "&lt;foo", encodingUtil.escapeText( "<foo\000>", true ) );
+      assertEquals( "foo ", EncodingUtil.escapeText( "foo \000 bar", false ) );
+      assertEquals( "foo", EncodingUtil.escapeText( "foo\000", false ) );
+      assertEquals( "", EncodingUtil.escapeText( "\000foo", false ) );
+      assertEquals( "&lt;foo", EncodingUtil.escapeText( "<foo\000>", false ) );
+      assertEquals( "&lt;foo", EncodingUtil.escapeText( "<foo\000>", true ) );
     },
     
     /////////////////////////////////////////////////////////
     // Tests ported from EncodingUtilTest#testReplaceNewLines
 
     testReplaceNewLines : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var stringToReplace = "First line.\nSecond line.\nThird line.";
       var expected = "First line.\\nSecond line.\\nThird line.";
-      assertEquals( expected, encodingUtil.replaceNewLines( stringToReplace ) );
+      assertEquals( expected, EncodingUtil.replaceNewLines( stringToReplace ) );
     },
 
     testReplaceCarriageReturns : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var stringToReplace = "First line.\rSecond line.\rThird line.";
       var expected = "First line.\\nSecond line.\\nThird line.";
-      assertEquals( expected, encodingUtil.replaceNewLines( stringToReplace ) );
+      assertEquals( expected, EncodingUtil.replaceNewLines( stringToReplace ) );
     },
 
     testReplaceDOSNewLines : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var stringToReplace = "First line.\r\nSecond line.\r\nThird line.";
       var expected = "First line.\\nSecond line.\\nThird line.";
-      assertEquals( expected, encodingUtil.replaceNewLines( stringToReplace ) );
+      assertEquals( expected, EncodingUtil.replaceNewLines( stringToReplace ) );
     },
 
     testReplaceNewLinesWithBlank : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var stringToReplace = "First line.\r\nSecond line.\r\nThird line.";
       var expected = "First line. Second line. Third line.";
-      assertEquals( expected, encodingUtil.replaceNewLines( stringToReplace, " " ) );
+      assertEquals( expected, EncodingUtil.replaceNewLines( stringToReplace, " " ) );
     },
     
     ////////////////////////////////////////////////////////////
     // Tests ported from EncodingUtilTest#testReplaceWhiteSpaces
 
     testDontReplaceSingleWhiteSpaces : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var stringToEscape = "test1 test2";
       var expected = "test1 test2";
-      assertEquals( expected, encodingUtil.replaceWhiteSpaces( stringToEscape ) );
+      assertEquals( expected, EncodingUtil.replaceWhiteSpaces( stringToEscape ) );
     },
 
     testReplaceDoubleWhiteSpaces : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var stringToEscape = "test1  test2";
       var expected = "test1&nbsp; test2";
-      assertEquals( expected, encodingUtil.replaceWhiteSpaces( stringToEscape ) );
+      assertEquals( expected, EncodingUtil.replaceWhiteSpaces( stringToEscape ) );
     },
 
     testReplaceMultipleWhiteSpaces : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var stringToEscape = "test1   test2";
       var expected = "test1&nbsp;&nbsp; test2";
-      assertEquals( expected, encodingUtil.replaceWhiteSpaces( stringToEscape ) );
+      assertEquals( expected, EncodingUtil.replaceWhiteSpaces( stringToEscape ) );
     },
 
     testReplaceStartingWhiteSpace : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var stringToEscape = " test";
       var expected = "&nbsp;test";
-      assertEquals( expected, encodingUtil.replaceWhiteSpaces( stringToEscape ) );
+      assertEquals( expected, EncodingUtil.replaceWhiteSpaces( stringToEscape ) );
     },
 
     testReplaceStartingAndEndingWhiteSpaces : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var stringToEscape = "  test  ";
       var expected = "&nbsp; test&nbsp;&nbsp;";
-      assertEquals( expected, encodingUtil.replaceWhiteSpaces( stringToEscape ) );
+      assertEquals( expected, EncodingUtil.replaceWhiteSpaces( stringToEscape ) );
     },
     
     /////////////////////////////////////////////////////////////////////
     // Tests ported from EncodingUtilTest#testEscapeLeadingTrailingSpaces
     
     testEscapeBothLeadingTrailingSpaces : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var stringToEscape = "    All rights reserved.   ";
       var expected = "&nbsp;&nbsp;&nbsp;&nbsp;All rights reserved.&nbsp;&nbsp;&nbsp;";
-      assertEquals( expected, encodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
+      assertEquals( expected, EncodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
     },
 
     testEscapeOnlyTrailingSpaces : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var stringToEscape = "All rights reserved. ";
       var expected = "All rights reserved.&nbsp;";
-      assertEquals( expected, encodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
+      assertEquals( expected, EncodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
     },
 
     testEscapeOnlyLeadingSpaces : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var stringToEscape = "  All rights reserved.";
       var expected = "&nbsp;&nbsp;All rights reserved.";
-      assertEquals( expected, encodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
+      assertEquals( expected, EncodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
     },
 
     testEscapeNoLeadingTrailingSpaces : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var stringToEscape = "All rights reserved.";
       var expected = "All rights reserved.";
-      assertEquals( expected, encodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
+      assertEquals( expected, EncodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
     },
 
     testEscapeLeadingTrailingSpacesWithNewLines : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var stringToEscape = " \n  All rights reserved. \n ";
       var expected = "&nbsp;\n  All rights reserved. \n&nbsp;";
-      assertEquals( expected, encodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
+      assertEquals( expected, EncodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
     },
 
     testEscapeLeadingTrailingSpacesWithWhitespaceString : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var stringToEscape = "  ";
       var expected = "&nbsp;&nbsp;";
-      assertEquals( expected, encodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
+      assertEquals( expected, EncodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
     },
 
     testEscapeLeadingTrailingSpacesWithEmptyString : function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var stringToEscape = "";
       var expected = "";
-      assertEquals( expected, encodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
+      assertEquals( expected, EncodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
     }
 
   }

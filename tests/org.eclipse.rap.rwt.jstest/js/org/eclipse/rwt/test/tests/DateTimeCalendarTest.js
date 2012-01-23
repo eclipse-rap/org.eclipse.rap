@@ -38,8 +38,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
                           "Sat" ],
 
     testCreateDateTimeDateByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
       assertTrue( widget instanceof org.eclipse.swt.widgets.DateTimeCalendar );
       assertIdentical( shell, widget.getParent() );
@@ -54,47 +54,47 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
     },
 
     testSetYearByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
-      testUtil.protocolSet( "w3", { "year" : 2000 } );
+      TestUtil.protocolSet( "w3", { "year" : 2000 } );
       assertEquals( 2000, widget._calendar.getDate().getFullYear() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetMonthByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
-      testUtil.protocolSet( "w3", { "month" : 6 } );
+      TestUtil.protocolSet( "w3", { "month" : 6 } );
       assertEquals( 6, widget._calendar.getDate().getMonth() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetDayByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
-      testUtil.protocolSet( "w3", { "day" : 10 } );
+      TestUtil.protocolSet( "w3", { "day" : 10 } );
       assertEquals( 10, widget._calendar.getDate().getDate() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetHasSelectionListenerByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
-      testUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "selection" : true } );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
       widget.destroy();
     },
 
     testCreateDispose : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       org.eclipse.swt.widgets.Calendar.CELL_WIDTH = 24;
       org.eclipse.swt.widgets.Calendar.CELL_HEIGHT = 16;
       var months = [
@@ -122,10 +122,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
       calendar.setYear( 2010 );
       calendar.setMonth( 9 );
       calendar.setDay( 27 );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( calendar.isSeeable() );
       calendar.destroy();
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( calendar.isDisposed() );
     },
 

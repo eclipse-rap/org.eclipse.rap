@@ -107,7 +107,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.PerformanceTest", {
     // Helper
 
     _createDummyTarget : function( fakeProperties ) {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -116,7 +116,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.PerformanceTest", {
       dummy.setDimension( 10, 10 );
       dummy.addToDocument();
       widgetManager.add( dummy, "dummyId", true, "dummyType" );
-      testUtil.flush();
+      TestUtil.flush();
       var props = [ "textColor", "left", "top", "label" ];
       for( var i = 0; i < fakeProperties; i++ ) {
         props.push( "prop" + i );

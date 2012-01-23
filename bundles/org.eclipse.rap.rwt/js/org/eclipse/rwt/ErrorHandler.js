@@ -152,10 +152,10 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       var doc = qx.ui.core.ClientDocument.getInstance();
       doc.setSelectable( true );
       if( org.eclipse.rwt.Client.isGecko() ) {
-        var util = org.eclipse.rwt.EventHandlerUtil;
+        var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
         qx.html.EventRegistration.removeEventListener( document.documentElement,
                                                        "mousedown",
-                                                       util._ffMouseFixListener );
+                                                       EventHandlerUtil._ffMouseFixListener );
       }
     }
 

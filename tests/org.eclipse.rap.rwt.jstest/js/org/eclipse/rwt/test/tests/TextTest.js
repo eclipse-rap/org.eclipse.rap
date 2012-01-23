@@ -16,8 +16,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
   members : {
 
     testCreateSingleTextByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -28,8 +28,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof org.eclipse.rwt.widgets.Text );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -44,8 +44,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testCreateMultiTextByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -56,8 +56,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_MULTI" ) );
       assertEquals( "text-area", widget.getAppearance() );
       assertFalse( widget.getWrap() );
@@ -66,8 +66,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testCreateMultiTextWithWarpByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -78,8 +78,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_MULTI" ) );
       assertEquals( "text-area", widget.getAppearance() );
       assertTrue( widget.getWrap() );
@@ -88,8 +88,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testCreatePasswordTextByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -101,8 +101,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "echoChar" : "?"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_PASSWORD" ) );
       assertEquals( "text-field", widget.getAppearance() );
       assertEquals( "password", widget._inputType );
@@ -111,8 +111,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testSetMessageByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -124,8 +124,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "message" : "some text"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       var messageLabel = widget.getUserData( "messageLabel" );
       assertTrue( messageLabel instanceof qx.ui.basic.Atom );
       assertEquals( "text-field-message", messageLabel.getAppearance() );
@@ -136,8 +136,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testSetMessageOnMultiByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -149,16 +149,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "message" : "some text"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertNull( widget.getUserData( "messageLabel" ) );
       shell.destroy();
       widget.destroy();
     },
 
     testDestroySingleTextByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -170,8 +170,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "message" : "some text"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       var messageLabel = widget.getUserData( "messageLabel" );
       processor.processOperation( {
         "target" : "w3",
@@ -183,8 +183,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testSetEchoCharByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -196,16 +196,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "echoChar" : "?"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( "password", widget._inputType );
       shell.destroy();
       widget.destroy();
     },
 
     testSetEchoCharOnMultiByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -217,16 +217,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "echoChar" : "?"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._inputType !== "password" );
       shell.destroy();
       widget.destroy();
     },
 
     testSetEditableByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -238,16 +238,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "editable" : false
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.getReadOnly() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetSelectionByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -259,8 +259,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "selection" : [ 1, 3 ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 1, widget.getUserData( "selectionStart" ) );
       assertEquals( 2, widget.getUserData( "selectionLength" ) );
       shell.destroy();
@@ -268,8 +268,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testSetTextLimitByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -281,16 +281,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "textLimit" : 30
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 30, widget.getMaxLength() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetTextLimitOnMultiByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -302,16 +302,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "textLimit" : 30
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( 30, widget.getMaxLength() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetHasSelectionListenerByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -322,17 +322,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      testUtil.protocolListen( "w3", { "selection" : true } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      TestUtil.protocolListen( "w3", { "selection" : true } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasSelectionListener() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetHasSelectionListenerOnMultiByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -343,18 +343,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      testUtil.protocolListen( "w3", { "selection" : true } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      TestUtil.protocolListen( "w3", { "selection" : true } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertFalse( widget.hasSelectionListener() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetHasSelectionListenerWithDefaultButtonByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w4",
@@ -365,7 +365,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      var defaultButton = objectManager.getObject( "w4" );
+      var defaultButton = ObjectManager.getObject( "w4" );
       shell.setDefaultButton( defaultButton );
       processor.processOperation( {
         "target" : "w3",
@@ -376,17 +376,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      testUtil.protocolListen( "w3", { "selection" : true } );
-      testUtil.flush();
-      var widget = objectManager.getObject( "w3" );
+      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.flush();
+      var widget = ObjectManager.getObject( "w3" );
       assertFalse( widget.hasSelectionListener() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetHasModifyListenerByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -397,9 +397,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      testUtil.protocolListen( "w3", { "modify" : true } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      TestUtil.protocolListen( "w3", { "modify" : true } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasModifyListener() );
       assertTrue( org.eclipse.swt.TextUtil.hasVerifyOrModifyListener( widget ) );
       shell.destroy();
@@ -407,8 +407,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testSetHasVerifyListenerByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -419,9 +419,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      testUtil.protocolListen( "w3", { "verify" : true } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      TestUtil.protocolListen( "w3", { "verify" : true } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasVerifyListener() );
       assertTrue( org.eclipse.swt.TextUtil.hasVerifyOrModifyListener( widget ) );
       shell.destroy();
@@ -429,8 +429,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testSetTextByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -442,16 +442,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "text" : "foo\nbar"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( "foo bar", widget.getValue() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetMultiTextByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -463,8 +463,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "text" : "foo\nbar"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertEquals( "foo\nbar", widget.getValue() );
       shell.destroy();
       widget.destroy();
@@ -472,13 +472,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
     testRenderPaddingWithRoundedBorder : function() {
       if( !org.eclipse.rwt.Client.supportsCss3() ) {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var text = new org.eclipse.rwt.widgets.Text( false );
         org.eclipse.swt.TextUtil.initialize( text );
         text.setPadding( 3 );
         text.setBorder( new org.eclipse.rwt.Border( 1, "rounded", "black", 0 ) );
         text.addToDocument();
-        testUtil.flush();
+        TestUtil.flush();
         assertEquals( "", text._style.paddingLeft );
         assertEquals( "3px", text._innerStyle.paddingLeft );
         text.destroy();
@@ -486,13 +486,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testSetSelection : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.prepareTimerUse();
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.prepareTimerUse();
       var text = new org.eclipse.rwt.widgets.Text( false );
       org.eclipse.swt.TextUtil.initialize( text );
       text.setValue( "asdfjkloe" );
       text.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       text.focus();
       org.eclipse.swt.TextUtil.setSelection( text, 2, 3 );
       assertEquals( 2, text.getSelectionStart() );
@@ -501,15 +501,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
     
     testSetSelectionBeforeAppear : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.prepareTimerUse();
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.prepareTimerUse();
       var text = new org.eclipse.rwt.widgets.Text( false );
       org.eclipse.swt.TextUtil.initialize( text );
       text.setValue( "asdfjkloe" );
       org.eclipse.swt.TextUtil.setSelection( text, 2, 3 );
       text.addToDocument();
       text.focus();
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( 2, text.getSelectionStart() );
       assertEquals( 3, text.getSelectionLength() );
       text.destroy();
@@ -517,128 +517,128 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     
 
     testCreateAsTextSetPasswordMode : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.prepareTimerUse();
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.prepareTimerUse();
       var text = new org.eclipse.rwt.widgets.Text( false );
       org.eclipse.swt.TextUtil.initialize( text );
       text.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( "text", text._inputType );
       assertEquals( "text", text._inputElement.type );
-      testUtil.clearTimerOnceLog();
+      TestUtil.clearTimerOnceLog();
       text.setPasswordMode( true );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( "password", text._inputType );
       assertEquals( "password", text._inputElement.type );
-      testUtil.clearTimerOnceLog();
+      TestUtil.clearTimerOnceLog();
       text.setPasswordMode( false );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( "text", text._inputType );
       assertEquals( "text", text._inputElement.type );
       text.setParent( null );
       text.destroy();
-      testUtil.flush();
-      testUtil.clearTimerOnceLog();
+      TestUtil.flush();
+      TestUtil.clearTimerOnceLog();
     },
 
     testCreateAsPasswordSetTextMode : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.prepareTimerUse();
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.prepareTimerUse();
       var text = new org.eclipse.rwt.widgets.Text( false );
       org.eclipse.swt.TextUtil.initialize( text );
       text.addToDocument();
-      testUtil.clearTimerOnceLog();
+      TestUtil.clearTimerOnceLog();
       text.setPasswordMode( true );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( "password", text._inputType );
       assertEquals( "password", text._inputElement.type );
-      testUtil.clearTimerOnceLog();
+      TestUtil.clearTimerOnceLog();
       text.setPasswordMode( false );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( "text", text._inputType );
       assertEquals( "text", text._inputElement.type );
-      testUtil.clearTimerOnceLog();
+      TestUtil.clearTimerOnceLog();
       text.setPasswordMode( true );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( "password", text._inputType );
       assertEquals( "password", text._inputElement.type );      
       text.setParent( null );
       text.destroy();
-      testUtil.flush();
-      testUtil.clearTimerOnceLog();
+      TestUtil.flush();
+      TestUtil.clearTimerOnceLog();
     },
     
     testValueSetPaswordMode : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.prepareTimerUse();
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.prepareTimerUse();
       var text = new org.eclipse.rwt.widgets.Text( false );
       org.eclipse.swt.TextUtil.initialize( text );
       text.addToDocument();
       text.setPasswordMode( true );
       text.setValue( "asdf" );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( "asdf", text.getValue() );
       assertEquals( "asdf", text.getComputedValue() );
       assertEquals( "asdf", text._inputElement.value );
       text.setPasswordMode( false );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( "asdf", text.getValue() );
       assertEquals( "asdf", text.getComputedValue() );
       assertEquals( "asdf", text._inputElement.value );
       text.setParent( null );
       text.destroy();
-      testUtil.flush();
-      testUtil.clearTimerOnceLog();
+      TestUtil.flush();
+      TestUtil.clearTimerOnceLog();
     },
     
     testSelectionSetPasswordMode : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.prepareTimerUse();
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.prepareTimerUse();
       var text = new org.eclipse.rwt.widgets.Text( false );
       org.eclipse.swt.TextUtil.initialize( text );
       text.setValue( "asdfjkloe" );
       text.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       text.setSelectionStart( 2 );
       text.setSelectionLength( 3 );
       assertEquals( 2, text.getSelectionStart() );
       assertEquals( 3, text.getSelectionLength() );
       text.setPasswordMode( false );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( 2, text.getSelectionStart() );
       assertEquals( 3, text.getSelectionLength() );
       text.setParent( null );
       text.destroy();
-      testUtil.flush();
-      testUtil.clearTimerOnceLog();
+      TestUtil.flush();
+      TestUtil.clearTimerOnceLog();
     },
     
     testCsssetPasswordMode : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.prepareTimerUse();
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.prepareTimerUse();
       var text = new org.eclipse.rwt.widgets.Text( false );
       org.eclipse.swt.TextUtil.initialize( text );
       text.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var oldCss = text._inputElement.style.cssText;
       text.setPasswordMode( true );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( oldCss, text._inputElement.style.cssText );
       text.setParent( null );
       text.destroy();
-      testUtil.flush();
-      testUtil.clearTimerOnceLog();
+      TestUtil.flush();
+      TestUtil.clearTimerOnceLog();
     },
     
     testCreateTextArea : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.prepareTimerUse();
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.prepareTimerUse();
       var text = new org.eclipse.rwt.widgets.Text( true );
       org.eclipse.swt.TextUtil.initialize( text );
       text.setPasswordMode( true ); // should be ignored
       text.setWrap( false ); 
       text.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       assertNull( text._inputType );
       assertEquals( "textarea", text._inputTag );
       assertEquals( "textarea", text._inputElement.tagName.toLowerCase() );
@@ -655,8 +655,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertTrue( wrapProperty == "soft" || wrapAttribute == "soft" );
       text.setParent( null );
       text.destroy();
-      testUtil.flush();
-      testUtil.clearTimerOnceLog();
+      TestUtil.flush();
+      TestUtil.clearTimerOnceLog();
     },
     
     testTextAreaMaxLength : qx.core.Variant.select( "qx.client", {
@@ -666,8 +666,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         // same call. In webkit it seems to fail randomly aswell.
       },
       "default" : function() {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        testUtil.prepareTimerUse();
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        TestUtil.prepareTimerUse();
         var text = new org.eclipse.rwt.widgets.Text( true );
         org.eclipse.swt.TextUtil.initialize( text );
         var changeLog = [];
@@ -676,7 +676,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         } );
         text.setValue( "0123456789" );
         text.addToDocument();
-        testUtil.flush();
+        TestUtil.flush();
         assertEquals( "0123456789", text.getValue() );
         assertEquals( "0123456789", text.getComputedValue() );
         text.setMaxLength( 5 );
@@ -703,20 +703,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         assertEquals( 5, text.getSelectionStart() );
         text.setParent( null );
         text.destroy();
-        testUtil.flush();
-        testUtil.clearTimerOnceLog();
+        TestUtil.flush();
+        TestUtil.clearTimerOnceLog();
       }
     } ),
 
     // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=330857 
     testGetSelectionWithLineBreakAtTheEnd : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.prepareTimerUse();
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.prepareTimerUse();
       var text = new org.eclipse.rwt.widgets.Text( true );
       org.eclipse.swt.TextUtil.initialize( text );
       text.setValue( "0123456789\r\n" );
       text.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       text.setFocused( true );
       text.setSelectionStart( 0 );
       text.setSelectionLength( 5 );
@@ -725,7 +725,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testKeyPressPropagation : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = new org.eclipse.swt.widgets.Composite();
       composite.setSpace( 0, 100, 0, 100 );
       var text = new org.eclipse.rwt.widgets.Text( false );
@@ -733,16 +733,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       org.eclipse.swt.TextUtil.initialize( text );
       text.setSpace( 0, 50, 0, 21 );
       composite.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       text.focus()
       var counter = 0;
       composite.addEventListener( "keypress", function( event ) {
         counter++
       } );
-      testUtil.keyDown( text._getTargetNode(), "Left" );
-      testUtil.keyDown( text._getTargetNode(), "Up" );
-      testUtil.keyDown( text._getTargetNode(), "Home" );
-      testUtil.keyDown( text._getTargetNode(), "x" );
+      TestUtil.keyDown( text._getTargetNode(), "Left" );
+      TestUtil.keyDown( text._getTargetNode(), "Up" );
+      TestUtil.keyDown( text._getTargetNode(), "Home" );
+      TestUtil.keyDown( text._getTargetNode(), "x" );
       assertEquals( 0, counter );
       text.destroy();
       composite.destroy();      
@@ -751,14 +751,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     testFirstInputIE : qx.core.Variant.select( "qx.client", {
       "default" : function() {},
       "mshtml" : function() {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        testUtil.prepareTimerUse();
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        TestUtil.prepareTimerUse();
         var text = new org.eclipse.rwt.widgets.Text( true );
         org.eclipse.swt.TextUtil.initialize( text );
         text.addToDocument();
-        testUtil.flush();
+        TestUtil.flush();
         assertEquals( " ", text._inputElement.value );
-        testUtil.forceTimerOnce();
+        TestUtil.forceTimerOnce();
         assertEquals( "", text._inputElement.value );          
         text.destroy();
       }
@@ -767,8 +767,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     testBoxShadowAndNonRoundedBorder : qx.core.Variant.select( "qx.client", {
       "default" : function() {},
       "mshtml" : function() {
-        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        testUtil.fakeAppearance( "text-field", {
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        TestUtil.fakeAppearance( "text-field", {
           "style" : function( states ) {
             return {
               "shadow" : [ false, 0, 0, 0, 0, "red", 0 ],
@@ -778,13 +778,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         } );
         var text = new org.eclipse.rwt.widgets.Text( true );
         text.addToDocument();
-        testUtil.flush();
+        TestUtil.flush();
         var border = text.getBorder();
         assertEquals( 3, border.getWidthTop() );
         assertEquals( "rounded", border.getStyle() );
         assertEquals( "green", border.getColor() );
         assertEquals( [ 0, 0, 0, 0 ], border.getRadii() );
-        testUtil.restoreAppearance();
+        TestUtil.restoreAppearance();
         text.destroy();
       }
     } )

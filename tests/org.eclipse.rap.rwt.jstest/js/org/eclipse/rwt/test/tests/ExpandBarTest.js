@@ -16,8 +16,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
   members : {
 
     testCreateExpandBarByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
       assertTrue( widget instanceof org.eclipse.swt.widgets.ExpandBar );
       assertIdentical( shell, widget.getParent() );
@@ -27,10 +27,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
     },
 
     testSetBottomSpacingBoundsByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      testUtil.protocolSet( "w3", { "bottomSpacingBounds"  : [ 1, 2, 3, 4] } );
+      TestUtil.protocolSet( "w3", { "bottomSpacingBounds"  : [ 1, 2, 3, 4] } );
       assertEquals( 1, widget._bottomSpacing.getLeft() );
       assertEquals( 2, widget._bottomSpacing.getTop() );
       assertEquals( 3, widget._bottomSpacing.getWidth() );
@@ -40,28 +40,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
     },
 
     testSetVScrollBarVisibleByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      testUtil.protocolSet( "w3", { "vScrollBarVisible"  : true } );
+      TestUtil.protocolSet( "w3", { "vScrollBarVisible"  : true } );
       assertTrue( widget._vertScrollBar.getDisplay() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetVScrollBarMaxByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      testUtil.protocolSet( "w3", { "vScrollBarMax"  : 35 } );
+      TestUtil.protocolSet( "w3", { "vScrollBarMax"  : 35 } );
       assertEquals( 35, widget._vertScrollBar.getMaximum() );
       shell.destroy();
       widget.destroy();
     },
 
     testCreateExpandItemByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
       var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
       assertTrue( item instanceof org.eclipse.swt.widgets.ExpandItem );
@@ -72,11 +72,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
     },
 
     testSetItemCustomVariantByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
       var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
-      testUtil.protocolSet( "w4", { "customVariant" : "variant_blue" } );
+      TestUtil.protocolSet( "w4", { "customVariant" : "variant_blue" } );
       assertTrue( item.hasState( "variant_blue" ) );
       shell.destroy();
       bar.destroy();
@@ -84,11 +84,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
     },
 
     testSetItemBoundsByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
       var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
-      testUtil.protocolSet( "w4", { "bounds" : [ 1, 2, 3, 4 ] } );
+      TestUtil.protocolSet( "w4", { "bounds" : [ 1, 2, 3, 4 ] } );
       assertEquals( 1, item.getLeft() );
       assertEquals( 2, item.getTop() );
       assertEquals( 3, item.getWidth() );
@@ -99,11 +99,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
     },
 
     testSetItemTextByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
       var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
-      testUtil.protocolSet( "w4", { "text" : "foo<>bar" } );
+      TestUtil.protocolSet( "w4", { "text" : "foo<>bar" } );
       assertEquals( "foo&lt;&gt;bar", item._text );
       shell.destroy();
       bar.destroy();
@@ -111,11 +111,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
     },
 
     testSetItemImageByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
       var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
-      testUtil.protocolSet( "w4", { "image" : [ "image.gif", 10, 20 ] } );
+      TestUtil.protocolSet( "w4", { "image" : [ "image.gif", 10, 20 ] } );
       assertEquals( "image.gif", item._image );
       shell.destroy();
       bar.destroy();
@@ -123,11 +123,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
     },
 
     testSetItemExpandedByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
       var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
-      testUtil.protocolSet( "w4", { "expanded" : true } );
+      TestUtil.protocolSet( "w4", { "expanded" : true } );
       assertTrue( item._expanded );
       shell.destroy();
       bar.destroy();
@@ -135,11 +135,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
     },
 
     testSetItemHeaderHeightByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
       var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
-      testUtil.protocolSet( "w4", { "headerHeight" : 12 } );
+      TestUtil.protocolSet( "w4", { "headerHeight" : 12 } );
       assertEquals( 12, item._headerHeight );
       shell.destroy();
       bar.destroy();

@@ -16,8 +16,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
   members : {
 
     testCreateTabFolderOnTopByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -28,8 +28,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof qx.ui.pageview.tabview.TabView );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -40,8 +40,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     },
 
     testCreateTabFolderOnBottomByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -52,8 +52,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
           "parent" : "w2"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof qx.ui.pageview.tabview.TabView );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -64,8 +64,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     },
 
     testSetSelectionByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
@@ -79,9 +79,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       var item1 = this._createTabItemByProtocol( "w4", "w3" );
       var item2 = this._createTabItemByProtocol( "w5", "w3" );
       var item3 = this._createTabItemByProtocol( "w6", "w3" );
-      testUtil.protocolSet( "w3", { "selection" : "w5" } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
+      TestUtil.protocolSet( "w3", { "selection" : "w5" } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
       assertFalse( item1.getChecked() );
       assertTrue( item2.getChecked() );
       assertFalse( item3.getChecked() );
@@ -93,15 +93,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     },
 
     testCreateTabItemByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
       assertTrue( item instanceof qx.ui.pageview.tabview.Button );
       assertIdentical( folder.getBar(), item.getParent() );
       assertNull( item.getUserData( "isControl") );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var page = objectManager.getObject( "w4pg" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var page = ObjectManager.getObject( "w4pg" );
       assertTrue( page instanceof qx.ui.pageview.tabview.Page );
       shell.destroy();
       folder.destroy();
@@ -109,28 +109,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     },
 
     testDestroyTabItemByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var page = objectManager.getObject( "w4pg" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var page = ObjectManager.getObject( "w4pg" );
       org.eclipse.rwt.protocol.Processor.processOperation( {
         "target" : "w4",
         "action" : "destroy"
       } );
-      testUtil.flush();
+      TestUtil.flush();
       assertTrue( item.isDisposed() );
       assertTrue( page.isDisposed() );
-      assertEquals( undefined, objectManager.getObject( "w4" ) );
-      assertEquals( undefined, objectManager.getObject( "w4pg" ) );
+      assertEquals( undefined, ObjectManager.getObject( "w4" ) );
+      assertEquals( undefined, ObjectManager.getObject( "w4pg" ) );
       shell.destroy();
       folder.destroy();
     },
 
     testSetTextByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
       org.eclipse.rwt.protocol.Processor.processOperation( {
@@ -147,8 +147,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     },
 
     testSetImageByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
       org.eclipse.rwt.protocol.Processor.processOperation( {
@@ -165,8 +165,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     },
 
     testSetControlByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
       var control =  new org.eclipse.rwt.widgets.Button( "push" );
@@ -188,8 +188,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     },
 
     testSetToolTipByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
       org.eclipse.rwt.protocol.Processor.processOperation( {
@@ -207,8 +207,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     },
 
     testSetCustomVariantByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
       org.eclipse.rwt.protocol.Processor.processOperation( {

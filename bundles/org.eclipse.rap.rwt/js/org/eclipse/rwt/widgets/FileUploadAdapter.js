@@ -28,8 +28,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.FileUpload", {
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
     "text" : function( widget, value ) {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      var text = encodingUtil.escapeText( value, true );
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var text = EncodingUtil.escapeText( value, true );
       widget.setText( text === "" ? null : text );
     },
     "image" : function( widget, value ) {

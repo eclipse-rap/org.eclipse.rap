@@ -31,11 +31,11 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Label", {
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
     "text" : function( widget, value ) {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       // Order is important here: escapeText, replace line breaks
-      var text = encodingUtil.escapeText( value, true );
-      text = encodingUtil.replaceNewLines( text, "<br/>" );
-      text = encodingUtil.replaceWhiteSpaces( text ); // fixes bug 192634
+      var text = EncodingUtil.escapeText( value, true );
+      text = EncodingUtil.replaceNewLines( text, "<br/>" );
+      text = EncodingUtil.replaceWhiteSpaces( text ); // fixes bug 192634
       org.eclipse.swt.LabelUtil.setText( widget, text );
     },
     "image" : function( widget, value ) {

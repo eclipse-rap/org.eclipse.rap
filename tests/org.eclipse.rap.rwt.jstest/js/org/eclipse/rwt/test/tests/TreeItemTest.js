@@ -16,8 +16,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
   members : {
 
     testCreateTreeItemByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -29,8 +29,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
           "index": 3
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var item = objectManager.getObject( "w4" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
       assertTrue( item instanceof org.eclipse.rwt.widgets.TreeItem );
       assertIdentical( tree.getRootItem(), item.getParent() );
       assertNull( item.getUserData( "isControl") );
@@ -40,8 +40,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     },
 
     testDestroyTreeItemByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -53,22 +53,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
           "index": 3
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var item = objectManager.getObject( "w4" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
       org.eclipse.rwt.protocol.Processor.processOperation( {
         "target" : "w4",
         "action" : "destroy"
       } );
-      testUtil.flush();
-      assertIdentical( undefined, objectManager.getObject( "w4" ) );
+      TestUtil.flush();
+      assertIdentical( undefined, ObjectManager.getObject( "w4" ) );
       assertEquals( -1, tree.getRootItem().indexOf( item ) );
       shell.destroy();
       tree.destroy();
     },
 
     testSetItemCountByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -81,16 +81,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
           "itemCount" : 10
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var item = objectManager.getObject( "w4" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
       assertEquals( 10, item._children.length );
       shell.destroy();
       tree.destroy();
     },
 
     testSetTextsByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -103,8 +103,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
           "texts" : [ "1", "2&<  >\"", "3" ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var item = objectManager.getObject( "w4" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
       assertEquals( "1", item.getText( 0 ) );
       assertEquals( "2&amp;&lt;&nbsp; &gt;&quot;", item.getText( 1 ) );
       assertEquals( "3", item.getText( 2 ) );
@@ -113,8 +113,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     },
 
     testSetImagesByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -127,8 +127,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
           "images" : [ [ "1.gif", 1, 1 ], [ "2.gif", 2, 2 ], [ "3.gif", 3, 3 ] ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var item = objectManager.getObject( "w4" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
       assertEquals( "1.gif", item.getImage( 0 ) );
       assertEquals( "2.gif", item.getImage( 1 ) );
       assertEquals( "3.gif", item.getImage( 2 ) );
@@ -137,8 +137,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     },
 
     testSetBackgroundByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -151,16 +151,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
           "background" : [ 0, 255, 0, 255 ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var item = objectManager.getObject( "w4" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
       assertEquals( "rgb(0,255,0)", item.getBackground() );
       shell.destroy();
       tree.destroy();
     },
 
     testSetForegroundByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -173,16 +173,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
           "foreground" : [ 0, 255, 0, 255 ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var item = objectManager.getObject( "w4" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
       assertEquals( "rgb(0,255,0)", item._foreground );
       shell.destroy();
       tree.destroy();
     },
 
     testSetFontByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -195,16 +195,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
           "font" : [ ["Arial"], 20, true, false ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var item = objectManager.getObject( "w4" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
       assertEquals( "bold 20px Arial", item._font.toCss() );
       shell.destroy();
       tree.destroy();
     },
 
     testSetCellBackgroundsByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -217,8 +217,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
           "cellBackgrounds" : [ null, [ 0, 255, 0, 255 ], null ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var item = objectManager.getObject( "w4" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
       assertNull( item.getCellBackground( 0 ) );
       assertEquals( "rgb(0,255,0)", item.getCellBackground( 1 ) );
       assertNull( item.getCellBackground( 2 ) );
@@ -227,8 +227,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     },
 
     testSetCellForegroundsByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -241,8 +241,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
           "cellForegrounds" : [ null, [ 0, 255, 0, 255 ], null ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var item = objectManager.getObject( "w4" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
       assertNull( item.getCellForeground( 0 ) );
       assertEquals( "rgb(0,255,0)", item.getCellForeground( 1 ) );
       assertNull( item.getCellForeground( 2 ) );
@@ -251,8 +251,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     },
 
     testSetCellFontsByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -265,8 +265,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
           "cellFonts" : [ null, [ ["Arial"], 20, true, false ], null ]
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var item = objectManager.getObject( "w4" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
       assertNull( item.getCellFont( 0 ) );
       assertEquals( "bold 20px Arial", item.getCellFont( 1 ) );
       assertNull( item.getCellFont( 2 ) );
@@ -275,8 +275,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     },
 
     testSetExpandedByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -289,16 +289,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
           "expanded" : true
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var item = objectManager.getObject( "w4" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
       assertTrue( item.isExpanded() );
       shell.destroy();
       tree.destroy();
     },
 
     testSetCheckedByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [ "CHECK" ] );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -311,16 +311,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
           "checked" : true
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var item = objectManager.getObject( "w4" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
       assertTrue( item.isChecked() );
       shell.destroy();
       tree.destroy();
     },
 
     testSetGrayedByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [ "CHECK" ] );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -333,16 +333,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
           "grayed" : true
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var item = objectManager.getObject( "w4" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
       assertTrue( item.isGrayed() );
       shell.destroy();
       tree.destroy();
     },
 
     testSetCustomVariantByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -355,8 +355,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
           "customVariant" : "variant_blue"
         }
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var item = objectManager.getObject( "w4" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
       assertEquals( "variant_blue", item.getVariant() );
       shell.destroy();
       tree.destroy();

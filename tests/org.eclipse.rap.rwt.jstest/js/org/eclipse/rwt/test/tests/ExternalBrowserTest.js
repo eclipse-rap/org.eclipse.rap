@@ -16,8 +16,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExternalBrowserTest", {
   members : {
 
     testExternalBrowserExists : function() {
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var externalBrowser = objectManager.getObject( "eb" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var externalBrowser = ObjectManager.getObject( "eb" );
       assertTrue( externalBrowser instanceof org.eclipse.rwt.widgets.ExternalBrowser );
     },
 
@@ -29,8 +29,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExternalBrowserTest", {
         "type" : "rwt.widgets.ExternalBrowser",
         "properties" : {}
       } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "eb" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "eb" );
       assertIdentical( externalBrowser, widget );
     },
 

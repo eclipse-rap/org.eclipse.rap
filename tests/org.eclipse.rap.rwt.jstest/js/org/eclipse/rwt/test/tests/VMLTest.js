@@ -16,24 +16,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
     TARGETENGINE : [ "mshtml" ],
 
     testCreateCanvas : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var canvasNode = gfxUtil.getCanvasNode( canvas );
       assertEquals( "DIV", canvasNode.tagName );
       assertEquals( "0", canvasNode.style.lineHeight );
       assertEquals( "0px", canvasNode.style.fontSize );
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testDrawRectInWidget : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var parent = new qx.ui.basic.Terminator();
       parent.setLocation( 10, 10 );
       parent.setDimension( 400, 400 );
       parent.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var parentNode = parent._getTargetNode();
       var canvas = gfxUtil.createCanvas();
       var shape = gfxUtil.createShape( "rect" );
@@ -45,13 +45,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       assertEquals( null, gfxUtil.getFillType( shape ) );
       assertTrue( gfxUtil.getDisplay( shape ) );
       parent.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
 
     testFillColor : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
-      testUtil.flush();
+      TestUtil.flush();
       var parentNode = document.body;
       var canvas = gfxUtil.createCanvas();
       var shape = gfxUtil.createShape( "rect" );
@@ -72,9 +72,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
     },
 
     testTransparentFill : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
-      testUtil.flush();
+      TestUtil.flush();
       var parentNode = document.body;
       var canvas = gfxUtil.createCanvas();
       var shape = gfxUtil.createShape( "rect" );
@@ -93,9 +93,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
     },
 
     testColorRestore : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
-      testUtil.flush();
+      TestUtil.flush();
       var parentNode = document.body;
       var canvas = gfxUtil.createCanvas();
       var shape = gfxUtil.createShape( "rect" );
@@ -113,9 +113,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
     },
 
     testFillGradient : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
-      testUtil.flush();
+      TestUtil.flush();
       var parentNode = document.body;
       var canvas = gfxUtil.createCanvas();
       var shape = gfxUtil.createShape( "rect" );
@@ -134,9 +134,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
     },
 
     testFillGradientHorizontal : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
-      testUtil.flush();
+      TestUtil.flush();
       var parentNode = document.body;
       var canvas = gfxUtil.createCanvas();
       var shape = gfxUtil.createShape( "rect" );
@@ -155,7 +155,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
     },
 
     testDrawRoundRect : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
@@ -173,7 +173,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
     },
 
     testDrawRoundRectOneRadiusOnlyMinimalMize : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
@@ -190,7 +190,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
     },
 
     testDrawRoundRectOneRadiusOnlyTooSmall : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
@@ -207,13 +207,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
     },
 
     testDisplay : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var parent = new qx.ui.basic.Terminator();
       parent.setLocation( 10, 10 );
       parent.setDimension( 400, 400 );
       parent.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       var parentNode = parent._getTargetNode();
       var canvas = gfxUtil.createCanvas();
       var shape = gfxUtil.createShape( "rect" );
@@ -225,11 +225,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       assertFalse( shape.fill.on );
       assertFalse( gfxUtil.getDisplay( shape ) );
       parent.destroy();
-      testUtil.flush();
+      TestUtil.flush();
     },
     
     testFillPattern : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var parentNode = document.body
       var canvas = gfxUtil.createCanvas();
@@ -250,9 +250,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
     },
     
     testOpacity : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
-      testUtil.flush();
+      TestUtil.flush();
       var parentNode = document.body;
       var canvas = gfxUtil.createCanvas();
       parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
@@ -270,9 +270,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
     },
 
     testBlur : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
-      testUtil.flush();
+      TestUtil.flush();
       var parentNode = document.body;
       var canvas = gfxUtil.createCanvas();
       parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
@@ -292,9 +292,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
     },
 
     testBlurWithOpacity : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
-      testUtil.flush();
+      TestUtil.flush();
       var parentNode = document.body;
       var canvas = gfxUtil.createCanvas();
       parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
@@ -318,7 +318,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
     },
     
     testNodeOrder : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var parent = document.body;
       canvas = gfxUtil.createCanvas();
@@ -334,7 +334,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       assertIdentical( nodes[ 0 ], shape1.node );
       assertIdentical( nodes[ 1 ], shape2.node );
       assertIdentical( nodes[ 2 ], shape3.node );
-      testUtil.flush();
+      TestUtil.flush();
     }
 
 

@@ -86,10 +86,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
     
     testTreeRowBounds : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
       var sample = tree._rowContainer._getTargetNode().childNodes[ 10 ];
-      var bounds = testUtil.getElementBounds( sample );
+      var bounds = TestUtil.getElementBounds( sample );
       assertEquals( 0, bounds.left );
       assertEquals( 200, bounds.top );
       assertEquals( 500, bounds.width );
@@ -99,7 +99,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
 
     testRenderEmptyRowOnHoverBug : function() {
       // See Bug 349310 - Mouseover on invisible items in SWT Tree
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
       var root = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
@@ -109,24 +109,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
         item.setTexts( [ "item" + i ] );
       }
       root.setExpanded( true );
-      testUtil.flush();
+      TestUtil.flush();
       var node = tree._rowContainer._children[ 2 ]._getTargetNode();
       assertEquals( "item1", node.firstChild.innerHTML );
       assertEquals( "", node.firstChild.style.display );
       root.setExpanded( false );
-      testUtil.flush();
+      TestUtil.flush();
       assertEquals( "none", node.firstChild.style.display );
-      testUtil.mouseOver( tree._rowContainer._children[ 2 ] );
+      TestUtil.mouseOver( tree._rowContainer._children[ 2 ] );
       assertEquals( "none", node.firstChild.style.display );
       tree.destroy();
     },
     
     testRenderEmptyRowsBackground : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
       var grad1 = [ [ 0, "red" ], [ 1, "yellow" ] ];
       var grad2 = [ [ 0, "yellow" ], [ 1, "red" ] ];
-      testUtil.fakeAppearance( "tree-row", {
+      TestUtil.fakeAppearance( "tree-row", {
         style : function( states ) {
           return {
             "itemBackground" : states.selected ? "red" : "blue",
@@ -143,13 +143,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
       var item = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
       root.setExpanded( true );
       tree.selectItem( item );
-      testUtil.flush();
+      TestUtil.flush();
       var row = tree._rowContainer._children[ 1 ];
       assertEquals( "red", row.getBackgroundColor() );
       assertEquals( "foo.jpg", row.getBackgroundImage() );
       assertIdentical( grad1, row.getBackgroundGradient() );
       root.setExpanded( false );
-      testUtil.flush();
+      TestUtil.flush();
       assertNull( row.getBackgroundColor() );
       assertNull( row.getBackgroundImage() );
       assertNull( row.getBackgroundGradient() );
@@ -157,13 +157,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
 
     testChangeTreeRowBounds : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
       var sample = tree._rowContainer._getTargetNode().childNodes[ 10 ];
       tree.setWidth( 400 );
       tree.setItemHeight( 15 );
-      testUtil.flush();
-      var bounds = testUtil.getElementBounds( sample );
+      TestUtil.flush();
+      var bounds = TestUtil.getElementBounds( sample );
       assertEquals( 0, bounds.left );
       assertEquals( 150, bounds.top );
       assertEquals( 500, bounds.width );
@@ -172,10 +172,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
 
     testGridLinesState : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( true );
       tree.setLinesVisible( true );
-      testUtil.flush();
+      TestUtil.flush();
       var row = tree._rowContainer._children[ 0 ];
       assertTrue( row.hasState( "linesvisible" ) );
       tree.setLinesVisible( false );
@@ -184,10 +184,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
 
     testZIndex : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( true );
       tree.setLinesVisible( true );
-      testUtil.flush();
+      TestUtil.flush();
       var row = tree._rowContainer._children[ 0 ];
       assertEquals( 0, row.getZIndex() );
       assertEquals( 1, tree._rowContainer._vertGridLines[ 0 ].style.zIndex );
@@ -195,9 +195,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
 
     testGridLinesStateOnNewRows : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( true );
-      testUtil.flush();
+      TestUtil.flush();
       tree.setLinesVisible( true );
       var row = tree._rowContainer._children[ 24 ];
       assertTrue( row.hasState( "linesvisible" ) );
@@ -208,24 +208,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
 
     testGridLinesHorizontal : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
       var row = tree._rowContainer._children[ 0 ];
-      assertFalse( testUtil.hasCssBorder( row.getElement() ) );
+      assertFalse( TestUtil.hasCssBorder( row.getElement() ) );
       tree.setLinesVisible( true );
-      testUtil.flush();
+      TestUtil.flush();
       var border = tree._rowContainer._getHorizontalGridBorder();
       assertIdentical( border, row.getBorder() );      
       tree.destroy();
     },
 
     testInitialGridLinesHorizontal : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( true );
       tree.setHeight( 0 );
       tree.setLinesVisible( true );
       tree.setHeight( 100 );      
-      testUtil.flush();
+      TestUtil.flush();
       var border = tree._rowContainer._getHorizontalGridBorder();
       var row = tree._rowContainer._children[ 0 ];
       assertIdentical( border, row.getBorder() );
@@ -264,7 +264,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     
     // TODO [tb] : refactor to create TreeRowContainer
     _createDefaultTree : function( noflush ) {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       this._fakeAppearance(); 
       var tree = new org.eclipse.rwt.widgets.Tree( { 
         "appearance": "tree",
@@ -283,13 +283,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
       tree.setItemMetrics( 2, 0, 500, 0, 0, 0, 500 );
       tree.addToDocument();
       if( !noflush ) {
-        testUtil.flush();
+        TestUtil.flush();
       }
       return tree;
     },
     
     _fakeAppearance : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var empty = {
         style : function( states ) {
           return {
@@ -301,8 +301,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
           }
         }
       }; 
-      testUtil.fakeAppearance( "tree-indent", empty );
-      testUtil.fakeAppearance( "tree-row", empty );            
+      TestUtil.fakeAppearance( "tree-indent", empty );
+      TestUtil.fakeAppearance( "tree-row", empty );            
     },
     
     _createContainer : function() {

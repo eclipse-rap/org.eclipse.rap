@@ -58,7 +58,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
     },
 
     testDestroyCoolItemByTheProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createCoolBar();
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -71,7 +71,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
         }
       } );
       var item = org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" );
-      testUtil.flush();
+      TestUtil.flush();
       processor.processOperation( {
         "target" : "w3",
         "action" : "destroy"

@@ -16,11 +16,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
   members : {
 
     testCallProbeByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text
         = "!#$%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxy";
       var fontName = [ "Verdana", "Lucida Sans", "Arial", "Helvetica", "sans-serif" ];
-      testUtil.initRequestLog();
+      TestUtil.initRequestLog();
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w1",
@@ -33,16 +33,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
           ]
         }
       } );
-      assertEquals( 0, testUtil.getRequestsSend() );
+      assertEquals( 0, TestUtil.getRequestsSend() );
       var request = org.eclipse.swt.Request.getInstance();
       assertNotNull( request.getParameter( "-785380229" ) );
       assertNotNull( request.getParameter( "-785380485" ) );
     },
 
     testCallMeasureStringsByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var fontName = [ "Verdana", "Lucida Sans", "Arial", "Helvetica", "sans-serif" ];
-      testUtil.initRequestLog();
+      TestUtil.initRequestLog();
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w1",
@@ -55,8 +55,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
           ]
         }
       } );
-      assertEquals( 2, testUtil.getRequestsSend() );
-      var log = testUtil.getRequestLog();
+      assertEquals( 2, TestUtil.getRequestsSend() );
+      var log = TestUtil.getRequestLog();
       assertTrue( log[ 0 ].indexOf( "-1114032847=" ) != -1 );
       assertTrue( log[ 1 ].indexOf( "1767849485=" ) != -1 );
       var expected = "&nbsp;&nbsp;Push &amp;<br/> Button&nbsp;";
@@ -66,7 +66,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       var button = new org.eclipse.rwt.widgets.Button( "push" );
       org.eclipse.swt.WidgetManager.getInstance().add( button, "btn1" );
       button.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       assertFalse( button.getFocused() );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {

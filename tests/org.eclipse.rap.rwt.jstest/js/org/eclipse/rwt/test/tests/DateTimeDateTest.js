@@ -46,8 +46,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     datePattern : "MDY",
 
     testCreateDateTimeDateByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
       assertTrue( widget instanceof org.eclipse.swt.widgets.DateTimeDate );
       assertIdentical( shell, widget.getParent() );
@@ -68,40 +68,40 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     },
 
     testSetYearByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
-      testUtil.protocolSet( "w3", { "year" : 2000 } );
+      TestUtil.protocolSet( "w3", { "year" : 2000 } );
       assertEquals( 2000, widget._yearTextField.getText() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetMonthByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
-      testUtil.protocolSet( "w3", { "month" : 6 } );
+      TestUtil.protocolSet( "w3", { "month" : 6 } );
       assertEquals( "07", widget._monthTextField.getText() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetDayByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
-      testUtil.protocolSet( "w3", { "day" : 10 } );
+      TestUtil.protocolSet( "w3", { "day" : 10 } );
       assertEquals( 10, widget._dayTextField.getText() );
       shell.destroy();
       widget.destroy();
     },
 
     testSetSubWidgetsBoundsByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
-      testUtil.protocolSet( "w3", { "subWidgetsBounds" : [ [ 0, 3, 5, 0, 18 ], 
+      TestUtil.protocolSet( "w3", { "subWidgetsBounds" : [ [ 0, 3, 5, 0, 18 ], 
                                                            [ 4, 3, 5, 0, 18 ] ] } );
       assertEquals( 3, widget._weekdayTextField.getLeft() );
       assertEquals( 5, widget._weekdayTextField.getTop() );
@@ -116,10 +116,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     },
 
     testSetHasSelectionListenerByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
-      testUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "selection" : true } );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
       widget.destroy();
@@ -133,15 +133,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     },
 
     testSendAllFieldsTogether : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.prepareTimerUse();
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.prepareTimerUse();
       var dateTime = this._createDefaultDateTime();
       dateTime.setDay( 10 );
       dateTime.setMonth( 10 );
       dateTime.setYear( 2010 );
-      testUtil.clearRequestLog();
+      TestUtil.clearRequestLog();
       dateTime._sendChanges();
-      assertEquals( 0, testUtil.getRequestsSend() );
+      assertEquals( 0, TestUtil.getRequestsSend() );
       var req = org.eclipse.swt.Request.getInstance();
       assertEquals( 10, req._parameters[ "w3.day" ] );
       assertEquals( 10, req._parameters[ "w3.month" ] );
@@ -150,29 +150,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     },
 
     testSendEvent : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.prepareTimerUse();
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.prepareTimerUse();
       var dateTime = this._createDefaultDateTime();
       dateTime.setHasSelectionListener( true );
       dateTime.setDay( 10 );
       dateTime.setMonth( 10 );
       dateTime.setYear( 2010 );
-      testUtil.clearRequestLog();
+      TestUtil.clearRequestLog();
       dateTime._sendChanges();
       // this should restart the timer, though there is currently no way to test it:
       dateTime._sendChanges(); 
-      assertEquals( 0, testUtil.getRequestsSend() );
-      testUtil.forceInterval( dateTime._requestTimer );
+      assertEquals( 0, TestUtil.getRequestsSend() );
+      TestUtil.forceInterval( dateTime._requestTimer );
       assertFalse( dateTime._requestTimer.getEnabled() );
-      assertEquals( 1, testUtil.getRequestsSend() );
+      assertEquals( 1, TestUtil.getRequestsSend() );
       dateTime.destroy();
     },
 
     testDropDownCalendar : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dateTime = this._createDefaultDateTime( true );
-      testUtil.click( dateTime._dropDownButton );
-      testUtil.flush();
+      TestUtil.click( dateTime._dropDownButton );
+      TestUtil.flush();
       var calendar = dateTime._calendar;
       assertTrue( dateTime._calendar.isSeeable() );
       assertEquals( 3, calendar.getLeft() );
@@ -181,13 +181,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     },
     
     testDropDownCalendarNotEnoughSpace : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dateTime = this._createDefaultDateTime( true );
       var browserHeight = qx.html.Window.getInnerHeight( window );
       dateTime.setTop( browserHeight - 40 );
-      testUtil.flush();
-      testUtil.click( dateTime._dropDownButton );
-      testUtil.flush();
+      TestUtil.flush();
+      TestUtil.click( dateTime._dropDownButton );
+      TestUtil.flush();
       var calendar = dateTime._calendar;
       assertTrue( dateTime._calendar.isSeeable() );
       assertEquals( 3, calendar.getLeft() );
@@ -198,26 +198,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
 
     // see bug 358531
     testEditingWithKeyboard_InitialEditing : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dateTime = this._createDefaultDateTime();
       dateTime._setDate( new Date( 2011, 8, 2 ) );
-      testUtil.click( dateTime._dayTextField );
-      testUtil.flush();
-      testUtil.pressOnce( dateTime, "1" );
-      testUtil.pressOnce( dateTime, "3" );
+      TestUtil.click( dateTime._dayTextField );
+      TestUtil.flush();
+      TestUtil.pressOnce( dateTime, "1" );
+      TestUtil.pressOnce( dateTime, "3" );
       assertEquals( "13", dateTime._dayTextField.getText() );
       dateTime.destroy();
     },
 
     testEditingWithKeyboard_ContinualEditing : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dateTime = this._createDefaultDateTime();
       dateTime._setDate( new Date( 2011, 8, 2 ) );
-      testUtil.click( dateTime._dayTextField );
-      testUtil.flush();
-      testUtil.pressOnce( dateTime, "2" );
-      testUtil.pressOnce( dateTime, "1" );
-      testUtil.pressOnce( dateTime, "3" );
+      TestUtil.click( dateTime._dayTextField );
+      TestUtil.flush();
+      TestUtil.pressOnce( dateTime, "2" );
+      TestUtil.pressOnce( dateTime, "1" );
+      TestUtil.pressOnce( dateTime, "3" );
       assertEquals( "03", dateTime._dayTextField.getText() );
       dateTime.destroy();
     },
@@ -249,7 +249,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     },
 
     _createDefaultDateTime : function( dropdown ) {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var style = "medium";
       if( dropdown ) {
         style +=  "|drop_down";
@@ -264,7 +264,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       widgetManager.add( dateTime, "w3", true );
       dateTime.setSpace( 3, 115, 3, 20 );
       dateTime.addToDocument();
-      testUtil.flush();
+      TestUtil.flush();
       return dateTime;
     }
 

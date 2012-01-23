@@ -36,11 +36,11 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Combo", {
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
     "items" : function( widget, value ) {
       var items = value;
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       for( var i = 0; i < items.length; i++ ) {
-        items[ i ] = encodingUtil.replaceNewLines( items[ i ], " " );
-        items[ i ] = encodingUtil.escapeText( items[ i ], false );
-        items[ i ] = encodingUtil.replaceWhiteSpaces( items[ i ] );
+        items[ i ] = EncodingUtil.replaceNewLines( items[ i ], " " );
+        items[ i ] = EncodingUtil.escapeText( items[ i ], false );
+        items[ i ] = EncodingUtil.replaceWhiteSpaces( items[ i ] );
       }
       widget.setItems( items );
     },

@@ -36,8 +36,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.ControlDecorator", {
       widget.setHeight( value[ 3 ] );
     },
     "text" : function( widget, value ) {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      var text = encodingUtil.escapeText( value, false );
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var text = EncodingUtil.escapeText( value, false );
       widget.setText( text );
     },
     "image" : function( widget, value ) {

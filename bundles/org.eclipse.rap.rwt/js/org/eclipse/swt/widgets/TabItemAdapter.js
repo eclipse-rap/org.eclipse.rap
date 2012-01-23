@@ -31,8 +31,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.TabItem", {
 
   propertyHandler : {
     "text" : function( widget, value ) {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      var text = encodingUtil.escapeText( value, false );
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var text = EncodingUtil.escapeText( value, false );
       widget.setLabel( text );
     },
     "image" : function( widget, value ) {

@@ -58,14 +58,14 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.MenuItem", {
     },
     "text" : function( widget, value ) {
       if( !widget.hasState( "rwt_SEPARATOR" ) ) {
-        var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+        var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
         var text = value;
         // Strip accelerator text
         var index = text.indexOf( "\t" );
         if( index != -1 ) {
           text = text.substring( 0, index );
         }
-        text = encodingUtil.escapeText( text, true );
+        text = EncodingUtil.escapeText( text, true );
         widget.setText( text );
       }
     },
