@@ -46,8 +46,8 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
     DropTarget dropTarget = ( DropTarget )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( dropTarget );
     clientObject.create( TYPE );
-    clientObject.setProperty( "control", WidgetUtil.getId( dropTarget.getControl() ) );
-    clientObject.setProperty( "style", DNDLCAUtil.convertOperations( dropTarget.getStyle() ) );
+    clientObject.set( "control", WidgetUtil.getId( dropTarget.getControl() ) );
+    clientObject.set( "style", DNDLCAUtil.convertOperations( dropTarget.getStyle() ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
@@ -63,7 +63,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
     Transfer[] newValue = dropTarget.getTransfer();
     if( WidgetLCAUtil.hasChanged( dropTarget, PROP_TRANSFER, newValue, DEFAULT_TRANSFER ) ) {
       String[] renderValue = DNDLCAUtil.convertTransferTypes( newValue );
-      ClientObjectFactory.getForWidget( dropTarget ).setProperty( "transfer", renderValue );
+      ClientObjectFactory.getForWidget( dropTarget ).set( "transfer", renderValue );
     }
   }
 

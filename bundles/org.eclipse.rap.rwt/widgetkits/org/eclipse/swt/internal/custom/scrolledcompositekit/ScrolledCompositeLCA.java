@@ -89,8 +89,8 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     ScrolledComposite scrolledComposite = ( ScrolledComposite )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( scrolledComposite );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( scrolledComposite.getParent() ) );
-    clientObject.setProperty( "style",
+    clientObject.set( "parent", WidgetUtil.getId( scrolledComposite.getParent() ) );
+    clientObject.set( "style",
                               WidgetLCAUtil.getStyles( scrolledComposite, ALLOWED_STYLES ) );
   }
 

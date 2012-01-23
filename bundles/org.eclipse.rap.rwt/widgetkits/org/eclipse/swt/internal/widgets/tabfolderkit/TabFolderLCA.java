@@ -52,8 +52,8 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     TabFolder folder = ( TabFolder )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( folder );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( folder.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( folder, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( folder.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( folder, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

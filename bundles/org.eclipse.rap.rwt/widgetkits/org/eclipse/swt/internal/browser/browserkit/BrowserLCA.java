@@ -98,8 +98,8 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     Browser browser = ( Browser )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( browser.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( browser, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( browser.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( browser, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
@@ -146,7 +146,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   private static void renderUrl( Browser browser ) throws IOException {
     if( hasUrlChanged( browser ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
-      clientObject.setProperty( "url", getUrl( browser ) );
+      clientObject.set( "url", getUrl( browser ) );
       browser.getAdapter( IBrowserAdapter.class ).resetUrlChanged();
     }
   }
@@ -290,7 +290,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
       Object[] value = new Object[] {
         name, result, error
       };
-      clientObject.setProperty( PARAM_FUNCTION_RESULT, value );
+      clientObject.set( PARAM_FUNCTION_RESULT, value );
     }
   }
 

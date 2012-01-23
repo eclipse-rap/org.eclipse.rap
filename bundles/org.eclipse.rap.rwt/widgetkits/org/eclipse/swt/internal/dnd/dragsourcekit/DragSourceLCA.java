@@ -48,8 +48,8 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     DragSource dragSource = ( DragSource )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( dragSource );
     clientObject.create( TYPE );
-    clientObject.setProperty( "control", WidgetUtil.getId( dragSource.getControl() ) );
-    clientObject.setProperty( "style", DNDLCAUtil.convertOperations( dragSource.getStyle() ) );
+    clientObject.set( "control", WidgetUtil.getId( dragSource.getControl() ) );
+    clientObject.set( "style", DNDLCAUtil.convertOperations( dragSource.getStyle() ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
@@ -70,7 +70,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     Transfer[] newValue = dragSource.getTransfer();
     if( WidgetLCAUtil.hasChanged( dragSource, PROP_TRANSFER, newValue, DEFAULT_TRANSFER ) ) {
       String[] renderValue = DNDLCAUtil.convertTransferTypes( newValue );
-      ClientObjectFactory.getForWidget( dragSource ).setProperty( "transfer", renderValue );
+      ClientObjectFactory.getForWidget( dragSource ).set( "transfer", renderValue );
     }
   }
 

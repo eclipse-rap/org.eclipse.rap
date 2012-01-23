@@ -165,8 +165,8 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     CTabFolder folder = ( CTabFolder )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( folder );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( folder.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( folder, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( folder.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( folder, ALLOWED_STYLES ) );
     String[] toolTipTexts = new String[] {
       SWT.getMessage( "SWT_Minimize" ),
       SWT.getMessage( "SWT_Maximize" ),
@@ -174,7 +174,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
       SWT.getMessage( "SWT_ShowList" ),
       SWT.getMessage( "SWT_Close" ),
     };
-    clientObject.setProperty( PROP_TOOLTIP_TEXTS, toolTipTexts );
+    clientObject.set( PROP_TOOLTIP_TEXTS, toolTipTexts );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
@@ -260,7 +260,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
         gradient = new Object[] { colors, percents, bgGradientVertical };
       }
       IClientObject clientObject = ClientObjectFactory.getForWidget( folder );
-      clientObject.setProperty( PROP_SELECTION_BG_GRADIENT, gradient );
+      clientObject.set( PROP_SELECTION_BG_GRADIENT, gradient );
     }
   }
 

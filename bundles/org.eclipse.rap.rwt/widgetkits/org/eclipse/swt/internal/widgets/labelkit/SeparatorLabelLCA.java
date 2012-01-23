@@ -41,8 +41,8 @@ final class SeparatorLabelLCA extends AbstractLabelLCADelegate {
   void renderInitialization( Label label ) throws IOException {
     IClientObject clientObject = ClientObjectFactory.getForWidget( label );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( label.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( label, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( label.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( label, ALLOWED_STYLES ) );
   }
 
   void renderChanges( Label label ) throws IOException {

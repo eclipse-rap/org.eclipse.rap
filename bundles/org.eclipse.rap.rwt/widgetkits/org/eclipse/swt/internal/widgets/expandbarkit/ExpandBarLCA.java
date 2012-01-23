@@ -53,8 +53,8 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
     ExpandBar expandBar = ( ExpandBar )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( expandBar );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( expandBar.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( expandBar, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( expandBar.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( expandBar, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

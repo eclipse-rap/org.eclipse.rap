@@ -50,7 +50,7 @@ final class MenuLCAUtil {
   static void renderInitialization( Menu menu ) {
     IClientObject clientObject = ClientObjectFactory.getForWidget( menu );
     clientObject.create( TYPE );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( menu, ALLOWED_STYLES ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( menu, ALLOWED_STYLES ) );
   }
 
   static void renderChanges( Menu menu ) {

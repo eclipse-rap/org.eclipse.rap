@@ -45,8 +45,8 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
     FileUpload fileUpload = ( FileUpload ) widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( fileUpload );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( fileUpload.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( fileUpload, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( fileUpload.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( fileUpload, ALLOWED_STYLES ) );
   }
 
   public void readData( Widget widget ) {

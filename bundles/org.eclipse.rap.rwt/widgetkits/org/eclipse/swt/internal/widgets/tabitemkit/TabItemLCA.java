@@ -59,9 +59,9 @@ public class TabItemLCA extends AbstractWidgetLCA {
     TabFolder parent = tabItem.getParent();
     IClientObject clientObject = ClientObjectFactory.getForWidget( tabItem );
     clientObject.create( TYPE );
-    clientObject.setProperty( "id", WidgetUtil.getId( tabItem ) );
-    clientObject.setProperty( "parent", WidgetUtil.getId( parent ) );
-    clientObject.setProperty( "index", parent.indexOf( tabItem ) ) ;
+    clientObject.set( "id", WidgetUtil.getId( tabItem ) );
+    clientObject.set( "parent", WidgetUtil.getId( parent ) );
+    clientObject.set( "index", parent.indexOf( tabItem ) ) ;
   }
 
   public void renderChanges( Widget widget ) throws IOException {

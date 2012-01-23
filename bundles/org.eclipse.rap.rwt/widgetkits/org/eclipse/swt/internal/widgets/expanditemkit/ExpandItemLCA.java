@@ -72,7 +72,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
     ExpandItem item = ( ExpandItem )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( item );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( item.getParent() ) );
+    clientObject.set( "parent", WidgetUtil.getId( item.getParent() ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

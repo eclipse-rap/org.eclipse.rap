@@ -74,8 +74,8 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     CoolItem item = ( CoolItem )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( item );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( item.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( item, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( item.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( item, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

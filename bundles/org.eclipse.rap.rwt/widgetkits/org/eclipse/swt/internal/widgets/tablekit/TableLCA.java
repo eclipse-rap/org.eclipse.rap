@@ -122,20 +122,20 @@ public final class TableLCA extends AbstractWidgetLCA {
     Table table = ( Table )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( table );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( table.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( table, ALLOWED_STYLES ) );
-    clientObject.setProperty( "appearance", "table" );
+    clientObject.set( "parent", WidgetUtil.getId( table.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( table, ALLOWED_STYLES ) );
+    clientObject.set( "appearance", "table" );
     ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     if( ( table.getStyle() & SWT.CHECK ) != 0 ) {
       int[] checkMetrics = new int[] { adapter.getCheckLeft(), adapter.getCheckWidth() };
-      clientObject.setProperty( "checkBoxMetrics", checkMetrics );
+      clientObject.set( "checkBoxMetrics", checkMetrics );
     }
     Integer fixedColumns = ( Integer )widget.getData( PROP_FIXED_COLUMNS );
     if( fixedColumns != null ) {
-      clientObject.setProperty( "splitContainer", true );
+      clientObject.set( "splitContainer", true );
     }
-    clientObject.setProperty( "indentionWidth", 0 );
-    clientObject.setProperty( PROP_TREE_COLUMN, -1 );
+    clientObject.set( "indentionWidth", 0 );
+    clientObject.set( PROP_TREE_COLUMN, -1 );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
@@ -413,7 +413,7 @@ public final class TableLCA extends AbstractWidgetLCA {
         };
       }
       IClientObject clientObject = ClientObjectFactory.getForWidget( table );
-      clientObject.setProperty( PROP_ITEM_METRICS, metrics );
+      clientObject.set( PROP_ITEM_METRICS, metrics );
     }
   }
 

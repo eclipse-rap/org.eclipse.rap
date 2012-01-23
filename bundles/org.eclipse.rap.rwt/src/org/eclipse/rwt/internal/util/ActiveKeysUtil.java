@@ -122,7 +122,7 @@ public final class ActiveKeysUtil {
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
       if( hasChanged ) {
         IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
-        clientObject.setProperty( "activeKeys", translateKeySequences( newValue ) );
+        clientObject.set( "activeKeys", translateKeySequences( newValue ) );
       }
     }
   }
@@ -135,7 +135,7 @@ public final class ActiveKeysUtil {
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
       if( hasChanged ) {
         IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-        clientObject.setProperty( "activeKeys", translateKeySequences( newValue ) );
+        clientObject.set( "activeKeys", translateKeySequences( newValue ) );
       }
     }
   }
@@ -148,7 +148,7 @@ public final class ActiveKeysUtil {
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
       if( hasChanged ) {
         IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
-        clientObject.setProperty( "cancelKeys", translateKeySequences( newValue ) );
+        clientObject.set( "cancelKeys", translateKeySequences( newValue ) );
       }
     }
   }
@@ -161,7 +161,7 @@ public final class ActiveKeysUtil {
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
       if( hasChanged ) {
         IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-        clientObject.setProperty( "cancelKeys", translateKeySequences( newValue ) );
+        clientObject.set( "cancelKeys", translateKeySequences( newValue ) );
       }
     }
   }

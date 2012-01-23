@@ -53,8 +53,8 @@ public final class SashLCA extends AbstractWidgetLCA {
     Sash sash = ( Sash )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( sash );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( sash.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( sash, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( sash.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( sash, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

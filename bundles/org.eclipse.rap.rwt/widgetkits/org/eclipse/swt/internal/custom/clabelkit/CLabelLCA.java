@@ -69,8 +69,8 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     CLabel clabel = ( CLabel )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( clabel );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( clabel.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( clabel, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( clabel.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( clabel, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

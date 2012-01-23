@@ -41,8 +41,8 @@ public class CompositeLCA extends AbstractWidgetLCA {
     Composite composite = ( Composite )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( composite );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( composite.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( composite, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( composite.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( composite, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

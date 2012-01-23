@@ -72,9 +72,9 @@ final class ToolItemLCAUtil {
     //           and radio-groups.
     IClientObject clientObject = ClientObjectFactory.getForWidget( toolItem );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( toolItem.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( toolItem, ALLOWED_STYLES ) );
-    clientObject.setProperty( "index", toolBar.indexOf( toolItem ) );
+    clientObject.set( "parent", WidgetUtil.getId( toolItem.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( toolItem, ALLOWED_STYLES ) );
+    clientObject.set( "index", toolBar.indexOf( toolItem ) );
   }
 
   static void renderChanges( ToolItem toolItem ) {

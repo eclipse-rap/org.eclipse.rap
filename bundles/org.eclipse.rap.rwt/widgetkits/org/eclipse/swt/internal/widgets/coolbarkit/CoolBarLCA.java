@@ -55,8 +55,8 @@ public class CoolBarLCA extends AbstractWidgetLCA {
     CoolBar coolbar = ( CoolBar )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( coolbar );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( coolbar.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( coolbar, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( coolbar.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( coolbar, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

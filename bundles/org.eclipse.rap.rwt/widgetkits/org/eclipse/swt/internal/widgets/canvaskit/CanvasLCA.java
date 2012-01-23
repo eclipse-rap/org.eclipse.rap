@@ -42,11 +42,11 @@ public final class CanvasLCA extends AbstractWidgetLCA {
     Canvas canvas = ( Canvas )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( canvas );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( canvas.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( canvas, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( canvas.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( canvas, ALLOWED_STYLES ) );
     IClientObject clientObjectGC = ClientObjectFactory.getForGC( canvas );
     clientObjectGC.create( TYPE_GC );
-    clientObjectGC.setProperty( "parent", WidgetUtil.getId( canvas ) );
+    clientObjectGC.set( "parent", WidgetUtil.getId( canvas ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

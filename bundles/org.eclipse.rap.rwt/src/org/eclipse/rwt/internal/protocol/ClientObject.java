@@ -30,19 +30,19 @@ public final class ClientObject implements IClientObject {
     getWriter().appendDestroy( targetId );
   }
 
-  public void setProperty( String name, int value ) {
+  public void set( String name, int value ) {
     getWriter().appendSet( targetId, name, value );
   }
 
-  public void setProperty( String name, double value ) {
+  public void set( String name, double value ) {
     getWriter().appendSet( targetId, name, value );
   }
 
-  public void setProperty( String name, boolean value ) {
+  public void set( String name, boolean value ) {
     getWriter().appendSet( targetId, name, value );
   }
 
-  public void setProperty( String name, String value ) {
+  public void set( String name, String value ) {
     getWriter().appendSet( targetId, name, value );
   }
 
@@ -50,11 +50,11 @@ public final class ClientObject implements IClientObject {
     getWriter().appendSet( targetId, name, value );
   }
 
-  public void setProperty( String name, Object value ) {
+  public void set( String name, Object value ) {
     getWriter().appendSet( targetId, name, value );
   }
 
-  public void setListen( String eventName, boolean listen ) {
+  public void listen( String eventName, boolean listen ) {
     getWriter().appendListen( targetId, eventName, listen );
   }
 

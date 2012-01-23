@@ -374,7 +374,7 @@ public class ControlLCAUtil {
     // there is no reliable default value for all controls
     if( WidgetLCAUtil.hasChanged( control, PROP_TAB_INDEX, newValue ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-      clientObject.setProperty( "tabIndex", newValue );
+      clientObject.set( "tabIndex", newValue );
     }
   }
 
@@ -417,7 +417,7 @@ public class ControlLCAUtil {
     // TODO [tb] : Can we have a shorthand for this, like in JSWriter?
     if( WidgetLCAUtil.hasChanged( control, Props.VISIBLE, newValue, defValue ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-      clientObject.setProperty( "visibility", newValue );
+      clientObject.set( "visibility", newValue );
     }
   }
 
@@ -499,7 +499,7 @@ public class ControlLCAUtil {
     Cursor newValue = control.getCursor();
     if( WidgetLCAUtil.hasChanged( control, PROP_CURSOR, newValue, null ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-      clientObject.setProperty( PROP_CURSOR, getQxCursor( newValue ) );
+      clientObject.set( PROP_CURSOR, getQxCursor( newValue ) );
     }
   }
 

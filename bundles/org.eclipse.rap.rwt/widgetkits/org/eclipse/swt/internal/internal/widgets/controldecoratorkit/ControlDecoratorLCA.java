@@ -59,8 +59,8 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
     ControlDecorator decorator = ( ControlDecorator )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( decorator );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( decorator.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( decorator, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( decorator.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( decorator, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

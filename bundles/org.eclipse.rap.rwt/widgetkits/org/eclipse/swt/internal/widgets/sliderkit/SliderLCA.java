@@ -79,8 +79,8 @@ public class SliderLCA extends AbstractWidgetLCA {
     Slider slider = ( Slider )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( slider );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( slider.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( slider, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( slider.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( slider, ALLOWED_STYLES ) );
   }
 
 

@@ -52,9 +52,9 @@ final class MenuItemLCAUtil {
     IClientObject clientObject = ClientObjectFactory.getForWidget( item );
     clientObject.create( TYPE );
     Menu parent = item.getParent();
-    clientObject.setProperty( "parent", WidgetUtil.getId( parent ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( item, ALLOWED_STYLES ) );
-    clientObject.setProperty( "index", parent.indexOf( item ) );
+    clientObject.set( "parent", WidgetUtil.getId( parent ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( item, ALLOWED_STYLES ) );
+    clientObject.set( "index", parent.indexOf( item ) );
   }
 
   static void renderChanges( MenuItem item ) {

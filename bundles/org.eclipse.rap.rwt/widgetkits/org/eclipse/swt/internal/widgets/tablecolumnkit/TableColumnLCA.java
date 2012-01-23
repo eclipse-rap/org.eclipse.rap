@@ -99,7 +99,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     TableColumn column = ( TableColumn )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( column );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( column.getParent() ) );
+    clientObject.set( "parent", WidgetUtil.getId( column.getParent() ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

@@ -58,7 +58,7 @@ public class ClientObject_Test extends TestCase {
 
   public void testCreateIncludesSetProperties() {
     clientObject.create( "rwt.widgets.Shell" );
-    clientObject.setProperty( "foo", 23 );
+    clientObject.set( "foo", 23 );
 
     Message message = getMessage();
     assertEquals( 1, message.getOperationCount() );
@@ -67,11 +67,11 @@ public class ClientObject_Test extends TestCase {
   }
 
   public void testSetProperty() {
-    clientObject.setProperty( "key", ( Object )"value" );
-    clientObject.setProperty( "key2", 2 );
-    clientObject.setProperty( "key3", 3.5 );
-    clientObject.setProperty( "key4", true );
-    clientObject.setProperty( "key5", "aString" );
+    clientObject.set( "key", ( Object )"value" );
+    clientObject.set( "key2", 2 );
+    clientObject.set( "key3", 3.5 );
+    clientObject.set( "key4", true );
+    clientObject.set( "key5", "aString" );
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
     assertEquals( shellId, operation.getTarget() );
@@ -83,7 +83,7 @@ public class ClientObject_Test extends TestCase {
   }
 
   public void testSetPropertyForIntArray() throws JSONException {
-    clientObject.setProperty( "key", new int[]{ 1, 2, 3 } );
+    clientObject.set( "key", new int[]{ 1, 2, 3 } );
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
     JSONArray result = ( JSONArray )operation.getProperty( "key" );
@@ -95,7 +95,7 @@ public class ClientObject_Test extends TestCase {
 
   public void testCreatePropertyGetStyle() {
     clientObject.create( "rwt.widgets.Shell"  );
-    clientObject.setProperty( "style", new String[] { "PUSH", "BORDER" } );
+    clientObject.set( "style", new String[] { "PUSH", "BORDER" } );
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
     assertArrayEquals( new String[] { "PUSH", "BORDER" }, operation.getStyles() );
@@ -109,8 +109,8 @@ public class ClientObject_Test extends TestCase {
   }
 
   public void testAddListener() {
-    clientObject.setListen( "selection", true );
-    clientObject.setListen( "fake", true );
+    clientObject.listen( "selection", true );
+    clientObject.listen( "fake", true );
 
     ListenOperation operation = ( ListenOperation )getMessage().getOperation( 0 );
     assertEquals( shellId, operation.getTarget() );
@@ -119,9 +119,9 @@ public class ClientObject_Test extends TestCase {
   }
 
   public void testRemoveListener() {
-    clientObject.setListen( "selection", false );
-    clientObject.setListen( "fake", false );
-    clientObject.setListen( "fake2", true );
+    clientObject.listen( "selection", false );
+    clientObject.listen( "fake", false );
+    clientObject.listen( "fake2", true );
 
     ListenOperation operation = ( ListenOperation )getMessage().getOperation( 0 );
     assertEquals( shellId, operation.getTarget() );

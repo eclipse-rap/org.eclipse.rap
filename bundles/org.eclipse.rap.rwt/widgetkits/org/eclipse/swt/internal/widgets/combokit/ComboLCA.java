@@ -97,8 +97,8 @@ public class ComboLCA extends AbstractWidgetLCA {
     Combo combo = ( Combo )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( combo.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( combo, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( combo.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( combo, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
@@ -181,7 +181,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     Integer newValue = new Integer( getItemHeight( combo ) );
     if( WidgetLCAUtil.hasChanged( combo, PROP_ITEM_HEIGHT, newValue ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
-      clientObject.setProperty( PROP_ITEM_HEIGHT, newValue );
+      clientObject.set( PROP_ITEM_HEIGHT, newValue );
     }
   }
 
@@ -211,7 +211,7 @@ public class ComboLCA extends AbstractWidgetLCA {
       = !isEditable( combo ) && WidgetLCAUtil.hasChanged( combo, PROP_TEXT, combo.getText(), "" );
     if( selectionChanged || textChanged ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
-      clientObject.setProperty( PROP_SELECTION_INDEX, newValue );
+      clientObject.set( PROP_SELECTION_INDEX, newValue );
     }
   }
 

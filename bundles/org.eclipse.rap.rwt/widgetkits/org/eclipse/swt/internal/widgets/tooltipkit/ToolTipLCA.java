@@ -67,8 +67,8 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
     ToolTip toolTip = ( ToolTip )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( toolTip );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( toolTip.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( toolTip, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( toolTip.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( toolTip, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

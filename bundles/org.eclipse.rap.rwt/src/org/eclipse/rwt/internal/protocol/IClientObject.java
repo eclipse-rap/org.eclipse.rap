@@ -35,7 +35,7 @@ public interface IClientObject {
    * @param name the name of the property to set
    * @param value the value to set
    */
-  void setProperty( String name, int value );
+  void set( String name, int value );
 
   /**
    * Advises the remote object to set the specified property to the given value.
@@ -43,7 +43,7 @@ public interface IClientObject {
    * @param name the name of the property to set
    * @param value the value to set
    */
-  void setProperty( String name, double value );
+  void set( String name, double value );
 
   /**
    * Advises the remote object to set the specified property to the given value.
@@ -51,7 +51,7 @@ public interface IClientObject {
    * @param name the name of the property to set
    * @param value the value to set
    */
-  void setProperty( String name, boolean value );
+  void set( String name, boolean value );
 
   /**
    * Advises the remote object to set the specified property to the given value.
@@ -59,7 +59,7 @@ public interface IClientObject {
    * @param name the name of the property to set
    * @param value the value to set
    */
-  void setProperty( String name, String value );
+  void set( String name, String value );
 
   /**
    * Advises the remote object to set the specified property to the given value.
@@ -67,7 +67,7 @@ public interface IClientObject {
    * @param name the name of the property to set
    * @param value the value to set
    */
-  void setProperty( String name, Object value );
+  void set( String name, Object value );
 
   /**
    * Advises the remote object to listen or to stop listening on the given type
@@ -77,7 +77,7 @@ public interface IClientObject {
    * @param eventType the name of event type to listen
    * @param listen true to listen to this type of events, false otherwise
    */
-  void setListen( String eventType, boolean listen );
+  void listen( String eventType, boolean listen );
 
   /**
    * Advises the client to call a specific method on the remote object.

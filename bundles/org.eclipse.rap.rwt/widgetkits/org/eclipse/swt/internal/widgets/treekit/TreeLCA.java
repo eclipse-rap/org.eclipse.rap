@@ -117,20 +117,20 @@ public final class TreeLCA extends AbstractWidgetLCA {
     Tree tree = ( Tree )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( tree );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( tree.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( tree, ALLOWED_STYLES ) );
-    clientObject.setProperty( "appearance", "tree" );
+    clientObject.set( "parent", WidgetUtil.getId( tree.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( tree, ALLOWED_STYLES ) );
+    clientObject.set( "appearance", "tree" );
     ITreeAdapter adapter = getTreeAdapter( tree );
     if( ( tree.getStyle() & SWT.CHECK ) != 0 ) {
       int[] checkMetrics = new int[] { adapter.getCheckLeft(), adapter.getCheckWidth() };
-      clientObject.setProperty( "checkBoxMetrics", checkMetrics );
+      clientObject.set( "checkBoxMetrics", checkMetrics );
     }
     if( ( tree.getStyle() & SWT.FULL_SELECTION ) == 0 ) {
       Rectangle textMargin = getTreeAdapter( tree ).getTextMargin();
       int[] selectionPadding = new int[] { textMargin.x, textMargin.width - textMargin.x };
-      clientObject.setProperty( "selectionPadding", selectionPadding );
+      clientObject.set( "selectionPadding", selectionPadding );
     }
-    clientObject.setProperty( "indentionWidth", adapter.getIndentionWidth() );
+    clientObject.set( "indentionWidth", adapter.getIndentionWidth() );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
@@ -418,7 +418,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
         };
       }
       IClientObject clientObject = ClientObjectFactory.getForWidget( tree );
-      clientObject.setProperty( PROP_ITEM_METRICS, metrics );
+      clientObject.set( PROP_ITEM_METRICS, metrics );
     }
   }
 

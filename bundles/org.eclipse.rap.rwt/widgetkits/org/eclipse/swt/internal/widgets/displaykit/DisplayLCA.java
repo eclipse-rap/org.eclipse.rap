@@ -211,7 +211,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     if( !currThemeId.equals( oldThemeId ) ) {
       Theme theme = RWTFactory.getThemeManager().getTheme( currThemeId );
       IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
-      clientObject.setProperty( PROP_CURRENT_THEME, theme.getJsId() );
+      clientObject.set( PROP_CURRENT_THEME, theme.getJsId() );
     }
   }
 
@@ -221,7 +221,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     Object oldTimeoutPage = adapter.getPreserved( PROP_TIMEOUT_PAGE );
     if( !timeoutPage.equals( oldTimeoutPage ) ) {
       IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
-      clientObject.setProperty( PROP_TIMEOUT_PAGE, timeoutPage );
+      clientObject.set( PROP_TIMEOUT_PAGE, timeoutPage );
     }
   }
 
@@ -251,7 +251,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
                        : !exitConfirmation.equals( oldExitConfirmation );
     if( hasChanged ) {
       IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
-      clientObject.setProperty( PROP_EXIT_CONFIRMATION, exitConfirmation );
+      clientObject.set( PROP_EXIT_CONFIRMATION, exitConfirmation );
     }
   }
 
@@ -311,7 +311,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         Control focusControl = display.getFocusControl();
         if( focusControl != null ) {
           IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
-          clientObject.setProperty( PROP_FOCUS_CONTROL,
+          clientObject.set( PROP_FOCUS_CONTROL,
                                     WidgetUtil.getId( display.getFocusControl() ) );
         }
       }
@@ -332,7 +332,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       WidgetAdapter adapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
       if( !adapter.isInitialized() ) {
         IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
-        clientObject.setProperty( "enableUiTests", true );
+        clientObject.set( "enableUiTests", true );
       }
     }
   }

@@ -104,8 +104,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     }
     IClientObject clientObject = ClientObjectFactory.getForWidget( item );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( parent ) );
-    clientObject.setProperty( "index", index );
+    clientObject.set( "parent", WidgetUtil.getId( parent ) );
+    clientObject.set( "index", index );
   }
 
   @Override

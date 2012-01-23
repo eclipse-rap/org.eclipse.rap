@@ -76,8 +76,8 @@ public final class ScaleLCA extends AbstractWidgetLCA {
     Scale scale = ( Scale )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( scale );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( scale.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( scale, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( scale.getParent() ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( scale, ALLOWED_STYLES ) );
   }
 
 

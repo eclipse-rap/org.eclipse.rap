@@ -71,9 +71,9 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     CTabFolder parent = item.getParent();
     IClientObject clientObject = ClientObjectFactory.getForWidget( item );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( parent ) );
-    clientObject.setProperty( "index", parent.indexOf( item ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( item, ALLOWED_STYLES ) );
+    clientObject.set( "parent", WidgetUtil.getId( parent ) );
+    clientObject.set( "index", parent.indexOf( item ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( item, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
