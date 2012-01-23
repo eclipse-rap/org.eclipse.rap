@@ -45,7 +45,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.JSExecutorTest", {
         }
       } );
       assertEquals( 33, window.foo );
-      delete window.foo;
+      foo = undefined; // IE doesnt like delete window.foo or delete foo;
     }
 
   }
