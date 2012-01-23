@@ -46,8 +46,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * @param widget the enclosed widget whose bounds to adjust
    * @param bounds the actual bounds of the enclosed widget
    * @return the adjusted bounds
-   * @deprecated Should not use this method anymore. Adjusting of the widget bounds is handled on
-   *             the client
+   * @deprecated Adjustment of the widget bounds is now handled on the client.
    */
   @Deprecated
   public Rectangle adjustCoordinates( Widget widget, Rectangle bounds ) {
@@ -104,6 +103,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * @deprecated As of 1.3, server-side widget pooling is no longer required.
    *             This method is not called anymore.
    */
+  @Deprecated
   public void createResetHandlerCalls( String typePoolId ) throws IOException {
   }
 
@@ -135,6 +135,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * @deprecated As of 1.3, server-side widget pooling is no longer required.
    *             This method is not called anymore.
    */
+  @Deprecated
   public String getTypePoolId( Widget widget ) {
     return null;
   }
