@@ -21,7 +21,7 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>ralfstx.eclipse.jshint.builder</name>
+			<name>com.eclipsesource.jshint.builder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
