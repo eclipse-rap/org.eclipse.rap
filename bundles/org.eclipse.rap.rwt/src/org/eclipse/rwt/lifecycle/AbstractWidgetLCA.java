@@ -86,62 +86,6 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
 
   /**
    * <p>
-   * Writes JavaScript code to the response that resets the client-side state of
-   * a disposed widget in order to make it ready for later reuse. After this
-   * code has been processed the client-side widget should be in a state that is
-   * equivalent to a newly created widget.
-   * </p>
-   * <p>
-   * Subclasses should override this method if pooling is supported by the
-   * widget type this LCA belongs to. To activate pooling override
-   * {@link #getTypePoolId(Widget)}.
-   * </p>
-   *
-   * @see #getTypePoolId(Widget)
-   * @param typePoolId the type pool id of the widget to reset
-   * @throws IOException
-   * @deprecated As of 1.3, server-side widget pooling is no longer required.
-   *             This method is not called anymore.
-   */
-  @Deprecated
-  public void createResetHandlerCalls( String typePoolId ) throws IOException {
-  }
-
-  /**
-   * Returns an id that is used to identify the type of a widget in the
-   * client-side widget pool.
-   * <p>
-   * The widget pool is used to store disposed widget instances on the client
-   * for later reuse. This is necessary to improve performance and to save
-   * client memory. Only widgets with the same type pool id can be reused.
-   * </p>
-   * <p>
-   * Usually, the fully qualified class name is a suitable return value. In case
-   * different sub-types of widget instances should be distinguished, this
-   * method must return a different string for every type, e.g. by appending a
-   * suffix. If this method returns <code>null</code>, the widget will not be
-   * stored in the widget pool and cannot be reused.
-   * </p>
-   * <p>
-   * Subclasses may override to activate pooling. In case pooling is activated
-   * the method {@link #createResetHandlerCalls(String)} should also be
-   * overridden.
-   * </p>
-   *
-   * @see #createResetHandlerCalls(String)
-   * @param widget the widget to store in the pool
-   * @return the type pool id or <code>null</code> if the widget should not be
-   *         pooled
-   * @deprecated As of 1.3, server-side widget pooling is no longer required.
-   *             This method is not called anymore.
-   */
-  @Deprecated
-  public String getTypePoolId( Widget widget ) {
-    return null;
-  }
-
-  /**
-   * <p>
    * As a side effect to redraw calls some native widgets trigger events like
    * resize for example. To simulate this behaviour subclasses may override
    * this method. The method takes as parameter type <code>Control</code>,
