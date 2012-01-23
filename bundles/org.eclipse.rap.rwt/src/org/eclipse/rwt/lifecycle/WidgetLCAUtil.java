@@ -1164,16 +1164,6 @@ public final class WidgetLCAUtil {
     return StylesUtil.filterStyles( widget, styles );
   }
 
-
-
-  ////////////////
-  // Help listener
-
-
-
-  ////////////////
-  // Help listener
-
   static boolean equals( Object object1, Object object2 ) {
     boolean result;
     if( object1 == object2 ) {
