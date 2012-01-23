@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.buttonkit;
 
-import java.io.IOException;
-
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
@@ -64,7 +62,7 @@ final class ButtonLCAUtil {
     clientObject.setProperty( "style", WidgetLCAUtil.getStyles( button, ALLOWED_STYLES ) );
   }
 
-  static void renderChanges( Button button ) throws IOException {
+  static void renderChanges( Button button ) {
     ControlLCAUtil.renderChanges( button );
     WidgetLCAUtil.renderCustomVariant( button );
     renderProperty( button, PROP_TEXT, button.getText(), "" );

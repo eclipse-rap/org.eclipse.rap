@@ -15,8 +15,6 @@ import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
-import java.io.IOException;
-
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.util.ParamCheck;
@@ -60,7 +58,7 @@ final class DateTimeLCAUtil {
     clientObject.setProperty( "style", WidgetLCAUtil.getStyles( dateTime, ALLOWED_STYLES ) );
   }
 
-  static void renderChanges( DateTime dateTime ) throws IOException {
+  static void renderChanges( DateTime dateTime ) {
     ControlLCAUtil.renderChanges( dateTime );
     WidgetLCAUtil.renderCustomVariant( dateTime );
     renderListener( dateTime,

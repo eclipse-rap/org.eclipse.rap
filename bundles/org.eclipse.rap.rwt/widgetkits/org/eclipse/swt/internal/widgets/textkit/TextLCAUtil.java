@@ -16,8 +16,6 @@ import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
-import java.io.IOException;
-
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
@@ -93,7 +91,7 @@ final class TextLCAUtil {
     clientObject.setProperty( "style", WidgetLCAUtil.getStyles( text, getAllowedStyles( text ) ) );
   }
 
-  static void renderChanges( Text text ) throws IOException {
+  static void renderChanges( Text text ) {
     ControlLCAUtil.renderChanges( text );
     WidgetLCAUtil.renderCustomVariant( text );
     renderProperty( text, PROP_TEXT, text.getText(), "" );

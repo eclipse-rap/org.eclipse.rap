@@ -16,8 +16,6 @@ import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
-import java.io.IOException;
-
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
@@ -59,7 +57,7 @@ final class MenuItemLCAUtil {
     clientObject.setProperty( "index", parent.indexOf( item ) );
   }
 
-  static void renderChanges( MenuItem item ) throws IOException {
+  static void renderChanges( MenuItem item ) {
     WidgetLCAUtil.renderCustomVariant( item );
     ItemLCAUtil.renderChanges( item );
     WidgetLCAUtil.renderMenu( item, item.getMenu() );

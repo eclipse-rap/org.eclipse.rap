@@ -16,7 +16,6 @@ import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,7 +53,7 @@ final class MenuLCAUtil {
     clientObject.setProperty( "style", WidgetLCAUtil.getStyles( menu, ALLOWED_STYLES ) );
   }
 
-  static void renderChanges( Menu menu ) throws IOException {
+  static void renderChanges( Menu menu ) {
     WidgetLCAUtil.renderCustomVariant( menu );
     renderProperty( menu, PROP_ENABLED, menu.getEnabled(), true );
     renderListener( menu, PROP_MENU_LISTENER, hasMenuListener( menu ), false );

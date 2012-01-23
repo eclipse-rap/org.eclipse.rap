@@ -122,7 +122,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   ///////////////////////
   // RenderChanges helper
 
-  private static void renderProperties( TableItem item ) throws IOException {
+  private static void renderProperties( TableItem item ) {
     renderProperty( item, PROP_TEXTS, getTexts( item ), getDefaultTexts( item ) );
     renderProperty( item, PROP_IMAGES, getImages( item ), new Image[ getColumnCount( item ) ] );
     WidgetLCAUtil.renderBackground( item, getUserBackground( item ) );
