@@ -15,8 +15,7 @@ import org.eclipse.rwt.internal.protocol.IClientObject;
 
 
 /**
- * @deprecated Use {@link IClientObject#addListener(String)} and
- *             {@link IClientObject#removeListener(String)} instead
+ * @deprecated Use {@link IClientObject#setListen(String, boolean)} instead
  */
 @Deprecated
 public final class JSListenerInfo {
