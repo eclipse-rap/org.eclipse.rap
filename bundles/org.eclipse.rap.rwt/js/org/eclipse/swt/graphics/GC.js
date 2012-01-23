@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -214,9 +214,9 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
 
     _fillText : function( operation ) {
       var fill = operation[ 0 ] === "fillText";
-      var text = operation[ 1 ];
-      var x = operation[ 2 ];
-      var y = operation[ 3 ];
+      var text = this._escapeText( operation[ 1 ], operation[ 2 ], operation[ 3 ], operation[ 4 ] );
+      var x = operation[ 5 ];
+      var y = operation[ 6 ];
       var textElement = document.createElement( "div" );
       var style = textElement.style;
       style.position = "absolute";
@@ -231,6 +231,16 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       }
       textElement.innerHTML = text;
       this._textCanvas.appendChild( textElement );
+    },
+
+    _escapeText : function( value, drawMnemonic, drawDelemiter, drawTab ) {
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var text = EncodingUtil.escapeText( value, drawMnemonic );
+      var replacement = drawDelemiter ? "<br/>" : "";
+      text = EncodingUtil.replaceNewLines( text, replacement );
+      replacement = drawTab ? "&nbsp;&nbsp;&nbsp;&nbsp;" : "";
+      text = text.replace( /\t/g, replacement );
+      return text;
     },
 
     _drawImage : function( operation ) {

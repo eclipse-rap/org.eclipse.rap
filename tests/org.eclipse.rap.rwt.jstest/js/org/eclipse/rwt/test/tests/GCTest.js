@@ -232,7 +232,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", [ 255, 255, 255 ], [ 0, 0, 0 ] );
       assertEquals( 0, gc._textCanvas.childNodes.length );
-      gc.draw( [ [ "fillText", "Hello World", 40, 50 ] ]);
+      gc.draw( [ [ "fillText", "Hello World", false, false, false, 40, 50 ] ]);
       assertEquals( 1, gc._textCanvas.childNodes.length );
       var textNode = gc._textCanvas.firstChild;
       assertEquals( "Hello World", textNode.innerHTML );
@@ -246,7 +246,39 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       canvas.destroy();
       testUtil.flush();
     },
-    
+
+    // Tests ported from GCOperationWriter_Test#testProcessText...
+    testEscapeText : function() {
+      var text = "text with \ttab, \nnew line and &mnemonic";
+      var gc = this._createGCByProtocol();
+      var expected = "text with &nbsp;&nbsp;&nbsp;&nbsp;tab, <br/>new line and mnemonic";
+      assertEquals( expected, gc._escapeText( text, true, true, true ) );
+      expected = "text with &nbsp;&nbsp;&nbsp;&nbsp;tab, <br/>new line and &amp;mnemonic";
+      assertEquals( expected, gc._escapeText( text, false, true, true ) );
+      expected = "text with &nbsp;&nbsp;&nbsp;&nbsp;tab, new line and &amp;mnemonic";
+      assertEquals( expected, gc._escapeText( text, false, false, true ) );
+      expected = "text with tab, new line and &amp;mnemonic";
+      assertEquals( expected, gc._escapeText( text, false, false, false ) );
+
+      // test mnemonic
+      text = "text without mnemonic";
+      assertEquals( text, gc._escapeText( text, true, false, false ) );
+      text = "text with &mnemonic";
+      expected = "text with mnemonic";
+      assertEquals( expected, gc._escapeText( text, true, false, false ) );
+      expected = "text with &amp;mnemonic";
+      assertEquals( expected, gc._escapeText( text, false, false, false ) );
+      text = "text with &&mnemonic";
+      expected = "text with &amp;mnemonic";
+      assertEquals( expected, gc._escapeText( text, true, false, false ) );
+      expected = "text with &amp;&amp;mnemonic";
+      assertEquals( expected, gc._escapeText( text, false, false, false ) );
+
+      gc.dispose();
+      org.eclipse.rwt.protocol.ObjectManager.getObject( "w2" ).destroy();
+      org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" ).destroy();
+    },
+
     /////////
     // Helper
     
@@ -267,9 +299,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
         "action" : "create",
         "type" : "rwt.GC",
         "properties" : {
-         "parent" : "w3"
+          "parent" : "w3"
         }
       } );
+      return org.eclipse.rwt.protocol.ObjectManager.getObject( "w4" );
     },
     
     _setProperty : function( gc, property, value ) {

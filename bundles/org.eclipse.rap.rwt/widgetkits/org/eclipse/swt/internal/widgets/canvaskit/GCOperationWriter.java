@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,6 @@ import java.util.Map;
 
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.internal.util.EncodingUtil;
-import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
@@ -209,7 +207,7 @@ final class GCOperationWriter {
     float startAngle = round( operation.startAngle * factor * -1, 4 );
     float arcAngle = round( operation.arcAngle * factor * -1, 4 );
     addClientOperation( "beginPath" );
-    addToOperations( 
+    addToOperations(
       "arc",
       new Float( x + width / 2 ),
       new Float( y + height / 2 ),
@@ -244,10 +242,10 @@ final class GCOperationWriter {
     if( operation.simple ) {
       addClientOperation( "drawImage", path, operation.destX, operation.destY );
     } else {
-      addClientOperation( 
-        "drawImage", 
-        path, 
-        operation.srcX, 
+      addClientOperation(
+        "drawImage",
+        path,
+        operation.srcX,
         operation.srcY,
         operation.srcWidth,
         operation.srcHeight,
@@ -257,34 +255,22 @@ final class GCOperationWriter {
         operation.destHeight
       );
     }
-    
+
   }
 
   private void drawText( DrawText operation ) {
     boolean fill = ( operation.flags & SWT.DRAW_TRANSPARENT ) == 0;
-    String text = processText( operation.text, operation.flags );
-    addClientOperation( 
-      fill ? "fillText" : "strokeText", 
-      text,
-      operation.x,
-      operation.y
-    );
-  }
-
-  static String processText( String text, int flags ) {
-    boolean drawMnemonic = ( flags & SWT.DRAW_MNEMONIC ) != 0;
-    String result = WidgetLCAUtil.escapeText( text, drawMnemonic );
-    String replacement = "";
-    if( ( flags & SWT.DRAW_DELIMITER ) != 0 ) {
-      replacement = "<br/>";
-    }
-    result = EncodingUtil.replaceNewLines( result, replacement );
-    replacement = "";
-    if( ( flags & SWT.DRAW_TAB ) != 0 ) {
-      replacement = "&nbsp;&nbsp;&nbsp;&nbsp;";
-    }
-    result = result.replaceAll( "\t", replacement );
-    return result;
+    boolean drawMnemonic = ( operation.flags & SWT.DRAW_MNEMONIC ) != 0;
+    boolean drawDelemiter = ( operation.flags & SWT.DRAW_DELIMITER ) != 0;
+    boolean drawTab = ( operation.flags & SWT.DRAW_TAB ) != 0;
+    Object[] objects = new Object[] {
+      fill ? "fillText" : "strokeText",
+      operation.text,
+      Boolean.valueOf( drawMnemonic ),
+      Boolean.valueOf( drawDelemiter ),
+      Boolean.valueOf( drawTab )
+    };
+    addClientOperation( objects, new float[] { operation.x, operation.y } );
   }
 
   private void setProperty( SetProperty operation ) {
@@ -305,7 +291,7 @@ final class GCOperationWriter {
         float alpha = ( ( Integer )operation.value ).floatValue();
         float globalAlpha = round( alpha / 255, 2 );
         name = "globalAlpha";
-        value = new Float( globalAlpha ); 
+        value = new Float( globalAlpha );
       break;
       case SetProperty.LINE_WIDTH:
         name = "lineWidth";
@@ -362,11 +348,11 @@ final class GCOperationWriter {
   private void addClientOperation( String name, float... args ) {
     addClientOperation( new Object[]{ name }, args );
   }
-  
+
   private void addClientOperation( String name, String argText, float... args ) {
     addClientOperation( new Object[]{ name, argText }, args );
   }
-  
+
   private void addClientOperation( Object[] objects, float[] numbers ) {
     Object[] operation = new Object[ objects.length + numbers.length ];
     for( int i = 0; i < objects.length; i++ ) {
@@ -377,7 +363,7 @@ final class GCOperationWriter {
     }
     operations.add( operation );
   }
-  
+
   private static String toCSSFont( FontData fontData ) {
     StringBuilder result = new StringBuilder();
     if( ( fontData.getStyle() & SWT.ITALIC ) != 0 ) {
@@ -405,7 +391,7 @@ final class GCOperationWriter {
     result[ 2 ] = rgb.blue;
     return result;
   }
-  
+
   private float getOffset( boolean fill ) {
     float result = 0;
     if( !fill && lineWidth % 2 != 0 ) {
@@ -413,10 +399,10 @@ final class GCOperationWriter {
     }
     return result;
   }
-  
+
   float round( double value, int decimals ) {
     int factor = ( int )Math.pow( 10, decimals );
     return ( ( float )Math.round( factor * value ) ) / factor;
   }
-  
+
 }
