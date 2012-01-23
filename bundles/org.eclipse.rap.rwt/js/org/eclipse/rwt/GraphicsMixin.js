@@ -294,7 +294,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       if( event.getValue() == null && this._gfxCanvasAppended ) {
         this._removeCanvas();
       }
-      if( event.getValue() != null && this._isCanvasReady() ) {
+      if( event.getValue() != null && this._isCanvasReady() ) { // TODO [tb] : prevent _copyData in this case
         if( this._gfxBackgroundEnabled ) {
           this._renderGfxBackground();
         }
@@ -339,21 +339,26 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       }
     },
 
-    _resetTargetNode : function() {
-      if( this._innerStyle ) {
-        this._innerStyle.left = "0px";
-        this._innerStyle.top = "0px";
-        if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+    _resetTargetNode : qx.core.Variant.select( "qx.client", {
+      "mshtml" : function() {
+        if( this._innerStyle ) {
+          this._innerStyle.left = "0px";
+          this._innerStyle.top = "0px";
           this._innerStyle.width = "";
           this._innerStyle.height = "";
           this.addToQueue( "width" );
           this.addToQueue( "height" );
-        } else {
+        }
+      },
+      "default" : function() {
+        if( this._innerStyle ) {
+          this._innerStyle.left = "0px";
+          this._innerStyle.top = "0px";
           this._innerStyle.width = "100%";
           this._innerStyle.height = "100%";
         }
       }
-    },
+    } ),
 
     /////////////////////
     // internals - canvas
@@ -378,36 +383,41 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
 
     _createCanvas : function() {
       if( !this._innerStyle ) {
-        var outline = null;
-        if( qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
-          //this prevents a graphical glitch in Safari
-          outline = this.getStyleProperty( "outline" );
-          this.removeStyleProperty( "outline" );
-          this.__outerElementStyleProperties.outline = true;
-        }
-        // make opacity work
-        if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-          this.__outerElementStyleProperties.filter = true;
-        } else {
-          this.__outerElementStyleProperties.opacity = true;
-          if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
-            this.__outerElementStyleProperties.MozOpacity = true;
-          }
-        }
-        this.prepareEnhancedBorder();
-        // TODO [tb] : redundant in some cases:
-//        this.addToQueue( "width" );
-//        this.addToQueue( "height" );
-        if( outline ) {
-          this.setStyleProperty( "outline", outline );
-        }
-        this._applyOpacity( this.getOpacity() );
+        this._prepareForCanvas();
       }
       this._gfxData = {};
       this._gfxCanvas = org.eclipse.rwt.GraphicsUtil.createCanvas();
       // TODO [tb] : can be removed?
       this._prepareBackgroundShape();
     },
+    
+    _prepareForCanvas : qx.core.Variant.select( "qx.client", {
+      "mshtml" : function() {
+        this.__outerElementStyleProperties.filter = true;
+        this.prepareEnhancedBorder();
+        this._applyOpacity( this.getOpacity() );
+      },
+      "gecko" : function() {
+        var outline = null;
+        this.__outerElementStyleProperties.opacity = true;
+        this.__outerElementStyleProperties.MozOpacity = true;
+        this.prepareEnhancedBorder();
+        this._applyOpacity( this.getOpacity() );
+      },
+      "webkit" : function() {
+        var outline = this.getStyleProperty( "outline" );
+        this.removeStyleProperty( "outline" );
+        this.__outerElementStyleProperties.outline = true;
+        this.__outerElementStyleProperties.opacity = true;
+        this.setStyleProperty( "outline", outline );
+        this._applyOpacity( this.getOpacity() );
+      },
+      "default" : function() {
+        this.__outerElementStyleProperties.opacity = true;
+        this.prepareEnhancedBorder();
+        this._applyOpacity( this.getOpacity() );
+      }
+    } ),
 
     _appendCanvas : function() {
       var parentNode = this.getElement();

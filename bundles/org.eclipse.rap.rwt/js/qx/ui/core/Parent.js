@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -1340,8 +1340,7 @@ qx.Class.define("qx.ui.core.Parent",
     // TODO There must be a better way than to define this in defer
 
     // Fix Operas Rendering Bugs
-    if (qx.core.Variant.isSet("qx.client", "opera"))
-    {
+    if( org.eclipse.rwt.Client.isOpera() ) {
       members._layoutChildOrig = members._layoutChild;
 
       members._layoutChild = function(vChild)

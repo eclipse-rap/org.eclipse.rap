@@ -186,7 +186,7 @@ org.eclipse.rwt.Display.prototype = {
     if( typeof screen.colorDepth == "number" ) {
       depth = parseInt( screen.colorDepth );
     }
-    if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
+    if( org.eclipse.rwt.Client.isGecko() ) {
       // Firefox detects 24bit and 32bit as 24bit, but 32bit is more likely
       depth = depth == 24 ? 32 : depth;
     }

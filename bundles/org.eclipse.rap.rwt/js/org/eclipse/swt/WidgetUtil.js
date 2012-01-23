@@ -28,13 +28,14 @@ qx.Class.define( "org.eclipse.swt.WidgetUtil", {
      * workaround for IE bug
      * div's have the height of the font even if they are empty
      */
-    fixIEBoxHeight : function( widget ) {
-      if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+    fixIEBoxHeight : qx.core.Variant.select( "qx.client", {
+      "mshtml" : function( widget ) {
         widget.setStyleProperty( "fontSize", "0" );
         widget.setStyleProperty( "lineHeight", "0" );
-      }
-    },
-    
+      },
+      "default" : qx.lang.Function.returnTrue
+    } ),
+
     getControl : function( widget ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var result = widget;

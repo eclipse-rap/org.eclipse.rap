@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -432,16 +432,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
 
     _setFont : function( element, font ) {
       if( font == "" || font == null ) {
-        // Resetting style.font causes errors in IE with any of these syntaxes:
-        // node.style.font = null | undefined | "inherit" | "";
-        if( !qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-          element.style.font = font;
-        }
-        element.style.fontFamily = "";
-        element.style.fontSize = "";
-        element.style.fontVariant = "";
-        element.style.fontStyle = "";
-        element.style.fontWeight = "";
+        this._resetFont( element );
       } else {
         if( font instanceof qx.ui.core.Font ) {
           font.renderStyle( element.style );
@@ -450,6 +441,26 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         }
       }
     },
+    
+    _resetFont : qx.core.Variant.select( "qx.client", {
+      "default" : function( element ) {
+        element.style.font = "";
+        element.style.fontFamily = "";
+        element.style.fontSize = "";
+        element.style.fontVariant = "";
+        element.style.fontStyle = "";
+        element.style.fontWeight = "";
+      },
+      "mshtml" : function( element ) {
+        // Resetting style.font causes errors in IE with any of these syntaxes:
+        // node.style.font = null | undefined | "inherit" | "";
+        element.style.fontFamily = "";
+        element.style.fontSize = "";
+        element.style.fontVariant = "";
+        element.style.fontStyle = "";
+        element.style.fontWeight = "";
+      }
+    } ),
 
     _setTextDecoration : function( element, decoration ) {
       if( decoration == null || decoration === "none" ) {

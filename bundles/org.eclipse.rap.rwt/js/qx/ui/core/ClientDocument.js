@@ -46,13 +46,6 @@ qx.Class.define("qx.ui.core.ClientDocument",
     // Reset absolute position
     this._document.body.style.position = "";
 
-    // Disable IE background image cache
-    if( qx.core.Variant.isSet("qx.client", "mshtml") && (org.eclipse.rwt.Client.getMajor() < 7) ){
-      try {
-        document.execCommand("BackgroundImageCache", false, true);
-      } catch(err) {};
-    }
-
     // Cache current size
     this._cachedInnerWidth = this._document.body.offsetWidth;
     this._cachedInnerHeight = this._document.body.offsetHeight;
@@ -75,7 +68,7 @@ qx.Class.define("qx.ui.core.ClientDocument",
     org.eclipse.rwt.EventHandler.setFocusRoot(this);
     
     // Gecko-specific settings
-    if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
+    if( org.eclipse.rwt.Client.isGecko() ) {
       // Fix for bug 193703:
       this.getElement().style.position = "absolute";      
       this.setSelectable( true );

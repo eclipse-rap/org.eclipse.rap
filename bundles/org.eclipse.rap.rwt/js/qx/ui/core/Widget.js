@@ -3820,7 +3820,7 @@ qx.Class.define( "qx.ui.core.Widget", {
         this._targetNode = document.createElement( "div" );
         this._innerStyle = this._targetNode.style;
         this._targetNodeEnabled = true;
-        if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+        if( org.eclipse.rwt.Client.isMshtml() ) {
           this.addToQueue( "width" );
           this.addToQueue( "height" );
         } else {
@@ -4082,7 +4082,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     // to substract the two border pixels assigned to
     // the outer element from the outer width to get
     // the inner width
-    if (qx.core.Variant.isSet("qx.client", "mshtml")) {
+    if( org.eclipse.rwt.Client.isMshtml() ) {
       members._renderRuntimeWidth = function(v) {
         this._style.pixelWidth = (v==null)?0:v;
         if( this._targetNodeEnabled ) {

@@ -50,7 +50,7 @@ qx.Class.define( "qx.io.Alias", {
         var alias = value.substring(0, value.indexOf("/"));
         var resolved = this._aliases[alias];
         if( resolved === undefined ) {
-          if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+          if( org.eclipse.rwt.Client.isMshtml() ) {
             if( window.location.protocol === "https:" ) {
               var firstCharPointOrSlash = value.match( /^[\.\/]/ );
               var firstCharAlphaNumeric = value.match( /^\w/ );
@@ -67,7 +67,7 @@ qx.Class.define( "qx.io.Alias", {
           return value;
         } else {
           // rewrite relative URL to an absolute if necessary
-          if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+          if( org.eclipse.rwt.Client.isMshtml() ) {
             if( window.location.protocol === "https:" ) {
               resolved = this.__rewriteUrl( resolved );
             }

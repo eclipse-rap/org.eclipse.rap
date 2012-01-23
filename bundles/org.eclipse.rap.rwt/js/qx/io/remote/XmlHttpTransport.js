@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -260,7 +260,7 @@ qx.Class.define("qx.io.remote.XmlHttpTransport",
       // not using a backend that evaluates the referrer, it's still useful to have it
       // set correctly, e.g. when looking at server log files.
 
-      if (!qx.core.Variant.isSet("qx.client", "webkit"))
+      if (! org.eclipse.rwt.Client.isWebkit() )
       {
         // avoid "Refused to set unsafe header Referer" in Safari and other Webkit-based browsers
         vRequest.setRequestHeader('Referer', window.location.href);

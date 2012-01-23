@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
       var style = element.style;
       // Resetting style.font causes errors in IE with any of these syntaxes:
       // node.style.font = null | undefined | "inherit" | "";
-      if( !qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+      if( !org.eclipse.rwt.Client.isMshtml() ) {
         style.font = "";
       }
       style.fontFamily = fontProps.fontFamily || "";
@@ -112,7 +112,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
         document.body.appendChild( node );
         this._measureNode = node;
       }
-      if( !qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+      if( !org.eclipse.rwt.Client.isMshtml() ) {
         node.style.font = "";
       }
       return node;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -405,15 +405,7 @@ qx.Class.define("qx.ui.basic.Image",
         {
           try
           {
-            // Create Image-Node
-            // Webkit has problems with "new Image". Maybe related to "new Function" with
-            // is also not working correctly.
-            if (qx.core.Variant.isSet("qx.client", "webkit")) {
-              this._image = document.createElement("img");
-            } else {
-              this._image = new Image;
-            }
-
+            this._createImageNode();
             this._image.style.border = "0 none";
             this._image.style.verticalAlign = "top";
             this._image.alt = "";
@@ -423,9 +415,7 @@ qx.Class.define("qx.ui.basic.Image",
             throw new Error( "Failed while creating image #1 " + ex );
           }
 
-          if (qx.core.Variant.isSet("qx.client", "gecko|opera|webkit")) {
-            this._styleEnabled();
-          }
+          this._imageNodeCreated();
         }
 
         value.appendChild(this._image);
@@ -439,8 +429,24 @@ qx.Class.define("qx.ui.basic.Image",
       }
     },
 
-
-
+    // Create Image-Node
+    // Webkit has problems with "new Image". Maybe related to "new Function" with
+    // is also not working correctly.
+    _createImageNode : qx.core.Variant.select( "qx.client", {
+      "webkit" : function() {
+        this._image = document.createElement("img");
+      },
+      "default" : function() {
+        this._image = new Image;
+      }
+    } ),
+    
+    _imageNodeCreated : qx.core.Variant.select( "qx.client", {
+      "gecko|opera|webkit" : function() {
+        this._styleEnabled();
+      },
+      "default": qx.lang.Function.returnTrue
+    } ),
 
     /*
     ---------------------------------------------------------------------------

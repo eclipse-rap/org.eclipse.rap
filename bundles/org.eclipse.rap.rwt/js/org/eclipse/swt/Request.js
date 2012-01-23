@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -330,19 +330,21 @@ qx.Class.define( "org.eclipse.swt.Request", {
         requestQueue._timer.start();
       }
     },
-
-    _isConnectionError : function( statusCode ) {
-      var result;
-      if( qx.core.Variant.isSet( "qx.client", "mshtml|newmshtml" ) ) {
+    
+    _isConnectionError : qx.core.Variant.select( "qx.client", {
+      "mshtml" : function( statusCode ) {
         // for a description of the IE status codes, see
         // http://support.microsoft.com/kb/193625
-        result = (    statusCode === 12007    // ERROR_INTERNET_NAME_NOT_RESOLVED
-                   || statusCode === 12029    // ERROR_INTERNET_CANNOT_CONNECT
-                   || statusCode === 12030    // ERROR_INTERNET_CONNECTION_ABORTED
-                   || statusCode === 12031    // ERROR_INTERNET_CONNECTION_RESET
-                   || statusCode === 12152 ); // ERROR_HTTP_INVALID_SERVER_RESPONSE
-      } else if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
+        var result = (    statusCode === 12007    // ERROR_INTERNET_NAME_NOT_RESOLVED
+                       || statusCode === 12029    // ERROR_INTERNET_CANNOT_CONNECT
+                       || statusCode === 12030    // ERROR_INTERNET_CONNECTION_ABORTED
+                       || statusCode === 12031    // ERROR_INTERNET_CONNECTION_RESET
+                       || statusCode === 12152 ); // ERROR_HTTP_INVALID_SERVER_RESPONSE
+        return result;
+      },
+      "gecko" : function( statusCode ) {
         // Firefox 3 reports other statusCode than oder versions (bug #249814)
+        var result;
         // Check if Gecko > 1.9 is running (used in FF 3)
         // Gecko/app integration overview: http://developer.mozilla.org/en/Gecko
         if( org.eclipse.rwt.Client.getMajor() * 10 + org.eclipse.rwt.Client.getMinor() >= 19 ) {
@@ -350,15 +352,12 @@ qx.Class.define( "org.eclipse.swt.Request", {
         } else {
           result = ( statusCode === -1 );
         }
-      } else if( qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
-        result = ( statusCode === 0 );
-      } else if( qx.core.Variant.isSet( "qx.client", "opera" ) ) {
-        result = ( statusCode === 0 );
-      } else {
-        result = false;
+        return result;
+      },
+      "default" : function( statusCode ) {
+        return statusCode === 0;
       }
-      return result;
-    },
+    } ),
 
     ///////////////////////////////////////////////////
     // Wait hint - UI feedback while request is running

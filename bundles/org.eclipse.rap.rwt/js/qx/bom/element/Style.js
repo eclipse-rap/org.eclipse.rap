@@ -49,8 +49,8 @@ qx.Class.define("qx.bom.element.Style",
       // Style property name correction
       names :
       {
-        "float" : qx.core.Variant.isSet("qx.client", "mshtml") ? "styleFloat" : "cssFloat",
-        "boxSizing" : qx.core.Variant.isSet("qx.client", "gecko") ? "mozBoxSizing" : "boxSizing"
+        "float" : org.eclipse.rwt.Client.isMshtml() ? "styleFloat" : "cssFloat",
+        "boxSizing" : org.eclipse.rwt.Client.isGecko() ? "mozBoxSizing" : "boxSizing"
       },
 
       // Mshtml has propertiery pixel* properties for locations and dimensions

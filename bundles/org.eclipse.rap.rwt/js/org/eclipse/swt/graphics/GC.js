@@ -18,15 +18,9 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     this._control = control;
     this._control.addEventListener( "create", this._onControlCreate, this );
     this._vmlCanvas = null;
-    if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-      this._vmlCanvas = org.eclipse.rwt.VML.createCanvas();
-      this._canvas = org.eclipse.rwt.VML.getCanvasNode( this._vmlCanvas );
-      this._context = new org.eclipse.rwt.VMLCanvas( this._vmlCanvas );
-      this._control.addEventListener( "insertDom", this._onCanvasAppear, this );
-    } else {
-      this._canvas = document.createElement( "canvas" );
-      this._context = this._canvas.getContext( "2d" );
-    }
+    this._canvas = null;
+    this._context = null;
+    this._createCanvas();
     this._textCanvas = document.createElement( "div" );
     this._textCanvas.style.position = "absolute";
     this._textCanvas.style.overflow = "hidden";
@@ -40,7 +34,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
 
   destruct : function() {
     this._control.removeEventListener( "create", this._onControlCreate, this );
-    if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+    if( org.eclipse.rwt.Client.isMshtml() ) {
       this._control.removeEventListener( "insertDom", this._onCanvasAppear, this );
     }
     if( this._control.isCreated() && !this._control.isDisposed() ) {
@@ -127,6 +121,19 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     
     ////////////
     // Internals
+
+    _createCanvas : qx.core.Variant.select( "qx.client", {
+      "mshtml" : function() {
+        this._vmlCanvas = org.eclipse.rwt.VML.createCanvas();
+        this._canvas = org.eclipse.rwt.VML.getCanvasNode( this._vmlCanvas );
+        this._context = new org.eclipse.rwt.VMLCanvas( this._vmlCanvas );
+        this._control.addEventListener( "insertDom", this._onCanvasAppear, this );
+      },
+      "default" : function() {
+        this._canvas = document.createElement( "canvas" );
+        this._context = this._canvas.getContext( "2d" );
+      }
+    } ),
 
     _onControlCreate : function() {
       this._addCanvasToDOM();
@@ -250,7 +257,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       image.src = args[ 0 ];
       args[ 0 ] = image;
       // On (native) canvas, only loaded images can be drawn: 
-      if( image.complete || qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+      if( image.complete || org.eclipse.rwt.Client.isMshtml() ) {
         this._context.drawImage.apply( this._context, args );
       } else {
         var alpha = this._context.globalAlpha;

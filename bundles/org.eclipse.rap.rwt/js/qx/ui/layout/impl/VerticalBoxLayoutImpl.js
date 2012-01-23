@@ -882,7 +882,7 @@ qx.Class.define("qx.ui.layout.impl.VerticalBoxLayoutImpl",
       var vWidget = this.getWidget();
 
       // special stretching support
-      if (qx.core.Variant.isSet("qx.client", "gecko"))
+      if ( org.eclipse.rwt.Client.isGecko() )
       {
         if (vChild.getAllowStretchX() && vWidget.getStretchChildrenOrthogonalAxis() && vChild._computedWidthTypeNull)
         {

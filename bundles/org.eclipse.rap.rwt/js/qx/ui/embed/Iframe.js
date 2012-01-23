@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -349,7 +349,7 @@ qx.Class.define("qx.ui.embed.Iframe",
     {
       if (this._blockerNode &&
          (!this._blockerNode.parentElement ||
-         (qx.core.Variant.isSet("qx.client", "gecko") && !this._blockerNode.parentNode))) {
+         (org.eclipse.rwt.Client.isGecko() && !this._blockerNode.parentNode))) {
         this._getBlockerParent().appendChild(this._blockerNode);
       }
     },
@@ -364,7 +364,7 @@ qx.Class.define("qx.ui.embed.Iframe",
     {
       if (this._blockerNode &&
          (this._blockerNode.parentElement ||
-         (qx.core.Variant.isSet("qx.client", "gecko") && this._blockerNode.parentNode))) {
+         (org.eclipse.rwt.Client.isGecko() && this._blockerNode.parentNode))) {
         this._getBlockerParent().removeChild(this._blockerNode);
       }
     },
@@ -402,26 +402,7 @@ qx.Class.define("qx.ui.embed.Iframe",
      */
     _generateIframeElement : function()
     {
-      var frameName = this.getFrameName()
-      if (qx.core.Variant.isSet("qx.client", "mshtml"))
-      {
-        var nameStr = frameName ? 'name="' + frameName + '"' : '';
-        var frameEl = qx.ui.embed.Iframe._element = document.createElement(
-          "<iframe " + nameStr + " ></iframe>");
-        frameEl.attachEvent("onload", function() {
-          qx.ui.embed.Iframe.load(frameEl);
-        });
-      }
-      else
-      {
-        var frameEl = qx.ui.embed.Iframe._element = document.createElement("iframe");
-
-        frameEl.onload = qx.ui.embed.Iframe.load;
-
-        if (frameName) {
-          frameEl.name = frameName;
-        }
-      }
+      var frameEl = this._createIframeNode( this.getFrameName() );
 
       frameEl._QxIframe = this;
 
@@ -449,6 +430,26 @@ qx.Class.define("qx.ui.embed.Iframe",
 
       return frameEl;
     },
+    
+    _createIframeNode : qx.core.Variant.select( "qx.client", {
+      "mshtml" : function( frameName ) {
+        var nameStr = frameName ? 'name="' + frameName + '"' : '';
+        var frameEl = qx.ui.embed.Iframe._element = document.createElement(
+          "<iframe " + nameStr + " ></iframe>");
+        frameEl.attachEvent("onload", function() {
+          qx.ui.embed.Iframe.load(frameEl);
+        });
+        return frameEl;
+      },
+      "default" : function( frameName ) {
+        var frameEl = qx.ui.embed.Iframe._element = document.createElement("iframe");
+        frameEl.onload = qx.ui.embed.Iframe.load;
+        if (frameName) {
+          frameEl.name = frameName;
+        }
+        return frameEl;
+      }
+    } ),
 
 
     /**
@@ -462,8 +463,7 @@ qx.Class.define("qx.ui.embed.Iframe",
       var blockerEl = qx.ui.embed.Iframe._blocker = document.createElement("div");
       var blockerStyle = blockerEl.style;
 
-      if (qx.core.Variant.isSet("qx.client", "mshtml"))
-      {
+      if( org.eclipse.rwt.Client.isMshtml() ) {
         // Setting the backgroundImage causes an "insecure elements" warning under SSL
         // blockerStyle.backgroundImage = "url(" + qx.io.Alias.getInstance().resolve("static/image/blank.gif") + ")";
 
@@ -668,9 +668,8 @@ qx.Class.define("qx.ui.embed.Iframe",
     },
 
     destroy : function() {
-      var isMshtml =  qx.core.Variant.isSet( "qx.client", "mshtml" );
       var src = "javascript:false;";
-      if( isMshtml && this._iframeNode && this.getSource() !== src ) {
+      if( org.eclipse.rwt.Client.isMshtml() && this._iframeNode && this.getSource() !== src ) {
         this.setStyleProperty( "visibility", "hidden" );
         this.addToDocument();
         this.addEventListener( "load", function() {

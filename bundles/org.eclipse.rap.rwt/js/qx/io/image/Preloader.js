@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -67,11 +67,8 @@ qx.Class.define("qx.io.image.Preloader",
     // Set Source
     this._source = imageUrl;
     this._element.src = imageUrl;
-
-    // Set PNG State
-    if (qx.core.Variant.isSet("qx.client", "mshtml")) {
-      this._isPng = /\.png$/i.test(this._element.nameProp);
-    }
+    
+    this._checkPng();
 
     qx.io.image.PreloaderManager.getInstance().add(this);
   },
@@ -148,6 +145,13 @@ qx.Class.define("qx.io.image.Preloader",
     isErroneous : function() {
       return this._isErroneous;
     },
+    
+    _checkPng : qx.core.Variant.select( "qx.client", {
+      "default": qx.lang.Function.returnTrue,
+      "mshtml" : function() {
+        this._isPng = /\.png$/i.test(this._element.nameProp);
+      } 
+    } ),
 
     // only used in mshtml: true when the image format is in png
     _isPng : false,

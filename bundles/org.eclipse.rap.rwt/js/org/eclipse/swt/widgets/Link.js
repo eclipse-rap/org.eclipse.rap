@@ -226,7 +226,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       if( e.which ) {
         leftBtnPressed = ( e.which === 1 );
       } else if ( e.button ) {
-        if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+        if( org.eclipse.rwt.Client.isMshtml() ) {
           leftBtnPressed = ( e.button === 1 );
         } else {
           leftBtnPressed = ( e.button === 0 );
@@ -245,7 +245,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
 
     _getEventTarget : function( e ) {
       var target;
-      if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+      if( org.eclipse.rwt.Client.isMshtml() ) {
         target = window.event.srcElement;
       } else {
         target = e.target;
@@ -297,7 +297,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       var hyperlink = this._getFocusedHyperlinkElement();
       if( hyperlink !== null ) {
         hyperlink.blur();
-        if( qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
+        if( org.eclipse.rwt.Client.isWebkit() ) {
           hyperlink.style.outline = "none";
         }
       }
@@ -305,7 +305,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       hyperlink = this._getFocusedHyperlinkElement();
       if( hyperlink !== null ) {
         hyperlink.focus();
-        if( qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
+        if( org.eclipse.rwt.Client.isWebkit() ) {
           hyperlink.style.outline = "1px dotted";
         }
       }

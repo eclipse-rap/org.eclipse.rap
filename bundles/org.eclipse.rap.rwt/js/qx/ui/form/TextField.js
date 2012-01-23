@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -333,16 +333,6 @@ qx.Class.define("qx.ui.form.TextField",
         istyle.WebkitAppearance = "none";
         istyle.MozAppearance = "none";
 
-        // Emulate IE hard-coded margin
-        // Mozilla by default emulates this IE handling, but in a wrong
-        // way. IE adds the additional margin to the CSS margin where
-        // Mozilla replaces it. But this make it possible for the user
-        // to overwrite the margin, which is not possible in IE.
-        // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=73817
-        if (qx.core.Variant.isSet("qx.client", "gecko|opera|webkit")) {
-          // NOTE [tb] : Non-IE browser also shift text 1px to the right, correcting with margin: 
-          istyle.margin = "1px 0 1px -1px";
-        }
 
         // Sync font, color, textAlign, cursor and text shadow
         this._renderFont();
@@ -352,21 +342,32 @@ qx.Class.define("qx.ui.form.TextField",
         this._renderSpellCheck();
         this._renderTextShadow();
 
-        // Register inline event
-        if (qx.core.Variant.isSet("qx.client", "mshtml")) {
-          inp.onpropertychange = this.__oninput;
-        } else {
-          inp.addEventListener("input", this.__oninput, false);
-        }
-        
-        if (qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
-          this._webkitMultilineFix();
-        }
+        this._textInit( inp );
 
         // TODO [tb] : write test:
         this._getTargetNode().appendChild( inp );
       }
     },
+    
+    _textInit : qx.core.Variant.select( "qx.client", {
+      "default" : function( inp ) {
+        // Emulate IE hard-coded margin
+        // Mozilla by default emulates this IE handling, but in a wrong
+        // way. IE adds the additional margin to the CSS margin where
+        // Mozilla replaces it. But this make it possible for the user
+        // to overwrite the margin, which is not possible in IE.
+        // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=73817
+        // NOTE [tb] : Non-IE browser also shift text 1px to the right, correcting with margin: 
+        inp.style.margin = "1px 0 1px -1px";
+        inp.addEventListener( "input", this.__oninput, false );
+        if( org.eclipse.rwt.Client.isWebkit() ) {
+          this._webkitMultilineFix();
+        }
+      },
+      "mshtml" : function( inp ) {
+        inp.onpropertychange = this.__oninput;
+      }
+    } ),
     
     _webkitMultilineFix : function(){
       this.addEventListener( "keydown", this._preventEnter, this );
@@ -887,11 +888,8 @@ qx.Class.define("qx.ui.form.TextField",
     _centerFieldVertically : function() {
       if( this._inputTag === "input" && this._inputElement ) {
         var innerHeight = this.getInnerHeight();
-        var inputElementHeight = qx.html.Dimension.getBoxHeight( this._inputElement );
+        var inputElementHeight = this._getInputElementHeight();
         if( inputElementHeight != 0 ) {
-          if( qx.core.Variant.isSet( "qx.client", "mshtml|newmshtml" ) ) {
-            inputElementHeight -= 2;
-          }
           var top = ( innerHeight - inputElementHeight ) / 2 - 1;
           if( top < 0 ) {
             top = 0;
@@ -904,11 +902,21 @@ qx.Class.define("qx.ui.form.TextField",
         }
       }
     },
+    
+    _getInputElementHeight : qx.core.Variant.select( "qx.client", {
+      "mshtml|newmshtml" : function() {
+        var result = qx.html.Dimension.getBoxHeight( this._inputElement );
+        if( result != 0 ) {
+          result -= 2;
+        }
+        return result;
+      },
+      "default" :function() {
+        return qx.html.Dimension.getBoxHeight( this._inputElement );
+      }
+    } ),
 
     _firstInputFixApplied : false,
-
-
-
 
     /*
     ---------------------------------------------------------------------------
@@ -1473,7 +1481,7 @@ qx.Class.define("qx.ui.form.TextField",
   {
     if (this._inputElement)
     {
-      if (qx.core.Variant.isSet("qx.client", "mshtml")) {
+      if( org.eclipse.rwt.Client.isMshtml() ) {
         this._inputElement.onpropertychange = null;
       } else {
         this._inputElement.removeEventListener("input", this.__oninput, false);

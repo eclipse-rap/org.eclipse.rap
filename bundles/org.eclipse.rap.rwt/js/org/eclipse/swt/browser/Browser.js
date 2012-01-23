@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -215,15 +215,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     
     _parseEvalResult : function( value ) {
       var result = null;
-      var win;
-      if(    qx.core.Variant.isSet( "qx.client", "gecko" )
-          && org.eclipse.rwt.Client.getVersion() < 2 )
-      {
-        // in older gecko the prototypes from the parent-frame are used
-        win = window;
-      } else {
-        win = this.getContentWindow();
-      }
+      var win = this.getContentWindow();
       // NOTE: This mimics the behavior of the evaluate method in SWT:
       if( value instanceof win.Function ) {
         result = this.objectToString( [ [] ] );
@@ -313,25 +305,36 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
       this._eval( script.join( "" ) );
     },
 
-    destroyFunction : function( name ) {
-      delete this._browserFunctions[ name ];
-      var win = this.getContentWindow();
-      if( win != null ) {
-	      try {
-	        var script = [];
-	        if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-	          script.push( "window." + name + " = undefined;" );
-	          script.push( "window." + name + "_impl = undefined;" );
-	        } else {
-	          script.push( "delete window." +  name + ";" );
-	          script.push( "delete window." +  name + "_impl;" );
-	        }
-	        this._eval( script.join( "" ) );
-	      } catch( e ) {
-	        throw new Error( "Unable to destroy function: " + name + " error: " + e );
-	      }
-	    }
-    },
+    destroyFunction : qx.core.Variant.select( "qx.client", {
+      "default" : function( name ) {
+        delete this._browserFunctions[ name ];
+        var win = this.getContentWindow();
+        if( win != null ) {
+          try {
+            var script = [];
+            script.push( "delete window." +  name + ";" );
+            script.push( "delete window." +  name + "_impl;" );
+            this._eval( script.join( "" ) );
+          } catch( e ) {
+            throw new Error( "Unable to destroy function: " + name + " error: " + e );
+          }
+        }
+      },
+      "mshtml" : function( name ) {
+        delete this._browserFunctions[ name ];
+        var win = this.getContentWindow();
+        if( win != null ) {
+          try {
+            var script = [];
+            script.push( "window." + name + " = undefined;" );
+            script.push( "window." + name + "_impl = undefined;" );
+            this._eval( script.join( "" ) );
+          } catch( e ) {
+            throw new Error( "Unable to destroy function: " + name + " error: " + e );
+          }
+        }
+      }
+    } ),
 
     setFunctionResult : function( name, result, error ) {
       this.setExecutedFunctionResult( result );

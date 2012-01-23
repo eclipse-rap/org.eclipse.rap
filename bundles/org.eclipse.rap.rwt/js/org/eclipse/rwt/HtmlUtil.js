@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -63,17 +63,21 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
           this.setStyleProperty( target, "filter", valueStr );
         }
       },
-      "default" : function( target, value ) {
+      "gecko" : function( target, value ) {
         if( value == null || value >= 1 ) {
-          if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
-            this.removeStyleProperty( target, "MozOpacity" );
-          }
+          this.removeStyleProperty( target, "MozOpacity" );
           this.removeStyleProperty( target, "opacity" );
         } else {
           var targetValue = qx.lang.Number.limit( value, 0, 1 );
-          if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
-            this.setStyleProperty( target, "MozOpacity", targetValue );
-          }
+          this.setStyleProperty( target, "MozOpacity", targetValue );
+          this.setStyleProperty( target, "opacity", targetValue );
+        }
+      },
+      "default" : function( target, value ) {
+        if( value == null || value >= 1 ) {
+          this.removeStyleProperty( target, "opacity" );
+        } else {
+          var targetValue = qx.lang.Number.limit( value, 0, 1 );
           this.setStyleProperty( target, "opacity", targetValue );
         }
       }
