@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -452,18 +452,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     },
 
     _update : function( msg, related ) {
-      var event = new qx.event.type.DataEvent( "update" );
-      event.setData( msg );
-      event.setBubbles( true );
-      event.setPropagationStopped( false );
-      if( related ) {
-        event.setRelatedTarget( related );
+      var event = {
+        "msg" : msg,
+        "related" : related,
+        "target" : this
       }
-      this.dispatchEvent( event, true );
+      this.dispatchSimpleEvent( "update", event, true );
+      delete event.target;
+      delete event.related;
+      delete event.msg;
     },
     
     _onUpdate : function( event ) {
-      if( event.getData() !== "content" ) {
+      if( event.msg !== "content" ) {
         this._visibleChildrenCount = null;
         this._indexCache = {};
       }

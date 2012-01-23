@@ -232,6 +232,33 @@ qx.Class.define("qx.core.Target",
     },
 
 
+    dispatchSimpleEvent : function( type, data, bubbles ) {
+      var listeners = this.__listeners;
+      var propagate = bubbles === true;
+      if( listeners ) {
+        var typeListeners = listeners[ type ];
+        if( typeListeners ) {
+          var func; 
+          var obj;
+          for( var hashCode in typeListeners ) {
+            // Shortcuts for handler and object
+            func = typeListeners[ hashCode ].handler;
+            obj = typeListeners[ hashCode ].object || this;
+            var result = func.call( obj, data ) ;
+            if( result === false ) {
+              propagate = false;
+            }
+          }
+        }
+      }
+      if( propagate && typeof( this.getParent ) === "function" ) {
+        var parent = this.getParent();
+        if( parent && !parent.getDisposed() && parent.getEnabled() ) {
+          parent.dispatchSimpleEvent( type, data, bubbles );
+        }
+      }
+    },
+
     /**
      * Internal event dispatch method
      *

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       if( text.isCreated() ) {
         org.eclipse.swt.TextUtil._doInitialize( text );
       } else {
-        text.addEventListener( "appear", org.eclipse.swt.TextUtil._onAppearInitialize );
+        text.addEventListener( "appear", org.eclipse.swt.TextUtil._onAppearInitialize, text );
       }
       text.setLiveUpdate( true );
       // [if] Prevent selection of all text on tab focus
@@ -70,10 +70,10 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 
     // === Private methods ===
 
-    _onAppearInitialize : function( event ) {
+    _onAppearInitialize : function() {
       // TODO [rst] Optimize: add/remove listener on change of
       //            hasVerifyOrModifyListener property
-      var text = event.getTarget();
+      var text = this;
       text.removeEventListener( "appear", org.eclipse.swt.TextUtil._onAppearInitialize );
       org.eclipse.swt.TextUtil._doInitialize( text );
     },

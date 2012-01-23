@@ -94,16 +94,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       child2.setDisplay( false );
       var log = [];
       var logger = function( event ) {
-        log.push( event.getTarget() );
-      }
+        log.push( event );
+      };
       parent.addEventListener( "insertDom", logger );
       child1.addEventListener( "insertDom", logger );
       child2.addEventListener( "insertDom", logger );
       TestUtil.flush();
-      assertEquals( [ parent, child1 ], log );
+      assertEquals( 2, log.length );
       child2.setDisplay( true );
       TestUtil.flush();
-      assertEquals( [ parent, child1, child2 ], log );
+      assertEquals( 3, log.length );
       parent.destroy();
       child1.destroy();
       child2.destroy();
@@ -116,7 +116,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       var child1 = new qx.ui.basic.Terminator();
       var log = [];
       child1.addEventListener( "insertDom", function( event ) {
-        log.push( event.getTarget().getElement().parentNode );
+        log.push( child1.getElement().parentNode );
       } );
       parent1.addEventListener( "insertDom", function( event ) {
         log.push( "parent" );
@@ -147,7 +147,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       child3.setParent( parent );
       var log = [];
       var logger = function( event ) {
-        log.push( event.getTarget().getElement().parentNode );
+        log.push( child1.getElement().parentNode );
       }
       child1.addEventListener( "insertDom", logger );
       TestUtil.flush();
@@ -166,7 +166,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       child.setParent( parent );
       var log = [];
       var logger = function( event ) {
-        log.push( event.getTarget().getElement().parentNode );
+        log.push( child.getElement().parentNode );
       }
       child.addEventListener( "insertDom", logger );
       TestUtil.flush();
@@ -184,7 +184,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       var child = new qx.ui.basic.Terminator();
       var log = [];
       var logger = function( event ) {
-        log.push( event.getTarget().getElement().parentNode );
+        log.push( child.getElement().parentNode );
       }
       child.addEventListener( "insertDom", logger );
       child.setParent( parent );
@@ -220,14 +220,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       child.setParent( parent );
       var log = [];
       var logger = function( event ) {
-        log.push( event.getTarget() );
+        log.push( null );
       }
       parent.addEventListener( "insertDom", logger );
       child.addEventListener( "insertDom", logger );
       TestUtil.flush();
-      assertEquals( [ parent, child ], log );
+      assertEquals( 2, log.length );
       parent.prepareEnhancedBorder();
-      assertEquals( [ parent, child, parent, child ], log );
+      assertEquals( 4, log.length );
       parent.destroy();
       child.destroy();
     },
@@ -544,13 +544,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testApplyObjectId_whenActivated : function() {
+      qx.ui.core.Widget._renderHtmlIds = true;
       var button = new org.eclipse.rwt.widgets.Button( "push" );
       button.addToDocument();
 
-      qx.ui.core.Widget._renderHtmlIds = true;
       button.applyObjectId( "w23" );
 
       assertEquals( "w23", button.getHtmlAttribute( "id" ) );
+      qx.ui.core.Widget._renderHtmlIds = false;
     },
 
     /////////

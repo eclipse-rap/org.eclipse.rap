@@ -565,7 +565,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       var log = [];
       var root = new org.eclipse.rwt.widgets.TreeItem();
       root.addEventListener( "update", function( event ) {
-        log.push( event.getData() );
+        log.push( event.msg );
       }, this);
       root.setItemCount( 1 );
       var child1 = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
@@ -620,7 +620,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       root.setItemCount( 1 );
       var child = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
       root.addEventListener( "update", function( event ) {
-        log.push( event.getData() );
+        log.push( event.msg );
       }, this);
       root.setItemCount( 0 );
       child.dispose();
@@ -659,7 +659,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       root.setItemCount( 1 );
       var child1 = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
       root.addEventListener( "update", function( event ) {
-        log.push( event.getData() );
+        log.push( event.msg );
       }, this);
       child1.setExpanded( true );
       child1.setExpanded( false );
@@ -765,7 +765,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       var item = new org.eclipse.rwt.widgets.TreeItem();
       var log = [];
       item.addEventListener( "update", function( event ) {
-        log.push( event.getData(), event.getTarget() );
+        log.push( event.msg, event.target );
       }, this);
       assertEquals( 0, item._children.length );
       item.setItemCount( 4 );
@@ -796,7 +796,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       var log = [];
       var root = new org.eclipse.rwt.widgets.TreeItem();
       root.addEventListener( "update", function( event ) {
-        log.push( event.getData(), event.getTarget() );
+        log.push( event.msg, event.target );
       }, this);
       root.setItemCount( 4 );
       var child1 = new org.eclipse.rwt.widgets.TreeItem( root, 0 );

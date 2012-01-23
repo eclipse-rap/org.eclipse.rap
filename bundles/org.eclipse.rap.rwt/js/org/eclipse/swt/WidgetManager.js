@@ -34,7 +34,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     _onAppearFocus : function( evt ) {
       var widget = this;
       widget.focus();
-      evt.getTarget().removeEventListener( 
+      widget.removeEventListener( 
         "appear", 
         org.eclipse.swt.WidgetManager._onAppearFocus, 
         widget );
@@ -155,9 +155,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       if( widget.isSeeable() ) {
         widget.focus();
       } else {
-        widget.addEventListener( "appear",
-                                 org.eclipse.swt.WidgetManager._onAppearFocus,
-                                 widget );
+        widget.addEventListener( "appear", org.eclipse.swt.WidgetManager._onAppearFocus, widget );
       }
     },
 

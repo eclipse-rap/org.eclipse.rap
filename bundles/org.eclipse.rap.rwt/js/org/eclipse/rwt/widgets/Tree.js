@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -363,17 +363,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     // event handler
 
     _onItemUpdate : function( event ) {
-      var item = event.getTarget();
-      if( event.getData() === "collapsed" ) {
+      var item = event.target;
+      if( event.msg === "collapsed" ) {
         if( this._focusItem && this._focusItem.isChildOf( item ) ) {
           this.setFocusItem( item );
         }
       }
-      if( event.getData() === "remove" ) {
+      if( event.msg === "remove" ) {
         this._scheduleUpdate( "checkDisposedItems" );
       }
       this._sendItemUpdate( item, event );
       this._renderItemUpdate( item, event );
+      return false;
     },
 
     _onVertScrollBarChangeValue : function() {
@@ -661,7 +662,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _renderItemUpdate : function( item, event ) {
       if( item.isDisplayable() ) {
-        switch( event.getData() ) {
+        switch( event.msg ) {
           case "expanded":
           case "collapsed":
             this._scheduleUpdate( "scrollHeight" );
@@ -835,7 +836,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _sendItemUpdate : function( item, event ) {
       if( !this._inServerResponse() ) {
-        switch( event.getData() ) {
+        switch( event.msg ) {
           case "expanded":
             this._sendItemEvent( item, "org.eclipse.swt.events.treeExpanded" );
           break;

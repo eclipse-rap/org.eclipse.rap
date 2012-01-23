@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,8 +54,7 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
     setText : function( widget, text ) {
       if( !widget.isCreated() ) {
         widget.setUserData( "setText", text );
-        widget.addEventListener( "appear",
-                                 org.eclipse.swt.LabelUtil._setTextDelayed );
+        widget.addEventListener( "appear", org.eclipse.swt.LabelUtil._setTextDelayed, widget );
       } else {
         org.eclipse.swt.LabelUtil._doSetText( widget, text );
       }
@@ -64,31 +63,28 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
     setImage : function( widget, imagePath ) {
       if( !widget.isCreated() ) {
         widget.setUserData( "setImage", imagePath );
-        widget.addEventListener( "appear",
-                                 org.eclipse.swt.LabelUtil._setImageDelayed );
+        widget.addEventListener( "appear", org.eclipse.swt.LabelUtil._setImageDelayed, widget );
       } else {
         org.eclipse.swt.LabelUtil._doSetImage( widget, imagePath );
       }
     },
     
-    _setTextDelayed : function( evt ) {
-      var widget = evt.getTarget();
+    _setTextDelayed : function() {
+      var widget = this;
       var text = widget.getUserData( "setText" );
       if( text != null ) {
         org.eclipse.swt.LabelUtil._doSetText( widget, text );
       }
-      widget.removeEventListener( "appear",
-                                  org.eclipse.swt.LabelUtil._setTextDelayed );
+      widget.removeEventListener( "appear", org.eclipse.swt.LabelUtil._setTextDelayed, widget );
     },
     
-    _setImageDelayed : function( evt ) {
-      var widget = evt.getTarget();
+    _setImageDelayed : function() {
+      var widget = this;
       var imagePath = widget.getUserData( "setImage" );
       if( imagePath != null ) {
         org.eclipse.swt.LabelUtil._doSetImage( widget, imagePath );
       }
-      widget.removeEventListener( "appear",
-                                  org.eclipse.swt.LabelUtil._setImageDelayed );
+      widget.removeEventListener( "appear", org.eclipse.swt.LabelUtil._setImageDelayed, widget );
     },
     
     _doSetText : function( widget, text ) {

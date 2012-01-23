@@ -583,28 +583,28 @@ qx.Class.define( "qx.ui.core.Widget", {
     //////////////////
     //  SCROLL-BLOCKER
     
-    disableScrolling : function(widget) {
+    disableScrolling : function( widget ) {
       var el = widget._getTargetNode();
-      if(el) {
+      if( el ) {
         qx.html.Scroll.disableScrolling(el);
       } else {
-        widget.addEventListener("appear", this._blockScrollingOnAppear, this);
+        widget.addEventListener( "appear", this._blockScrollingOnAppear, widget );
       }
     },
     
-    enableScrolling : function(widget) {
+    enableScrolling : function( widget ) {
       var el = widget._getTargetNode();
-      if(el) {
-        qx.html.Scroll.enableScrolling(el);
+      if( el ) {
+        qx.html.Scroll.enableScrolling( el );
       } else {
-        widget.removeEventListener("appear", this._blockScrollingOnAppear, this);
+        widget.removeEventListener( "appear", this._blockScrollingOnAppear, widget );
       }     
     },
     
-    _blockScrollingOnAppear : function(ev) {
-      var widget = ev.getTarget();
-      widget.removeEventListener("appear", this._blockScrollingOnAppear, this);
-      this.disableScrolling(widget);
+    _blockScrollingOnAppear : function() {
+      var func = qx.ui.core.Widget._blockScrollingOnAppear;
+      this.removeEventListener( "appear", func, this );
+      qx.ui.core.Widget.disableScrolling( this );
     }
 
   },
@@ -1735,12 +1735,12 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     _beforeAppear : function() {
-      this.createDispatchEvent("beforeAppear");
+      this.dispatchSimpleEvent( "beforeAppear" );
     },
 
     _afterAppear : function() {
       this._isSeeable = true;
-      this.createDispatchEvent("appear");
+      this.dispatchSimpleEvent( "appear" );
     },
 
     _ieFixLayoutOnAppear : qx.core.Variant.select( "qx.client", {
@@ -1773,12 +1773,12 @@ qx.Class.define( "qx.ui.core.Widget", {
         this.removeState("abandoned");
       }
 
-      this.createDispatchEvent("beforeDisappear");
+      this.dispatchSimpleEvent( "beforeDisappear" );
     },
 
     _afterDisappear : function() {
       this._isSeeable = false;
-      this.createDispatchEvent("disappear");
+      this.dispatchSimpleEvent("disappear");
     },
 
     _isSeeable : false,
@@ -1808,7 +1808,7 @@ qx.Class.define( "qx.ui.core.Widget", {
 
     _afterInsertDom : function() {
       this._isInDom = true;
-      this.createDispatchEvent( "insertDom" );
+      this.dispatchSimpleEvent( "insertDom" );
     },
 
     _afterRemoveDom : function() {
@@ -1904,7 +1904,7 @@ qx.Class.define( "qx.ui.core.Widget", {
         this._applyHtmlAttributes(value);
         this._applyElementData(value);
         // send out create event
-        this.createDispatchEvent("create");
+        this.dispatchSimpleEvent( "create" );
         // add created instances to state queue
         this.addToStateQueue();
       } else {
