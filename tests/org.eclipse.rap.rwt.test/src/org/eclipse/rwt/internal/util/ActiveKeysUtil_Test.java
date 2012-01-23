@@ -19,14 +19,10 @@ import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,11 +68,11 @@ public class ActiveKeysUtil_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
-    
+
     String[] keyBindings = new String[] { "CTRL+A" };
     shell.setData( RWT.ACTIVE_KEYS, keyBindings );
     Fixture.preserveWidgets();
-    
+
     String[] preserved = ( String[] )adapter.getPreserved( ActiveKeysUtil.PROP_ACTIVE_KEYS );
     assertTrue( Arrays.equals( keyBindings, preserved ) );
   }
@@ -120,11 +116,11 @@ public class ActiveKeysUtil_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
-    
+
     String[] keyBindings = new String[] { "CTRL+A" };
     shell.setData( RWT.CANCEL_KEYS, keyBindings );
     Fixture.preserveWidgets();
-    
+
     String[] preserved = ( String[] )adapter.getPreserved( ActiveKeysUtil.PROP_CANCEL_KEYS );
     assertTrue( Arrays.equals( keyBindings, preserved ) );
   }
@@ -189,7 +185,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     String[] activeKeys = new String[] { "x", "ALT+x", };
     shell.setData( RWT.ACTIVE_KEYS, activeKeys );
     ActiveKeysUtil.renderActiveKeys( shell );
-    
+
     String expected = "\"#88\",\"ALT+#88\"";
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( shell, "activeKeys" );
@@ -216,14 +212,14 @@ public class ActiveKeysUtil_Test extends TestCase {
     String[] activeKeys = new String[] { "x", "ALT+x", };
     shell.setData( RWT.CANCEL_KEYS, activeKeys );
     ActiveKeysUtil.renderCancelKeys( shell );
-    
+
     String expected = "\"#88\",\"ALT+#88\"";
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( shell, "cancelKeys" );
     JSONArray renderedKeys = ( JSONArray )operation.getProperty( "cancelKeys" );
     assertEquals( expected, renderedKeys.join( "," ) );
   }
-  
+
   public void testWriteKeyBindings_UnrecognizedKey() {
     Fixture.fakeNewRequest();
 

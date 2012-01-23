@@ -667,7 +667,7 @@ public class ControlLCAUtil_Test extends TestCase {
   //////////////////////////////////////////////
   // Tests for new render methods using protocol
 
-  public void testRenderVisibilityIntiallyFalse() throws IOException {
+  public void testRenderVisibilityIntiallyFalse() {
     control.setVisible( false );
     ControlLCAUtil.renderVisible( control );
 
@@ -675,14 +675,14 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findSetProperty( control, "visibility" ) );
   }
 
-  public void testRenderVisibilityInitiallyTrue() throws IOException {
+  public void testRenderVisibilityInitiallyTrue() {
     ControlLCAUtil.renderVisible( control );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "visibility" ) );
   }
 
-  public void testRenderVisibilityUnchanged() throws IOException {
+  public void testRenderVisibilityUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.setVisible( false );
@@ -695,7 +695,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
-  public void testRenderBoundsIntiallyZero() throws IOException, JSONException {
+  public void testRenderBoundsIntiallyZero() throws JSONException {
     control = new Button( shell, SWT.PUSH );
     ControlLCAUtil.renderBounds( control );
 
@@ -705,7 +705,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
-  public void testRenderBoundsInitiallySet() throws IOException, JSONException {
+  public void testRenderBoundsInitiallySet() throws JSONException {
     control.setBounds( 10, 20, 100, 200 );
     ControlLCAUtil.renderBounds( control );
 
@@ -715,7 +715,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
-  public void testRenderBoundsUnchanged() throws IOException {
+  public void testRenderBoundsUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.setBounds( 10, 20, 100, 200 );
@@ -802,7 +802,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
-  public void testRenderIntialToolTip() throws IOException {
+  public void testRenderIntialToolTip() {
     ControlLCAUtil.renderToolTip( control );
 
     Message message = Fixture.getProtocolMessage();
@@ -810,7 +810,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
-  public void testRenderToolTip() throws IOException {
+  public void testRenderToolTip() {
     control.setToolTipText( "foo" );
     ControlLCAUtil.renderToolTip( control );
 
@@ -819,7 +819,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
-  public void testRenderToolTipUnchanged() throws IOException {
+  public void testRenderToolTipUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.setToolTipText( "foo" );
@@ -832,7 +832,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
-  public void testRenderIntialMenu() throws IOException {
+  public void testRenderIntialMenu() {
     ControlLCAUtil.renderMenu( control );
 
     Message message = Fixture.getProtocolMessage();
@@ -840,7 +840,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
-  public void testRenderMenu() throws IOException {
+  public void testRenderMenu() {
     control.setMenu( new Menu( shell ) );
     ControlLCAUtil.renderMenu( control );
 
@@ -850,7 +850,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
-  public void testRenderMenuUnchanged() throws IOException {
+  public void testRenderMenuUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.setMenu( new Menu( shell ) );
@@ -863,7 +863,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
-  public void testRenderIntialEnabled() throws IOException {
+  public void testRenderIntialEnabled() {
     ControlLCAUtil.renderEnabled( control );
 
     Message message = Fixture.getProtocolMessage();
@@ -871,7 +871,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
-  public void testRenderEnabled() throws IOException {
+  public void testRenderEnabled() {
     control.setEnabled( false );
     ControlLCAUtil.renderEnabled( control );
 
@@ -880,7 +880,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
-  public void testRenderEnabledUnchanged() throws IOException {
+  public void testRenderEnabledUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.setEnabled( false );
@@ -924,14 +924,14 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "backgroundImage" ) );
   }
 
-  public void testRenderInitialFont() throws IOException {
+  public void testRenderInitialFont() {
     ControlLCAUtil.renderFont( control );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "font" ) );
   }
 
-  public void testRenderFont() throws IOException, JSONException {
+  public void testRenderFont() throws JSONException {
     control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
     ControlLCAUtil.renderFont( control );
 
@@ -944,7 +944,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( false, result.getBoolean( 3 ) );
   }
 
-  public void testRenderFontBold() throws IOException, JSONException {
+  public void testRenderFontBold() throws JSONException {
     control.setFont( new Font( display, "Arial", 12, SWT.BOLD ) );
     ControlLCAUtil.renderFont( control );
 
@@ -954,7 +954,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( false, result.getBoolean( 3 ) );
   }
 
-  public void testRenderFontItalic() throws IOException, JSONException {
+  public void testRenderFontItalic() throws JSONException {
     control.setFont( new Font( display, "Arial", 12, SWT.ITALIC ) );
     ControlLCAUtil.renderFont( control );
 
@@ -964,7 +964,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( true, result.getBoolean( 3 ) );
   }
 
-  public void testRenderFontItalicAndBold() throws IOException, JSONException {
+  public void testRenderFontItalicAndBold() throws JSONException {
     control.setFont( new Font( display, "Arial", 12, SWT.ITALIC | SWT.BOLD ) );
     ControlLCAUtil.renderFont( control );
 
@@ -974,7 +974,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( true, result.getBoolean( 3 ) );
   }
 
-  public void testRenderFontUnchanged() throws IOException {
+  public void testRenderFontUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
@@ -986,7 +986,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "font" ) );
   }
 
-  public void testResetFont() throws IOException {
+  public void testResetFont() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );

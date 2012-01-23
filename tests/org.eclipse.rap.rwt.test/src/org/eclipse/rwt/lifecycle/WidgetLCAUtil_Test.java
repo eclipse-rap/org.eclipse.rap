@@ -48,6 +48,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+@SuppressWarnings("deprecation")
 public class WidgetLCAUtil_Test extends TestCase {
 
   private Display display;
@@ -309,7 +310,6 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
-  @SuppressWarnings("deprecation")
   public void testWriteImage() throws IOException {
     Label item = new Label( shell, SWT.NONE );
 
@@ -648,14 +648,14 @@ public class WidgetLCAUtil_Test extends TestCase {
   //////////////////////////////////////////////
   // Tests for new render methods using protocol
 
-  public void testRenderIntialBackgroundNull() throws IOException {
+  public void testRenderIntialBackgroundNull() {
     WidgetLCAUtil.renderBackground( widget, null );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( widget, "background" ) );
   }
 
-  public void testRenderBackground() throws IOException, JSONException {
+  public void testRenderBackground() throws JSONException {
     WidgetLCAUtil.renderBackground( widget, new Color( display, 0, 16, 255 ) );
 
     Message message = Fixture.getProtocolMessage();
@@ -663,7 +663,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[0,16,255,255]", actual ) );
   }
 
-  public void testRenderBackgroundNull() throws IOException {
+  public void testRenderBackgroundNull() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
     widget.setBackground( new Color( display, 0, 16, 255 ) );
@@ -675,7 +675,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( widget, "background" ) );
   }
 
-  public void testRenderBackgroundUnchanged() throws IOException {
+  public void testRenderBackgroundUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
     widget.setBackground( new Color( display, 0, 16, 255 ) );
@@ -687,7 +687,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( widget, "background" ) );
   }
 
-  public void testRenderIntialBackgroundTransparent() throws IOException, JSONException {
+  public void testRenderIntialBackgroundTransparent() throws JSONException {
     WidgetLCAUtil.renderBackground( widget, null, true );
 
     Message message = Fixture.getProtocolMessage();
@@ -696,7 +696,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,0,0]", actual ) );
   }
 
-  public void testRenderBackgroundTransparencyUnchanged() throws IOException {
+  public void testRenderBackgroundTransparencyUnchanged() {
     widget = new Button( shell, SWT.CHECK );
     shell.setBackgroundMode( SWT.INHERIT_DEFAULT );
     Fixture.markInitialized( display );
@@ -711,7 +711,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( widget, "background" ) );
   }
 
-  public void testRenderBackgroundNoMoreTransparent() throws IOException, JSONException {
+  public void testRenderBackgroundNoMoreTransparent() throws JSONException {
     widget = new Button( shell, SWT.CHECK );
     shell.setBackgroundMode( SWT.INHERIT_DEFAULT );
     Fixture.markInitialized( display );
@@ -728,7 +728,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[0,16,255,255]", actual ) );
   }
 
-  public void testRenderBackgroundReset() throws IOException {
+  public void testRenderBackgroundReset() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
     widget.setBackground( new Color( display, 0, 16, 255 ) );
@@ -740,7 +740,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( widget, "background" ) );
   }
 
-  public void testRenderIntialForeground() throws IOException {
+  public void testRenderIntialForeground() {
     ControlLCAUtil.renderForeground( widget );
 
     Message message = Fixture.getProtocolMessage();
@@ -748,7 +748,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( widget, "foreground" ) );
   }
 
-  public void testRenderForeground() throws IOException, JSONException {
+  public void testRenderForeground() throws JSONException {
     widget.setForeground( new Color( display, 0, 16, 255 ) );
     ControlLCAUtil.renderForeground( widget );
 
@@ -759,7 +759,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[0,16,255,255]", actual ) );
   }
 
-  public void testRenderForegroundUnchanged() throws IOException {
+  public void testRenderForegroundUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
     widget.setForeground( new Color( display, 0, 16, 255 ) );
@@ -771,14 +771,14 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( widget, "foreground" ) );
   }
 
-  public void testRenderInitialCustomVariant() throws IOException {
+  public void testRenderInitialCustomVariant() {
     WidgetLCAUtil.renderCustomVariant( widget );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( widget, "customVariant" ) );
   }
 
-  public void testRenderCustomVariant() throws IOException {
+  public void testRenderCustomVariant() {
     widget.setData( WidgetUtil.CUSTOM_VARIANT, "my_variant" );
     WidgetLCAUtil.renderCustomVariant( widget );
 
@@ -786,7 +786,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( "variant_my_variant", message.findSetProperty( widget, "customVariant" ) );
   }
 
-  public void testRenderCustomVariantUnchanged() throws IOException {
+  public void testRenderCustomVariantUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
     widget.setData( WidgetUtil.CUSTOM_VARIANT, "my_variant" );
@@ -850,7 +850,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( widget, "help" ) );
   }
 
-  public void testRenderBackgroundGradient() throws IOException, JSONException {
+  public void testRenderBackgroundGradient() throws JSONException {
     Control control = new Composite( shell, SWT.NONE );
     Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
@@ -874,7 +874,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( Boolean.TRUE, gradient.get( 2 ) );
   }
 
-  public void testRenderBackgroundGradientHorizontal() throws IOException, JSONException {
+  public void testRenderBackgroundGradientHorizontal() throws JSONException {
     Control control = new Composite( shell, SWT.NONE );
     Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
@@ -898,7 +898,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( Boolean.FALSE, gradient.get( 2 ) );
   }
 
-  public void testRenderBackgroundGradientUnchanged() throws IOException {
+  public void testRenderBackgroundGradientUnchanged() {
     Control control = new Composite( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -918,7 +918,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "backgroundGradient" ) );
   }
 
-  public void testResetBackgroundGradient() throws IOException {
+  public void testResetBackgroundGradient() {
     Control control = new Composite( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -939,7 +939,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( control, "backgroundGradient" ) );
   }
 
-  public void testRenderRoundedBorder() throws IOException, JSONException {
+  public void testRenderRoundedBorder() throws JSONException {
     Widget widget = new Composite( shell, SWT.NONE );
     Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
@@ -959,7 +959,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( 8, border.getInt( 5 ) );
   }
 
-  public void testRenderRoundedBorderUnchanged() throws IOException {
+  public void testRenderRoundedBorderUnchanged() {
     Widget widget = new Composite( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
@@ -975,7 +975,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( widget, "roundedBorder" ) );
   }
 
-  public void testResetRoundedBorder() throws IOException {
+  public void testResetRoundedBorder() {
     Widget widget = new Composite( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
@@ -992,7 +992,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( widget, "roundedBorder" ) );
   }
 
-  public void testRenderInitialMenu() throws IOException {
+  public void testRenderInitialMenu() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
 
@@ -1002,7 +1002,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( 0, message.getOperationCount() );
   }
 
-  public void testRenderMenu() throws IOException {
+  public void testRenderMenu() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
     Menu menu = new Menu( widget );
@@ -1014,7 +1014,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( WidgetUtil.getId( menu ), message.findSetProperty( widget, "menu" ) );
   }
 
-  public void testRenderMenuReset() throws IOException {
+  public void testRenderMenuReset() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
     Menu menu = new Menu( widget );
