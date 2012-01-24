@@ -11,7 +11,7 @@
 package org.eclipse.rap.rwt.jstest.internal;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.jstest.TestContribution;
@@ -28,7 +28,8 @@ public class ContributionServiceTracker
 
   public ContributionServiceTracker( BundleContext context ) {
     super( context, TestContribution.class.getName(), null );
-    contributions = new HashMap<String, TestContribution>();
+    contributions = new LinkedHashMap<String, TestContribution>();
+    register( new RWTContribution() );
     register( new RWTTestsContribution() );
   }
 

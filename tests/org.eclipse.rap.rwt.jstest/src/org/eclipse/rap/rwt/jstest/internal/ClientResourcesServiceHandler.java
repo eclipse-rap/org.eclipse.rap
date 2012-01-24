@@ -36,8 +36,6 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
 
   public static final String ID = "clientResources";
 
-  private final TestContribution rwtContribution = new RWTContribution();
-
   public Map<String, TestContribution> getContributions() {
     return Activator.getContributions();
   }
@@ -54,7 +52,7 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
   }
 
   private void deliverResource( String contributionName, String file ) throws IOException {
-    TestContribution contribution = findContribution( contributionName );
+    TestContribution contribution = getContributions().get( contributionName );
     if( contribution != null ) {
       deliverResource( contribution, file );
     } else {
@@ -62,22 +60,11 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     }
   }
 
-  private TestContribution findContribution( String contributionName ) {
-    TestContribution contribution;
-    if( rwtContribution.getName().equals( contributionName ) ) {
-      contribution = rwtContribution;
-    } else {
-      contribution = getContributions().get( contributionName );
-    }
-    return contribution;
-  }
-
   private void deliverFilesList() throws IOException {
     HttpServletResponse response = RWT.getResponse();
     response.setContentType( "text/javascript" );
     PrintWriter writer = response.getWriter();
     writer.write( "( function() {\n" );
-    writeIncludeResources( writer, rwtContribution );
     Collection<TestContribution> contributions = getContributions().values();
     for( TestContribution contribution : contributions ) {
       writeIncludeResources( writer, contribution );
