@@ -86,7 +86,8 @@ public class RWTTestsContribution implements TestContribution {
     "tests/ExpandBarTest.js",
     "tests/ControlDecoratorTest.js",
     "tests/ExternalBrowserTest.js",
-    "tests/JSExecutorTest.js"
+    "tests/JSExecutorTest.js",
+    "tests/BrowserHistoryTest.js"
   };
 
   public String getName() {

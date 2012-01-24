@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -64,6 +64,7 @@ qx.Class.define("qx.client.History",
     "mshtml" : function()
     {
       this.base(arguments);
+      this._hasNavigationListener = false;
 
       this._iframe = document.createElement("iframe");
       this._iframe.style.visibility = "hidden";
@@ -94,6 +95,7 @@ qx.Class.define("qx.client.History",
     "default" : function()
     {
       this.base(arguments);
+      this._hasNavigationListener = false;
 
       this._titles = {};
       this._state = this.__getState();
@@ -242,20 +244,21 @@ qx.Class.define("qx.client.History",
      * Starts the timer polling for updates to the history IFrame on IE
      * or the fragment identifier on other browsers.
      */
-    __startTimer : function()
-    {
+    __startTimer : function() {
       this._timer = new qx.client.Timer(this.getTimeoutInterval());
 
-      this._timer.addEventListener("interval", function(e) {
+      this._timer.addEventListener( "interval", function( e ) {
         var newHash = this.__getState();
         // RAP [if] Ignore all non application states
         //if (newHash != this._state) {
-        if( newHash != this._state && this._titles[newHash] != null ) {
+        if( newHash != this._state && this._titles[ newHash ] != null ) {
           this.__onHistoryLoad(newHash);
         }
-      }, this);
+      }, this );
 
-      this._timer.start();
+      if( this._hasNavigationListener ) {
+        this._timer.start();
+      }
     },
 
 
@@ -367,12 +370,32 @@ qx.Class.define("qx.client.History",
       },
 
       "default" : null
-    })
+    }),
+
+    setHasNavigationListener : function( value ) {
+      this._hasNavigationListener = value;
+      if( value ) {
+        this.addEventListener( "request", this._historyNavigated, this );
+        if( this._timer ) {
+          this._timer.start();
+        }
+      } else {
+        this.removeEventListener( "request", this._historyNavigated, this );
+        if( this._timer ) {
+          this._timer.stop();
+        }
+      }
+    },
+
+    _historyNavigated : function( event ) {
+      var entryId = event.getData();
+      var req = org.eclipse.swt.Request.getInstance();
+      req.addParameter( "org.eclipse.rwt.events.historyNavigated", "true" );
+      req.addParameter( "org.eclipse.rwt.events.historyNavigated.entryId", entryId );
+      req.send();
+    }
+
   },
-
-
-
-
 
   /*
   *****************************************************************************

@@ -157,6 +157,7 @@ public final class ClientResources {
     "qx/ui/popup/ToolTipManager.js",
     "qx/html/Window.js",
     "qx/client/History.js",
+    "org/eclipse/rwt/BrowserHistoryAdapter.js",
     "qx/event/handler/DragAndDropHandler.js",
     "qx/event/type/DragEvent.js",
     "qx/ui/embed/HtmlEmbed.js",

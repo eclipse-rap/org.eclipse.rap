@@ -96,6 +96,12 @@ qx.Class.define( "org.eclipse.rwt.System", {
         browser, 
         AdapterRegistry.getAdapter( "rwt.widgets.ExternalBrowser" ) 
       );
+      var browserHistory = qx.client.History.getInstance();
+      org.eclipse.rwt.protocol.ObjectManager.add( 
+        "bh", 
+        browserHistory, 
+        AdapterRegistry.getAdapter( "rwt.BrowserHistory" ) 
+      );
     },
 
     getStartupTime : function() {

@@ -100,10 +100,6 @@ org.eclipse.rwt.Display.prototype = {
     this._document.addEventListener( "keypress", this._onKeyPress, this );
     this._request.addEventListener( "send", this._onSend, this );
     org.eclipse.rwt.KeyEventSupport.getInstance(); // adds global KeyListener
-    // Observe browser history
-    // TODO [tb] : do this on demand only
-    var history = qx.client.History.getInstance();
-    history.addEventListener( "request", this._historyNavigated, this );
     org.eclipse.rwt.System.getInstance().addEventListener( "beforeunload", this._onBeforeUnload, this );
     org.eclipse.rwt.System.getInstance().addEventListener( "unload", this._onUnload, this );
   },
@@ -128,14 +124,6 @@ org.eclipse.rwt.Display.prototype = {
     var id = this._request.getUIRootId();
     this._request.addParameter( id + ".cursorLocation.x", String( pageX ) );
     this._request.addParameter( id + ".cursorLocation.y", String( pageY ) );
-  },
-
-  _historyNavigated : function( event ) {
-    var entryId = event.getData();
-    var req = org.eclipse.swt.Request.getInstance();
-    req.addParameter( "org.eclipse.rwt.events.historyNavigated", "true" );
-    req.addParameter( "org.eclipse.rwt.events.historyNavigated.entryId", entryId );
-    req.send();
   },
 
   _onBeforeUnload : function( event ) {
