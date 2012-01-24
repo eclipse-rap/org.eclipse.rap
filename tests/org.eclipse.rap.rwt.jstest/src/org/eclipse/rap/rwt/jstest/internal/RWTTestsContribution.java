@@ -1,7 +1,19 @@
+/*******************************************************************************
+ * Copyright (c) 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
 package org.eclipse.rap.rwt.jstest.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.rap.rwt.jstest.TestContribution;
 
@@ -95,20 +107,24 @@ public class RWTTestsContribution implements TestContribution {
   }
 
   public String[] getResources() {
-    String[] resources = new String[ RESOURCE_FILES.length + TEST_FILES.length ];
-    int i = 0;
+    List<String> result = new ArrayList<String>();
     for( String resource : RESOURCE_FILES ) {
-      resources[ i++ ] = PATH_PREFIX + resource;
+      result.add( PATH_PREFIX + resource );
     }
     for( String resource : TEST_FILES ) {
-      resources[ i++ ] = PATH_PREFIX + resource;
+      result.add( PATH_PREFIX + resource );
     }
-    return resources;
+    return toArray( result );
   }
 
   public InputStream getResourceAsStream( String resource ) throws IOException {
-    InputStream resourceAsStream = RWTTestsContribution.class.getResourceAsStream( resource );
-    return resourceAsStream;
+    return RWTTestsContribution.class.getResourceAsStream( resource );
+  }
+
+  private static String[] toArray( List<String> list ) {
+    String[] array = new String[ list.size() ];
+    list.toArray( array );
+    return array;
   }
 
 }

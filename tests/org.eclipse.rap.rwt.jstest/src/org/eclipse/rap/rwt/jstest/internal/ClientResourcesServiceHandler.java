@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -26,19 +26,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.jstest.TestContribution;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.theme.QxAppearanceWriter;
-import org.eclipse.rwt.internal.theme.Theme;
-import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.service.IServiceHandler;
 
 
-@SuppressWarnings( "restriction" )
 public class ClientResourcesServiceHandler implements IServiceHandler {
 
   private static final String PARAM_CONTRIBUTION = "contribution";
   private static final String PARAM_FILE = "file";
-  private static final String APPEARANCE_NAME = "rap-appearance.js";
 
   public static final String ID = "clientResources";
 
@@ -53,31 +47,29 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     String fileParameter = request.getParameter( PARAM_FILE );
     String contributionParameter = request.getParameter( PARAM_CONTRIBUTION );
     if( fileParameter != null ) {
-      if( APPEARANCE_NAME.equals( fileParameter ) ) {
-        deliverAppearance();
-      } else if( rwtContribution.getName().equals( contributionParameter ) ) {
-        deliverResource( rwtContribution, fileParameter );
-      } else {
-        deliverResource( contributionParameter, fileParameter );
-      }
+      deliverResource( contributionParameter, fileParameter );
     } else {
       deliverFilesList();
     }
   }
 
   private void deliverResource( String contributionName, String file ) throws IOException {
-    boolean found = false;
-    Map<String, TestContribution> contributions = getContributions();
-    for( String name : contributions.keySet() ) {
-      if( name.equals( contributionName ) ) {
-        found = true;
-        deliverResource( contributions.get( name ), file );
-        break;
-      }
-    }
-    if( !found ) {
+    TestContribution contribution = findContribution( contributionName );
+    if( contribution != null ) {
+      deliverResource( contribution, file );
+    } else {
       writeError( RWT.getResponse(), HttpServletResponse.SC_BAD_REQUEST, "Unknown contribution" );
     }
+  }
+
+  private TestContribution findContribution( String contributionName ) {
+    TestContribution contribution;
+    if( rwtContribution.getName().equals( contributionName ) ) {
+      contribution = rwtContribution;
+    } else {
+      contribution = getContributions().get( contributionName );
+    }
+    return contribution;
   }
 
   private void deliverFilesList() throws IOException {
@@ -87,8 +79,6 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     writer.write( "( function() {\n" );
     writeIncludeResource( writer, getContributions().get( "rwt-test" ), "/resource/TestSettings.js" );
     writeIncludeResources( writer, rwtContribution );
-    writeIncludeResource( writer, ( TestContribution )null, APPEARANCE_NAME );
-    writeIncludeResource( writer, getThemeLocation(), null );
     Collection<TestContribution> contributions = getContributions().values();
     for( TestContribution contribution : contributions ) {
       writeIncludeResources( writer, contribution );
@@ -112,22 +102,6 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     } else {
       writeError( response, HttpServletResponse.SC_NOT_FOUND, "Resource not found" );
     }
-  }
-
-  private void deliverAppearance() throws IOException {
-    HttpServletResponse response = RWT.getResponse();
-    response.setContentType( "text/javascript" );
-    ThemeManager themeManager = RWTFactory.getThemeManager();
-    List<String> customAppearances = themeManager.getAppearances();
-    String appearanceCode = QxAppearanceWriter.createQxAppearanceTheme( customAppearances );
-    PrintWriter writer = response.getWriter();
-    writer.write( appearanceCode );
-  }
-
-  private String getThemeLocation() {
-    ThemeManager themeManager = RWTFactory.getThemeManager();
-    Theme defaultTheme = themeManager.getTheme( ThemeManager.FALLBACK_THEME_ID );
-    return defaultTheme.getRegisteredLocation();
   }
 
   private static void writeError( HttpServletResponse response, int statusCode, String message )
@@ -176,14 +150,13 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     InputStream inputStream = contribution.getResourceAsStream( resource );
     if( inputStream != null ) {
       try {
-        InputStreamReader reader = new InputStreamReader( inputStream, "UTF-8" );
-        BufferedReader bufferedReader = new BufferedReader( reader );
-        int read = bufferedReader.read( buffer );
+        Reader reader = new BufferedReader( new InputStreamReader( inputStream, "UTF-8" ) );
+        int read = reader.read( buffer );
         while( read != -1 ) {
           for( int i = 0; i < read; i++ ) {
             hash = 31 * hash + buffer[ i++ ];
           }
-          read = bufferedReader.read( buffer );
+          read = reader.read( buffer );
         }
       } finally {
         inputStream.close();
@@ -192,33 +165,32 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     return Integer.toHexString( hash );
   }
 
-  private static String getResourceLocation( TestContribution contribution, String resource )
-  {
+  private static String getResourceLocation( TestContribution contribution, String resource ) {
     StringBuilder url = new StringBuilder();
     url.append( RWT.getRequest().getContextPath() );
     url.append( RWT.getRequest().getServletPath() );
     url.append( '?' );
-    url.append( REQUEST_PARAM );
-    url.append( '=' );
-    url.append( ID );
+    appendParameter( url, REQUEST_PARAM, ID );
     url.append( '&' );
-    url.append( PARAM_FILE );
-    url.append( '=' );
-    url.append( resource );
+    appendParameter( url, PARAM_FILE, resource );
     if( contribution != null ) {
       url.append( '&' );
-      url.append( PARAM_CONTRIBUTION );
-      url.append( '=' );
-      url.append( contribution.getName() );
+      appendParameter( url, PARAM_CONTRIBUTION, contribution.getName() );
     }
     return RWT.getResponse().encodeURL( url.toString() );
+  }
+
+  private static void appendParameter( StringBuilder stringBuilder, String name, String value ) {
+    stringBuilder.append( name );
+    stringBuilder.append( '=' );
+    stringBuilder.append( value );
   }
 
   private static void copyContents( InputStream inputStream, PrintWriter writer )
     throws IOException
   {
     try {
-      BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream, "UTF-8" ) );
+      Reader reader = new BufferedReader( new InputStreamReader( inputStream, "UTF-8" ) );
       char[] buffer = new char[ 8192 ];
       int count = reader.read( buffer );
       while( count != -1 ) {
