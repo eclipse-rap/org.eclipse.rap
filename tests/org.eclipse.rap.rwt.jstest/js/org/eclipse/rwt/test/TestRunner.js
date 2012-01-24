@@ -382,7 +382,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
         var node = head.childNodes[ i ];
         if( node.nodeName.toLowerCase() == "script" ) {
           var src = node.getAttribute( "src" );
-          if( src && src.indexOf( "Test.js" ) == ( src.length - 7) ) {
+          if( src && src.indexOf( "Test.js" ) != -1 ) {
             result[ this._getShortClassName( src ) ] = true;
           }
         }
@@ -391,14 +391,8 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
     },
 
     _getShortClassName : function( src ) {
-      var result = src;
-      var separator = ".";
-      if( result.toLowerCase().slice( -3 ) == ".js" ) {
-        result = result.substr( 0, result.length - 3 );
-        separator = "/";
-      }
-      var splitted = result.split( separator );
-      result = splitted.pop();
+      var result = src.replace( /^.*?(\w+)\.js.*$/, "$1" );
+      result = result.split( "." ).pop();
       return result;
     },
 

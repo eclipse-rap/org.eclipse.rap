@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.jstest.internal;
 
+import java.util.Map;
+
+import org.eclipse.rap.rwt.jstest.TestContribution;
 import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -18,26 +21,45 @@ import org.osgi.framework.ServiceRegistration;
 
 public class Activator implements BundleActivator {
 
-  private HttpServiceTracker tracker;
+  private static Activator instance;
+  private HttpServiceTracker httpTracker;
+  private ContributionServiceTracker contributionTracker;
   private ServiceRegistration<ApplicationConfigurator> rapAppConfigService;
 
   public void start( BundleContext context ) throws Exception {
     registerRapApplication( context );
     startHttpTracker( context );
+    startContributionTracker( context );
+    instance = this;
   }
 
   public void stop( BundleContext context ) throws Exception {
+    instance = null;
+    stopContributionTracker();
     stopHttpTracker();
     unregisterRapApplication();
   }
 
+  public static Map<String, TestContribution> getContributions() {
+    return instance.contributionTracker.getContributions();
+  }
+
+  private void startContributionTracker( BundleContext context ) {
+    contributionTracker = new ContributionServiceTracker( context );
+    contributionTracker.open();
+  }
+
+  private void stopContributionTracker() {
+    contributionTracker.close();
+  }
+
   private void startHttpTracker( BundleContext context ) {
-    tracker = new HttpServiceTracker( context );
-    tracker.open();
+    httpTracker = new HttpServiceTracker( context );
+    httpTracker.open();
   }
 
   private void stopHttpTracker() {
-    tracker.close();
+    httpTracker.close();
   }
 
   private void registerRapApplication( BundleContext context ) {

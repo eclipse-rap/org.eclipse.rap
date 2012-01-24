@@ -3,7 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Javascript test suite
 Bundle-SymbolicName: org.eclipse.rap.rwt.jstest
 Bundle-Version: 1.5.0.qualifier
-Export-Package: org.eclipse.rwt.test,
+Export-Package: org.eclipse.rap.rwt.jstest,
+ org.eclipse.rwt.test,
  org.eclipse.rwt.test.fixture,
  org.eclipse.rwt.test.tests,
  resource

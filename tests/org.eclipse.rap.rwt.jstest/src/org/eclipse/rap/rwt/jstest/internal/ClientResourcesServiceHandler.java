@@ -16,42 +16,68 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rap.rwt.jstest.TestContribution;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.theme.QxAppearanceWriter;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeManager;
-import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.service.IServiceHandler;
-import org.eclipse.swt.internal.widgets.displaykit.ClientResourcesAdapter;
 
 
 @SuppressWarnings( "restriction" )
 public class ClientResourcesServiceHandler implements IServiceHandler {
 
+  private static final String PARAM_CONTRIBUTION = "contribution";
+  private static final String PARAM_FILE = "file";
   private static final String APPEARANCE_NAME = "rap-appearance.js";
-  private static final String JSON_PARSER_NAME = "rap-json2.js";
+  private static final String JSON_PARSER_NAME = "json2.js";
+
   public static final String ID = "clientResources";
+
+  private final TestContribution rwtContribution = new RWTContribution();
+
+  public Map<String, TestContribution> getContributions() {
+    return Activator.getContributions();
+  }
 
   public void service() throws IOException, ServletException {
     HttpServletRequest request = RWT.getRequest();
-    String file = request.getParameter( "file" );
-    if( file != null ) {
-      if( APPEARANCE_NAME.equals( file ) ) {
+    String fileParameter = request.getParameter( PARAM_FILE );
+    String contributionParameter = request.getParameter( PARAM_CONTRIBUTION );
+    if( fileParameter != null ) {
+      if( APPEARANCE_NAME.equals( fileParameter ) ) {
         deliverAppearance();
-      } else if( JSON_PARSER_NAME.equals( file ) ) {
-        deliverResource( "json2.js" );
+      } else if( rwtContribution.getName().equals( contributionParameter ) ) {
+        deliverResource( rwtContribution, fileParameter );
       } else {
-        deliverResource( file );
+        deliverResource( contributionParameter, fileParameter );
       }
     } else {
       deliverFilesList();
+    }
+  }
+
+  private void deliverResource( String contributionName, String file ) throws IOException {
+    boolean found = false;
+    Map<String, TestContribution> contributions = getContributions();
+    for( String name : contributions.keySet() ) {
+      if( name.equals( contributionName ) ) {
+        found = true;
+        deliverResource( contributions.get( name ), file );
+        break;
+      }
+    }
+    if( !found ) {
+      writeError( RWT.getResponse(), HttpServletResponse.SC_BAD_REQUEST, "Unknown contribution" );
     }
   }
 
@@ -60,20 +86,24 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     response.setContentType( "text/javascript" );
     PrintWriter writer = response.getWriter();
     writer.write( "( function() {\n" );
-    String[] clientResources = ClientResourcesAdapter.getRegisteredClientResources();
-    for( String resource : clientResources ) {
-      writeIncludeResource( writer, getResourceLocation( resource ), true );
+    writeIncludeResource( writer, getContributions().get( "rwt-test" ), "/resource/TestSettings.js" );
+    writeIncludeResources( writer, rwtContribution );
+    writeIncludeResource( writer, ( TestContribution )null, APPEARANCE_NAME );
+    writeIncludeResource( writer, rwtContribution, JSON_PARSER_NAME );
+    writeIncludeResource( writer, getThemeLocation(), null );
+    Collection<TestContribution> contributions = getContributions().values();
+    for( TestContribution contribution : contributions ) {
+      writeIncludeResources( writer, contribution );
     }
-    writeIncludeResource( writer, getResourceLocation( APPEARANCE_NAME ), false );
-    writeIncludeResource( writer, getResourceLocation( JSON_PARSER_NAME ), false );
-    writeIncludeResource( writer, getThemeLocation(), false );
     writer.write( "} )();\n" );
   }
 
-  private void deliverResource( String resourceName ) throws IOException {
+  private void deliverResource( TestContribution contribution, String resource )
+    throws IOException
+  {
     HttpServletResponse response = RWT.getResponse();
     response.setContentType( "text/javascript" );
-    InputStream inputStream = ClientResourcesAdapter.getResourceAsStream( resourceName );
+    InputStream inputStream = contribution.getResourceAsStream( resource );
     if( inputStream != null ) {
       try {
         PrintWriter writer = response.getWriter();
@@ -96,26 +126,13 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     writer.write( appearanceCode );
   }
 
-  private String getResourceLocation( String resource ) {
-     StringBuilder url = new StringBuilder();
-     url.append( RWT.getRequest().getContextPath() );
-     url.append( RWT.getRequest().getServletPath() );
-     url.append( '?' );
-     url.append( REQUEST_PARAM );
-     url.append( '=' );
-     url.append( ID );
-     url.append( "&file=" );
-     url.append( resource );
-     return RWT.getResponse().encodeURL( url.toString() );
-  }
-
   private String getThemeLocation() {
     ThemeManager themeManager = RWTFactory.getThemeManager();
     Theme defaultTheme = themeManager.getTheme( ThemeManager.FALLBACK_THEME_ID );
     return defaultTheme.getRegisteredLocation();
   }
 
-  private void writeError( HttpServletResponse response, int statusCode, String message )
+  private static void writeError( HttpServletResponse response, int statusCode, String message )
     throws IOException
   {
     response.setContentType( "text/html" );
@@ -124,15 +141,79 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     writer.write( "<html><h1>HTTP " + statusCode + "</h1><p>" + message + "</p></html>" );
   }
 
-  private static void writeIncludeResource( PrintWriter writer, String resource, boolean nocache ) {
+  private static void writeIncludeResources( PrintWriter writer, TestContribution contribution )
+    throws IOException
+  {
+    String[] clientResources = contribution.getResources();
+    for( String resource : clientResources ) {
+      writeIncludeResource( writer, contribution, resource );
+    }
+  }
+
+  private static void writeIncludeResource( PrintWriter writer,
+                                            TestContribution contribution,
+                                            String resource ) throws IOException
+  {
+    String location = getResourceLocation( contribution, resource );
+    String hash = contribution == null ? "" : getResourceHash( contribution, resource );
+    writeIncludeResource( writer, location, hash );
+  }
+
+  private static void writeIncludeResource( PrintWriter writer, String resource, String hash ) {
     writer.write( "document.write( '<script src=\"" );
     writer.write( resource );
-    if( nocache ) {
+    if( hash != null ) {
       writer.write( resource.contains( "?" ) ? "&" : "?" );
       writer.write( "nocache=" );
-      writer.write( Long.toString( System.currentTimeMillis() ) );
+      writer.write( hash );
     }
     writer.write( "\" type=\"text/javascript\"></script>' );\n" );
+  }
+
+  private static String getResourceHash( TestContribution contribution, String resource )
+    throws IOException
+  {
+    int hash = 0;
+    char[] buffer = new char[ 8096 ];
+    InputStream inputStream = contribution.getResourceAsStream( resource );
+    if( inputStream != null ) {
+      try {
+        InputStreamReader reader = new InputStreamReader( inputStream, "UTF-8" );
+        BufferedReader bufferedReader = new BufferedReader( reader );
+        int read = bufferedReader.read( buffer );
+        while( read != -1 ) {
+          for( int i = 0; i < read; i++ ) {
+            hash = 31 * hash + buffer[ i++ ];
+          }
+          read = bufferedReader.read( buffer );
+        }
+      } finally {
+        inputStream.close();
+      }
+    }
+    return Integer.toHexString( hash );
+  }
+
+  private static String getResourceLocation( TestContribution contribution, String resource )
+  {
+    StringBuilder url = new StringBuilder();
+    url.append( RWT.getRequest().getContextPath() );
+    url.append( RWT.getRequest().getServletPath() );
+    url.append( '?' );
+    url.append( REQUEST_PARAM );
+    url.append( '=' );
+    url.append( ID );
+    url.append( '&' );
+    url.append( PARAM_FILE );
+    url.append( '=' );
+    url.append( resource );
+    if( contribution != null ) {
+      url.append( '&' );
+      url.append( PARAM_CONTRIBUTION );
+      url.append( '=' );
+      url.append( contribution.getName() );
+    }
+    return RWT.getResponse().encodeURL( url.toString() );
   }
 
   private static void copyContents( InputStream inputStream, PrintWriter writer )

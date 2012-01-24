@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,6 @@ import org.osgi.util.tracker.ServiceTracker;
 
 
 public class HttpServiceTracker extends ServiceTracker<HttpService, HttpService> {
-
-  private static final String TEST_RESOURCES_PATH = "/test-resources";
 
   public HttpServiceTracker( BundleContext context ) {
     super( context, HttpService.class.getName(), null );
@@ -44,13 +42,11 @@ public class HttpServiceTracker extends ServiceTracker<HttpService, HttpService>
   }
 
   private void register( HttpService httpService ) throws NamespaceException {
-    httpService.registerResources( TEST_RESOURCES_PATH, "/js", null );
     httpService.registerResources( "/", "/htdocs", null );
   }
 
   private void unregister( HttpService service ) {
     service.unregister( "/" );
-    service.unregister( TEST_RESOURCES_PATH );
   }
 
   private void printUrl( String port ) {
