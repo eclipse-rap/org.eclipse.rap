@@ -77,7 +77,6 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     response.setContentType( "text/javascript" );
     PrintWriter writer = response.getWriter();
     writer.write( "( function() {\n" );
-    writeIncludeResource( writer, getContributions().get( "rwt-test" ), "/resource/TestSettings.js" );
     writeIncludeResources( writer, rwtContribution );
     Collection<TestContribution> contributions = getContributions().values();
     for( TestContribution contribution : contributions ) {

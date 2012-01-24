@@ -29,8 +29,8 @@ public class RWTContribution implements TestContribution {
 
   private static final String APPEARANCE_NAME = "appearance.js";
   private static final String THEME_NAME = "default-theme.js";
-
-  private static final String JSON_PARSER_NAME = "json2.js";
+  private static final String TEST_SETTINGS_RESOURCE = "/resource/TestSettings.js";
+  private static final String JSON_PARSER_RESOURCE = "json2.js";
 
   public String getName() {
     return "rwt";
@@ -39,10 +39,11 @@ public class RWTContribution implements TestContribution {
   public String[] getResources() {
     List<String> result = new ArrayList<String>();
     String[] clientResources = ClientResourcesAdapter.getRegisteredClientResources();
+    result.add( TEST_SETTINGS_RESOURCE );
     for( String resource : clientResources ) {
       result.add( resource );
     }
-    result.add( JSON_PARSER_NAME );
+    result.add( JSON_PARSER_RESOURCE );
     result.add( APPEARANCE_NAME );
     result.add( THEME_NAME );
     return toArray( result );
@@ -56,6 +57,8 @@ public class RWTContribution implements TestContribution {
     } else if( THEME_NAME.equals( resource ) ) {
       String themeCode = getThemeCode();
       result = new ByteArrayInputStream( themeCode.getBytes( "UTF-8" ) );
+    } else if( TEST_SETTINGS_RESOURCE.equals( resource ) ) {
+      result = getClass().getResourceAsStream( resource );
     } else {
       result = ClientResourcesAdapter.getResourceAsStream( resource );
     }
