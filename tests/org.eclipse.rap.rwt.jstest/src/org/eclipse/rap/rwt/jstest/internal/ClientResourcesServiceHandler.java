@@ -39,7 +39,6 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
   private static final String PARAM_CONTRIBUTION = "contribution";
   private static final String PARAM_FILE = "file";
   private static final String APPEARANCE_NAME = "rap-appearance.js";
-  private static final String JSON_PARSER_NAME = "json2.js";
 
   public static final String ID = "clientResources";
 
@@ -89,7 +88,6 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     writeIncludeResource( writer, getContributions().get( "rwt-test" ), "/resource/TestSettings.js" );
     writeIncludeResources( writer, rwtContribution );
     writeIncludeResource( writer, ( TestContribution )null, APPEARANCE_NAME );
-    writeIncludeResource( writer, rwtContribution, JSON_PARSER_NAME );
     writeIncludeResource( writer, getThemeLocation(), null );
     Collection<TestContribution> contributions = getContributions().values();
     for( TestContribution contribution : contributions ) {
