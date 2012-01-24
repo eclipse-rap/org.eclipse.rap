@@ -24,5 +24,5 @@
 <booleanAttribute key="tracing" value="false"/>
 <booleanAttribute key="useCustomFeatures" value="false"/>
 <booleanAttribute key="useDefaultConfigArea" value="false"/>
-<stringAttribute key="workspace_bundles" value="com.eclipsesource.rap.accessibility.test@default:default,com.eclipsesource.rap.accessibility@default:default,org.eclipse.rap.rwt.jstest@default:default,org.eclipse.rap.rwt.osgi@default:default,org.eclipse.rap.rwt@default:default"/>
+<stringAttribute key="workspace_bundles" value="org.eclipse.rap.rwt.jstest@default:default,org.eclipse.rap.rwt.osgi@default:default,org.eclipse.rap.rwt@default:default"/>
 </launchConfiguration>
