@@ -377,6 +377,8 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         } else if( !this._gfxEnabled && this._gfxCanvasAppended ) {
           this._removeCanvas();
         }
+      } else if( this._gfxEnabled ) {
+        this._prepareGraphicsSupport();
       }
       return result;
     },

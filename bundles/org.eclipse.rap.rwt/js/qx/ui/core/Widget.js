@@ -1896,7 +1896,7 @@ qx.Class.define( "qx.ui.core.Widget", {
         this._element = value;
         this._style = value.style;
         if( this._targetNodeEnabled ) {
-          this.prepareEnhancedBorder();
+          this.prepareEnhancedBorder( true );
         }
         this.initBackgroundColor();
         this._applyStyleProperties(value);
@@ -3761,7 +3761,24 @@ qx.Class.define( "qx.ui.core.Widget", {
 
     _applyBorder : function( value, old ) {
       this._queueBorder( value );
+      if( value && value.getStyle() === "rounded" ) {
+        this._prepareGraphicsSupport();
+      }
     },
+
+    _prepareGraphicsSupport : ( function() {
+      var result;
+      if( org.eclipse.rwt.Client.supportsCss3() ) {
+        result = qx.lang.Function.returnTrue;
+      } else {
+        result = function() {
+          if( !this._targetNodeEnabled && !this._isCreated ) {
+            this._targetNodeEnabled = true;
+          }
+        };
+      }
+      return result;      
+    } )(), 
 
     _queueBorder : function( value ) {
       this.addToQueue( "border" );
@@ -3815,7 +3832,7 @@ qx.Class.define( "qx.ui.core.Widget", {
       return this.__borderObject && this.__borderObject.getStyle() === "complex";
     },
 
-    prepareEnhancedBorder : function() {
+    prepareEnhancedBorder : function( newElement ) {
       if( !this._innerStyle ) {
         this._targetNode = document.createElement( "div" );
         this._innerStyle = this._targetNode.style;
@@ -3828,28 +3845,32 @@ qx.Class.define( "qx.ui.core.Widget", {
           this._innerStyle.height = "100%";
         }
         this._innerStyle.position = "absolute";
-        for( var i in this._styleProperties ) {
-          switch( i ) {
-            case "zIndex":
-            case "filter":
-            case "opacity":
-            case "MozOpacity":
-            case "display":
-            case "cursor":
-            case "boxShadow":
-            break;
-            default:
-              this._innerStyle[i] = this._styleProperties[i];
-              this._style[i] = "";
+        if( !newElement ) {
+          for( var i in this._styleProperties ) {
+            switch( i ) {
+              case "zIndex":
+              case "filter":
+              case "opacity":
+              case "MozOpacity":
+              case "display":
+              case "cursor":
+              case "boxShadow":
+              break;
+              default:
+                this._innerStyle[i] = this._styleProperties[i];
+                this._style[i] = "";
+            }
           }
         }
         // [if] Fix for bug 279800: Some focused widgets look strange in webkit
         this._style.outline = "none";
         this._applyContainerOverflow( this.getContainerOverflow() );
-        for( var i in this._htmlProperties ) {
-          switch( i ) {
-            case "unselectable":
-              this._targetNode.unselectable = this._htmlProperties[ i ];
+        if( !newElement ) {
+          for( var i in this._htmlProperties ) {
+            switch( i ) {
+              case "unselectable":
+                this._targetNode.unselectable = this._htmlProperties[ i ];
+            }
           }
         }
         while( this._element.firstChild ) {
