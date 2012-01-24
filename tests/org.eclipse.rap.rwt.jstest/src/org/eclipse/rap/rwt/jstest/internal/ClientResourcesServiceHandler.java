@@ -33,6 +33,7 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
 
   private static final String PARAM_CONTRIBUTION = "contribution";
   private static final String PARAM_FILE = "file";
+  private static final String PARAM_NOCACHE = "nocache";
 
   public static final String ID = "clientResources";
 
@@ -113,56 +114,29 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
                                             String resource ) throws IOException
   {
     String location = getResourceLocation( contribution, resource );
-    String hash = contribution == null ? "" : getResourceHash( contribution, resource );
-    writeIncludeResource( writer, location, hash );
+    writeIncludeResource( writer, location );
   }
 
-  private static void writeIncludeResource( PrintWriter writer, String resource, String hash ) {
+  private static void writeIncludeResource( PrintWriter writer, String resource ) {
     writer.write( "document.write( '<script src=\"" );
     writer.write( resource );
-    if( hash != null ) {
-      writer.write( resource.contains( "?" ) ? "&" : "?" );
-      writer.write( "nocache=" );
-      writer.write( hash );
-    }
     writer.write( "\" type=\"text/javascript\"></script>' );\n" );
   }
 
-  private static String getResourceHash( TestContribution contribution, String resource )
+  private static String getResourceLocation( TestContribution contribution, String resource )
     throws IOException
   {
-    int hash = 0;
-    char[] buffer = new char[ 8096 ];
-    InputStream inputStream = contribution.getResourceAsStream( resource );
-    if( inputStream != null ) {
-      try {
-        Reader reader = new BufferedReader( new InputStreamReader( inputStream, "UTF-8" ) );
-        int read = reader.read( buffer );
-        while( read != -1 ) {
-          for( int i = 0; i < read; i++ ) {
-            hash = 31 * hash + buffer[ i++ ];
-          }
-          read = reader.read( buffer );
-        }
-      } finally {
-        inputStream.close();
-      }
-    }
-    return Integer.toHexString( hash );
-  }
-
-  private static String getResourceLocation( TestContribution contribution, String resource ) {
     StringBuilder url = new StringBuilder();
     url.append( RWT.getRequest().getContextPath() );
     url.append( RWT.getRequest().getServletPath() );
     url.append( '?' );
     appendParameter( url, REQUEST_PARAM, ID );
     url.append( '&' );
+    appendParameter( url, PARAM_CONTRIBUTION, contribution.getName() );
+    url.append( '&' );
     appendParameter( url, PARAM_FILE, resource );
-    if( contribution != null ) {
-      url.append( '&' );
-      appendParameter( url, PARAM_CONTRIBUTION, contribution.getName() );
-    }
+    url.append( '&' );
+    appendParameter( url, PARAM_NOCACHE, getResourceHash( contribution, resource ) );
     return RWT.getResponse().encodeURL( url.toString() );
   }
 
@@ -170,6 +144,34 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     stringBuilder.append( name );
     stringBuilder.append( '=' );
     stringBuilder.append( value );
+  }
+
+  private static String getResourceHash( TestContribution contribution, String resource )
+    throws IOException
+  {
+    int hash = 0;
+    InputStream inputStream = contribution.getResourceAsStream( resource );
+    if( inputStream != null ) {
+      try {
+        hash = getHashCode( inputStream );
+      } finally {
+        inputStream.close();
+      }
+    }
+    return Integer.toHexString( hash );
+  }
+
+  private static int getHashCode( InputStream inputStream ) throws IOException {
+    int hash = 0;
+    byte[] buffer = new byte[ 8096 ];
+    int read = inputStream.read( buffer );
+    while( read != -1 ) {
+      for( int i = 0; i < read; i++ ) {
+        hash = 31 * hash + buffer[ i++ ];
+      }
+      read = inputStream.read( buffer );
+    }
+    return hash;
   }
 
   private static void copyContents( InputStream inputStream, PrintWriter writer )
