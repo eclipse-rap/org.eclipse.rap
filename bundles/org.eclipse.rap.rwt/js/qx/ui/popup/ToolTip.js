@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -33,9 +33,6 @@ qx.Class.define("qx.ui.popup.ToolTip",
     //   INIT
     // ************************************************************************
     this.base(arguments, vLabel, vIcon);
-
-    // Apply shadow
-    this.setStyleProperty("filter", "progid:DXImageTransform.Microsoft.Shadow(color='Gray', Direction=135, Strength=4)");
 
     // ************************************************************************
     //   TIMER

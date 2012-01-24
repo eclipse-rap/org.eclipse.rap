@@ -454,11 +454,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
         var outerCSS = widget.getElement().style.cssText.toLowerCase();
         assertTrue( innerCSS.indexOf( "filter" ) == -1 );
         assertTrue( outerCSS.indexOf( "filter" ) != -1 );
+        assertFalse( widget._gfxData.backgroundShape.node.style.antialias );
         widget.setOpacity( 1 );      
         innerCSS = widget._getTargetNode().style.cssText.toLowerCase();
         outerCSS = widget.getElement().style.cssText.toLowerCase();
         assertTrue( innerCSS.indexOf( "filter" ) == -1 );
         assertTrue( outerCSS.indexOf( "filter" ) == -1 );
+        assertTrue( widget._gfxData.backgroundShape.node.style.antialias );
         widget.destroy();
       },
       "default" : function(){}

@@ -79,7 +79,23 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         this.base( arguments, value, oldValue );
       }
     } ),
+    
 
+    _applyOpacity : function( value, oldValue ) {
+      this.base( arguments, value, oldValue );
+      this._checkAntiAlias( value );
+   },
+    
+    _checkAntiAlias : qx.core.Variant.select( "qx.client", {
+      "default" : qx.lang.Function.returnTrue,
+      "mshtml" : function( opacity ) {
+        if( this._gfxData && this._gfxData.backgroundInsert ) {
+          var antiAlias = opacity === 1 || opacity === null;
+          org.eclipse.rwt.VML._setAntiAlias( this._gfxData.backgroundShape, antiAlias );
+        }
+      }
+    } ),
+    
     //overwritten
     _styleBackgroundColor : function( value ) {
       if( this._gfxBackgroundEnabled ) {
@@ -464,6 +480,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
             var shape = this._gfxData.backgroundShape;
             GraphicsUtil.addToCanvas( this._gfxCanvas, shape );
             this._gfxData.backgroundInsert = true;
+            this._checkAntiAlias( this.getOpacity() );
           }
         } else if( this._gfxData.backgroundInsert ) {
           GraphicsUtil.removeFromCanvas( this._gfxCanvas, backgroundShape );
