@@ -488,19 +488,23 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       }
       return str.join(" ,");
     },
-    
+
     _copyData : function( source, target ) {
-      if( !source || !target ) {
-        throw "VML._copyData: source or target missing!";
-      }
-      for( var key in source ) {
-        var value = source[ key ];
-        if( typeof value === "object" ) {
-          this._copyData( value, target[ key ] );
-        } else {
-          target[ key ] = value;
+      try {
+        if( !source || !target ) {
+          throw "VML._copyData: source or target missing!";
         }
-      }
+        for( var key in source ) {
+          var value = source[ key ];
+          if( typeof value === "object" ) {
+            this._copyData( value, target[ key ] );
+          } else {
+            target[ key ] = value;
+          }
+        }
+      } catch( ex ) {
+        // ignored in 1.4.2 only
+      } 
     },
 
     _handleAppearShape : function( shape ) {
