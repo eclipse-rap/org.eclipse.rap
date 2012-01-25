@@ -109,7 +109,7 @@ public class SimpleLifeCycle_Test extends TestCase {
 
   public void testThreadIsDetachedInSubsequentRequest() throws IOException {
     registerEntryPoint( TestEntryPoint.class );
-    Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
+    Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointUtil.DEFAULT );
     lifeCycle.execute();
     Fixture.fakeNewRequest();
     lifeCycle.execute();
@@ -241,7 +241,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
 
   private static void registerEntryPoint( Class<? extends IEntryPoint> type ) {
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, type );
+    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT, type );
   }
 
   private static void newSession() {

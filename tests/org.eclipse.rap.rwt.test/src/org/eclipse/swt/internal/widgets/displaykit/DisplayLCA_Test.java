@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -194,7 +194,7 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderInitiallyDisposed() throws Exception {
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT,
+    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT,
                                                 TestRenderInitiallyDisposedEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     LifeCycleUtil.setSessionDisplay( null );
@@ -207,7 +207,7 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderDisposed() throws Exception {
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT,
+    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT,
                                                 TestRenderDisposedEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     LifeCycleUtil.setSessionDisplay( null );

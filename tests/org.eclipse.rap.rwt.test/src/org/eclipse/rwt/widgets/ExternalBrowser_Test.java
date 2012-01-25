@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
@@ -82,7 +82,7 @@ public class ExternalBrowser_Test extends TestCase {
    * matches the order of the ExternalBrowser#open/close calls
    */
   public void testExecutionOrder() throws IOException {
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT,
+    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT,
                                                 TestExecutionOrderEntryPoint.class );
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );

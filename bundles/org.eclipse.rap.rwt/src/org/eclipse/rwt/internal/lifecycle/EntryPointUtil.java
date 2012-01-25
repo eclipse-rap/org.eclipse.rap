@@ -28,6 +28,8 @@ public class EntryPointUtil {
   private static final String ATTR_CURRENT_ENTRY_POINT_NAME
     = EntryPointUtil.class.getName() + "#currentEntryPoint";
 
+  public static final String DEFAULT = "default";
+
   private EntryPointUtil() {
     // prevent instantiation
   }
@@ -60,7 +62,7 @@ public class EntryPointUtil {
     if( result == null ) {
       result = readFromBranding();
       if( result == null ) {
-        result = EntryPointManager.DEFAULT;
+        result = EntryPointUtil.DEFAULT;
       }
     }
     return result;

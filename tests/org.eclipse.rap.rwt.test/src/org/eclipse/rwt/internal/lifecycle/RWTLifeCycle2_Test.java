@@ -187,7 +187,7 @@ public class RWTLifeCycle2_Test extends TestCase {
 
   public void testSessionRestartAfterExceptionInUIThread() throws Exception {
     TestRequest request;
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, ExceptionInReadAndDispatchEntryPoint.class );
+    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT, ExceptionInReadAndDispatchEntryPoint.class );
     // send initial request - response is index.html
     request = newRequest();
     request.setParameter( RequestParams.STARTUP, "default" );
@@ -234,7 +234,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   public void testEventProcessingOnSessionRestart() throws Exception {
     TestRequest request;
     Class<? extends IEntryPoint> entryPoint = EventProcessingOnSessionRestartEntryPoint.class;
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, entryPoint );
+    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT, entryPoint );
     // send initial request - response is index.html
     request = newRequest();
     request.setParameter( RequestParams.STARTUP, "default" );
@@ -264,7 +264,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   public void testSessionInvalidateWithDisposeInFinally() throws Exception {
     TestRequest request;
     Class<? extends IEntryPoint> clazz = TestSessionInvalidateWithDisposeInFinallyEntryPoint.class;
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, clazz );
+    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT, clazz );
     // send initial request - response is index.html
     request = newRequest();
     request.setParameter( RequestParams.STARTUP, "default" );

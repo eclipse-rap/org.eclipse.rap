@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 EclipseSource and others.
+ * Copyright (c) 2002, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.Display;
 
@@ -110,9 +110,9 @@ public class WrappedRequest_Test extends TestCase {
     String title = startupPage.getConfigurer().getTemplate().getTokens() [ TOKEN_INDEX_TITLE ];
     assertTrue( content.contains( title ) );
 
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, DefaultEntryPoint.class );
+    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT, DefaultEntryPoint.class );
     Fixture.fakeRequestParam( p1, null );
-    Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
+    Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointUtil.DEFAULT );
     Fixture.fakeRequestParam( LifeCycleServiceHandler.RWT_INITIALIZE, "true" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setHeader( "User-Agent", "myAgent" );

@@ -43,7 +43,7 @@ public class EntryPointUtil_Test extends TestCase {
   }
 
   public void testGetCurrentEntryPointName_default() {
-    assertEquals( EntryPointManager.DEFAULT, EntryPointUtil.getCurrentEntryPointName() );
+    assertEquals( EntryPointUtil.DEFAULT, EntryPointUtil.getCurrentEntryPointName() );
   }
 
   public void testGetCurrentEntryPointName_withStartupParameter() {

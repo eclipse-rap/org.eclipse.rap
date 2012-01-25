@@ -22,7 +22,6 @@ import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 
 public class EntryPointManager {
 
-  public static final String DEFAULT = "default";
   private final Map<String, IEntryPointFactory> registry;
 
   public EntryPointManager() {
