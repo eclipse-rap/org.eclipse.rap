@@ -41,8 +41,8 @@ public final class ApplicationRegistry {
 
   public static IApplication getApplication() {
     IApplication application = null;
-    String currentEntryPoint = EntryPointUtil.getCurrentEntryPoint();
-    Class clazz = ( Class )appEntrypointMapping.get( currentEntryPoint );
+    String currentEntryPointName = EntryPointUtil.getCurrentEntryPointName();
+    Class clazz = ( Class )appEntrypointMapping.get( currentEntryPointName );
     try {
       application = ( IApplication )clazz.newInstance();
     } catch( final InstantiationException e ) {

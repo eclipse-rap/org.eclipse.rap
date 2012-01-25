@@ -42,8 +42,10 @@ public class Application implements IEntryPoint, ITestHarness {
 
   private int createAndRunWorkbench() {
     int result;
-    if( getEntryPoint() != null ) {
-      result = EntryPointUtil.createUI( getEntryPoint() );
+    String entryPointName = getEntryPointName();
+    if( entryPointName != null ) {
+      IEntryPoint entryPoint = EntryPointUtil.getEntryPoint( entryPointName );
+      result = entryPoint.createUI();
     } else {
       result = createAndRunEmptyWorkbench();
     }
@@ -61,7 +63,7 @@ public class Application implements IEntryPoint, ITestHarness {
     return PlatformUI.createAndRunWorkbench( display, workbenchAdvisor );
   }
 
-  private String getEntryPoint() {
+  private String getEntryPointName() {
     String parameter = RWT.getRequest().getParameter( "testentrypoint" );
     String result = null;
     if( !"rapjunit".equals( parameter ) && !"".equals( parameter ) ) {

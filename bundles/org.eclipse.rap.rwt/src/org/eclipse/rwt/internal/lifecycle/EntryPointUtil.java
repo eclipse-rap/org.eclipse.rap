@@ -25,20 +25,38 @@ import org.eclipse.rwt.service.ISessionStore;
 
 public class EntryPointUtil {
 
-  private static final String ATTR_CURRENT_ENTRY_POINT
+  private static final String ATTR_CURRENT_ENTRY_POINT_NAME
     = EntryPointUtil.class.getName() + "#currentEntryPoint";
 
   private EntryPointUtil() {
     // prevent instantiation
   }
 
-  public static String getCurrentEntryPoint() {
-    ISessionStore session = ContextProvider.getSessionStore();
-    return ( String )session.getAttribute( ATTR_CURRENT_ENTRY_POINT );
+  public static IEntryPoint getCurrentEntryPoint() {
+    String entryPointName = getCurrentEntryPointName();
+    return getEntryPoint( entryPointName );
   }
 
-  public static String findEntryPoint() {
-    String result = readFromStartupParameter();
+  public static IEntryPoint getEntryPoint( String name ) {
+    ParamCheck.notNull( name, "name" );
+
+    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
+    IEntryPointFactory factory = entryPointManager.getEntryPointFactory( name );
+    return factory.create();
+  }
+
+  public static String getCurrentEntryPointName() {
+    String result = readCurrentEntryPointName();
+    if( result == null ) {
+      result = determineCurrentEntryPointName();
+      storeCurrentEntryPointName( result );
+    }
+    return result;
+  }
+
+  private static String determineCurrentEntryPointName() {
+    String result;
+    result = readFromStartupParameter();
     if( result == null ) {
       result = readFromBranding();
       if( result == null ) {
@@ -46,16 +64,6 @@ public class EntryPointUtil {
       }
     }
     return result;
-  }
-
-  public static int createUI( String name ) {
-    ParamCheck.notNull( name, "name" );
-
-    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
-    IEntryPointFactory factory = entryPointManager.getEntryPointFactory( name );
-    IEntryPoint entryPoint = factory.create();
-    setCurrentEntryPoint( name );
-    return entryPoint.createUI();
   }
 
   private static String readFromStartupParameter() {
@@ -76,9 +84,14 @@ public class EntryPointUtil {
     return result;
   }
 
-  private static void setCurrentEntryPoint( String name ) {
+  private static void storeCurrentEntryPointName( String name ) {
     ISessionStore session = ContextProvider.getSessionStore();
-    session.setAttribute( ATTR_CURRENT_ENTRY_POINT, name );
+    session.setAttribute( ATTR_CURRENT_ENTRY_POINT_NAME, name );
+  }
+
+  private static String readCurrentEntryPointName() {
+    ISessionStore session = ContextProvider.getSessionStore();
+    return ( String )session.getAttribute( ATTR_CURRENT_ENTRY_POINT_NAME );
   }
 
 }

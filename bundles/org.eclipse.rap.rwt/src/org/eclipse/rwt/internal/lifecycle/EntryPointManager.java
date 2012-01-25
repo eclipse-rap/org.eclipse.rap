@@ -64,6 +64,8 @@ public class EntryPointManager {
   }
 
   public IEntryPointFactory getEntryPointFactory( String name ) {
+    ParamCheck.notNull( name, "name" );
+
     IEntryPointFactory result;
     synchronized( registry ) {
       checkNameExists( name );

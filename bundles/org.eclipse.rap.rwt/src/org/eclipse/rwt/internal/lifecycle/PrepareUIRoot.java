@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
+import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.widgets.Display;
 
@@ -24,8 +25,8 @@ final class PrepareUIRoot implements IPhase {
   public PhaseId execute( Display display ) {
     PhaseId result;
     if( LifeCycleUtil.isStartup() ) {
-      String entryPointName = EntryPointUtil.findEntryPoint();
-      EntryPointUtil.createUI( entryPointName );
+      IEntryPoint entryPoint = EntryPointUtil.getCurrentEntryPoint();
+      entryPoint.createUI();
       result = PhaseId.RENDER;
     } else {
       result = PhaseId.READ_DATA;

@@ -19,6 +19,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServiceContext;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rwt.internal.uicallback.UICallBackManager;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.service.IServiceStore;
@@ -169,8 +170,8 @@ public class RWTLifeCycle extends LifeCycle {
   int createUI() {
     int result = -1;
     if( ZERO.equals( getCurrentPhase() ) && LifeCycleUtil.isStartup() ) {
-      String entryPoint = EntryPointUtil.findEntryPoint();
-      result = EntryPointUtil.createUI( entryPoint );
+      IEntryPoint entryPoint = EntryPointUtil.getCurrentEntryPoint();
+      result = entryPoint.createUI();
     }
     return result;
   }

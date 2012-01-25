@@ -12,6 +12,7 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
@@ -26,9 +27,14 @@ import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 
 public class EntryPointUtil_Test extends TestCase {
 
+  private IEntryPoint entryPoint;
+  private IEntryPointFactory entryPointFactory;
+
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
+    entryPoint = mockEntryPoint();
+    entryPointFactory = mockEntryPointFactory( entryPoint );
   }
 
   @Override
@@ -36,61 +42,74 @@ public class EntryPointUtil_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testFindEntryPoint_default() {
-    assertEquals( EntryPointManager.DEFAULT, EntryPointUtil.findEntryPoint() );
+  public void testGetCurrentEntryPointName_default() {
+    assertEquals( EntryPointManager.DEFAULT, EntryPointUtil.getCurrentEntryPointName() );
   }
 
-  public void testFindEntryPoint_withStartupParameter() {
+  public void testGetCurrentEntryPointName_withStartupParameter() {
     Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
 
-    assertEquals( "foo", EntryPointUtil.findEntryPoint() );
+    assertEquals( "foo", EntryPointUtil.getCurrentEntryPointName() );
   }
 
-  public void testFindEntryPoint_withBranding() {
+  public void testGetCurrentEntryPointName_withBranding() {
     // register a branding with the default servlet name ("rap")
     TestBranding branding = new TestBranding( "rap", null, "foo" );
     RWTFactory.getBrandingManager().register( branding );
 
-    assertEquals( "foo", EntryPointUtil.findEntryPoint() );
+    assertEquals( "foo", EntryPointUtil.getCurrentEntryPointName() );
   }
 
-  public void testCreateUI() {
-    IEntryPoint entryPoint = mockEntryPoint( 23 );
-    IEntryPointFactory entryPointFactory = mockEntryPointFactory( entryPoint );
+  public void testGetCurrentEntryPointName_isCached() {
+    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
+    EntryPointUtil.getCurrentEntryPointName();
+    Fixture.fakeRequestParam( RequestParams.STARTUP, "bar" );
+
+    assertEquals( "foo", EntryPointUtil.getCurrentEntryPointName() );
+  }
+
+  public void testGetCurrentEntryPoint() {
+    RWTFactory.getEntryPointManager().register( "foo", entryPointFactory );
+    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
+
+    IEntryPoint returnedEntryPoint = EntryPointUtil.getCurrentEntryPoint();
+
+    verify( entryPointFactory ).create();
+    assertSame( entryPoint, returnedEntryPoint );
+  }
+
+  public void testGetCurrentEntryPoint_isCached() {
+    RWTFactory.getEntryPointManager().register( "foo", entryPointFactory );
+    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
+    EntryPointUtil.getCurrentEntryPoint();
+    Fixture.fakeRequestParam( RequestParams.STARTUP, "bar" );
+
+    IEntryPoint returnedEntryPoint = EntryPointUtil.getCurrentEntryPoint();
+
+    verify( entryPointFactory, times( 2 ) ).create();
+    assertSame( entryPoint, returnedEntryPoint );
+  }
+
+  public void testGetEntryPoint() {
     RWTFactory.getEntryPointManager().register( "foo", entryPointFactory );
 
-    int returnValue = EntryPointUtil.createUI( "foo" );
+    IEntryPoint returnedEntryPoint = EntryPointUtil.getEntryPoint( "foo" );
 
     verify( entryPointFactory ).create();
-    verify( entryPoint ).createUI();
-    assertEquals( 23, returnValue );
-    assertEquals( "foo", EntryPointUtil.getCurrentEntryPoint() );
+    assertSame( entryPoint, returnedEntryPoint );
   }
 
-  public void testCreateUI_withDefaultEntryPoint() {
-    IEntryPoint entryPoint = mockEntryPoint( 23 );
-    IEntryPointFactory entryPointFactory = mockEntryPointFactory( entryPoint );
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, entryPointFactory );
-
-    int returnValue = EntryPointUtil.createUI( EntryPointManager.DEFAULT );
-
-    verify( entryPointFactory ).create();
-    verify( entryPoint ).createUI();
-    assertEquals( 23, returnValue );
-    assertEquals( EntryPointManager.DEFAULT, EntryPointUtil.getCurrentEntryPoint() );
-  }
-
-  public void testCreateUI_withNullName() {
+  public void testGetEntryPoint_withNullName() {
     try {
-      EntryPointUtil.createUI( null );
+      EntryPointUtil.getEntryPoint( null );
       fail();
     } catch( NullPointerException expected ) {
     }
   }
 
-  public void testCreateUI_withNonExistingEntryPointName() {
+  public void testGetEntryPoint_withNonExistingEntryPointName() {
     try {
-      EntryPointUtil.createUI( "does.not.exist" );
+      EntryPointUtil.getEntryPoint( "does.not.exist" );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -102,9 +121,9 @@ public class EntryPointUtil_Test extends TestCase {
     return entryPointFactory;
   }
 
-  private static IEntryPoint mockEntryPoint( int returnValue ) {
+  private static IEntryPoint mockEntryPoint() {
     IEntryPoint entryPoint = mock( IEntryPoint.class );
-    when( Integer.valueOf( entryPoint.createUI() ) ).thenReturn( Integer.valueOf( returnValue ) );
+    when( Integer.valueOf( entryPoint.createUI() ) ).thenReturn( Integer.valueOf( 0 ) );
     return entryPoint;
   }
 
