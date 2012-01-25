@@ -19,15 +19,12 @@ import org.eclipse.rwt.lifecycle.PhaseListener;
 
 public abstract class LifeCycle implements ILifeCycle {
 
-  public LifeCycle( EntryPointManager entryPointManager ) {
-  }
-  
   public abstract void execute() throws IOException;
 
   public abstract void requestThreadExec( Runnable runnable );
 
   public abstract void addPhaseListener( PhaseListener phaseListener );
   public abstract void removePhaseListener( PhaseListener phaseListener );
-  
+
   public abstract void sleep();
 }

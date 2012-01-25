@@ -27,11 +27,12 @@ import org.eclipse.swt.widgets.Display;
 public class SimpleLifeCycle extends LifeCycle {
 
   private static class SessionDisplayPhaseExecutor extends PhaseExecutor {
-    
+
     SessionDisplayPhaseExecutor( PhaseListenerManager phaseListenerManager, IPhase[] phases ) {
       super( phaseListenerManager, phases );
     }
-    
+
+    @Override
     Display getDisplay() {
       return LifeCycleUtil.getSessionDisplay();
     }
@@ -39,31 +40,31 @@ public class SimpleLifeCycle extends LifeCycle {
 
   private static class SimpleUIThreadHolder implements IUIThreadHolder {
     private final Thread thread;
-  
+
     public SimpleUIThreadHolder( Thread thread ) {
       this.thread = thread;
     }
-  
+
     public void updateServiceContext() {
       throw new UnsupportedOperationException();
     }
-  
+
     public void terminateThread() {
       throw new UnsupportedOperationException();
     }
-  
+
     public void switchThread() {
       throw new UnsupportedOperationException();
     }
-  
+
     public void setServiceContext( ServiceContext serviceContext ) {
       throw new UnsupportedOperationException();
     }
-  
+
     public Thread getThread() {
       return thread;
     }
-  
+
     public Object getLock() {
       throw new UnsupportedOperationException();
     }
@@ -76,11 +77,11 @@ public class SimpleLifeCycle extends LifeCycle {
     public void setShutdownCallback( Runnable shutdownCallback ) {
       this.shutdownCallback = shutdownCallback;
     }
-  
+
     public void setSessionStore( ISessionStore sessionStore ) {
       this.sessionStore = sessionStore;
     }
-  
+
     public void interceptShutdown() {
       final Display display = LifeCycleUtil.getSessionDisplay( sessionStore );
       if( isDisplayActive( display ) && isApplicationContextActive() ) {
@@ -98,11 +99,11 @@ public class SimpleLifeCycle extends LifeCycle {
     public void processShutdown() {
       throw new UnsupportedOperationException();
     }
-    
+
     private static boolean isDisplayActive( Display display ) {
       return display != null && !display.isDisposed();
     }
-  
+
     private boolean isApplicationContextActive() {
       ApplicationContext applicationContext = ApplicationContextUtil.get( sessionStore );
       return applicationContext != null && applicationContext.isActivated();
@@ -112,17 +113,17 @@ public class SimpleLifeCycle extends LifeCycle {
   private final PhaseListenerManager phaseListenerManager;
   private final IPhase[] phases;
 
-  public SimpleLifeCycle( EntryPointManager entryPointManager ) {
-    super( entryPointManager );
-    this.phaseListenerManager = new PhaseListenerManager( this );
-    this.phases = new IPhase[] {
-      new PrepareUIRoot( entryPointManager ),
+  public SimpleLifeCycle() {
+    phaseListenerManager = new PhaseListenerManager( this );
+    phases = new IPhase[] {
+      new PrepareUIRoot(),
       new ReadData(),
       new ProcessAction(),
       new Render()
     };
   }
 
+  @Override
   public void execute() throws IOException {
     installSessionShutdownAdapter();
     ISessionStore sessionStore = ContextProvider.getSessionStore();
@@ -134,19 +135,23 @@ public class SimpleLifeCycle extends LifeCycle {
       detachThread( LifeCycleUtil.getSessionDisplay(), sessionStore );
     }
   }
-  
+
+  @Override
   public void requestThreadExec( Runnable runnable ) {
     runnable.run();
   }
 
+  @Override
   public void addPhaseListener( PhaseListener phaseListener ) {
     phaseListenerManager.addPhaseListener( phaseListener );
   }
 
+  @Override
   public void removePhaseListener( PhaseListener phaseListener ) {
     phaseListenerManager.removePhaseListener( phaseListener );
   }
-  
+
+  @Override
   public void sleep() {
     String msg = "The " + getClass().getSimpleName() + " does not support Display#sleep().";
     throw new UnsupportedOperationException( msg );

@@ -93,7 +93,7 @@ public class ApplicationContext {
     resourceManager = new ResourceManagerImpl( configuration );
     phaseListenerRegistry = new PhaseListenerRegistry();
     entryPointManager = new EntryPointManager();
-    lifeCycleFactory = new LifeCycleFactory( entryPointManager, phaseListenerRegistry );
+    lifeCycleFactory = new LifeCycleFactory( phaseListenerRegistry );
     themeManager = new ThemeManager();
     brandingManager = new BrandingManager();
     resourceFactory = new ResourceFactory();

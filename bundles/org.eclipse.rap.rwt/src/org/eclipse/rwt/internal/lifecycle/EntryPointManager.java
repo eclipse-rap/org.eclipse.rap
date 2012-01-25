@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,42 +14,31 @@ package org.eclipse.rwt.internal.lifecycle;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.IEntryPointFactory;
-import org.eclipse.rwt.service.ISessionStore;
 
 
 public class EntryPointManager {
-  
+
   public static final String DEFAULT = "default";
-  private static final String CURRENT_ENTRY_POINT
-    = EntryPointManager.class.getName() + "#currentEntryPointName";
-  
   private final Map<String, IEntryPointFactory> registry;
 
-  public static String getCurrentEntryPoint() {
-    ISessionStore session = ContextProvider.getSessionStore();
-    return ( String )session.getAttribute( EntryPointManager.CURRENT_ENTRY_POINT );    
-  }
-  
   public EntryPointManager() {
     registry = new HashMap<String, IEntryPointFactory>();
   }
-  
+
   public void register( String name, Class<? extends IEntryPoint> type ) {
     ParamCheck.notNull( type, "type" );
-    
+
     register( name, new DefaultEntryPointFactory( type ) );
   }
-
 
   public void register( String name, IEntryPointFactory entryPointFactory ) {
     ParamCheck.notNull( name, "name" );
     ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
-    
+
     synchronized( registry ) {
       if( registry.containsKey( name ) ) {
         String msg = "Entry point already registered: " + name;
@@ -61,33 +50,26 @@ public class EntryPointManager {
 
   public void deregister( String name ) {
     ParamCheck.notNull( name, "name" );
-    
+
     synchronized( registry ) {
       checkNameExists( name );
       registry.remove( name );
     }
   }
-  
+
   public void deregisterAll() {
     synchronized( registry ) {
       registry.clear();
     }
   }
 
-
-  public int createUI( String name ) {
-    ParamCheck.notNull( name, "name" );
-    
-    IEntryPointFactory factory;
+  public IEntryPointFactory getEntryPointFactory( String name ) {
+    IEntryPointFactory result;
     synchronized( registry ) {
       checkNameExists( name );
-      factory = registry.get( name );
+      result = registry.get( name );
     }
-    // no synchronization during instance creation to avoid lock in case
-    // of expensive constructor operations
-    IEntryPoint entryPoint = factory.create();
-    setCurrentEntryPoint( name );
-    return entryPoint.createUI();
+    return result;
   }
 
   public String[] getEntryPoints() {
@@ -103,10 +85,5 @@ public class EntryPointManager {
       String msg = "Entry point does not exist: " + name;
       throw new IllegalArgumentException( msg );
     }
-  }
-
-  private static void setCurrentEntryPoint( String name ) {
-    ISessionStore session = ContextProvider.getSessionStore();
-    session.setAttribute( EntryPointManager.CURRENT_ENTRY_POINT, name );
   }
 }

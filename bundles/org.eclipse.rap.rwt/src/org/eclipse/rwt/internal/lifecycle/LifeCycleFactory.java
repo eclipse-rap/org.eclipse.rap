@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,24 +20,19 @@ import org.eclipse.rwt.lifecycle.PhaseListener;
 public class LifeCycleFactory {
   private static final Class<? extends LifeCycle> DEFAULT_LIFE_CYCLE_CLASS = SimpleLifeCycle.class;
 
-  private final EntryPointManager entryPointManager;
   private final PhaseListenerRegistry phaseListenerRegistry;
   private Class<? extends LifeCycle> lifeCycleClass;
   private LifeCycle lifeCycle;
 
-  
-  public LifeCycleFactory( EntryPointManager entryPointManager, 
-                           PhaseListenerRegistry phaseListenerRegistry ) 
-  {
-    this.entryPointManager = entryPointManager;
+  public LifeCycleFactory( PhaseListenerRegistry phaseListenerRegistry ) {
     this.phaseListenerRegistry = phaseListenerRegistry;
-    this.lifeCycleClass = DEFAULT_LIFE_CYCLE_CLASS;
+    lifeCycleClass = DEFAULT_LIFE_CYCLE_CLASS;
   }
-  
+
   public ILifeCycle getLifeCycle() {
     return lifeCycle;
   }
-  
+
   public void configure( Class<? extends LifeCycle> lifeCycleClass ) {
     this.lifeCycleClass = lifeCycleClass;
   }
@@ -55,8 +50,6 @@ public class LifeCycleFactory {
   }
 
   private LifeCycle newLifeCycle() {
-    Class[] paramTypes = new Class[] { EntryPointManager.class };
-    Object[] paramValues = new Object[] { entryPointManager };
-    return ( LifeCycle )ClassUtil.newInstance( lifeCycleClass, paramTypes, paramValues );
+    return ( LifeCycle )ClassUtil.newInstance( lifeCycleClass );
   }
 }

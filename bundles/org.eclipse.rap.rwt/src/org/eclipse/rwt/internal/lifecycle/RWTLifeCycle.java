@@ -71,17 +71,15 @@ public class RWTLifeCycle extends LifeCycle {
     new Render()
   };
 
-  private final EntryPointManager entryPointManager;
   private final PhaseListenerManager phaseListenerManager;
   Runnable uiRunnable;
 
-  public RWTLifeCycle( EntryPointManager entryPointManager ) {
-    super( entryPointManager );
-    this.entryPointManager = entryPointManager;
+  public RWTLifeCycle() {
     phaseListenerManager = new PhaseListenerManager( this );
     uiRunnable = new UIThreadController();
   }
 
+  @Override
   public void execute() throws IOException {
     if( LifeCycleUtil.isStartup() ) {
       setPhaseOrder( PHASE_ORDER_STARTUP );
@@ -99,14 +97,17 @@ public class RWTLifeCycle extends LifeCycle {
     } while( runnable != null );
   }
 
+  @Override
   public void addPhaseListener( PhaseListener listener ) {
     phaseListenerManager.addPhaseListener( listener );
   }
 
+  @Override
   public void removePhaseListener( PhaseListener listener ) {
     phaseListenerManager.removePhaseListener( listener );
   }
 
+  @Override
   public void requestThreadExec( Runnable runnable ) {
     setRequestThreadRunnable( runnable );
     getUIThreadHolder().switchThread();
@@ -169,7 +170,7 @@ public class RWTLifeCycle extends LifeCycle {
     int result = -1;
     if( ZERO.equals( getCurrentPhase() ) && LifeCycleUtil.isStartup() ) {
       String entryPoint = EntryPointUtil.findEntryPoint();
-      result = entryPointManager.createUI( entryPoint );
+      result = EntryPointUtil.createUI( entryPoint );
     }
     return result;
   }
@@ -216,6 +217,7 @@ public class RWTLifeCycle extends LifeCycle {
     }
   }
 
+  @Override
   public void sleep() {
     continueLifeCycle();
     IUIThreadHolder uiThread = getUIThreadHolder();

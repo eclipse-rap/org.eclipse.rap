@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,199 +61,16 @@ public class RWTLifeCycle_Test extends TestCase {
 
   private static StringBuilder log = new StringBuilder();
 
-  private static class LoggingPhaseListener implements PhaseListener {
-    private static final long serialVersionUID = 1L;
-    public void beforePhase( PhaseEvent event ) {
-      log.append( "before" + event.getPhaseId() );
-    }
-    public void afterPhase( PhaseEvent event ) {
-      log.append( "after" + event.getPhaseId() );
-    }
-    public PhaseId getPhaseId() {
-      return PhaseId.ANY;
-    }
+  @Override
+  protected void setUp() throws Exception {
+    log.setLength( 0 );
+    Fixture.setUp();
+    Fixture.fakeResponseWriter();
   }
 
-  public static final class MainStartup implements IEntryPoint {
-    public int createUI() {
-      log.append( "createUI" );
-      return 0;
-    }
-  }
-
-  public static final class ErrorStartup implements IEntryPoint {
-    public int createUI() {
-      throw new RuntimeException( ERR_MSG );
-    }
-  }
-
-  private final class ExceptionListenerTest implements PhaseListener {
-
-    private static final long serialVersionUID = 1L;
-
-    public void afterPhase( PhaseEvent event ) {
-      log.append( AFTER + event.getPhaseId() + "|" );
-      throw new RuntimeException();
-    }
-
-    public void beforePhase( PhaseEvent event ) {
-      log.append( BEFORE + event.getPhaseId() + "|" );
-      throw new RuntimeException();
-    }
-
-    public PhaseId getPhaseId() {
-      return PhaseId.PREPARE_UI_ROOT;
-    }
-  }
-
-  public static class TestEntryPoint implements IEntryPoint {
-    public int createUI() {
-      new Display();
-      return 0;
-    }
-  }
-
-  public static class TestPhasesEntryPoint implements IEntryPoint {
-    public int createUI() {
-      Display display = new Display();
-      while( !display.isDisposed() ) {
-        if( !display.readAndDispatch() ) {
-          display.sleep();
-        }
-      }
-      return 0;
-    }
-  }
-
-  public static class TestErrorInLifeCycleEntryPoint implements IEntryPoint {
-    public int createUI() {
-      String msg = TestErrorInLifeCycleEntryPoint.class.getName();
-      throw new RuntimeException( msg );
-    }
-  }
-
-  public static class TestEntryPointWithLog implements IEntryPoint {
-    public int createUI() {
-      new Display();
-      log.append( DISPLAY_CREATED );
-      return 0;
-    }
-  }
-
-  public static class DisposeDisplayOnSessionTimeoutEntryPoint
-    implements IEntryPoint
-  {
-    public int createUI() {
-      Display display = new Display();
-      display.addListener( SWT.Dispose, new Listener() {
-        public void handleEvent( Event event ) {
-          log.append( "display disposed" );
-        }
-      } );
-      return 0;
-    }
-  }
-
-  public static class SessionInvalidateWithEventLoopEntryPoint
-    implements IEntryPoint
-  {
-    public int createUI() {
-      Display display = new Display();
-      Shell shell = new Shell( display );
-      shell.open();
-      while( !shell.isDisposed() ) {
-        if( !display.readAndDispatch() ) {
-          display.sleep();
-        }
-      }
-      log.append( "regular end of createUI" );
-      return 0;
-    }
-  }
-
-  public static class SessionInvalidateWithoutEventLoopEntryPoint
-    implements IEntryPoint
-  {
-    public int createUI() {
-      new Display();
-      return 0;
-    }
-  }
-
-  public static class ExceptionInRenderEntryPoint implements IEntryPoint {
-    public static class BuggyShell extends Shell {
-      private static final long serialVersionUID = 1L;
-      public BuggyShell( Display display ) {
-        super( display );
-      }
-      @SuppressWarnings("unchecked")
-      @Override
-      public <T> T getAdapter( Class<T> adapter ) {
-        Object result;
-        if( adapter.equals( ILifeCycleAdapter.class ) ) {
-          result = new AbstractWidgetLCA() {
-            @Override
-            public void preserveValues( Widget widget ) {
-            }
-            public void readData( Widget widget ) {
-            }
-            @Override
-            public void renderInitialization( Widget widget )
-              throws IOException
-            {
-              throw new RuntimeException( EXCEPTION_IN_RENDER );
-            }
-            @Override
-            public void renderChanges( Widget widget ) throws IOException {
-              throw new RuntimeException( EXCEPTION_IN_RENDER );
-            }
-            @Override
-            public void renderDispose( Widget widget ) throws IOException {
-            }
-          };
-        } else {
-          result = super.getAdapter( adapter );
-        }
-        return ( T )result;
-      }
-    }
-
-    public int createUI() {
-      Display display = new Display();
-      Shell shell = new BuggyShell( display );
-      shell.open();
-      while( !shell.isDisposed() ) {
-        try {
-          if( !display.readAndDispatch() ) {
-            display.sleep();
-          }
-        } catch( RuntimeException e ) {
-          // continue loop
-        }
-      }
-      log.append( "regular end of createUI" );
-      return 0;
-    }
-  }
-
-  public static final class TestOrderOfDisplayDisposeAndSessionUnboundEntryPoint
-    implements IEntryPoint
-  {
-    public int createUI() {
-      Display display = new Display();
-      display.addListener( SWT.Dispose, new Listener() {
-        public void handleEvent( Event event ) {
-          log.append( "disposeEvent, " );
-        }
-      } );
-      ISessionStore sessionStore = RWT.getSessionStore();
-      sessionStore.addSessionStoreListener( new SessionStoreListener() {
-        public void beforeDestroy( SessionStoreEvent event ) {
-          log.append( "beforeDestroy" );
-        }
-      } );
-      return 0;
-    }
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
   }
 
   public void testNoEntryPoint() throws IOException {
@@ -270,7 +87,9 @@ public class RWTLifeCycle_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT,
                                                 TestEntryPointWithLog.class );
+
     lifeCycle.execute();
+
     assertEquals( DISPLAY_CREATED, log.toString() );
   }
 
@@ -278,7 +97,9 @@ public class RWTLifeCycle_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.STARTUP, MY_ENTRY_POINT );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     RWTFactory.getEntryPointManager().register( MY_ENTRY_POINT, TestEntryPointWithLog.class );
+
     lifeCycle.execute();
+
     assertEquals( DISPLAY_CREATED, log.toString() );
   }
 
@@ -1019,7 +840,7 @@ public class RWTLifeCycle_Test extends TestCase {
 
   public void testGetUIThreadWhileLifeCycleInExecute() throws IOException {
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle( RWTFactory.getEntryPointManager() );
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
     final Thread[] currentThread = { null };
     final Thread[] uiThread = { null };
     lifeCycle.addPhaseListener( new PhaseListener() {
@@ -1041,9 +862,8 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testGetUIThreadAfterLifeCycleExecuted() throws IOException {
-    EntryPointManager entryPointManager = new EntryPointManager();
-    entryPointManager.register( EntryPointManager.DEFAULT, TestEntryPoint.class );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle( entryPointManager );
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
     lifeCycle.execute();
 
     Thread uiThread = LifeCycleUtil.getUIThread( ContextProvider.getSessionStore() ).getThread();
@@ -1078,15 +898,198 @@ public class RWTLifeCycle_Test extends TestCase {
     return ( UIThread )LifeCycleUtil.getUIThread( session );
   }
 
-  @Override
-  protected void setUp() throws Exception {
-    log.setLength( 0 );
-    Fixture.setUp();
-    Fixture.fakeResponseWriter();
+  private static class LoggingPhaseListener implements PhaseListener {
+    private static final long serialVersionUID = 1L;
+    public void beforePhase( PhaseEvent event ) {
+      log.append( "before" + event.getPhaseId() );
+    }
+    public void afterPhase( PhaseEvent event ) {
+      log.append( "after" + event.getPhaseId() );
+    }
+    public PhaseId getPhaseId() {
+      return PhaseId.ANY;
+    }
   }
 
-  @Override
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public static final class MainStartup implements IEntryPoint {
+    public int createUI() {
+      log.append( "createUI" );
+      return 0;
+    }
+  }
+
+  public static final class ErrorStartup implements IEntryPoint {
+    public int createUI() {
+      throw new RuntimeException( ERR_MSG );
+    }
+  }
+
+  private final class ExceptionListenerTest implements PhaseListener {
+
+    private static final long serialVersionUID = 1L;
+
+    public void afterPhase( PhaseEvent event ) {
+      log.append( AFTER + event.getPhaseId() + "|" );
+      throw new RuntimeException();
+    }
+
+    public void beforePhase( PhaseEvent event ) {
+      log.append( BEFORE + event.getPhaseId() + "|" );
+      throw new RuntimeException();
+    }
+
+    public PhaseId getPhaseId() {
+      return PhaseId.PREPARE_UI_ROOT;
+    }
+  }
+
+  public static class TestEntryPoint implements IEntryPoint {
+    public int createUI() {
+      new Display();
+      return 0;
+    }
+  }
+
+  public static class TestPhasesEntryPoint implements IEntryPoint {
+    public int createUI() {
+      Display display = new Display();
+      while( !display.isDisposed() ) {
+        if( !display.readAndDispatch() ) {
+          display.sleep();
+        }
+      }
+      return 0;
+    }
+  }
+
+  public static class TestErrorInLifeCycleEntryPoint implements IEntryPoint {
+    public int createUI() {
+      String msg = TestErrorInLifeCycleEntryPoint.class.getName();
+      throw new RuntimeException( msg );
+    }
+  }
+
+  public static class TestEntryPointWithLog implements IEntryPoint {
+    public int createUI() {
+      new Display();
+      log.append( DISPLAY_CREATED );
+      return 0;
+    }
+  }
+
+  public static class DisposeDisplayOnSessionTimeoutEntryPoint
+    implements IEntryPoint
+  {
+    public int createUI() {
+      Display display = new Display();
+      display.addListener( SWT.Dispose, new Listener() {
+        public void handleEvent( Event event ) {
+          log.append( "display disposed" );
+        }
+      } );
+      return 0;
+    }
+  }
+
+  public static class SessionInvalidateWithEventLoopEntryPoint
+    implements IEntryPoint
+  {
+    public int createUI() {
+      Display display = new Display();
+      Shell shell = new Shell( display );
+      shell.open();
+      while( !shell.isDisposed() ) {
+        if( !display.readAndDispatch() ) {
+          display.sleep();
+        }
+      }
+      log.append( "regular end of createUI" );
+      return 0;
+    }
+  }
+
+  public static class SessionInvalidateWithoutEventLoopEntryPoint
+    implements IEntryPoint
+  {
+    public int createUI() {
+      new Display();
+      return 0;
+    }
+  }
+
+  public static class ExceptionInRenderEntryPoint implements IEntryPoint {
+    public static class BuggyShell extends Shell {
+      private static final long serialVersionUID = 1L;
+      public BuggyShell( Display display ) {
+        super( display );
+      }
+      @SuppressWarnings("unchecked")
+      @Override
+      public <T> T getAdapter( Class<T> adapter ) {
+        Object result;
+        if( adapter.equals( ILifeCycleAdapter.class ) ) {
+          result = new AbstractWidgetLCA() {
+            @Override
+            public void preserveValues( Widget widget ) {
+            }
+            public void readData( Widget widget ) {
+            }
+            @Override
+            public void renderInitialization( Widget widget )
+              throws IOException
+            {
+              throw new RuntimeException( EXCEPTION_IN_RENDER );
+            }
+            @Override
+            public void renderChanges( Widget widget ) throws IOException {
+              throw new RuntimeException( EXCEPTION_IN_RENDER );
+            }
+            @Override
+            public void renderDispose( Widget widget ) throws IOException {
+            }
+          };
+        } else {
+          result = super.getAdapter( adapter );
+        }
+        return ( T )result;
+      }
+    }
+
+    public int createUI() {
+      Display display = new Display();
+      Shell shell = new BuggyShell( display );
+      shell.open();
+      while( !shell.isDisposed() ) {
+        try {
+          if( !display.readAndDispatch() ) {
+            display.sleep();
+          }
+        } catch( RuntimeException e ) {
+          // continue loop
+        }
+      }
+      log.append( "regular end of createUI" );
+      return 0;
+    }
+  }
+
+  public static final class TestOrderOfDisplayDisposeAndSessionUnboundEntryPoint
+    implements IEntryPoint
+  {
+    public int createUI() {
+      Display display = new Display();
+      display.addListener( SWT.Dispose, new Listener() {
+        public void handleEvent( Event event ) {
+          log.append( "disposeEvent, " );
+        }
+      } );
+      ISessionStore sessionStore = RWT.getSessionStore();
+      sessionStore.addSessionStoreListener( new SessionStoreListener() {
+        public void beforeDestroy( SessionStoreEvent event ) {
+          log.append( "beforeDestroy" );
+        }
+      } );
+      return 0;
+    }
   }
 }

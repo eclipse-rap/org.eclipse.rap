@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
@@ -17,12 +17,6 @@ import org.eclipse.swt.widgets.Display;
 
 final class PrepareUIRoot implements IPhase {
 
-  private final EntryPointManager entryPointManager;
-
-  PrepareUIRoot( EntryPointManager entryPointManager ) {
-    this.entryPointManager = entryPointManager;
-  }
-
   public PhaseId getPhaseId() {
     return PhaseId.PREPARE_UI_ROOT;
   }
@@ -31,15 +25,11 @@ final class PrepareUIRoot implements IPhase {
     PhaseId result;
     if( LifeCycleUtil.isStartup() ) {
       String entryPointName = EntryPointUtil.findEntryPoint();
-      createUI( entryPointName );
+      EntryPointUtil.createUI( entryPointName );
       result = PhaseId.RENDER;
     } else {
       result = PhaseId.READ_DATA;
     }
     return result;
-  }
-
-  private void createUI( String entryPointName ) {
-    entryPointManager.createUI( entryPointName );
   }
 }

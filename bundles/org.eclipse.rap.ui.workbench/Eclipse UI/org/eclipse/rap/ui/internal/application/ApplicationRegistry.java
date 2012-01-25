@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.application;
 
@@ -17,9 +18,10 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.rap.ui.internal.servlet.EntryPointExtension;
 import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.framework.Bundle;
+
 
 /*
  * Registers all available applications as entrypoints.
@@ -39,7 +41,7 @@ public final class ApplicationRegistry {
 
   public static IApplication getApplication() {
     IApplication application = null;
-    String currentEntryPoint = EntryPointManager.getCurrentEntryPoint();
+    String currentEntryPoint = EntryPointUtil.getCurrentEntryPoint();
     Class clazz = ( Class )appEntrypointMapping.get( currentEntryPoint );
     try {
       application = ( IApplication )clazz.newInstance();

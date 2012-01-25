@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,50 +31,20 @@ import org.eclipse.swt.widgets.Display;
 // TODO [rh] see if it is possible to move this test to org.eclipse.rwt.test
 public class SimpleLifeCycle_Test extends TestCase {
 
-  
-  private static class ThreadRecordingPhaseListener implements PhaseListener {
-    private static final long serialVersionUID = 1L;
-
-    private final List<Thread> threads;
-
-    private ThreadRecordingPhaseListener() {
-      this.threads = new LinkedList<Thread>();
-    }
-
-    public void beforePhase( PhaseEvent event ) {
-      threads.add( Display.getCurrent().getThread() );
-    }
-
-    public void afterPhase( PhaseEvent event ) {
-      threads.add( Display.getCurrent().getThread() );
-    }
-
-    public PhaseId getPhaseId() {
-      return PhaseId.ANY;
-    }
-    
-    Thread[] getThreads() {
-      Thread[] result = new Thread[ threads.size() ];
-      threads.toArray( result );
-      return result;
-    }
-  }
-
-  private static class TestEntryPoint implements IEntryPoint {
-    public int createUI() {
-      new Display();
-      return 0;
-    }
-  }
-
-  private static class DefaultDisplayEntryPoint implements IEntryPoint {
-    public int createUI() {
-      Display.getDefault();
-      return 0;
-    }
-  }
-
   private LifeCycle lifeCycle;
+
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    ISessionStore sessionSore = ContextProvider.getSessionStore();
+    ApplicationContextUtil.set( sessionSore, ApplicationContextUtil.getInstance() );
+    lifeCycle = new SimpleLifeCycle();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testPhaseOrderForInitialRequest() throws Exception {
     registerEntryPoint( TestEntryPoint.class );
@@ -88,7 +58,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertBeforePhaseEvent( loggedEvents[ 2 ], PhaseId.RENDER );
     assertAfterPhaseEvent( loggedEvents[ 3 ], PhaseId.RENDER );
   }
-  
+
   public void testPhaseOrderForSubsequentRequest() throws Exception {
     new Display();
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
@@ -116,14 +86,14 @@ public class SimpleLifeCycle_Test extends TestCase {
       assertSame( Thread.currentThread(), threads[ i ] );
     }
   }
-  
+
   public void testThreadIsDetachedInInitialRequest() throws IOException {
     registerEntryPoint( TestEntryPoint.class );
     lifeCycle.execute();
     assertNull( Display.getCurrent() );
     assertNull( LifeCycleUtil.getSessionDisplay().getThread() );
   }
-  
+
   public void testThreadIsAttachedInSubsequentRequest() throws IOException {
     registerEntryPoint( TestEntryPoint.class );
     lifeCycle.execute();
@@ -146,17 +116,17 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertNull( Display.getCurrent() );
     assertNull( LifeCycleUtil.getSessionDisplay().getThread() );
   }
-  
+
   // bug 361753
   public void testDefaultDisplayIsAvailableInInitialRequest() throws IOException {
     registerEntryPoint( DefaultDisplayEntryPoint.class );
     Fixture.fakeNewRequest();
-    
+
     lifeCycle.execute();
-    
+
     assertNotNull( LifeCycleUtil.getSessionDisplay( ContextProvider.getSessionStore() ) );
   }
-  
+
   public void testPhaseListenersHaveApplicationScope() throws Exception {
     registerEntryPoint( TestEntryPoint.class );
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
@@ -165,7 +135,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     lifeCycle.execute();
     assertTrue( phaseListener.getLoggedEvents().length > 0 );
   }
-  
+
   public void testAddPhaseListener() throws Exception {
     registerEntryPoint( TestEntryPoint.class );
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
@@ -173,7 +143,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     lifeCycle.execute();
     assertTrue( phaseListener.getLoggedEvents().length > 0 );
   }
-  
+
   public void testRemovePhaseListener() throws Exception {
     registerEntryPoint( TestEntryPoint.class );
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
@@ -182,7 +152,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     lifeCycle.execute();
     assertEquals( 0, phaseListener.getLoggedEvents().length );
   }
-  
+
   public void testRequestThreadExecRunsRunnableOnCallingThread() {
     final Thread[] invocationThread = { null };
     Runnable runnable = new Runnable() {
@@ -190,12 +160,12 @@ public class SimpleLifeCycle_Test extends TestCase {
         invocationThread[ 0 ] = Thread.currentThread();
       }
     };
-    
+
     lifeCycle.requestThreadExec( runnable );
-    
+
     assertSame( Thread.currentThread(), invocationThread[ 0 ] );
   }
-  
+
   public void testGetUIThreadWhileLifeCycleInExecute() throws IOException {
     new Display();
     final Thread[] uiThread = { null };
@@ -210,45 +180,45 @@ public class SimpleLifeCycle_Test extends TestCase {
         uiThread[ 0 ] = LifeCycleUtil.getUIThread( ContextProvider.getSessionStore() ).getThread();
       }
     } );
-    
+
     lifeCycle.execute();
-    
+
     assertSame( Thread.currentThread(), uiThread[ 0 ] );
   }
-  
+
   public void testGetUIThreadAfterLifeCycleExecuted() throws IOException {
     registerEntryPoint( TestEntryPoint.class );
     lifeCycle.execute();
-    
+
     IUIThreadHolder threadHolder = LifeCycleUtil.getUIThread( ContextProvider.getSessionStore() );
 
     assertNull( threadHolder );
   }
-  
+
   public void testInvalidateDisposesDisplay() throws Throwable {
     final ISessionStore sessionStore = ContextProvider.getSessionStore();
     Display display = new Display();
     lifeCycle.execute();
-    
+
     Fixture.runInThread( new Runnable() {
       public void run() {
         sessionStore.getHttpSession().invalidate();
       }
     } );
-    
+
     assertTrue( display.isDisposed() );
   }
-  
+
   public void testSessionRestartDisposesDisplay() throws IOException {
     final ISessionStore sessionStore = ContextProvider.getSessionStore();
     Display display = new Display();
     lifeCycle.execute();
-    
+
     sessionStore.getHttpSession().invalidate();
-    
+
     assertTrue( display.isDisposed() );
   }
-  
+
   public void testSleep() {
     try {
       lifeCycle.sleep();
@@ -256,17 +226,6 @@ public class SimpleLifeCycle_Test extends TestCase {
     } catch( UnsupportedOperationException expected ) {
       assertTrue( expected.getMessage().length() > 0 );
     }
-  }
-  
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    ISessionStore sessionSore = ContextProvider.getSessionStore();
-    ApplicationContextUtil.set( sessionSore, ApplicationContextUtil.getInstance() );
-    lifeCycle = new SimpleLifeCycle( RWTFactory.getEntryPointManager() );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 
   private void assertBeforePhaseEvent( PhaseEventInfo beforePrepareUIRoot, PhaseId phaseId ) {
@@ -280,7 +239,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertEquals( phaseId, beforePrepareUIRoot.phaseId );
     assertSame( lifeCycle, beforePrepareUIRoot.source );
   }
-  
+
   private static void registerEntryPoint( Class<? extends IEntryPoint> type ) {
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, type );
   }
@@ -288,5 +247,47 @@ public class SimpleLifeCycle_Test extends TestCase {
   private static void newSession() {
     ContextProvider.disposeContext();
     Fixture.createServiceContext();
+  }
+
+  private static class ThreadRecordingPhaseListener implements PhaseListener {
+    private static final long serialVersionUID = 1L;
+
+    private final List<Thread> threads;
+
+    private ThreadRecordingPhaseListener() {
+      threads = new LinkedList<Thread>();
+    }
+
+    public void beforePhase( PhaseEvent event ) {
+      threads.add( Display.getCurrent().getThread() );
+    }
+
+    public void afterPhase( PhaseEvent event ) {
+      threads.add( Display.getCurrent().getThread() );
+    }
+
+    public PhaseId getPhaseId() {
+      return PhaseId.ANY;
+    }
+
+    Thread[] getThreads() {
+      Thread[] result = new Thread[ threads.size() ];
+      threads.toArray( result );
+      return result;
+    }
+  }
+
+  private static class TestEntryPoint implements IEntryPoint {
+    public int createUI() {
+      new Display();
+      return 0;
+    }
+  }
+
+  private static class DefaultDisplayEntryPoint implements IEntryPoint {
+    public int createUI() {
+      Display.getDefault();
+      return 0;
+    }
   }
 }
