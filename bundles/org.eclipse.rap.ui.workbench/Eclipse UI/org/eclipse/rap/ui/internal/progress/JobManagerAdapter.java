@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.UICallBack;
@@ -117,15 +116,6 @@ public class JobManagerAdapter
       try {
         manager[ 0 ] = findProgressManager( event.getJob() );
         display = ( Display )jobs.get( event.getJob() );
-        if( display != null && !display.isDisposed() ) {
-          display.asyncExec( new Runnable() {
-            public void run() {
-              Job job = event.getJob();
-              String id = String.valueOf( job.hashCode() );
-              UICallBackServiceHandler.deactivateUICallBacksFor( id );
-            }
-          } );
-        }
       } finally {
         jobs.remove( event.getJob() );
       }
@@ -133,6 +123,8 @@ public class JobManagerAdapter
     if( display != null && !display.isDisposed() ) {
       display.asyncExec( new Runnable() {
         public void run() {
+          String id = String.valueOf( event.getJob().hashCode() );
+          UICallBackServiceHandler.deactivateUICallBacksFor( id );
           manager[ 0 ].changeListener.done( event );
         }
       } );
