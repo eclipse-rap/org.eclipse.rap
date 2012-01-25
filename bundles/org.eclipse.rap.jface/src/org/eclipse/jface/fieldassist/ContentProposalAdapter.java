@@ -61,7 +61,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
  * <p>
  * This class provides some overridable methods to allow clients to manually
  * control the popup. However, most of the implementation remains private.
- * 
+ *
  * @since 1.0
  */
 public class ContentProposalAdapter implements Serializable {
@@ -139,12 +139,10 @@ public class ContentProposalAdapter implements Serializable {
 			void installListeners() {
 				// Listeners on this popup's table and scroll bar
 				proposalTable.addListener(SWT.FocusOut, this);
-				// RAP [bm]: 
-//				ScrollBar scrollbar = proposalTable.getVerticalBar();
-//				if (scrollbar != null) {
-//					scrollbar.addListener(SWT.Selection, this);
-//				}
-				// RAPEND: [bm] 
+				ScrollBar scrollbar = proposalTable.getVerticalBar();
+				if (scrollbar != null) {
+					scrollbar.addListener(SWT.Selection, this);
+				}
 
 				// Listeners on this popup's shell
 				getShell().addListener(SWT.Deactivate, this);
@@ -158,7 +156,7 @@ public class ContentProposalAdapter implements Serializable {
 				// Listeners on the target control's shell
 				Shell controlShell = control.getShell();
 				controlShell.addListener(SWT.Move, this);
-				// RAP [if] Don't add a resize listener because of 
+				// RAP [if] Don't add a resize listener because of
 				// TextSizeDetermnation
 //				controlShell.addListener(SWT.Resize, this);
 				// RAPEND [if]
@@ -169,12 +167,10 @@ public class ContentProposalAdapter implements Serializable {
 			void removeListeners() {
 				if (isValid()) {
 					proposalTable.removeListener(SWT.FocusOut, this);
-					// RAP [bm]: 
-//					ScrollBar scrollbar = proposalTable.getVerticalBar();
-//					if (scrollbar != null) {
-//						scrollbar.removeListener(SWT.Selection, this);
-//					}
-					// RAPEND: [bm] 
+					ScrollBar scrollbar = proposalTable.getVerticalBar();
+					if (scrollbar != null) {
+						scrollbar.removeListener(SWT.Selection, this);
+					}
 
 					getShell().removeListener(SWT.Deactivate, this);
 					getShell().removeListener(SWT.Close, this);
@@ -189,7 +185,7 @@ public class ContentProposalAdapter implements Serializable {
 
 					Shell controlShell = control.getShell();
 					controlShell.removeListener(SWT.Move, this);
-					// RAP [if] Don't add a resize listener because of 
+					// RAP [if] Don't add a resize listener because of
 	                // TextSizeDetermnation
 //					controlShell.removeListener(SWT.Resize, this);
 					// RAPEND [if]
@@ -233,9 +229,9 @@ public class ContentProposalAdapter implements Serializable {
 //					// Some keys will always set doit to false anyway.
 //					e.doit = propagateKeys;
 //				}
-				
+
 				// RAP [if]: Recompute proposals on modify event too.
-                if( e.type == SWT.Modify ) {                  
+                if( e.type == SWT.Modify ) {
                   asyncRecomputeProposals(filterText);
                 }
                 // ENDRAP [if]
@@ -244,114 +240,112 @@ public class ContentProposalAdapter implements Serializable {
 
 				if (key == 0) {
 					int newSelection = proposalTable.getSelectionIndex();
-					// RAP [bm]: KeyEvents
-//					int visibleRows = (proposalTable.getSize().y / proposalTable
-//							.getItemHeight()) - 1;
-					// RAPEND: [bm] 
+					int visibleRows = (proposalTable.getSize().y / proposalTable
+							.getItemHeight()) - 1;
 
-					
-//					switch (e.keyCode) {
-//					case SWT.ARROW_UP:
-//						newSelection -= 1;
-//						if (newSelection < 0) {
-//							newSelection = proposalTable.getItemCount() - 1;
-//						}
-//						// Not typical - usually we get this as a Traverse and
-//						// therefore it never propagates. Added for consistency.
-//						if (e.type == SWT.KeyDown) {
-//							// don't propagate to control
-//							e.doit = false;
-//						}
-//
-//						break;
-//
-//					case SWT.ARROW_DOWN:
-//						newSelection += 1;
-//						if (newSelection > proposalTable.getItemCount() - 1) {
-//							newSelection = 0;
-//						}
-//						// Not typical - usually we get this as a Traverse and
-//						// therefore it never propagates. Added for consistency.
-//						if (e.type == SWT.KeyDown) {
-//							// don't propagate to control
-//							e.doit = false;
-//						}
-//
-//						break;
-//
-//					case SWT.PAGE_DOWN:
-//						newSelection += visibleRows;
-//						if (newSelection >= proposalTable.getItemCount()) {
-//							newSelection = proposalTable.getItemCount() - 1;
-//						}
-//						if (e.type == SWT.KeyDown) {
-//							// don't propagate to control
-//							e.doit = false;
-//						}
-//						break;
-//
-//					case SWT.PAGE_UP:
-//						newSelection -= visibleRows;
-//						if (newSelection < 0) {
-//							newSelection = 0;
-//						}
-//						if (e.type == SWT.KeyDown) {
-//							// don't propagate to control
-//							e.doit = false;
-//						}
-//						break;
-//
-//					case SWT.HOME:
-//						newSelection = 0;
-//						if (e.type == SWT.KeyDown) {
-//							// don't propagate to control
-//							e.doit = false;
-//						}
-//						break;
-//
-//					case SWT.END:
-//						newSelection = proposalTable.getItemCount() - 1;
-//						if (e.type == SWT.KeyDown) {
-//							// don't propagate to control
-//							e.doit = false;
-//						}
-//						break;
-//
-//					// If received as a Traverse, these should propagate
-//					// to the control as keydown. If received as a keydown,
-//					// proposals should be recomputed since the cursor
-//					// position has changed.
-//					case SWT.ARROW_LEFT:
-//					case SWT.ARROW_RIGHT:
-//						if (e.type == SWT.Traverse) {
-//							e.doit = false;
-//						} else {
-//							e.doit = true;
-//							String contents = getControlContentAdapter()
-//									.getControlContents(getControl());
-//							// If there are no contents, changes in cursor
-//							// position have no effect. Note also that we do 
-//							// not affect the filter text on ARROW_LEFT as 
-//							// we would with BS.
-//							if (contents.length() > 0) {
-//								asyncRecomputeProposals(filterText);
-//							}
-//						}
-//						break;
-//
-//					// Any unknown keycodes will cause the popup to close.
-//					// Modifier keys are explicitly checked and ignored because
-//					// they are not complete yet (no character).
-//					default:
-//						if (e.keyCode != SWT.CAPS_LOCK e.keyCode != SWT.NUM_LOCK 
-//								&& e.keyCode != SWT.MOD1
-//								&& e.keyCode != SWT.MOD2
-//								&& e.keyCode != SWT.MOD3
-//								&& e.keyCode != SWT.MOD4) {
-//							close();
-//						}
-//						return;
-//					}
+
+					switch (e.keyCode) {
+					case SWT.ARROW_UP:
+						newSelection -= 1;
+						if (newSelection < 0) {
+							newSelection = proposalTable.getItemCount() - 1;
+						}
+						// Not typical - usually we get this as a Traverse and
+						// therefore it never propagates. Added for consistency.
+						if (e.type == SWT.KeyDown) {
+							// don't propagate to control
+							e.doit = false;
+						}
+
+						break;
+
+					case SWT.ARROW_DOWN:
+						newSelection += 1;
+						if (newSelection > proposalTable.getItemCount() - 1) {
+							newSelection = 0;
+						}
+						// Not typical - usually we get this as a Traverse and
+						// therefore it never propagates. Added for consistency.
+						if (e.type == SWT.KeyDown) {
+							// don't propagate to control
+							e.doit = false;
+						}
+
+						break;
+
+					case SWT.PAGE_DOWN:
+						newSelection += visibleRows;
+						if (newSelection >= proposalTable.getItemCount()) {
+							newSelection = proposalTable.getItemCount() - 1;
+						}
+						if (e.type == SWT.KeyDown) {
+							// don't propagate to control
+							e.doit = false;
+						}
+						break;
+
+					case SWT.PAGE_UP:
+						newSelection -= visibleRows;
+						if (newSelection < 0) {
+							newSelection = 0;
+						}
+						if (e.type == SWT.KeyDown) {
+							// don't propagate to control
+							e.doit = false;
+						}
+						break;
+
+					case SWT.HOME:
+						newSelection = 0;
+						if (e.type == SWT.KeyDown) {
+							// don't propagate to control
+							e.doit = false;
+						}
+						break;
+
+					case SWT.END:
+						newSelection = proposalTable.getItemCount() - 1;
+						if (e.type == SWT.KeyDown) {
+							// don't propagate to control
+							e.doit = false;
+						}
+						break;
+
+					// If received as a Traverse, these should propagate
+					// to the control as keydown. If received as a keydown,
+					// proposals should be recomputed since the cursor
+					// position has changed.
+					case SWT.ARROW_LEFT:
+					case SWT.ARROW_RIGHT:
+						if (e.type == SWT.Traverse) {
+							e.doit = false;
+						} else {
+							e.doit = true;
+							String contents = getControlContentAdapter()
+									.getControlContents(getControl());
+							// If there are no contents, changes in cursor
+							// position have no effect. Note also that we do
+							// not affect the filter text on ARROW_LEFT as
+							// we would with BS.
+							if (contents.length() > 0) {
+								asyncRecomputeProposals(filterText);
+							}
+						}
+						break;
+
+					// Any unknown keycodes will cause the popup to close.
+					// Modifier keys are explicitly checked and ignored because
+					// they are not complete yet (no character).
+					default:
+						if (e.keyCode != SWT.CAPS_LOCK && e.keyCode != SWT.NUM_LOCK
+								&& e.keyCode != SWT.MOD1
+								&& e.keyCode != SWT.MOD2
+								&& e.keyCode != SWT.MOD3
+								&& e.keyCode != SWT.MOD4) {
+							close();
+						}
+						return;
+					}
 
 					// If any of these navigation events caused a new selection,
 					// then handle that now and return.
@@ -431,7 +425,7 @@ public class ContentProposalAdapter implements Serializable {
 				}
 			}
 		}
-		// RAPEND: [bm] 
+		// RAPEND: [bm]
 
 		/*
 		 * Internal class used to implement the secondary popup.
@@ -525,7 +519,7 @@ public class ContentProposalAdapter implements Serializable {
 				}
 				getShell().setBounds(proposedBounds);
 			}
-			
+
 			/*
 			 * (non-Javadoc)
 			 * @see org.eclipse.jface.dialogs.PopupDialog#getForeground()
@@ -534,7 +528,7 @@ public class ContentProposalAdapter implements Serializable {
 				return control.getDisplay().
 						getSystemColor(SWT.COLOR_INFO_FOREGROUND);
 			}
-			
+
 			/*
 			 * (non-Javadoc)
 			 * @see org.eclipse.jface.dialogs.PopupDialog#getBackground()
@@ -610,7 +604,7 @@ public class ContentProposalAdapter implements Serializable {
 		 * Constructs a new instance of this popup, specifying the control for
 		 * which this popup is showing content, and how the proposals should be
 		 * obtained and displayed.
-		 * 
+		 *
 		 * @param infoText
 		 *            Text to be shown in a lower info area, or
 		 *            <code>null</code> if there is no info area.
@@ -636,7 +630,7 @@ public class ContentProposalAdapter implements Serializable {
 			return JFaceResources.getColorRegistry().get(
 					JFacePreferences.CONTENT_ASSIST_FOREGROUND_COLOR);
 		}
-		
+
 		/*
 		 * (non-Javadoc)
 		 * @see org.eclipse.jface.dialogs.PopupDialog#getBackground()
@@ -650,7 +644,7 @@ public class ContentProposalAdapter implements Serializable {
 		 * Creates the content area for the proposal popup. This creates a table
 		 * and places it inside the composite. The table will contain a list of
 		 * all the proposals.
-		 * 
+		 *
 		 * @param parent The parent composite to contain the dialog area; must
 		 * not be <code>null</code>.
 		 */
@@ -698,12 +692,12 @@ public class ContentProposalAdapter implements Serializable {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.jface.dialogs.PopupDialog.adjustBounds()
 		 */
 		protected void adjustBounds() {
 			// Get our control's location in display coordinates.
-			Point location = control.getDisplay().map(control.getParent(), null, control.getLocation());			
+			Point location = control.getDisplay().map(control.getParent(), null, control.getLocation());
 			int initialX = location.x + POPUP_OFFSET;
 			int initialY = location.y + control.getSize().y + POPUP_OFFSET;
 			// If we are inserting content, use the cursor position to
@@ -728,11 +722,11 @@ public class ContentProposalAdapter implements Serializable {
 				getShell().pack();
 				popupSize = getShell().getSize();
 			}
-			
+
 			// Constrain to the display
 			Rectangle constrainedBounds = getConstrainedShellBounds(new Rectangle(initialX, initialY, popupSize.x, popupSize.y));
-			
-			// If there has been an adjustment causing the popup to overlap 
+
+			// If there has been an adjustment causing the popup to overlap
 			// with the control, then put the popup above the control.
 			if (constrainedBounds.y < initialY)
 				getShell().setBounds(initialX, location.y - popupSize.y, popupSize.x, popupSize.y);
@@ -906,9 +900,9 @@ public class ContentProposalAdapter implements Serializable {
 		 * Opens this ContentProposalPopup. This method is extended in order to
 		 * add the control listener when the popup is opened and to invoke the
 		 * secondary popup if applicable.
-		 * 
+		 *
 		 * @return the return code
-		 * 
+		 *
 		 * @see org.eclipse.jface.window.Window#open()
 		 */
 		public int open() {
@@ -927,7 +921,7 @@ public class ContentProposalAdapter implements Serializable {
 		/**
 		 * Closes this popup. This method is extended to remove the control
 		 * listener.
-		 * 
+		 *
 		 * @return <code>true</code> if the window is (or was already) closed,
 		 *         and <code>false</code> if it is still open
 		 */
@@ -1128,7 +1122,7 @@ public class ContentProposalAdapter implements Serializable {
 	/**
 	 * Indicates that a cumulative filter applies as keys are typed in the
 	 * popup. That is, each character typed will be added to the filter.
-	 * 
+	 *
 	 * @deprecated As of 3.4, filtering that is sensitive to changes in the
 	 *             control content should be performed by the supplied
 	 *             {@link IContentProposalProvider}, such as that performed by
@@ -1287,7 +1281,7 @@ public class ContentProposalAdapter implements Serializable {
 	/**
 	 * Construct a content proposal adapter that can assist the user with
 	 * choosing content for the field.
-	 * 
+	 *
 	 * @param control
 	 *            the control for which the adapter is providing content assist.
 	 *            May not be <code>null</code>.
@@ -1337,7 +1331,7 @@ public class ContentProposalAdapter implements Serializable {
 
 	/**
 	 * Get the control on which the content proposal adapter is installed.
-	 * 
+	 *
 	 * @return the control on which the proposal adapter is installed.
 	 */
 	public Control getControl() {
@@ -1346,7 +1340,7 @@ public class ContentProposalAdapter implements Serializable {
 
 	/**
 	 * Get the label provider that is used to show proposals.
-	 * 
+	 *
 	 * @return the {@link ILabelProvider} used to show proposals, or
 	 *         <code>null</code> if one has not been installed.
 	 */
@@ -1356,7 +1350,7 @@ public class ContentProposalAdapter implements Serializable {
 
 	/**
 	 * Return a boolean indicating whether the receiver is enabled.
-	 * 
+	 *
 	 * @return <code>true</code> if the adapter is enabled, and
 	 *         <code>false</code> if it is not.
 	 */
@@ -1368,7 +1362,7 @@ public class ContentProposalAdapter implements Serializable {
 	 * Set the label provider that is used to show proposals. The lifecycle of
 	 * the specified label provider is not managed by this adapter. Clients must
 	 * dispose the label provider when it is no longer needed.
-	 * 
+	 *
 	 * @param labelProvider
 	 *            the (@link ILabelProvider} used to show proposals.
 	 */
@@ -1380,7 +1374,7 @@ public class ContentProposalAdapter implements Serializable {
 	 * Return the proposal provider that provides content proposals given the
 	 * current content of the field. A value of <code>null</code> indicates
 	 * that there are no content proposals available for the field.
-	 * 
+	 *
 	 * @return the {@link IContentProposalProvider} used to show proposals. May
 	 *         be <code>null</code>.
 	 */
@@ -1390,7 +1384,7 @@ public class ContentProposalAdapter implements Serializable {
 
 	/**
 	 * Set the content proposal provider that is used to show proposals.
-	 * 
+	 *
 	 * @param proposalProvider
 	 *            the {@link IContentProposalProvider} used to show proposals
 	 */
@@ -1401,7 +1395,7 @@ public class ContentProposalAdapter implements Serializable {
 
 	/**
 	 * Return the array of characters on which the popup is autoactivated.
-	 * 
+	 *
 	 * @return An array of characters that trigger auto-activation of content
 	 *         proposal. If specified, these characters will trigger
 	 *         auto-activation of the proposal popup, regardless of whether an
@@ -1421,7 +1415,7 @@ public class ContentProposalAdapter implements Serializable {
 	/**
 	 * Set the array of characters that will trigger autoactivation of the
 	 * popup.
-	 * 
+	 *
 	 * @param autoActivationCharacters
 	 *            An array of characters that trigger auto-activation of content
 	 *            proposal. If specified, these characters will trigger
@@ -1432,7 +1426,7 @@ public class ContentProposalAdapter implements Serializable {
 	 *            <code>null</code> and the keyStroke value is
 	 *            <code>null</code>, then all alphanumeric characters will
 	 *            auto-activate content proposal.
-	 * 
+	 *
 	 */
 	public void setAutoActivationCharacters(char[] autoActivationCharacters) {
 		if (autoActivationCharacters == null) {
@@ -1445,7 +1439,7 @@ public class ContentProposalAdapter implements Serializable {
 	/**
 	 * Set the delay, in milliseconds, used before any autoactivation is
 	 * triggered.
-	 * 
+	 *
 	 * @return the time in milliseconds that will pass before a popup is
 	 *         automatically opened
 	 */
@@ -1456,7 +1450,7 @@ public class ContentProposalAdapter implements Serializable {
 
 	/**
 	 * Set the delay, in milliseconds, used before autoactivation is triggered.
-	 * 
+	 *
 	 * @param delay
 	 *            the time in milliseconds that will pass before a popup is
 	 *            automatically opened
@@ -1469,7 +1463,7 @@ public class ContentProposalAdapter implements Serializable {
 	/**
 	 * Get the integer style that indicates how an accepted proposal affects the
 	 * control's content.
-	 * 
+	 *
 	 * @return a constant indicating how an accepted proposal should affect the
 	 *         control's content. Should be one of <code>PROPOSAL_INSERT</code>,
 	 *         <code>PROPOSAL_REPLACE</code>, or <code>PROPOSAL_IGNORE</code>.
@@ -1482,7 +1476,7 @@ public class ContentProposalAdapter implements Serializable {
 	/**
 	 * Set the integer style that indicates how an accepted proposal affects the
 	 * control's content.
-	 * 
+	 *
 	 * @param acceptance
 	 *            a constant indicating how an accepted proposal should affect
 	 *            the control's content. Should be one of
@@ -1496,7 +1490,7 @@ public class ContentProposalAdapter implements Serializable {
 	/**
 	 * Return the integer style that indicates how keystrokes affect the content
 	 * of the proposal popup while it is open.
-	 * 
+	 *
 	 * @return a constant indicating how keystrokes in the proposal popup affect
 	 *         filtering of the proposals shown. <code>FILTER_NONE</code>
 	 *         specifies that no filtering will occur in the content proposal
@@ -1521,7 +1515,7 @@ public class ContentProposalAdapter implements Serializable {
 	 * to achieve content-sensitive filtering such as auto-completion. Filtering
 	 * that is sensitive to changes in the control content should be performed
 	 * by the supplied {@link IContentProposalProvider}.
-	 * 
+	 *
 	 * @param filterStyle
 	 *            a constant indicating how keystrokes received in the proposal
 	 *            popup affect filtering of the proposals shown.
@@ -1540,7 +1534,7 @@ public class ContentProposalAdapter implements Serializable {
 
 	/**
 	 * Return the size, in pixels, of the content proposal popup.
-	 * 
+	 *
 	 * @return a Point specifying the last width and height, in pixels, of the
 	 *         content proposal popup.
 	 */
@@ -1551,7 +1545,7 @@ public class ContentProposalAdapter implements Serializable {
 	/**
 	 * Set the size, in pixels, of the content proposal popup. This size will be
 	 * used the next time the content proposal popup is opened.
-	 * 
+	 *
 	 * @param size
 	 *            a Point specifying the desired width and height, in pixels, of
 	 *            the content proposal popup.
@@ -1565,7 +1559,7 @@ public class ContentProposalAdapter implements Serializable {
 	 * auto-activation characters) received by the content proposal popup should
 	 * also be propagated to the adapted control when the proposal popup is
 	 * open.
-	 * 
+	 *
 	 * @return a boolean that indicates whether key events (including
 	 *         auto-activation characters) should be propagated to the adapted
 	 *         control when the proposal popup is open. Default value is
@@ -1580,7 +1574,7 @@ public class ContentProposalAdapter implements Serializable {
 	 * auto-activation characters) received by the content proposal popup should
 	 * also be propagated to the adapted control when the proposal popup is
 	 * open.
-	 * 
+	 *
 	 * @param propagateKeys
 	 *            a boolean that indicates whether key events (including
 	 *            auto-activation characters) should be propagated to the
@@ -1595,7 +1589,7 @@ public class ContentProposalAdapter implements Serializable {
 	 * from the adapter's control. This method is used when a client, such as a
 	 * content proposal listener, needs to update the control's contents
 	 * manually.
-	 * 
+	 *
 	 * @return the {@link IControlContentAdapter} which can update the control
 	 *         text.
 	 */
@@ -1605,12 +1599,12 @@ public class ContentProposalAdapter implements Serializable {
 
 	/**
 	 * Set the boolean flag that determines whether the adapter is enabled.
-	 * 
+	 *
 	 * @param enabled
 	 *            <code>true</code> if the adapter is enabled and responding
 	 *            to user input, <code>false</code> if it is ignoring user
 	 *            input.
-	 * 
+	 *
 	 */
 	public void setEnabled(boolean enabled) {
 		// If we are disabling it while it's proposing content, close the
@@ -1627,13 +1621,13 @@ public class ContentProposalAdapter implements Serializable {
 	 * Add the specified listener to the list of content proposal listeners that
 	 * are notified when content proposals are chosen.
 	 * </p>
-	 * 
+	 *
 	 * @param listener
 	 *            the IContentProposalListener to be added as a listener. Must
 	 *            not be <code>null</code>. If an attempt is made to register
 	 *            an instance which is already registered with this instance,
 	 *            this method has no effect.
-	 * 
+	 *
 	 * @see org.eclipse.jface.fieldassist.IContentProposalListener
 	 */
 	public void addContentProposalListener(IContentProposalListener listener) {
@@ -1644,12 +1638,12 @@ public class ContentProposalAdapter implements Serializable {
 	 * Removes the specified listener from the list of content proposal
 	 * listeners that are notified when content proposals are chosen.
 	 * </p>
-	 * 
+	 *
 	 * @param listener
 	 *            the IContentProposalListener to be removed as a listener. Must
 	 *            not be <code>null</code>. If the listener has not already
 	 *            been registered, this method has no effect.
-	 * 
+	 *
 	 * @since 1.0
 	 * @see org.eclipse.jface.fieldassist.IContentProposalListener
 	 */
@@ -1661,13 +1655,13 @@ public class ContentProposalAdapter implements Serializable {
 	 * Add the specified listener to the list of content proposal listeners that
 	 * are notified when a content proposal popup is opened or closed.
 	 * </p>
-	 * 
+	 *
 	 * @param listener
 	 *            the IContentProposalListener2 to be added as a listener. Must
 	 *            not be <code>null</code>. If an attempt is made to register
 	 *            an instance which is already registered with this instance,
 	 *            this method has no effect.
-	 * 
+	 *
 	 * @since 1.0
 	 * @see org.eclipse.jface.fieldassist.IContentProposalListener2
 	 */
@@ -1679,12 +1673,12 @@ public class ContentProposalAdapter implements Serializable {
 	 * Remove the specified listener from the list of content proposal listeners
 	 * that are notified when a content proposal popup is opened or closed.
 	 * </p>
-	 * 
+	 *
 	 * @param listener
 	 *            the IContentProposalListener2 to be removed as a listener.
 	 *            Must not be <code>null</code>. If the listener has not
 	 *            already been registered, this method has no effect.
-	 * 
+	 *
 	 * @since 1.0
 	 * @see org.eclipse.jface.fieldassist.IContentProposalListener2
 	 */
@@ -1822,7 +1816,7 @@ public class ContentProposalAdapter implements Serializable {
 							}
 							watchModify = false;
 							// We are in autoactivation mode, either for specific
-							// characters or for all characters. In either case, 
+							// characters or for all characters. In either case,
 							// we should close the proposal popup when there is no
 							// content in the control.
 							if (isControlContentEmpty()) {
@@ -1859,7 +1853,7 @@ public class ContentProposalAdapter implements Serializable {
 
 			/**
 			 * Dump the given events to "standard" output.
-			 * 
+			 *
 			 * @param who
 			 *            who is dumping the event
 			 * @param e
@@ -1886,12 +1880,29 @@ public class ContentProposalAdapter implements Serializable {
 // RAP [if] Use CANCEL_KEYS instead of doit = false
 		String[] cancelKeys;
 		if( triggerKeyStroke ==  null ) {
-		  cancelKeys = new String[] {
-		    "ESC", "ENTER", "TAB" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		  };
+          cancelKeys = new String[]{
+            "ESC", //$NON-NLS-1$
+            "ENTER", //$NON-NLS-1$
+            "TAB", //$NON-NLS-1$
+            "ARROW_UP", //$NON-NLS-1$
+            "ARROW_DOWN", //$NON-NLS-1$
+            "PAGE_UP", //$NON-NLS-1$
+            "PAGE_DOWN", //$NON-NLS-1$
+            "HOME", //$NON-NLS-1$
+            "END" //$NON-NLS-1$
+          };
 		} else {
           cancelKeys = new String[] {
-            "ESC", "ENTER", "TAB", triggerKeyStroke.toString() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            "ESC", //$NON-NLS-1$
+            "ENTER", //$NON-NLS-1$
+            "TAB", //$NON-NLS-1$
+            "ARROW_UP", //$NON-NLS-1$
+            "ARROW_DOWN", //$NON-NLS-1$
+            "PAGE_UP", //$NON-NLS-1$
+            "PAGE_DOWN", //$NON-NLS-1$
+            "HOME", //$NON-NLS-1$
+            "END", //$NON-NLS-1$
+            triggerKeyStroke.toString()
           };
 		}
         control.setData( RWT.CANCEL_KEYS, cancelKeys );
@@ -1910,7 +1921,7 @@ public class ContentProposalAdapter implements Serializable {
 	 * proposal provider. If there are no proposals to be shown, do not show the
 	 * popup. This method returns immediately. That is, it does not wait for the
 	 * popup to open or a proposal to be selected.
-	 * 
+	 *
 	 * @param autoActivated
 	 *            a boolean indicating whether the popup was autoactivated. If
 	 *            false, a beep will sound when no proposals can be shown.
@@ -1958,7 +1969,7 @@ public class ContentProposalAdapter implements Serializable {
 	 * returns immediately, and has no effect if the proposal popup was not
 	 * open. This method is used by subclasses to explicitly close the popup
 	 * based on additional logic.
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	protected void closeProposalPopup() {
@@ -1970,7 +1981,7 @@ public class ContentProposalAdapter implements Serializable {
 	/*
 	 * A content proposal has been accepted. Update the control contents
 	 * accordingly and notify any listeners.
-	 * 
+	 *
 	 * @param proposal the accepted proposal
 	 */
 	private void proposalAccepted(IContentProposal proposal) {
@@ -2165,7 +2176,7 @@ public class ContentProposalAdapter implements Serializable {
 	/**
 	 * Returns whether the content proposal popup has the focus. This includes
 	 * both the primary popup and any secondary info popup that may have focus.
-	 * 
+	 *
 	 * @return <code>true</code> if the proposal popup or its secondary info
 	 *         popup has the focus
 	 * @since 1.1
@@ -2181,7 +2192,7 @@ public class ContentProposalAdapter implements Serializable {
 		return getControlContentAdapter().getControlContents(getControl())
 				.length() == 0;
 	}
-	
+
 	/*
 	 * The popup has just opened, but listeners have not yet
 	 * been notified.  Perform any cleanup that is needed.
@@ -2192,10 +2203,10 @@ public class ContentProposalAdapter implements Serializable {
 			((Combo)control).setListVisible(false);
 		}
 	}
-	
+
 	/*
 	 * Return whether a proposal popup should remain open.
-	 * If it was autoactivated by specific characters, and 
+	 * If it was autoactivated by specific characters, and
 	 * none of those characters remain, then it should not remain
 	 * open.  This method should not be used to determine
 	 * whether autoactivation has occurred or should occur, only whether
@@ -2212,34 +2223,34 @@ public class ContentProposalAdapter implements Serializable {
 		}
 		return false;
 	}
-	
+
 	/*
 	 * Return whether this adapter is configured for autoactivation, by
 	 * specific characters or by any characters.
 	 */
 	private boolean allowsAutoActivate() {
 		return (autoActivateString != null && autoActivateString.length() > 0) // there are specific autoactivation chars supplied
-		  || (autoActivateString == null && triggerKeyStroke == null);    // we autoactivate on everything		
+		  || (autoActivateString == null && triggerKeyStroke == null);    // we autoactivate on everything
 	}
-	
+
 	/**
 	 * Sets focus to the proposal popup. If the proposal popup is not opened,
 	 * this method is ignored. If the secondary popup has focus, focus is returned
 	 * to the main proposal popup.
-	 * 
+	 *
 	 * @since 1.3
 	 */
 	public void setProposalPopupFocus() {
 		if (isValid() && popup != null)
 			popup.getShell().setFocus();
 	}
-	
+
 	/**
 	 * Answers a boolean indicating whether the main proposal popup is open.
-	 * 
+	 *
 	 * @return <code>true</code> if the proposal popup is open, and
 	 *         <code>false</code> if it is not.
-	 * 
+	 *
 	 * @since 1.3
 	 */
 	public boolean isProposalPopupOpen() {
