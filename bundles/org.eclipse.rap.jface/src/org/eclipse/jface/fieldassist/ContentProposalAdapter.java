@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ListenerList;
 
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -33,6 +34,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
@@ -943,6 +945,9 @@ public class ContentProposalAdapter implements Serializable {
 			// If we do not already have a pending update, then
 			// create a thread now that will show the proposal description
 			if (!pendingDescriptionUpdate) {
+// RAP [if] Activate/deactivate the UICallBack
+	            final String id = ContentProposalAdapter.class.getName() + "#showProposalDescription"; //$NON-NLS-1$
+// ENDRAP
 				// Create a thread that will sleep for the specified delay
 				// before creating the popup. We do not use Jobs since this
 				// code must be able to run independently of the Eclipse
@@ -957,7 +962,8 @@ public class ContentProposalAdapter implements Serializable {
 						if (!isValid()) {
 							return;
 						}
-						getShell().getDisplay().syncExec(new Runnable() {
+						Display display = getShell().getDisplay();
+						display.syncExec(new Runnable() {
 							public void run() {
 								// Query the current selection since we have
 								// been delayed
@@ -989,8 +995,16 @@ public class ContentProposalAdapter implements Serializable {
 								}
 							}
 						});
+// RAP [if] Activate/deactivate the UICallBack
+						display.asyncExec( new Runnable() {
+					      public void run() {
+					        UICallBack.deactivate( id );
+					      }
+					    } );
 					}
 				};
+				UICallBack.activate( id );
+// ENDRAP
 				Thread t = new Thread(runnable);
 				t.start();
 			}
@@ -2095,6 +2109,9 @@ public class ContentProposalAdapter implements Serializable {
 	 */
 	private void autoActivate() {
 		if (autoActivationDelay > 0) {
+// RAP [if] Activate/deactivate the UICallBack
+		    final String id = ContentProposalAdapter.class.getName() + "#autoActivate"; //$NON-NLS-1$
+// ENDRAP
 			Runnable runnable = new Runnable() {
 				public void run() {
 					receivedKeyDown = false;
@@ -2105,13 +2122,22 @@ public class ContentProposalAdapter implements Serializable {
 					if (!isValid() || receivedKeyDown) {
 						return;
 					}
-					getControl().getDisplay().syncExec(new Runnable() {
+					Display display = getControl().getDisplay();
+					display.syncExec(new Runnable() {
 						public void run() {
 							openProposalPopup(true);
 						}
 					});
+// RAP [if] Activate/deactivate the UICallBack
+					display.asyncExec( new Runnable() {
+                      public void run() {
+                        UICallBack.deactivate( id );
+                      }
+                    } );
 				}
 			};
+			UICallBack.activate( id );
+// ENDRAP
 			Thread t = new Thread(runnable);
 			t.start();
 		} else {
