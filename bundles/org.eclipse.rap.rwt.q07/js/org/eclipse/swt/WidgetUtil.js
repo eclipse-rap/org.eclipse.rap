@@ -34,7 +34,16 @@ qx.Class.define( "org.eclipse.swt.WidgetUtil", {
         widget.setStyleProperty( "lineHeight", "0" );
       }
     },
-    
+
+    getControl : function( widget ) {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var result = widget;
+      while( result != null && !widgetManager.isControl( result ) ) {
+        result = result.getParent ? result.getParent() : null;
+      }
+      return result;
+    },
+
     /**
      * Can be used simulate mouseEvents on the qooxdoo event-layer.
      * Manager and handler that are usually notified by 
@@ -74,4 +83,4 @@ qx.Class.define( "org.eclipse.swt.WidgetUtil", {
     }
 
   }
-});
+} );

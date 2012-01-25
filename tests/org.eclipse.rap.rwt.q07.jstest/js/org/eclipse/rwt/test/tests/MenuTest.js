@@ -203,6 +203,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.menu.addMenuItemAt( this.menuItem, 0 );
       var widget = new qx.ui.basic.Atom( "bla" );
       widget.addToDocument();
+      widget.setUserData( "isControl", true );
       widget.setLocation( 10, 10 );
       widget.setDimension( 10, 10 );
       widget.setContextMenu( this.menu );
@@ -233,7 +234,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       var menu2 = new org.eclipse.rwt.widgets.Menu();
       menu1.setHasMenuListener( true );
       menu2.setHasMenuListener( true );
-      var parent = new org.eclipse.swt.widgets.Composite();
+      var parent = this._createControl();
       parent.addToDocument();    
       parent.setContextMenu( menu1 );
       parent.addEventListener( 
@@ -242,6 +243,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       var widget = new qx.ui.basic.Atom( "bla" );
       widget.setContextMenu( menu2 );
       widget.setParent( parent );
+      widget.setUserData( "isControl", true );
       widget.addEventListener( 
         "contextmenu", 
         org.eclipse.rwt.widgets.Menu.contextMenuHandler );      
@@ -699,6 +701,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget.setLocation( 10, 10 );
       widget.setDimension( 10, 10 );
       widget.setContextMenu( this.menu );
+      widget.setUserData( "isControl", true );
       widget.addEventListener( 
         "contextmenu", 
         org.eclipse.rwt.widgets.Menu.contextMenuHandler );      
@@ -728,6 +731,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.menu.addMenuItemAt( this.menuItem, 0 );
       var widget = new qx.ui.basic.Atom( "bla" );
       widget.addToDocument();
+      widget.setUserData( "isControl", true );
       widget.setLocation( 10, 10 );
       widget.setDimension( 10, 10 );
       widget.setContextMenu( this.menu );
@@ -743,7 +747,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget2.setLocation( 20, 20 );
       widget2.setDimension( 20, 20 );
       widget2.setContextMenu( menu2 );
-      widget2.addEventListener( 
+      widget2.setUserData( "isControl", true );
+      widget2.addEventListener(       
         "contextmenu", 
         org.eclipse.rwt.widgets.Menu.contextMenuHandler );
       this.testUtil.flush();
@@ -789,6 +794,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       menuItem2.setText( "bla" ); 
       menu2.addMenuItemAt( menuItem2, 0 );
       var widget = new qx.ui.basic.Atom( "bla" );
+      widget.setUserData( "isControl", true );
       widget.addToDocument();
       widget.setLocation( 10, 10 );
       widget.setDimension( 10, 10 );
@@ -962,7 +968,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.menuItem.setText( "bla" ); 
       this.menu.addMenuItemAt( this.menuItem, 0 );
       var widget = new qx.ui.basic.Atom( "bla" );
-      var parent = new qx.ui.layout.CanvasLayout();
+      var parent = this._createControl();
       parent.add( widget );
       parent.addToDocument();
       parent.setLocation( 10, 10 );
@@ -988,6 +994,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget.setParent( null );
       widget.dispose();
       this.disposeMenu();            
+    },
+    
+    testContextmenuNotOpenOnParentControl : function() {
+      var menu1 = new org.eclipse.rwt.widgets.Menu();
+      menu1.setHasMenuListener( true );
+      var parent = this._createControl();
+      parent.addToDocument();    
+      parent.setContextMenu( menu1 );
+      parent.addEventListener( 
+        "contextmenu", 
+        org.eclipse.rwt.widgets.Menu.contextMenuHandler );      
+      var widget = this._createControl();
+      widget.setParent( parent );
+      this.testUtil.flush();
+      assertFalse( menu1.isSeeable() );
+      this.testUtil.rightClick( widget );
+      assertFalse( menu1.isSeeable() );
+      menu1.destroy();            
+      widget.destroy();
+      parent.destroy();
     },
         
     /************************* Helper *****************************/
@@ -1108,6 +1134,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
         layout.arrowWidth = nodeBounds.width;
       }
       return layout;
+    },
+    
+    _createControl : function() {
+      var result = new org.eclipse.swt.widgets.Composite();
+      result.setUserData( "isControl", true );
+      return result;
     }
     
   }
