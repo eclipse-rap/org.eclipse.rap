@@ -813,6 +813,7 @@ public class Text extends Scrollable {
     replace += string;
     replace += oldText.substring( sel.y );
     setText( replace );
+    setSelection( sel.x + string.length() );
   }
 
   ////////////////////
@@ -888,7 +889,7 @@ public class Text extends Scrollable {
    * <code>widgetDefaultSelected</code> is typically called when ENTER is pressed in a single-line text,
    * or when ENTER is pressed in a search text. If the receiver has the <code>SWT.SEARCH | SWT.ICON_CANCEL</code> style
    * and the user cancels the search, the event object detail field contains the value <code>SWT.ICON_CANCEL</code>.
-   * Likewise, if the receiver has the <code>SWT.ICON_SEARCH</code> style and the icon search is selected, the 
+   * Likewise, if the receiver has the <code>SWT.ICON_SEARCH</code> style and the icon search is selected, the
    * event object detail field contains the value <code>SWT.ICON_SEARCH</code>.
    * </p>
    *

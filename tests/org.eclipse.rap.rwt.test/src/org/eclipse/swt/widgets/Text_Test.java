@@ -26,8 +26,13 @@ import org.eclipse.swt.graphics.Rectangle;
 
 public class Text_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
@@ -35,8 +40,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testInitialValuesForSingleText() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
     assertEquals( "", text.getText() );
     assertEquals( "", text.getMessage() );
@@ -47,8 +50,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testTextLimit() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
     text.setTextLimit( -1 );
     assertEquals( -1, text.getTextLimit() );
@@ -72,8 +73,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testGetLineHeight() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.MULTI );
     // default theme font is 11px
     assertEquals( 16, text.getLineHeight() );
@@ -84,8 +83,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testSelection() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
 
     // test select all
@@ -134,8 +131,6 @@ public class Text_Test extends TestCase {
   public void testModifyEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuilder log = new StringBuilder();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final Text text = new Text( shell, SWT.NONE );
     text.addModifyListener( new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
@@ -156,8 +151,6 @@ public class Text_Test extends TestCase {
     VerifyListener verifyListener;
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<TypedEvent> log = new ArrayList<TypedEvent>();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final Text text = new Text( shell, SWT.NONE );
     text.addModifyListener( new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
@@ -249,9 +242,6 @@ public class Text_Test extends TestCase {
 
   // TODO [bm] extend testcase with newline chars and getLineCount
   public void testInsert() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-
     // Test insert on multi-line Text
     Text text = new Text( shell, SWT.MULTI );
     text.setBounds( 0, 0, 500, 500 );
@@ -297,8 +287,6 @@ public class Text_Test extends TestCase {
 
   // TODO [bm] extend testcase with newline chars for SWT.MULTI
   public void testAppend() {
-		Display display = new Display();
-		Shell shell = new Shell(display);
 		Text text = new Text(shell, SWT.SINGLE);
 
 		try {
@@ -332,8 +320,6 @@ public class Text_Test extends TestCase {
   public void testInsertWithModifyListener() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<ModifyEvent> log = new ArrayList<ModifyEvent>();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.SINGLE );
     text.setBounds( 0, 0, 100, 20 );
     text.addModifyListener( new ModifyListener() {
@@ -360,8 +346,6 @@ public class Text_Test extends TestCase {
 
   public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
     Point expected = new Point( 85, 26 );
     assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -395,8 +379,6 @@ public class Text_Test extends TestCase {
 
   public void testComputeTrim() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.SINGLE );
     Rectangle expected = new Rectangle( -10, -5, 20, 10 );
     assertEquals( expected, text.computeTrim( 0, 0, 0, 0 ) );
@@ -416,8 +398,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testGetCaretPosition() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.SINGLE );
     text.setText( "Sample text" );
     assertEquals( 0, text.getCaretPosition() );
@@ -436,8 +416,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testGetText() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
     text.setText( "Test Text" );
     assertEquals( "Test", text.getText( 0, 3 ) );
@@ -448,8 +426,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testMessage() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.SINGLE );
     assertEquals( "", text.getMessage() );
     text.setMessage( "New message" );
@@ -457,8 +433,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.SEARCH | SWT.PASSWORD );
     int style = text.getStyle();
     assertTrue( ( style & SWT.SINGLE ) != 0 );
@@ -467,8 +441,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testEchoChar() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     // single line text field
     Text singleText = new Text( shell, SWT.NONE );
     assertEquals( ( char )0, singleText.getEchoChar() );
@@ -487,16 +459,12 @@ public class Text_Test extends TestCase {
   }
 
   public void testIconStyles() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.SEARCH | SWT.ICON_CANCEL | SWT.ICON_SEARCH );
     assertTrue( ( text.getStyle() & SWT.ICON_CANCEL ) != 0 );
     assertTrue( ( text.getStyle() & SWT.ICON_SEARCH ) != 0 );
   }
 
   public void testSetTextChars() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
     char[] expected = new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' };
     text.setTextChars( expected );
@@ -509,8 +477,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testSetTextChars_NullValue() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
     try {
       text.setTextChars( null );
@@ -520,8 +486,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testSetTextChars_EmptyArray() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
     char[] expected = new char[ 0 ];
     text.setTextChars( expected );
@@ -531,8 +495,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testGetTextChars_FromText() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
     String string = "new string";
     text.setText( string );
@@ -543,13 +505,21 @@ public class Text_Test extends TestCase {
   }
 
   public void testIsSerializable() throws Exception {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
     text.setText( "foo" );
 
     Text deserializedText = Fixture.serializeAndDeserialize( text );
 
     assertEquals( text.getText(), deserializedText.getText() );
+  }
+
+  public void testSelectionAfterInsertText() {
+    Text text = new Text( shell, SWT.NONE );
+    text.setText( "foobar" );
+    text.setSelection( 3 );
+
+    text.insert( "xxx" );
+
+    assertEquals( new Point( 6, 6 ), text.getSelection() );
   }
 }
