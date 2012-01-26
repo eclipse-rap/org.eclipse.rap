@@ -247,13 +247,19 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       },
       "gecko" : function( event, keyCode, charCode ) {
         var result;
-        if(    event.type === "keydown"
-            && !this._isFirstKeyDown( keyCode )
-        ) {
-          // suppress unwanted "keydown":
-          result = [];
+        if( event.type === "keydown" && this.isModifier( keyCode ) ) {
+          if( this._isFirstKeyDown( keyCode ) ) {
+            result = [ "keydown", "keypress" ];
+          } else {
+            result = [ "keypress" ];
+          }
         } else {
-          result = [ event.type ];
+          if( event.type === "keydown" && !this._isFirstKeyDown( keyCode ) ) {
+            // suppress unwanted "keydown":
+            result = [];
+          } else {
+            result = [ event.type ];
+          }
         }
         return result;
       },
@@ -318,6 +324,10 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
 
     isSpecialKeyCode : function( keyCode ) {
       return this._specialCharCodeMap[ keyCode ] ? true : false;
+    },
+    
+    isModifier : function( keyCode ) {
+      return keyCode >= 16 && keyCode <= 20 && keyCode !== 19;
     },
 
     _isAlphaNumericKeyCode : function( keyCode ) {

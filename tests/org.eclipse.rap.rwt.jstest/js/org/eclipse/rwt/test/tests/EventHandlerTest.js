@@ -396,7 +396,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.destroy();
     },
     
-    testKeyDownModifier : function() {
+    testPressDownModifier : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
@@ -404,10 +404,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.focus();
       var log = this._addKeyLogger( widget, true, false, false );
       TestUtil.keyDown( widget._getTargetNode(), "Shift" );
-      var expected = qx.core.Variant.select( "qx.client", {
-        "default" : [ "keydown", "keypress" ],
-        "gecko|opera" : [ "keydown" ]
-      } );
+      TestUtil.keyUp( widget._getTargetNode(), "Shift" );
+      var expected = [ "keydown", "keypress", "keyup" ];
       assertEquals( expected, log );
       widget.destroy();
     },    
@@ -421,11 +419,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       var log = this._addKeyLogger( widget, true, false, false );
       TestUtil.keyDown( widget._getTargetNode(), "Shift" );
       TestUtil.keyHold( widget._getTargetNode(), "Shift" );
-      var expected = qx.core.Variant.select( "qx.client", {
-        "default" : [ "keydown", "keypress", "keypress" ],
-        "gecko" : [ "keydown" ],
-        "opera" : [ "keydown" ]
-      } );
+      var expected = [ "keydown", "keypress", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
     },

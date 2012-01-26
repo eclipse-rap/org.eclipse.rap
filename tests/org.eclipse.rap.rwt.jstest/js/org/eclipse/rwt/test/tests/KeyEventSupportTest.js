@@ -495,6 +495,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       this._disposeTextWidget( text );
     },
 
+    testShiftCharacter : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
+      var text = this._createTextWidget();
+      var shift = qx.event.type.DomEvent.SHIFT_MASK;
+      TestUtil.keyDown( text.getElement(), "Shift", shift );
+      TestUtil.keyDown( text.getElement(), "A", shift );
+      assertEquals( 2, TestUtil.getRequestsSend() );
+      this._disposeTextWidget( text );
+    },
+
     testSetActiveKeysByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
