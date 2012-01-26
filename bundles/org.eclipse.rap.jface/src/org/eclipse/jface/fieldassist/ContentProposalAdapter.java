@@ -942,13 +942,13 @@ public class ContentProposalAdapter implements Serializable {
 		 * popup.
 		 */
 		private void showProposalDescription() {
-// RAP [if] Activate/deactivate the UICallBack
-		    final String id = ContentProposalAdapter.class.getName() + "#showProposalDescription"; //$NON-NLS-1$
-		    UICallBack.activate( id );
-// ENDRAP
 			// If we do not already have a pending update, then
 			// create a thread now that will show the proposal description
 			if (!pendingDescriptionUpdate) {
+// RAP [if] Activate/deactivate the UICallBack
+			    final String id = ContentProposalAdapter.class.getName() + "#showProposalDescription"; //$NON-NLS-1$
+			    UICallBack.activate( id );
+// ENDRAP
 				// Create a thread that will sleep for the specified delay
 				// before creating the popup. We do not use Jobs since this
 				// code must be able to run independently of the Eclipse
@@ -992,17 +992,12 @@ public class ContentProposalAdapter implements Serializable {
 										infoPopup.close();
 									}
 									pendingDescriptionUpdate = false;
-
+// RAP [if] Activate/deactivate the UICallBack
+									UICallBack.deactivate( id );
+// ENDRAP
 								}
 							}
 						});
-// RAP [if] Activate/deactivate the UICallBack
-						display.asyncExec( new Runnable() {
-					      public void run() {
-					        UICallBack.deactivate( id );
-					      }
-					    } );
-// ENDRAP
 					}
 				};
 				Thread t = new Thread(runnable);
