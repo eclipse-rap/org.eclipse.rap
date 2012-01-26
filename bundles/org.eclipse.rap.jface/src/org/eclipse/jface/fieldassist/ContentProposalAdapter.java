@@ -1897,7 +1897,6 @@ public class ContentProposalAdapter implements Serializable {
           cancelKeys = new String[]{
             "ESC", //$NON-NLS-1$
             "ENTER", //$NON-NLS-1$
-            "TAB", //$NON-NLS-1$
             "ARROW_UP", //$NON-NLS-1$
             "ARROW_DOWN", //$NON-NLS-1$
             "PAGE_UP", //$NON-NLS-1$
@@ -1909,7 +1908,6 @@ public class ContentProposalAdapter implements Serializable {
           cancelKeys = new String[] {
             "ESC", //$NON-NLS-1$
             "ENTER", //$NON-NLS-1$
-            "TAB", //$NON-NLS-1$
             "ARROW_UP", //$NON-NLS-1$
             "ARROW_DOWN", //$NON-NLS-1$
             "PAGE_UP", //$NON-NLS-1$
