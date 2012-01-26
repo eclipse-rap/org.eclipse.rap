@@ -2120,15 +2120,11 @@ public class ContentProposalAdapter implements Serializable {
 					display.syncExec(new Runnable() {
 						public void run() {
 							openProposalPopup(true);
+// RAP [if] Activate/deactivate the UICallBack
+							UICallBack.deactivate( id );
+// ENDRAP
 						}
 					});
-// RAP [if] Activate/deactivate the UICallBack
-					display.asyncExec( new Runnable() {
-                      public void run() {
-                        UICallBack.deactivate( id );
-                      }
-                    } );
-// ENDRAP
 				}
 			};
 			Thread t = new Thread(runnable);
