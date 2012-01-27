@@ -13,6 +13,7 @@ package org.eclipse.jface.fieldassist;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ListenerList;
@@ -67,6 +68,36 @@ import org.eclipse.jface.viewers.ILabelProvider;
  * @since 1.0
  */
 public class ContentProposalAdapter implements Serializable {
+
+// RAP [if] Use CANCEL_KEYS instead of doit = false
+    private final String[] CANCEL_KEYS = new String[]{
+      "ESC", //$NON-NLS-1$
+      "ENTER", //$NON-NLS-1$
+      "TAB",  //$NON-NLS-1$
+      "ARROW_UP", //$NON-NLS-1$
+      "ARROW_DOWN", //$NON-NLS-1$
+      "PAGE_UP", //$NON-NLS-1$
+      "PAGE_DOWN", //$NON-NLS-1$
+      "HOME", //$NON-NLS-1$
+      "END" //$NON-NLS-1$
+    };
+
+    private void updateCancelKeys( boolean add, String[] keysToUpdate ) {
+      String[] oldCancelKeys = ( String[] )control.getData( RWT.CANCEL_KEYS );
+      if( oldCancelKeys == null ) {
+        oldCancelKeys = new String[ 0 ];
+      }
+      ArrayList cancelKeys = new ArrayList( Arrays.asList( oldCancelKeys ) );
+      for( int i = 0; i < keysToUpdate.length; i++ ) {
+        if( add ) {
+          cancelKeys.add( keysToUpdate[ i ] );
+        } else {
+          cancelKeys.remove( keysToUpdate[ i ] );
+        }
+      }
+      control.setData( RWT.CANCEL_KEYS, cancelKeys.toArray( new String[ 0 ] ) );
+    }
+// ENDRAP
 
 	/*
 	 * The lightweight popup used to show content proposals for a text field. If
@@ -917,6 +948,9 @@ public class ContentProposalAdapter implements Serializable {
 			if (p != null) {
 				showProposalDescription();
 			}
+// RAP [if] Use CANCEL_KEYS instead of doit = false
+		    updateCancelKeys( true, CANCEL_KEYS );
+// ENDRAP
 			return value;
 		}
 
@@ -934,6 +968,9 @@ public class ContentProposalAdapter implements Serializable {
 			}
 			boolean ret = super.close();
 			notifyPopupClosed();
+// RAP [if] Use CANCEL_KEYS instead of doit = false
+            updateCancelKeys( false, CANCEL_KEYS );
+// ENDRAP
 			return ret;
 		}
 
@@ -1332,6 +1369,11 @@ public class ContentProposalAdapter implements Serializable {
 		// The rest of these may be null
 		this.proposalProvider = proposalProvider;
 		this.triggerKeyStroke = keyStroke;
+// RAP [if] Use CANCEL_KEYS instead of doit = false
+		if( keyStroke != null ) {
+		  updateCancelKeys( true, new String[] { keyStroke.toString() } );
+		}
+// ENDRAP
 		if (autoActivationCharacters != null) {
 			this.autoActivateString = new String(autoActivationCharacters);
 		}
@@ -1886,34 +1928,6 @@ public class ContentProposalAdapter implements Serializable {
 			}
 		};
 		control.addListener(SWT.KeyDown, controlListener);
-// RAP [if] Use CANCEL_KEYS instead of doit = false
-		String[] cancelKeys;
-		if( triggerKeyStroke ==  null ) {
-          cancelKeys = new String[]{
-            "ESC", //$NON-NLS-1$
-            "ENTER", //$NON-NLS-1$
-            "ARROW_UP", //$NON-NLS-1$
-            "ARROW_DOWN", //$NON-NLS-1$
-            "PAGE_UP", //$NON-NLS-1$
-            "PAGE_DOWN", //$NON-NLS-1$
-            "HOME", //$NON-NLS-1$
-            "END" //$NON-NLS-1$
-          };
-		} else {
-          cancelKeys = new String[] {
-            "ESC", //$NON-NLS-1$
-            "ENTER", //$NON-NLS-1$
-            "ARROW_UP", //$NON-NLS-1$
-            "ARROW_DOWN", //$NON-NLS-1$
-            "PAGE_UP", //$NON-NLS-1$
-            "PAGE_DOWN", //$NON-NLS-1$
-            "HOME", //$NON-NLS-1$
-            "END", //$NON-NLS-1$
-            triggerKeyStroke.toString()
-          };
-		}
-        control.setData( RWT.CANCEL_KEYS, cancelKeys );
-// ENDRAP
 		control.addListener(SWT.Traverse, controlListener);
 		control.addListener(SWT.Modify, controlListener);
 
