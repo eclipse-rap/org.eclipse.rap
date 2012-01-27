@@ -156,14 +156,14 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
         var fun = this._currentInstance[ test ];
       }
       if( this._NOTRYCATCH ) {
-        fun.apply( this._currentInstance, this._args );
+        this._executeTest( fun );
         if( !this._failed ) {
           this._cleanUp();
           this.info( test + " - OK ", true, this._getCurrentTestLink() );
         }
       } else {
         try {
-          fun.apply( this._currentInstance, this._args );
+          this._executeTest( fun );
           if( !this._failed ) {
             this._cleanUp();
             this.info( test + " - OK ", true, this._getCurrentTestLink() );
@@ -171,6 +171,17 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
         } catch( e ) {
           this._handleException( e );
         }
+      }
+  	},
+  	
+  	_executeTest : function( fun ) {
+      if( this._currentInstance._setUp instanceof Function ) {
+        // TODO [tb] : execute setUp/tearDown not between multipart tests
+        this._currentInstance._setUp();
+      }
+      fun.apply( this._currentInstance, this._args );
+      if( this._currentInstance._tearDown instanceof Function ) {
+        this._currentInstance._tearDown();
       }
   	},
 
