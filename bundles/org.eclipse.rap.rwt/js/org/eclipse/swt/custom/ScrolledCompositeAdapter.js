@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,13 +31,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.ScrolledComposite", {
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
     // Override original bounds handler to set clipWidth and clipHeight
     "bounds" : function( widget, value ) {
-      if( widget.getUserData( "scrolledComposite" ) === null ) {
-        widget.setLeft( value[ 0 ] );
-        widget.setTop( value[ 1 ] );
-      }
-      widget.setWidth( value[ 2 ] );
+      org.eclipse.rwt.protocol.AdapterUtil.getControlPropertyHandler( "bounds" )( widget, value );
       widget.setClipWidth( value[ 2 ] );
-      widget.setHeight( value[ 3 ] );
       widget.setClipHeight( value[ 3 ] );
     },
     // Order is important: origin before scrollBarsVisible

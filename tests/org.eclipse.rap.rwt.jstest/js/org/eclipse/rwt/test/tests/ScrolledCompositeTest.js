@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,6 +63,35 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       assertEquals( 4, widget.getHeight() );
       assertEquals( 4, widget.getClipHeight() );
       shell.destroy();
+      widget.destroy();
+    },
+
+    testSetBoundsByProtocol_WithTabFolderParent : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var tabFolder = new qx.ui.pageview.tabview.TabView();
+      ObjectManager.add( "w4", tabFolder, null );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrolledComposite",
+        "properties" : {
+          "style" : [],
+          "parent" : "w4",
+          "bounds" : [ 1, 2, 3, 4 ]
+        }
+      } );
+      var widget = ObjectManager.getObject( "w3" );
+      assertEquals( 0, widget.getLeft() );
+      assertEquals( 0, widget.getTop() );
+      assertEquals( 3, widget.getWidth() );
+      assertEquals( 3, widget.getClipWidth() );
+      assertEquals( 4, widget.getHeight() );
+      assertEquals( 4, widget.getClipHeight() );
+      shell.destroy();
+      tabFolder.destroy();
       widget.destroy();
     },
 
