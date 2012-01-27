@@ -7,6 +7,9 @@
             class="org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit.ToggleHyperlinkResource">
       </resource>
       <resource
+            class="org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit.ToggleHyperlinkAdapterResource">
+      </resource>
+      <resource
             class="org.eclipse.ui.forms.internal.widgets.hyperlinkkit.HyperlinkResource">
       </resource>
       <resource

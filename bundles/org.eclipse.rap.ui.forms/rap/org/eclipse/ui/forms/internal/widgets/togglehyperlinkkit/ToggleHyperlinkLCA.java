@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit;
@@ -15,11 +15,11 @@ package org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.widgets.*;
 
@@ -29,8 +29,11 @@ import org.eclipse.ui.forms.widgets.*;
  */
 public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
 
-  static final String PROP_EXPANDED = "expanded"; //$NON-NLS-1$
-  static final String PROP_SELECTION_LISTENERS = "selectionListeners"; //$NON-NLS-1$
+  private static final String TYPE = "forms.widgets.ToggleHyperlink"; //$NON-NLS-1$
+
+  private static final String PROP_IMAGES = "images"; //$NON-NLS-1$
+  private static final String PROP_EXPANDED = "expanded"; //$NON-NLS-1$
+  private static final String PROP_SELECTION_LISTENER = "selection"; //$NON-NLS-1$
 
   private static final String PREFIX = "resource/widget/rap/hyperlink/"; //$NON-NLS-1$
   private static final String MINUS_GIF = PREFIX + "minus.gif"; //$NON-NLS-1$
@@ -43,13 +46,15 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
   private static final String TWISTIE_EXPAND_HOVER_GIF
     = PREFIX + "twistie_expand_hover.gif"; //$NON-NLS-1$
 
+  private static final Image[] DEFAULT_IMAGES = new Image[] { null, null, null, null };
+
   public void preserveValues( Widget widget ) {
     ToggleHyperlink hyperlink = ( ToggleHyperlink )widget;
     ControlLCAUtil.preserveValues( hyperlink );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( hyperlink );
-    adapter.preserve( PROP_EXPANDED, Boolean.valueOf( hyperlink.isExpanded() ) );
+    WidgetLCAUtil.preserveCustomVariant( hyperlink );
+    WidgetLCAUtil.preserveProperty( hyperlink, PROP_EXPANDED, hyperlink.isExpanded() );
     boolean hasListener = SelectionEvent.hasListener( hyperlink );
-    adapter.preserve( PROP_SELECTION_LISTENERS, Boolean.valueOf( hasListener ) );
+    WidgetLCAUtil.preserveListener( hyperlink, PROP_SELECTION_LISTENER, hasListener );
   }
 
   public void readData( Widget widget ) {
@@ -60,49 +65,27 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     ToggleHyperlink hyperlink = ( ToggleHyperlink )widget;
-    JSWriter writer = JSWriter.getWriterFor( hyperlink );
-    writer.newWidget( "org.eclipse.ui.forms.widgets.ToggleHyperlink" ); //$NON-NLS-1$
-    WidgetLCAUtil.writeCustomVariant( widget );
-    writeImages( hyperlink );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( hyperlink );
+    clientObject.create( TYPE );
+    clientObject.set( "parent", WidgetUtil.getId( hyperlink.getParent() ) ); //$NON-NLS-1$
+    WidgetLCAUtil.renderProperty( hyperlink, PROP_IMAGES, getImages( hyperlink ), DEFAULT_IMAGES );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
     ToggleHyperlink hyperlink = ( ToggleHyperlink )widget;
-    ControlLCAUtil.writeChanges( hyperlink );
-    writeExpanded( hyperlink );
-    writeSelectionListener( hyperlink );
+    ControlLCAUtil.renderChanges( hyperlink );
+    WidgetLCAUtil.renderCustomVariant( hyperlink );
+    WidgetLCAUtil.renderProperty( hyperlink, PROP_EXPANDED, hyperlink.isExpanded(), false );
+    boolean hasListener = SelectionEvent.hasListener( hyperlink );
+    WidgetLCAUtil.renderListener( hyperlink, PROP_SELECTION_LISTENER, hasListener, false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
-  ////////////////
-  // Write changes
-
-  private void writeImages( ToggleHyperlink hyperlink ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( hyperlink );
-    Image[] images = getImages( hyperlink );
-    String[] imageNames = new String[ images.length ];
-    for( int i = 0; i < imageNames.length; i++ ) {
-      imageNames[ i ] = ImageFactory.getImagePath( images[ i ] );
-    }
-    writer.set( "images", imageNames ); //$NON-NLS-1$
-  }
-
-  private static void writeExpanded( ToggleHyperlink hyperlink ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( hyperlink );
-    Boolean newValue = Boolean.valueOf( hyperlink.isExpanded() );
-    writer.set( PROP_EXPANDED, "expanded", newValue, Boolean.FALSE ); //$NON-NLS-1$
-  }
-
-  private static void writeSelectionListener( ToggleHyperlink hyperlink ) throws IOException {
-    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( hyperlink ) );
-    String prop = PROP_SELECTION_LISTENERS;
-    JSWriter writer = JSWriter.getWriterFor( hyperlink );
-    writer.set( prop, "hasSelectionListener", newValue, Boolean.FALSE ); //$NON-NLS-1$
-  }
+  //////////////////
+  // Helping methods
 
   /* (intentiaonally non-JavaDoc'ed)
    * Returns four images for:
