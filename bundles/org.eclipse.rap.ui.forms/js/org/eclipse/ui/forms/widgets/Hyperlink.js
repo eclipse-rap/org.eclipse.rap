@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
@@ -26,6 +26,8 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
     // TODO [rh] workaround for weird getLabelObject behavior
     this.setLabel( "" );
     // End of workaround
+    this._text = "";
+    this._underlined = false;
     this._savedBackgroundColor = null;
     this._savedTextColor = null;
     this._activeBackgroundColor = null;
@@ -48,6 +50,21 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
   },
     
   members : {
+
+    setText : function( value ) {
+      this._text = value;
+      this._updateText();
+    },
+
+    setUnderlined : function( value ) {
+      this._underlined = value;
+      this._updateText();
+    },
+
+    _updateText : function() {
+      var text = this._underlined ? "<u>" + this._text + "</u>" : this._text;
+      this.setLabel( text );
+    },
 
     setActiveBackgroundColor : function( value ) {
       this._activeBackgroundColor = value;

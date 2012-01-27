@@ -1,52 +1,95 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.imagehyperlinkkit;
+
+import java.io.IOException;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
+import org.json.*;
 
 public class ImageHyperlinkLCA_Test extends TestCase {
 
-  public void testPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    ImageHyperlink hyperlink = new ImageHyperlink( shell, SWT.NONE );
-    Fixture.markInitialized( display );
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( hyperlink );
-    Image image = ( Image )adapter.getPreserved( ImageHyperlinkLCA.PROP_IMAGE );
-    assertEquals( null, image );
-    Fixture.clearPreserved();
-    Image newImage = Graphics.getImage( Fixture.IMAGE1 );
-    hyperlink.setImage( newImage );
-    Fixture.preserveWidgets();
-    image = ( Image )adapter.getPreserved( ImageHyperlinkLCA.PROP_IMAGE );
-    assertEquals( newImage, image );
-    display.dispose();
-  }
+  private Display display;
+  private Shell shell;
+  private ImageHyperlinkLCA lca;
 
-  protected void setUp() throws Exception {
+  protected void setUp() {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
+    lca = new ImageHyperlinkLCA();
+    Fixture.fakeNewRequest( display );
   }
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  public void testRenderInitialImage() throws IOException {
+    ImageHyperlink hyperlink = new ImageHyperlink( shell, SWT.NONE );
+
+    lca.renderChanges( hyperlink );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( hyperlink, "image" ) );
+  }
+
+  public void testRenderImage() throws IOException, JSONException {
+    ImageHyperlink hyperlink = new ImageHyperlink( shell, SWT.NONE );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+
+    hyperlink.setImage( image );
+    lca.renderChanges( hyperlink );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( hyperlink, "image" );
+    assertNotNull( actual.get( 0 ) );
+    assertEquals( 100, actual.get( 1 ) );
+    assertEquals( 50, actual.get( 2 ) );
+  }
+
+  public void testRenderImageUnchanged() throws IOException {
+    ImageHyperlink hyperlink = new ImageHyperlink( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( hyperlink );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+
+    hyperlink.setImage( image );
+    Fixture.preserveWidgets();
+    lca.renderChanges( hyperlink );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( hyperlink, "image" ) );
+  }
+
+  public void testRenderImageReset() throws IOException {
+    ImageHyperlink hyperlink = new ImageHyperlink( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( hyperlink );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    hyperlink.setImage( image );
+
+    Fixture.preserveWidgets();
+    hyperlink.setImage( null );
+    lca.renderChanges( hyperlink );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( hyperlink, "image" ) );
   }
 }

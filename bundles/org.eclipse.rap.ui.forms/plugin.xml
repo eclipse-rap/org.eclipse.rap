@@ -13,6 +13,9 @@
             class="org.eclipse.ui.forms.internal.widgets.hyperlinkkit.HyperlinkResource">
       </resource>
       <resource
+            class="org.eclipse.ui.forms.internal.widgets.hyperlinkkit.HyperlinkAdapterResource">
+      </resource>
+      <resource
             class="org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextResource">
       </resource>
    </extension>

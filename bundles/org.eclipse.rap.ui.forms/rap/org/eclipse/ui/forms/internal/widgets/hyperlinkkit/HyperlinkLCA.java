@@ -1,41 +1,41 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.internal.widgets.IHyperlinkAdapter;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
-/* (intentionally non-JavaDoc'ed)
- * This class serves as the LCA for org.eclipse.ui.forms.widgets.TreeNode and
- * org.eclipse.ui.forms.widgets.Twistie.
- */
 public class HyperlinkLCA extends AbstractWidgetLCA {
 
-  static final String PROP_TEXT = "text"; //$NON-NLS-1$
-  static final String PROP_UNDERLINED = "underlined"; //$NON-NLS-1$
-  static final String PROP_SELECTION_LISTENERS = "selectionListeners"; //$NON-NLS-1$
-  static final String PROP_ACTIVE_FOREGROUND = "activeForeground"; //$NON-NLS-1$
-  static final String PROP_ACTIVE_BACKGROUND = "activeBackground"; //$NON-NLS-1$
-  static final String PROP_INACTIVE_FOREGROUND = "inactiveForeground"; //$NON-NLS-1$
-  static final String PROP_INACTIVE_BACKGROUND = "inactiveBackground"; //$NON-NLS-1$
-  static final String PROP_UNDERLINE_MODE = "underlineMode"; //$NON-NLS-1$
+  private static final String TYPE = "forms.widgets.Hyperlink"; //$NON-NLS-1$
+  private static final String[] ALLOWED_STYLES = new String[] { "WRAP" }; //$NON-NLS-1$
+
+  private static final String PROP_TEXT = "text"; //$NON-NLS-1$
+  private static final String PROP_UNDERLINED = "underlined"; //$NON-NLS-1$
+  private static final String PROP_UNDERLINE_MODE = "underlineMode"; //$NON-NLS-1$
+  private static final String PROP_ACTIVE_FOREGROUND = "activeForeground"; //$NON-NLS-1$
+  private static final String PROP_ACTIVE_BACKGROUND = "activeBackground"; //$NON-NLS-1$
+  private static final String PROP_SELECTION_LISTENER = "selection"; //$NON-NLS-1$
+
+  private static final int DEFAULT_UNDERLINE_MODE = 0;
 
   public void readData( Widget widget ) {
     ControlLCAUtil.processSelection( widget, null, false );
@@ -45,122 +45,73 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     Hyperlink hyperlink = ( Hyperlink )widget;
     ControlLCAUtil.preserveValues( hyperlink );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( hyperlink );
-    adapter.preserve( PROP_TEXT, hyperlink.getText() );
-    adapter.preserve( PROP_UNDERLINED, Boolean.valueOf( hyperlink.isUnderlined() ) );
+    WidgetLCAUtil.preserveCustomVariant( hyperlink );
+    WidgetLCAUtil.preserveProperty( hyperlink, PROP_TEXT, hyperlink.getText() );
+    WidgetLCAUtil.preserveProperty( hyperlink, PROP_UNDERLINED, hyperlink.isUnderlined() );
+    WidgetLCAUtil.preserveProperty( hyperlink, PROP_UNDERLINE_MODE, getUnderlineMode( hyperlink ) );
+    WidgetLCAUtil.preserveProperty( hyperlink,
+                                    PROP_ACTIVE_FOREGROUND,
+                                    getActiveForeground( hyperlink ) );
+    WidgetLCAUtil.preserveProperty( hyperlink,
+                                    PROP_ACTIVE_BACKGROUND,
+                                    getActiveBackground( hyperlink ) );
     boolean hasListener = SelectionEvent.hasListener( hyperlink );
-    adapter.preserve( PROP_SELECTION_LISTENERS, Boolean.valueOf( hasListener ) );
-    adapter.preserve( PROP_ACTIVE_BACKGROUND, getActiveBackground( hyperlink ) );
-    adapter.preserve( PROP_ACTIVE_FOREGROUND, getActiveForeground( hyperlink ) );
-    adapter.preserve( PROP_UNDERLINE_MODE, getUnderlineMode( hyperlink ) );
-//    adapter.preserve( PROP_INACTIVE_BACKGROUND, hyperlink.getBackground() );
-//    adapter.preserve( PROP_INACTIVE_FOREGROUND, hyperlink.getForeground() );
+    WidgetLCAUtil.preserveListener( hyperlink, PROP_SELECTION_LISTENER, hasListener );
   }
 
   public void renderInitialization( Widget widget ) throws IOException {
     Hyperlink hyperlink = ( Hyperlink )widget;
-    JSWriter writer = JSWriter.getWriterFor( hyperlink );
-    String style = ""; //$NON-NLS-1$
-    if( ( hyperlink.getStyle() & SWT.WRAP ) != 0 ) {
-      style = "wrap"; //$NON-NLS-1$
-    }
-    Object[] args = new Object[]{
-      style
-    };
-    writer.newWidget( "org.eclipse.ui.forms.widgets.Hyperlink", args ); //$NON-NLS-1$
-    WidgetLCAUtil.writeCustomVariant( widget );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( hyperlink );
+    clientObject.create( TYPE );
+    clientObject.set( "parent", WidgetUtil.getId( hyperlink.getParent() ) ); //$NON-NLS-1$
+    clientObject.set( "style", WidgetLCAUtil.getStyles( hyperlink, ALLOWED_STYLES ) ); //$NON-NLS-1$
   }
 
   public void renderChanges( Widget widget ) throws IOException {
     Hyperlink hyperlink = ( Hyperlink )widget;
-    ControlLCAUtil.writeChanges( hyperlink );
-    writeText( hyperlink );
-    writeSelectionListener( hyperlink );
-    writeActiveForeground( hyperlink );
-    writeActiveBackground( hyperlink );
-    writeUnderlineMode( hyperlink );
+    ControlLCAUtil.renderChanges( hyperlink );
+    WidgetLCAUtil.renderCustomVariant( widget );
+    WidgetLCAUtil.renderProperty( hyperlink, PROP_TEXT, hyperlink.getText(), "" ); //$NON-NLS-1$
+    WidgetLCAUtil.renderProperty( hyperlink, PROP_UNDERLINED, hyperlink.isUnderlined(), false );
+    WidgetLCAUtil.renderProperty( hyperlink,
+                                  PROP_UNDERLINE_MODE,
+                                  getUnderlineMode( hyperlink ),
+                                  DEFAULT_UNDERLINE_MODE );
+    WidgetLCAUtil.renderProperty( hyperlink,
+                                  PROP_ACTIVE_FOREGROUND,
+                                  getActiveForeground( hyperlink ),
+                                  null );
+    WidgetLCAUtil.renderProperty( hyperlink,
+                                  PROP_ACTIVE_BACKGROUND,
+                                  getActiveBackground( hyperlink ),
+                                  null );
+    boolean hasListener = SelectionEvent.hasListener( hyperlink );
+    WidgetLCAUtil.renderListener( hyperlink, PROP_SELECTION_LISTENER, hasListener, false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
-  }
-
-  ////////////////
-  // Write changes
-
-  private static void writeText( Hyperlink hyperlink ) throws IOException {
-    String text = hyperlink.getText();
-    Boolean underlined = Boolean.valueOf( hyperlink.isUnderlined() );
-    Boolean def = Boolean.FALSE;
-    boolean textChanged = WidgetLCAUtil.hasChanged( hyperlink, PROP_TEXT, text, "" ); //$NON-NLS-1$
-    boolean underlinedChanged
-      = WidgetLCAUtil.hasChanged( hyperlink, PROP_UNDERLINED, underlined, def );
-    if( textChanged || underlinedChanged ) {
-      text = WidgetLCAUtil.escapeText( text, false );
-      if( underlined.booleanValue() ) {
-        text = underlineText( text );
-      }
-      JSWriter writer = JSWriter.getWriterFor( hyperlink );
-      writer.set( "label", text ); //$NON-NLS-1$
-    }
-  }
-
-  private static void writeSelectionListener( Hyperlink hyperlink ) throws IOException {
-    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( hyperlink ) );
-    String prop = PROP_SELECTION_LISTENERS;
-    JSWriter writer = JSWriter.getWriterFor( hyperlink );
-    writer.set( prop, "hasSelectionListener", newValue, Boolean.FALSE ); //$NON-NLS-1$
-  }
-
-  private static void writeActiveForeground( Hyperlink hyperlink ) throws IOException {
-	  Color newValue = getActiveForeground( hyperlink );
-	  JSWriter writer = JSWriter.getWriterFor( hyperlink );
-	  writer.set( PROP_ACTIVE_FOREGROUND, "activeTextColor", newValue, null ); //$NON-NLS-1$
-  }
-
-  private static void writeActiveBackground( Hyperlink hyperlink ) throws IOException {
-    Color newValue = getActiveBackground( hyperlink );
-    JSWriter writer = JSWriter.getWriterFor( hyperlink );
-    writer.set( PROP_ACTIVE_BACKGROUND, "activeBackgroundColor", newValue ,null ); //$NON-NLS-1$
-  }
-
-  private static void writeUnderlineMode( Hyperlink hyperlink ) throws IOException {
-    Integer newValue = getUnderlineMode( hyperlink );
-    JSWriter writer = JSWriter.getWriterFor( hyperlink );
-    writer.set( PROP_UNDERLINE_MODE, "underlineMode", newValue, null ); //$NON-NLS-1$
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
   //////////////////
   // Helping methods
 
-  private static String underlineText( String text ) {
-    StringBuffer result = new StringBuffer();
-    result.append( "<u>" ); //$NON-NLS-1$
-    result.append( text );
-    result.append( "</u>" ); //$NON-NLS-1$
-    return result.toString();
-  }
-
   private static Color getActiveForeground( Hyperlink hyperlink ) {
     Object adapter = hyperlink.getAdapter( IHyperlinkAdapter.class );
     IHyperlinkAdapter hyperlinkAdapter = ( IHyperlinkAdapter )adapter;
-    Color newValue = hyperlinkAdapter.getActiveForeground();
-    return newValue;
+    return hyperlinkAdapter.getActiveForeground();
   }
 
   private static Color getActiveBackground( Hyperlink hyperlink ) {
     Object adapter = hyperlink.getAdapter( IHyperlinkAdapter.class );
     IHyperlinkAdapter hyperlinkAdapter = ( IHyperlinkAdapter )adapter;
-    Color newValue = hyperlinkAdapter.getActiveBackground();
-    return newValue;
+    return hyperlinkAdapter.getActiveBackground();
   }
 
-  private static Integer getUnderlineMode( Hyperlink hyperlink ) {
+  private static int getUnderlineMode( Hyperlink hyperlink ) {
     Object adapter = hyperlink.getAdapter( IHyperlinkAdapter.class );
     IHyperlinkAdapter hyperlinkAdapter = ( IHyperlinkAdapter )adapter;
-    Integer newValue = new Integer( hyperlinkAdapter.getUnderlineMode() );
-    return newValue;
+    return hyperlinkAdapter.getUnderlineMode();
   }
 
 }
