@@ -868,6 +868,19 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     var runner = org.eclipse.rwt.test.TestRunner.getInstance();
     runner.setArguments( arguments );
   },
+  
+  /**
+   * Ensures that the given object has no other objects as a fields
+   */
+  hasNoObjects : function( object ) {
+    var result = true;
+    for( var key in object ) {
+      if( object[ key ] instanceof Object ) {
+        result = false;
+      }
+    }
+    return result;
+  },
 
   ///////////////////
   // Protocol ralated

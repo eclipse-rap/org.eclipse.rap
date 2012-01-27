@@ -749,6 +749,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       assertTrue( shell.hasState( "variant_blue" ) );
       shell.destroy();
     },
+    
+    testHasNoObjectsTrue : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var object = {
+        "foo" : 1,
+        "bar" : "a",
+        "bang" : true,
+        "puff" : null,
+        "doing" : undefined
+      };
+      assertTrue( TestUtil.hasNoObjects( object ) );
+    },
+
+    testHasNoObjectsFalse : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      assertFalse( TestUtil.hasNoObjects( { "x" : {} } ) );
+      assertFalse( TestUtil.hasNoObjects( { "x" : [] } ) );
+      assertFalse( TestUtil.hasNoObjects( { "x" : new Boolean( true ) } ) );
+      assertFalse( TestUtil.hasNoObjects( { "x" : function(){} } ) );
+      assertFalse( TestUtil.hasNoObjects( { "x" : /./ } ) );
+    },
 
     /////////
     // helper
