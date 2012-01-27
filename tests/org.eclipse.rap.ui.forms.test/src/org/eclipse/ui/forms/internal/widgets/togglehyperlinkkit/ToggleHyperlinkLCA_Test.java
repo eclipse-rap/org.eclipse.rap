@@ -14,15 +14,10 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.internal.widgets.spinnerkit.SpinnerLCA;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
 import org.eclipse.ui.forms.widgets.ToggleHyperlink;
@@ -123,6 +118,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   public void testRenderRemoveSelectionListener() throws Exception {
     Twistie twistie = new Twistie( shell, SWT.NONE );
     Listener listener = new Listener() {
+      private static final long serialVersionUID = 1L;
       public void handleEvent( Event event ) {
       }
     };
@@ -145,6 +141,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Fixture.preserveWidgets();
 
     twistie.addListener( SWT.DefaultSelection, new Listener() {
+      private static final long serialVersionUID = 1L;
       public void handleEvent( Event event ) {
       }
     } );
