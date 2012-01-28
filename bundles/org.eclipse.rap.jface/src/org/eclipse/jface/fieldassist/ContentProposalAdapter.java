@@ -111,7 +111,7 @@ public class ContentProposalAdapter implements Serializable {
 // RAP [if] Make ContentProposalPopup shell themeable
 	    protected void configureShell( Shell shell ) {
 	      super.configureShell( shell );
-	      shell.setData( WidgetUtil.CUSTOM_VARIANT, "contentProposalPopup" ); //$NON-NLS-1$
+	      shell.setData( WidgetUtil.CUSTOM_VARIANT, "jface_contentProposalPopup" ); //$NON-NLS-1$
 	    }
 // ENDRAP
 
@@ -477,7 +477,7 @@ public class ContentProposalAdapter implements Serializable {
 // RAP [if] Make InfoPopupDialog shell themeable
 	        protected void configureShell( Shell shell ) {
 	          super.configureShell( shell );
-	          shell.setData( WidgetUtil.CUSTOM_VARIANT, "infoPopupDialog" ); //$NON-NLS-1$
+	          shell.setData( WidgetUtil.CUSTOM_VARIANT, "jface_infoPopupDialog" ); //$NON-NLS-1$
 	        }
 // ENDRAP
 

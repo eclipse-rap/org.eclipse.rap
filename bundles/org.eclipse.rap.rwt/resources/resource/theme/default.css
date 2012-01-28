@@ -1914,7 +1914,7 @@ ScrollBar-DownButton[VERTICAL] {
 
 /* JFace specific theming */
 
-Shell.contentProposalPopup, Shell.infoPopupDialog {
+Shell.jface_contentProposalPopup, Shell.jface_infoPopupDialog {
   border: 1px solid #6e6e6e;
   border-radius: 2px;
   padding: 15px;
