@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,9 +80,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
-      TestUtil.protocolSet( "w3", { "roundedBorder" : [ 2, "#00ff00", 1, 2, 3, 4 ] } );
+      TestUtil.protocolSet( "w3", { "roundedBorder" : [ 2, [ 0, 255, 0, 255 ], 1, 2, 3, 4 ] } );
       var border = widget.getBorder();
-      assertEquals( "#00ff00", border.getColor() );
+      assertEquals( "rgb(0,255,0)", border.getColor() );
       assertEquals( [ 1, 2, 3, 4 ], border.getRadii() );
       shell.destroy();
       widget.destroy();
@@ -92,12 +92,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
-      var gradient = [ [ "#0000ff", "#00ff00", "#0000ff" ], [ 0, 50, 100 ], false ];
+      var gradient
+        = [ [ [ 0, 0, 255, 255 ], [ 0, 255, 0, 255 ], [ 0, 0, 255, 255 ] ], [ 0, 50, 100 ], false ];
       TestUtil.protocolSet( "w3", { "backgroundGradient" : gradient } );
       var actual = widget.getBackgroundGradient();
-      assertEquals( [ 0, "#0000ff" ], actual[ 0 ] );
-      assertEquals( [ 0.5, "#00ff00" ], actual[ 1 ] );
-      assertEquals( [ 1, "#0000ff" ], actual[ 2 ] );
+      assertEquals( [ 0, "rgb(0,0,255)" ], actual[ 0 ] );
+      assertEquals( [ 0.5, "rgb(0,255,0)" ], actual[ 1 ] );
+      assertEquals( [ 1, "rgb(0,0,255)" ], actual[ 2 ] );
       assertTrue( actual.horizontal );
       shell.destroy();
       widget.destroy();

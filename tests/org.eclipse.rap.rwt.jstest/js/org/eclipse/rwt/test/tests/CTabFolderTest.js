@@ -228,12 +228,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createCTabFolderByProtocol( "w3", "w2" );
-      var gradient = [ [ "#0000ff", "#00ff00", "#0000ff" ], [ 0, 50, 100 ], false ];
+      var gradient
+        = [ [ [ 0, 0, 255, 255 ], [ 0, 255, 0, 255 ], [ 0, 0, 255, 255 ] ], [ 0, 50, 100 ], false ];
       TestUtil.protocolSet( "w3", { "selectionBackgroundGradient" : gradient } );
       var actual = widget.getSelectionBackgroundGradient();
-      assertEquals( [ "#0000ff", "#00ff00", "#0000ff" ], actual.colors );
-      assertEquals( [ 0, 50, 100 ], actual.percents );
-      assertFalse( actual.vertical );
+      assertEquals( 3, gradient.length );
+      assertEquals( [ 0, "rgb(0,0,255)" ], actual[ 0 ] );
+      assertEquals( [ 0.5, "rgb(0,255,0)" ], actual[ 1] );
+      assertEquals( [ 1, "rgb(0,0,255)" ], actual[ 2] );
+      assertFalse( actual.horizontal === false );
       shell.destroy();
       widget.destroy();
     },

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -155,10 +155,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     },
 
     updateBackgroundImage : function() {
-      var image = null;
-      if( this.isSelected() ) {
-        image = this._parent.getSelectionBackgroundImage();
-      }
+      var image = this.isSelected() ? this._parent.getSelectionBackgroundImage() : null;
       if( image != null ) {
         this.setUserData( "backgroundImageSize", image.slice( 1 ) );
         this.setBackgroundImage( image[ 0 ] );
@@ -168,17 +165,12 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     },
 
     updateBackgroundGradient : function() {
-      var colors = null;
-      var percents = null;
-      var vertical = true;
-      var gradient = this._parent.getSelectionBackgroundGradient();
-      if( this.isSelected() && gradient != null ) {
-        colors = gradient.colors;
-        percents = gradient.percents;
-        vertical = gradient.vertical;
+      var gradient = this.isSelected() ? this._parent.getSelectionBackgroundGradient() : null;
+      if( gradient != null ) {
+        this.setBackgroundGradient( gradient );
+      } else {
+        this.resetBackgroundGradient();
       }
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      widgetManager.setBackgroundGradient( this, colors, percents, vertical );
     },
 
     updateCloseButton : function() {
@@ -186,7 +178,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       if( this._canClose || this._showClose ) {
         visible
           =  this.isSelected()
-          || ( this._parent.getUnselectedCloseVisible()
+          || (    this._parent.getUnselectedCloseVisible()
                && this.hasState( org.eclipse.swt.custom.CTabItem.STATE_OVER ) );
       }
       this._closeButton.setVisibility( visible );

@@ -242,7 +242,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
         var vertical = value[ 2 ];
         gradient = [];
         for( var i = 0; i < colors.length; i++ ) {
-          gradient[ i ] = [ percents[ i ] / 100, colors[ i ] ];
+          gradient[ i ] = [ percents[ i ] / 100, qx.util.ColorUtil.rgbToRgbString( colors[ i ] ) ];
         }
         gradient.horizontal = !vertical;
       }
@@ -251,7 +251,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     "roundedBorder" : function( widget, value ) {
       if( value ) {
         var width = value[ 0 ];
-        var color = value[ 1 ];
+        var color = qx.util.ColorUtil.rgbToRgbString( value[ 1 ] );
         var radii = value.slice( -4 );
         var border = new org.eclipse.rwt.Border( width, "rounded", color, radii );
         widget.setBorder( border );

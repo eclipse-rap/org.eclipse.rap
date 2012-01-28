@@ -572,18 +572,18 @@ public final class WidgetLCAUtil {
       Color[] bgGradientColors = graphicsAdapter.getBackgroundGradientColors();
       Object[] args = null;
       if( bgGradientColors!= null ) {
-        String[] colorStrings = new String[ bgGradientColors.length ];
+        Object[] colors = new Object[ bgGradientColors.length ];
         int[] bgGradientPercents = graphicsAdapter.getBackgroundGradientPercents();
         Integer[] percents = new Integer[ bgGradientPercents.length ];
-        for( int i = 0; i < colorStrings.length; i++ ) {
-          colorStrings[ i ] = getColorValue( bgGradientColors[ i ].getRGB() );
+        for( int i = 0; i < colors.length; i++ ) {
+          colors[ i ] = getColorValueAsArray( bgGradientColors[ i ], false );
         }
         for( int i = 0; i < bgGradientPercents.length; i++ ) {
           percents[ i ] =  new Integer( bgGradientPercents[ i ] );
         }
         boolean bgGradientVertical = graphicsAdapter.isBackgroundGradientVertical();
         args = new Object[] {
-          colorStrings,
+          colors,
           percents,
           new Boolean( bgGradientVertical )
         };
@@ -633,7 +633,7 @@ public final class WidgetLCAUtil {
         Rectangle radius = graphicAdapter.getRoundedBorderRadius();
         args = new Object[] {
           new Integer( width ),
-          getColorValue( color.getRGB() ),
+          getColorValueAsArray( color, false ),
           new Integer( radius.x ),
           new Integer( radius.y ),
           new Integer( radius.width ),
@@ -1186,27 +1186,6 @@ public final class WidgetLCAUtil {
       result = object1.equals( object2 );
     }
     return result;
-  }
-
-  public static String getColorValue( RGB rgb ) {
-    StringBuilder buffer = new StringBuilder();
-    buffer.append( "#" );
-    String red = Integer.toHexString( rgb.red );
-    if( red.length() == 1  ) {
-      buffer.append( "0" );
-    }
-    buffer.append( red );
-    String green = Integer.toHexString( rgb.green );
-    if( green.length() == 1  ) {
-      buffer.append( "0" );
-    }
-    buffer.append( green );
-    String blue = Integer.toHexString( rgb.blue );
-    if( blue.length() == 1  ) {
-      buffer.append( "0" );
-    }
-    buffer.append( blue );
-    return buffer.toString();
   }
 
   private static Object[] getImageAsArray( Image image ) {

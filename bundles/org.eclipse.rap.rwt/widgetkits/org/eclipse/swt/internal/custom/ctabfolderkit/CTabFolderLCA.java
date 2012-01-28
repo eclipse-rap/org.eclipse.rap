@@ -249,10 +249,10 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     if( hasChanged ) {
       Object gradient = null;
       if( bgGradientColors!= null ) {
-        String[] colors = new String[ bgGradientColors.length ];
+        Object[] colors = new Object[ bgGradientColors.length ];
         Integer[] percents = new Integer[ bgGradientPercents.length ];
         for( int i = 0; i < colors.length; i++ ) {
-          colors[ i ] = WidgetLCAUtil.getColorValue( bgGradientColors[ i ].getRGB() );
+          colors[ i ] = getColorValueAsArray( bgGradientColors[ i ] );
         }
         for( int i = 0; i < bgGradientPercents.length; i++ ) {
           percents[ i ] =  Integer.valueOf( bgGradientPercents[ i ] );
@@ -337,5 +337,14 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
 
   private static ICTabFolderAdapter getCTabFolderAdapter( CTabFolder folder ) {
     return folder.getAdapter( ICTabFolderAdapter.class );
+  }
+
+  private static int[] getColorValueAsArray( Color color ) {
+    int[] result = null;
+    if( color != null ) {
+      RGB rgb = color.getRGB();
+      result = new int[] { rgb.red, rgb.green, rgb.blue, 255 };
+    }
+    return result;
   }
 }

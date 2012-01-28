@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2012 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -213,7 +213,7 @@ public class ToolTipLCA_Test extends TestCase {
     JSONArray border = ( JSONArray )message.findSetProperty( toolTip, "roundedBorder" );
     assertEquals( 6, border.length() );
     assertEquals( 2, border.getInt( 0 ) );
-    assertEquals( "#00ff00", border.getString( 1 ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", border.getJSONArray( 1 ) ) );
     assertEquals( 5, border.getInt( 2 ) );
     assertEquals( 6, border.getInt( 3 ) );
     assertEquals( 7, border.getInt( 4 ) );
@@ -256,8 +256,8 @@ public class ToolTipLCA_Test extends TestCase {
     JSONArray gradient = ( JSONArray )message.findSetProperty( toolTip, "backgroundGradient" );
     JSONArray colors = ( JSONArray )gradient.get( 0 );
     JSONArray stops = ( JSONArray )gradient.get( 1 );
-    assertEquals( "#00ff00", colors.get( 0 ) );
-    assertEquals( "#0000ff", colors.get( 1 ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", colors.getJSONArray( 0 ) ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,255,255]", colors.getJSONArray( 1 ) ) );
     assertEquals( new Integer( 0 ), stops.get( 0 ) );
     assertEquals( new Integer( 100 ), stops.get( 1 ) );
     assertEquals( Boolean.TRUE, gradient.get( 2 ) );

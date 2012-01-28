@@ -774,8 +774,8 @@ public class CTabFolderLCA_Test extends TestCase {
       = ( JSONArray )message.findSetProperty( folder, "selectionBackgroundGradient" );
     JSONArray colors = ( JSONArray )gradient.get( 0 );
     JSONArray stops = ( JSONArray )gradient.get( 1 );
-    assertEquals( "#ff0000", colors.get( 0 ) );
-    assertEquals( "#00ff00", colors.get( 1 ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[255,0,0,255]", colors.getJSONArray( 0 ) ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", colors.getJSONArray( 1 ) ) );
     assertEquals( Integer.valueOf( 0 ), stops.get( 0 ) );
     assertEquals( Integer.valueOf( 50 ), stops.get( 1 ) );
     assertEquals( Boolean.FALSE, gradient.get( 2 ) );

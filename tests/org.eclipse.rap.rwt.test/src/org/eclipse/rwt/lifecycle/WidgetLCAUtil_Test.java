@@ -867,8 +867,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     JSONArray gradient = ( JSONArray )message.findSetProperty( control, "backgroundGradient" );
     JSONArray colors = ( JSONArray )gradient.get( 0 );
     JSONArray stops = ( JSONArray )gradient.get( 1 );
-    assertEquals( "#00ff00", colors.get( 0 ) );
-    assertEquals( "#0000ff", colors.get( 1 ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", colors.getJSONArray( 0 ) ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,255,255]", colors.getJSONArray( 1 ) ) );
     assertEquals( new Integer( 0 ), stops.get( 0 ) );
     assertEquals( new Integer( 100 ), stops.get( 1 ) );
     assertEquals( Boolean.TRUE, gradient.get( 2 ) );
@@ -891,8 +891,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     JSONArray gradient = ( JSONArray )message.findSetProperty( control, "backgroundGradient" );
     JSONArray colors = ( JSONArray )gradient.get( 0 );
     JSONArray stops = ( JSONArray )gradient.get( 1 );
-    assertEquals( "#00ff00", colors.get( 0 ) );
-    assertEquals( "#0000ff", colors.get( 1 ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", colors.getJSONArray( 0 ) ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,255,255]", colors.getJSONArray( 1 ) ) );
     assertEquals( new Integer( 0 ), stops.get( 0 ) );
     assertEquals( new Integer( 100 ), stops.get( 1 ) );
     assertEquals( Boolean.FALSE, gradient.get( 2 ) );
@@ -952,7 +952,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     JSONArray border = ( JSONArray )message.findSetProperty( widget, "roundedBorder" );
     assertEquals( 6, border.length() );
     assertEquals( 2, border.getInt( 0 ) );
-    assertEquals( "#00ff00", border.getString( 1 ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", border.getJSONArray( 1 ) ) );
     assertEquals( 5, border.getInt( 2 ) );
     assertEquals( 6, border.getInt( 3 ) );
     assertEquals( 7, border.getInt( 4 ) );

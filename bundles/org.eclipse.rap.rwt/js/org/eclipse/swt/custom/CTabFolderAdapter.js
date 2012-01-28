@@ -95,11 +95,18 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.CTabFolder", {
       }
     },
     "selectionBackgroundGradient" : function( widget, value ) {
-      if( value === null ) {
-        widget.setSelectionBackgroundGradient( null, null, true );
-      } else {
-        widget.setSelectionBackgroundGradient( value[ 0 ], value[ 1 ], value[ 2 ] );
+      var gradient = null;
+      if( value ) {
+        var colors = value[ 0 ];
+        var percents = value[ 1 ];
+        var vertical = value[ 2 ];
+        gradient = [];
+        for( var i = 0; i < colors.length; i++ ) {
+          gradient[ i ] = [ percents[ i ] / 100, qx.util.ColorUtil.rgbToRgbString( colors[ i ] ) ];
+        }
+        gradient.horizontal = !vertical;
       }
+      widget.setSelectionBackgroundGradient( gradient );
     }
   } ),
 
