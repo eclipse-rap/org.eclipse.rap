@@ -1911,3 +1911,12 @@ ScrollBar-UpButton[VERTICAL] {
 ScrollBar-DownButton[VERTICAL] {
   background-image: url( resource/widget/rap/scrollbar/up.png );
 }
+
+/* JFace specific theming */
+
+Shell.contentProposalPopup, Shell.infoPopupDialog {
+  border: 1px solid #6e6e6e;
+  border-radius: 2px;
+  padding: 15px;
+  box-shadow: 0 0 4px #ababab;
+}

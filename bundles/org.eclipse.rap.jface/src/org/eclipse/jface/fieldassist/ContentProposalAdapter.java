@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.ListenerList;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -106,6 +107,14 @@ public class ContentProposalAdapter implements Serializable {
 	 * popup.
 	 */
 	class ContentProposalPopup extends PopupDialog {
+
+// RAP [if] Make ContentProposalPopup shell themeable
+	    protected void configureShell( Shell shell ) {
+	      super.configureShell( shell );
+	      shell.setData( WidgetUtil.CUSTOM_VARIANT, "contentProposalPopup" ); //$NON-NLS-1$
+	    }
+// ENDRAP
+
 		/*
 		 * The listener we install on the popup and related controls to
 		 * determine when to close the popup. Some events (move, resize, close,
@@ -464,6 +473,13 @@ public class ContentProposalAdapter implements Serializable {
 		 * Internal class used to implement the secondary popup.
 		 */
 		private class InfoPopupDialog extends PopupDialog {
+
+// RAP [if] Make InfoPopupDialog shell themeable
+	        protected void configureShell( Shell shell ) {
+	          super.configureShell( shell );
+	          shell.setData( WidgetUtil.CUSTOM_VARIANT, "infoPopupDialog" ); //$NON-NLS-1$
+	        }
+// ENDRAP
 
 			/*
 			 * The text control that displays the text.
