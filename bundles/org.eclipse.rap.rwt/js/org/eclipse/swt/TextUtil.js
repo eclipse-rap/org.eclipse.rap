@@ -89,7 +89,10 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       text.addEventListener( "focus", org.eclipse.swt.TextUtil._onFocus, text );
       text.addEventListener( "blur", org.eclipse.swt.TextUtil._onBlur, text );
       org.eclipse.swt.TextUtil._updateLineHeight( text );
-      this._doSetSelection( text );
+      var length = text.getUserData( "selectionLength" );
+      if( length !== null && length !== 0 ) {
+        this._doSetSelection( text );
+      }
     },
 
     // === Event listener ===

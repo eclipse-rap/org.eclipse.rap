@@ -853,6 +853,12 @@ qx.Class.define("qx.ui.form.TextField",
         if( !this.isDisposed() ) {
           this._inValueProperty = true;
           this._inputElement.value = this.getValue() === null ? "" : this.getValue().toString();
+          var start = this.getUserData( "selectionStart" );
+          var length = this.getUserData( "selectionLength" );
+          if( length != 0 && length != null ) {
+            this.setSelectionStart( start );
+            this.setSelectionLength( length );
+          }
           this._firstInputFixApplied = true;
           delete this._inValueProperty;
         }
@@ -1114,7 +1120,9 @@ qx.Class.define("qx.ui.form.TextField",
       "default" : function(vStart)
       {
         this._visualPropertyCheck();
-        this._inputElement.selectionStart = vStart;
+        if( this._inputElement.selectionStart != vStart ) {
+          this._inputElement.selectionStart = vStart;
+        }
       }
     }),
 
@@ -1227,7 +1235,10 @@ qx.Class.define("qx.ui.form.TextField",
         var el = this._inputElement;
 
         if (qx.util.Validation.isValidString(el.value)) {
-          el.selectionEnd = el.selectionStart + vLength;
+          var end = el.selectionStart + vLength;
+          if( el.selectionEnd != end ) {
+            el.selectionEnd = el.selectionStart + vLength;
+          }
         }
       }
     }),
