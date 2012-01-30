@@ -80,8 +80,8 @@ org.eclipse.rwt.protocol.AdapterUtil = {
         widget.resetBackgroundImage();
         widget.setUserData( "backgroundImageSize", null );
       } else {
-        widget.setBackgroundImage( value[ 0 ] );
         widget.setUserData( "backgroundImageSize", value.slice( 1 ) );
+        widget.setBackgroundImage( value[ 0 ] );
       }
     },
     "cursor" : function( widget, value ) {
