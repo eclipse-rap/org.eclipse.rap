@@ -28,20 +28,12 @@ import org.json.JSONException;
 @SuppressWarnings("restriction")
 public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
 
-  private Display display;
-  private Shell shell;
   private ToggleHyperlinkLCA lca;
 
   protected void setUp() {
-    Fixture.setUp();
-    display = new Display();
-    shell = new Shell( display, SWT.NONE );
+    super.setUp();
     lca = new ToggleHyperlinkLCA();
     Fixture.fakeNewRequest( display );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 
   public void testSelectionEvent() {
@@ -49,10 +41,10 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     testDefaultSelectionEvent( twistie );
   }
 
+  @SuppressWarnings("serial")
   private void testDefaultSelectionEvent( final ToggleHyperlink hyperlink ) {
     final StringBuffer log = new StringBuffer();
     Listener listener = new Listener() {
-      private static final long serialVersionUID = 1L;
       public void handleEvent( Event event ) {
         assertEquals( hyperlink, event.widget );
         assertEquals( null, event.item );
@@ -115,10 +107,10 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( Boolean.TRUE, message.findListenProperty( twistie, "selection" ) );
   }
 
+  @SuppressWarnings("serial")
   public void testRenderRemoveSelectionListener() throws Exception {
     Twistie twistie = new Twistie( shell, SWT.NONE );
     Listener listener = new Listener() {
-      private static final long serialVersionUID = 1L;
       public void handleEvent( Event event ) {
       }
     };
@@ -134,6 +126,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( Boolean.FALSE, message.findListenProperty( twistie, "selection" ) );
   }
 
+  @SuppressWarnings("serial")
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Twistie twistie = new Twistie( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -141,7 +134,6 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Fixture.preserveWidgets();
 
     twistie.addListener( SWT.DefaultSelection, new Listener() {
-      private static final long serialVersionUID = 1L;
       public void handleEvent( Event event ) {
       }
     } );

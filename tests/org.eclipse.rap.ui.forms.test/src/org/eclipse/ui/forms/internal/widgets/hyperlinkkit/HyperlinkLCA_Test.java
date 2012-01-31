@@ -29,32 +29,25 @@ import org.json.JSONException;
 @SuppressWarnings("restriction")
 public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
 
-  private Display display;
-  private Shell shell;
   private Hyperlink hyperlink;
   private HyperlinkLCA lca;
 
   protected void setUp() {
-    Fixture.setUp();
-    display = new Display();
-    shell = new Shell( display, SWT.NONE );
+    super.setUp();
     hyperlink = new Hyperlink( shell, SWT.NONE );
     lca = new HyperlinkLCA();
     Fixture.fakeNewRequest( display );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
   public void testSelectionEvent() {
     Hyperlink hyperlink = new Hyperlink( shell, SWT.NONE );
     testDefaultSelectionEvent( hyperlink );
   }
 
+  @SuppressWarnings("serial")
   private void testDefaultSelectionEvent( final Hyperlink hyperlink ) {
     final StringBuffer log = new StringBuffer();
     Listener listener = new Listener() {
-      private static final long serialVersionUID = 1L;
       public void handleEvent( Event event ) {
         assertEquals( hyperlink, event.widget );
         assertEquals( null, event.item );
@@ -254,9 +247,9 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( Boolean.TRUE, message.findListenProperty( hyperlink, "selection" ) );
   }
 
+  @SuppressWarnings("serial")
   public void testRenderRemoveSelectionListener() throws Exception {
     Listener listener = new Listener() {
-      private static final long serialVersionUID = 1L;
       public void handleEvent( Event event ) {
       }
     };
@@ -272,13 +265,13 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( Boolean.FALSE, message.findListenProperty( hyperlink, "selection" ) );
   }
 
+  @SuppressWarnings("serial")
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( hyperlink );
     Fixture.preserveWidgets();
 
     hyperlink.addListener( SWT.DefaultSelection, new Listener() {
-      private static final long serialVersionUID = 1L;
       public void handleEvent( Event event ) {
       }
     } );
