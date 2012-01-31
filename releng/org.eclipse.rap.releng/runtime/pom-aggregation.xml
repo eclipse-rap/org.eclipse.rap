@@ -27,7 +27,7 @@
 
   <properties>
     <tycho-version>0.13.0</tycho-version>
-    <base-platform>4.2milestones/S-4.2M4-201112092100/</base-platform>
+    <base-platform>4.2milestones/S-4.2M5-201201271145/</base-platform>
   </properties>
 
   <modules>
