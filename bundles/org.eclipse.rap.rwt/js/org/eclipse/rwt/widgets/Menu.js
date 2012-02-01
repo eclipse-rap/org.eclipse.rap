@@ -267,7 +267,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
           }
         }
       }
-      this.createDispatchEvent( "changeHoverItem" );
+      this.dispatchSimpleEvent( "changeHoverItem" );
     },
     
     getHoverItem : function( value ) {

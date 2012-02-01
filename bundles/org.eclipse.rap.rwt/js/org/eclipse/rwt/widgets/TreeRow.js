@@ -29,6 +29,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     this._expandElement = null;
     this._checkBoxElement = null;
     this._treeColumnElements = [];
+    this._cellLabels = [];
   },
 
   destruct : function() {
@@ -36,11 +37,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     this._expandElement = null;
     this._checkBoxElement = null;
     this._treeColumnElements = null;
+    this._cellLabels = null;
+  },
+  
+  events : {
+    "itemRendered" : "qx.event.type.Event"
   },
 
   members : {
 
     renderItem : function( item, config, selected, hoverElement ) {
+      this._cellLabels = [];
       this._usedNodes = 0;
       if( item != null ) {
         var renderSelected = this._renderAsSelected( config, selected );
@@ -52,6 +59,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         }
         this._renderCheckBox( item, config, hoverElement );
         this._renderCells( item, config, renderSelected, hoverElement );
+        this.dispatchSimpleEvent( "itemRendered", item );
       } else {
         this.setBackgroundColor( null );
         this.setBackgroundImage( null );
@@ -59,7 +67,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       }
       this._hideRemainingElements();
     },
-    
+
     getTargetIdentifier : function( event ) {
       var node = event.getDomTarget();
       var result = "other";
@@ -353,6 +361,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         this._setTextDecoration( element, this._styleMap.textDecoration );
         org.eclipse.rwt.HtmlUtil.setTextShadow( element, this._styleMap.textShadow );
         element.style.lineHeight = element.style.height;
+        this._cellLabels[ cell ] = element;
       }
       return element;
     },

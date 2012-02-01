@@ -333,21 +333,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     setSelection : function( value ) {
       this._selection = this._normalizeSelection( value );
       this._updateThumbPosition();
-      this.createDispatchEvent( "selectionChanged" );
+      this.dispatchSimpleEvent( "selectionChanged" );
     },
     
     setMinimum : function( value ) {
       this._minimum = value;
       this._updateStep();
       this._updateThumbPosition();
-      this.createDispatchEvent( "minimumChanged" );
+      this.dispatchSimpleEvent( "minimumChanged" );
     },
     
     setMaximum : function( value ) {
       this._maximum = value;
       this._updateStep();
       this._updateThumbPosition();
-      this.createDispatchEvent( "maximumChanged" );
+      this.dispatchSimpleEvent( "maximumChanged" );
     },
     
     setIncrement : function( value ) {

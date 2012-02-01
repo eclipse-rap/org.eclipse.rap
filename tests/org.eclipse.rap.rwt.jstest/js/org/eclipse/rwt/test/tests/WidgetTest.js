@@ -537,21 +537,55 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     testApplyObjectId_default : function() {
       var button = new org.eclipse.rwt.widgets.Button( "push" );
       button.addToDocument();
-
+      
+      qx.ui.core.Widget._renderHtmlIds = false;
       button.applyObjectId( "w23" );
 
       assertIdentical( "", button.getHtmlAttribute( "id" ) );
+      button.destroy();
     },
 
     testApplyObjectId_whenActivated : function() {
-      qx.ui.core.Widget._renderHtmlIds = true;
       var button = new org.eclipse.rwt.widgets.Button( "push" );
       button.addToDocument();
 
+      qx.ui.core.Widget._renderHtmlIds = true;
       button.applyObjectId( "w23" );
 
       assertEquals( "w23", button.getHtmlAttribute( "id" ) );
-      qx.ui.core.Widget._renderHtmlIds = false;
+      button.destroy();
+    },
+    
+    testFiresChangeEnabledEvent : function() {
+    	var button = new org.eclipse.rwt.widgets.Button( "push" );
+      button.addToDocument();
+      var log = 0;
+      button.addEventListener( "changeEnabled", function() {
+        log++;
+      } );
+      
+      button.setEnabled( false );
+      
+      assertTrue( log > 0 );
+      button.destroy();
+    },
+    
+    testFiresChangeContextMenuEvent : function() {
+    	var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      var menu = this._createMenuWithItems( 3 );
+      button.addToDocument();
+      testUtil.flush();
+      var log = 0;
+      button.addEventListener( "changeContextMenu", function() {
+        log++;
+      } );
+      
+      button.setContextMenu( menu );
+      
+      assertTrue( log > 0 );
+      button.destroy();
+      menu.destroy();
     },
 
     /////////
@@ -565,6 +599,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       widget.setHeight( 100 );
       TestUtil.flush();
       return widget;
+    },
+    
+    _createMenuWithItems : function( itemCount ) {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var menu = new org.eclipse.rwt.widgets.Menu();
+      for( var i = 0; i < itemCount; i++ ) {
+        var menuItem = new org.eclipse.rwt.widgets.MenuItem( "push" );
+        menu.addMenuItemAt( menuItem, i );
+      }
+      var menuItem = new org.eclipse.rwt.widgets.MenuItem( "push" );
+      menu.addMenuItemAt( menuItem, 0 );
+      menu.show();
+      testUtil.flush();
+      return menu;
     },
     
     _getComplexBorder : function() {

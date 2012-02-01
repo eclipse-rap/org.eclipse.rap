@@ -1242,8 +1242,75 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertTrue( org.eclipse.rwt.widgets.Menu._hasNativeMenu( element ) );
       text.dispose();
     },
+    
+    testMenuFiresChangeHoverItemEvent : function() {
+      var menu = this._createMenuWithItems( "push", 3 );
+      var menuItems = menu._layout.getVisibleChildren();
+      var log = 0;
+      menu.addEventListener( "changeHoverItem", function(){
+        log++;
+      } );
+      
+      menu.setHoverItem( menuItems[ 0 ] );
+      
+      assertTrue( log > 0 );
+      menu.destroy();
+    },
+    
+    testMenuBarFiresChangeOpenItemEvent : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var menuBar = new org.eclipse.rwt.widgets.MenuBar();
+      var menuItem = new org.eclipse.rwt.widgets.MenuItem( "push" );
+      var menu = this._createMenuWithItems( "push", 3 );
+      menuItem.setMenu( menu );
+      menuBar.addToDocument();
+      menuBar.addMenuItemAt( menuItem, 0 );
+      testUtil.flush();
+      var log = 0;
+      menuBar.addEventListener( "changeOpenItem", function() {
+        log++;
+      });
+      
+      menuBar.setOpenItem( menuItem );
+      
+      assertTrue( log > 0 );
+      menuBar.destroy();
+      menu.destroy();
+    },
+    
+    testMenuItemFiresSubMenuChangedEvent : function() {
+      var menu = this._createMenuWithItems( "push", 3 );
+      var subMenu = this._createMenuWithItems( "push", 3 );
+      var menuItems = menu._layout.getVisibleChildren();
+      var menuItem = menuItems[ 0 ];
+      var log = 0;
+      menuItem.addEventListener( "subMenuChanged", function(){
+        log++;
+      } );
+      
+      menuItem.setMenu( subMenu );
+      
+      assertTrue( log > 0 );
+      menu.destroy();
+      subMenu.destroy();
+    },
 
     /************************* Helper *****************************/
+    
+    _createMenuWithItems : function( itemType, itemCount ) {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var menu = new org.eclipse.rwt.widgets.Menu();
+      for( var i = 0; i < itemCount; i++ ) {
+        var menuItem = new org.eclipse.rwt.widgets.MenuItem( itemType );
+        menu.addMenuItemAt( menuItem, i );
+      }
+      var menuItem = new org.eclipse.rwt.widgets.MenuItem( itemType );
+      menu.addMenuItemAt( menuItem, 0 );
+      menu.addToDocument();
+      menu.show();
+      testUtil.flush();
+      return menu;
+    },
 
     _createMenuBarByProtocol : function( id, parentId ) {
       org.eclipse.rwt.protocol.Processor.processOperation( {

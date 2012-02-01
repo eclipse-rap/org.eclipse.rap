@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.MenuBar", {
       init : "toolbar"
     }
 
+  },
+  
+  events : {
+    "changeOpenItem" : "qx.event.type.Event"
   },
 
   members : {
@@ -97,6 +101,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MenuBar", {
       } else {
         this._openItem = null;
       }
+      this.dispatchSimpleEvent( "changeOpenItem" );
     },
 
     getOpenItem : function() {

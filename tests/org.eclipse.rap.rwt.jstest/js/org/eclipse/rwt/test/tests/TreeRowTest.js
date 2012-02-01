@@ -1891,6 +1891,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       tree.destroy();
       row.destroy();
     },
+    
+    testTreeRowFiresItemRenderedEvent : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree();
+      testUtil.flush();
+      var treeRow = this._createRow( tree );
+      this._addToDom( treeRow );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test" ] );
+      var log = 0;
+      treeRow.addEventListener( "itemRendered", function() {
+        log++;
+      } );
+      
+      treeRow.renderItem( item, tree._config, false, null );
+      
+      assertTrue( log > 0 );
+      tree.destroy();
+      treeRow.destroy();
+    },
 
      /////////
      // Helper

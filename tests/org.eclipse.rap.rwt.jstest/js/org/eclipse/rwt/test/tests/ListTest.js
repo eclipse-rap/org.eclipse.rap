@@ -677,28 +677,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     //////////////////////////
     // test apply subelement IDs
     
-    testApplyListItemIds_renderHtmlIdsActivated : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var list = this._createDefaultList();
-
-      qx.ui.core.Widget._renderHtmlIds = true;
-      list.setItems( [ "item1", "item2", "item3"] );
-      TestUtil.flush();
-
-      var listItemId = list.getHtmlAttribute( "id" ) + "-listitem-" + "0";
-      assertEquals( listItemId, list.getItems()[ 0 ].getHtmlAttribute( "id" ) );
-      list.destroy();
-    },
-    
     testApplyListItemIds_renderHtmlIdsDeactivated : function() {
+      qx.ui.core.Widget._renderHtmlIds = false;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
+      list.applyObjectId( "123" );
 
-      qx.ui.core.Widget._renderHtmlIds = false;
       list.setItems( [ "item1", "item2", "item3"] );
       TestUtil.flush();
       
       assertEquals( "", list.getItems()[ 0 ].getHtmlAttribute( "id" ) );
+      list.destroy();
+    },
+    
+    testApplyListItemIds_renderHtmlIdsActivated : function() {
+      qx.ui.core.Widget._renderHtmlIds = true;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var list = this._createDefaultList();
+      list.applyObjectId( "123" );
+
+      list.setItems( [ "item1", "item2", "item3"] );
+      TestUtil.flush();
+      
+      assertEquals( "123-listitem-0", list.getItems()[ 0 ].getHtmlAttribute( "id" ) );
       list.destroy();
     },
     

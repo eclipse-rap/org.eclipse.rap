@@ -379,7 +379,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._list.setZIndex( topZIndex + 1 );
       }
     },
-   
+
     _setSelected : function( value ) {
       this._selected = value;
       if( value ) {
@@ -400,7 +400,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._resetListSelection();
       }
       this._sendWidgetSelected();
-      this.createDispatchEvent( "selectionChanged" );
+      this.dispatchSimpleEvent( "selectionChanged" );
     },
     
     // [if] avoid warning message - see bug 300038

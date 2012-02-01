@@ -118,7 +118,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
 
     setMenu : function( menu ) {
       this._subMenu = menu;
-      this.createDispatchEvent( "subMenuChanged" );
+      this.dispatchSimpleEvent( "subMenuChanged" );
     },    
 
     getMenu : function() {
