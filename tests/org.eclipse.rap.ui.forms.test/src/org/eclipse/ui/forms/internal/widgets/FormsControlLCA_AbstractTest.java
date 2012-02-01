@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,13 +29,13 @@ public abstract class FormsControlLCA_AbstractTest extends TestCase {
   protected Display display;
   protected Shell shell;
 
-  protected void setUp() throws Exception {
+  protected void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
   }
 
-  protected void tearDown() throws Exception {
+  protected void tearDown() {
     Fixture.tearDown();
   }
 
