@@ -5,10 +5,6 @@
   <extension
       id="org.eclipse.rap.demo.themes"
       point="org.eclipse.rap.ui.themes">
-    <theme
-        id="org.eclipse.rap.demo.alttheme"
-        name="Alternative Demo Theme"
-        file="theme1/theme.css"/>
     <themeContribution
           file="themeContribution/special-variants.css"
           themeId="org.eclipse.rap.rwt.theme.Default">
@@ -218,7 +214,6 @@
            favicon="icons/favicon2.ico"
            id="org.eclipse.rap.demo.branding1"
            servletName="tea"
-           themeId="org.eclipse.rap.demo.alttheme"
            title="It&apos;s tea-time">
      </branding>
   </extension>
