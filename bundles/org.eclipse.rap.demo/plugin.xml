@@ -9,6 +9,10 @@
         id="org.eclipse.rap.demo.alttheme"
         name="Alternative Demo Theme"
         file="theme1/theme.css"/>
+    <themeContribution
+          file="themeContribution/special-variants.css"
+          themeId="org.eclipse.rap.rwt.theme.Default">
+    </themeContribution>
   </extension>
   
   <extension

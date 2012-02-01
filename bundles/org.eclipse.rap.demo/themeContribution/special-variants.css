@@ -1,0 +1,50 @@
+/*******************************************************************************
+ * Copyright (c) 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
+
+.special-red {
+  color: red;
+  background-color: #ffaaaa;
+}
+
+.special-red:disabled {
+  color: white;
+}
+
+.special-blue {
+  color: blue;
+  background-color: #aaaaff;
+}
+
+.special-blue:disabled {
+  color: white;
+}
+
+Shell.special-red {
+  border: 3px solid red;
+  padding: 10px;
+}
+
+Shell.special-blue {
+  border: 3px solid blue;
+  padding: 10px;
+}
+
+Link-Hyperlink.special-red {
+  color: #ffaaaa;
+}
+
+Link-Hyperlink.special-blue {
+  color: #aaaaff;
+}
+
+Button[PUSH].special-red, Button[TOGGLE].special-red {
+  border: 2px solid red;
+}
