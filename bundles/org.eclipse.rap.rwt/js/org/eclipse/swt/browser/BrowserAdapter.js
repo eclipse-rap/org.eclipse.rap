@@ -55,7 +55,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Browser", {
     "createFunctions" : function( widget, properties ) {
       var functions = properties.functions;
       for( var i = 0; i < functions.length; i++ ) {
-      	widget.createFunction( functions[ i ] );
+        widget.createFunction( functions[ i ] );
       }
     },
     "destroyFunctions" : function( widget, properties ) {

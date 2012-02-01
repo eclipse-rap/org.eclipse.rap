@@ -76,14 +76,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolBar", {
 
     _onKeyPress : function( event ) {
       if( this._isRelevantEvent( event ) ) {
-	      switch( event.getKeyIdentifier() ) {
-	        case "Left":
-	          this._hoverNext( true );
-	        break;
-	        case "Right":
-	          this._hoverNext( false );
-	        break;
-	      }
+        switch( event.getKeyIdentifier() ) {
+          case "Left":
+            this._hoverNext( true );
+          break;
+          case "Right":
+            this._hoverNext( false );
+          break;
+        }
       }
     },
 

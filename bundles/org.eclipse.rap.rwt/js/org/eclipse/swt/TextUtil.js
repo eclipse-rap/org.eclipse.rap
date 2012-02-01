@@ -170,8 +170,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       // TODO [rst] _inputElement can be undefined when text created invisible
       if( text._inputElement !== undefined ) {
         var font = text.getFont();
-        var height = Math.floor( font.getSize()
-                                 * org.eclipse.swt.TextUtil.LINE_HEIGT_FACTOR );
+        var height = Math.floor( font.getSize() * org.eclipse.swt.TextUtil.LINE_HEIGT_FACTOR );
         text._inputElement.style.lineHeight = height + "px";
       }
     },
@@ -240,7 +239,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
      * send listener is already attached.
      */
     _isModified : function( widget ) {
-      return widget.getUserData( "modified" ) == true;
+      return widget.getUserData( "modified" ) === true;
     },
 
     _setModified : function( widget, modified ) {
@@ -320,7 +319,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       var label = text.getUserData( "messageLabel" );
       if( label != null ) {
         label.setLeft( text.getLeft() );
-        label.setTop( text.getTop() )
+        label.setTop( text.getTop() );
         label.setWidth( text.getWidth() );
         label.setHeight( text.getHeight() );
         label.setZIndex( text.getZIndex() + 1 );
