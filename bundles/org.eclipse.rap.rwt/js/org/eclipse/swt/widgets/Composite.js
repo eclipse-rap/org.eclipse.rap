@@ -58,9 +58,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Composite", {
     } ),
 
     _fixBackgroundTransparency : function() {
-      if(    this.getBackgroundColor() == null 
-          && this.getBackgroundImage() == null ) 
-      {
+      if( this.getBackgroundColor() == null && this.getBackgroundImage() == null ) {
         this._applyBackgroundImage( "static/image/blank.gif", null );
       }
     }

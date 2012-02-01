@@ -143,7 +143,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
     },
     
     _getTextSize : function( text, width ) {
-      var data = new Array();
+      var data = [];
       data[ 0 ] = "";
       data[ 1 ] = text;
       data[ 2 ] = this._messageFont.getFamily();

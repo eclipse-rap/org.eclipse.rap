@@ -81,7 +81,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
       shell.setMinHeight( value[ 1 ] );
     },
     "text" : function( shell, value ) {
-      var text = org.eclipse.rwt.protocol.EncodingUtil.escapeText( value, false )
+      var text = org.eclipse.rwt.protocol.EncodingUtil.escapeText( value, false );
       shell.setCaption( text );
     },
     "image" : function( shell, value ) {

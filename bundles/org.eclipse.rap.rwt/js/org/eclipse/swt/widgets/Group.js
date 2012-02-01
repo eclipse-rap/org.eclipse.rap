@@ -20,8 +20,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
     this.base( arguments );
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     var themeValues = new org.eclipse.swt.theme.ThemeValues( {} );
-    this._themeBackgroundColor
-      = themeValues.getCssColor( "Group-Label", "background-color" );
+    this._themeBackgroundColor = themeValues.getCssColor( "Group-Label", "background-color" );
     themeValues.dispose();
     // Make sure that the 'labelObject' is created
     var labelObject = this.getLegendObject().getLabelObject();

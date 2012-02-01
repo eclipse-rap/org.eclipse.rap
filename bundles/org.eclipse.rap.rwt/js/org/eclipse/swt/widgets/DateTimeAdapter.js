@@ -64,7 +64,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.DateTime", {
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
     "subWidgetsBounds" : function( widget, value ) {
       for( var i = 0; i < value.length; i++ ) {
-	      widget.setBounds.apply( widget, value[ i ] );
+        widget.setBounds.apply( widget, value[ i ] );
       }
     }
   } ),
