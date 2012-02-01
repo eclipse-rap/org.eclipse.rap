@@ -19,7 +19,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     // Since it holds no references to the dom, it suffices to dispose tree. 
     this._autoDispose = false; 
     this.base( arguments );
-    this._parent = parent
+    this._parent = parent;
     this._level = -1;
     this._children = [];
     this._indexCache = {};
@@ -131,7 +131,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
 
     getCellFont : function( column ) {
       var result = this._cellFonts[ column ];
-      return typeof result === "string" && result != "" ? result : this._font;
+      return typeof result === "string" && result !== "" ? result : this._font;
     },
 
     setCellFonts : function( fonts ) {
@@ -255,7 +255,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     },
     
     getChildrenLength : function() {
-    	return this._children.length;
+      return this._children.length;
     },
 
     isChildCreated : function( index ) {
@@ -288,10 +288,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     },
     
     indexOf : function( item ) {
-    	var hash = item.toHashCode();
-    	if( this._indexCache[ hash ] === undefined ) {
-	    	this._indexCache[ hash ] = this._children.indexOf( item );
-    	}
+      var hash = item.toHashCode();
+      if( this._indexCache[ hash ] === undefined ) {
+        this._indexCache[ hash ] = this._children.indexOf( item );
+      }
       return this._indexCache[ hash ];
     },
     
@@ -299,7 +299,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
      * Returns true if the given item is one of the parents of this item (recursive).
      */
     isChildOf : function( parent ) {
-      var result = this._parent === parent
+      var result = this._parent === parent;
       if( !result && !this._parent.isRootItem() ) {
         result = this._parent.isChildOf( parent );
       }
@@ -321,7 +321,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
         if( expandedIndex === undefined || expandedIndex >= localIndex ) {
           result = this.getChild( localIndex );
           if( result ) {
-	          this._indexCache[ result.toHashCode() ] = localIndex;
+            this._indexCache[ result.toHashCode() ] = localIndex;
           }
           success = true;
         } else {
@@ -408,7 +408,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
           result = result.getLastChild();
         }        
       } else if( this.getLevel() > 0 ) {
-        result = this._parent
+        result = this._parent;
       }
       return result;
     },
@@ -456,7 +456,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
         "msg" : msg,
         "related" : related,
         "target" : this
-      }
+      };
       this.dispatchSimpleEvent( "update", event, true );
       delete event.target;
       delete event.related;
