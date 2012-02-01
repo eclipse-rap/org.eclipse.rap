@@ -141,7 +141,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
     },
     
     _renderGridVertical : function() {
-      var linesNeeded = this._config.linesVisible ? this._config.columnCount : 0
+      var linesNeeded = this._config.linesVisible ? this._config.columnCount : 0;
       for( var i = 0; i < linesNeeded; i++ ) {
         this._renderVerticalGridline( i );          
       }
@@ -308,7 +308,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
     },    
 
     _updateRowCount : function() {
-      var height = this.getHeight()
+      var height = this.getHeight();
       var rowsNeeded = Math.round( ( this.getHeight() / this._rowHeight ) + 0.5 );
       while( this._children.length < rowsNeeded ) {
         var row = new org.eclipse.rwt.widgets.TreeRow( this.getParent() );
@@ -382,7 +382,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
       var target = event.getTarget();
       var internal = target === event.getRelatedTarget();
       if( target instanceof org.eclipse.rwt.widgets.TreeRow && internal && this._hoverItem ) {
-        var hoverElement = target.getTargetIdentifier( event )
+        var hoverElement = target.getTargetIdentifier( event );
         if( this._hoverElement !== hoverElement ) {
           this._hoverElement = hoverElement;
           this._setHoverItem( this._hoverItem );
@@ -394,7 +394,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
       var target = event.getOriginalTarget();
       if( target instanceof org.eclipse.rwt.widgets.TreeRow ) {
         if( event.getType() === "mouseout" ) {
-          this._hoverElement = null
+          this._hoverElement = null;
           this._setHoverItem( null );
         } else {
           this._hoverElement = target.getTargetIdentifier( event );
