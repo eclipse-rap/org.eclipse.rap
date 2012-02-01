@@ -37,6 +37,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     FileUpload fileUpload = ( FileUpload ) widget;
     ControlLCAUtil.preserveValues( fileUpload );
+    WidgetLCAUtil.preserveCustomVariant( fileUpload );
     preserveProperty( fileUpload, PROP_TEXT, fileUpload.getText() );
     preserveProperty( fileUpload, PROP_IMAGE, fileUpload.getImage() );
   }
@@ -57,6 +58,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
   public void renderChanges( Widget widget ) throws IOException {
     FileUpload fileUpload = ( FileUpload ) widget;
     ControlLCAUtil.renderChanges( fileUpload );
+    WidgetLCAUtil.renderCustomVariant( fileUpload );
     renderProperty( fileUpload, PROP_TEXT, fileUpload.getText(), "" );
     renderProperty( fileUpload, PROP_IMAGE, fileUpload.getImage(), null );
     renderSubmit( fileUpload );

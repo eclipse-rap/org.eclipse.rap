@@ -234,6 +234,34 @@ public class FileUploadLCA_Test extends TestCase {
     assertNull( message.findCallOperation( fileUpload, "submit" ) );
   }
 
+  public void testRenderInitialCustomVariant() throws IOException {
+    lca.render( fileUpload );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( fileUpload );
+    assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
+  }
+
+  public void testRenderCustomVariant() throws IOException {
+    fileUpload.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    lca.renderChanges( fileUpload );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "variant_blue", message.findSetProperty( fileUpload, "customVariant" ) );
+  }
+
+  public void testRenderCustomVariantUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( fileUpload );
+
+    fileUpload.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( fileUpload );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( fileUpload, "customVariant" ) );
+  }
+
   private IFileUploadAdapter getFileUploadAdapter( FileUpload upload ) {
     return upload.getAdapter( IFileUploadAdapter.class );
   }
