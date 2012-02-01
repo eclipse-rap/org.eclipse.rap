@@ -277,8 +277,9 @@ public class UICallBackManager_Test extends TestCase {
     simulateBackgroundAddition( context );
     fakeRequestParam();
     Fixture.executeLifeCycleFromServerThread();
+    // let request thread finish off and die
+    callBackRequestSimulator.requestThread.join( 10 );
 
-    Thread.yield(); // let request thread finish up and die
     assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
     assertFalse( manager.isCallBackRequestBlocked() );
     assertFalse( callBackRequestSimulator.isRequestRunning() );
