@@ -18,6 +18,9 @@
       <resource
             class="org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextResource">
       </resource>
+      <resource
+            class="org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextAdapterResource">
+      </resource>
    </extension>
    <extension
          point="org.eclipse.rap.ui.themeableWidgets">

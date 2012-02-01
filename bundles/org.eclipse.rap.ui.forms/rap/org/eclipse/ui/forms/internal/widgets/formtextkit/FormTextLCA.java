@@ -1,26 +1,28 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.formtextkit;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.HyperlinkSettings;
 import org.eclipse.ui.forms.internal.widgets.*;
@@ -29,88 +31,100 @@ import org.eclipse.ui.internal.forms.widgets.*;
 
 public class FormTextLCA extends AbstractWidgetLCA {
 
+  private static final String TYPE = "forms.widgets.FormText"; //$NON-NLS-1$
+
   private static final Pattern FONT_NAME_FILTER_PATTERN
     = Pattern.compile( "\"|\\\\" ); //$NON-NLS-1$
-  private static final String NBSP = "&nbsp;";  //$NON-NLS-1$
-  private static final String PREFIX
-    = "resource/widget/rap/formtext/"; //$NON-NLS-1$
-  private static final String BULLET_CIRCLE_GIF
-    = PREFIX + "bullet_circle.gif"; //$NON-NLS-1$
+  private static final String PREFIX = "resource/widget/rap/formtext/"; //$NON-NLS-1$
+  private static final String BULLET_CIRCLE_GIF = PREFIX + "bullet_circle.gif"; //$NON-NLS-1$
 
   // Property names for preserveValues
-  static final String PROP_PARAGRAPHS = "paragraphs"; //$NON-NLS-1$
-  static final String PROP_HYPERLINK_SETTINGS
-    = "hyperlinkSettings"; //$NON-NLS-1$
+  private static final String PROP_TEXT = "text"; //$NON-NLS-1$
+  private static final String PROP_HYPERLINK_SETTINGS = "hyperlinkSettings"; //$NON-NLS-1$
+  private static final String PROP_HYPERLINK_UNDERLINE_MODE = "hyperlinkUnderlineMode"; //$NON-NLS-1$
+  private static final String PROP_HYPERLINK_FOREGROUND = "hyperlinkForeground"; //$NON-NLS-1$
+  private static final String PROP_HYPERLINK_ACTIVE_FOREGROUND = "hyperlinkActiveForeground"; //$NON-NLS-1$
 
-  // Default values
-  private static final Paragraph[] DEFAULT_PARAGRAPHS = new Paragraph[ 0 ];
-
-  public void preserveValues( final Widget widget ) {
+  public void preserveValues( Widget widget ) {
     FormText formText = ( FormText )widget;
     ControlLCAUtil.preserveValues( formText );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( formText );
-    adapter.preserve( PROP_PARAGRAPHS, getParagraphs( formText ) );
-    adapter.preserve( PROP_HYPERLINK_SETTINGS, formText.getHyperlinkSettings() );
+    WidgetLCAUtil.preserveCustomVariant( formText );
+    HyperlinkSettings settings = formText.getHyperlinkSettings();
+    WidgetLCAUtil.preserveProperty( formText,
+                                    PROP_HYPERLINK_UNDERLINE_MODE,
+                                    settings.getHyperlinkUnderlineMode() );
+    WidgetLCAUtil.preserveProperty( formText,
+                                    PROP_HYPERLINK_FOREGROUND,
+                                    settings.getForeground() );
+    WidgetLCAUtil.preserveProperty( formText,
+                                    PROP_HYPERLINK_ACTIVE_FOREGROUND,
+                                    settings.getActiveForeground() );
   }
 
-  public void renderInitialization( final Widget widget ) throws IOException {
+  public void renderInitialization( Widget widget ) throws IOException {
     FormText formText = ( FormText )widget;
-    JSWriter writer = JSWriter.getWriterFor( formText );
-    writer.newWidget( "org.eclipse.ui.forms.widgets.FormText" ); //$NON-NLS-1$
-    ControlLCAUtil.writeStyleFlags( formText );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( formText );
+    clientObject.create( TYPE );
+    clientObject.set( "parent", WidgetUtil.getId( formText.getParent() ) ); //$NON-NLS-1$
   }
 
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
     FormText formText = ( FormText )widget;
     ControlLCAUtil.processSelection( formText, null, false );
     ControlLCAUtil.processMouseEvents( formText );
     ControlLCAUtil.processKeyEvents( formText );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     FormText formText = ( FormText )widget;
-    ControlLCAUtil.writeChanges( formText );
-    writeHyperlinkSettings( formText );
-    writeParagraphs( formText );
-    WidgetLCAUtil.writeCustomVariant( formText );
+    ControlLCAUtil.renderChanges( formText );
+    WidgetLCAUtil.renderCustomVariant( formText );
+    renderHyperlinkSettings( formText );
+    renderText( formText );
   }
 
-  public void renderDispose( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
+  public void renderDispose( Widget widget ) throws IOException {
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
-  ////////////////
-  // Write changes
+  ////////////////////////////
+  // Render changed properties
 
-  private static void writeParagraphs( final FormText formText )
-    throws IOException
-  {
-    Paragraph[] paragraphs = getParagraphs( formText );
-    String prop = PROP_PARAGRAPHS;
-    Paragraph[] defValue = DEFAULT_PARAGRAPHS;
-    if(    WidgetLCAUtil.hasChanged( formText, prop, paragraphs, defValue )
-        || hasLayoutChanged( formText ) )
-    {
-      clearContent( formText );
+  private static void renderHyperlinkSettings( FormText formText ) {
+    if( hasHyperlinkSettingsChanged( formText ) ) {
+      HyperlinkSettings newValue = formText.getHyperlinkSettings();
+      int underlineMode = newValue.getHyperlinkUnderlineMode();
+      Color foreground = newValue.getForeground();
+      Color activeForeground = newValue.getActiveForeground();
+      Object[] args = new Object[] {
+        new Integer( underlineMode ),
+        getColorAsArray( foreground ),
+        getColorAsArray( activeForeground )
+      };
+      IClientObject clientObject = ClientObjectFactory.getForWidget( formText );
+      clientObject.set( PROP_HYPERLINK_SETTINGS, args );
+    }
+  }
+
+  private static void renderText( FormText formText ) {
+    if( hasLayoutChanged( formText ) ) {
+      Paragraph[] paragraphs = getParagraphs( formText );
+      ArrayList buffer = new ArrayList();
       for( int i = 0; i < paragraphs.length; i++ ) {
         Paragraph paragraph = paragraphs[ i ];
         if( paragraph instanceof BulletParagraph ) {
           BulletParagraph bullet = ( BulletParagraph )paragraph;
-          writeBullet( formText, bullet );
+          appendBullet( formText, bullet, buffer );
         }
         ParagraphSegment[] segments = paragraph.getSegments();
-        writeSegments( formText, segments );
+        appendSegments( formText, segments, buffer );
       }
-      updateHyperlinks( formText );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( formText );
+      clientObject.set( PROP_TEXT, buffer.toArray( new Object[ 0 ] ) );
     }
   }
 
-  private static void writeBullet( final FormText formText,
-                                   final BulletParagraph bullet )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( formText );
+  private static void appendBullet( FormText formText, BulletParagraph bullet, ArrayList buffer ) {
     int style = bullet.getBulletStyle();
     Image image = getBulletImage( formText, bullet );
     String imageName = ImageFactory.getImagePath( image );
@@ -120,46 +134,64 @@ public class FormTextLCA extends AbstractWidgetLCA {
     // ( no "value" attribute ) the bullet bounds are null
     if( bounds != null ) {
       Object[] args = new Object[] {
+        "bullet", //$NON-NLS-1$
         new Integer( style ),
         imageName,
         text,
-        new Integer( bounds.x ),
-        new Integer( bounds.y ),
-        new Integer( bounds.width ),
-        new Integer( bounds.height )
+        getBoundsAsArray( bounds )
       };
-      writer.call( "createBullet", args ); //$NON-NLS-1$
+      buffer.add( args );
     }
   }
 
-  private static void writeSegments( final FormText formText,
-                                     final ParagraphSegment[] segments )
-    throws IOException
+  private static void appendSegments( FormText formText,
+                                      ParagraphSegment[] segments,
+                                      ArrayList buffer )
   {
     for( int i = 0; i < segments.length; i++ ) {
       ParagraphSegment segment = segments[ i ];
       if( segment instanceof TextHyperlinkSegment ) {
-        writeTextHyperlinkSegment( formText, ( TextHyperlinkSegment )segment );
+        appendTextHyperlinkSegment( formText, ( TextHyperlinkSegment )segment, buffer );
       } else if( segment instanceof TextSegment ) {
-        writeTextSegment( formText, ( TextSegment )segment );
+        appendTextSegment( formText, ( TextSegment )segment, buffer );
       } else if( segment instanceof ImageHyperlinkSegment ) {
-        writeImageHyperlinkSegment( formText, ( ImageHyperlinkSegment )segment );
+        appendImageHyperlinkSegment( formText, ( ImageHyperlinkSegment )segment, buffer );
       } else if( segment instanceof ImageSegment ) {
-        writeImageSegment( formText, ( ImageSegment )segment );
-      } else if( segment instanceof ControlSegment ) {
-        writeControlSegment( formText, ( ControlSegment )segment );
+        appendImageSegment( formText, ( ImageSegment )segment, buffer );
       } else if( segment instanceof AggregateHyperlinkSegment ) {
-        writeAggregateHyperlinkSegment( formText,
-                                        ( AggregateHyperlinkSegment )segment );
+        appendAggregateHyperlinkSegment( formText, ( AggregateHyperlinkSegment )segment, buffer );
       }
     }
   }
 
-  private static void writeTextSegment( final FormText formText,
-                                        final TextSegment segment )
-    throws IOException
+  private static void appendTextHyperlinkSegment( FormText formText,
+                                                  TextHyperlinkSegment segment,
+                                                  ArrayList buffer )
   {
-    JSWriter writer = JSWriter.getWriterFor( formText );
+    String[] textFragments = getTextFragments( segment );
+    String tooltipText = segment.getTooltipText();
+    Rectangle[] textFragmentsBounds = getTextFragmentsBounds( segment );
+    String fontId = getFontId( segment );
+    Font font = null;
+    if( fontId != null ) {
+      font = ( Font )getResourceTable( formText ).get( fontId );
+    }
+    for( int i = 0; i < textFragments.length; i++ ) {
+      Object[] args = new Object[] {
+        "textHyperlink", //$NON-NLS-1$
+        textFragments[ i ],
+        tooltipText,
+        getBoundsAsArray( textFragmentsBounds[ i ] ),
+        getFontAsArray( font ),
+      };
+      buffer.add( args );
+    }
+  }
+
+  private static void appendTextSegment( FormText formText,
+                                         TextSegment segment,
+                                         ArrayList buffer )
+  {
     String[] textFragments = getTextFragments( segment );
     Rectangle[] textFragmentsBounds = getTextFragmentsBounds( segment );
     String fontId = getFontId( segment );
@@ -174,184 +206,111 @@ public class FormTextLCA extends AbstractWidgetLCA {
     }
     for( int i = 0; i < textFragments.length; i++ ) {
       Object[] args = new Object[] {
-        textFragments[ i ].replaceAll( " ", NBSP ), //$NON-NLS-1$,
-        new Integer( textFragmentsBounds[ i ].x ),
-        new Integer( textFragmentsBounds[ i ].y ),
-        new Integer( textFragmentsBounds[ i ].width ),
-        new Integer( textFragmentsBounds[ i ].height ),
-        getFontName( font ),
-        getFontSize( font ),
-        getFontStyle( font, SWT.BOLD ),
-        getFontStyle( font, SWT.ITALIC ),
-        colorToHtmlString( color )
+        "text", //$NON-NLS-1$
+        textFragments[ i ],
+        getBoundsAsArray( textFragmentsBounds[ i ] ),
+        getFontAsArray( font ),
+        getColorAsArray( color )
       };
-      writer.call( "createTextFragment", args ); //$NON-NLS-1$
+      buffer.add( args );
     }
   }
 
-  private static void writeTextHyperlinkSegment(
-    final FormText formText,
-    final TextHyperlinkSegment segment )
-    throws IOException
+  private static void appendImageHyperlinkSegment( FormText formText,
+                                                   ImageHyperlinkSegment segment,
+                                                   ArrayList buffer )
   {
-    JSWriter writer = JSWriter.getWriterFor( formText );
-    String[] textFragments = getTextFragments( segment );
-    String tooltipText = segment.getTooltipText();
-    Rectangle[] textFragmentsBounds = getTextFragmentsBounds( segment );
-    String fontId = getFontId( segment );
-    Font font = null;
-    if( fontId != null ) {
-      font = ( Font )getResourceTable( formText ).get( fontId );
-    }
-    for( int i = 0; i < textFragments.length; i++ ) {
-      Object[] args = new Object[] {
-        textFragments[ i ].replaceAll( " ", NBSP ), //$NON-NLS-1$
-        tooltipText,
-        new Integer( textFragmentsBounds[ i ].x ),
-        new Integer( textFragmentsBounds[ i ].y ),
-        new Integer( textFragmentsBounds[ i ].width ),
-        new Integer( textFragmentsBounds[ i ].height ),
-        getFontName( font ),
-        getFontSize( font ),
-        getFontStyle( font, SWT.BOLD ),
-        getFontStyle( font, SWT.ITALIC )
-      };
-      writer.call( "createTextHyperlinkSegment", args ); //$NON-NLS-1$
-    }
-  }
-
-  private static void writeImageSegment( final FormText formText,
-                                         final ImageSegment segment )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( formText );
-    Rectangle bounds = segment.getBounds();
-    Image image = segment.getImage( getResourceTable( formText ) );
-    String imageName = ImageFactory.getImagePath( image );
-    Object[] args = new Object[] {
-      imageName,
-      new Integer( bounds.x ),
-      new Integer( bounds.y ),
-      new Integer( bounds.width ),
-      new Integer( bounds.height )
-    };
-    writer.call( "createImageSegment", args ); //$NON-NLS-1$
-  }
-
-  private static void writeImageHyperlinkSegment(
-    final FormText formText,
-    final ImageHyperlinkSegment segment )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( formText );
     String tooltipText = segment.getTooltipText();
     Rectangle bounds = segment.getBounds();
     Image image = segment.getImage( getResourceTable( formText ) );
     String imageName = ImageFactory.getImagePath( image );
     Object[] args = new Object[] {
+      "imageHyperlink", //$NON-NLS-1$
       imageName,
       tooltipText,
-      new Integer( bounds.x ),
-      new Integer( bounds.y ),
-      new Integer( bounds.width ),
-      new Integer( bounds.height )
+      getBoundsAsArray( bounds )
     };
-    writer.call( "createImageHyperlinkSegment", args ); //$NON-NLS-1$
+    buffer.add( args );
   }
 
-  private static void writeControlSegment( final FormText formText,
-                                           final ControlSegment segment )
-    throws IOException
+  private static void appendImageSegment( FormText formText,
+                                          ImageSegment segment,
+                                          ArrayList buffer )
   {
-    JSWriter writer = JSWriter.getWriterFor( formText );
-    Control control = segment.getControl( getResourceTable( formText ) );
+    Rectangle bounds = segment.getBounds();
+    Image image = segment.getImage( getResourceTable( formText ) );
+    String imageName = ImageFactory.getImagePath( image );
     Object[] args = new Object[] {
-      WidgetUtil.getId( control )
+      "image", //$NON-NLS-1$
+      imageName,
+      getBoundsAsArray( bounds )
     };
-    writer.call( "createControlSegment", args ); //$NON-NLS-1$
+    buffer.add( args );
   }
 
-  private static void writeAggregateHyperlinkSegment(
-    final FormText formText,
-    final AggregateHyperlinkSegment segment )
-    throws IOException
+  private static void appendAggregateHyperlinkSegment( FormText formText,
+                                                       AggregateHyperlinkSegment segment,
+                                                       ArrayList buffer )
   {
     Object[] segments = getHyperlinkSegments( segment );
     for( int i = 0; i < segments.length; i++ ) {
       Object hyperlinkSegment = segments[ i ];
       if( hyperlinkSegment instanceof TextHyperlinkSegment ) {
-        writeTextHyperlinkSegment( formText,
-                                   ( TextHyperlinkSegment )hyperlinkSegment );
+        appendTextHyperlinkSegment( formText,
+                                   ( TextHyperlinkSegment )hyperlinkSegment,
+                                   buffer );
       } else if( hyperlinkSegment instanceof ImageHyperlinkSegment ) {
-        writeImageHyperlinkSegment( formText,
-                                    ( ImageHyperlinkSegment )hyperlinkSegment );
+        appendImageHyperlinkSegment( formText,
+                                    ( ImageHyperlinkSegment )hyperlinkSegment,
+                                    buffer );
       }
     }
-  }
-
-  private static void writeHyperlinkSettings( final FormText formText )
-    throws IOException
-  {
-    HyperlinkSettings newValue = formText.getHyperlinkSettings();
-    String prop = PROP_HYPERLINK_SETTINGS;
-    if( WidgetLCAUtil.hasChanged( formText, prop, newValue ) ) {
-      int underlineMode = newValue.getHyperlinkUnderlineMode();
-      Color foreground = newValue.getForeground();
-      Color activeForeground = newValue.getActiveForeground();
-      Object[] args = new Object[] {
-        new Integer( underlineMode ),
-        colorToHtmlString( foreground ),
-        colorToHtmlString( activeForeground )
-      };
-      JSWriter writer = JSWriter.getWriterFor( formText );
-      writer.call( "setHyperlinkSettings", args ); //$NON-NLS-1$
-    }
-  }
-
-  private static void clearContent( final FormText formText ) throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( formText );
-    writer.call( "clearContent", new Object[ 0 ] ); //$NON-NLS-1$
-  }
-
-  private static void updateHyperlinks( final FormText formText )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( formText );
-    writer.call( "updateHyperlinks", new Object[ 0 ] ); //$NON-NLS-1$
   }
 
   //////////////////
   // Helping methods
 
-  private static IFormTextAdapter getAdapter( final FormText formText ) {
+  private static boolean hasHyperlinkSettingsChanged( FormText formText ) {
+    HyperlinkSettings newValue = formText.getHyperlinkSettings();
+    Integer underlineMode = new Integer( newValue.getHyperlinkUnderlineMode() );
+    Color foreground = newValue.getForeground();
+    Color actForeground = newValue.getActiveForeground();
+    return    WidgetLCAUtil.hasChanged( formText, PROP_HYPERLINK_UNDERLINE_MODE, underlineMode )
+           || WidgetLCAUtil.hasChanged( formText, PROP_HYPERLINK_FOREGROUND, foreground )
+           || WidgetLCAUtil.hasChanged( formText, PROP_HYPERLINK_ACTIVE_FOREGROUND, actForeground );
+  }
+
+  private static Paragraph[] getParagraphs( FormText formText ) {
+    IFormTextAdapter adapter = getAdapter( formText );
+    return adapter.getParagraphs();
+  }
+
+  private static boolean hasLayoutChanged( FormText formText ) {
+    IFormTextAdapter adapter = getAdapter( formText );
+    return adapter.hasLayoutChanged();
+  }
+
+  private static IFormTextAdapter getAdapter( FormText formText ) {
     Object adapter = formText.getAdapter( IFormTextAdapter.class );
     return ( IFormTextAdapter )adapter;
   }
 
-  private static ITextSegmentAdapter getAdapter( final TextSegment segment ) {
+  private static ITextSegmentAdapter getAdapter( TextSegment segment ) {
     Object adapter = segment.getAdapter( ITextSegmentAdapter.class );
     return ( ITextSegmentAdapter )adapter;
   }
 
-  private static IBulletParagraphAdapter getAdapter(
-    final BulletParagraph bullet )
-  {
+  private static IBulletParagraphAdapter getAdapter( BulletParagraph bullet ) {
     Object adapter = bullet.getAdapter( IBulletParagraphAdapter.class );
     return ( IBulletParagraphAdapter )adapter;
   }
 
-  private static IAggregateHyperlinkSegmentAdapter getAdapter(
-    final AggregateHyperlinkSegment segment )
-  {
-    Object adapter
-      = segment.getAdapter( IAggregateHyperlinkSegmentAdapter.class );
+  private static IAggregateHyperlinkSegmentAdapter getAdapter( AggregateHyperlinkSegment segment ) {
+    Object adapter = segment.getAdapter( IAggregateHyperlinkSegmentAdapter.class );
     return ( IAggregateHyperlinkSegmentAdapter )adapter;
   }
 
-  private static Image getBulletImage( final FormText formText,
-                                       final BulletParagraph bullet )
-  {
+  private static Image getBulletImage( FormText formText, BulletParagraph bullet ) {
     ClassLoader classLoader = FormTextLCA.class.getClassLoader();
     Image bulletImage = Graphics.getImage( BULLET_CIRCLE_GIF, classLoader );
     if( bullet.getBulletStyle() == BulletParagraph.IMAGE ) {
@@ -366,100 +325,80 @@ public class FormTextLCA extends AbstractWidgetLCA {
     return bulletImage;
   }
 
-  private static Rectangle getBulletBounds( final BulletParagraph bullet ) {
+  private static Rectangle getBulletBounds( BulletParagraph bullet ) {
     IBulletParagraphAdapter bulletParagraphAdapter = getAdapter( bullet );
     return bulletParagraphAdapter.getBulletBounds();
   }
 
-  private static Paragraph[] getParagraphs( final FormText formText ) {
-    IFormTextAdapter adapter = getAdapter( formText );
-    return adapter.getParagraphs();
-  }
-
-  private static Hashtable getResourceTable( final FormText formText ) {
+  private static Hashtable getResourceTable( FormText formText ) {
     IFormTextAdapter adapter = getAdapter( formText );
     return adapter.getResourceTable();
   }
 
-  private static boolean hasLayoutChanged( final FormText formText ) {
-    IFormTextAdapter adapter = getAdapter( formText );
-    return adapter.hasLayoutChanged();
-  }
-
-  private static String[] getTextFragments( final TextSegment segment ) {
+  private static String[] getTextFragments( TextSegment segment ) {
     ITextSegmentAdapter textSegmentAdapter = getAdapter( segment );
     return textSegmentAdapter.getTextFragments();
   }
 
-  private static Rectangle[] getTextFragmentsBounds( final TextSegment segment )
-  {
+  private static Rectangle[] getTextFragmentsBounds( TextSegment segment ) {
     ITextSegmentAdapter textSegmentAdapter = getAdapter( segment );
     return textSegmentAdapter.getTextFragmentsBounds();
   }
 
-  private static String getFontId( final TextSegment segment ) {
+  private static String getFontId( TextSegment segment ) {
     ITextSegmentAdapter textSegmentAdapter = getAdapter( segment );
     return textSegmentAdapter.getFontId();
   }
 
-  private static Object[] getHyperlinkSegments(
-    final AggregateHyperlinkSegment segment )
-  {
-    IAggregateHyperlinkSegmentAdapter hyperlinkSegmentAdapter
-      = getAdapter( segment );
+  private static Object[] getHyperlinkSegments( AggregateHyperlinkSegment segment ) {
+    IAggregateHyperlinkSegmentAdapter hyperlinkSegmentAdapter = getAdapter( segment );
     return hyperlinkSegmentAdapter.getHyperlinkSegments();
   }
 
-  private static String colorToHtmlString( final Color color ) {
-    String result = null;
+  private static int[] getBoundsAsArray( Rectangle bounds ) {
+    return new int[] { bounds.x, bounds.y, bounds.width, bounds.height };
+  }
+
+  private static Object[] getFontAsArray( Font font ) {
+    Object[] result = null;
+    if( font != null ) {
+      result = new Object[] {
+        getFontName( font ),
+        getFontSize( font ),
+        getFontStyle( font, SWT.BOLD ),
+        getFontStyle( font, SWT.ITALIC )
+      };
+    }
+    return result;
+  }
+
+  private static String[] getFontName( Font font ) {
+    FontData fontData = font.getFontData()[ 0 ];
+    String fontName = fontData.getName();
+    String[] result = fontName.split( "," ); //$NON-NLS-1$
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = result[ i ].trim();
+      Matcher matcher = FONT_NAME_FILTER_PATTERN.matcher( result[ i ] );
+      result[ i ] = matcher.replaceAll( "" ); //$NON-NLS-1$
+    }
+    return result;
+  }
+
+  private static Integer getFontSize( Font font ) {
+    FontData fontData = font.getFontData()[ 0 ];
+    return new Integer( fontData.getHeight() );
+  }
+
+  private static Boolean getFontStyle( Font font, int style ) {
+    FontData fontData = font.getFontData()[ 0 ];
+    return Boolean.valueOf( ( fontData.getStyle() & style ) != 0 );
+  }
+
+  private static int[] getColorAsArray( Color color ) {
+    int[] result = null;
     if( color != null ) {
-      int red = color.getRed();
-      int green = color.getGreen();
-      int blue = color.getBlue();
-      StringBuffer sb = new StringBuffer();
-      sb.append( "#" ); //$NON-NLS-1$
-      sb.append( getHexStr( red ) );
-      sb.append( getHexStr( green ) );
-      sb.append( getHexStr( blue ) );
-      result = sb.toString();
-    }
-    return result;
-  }
-
-  private static String getHexStr( final int value ) {
-    String hex = Integer.toHexString( value );
-    return hex.length() == 1 ? "0" + hex : hex; //$NON-NLS-1$
-  }
-
-  private static String[] getFontName( final Font font ) {
-    String[] result = null;
-    if( font != null ) {
-      FontData fontData = font.getFontData()[ 0 ];
-      String fontName = fontData.getName();
-      result = fontName.split( "," ); //$NON-NLS-1$
-      for( int i = 0; i < result.length; i++ ) {
-        result[ i ] = result[ i ].trim();
-        Matcher matcher = FONT_NAME_FILTER_PATTERN.matcher( result[ i ] );
-        result[ i ] = matcher.replaceAll( "" ); //$NON-NLS-1$
-      }
-    }
-    return result;
-  }
-
-  private static Integer getFontSize( final Font font ) {
-    Integer result = null;
-    if( font != null ) {
-      FontData fontData = font.getFontData()[ 0 ];
-      result = new Integer( fontData.getHeight() );
-    }
-    return result;
-  }
-
-  private static Boolean getFontStyle( final Font font, final int style ) {
-    Boolean result = null;
-    if( font != null ) {
-      FontData fontData = font.getFontData()[ 0 ];
-      result = Boolean.valueOf( ( fontData.getStyle() & style ) != 0 );
+      RGB rgb = color.getRGB();
+      result = new int[] { rgb.red, rgb.green, rgb.blue, 255 };
     }
     return result;
   }
