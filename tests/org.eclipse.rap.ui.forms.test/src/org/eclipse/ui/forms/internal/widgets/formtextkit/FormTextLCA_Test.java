@@ -90,6 +90,8 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
   }
 
   public void testRenderText() throws IOException, JSONException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( formText );
     String text = "<form>"
                 + "<p>First paragraph</p>"
                 + "<li>First bullet</li>"
@@ -117,6 +119,50 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( "Third bullet", actual.getJSONArray( 6 ).getString( 1 ) );
     assertEquals( "text", actual.getJSONArray( 7 ).getString( 0 ) );
     assertEquals( "Second paragraph", actual.getJSONArray( 7 ).getString( 1 ) );
+  }
+
+  public void testRenderTextWithChangedResourceTable() throws IOException, JSONException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( formText );
+    String text = "<form>"
+                + "<p><span color=\"foo\">First paragraph</span></p>"
+                + "</form>";
+    formText.setSize( 300, 300 );
+    formText.setColor( "foo", display.getSystemColor( SWT.COLOR_RED ) );
+    formText.setText( text, true, false );
+    Fixture.executeLifeCycleFromServerThread();
+    Fixture.fakeNewRequest( display );
+    Fixture.preserveWidgets();
+
+    formText.setColor( "foo", display.getSystemColor( SWT.COLOR_BLUE ) );
+    lca.renderChanges( formText );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( formText, "text" );
+    assertEquals( "text", actual.getJSONArray( 0 ).getString( 0 ) );
+    assertEquals( "First paragraph", actual.getJSONArray( 0 ).getString( 1 ) );
+    assertEquals( "[0,0,255,255]", actual.getJSONArray( 0 ).getString( 4 ) );
+  }
+
+  public void testRenderTextWithChangedBounds() throws IOException, JSONException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( formText );
+    String text = "<form>"
+                + "<p>First paragraph</p>"
+                + "</form>";
+    formText.setSize( 300, 300 );
+    formText.setText( text, true, false );
+    Fixture.executeLifeCycleFromServerThread();
+    Fixture.fakeNewRequest( display );
+    Fixture.preserveWidgets();
+
+    formText.setSize( 200, 400 );
+    lca.renderChanges( formText );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( formText, "text" );
+    assertEquals( "text", actual.getJSONArray( 0 ).getString( 0 ) );
+    assertEquals( "First paragraph", actual.getJSONArray( 0 ).getString( 1 ) );
   }
 
 }

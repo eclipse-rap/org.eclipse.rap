@@ -12,12 +12,11 @@
 package org.eclipse.ui.forms.widgets;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.*;
 
 import org.eclipse.core.runtime.ListenerList;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 // RAP [if] accessibility not supported
@@ -234,7 +233,11 @@ public class FormText extends Canvas {
 	private static final String CONTROL_KEY = "__segment__"; //$NON-NLS-1$
 
 	private class FormTextLayout extends Layout implements ILayoutExtension {
-		public FormTextLayout() {
+
+	    private Map averageFontWidths;
+
+	    public FormTextLayout() {
+	      averageFontWidths = new HashMap();
 		}
 
 		public int computeMaximumWidth(Composite parent, boolean changed) {
@@ -319,9 +322,10 @@ public class FormText extends Canvas {
 		}
 
 		protected void layout(Composite composite, boolean flushCache) {
-  		    // RAP [if] Instruct LCA to relayout the segments to the client
-		    model.clearCache( null );
-            hasLayoutChanged = true;
+		    // RAP [if] Workaround for the text size determination
+		    if( hasAverageFontWidthsChanged() ) {
+		      model.clearCache( null );
+		    }
 
 			long start = 0;
 
@@ -365,6 +369,26 @@ public class FormText extends Canvas {
 				System.out.println("FormText.layout: " + (stop - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
+
+	    // RAP [if] Workaround for the text size determination
+        private boolean hasAverageFontWidthsChanged() {
+          boolean result = false;
+          Enumeration keys = resourceTable.keys();
+          while( keys.hasMoreElements() && !result ) {
+            String key = ( String )keys.nextElement();
+            if( key.startsWith( "f." ) ) { //$NON-NLS-1$
+              Font font = ( Font )resourceTable.get( key );
+              Float newValue = new Float( Graphics.getAvgCharWidth( font ) );
+              Float preservedValue = ( Float )averageFontWidths.get( key );
+              if( !newValue.equals( preservedValue ) ) {
+                averageFontWidths.put( key, newValue );
+                result = true;
+              }
+            }
+          }
+          return result;
+        }
+        // ENDRAP
 	}
 
 	/**
@@ -515,7 +539,7 @@ public class FormText extends Canvas {
             }
 
             public Hashtable getResourceTable() {
-              return resourceTable;
+              return ( Hashtable )resourceTable.clone();
             }
 
             public boolean hasLayoutChanged() {
@@ -729,6 +753,7 @@ public class FormText extends Canvas {
 		else
 			model.parseRegularText(text, expandURLs);
 		hookControlSegmentFocus();
+		hasLayoutChanged = true;
 		layout();
 		redraw();
 	}
@@ -749,6 +774,7 @@ public class FormText extends Canvas {
 		disposeResourceTable(false);
 		model.parseInputStream(is, expandURLs);
 		hookControlSegmentFocus();
+		hasLayoutChanged = true;
 		layout();
 		redraw();
 	}

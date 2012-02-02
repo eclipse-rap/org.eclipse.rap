@@ -11,8 +11,7 @@
 package org.eclipse.ui.forms.internal.widgets.formtextkit;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,11 +38,13 @@ public class FormTextLCA extends AbstractWidgetLCA {
   private static final String BULLET_CIRCLE_GIF = PREFIX + "bullet_circle.gif"; //$NON-NLS-1$
 
   // Property names for preserveValues
+  private static final String PROP_BOUNDS = "bounds"; //$NON-NLS-1$
   private static final String PROP_TEXT = "text"; //$NON-NLS-1$
   private static final String PROP_HYPERLINK_SETTINGS = "hyperlinkSettings"; //$NON-NLS-1$
   private static final String PROP_HYPERLINK_UNDERLINE_MODE = "hyperlinkUnderlineMode"; //$NON-NLS-1$
   private static final String PROP_HYPERLINK_FOREGROUND = "hyperlinkForeground"; //$NON-NLS-1$
   private static final String PROP_HYPERLINK_ACTIVE_FOREGROUND = "hyperlinkActiveForeground"; //$NON-NLS-1$
+  private static final String PROP_RESOURCE_TABLE = "resourceTable"; //$NON-NLS-1$
 
   public void preserveValues( Widget widget ) {
     FormText formText = ( FormText )widget;
@@ -59,6 +60,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveProperty( formText,
                                     PROP_HYPERLINK_ACTIVE_FOREGROUND,
                                     settings.getActiveForeground() );
+    WidgetLCAUtil.preserveProperty( widget, PROP_RESOURCE_TABLE, getResourceTable( formText ) );
   }
 
   public void renderInitialization( Widget widget ) throws IOException {
@@ -107,7 +109,10 @@ public class FormTextLCA extends AbstractWidgetLCA {
   }
 
   private static void renderText( FormText formText ) {
-    if( hasLayoutChanged( formText ) ) {
+    if(    hasLayoutChanged( formText )
+        || hasResourceTableChanged( formText )
+        || hasBoundsChanged( formText ) )
+    {
       Paragraph[] paragraphs = getParagraphs( formText );
       ArrayList buffer = new ArrayList();
       for( int i = 0; i < paragraphs.length; i++ ) {
@@ -288,6 +293,15 @@ public class FormTextLCA extends AbstractWidgetLCA {
   private static boolean hasLayoutChanged( FormText formText ) {
     IFormTextAdapter adapter = getAdapter( formText );
     return adapter.hasLayoutChanged();
+  }
+
+  private static boolean hasResourceTableChanged( FormText formText ) {
+    Hashtable resourceTable = getResourceTable( formText );
+    return WidgetLCAUtil.hasChanged( formText, PROP_RESOURCE_TABLE, resourceTable );
+  }
+
+  private static boolean hasBoundsChanged( FormText formText ) {
+    return WidgetLCAUtil.hasChanged( formText, PROP_BOUNDS, formText.getBounds() );
   }
 
   private static IFormTextAdapter getAdapter( FormText formText ) {
