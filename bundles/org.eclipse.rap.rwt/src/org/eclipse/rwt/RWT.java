@@ -181,9 +181,9 @@ public final class RWT {
    * instructed to issue events for the given key sequences. These key events can be captured using
    * <code>Display.addFilter()</code>.
    * <p>
-   * The property can also be used in <code>Control.setData()</code>, in which case a key listener 
-   * attached to that control will only receive events for these key sequences. A control that has 
-   * no active keys set will issue events for all key strokes. 
+   * The property can also be used in <code>Control.setData()</code>. In this case, a key listener
+   * that is attached to that control will only receive events for the specified key sequences.
+   * Control without active keys set will issue events for all key strokes.
    * </p>
    * <p>
    * Valid strings for key sequences consist of one key and any number of modifier keys,
@@ -233,11 +233,13 @@ public final class RWT {
    * default operation associated with certain key sequences. It allows the same values as
    * {@link RWT#ACTIVE_KEYS}. If a key sequences is given in {@link RWT#CANCEL_KEYS} as well as
    * in {@link RWT#ACTIVE_KEYS}, it will cancel its default operation, but still issue the event.
-   * The property can also be used in <code>Control.setData()</code>, in which case the associated
-   * default operation will only be canceled if the control is focused.
+   * <p>
+   * The property can also be used in <code>Control.setData()</code>. In this case, the associated
+   * default operation will only be cancelled if the control is focused.
+   * </p>
    *
    * <p>
-   * Depending on the client, no all default operations can be canceled.
+   * Depending on the client, there may be certain keys that cannot be cancelled.
    * </p>
    *
    * @see Display#setData(String,Object)
