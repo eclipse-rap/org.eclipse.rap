@@ -395,8 +395,7 @@ public final class RWT {
    * @since 1.3
    */
   public static IBrowserHistory getBrowserHistory() {
-    Object instance = SessionSingletonBase.getInstance( BrowserHistory.class );
-    return ( IBrowserHistory )instance;
+    return SessionSingletonBase.getInstance( BrowserHistory.class );
   }
 
   /**
