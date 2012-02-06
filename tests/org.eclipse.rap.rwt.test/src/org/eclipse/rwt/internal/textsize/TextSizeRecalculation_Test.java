@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,6 +72,17 @@ public class TextSizeRecalculation_Test extends TestCase {
 
     control.setBounds( new Rectangle( 1, 1, 2, 2 ) );
     assertFalse( ControlUtil.getControlAdapter( control ).isPacked() );
+  }
+
+  public void testShellRePackTookPlace() {
+    shell.pack();
+    turnOnImmediateResizeEventHandling();
+    fakeMeasurementResults();
+    TextSizeRecalculation recalculation = new TextSizeRecalculation();
+
+    recalculation.execute();
+
+    assertTrue( ControlUtil.getControlAdapter( shell ).isPacked() );
   }
 
   public void testLayoutOfCompositeWithFixedSize() {

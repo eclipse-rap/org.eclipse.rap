@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ class TextSizeRecalculation {
   }
 
   private void forceShellRecalculations( Shell shell ) {
+    boolean isPacked = ControlUtil.getControlAdapter( shell ).isPacked();
     Rectangle boundsBuffer = shell.getBounds();
     bufferScrolledCompositeOrigins( shell );
     clearLayoutBuffers( shell );
@@ -39,7 +40,7 @@ class TextSizeRecalculation {
     rePack( shell );
     enlargeScrolledCompositeContent( shell );
     clearLayoutBuffers( shell );
-    restoreShellSize( shell, boundsBuffer );
+    restoreShellSize( shell, boundsBuffer, isPacked );
     restoreScrolledCompositeOrigins( shell );
   }
 
@@ -67,8 +68,12 @@ class TextSizeRecalculation {
     WidgetTreeVisitor.accept( shell, new RestoreScrolledCompositeOriginsVisitor() );
   }
 
-  private void restoreShellSize( Shell shell, Rectangle bufferedBounds ) {
-    setShellSize( shell, bufferedBounds );
+  private void restoreShellSize( Shell shell, Rectangle bufferedBounds, boolean isPacked ) {
+    if( isPacked ) {
+      shell.pack();
+    } else {
+      setShellSize( shell, bufferedBounds );
+    }
   }
 
   private void enlargeShell( Shell shell ) {
