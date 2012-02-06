@@ -43,6 +43,7 @@ import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.rwt.service.ISettingStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
 
@@ -247,6 +248,24 @@ public final class RWT {
    * @since 1.5
    */
   public static final String CANCEL_KEYS = "org.eclipse.rap.rwt.cancelKeys";
+
+  /**
+   * The property to use in <code>Control.setData()</code> in order to set a custom item height.
+   * The custom item height must be specified as an <code>Integer</code> and passed to
+   * <code>setData()</code> with this constant as the key.
+   * <p>
+   * For example:
+   * <code>table.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( 45 ) );</code>
+   * </p>
+   * <p><b>Used By:</b><ul>
+   * <li><code>Table</code></li>
+   * <li><code>Tree</code></li>
+   * </ul></p>
+   *
+   * @see Control#setData(String,Object)
+   * @since 1.5
+   */
+  public static final String CUSTOM_ITEM_HEIGHT = "org.eclipse.rap.rwt.customItemHeight";
 
   /**
    * Returns the instance of the life cycle which is currently processed.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
@@ -1504,15 +1505,15 @@ public class Tree_Test extends TestCase {
     assertEquals( 1, deserializedTree.getItemCount() );
     assertEquals( 1, deserializedTree.getColumnCount() );
   }
-  
+
   public void testLayoutCacheIsSerializable() throws Exception {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setHeaderVisible( true );
     new TreeColumn( tree, SWT.NONE );
     int headerHeight = tree.getHeaderHeight();
-    
+
     Tree deserializedTree = Fixture.serializeAndDeserialize( tree );
-    
+
     assertEquals( headerHeight, deserializedTree.getHeaderHeight() );
   }
 
@@ -1566,6 +1567,53 @@ public class Tree_Test extends TestCase {
     tree.getItems(); // create placeholder items
 
     assertTrue( tree.getCreatedItems().length < 10 );
+  }
+
+  public void testSetCustomItemHeight() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    tree.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( 123 ) );
+    assertEquals( 123, tree.getItemHeight() );
+  }
+
+  public void testGetCustomItemHeight() {
+    Integer itemHeight = new Integer( 123 );
+    Tree tree = new Tree( composite, SWT.NONE );
+    tree.setData( RWT.CUSTOM_ITEM_HEIGHT, itemHeight );
+
+    Object returnedItemHeight = tree.getData( RWT.CUSTOM_ITEM_HEIGHT );
+
+    assertEquals( itemHeight, returnedItemHeight );
+  }
+
+  public void testResetCustomItemHeight() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    int calculatedItemHeight = tree.getItemHeight();
+    tree.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( 123 ) );
+    tree.setData( RWT.CUSTOM_ITEM_HEIGHT, null );
+    assertEquals( calculatedItemHeight, tree.getItemHeight() );
+  }
+
+  public void testDefaultCustomItemHeight() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    assertEquals( 27, tree.getItemHeight() );
+  }
+
+  public void testSetCustomItemHeightWithNegativeValue() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    try {
+      tree.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( -1 ) );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testSetCustomItemHeightWithNonIntegerValue() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    try {
+      tree.setData( RWT.CUSTOM_ITEM_HEIGHT, new Object() );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 
   /////////

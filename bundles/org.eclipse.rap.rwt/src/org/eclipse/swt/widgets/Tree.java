@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import java.util.*;
 import java.util.List;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -99,6 +100,7 @@ public class Tree extends Composite {
   private static final Rectangle TEXT_MARGIN = new Rectangle( 3, 0, 8, 0 );
 
   private int itemCount;
+  private int customItemHeight;
   private TreeItem[] items;
   final ItemHolder<TreeColumn> columnHolder;
   private TreeItem[] selection;
@@ -158,6 +160,7 @@ public class Tree extends Composite {
     setTreeEmpty();
     sortDirection = SWT.NONE;
     selection = EMPTY_SELECTION;
+    customItemHeight = -1;
     resizeListener = new ResizeListener();
     addControlListener( resizeListener );
     layoutCache = new LayoutCache();
@@ -1018,10 +1021,14 @@ public class Tree extends Composite {
    */
   public int getItemHeight() {
     checkWidget();
-    if( !layoutCache.hasItemHeight() ) {
-      layoutCache.itemHeight = computeItemHeight();
+    int result = customItemHeight;
+    if( result == -1 ) {
+      if( !layoutCache.hasItemHeight() ) {
+        layoutCache.itemHeight = computeItemHeight();
+      }
+      result = layoutCache.itemHeight;
     }
-    return layoutCache.itemHeight;
+    return result;
   }
 
   /**
@@ -1591,11 +1598,14 @@ public class Tree extends Composite {
     TreeEvent.removeListener( this, listener );
   }
 
+  @Override
   public void setData( String key, Object value ) {
-    super.setData( key, value );
     if( WidgetUtil.CUSTOM_VARIANT.equals( key ) ) {
       layoutCache.invalidateAll();
+    } else if( RWT.CUSTOM_ITEM_HEIGHT.equals( key ) ) {
+      setCustomItemHeight( value );
     }
+    super.setData( key, value );
   }
 
   /////////////////////////////////
@@ -1697,6 +1707,21 @@ public class Tree extends Composite {
       height += getHorizontalBar().getSize().y;
     }
     return new Point( width, height );
+  }
+
+  private void setCustomItemHeight( Object value ) {
+    if( value == null ) {
+      customItemHeight = -1;
+    } else {
+      if( !( value instanceof Integer ) ) {
+        error( SWT.ERROR_INVALID_ARGUMENT );
+      }
+      int itemHeight = ( ( Integer )value ).intValue();
+      if( itemHeight < 0 ) {
+        error( SWT.ERROR_INVALID_RANGE );
+      }
+      customItemHeight = itemHeight;
+    }
   }
 
   /////////////////////

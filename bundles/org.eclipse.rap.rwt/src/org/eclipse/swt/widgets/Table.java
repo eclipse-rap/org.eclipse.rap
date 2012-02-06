@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
@@ -323,31 +324,12 @@ public class Table extends Composite {
    * There is no guarantee that this API will remain the same. Please use this API with caution.
    * </p>
    *
-   * @see #ITEM_HEIGHT
+   * @see RWT#CUSTOM_ITEM_HEIGHT
    * @see #IMAGE_MAP
    * @see TableItem#setText(String)
    * @since 1.5
    */
   public static final String ENABLE_RICH_TEXT = Table.class.getName() + "#enableRichText";
-
-  /**
-   * If rich text for a table is enabled, the application programmer must provide the item height.
-   * The item height must be specified as an <code>Integer</code> and passed to
-   * <code>setData()</code> with this constant as the key.
-   * <p>
-   * For example:
-   * <code>table.setData( Table.ITEM_HEIGHT, new Integer( 45 ) );</code>
-   * </p>
-   *
-   * <p>
-   * <strong>PROVISIONAL</strong>: This constant has been added as part of a work in progress.
-   * There is no guarantee that this API will remain the same. Please use this API with caution.
-   * </p>
-   *
-   * @see #ENABLE_RICH_TEXT
-   * @since 1.5
-   */
-  public static final String ITEM_HEIGHT = Table.class.getName() + "#itemHeight";
 
   /**
    * Associates image names from {@literal <img>} elements with their actual {@link Image images}.
@@ -373,7 +355,7 @@ public class Table extends Composite {
   private transient CompositeItemHolder itemHolder;
   private final ITableAdapter tableAdapter;
   private final ControlListener resizeListener;
-  private int predefinedItemHeight;
+  private int customItemHeight;
   private int itemCount;
   private TableItem[] items;
   private final ItemHolder<TableColumn> columnHolder;
@@ -435,7 +417,7 @@ public class Table extends Composite {
     columnHolder = new ItemHolder<TableColumn>( TableColumn.class );
     setTableEmpty();
     selection = EMPTY_SELECTION;
-    predefinedItemHeight = -1;
+    customItemHeight = -1;
     resizeListener = new ResizeListener();
     bufferedCellSpacing = -1;
     addControlListener( resizeListener );
@@ -464,8 +446,8 @@ public class Table extends Composite {
   }
 
   public void setData( String key, Object value ) {
-    if( ITEM_HEIGHT.equals( key ) ) {
-      setPredefinedItemHeight( value );
+    if( RWT.CUSTOM_ITEM_HEIGHT.equals( key ) ) {
+      setCustomItemHeight( value );
     } else if( ENABLE_RICH_TEXT.equals( key ) ) {
       richTextEnabled = Boolean.TRUE.equals( value );
     }
@@ -1964,7 +1946,7 @@ public class Table extends Composite {
    */
   public int getItemHeight() {
     checkWidget();
-    int result = predefinedItemHeight;
+    int result = customItemHeight;
     if( result == -1 ) {
       int textHeight = Graphics.getCharHeight( getFont() );
       int paddingHeight = getCellPadding().height;
@@ -2133,9 +2115,9 @@ public class Table extends Composite {
     return new Point( width, height );
   }
 
-  private void setPredefinedItemHeight( Object value ) {
+  private void setCustomItemHeight( Object value ) {
     if( value == null ) {
-      predefinedItemHeight = -1;
+      customItemHeight = -1;
     } else {
       if( !( value instanceof Integer ) ) {
         error( SWT.ERROR_INVALID_ARGUMENT );
@@ -2144,7 +2126,7 @@ public class Table extends Composite {
       if( itemHeight < 0 ) {
         error( SWT.ERROR_INVALID_RANGE );
       }
-      predefinedItemHeight = itemHeight;
+      customItemHeight = itemHeight;
     }
   }
 

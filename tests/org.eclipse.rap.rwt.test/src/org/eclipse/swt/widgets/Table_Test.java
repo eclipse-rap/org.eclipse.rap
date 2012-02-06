@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
@@ -270,7 +271,7 @@ public class Table_Test extends TestCase {
     assertTrue( column.isDisposed() );
     assertTrue( item.isDisposed() );
   }
-  
+
   public void testDisposeSingleSelectedItem() {
     Table table = createTable( SWT.SINGLE, 1 );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -492,7 +493,7 @@ public class Table_Test extends TestCase {
   public void testRemoveAllVirtual() {
     shell.setSize( 100, 100 );
     shell.setLayout( new FillLayout() );
-    Table table = createTable( SWT.MULTI | SWT.VIRTUAL, 1 ); 
+    Table table = createTable( SWT.MULTI | SWT.VIRTUAL, 1 );
     table.addListener( SWT.SetData, new Listener() {
       public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
@@ -512,7 +513,7 @@ public class Table_Test extends TestCase {
     TableItem[] items = createTableItems( table, number );
 
     table.remove( 2, 3 );
-    
+
     assertTrue( items[ 2 ].isDisposed() );
     assertTrue( items[ 3 ].isDisposed() );
     assertEquals( table.getItemCount(), 3 );
@@ -530,7 +531,7 @@ public class Table_Test extends TestCase {
   public void testRemoveRangeVirtual() {
     shell.setSize( 100, 100 );
     shell.setLayout( new FillLayout() );
-    Table table = createTable( SWT.MULTI | SWT.VIRTUAL, 1 ); 
+    Table table = createTable( SWT.MULTI | SWT.VIRTUAL, 1 );
     table.addListener( SWT.SetData, new Listener() {
       public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
@@ -568,7 +569,7 @@ public class Table_Test extends TestCase {
   public void testRemoveArrayVirtual() {
     shell.setSize( 100, 100 );
     shell.setLayout( new FillLayout() );
-    Table table = createTable( SWT.MULTI | SWT.VIRTUAL, 1 ); 
+    Table table = createTable( SWT.MULTI | SWT.VIRTUAL, 1 );
     table.addListener( SWT.SetData, new Listener() {
       public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
@@ -938,7 +939,7 @@ public class Table_Test extends TestCase {
     table.setSelection( 1 );
     assertEquals( 1, table.getSelectionCount() );
   }
-  
+
   public void testSelectAll_MULTI() {
     Table table = createTable( SWT.MULTI, 1 );
     createTableItems( table, 2 );
@@ -954,18 +955,18 @@ public class Table_Test extends TestCase {
     table.deselect( 0 );
     assertEquals( 0, table.getSelectionCount() );
   }
-  
+
   public void testDeselectMulti() {
     Table table = createTable( SWT.MULTI, 1 );
     createTableItems( table, 2 );
     table.selectAll();
 
     table.deselect( new int[] { 0, 2 } );
-    
+
     assertEquals( 1, table.getSelectionCount() );
     assertEquals( true, table.isSelected( 1 ) );
   }
-  
+
   public void testDeselectArray() {
     Table table = createTable( SWT.SINGLE, 1 );
     createTableItems( table, 2 );
@@ -976,34 +977,34 @@ public class Table_Test extends TestCase {
     assertEquals( 1, table.getSelectionCount() );
     assertEquals( true, table.isSelected( 1 ) );
   }
-  
+
   public void testDeselectArrayWithWithIndicesOutsideSelection() {
     Table table = createTable( SWT.SINGLE, 1 );
     createTableItems( table, 2 );
     table.setSelection( 1 );
 
     table.deselect( new int[] { 1, 777 } );
-    
+
     assertEquals( 0, table.getSelectionCount() );
   }
-  
+
   public void testDeselectRangeWithSelectionWithinRange() {
     Table table = createTable( SWT.SINGLE, 1 );
     createTableItems( table, 2 );
     table.setSelection( 1 );
-    
+
     table.deselect( 0, 777 );
-    
+
     assertEquals( 0, table.getSelectionCount() );
   }
-  
+
   public void testDeselectRangeWithSelectionOutsideRange() {
     Table table = createTable( SWT.SINGLE, 1 );
     createTableItems( table, 2 );
     table.setSelection( 1 );
 
     table.deselect( 4, 777 );
-    
+
     assertEquals( 1, table.getSelectionCount() );
     assertEquals( true, table.isSelected( 1 ) );
   }
@@ -1066,7 +1067,7 @@ public class Table_Test extends TestCase {
     item.setGrayed( true );
 
     table.clear( table.indexOf( item ) );
-    
+
     assertEquals( "", item.getText() );
     assertEquals( null, item.getImage() );
     assertEquals( false, item.getChecked() );
@@ -1075,7 +1076,7 @@ public class Table_Test extends TestCase {
     assertSame( item, table.getSelection()[ 0 ] );
 
   }
-  
+
   public void testClearWithIllegalArgument() {
     Table table = new Table( shell, SWT.CHECK );
     try {
@@ -1120,7 +1121,7 @@ public class Table_Test extends TestCase {
       }
     }
   }
-  
+
   public void testClearRangeWithIllegalArgument() {
     Table table = new Table( shell, SWT.NONE );
     try {
@@ -1151,7 +1152,7 @@ public class Table_Test extends TestCase {
       }
     }
   }
-  
+
   public void testClearIndicesWithIllegalArgument() {
     Table table = new Table( shell, SWT.NONE );
     try {
@@ -1229,7 +1230,7 @@ public class Table_Test extends TestCase {
     assertNull( table.getSortColumn() );
 
   }
-  
+
   public void testDisposeCurrentSortColumn() {
     Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
@@ -1237,11 +1238,11 @@ public class Table_Test extends TestCase {
     table.setSortDirection( SWT.UP );
 
     column.dispose();
-    
+
     assertNull( table.getSortColumn() );
     assertEquals( SWT.UP, table.getSortDirection() );
   }
-  
+
   public void testSetSortWolumnWithDisposedColumn() {
     Table table = new Table( shell, SWT.NONE );
     TableColumn disposedColumn = new TableColumn( table, SWT.NONE );
@@ -1252,7 +1253,7 @@ public class Table_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
   public void testSetSortDirection() {
     Table table = new Table( shell, SWT.NONE );
     table.setSortDirection( SWT.NONE );
@@ -1264,7 +1265,7 @@ public class Table_Test extends TestCase {
     table.setSortDirection( SWT.NONE );
     table.setSortDirection( 4711 );
     assertEquals( SWT.NONE, table.getSortDirection() );
-    
+
   }
 
   public void testGetColumnOrder() {
@@ -1613,7 +1614,7 @@ public class Table_Test extends TestCase {
     item0.setImage( createImage50x100() );
     item0.dispose();
     assertFalse( table.hasColumnImages( 0 ) );
-    
+
     item0 = new TableItem( table, SWT.NONE );
     item0.setImage( createImage50x100() );
     TableItem item1 = new TableItem( table, SWT.NONE );
@@ -1843,7 +1844,7 @@ public class Table_Test extends TestCase {
     assertEquals( 5, table.getVisibleItemCount( true ) );
     assertEquals( 5, table.getVisibleItemCount( false ) );
   }
-  
+
   public void testGetVisibleItemCountWithPartiallyVisibleItem() {
     Table table = new Table( shell, SWT.NO_SCROLL );
     createTableItems( table, 10 );
@@ -2154,7 +2155,7 @@ public class Table_Test extends TestCase {
     table.showColumn( table.getColumn( 5 ) );
     assertEquals( 125, adapter.getLeftOffset() );
   }
-  
+
   public void testShowColumnWithReorderedColumns() {
     Table table = new Table( shell, SWT.NONE );
     table.setSize( 325, 100 );
@@ -2162,7 +2163,7 @@ public class Table_Test extends TestCase {
       TableColumn column = new TableColumn( table, SWT.NONE );
       column.setWidth( 50 );
     }
-    
+
     table.setColumnOrder( new int[] { 8, 7, 0, 1, 2, 3, 6, 5, 4 } );
     table.showColumn( table.getColumn( 8 ) );
 
@@ -2172,7 +2173,7 @@ public class Table_Test extends TestCase {
     table.showColumn( table.getColumn( 5 ) );
     assertEquals( 125, adapter.getLeftOffset() );
   }
-  
+
   public void testShowColumnWithNullArgument() {
     Table table = new Table( shell, SWT.NONE );
     try {
@@ -2181,7 +2182,7 @@ public class Table_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
   public void testShowColumnWithDisposedColumn() {
     Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
@@ -2192,16 +2193,16 @@ public class Table_Test extends TestCase {
     } catch( IllegalArgumentException expeted ) {
     }
   }
-  
+
   public void testShowColumnWithForeignColumn() {
     int initialLeftOffset = 123456;
     Table table = createTable( SWT.NONE, 1 );
     table.leftOffset = initialLeftOffset;
     Table otherTable = new Table( shell, SWT.NONE );
     TableColumn otherColumn = new TableColumn( otherTable, SWT.NONE );
-    
+
     table.showColumn( otherColumn );
-    
+
     ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     assertEquals( initialLeftOffset, adapter.getLeftOffset() );
   }
@@ -2267,7 +2268,7 @@ public class Table_Test extends TestCase {
     assertNull( table.getHorizontalBar() );
     assertNull( table.getVerticalBar() );
   }
-  
+
   // 288634: [Table] TableItem images are not displayed if columns are created
   // after setInput
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=288634
@@ -2307,7 +2308,7 @@ public class Table_Test extends TestCase {
     assertEquals( 37, table.getItemsPreferredWidth( 0 ) );
     assertEquals( 12, table.getItemsPreferredWidth( 1 ) );
   }
-  
+
   public void testRemoveArrayDuplicates() {
     Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 5 );
@@ -2339,55 +2340,55 @@ public class Table_Test extends TestCase {
   public void testIsSerializable() throws Exception {
     Table table = createTable( SWT.VIRTUAL, 1 );
     new TableItem( table, 0 );
-    
+
     Table deserializedTable = Fixture.serializeAndDeserialize( table );
-    
+
     assertEquals( 1, deserializedTable.getItemCount() );
     assertEquals( 1, deserializedTable.getColumnCount() );
   }
-  
-  public void testSetPredefinedItemHeight() {
+
+  public void testSetCustomItemHeight() {
     Table table = new Table( shell, SWT.NONE );
-    table.setData( Table.ITEM_HEIGHT, new Integer( 123 ) );
+    table.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( 123 ) );
     assertEquals( 123, table.getItemHeight() );
   }
-  
-  public void testGetPredefinedItemHeight() {
+
+  public void testGetCustomItemHeight() {
     Integer itemHeight = new Integer( 123 );
     Table table = new Table( shell, SWT.NONE );
-    table.setData( Table.ITEM_HEIGHT, itemHeight );
+    table.setData( RWT.CUSTOM_ITEM_HEIGHT, itemHeight );
 
-    Object returnedItemHeight = table.getData( Table.ITEM_HEIGHT );
-    
+    Object returnedItemHeight = table.getData( RWT.CUSTOM_ITEM_HEIGHT );
+
     assertEquals( itemHeight, returnedItemHeight );
   }
 
-  public void testResetPredefinedItemHeight() {
+  public void testResetCustomItemHeight() {
     Table table = new Table( shell, SWT.NONE );
     int calculatedItemHeight = table.getItemHeight();
-    table.setData( Table.ITEM_HEIGHT, new Integer( 123 ) );
-    table.setData( Table.ITEM_HEIGHT, null );
+    table.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( 123 ) );
+    table.setData( RWT.CUSTOM_ITEM_HEIGHT, null );
     assertEquals( calculatedItemHeight, table.getItemHeight() );
   }
 
-  public void testDefaultPredefinedItemHeight() {
+  public void testDefaultCustomItemHeight() {
     Table table = new Table( shell, SWT.NONE );
     assertEquals( 26, table.getItemHeight() );
   }
 
-  public void testSetPredefinedItemHeightWithNegativeValue() {
+  public void testSetCustomItemHeightWithNegativeValue() {
     Table table = new Table( shell, SWT.NONE );
     try {
-      table.setData( Table.ITEM_HEIGHT, new Integer( -1 ) );
+      table.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( -1 ) );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
 
-  public void testSetPredefinedItemHeightWithNonIntegerValue() {
+  public void testSetCustomItemHeightWithNonIntegerValue() {
     Table table = new Table( shell, SWT.NONE );
     try {
-      table.setData( Table.ITEM_HEIGHT, new Object() );
+      table.setData( RWT.CUSTOM_ITEM_HEIGHT, new Object() );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -2397,26 +2398,26 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     table.setData( Table.ENABLE_RICH_TEXT, Boolean.FALSE );
     TableItem item = new TableItem( table, SWT.NONE );
-    
+
     try {
       item.setText( "<html> invalid xml: <<&>> </html>" );
     } catch( Exception notExpected ) {
       fail();
     }
   }
-  
+
   public void testRichTextWithEnableRichText() {
     Table table = new Table( shell, SWT.NONE );
     table.setData( Table.ENABLE_RICH_TEXT, Boolean.TRUE );
     TableItem item = new TableItem( table, SWT.NONE );
-    
+
     try {
       item.setText( "<html> invalid xml: <<&>> </html>" );
       fail();
     } catch( RichTextParserException expected ) {
     }
   }
-  
+
   protected void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -2441,7 +2442,7 @@ public class Table_Test extends TestCase {
     stream.close();
     return result;
   }
-  
+
   private Table createTable( int style, int columnCount ) {
     Table result = new Table( shell, style );
     for( int i = 0; i < columnCount; i++ ) {
@@ -2457,7 +2458,7 @@ public class Table_Test extends TestCase {
     }
     return result;
   }
-  
+
   private static boolean find( int element, int[] array ) {
     boolean result = false;
     for( int i = 0; i < array.length; i++ ) {
