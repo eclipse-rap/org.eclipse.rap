@@ -1,0 +1,5 @@
+#Tue Feb 07 14:23:42 EET 2012
+eclipse.preferences.version=1
+enabled=true
+globals=org\: true, qx\: true, qxsettings\: true, qxvariants\: true, namespace\: false, \r\nassertTrue\: true, assertFalse\: true, assertNull\: true, assertNotNull\: true, assertEquals\: true, assertIdentical\: true, \r\nassertCaontains\: true, assertContainsNot\: true, assertLarger\: true, assertSmaller\: true, fail\: true
+options=bitwise\: true, curly\: true, eqnull\: true, shadow\: true, funcscope\: true, undef\: true, browser\: true

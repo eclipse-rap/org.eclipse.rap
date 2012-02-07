@@ -487,7 +487,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
     testSetSelection : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      TestUtil.prepareTimerUse();
       var text = new org.eclipse.rwt.widgets.Text( false );
       org.eclipse.swt.TextUtil.initialize( text );
       text.setValue( "asdfjkloe" );
@@ -499,22 +498,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( 3, text.getSelectionLength() );
       text.destroy();
     },
-    
+
     testSetSelectionBeforeAppear : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      TestUtil.prepareTimerUse();
       var text = new org.eclipse.rwt.widgets.Text( false );
       org.eclipse.swt.TextUtil.initialize( text );
       text.setValue( "asdfjkloe" );
       org.eclipse.swt.TextUtil.setSelection( text, 2, 3 );
       text.addToDocument();
-      text.focus();
       TestUtil.flush();
+      text.focus();
       assertEquals( 2, text.getSelectionStart() );
       assertEquals( 3, text.getSelectionLength() );
       text.destroy();
     },
-    
 
     testCreateAsTextSetPasswordMode : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -593,12 +590,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     
     testSelectionSetPasswordMode : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      TestUtil.prepareTimerUse();
       var text = new org.eclipse.rwt.widgets.Text( false );
       org.eclipse.swt.TextUtil.initialize( text );
       text.setValue( "asdfjkloe" );
       text.addToDocument();
       TestUtil.flush();
+      text.focus();
       text.setSelectionStart( 2 );
       text.setSelectionLength( 3 );
       assertEquals( 2, text.getSelectionStart() );
@@ -610,7 +607,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setParent( null );
       text.destroy();
       TestUtil.flush();
-      TestUtil.clearTimerOnceLog();
     },
     
     testCsssetPasswordMode : function() {
@@ -734,10 +730,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setSpace( 0, 50, 0, 21 );
       composite.addToDocument();
       TestUtil.flush();
-      text.focus()
+      text.focus();
       var counter = 0;
       composite.addEventListener( "keypress", function( event ) {
-        counter++
+        counter++;
       } );
       TestUtil.keyDown( text._getTargetNode(), "Left" );
       TestUtil.keyDown( text._getTargetNode(), "Up" );
