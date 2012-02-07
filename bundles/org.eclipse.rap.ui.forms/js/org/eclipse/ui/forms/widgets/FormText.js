@@ -126,7 +126,7 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
         left   : bounds[ 0 ],
         top    : bounds[ 1 ],
         width  : bounds[ 2 ],
-        height : bounds[ 3 ],
+        height : bounds[ 3 ]
       } );
       this._segments[ this._segments.length ] = image;
       this.add( image );
