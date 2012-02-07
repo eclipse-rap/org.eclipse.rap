@@ -37,6 +37,7 @@ public final class BrowserHistory
   implements IBrowserHistory, PhaseListener, Adaptable, SessionStoreListener
 {
 
+  private final static String TYPE = "rwt.BrowserHistory";
   private final static String BROWSER_HISTORY_ID = "bh";
   private final static String PROP_NAVIGATION_LISTENER = "navigation";
   private final static String PROP_ENTRIES = "entries";
@@ -51,6 +52,7 @@ public final class BrowserHistory
   private final Display display;
   private final List<HistoryEntry> entriesToAdd;
   private IEventAdapter eventAdapter;
+  private boolean created;
 
   public BrowserHistory() {
     display = Display.getCurrent();
@@ -95,6 +97,7 @@ public final class BrowserHistory
       if( event.getPhaseId() == PhaseId.READ_DATA ) {
         preserveNavigationListener();
       } else if( event.getPhaseId() == PhaseId.RENDER ) {
+        renderCreate();
         renderNavigationListener();
         renderAdd();
       }
@@ -159,6 +162,14 @@ public final class BrowserHistory
       result = preserved.booleanValue();
     }
     return result;
+  }
+
+  private void renderCreate() {
+    if( !created ) {
+      ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
+      protocolWriter.appendCreate( BROWSER_HISTORY_ID, TYPE );
+      created = true;
+    }
   }
 
   private void renderNavigationListener() {

@@ -15,16 +15,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
 
   members : {
 
-    testBrowserHistoryExists : function() {
+    testCreateBrowserHistoryByProtocol : function() {
       var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var browserHistory = ObjectManager.getObject( "bh" );
+      var browserHistory = this._createBrowserHistoryByProtocol();
       assertTrue( browserHistory instanceof qx.client.History );
       assertFalse( browserHistory._timer.getEnabled() );
     },
 
     testSetHasNavigationListenerByProtocol : function() {
       var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var browserHistory = ObjectManager.getObject( "bh" );
+      var browserHistory = this._createBrowserHistoryByProtocol();
       org.eclipse.rwt.protocol.Processor.processOperation( {
         "target" : "bh",
         "action" : "listen",
@@ -35,11 +35,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
       assertTrue( browserHistory._hasNavigationListener );
       assertTrue( browserHistory.hasEventListeners( "request" ) );
       assertTrue( browserHistory._timer.getEnabled() );
+      browserHistory.setHasNavigationListener( false );
     },
 
     testAddByProtocol : function() {
       var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var browserHistory = ObjectManager.getObject( "bh" );
+      var browserHistory = this._createBrowserHistoryByProtocol();
       org.eclipse.rwt.protocol.Processor.processOperation( {
         "target" : "bh",
         "action" : "call",
@@ -49,6 +50,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
         }
       } );
       assertEquals( "text1", browserHistory._titles[ "id1" ] );
+    },
+
+    /////////
+    // Helper
+
+    _createBrowserHistoryByProtocol : function() {
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : "bh",
+        "action" : "create",
+        "type" : "rwt.BrowserHistory"
+      } );
+      return org.eclipse.rwt.protocol.ObjectManager.getObject( "bh" );
     }
 
   }

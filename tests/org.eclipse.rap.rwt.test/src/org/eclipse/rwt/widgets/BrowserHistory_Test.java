@@ -84,6 +84,26 @@ public class BrowserHistory_Test extends TestCase {
     }
   }
 
+  public void testRenderCreate() {
+    RWT.getBrowserHistory();
+
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCreateOperation( "bh" ) );
+  }
+
+  public void testRenderCreate_OnlyOnce() {
+    RWT.getBrowserHistory();
+
+    Fixture.executeLifeCycleFromServerThread();
+    Fixture.fakeNewRequest( display );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findCreateOperation( "bh" ) );
+  }
+
   public void testRenderAddNavigationListener() {
     Fixture.fakePhase( PhaseId.READ_DATA );
     ProcessActionRunner.add( new Runnable() {
