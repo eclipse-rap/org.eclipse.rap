@@ -30,24 +30,24 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "forms.widgets.FormText", {
       widget.clearContent();
       for( var i = 0; i < value.length; i++ ) {
         var type = value[ i ][ 0 ];
-      	var args = value[ i ].slice( 1 );
-      	switch( type ) {
-      	  case "bullet":
-      	    widget.createBullet.apply( widget, args );
-      	  break;
-      	  case "textHyperlink":
-      	    widget.createTextHyperlinkSegment.apply( widget, args );
-      	  break;
-      	  case "text":
-      	    widget.createTextSegment.apply( widget, args );
-      	  break;
-      	  case "imageHyperlink":
-      	    widget.createImageHyperlinkSegment.apply( widget, args );
-      	  break;
-      	  case "image":
-      	    widget.createImageSegment.apply( widget, args );
-      	  break;
-      	}
+        var args = value[ i ].slice( 1 );
+        switch( type ) {
+          case "bullet":
+            widget.createBullet.apply( widget, args );
+          break;
+          case "textHyperlink":
+            widget.createTextHyperlinkSegment.apply( widget, args );
+          break;
+          case "text":
+            widget.createTextSegment.apply( widget, args );
+          break;
+          case "imageHyperlink":
+            widget.createImageHyperlinkSegment.apply( widget, args );
+          break;
+          case "image":
+            widget.createImageSegment.apply( widget, args );
+          break;
+        }
       }
       widget.updateHyperlinks();
     },
