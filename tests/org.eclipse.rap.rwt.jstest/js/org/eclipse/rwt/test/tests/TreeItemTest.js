@@ -34,7 +34,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       assertTrue( item instanceof org.eclipse.rwt.widgets.TreeItem );
       assertIdentical( tree.getRootItem(), item.getParent() );
       assertNull( item.getUserData( "isControl") );
-      assertEquals( 3, tree.getRootItem().indexOf( item ) )
+      assertEquals( 3, tree.getRootItem().indexOf( item ) );
       shell.destroy();
       tree.destroy();
     },
@@ -818,7 +818,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       var sibling = child.getNextSibling();
       assertFalse( sibling.isCached() );
       assertEquals( 1, item._children.indexOf( sibling ) );
-      item.dispose()
+      item.dispose();
     },
 
     testHasVirtualSibling: function() {
@@ -828,7 +828,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       assertEquals( 0, item._children.indexOf( child ) );
       assertTrue( child.hasNextSibling() );
       assertIdentical( undefined, item._children[ 1 ] );
-      item.dispose()
+      item.dispose();
     },
 
     testVirtualChildrenCount: function() {
@@ -836,7 +836,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       item.setItemCount( 4 );
       assertEquals( 4, item.getVisibleChildrenCount() );
       assertEquals( [ undefined, undefined, undefined, undefined ], item._children );
-      item.dispose()
+      item.dispose();
     },
 
     testVirtualGetLastChild: function() {
@@ -844,7 +844,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       item.setItemCount( 4 );
       var child = item.getLastChild();
       assertEquals( 3, item._children.indexOf( child ) );
-      item.dispose()
+      item.dispose();
     },
 
     testCacheItem : function() {
@@ -860,57 +860,57 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     },
     
     testFindItemByFlatIndexFirstItem : function() {
-    	var root = this._createRoot();
-    	var item = root.findItemByFlatIndex( 0 );
-    	assertIdentical( item, root.getChild( 0 ) );
-    	root.dispose();
+      var root = this._createRoot();
+      var item = root.findItemByFlatIndex( 0 );
+      assertIdentical( item, root.getChild( 0 ) );
+      root.dispose();
     },
 
     testFindItemByFlatIndexLastItem: function() {
-    	var root = this._createRoot();
-    	var item = root.findItemByFlatIndex( 1434 );
-    	assertIdentical( item, root.getChild( 19 ) );
-    	root.dispose();
+      var root = this._createRoot();
+      var item = root.findItemByFlatIndex( 1434 );
+      assertIdentical( item, root.getChild( 19 ) );
+      root.dispose();
     },
 
     testFindItemByFlatIndexOutOfBounds: function() {
-    	var root = this._createRoot();
-    	assertIdentical( undefined, root.findItemByFlatIndex( 1435 ) );
-    	root.dispose();
+      var root = this._createRoot();
+      assertIdentical( undefined, root.findItemByFlatIndex( 1435 ) );
+      root.dispose();
     },
 
     testFindItemByFlatIndex : function() {
-    	var root = this._createRoot();
-    	var item = root.findItemByFlatIndex( 1020 );
-    	assertEquals( "x", item.getText( 0 ) );
-    	assertFalse( root.isChildCreated( 7 ) );
-    	root.dispose();
+      var root = this._createRoot();
+      var item = root.findItemByFlatIndex( 1020 );
+      assertEquals( "x", item.getText( 0 ) );
+      assertFalse( root.isChildCreated( 7 ) );
+      root.dispose();
     },
 
     testFindItemByFlatIndexNegative : function() {
       var root = new org.eclipse.rwt.widgets.TreeItem();
-    	assertNull( root.findItemByFlatIndex( -1 ) );
-    	root.dispose();
+      assertNull( root.findItemByFlatIndex( -1 ) );
+      root.dispose();
     },
 
     testFindItemByFlatIndexNoItems : function() {
       var root = new org.eclipse.rwt.widgets.TreeItem();
-    	assertIdentical( undefined, root.findItemByFlatIndex( 0 ) );
-    	root.dispose();
+      assertIdentical( undefined, root.findItemByFlatIndex( 0 ) );
+      root.dispose();
     },
 
     testFindItemByFlatIndexFirstItemOfLayer : function() {
-    	var root = this._createRoot();
-    	var item = root.findItemByFlatIndex( 1031 );
-    	assertEquals( "y", item.getText( 0 ) );
-    	root.dispose();
+      var root = this._createRoot();
+      var item = root.findItemByFlatIndex( 1031 );
+      assertEquals( "y", item.getText( 0 ) );
+      root.dispose();
     },
 
     testFindItemByFlatIndexLastItemOfLayer : function() {
-    	var root = this._createRoot();
-    	var item = root.findItemByFlatIndex( 1006 );
-    	assertEquals( "z", item.getText( 0 ) );
-    	root.dispose();
+      var root = this._createRoot();
+      var item = root.findItemByFlatIndex( 1006 );
+      assertEquals( "z", item.getText( 0 ) );
+      root.dispose();
     },
 
     testFindItemByFlatIndexCollapse : function() {
