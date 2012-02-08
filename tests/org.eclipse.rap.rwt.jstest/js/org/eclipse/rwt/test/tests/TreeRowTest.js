@@ -438,7 +438,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var startSymbol = TestUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbol.indexOf( "start.gif" ) != -1 );
       item.setItemCount( 3 );
-      new org.eclipse.rwt.widgets.TreeItem( item, 2 )
+      new org.eclipse.rwt.widgets.TreeItem( item, 2 );
       row.renderItem( item, tree._config, false, null );
       var startSymbolCollapsed = TestUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbolCollapsed.indexOf( "start-collapsed.gif" ) != -1 );
@@ -1394,7 +1394,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             result.itemForeground = "white";
           } else {
             result.itemBackground = "#888888";
-            result.itemForeground = "black"
+            result.itemForeground = "black";
           }
           result.itemBackgroundGradient = null;
           result.itemBackgroundImage = null;
@@ -1433,7 +1433,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             result.itemForeground = "white";
           } else {
             result.itemBackground = "#888888";
-            result.itemForeground = "black"
+            result.itemForeground = "black";
           }
           result.itemBackgroundGradient = null;
           result.itemBackgroundImage = null;
@@ -1533,7 +1533,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var item = this._createItem( tree );
       item.setTexts( [ "Test1", "Test2" ] );
       row.renderItem( item, tree._config, false, null );
-      nodes = row._getTargetNode().childNodes;
+      var nodes = row._getTargetNode().childNodes;
       assertEquals( 3, nodes.length );
       assertEquals( "black", nodes[ 1 ].style.color );
       assertEquals( "black", nodes[ 2 ].style.color );
@@ -1781,7 +1781,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     },
 
     testRenderLabelAlignment : function() {
-      var tree = this._createTree()
+      var tree = this._createTree();
       tree.setTreeColumn( 1 );
       var row = this._createRow( tree );
       this._addToDom( row );
@@ -1918,9 +1918,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
      _createRow : function( tree, isTable ) {
        var result = new org.eclipse.rwt.widgets.TreeRow( tree );
        if( isTable ) {
-	       result.setAppearance( "table-row" );
+         result.setAppearance( "table-row" );
        } else {
-	       result.setAppearance( "tree-row" );
+         result.setAppearance( "tree-row" );
        }
        return result;
      },
@@ -1941,7 +1941,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             "itemBackgroundImage" : "undefined",
             "itemForeground" : "undefined",
             "checkBox" : null
-          }
+          };
         }
       } );
       TestUtil.fakeAppearance( "tree-row-indent",  {
@@ -2016,7 +2016,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
         style : function( states ) {
           return {
             "backgroundImage" : states.over ? "over.gif" : value
-          }
+          };
         }
       } );
     },
@@ -2031,7 +2031,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             "itemBackgroundGradient" : null,
             "itemBackgroundImage" : null,
             "checkBox" : null
-          }
+          };
         }
       } );
     },
@@ -2046,7 +2046,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             "itemBackgroundImage" : null,
             "itemForeground" : "undefined",
             "checkBox" : null
-          }
+          };
         }
       } );
     },
@@ -2061,7 +2061,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             "itemBackground" : "transparent",
             "itemForeground" : "undefined",
             "checkBox" : null
-          }
+          };
         }
       } );
     },
@@ -2076,7 +2076,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             "itemBackgroundImage" : null,
             "itemForeground" : value,
             "checkBox" : null
-          }
+          };
         }
       } );
     }
