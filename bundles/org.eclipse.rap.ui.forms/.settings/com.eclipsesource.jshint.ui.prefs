@@ -1,5 +1,5 @@
-#Wed Feb 08 09:53:33 EET 2012
+#Thu Feb 09 12:22:09 EET 2012
 eclipse.preferences.version=1
 enabled=true
 globals=org\: true, qx\: true, qxsettings\: true, qxvariants\: true, namespace\: false
-options=bitwise\: true, curly\: true, eqnull\: true, shadow\: true, funcscope\: true, undef\: true, browser\: true
+options=bitwise\: true, curly\: true, eqnull\: true, shadow\: true, funcscope\: true, undef\: true, browser\: true, laxbreak\: true
