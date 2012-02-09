@@ -38,7 +38,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var log = [];
       var logger = function( event ) {
         log.push( event.type );
-      }
+      };
       div.ontouchstart = logger;  
       div.ontouchmove = logger;
       div.ontouchend = logger;
@@ -58,7 +58,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var log = [];
       var logger = function( event ) {
         log.push( event.target );
-      }
+      };
       div.ontouchstart = logger;  
       div.ontouchmove = logger;
       div.ontouchend = logger;
@@ -103,7 +103,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var log = [];
       var logger = function( event ) {
         log.push( event.touches.length );
-      }
+      };
       div.ontouchstart = logger;  
       div.ontouchmove = logger;
       div.ontouchend = logger;
@@ -127,7 +127,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var log = [];
       var logger = function( event ) {
         log.push( event.touches );
-      }
+      };
       div.ontouchstart = logger;  
       div.ontouchmove = logger;
       div.ontouchend = logger;
@@ -146,7 +146,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var log = [];
       var logger = function( event ) {
         log.push( event.type );
-      }
+      };
       div.ontouchstart = logger;  
       div.ontouchmove = logger;
       div.ontouchend = logger;
@@ -164,7 +164,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         "gesturechange",
         "touchmove",
         "gestureend",
-        "touchend",
+        "touchend"
       ];
       assertEquals( expected, log );
       document.body.removeChild( div );
@@ -177,7 +177,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var log = [];
       var logger = function( event ) {
         log.push( event.touches.length );
-      }
+      };
       div.ontouchstart = logger;  
       div.ontouchmove = logger;
       div.ontouchend = logger;
@@ -552,7 +552,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var widget = new org.eclipse.rwt.widgets.Tree();
       widget.addToDocument();
       widgetManager.add( widget, "tree", true );
-      column = new org.eclipse.swt.widgets.TableColumn( widget );
+      var column = new org.eclipse.swt.widgets.TableColumn( widget );
       column.setLabel( "test" );
       column.setIcon( "http://blah.blah" );
       column.setParent( widget );
@@ -569,7 +569,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         
     testIsNotDraggableWidget : function() {
       //test basic widgets without proper appearance that might allow a broader match
-      widget = new org.eclipse.rwt.widgets.BasicButton( "push" );
+      var widget = new org.eclipse.rwt.widgets.BasicButton( "push" );
       widget.addToDocument();
       assertFalse( this._isDraggable( widget ) );
       widget.destroy();
@@ -757,7 +757,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var log = [];
       var logger = function( event ) {
         log.push( event.getDomEvent().originalEvent.prevented );
-      }
+      };
       widget.addEventListener( "mousedown", logger );
       widget.addEventListener( "mouseup", logger );
       widget.addEventListener( "mouseout", logger );
@@ -781,7 +781,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var log = [];
       var logger = function( event ) {
         log.push( event.getDomEvent().originalEvent );
-      }
+      };
       widget.addEventListener( "mouseout", logger );
       var node = widget._getTargetNode();
       this.touchAt( node, "touchstart", 0, 0  );
@@ -800,7 +800,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var log = [];
       var logger = function( event ) {
         log.push( event.getDomEvent().originalEvent );
-      }
+      };
       widget.addEventListener( "mouseout", logger );
       var node = widget._getTargetNode();
       this.touchAt( node, "touchstart", 0, 0  );
@@ -900,7 +900,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       org.eclipse.rwt.test.fixture.TestUtil.flush();
       var node = widget._getTargetNode();
       if( node == null ) {
-      	throw new Error( "expected non-null node to test" );
+        throw new Error( "expected non-null node to test" );
       }
       return org.eclipse.rwt.MobileWebkitSupport._isDraggableWidget( node );
     },
@@ -927,7 +927,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
     
     gesture : function( node, type ) {
-      var event = this.createGestureEvent( type, node )
+      var event = this.createGestureEvent( type, node );
       var touchType = "";
       switch( type ) {
         case "gesturestart":

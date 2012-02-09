@@ -65,13 +65,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       TestUtil.click( bar._thumb );
       var log = [];
       bar.addEventListener( "keypress", function( event ) {
-      	log.push( event );
+        log.push( event );
       } );
       bar.addEventListener( "keydown", function( event ) {
-      	log.push( event );
+        log.push( event );
       } );
       bar.addEventListener( "keyup", function( event ) {
-      	log.push( event );
+        log.push( event );
       } );
       TestUtil.pressOnce( bar._thumb._getTargetNode(), "Enter" );
       TestUtil.pressOnce( bar._thumb._getTargetNode(), "Down" );
@@ -459,7 +459,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
 
     testMaximumZero : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      bar = this._createScrollBar( false, false );
+      var bar = this._createScrollBar( false, false );
       bar.setMaximum( 0 );
       bar.setValue( 40 );
       bar.setHeight( 20 );
@@ -471,7 +471,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
 
     testMouseWheel : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      bar = this._createScrollBar( false, false );
+      var bar = this._createScrollBar( false, false );
       assertEquals( 0, bar.getValue() );
       TestUtil.fakeWheel( bar, 1 );
       assertEquals( 0, bar.getValue() );
@@ -484,7 +484,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
 
     testGetValue_NoFractionalValue : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      bar = this._createScrollBar( false, false );
+      var bar = this._createScrollBar( false, false );
       bar.setValue( 5 );
       bar.setHeight( 60 );
       TestUtil.flush();

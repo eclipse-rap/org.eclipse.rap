@@ -62,7 +62,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       TestUtil.flush();
       var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var shell = ObjectManager.getObject( "w2" );
-      canvas = ObjectManager.getObject( "w3" );
+      var canvas = ObjectManager.getObject( "w3" );
       var gc = ObjectManager.getObject( "w4" );
       assertTrue( gc instanceof org.eclipse.swt.graphics.GC );
       var node = canvas._getTargetNode();
@@ -283,6 +283,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
     // Helper
     
     _createGCByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
