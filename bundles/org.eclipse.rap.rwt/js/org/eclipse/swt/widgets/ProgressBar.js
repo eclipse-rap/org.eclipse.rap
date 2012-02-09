@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -252,15 +252,15 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     },
 
     _createCanvas : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
-      this._canvas = gfxUtil.createCanvas();
-      this._getTargetNode().appendChild( gfxUtil.getCanvasNode( this._canvas ) );
+      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      this._canvas = GraphicsUtil.createCanvas();
+      this._getTargetNode().appendChild( GraphicsUtil.getCanvasNode( this._canvas ) );
       this._gfxCanvasAppended = true;
       this.addEventListener( "insertDom", this._onCanvasAppear );
-      this._backgroundShape = gfxUtil.createShape( "roundrect" );
-      this._indicatorShape = gfxUtil.createShape( "roundrect" );
-      gfxUtil.addToCanvas( this._canvas, this._backgroundShape );
-      gfxUtil.addToCanvas( this._canvas, this._indicatorShape );
+      this._backgroundShape = GraphicsUtil.createShape( "roundrect" );
+      this._indicatorShape = GraphicsUtil.createShape( "roundrect" );
+      GraphicsUtil.addToCanvas( this._canvas, this._backgroundShape );
+      GraphicsUtil.addToCanvas( this._canvas, this._indicatorShape );
       this._styleBackgroundFill();
       this._styleIndicatorFill();
       if( this.isSeeable() ) {
@@ -272,23 +272,23 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     // render style
 
     _styleIndicatorBorder : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
       if( this.getBorder() && this.getBorder().getStyle() === "rounded" ) {
         if( !this._useBorderShape ) {
           this._style.border = "";
           if( this._borderShape == null ) {
-            this._borderShape = gfxUtil.createShape( "roundrect" );
+            this._borderShape = GraphicsUtil.createShape( "roundrect" );
           }
-          gfxUtil.addToCanvas( this._canvas, this._borderShape );
+          GraphicsUtil.addToCanvas( this._canvas, this._borderShape );
           this._useBorderShape = true;
         }
         this._gfxBorderWidth = this._getMaxBorderWidth( this.getBorder() );
         var color = this.getBorder().getColor();
         // NOTE : Different widths for different edges are not supported
-        gfxUtil.setStroke( this._borderShape, color, this._gfxBorderWidth );
+        GraphicsUtil.setStroke( this._borderShape, color, this._gfxBorderWidth );
       } else {
         if( this._useBorderShape ) {
-          gfxUtil.removeFromCanvas( this._canvas, this._borderShape );
+          GraphicsUtil.removeFromCanvas( this._canvas, this._borderShape );
           this._useBorderShape = true;
           this._gfxBorderWidth = 0;
         }        
@@ -296,34 +296,34 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     },
 
     _styleSeparatorBorder : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
       var border = this.getSeparatorBorder();
       if( border != null ) {
         if( !this._useSeparator ) {
           if( this._isIndeterminate() ) {
             if( this._separatorStartShape == null ) {
-              this._separatorStartShape = gfxUtil.createShape( "rect" );
+              this._separatorStartShape = GraphicsUtil.createShape( "rect" );
             }
-            gfxUtil.addToCanvas( this._canvas, this._separatorStartShape );            
+            GraphicsUtil.addToCanvas( this._canvas, this._separatorStartShape );            
           }
           if( this._separatorEndShape == null ) {
-            this._separatorEndShape = gfxUtil.createShape( "rect" );
+            this._separatorEndShape = GraphicsUtil.createShape( "rect" );
           }
-          gfxUtil.addToCanvas( this._canvas, this._separatorEndShape );
+          GraphicsUtil.addToCanvas( this._canvas, this._separatorEndShape );
           this._useSeparator = true;
         }
         this._separatorWidth = this._getMaxBorderWidth( border );        
         // use one color for all edges:
         var color = border.getColorTop();
-        gfxUtil.setFillColor( this._separatorEndShape, color );
+        GraphicsUtil.setFillColor( this._separatorEndShape, color );
         if( this._isIndeterminate() ) {
-          gfxUtil.setFillColor( this._separatorStartShape, color );
+          GraphicsUtil.setFillColor( this._separatorStartShape, color );
         }
       } else if( this._useSeparator ) {
-        gfxUtil.removeFromCanvas( this._canvs, this._separatorEndShape );
+        GraphicsUtil.removeFromCanvas( this._canvas, this._separatorEndShape );
         this._useSeparator = false;
         if( this._isIndeterminate() ) {
-          gfxUtil.removeFromCanvas( canvas, this._separatorStartShape );
+          GraphicsUtil.removeFromCanvas( this._canvas, this._separatorStartShape );
         }
         this._separatorWidth = 0;   
       }
@@ -340,39 +340,39 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     },
     
     _styleIndicatorFill : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
       if(    this.getIndicatorImage() != null 
           && this.getIndicatorImage()[ 0 ] != null )
       {
         var image = this.getIndicatorImage();
-        gfxUtil.setFillPattern( this._indicatorShape, 
+        GraphicsUtil.setFillPattern( this._indicatorShape, 
                                 image[ 0 ], 
                                 image[ 1 ], 
                                 image[ 2 ] );
       } else if( this.getIndicatorGradient() != null ) {
-        gfxUtil.setFillGradient( this._indicatorShape, 
+        GraphicsUtil.setFillGradient( this._indicatorShape, 
                                  this.getIndicatorGradient() );
       } else {
-        gfxUtil.setFillColor( this._indicatorShape, this.getIndicatorColor() );
+        GraphicsUtil.setFillColor( this._indicatorShape, this.getIndicatorColor() );
       }
-      gfxUtil.setOpacity( this._indicatorShape, this.getIndicatorOpacity() );
+      GraphicsUtil.setOpacity( this._indicatorShape, this.getIndicatorOpacity() );
     },
 
     _styleBackgroundFill : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
       if(    this.getBackgroundImageSized() != null 
           && this.getBackgroundImageSized()[ 0 ] != null )
       {
         var image = this.getBackgroundImageSized();
-        gfxUtil.setFillPattern( this._backgroundShape, 
+        GraphicsUtil.setFillPattern( this._backgroundShape, 
                                 image[ 0 ], 
                                 image[ 1 ], 
                                 image[ 2 ] );
       } else if( this.getBackgroundGradient() != null ) {
-        gfxUtil.setFillGradient( this._backgroundShape, 
+        GraphicsUtil.setFillGradient( this._backgroundShape, 
                                  this.getBackgroundGradient() );
       } else {
-        gfxUtil.setFillColor( this._backgroundShape, 
+        GraphicsUtil.setFillColor( this._backgroundShape, 
                               this.getBackgroundColor() );
       }
     },
@@ -381,20 +381,20 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     // render layout
 
     _renderDimension : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;      
+      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;      
       var radii = [ 0, 0, 0, 0 ];
       var width = this.getInnerWidth();
       var height = this.getInnerHeight();      
       if( this._useBorderShape ) {
         radii = this.getBorder().getRadii();        
-        gfxUtil.setRoundRectLayout( this._borderShape, 
+        GraphicsUtil.setRoundRectLayout( this._borderShape, 
                                     this._gfxBorderWidth / 2, 
                                     this._gfxBorderWidth / 2,
                                     width - this._gfxBorderWidth, 
                                     height - this._gfxBorderWidth, 
                                     radii );    
       }
-      gfxUtil.setRoundRectLayout( this._backgroundShape, 
+      GraphicsUtil.setRoundRectLayout( this._backgroundShape, 
                                   this._gfxBorderWidth / 2, 
                                   this._gfxBorderWidth / 2,
                                   width - this._gfxBorderWidth, 
@@ -403,7 +403,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     },
 
     _renderIndicatorSelection : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
       var virtualPosition = this._getIndicatorVirtualPosition();
       var position = Math.max( virtualPosition, 0 );
       var length = this._getIndicatorLength( virtualPosition );
@@ -437,28 +437,28 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
                   : this._gfxBorderWidth / 2;
         var left = vertical ? this._gfxBorderWidth / 2 : displayPosition;
         var shape = this._indicatorShape;
-        gfxUtil.setDisplay( this._indicatorShape, true );        
-        gfxUtil.setRoundRectLayout( shape, left, top, width, height, radii );    
+        GraphicsUtil.setDisplay( this._indicatorShape, true );        
+        GraphicsUtil.setRoundRectLayout( shape, left, top, width, height, radii );    
       } else {
-        gfxUtil.setDisplay( this._indicatorShape, false );
+        GraphicsUtil.setDisplay( this._indicatorShape, false );
       }
       if( this._useSeparator ) {
-        this._renderSeparator( position, length )
+        this._renderSeparator( position, length );
       }
     },
 
     _renderSeparator : function( position, length ) {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;              
+      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;              
       var full = length + position == this._getIndicatorFullLength();
       if( length == 0 ) {
-        gfxUtil.setDisplay( this._separatorEndShape, false );
+        GraphicsUtil.setDisplay( this._separatorEndShape, false );
         if( this._isIndeterminate() ) {
-          gfxUtil.setDisplay( this._separatorStartShape, false );
+          GraphicsUtil.setDisplay( this._separatorStartShape, false );
         }
       } else {
-        gfxUtil.setDisplay( this._separatorEndShape, !full );
+        GraphicsUtil.setDisplay( this._separatorEndShape, !full );
         if( this._isIndeterminate() ) {
-          gfxUtil.setDisplay( this._separatorStartShape, position != 0 );
+          GraphicsUtil.setDisplay( this._separatorStartShape, position != 0 );
         }
         var displayPosition =   position 
                               + this._gfxBorderWidth 
@@ -471,12 +471,12 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
           var height = this._separatorWidth;
           var shape = this._separatorEndShape;
           if( !full ) {
-            gfxUtil.setRectBounds( shape, left, top, width, height );
+            GraphicsUtil.setRectBounds( shape, left, top, width, height );
           }
           if( position != 0 ) {
             top = this.getInnerHeight() - displayPosition - this._separatorWidth;
             shape = this._separatorStartShape;
-            gfxUtil.setRectBounds( shape, left, top, width, height );
+            GraphicsUtil.setRectBounds( shape, left, top, width, height );
           } 
         } else {
           var left = displayPosition + displayLength - this._separatorWidth;
@@ -485,12 +485,12 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
           var height = this.getInnerHeight() - 2 * this._gfxBorderWidth;
           var shape = this._separatorEndShape;
           if( !full ) { 
-            gfxUtil.setRectBounds( shape, left, top, width, height );
+            GraphicsUtil.setRectBounds( shape, left, top, width, height );
           }
           if( position != 0 ) {
             left = displayPosition;
             shape = this._separatorStartShape;
-            gfxUtil.setRectBounds( shape, left, top, width, height );
+            GraphicsUtil.setRectBounds( shape, left, top, width, height );
           } 
         }
       }
