@@ -23,7 +23,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     this._text = "";
     this._hasSelectionListener = false;
     this._hyperlinksHaveListeners = false;
-    this._linkColor;
     // indicates that the next request can be sent
     this._readyToSendChanges = true;
     // innerTab handling
