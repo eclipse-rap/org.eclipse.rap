@@ -150,7 +150,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
       if( this._fixed !== value ) {
         this._fixed = value;
         this._handleZIndex();
-        this.addToQueue( "left" )
+        this.addToQueue( "left" );
       }
     },
     

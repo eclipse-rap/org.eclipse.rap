@@ -650,7 +650,9 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       var result = value;
       if( value.length == 2 ) {
         var firstChar = value.substring( 0, 1 );
-        if( firstChar == "0" ) result = value.substring( 1 );
+        if( firstChar == "0" ) {
+          result = value.substring( 1 );
+        }
       }
       return result;
     },
@@ -670,7 +672,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     },
     
     _onInterval : function() {
-      this._requestTimer.stop()
+      this._requestTimer.stop();
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
       var req = org.eclipse.swt.Request.getInstance();

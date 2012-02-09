@@ -232,7 +232,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
         var dot = qx.lang.String.escapeRegexpChars( "." );
         result = result.replace( new RegExp( dot ), separator );
       }  
-      return result
+      return result;
     },
 
     _limit : function( value ) {
@@ -292,7 +292,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     __checkValueWithDigits : function( acceptEmpty, acceptEdit ) {
       var inputElement = this._textfield.getInputElement();
       if( inputElement ) {
-        if( inputElement.value == "" && !acceptEmpty ) {
+        if( inputElement.value === "" && !acceptEmpty ) {
           this.resetValue();
         } else {          
           var strValue = inputElement.value;
