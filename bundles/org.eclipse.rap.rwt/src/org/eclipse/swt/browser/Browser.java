@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,9 @@ import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.*;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -141,6 +144,7 @@ public class Browser extends Composite {
     html = "";
     url = "";
     functions = new ArrayList<BrowserFunction>();
+    addDisposeListener( new BrowserDisposeListener() );
   }
 
   /**
@@ -523,5 +527,21 @@ public class Browser extends Composite {
 
   protected void checkWidget() {
     super.checkWidget ();
+  }
+
+  private void onDispose() {
+    executeResult = Boolean.FALSE;
+    evaluateResult = null;
+    executeScript = null;
+    executePending = false;
+  }
+
+  ////////////////
+  // Inner classes
+
+  private class BrowserDisposeListener implements DisposeListener, SerializableCompatibility  {
+    public void widgetDisposed( DisposeEvent event ) {
+      onDispose();
+    }
   }
 }

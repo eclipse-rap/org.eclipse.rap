@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ public class Browser_Test extends TestCase {
     assertEquals( "", browser.getUrl() );
     assertEquals( "", getText( browser ) );
   }
-  
+
   public void testMozillaStyleFlags() {
     try {
       new Browser( shell, SWT.MOZILLA );
@@ -56,7 +56,7 @@ public class Browser_Test extends TestCase {
       assertEquals( "Unsupported Browser type", error.getMessage() );
     }
   }
-  
+
   public void testWebkitStyleFlag() {
     try {
       new Browser( shell, SWT.WEBKIT );
@@ -252,14 +252,27 @@ public class Browser_Test extends TestCase {
     Browser browser = new Browser( shell, SWT.NONE );
     assertNull( browser.getWebBrowser() );
   }
-  
+
   public void testIsSerializable() throws Exception {
     Browser browser = new Browser( shell, SWT.NONE );
     browser.setUrl( "http://eclipse.org/rap" );
-    
+
     Browser deserializedBrowser = Fixture.serializeAndDeserialize( browser );
-    
+
     assertEquals( browser.getUrl(), deserializedBrowser.getUrl() );
+  }
+
+  public void testExecuteReturnsAfterDispose() {
+    final Browser browser = new Browser( shell, SWT.NONE );
+    display.asyncExec( new Runnable() {
+      public void run() {
+        browser.dispose();
+      }
+    } );
+
+    boolean result = browser.execute( "var x = 2;" );
+
+    assertFalse( result );
   }
 
   private static String getText( Browser browser ) {
