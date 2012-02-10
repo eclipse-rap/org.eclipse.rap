@@ -42,7 +42,7 @@ public class ServiceContext_Test extends TestCase {
     ServletContext servletContext = mock( ServletContext.class );
     when( servletContext.getRealPath( anyString() ) ).thenReturn( "" );
     applicationContext = new ApplicationContext( applicationConfigurator, servletContext );
-    Fixture.setSkipResourceRegistration( true );
+    Fixture.setSkipResourceRegistration();
     sessionStore = new SessionStoreImpl( new TestSession() );
   }
 
@@ -51,7 +51,7 @@ public class ServiceContext_Test extends TestCase {
     if( ContextProvider.hasContext() ) {
       Fixture.disposeOfServiceContext();
     }
-    Fixture.setSkipResourceDeletion( Fixture.usePerformanceOptimizations() );
+    Fixture.resetSkipResourceRegistration();
   }
 
   public void testGetApplicationContext() {

@@ -40,7 +40,7 @@ import org.osgi.service.log.LogService;
 
 
 public class ApplicationLauncherImpl_Test extends TestCase {
-  
+
   private static final String CONTEXT_NAME = "context";
   private static final String FILTER_EXPRESSION = "(key=value)";
   private static final String SERVLET_ALIAS_1 = "servlet1";
@@ -54,12 +54,12 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   private ApplicationLauncherImpl applicationLauncher;
   private ServiceRegistration serviceRegistration;
   private LogService log;
-  
+
   public void testLaunch() {
     String path = Fixture.WEB_CONTEXT_DIR.getPath();
-    
+
     applicationLauncher.launch( configurator, httpService, null, null, path );
-    
+
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
     checkHttpContextHasBeenCreated();
@@ -70,49 +70,49 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     HttpContext httpContext = mock( HttpContext.class );
     String path = Fixture.WEB_CONTEXT_DIR.getPath();
     applicationLauncher.launch( configurator, httpService, httpContext, null, path );
-    
+
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
     checkHttpContextHasBeenWrapped();
     checkApplicationReferenceHasBeenRegisteredAsService();
   }
-  
+
   public void testLaunchWithDefaultContextDirectory() {
     launchApplication();
-    
+
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
   }
-  
+
   public void testLaunchWithProblem() {
     prepareConfiguratorToThrowException();
     mockLogService();
-    
+
     registerServiceReferences();
-    
+
     checkProblemHasBeenLogged();
   }
 
   public void testStopApplication() {
     String path = Fixture.WEB_CONTEXT_DIR.getPath();
     ApplicationReference context = launchApplicationReference( path );
-    
+
     context.stopApplication();
 
     checkDefaultAliasHasBeenUnregistered();
     checkWebContextResourcesHaveBeenDeleted();
     checkApplicationReferenceHasBeenUnregisteredAsService();
   }
-  
+
   public void testStopApplicationReferenceWithProblem() {
     mockLogService();
     ApplicationReferenceImpl applicationReference = createMalignApplicationReference();
-    
+
     applicationLauncher.stopApplicationReference( applicationReference );
-    
+
     checkProblemHasBeenLogged();
   }
-  
+
   public void testActivationStateAfterDeactivation() {
     ApplicationReference applicationReference = launchApplication();
 
@@ -123,152 +123,153 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkDefaultAliasHasBeenUnregistered();
     checkWebContextResourcesHaveBeenDeleted();
   }
-  
+
   public void testLaunchWithMultipleServletNames() {
     createAliasConfigurator( SERVLET_ALIAS_1, SERVLET_ALIAS_2 );
     createApplicationLauncher();
-    
+
     launchApplication();
-    
+
     checkAliasHasBeenRegistered( SERVLET_ALIAS_1 );
     checkAliasHasBeenRegistered( SERVLET_ALIAS_2 );
   }
-  
+
   public void testStopApplicationWithMultipleServletNames() {
     createAliasConfigurator( SERVLET_ALIAS_1, SERVLET_ALIAS_2 );
     createApplicationLauncher();
     ApplicationReference applicationReference = launchApplication();
 
     applicationReference.stopApplication();
-    
+
     checkAliasHasBeenUnregistered( SERVLET_ALIAS_1 );
     checkAliasHasBeenUnregistered( SERVLET_ALIAS_2 );
   }
-  
+
   public void testLaunchWithContextName() {
     mockBundleContext( CONTEXT_NAME );
     createApplicationLauncher();
     String location = applicationLauncher.getLocation( CONTEXT_NAME, configurator, httpService );
-    
+
     applicationLauncher.launch( configurator, httpService, null, CONTEXT_NAME, location );
-    
+
     checkAliasHasBeenRegistered( CONTEXT_NAME + "/" + ApplicationReferenceImpl.DEFAULT_ALIAS );
   }
-  
+
   public void testStopApplicationWithContextName() {
     mockBundleContext( CONTEXT_NAME );
     createApplicationLauncher();
     String location = applicationLauncher.getLocation( CONTEXT_NAME, configurator, httpService );
     ApplicationReference applicationReference
       = applicationLauncher.launch( configurator, httpService, null, CONTEXT_NAME, location );
-    
+
     applicationReference.stopApplication();
-    
+
     checkAliasHasBeenUnregistered( CONTEXT_NAME + "/" + ApplicationReferenceImpl.DEFAULT_ALIAS );
   }
-  
+
   public void testActivate() {
     registerServiceReferences();
-    
+
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
   }
-  
+
   public void testDeactivate() {
     ApplicationReferenceImpl applicationreference
       = ( ApplicationReferenceImpl )launchApplication();
-    
+
     applicationLauncher.deactivate();
-    
+
     assertFalse( applicationreference.isAlive() );
   }
-  
+
   public void testAddConfigurator() {
     applicationLauncher.addHttpService( httpServiceReference );
-    
+
     ApplicationConfigurator added = applicationLauncher.addConfigurator( configuratorReference );
 
     assertSame( configurator, added );
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
   }
-  
+
   public void testRemoveConfigurator() {
     applicationLauncher.addHttpService( httpServiceReference );
     applicationLauncher.addConfigurator( configuratorReference );
 
     applicationLauncher.removeConfigurator( configurator );
-    
+
     checkDefaultAliasHasBeenUnregistered();
     checkWebContextResourcesHaveBeenDeleted();
   }
-  
+
   public void testAddHttpService() {
     applicationLauncher.addConfigurator( configuratorReference );
-    
+
     HttpService added = applicationLauncher.addHttpService( httpServiceReference );
-    
+
     assertSame( httpService, added );
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
   }
-  
+
   public void testRemoveHttpService() {
     ApplicationReferenceImpl reference1 = ( ApplicationReferenceImpl )launchApplication();
     ApplicationReferenceImpl reference2 = ( ApplicationReferenceImpl )launchApplication();
-    
+
     applicationLauncher.removeHttpService( httpService );
-    
+
     assertFalse( reference1.isAlive() );
     assertFalse( reference2.isAlive() );
     checkWebContextResourcesHaveBeenDeleted();
   }
-  
+
   public void testAddConfigurerAfterLaunch() {
     ApplicationReference reference = launchApplication();
     applicationLauncher.addHttpService( httpServiceReference );
     reference.stopApplication();
-    
+
     mockSecondConfiguratorReference();
-    
+
     checkDefaultAliasHasBeenRegisteredTwice();
   }
-  
+
   public void testNonMatchingFilterUsageHttpService() {
     configureHttpServiceFilter( "wrongValue" );
-    
+
     registerServiceReferences();
-    
+
     checkDefaultAliasHasNotBeenRegistered();
   }
 
   public void testNonMatchingFilterUsageConfigurator() {
     configureConfiguratorFilter( "wrongValue" );
-    
+
     registerServiceReferences();
-    
+
     checkDefaultAliasHasNotBeenRegistered();
   }
-  
+
   public void testMatchingFilterUsageHttpService() {
     configureHttpServiceFilter( "value" );
-    
+
     registerServiceReferences();
-    
+
     checkDefaultAliasHasBeenRegistered();
   }
-  
+
   public void testMatchingFilterUsageConfigurator() {
     configureConfiguratorFilter( "value" );
 
     registerServiceReferences();
-    
+
     checkDefaultAliasHasBeenRegistered();
   }
 
+  @Override
   protected void setUp() {
     Fixture.deleteWebContextDirectory();
-    Fixture.setSkipResourceDeletion( false );
+    Fixture.setSkipResourceDeletion();
     Fixture.useTestResourceManager();
     mockConfigurator();
     mockHttpService();
@@ -276,9 +277,10 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     createApplicationLauncher();
   }
 
+  @Override
   protected void tearDown() {
     Fixture.delete( Fixture.WEB_CONTEXT_DIR );
-    Fixture.setSkipResourceDeletion( Fixture.usePerformanceOptimizations() );
+    Fixture.resetSkipResourceDeletion();
   }
 
   @SuppressWarnings( "unchecked" )
@@ -299,7 +301,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   private void checkDefaultAliasHasNotBeenRegistered() {
     checkAliasHasBeenRegistered( ApplicationReferenceImpl.DEFAULT_ALIAS, 0 );
   }
-  
+
   private void checkDefaultAliasHasBeenRegistered() {
     checkAliasHasBeenRegistered( ApplicationReferenceImpl.DEFAULT_ALIAS, 1 );
   }
@@ -307,15 +309,15 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   private void checkAliasHasBeenRegistered( String alias ) {
     checkAliasHasBeenRegistered( alias, 1 );
   }
-  
+
   private void checkAliasHasBeenRegistered( String alias, int times )  {
     try {
       verify( httpService, times( times ) ).registerServlet( eq( "/" + alias ),
-                                                             any( HttpServlet.class ), 
-                                                             any( Dictionary.class ), 
+                                                             any( HttpServlet.class ),
+                                                             any( Dictionary.class ),
                                                              any( HttpContext.class ) );
       verify( httpService, times( times ) ).registerResources( eq( getResourcesDirectory( alias ) ),
-                                                               any( String.class ), 
+                                                               any( String.class ),
                                                                any( HttpContext.class ) );
     } catch( Exception shouldNotHappen ) {
       throw new RuntimeException( shouldNotHappen );
@@ -329,7 +331,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     }
     return result;
   }
-  
+
   private void checkDefaultAliasHasBeenUnregistered() {
     checkAliasHasBeenUnregistered( ApplicationReferenceImpl.DEFAULT_ALIAS );
   }
@@ -338,11 +340,11 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     verify( httpService ).unregister( "/" + alias );
     verify( httpService ).unregister( getResourcesDirectory( alias ) );
   }
-  
+
   private void checkWebContextResourcesHaveBeenCreated() {
     assertTrue( Fixture.WEB_CONTEXT_RWT_RESOURCES_DIR.exists() );
   }
-  
+
   private void checkWebContextResourcesHaveBeenDeleted() {
     assertFalse( Fixture.WEB_CONTEXT_RWT_RESOURCES_DIR.exists() );
   }
@@ -360,14 +362,14 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   private HttpContext checkHttpContextHasBeenWrapped() {
     return verify( httpService, never() ).createDefaultHttpContext();
   }
-  
+
   private void checkHttpContextHasBeenCreated() {
     verify( httpService ).createDefaultHttpContext();
   }
 
   private void checkProblemHasBeenLogged() {
     verify( log ).log( eq( LogService.LOG_ERROR ),
-                       any( String.class ), 
+                       any( String.class ),
                        any( IllegalStateException.class ) );
   }
 
@@ -384,7 +386,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     applicationLauncher.addConfigurator( configuratorReference );
     applicationLauncher.addHttpService( httpServiceReference );
   }
-  
+
   private void configureConfiguratorFilter( String value ) {
     Class< ? > targetType = HttpService.class;
     ServiceReference< ?> serviceReference = configuratorReference;
@@ -436,7 +438,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     applicationLauncher.addConfigurator( configuratorReference );
   }
 
-  
+
   private void createAliasConfigurator( final String alias1, final String alias2 ) {
     configurator = new ApplicationConfigurator() {
       public void configure( ApplicationConfiguration configuration ) {
@@ -511,7 +513,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     when( bundleContext.getService( httpServiceReference ) ).thenReturn( httpService );
     when( bundleContext.getService( configuratorReference ) ).thenReturn( configurator );
     serviceRegistration = mock( ServiceRegistration.class );
-    when( bundleContext.registerService( eq( ApplicationReference.class.getName() ), 
+    when( bundleContext.registerService( eq( ApplicationReference.class.getName() ),
                                          any( ApplicationReference.class ),
                                          any( Dictionary.class ) ) )
       .thenReturn( serviceRegistration );
@@ -522,7 +524,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     when( result.getServletName() ).thenReturn( servletName );
     return result;
   }
-  
+
   private ApplicationReference launchApplication() {
     String location = applicationLauncher.getLocation( null, configurator, httpService );
     return launchApplicationReference( location );
@@ -531,7 +533,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   private ApplicationReference launchApplicationReference( String location ) {
     return applicationLauncher.launch( configurator, httpService, null, null, location );
   }
-  
+
   private void prepareConfiguratorToThrowException() {
     doThrow( new IllegalStateException() )
       .when( configurator ).configure( any( ApplicationConfiguration.class ) );

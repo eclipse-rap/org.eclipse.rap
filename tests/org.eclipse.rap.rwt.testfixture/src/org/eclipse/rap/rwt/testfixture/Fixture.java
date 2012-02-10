@@ -91,8 +91,10 @@ public final class Fixture {
 
   static {
     ThemeManagerHelper.replaceStandardResourceLoader();
-    setSkipResourceRegistration( usePerformanceOptimizations() );
-    setSkipResourceDeletion( usePerformanceOptimizations() );
+    if( isPerformanceOptimizationsEnabled() ) {
+      setSkipResourceRegistration();
+      setSkipResourceDeletion();
+    }
   }
 
   private static ServletContext servletContext;
@@ -158,7 +160,7 @@ public final class Fixture {
     //      50% on my machine without causing any test to fail. However this has a bad smell
     //      with it, so I introduced a flag that can be switch on for fast tests on local machines
     //      and switched of for the integration build tests. Think about a less intrusive solution.
-    if( !usePerformanceOptimizations() ) {
+    if( !isPerformanceOptimizationsEnabled() ) {
       deleteWebContextDirectory();
     }
   }
@@ -368,16 +370,20 @@ public final class Fixture {
   ////////////////
   // general stuff
 
-  public static boolean usePerformanceOptimizations() {
-    return Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS );
+  public static void setSkipResourceRegistration() {
+    ApplicationContextHelper.setSkipResoureRegistration( true );
   }
 
-  public static void setSkipResourceRegistration( boolean skip ) {
-    ApplicationContextHelper.setSkipResoureRegistration( skip );
+  public static void resetSkipResourceRegistration() {
+    ApplicationContextHelper.setSkipResoureRegistration( isPerformanceOptimizationsEnabled() );
   }
 
-  public static void setSkipResourceDeletion( boolean skip ) {
-    ApplicationContextHelper.setSkipResoureDeletion( skip );
+  public static void setSkipResourceDeletion() {
+    ApplicationContextHelper.setSkipResoureDeletion( true );
+  }
+
+  public static void resetSkipResourceDeletion() {
+    ApplicationContextHelper.setSkipResoureDeletion( isPerformanceOptimizationsEnabled() );
   }
 
   public static void copyTestResource( String resourceName, File destination ) throws IOException {
@@ -570,6 +576,13 @@ public final class Fixture {
     ISessionStore sessionStore = ContextProvider.getSessionStore();
     LifeCycleUtil.setUIThread( sessionStore, result );
     return result;
+  }
+
+  ////////////////
+  // general stuff
+
+  private static boolean isPerformanceOptimizationsEnabled() {
+    return Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS );
   }
 
   private Fixture() {
