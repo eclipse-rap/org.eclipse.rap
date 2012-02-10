@@ -36,11 +36,13 @@ public class ThemeManagerHelper {
     boolean activated;
     boolean deactivated;
 
+    @Override
     public void deactivate() {
       // ignore reset for test cases to improve performance
       deactivated = true;
     }
 
+    @Override
     public void initialize() {
       if( !initialized ) {
         // Register empty default theme. Execute tests against fall-back theme.
@@ -49,12 +51,14 @@ public class ThemeManagerHelper {
       }
     }
 
+    @Override
     public void activate() {
       if( !activated ) {
         super.activate();
         activated = true;
       } else {
-        RWTFactory.getResourceManager().register( "dummy" );
+        InputStream inputStream = new ByteArrayInputStream( "dummy".getBytes() );
+        RWTFactory.getResourceManager().register( "dummy", inputStream );
       }
       deactivated = false;
     }
@@ -79,8 +83,8 @@ public class ThemeManagerHelper {
   //      buffering speeds up RWTAllTestSuite about 10% on my machine. Think about a less intrusive
   //      solution.
   private static class TestResourceLoader implements ResourceLoader {
-    private ClassLoader classLoader = ThemeManager.class.getClassLoader();
-    private Map<String,StreamBuffer> resourceStreams = new HashMap<String,StreamBuffer>();
+    private final ClassLoader classLoader = ThemeManager.class.getClassLoader();
+    private final Map<String,StreamBuffer> resourceStreams = new HashMap<String,StreamBuffer>();
 
     public InputStream getResourceAsStream( String name )
       throws IOException
@@ -114,6 +118,7 @@ public class ThemeManagerHelper {
     private StreamBuffer( InputStream in ) {
       super( in );
     }
+    @Override
     public void close() throws IOException {}
   }
 
