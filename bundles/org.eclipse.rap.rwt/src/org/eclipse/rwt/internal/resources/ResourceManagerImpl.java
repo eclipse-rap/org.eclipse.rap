@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -327,13 +327,9 @@ public class ResourceManagerImpl implements IResourceManager {
   }
 
   private File getDiskLocation( String name, Integer version ) {
-    StringBuilder filename = new StringBuilder();
-    filename.append( configuration.getContextDirectory().toString() );
-    filename.append( File.separator );
-    filename.append( RESOURCES );
-    filename.append( File.separator );
-    filename.append( versionedResourceName( escapeFilename( name ), version ) );
-    return new File( filename.toString() );
+    File resourcesDir = new File( configuration.getContextDirectory(), RESOURCES );
+    String fileName = versionedResourceName( escapeFilename( name ), version );
+    return new File( resourcesDir, fileName );
   }
 
   private static String escapeFilename( String name ) {
