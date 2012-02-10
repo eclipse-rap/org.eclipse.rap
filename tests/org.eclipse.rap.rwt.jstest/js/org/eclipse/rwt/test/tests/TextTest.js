@@ -14,9 +14,13 @@
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Processor = org.eclipse.rwt.protocol.Processor;
 var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+var Font = qx.ui.core.Font;
+var Client = org.eclipse.rwt.Client;
+var Request = org.eclipse.swt.Request;
 
 var shell;
 var text;
+var log;
 
 qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
@@ -365,6 +369,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         createText();
         text.setPadding( 3 );
         text.setBorder( new org.eclipse.rwt.Border( 1, "rounded", "black", 0 ) );
+        TestUtil.flush();
         assertEquals( "", text._style.paddingLeft );
         assertEquals( "3px", text._innerStyle.paddingLeft );
       }
@@ -378,12 +383,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( 3, text.getSelectionLength() );
     },
 
+    testSetEmptySelectionBeforeAppear : qx.core.Variant.select( "qx.client", {
+      "default" : function() {
+        createText( true );
+        text.setValue( "asdfjkloe" );
+  
+        org.eclipse.swt.TextUtil.setSelection( text, 2, 3 );
+        TestUtil.flush();
+  
+        assertEquals( 2, text.getSelectionStart() );
+        assertEquals( 3, text.getSelectionLength() );
+      },
+      "gecko" : function() {
+        // TODO [tb] : implement getComputedSelection
+      }
+    } ),
+
     testSetSelectionBeforeAppear : function() {
       createText( true );
       text.setValue( "asdfjkloe" );
+
       org.eclipse.swt.TextUtil.setSelection( text, 2, 3 );
       TestUtil.flush();
       text.focus();
+
       assertEquals( 2, text.getSelectionStart() );
       assertEquals( 3, text.getSelectionLength() );
     },
@@ -460,7 +483,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.flush();
       assertEquals( oldCss, text._inputElement.style.cssText );
     },
-    
+
     testCreateTextArea : function() {
       createText( true, true );
       text.setPasswordMode( true ); // should be ignored
@@ -481,7 +504,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       } catch( ex ) {}
       assertTrue( wrapProperty == "soft" || wrapAttribute == "soft" );
     },
-    
+
     testTextAreaMaxLength : qx.core.Variant.select( "qx.client", {
       "mshtml|webkit" : function() {
         // NOTE: This test would fail in IE because it has a bug that sometimes
@@ -553,7 +576,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     testFirstInputIE : qx.core.Variant.select( "qx.client", {
       "default" : function() {},
       "mshtml" : function() {
-        createText( false, true );
+        createText( true, true );
+        TestUtil.flush();
         assertEquals( " ", text._inputElement.value );
         TestUtil.forceTimerOnce();
         assertEquals( "", text._inputElement.value );          
@@ -580,14 +604,186 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         TestUtil.restoreAppearance();
       }
     } ),
-    
+
+    testSetFontLineHeight : function() {
+      createText();
+
+      text.setFont( new Font( 10 ) );
+
+      assertEquals( 12, parseInt( text.getInputElement().style.lineHeight ) );
+    },
+
+    testSetFontBeforeCreateLineHeight : function() {
+      createText( true );
+
+      text.setFont( new Font( 10 ) );
+      TestUtil.flush();
+
+      assertEquals( 12, parseInt( text.getInputElement().style.lineHeight ) );
+    },
+
+    testResetSelectionLengthAtTabFocus : function() {
+      createText();
+      text.setValue( "12345" );
+      text.setSelectionStart( 0 );
+      text.setSelectionLength( 4 );
+      assertEquals( 4, text.getSelectionLength() );
+      
+      text.setFocused( true );
+      text._ontabfocus();
+      
+      assertEquals( 0, text.getSelectionLength() );
+    },
+
+    testLiveUpdate : function() {
+      createText();
+      createChangeLogger();
+      
+      typeCharacter( "A" );
+      
+      assertEquals( [ "A" ], log );
+    },
+
+    testSendSelectionChangeOnMouseDown : function() {
+      createText();
+      text.setValue( "foobar" );
+      
+      TestUtil.fakeMouseEvent( text, "mousedown" );
+      setSelection( [ 3, 3 ] );
+      TestUtil.fakeMouseEvent( text, "mouseup" );
+      Request.getInstance().send();   
+      
+      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=3" ) !== -1 );
+      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
+    },
+
+//    TODO [tb] : activate when fixed
+//
+//    testSendSelectionChangeOnMouseMoveOut : function() {
+//      createText();
+//      text.setValue( "foobar" );
+//      
+//      TestUtil.fakeMouseEvent( text, "mousedown" );
+//      setSelection( [ 3, 3 ] );
+//      TestUtil.fakeMouseEvent( text, "mouseout" );
+//      TestUtil.fakeMouseEvent( shell, "mouseup" );
+//      Request.getInstance().send();   
+//      
+//      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=3" ) !== -1 );
+//      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
+//    },
+//
+    testSendSelectionChangeOnKeyPress : function() {
+      createText();
+      text.setValue( "foobar" );
+      
+      TestUtil.keyDown( text, "Right" );
+      setSelection( [ 3, 3 ] );
+      TestUtil.keyDown( text, "Enter" );
+      Request.getInstance().send();   
+      
+      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=3" ) !== -1 );
+      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
+    },
+
+    testSendSelectionChangeOnTwoKeyPress : function() {
+      createText();
+      text.setValue( "foobar" );
+      
+      TestUtil.keyDown( text, "Right" );
+      setSelection( [ 3, 3 ] );
+      TestUtil.keyDown( text, "Enter" ); // can send a request without releasing Right
+      Request.getInstance().send();   
+      
+      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=3" ) !== -1 );
+      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
+    },
+
+    testSendSelectionChangeOnProgrammaticValueChange : function() {
+      createText();
+      text.setValue( "foobar" );
+      setSelection( [ 3, 3 ] );
+      
+      text.setValue( "f" );
+      Request.getInstance().send();   
+      
+      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=1" ) !== -1 );
+      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
+    },
+
+    testSendTextChange : function() {
+      createText();
+
+      text.setValue( "foobar" );
+      Request.getInstance().send();   
+      
+      assertTrue( TestUtil.getMessage().indexOf( "w3.text=foobar" ) !== -1 );
+    },
+
+    testSendTextModifyEventWithModifyListener : function() {
+      createText();
+      text.setHasModifyListener( true );
+
+      text.setValue( "foobar" );
+      TestUtil.forceTimerOnce();
+      
+      assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.modifyText=w3" ) !== -1 );
+    },
+
+    testSendTextModifyEventWithVerifyListener : function() {
+      createText();
+      text.setHasVerifyListener( true );
+
+      text.setValue( "foobar" );
+      TestUtil.forceTimerOnce();
+      
+      assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.modifyText=w3" ) !== -1 );
+    },
+
+    testSendNoModifyEvent : function() {
+      createText();
+
+      text.setValue( "foobar" );
+      TestUtil.forceTimerOnce();
+
+      assertEquals( 0, TestUtil.getRequestsSend() );      
+      Request.getInstance().send();   
+      assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.modifyText" ) === -1 );
+    },
+
+    testDontSendTextModifyEventTwice : function() {
+      createText();
+      text.setHasModifyListener( true );
+
+      text.setValue( "foobar" );
+      text.setValue( "barfoo" );
+      TestUtil.forceTimerOnce();
+
+      assertEquals( 1, TestUtil.getRequestsSend() );      
+      assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.modifyText=w3" ) !== -1 );
+      assertTrue( TestUtil.getMessage().indexOf( "w3.text=barfoo" ) !== -1 );
+    },
+
+//    TODO [tb] : re-implement feature on DOM level.
+//
+//    testSetMessageCreatesLabel : function() {
+//      createText();
+//
+//      org.eclipse.swt.TextUtil.setMessage( text, "konnichiwa" );
+//
+//      var element = text.getElement().lastChild;
+//      assertEquals( "konnichiwa", element.innerHTML );
+//    },
+
     /////////
     // Helper
-    
+
     _setUp : function() {
       shell = TestUtil.createShellByProtocol( "w2" );
+      TestUtil.clearRequestLog();
+      log = [];
     },
-    
+
     _tearDown : function() {
       TestUtil.clearTimerOnceLog();
       shell.destroy();
@@ -603,12 +799,44 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
 var createText = function( noflush, arg ) {
   text = new org.eclipse.rwt.widgets.Text( arg ? arg : false );
+  ObjectManager.add( "w3", text, null );
   org.eclipse.swt.TextUtil.initialize( text );
-  text.addToDocument();
+  text.setParent( shell );
   if( noflush !== true ) {
     TestUtil.flush();
+    TestUtil.forceTimerOnce(); // apply first input fix in IE
     text.focus();
   }
+};
+
+var createChangeLogger = function() {
+  var logger = function( event ) {
+    log.push( event.getTarget().getValue() );
+  };
+  text.addEventListener( "changeValue", logger );
+};
+
+var typeCharacter = function( character ) {
+  TestUtil.keyDown( text, character );
+  // we will assume that the carret is at the end
+  var newValue = text.getInputElement().value + character;
+  text._inValueProperty = true;
+  text.getInputElement().value = newValue;
+  text._inValueProperty = false;
+  if( Client.isWebkit() ) {
+    text.setSelectionStart( newValue.length - character.length );
+    text._oninputDom( { "propertyName" : "value" } );
+    text.setSelectionStart( newValue.length );
+  } else {
+    text.setSelectionStart( newValue.length );
+    text._oninputDom( { "propertyName" : "value" } );
+  }
+  TestUtil.keyUp( text, character );
+};
+
+var setSelection = function( selection ) {
+  text.setSelectionStart( selection[ 0 ] );
+  text.setSelectionLength( selection[ 1 ] - selection[ 0 ] );
 };
 
 }());
