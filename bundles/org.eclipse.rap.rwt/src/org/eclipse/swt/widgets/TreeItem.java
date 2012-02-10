@@ -955,6 +955,9 @@ public class TreeItem extends Item {
     if( text == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
+    if( parent.markupEnabled ) {
+      MarkupValidator.validate( text );
+    }
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {
       ensureData( index, count );

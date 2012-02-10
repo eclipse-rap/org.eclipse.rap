@@ -1616,6 +1616,30 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  public void testMarkupTextWithoutMarkupEnabled() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    tree.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    try {
+      item.setText( "invalid xhtml: <<&>>" );
+    } catch( Exception notExpected ) {
+      fail();
+    }
+  }
+
+  public void testMarkupTextWithMarkupEnabled() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    try {
+      item.setText( "invalid xhtml: <<&>>" );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
   /////////
   // Helper
 

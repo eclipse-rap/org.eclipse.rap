@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,34 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.renderItem( item, tree._config, false, null );
       assertEquals( 2, row._getTargetNode().childNodes.length );
       assertEquals( "Test", row._getTargetNode().childNodes[ 1 ].innerHTML );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testRenderItemWithMarkupEnabled : function() {
+      var tree = this._createTree();
+      tree.setMarkupEnabled( true );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setTexts( [ "<b>Test</b>" ] );
+      row.renderItem( item, tree._config, false, null );
+      assertEquals( 2, row._getTargetNode().childNodes.length );
+      assertEquals( "<b>Test</b>", row._getTargetNode().childNodes[ 1 ].innerHTML );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testRenderItemWithoutMarkupEnabled : function() {
+      var tree = this._createTree();
+      tree.setMarkupEnabled( false );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setTexts( [ "<b>Test</b>" ] );
+      row.renderItem( item, tree._config, false, null );
+      assertEquals( 2, row._getTargetNode().childNodes.length );
+      assertEquals( "&lt;b&gt;Test&lt;/b&gt;", row._getTargetNode().childNodes[ 1 ].innerHTML );
       tree.destroy();
       row.destroy();
     },

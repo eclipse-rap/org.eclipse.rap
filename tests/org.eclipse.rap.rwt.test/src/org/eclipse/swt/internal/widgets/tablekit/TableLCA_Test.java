@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
@@ -1686,6 +1687,39 @@ public class TableLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( table, "cellToolTipText" ) );
+  }
+
+  public void testRenderInitialMarkupEnabled() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
+    lca.render( table );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( table );
+    assertTrue( operation.getPropertyNames().indexOf( "markupEnabled" ) == -1 );
+  }
+
+  public void testRenderMarkupEnabled() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
+    table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    lca.renderChanges( table );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( table, "markupEnabled" ) );
+  }
+
+  public void testRenderMarkupEnabledUnchanged() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( table );
+
+    table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    Fixture.preserveWidgets();
+    lca.renderChanges( table );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( table, "markupEnabled" ) );
   }
 
   private static void createTableColumns( Table table, int count ) {

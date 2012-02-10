@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,6 @@ package org.eclipse.swt.widgets;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -49,23 +47,23 @@ public class TableItem_Test extends TestCase {
 
   public void testConstructor() {
     Table table = new Table( shell, SWT.NONE );
-    
+
     TableItem item1 = new TableItem( table, SWT.NONE );
-    
+
     assertEquals( 1, table.getItemCount() );
     assertSame( item1, table.getItem( 0 ) );
   }
-  
+
   public void testConstructorThatInsertsItem() {
     Table table = new Table( shell, SWT.NONE );
     new TableItem( table, SWT.NONE );
 
     TableItem item0 = new TableItem( table, SWT.NONE, 0 );
-    
+
     assertEquals( 2, table.getItemCount() );
     assertSame( item0, table.getItem( 0 ) );
   }
-  
+
   public void testConstructorWithNegativeIndex() {
     Table table = new Table( shell, SWT.NONE );
     try {
@@ -83,7 +81,7 @@ public class TableItem_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
   public void testConstructorWithNullParent() {
     try {
       new TableItem( null, SWT.NONE );
@@ -97,7 +95,7 @@ public class TableItem_Test extends TestCase {
     TableItem item = new TableItem( table, SWT.NONE );
     assertSame( table, item.getParent() );
   }
-  
+
   public void testBounds() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -276,13 +274,13 @@ public class TableItem_Test extends TestCase {
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( "abc" );
     Rectangle origBounds = item.getTextBounds( 0 );
-    
+
     table.setFont( Graphics.getFont( "Helvetica", 50, SWT.BOLD ) );
     Rectangle actualBounds = item.getTextBounds( 0 );
 
     assertTrue( actualBounds.width > origBounds.width );
   }
-  
+
   public void testTextBoundsWithCheckboxTable() {
     Table table = new Table( shell, SWT.CHECK );
     TableColumn column = new TableColumn( table, SWT.LEFT );
@@ -308,7 +306,7 @@ public class TableItem_Test extends TestCase {
     adapter.setLeftOffset( column0.getWidth() );
     assertEquals( column0TextBounds.x, item.getTextBounds( 1 ).x );
   }
-  
+
   public void testTextBoundsWithChangedText() {
     String itemText = "text";
     Table table = new Table( shell, SWT.NONE );
@@ -318,7 +316,7 @@ public class TableItem_Test extends TestCase {
     int shortWidth = item.getTextBounds( 0 ).width;
     item.setText( itemText + itemText );
     int longWidth = item.getTextBounds( 0 ).width;
-    
+
     assertTrue( shortWidth < longWidth );
   }
 
@@ -326,39 +324,13 @@ public class TableItem_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( "" );
-    
+
     Rectangle textBounds = item.getTextBounds( 0 );
-    
+
     assertEquals( 0, textBounds.width );
     assertTrue( textBounds.height > 0 );
   }
-  
-  public void testGetItemBoundsWithRichText() {
-    Table table = new Table( shell, SWT.NONE );
-    table.setData( Table.ENABLE_RICH_TEXT, Boolean.TRUE );
-    TableItem item = new TableItem( table, SWT.NONE );
-    HashMap<String,Image> imageMap = new HashMap<String,Image>();
-    imageMap.put( "foo", Graphics.getImage( Fixture.IMAGE_100x50 ) );
-    table.setData( Table.IMAGE_MAP, imageMap );
-    item.setText( "<html><img src=\"foo\"/></html>" );
-    
-    Rectangle textBounds = item.getTextBounds( 0 );
-    
-    assertEquals( 100, textBounds.width );
-  }
-  
-  public void testGetItemBoundsWithRichtTextForUnknownImage() {
-    Table table = new Table( shell, SWT.NONE );
-    table.setData( Table.ENABLE_RICH_TEXT, Boolean.TRUE );
-    TableItem item = new TableItem( table, SWT.NONE );
-    
-    try {
-      item.setText( "<html><img src=\"foo\"/></html>" );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
-  }
-  
+
   public void testImageBoundsWithoutColumns() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -648,7 +620,7 @@ public class TableItem_Test extends TestCase {
     simpleItem.setGrayed( true );
     assertEquals( false, simpleItem.getGrayed() );
   }
-  
+
   public void testCheckedAndGrayedWithCheckTable() {
     Table checkedTable = new Table( shell, SWT.CHECK );
     TableItem checkedItem = new TableItem( checkedTable, SWT.NONE );
@@ -926,7 +898,7 @@ public class TableItem_Test extends TestCase {
     tableItem.setBackground( null );
     assertEquals( table.getBackground(), tableItem.getBackground() );
   }
-  
+
   public void testSetBackgroundWithDisposedColor() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -948,7 +920,7 @@ public class TableItem_Test extends TestCase {
     tableItem.setBackground( 0, null );
     assertEquals( table.getBackground(), tableItem.getBackground() );
   }
-  
+
   public void testSetBackgroundIWidthDisposedColor() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -974,7 +946,7 @@ public class TableItem_Test extends TestCase {
     tableItem.setFont( null );
     assertSame( tableFont, tableItem.getFont() );
   }
-  
+
   public void testSetFontWithDisposedFont() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -1000,7 +972,7 @@ public class TableItem_Test extends TestCase {
     tableItem.setFont( null );
     assertSame( tableFont, tableItem.getFont() );
   }
-  
+
   public void testFontFontIWithDisposedFont() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -1022,7 +994,7 @@ public class TableItem_Test extends TestCase {
     tableItem.setForeground( null );
     assertEquals( table.getForeground(), tableItem.getForeground() );
   }
-  
+
   public void testSetForegroundWithDisposedColor() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
@@ -1184,30 +1156,30 @@ public class TableItem_Test extends TestCase {
 
     assertFalse( adapter.isItemVirtual( 0 ) );
   }
-  
+
   public void testIsSerializable() throws Exception {
     String itemText = "text";
     Table table = new Table( shell, SWT.VIRTUAL | SWT.CHECK );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( itemText );
-    
+
     TableItem deserializedItem = Fixture.serializeAndDeserialize( item );
-    
+
     assertEquals( itemText, deserializedItem.getText() );
   }
-  
+
   public void testVirtualGetBoundsMaterializeItems() {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.addListener( SWT.SetData, new Listener() {
       public void handleEvent( Event event ) {
         TableItem item = ( TableItem )event.item;
         item.setText( "Very long long long long long text" );
-      }      
+      }
     } );
     table.setItemCount( 5 );
-    
+
     Rectangle bounds =  table.getItem( 0 ).getBounds();
-    
+
     assertTrue( bounds.width > 100 );
   }
 

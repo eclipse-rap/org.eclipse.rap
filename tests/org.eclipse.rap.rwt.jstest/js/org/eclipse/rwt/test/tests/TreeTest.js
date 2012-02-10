@@ -315,6 +315,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       widget.destroy();
     },
 
+    testSetMarkupEnabledByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      TestUtil.protocolSet( "w3", { "markupEnabled" : true } );
+      assertTrue( widget.getRenderConfig().markupEnabled );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testSetSortDirectionByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );

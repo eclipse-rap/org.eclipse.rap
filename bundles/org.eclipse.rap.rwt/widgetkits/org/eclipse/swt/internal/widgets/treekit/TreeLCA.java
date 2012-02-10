@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
@@ -66,6 +67,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static final String PROP_SELECTION_LISTENER = "selection";
   private static final String PROP_ENABLE_CELL_TOOLTIP = "enableCellToolTip";
   private static final String PROP_CELL_TOOLTIP_TEXT = "cellToolTipText";
+  private static final String PROP_MARKUP_ENABLED = "markupEnabled";
 
   private static final int ZERO = 0 ;
   private static final String[] DEFAULT_SELECTION = new String[ 0 ];
@@ -97,6 +99,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     preserveListener( tree, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( tree ) );
     preserveProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ) );
     preserveProperty( tree, PROP_CELL_TOOLTIP_TEXT, null );
+    preserveProperty( tree, PROP_MARKUP_ENABLED, isMarkupEnabled( tree ) );
   }
 
   public void readData( Widget widget ) {
@@ -164,6 +167,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     renderListener( tree, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( tree ), false );
     renderProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ), false );
     renderProperty( tree, PROP_CELL_TOOLTIP_TEXT, getCellToolTipText( tree ), null );
+    renderProperty( tree, PROP_MARKUP_ENABLED, isMarkupEnabled( tree ), false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
@@ -294,6 +298,10 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   //////////////////
   // Helping methods
+
+  private static boolean isMarkupEnabled( Tree tree ) {
+    return Boolean.TRUE.equals( tree.getData( RWT.MARKUP_ENABLED ) );
+  }
 
   private static String[] getSelection( Tree tree ) {
     TreeItem[] selection = tree.getSelection();

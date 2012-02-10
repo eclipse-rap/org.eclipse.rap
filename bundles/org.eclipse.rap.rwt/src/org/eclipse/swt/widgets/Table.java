@@ -263,92 +263,6 @@ public class Table extends Composite {
    */
   public static final String ALWAYS_HIDE_SELECTION = Table.class.getName() + "#alwaysHideSelection";
 
-  /**
-   * Controls whether the use of <em>rich text</em> in table items is enabled. With richt text
-   * enabled, it is possible to have multiple images, different fonts, line breaks etc. in a
-   * single table cell.
-   * To enable rich text, this constant must be passed to <code>setData()</code> with a value
-   * of <code>Boolean.TRUE</code>.
-   * <p>
-   * For example:
-   * <code>table.setData( Table.ENABLE_RICH_TEXT, Boolean.TRUE );</code>
-   * </p>
-   * <p>
-   * If rich text is enabled, then text that is passed to one of the <code>setText()</code> methods
-   * of <code>TableItem</code> is interpreted. If the given text starts with {@literal <html>},
-   * it is expected to contain
-   * <a href="http://en.wikipedia.org/wiki/XML#Well-formedness_and_error-handling">well-formed XML</a>
-   * that describes how the table cell is to be rendered.
-   * </p>
-   * <p>
-   * The rich text markup tries to align with the elements and attributes known from HTML wherever
-   * possible. Specifying an unsupported element leads to an exception. The following table lists
-   * all supported elements and their meaning.
-   * <dl>
-   *   <dt>{@literal <html>}</dt>
-   *   <dd>Marks the beginning and end of rich text. Text may directly be embedded. Note that no
-   *     text must be given before the opening {@literal <html>} element or after the closing
-   *     {@literal </html>} element.</dd>
-   *   <dt>{@literal <font>}</dt>
-   *   <dd>Changes the font for the enclosed text. The attributes <strong>name</strong> and
-   *     <strong>height</strong> must be given and specify the name and height of the font.
-   *     The example below how the {@<font> element} can be used to display text in an alternte
-   *     font.
-   *     <code><pre>
-   *     table.setData( Table.ENABLE_RICH_TEXT, Boolean.TRUE );
-   *     Tableitem item = new TableItem( table, SWT.NONE );
-   *     item.setText( {@literal "<html>default and <font name="Helvetica" height="40">enlarged</font>text</html>"} );
-   *     </pre></code>
-   *   </dd>
-   *   <dt>{@literal <br>}</dt>
-   *   <dd>A line break</dd>
-   *   <dt>{@literal <img>}</dt>
-   *   <dd>Renders an image. The <strong>src</strong> attribute is mandatory and denotes the image
-   *     name. An {@link #IMAGE_MAP image map} associates the name given here with the actual
-   *     {@link Image image} that should be displayed. The example below shows how the
-   *     {@literal <img>} element and an image map can be used to display an image.
-   *     <code><pre>
-   *     table.setData( Table.ENABLE_RICH_TEXT, Boolean.TRUE );
-   *     Map imageMap = new hashMap();
-   *     imageMap( "foo", new Image( table.getDisplay(), inputStream );
-   *     table.setData( Table.IMAGE_MAP, imageMap );
-   *     Tableitem item = new TableItem( table, SWT.NONE );
-   *     item.setText( {@literal "<html><img src="foo" /></html>"} );
-   *     </pre></code>
-   *   </dd>
-   * </dl>
-   * </p>
-   *
-   * <p>
-   * <strong>PROVISIONAL</strong>: This constant has been added as part of a work in progress.
-   * There is no guarantee that this API will remain the same. Please use this API with caution.
-   * </p>
-   *
-   * @see RWT#CUSTOM_ITEM_HEIGHT
-   * @see #IMAGE_MAP
-   * @see TableItem#setText(String)
-   * @since 1.5
-   */
-  public static final String ENABLE_RICH_TEXT = Table.class.getName() + "#enableRichText";
-
-  /**
-   * Associates image names from {@literal <img>} elements with their actual {@link Image images}.
-   * The image map must be specified as a <code>{@literal Map<String,Image>}</code> and passed to
-   * <code>setData()</code> with this constant as the key.
-   * <p>
-   * Currently, images must be listed in this map <strong>before</strong> they are referenced
-   * from rich text (i.e. by calling <code>TableItem#setText()</code>).
-   * </p>
-   * <p>
-   * <strong>PROVISIONAL</strong>: This constant has been added as part of a work in progress.
-   * There is no guarantee that this API will remain the same. Please use this API with caution.
-   * </p>
-   *
-   * @see #ENABLE_RICH_TEXT
-   * @since 1.5
-   */
-  public static final String IMAGE_MAP = Table.class.getName() + "#imageMap";
-
   private static final int GRID_WIDTH = 1;
   private static final int[] EMPTY_SELECTION = new int[ 0 ];
 
@@ -374,7 +288,7 @@ public class Table extends Composite {
   private Point itemImageSize;
   private Rectangle bufferedCellPadding;
   private int bufferedCellSpacing;
-  boolean richTextEnabled;
+  boolean markupEnabled;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -448,8 +362,8 @@ public class Table extends Composite {
   public void setData( String key, Object value ) {
     if( RWT.CUSTOM_ITEM_HEIGHT.equals( key ) ) {
       setCustomItemHeight( value );
-    } else if( ENABLE_RICH_TEXT.equals( key ) ) {
-      richTextEnabled = Boolean.TRUE.equals( value );
+    } else if( RWT.MARKUP_ENABLED.equals( key ) ) {
+      markupEnabled = Boolean.TRUE.equals( value );
     }
     super.setData( key, value );
   }

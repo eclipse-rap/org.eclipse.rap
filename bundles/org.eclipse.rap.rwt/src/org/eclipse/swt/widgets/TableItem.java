@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,15 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.util.Map;
-
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.internal.widgets.RichTextUtil.IImageSizeProvider;
 
 
 /**
@@ -96,28 +93,6 @@ public class TableItem extends Item {
 
     public boolean isParentDisposed() {
       return TableItem.this.parent.isDisposed();
-    }
-
-    public boolean isRichTextEnabled() {
-      return TableItem.this.parent.richTextEnabled;
-    }
-  }
-
-  private class TableImageSizeProvider implements IImageSizeProvider {
-
-    public Rectangle getImageSize( String imageName ) {
-      Image image = getImage( imageName );
-      return image.getBounds();
-    }
-
-    @SuppressWarnings("unchecked")
-    private Image getImage( String imageName ) {
-      Map<String,Image> imageMap = ( Map<String,Image> )parent.getData( Table.IMAGE_MAP );
-      Image result = imageMap == null ? null : imageMap.get( imageName );
-      if( result == null ) {
-        throw new IllegalArgumentException( "Unknown image name: " + imageName );
-      }
-      return result;
     }
   }
 
@@ -279,6 +254,9 @@ public class TableItem extends Item {
     checkWidget();
     if( text == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( parent.markupEnabled ) {
+      MarkupValidator.validate( text );
     }
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {
@@ -1104,13 +1082,7 @@ public class TableItem extends Item {
     int result = 0;
     if( hasData( index ) ) {
       if( data[ index ].textWidth == Data.UNKNOWN_WIDTH ) {
-        if( parent.richTextEnabled ) {
-          String text = data[ index ].text;
-          IImageSizeProvider imageSizeProvider = new TableImageSizeProvider();
-          data[ index ].textWidth = RichTextUtil.getTextWidth( text, font, imageSizeProvider );
-        } else {
-          data[ index ].textWidth = Graphics.stringExtent( font, data[ index ].text ).x;
-        }
+        data[ index ].textWidth = Graphics.stringExtent( font, data[ index ].text ).x;
       }
       result = data[ index ].textWidth;
     }

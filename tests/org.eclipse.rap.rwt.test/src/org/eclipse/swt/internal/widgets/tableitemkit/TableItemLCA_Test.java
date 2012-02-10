@@ -72,11 +72,6 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item1 );
-    String[] texts1 = TableItemLCA.getTexts( item1 );
-    String[] texts2 = ( String[] )adapter.getPreserved( TableItemLCA.PROP_TEXTS );
-    assertEquals( texts1[ 0 ], texts2[ 0 ] );
-    assertEquals( texts1[ 1 ], texts2[ 1 ] );
-    assertEquals( texts1[ 2 ], texts2[ 2 ] );
     Image[] images1 = TableItemLCA.getImages( item1 );
     Image[] images2 = ( Image[] )adapter.getPreserved( TableItemLCA.PROP_IMAGES );
     assertEquals( images1[ 0 ], images2[ 0 ] );
@@ -132,10 +127,6 @@ public class TableItemLCA_Test extends TestCase {
     tableAdapter.setFocusIndex( 0 );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item1 );
-    texts2 = ( String[] )adapter.getPreserved( TableItemLCA.PROP_TEXTS );
-    assertEquals( "item11", texts2[ 0 ] );
-    assertEquals( "item12", texts2[ 1 ] );
-    assertEquals( "item13", texts2[ 2 ] );
     images2 = ( Image[] )adapter.getPreserved( TableItemLCA.PROP_IMAGES );
     assertEquals( image1, images2[ 0 ] );
     assertEquals( image2, images2[ 1 ] );

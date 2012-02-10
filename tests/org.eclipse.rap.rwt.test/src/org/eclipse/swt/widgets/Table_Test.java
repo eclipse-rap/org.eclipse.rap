@@ -32,6 +32,17 @@ public class Table_Test extends TestCase {
   private Display display;
   private Shell shell;
 
+  protected void setUp() {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  protected void tearDown() {
+    Fixture.tearDown();
+  }
+
   public void testInitialValues() {
     Table table = new Table( shell, SWT.NONE );
 
@@ -2394,39 +2405,28 @@ public class Table_Test extends TestCase {
     }
   }
 
-  public void testRichTextWithoutEnableRichText() {
+  public void testMarkupTextWithoutMarkupEnabled() {
     Table table = new Table( shell, SWT.NONE );
-    table.setData( Table.ENABLE_RICH_TEXT, Boolean.FALSE );
+    table.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
     TableItem item = new TableItem( table, SWT.NONE );
 
     try {
-      item.setText( "<html> invalid xml: <<&>> </html>" );
+      item.setText( "invalid xhtml: <<&>>" );
     } catch( Exception notExpected ) {
       fail();
     }
   }
 
-  public void testRichTextWithEnableRichText() {
+  public void testMarkupTextWithMarkupEnabled() {
     Table table = new Table( shell, SWT.NONE );
-    table.setData( Table.ENABLE_RICH_TEXT, Boolean.TRUE );
+    table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
     TableItem item = new TableItem( table, SWT.NONE );
 
     try {
-      item.setText( "<html> invalid xml: <<&>> </html>" );
+      item.setText( "invalid xhtml: <<&>>" );
       fail();
-    } catch( RichTextParserException expected ) {
+    } catch( IllegalArgumentException expected ) {
     }
-  }
-
-  protected void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display = new Display();
-    shell = new Shell( display );
-  }
-
-  protected void tearDown() {
-    Fixture.tearDown();
   }
 
   private Image createImage50x100() throws IOException {

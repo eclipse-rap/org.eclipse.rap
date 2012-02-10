@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
@@ -70,6 +71,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final String PROP_ALWAYS_HIDE_SELECTION = "alwaysHideSelection";
   private static final String PROP_ENABLE_CELL_TOOLTIP = "enableCellToolTip";
   private static final String PROP_CELL_TOOLTIP_TEXT = "cellToolTipText";
+  private static final String PROP_MARKUP_ENABLED = "markupEnabled";
 
   private static final int ZERO = 0 ;
   private static final String[] DEFAULT_SELECTION = new String[ 0 ];
@@ -102,6 +104,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     preserveProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ) );
     preserveProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ) );
     preserveProperty( table, PROP_CELL_TOOLTIP_TEXT, null );
+    preserveProperty( table, PROP_MARKUP_ENABLED, isMarkupEnabled( table ) );
   }
 
   public void readData( Widget widget ) {
@@ -168,6 +171,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     renderProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ), false );
     renderProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ), false );
     renderProperty( table, PROP_CELL_TOOLTIP_TEXT, getCellToolTipText( table ), null );
+    renderProperty( table, PROP_MARKUP_ENABLED, isMarkupEnabled( table ), false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
@@ -306,6 +310,10 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   //////////////////
   // Helping methods
+
+  private static boolean isMarkupEnabled( Table table ) {
+    return Boolean.TRUE.equals( table.getData( RWT.MARKUP_ENABLED ) );
+  }
 
   private static String[] getSelection( Table table ) {
     TableItem[] selection = table.getSelection();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH amd others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH amd others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ public final class SystemProps {
   public static final String CLIENT_LIBRARY_VARIANT = "org.eclipse.rwt.clientLibraryVariant";
   public static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
   public static final String ENABLE_THEME_WARNINGS = "org.eclipse.rap.enableThemeWarnings";
+  public static final String DISABLE_MARKUP_VALIDATION = "org.eclipse.rap.disableMarkupValidation";
 
   private SystemProps() {
     // prevent instantiation
@@ -40,6 +41,10 @@ public final class SystemProps {
   public static boolean isDevelopmentMode() {
     String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
     return DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
+  }
+
+  public static boolean isMarkupValidationDisabled() {
+    return getBooleanProperty( DISABLE_MARKUP_VALIDATION, false );
   }
 
   private static boolean getBooleanProperty( String key, boolean defaultValue ) {

@@ -268,6 +268,40 @@ public final class RWT {
   public static final String CUSTOM_ITEM_HEIGHT = "org.eclipse.rap.rwt.customItemHeight";
 
   /**
+   * Controls whether the use of <em>markup</em> in text is enabled. To enable
+   * markup in text, this constant must be passed to <code>setData()</code> with
+   * a value of <code>Boolean.TRUE</code>.
+   * <p>
+   * For example: <code>table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );</code>
+   * </p>
+   * <p>
+   * When markup is enabled, certain XHTML tags can be used in the text property
+   * of the respective widget. Specifying an unsupported element will lead to an
+   * {@link IllegalArgumentException} when setting the text. The following table
+   * lists the currently supported tags:
+   * <dl>
+   * <dt>{@literal <b>text</b>}</dt>
+   * <dd>renders its content in bold font style</dd>
+   * <dt>{@literal <i>text</i>}</dt>
+   * <dd>renders its content in italic font style</dd>
+   * <dt>{@literal <br/>}</dt>
+   * <dd>inserts a line break</dd>
+   * </dl>
+   * </p>
+   * <p>
+   * <b>Used By:</b>
+   * <ul>
+   * <li><code>Table</code></li>
+   * <li><code>Tree</code></li>
+   * </ul>
+   * </p>
+   *
+   * @see Control#setData(String,Object)
+   * @since 1.5
+   */
+  public static final String MARKUP_ENABLED = "org.eclipse.rap.rwt.markupEnabled";
+
+  /**
    * Returns the instance of the life cycle which is currently processed.
    *
    * @return instance of {@link ILifeCycle}

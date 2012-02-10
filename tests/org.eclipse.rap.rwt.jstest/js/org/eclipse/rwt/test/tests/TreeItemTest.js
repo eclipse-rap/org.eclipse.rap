@@ -106,7 +106,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( "1", item.getText( 0 ) );
-      assertEquals( "2&amp;&lt;&nbsp; &gt;&quot;", item.getText( 1 ) );
+      assertEquals( "2&<&nbsp; >\"", item.getText( 1 ) );
       assertEquals( "3", item.getText( 2 ) );
       shell.destroy();
       tree.destroy();

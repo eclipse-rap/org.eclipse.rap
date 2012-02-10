@@ -120,6 +120,7 @@ public class Tree extends Composite {
   LayoutCache layoutCache;
   boolean isFlatIndexValid;
   private int visibleItemsCount;
+  boolean markupEnabled;
 
   /**
    * Constructs a new instance of this class given its parent and a style value
@@ -1604,6 +1605,8 @@ public class Tree extends Composite {
       layoutCache.invalidateAll();
     } else if( RWT.CUSTOM_ITEM_HEIGHT.equals( key ) ) {
       setCustomItemHeight( value );
+    } else if( RWT.MARKUP_ENABLED.equals( key ) ) {
+      markupEnabled = Boolean.TRUE.equals( value );
     }
     super.setData( key, value );
   }

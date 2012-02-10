@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
@@ -1438,6 +1439,39 @@ public class TreeLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( tree, "focusItem" ) );
+  }
+
+  public void testRenderInitialMarkupEnabled() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "markupEnabled" ) == -1 );
+  }
+
+  public void testRenderMarkupEnabled() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( tree, "markupEnabled" ) );
+  }
+
+  public void testRenderMarkupEnabledUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "markupEnabled" ) );
   }
 
   private static void setScrollLeft( Tree tree, int scrollLeft ) {

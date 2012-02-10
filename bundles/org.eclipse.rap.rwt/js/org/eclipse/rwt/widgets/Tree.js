@@ -253,7 +253,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     setFocusItem : function( item ) {
       this._focusItem = item;
-      this._sendItemFocusChange()
+      this._sendItemFocusChange();
     },
 
     setSortDirection : function( direction ) {
@@ -641,7 +641,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         if( !this._focusItem.isExpanded() ) {
           this._focusItem.setExpanded( true );
         } else {
-          var item = this._focusItem.getChild( 0 )
+          var item = this._focusItem.getChild( 0 );
           var itemIndex = item.getFlatIndex();
           this._handleKeyboardSelect( event, item, itemIndex, true );
         }
@@ -912,7 +912,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       if( item.isCached() ) {
         result = wm.findIdByWidget( item );
       } else {
-        var parent = item.getParent()
+        var parent = item.getParent();
         if( parent.isRootItem() ) {
           result = wm.findIdByWidget( this );
         } else {
@@ -1206,6 +1206,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     setCellToolTipText : function( text ) {
       if( this._cellToolTip != null ) {
         this._cellToolTip.setText( text );
+      }
+    },
+
+    //////////////////
+    // Markup handling
+
+    setMarkupEnabled : function( value ) {
+      if( this._config.markupEnabled !== value ) {
+        this._config.markupEnabled = value;
+        this._scheduleUpdate();
       }
     }
 

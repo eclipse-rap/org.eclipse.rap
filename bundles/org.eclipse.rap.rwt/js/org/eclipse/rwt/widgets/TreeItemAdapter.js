@@ -41,11 +41,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.TreeItem", {
 
   propertyHandler : {
     "texts" : function( widget, value ) {
-      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var texts = value;
       for( var i = 0; i < value.length; i++ ) {
-        texts[ i ] = EncodingUtil.escapeText( texts[ i ], false );
-        texts[ i ] = EncodingUtil.replaceWhiteSpaces( texts[ i ] );
+        texts[ i ] = org.eclipse.rwt.protocol.EncodingUtil.replaceWhiteSpaces( texts[ i ] );
       }
       widget.setTexts( texts );
     },

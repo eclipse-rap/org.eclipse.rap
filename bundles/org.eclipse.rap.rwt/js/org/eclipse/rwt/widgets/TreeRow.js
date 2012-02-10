@@ -354,13 +354,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         } else {
           element.style.textAlign = this._getAlignment( cell, config );
         }
+        if( !config.markupEnabled ) {
+          text = org.eclipse.rwt.protocol.EncodingUtil.escapeText( text, false );
+        }
         element.innerHTML = text;
         this._setForeground( element, this._getCellColor( item, cell, config ) );
         this._setBounds( element, left, 0, width, this.getHeight() );
         this._setFont( element, this._getCellFont( item, cell, config ) );
         this._setTextDecoration( element, this._styleMap.textDecoration );
         org.eclipse.rwt.HtmlUtil.setTextShadow( element, this._styleMap.textShadow );
-        element.style.lineHeight = element.style.height;
+        element.style.lineHeight = config.markupEnabled ? "" : element.style.height;
         this._cellLabels[ cell ] = element;
       }
       return element;
