@@ -1272,8 +1272,8 @@ TreeColumn-SortIndicator:down {
 }
 
 Tree-Cell {
-  spacing: 0;
-  padding: 6px;
+  spacing: 3px;
+  padding: 6px 3px 6px 3px;
 }
 
 Tree-GridLine {

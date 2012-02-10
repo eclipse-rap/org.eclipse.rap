@@ -971,6 +971,15 @@ public class TreeItem_Test extends TestCase {
     assertTrue( col0Bounds.y < item2.getImageBounds( 0 ).y );
   }
 
+  public void testGetImageBoundsForTreeColumn() {
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    createColumns( tree, 1 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+    treeItem.setImage( 1, Graphics.getImage( Fixture.IMAGE1 ) );
+
+    assertEquals( treeItem.getImageBounds( 0 ).x, tree.getVisualCellLeft( 0, treeItem ) );
+  }
+
   public void testDynamicColumnCountAttributes() {
     Tree tree = new Tree( shell, SWT.SINGLE );
     createColumns( tree, 1 );
