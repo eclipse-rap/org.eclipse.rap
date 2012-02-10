@@ -19,6 +19,7 @@ import javax.servlet.ServletContextEvent;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
@@ -34,6 +35,93 @@ import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
 public class RWTServletContextListener_Test extends TestCase {
+
+  private RWTServletContextListener rwtServletContextListener;
+  private ServletContext servletContext;
+  private ServletContextEvent contextInitializedEvent;
+
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.useTestResourceManager();
+    rwtServletContextListener = new RWTServletContextListener();
+    servletContext = new TestServletContext();
+    contextInitializedEvent = new ServletContextEvent( servletContext );
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.useDefaultResourceManager();
+  }
+
+  public void testResourceManagerIsInitialized() {
+    String className = TestConfigurator.class.getName();
+    servletContext.setInitParameter( ApplicationConfigurator.CONFIGURATOR_PARAM, className );
+
+    rwtServletContextListener.contextInitialized( contextInitializedEvent );
+
+    assertResourceManagerIsRegistered();
+  }
+
+  public void testEntryPointInitialization() {
+    String className = TestEntryPoint.class.getName();
+    servletContext.setInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM, className );
+
+    rwtServletContextListener.contextInitialized( contextInitializedEvent );
+
+    assertEntryPointIsRegistered();
+  }
+
+  public void testEntryPointInitializationWithNonExistingClassName() {
+    String className = "does.not.Exist";
+    servletContext.setInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM, className );
+
+    try {
+      rwtServletContextListener.contextInitialized( contextInitializedEvent );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testConfigurator() {
+    String className = TestConfigurator.class.getName();
+    servletContext.setInitParameter( ApplicationConfigurator.CONFIGURATOR_PARAM, className );
+
+    rwtServletContextListener.contextInitialized( contextInitializedEvent );
+
+    assertEntryPointIsRegistered();
+    assertPhaseListenersAreRegistered();
+    assertResourceIsRegistered();
+    assertBrandingIsRegistered();
+  }
+
+  private void assertResourceManagerIsRegistered() {
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    assertNotNull( applicationContext.getResourceManager() );
+  }
+
+  private void assertEntryPointIsRegistered() {
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    assertEquals( 1, applicationContext.getEntryPointManager().getEntryPoints().length );
+  }
+
+  private void assertPhaseListenersAreRegistered() {
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    assertEquals( 3, applicationContext.getPhaseListenerRegistry().getAll().length );
+  }
+
+  private void assertResourceIsRegistered() {
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    IResource[] resources = applicationContext.getResourceRegistry().get();
+    assertEquals( 1, resources.length );
+    assertEquals( TestResource.class, resources[ 0 ].getClass() );
+  }
+
+  private void assertBrandingIsRegistered() {
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    AbstractBranding[] allBrandings = applicationContext.getBrandingManager().getAll();
+    assertEquals( 1, allBrandings.length );
+    assertEquals( TestBranding.class, allBrandings[ 0 ].getClass() );
+  }
 
   public static class TestEntryPoint implements IEntryPoint {
     public int createUI() {
@@ -93,85 +181,5 @@ public class RWTServletContextListener_Test extends TestCase {
       configuration.addResource( new TestResource() );
       configuration.addBranding( new TestBranding() );
     }
-  }
-
-  private RWTServletContextListener rwtServletContextListener;
-  private ServletContext servletContext;
-  private ServletContextEvent contextInitializedEvent;
-
-  public void testResourceManagerIsInitialized() {
-    String className = TestConfigurator.class.getName();
-    servletContext.setInitParameter( ApplicationConfigurator.CONFIGURATOR_PARAM, className );
-    
-    rwtServletContextListener.contextInitialized( contextInitializedEvent );
-    
-    assertResourceManagerIsRegistered();
-  }
-
-  public void testEntryPointInitialization() {
-    String className = TestEntryPoint.class.getName();
-    servletContext.setInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM, className );
-
-    rwtServletContextListener.contextInitialized( contextInitializedEvent );
-
-    assertEntryPointIsRegistered();
-  }
-
-  public void testEntryPointInitializationWithNonExistingClassName() {
-    String className = "does.not.Exist";
-    servletContext.setInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM, className );
-
-    try {
-      rwtServletContextListener.contextInitialized( contextInitializedEvent );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
-  }
-
-  public void testConfigurator() {
-    String className = TestConfigurator.class.getName();
-    servletContext.setInitParameter( ApplicationConfigurator.CONFIGURATOR_PARAM, className );
-
-    rwtServletContextListener.contextInitialized( contextInitializedEvent );
-
-    assertEntryPointIsRegistered();
-    assertPhaseListenersAreRegistered();
-    assertResourceIsRegistered();
-    assertBrandingIsRegistered();
-  }
-
-  protected void setUp() throws Exception {
-    rwtServletContextListener = new RWTServletContextListener();
-    servletContext = new TestServletContext();
-    contextInitializedEvent = new ServletContextEvent( servletContext );
-  }
-
-  private void assertResourceManagerIsRegistered() {
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-    assertNotNull( applicationContext.getResourceManager() );
-  }
-
-  private void assertEntryPointIsRegistered() {
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-    assertEquals( 1, applicationContext.getEntryPointManager().getEntryPoints().length );
-  }
-  
-  private void assertPhaseListenersAreRegistered() {
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-    assertEquals( 3, applicationContext.getPhaseListenerRegistry().getAll().length );
-  }
-
-  private void assertResourceIsRegistered() {
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-    IResource[] resources = applicationContext.getResourceRegistry().get();
-    assertEquals( 1, resources.length );
-    assertEquals( TestResource.class, resources[ 0 ].getClass() );
-  }
-
-  private void assertBrandingIsRegistered() {
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-    AbstractBranding[] allBrandings = applicationContext.getBrandingManager().getAll();
-    assertEquals( 1, allBrandings.length );
-    assertEquals( TestBranding.class, allBrandings[ 0 ].getClass() );
   }
 }

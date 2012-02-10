@@ -237,6 +237,7 @@ public final class Fixture {
     disposeOfApplicationContext();
     disposeOfServletContext();
     unsetSystemProperties();
+    useDefaultResourceManager();
   }
 
 
