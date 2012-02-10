@@ -196,7 +196,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
       var statics = org.eclipse.swt.browser.Browser;
       var localDomain = statics.getDomain( document.URL );
       var srcDomain = domainUnkown ? null : statics.getDomain( this.getSource() );
-      var msg = "SecurityRestriction:\nBrowser-Widget can not access " 
+      var msg = "SecurityRestriction:\nBrowser-Widget can not access "; 
       msg +=   srcDomain !== null 
              ? "\"" + srcDomain + "\"" 
              : "unkown domain"; 
@@ -289,7 +289,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
           }
         }
         return result;
-      }
+      };
     },
 
     // [if] This wrapper function is a workaround for bug 332313
