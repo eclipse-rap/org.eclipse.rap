@@ -49,13 +49,13 @@ import org.eclipse.swt.internal.widgets.displaykit.ClientResources;
 public class ApplicationContext {
   // TODO [fappel]: this allows to set a fake double of the resource manager for testing purpose.
   //                Think about a less intrusive solution.
-  public static IResourceManager testResourceManager;
-  // TODO [fappel]: the testMode flag is used to ignore resource registration. Think about
+  static IResourceManager testResourceManager;
+  // TODO [fappel]: this flag is used to skip resource registration. Think about
   //                a less intrusive solution.
-  public static boolean ignoreResoureRegistration;
-  // TODO [fappel]: the testMode flag is used to ignore resource deletion. Think about
+  static boolean skipResoureRegistration;
+  // TODO [fappel]: this flag is used to skip resource deletion. Think about
   //                a less intrusive solution.
-  public static boolean ignoreResoureDeletion;
+  static boolean skipResoureDeletion;
   // TODO [fappel]: themeManager isn't final for performance reasons of the testsuite.
   //                TestServletContext#setAttribute(String,Object) will replace the runtime
   //                implementation with an optimized version for testing purpose. Think about
@@ -275,7 +275,7 @@ public class ApplicationContext {
     // Note: order is crucial here
     jsLibraryConcatenator.startJSConcatenation();
     themeManager.activate();
-    if( !ignoreResoureRegistration ) {
+    if( !skipResoureRegistration ) {
       new ClientResources( getResourceManager(), themeManager ).registerResources();
     }
     jsLibraryConcatenator.activate();
@@ -306,7 +306,7 @@ public class ApplicationContext {
     //                the resource manager factory is configurable. Is
     //                the latter really necessary since the only other factory
     //                in use is for testing purpose (unfortunately API).
-    if( !ignoreResoureDeletion ) {
+    if( !skipResoureDeletion ) {
       File resourcesDir = new File( configuration.getContextDirectory(),
                                     ResourceManagerImpl.RESOURCES );
       ApplicationContextUtil.delete( resourcesDir );

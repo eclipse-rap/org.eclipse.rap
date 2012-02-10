@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 EclipseSource and others.
+ * Copyright (c) 2002, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,12 +32,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.eclipse.rap.rwt.testfixture.internal.engine.ApplicationContextHelper;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.application.ApplicationConfiguration.OperationMode;
+import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.engine.RWTServletContextListener;
+import org.eclipse.rwt.internal.application.ApplicationContextHelper;
 import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
@@ -91,8 +91,8 @@ public final class Fixture {
 
   static {
     ThemeManagerHelper.replaceStandardResourceLoader();
-    setIgnoreResourceRegistration( usePerformanceOptimizations() );
-    setIgnoreResourceDeletion( usePerformanceOptimizations() );
+    setSkipResourceRegistration( usePerformanceOptimizations() );
+    setSkipResourceDeletion( usePerformanceOptimizations() );
   }
 
   private static ServletContext servletContext;
@@ -371,12 +371,12 @@ public final class Fixture {
     return Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS );
   }
 
-  public static void setIgnoreResourceDeletion( boolean usePerformanceOptimizations ) {
-    ApplicationContextHelper.setIgnoreResoureDeletion( usePerformanceOptimizations );
+  public static void setSkipResourceRegistration( boolean skip ) {
+    ApplicationContextHelper.setSkipResoureRegistration( skip );
   }
 
-  public static void setIgnoreResourceRegistration( boolean usePerformanceOptimizations ) {
-    ApplicationContextHelper.setIgnoreResoureRegistration( usePerformanceOptimizations );
+  public static void setSkipResourceDeletion( boolean skip ) {
+    ApplicationContextHelper.setSkipResoureDeletion( skip );
   }
 
   public static void copyTestResource( String resourceName, File destination ) throws IOException {

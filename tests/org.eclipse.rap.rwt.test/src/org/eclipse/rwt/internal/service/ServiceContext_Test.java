@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,13 +32,31 @@ import org.eclipse.swt.widgets.Display;
 
 
 public class ServiceContext_Test extends TestCase {
-  
+
   private SessionStoreImpl sessionStore;
   private ApplicationContext applicationContext;
 
+  @Override
+  protected void setUp() {
+    ApplicationConfigurator applicationConfigurator = mock( ApplicationConfigurator.class );
+    ServletContext servletContext = mock( ServletContext.class );
+    when( servletContext.getRealPath( anyString() ) ).thenReturn( "" );
+    applicationContext = new ApplicationContext( applicationConfigurator, servletContext );
+    Fixture.setSkipResourceRegistration( true );
+    sessionStore = new SessionStoreImpl( new TestSession() );
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    if( ContextProvider.hasContext() ) {
+      Fixture.disposeOfServiceContext();
+    }
+    Fixture.setSkipResourceDeletion( Fixture.usePerformanceOptimizations() );
+  }
+
   public void testGetApplicationContext() {
     ServiceContext context = createContext( applicationContext );
-    
+
     ApplicationContext foundInContext = context.getApplicationContext();
     ApplicationContext foundInSession = ApplicationContextUtil.get( sessionStore );
     assertSame( applicationContext, foundInContext );
@@ -48,42 +66,42 @@ public class ServiceContext_Test extends TestCase {
   public void testGetApplicationContextWithNullSessionStore() {
     sessionStore = null;
     ServiceContext context = createContext( applicationContext );
-    
+
     ApplicationContext found = context.getApplicationContext();
 
     assertSame( applicationContext, found );
   }
-  
+
   public void testGetApplicationContextFromSessionStore() {
     ServiceContext context = createContext();
     applicationContext.activate();
     ApplicationContextUtil.set( sessionStore, applicationContext );
 
     ApplicationContext found = context.getApplicationContext();
-    
+
     assertSame( applicationContext, found );
   }
-  
+
   public void testGetApplicationContextFromSessionStoreWithDeactivatedApplicationContext() {
     ServiceContext context = createContext();
     ApplicationContextUtil.set( sessionStore, applicationContext );
-    
+
     ApplicationContext found = context.getApplicationContext();
-    
+
     assertNull( found );
   }
-  
+
   public void testGetApplicationContextOnDisposedServiceContext() {
     ServiceContext context = createContext( null );
     context.dispose();
-    
+
     try {
       context.getApplicationContext();
       fail();
     } catch( IllegalStateException expected ) {
     }
   }
-  
+
   public void testGetApplicationContextFromBackgroundThread() throws Throwable {
     ServiceContext serviceContext = createContext( applicationContext );
     ContextProvider.setContext( serviceContext );
@@ -98,25 +116,10 @@ public class ServiceContext_Test extends TestCase {
         } );
       }
     };
-    
+
     Fixture.runInThread( runnable );
-    
+
     assertSame( ApplicationContextUtil.getInstance(), backgroundApplicationContext[ 0 ] );
-  }
-  
-  protected void setUp() {
-    ApplicationConfigurator applicationConfigurator = mock( ApplicationConfigurator.class );
-    ServletContext servletContext = mock( ServletContext.class );
-    when( servletContext.getRealPath( anyString() ) ).thenReturn( "" );
-    applicationContext = new ApplicationContext( applicationConfigurator, servletContext );
-    sessionStore = new SessionStoreImpl( new TestSession() );
-  }
-  
-  @Override
-  protected void tearDown() throws Exception {
-    if( ContextProvider.hasContext() ) {
-      Fixture.disposeOfServiceContext();
-    }
   }
 
   private ServiceContext createContext( ApplicationContext applicationContext ) {
