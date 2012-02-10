@@ -42,7 +42,7 @@ public class ServiceContext_Test extends TestCase {
     ServletContext servletContext = mock( ServletContext.class );
     when( servletContext.getRealPath( anyString() ) ).thenReturn( "" );
     applicationContext = new ApplicationContext( applicationConfigurator, servletContext );
-    Fixture.setSkipResourceRegistration();
+    Fixture.setSkipResourceRegistration( true );
     sessionStore = new SessionStoreImpl( new TestSession() );
   }
 

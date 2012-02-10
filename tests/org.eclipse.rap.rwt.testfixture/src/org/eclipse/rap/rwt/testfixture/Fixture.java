@@ -91,10 +91,8 @@ public final class Fixture {
 
   static {
     ThemeManagerHelper.replaceStandardResourceLoader();
-    if( isPerformanceOptimizationsEnabled() ) {
-      setSkipResourceRegistration();
-      setSkipResourceDeletion();
-    }
+    setSkipResourceRegistration( isPerformanceOptimizationsEnabled() );
+    setSkipResourceDeletion( isPerformanceOptimizationsEnabled() );
   }
 
   private static ServletContext servletContext;
@@ -370,16 +368,16 @@ public final class Fixture {
   ////////////////
   // general stuff
 
-  public static void setSkipResourceRegistration() {
-    ApplicationContextHelper.setSkipResoureRegistration( true );
+  public static void setSkipResourceRegistration( boolean skip ) {
+    ApplicationContextHelper.setSkipResoureRegistration( skip );
   }
 
   public static void resetSkipResourceRegistration() {
     ApplicationContextHelper.setSkipResoureRegistration( isPerformanceOptimizationsEnabled() );
   }
 
-  public static void setSkipResourceDeletion() {
-    ApplicationContextHelper.setSkipResoureDeletion( true );
+  public static void setSkipResourceDeletion( boolean skip ) {
+    ApplicationContextHelper.setSkipResoureDeletion( skip );
   }
 
   public static void resetSkipResourceDeletion() {
