@@ -51,7 +51,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       item.setTexts( [ "<b>Test</b>" ] );
       row.renderItem( item, tree._config, false, null );
       assertEquals( 2, row._getTargetNode().childNodes.length );
-      assertEquals( "<b>Test</b>", row._getTargetNode().childNodes[ 1 ].innerHTML );
+      assertEquals( "<b>test</b>", row._getTargetNode().childNodes[ 1 ].innerHTML.toLowerCase() );
       tree.destroy();
       row.destroy();
     },
