@@ -34,7 +34,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this._itemHeight = 20;
     this._visibleItemCount = 5;
     // Text field
-    this._field = new qx.ui.form.TextField();
+    this._field = new org.eclipse.rwt.BasicText();
     this._field.setTabIndex( null );
     this._field.setAllowStretchY( true );
     this.add( this._field );

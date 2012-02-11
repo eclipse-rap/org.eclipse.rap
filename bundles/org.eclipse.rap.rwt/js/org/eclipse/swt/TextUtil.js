@@ -257,7 +257,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       // [if] Workaround for bug 261611
       // [Text] Javascript error "text.getSelectionStart is not a function"
       // https://bugs.eclipse.org/bugs/show_bug.cgi?id=261611
-      if( text instanceof qx.ui.form.TextField ) {
+      if( text instanceof org.eclipse.rwt.BasicText ) {
         var widget = enclosingWidget != null ? enclosingWidget : text;
         var start = text.getSelectionStart();
         // TODO [rst] Quick fix for bug 258632

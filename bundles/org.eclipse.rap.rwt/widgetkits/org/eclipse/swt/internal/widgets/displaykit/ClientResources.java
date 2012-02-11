@@ -125,7 +125,7 @@ public final class ClientResources {
     "qx/io/remote/AbstractRemoteTransport.js",
     "qx/ui/layout/HorizontalBoxLayout.js",
     "qx/ui/form/Spinner.js",
-    "qx/ui/form/TextField.js",
+    "org/eclipse/rwt/widgets/BasicText.js",
     "qx/ui/layout/VerticalBoxLayout.js",
     "qx/ui/form/Button.js",
     "qx/util/range/Range.js",
