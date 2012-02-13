@@ -168,7 +168,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     // this function is also used by Combo.js
     _updateLineHeight : function( text ) {
       // TODO [rst] _inputElement can be undefined when text created invisible
-      if( text._inputElement !== undefined ) {
+      if( text._inputElement != null ) {
         var font = text.getFont();
         var height = Math.floor( font.getSize() * org.eclipse.swt.TextUtil.LINE_HEIGT_FACTOR );
         text._inputElement.style.lineHeight = height + "px";
