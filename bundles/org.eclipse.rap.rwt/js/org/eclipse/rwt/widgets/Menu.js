@@ -90,7 +90,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
       var result = false;
       switch( target.classname ) {
         case "org.eclipse.rwt.widgets.Text":
-        case "org.eclipse.rwt.BasicText":
+        case "org.eclipse.rwt.widgets.BasicText":
         case "qx.ui.form.TextArea":
           // NOTE: "enabled" can be "inherit", so it is not always a boolean
           if( target.getEnabled() != false ) {

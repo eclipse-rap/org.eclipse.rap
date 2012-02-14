@@ -66,7 +66,7 @@ qx.Class.define( "org.eclipse.rwt.System", {
     _applyPatches : function() {
       if( !org.eclipse.rwt.Client.supportsCss3() ) {
         qx.Class.patch( qx.ui.core.Parent, org.eclipse.rwt.GraphicsMixin );
-        qx.Class.patch( org.eclipse.rwt.BasicText, org.eclipse.rwt.GraphicsMixin );
+        qx.Class.patch( org.eclipse.rwt.widgets.BasicText, org.eclipse.rwt.GraphicsMixin );
         qx.Class.patch( org.eclipse.rwt.widgets.TreeRow, org.eclipse.rwt.GraphicsMixin );
         qx.Class.patch( org.eclipse.rwt.widgets.MultiCellWidget, org.eclipse.rwt.GraphicsMixin );
       } else {

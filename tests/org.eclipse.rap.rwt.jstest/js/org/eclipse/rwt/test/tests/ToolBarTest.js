@@ -573,6 +573,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     // Helper
     
     createDefaultToolBar : function() {
+      var shell = this.TestUtil.createShellByProtocol( "w2" );
       this.toolBar = new org.eclipse.rwt.widgets.ToolBar( false );
       this.toolItem1 = new org.eclipse.rwt.widgets.ToolItem( "push", false );
       this.toolItem2 = new org.eclipse.rwt.widgets.ToolItem( "push", false  );
@@ -586,11 +587,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.toolBar.addAt( this.separator, 2 );
       this.toolBar.addAt( this.toolItem3, 3 );
       this.toolItem2.setEnabled( false );
-      this.toolBar.addToDocument();
+      this.toolBar.setParent( shell );
       this.TestUtil.flush();
     },
     
     disposeToolBar : function() {
+      this.toolBar.getParent().destroy();
       this.toolBar.setParent( null );
       this.toolItem1.dispose();
       this.toolItem2.dispose();

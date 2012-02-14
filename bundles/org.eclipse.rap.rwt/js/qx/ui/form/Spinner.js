@@ -49,7 +49,7 @@
  *
  * @appearance spinner
  *
- * @appearance spinner-field {org.eclipse.rwt.BasicText}
+ * @appearance spinner-field {org.eclipse.rwt.widgets.BasicText}
  *
  * @appearance spinner-button-up {qx.ui.basic.Image}
  * @state pressed {spinner-button-up}
@@ -84,7 +84,7 @@ qx.Class.define("qx.ui.form.Spinner",
     // ************************************************************************
     //   TEXTFIELD
     // ************************************************************************
-    this._textfield = new org.eclipse.rwt.BasicText;
+    this._textfield = new org.eclipse.rwt.widgets.BasicText;
     this._textfield.setBorder(null);
     this._textfield.setWidth("1*");
     this._textfield.setAllowStretchY(true);

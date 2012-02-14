@@ -17,7 +17,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Text", {
     org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );
     org.eclipse.rwt.protocol.AdapterUtil.setParent( result, properties.parent );
-    org.eclipse.swt.TextUtil.initialize( result );
     if( styleMap.RIGHT ) {
       result.setTextAlign( "right" );
     } else if( styleMap.CENTER ) {
@@ -60,7 +59,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Text", {
     "selection" : function( widget, value ) {
       var start = value[ 0 ];
       var length = value[ 1 ] - value[ 0 ];
-      org.eclipse.swt.TextUtil.setSelection( widget, start, length );
+      widget.setSelection( start, length );
     },
     "textLimit" : function( widget, value ) {
       widget.setMaxLength( value );

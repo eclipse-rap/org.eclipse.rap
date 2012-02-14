@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.BasicText", {
+qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
 
   extend : qx.ui.basic.Terminator,
 
@@ -30,6 +30,7 @@ qx.Class.define( "org.eclipse.rwt.BasicText", {
     this.addEventListener( "input", this._oninput );
     this.addEventListener( "keydown", this._onkeydown );
     this.addEventListener( "keypress", this._onkeypress );
+    this._updateLineHeight();
   },
 
   destruct : function() {
@@ -99,6 +100,7 @@ qx.Class.define( "org.eclipse.rwt.BasicText", {
   },
 
   members : {
+    _LINE_HEIGT_FACTOR : 1.2,
     _inputTag : "input",
     _inputType : "text",
     _inputElement : null,
@@ -359,6 +361,7 @@ qx.Class.define( "org.eclipse.rwt.BasicText", {
         this._renderTextShadow();
         this._textInit();
         this._getTargetNode().appendChild( this._inputElement );
+        this._updateLineHeight();
       }
     },
 
@@ -381,7 +384,7 @@ qx.Class.define( "org.eclipse.rwt.BasicText", {
         this._inputElement.onpropertychange = this.__oninput;
       }
     } ),
-    
+
     _webkitMultilineFix : function(){
       this.addEventListener( "keydown", this._preventEnter, this );
       this.addEventListener( "keypress", this._preventEnter, this );
@@ -503,6 +506,7 @@ qx.Class.define( "org.eclipse.rwt.BasicText", {
 
     _applyFont : function( value, old ) {
       this._styleFont( value );
+      this._updateLineHeight();
     },
 
     _styleFont : function( value ) {
@@ -517,6 +521,14 @@ qx.Class.define( "org.eclipse.rwt.BasicText", {
         } else {
           qx.ui.core.Font.resetElement( this._inputElement );
         }
+      }
+    },
+
+    _updateLineHeight : function() {
+      if( this._inputElement != null ) {
+        var font = this.getFont();
+        var height = Math.floor( font.getSize() * this._LINE_HEIGT_FACTOR );
+        this._inputElement.style.lineHeight = height + "px";
       }
     },
 

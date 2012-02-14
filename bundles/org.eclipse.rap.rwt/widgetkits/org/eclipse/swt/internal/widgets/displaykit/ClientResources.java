@@ -234,7 +234,6 @@ public final class ClientResources {
     "org/eclipse/rwt/widgets/ToolBar.js",
     "org/eclipse/rwt/widgets/ToolBarAdapter.js",
     "org/eclipse/rwt/widgets/ToolItemAdapter.js",
-    "org/eclipse/swt/TextUtil.js",
     "org/eclipse/swt/widgets/Scale.js",
     "org/eclipse/swt/widgets/ScaleAdapter.js",
     "org/eclipse/rwt/widgets/ToolSeparator.js",

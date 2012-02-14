@@ -34,7 +34,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this._itemHeight = 20;
     this._visibleItemCount = 5;
     // Text field
-    this._field = new org.eclipse.rwt.BasicText();
+    this._field = new org.eclipse.rwt.widgets.BasicText();
     this._field.setTabIndex( null );
     this._field.setAllowStretchY( true );
     this.add( this._field );
@@ -174,7 +174,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           this._list.addState( "rwt_BORDER" );
         }
         this.getTopLevelWidget().add( this._list );
-      org.eclipse.swt.TextUtil._updateLineHeight( this._field );
     },
     
     _onFocusIn : function( evt ) {
@@ -202,7 +201,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       for( var i = 0; i < items.length; i++ ) {
         items[ i ].setFont( value );
       }
-      org.eclipse.swt.TextUtil._updateLineHeight( this._field );
     },
 
     _onChangeTextColor : function( evt ) {

@@ -227,7 +227,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     testTextFocus : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = new org.eclipse.rwt.widgets.Text( false );
-      org.eclipse.swt.TextUtil.initialize( text );
       text.addToDocument();
       TestUtil.flush();
       assertFalse( text.isFocused() );

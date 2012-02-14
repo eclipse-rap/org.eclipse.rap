@@ -505,7 +505,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = new org.eclipse.rwt.widgets.Text( false );
       text.addToDocument();
-      org.eclipse.swt.TextUtil.initialize( text );
       text.setSpace( 0, 50, 0, 21 );
       TestUtil.flush();
       text.focus();

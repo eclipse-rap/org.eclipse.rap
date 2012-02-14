@@ -312,7 +312,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.protocolListen( "w3", { "modify" : true } );
       text = ObjectManager.getObject( "w3" );
       assertTrue( text.hasModifyListener() );
-      assertTrue( org.eclipse.swt.TextUtil.hasVerifyOrModifyListener( text ) );
     },
 
     testSetHasVerifyListenerByProtocol : function() {
@@ -328,7 +327,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.protocolListen( "w3", { "verify" : true } );
       text = ObjectManager.getObject( "w3" );
       assertTrue( text.hasVerifyListener() );
-      assertTrue( org.eclipse.swt.TextUtil.hasVerifyOrModifyListener( text ) );
     },
 
     testSetTextByProtocol : function() {
@@ -376,7 +374,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       createText();
       text.setValue( "asdfjkloe" );
 
-      org.eclipse.swt.TextUtil.setSelection( text, 2, 3 );
+      text.setSelection( 2, 3 );
 
       assertEquals( 2, text.getSelectionStart() );
       assertEquals( 3, text.getSelectionLength() );
@@ -386,7 +384,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     testRestoreSelectionOnTabFocus : function() {
       createText();
       text.setValue( "asdfjkloe" );
-      org.eclipse.swt.TextUtil.setSelection( text, 2, 3 );
+      text.setSelection( 2, 3 );
       text.blur();
       
       text.focus();
@@ -403,7 +401,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         createText( true );
         text.setValue( "asdfjkloe" );
   
-        org.eclipse.swt.TextUtil.setSelection( text, 2, 3 );
+        text.setSelection( 2, 3 );
         TestUtil.flush();
   
         assertEquals( 2, text.getSelectionStart() );
@@ -418,7 +416,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       createText( true );
       text.setValue( "asdfjkloe" );
 
-      org.eclipse.swt.TextUtil.setSelection( text, 2, 3 );
+      text.setSelection( 2, 3 );
       TestUtil.flush();
       text.focus();
 
@@ -1008,7 +1006,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 var createText = function( noflush, arg ) {
   text = new org.eclipse.rwt.widgets.Text( arg ? arg : false );
   ObjectManager.add( "w3", text, null );
-  org.eclipse.swt.TextUtil.initialize( text );
   text.setParent( shell );
   if( noflush !== true ) {
     TestUtil.flush();
