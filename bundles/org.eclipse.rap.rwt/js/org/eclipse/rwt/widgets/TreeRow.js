@@ -71,12 +71,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     getTargetIdentifier : function( event ) {
       var node = event.getDomTarget();
       var result = "other";
-      if( this._treeColumnElements.indexOf( node ) != -1 ) {
-        result = "treeColumn";
-      } else if( this._expandElement !== null && this._expandElement === node ) {
+      if( this._expandElement !== null && this._expandElement === node ) {
         result = "expandIcon";
       } else if( this._checkBoxElement !== null && this._checkBoxElement === node ) {
-        result = "checkBox";        
+        result = "checkBox";
+      } else {
+        while( node !== this.getElement() && result === "other" ) {
+          if( this._treeColumnElements.indexOf( node ) != -1 ) {
+            result = "treeColumn";
+          }
+          node = node.parentNode;
+        }
       }
       return result;
     },
