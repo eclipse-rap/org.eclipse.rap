@@ -27,6 +27,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     this._hasSelectionListener = false;
     this._hasModifyListener = false;
     this._hasVerifyListener = false;
+    this._message = null;
+    this._messageElement = null;
+  },
+  
+  destruct : function() {
+    this._messageElement = null;
+    this.__oninput = null;
+    this._ontabfocus = null; // TODO [tb] : remove when no longer needed
   },
 
   properties : {
@@ -41,6 +49,67 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
 
   members : {
     
+    //////
+    // API
+    
+    setMessage : function( value ) {
+      if( this._inputTag !== "textarea" ) {
+        this._message = value;
+        this._updateMessage();
+      }
+    },
+    
+    getMessage : function() {
+      return this._message;
+    },
+    
+    setPasswordMode : function( value ) {
+      var type = value ? "password" : "text";
+      if( this._inputTag != "textarea" && this._inputType != type ) {
+        this._inputType = type;
+        if( this._isCreated ) {
+          if( org.eclipse.rwt.Client.getEngine() === "mshtml" ) {
+            this._reCreateInputField();
+          } else {
+            this._inputElement.type = this._inputType;
+          }        
+        }
+      }
+    },
+
+    setHasSelectionListener : function( value ) {
+      if( !this.hasState( "rwt_MULTI" ) ) {
+        this._hasSelectionListener = value;
+      }
+    },
+
+    hasSelectionListener : function() {
+      // Emulate SWT (on Windows) where a default button takes precedence over
+      // a SelectionListener on a text field when both are on the same shell.
+      var shell = org.eclipse.rwt.protocol.AdapterUtil.getShell( this );
+      var defButton = shell.getDefaultButton();
+      // TODO [rst] On GTK, the SelectionListener is also off when the default
+      //      button is invisible or disabled. Check with Windows and repair.
+      var hasDefaultButton = defButton != null && defButton.isSeeable();
+      return !hasDefaultButton && this._hasSelectionListener;
+    },
+
+    setHasModifyListener : function( value ) {
+      this._hasModifyListener = value;
+    },
+
+    hasModifyListener : function() {
+      return this._hasModifyListener;
+    },
+
+    setHasVerifyListener : function( value ) {
+      this._hasVerifyListener = value;
+    },
+
+    hasVerifyListener : function() {
+      return this._hasVerifyListener;
+    },
+    
     ///////////////////
     // textarea support
     
@@ -51,6 +120,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       }
       // Fix for bug 306354
       this._inputElement.style.paddingRight = "1px";
+      this._updateMessage();
     },
 
     _webkitMultilineFix : function() {
@@ -128,20 +198,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     ///////////////////
     // password support
     
-    setPasswordMode : function( value ) {
-      var type = value ? "password" : "text";
-      if( this._inputTag != "textarea" && this._inputType != type ) {
-        this._inputType = type;
-        if( this._isCreated ) {
-          if( org.eclipse.rwt.Client.getEngine() == "mshtml" ) {
-            this._reCreateInputField();
-          } else {
-            this._inputElement.type = this._inputType;
-          }        
-        }
-      }
-    },
-    
     _reCreateInputField : function() {
       var selectionStart = this.getSelectionStart();
       var selectionLength = this.getSelectionLength();
@@ -157,42 +213,114 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       this.setSelectionStart( selectionStart );
       this.setSelectionLength( selectionLength );
     },
-
-    ///////////////////
-    // events listeners
-
-    setHasSelectionListener : function( value ) {
-      if( !this.hasState( "rwt_MULTI" ) ) {
-        this._hasSelectionListener = value;
+    
+    //////////////////
+    // message support
+    
+    _postApply : function() {
+      this.base( arguments );
+      this._layoutMessage();
+    },
+    
+    _applyValue : function( newValue, oldValue ) {
+      this.base( arguments, newValue, oldValue );
+      this._updateMessageVisibility();
+    },
+    
+    _applyFocused : function( newValue, oldValue ) {
+      this.base( arguments, newValue, oldValue );
+      this._updateMessageVisibility();
+      if( newValue && ( this.getValue() === "" || this.getValue() == "" ) ) {
+        this._forceFocus(); 
       }
     },
-
-    hasSelectionListener : function() {
-      // Emulate SWT (on Windows) where a default button takes precedence over
-      // a SelectionListener on a text field when both are on the same shell.
-      var shell = org.eclipse.rwt.protocol.AdapterUtil.getShell( this );
-      var defButton = shell.getDefaultButton();
-      // TODO [rst] On GTK, the SelectionListener is also off when the default
-      //      button is invisible or disabled. Check with Windows and repair.
-      var hasDefaultButton = defButton != null && defButton.isSeeable();
-      return !hasDefaultButton && this._hasSelectionListener;
+    
+    _forceFocus : qx.core.Variant.select( "qx.client", {
+      "mshtml" : function() {
+        qx.client.Timer.once( function() {
+          if( this._inputElement ) {
+            this._inputElement.select();
+            this._inputElement.focus();
+          }
+        }, this, 1 );
+      },
+      "webkit" : function() {
+        qx.client.Timer.once( function() {
+          if( this._inputElement ) {
+            this._inputElement.focus();
+          }
+        }, this, 1 );
+      },
+      "default" : function() {
+        // nothing to do
+      }
+    } ),
+    
+    _applyCursor : function( newValue, oldValue ) {
+      this.base( arguments, newValue, oldValue );
+      this._renderMessageCursor();
     },
-
-    setHasModifyListener : function( value ) {
-      this._hasModifyListener = value;
+    
+    _updateMessage : function() {
+      if( this._isCreated ) {
+        if( this._message != null && this._message !== "" && this._messageElement == null ) {
+          this._messageElement = document.createElement( "div" );
+          var style = this._messageElement.style;
+          style.position = "absolute";
+          style.outline = "none";
+          var styleMap = this._getMessageStyle();
+          styleMap.font.renderStyle( style );          
+          style.color = styleMap.textColor || "";
+          style.left = styleMap.paddingLeft + "px";
+          style.height = Math.round( styleMap.font.getSize() * 1.2 ) + "px";
+          org.eclipse.rwt.HtmlUtil.setTextShadow( this._messageElement, styleMap.textShadow ); 
+          this._getTargetNode().insertBefore( this._messageElement, this._inputElement );
+        }
+        if( this._messageElement ) {
+          this._messageElement.innerHTML = this._message ? this._message : "";
+        }
+        this._layoutMessage();
+        this._renderMessageCursor();
+        this._updateMessageVisibility();
+      }
     },
-
-    hasModifyListener : function() {
-      return this._hasModifyListener;
+    
+    _layoutMessage : function() {
+      if( this._messageElement ) {
+        var styleMap = this._getMessageStyle();
+        var style = this._messageElement.style;
+        style.width = (   this.getBoxWidth() 
+                        - this._cachedBorderLeft 
+                        - this._cachedBorderRight 
+                        - styleMap.paddingLeft 
+                        - styleMap.paddingRight ) + "px";
+        var messageHeight = parseInt( style.height );
+        style.top = Math.round( this.getInnerHeight() / 2 - messageHeight / 2 ) + "px";
+      }
     },
-
-    setHasVerifyListener : function( value ) {
-      this._hasVerifyListener = value;
+    
+    _getMessageStyle : function() {
+      var manager = qx.theme.manager.Appearance.getInstance();
+      return manager.styleFrom( "text-field-message", {} );
     },
-
-    hasVerifyListener : function() {
-      return this._hasVerifyListener;
+    
+    _updateMessageVisibility : function() {
+      if( this._messageElement ) {
+        var visible = ( this.getValue() == null || this.getValue() === "" ) && !this.getFocused(); 
+        this._messageElement.style.display = visible ? "" : "none";
+      }
+    },
+    
+    _renderMessageCursor : function() {
+      if( this._messageElement ) {
+        var cursor = this._inputElement.style.cursor;
+        if( cursor == null || cursor === "" ) {
+          cursor = "text";
+        }
+        this._messageElement.style.cursor = cursor;
+      }
     }
+
 
   }
 

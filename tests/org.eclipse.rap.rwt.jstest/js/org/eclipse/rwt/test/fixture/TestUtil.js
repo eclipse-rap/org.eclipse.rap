@@ -872,11 +872,13 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   /**
    * Ensures that the given object has no other objects as a fields
    */
-  hasNoObjects : function( object ) {
+  hasNoObjects : function( object, ownProperty ) {
     var result = true;
     for( var key in object ) {
       if( object[ key ] instanceof Object ) {
-        result = false;
+        if( !ownProperty || object.hasOwnProperty( key ) ) {
+          result = false;
+        }
       }
     }
     return result;

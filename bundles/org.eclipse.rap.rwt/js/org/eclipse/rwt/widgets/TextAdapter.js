@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Text", {
   },
 
   destructor : function( widget ) {
-    org.eclipse.swt.TextUtil.disposeMessageLabel( widget);
     org.eclipse.rwt.protocol.AdapterUtil.getControlDestructor()( widget );
   },
 
@@ -49,11 +48,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Text", {
         text = EncodingUtil.replaceNewLines( text, " " );
       }
       widget.setValue( text );
-    },
-    "message" : function( widget, value ) {
-      if( !widget.hasState( "rwt_MULTI" ) ) {
-        org.eclipse.swt.TextUtil.setMessage( widget, value );
-      }
     },
     "echoChar" : function( widget, value ) {
       if( !widget.hasState( "rwt_MULTI" ) ) {

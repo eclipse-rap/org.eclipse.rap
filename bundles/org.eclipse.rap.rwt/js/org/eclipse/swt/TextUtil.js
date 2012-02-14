@@ -87,7 +87,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       text.addEventListener( "changeValue", org.eclipse.swt.TextUtil._onTextChange );
       text.addEventListener( "changeFont", org.eclipse.swt.TextUtil._onFontChange, text );
       text.addEventListener( "focus", org.eclipse.swt.TextUtil._onFocus, text );
-      text.addEventListener( "blur", org.eclipse.swt.TextUtil._onBlur, text );
       org.eclipse.swt.TextUtil._updateLineHeight( text );
       var length = text.getUserData( "selectionLength" );
       if( length !== null && length !== 0 ) {
@@ -134,13 +133,16 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     _onKeyUp : function( event ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var text = event.getTarget();
-        org.eclipse.swt.TextUtil._handleSelectionChange( text );
+        if( event.getKeyIdentifier() == "Tab" ) {
+          org.eclipse.swt.TextUtil._doSetSelection( text );
+        } else {
+          org.eclipse.swt.TextUtil._handleSelectionChange( text );
+        }
       }
     },
 
     _onTextChange : function( event ) {
       var text = event.getTarget();
-      org.eclipse.swt.TextUtil._updateMessageLabel( text );
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         org.eclipse.swt.TextUtil._handleModification( text );
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
@@ -154,17 +156,11 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 
     _onFocus : function( event ) {
       var text = event.getTarget();
-      org.eclipse.swt.TextUtil._updateMessageLabel( text );
       if( !qx.event.handler.FocusHandler.mouseFocus ) {
         org.eclipse.swt.TextUtil._doSetSelection( text );
       }
     },
     
-    _onBlur : function( event ) {
-      var text = event.getTarget();      
-      org.eclipse.swt.TextUtil._updateMessageLabel( text );
-    },
-
     // this function is also used by Combo.js
     _updateLineHeight : function( text ) {
       // TODO [rst] _inputElement can be undefined when text created invisible
@@ -281,81 +277,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
           org.eclipse.swt.WidgetUtil.setPropertyParam( widget, "selectionLength", length );
         }
       }
-    },
-    
-    //////////////////////////////////////////
-    // Functions to maintain the message label
-    
-    _createMessageLabel : function( text, message ) {
-      var label = new qx.ui.basic.Atom( message );
-      label.setAppearance( "text-field-message" );
-      label.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
-      label.addEventListener( "mousedown",
-                              org.eclipse.swt.TextUtil._onMessageLabelMouseDown,
-                              text );
-      label.setParent( text.getParent() );      
-      text.addEventListener( "changeZIndex",
-                             org.eclipse.swt.TextUtil._onTextPropertyChange,
-                             text );
-      text.addEventListener( "changeVisibility",
-                             org.eclipse.swt.TextUtil._onTextPropertyChange,
-                             text );
-      text.addEventListener( "changeLeft",
-                             org.eclipse.swt.TextUtil._onTextPropertyChange,
-                             text );
-      text.addEventListener( "changeTop",
-                             org.eclipse.swt.TextUtil._onTextPropertyChange,
-                             text );
-      text.addEventListener( "changeWidth",
-                             org.eclipse.swt.TextUtil._onTextPropertyChange,
-                             text );
-      text.addEventListener( "changeHeight",
-                             org.eclipse.swt.TextUtil._onTextPropertyChange,
-                             text );
-      text.setUserData( "messageLabel", label );
-    },
-    
-    _updateMessageLabel : function( text ) {
-      var label = text.getUserData( "messageLabel" );
-      if( label != null ) {
-        label.setLeft( text.getLeft() );
-        label.setTop( text.getTop() );
-        label.setWidth( text.getWidth() );
-        label.setHeight( text.getHeight() );
-        label.setZIndex( text.getZIndex() + 1 );
-        var visible =    text.getVisibility()
-                      && text.getValue() === ""
-                      && !text.getFocused();
-        label.setVisibility( visible );
-      }
-    },
-    
-    disposeMessageLabel : function( text ) {
-      var label = text.getUserData( "messageLabel" );
-      if( label != null ) {
-        label.setParent( null );
-        label.destroy();
-      }
-    },
-    
-    setMessage : function( text, message ) {
-      var label = text.getUserData( "messageLabel" );
-      if( label == null ) {
-        org.eclipse.swt.TextUtil._createMessageLabel( text, message );
-        org.eclipse.swt.TextUtil._updateMessageLabel( text );
-      } else {
-        label.setLabel( message );
-      }
-    },
-    
-    _onMessageLabelMouseDown : function( event ) {
-      this.focus();
-    },
-    
-    _onTextPropertyChange : function( event ) {
-      var text = event.getTarget();
-      org.eclipse.swt.TextUtil._updateMessageLabel( text );
     }
 
   }
-});
+} );

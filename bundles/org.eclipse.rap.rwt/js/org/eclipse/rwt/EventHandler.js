@@ -476,7 +476,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
         var e = EventHandlerUtil.getDomEvent( arguments );
         var target = EventHandlerUtil.getOriginalTargetObjectFromEvent( e );
-        while( target )       {
+        while( target ) {
           if( target.getSelectable() != null ) {
             if ( !target.getSelectable() ) {
               EventHandlerUtil.stopDomEvent( e );

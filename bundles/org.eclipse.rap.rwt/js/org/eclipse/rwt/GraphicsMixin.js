@@ -10,6 +10,12 @@
  ******************************************************************************/
 
 qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
+  
+  destruct : function() {
+    this._gfxProperties = null;
+    this._gfxData = null;
+    this._gfxCanvas = null;
+  },
 
   statics : {
 

@@ -15,6 +15,7 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Processor = org.eclipse.rwt.protocol.Processor;
 var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
 var Font = qx.ui.core.Font;
+var Border = org.eclipse.rwt.Border;
 var Client = org.eclipse.rwt.Client;
 var Request = org.eclipse.swt.Request;
 
@@ -111,11 +112,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         }
       } );
       text = ObjectManager.getObject( "w3" );
-      var messageLabel = text.getUserData( "messageLabel" );
-      assertTrue( messageLabel instanceof qx.ui.basic.Atom );
-      assertEquals( "text-field-message", messageLabel.getAppearance() );
-      assertIdentical( text.getParent(), messageLabel.getParent() );
-      messageLabel.destroy();
+      assertEquals( "some text", text.getMessage() );
     },
 
     testSetMessageOnMultiByProtocol : function() {
@@ -145,12 +142,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         }
       } );
       text = ObjectManager.getObject( "w3" );
-      var messageLabel = text.getUserData( "messageLabel" );
+
       Processor.processOperation( {
         "target" : "w3",
         "action" : "destroy"
       } );
-      assertNull( messageLabel.getParent() );
+
       assertNull( text.getParent() );
     },
 
@@ -368,7 +365,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       if( !org.eclipse.rwt.Client.supportsCss3() ) {
         createText();
         text.setPadding( 3 );
-        text.setBorder( new org.eclipse.rwt.Border( 1, "rounded", "black", 0 ) );
+        text.setBorder( new Border( 1, "rounded", "black", 0 ) );
         TestUtil.flush();
         assertEquals( "", text._style.paddingLeft );
         assertEquals( "3px", text._innerStyle.paddingLeft );
@@ -378,7 +375,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     testSetSelection : function() {
       createText();
       text.setValue( "asdfjkloe" );
+
       org.eclipse.swt.TextUtil.setSelection( text, 2, 3 );
+
+      assertEquals( 2, text.getSelectionStart() );
+      assertEquals( 3, text.getSelectionLength() );
+    },
+
+
+    testRestoreSelectionOnTabFocus : function() {
+      createText();
+      text.setValue( "asdfjkloe" );
+      org.eclipse.swt.TextUtil.setSelection( text, 2, 3 );
+      text.blur();
+      
+      text.focus();
+      text.setSelectionLength( 0 ); // browser does that on tab keyup
+      TestUtil.keyUp( text, "Tab" );
+
+
       assertEquals( 2, text.getSelectionStart() );
       assertEquals( 3, text.getSelectionLength() );
     },
@@ -591,7 +606,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "style" : function( states ) {
             return {
               "shadow" : [ false, 0, 0, 0, 0, "red", 0 ],
-              "border" : new org.eclipse.rwt.Border( 3, "solid", "green" )
+              "border" : new Border( 3, "solid", "green" )
             };
           }
         } );
@@ -764,16 +779,209 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertTrue( TestUtil.getMessage().indexOf( "w3.text=barfoo" ) !== -1 );
     },
 
-//    TODO [tb] : re-implement feature on DOM level.
-//
-//    testSetMessageCreatesLabel : function() {
-//      createText();
-//
-//      org.eclipse.swt.TextUtil.setMessage( text, "konnichiwa" );
-//
-//      var element = text.getElement().lastChild;
-//      assertEquals( "konnichiwa", element.innerHTML );
-//    },
+    testSetMessageCreatesLabel : function() {
+      createText();
+
+      text.setMessage( "konnichiwa" );
+
+      var element = text._getTargetNode().firstChild;
+      assertEquals( "konnichiwa", element.innerHTML );
+    },
+
+    testSetMessageOnMulti : function() {
+      createText( false, true );
+
+      text.setMessage( "konnichiwa" );
+
+      assertEquals( 1, text._getTargetNode().childNodes.length );
+    },
+
+    testSetMessageBeforeCreate : function() {
+      createText( true );
+
+      text.setMessage( "konnichiwa" );
+      TestUtil.flush();
+
+      var element = text._getTargetNode().firstChild;
+      assertEquals( "konnichiwa", element.innerHTML );
+    },
+
+    testSetMessageTwice : function() {
+      createText();
+
+      text.setMessage( "konnichiwa" );
+      var element = text._getTargetNode().firstChild;
+      text.setMessage( "arigatto" );
+
+      var elementAgain = text._getTargetNode().firstChild;
+      assertIdentical( element, elementAgain );
+      assertEquals( "arigatto", element.innerHTML );
+    },
+
+    testSetMessageToNull : function() {
+      createText();
+
+      text.setMessage( "konnichiwa" );
+      var element = text._getTargetNode().firstChild;
+      text.setMessage( null );
+
+      var elementAgain = text._getTargetNode().firstChild;
+      assertIdentical( element, elementAgain );
+      assertEquals( "", element.innerHTML );
+    },
+
+    testMessageLabelDefaultProperties : function() {
+      createText();
+
+      text.setMessage( "konnichiwa" );
+
+      var style = text._getTargetNode().firstChild.style;
+      assertEquals( "absolute", style.position );
+      if( !Client.isMshtml() ) {
+        assertTrue( style.outline.indexOf( "none" ) !== -1 );
+      }
+    },
+
+    testMessageLabelSetCursor : function() {
+      createText();
+      text.setMessage( "bla" );
+
+      text.setCursor( "wait" );
+
+      var style = text._getTargetNode().firstChild.style;
+      assertEquals( "wait", style.cursor );
+    },
+
+    testMessageLabelSetCursorBeforeCreate : function() {
+      createText( true );
+      text.setMessage( "bla" );
+
+      text.setCursor( "wait" );
+      TestUtil.flush();
+
+      var style = text._getTargetNode().firstChild.style;
+      assertEquals( "wait", style.cursor );
+    },
+
+    testMessageLabelThemingProperties : function() {
+      createText( true );
+      text.setMessage( "konnichiwa" );
+      text.setWidth( 100 );
+      text.setHeight( 30 );
+
+      TestUtil.fakeAppearance( "text-field-message", {
+        "style" : function( states ) {
+          var result = {};
+          result.font = new Font( 10 );
+          result.textColor = "red";
+          result.paddingRight = 4;
+          result.paddingLeft = 3;
+          result.textShadow = [ false, 0, 3, 0, 0, "red", 0 ];
+          return result;
+        }      
+      } );
+      TestUtil.flush();
+
+      var style = text._getTargetNode().firstChild.style;
+      assertEquals( "10px", style.fontSize );
+      assertEquals( "red", style.color );
+      if( Client.isGecko() || Client.isWebkit() ) {
+        assertTrue( style.textShadow.indexOf( "3px" ) != -1 );
+      }
+      assertEquals( "3px", style.left );
+      assertEquals( "93px", style.width );
+      assertEquals( "9px", style.top );
+      assertEquals( "12px", style.height );
+    },
+
+    testMessageLabelResize : function() {
+      createText( true );
+      text.setMessage( "konnichiwa" );
+      text.setWidth( 100 );
+      text.setHeight( 30 );
+      TestUtil.fakeAppearance( "text-field-message", {
+        "style" : function( states ) {
+          var result = {};
+          result.font = new Font( 10 );
+          result.textColor = "red";
+          result.paddingRight = 4;
+          result.paddingLeft = 3;
+          result.textShadow = [ false, 0, 3, 0, 0, "red", 0 ];
+          return result;
+        }      
+      } );
+      TestUtil.flush();
+
+      text.setWidth( 120 );
+      text.setHeight( 50 );
+      TestUtil.flush();
+
+      var style = text._getTargetNode().firstChild.style;
+      assertEquals( "113px", style.width );
+      assertEquals( "19px", style.top );
+    },
+
+    testMessageAppearsOnBlur : function() {
+      createText();
+      text.setMessage( "xxx" );
+      text.setValue( "" );
+      var element = text._getTargetNode().firstChild;
+      assertEquals( "none", element.style.display );
+
+      text.blur();
+
+      assertEquals( "", element.style.display );
+    },
+
+    testMessageAppearsOnEmptyText : function() {
+      createText();
+      text.setMessage( "xxx" );
+      text.setValue( "foo" );
+      var element = text._getTargetNode().firstChild;
+      text.blur();
+      assertEquals( "none", element.style.display );
+
+      text.setValue( "" );
+
+      assertEquals( "", element.style.display );
+    },
+
+    testMessageDisappearsOnFocus : function() {
+      createText();
+      text.setMessage( "xxx" );
+      text.setValue( "" );
+      var element = text._getTargetNode().firstChild;
+      text.blur();
+      assertEquals( "", element.style.display );
+
+      text.focus();
+
+      assertEquals( "none", element.style.display );
+    },
+
+    testMessageDisappearsOnSetText : function() {
+      createText();
+      text.setMessage( "xxx" );
+      text.setValue( "" );
+      var element = text._getTargetNode().firstChild;
+      text.blur();
+      assertEquals( "", element.style.display );
+
+      text.setValue( "foo" );
+
+      assertEquals( "none", element.style.display );
+    },
+
+    testDisposeText : function() {
+      createText();
+      text.setMessage( "xxx" );
+
+      text.destroy();
+      TestUtil.flush();
+
+      assertTrue( TestUtil.hasNoObjects( text, true ) );
+      text = null;
+    },
 
     /////////
     // Helper
