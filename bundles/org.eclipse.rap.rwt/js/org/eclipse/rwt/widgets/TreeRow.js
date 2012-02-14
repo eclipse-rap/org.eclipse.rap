@@ -340,7 +340,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       // NOTE [tb] : When scrolling in Firefox, it may happen that the text
       //             becomes temorarily invisible. This is a browser-bug
       //             that ONLY occurs when Firebug is installed.
-      var text = item.getText( cell );
+      var text = item.getText( cell, config.markupEnabled );
       var element = null;
       if( text !== "" ) {
         element = this._getTextElement( 3 );
@@ -353,9 +353,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
           element.style.textAlign = "left";
         } else {
           element.style.textAlign = this._getAlignment( cell, config );
-        }
-        if( !config.markupEnabled ) {
-          text = org.eclipse.rwt.protocol.EncodingUtil.escapeText( text, false );
         }
         element.innerHTML = text;
         this._setForeground( element, this._getCellColor( item, cell, config ) );
@@ -407,7 +404,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
 
     _getVisualTextWidth : function( item, cell, config ) {
-      var text = item.getText( cell );
+      var text = item.getText( cell, config.markupEnabled );
       var font = this._getCellFont( item, cell, config );
       var fontProps = this._getFontProps( font );
       var calc = org.eclipse.swt.FontSizeCalculation;

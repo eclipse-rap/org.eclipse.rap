@@ -119,9 +119,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       this._update( "content" );
     },
 
-    getText : function( column ) {
+    getText : function( column, asMarkup ) {
       var result = this._texts[ column ];
-      return ( typeof result ) === "string" ? result : "";
+      if( ( typeof result ) === "string" ) {
+        var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+        if( !asMarkup ) {
+          result = EncodingUtil.escapeText( result, false );
+        }
+        result = EncodingUtil.replaceWhiteSpaces( result );
+      } else {
+        result = "";
+      }
+      return result;
     },
 
     setFont : function( font ) {
@@ -472,7 +481,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     
     /////////
     // Helper
-    
+
     _computeVisibleChildrenCount : function() {
       // NOTE: Caching this value speeds up creating and scrolling the tree considerably
       var result = 0;

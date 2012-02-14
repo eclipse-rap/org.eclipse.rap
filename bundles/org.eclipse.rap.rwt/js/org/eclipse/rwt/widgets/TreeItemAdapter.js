@@ -40,13 +40,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.TreeItem", {
   ],
 
   propertyHandler : {
-    "texts" : function( widget, value ) {
-      var texts = value;
-      for( var i = 0; i < value.length; i++ ) {
-        texts[ i ] = org.eclipse.rwt.protocol.EncodingUtil.replaceWhiteSpaces( texts[ i ] );
-      }
-      widget.setTexts( texts );
-    },
     "images" : function( widget, value ) {
       var images = [];
       for( var i = 0; i < value.length; i++ ) {

@@ -106,7 +106,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( "1", item.getText( 0 ) );
-      assertEquals( "2&<&nbsp; >\"", item.getText( 1 ) );
+      assertEquals( "2&amp;&lt;&nbsp; &gt;&quot;", item.getText( 1 ) );
       assertEquals( "3", item.getText( 2 ) );
       shell.destroy();
       tree.destroy();
@@ -388,9 +388,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
 
     testText : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
-      item.setTexts( [ "Test", "Test2" ] );
-      assertEquals( "Test", item.getText( 0 ) );
-      assertEquals( "Test2", item.getText( 1 ) );
+      item.setTexts( [ "<b>Test</b>", "<i>Test2</i>" ] );
+      assertEquals( "&lt;b&gt;Test&lt;/b&gt;", item.getText( 0 ) );
+      assertEquals( "&lt;i&gt;Test2&lt;/i&gt;", item.getText( 1 ) );
+    },
+
+    testTextAsMarkup : function() {
+      var item = new org.eclipse.rwt.widgets.TreeItem();
+      item.setTexts( [ "<b>Test</b>", "<i>Test2</i>" ] );
+      assertEquals( "<b>Test</b>", item.getText( 0, true ) );
+      assertEquals( "<i>Test2</i>", item.getText( 1, true ) );
     },
 
     testItemFont : function() {
