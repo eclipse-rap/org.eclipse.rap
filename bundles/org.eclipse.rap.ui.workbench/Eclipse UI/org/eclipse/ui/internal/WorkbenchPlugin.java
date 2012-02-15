@@ -32,8 +32,9 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.service.localization.LocaleProvider;
 import org.eclipse.rap.ui.internal.SessionLocaleProvider;
+import org.eclipse.rap.ui.internal.application.ApplicationRegistry;
 import org.eclipse.rap.ui.internal.progress.JobManagerAdapter;
-import org.eclipse.rap.ui.internal.servlet.EntryPointExtension;
+import org.eclipse.rap.ui.internal.servlet.EntryPointParameters;
 import org.eclipse.rap.ui.internal.servlet.HttpServiceTracker;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.SessionSingletonBase;
@@ -1340,7 +1341,8 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     		httpServiceTracker.close();
     		httpServiceTracker = null;
     	}
-        EntryPointExtension.unbindAll();
+        EntryPointParameters.clear();
+        ApplicationRegistry.clear();
         // RAPEND 
 
         // RAP [rh] unregister multi-session-aware LocaleProvider service

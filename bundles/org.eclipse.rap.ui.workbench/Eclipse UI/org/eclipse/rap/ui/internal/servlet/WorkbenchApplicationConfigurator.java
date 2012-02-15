@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 EclipseSource and others.
+ * Copyright (c) 2006, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,16 +16,29 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.rap.ui.internal.application.ApplicationRegistry;
+import org.eclipse.rap.ui.internal.application.EntryPointApplicationWrapper;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.application.ApplicationConfiguration.OperationMode;
+import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.application.ApplicationConfigurationImpl;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.PhaseListener;
@@ -34,11 +47,14 @@ import org.eclipse.rwt.resources.ResourceLoader;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISettingStoreFactory;
 import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceReference;
 
 
+@SuppressWarnings( "deprecation" )
 public final class WorkbenchApplicationConfigurator implements ApplicationConfigurator {
- 
+
   private static final String ID_ADAPTER_FACTORY = "org.eclipse.rap.ui.adapterfactory";
   private static final String ID_ENTRY_POINT = "org.eclipse.rap.ui.entrypoint";
   private static final String ID_THEMES = "org.eclipse.rap.ui.themes";
@@ -49,24 +65,13 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   private static final String ID_SERVICE_HANDLER = "org.eclipse.rap.ui.serviceHandler";
   private static final String ID_RESOURCES = "org.eclipse.rap.ui.resources";
   private static final String ID_SETTING_STORES = "org.eclipse.rap.ui.settingstores";
-  
-  private final ServiceReference httpServiceReference;
 
-  private static final class DependentResource {
-    public final IResource resource;
-    public final String id;
-    public final List dependencies;
-    
-    public DependentResource( IResource resource, String id, List dependencies ) {
-      this.resource = resource;
-      this.id = id;
-      this.dependencies = dependencies;
-    }
-    
-    public String toString() {
-      return id != null ? id : resource.getClass().getName();
-    }
-  }
+  private static final String RUN = "run"; //$NON-NLS-1$
+  private static final String PI_RUNTIME = "org.eclipse.core.runtime"; //$NON-NLS-1$
+  private static final String PT_APPLICATIONS = "applications"; //$NON-NLS-1$
+  private static final String PT_APP_VISIBLE = "visible"; //$NON-NLS-1$
+
+  private final ServiceReference httpServiceReference;
 
   WorkbenchApplicationConfigurator( ServiceReference httpServiceReference ) {
     this.httpServiceReference = httpServiceReference;
@@ -76,14 +81,14 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
 	configuration.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     registerPhaseListener( configuration );
     registerSettingStoreFactory( configuration );
-    registerWorkbenchEntryPoint( configuration );
+    registerWorkbenchEntryPoints( ( ApplicationConfigurationImpl )configuration );
+    registerApplicationEntryPoints( ( ApplicationConfigurationImpl )configuration );
     registerThemeableWidgets( configuration );
     registerThemes( configuration );
     registerThemeContributions( configuration );
-    registerFactories( configuration );
+    registerAdapterFactories( ( ApplicationConfigurationImpl )configuration );
     registerResources( configuration );
     registerServiceHandlers( configuration );
-    registerApplicationEntryPoints( configuration );
     registerBrandings( configuration );
   }
 
@@ -149,7 +154,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
 	return systemBundle.getBundleContext().getProperty( name );
   }
 
-  private void registerFactories( ApplicationConfiguration configuration ) {
+  private void registerAdapterFactories( ApplicationConfigurationImpl configuration ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_ADAPTER_FACTORY );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -162,8 +167,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         Class factoryClass = bundle.loadClass( factoryName );
         Class adaptableClass = bundle.loadClass( adaptableName );
         AdapterFactory adapterFactory = ( AdapterFactory )ClassUtil.newInstance( factoryClass ) ;
-        ( ( ApplicationConfigurationImpl )configuration )
-            .addAdapterFactory( adaptableClass, adapterFactory );
+        configuration.addAdapterFactory( adaptableClass, adapterFactory );
       } catch( Throwable thr ) {
         String text = "Could not register adapter factory ''{0}''  for the adapter type ''{1}''.";
         Object[] param = new Object[] { factoryName, adaptableName};
@@ -172,25 +176,50 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     }
   }
 
-
-  private void registerWorkbenchEntryPoint( ApplicationConfiguration configuration ) {
-    IExtensionRegistry registry = Platform.getExtensionRegistry();
-    IExtensionPoint point = registry.getExtensionPoint( ID_ENTRY_POINT );
-    IConfigurationElement[] elements = point.getConfigurationElements();
-    for( int i = 0; i < elements.length; i++ ) {
-      String contributorName = elements[ i ].getContributor().getName();
-      String className = elements[ i ].getAttribute( "class" );
-      String parameter = elements[ i ].getAttribute( "parameter" );
-      String id = elements[ i ].getAttribute( "id" );
+  private void registerWorkbenchEntryPoints( ApplicationConfigurationImpl configuration ) {
+    for( IConfigurationElement element : getEntryPointExtensions() ) {
+      String contributorName = element.getContributor().getName();
+      String className = element.getAttribute( "class" );
+      String parameter = element.getAttribute( "parameter" );
+      String id = element.getAttribute( "id" );
       try {
         Bundle bundle = Platform.getBundle( contributorName );
         Class clazz = bundle.loadClass( className );
-        configuration.addEntryPoint( parameter, clazz );
-        EntryPointExtension.bind( id, parameter );
+        configuration.addEntryPointByParameter( parameter, clazz );
+        EntryPointParameters.register( id, parameter );
       } catch( final Throwable thr ) {
         String text = "Could not register entry point ''{0}'' with startup parameter ''{1}''.";
         Object[] param = new Object[] { className, parameter };
         logProblem( text, param, thr, contributorName );
+      }
+    }
+  }
+
+  private void registerApplicationEntryPoints( ApplicationConfigurationImpl configuration ) {
+    for( IExtension extension : getApplicationExtensions() ) {
+      IConfigurationElement configElement = extension.getConfigurationElements()[ 0 ];
+      String contributorName = configElement.getContributor().getName();
+      IConfigurationElement[] runElement = configElement.getChildren( RUN );
+      String className = runElement[ 0 ].getAttribute( "class" ); //$NON-NLS-1$
+      String applicationId = extension.getUniqueIdentifier();
+      // [if] Use full qualified applicationParameter, see bug 321360
+      String applicationParameter = extension.getUniqueIdentifier();
+      String isVisible = configElement.getAttribute( PT_APP_VISIBLE );
+      try {
+        // ignore invisible applications
+        if( isVisible == null || Boolean.valueOf( isVisible ).booleanValue() ) {
+          Bundle bundle = Platform.getBundle( contributorName );
+          Class clazz = bundle.loadClass( className );
+          ApplicationRegistry.addMapping( applicationParameter, clazz );
+          configuration.addEntryPointByParameter( applicationParameter,
+                                                  EntryPointApplicationWrapper.class );
+          EntryPointParameters.register( applicationId, applicationParameter );
+        }
+      } catch( ClassNotFoundException exception ) {
+        String text =   "Could not register application ''{0}'' " //$NON-NLS-1$
+                      + "with request startup parameter ''{1}''."; //$NON-NLS-1$
+        Object[] params = new Object[]{ className, applicationParameter };
+        logProblem( text, params, exception, contributorName );
       }
     }
   }
@@ -381,13 +410,45 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     }
   }
 
-  private void registerApplicationEntryPoints( ApplicationConfiguration configuration ) {
-    ApplicationRegistry.registerApplicationEntryPoints( configuration );
+  private static IConfigurationElement[] getEntryPointExtensions() {
+    IExtensionRegistry registry = Platform.getExtensionRegistry();
+    IExtensionPoint extensionPoint = registry.getExtensionPoint( ID_ENTRY_POINT );
+    IConfigurationElement[] elements = extensionPoint.getConfigurationElements();
+    return elements;
   }
-  
-  private void logProblem( String text, Object[] textParams, Throwable problem, String bundleId ) {
+
+  private static IExtension[] getApplicationExtensions() {
+    IExtensionRegistry registry = Platform.getExtensionRegistry();
+    String extensionPointId = PI_RUNTIME + '.' + PT_APPLICATIONS;
+    IExtensionPoint extensionPoint = registry.getExtensionPoint( extensionPointId );
+    return extensionPoint.getExtensions();
+  }
+
+  private static void logProblem( String text,
+                                  Object[] textParams,
+                                  Throwable problem,
+                                  String bundleId )
+  {
     String msg = MessageFormat.format( text, textParams );
     Status status = new Status( IStatus.ERROR, bundleId, IStatus.OK, msg, problem );
     WorkbenchPlugin.getDefault().getLog().log( status );
   }
+
+  private static final class DependentResource {
+    public final IResource resource;
+    public final String id;
+    public final List dependencies;
+
+    public DependentResource( IResource resource, String id, List dependencies ) {
+      this.resource = resource;
+      this.id = id;
+      this.dependencies = dependencies;
+    }
+
+    @Override
+    public String toString() {
+      return id != null ? id : resource.getClass().getName();
+    }
+  }
+
 }

@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.application;
 
@@ -34,12 +35,13 @@ import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISettingStoreFactory;
 import org.eclipse.swt.widgets.Widget;
 
+
 @SuppressWarnings("deprecation")
 public class ApplicationConfigurationImpl implements ApplicationConfiguration {
 
   private final ApplicationContext applicationContext;
   private final ApplicationConfigurator configurator;
-  
+
   static class ResourceLoaderImpl implements ResourceLoader {
 
     private final ClassLoader loader;
@@ -59,7 +61,7 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
     this.applicationContext = applicationContext;
     this.configurator = configurator;
   }
-  
+
   public void setOperationMode( OperationMode operationMode ) {
     ParamCheck.notNull( operationMode, "operationMode" );
     switch( operationMode ) {
@@ -78,20 +80,27 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
 
   public void addPhaseListener( PhaseListener phaseListener ) {
     ParamCheck.notNull( phaseListener, "phaseListener" );
-    
+
     applicationContext.getPhaseListenerRegistry().add( phaseListener );
   }
 
   public void setSettingStoreFactory( ISettingStoreFactory settingStoreFactory ) {
     ParamCheck.notNull( settingStoreFactory, "settingStoreFactory" );
-    
+
     applicationContext.getSettingStoreManager().register( settingStoreFactory );
+  }
+
+  /*
+   * For backwards compatibility with the extension point attribute 'parameter'
+   */
+  public void addEntryPointByParameter( String parameter, Class<? extends IEntryPoint> type ) {
+    addEntryPoint( parameter, type );
   }
 
   public void addEntryPoint( String entryPointName, Class<? extends IEntryPoint> type ) {
     ParamCheck.notNull( entryPointName, "entryPointName" );
     ParamCheck.notNull( type, "type" );
-    
+
     applicationContext.getEntryPointManager().register( entryPointName, type );
   }
 
@@ -107,27 +116,27 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
   public void addAdapterFactory( Class<?> adaptable, AdapterFactory adapterFactory ) {
     ParamCheck.notNull( adaptable, "adaptable" );
     ParamCheck.notNull( adapterFactory, "adapterFactory" );
-    
+
     applicationContext.getAdapterManager().registerAdapters( adaptable, adapterFactory );
   }
 
   public void addResource( IResource resource ) {
     ParamCheck.notNull( resource, "resource" );
-    
+
     applicationContext.getResourceRegistry().add( resource );
   }
 
   public void addServiceHandler( String serviceHandlerId, IServiceHandler serviceHandler ) {
     ParamCheck.notNull( serviceHandlerId, "serviceHandlerId" );
     ParamCheck.notNull( serviceHandler, "serviceHandler" );
-    
+
     ServiceManager serviceManager = applicationContext.getServiceManager();
     serviceManager.registerServiceHandler( serviceHandlerId, serviceHandler );
   }
 
   public void addBranding( AbstractBranding branding ) {
     ParamCheck.notNull( branding, "branding" );
-    
+
     applicationContext.getBrandingManager().register( branding );
   }
 
@@ -139,7 +148,7 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
     ParamCheck.notNull( themeId, "themeId" );
     ParamCheck.notNull( styleSheetLocation, "styleSheetLocation" );
     ParamCheck.notNull( resourceLoader, "resourceLoader" );
-    
+
     StyleSheet styleSheet = readStyleSheet( styleSheetLocation, resourceLoader );
     ThemeManager themeManager = applicationContext.getThemeManager();
     Theme theme = themeManager.getTheme( themeId );
@@ -157,7 +166,7 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
   public void addThemableWidget( Class<? extends Widget> widget, ResourceLoader resourceLoader ) {
     ParamCheck.notNull( widget, "widget" );
     ParamCheck.notNull( resourceLoader, "resourceLoader" );
-    
+
     applicationContext.getThemeManager().addThemeableWidget( widget, resourceLoader );
   }
 

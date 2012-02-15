@@ -10,17 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.application;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.*;
 import org.eclipse.equinox.app.IApplication;
-import org.eclipse.rap.ui.internal.servlet.EntryPointExtension;
-import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.internal.lifecycle.EntryPointUtil;
-import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.osgi.framework.Bundle;
 
 
 /*
@@ -28,78 +22,31 @@ import org.osgi.framework.Bundle;
  */
 public final class ApplicationRegistry {
 
-  private static final String RUN
-    = "run"; //$NON-NLS-1$
-  private static final String PI_RUNTIME
-    = "org.eclipse.core.runtime"; //$NON-NLS-1$
-  private static final String PT_APPLICATIONS
-    = "applications"; //$NON-NLS-1$
-  private static final String PT_APP_VISIBLE
-    = "visible"; //$NON-NLS-1$
+  private static Map appEntryPointMapping = new HashMap();
 
-  private static Map appEntrypointMapping = new HashMap();
-
-  public static IApplication getApplication() {
-    IApplication application = null;
+  public static IApplication createApplication() {
+    IApplication application;
     String currentEntryPointName = EntryPointUtil.getCurrentEntryPointName();
-    Class clazz = ( Class )appEntrypointMapping.get( currentEntryPointName );
+    Class clazz = ( Class )appEntryPointMapping.get( currentEntryPointName );
     try {
       application = ( IApplication )clazz.newInstance();
-    } catch( final InstantiationException e ) {
-      e.printStackTrace();
-    } catch( final IllegalAccessException e ) {
-      e.printStackTrace();
+    } catch( Exception exception ) {
+      String message = "Failed to create application " + currentEntryPointName;
+      throw new IllegalArgumentException( message, exception );
     }
     return application;
   }
 
-  private static void registerApplication( IExtension extension,
-                                           ApplicationConfiguration configuration )
-  {
-    IConfigurationElement configElement
-      = extension.getConfigurationElements()[0];
-    String contributorName = configElement.getContributor().getName();
-    IConfigurationElement[] runElement = configElement.getChildren( RUN );
-    String className = runElement[ 0 ].getAttribute( "class" ); //$NON-NLS-1$
-    String applicationId = extension.getUniqueIdentifier();
-    // [if] Use full qualified applicationParameter, see bug 321360
-    String applicationParameter = extension.getUniqueIdentifier();
-    String isVisible = configElement.getAttribute( PT_APP_VISIBLE );
-    try {
-      // ignore invisible applications
-      if( isVisible == null || Boolean.valueOf( isVisible ).booleanValue() ) {
-        Bundle bundle = Platform.getBundle( contributorName );
-        Class clazz = bundle.loadClass( className );
-        appEntrypointMapping.put( applicationParameter, clazz );
-        configuration.addEntryPoint( applicationParameter, EntrypointApplicationWrapper.class );
-        EntryPointExtension.bind( applicationId, applicationParameter );
-      }
-    } catch( final ClassNotFoundException e ) {
-      String text =   "Could not register application ''{0}'' " //$NON-NLS-1$
-                    + "with request startup parameter ''{1}''."; //$NON-NLS-1$
-      Object[] params = new Object[]{ className, applicationParameter };
-      String msg = MessageFormat.format( text, params );
-      IStatus status = new Status( IStatus.ERROR, contributorName,
-                                         IStatus.OK, msg, e );
-      WorkbenchPlugin.getDefault().getLog().log( status );
-    }
+  public static void addMapping( String applicationParameter, Class clazz ) {
+    appEntryPointMapping.put( applicationParameter, clazz );
   }
-
-  public static void registerApplicationEntryPoints( ApplicationConfiguration configuration ) {
-    IExtension[] elements = getApplicationExtensions();
-    for( int i = 0; i < elements.length; i++ ) {
-      registerApplication( elements[ i ], configuration );
-    }
-  }
-
-  private static IExtension[] getApplicationExtensions() {
-    IExtensionRegistry registry = Platform.getExtensionRegistry();
-    String extensionPointId = PI_RUNTIME + '.' + PT_APPLICATIONS;
-    IExtensionPoint extensionPoint = registry.getExtensionPoint( extensionPointId );
-    return extensionPoint.getExtensions();
+  
+  public static void clear() {
+    appEntryPointMapping.clear();
   }
 
   private ApplicationRegistry() {
     // prevent instantiation
   }
+
 }
