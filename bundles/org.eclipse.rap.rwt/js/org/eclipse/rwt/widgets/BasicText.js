@@ -24,12 +24,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     this.initWidth();
     this.initHeight();
     this.initTabIndex();
+    this._selectionStart = 0;
+    this._selectionLength = 0;
     this.__oninput = qx.lang.Function.bindEvent( this._oninputDom, this );
     this.addEventListener( "blur", this._onblur );
-    this.addEventListener( "focus", this._onfocus );
     this.addEventListener( "input", this._oninput );
     this.addEventListener( "keydown", this._onkeydown );
     this.addEventListener( "keypress", this._onkeypress );
+    this.addEventListener( "keyup", this._onkeyup, this );
+    this.addEventListener( "mousedown", this._onMouseDownUp, this );
+    this.addEventListener( "mouseup", this._onMouseDownUp, this );
     this._updateLineHeight();
   },
 
@@ -42,7 +46,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       }
     }
     this._inputElement = null;
-    this.__font = null;
     this.__font = null;
   },
 
@@ -110,6 +113,22 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     /////////
     // API
 
+    setSelection : function( selection ) {
+      this._selectionStart = selection[ 0 ];
+      this._selectionLength = selection[ 1 ] - selection[ 0 ];
+      this._renderSelection();
+    },
+    
+    getSelection : function() {
+      return [ this._selectionStart, this._selectionStart + this._selectionLength ];
+    },
+
+    getComputedSelection : function() {
+      var start = this._getSelectionStart();
+      var length = this._getSelectionLength();
+      return [ start, start + length ];
+    },
+
     getComputedValue : function() {
       var result;
       if( this._inputElement != null ) {
@@ -123,11 +142,40 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     getInputElement : function() {
       return this._inputElement || null;
     },
-
+    
     /////////////////////
     // selection handling
 
-    setSelectionStart : qx.core.Variant.select( "qx.client", {
+    _renderSelection : function() {
+      // setting selection here might de-select all other selections, so only render if focused 
+      if( this.isCreated() && this.getFocused() ) { 
+        this._setSelectionStart( this._selectionStart );
+        this._setSelectionLength( this._selectionLength );
+      }
+    },
+    
+    _detectSelectionChange : function() {
+      if( this._isCreated ) {
+        var start = this._getSelectionStart();
+        var length = this._getSelectionLength();
+        if( typeof start === "undefined" ) {
+          start = 0;
+        }
+        if( typeof length === "undefined" ) {
+          length = 0;
+        }
+        if( this._selectionStart !== start || this._selectionLength !== length ) {
+          this._handleSelectionChange( start, length );
+        }
+      }
+    },
+
+    _handleSelectionChange : function( start, length ) {
+      this._selectionStart = start;
+      this._selectionLength = length;
+    },
+
+    _setSelectionStart : qx.core.Variant.select( "qx.client", {
       "mshtml" : function( vStart ) {
         this._visualPropertyCheck();
         var vText = this._inputElement.value;
@@ -166,7 +214,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       }
     } ),
 
-    getSelectionStart : qx.core.Variant.select( "qx.client", {
+    _getSelectionStart : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
         this._visualPropertyCheck();
         var vSelectionRange = window.document.selection.createRange();
@@ -207,7 +255,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       }
     } ),
 
-    setSelectionLength : qx.core.Variant.select( "qx.client", {
+    _setSelectionLength : qx.core.Variant.select( "qx.client", {
       "mshtml" : function( vLength ) {
         this._visualPropertyCheck();
         var vSelectionRange = window.document.selection.createRange();
@@ -243,7 +291,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       }
     } ),
 
-    getSelectionLength : qx.core.Variant.select( "qx.client", {
+    _getSelectionLength : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
         this._visualPropertyCheck();
         var vSelectionRange = window.document.selection.createRange();
@@ -275,8 +323,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     selectAll : function() {
       this._visualPropertyCheck();
       if( this.getValue() != null ) {
-        this.setSelectionStart( 0 );
-        this.setSelectionLength( this._inputElement.value.length );
+        this._setSelectionStart( 0 );
+        this._setSelectionLength( this._inputElement.value.length );
       }
       // to be sure we get the element selected
       this._inputElement.select();
@@ -289,33 +337,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       if( this.isEnabled() && this.isSeeable() ) {
         this._inputElement.focus();
       }
+      this._detectSelectionChange();
     },
-
-    selectFromTo : qx.core.Variant.select( "qx.client", {
-      "mshtml" : function( vStart, vEnd ) {
-        this._visualPropertyCheck();
-        this.setSelectionStart( vStart );
-        this.setSelectionLength( vEnd - vStart );
-      },
-      "gecko" : function( vStart, vEnd ) {
-        this._visualPropertyCheck();
-        // the try catch block is neccesary because FireFox raises an exception
-        // if the property "selectionStart" is read while the element or one of
-        // its parent elements is invisible
-        // https://bugzilla.mozilla.org/show_bug.cgi?id=329354
-        try {
-          this._inputElement.selectionStart = vStart;
-          this._inputElement.selectionEnd = vEnd;
-        } catch( ex ) {
-          // ignore
-        }
-      },
-      "default" : function( vStart, vEnd ) {
-        this._visualPropertyCheck();
-        this._inputElement.selectionStart = vStart;
-        this._inputElement.selectionEnd = vEnd;
-      }
-    } ),
 
     ////////////
     // rendering
@@ -470,6 +493,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
         }
       }
       delete this._inValueProperty;
+      this._detectSelectionChange();
     },
 
     _applyMaxLength : function( value, old ) {
@@ -565,12 +589,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       if( !this.isDisposed() ) {
         this._inValueProperty = true;
         this._inputElement.value = this.getValue() === null ? "" : this.getValue().toString();
-        var start = this.getUserData( "selectionStart" );
-        var length = this.getUserData( "selectionLength" );
-        if( length !== 0 && length != null ) {
-          this.setSelectionStart( start );
-          this.setSelectionLength( length );
-        }
+        this._renderSelection();
         this._firstInputFixApplied = true;
         delete this._inValueProperty;
       }
@@ -583,10 +602,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
           qx.client.Timer.once( this._ieFirstInputFix, this, 1 );
         }
         this._centerFieldVertically();
+        this._renderSelection();
       },
       "default" : function() {
         this.base( arguments );
         this._centerFieldVertically();
+        this._renderSelection();
       }
     } ),
 
@@ -639,8 +660,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       this.selectAll();
     },
 
-    _onfocus : function() {
+    _applyFocused : function( newValue, oldValue ) {
+      this.base( arguments, newValue, oldValue );
       this._textOnFocus = this.getComputedValue();
+      if( !qx.event.handler.FocusHandler.mouseFocus ) {
+        this._renderSelection();
+      }
     },
 
     _onblur : function() {
@@ -650,7 +675,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       }
       // RAP workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=201080
       if( this.getParent() != null ) {
-        this.setSelectionLength( 0 );
+        this._setSelectionLength( 0 );
       }
     },
 
@@ -668,6 +693,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       if( e.getKeyIdentifier() == "Backspace" && this.getReadOnly() ) {
         e.preventDefault();
       }
+      this._detectSelectionChange();
     },
 
     // [if] Stops keypress propagation
@@ -676,6 +702,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       if( e.getKeyIdentifier() !== "Tab" ) {
         e.stopPropagation();
       }
+      this._detectSelectionChange();
+    },
+
+    _onkeyup : function( event ) {
+      this._detectSelectionChange();
+    },
+
+    _onMouseDownUp : function( event ) {
+      this._detectSelectionChange();
     },
 
     /////////

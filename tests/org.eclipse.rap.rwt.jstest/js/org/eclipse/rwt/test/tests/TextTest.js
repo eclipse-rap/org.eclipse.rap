@@ -45,7 +45,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertTrue( text.getUserData( "isControl") );
       assertTrue( text.hasState( "rwt_SINGLE" ) );
       assertEquals( "text-field", text.getAppearance() );
-      assertNotNull( text.getUserData( "selectionStart" ) );
       assertEquals( "right", text.getTextAlign() );
       assertFalse( text.getReadOnly() );
       assertNull( text.getMaxLength() );
@@ -208,8 +207,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         }
       } );
       text = ObjectManager.getObject( "w3" );
-      assertEquals( 1, text.getUserData( "selectionStart" ) );
-      assertEquals( 2, text.getUserData( "selectionLength" ) );
+      assertEquals( 1, text._selectionStart );
+      assertEquals( 2, text._selectionLength );
     },
 
     testSetTextLimitByProtocol : function() {
@@ -374,54 +373,49 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       createText();
       text.setValue( "asdfjkloe" );
 
-      text.setSelection( 2, 3 );
+      text.setSelection( [ 2, 5 ] );
 
-      assertEquals( 2, text.getSelectionStart() );
-      assertEquals( 3, text.getSelectionLength() );
+      assertEquals( [ 2, 5 ], text.getSelection() );
+      assertEquals( [ 2, 5 ], text.getComputedSelection() );
     },
 
 
     testRestoreSelectionOnTabFocus : function() {
       createText();
       text.setValue( "asdfjkloe" );
-      text.setSelection( 2, 3 );
+      text.setSelection( [ 2, 5 ] );
       text.blur();
       
       text.focus();
-      text.setSelectionLength( 0 ); // browser does that on tab keyup
+      text._ontabfocus();
       TestUtil.keyUp( text, "Tab" );
 
-
-      assertEquals( 2, text.getSelectionStart() );
-      assertEquals( 3, text.getSelectionLength() );
+      assertEquals( [ 2, 5 ], text.getSelection() );
+      assertEquals( [ 2, 5 ], text.getComputedSelection() );
     },
-
-    testSetEmptySelectionBeforeAppear : qx.core.Variant.select( "qx.client", {
-      "default" : function() {
-        createText( true );
-        text.setValue( "asdfjkloe" );
-  
-        text.setSelection( 2, 3 );
-        TestUtil.flush();
-  
-        assertEquals( 2, text.getSelectionStart() );
-        assertEquals( 3, text.getSelectionLength() );
-      },
-      "gecko" : function() {
-        // TODO [tb] : implement getComputedSelection
-      }
-    } ),
 
     testSetSelectionBeforeAppear : function() {
       createText( true );
       text.setValue( "asdfjkloe" );
 
-      text.setSelection( 2, 3 );
+      text.setSelection( [ 2, 5 ] );
+      assertEquals( [ 2, 5 ], text.getSelection() );
+      TestUtil.flush();
+      text.focus();
+      
+      assertEquals( [ 2, 5 ], text.getComputedSelection() );
+    },
+
+    testSetEmptySelectionBeforeAppear : function() {
+      createText( true );
+      text.setValue( "asdfjkloe" );
+
+      text.setSelection( [ 2, 2 ] );
+      assertEquals( [ 2, 2 ], text.getSelection() );
       TestUtil.flush();
       text.focus();
 
-      assertEquals( 2, text.getSelectionStart() );
-      assertEquals( 3, text.getSelectionLength() );
+      assertEquals( [ 2, 2 ], text.getComputedSelection() );
     },
 
     testCreateAsTextSetPasswordMode : function() {
@@ -479,14 +473,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.addToDocument();
       TestUtil.flush();
       text.focus();
-      text.setSelectionStart( 2 );
-      text.setSelectionLength( 3 );
-      assertEquals( 2, text.getSelectionStart() );
-      assertEquals( 3, text.getSelectionLength() );
+      text._setSelectionStart( 2 );
+      text._setSelectionLength( 3 );
+      assertEquals( [ 2, 5 ], text.getComputedSelection() );
       text.setPasswordMode( false );
       TestUtil.flush();
-      assertEquals( 2, text.getSelectionStart() );
-      assertEquals( 3, text.getSelectionLength() );
+      assertEquals( [ 2, 5 ], text.getComputedSelection() );
     },
     
     testCssSetPasswordMode : function() {
@@ -543,18 +535,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         assertEquals( "012345678", text.getComputedValue() );
         assertEquals( 1, changeLog.length );
         text._inputElement.value = "01234567x8";
-        text.setSelectionStart( 9 );
+        text._setSelectionStart( 9 );
         text.__oninput( {} );
         assertEquals( "012345678", text.getValue() );
         assertEquals( "012345678", text.getComputedValue() );
         assertEquals( 1, changeLog.length );
-        assertEquals( 8, text.getSelectionStart() );
+        assertEquals( 8, text._getSelectionStart() );
         text._inputElement.value = "abcdefghiklmnopq";
         text.__oninput( {} );
         assertEquals( "abcde", text.getValue() );
         assertEquals( "abcde", text.getComputedValue() );
         assertEquals( 2, changeLog.length );
-        assertEquals( 5, text.getSelectionStart() );
+        assertEquals( 5, text._getSelectionStart() );
       }
     } ),
 
@@ -564,9 +556,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setValue( "0123456789\r\n" );
       TestUtil.flush();
       text.setFocused( true );
-      text.setSelectionStart( 0 );
-      text.setSelectionLength( 5 );
-      assertEquals( 0, text.getSelectionStart() );
+      text._setSelectionStart( 0 );
+      text._setSelectionLength( 5 );
+      assertEquals( 0, text._getSelectionStart() );
     },
 
     testKeyPressPropagation : function() {
@@ -633,19 +625,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.flush();
 
       assertEquals( 12, parseInt( text.getInputElement().style.lineHeight ) );
-    },
-
-    testResetSelectionLengthAtTabFocus : function() {
-      createText();
-      text.setValue( "12345" );
-      text.setSelectionStart( 0 );
-      text.setSelectionLength( 4 );
-      assertEquals( 4, text.getSelectionLength() );
-      
-      text.setFocused( true );
-      text._ontabfocus();
-      
-      assertEquals( 0, text.getSelectionLength() );
     },
 
     testLiveUpdate : function() {
@@ -730,6 +709,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setValue( "foobar" );
       Request.getInstance().send();   
       
+      console.log( TestUtil.getMessage() );
       assertTrue( TestUtil.getMessage().indexOf( "w3.text=foobar" ) !== -1 );
     },
 
@@ -835,7 +815,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       var style = text._getTargetNode().firstChild.style;
       assertEquals( "absolute", style.position );
-      if( !Client.isMshtml() ) {
+      if( !Client.isMshtml() && !Client.isNewMshtml() ) {
         assertTrue( style.outline.indexOf( "none" ) !== -1 );
       }
     },
@@ -1029,19 +1009,19 @@ var typeCharacter = function( character ) {
   text.getInputElement().value = newValue;
   text._inValueProperty = false;
   if( Client.isWebkit() ) {
-    text.setSelectionStart( newValue.length - character.length );
+    text._setSelectionStart( newValue.length - character.length );
     text._oninputDom( { "propertyName" : "value" } );
-    text.setSelectionStart( newValue.length );
+    text._setSelectionStart( newValue.length );
   } else {
-    text.setSelectionStart( newValue.length );
+    text._setSelectionStart( newValue.length );
     text._oninputDom( { "propertyName" : "value" } );
   }
   TestUtil.keyUp( text, character );
 };
 
 var setSelection = function( selection ) {
-  text.setSelectionStart( selection[ 0 ] );
-  text.setSelectionLength( selection[ 1 ] - selection[ 0 ] );
+  text._setSelectionStart( selection[ 0 ] );
+  text._setSelectionLength( selection[ 1 ] - selection[ 0 ] );
 };
 
 }());

@@ -56,11 +56,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Text", {
     "editable" : function( widget, value ) {
       widget.setReadOnly( !value );
     },
-    "selection" : function( widget, value ) {
-      var start = value[ 0 ];
-      var length = value[ 1 ] - value[ 0 ];
-      widget.setSelection( start, length );
-    },
     "textLimit" : function( widget, value ) {
       widget.setMaxLength( value );
     }

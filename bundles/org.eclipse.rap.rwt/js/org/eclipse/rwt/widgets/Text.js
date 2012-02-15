@@ -16,7 +16,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
   construct : function( isTextarea ) {
     this.base( arguments );
     if( isTextarea ) {
-      // NOTE: This essentially turns TextField into qx.ui.form.TextArea
       this._inputTag = "textarea";
       this._inputType = null;
       this._inputOverflow = "auto";
@@ -27,18 +26,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     this._hasSelectionListener = false;
     this._hasModifyListener = false;
     this._hasVerifyListener = false;
+    this._requestScheduled = false;
     this._message = null;
     this._messageElement = null;
     this.setLiveUpdate( true );
-    this._attachListener();
-    this.setUserData( "selectionStart", 0 );
-    this.setUserData( "selectionLength", 0 );
   },
   
   destruct : function() {
     this._messageElement = null;
     this.__oninput = null;
-    this._ontabfocus = null; // TODO [tb] : remove when no longer needed
   },
 
   properties : {
@@ -56,15 +52,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     //////
     // API
     
-    setSelection : function( start, length ) {
-      // [if] The selection is applied on the TextField when it gains the focus.
-      this.setUserData( "selectionStart", start );
-      this.setUserData( "selectionLength", length );
-      if( this.getFocused() && this.isCreated() ) {
-        this._doSetSelection();
-      }
-    },
-
     setMessage : function( value ) {
       if( this._inputTag !== "textarea" ) {
         this._message = value;
@@ -125,148 +112,68 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     
     ////////////////
     // event handler
-    
-    _attachListener : function() {
-      this.addEventListener( "mousedown", this._onMouseDownUp, this );
-      this.addEventListener( "mouseup", this._onMouseDownUp, this );
-      this.addEventListener( "keyup", this._onKeyUp, this );
-      this.addEventListener( "keydown", this._onKeyDown, this );
-      this.addEventListener( "keypress", this._onKeyPress, this );
-      this.addEventListener( "changeValue", this._onTextChange, this );
-      this.addEventListener( "focus", this._onFocus, this );
-    },
 
     _ontabfocus : function() {
-      this.setSelectionLength( 0 );
+      this._renderSelection();
     },
 
-    _onMouseDownUp : function( event ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        this._handleSelectionChange();
-      }
-    },
-
-    _onKeyDown : function( event ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        this._handleSelectionChange();
-        if(    event.getKeyIdentifier() == "Enter"
-            && !event.isShiftPressed()
-            && !event.isAltPressed()
-            && !event.isCtrlPressed()
-            && !event.isMetaPressed() )
-        {
-          if( this.hasState( "rwt_MULTI" ) ) {
-            event.stopPropagation();
-          }
-          if( this.hasSelectionListener() ) {
-            this._sendWidgetDefaultSelected();
-          }
+    _onkeydown : function( event ) {
+      this.base( arguments, event );
+      if(    event.getKeyIdentifier() == "Enter"
+          && !event.isShiftPressed()
+          && !event.isAltPressed()
+          && !event.isCtrlPressed()
+          && !event.isMetaPressed() )
+      {
+        if( this.hasState( "rwt_MULTI" ) ) {
+          event.stopPropagation();
+        }
+        if( this.hasSelectionListener() ) {
+          this._sendWidgetDefaultSelected();
         }
       }
     },
 
-    _onKeyPress : function( event ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        this._handleSelectionChange();
-      }
-    },
-
-    _onKeyUp : function( event ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        if( event.getKeyIdentifier() == "Tab" ) {
-          this._doSetSelection();
-        } else {
-          this._handleSelectionChange();
-        }
-      }
-    },
-
-    _onTextChange : function( event ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        this._handleModification();
-        this._handleSelectionChange();
-      }
-    },
-
-    _onFocus : function( event ) {
-      if( !qx.event.handler.FocusHandler.mouseFocus ) {
-        this._doSetSelection();
-      }
-    },
-
-    ////////////
-    // selection
+    ///////////////
+    // send changes
     
-    _handleSelectionChange : function() {
-      // [if] Workaround for bug 261611
-      // [Text] Javascript error "text.getSelectionStart is not a function"
-      // https://bugs.eclipse.org/bugs/show_bug.cgi?id=261611
-      if( this._isCreated ) {
-        var start = this.getSelectionStart();
-        // TODO [rst] Quick fix for bug 258632
-        //            https://bugs.eclipse.org/bugs/show_bug.cgi?id=258632
-        if( start === undefined ) {
-          start = 0;
-        }
-        var length = this.getSelectionLength();
-        // TODO [rst] Workaround for qx bug 521. Might be redundant as the
-        // bug is marked as (partly) fixed.
-        // See http://bugzilla.qooxdoo.org/show_bug.cgi?id=521
-        if( typeof length == "undefined" ) {
-          length = 0;
-        }
-        if(    this.getUserData( "selectionStart" ) != start
-            || this.getUserData( "selectionLength" ) != length )
-        {
-          this.setUserData( "selectionStart", start );
-          org.eclipse.swt.WidgetUtil.setPropertyParam( this, "selectionStart", start );
-          this.setUserData( "selectionLength", length );
-          org.eclipse.swt.WidgetUtil.setPropertyParam( this, "selectionLength", length );
-        }
+    _handleSelectionChange : function( start, length ) {
+      this.base( arguments, start, length );
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+        org.eclipse.swt.WidgetUtil.setPropertyParam( this, "selectionStart", start );
+        org.eclipse.swt.WidgetUtil.setPropertyParam( this, "selectionLength", length );
       }
     },
-
+    
     _handleModification : function() {
-      // if not yet done, register an event listener that adds a request param
-      // with the text widgets' content just before the request is sent
-      if( !this.getUserData( "modified" ) === true ) {
-        this.setUserData( "modified", true );
+      if( !this._requestScheduled ) {
+        this._requestScheduled = true;
         var req = org.eclipse.swt.Request.getInstance();
         req.addEventListener( "send", this._onSend, this );
         if( this.hasModifyListener() || this.hasVerifyListener() ) {
-          // add modifyText-event with sender-id to request parameters
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( this );
           var req = org.eclipse.swt.Request.getInstance();
           req.addEvent( "org.eclipse.swt.events.modifyText", id );
-          // register listener that is notified when a request is sent
           qx.client.Timer.once( this._delayedSend, this, 500 );
         }
       }
     },
 
     _delayedSend : function( event ) {
-      // NOTE: "this" references the text widget (see qx.client.Timer.once above)
-      if( this.getUserData( "modified" ) === true ) {
+      if( this._requestScheduled ) {
         var req = org.eclipse.swt.Request.getInstance();
         req.send();
       }
     },
 
     _onSend : function( event ) {
-      // NOTE: 'this' references the text widget
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
       var req = org.eclipse.swt.Request.getInstance();
       req.addParameter( id + ".text", this.getComputedValue() );
-      // remove the _onSend listener and change the text widget state to 'unmodified'
       req.removeEventListener( "send", this._onSend, this );
-      this.setUserData( "modified", false );
-      // Update the value property (which is qooxdoo-wise only updated on
-      // focus-lost) to be in sync with server-side
-      if( this.getFocused() ) {
-        this.setValue( this.getComputedValue() );
-      }
+      this._requestScheduled = false;
     },
 
     /*
@@ -281,15 +188,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       req.send();
     },
 
-    _doSetSelection : function() {
-      var start = this.getUserData( "selectionStart" );
-      var length = this.getUserData( "selectionLength" );
-      if( start != null && length != null ) {
-        this.setSelectionStart( start );
-        this.setSelectionLength( length );
-      }
-    },
-
     ///////////////////
     // textarea support
     
@@ -301,14 +199,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       // Fix for bug 306354
       this._inputElement.style.paddingRight = "1px";
       this._updateMessage();
-    },
-
-    _afterAppear : function() {
-      this.base( arguments );
-      var length = this.getUserData( "selectionLength" );
-      if( length !== null && length !== 0 ) {
-        this._doSetSelection();
-      }
     },
 
     _webkitMultilineFix : function() {
@@ -360,17 +250,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
           var oldValue = this.getValue();
           // NOTE [tb] : When pasting strings, this might not always 
           //             behave like SWT. There is no reliable fix for that.
-          var position = this.getSelectionStart();
+          var position = this._getSelectionStart();
           if( oldValue.length == ( value.length - 1 ) ) {
             // The user added one character, undo.
             this._inputElement.value = oldValue;
-            this.setSelectionStart( position - 1 );
-            this.setSelectionLength( 0 );
+            this._setSelectionStart( position - 1 );
+            this._setSelectionLength( 0 );
           } else if( value.length >= oldValue.length && value != oldValue) {
             // The user pasted a string, shorten:
             this._inputElement.value = value.slice( 0, this.getMaxLength() );            
-            this.setSelectionStart( Math.min( position, this.getMaxLength() ) );
-            this.setSelectionLength( 0 );
+            this._setSelectionStart( Math.min( position, this.getMaxLength() ) );
+            this._setSelectionLength( 0 );
           }
           if( this._inputElement.value == oldValue ) {
             fireEvents = false;
@@ -386,8 +276,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     // password support
     
     _reCreateInputField : function() {
-      var selectionStart = this.getSelectionStart();
-      var selectionLength = this.getSelectionLength();
+      var selectionStart = this._getSelectionStart();
+      var selectionLength = this._getSelectionLength();
       this._inputElement.parentNode.removeChild( this._inputElement );
       this._inputElement.onpropertychange = null;
       this._inputElement = null;
@@ -396,8 +286,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       this._afterAppear();
       this._postApply();
       this._applyFocused( this.getFocused() );
-      this.setSelectionStart( selectionStart );
-      this.setSelectionLength( selectionLength );
+      this._setSelectionStart( selectionStart );
+      this._setSelectionLength( selectionLength );
     },
     
     //////////////////
@@ -411,12 +301,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     _applyValue : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
       this._updateMessageVisibility();
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+        this._handleModification();
+      }
     },
-    
+
     _applyFocused : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
       this._updateMessageVisibility();
-      if( newValue && ( this.getValue() === "" || this.getValue() == "" ) ) {
+      if( newValue && ( this.getValue() === "" || this.getValue() == null ) ) {
         this._forceFocus(); 
       }
     },

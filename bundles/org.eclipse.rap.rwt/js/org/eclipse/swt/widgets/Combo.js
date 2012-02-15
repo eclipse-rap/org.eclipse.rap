@@ -264,7 +264,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     _visualizeBlur : function() {
       if( this._field.isCreated() ) {
         // setting selection lenght to 0 needed for IE to deselect text
-        this._field.setSelectionLength( 0 );
+        this._field._setSelectionLength( 0 );
         this._field._visualizeBlur();
       }
       if( !this._editable ) {
@@ -726,14 +726,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     // Checks for a text field selection change and updates 
     // the request parameter if necessary.
     _handleSelectionChange : function() {
-      var start = this._field.getSelectionStart();
+      var sel = this._field.getComputedSelection();
+      var start = sel[ 0 ];
       // TODO [ad] Solution from TextUtil.js - must be in synch with it
       // TODO [rst] Quick fix for bug 258632
       //            https://bugs.eclipse.org/bugs/show_bug.cgi?id=258632
       if( start === undefined ) {
         start = 0;
       }
-      var length = this._field.getSelectionLength();
+      var length = sel[ 1 ] - sel[ 0 ];
       // TODO [ad] Solution from TextUtil.js - must be in synch with it
       // TODO [rst] Workaround for qx bug 521. Might be redundant as the
       //            bug is marked as (partly) fixed.
@@ -801,9 +802,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     setTextSelection : function( start, length ) {
       if( this._field.isCreated() ) {
         this._selectionStart = start;
-        this._field.setSelectionStart( start );
         this._selectionLength = length;
-        this._field.setSelectionLength( length );
+        this._field.setSelection( start, start + length );
       }
     },
     
