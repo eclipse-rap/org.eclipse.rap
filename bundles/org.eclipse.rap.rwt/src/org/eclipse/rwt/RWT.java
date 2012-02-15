@@ -101,6 +101,7 @@ public final class RWT {
    * </pre>
    * </p>
    */
+  @SuppressWarnings("javadoc")
   public static final class NLS {
 
     private final static Map<ResourceBundle,Object> map = new HashMap<ResourceBundle, Object>();
