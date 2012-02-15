@@ -40,10 +40,12 @@ import org.eclipse.swt.layout.FillLayout;
 
 public class Display_Test extends TestCase {
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -859,12 +861,12 @@ public class Display_Test extends TestCase {
 
   public void testEnsureIdIsW1() throws IOException {
     Class<EnsureIdEntryPoint> entryPointClass = EnsureIdEntryPoint.class;
-    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT, entryPointClass );
+    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, entryPointClass );
     Fixture.fakeNewRequest();
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
     assertEquals( "w1", DisplayUtil.getId( LifeCycleUtil.getSessionDisplay() ) );
-    RWTFactory.getEntryPointManager().deregister( EntryPointUtil.DEFAULT );
+    RWTFactory.getEntryPointManager().deregisterByName( EntryPointUtil.DEFAULT );
   }
 
   public void testSetData() {

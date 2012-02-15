@@ -35,8 +35,8 @@ public class ReadDispose_Test extends TestCase {
   public void testWidgetDisposal() throws Exception {
     // Run requests to initialize the 'system'
     Fixture.fakeNewRequest();
-    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT,
-                                                WidgetDisposalEntryPoint.class );
+    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
+                                                      WidgetDisposalEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
     Fixture.fakeNewRequest();
@@ -51,11 +51,13 @@ public class ReadDispose_Test extends TestCase {
     lifeCycle.execute();
   }
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -76,6 +78,7 @@ public class ReadDispose_Test extends TestCase {
       }
       Button button = new Button( shell, SWT.PUSH );
       button.addSelectionListener( new SelectionAdapter() {
+        @Override
         public void widgetSelected( SelectionEvent event ) {
           text.dispose();
           tree.dispose();

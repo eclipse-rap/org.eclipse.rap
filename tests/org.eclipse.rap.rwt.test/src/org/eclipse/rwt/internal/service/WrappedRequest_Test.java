@@ -110,7 +110,8 @@ public class WrappedRequest_Test extends TestCase {
     String title = startupPage.getConfigurer().getTemplate().getTokens() [ TOKEN_INDEX_TITLE ];
     assertTrue( content.contains( title ) );
 
-    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT, DefaultEntryPoint.class );
+    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
+                                                      DefaultEntryPoint.class );
     Fixture.fakeRequestParam( p1, null );
     Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointUtil.DEFAULT );
     Fixture.fakeRequestParam( LifeCycleServiceHandler.RWT_INITIALIZE, "true" );
@@ -122,10 +123,12 @@ public class WrappedRequest_Test extends TestCase {
     assertEquals( v1, ContextProvider.getRequest().getParameter( p1 ) );
   }
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }

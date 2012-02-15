@@ -25,6 +25,7 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
 import org.eclipse.swt.widgets.*;
 
+
 public class PreserveWidgets_Test extends TestCase {
 
   public static class TestEntryPointWithShell implements IEntryPoint {
@@ -44,38 +45,43 @@ public class PreserveWidgets_Test extends TestCase {
 
   private static class LoggingWidgetLCA extends AbstractWidgetLCA {
     private final StringBuilder log;
-    
+
     LoggingWidgetLCA() {
       log= new StringBuilder();
     }
-    
+
+    @Override
     public void preserveValues( Widget widget ) {
       log.append( widget.getClass().getName() );
     }
-  
+
     public void readData( Widget widget ) {
     }
-  
+
+    @Override
     public void renderInitialization( Widget widget ) throws IOException {
     }
-  
+
+    @Override
     public void renderChanges( Widget widget ) throws IOException
     {
     }
-  
+
+    @Override
     public void renderDispose( Widget widget ) throws IOException {
     }
   }
 
   private static class CustomLCAWidget extends Composite {
-    
+
     private final AbstractWidgetLCA widgetLCA;
 
     CustomLCAWidget( Composite parent, AbstractWidgetLCA widgetLCA ) {
       super( parent, 0 );
       this.widgetLCA = widgetLCA;
     }
-    
+
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result;
@@ -90,14 +96,15 @@ public class PreserveWidgets_Test extends TestCase {
 
   private static class CustomLCAShell extends Shell {
     private static final long serialVersionUID = 1L;
-    
+
     private final AbstractWidgetLCA widgetLCA;
-    
+
     CustomLCAShell( Display display, AbstractWidgetLCA widgetLCA ) {
       super( display );
       this.widgetLCA = widgetLCA;
     }
-    
+
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result;
@@ -110,17 +117,19 @@ public class PreserveWidgets_Test extends TestCase {
     }
   }
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeNewRequest();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
 
   public void testInitialization() throws Exception {
-    // ensures that the default preserve mechanism is registered and executes at the designated 
+    // ensures that the default preserve mechanism is registered and executes at the designated
     // phases
     Display display = new Display();
     Composite shell = new Shell( display );
@@ -145,9 +154,9 @@ public class PreserveWidgets_Test extends TestCase {
         return PhaseId.ANY;
       }
     } );
-    
+
     Fixture.executeLifeCycleFromServerThread( );
-    
+
     assertEquals( "copy created", log.toString() );
   }
 
@@ -157,9 +166,9 @@ public class PreserveWidgets_Test extends TestCase {
     Composite shell = new CustomLCAShell( display, loggingWidgetLCA );
     new CustomLCAWidget( shell, loggingWidgetLCA );
     Fixture.markInitialized( display );
-    
+
     new DisplayLCA().preserveValues( display );
-    
+
     String expectedorder = CustomLCAShell.class.getName() + CustomLCAWidget.class.getName();
     assertEquals( expectedorder, loggingWidgetLCA.log.toString() );
   }
@@ -170,17 +179,17 @@ public class PreserveWidgets_Test extends TestCase {
     LoggingWidgetLCA loggingWidgetLCA = new LoggingWidgetLCA();
     Composite shell = new CustomLCAShell( display, loggingWidgetLCA );
     new CustomLCAWidget( shell, loggingWidgetLCA );
-    
+
     new DisplayLCA().preserveValues( display );
-    
+
     assertEquals( "", log.toString() );
   }
 
   public void testStartup() throws Exception {
     // Simulate startup with no startup entry point set
     // First request: (renders html skeletion that contains 'application')
-    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT, 
-                                                TestEntryPointWithShell.class );
+    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
+                                                      TestEntryPointWithShell.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
     // Second request: first 'real' one that writes JavaScript to create display
@@ -190,7 +199,7 @@ public class PreserveWidgets_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertTrue( message.getOperationCount()> 0 );
   }
-  
+
   public void testClearPreservedWithDisposedDisplay() {
     Display display = new Display();
     display.dispose();

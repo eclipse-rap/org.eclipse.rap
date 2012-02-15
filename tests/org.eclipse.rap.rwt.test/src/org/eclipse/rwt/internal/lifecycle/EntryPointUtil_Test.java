@@ -69,7 +69,7 @@ public class EntryPointUtil_Test extends TestCase {
   }
 
   public void testGetCurrentEntryPoint() {
-    RWTFactory.getEntryPointManager().register( "foo", entryPointFactory );
+    RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
     Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
 
     IEntryPoint returnedEntryPoint = EntryPointUtil.getCurrentEntryPoint();
@@ -79,7 +79,7 @@ public class EntryPointUtil_Test extends TestCase {
   }
 
   public void testGetCurrentEntryPoint_isCached() {
-    RWTFactory.getEntryPointManager().register( "foo", entryPointFactory );
+    RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
     Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
     EntryPointUtil.getCurrentEntryPoint();
     Fixture.fakeRequestParam( RequestParams.STARTUP, "bar" );
@@ -91,7 +91,7 @@ public class EntryPointUtil_Test extends TestCase {
   }
 
   public void testGetEntryPoint() {
-    RWTFactory.getEntryPointManager().register( "foo", entryPointFactory );
+    RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
 
     IEntryPoint returnedEntryPoint = EntryPointUtil.getEntryPoint( "foo" );
 

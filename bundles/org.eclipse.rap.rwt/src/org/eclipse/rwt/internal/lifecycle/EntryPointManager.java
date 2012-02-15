@@ -8,12 +8,14 @@
  * Contributors:
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
@@ -22,69 +24,127 @@ import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 
 public class EntryPointManager {
 
-  private final Map<String, IEntryPointFactory> registry;
+  private final Map<String, IEntryPointFactory> entryPointsByPath;
+  private final Map<String, IEntryPointFactory> entryPointsByName;
 
   public EntryPointManager() {
-    registry = new HashMap<String, IEntryPointFactory>();
+    entryPointsByPath = new HashMap<String, IEntryPointFactory>();
+    entryPointsByName = new HashMap<String, IEntryPointFactory>();
   }
 
-  public void register( String name, Class<? extends IEntryPoint> type ) {
-    ParamCheck.notNull( type, "type" );
-
-    register( name, new DefaultEntryPointFactory( type ) );
+  public void registerByPath( String path, Class<? extends IEntryPoint> type ) {
+    ParamCheck.notNull( path, "path" );
+    doRegisterByPath( path, new DefaultEntryPointFactory( type ) );
   }
 
-  public void register( String name, IEntryPointFactory entryPointFactory ) {
+  public void registerByPath( String path, IEntryPointFactory entryPointFactory ) {
+    ParamCheck.notNull( path, "path" );
+    ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
+    doRegisterByPath( path, entryPointFactory );
+  }
+
+  public void registerByName( String name, Class<? extends IEntryPoint> type ) {
+    ParamCheck.notNull( name, "name" );
+    doRegisterByName( name, new DefaultEntryPointFactory( type ) );
+  }
+
+  public void registerByName( String name, IEntryPointFactory entryPointFactory ) {
     ParamCheck.notNull( name, "name" );
     ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
-
-    synchronized( registry ) {
-      if( registry.containsKey( name ) ) {
-        String msg = "Entry point already registered: " + name;
-        throw new IllegalArgumentException( msg );
-      }
-      registry.put( name, entryPointFactory );
-    }
+    doRegisterByName( name, entryPointFactory );
   }
 
-  public void deregister( String name ) {
+  public void deregisterByName( String name ) {
     ParamCheck.notNull( name, "name" );
-
-    synchronized( registry ) {
+    synchronized( entryPointsByName ) {
       checkNameExists( name );
-      registry.remove( name );
+      entryPointsByName.remove( name );
     }
   }
 
   public void deregisterAll() {
-    synchronized( registry ) {
-      registry.clear();
+    synchronized( entryPointsByPath ) {
+      entryPointsByPath.clear();
+    }
+    synchronized( entryPointsByName ) {
+      entryPointsByName.clear();
     }
   }
 
-  public IEntryPointFactory getEntryPointFactory( String name ) {
-    ParamCheck.notNull( name, "name" );
-
+  public IEntryPointFactory getFactoryByPath( String path ) {
     IEntryPointFactory result;
-    synchronized( registry ) {
-      checkNameExists( name );
-      result = registry.get( name );
+    synchronized( entryPointsByPath ) {
+      checkPathExists( path );
+      result = entryPointsByPath.get( path );
     }
     return result;
   }
 
-  public String[] getEntryPoints() {
-    synchronized( registry ) {
-      String[] result = new String[ registry.keySet().size() ];
-      registry.keySet().toArray( result );
-      return result;
+  public IEntryPointFactory getFactoryByName( String name ) {
+    IEntryPointFactory result;
+    synchronized( entryPointsByName ) {
+      checkNameExists( name );
+      result = entryPointsByName.get( name );
+    }
+    return result;
+  }
+
+  public Collection<String> getServletPaths() {
+    Collection<String> result;
+    synchronized( entryPointsByPath ) {
+      result = new ArrayList<String>( entryPointsByPath.keySet() );
+    }
+    return result;
+  }
+
+  public Collection<String> getEntryPointNames() {
+    Collection<String> result;
+    synchronized( entryPointsByName ) {
+      result = new ArrayList<String>( entryPointsByName.keySet() );
+    }
+    return result;
+  }
+
+  private void doRegisterByPath( String key, IEntryPointFactory entryPointFactory ) {
+    synchronized( entryPointsByPath ) {
+      checkPathAvailable( key );
+      entryPointsByPath.put( key, entryPointFactory );
+    }
+  }
+
+  private void doRegisterByName( String key, IEntryPointFactory entryPointFactory ) {
+    synchronized( entryPointsByName ) {
+      checkNameAvailable( key );
+      entryPointsByName.put( key, entryPointFactory );
+    }
+  }
+
+  private void checkPathAvailable( String key ) {
+    if( entryPointsByPath.containsKey( key ) ) {
+      String message = "Entry point already registered for path " + key;
+      throw new IllegalArgumentException( message );
+    }
+  }
+
+  private void checkNameAvailable( String key ) {
+    if( entryPointsByName.containsKey( key ) ) {
+      String message = "Entry point already registered for name: " + key;
+      throw new IllegalArgumentException( message );
+    }
+  }
+
+  private void checkPathExists( String path ) {
+    if( !entryPointsByPath.containsKey( path ) ) {
+      String message = "No entry point registered for path: " + path;
+      throw new IllegalArgumentException( message );
     }
   }
 
   private void checkNameExists( String name ) {
-    if( !registry.containsKey( name ) ) {
-      String msg = "Entry point does not exist: " + name;
-      throw new IllegalArgumentException( msg );
+    if( !entryPointsByName.containsKey( name ) ) {
+      String message = "No entry point registered for name: " + name;
+      throw new IllegalArgumentException( message );
     }
   }
+
 }

@@ -43,7 +43,7 @@ public class EntryPointUtil {
     ParamCheck.notNull( name, "name" );
 
     EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
-    IEntryPointFactory factory = entryPointManager.getEntryPointFactory( name );
+    IEntryPointFactory factory = entryPointManager.getFactoryByName( name );
     return factory.create();
   }
 

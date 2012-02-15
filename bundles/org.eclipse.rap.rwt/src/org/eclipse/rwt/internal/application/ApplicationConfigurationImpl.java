@@ -90,29 +90,34 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
     applicationContext.getSettingStoreManager().register( settingStoreFactory );
   }
 
-  /*
-   * For backwards compatibility with the extension point attribute 'parameter'
-   */
-  public void addEntryPointByParameter( String parameter, Class<? extends IEntryPoint> type ) {
-    addEntryPoint( parameter, type );
-  }
-
   public void addEntryPoint( String entryPointName, Class<? extends IEntryPoint> type ) {
     ParamCheck.notNull( entryPointName, "entryPointName" );
     ParamCheck.notNull( type, "type" );
 
-    applicationContext.getEntryPointManager().register( entryPointName, type );
+    applicationContext.getEntryPointManager().registerByName( entryPointName, type );
   }
 
   public void addEntryPoint( String entryPointName, IEntryPointFactory entryPointFactory ) {
     ParamCheck.notNull( entryPointName, "entryPointName" );
     ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
 
-    applicationContext.getEntryPointManager().register( entryPointName, entryPointFactory );
+    applicationContext.getEntryPointManager().registerByName( entryPointName, entryPointFactory );
   }
 
+  /*
+   * Only for backward compatibility with the extension point "org.eclipse.rap.ui.entrypoint"
+   * attribute "parameter"
+   */
+  public void addEntryPointByParameter( String parameter, Class<? extends IEntryPoint> type ) {
+    ParamCheck.notNull( parameter, "parameter" );
+    ParamCheck.notNull( type, "type" );
 
-  // Only supported for Workbench API backward compatibilty
+    applicationContext.getEntryPointManager().registerByName( parameter, type );
+  }
+
+  /*
+   * Only for backward compatibility with the extension point "org.eclipse.rap.ui.adapterfactory"
+   */
   public void addAdapterFactory( Class<?> adaptable, AdapterFactory adapterFactory ) {
     ParamCheck.notNull( adaptable, "adaptable" );
     ParamCheck.notNull( adapterFactory, "adapterFactory" );

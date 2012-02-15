@@ -29,10 +29,12 @@ import org.eclipse.swt.widgets.Display;
 
 public class ExternalBrowser_Test extends TestCase {
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -82,8 +84,8 @@ public class ExternalBrowser_Test extends TestCase {
    * matches the order of the ExternalBrowser#open/close calls
    */
   public void testExecutionOrder() throws IOException {
-    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT,
-                                                TestExecutionOrderEntryPoint.class );
+    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
+                                                      TestExecutionOrderEntryPoint.class );
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
 

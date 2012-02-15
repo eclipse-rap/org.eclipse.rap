@@ -241,7 +241,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
 
   private static void registerEntryPoint( Class<? extends IEntryPoint> type ) {
-    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT, type );
+    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, type );
   }
 
   private static void newSession() {

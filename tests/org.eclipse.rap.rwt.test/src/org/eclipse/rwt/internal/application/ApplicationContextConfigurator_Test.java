@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -155,7 +155,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     checkContextDirectoryHasBeenSet();
     checkPhaseListenersHaveBeenAdded();
     checkSettingStoreManagerHasBeenSet();
-    checkEntryPointsHasBeenAdded();
+    checkEntryPointsHaveBeenAdded();
     checkAdapterFactoriesHaveBeenAdded();
     checkResourceHasBeenAdded();
     checkServiceHandlersHaveBeenAdded();
@@ -311,8 +311,8 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     assertTrue( testAdapter instanceof TestAdapter );
   }
 
-  private void checkEntryPointsHasBeenAdded() {
-    assertEquals( 2, applicationContext.getEntryPointManager().getEntryPoints().length );
+  private void checkEntryPointsHaveBeenAdded() {
+    assertEquals( 2, applicationContext.getEntryPointManager().getEntryPointNames().size() );
   }
 
   private void checkSettingStoreManagerHasBeenSet() {
@@ -347,7 +347,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   private void checkEntryPointHasBeenRemoved() {
-    assertEquals( 0, applicationContext.getEntryPointManager().getEntryPoints().length );
+    assertEquals( 0, applicationContext.getEntryPointManager().getEntryPointNames().size() );
   }
 
   private void checkPhaseListenerHasBeenRemoved() {

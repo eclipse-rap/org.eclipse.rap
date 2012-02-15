@@ -51,6 +51,7 @@ public class DisplayLCA_Test extends TestCase {
   private String displayId;
   private DisplayLCA displayLCA;
 
+  @Override
   protected void setUp() throws Exception {
     clearLogs();
     Fixture.setUp();
@@ -61,6 +62,7 @@ public class DisplayLCA_Test extends TestCase {
     displayLCA = new DisplayLCA();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
     clearLogs();
@@ -114,6 +116,7 @@ public class DisplayLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
     Composite shell = new Shell( display , SWT.NONE );
     new CustomLCAWidget( shell, new TestWidgetLCA() {
+      @Override
       public void renderChanges( Widget widget ) throws IOException {
         throw new IOException();
       }
@@ -194,8 +197,8 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderInitiallyDisposed() throws Exception {
-    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT,
-                                                TestRenderInitiallyDisposedEntryPoint.class );
+    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
+                                                      TestRenderInitiallyDisposedEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     LifeCycleUtil.setSessionDisplay( null );
     // ensure that life cycle execution succeeds with disposed display
@@ -207,8 +210,8 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderDisposed() throws Exception {
-    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT,
-                                                TestRenderDisposedEntryPoint.class );
+    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
+                                                      TestRenderDisposedEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     LifeCycleUtil.setSessionDisplay( null );
     lifeCycle.execute();
@@ -408,18 +411,23 @@ public class DisplayLCA_Test extends TestCase {
   private static class TestWidgetLCA extends AbstractWidgetLCA {
     public void readData( Widget widget ) {
     }
+    @Override
     public void preserveValues( Widget widget ) {
     }
+    @Override
     public void renderInitialization( Widget widget ) throws IOException {
     }
+    @Override
     public void renderChanges( Widget widget ) throws IOException {
     }
+    @Override
     public void renderDispose( Widget widget ) throws IOException {
     }
   }
 
   private static class LoggingWidgetLCA extends AbstractWidgetLCA {
 
+    @Override
     public void preserveValues( Widget widget ) {
     }
 
@@ -427,15 +435,18 @@ public class DisplayLCA_Test extends TestCase {
       log.add( widget );
     }
 
+    @Override
     public void renderInitialization( Widget widget ) throws IOException {
       renderInitLog.add( widget );
     }
 
+    @Override
     public void renderChanges( Widget widget ) throws IOException {
       log.add( widget );
       renderChangesLog.add( widget );
     }
 
+    @Override
     public void renderDispose( Widget widget ) throws IOException {
       renderDisposeLog.add( widget );
     }
@@ -451,6 +462,7 @@ public class DisplayLCA_Test extends TestCase {
       this.widgetLCA = widgetLCA;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result;
@@ -473,6 +485,7 @@ public class DisplayLCA_Test extends TestCase {
       this.widgetLCA = widgetLCA;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result;

@@ -11,12 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -63,80 +60,177 @@ public class EntryPointManager_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testRegisterEntryPointWithNullParam() {
+  public void testRegisterEntryPointByPath_nullPath() {
     try {
-      entryPointManager.register( NAME, ( Class<? extends IEntryPoint> )null );
-      fail( "null-entrypoint not allowed" );
+      entryPointManager.registerByPath( null, TestEntryPoint.class );
+      fail();
     } catch( NullPointerException expected ) {
     }
   }
 
-  public void testDelegationOfEntryPointRegistration() {
-    EntryPointManager entryPointManagerSpy = spy( entryPointManager );
-
-    entryPointManagerSpy.register( NAME, TestEntryPoint.class );
-
-    verify( entryPointManagerSpy ).register( eq( NAME ), any( DefaultEntryPointFactory.class ) );
-  }
-
-  public void testRegisterWithNullName() {
+  public void testRegisterEntryPointByPath_nullClass() {
     try {
-      entryPointManager.register( null, entryPointFactory );
-      fail( "null-name not allowed" );
+      entryPointManager.registerByPath( NAME, ( Class<? extends IEntryPoint> )null );
+      fail();
     } catch( NullPointerException expected ) {
     }
   }
 
-  public void testRegisterWithNullFactory() {
+  public void testRegisterEntryPointByPath_duplicate() {
+    entryPointManager.registerByPath( NAME, entryPointFactory );
     try {
-      entryPointManager.register( NAME, ( IEntryPointFactory )null );
-      fail( "null-factory not allowed" );
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  public void testRegisterDuplicateEntryPoint() {
-    entryPointManager.register( NAME, entryPointFactory );
-    try {
-      entryPointManager.register( NAME, entryPointFactory );
-      fail( "register duplicate names not allowed" );
+      entryPointManager.registerByPath( NAME, entryPointFactory );
+      fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
 
-  public void testDeregisterWithNullName() {
+  public void testRegisterEntryPointByPath() {
+    entryPointManager.registerByPath( NAME, TestEntryPoint.class );
+
+    IEntryPointFactory factory = entryPointManager.getFactoryByPath( NAME );
+
+    assertEquals( DefaultEntryPointFactory.class, factory.getClass() );
+    assertEquals( TestEntryPoint.class, factory.create().getClass() );
+  }
+
+  public void testRegisterFactoryByPath_nullPath() {
     try {
-      entryPointManager.deregister( null );
-      fail( "deregister( null ) not allowed" );
+      entryPointManager.registerByPath( null, entryPointFactory );
+      fail();
     } catch( NullPointerException expected ) {
     }
   }
 
-  public void testDeregisterNonExistingEntryPoint() {
+  public void testRegisterFactoryByPath_nullFactory() {
     try {
-      entryPointManager.deregister( "does.not.exist.at.all" );
-      fail( "deregister not allowed for unregistered entry points" );
+      entryPointManager.registerByPath( NAME, ( IEntryPointFactory )null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+
+  public void testRegisterFactoryByPath() {
+    entryPointManager.registerByPath( NAME, entryPointFactory );
+
+    IEntryPointFactory factory = entryPointManager.getFactoryByPath( NAME );
+
+    assertSame( entryPointFactory, factory );
+  }
+
+  public void testGetServletPaths_initallyEmpty() {
+    assertTrue( entryPointManager.getServletPaths().isEmpty() );
+  }
+
+  public void testGetServletPaths() {
+    entryPointManager.registerByPath( "foo", entryPointFactory );
+    entryPointManager.registerByPath( "bar", entryPointFactory );
+
+    assertEquals( 2, entryPointManager.getServletPaths().size() );
+    assertTrue( entryPointManager.getServletPaths().contains( "foo" ) );
+    assertTrue( entryPointManager.getServletPaths().contains( "bar" ) );
+  }
+
+  public void testRegisterEntryPointByName_nullName() {
+    try {
+      entryPointManager.registerByName( null, TestEntryPoint.class );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+
+  public void testRegisterEntryPointByName_nullClass() {
+    try {
+      entryPointManager.registerByName( NAME, ( Class<? extends IEntryPoint> )null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+
+  public void testRegisterEntryPointByName_duplicate() {
+    entryPointManager.registerByName( NAME, TestEntryPoint.class );
+    try {
+      entryPointManager.registerByName( NAME, TestEntryPoint.class );
+      fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
 
-  public void testDeregister() {
-    entryPointManager.register( NAME, entryPointFactory );
-    entryPointManager.deregister( NAME );
+  public void testRegisterEntryPointByName() {
+    entryPointManager.registerByName( NAME, TestEntryPoint.class );
+
+    IEntryPointFactory factory = entryPointManager.getFactoryByName( NAME );
+
+    assertEquals( DefaultEntryPointFactory.class, factory.getClass() );
+    assertEquals( TestEntryPoint.class, factory.create().getClass() );
+  }
+
+  public void testRegisterFactoryByName_nullPath() {
     try {
-      entryPointManager.getEntryPointFactory( NAME );
-      fail( "deregistering entry point failed" );
-    } catch( RuntimeException expected ) {
+      entryPointManager.registerByName( null, entryPointFactory );
+      fail();
+    } catch( NullPointerException expected ) {
     }
+  }
+
+  public void testRegisterFactoryByName_nullFactory() {
+    try {
+      entryPointManager.registerByName( NAME, ( IEntryPointFactory )null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+
+  public void testRegisterFactoryByName() {
+    entryPointManager.registerByName( NAME, entryPointFactory );
+
+    IEntryPointFactory factory = entryPointManager.getFactoryByName( NAME );
+
+    assertSame( entryPointFactory, factory );
+  }
+
+  public void testGetEntryPointNames_initallyEmpty() {
+    assertTrue( entryPointManager.getEntryPointNames().isEmpty() );
+  }
+
+  public void testEntryPointNames() {
+    entryPointManager.registerByName( "foo", entryPointFactory );
+    entryPointManager.registerByName( "bar", entryPointFactory );
+
+    assertEquals( 2, entryPointManager.getEntryPointNames().size() );
+    assertTrue( entryPointManager.getEntryPointNames().contains( "foo" ) );
+    assertTrue( entryPointManager.getEntryPointNames().contains( "bar" ) );
+  }
+
+  public void testDeregisterByName_nullName() {
+    try {
+      entryPointManager.deregisterByName( null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+
+  public void testDeregisterByName_nonExistingName() {
+    try {
+      entryPointManager.deregisterByName( "does.not.exist" );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testDeregisterByName() {
+    entryPointManager.registerByName( NAME, entryPointFactory );
+    entryPointManager.deregisterByName( NAME );
+
+    assertTrue( entryPointManager.getEntryPointNames().isEmpty() );
   }
 
   public void testDeregisterAll() {
-    entryPointManager.register( NAME, entryPointFactory );
+    entryPointManager.registerByPath( NAME, entryPointFactory );
+    entryPointManager.registerByName( NAME, TestEntryPoint.class );
     entryPointManager.deregisterAll();
-    try {
-      entryPointManager.getEntryPointFactory( NAME );
-      fail( "deregistering entry point failed" );
-    } catch( RuntimeException expected ) {
-    }
+
+    assertTrue( entryPointManager.getServletPaths().isEmpty() );
+    assertTrue( entryPointManager.getEntryPointNames().isEmpty() );
   }
 }

@@ -51,7 +51,7 @@ public class PrepareUIRoot_Test extends TestCase {
   }
 
   public void testExecuteInFirstRequestsWithNoStartupParameter() throws IOException {
-    RWTFactory.getEntryPointManager().register( EntryPointUtil.DEFAULT, TestEntryPoint.class );
+    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, TestEntryPoint.class );
 
     PhaseId phaseId = phase.execute( null );
 
@@ -60,7 +60,7 @@ public class PrepareUIRoot_Test extends TestCase {
   }
 
   public void testExecuteInFirstRequestsWithStartupParameter() throws IOException {
-    RWTFactory.getEntryPointManager().register( "myEntryPoint", TestEntryPoint.class );
+    RWTFactory.getEntryPointManager().registerByName( "myEntryPoint", TestEntryPoint.class );
     Fixture.fakeRequestParam( RequestParams.STARTUP, "myEntryPoint" );
 
     PhaseId phaseId = phase.execute( null );
