@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,9 +7,11 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.application;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -85,7 +87,7 @@ public class Application {
   /**
    * Starts this application.
    *
-   * @throws IllegalStateException if this apllication was already started.
+   * @throws IllegalStateException if this application was already started.
    */
   public void start() {
     ApplicationContextUtil.set( applicationContext.getServletContext(), applicationContext );
@@ -118,8 +120,12 @@ public class Application {
    *   no servlet names are provided.
    */
   public String[] getServletNames() {
-    AbstractBranding[] brandings = applicationContext.getBrandingManager().getAll();
     Set<String> names = new HashSet<String>();
+    Collection<String> servletPaths = applicationContext.getEntryPointManager().getServletPaths();
+    for( String path : servletPaths ) {
+      names.add( path );
+    }
+    AbstractBranding[] brandings = applicationContext.getBrandingManager().getAll();
     for( AbstractBranding branding : brandings ) {
       names.add( branding.getServletName() );
     }
