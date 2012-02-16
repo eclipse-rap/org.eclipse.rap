@@ -28,13 +28,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     this._selectionLength = 0;
     this.__oninput = qx.lang.Function.bindEvent( this._oninputDom, this );
     this.addEventListener( "blur", this._onblur );
-    this.addEventListener( "input", this._oninput );
     this.addEventListener( "keydown", this._onkeydown );
     this.addEventListener( "keypress", this._onkeypress );
     this.addEventListener( "keyup", this._onkeyup, this );
     this.addEventListener( "mousedown", this._onMouseDownUp, this );
     this.addEventListener( "mouseup", this._onMouseDownUp, this );
     this._updateLineHeight();
+    this._typed = null;
+    this._selectionNeedsUpdate = false;
   },
 
   destruct : function() {
@@ -79,15 +80,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       apply : "_applyTextAlign"
     },
 
-    /**
-     * Whether the property {@link #value} should be updated "live" on each key
-     * stroke or only on focus blur (default).
-     */
-    liveUpdate : {
-      check : "Boolean",
-      init : false
-    },
-
     maxLength : {
       check : "Integer",
       apply : "_applyMaxLength",
@@ -108,7 +100,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     _inputType : "text",
     _inputElement : null,
     _firstInputFixApplied : false,
-    _textOnFocus : null,
     
     /////////
     // API
@@ -151,6 +142,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       if( this.isCreated() && this.getFocused() ) { 
         this._setSelectionStart( this._selectionStart );
         this._setSelectionLength( this._selectionLength );
+        this._selectionNeedsUpdate = false;
       }
     },
     
@@ -483,7 +475,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     },
 
     _applyValue : function( value, old ) {
+      this._renderValue();
+      this._detectSelectionChange();
+    },
+    
+    _renderValue : function() {
       this._inValueProperty = true;
+      var value = this.getValue();
       if( this._inputElement != null ) {
         if (value === null) {
           value = "";
@@ -493,7 +491,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
         }
       }
       delete this._inValueProperty;
-      this._detectSelectionChange();
     },
 
     _applyMaxLength : function( value, old ) {
@@ -648,13 +645,32 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     _oninputDom : qx.core.Variant.select( "qx.client", {
       "mshtml" : function( event ) {
         if( !this._inValueProperty && event.propertyName === "value" ) {
-          this.createDispatchDataEvent( "input", this.getComputedValue() );
+          this._oninput();
         }
       },
       "default" : function( event ) {
-        this.createDispatchDataEvent( "input", this.getComputedValue() );
+        this._oninput();
       }
     } ),
+
+    _oninput : function() {
+      try {
+        var newValue = this.getComputedValue().toString();
+        var doit = true;
+        if( this.hasEventListeners( "input" ) ) {
+          doit = this.dispatchEvent( new qx.event.type.DataEvent( "input", this._typed ), true );
+        }
+        if( doit ) {
+          this.setValue( newValue );
+        } else if( org.eclipse.rwt.Client.isWebkit() || org.eclipse.rwt.Client.isMshtml() ){
+          // some browser set new selection after input event, ignoring all changes before that
+          qx.client.Timer.once( this._renderSelection, this, 0 );
+          this._selectionNeedsUpdate = true;
+        }
+      } catch( ex ) {
+        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
+      }
+    },
 
     _ontabfocus : function() {
       this.selectAll();
@@ -662,27 +678,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
 
     _applyFocused : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
-      this._textOnFocus = this.getComputedValue();
       if( !qx.event.handler.FocusHandler.mouseFocus ) {
         this._renderSelection();
       }
     },
 
     _onblur : function() {
-      var vValue = this.getComputedValue().toString();
-      if( this._textOnFocus !== vValue ) {
-        this.setValue( vValue );
-      }
       // RAP workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=201080
       if( this.getParent() != null ) {
         this._setSelectionLength( 0 );
-      }
-    },
-
-    _oninput : function() {
-      if( this.isLiveUpdate() ) {
-        var vValue = this.getComputedValue().toString();
-        this.setValue( vValue );
       }
     },
 
@@ -694,6 +698,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
         e.preventDefault();
       }
       this._detectSelectionChange();
+      this._typed = null;
     },
 
     // [if] Stops keypress propagation
@@ -702,15 +707,24 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       if( e.getKeyIdentifier() !== "Tab" ) {
         e.stopPropagation();
       }
+      if( this._selectionNeedsUpdate ) {
+        this._renderSelection();
+      }
       this._detectSelectionChange();
+      this._typed = String.fromCharCode( e.getCharCode() );
     },
 
     _onkeyup : function( event ) {
+      if( this._selectionNeedsUpdate ) {
+        this._renderSelection();
+      }
       this._detectSelectionChange();
+      this._typed = null;
     },
 
     _onMouseDownUp : function( event ) {
       this._detectSelectionChange();
+      this._typed = null;
     },
 
     /////////

@@ -29,7 +29,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     this._requestScheduled = false;
     this._message = null;
     this._messageElement = null;
-    this.setLiveUpdate( true );
   },
   
   destruct : function() {

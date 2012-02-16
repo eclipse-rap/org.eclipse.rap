@@ -108,7 +108,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
 
     _visualizeBlur : function() {
       // setSelectionLength( 0 ) for TextField - needed for IE
-      this._textfield.setSelectionLength( 0 );
+      this._textfield._setSelectionLength( 0 );
       this._textfield._visualizeBlur();
       this.removeState( "focused" );
     },
