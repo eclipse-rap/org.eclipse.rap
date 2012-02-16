@@ -287,14 +287,6 @@ qx.Class.define("qx.bom.element.Location",
 
           var left = rect.left;
           var top = rect.top;
-
-          // Internet Explorer (at least version 7.0) adds the border
-          // when running in standard mode
-          if (doc.compatMode === "CSS1Compat")
-          {
-            left -= this.__num(elem, "borderLeftWidth");
-            top -= this.__num(elem, "borderTopWidth");
-          }
         }
         else
         {
