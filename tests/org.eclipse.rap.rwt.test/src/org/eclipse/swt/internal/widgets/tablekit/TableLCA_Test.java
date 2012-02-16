@@ -852,6 +852,7 @@ public class TableLCA_Test extends TestCase {
     assertEquals( Integer.valueOf( 0 ), operation.getProperty( "indentionWidth" ) );
     assertEquals( Integer.valueOf( -1 ), operation.getProperty( "treeColumn" ) );
     assertFalse( operation.getPropertyNames().contains( "checkBoxMetrics" ) );
+    assertEquals( Boolean.FALSE, operation.getProperty( "markupEnabled" ) );
   }
 
   public void testRenderCreateWithFixedColumns() throws IOException {
@@ -1689,37 +1690,14 @@ public class TableLCA_Test extends TestCase {
     assertNull( message.findSetOperation( table, "cellToolTipText" ) );
   }
 
-  public void testRenderInitialMarkupEnabled() throws IOException {
+  public void testRenderMarkupEnabled() throws IOException {
     Table table = new Table( shell, SWT.NONE );
+    table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
 
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( table );
-    assertTrue( operation.getPropertyNames().indexOf( "markupEnabled" ) == -1 );
-  }
-
-  public void testRenderMarkupEnabled() throws IOException {
-    Table table = new Table( shell, SWT.NONE );
-
-    table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
-    lca.renderChanges( table );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( table, "markupEnabled" ) );
-  }
-
-  public void testRenderMarkupEnabledUnchanged() throws IOException {
-    Table table = new Table( shell, SWT.NONE );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( table );
-
-    table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
-    Fixture.preserveWidgets();
-    lca.renderChanges( table );
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( table, "markupEnabled" ) );
+    assertEquals( Boolean.TRUE, message.findCreateProperty( table, "markupEnabled" ) );
   }
 
   private static void createTableColumns( Table table, int count ) {

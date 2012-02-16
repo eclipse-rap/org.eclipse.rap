@@ -99,7 +99,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
     preserveListener( tree, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( tree ) );
     preserveProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ) );
     preserveProperty( tree, PROP_CELL_TOOLTIP_TEXT, null );
-    preserveProperty( tree, PROP_MARKUP_ENABLED, isMarkupEnabled( tree ) );
   }
 
   public void readData( Widget widget ) {
@@ -134,7 +133,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
       clientObject.set( "selectionPadding", selectionPadding );
     }
     clientObject.set( "indentionWidth", adapter.getIndentionWidth() );
-  }
+    clientObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( tree ) );  }
 
   public void renderChanges( Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
@@ -167,7 +166,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
     renderListener( tree, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( tree ), false );
     renderProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ), false );
     renderProperty( tree, PROP_CELL_TOOLTIP_TEXT, getCellToolTipText( tree ), null );
-    renderProperty( tree, PROP_MARKUP_ENABLED, isMarkupEnabled( tree ), false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {

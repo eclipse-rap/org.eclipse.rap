@@ -43,8 +43,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     },
 
     testRenderItemWithMarkupEnabled : function() {
-      var tree = this._createTree();
-      tree.setMarkupEnabled( true );
+      var tree = this._createTree( false, "markupEnabled" );
       var row = this._createRow( tree );
       this._addToDom( row );
       var item = this._createItem( tree );
@@ -58,7 +57,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
 
     testRenderItemWithoutMarkupEnabled : function() {
       var tree = this._createTree();
-      tree.setMarkupEnabled( false );
       var row = this._createRow( tree );
       this._addToDom( row );
       var item = this._createItem( tree );

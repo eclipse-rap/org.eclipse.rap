@@ -271,9 +271,15 @@ public final class RWT {
   /**
    * Controls whether the use of <em>markup</em> in text is enabled. To enable
    * markup in text, this constant must be passed to <code>setData()</code> with
-   * a value of <code>Boolean.TRUE</code>.
+   * a value of <code>Boolean.TRUE</code>. The call to <code>setData()</code>
+   * must be placed directly after the control is created. Once, the markup in text
+   * is enabled it's not possible to disable it.
    * <p>
-   * For example: <code>table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );</code>
+   * For example:
+   * <code><pre>
+   *   Table table = new Table( parent, SWT.NONE );
+   *   table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+   * </pre></code>
    * </p>
    * <p>
    * When markup is enabled, certain XHTML tags can be used in the text property
@@ -287,7 +293,39 @@ public final class RWT {
    * <dd>renders its content in italic font style</dd>
    * <dt>{@literal <br/>}</dt>
    * <dd>inserts a line break</dd>
+   * <dt>{@literal <sub>}</dt>
+   * <dd>renders its content as subscript</dd>
+   * <dt>{@literal <sup>}</dt>
+   * <dd>renders its content as superscript</dd>
+   * <dt>{@literal <big>}</dt>
+   * <dd>renders its content with bigger font size</dd>
+   * <dt>{@literal <small>}</dt>
+   * <dd>renders its content with smaller font size</dd>
+   * <dt>{@literal <del>}</dt>
+   * <dd>renders its content as deleted text</dd>
+   * <dt>{@literal <ins>}</dt>
+   * <dd>renders its content as inserted text</dd>
+   * <dt>{@literal <em>}</dt>
+   * <dd>renders its content as emphasized text</dd>
+   * <dt>{@literal <strong>}</dt>
+   * <dd>renders its content as strong emphasized text</dd>
+   * <dt>{@literal <dfn>}</dt>
+   * <dd>renders its content as instance definition</dd>
+   * <dt>{@literal <code>}</dt>
+   * <dd>renders its content as computer code fragment</dd>
+   * <dt>{@literal <samp>}</dt>
+   * <dd>renders its content as sample program output</dd>
+   * <dt>{@literal <kbd>}</dt>
+   * <dd>renders its content as text to be entered by the user</dd>
+   * <dt>{@literal <var>}</dt>
+   * <dd>renders its content as instance of a variable or program argument</dd>
+   * <dt>{@literal <cite>}</dt>
+   * <dd>renders its content as citation</dd>
+   * <dt>{@literal <span>}</dt>
+   * <dd>generic style container</dd>
    * </dl>
+   * The visual representation of the above tags can be specified in a <code>style</code>
+   * attribute.
    * </p>
    * <p>
    * <b>Used By:</b>

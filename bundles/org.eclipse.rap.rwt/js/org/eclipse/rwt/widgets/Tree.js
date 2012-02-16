@@ -160,6 +160,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       if( typeof map.indentionWidth === "number" ) {
         this._config.indentionWidth = map.indentionWidth;
       }
+      if( map.markupEnabled ) {
+        this._config.markupEnabled = true;
+      }
       this._rowContainer.setBaseAppearance( map.appearance );
       this.setAppearance( map.appearance );
     },
@@ -1206,16 +1209,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     setCellToolTipText : function( text ) {
       if( this._cellToolTip != null ) {
         this._cellToolTip.setText( text );
-      }
-    },
-
-    //////////////////
-    // Markup handling
-
-    setMarkupEnabled : function( value ) {
-      if( this._config.markupEnabled !== value ) {
-        this._config.markupEnabled = value;
-        this._scheduleUpdate();
       }
     }
 

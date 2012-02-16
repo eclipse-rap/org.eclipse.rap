@@ -11,9 +11,11 @@
 package org.eclipse.swt.internal.widgets;
 
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -27,7 +29,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class MarkupValidator {
 
   private static final SAXParser SAX_PARSER = createSAXParser();
-  private static final List<String> SUPPORTED_ELEMENTS = createSupportedElementsList();
+  private static final Map<String, String[]> SUPPORTED_ELEMENTS = createSupportedElementsMap();
 
   private MarkupValidator() {
     // prevent instantiation
@@ -61,21 +63,51 @@ public class MarkupValidator {
     return result;
   }
 
-  private static List<String> createSupportedElementsList() {
-    List<String> result = new ArrayList<String>();
-    result.add( "html" );
-    result.add( "b" );
-    result.add( "i" );
-    result.add( "br" );
-    return Collections.unmodifiableList( result );
+  private static Map<String, String[]> createSupportedElementsMap() {
+    Map<String, String[]> result = new HashMap<String, String[]>();
+    result.put( "html", new String[ 0 ] );
+    result.put( "b", new String[] { "style" } );
+    result.put( "i", new String[] { "style" } );
+    result.put( "sub", new String[] { "style" } );
+    result.put( "sup", new String[] { "style" } );
+    result.put( "br", new String[] { "style" } );
+    result.put( "big", new String[] { "style" } );
+    result.put( "small", new String[] { "style" } );
+    result.put( "del", new String[] { "style" } );
+    result.put( "ins", new String[] { "style" } );
+    result.put( "em", new String[] { "style" } );
+    result.put( "strong", new String[] { "style" } );
+    result.put( "dfn", new String[] { "style" } );
+    result.put( "code", new String[] { "style" } );
+    result.put( "samp", new String[] { "style" } );
+    result.put( "kbd", new String[] { "style" } );
+    result.put( "var", new String[] { "style" } );
+    result.put( "cite", new String[] { "style" } );
+    result.put( "span", new String[] { "style" } );
+//    result.put( "img", new String[] { "style", "src", "width", "height" } );
+//    result.put( "a", new String[] { "style", "href", "target" } );
+    return result;
   }
 
   private static class MarkupHandler extends DefaultHandler {
 
     @Override
     public void startElement( String uri, String localName, String name, Attributes attributes ) {
-      if( !SUPPORTED_ELEMENTS.contains( name ) ) {
+      if( !SUPPORTED_ELEMENTS.containsKey( name ) ) {
         throw new IllegalArgumentException( "Unsupported element in markup text: " + name );
+      } else if( attributes.getLength() > 0 ) {
+        List<String> supportedAttributes = Arrays.asList( SUPPORTED_ELEMENTS.get( name ) );
+        int index = 0;
+        String attributeName = attributes.getQName( index );
+        while( attributeName != null ) {
+          if( !supportedAttributes.contains( attributeName ) ) {
+            String message = "Unsupported attribute \"{0}\" for element \"{1}\" in markup text";
+            message = MessageFormat.format( message, new Object[] { attributeName, name } );
+            throw new IllegalArgumentException( message );
+          }
+          index++;
+          attributeName = attributes.getQName( index );
+        }
       }
     }
 

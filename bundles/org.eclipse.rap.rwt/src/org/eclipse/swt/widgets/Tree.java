@@ -1605,7 +1605,7 @@ public class Tree extends Composite {
       layoutCache.invalidateAll();
     } else if( RWT.CUSTOM_ITEM_HEIGHT.equals( key ) ) {
       setCustomItemHeight( value );
-    } else if( RWT.MARKUP_ENABLED.equals( key ) ) {
+    } else if( RWT.MARKUP_ENABLED.equals( key ) && !markupEnabled ) {
       markupEnabled = Boolean.TRUE.equals( value );
     }
     super.setData( key, value );

@@ -104,7 +104,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     preserveProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ) );
     preserveProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ) );
     preserveProperty( table, PROP_CELL_TOOLTIP_TEXT, null );
-    preserveProperty( table, PROP_MARKUP_ENABLED, isMarkupEnabled( table ) );
   }
 
   public void readData( Widget widget ) {
@@ -139,6 +138,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
     clientObject.set( "indentionWidth", 0 );
     clientObject.set( PROP_TREE_COLUMN, -1 );
+    clientObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( table ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
@@ -171,7 +171,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     renderProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ), false );
     renderProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ), false );
     renderProperty( table, PROP_CELL_TOOLTIP_TEXT, getCellToolTipText( table ), null );
-    renderProperty( table, PROP_MARKUP_ENABLED, isMarkupEnabled( table ), false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {

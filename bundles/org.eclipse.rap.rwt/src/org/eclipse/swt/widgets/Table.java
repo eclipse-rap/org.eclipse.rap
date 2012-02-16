@@ -362,7 +362,7 @@ public class Table extends Composite {
   public void setData( String key, Object value ) {
     if( RWT.CUSTOM_ITEM_HEIGHT.equals( key ) ) {
       setCustomItemHeight( value );
-    } else if( RWT.MARKUP_ENABLED.equals( key ) ) {
+    } else if( RWT.MARKUP_ENABLED.equals( key ) && !markupEnabled ) {
       markupEnabled = Boolean.TRUE.equals( value );
     }
     super.setData( key, value );

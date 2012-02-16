@@ -25,7 +25,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Tree", {
       checkBoxMetrics : properties.checkBoxMetrics,
       selectionPadding : properties.selectionPadding,
       indentionWidth : properties.indentionWidth,
-      splitContainer : properties.splitContainer
+      splitContainer : properties.splitContainer,
+      markupEnabled : properties.markupEnabled
     };  
     var result = new org.eclipse.rwt.widgets.Tree( configMap );
     org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
@@ -56,8 +57,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Tree", {
     "scrollBarsVisible",
     "alwaysHideSelection",
     "enableCellToolTip",
-    "cellToolTipText",
-    "markupEnabled"
+    "cellToolTipText"
   ] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {

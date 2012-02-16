@@ -615,6 +615,7 @@ public class TreeLCA_Test extends TestCase {
     JSONArray actual = ( JSONArray )operation.getProperty( "selectionPadding" );
     assertTrue( ProtocolTestUtil.jsonEquals( "[3,5]", actual ) );
     assertFalse( operation.getPropertyNames().contains( "checkBoxMetrics" ) );
+    assertEquals( Boolean.FALSE, operation.getProperty( "markupEnabled" ) );
   }
 
   public void testRenderParent() throws IOException {
@@ -1441,37 +1442,14 @@ public class TreeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( tree, "focusItem" ) );
   }
 
-  public void testRenderInitialMarkupEnabled() throws IOException {
+  public void testRenderMarkupEnabled() throws IOException {
     Tree tree = new Tree( shell, SWT.NONE );
+    tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
 
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( tree );
-    assertTrue( operation.getPropertyNames().indexOf( "markupEnabled" ) == -1 );
-  }
-
-  public void testRenderMarkupEnabled() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
-    tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
-    lca.renderChanges( tree );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( tree, "markupEnabled" ) );
-  }
-
-  public void testRenderMarkupEnabledUnchanged() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( tree );
-
-    tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
-    Fixture.preserveWidgets();
-    lca.renderChanges( tree );
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( tree, "markupEnabled" ) );
+    assertEquals( Boolean.TRUE, message.findCreateProperty( tree, "markupEnabled" ) );
   }
 
   private static void setScrollLeft( Tree tree, int scrollLeft ) {

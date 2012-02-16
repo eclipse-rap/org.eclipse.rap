@@ -2429,6 +2429,15 @@ public class Table_Test extends TestCase {
     }
   }
 
+  public void testDisableMarkupIsIgnored() {
+    Table table = new Table( shell, SWT.NONE );
+    table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    table.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
+
+    assertTrue( table.markupEnabled );
+  }
+
   private Image createImage50x100() throws IOException {
     InputStream stream = Fixture.class.getClassLoader().getResourceAsStream( Fixture.IMAGE_50x100 );
     Image result = new Image( display, stream );

@@ -1640,6 +1640,15 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  public void testDisableMarkupIsIgnored() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    tree.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
+
+    assertTrue( tree.markupEnabled );
+  }
+
   /////////
   // Helper
 

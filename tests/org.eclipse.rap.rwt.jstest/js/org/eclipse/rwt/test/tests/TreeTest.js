@@ -318,8 +318,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     testSetMarkupEnabledByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
-      TestUtil.protocolSet( "w3", { "markupEnabled" : true } );
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Tree",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "appearance": "tree",
+          "markupEnabled" : true
+        }
+      } );
+      var widget = org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" );
       assertTrue( widget.getRenderConfig().markupEnabled );
       shell.destroy();
       widget.destroy();

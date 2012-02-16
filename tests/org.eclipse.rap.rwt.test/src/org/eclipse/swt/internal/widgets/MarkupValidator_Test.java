@@ -16,11 +16,12 @@ import junit.framework.TestCase;
 public class MarkupValidator_Test extends TestCase {
 
   public void testValidate() {
-    String markup = "<b>foo</b><br/><i>bar</i>";
+    String markup = "<b>foo</b><br/><span style=\"background-color: blue\">bar</span>";
 
     try {
       MarkupValidator.validate( markup );
     } catch( Exception ex ) {
+      ex.printStackTrace();
       fail( ex.getMessage() );
     }
   }
@@ -33,7 +34,7 @@ public class MarkupValidator_Test extends TestCase {
       fail( "validation should throw an exception" );
     } catch( Exception expected ) {
       assertTrue( expected instanceof IllegalArgumentException );
-      assertEquals( expected.getMessage(), "Failed to parse markup text" );
+      assertEquals( "Failed to parse markup text", expected.getMessage() );
     }
   }
 
@@ -45,7 +46,20 @@ public class MarkupValidator_Test extends TestCase {
       fail( "validation should throw an exception" );
     } catch( Exception expected ) {
       assertTrue( expected instanceof IllegalArgumentException );
-      assertEquals( expected.getMessage(), "Unsupported element in markup text: ul" );
+      assertEquals( "Unsupported element in markup text: ul", expected.getMessage() );
+    }
+  }
+
+  public void testValidate_UnsupportedAttribute() {
+    String markup = "<b>foo</b><br/><span href=\"abc\">bar</span>";
+
+    try {
+      MarkupValidator.validate( markup );
+      fail( "validation should throw an exception" );
+    } catch( Exception expected ) {
+      assertTrue( expected instanceof IllegalArgumentException );
+      String expectedMessage = "Unsupported attribute \"href\" for element \"span\" in markup text";
+      assertEquals( expectedMessage, expected.getMessage() );
     }
   }
 
