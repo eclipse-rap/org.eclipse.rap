@@ -1405,6 +1405,7 @@ public class TreeItem extends Item {
       itemCount = newItemCount;
       parent.isFlatIndexValid = false;
       parent.updateScrollBars();
+      parent.redraw();
     }
   }
 

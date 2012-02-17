@@ -269,8 +269,8 @@ public class Tree extends Composite {
       itemCount = newItemCount;
       isFlatIndexValid = false;
       updateScrollBars();
+      redraw();
     }
-    redraw();
   }
 
   /**
@@ -952,7 +952,6 @@ public class Tree extends Composite {
       if( recursive ) {
         item.clearAll( true, false );
       }
-      checkData( item, index );
     }
   }
 
@@ -2266,6 +2265,10 @@ public class Tree extends Composite {
   {
     private String toolTipText;
     private ICellToolTipProvider provider;
+
+    public void checkData() {
+      Tree.this.updateAllItems();
+    }
 
     public void setScrollLeft( int left ) {
       scrollLeft = left;

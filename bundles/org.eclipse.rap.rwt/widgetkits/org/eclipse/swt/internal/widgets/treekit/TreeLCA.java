@@ -173,8 +173,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
   }
 
   public void doRedrawFake( Control control ) {
-    ControlEvent evt = new ControlEvent( control, ControlEvent.CONTROL_RESIZED );
-    evt.processEvent();
+    Tree tree = ( Tree )control;
+    tree.getAdapter( ITreeAdapter.class ).checkData();
   }
 
   private static void processWidgetSelectedEvent( Tree tree ) {

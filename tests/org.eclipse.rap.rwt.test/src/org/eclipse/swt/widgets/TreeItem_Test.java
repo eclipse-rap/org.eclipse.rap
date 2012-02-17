@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1987,6 +1987,42 @@ public class TreeItem_Test extends TestCase {
     item.removeAll();
 
     assertEquals( 0, tree.getSelectionCount() );
+  }
+
+  // see bug 371860
+  public void testClearSetDataOrder() {
+    final List<String> log = new ArrayList<String>();
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setSize( 100, 160 );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item.setText( "item" );
+    tree.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( Event event ) {
+        TreeItem item = ( TreeItem )event.item;
+        int i = item.getParent().indexOf( item );
+        item.setText( "item " + i );
+        log.add( "item" + i + "#SetData" );
+      }
+    } );
+    TreeItem item0 = new TreeItem( item, SWT.NONE );
+    item0.setText( "item0" );
+    TreeItem item1 = new TreeItem( item, SWT.NONE );
+    item1.setText( "item1" );
+    item.setExpanded( true );
+
+    log.add( "clear item0" );
+    item.clear( 0, false );
+    log.add( "clear item1" );
+    item.clear( 1, false );
+    log.add( "setItemCount" );
+    item.setItemCount( 1 );
+    display.readAndDispatch();  // redraw the tree
+
+    assertEquals( 4, log.size() );
+    assertEquals( "clear item0", log.get( 0 ) );
+    assertEquals( "clear item1", log.get( 1 ) );
+    assertEquals( "setItemCount", log.get( 2 ) );
+    assertEquals( "item0#SetData", log.get( 3 ) );
   }
 
   //////////////////
