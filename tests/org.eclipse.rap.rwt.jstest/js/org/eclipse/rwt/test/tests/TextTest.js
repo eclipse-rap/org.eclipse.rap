@@ -419,7 +419,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       if( !Client.isGecko() ) {
         // Fails in gecko about half of the time for no known reason, but works in actuality
-        assertEquals( [ 2, 5 ], text.getComputedSelection() );
+        assertEquals( [ 2, 2 ], text.getComputedSelection() );
       }
     },
 
