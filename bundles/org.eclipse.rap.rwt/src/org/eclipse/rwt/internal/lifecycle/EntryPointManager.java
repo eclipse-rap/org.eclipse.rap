@@ -34,12 +34,14 @@ public class EntryPointManager {
 
   public void registerByPath( String path, Class<? extends IEntryPoint> type ) {
     ParamCheck.notNull( path, "path" );
+    checkValidPath( path );
     doRegisterByPath( path, new DefaultEntryPointFactory( type ) );
   }
 
   public void registerByPath( String path, IEntryPointFactory entryPointFactory ) {
     ParamCheck.notNull( path, "path" );
     ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
+    checkValidPath( path );
     doRegisterByPath( path, entryPointFactory );
   }
 
@@ -116,6 +118,18 @@ public class EntryPointManager {
     synchronized( entryPointsByName ) {
       checkNameAvailable( key );
       entryPointsByName.put( key, entryPointFactory );
+    }
+  }
+
+  private void checkValidPath( String path ) {
+    if( !path.startsWith( "/" ) ) {
+      throw new IllegalArgumentException( "Path must start with '/': " + path );
+    }
+    if( path.endsWith( "/" ) ) {
+      throw new IllegalArgumentException( "Path must not end with '/': " + path );
+    }
+    if( path.length() > 0 && path.substring( 1 ).contains( "/" ) ) {
+      throw new IllegalArgumentException( "Nested paths not yet supported: " + path );
     }
   }
 

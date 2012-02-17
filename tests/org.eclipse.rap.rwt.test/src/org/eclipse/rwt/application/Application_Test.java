@@ -19,6 +19,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Collection;
+
 import javax.servlet.ServletContext;
 
 import junit.framework.TestCase;
@@ -83,27 +85,27 @@ public class Application_Test extends TestCase {
   public void testGetDefaultServletNames() {
     application.start();
 
-    String[] servletNames = application.getServletNames();
+    Collection<String> servletPaths = application.getServletPaths();
 
-    assertEquals( 0, servletNames.length );
+    assertTrue( servletPaths.isEmpty() );
   }
 
   public void testGetServletNames_withBranding() {
     startWithBrandingConfiguration();
 
-    String[] servletNames = application.getServletNames();
+    Collection<String> servletPaths = application.getServletPaths();
 
-    assertEquals( 1, servletNames.length );
-    assertEquals( SERVLET_NAME, servletNames[ 0 ] );
+    assertEquals( 1, servletPaths.size() );
+    assertTrue( servletPaths.contains( "/" + SERVLET_NAME ) );
   }
 
   public void testGetServletNames_withEntryPoint() {
     startWithEntryPointConfiguration();
 
-    String[] servletNames = application.getServletNames();
+    Collection<String> servletPaths = application.getServletPaths();
 
-    assertEquals( 1, servletNames.length );
-    assertEquals( SERVLET_NAME, servletNames[ 0 ] );
+    assertEquals( 1, servletPaths.size() );
+    assertTrue( servletPaths.contains( "/" + SERVLET_NAME ) );
   }
 
   public void testParamServletContextMustNotBeNull() {
@@ -156,7 +158,7 @@ public class Application_Test extends TestCase {
     verify( servletContext ).setAttribute( anyString(), argument.capture() );
     ApplicationContext applicationContext = argument.getValue();
     EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
-    entryPointManager.registerByPath( SERVLET_NAME, TestEntryPoint.class );
+    entryPointManager.registerByPath( "/" + SERVLET_NAME, TestEntryPoint.class );
 //    configurator = new ApplicationConfigurator() {
 //      public void configure( ApplicationConfiguration configuration ) {
 //        configuration.addEntryPoint( SERVLET_NAME, TestEntryPoint.class );

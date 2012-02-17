@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
@@ -43,14 +44,14 @@ public class ApplicationLauncherImpl_Test extends TestCase {
 
   private static final String CONTEXT_NAME = "context";
   private static final String FILTER_EXPRESSION = "(key=value)";
-  private static final String SERVLET_ALIAS_1 = "servlet1";
-  private static final String SERVLET_ALIAS_2 = "servlet2";
+  private static final String SERVLET_NAME_1 = "servlet1";
+  private static final String SERVLET_NAME_2 = "servlet2";
 
   private BundleContext bundleContext;
   private HttpService httpService;
-  private ServiceReference< HttpService > httpServiceReference;
+  private ServiceReference<HttpService> httpServiceReference;
   private ApplicationConfigurator configurator;
-  private ServiceReference< ApplicationConfigurator > configuratorReference;
+  private ServiceReference<ApplicationConfigurator> configuratorReference;
   private ApplicationLauncherImpl applicationLauncher;
   private ServiceRegistration serviceRegistration;
   private LogService log;
@@ -125,24 +126,24 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   }
 
   public void testLaunchWithMultipleServletNames() {
-    createAliasConfigurator( SERVLET_ALIAS_1, SERVLET_ALIAS_2 );
+    createAliasConfigurator( SERVLET_NAME_1, SERVLET_NAME_2 );
     createApplicationLauncher();
 
     launchApplication();
 
-    checkAliasHasBeenRegistered( SERVLET_ALIAS_1 );
-    checkAliasHasBeenRegistered( SERVLET_ALIAS_2 );
+    checkAliasHasBeenRegistered( "/" + SERVLET_NAME_1 );
+    checkAliasHasBeenRegistered( "/" + SERVLET_NAME_2 );
   }
 
   public void testStopApplicationWithMultipleServletNames() {
-    createAliasConfigurator( SERVLET_ALIAS_1, SERVLET_ALIAS_2 );
+    createAliasConfigurator( SERVLET_NAME_1, SERVLET_NAME_2 );
     createApplicationLauncher();
     ApplicationReference applicationReference = launchApplication();
 
     applicationReference.stopApplication();
 
-    checkAliasHasBeenUnregistered( SERVLET_ALIAS_1 );
-    checkAliasHasBeenUnregistered( SERVLET_ALIAS_2 );
+    checkAliasHasBeenUnregistered( "/" + SERVLET_NAME_1 );
+    checkAliasHasBeenUnregistered( "/" + SERVLET_NAME_2 );
   }
 
   public void testLaunchWithContextName() {
@@ -152,7 +153,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
 
     applicationLauncher.launch( configurator, httpService, null, CONTEXT_NAME, location );
 
-    checkAliasHasBeenRegistered( CONTEXT_NAME + "/" + ApplicationReferenceImpl.DEFAULT_ALIAS );
+    checkAliasHasBeenRegistered( "/" + CONTEXT_NAME + ApplicationReferenceImpl.DEFAULT_ALIAS );
   }
 
   public void testStopApplicationWithContextName() {
@@ -164,7 +165,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
 
     applicationReference.stopApplication();
 
-    checkAliasHasBeenUnregistered( CONTEXT_NAME + "/" + ApplicationReferenceImpl.DEFAULT_ALIAS );
+    checkAliasHasBeenUnregistered( "/" + CONTEXT_NAME + ApplicationReferenceImpl.DEFAULT_ALIAS );
   }
 
   public void testActivate() {
@@ -175,12 +176,11 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   }
 
   public void testDeactivate() {
-    ApplicationReferenceImpl applicationreference
-      = ( ApplicationReferenceImpl )launchApplication();
+    ApplicationReferenceImpl applicationReference = ( ApplicationReferenceImpl )launchApplication();
 
     applicationLauncher.deactivate();
 
-    assertFalse( applicationreference.isAlive() );
+    assertFalse( applicationReference.isAlive() );
   }
 
   public void testAddConfigurator() {
@@ -284,10 +284,10 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   }
 
   @SuppressWarnings( "unchecked" )
-  private ServiceRegistration< ? > checkApplicationReferenceHasBeenRegisteredAsService() {
+  private ServiceRegistration<?> checkApplicationReferenceHasBeenRegisteredAsService() {
     return verify( bundleContext ).registerService( eq( ApplicationReference.class.getName() ),
-                                             any( ApplicationReference.class ),
-                                             any( Dictionary.class ) );
+                                                    any( ApplicationReference.class ),
+                                                    any( Dictionary.class ) );
   }
 
   private void checkApplicationReferenceHasBeenUnregisteredAsService() {
@@ -310,9 +310,9 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkAliasHasBeenRegistered( alias, 1 );
   }
 
-  private void checkAliasHasBeenRegistered( String alias, int times )  {
+  private void checkAliasHasBeenRegistered( String alias, int times ) {
     try {
-      verify( httpService, times( times ) ).registerServlet( eq( "/" + alias ),
+      verify( httpService, times( times ) ).registerServlet( eq( alias ),
                                                              any( HttpServlet.class ),
                                                              any( Dictionary.class ),
                                                              any( HttpContext.class ) );
@@ -326,7 +326,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
 
   private String getResourcesDirectory( String alias ) {
     String result = "/" + Application.RESOURCES;
-    if( alias.contains( "/" ) ) {
+    if( alias.lastIndexOf( '/' ) > 0 ) {
       result = "/" + CONTEXT_NAME + "/" + Application.RESOURCES;
     }
     return result;
@@ -337,7 +337,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   }
 
   private void checkAliasHasBeenUnregistered( String alias ) {
-    verify( httpService ).unregister( "/" + alias );
+    verify( httpService ).unregister( alias );
     verify( httpService ).unregister( getResourcesDirectory( alias ) );
   }
 
@@ -388,23 +388,23 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   }
 
   private void configureConfiguratorFilter( String value ) {
-    Class< ? > targetType = HttpService.class;
-    ServiceReference< ?> serviceReference = configuratorReference;
-    ServiceReference< ? > targetReference = httpServiceReference;
+    Class<?> targetType = HttpService.class;
+    ServiceReference<?> serviceReference = configuratorReference;
+    ServiceReference<?> targetReference = httpServiceReference;
     configureFilterScenario( value, targetType, serviceReference, targetReference );
   }
 
   private void configureHttpServiceFilter( String value ) {
-    Class< ? > targetType = ApplicationConfigurator.class;
-    ServiceReference< ?> serviceReference = httpServiceReference;
-    ServiceReference< ? > targetReference = configuratorReference;
+    Class<?> targetType = ApplicationConfigurator.class;
+    ServiceReference<?> serviceReference = httpServiceReference;
+    ServiceReference<?> targetReference = configuratorReference;
     configureFilterScenario( value, targetType, serviceReference, targetReference );
   }
 
   private void configureFilterScenario( String value,
-                                        Class< ? > targetType,
-                                        ServiceReference< ? > serviceReference,
-                                        ServiceReference< ? > targetReference )
+                                        Class<?> targetType,
+                                        ServiceReference<?> serviceReference,
+                                        ServiceReference<?> targetReference )
   {
     String target = Matcher.createTargetKey( targetType );
     when( serviceReference.getProperty( target ) ).thenReturn( FILTER_EXPRESSION );
@@ -439,11 +439,12 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   }
 
 
-  private void createAliasConfigurator( final String alias1, final String alias2 ) {
+  private void createAliasConfigurator( final String servletName1, final String servletName2 ) {
     configurator = new ApplicationConfigurator() {
       public void configure( ApplicationConfiguration configuration ) {
-        configuration.addBranding( mockBranding( alias1 ) );
-        configuration.addBranding( mockBranding( alias2 ) );
+        // TODO [rst] replace with addEntryPoint when switched to register-by-path
+        configuration.addBranding( mockBranding( servletName1 ) );
+        configuration.addBranding( mockBranding( servletName2 ) );
       }
     };
     mockBundleContext();
@@ -457,8 +458,8 @@ public class ApplicationLauncherImpl_Test extends TestCase {
 
   private void mockServletConfigForServletContextRetrieval( HttpService service ) {
     String servletContextFinderAlias = ApplicationReferenceImpl.SERVLET_CONTEXT_FINDER_ALIAS;
-    String alias1 = "/" + servletContextFinderAlias;
-    String alias2 = "/" + CONTEXT_NAME + "/" + servletContextFinderAlias;
+    String alias1 = servletContextFinderAlias;
+    String alias2 = "/" + CONTEXT_NAME + servletContextFinderAlias;
     mockServletConfigForServletContextRetrieval( service, alias1 );
     mockServletConfigForServletContextRetrieval( service, alias2 );
   }

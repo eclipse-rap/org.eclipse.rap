@@ -25,6 +25,7 @@ import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 public class EntryPointManager_Test extends TestCase {
 
   private static final String NAME = "entryPointName";
+  private static final String PATH = "/entrypoint";
   private static final Integer RETURN_VALUE = Integer.valueOf( 123 );
 
   private EntryPointManager entryPointManager;
@@ -70,25 +71,34 @@ public class EntryPointManager_Test extends TestCase {
 
   public void testRegisterEntryPointByPath_nullClass() {
     try {
-      entryPointManager.registerByPath( NAME, ( Class<? extends IEntryPoint> )null );
+      entryPointManager.registerByPath( PATH, ( Class<? extends IEntryPoint> )null );
       fail();
     } catch( NullPointerException expected ) {
     }
   }
 
   public void testRegisterEntryPointByPath_duplicate() {
-    entryPointManager.registerByPath( NAME, entryPointFactory );
+    entryPointManager.registerByPath( PATH, TestEntryPoint.class );
     try {
-      entryPointManager.registerByPath( NAME, entryPointFactory );
+      entryPointManager.registerByPath( PATH, TestEntryPoint.class );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
 
-  public void testRegisterEntryPointByPath() {
-    entryPointManager.registerByPath( NAME, TestEntryPoint.class );
+  public void testRegisterEntryPointByPath_illegalPath() {
+    Class<TestEntryPoint> entryPointClass = TestEntryPoint.class;
+    assertRegisterByPathFails( "", entryPointClass );
+    assertRegisterByPathFails( "/", entryPointClass );
+    assertRegisterByPathFails( "foo", entryPointClass );
+    assertRegisterByPathFails( "/foo/", entryPointClass );
+    assertRegisterByPathFails( "/foo/bar", entryPointClass );
+  }
 
-    IEntryPointFactory factory = entryPointManager.getFactoryByPath( NAME );
+  public void testRegisterEntryPointByPath() {
+    entryPointManager.registerByPath( PATH, TestEntryPoint.class );
+
+    IEntryPointFactory factory = entryPointManager.getFactoryByPath( PATH );
 
     assertEquals( DefaultEntryPointFactory.class, factory.getClass() );
     assertEquals( TestEntryPoint.class, factory.create().getClass() );
@@ -102,18 +112,35 @@ public class EntryPointManager_Test extends TestCase {
     }
   }
 
+  public void testRegisterFactoryByPath_duplicate() {
+    entryPointManager.registerByPath( PATH, entryPointFactory );
+    try {
+      entryPointManager.registerByPath( PATH, entryPointFactory );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRegisterFactoryByPath_illegalPath() {
+    assertRegisterByPathFails( "", entryPointFactory );
+    assertRegisterByPathFails( "/", entryPointFactory );
+    assertRegisterByPathFails( "foo", entryPointFactory );
+    assertRegisterByPathFails( "/foo/", entryPointFactory );
+    assertRegisterByPathFails( "/foo/bar", entryPointFactory );
+  }
+
   public void testRegisterFactoryByPath_nullFactory() {
     try {
-      entryPointManager.registerByPath( NAME, ( IEntryPointFactory )null );
+      entryPointManager.registerByPath( PATH, ( IEntryPointFactory )null );
       fail();
     } catch( NullPointerException expected ) {
     }
   }
 
   public void testRegisterFactoryByPath() {
-    entryPointManager.registerByPath( NAME, entryPointFactory );
+    entryPointManager.registerByPath( PATH, entryPointFactory );
 
-    IEntryPointFactory factory = entryPointManager.getFactoryByPath( NAME );
+    IEntryPointFactory factory = entryPointManager.getFactoryByPath( PATH );
 
     assertSame( entryPointFactory, factory );
   }
@@ -123,12 +150,12 @@ public class EntryPointManager_Test extends TestCase {
   }
 
   public void testGetServletPaths() {
-    entryPointManager.registerByPath( "foo", entryPointFactory );
-    entryPointManager.registerByPath( "bar", entryPointFactory );
+    entryPointManager.registerByPath( "/foo", entryPointFactory );
+    entryPointManager.registerByPath( "/bar", entryPointFactory );
 
     assertEquals( 2, entryPointManager.getServletPaths().size() );
-    assertTrue( entryPointManager.getServletPaths().contains( "foo" ) );
-    assertTrue( entryPointManager.getServletPaths().contains( "bar" ) );
+    assertTrue( entryPointManager.getServletPaths().contains( "/foo" ) );
+    assertTrue( entryPointManager.getServletPaths().contains( "/bar" ) );
   }
 
   public void testRegisterEntryPointByName_nullName() {
@@ -226,11 +253,27 @@ public class EntryPointManager_Test extends TestCase {
   }
 
   public void testDeregisterAll() {
-    entryPointManager.registerByPath( NAME, entryPointFactory );
-    entryPointManager.registerByName( NAME, TestEntryPoint.class );
+    entryPointManager.registerByPath( PATH, entryPointFactory );
+    entryPointManager.registerByName( PATH, TestEntryPoint.class );
     entryPointManager.deregisterAll();
 
     assertTrue( entryPointManager.getServletPaths().isEmpty() );
     assertTrue( entryPointManager.getEntryPointNames().isEmpty() );
+  }
+
+  private void assertRegisterByPathFails( String path, Class<? extends IEntryPoint> type ) {
+    try {
+      entryPointManager.registerByPath( path, type );
+      fail( "Exected to fail but succeeded" );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  private void assertRegisterByPathFails( String path, IEntryPointFactory factory ) {
+    try {
+      entryPointManager.registerByPath( path, factory );
+      fail( "Exected to fail but succeeded" );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 }

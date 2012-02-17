@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,9 +7,11 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
+import java.util.Collection;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
@@ -26,8 +28,8 @@ import org.osgi.service.http.HttpService;
 
 class ApplicationReferenceImpl implements ApplicationReference {
 
-  static final String SERVLET_CONTEXT_FINDER_ALIAS = "servlet_context_finder";
-  static final String DEFAULT_ALIAS = "rap";
+  static final String SERVLET_CONTEXT_FINDER_ALIAS = "/servlet_context_finder";
+  static final String DEFAULT_ALIAS = "/rap";
 
   private ApplicationConfigurator configurator;
   private HttpService httpService;
@@ -54,7 +56,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
     this.contextName = contextName;
     this.applicationLauncher = applicationLauncher;
   }
-  
+
   void start() {
     createApplication( registerServletContextProviderServlet() );
     try {
@@ -79,8 +81,8 @@ class ApplicationReferenceImpl implements ApplicationReference {
   }
 
   private void registerServlets() {
-    String[] aliases = application.getServletNames();
-    if( aliases.length == 0 ) {
+    Collection<String> aliases = application.getServletPaths();
+    if( aliases.isEmpty() ) {
       registerServlet( DEFAULT_ALIAS, new RWTServlet() );
     }
     for( String alias : aliases ) {
@@ -112,7 +114,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
     }
     clearFields();
   }
-  
+
   private void stopRWTApplication() {
     unregisterServlets();
     unregisterResourcesDirectory();
@@ -121,8 +123,8 @@ class ApplicationReferenceImpl implements ApplicationReference {
   }
 
   private void unregisterServlets() {
-    String[] aliases = application.getServletNames();
-    if( aliases.length == 0 ) {
+    Collection<String> aliases = application.getServletPaths();
+    if( aliases.isEmpty() ) {
       unregisterServlet( DEFAULT_ALIAS );
     }
     for( String alias : aliases ) {
@@ -173,7 +175,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
   private void registerServlet( String alias, HttpServlet servlet ) {
     try {
       HttpServlet wrapper = new CutOffContextPathWrapper( servlet, servletContextWrapper, alias );
-      httpService.registerServlet( getContextSegment() + "/" + alias, wrapper, null, httpContext );
+      httpService.registerServlet( getContextSegment() + alias, wrapper, null, httpContext );
     } catch( RuntimeException rte ) {
       throw rte;
     } catch( Exception shouldNotHappen ) {
@@ -205,7 +207,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
   }
 
   private void unregisterServlet( String alias ) {
-    httpService.unregister( getContextSegment() + "/" + alias );
+    httpService.unregister( getContextSegment() + alias );
   }
 
   private void unregisterResourcesDirectory() {
@@ -223,7 +225,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
     }
     return result;
   }
-  
+
   boolean isAlive() {
     return alive;
   }

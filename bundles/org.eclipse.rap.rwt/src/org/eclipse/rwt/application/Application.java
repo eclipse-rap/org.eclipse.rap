@@ -12,6 +12,7 @@
 package org.eclipse.rwt.application;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -109,27 +110,21 @@ public class Application {
   }
 
   /**
-   * Returns an array of all servlet names that are provided by this application.
-   * <p>
-   * Note: This is not the actual structure used by the receiver
-   * to maintain its list of servlet names, so modifying the array will
-   * not affect the receiver.
-   * </p>
+   * Returns the servlet paths for all entrypoints that are registered with this
+   * application.
    *
-   * @return all servlet names provided by this application. Returns an empty array if
-   *   no servlet names are provided.
+   * @return an unmodifiable collection of the servlet paths, empty if no
+   *         entrypoints have been registered
    */
-  public String[] getServletNames() {
-    Set<String> names = new HashSet<String>();
+  public Collection<String> getServletPaths() {
+    Set<String> result = new HashSet<String>();
     Collection<String> servletPaths = applicationContext.getEntryPointManager().getServletPaths();
-    for( String path : servletPaths ) {
-      names.add( path );
-    }
+    result.addAll( servletPaths );
     AbstractBranding[] brandings = applicationContext.getBrandingManager().getAll();
     for( AbstractBranding branding : brandings ) {
-      names.add( branding.getServletName() );
+      result.add( "/" + branding.getServletName() );
     }
-    return names.toArray( new String[ names.size() ] );
+    return Collections.unmodifiableCollection( result );
   }
 
   private void activateApplicationContext() {
