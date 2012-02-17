@@ -573,6 +573,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       this._disposeTextWidget( text );
     },
 
+    testDontSendCtrlTab : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
+      var text = this._createTextWidget();
+      this._setActiveKeys( text, [ "CTRL+#9", "CTRL+SHIFT+#9" ] );
+      var dom = qx.event.type.DomEvent;
+
+      TestUtil.press( text, 9, false, dom.CTRL_MASK );
+      TestUtil.press( text, 9, false, dom.CTRL_MASK | dom.SHIFT_MASK );
+      
+      assertEquals( 0, TestUtil.getRequestsSend() );
+      this._disposeTextWidget( text );
+    },
+
     testActiveSpecialCharKeySent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();

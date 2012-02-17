@@ -113,6 +113,10 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
           this._ignoreNextKeypress = true;
         }
       }
+      if( domEvent.ctrlKey && keyCode === 9 ) {
+        // Used by the browser to switch tabs, not useable
+        result = false;
+      }
       return result;
     },
 
