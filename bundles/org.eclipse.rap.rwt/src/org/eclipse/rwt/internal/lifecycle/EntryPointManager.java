@@ -76,7 +76,6 @@ public class EntryPointManager {
   public IEntryPointFactory getFactoryByPath( String path ) {
     IEntryPointFactory result;
     synchronized( entryPointsByPath ) {
-      checkPathExists( path );
       result = entryPointsByPath.get( path );
     }
     return result;
@@ -85,7 +84,6 @@ public class EntryPointManager {
   public IEntryPointFactory getFactoryByName( String name ) {
     IEntryPointFactory result;
     synchronized( entryPointsByName ) {
-      checkNameExists( name );
       result = entryPointsByName.get( name );
     }
     return result;
@@ -143,13 +141,6 @@ public class EntryPointManager {
   private void checkNameAvailable( String key ) {
     if( entryPointsByName.containsKey( key ) ) {
       String message = "Entry point already registered for name: " + key;
-      throw new IllegalArgumentException( message );
-    }
-  }
-
-  private void checkPathExists( String path ) {
-    if( !entryPointsByPath.containsKey( path ) ) {
-      String message = "No entry point registered for path: " + path;
       throw new IllegalArgumentException( message );
     }
   }

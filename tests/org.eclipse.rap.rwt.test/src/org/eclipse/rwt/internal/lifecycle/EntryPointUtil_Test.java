@@ -93,25 +93,18 @@ public class EntryPointUtil_Test extends TestCase {
   public void testGetEntryPoint() {
     RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
 
-    IEntryPoint returnedEntryPoint = EntryPointUtil.getEntryPoint( "foo" );
+    IEntryPoint returnedEntryPoint = EntryPointUtil.getEntryPointByName( "foo" );
 
     verify( entryPointFactory ).create();
     assertSame( entryPoint, returnedEntryPoint );
   }
 
-  public void testGetEntryPoint_withNullName() {
-    try {
-      EntryPointUtil.getEntryPoint( null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-
   public void testGetEntryPoint_withNonExistingEntryPointName() {
     try {
-      EntryPointUtil.getEntryPoint( "does.not.exist" );
+      EntryPointUtil.getEntryPointByName( "does.not.exist" );
       fail();
     } catch( IllegalArgumentException expected ) {
+      assertEquals( "Entry point not found: does.not.exist", expected.getMessage() );
     }
   }
 

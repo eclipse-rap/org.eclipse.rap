@@ -145,6 +145,10 @@ public class EntryPointManager_Test extends TestCase {
     assertSame( entryPointFactory, factory );
   }
 
+  public void testGetFactoryByPath_nonExisting() {
+    assertNull( entryPointManager.getFactoryByPath( PATH ) );
+  }
+
   public void testGetServletPaths_initallyEmpty() {
     assertTrue( entryPointManager.getServletPaths().isEmpty() );
   }
@@ -214,6 +218,10 @@ public class EntryPointManager_Test extends TestCase {
     IEntryPointFactory factory = entryPointManager.getFactoryByName( NAME );
 
     assertSame( entryPointFactory, factory );
+  }
+
+  public void testGetFactoryByName_nonExisting() {
+    assertNull( entryPointManager.getFactoryByName( NAME ) );
   }
 
   public void testGetEntryPointNames_initallyEmpty() {

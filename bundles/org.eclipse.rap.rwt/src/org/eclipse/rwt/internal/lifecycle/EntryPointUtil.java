@@ -17,7 +17,6 @@ import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rwt.service.ISessionStore;
@@ -35,19 +34,11 @@ public class EntryPointUtil {
   }
 
   public static IEntryPoint getCurrentEntryPoint() {
-    String entryPointName = getCurrentEntryPointName();
-    return getEntryPoint( entryPointName );
+    String name = getCurrentEntryPointName();
+    return getEntryPointByName( name );
   }
 
-  public static IEntryPoint getEntryPoint( String name ) {
-    ParamCheck.notNull( name, "name" );
-
-    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
-    IEntryPointFactory factory = entryPointManager.getFactoryByName( name );
-    return factory.create();
-  }
-
-  public static String getCurrentEntryPointName() {
+  static String getCurrentEntryPointName() {
     String result = readCurrentEntryPointName();
     if( result == null ) {
       result = determineCurrentEntryPointName();
@@ -56,11 +47,20 @@ public class EntryPointUtil {
     return result;
   }
 
+  static IEntryPoint getEntryPointByName( String name ) {
+    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
+    IEntryPointFactory factory = entryPointManager.getFactoryByName( name );
+    if( factory == null ) {
+      throw new IllegalArgumentException( "Entry point not found: " + name );
+    }
+    return factory.create();
+  }
+
   private static String determineCurrentEntryPointName() {
     String result;
-    result = readFromStartupParameter();
+    result = readNameFromStartupParameter();
     if( result == null ) {
-      result = readFromBranding();
+      result = readNameFromBranding();
       if( result == null ) {
         result = EntryPointUtil.DEFAULT;
       }
@@ -68,22 +68,16 @@ public class EntryPointUtil {
     return result;
   }
 
-  private static String readFromStartupParameter() {
+  private static String readNameFromStartupParameter() {
     HttpServletRequest request = ContextProvider.getRequest();
     String result = request.getParameter( RequestParams.STARTUP );
-    if( "".equals( result ) ) {
-      result = null;
-    }
-    return result;
+    return "".equals( result ) ? null : result;
   }
 
-  private static String readFromBranding() {
+  private static String readNameFromBranding() {
     AbstractBranding branding = BrandingUtil.determineBranding();
     String result = branding.getDefaultEntryPoint();
-    if( "".equals( result ) ) {
-      result = null;
-    }
-    return result;
+    return "".equals( result ) ? null : result;
   }
 
   private static void storeCurrentEntryPointName( String name ) {
