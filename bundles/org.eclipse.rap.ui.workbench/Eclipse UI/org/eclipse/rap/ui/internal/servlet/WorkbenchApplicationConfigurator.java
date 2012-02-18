@@ -182,15 +182,21 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
       String contributorName = element.getContributor().getName();
       String className = element.getAttribute( "class" );
       String parameter = element.getAttribute( "parameter" );
+      String path = element.getAttribute( "path" );
       String id = element.getAttribute( "id" );
       try {
         Bundle bundle = Platform.getBundle( contributorName );
         Class clazz = bundle.loadClass( className );
-        configuration.addEntryPointByParameter( parameter, clazz );
-        EntryPointParameters.register( id, parameter );
+        if( parameter != null ) {
+          configuration.addEntryPointByParameter( parameter, clazz );
+          EntryPointParameters.register( id, parameter );
+        }
+        if( path != null ) {
+          configuration.addEntryPoint( path, clazz );
+        }
       } catch( final Throwable thr ) {
-        String text = "Could not register entry point ''{0}'' with startup parameter ''{1}''.";
-        Object[] param = new Object[] { className, parameter };
+        String text = "Could not register entry point ''{0}'' with id ''{1}''.";
+        Object[] param = new Object[] { className, id };
         logProblem( text, param, thr, contributorName );
       }
     }

@@ -1,16 +1,28 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.rap.ui">
+<schema targetNamespace="org.eclipse.rap.ui" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
          <meta.schema plugin="org.eclipse.rap.ui" id="entrypoint" name="EntryPoint"/>
       </appInfo>
       <documentation>
-         A major difference between RCP and RAP is the way an application is started. With regular SWT applications you would use the &lt;code&gt;main(String[] args)&lt;/code&gt; method, in RCP an implementation of &lt;code&gt;IApplication&lt;/code&gt;. As RAP uses a life cycle to control the application startup the application needs an &lt;code&gt;IEntrypoint&lt;/code&gt; implementation which does mostly the same as &lt;code&gt;IApplication&lt;/code&gt;. The difference is that we need to do not dispose the display but return it to RAP in the &lt;code&gt;createUI&lt;/code&gt; method. There can be several entrypoints for the same application which are distinguished by a paramter in the URI for this application like &lt;code&gt;&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/rap?startup=&amp;lt;entrypointname&amp;gt;&lt;/code&gt;.
+         For every RAP application, an entry point class must be registered with the framework. The framework will create a separate instance of this entry point for every user session. Entry points must implement the interface &lt;code&gt;IEntryPoint&lt;/code&gt;.
+&lt;p&gt;
+An application can register several entrypoints, each at a different URL path. To access an entry point, the path that it is registered at must be appended to the context path of the application.
+&lt;/p&gt;
+&lt;p&gt;
+As an alternative to registering an entrypoint, Eclipse applications can also use the interface &lt;code&gt;IApplication&lt;/code&gt;.
+&lt;/p&gt;
+
       </documentation>
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
          <sequence>
             <element ref="entrypoint" minOccurs="1" maxOccurs="unbounded"/>
@@ -66,15 +78,54 @@
                </appInfo>
             </annotation>
          </attribute>
-         <attribute name="parameter" type="string" use="required">
+         <attribute name="path" type="string">
             <annotation>
                <documentation>
-                  The name which should be used from outside in the URI.
+                  The URL path to register the entry point at.
                </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="parameter" type="string">
+            <annotation>
+               <documentation>
+                  A URL parameter name to access the entry point. Deprecated, use the path attribute instead.
+               </documentation>
+               <appInfo>
+                  <meta.attribute deprecated="true"/>
+               </appInfo>
             </annotation>
          </attribute>
       </complexType>
    </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         Each entrypoint has to implement the &lt;code&gt;IEntryPoint&lt;/code&gt; interface.
+In the createUI() method the user interface of the application is created.
+An entrypoint for a simple RAP application could look like this:
+
+&lt;pre&gt;
+public class MyEntryPoint implements IEntryPoint {
+
+  public int createUI() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setLayout( new GridLayout() );
+
+    Label label = new Label( shell, SWT.NONE );
+    label.setText( &quot;Hello World!&quot; );
+
+    shell.layout();
+    shell.open();
+    return 0;
+  }
+}
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
 
    <annotation>
       <appInfo>
@@ -95,30 +146,10 @@
     id=&quot;org.eclipse.rap.demo.demoentrypoint&quot;
     point=&quot;org.eclipse.rap.ui.entrypoint&quot;&gt;
   &lt;entrypoint
-     id=&quot;org.eclipse.rap.demo.entrypoint&quot;
-        class=&quot;org.eclipse.rap.demo.MyAppEntrypoint&quot;
-        parameter=&quot;myapp&quot;/&gt;
+      id=&quot;org.eclipse.rap.demo.entrypoint&quot;
+      class=&quot;org.eclipse.rap.demo.MyEntrypoint&quot;
+      path=&quot;/myapp&quot;/&gt;
   &lt;/extension&gt;
-&lt;/pre&gt;
-      </documentation>
-   </annotation>
-
-   <annotation>
-      <appInfo>
-         <meta.section type="apiInfo"/>
-      </appInfo>
-      <documentation>
-         Each entrypoint has to implement the &lt;code&gt;IEntryPoint&lt;/code&gt; interface. There is no API to register entrypoints on the fly. An entrypoint for a regular RCP application could look like this:
-
-&lt;pre&gt;
-public class MyAppEntrypoint implements IEntryPoint {
-
- public Display createUI() {
-  Display display = PlatformUI.createDisplay();
-  PlatformUI.createAndRunWorkbench( display, new ApplicationWorkbenchAdvisor() );
-  return display;
- }
-}
 &lt;/pre&gt;
       </documentation>
    </annotation>
@@ -129,11 +160,11 @@ public class MyAppEntrypoint implements IEntryPoint {
          <meta.section type="copyright"/>
       </appInfo>
       <documentation>
-         Copyright (c) 2007 Innoopract Informationssysteme GmbH and others.&lt;br&gt;
-All rights reserved. This program and the accompanying materials are made
-available under the terms of the Eclipse Public License v1.0 which accompanies
-this distribution, and is available at &lt;a 
-href=&quot;http://www.eclipse.org/legal/epl-v10.html&quot;&gt;http://www.eclipse.org/legal/epl-v10.html&lt;/a&gt;
+         Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.&lt;br&gt;
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License v1.0
+which accompanies this distribution, and is available at
+&lt;a href=&quot;http://www.eclipse.org/legal/epl-v10.html&quot;&gt;http://www.eclipse.org/legal/epl-v10.html&lt;/a&gt;
       </documentation>
    </annotation>
 
