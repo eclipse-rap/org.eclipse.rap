@@ -116,6 +116,17 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
   }
 
   /*
+   * Only for backward compatibility with the extension point "org.eclipse.rap.ui.entrypoint"
+   * attribute "parameter"
+   */
+  public void addEntryPointByParameter( String parameter, IEntryPointFactory entryPointFactory ) {
+    ParamCheck.notNull( parameter, "parameter" );
+    ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
+
+    applicationContext.getEntryPointManager().registerByName( parameter, entryPointFactory );
+  }
+
+  /*
    * Only for backward compatibility with the extension point "org.eclipse.rap.ui.adapterfactory"
    */
   public void addAdapterFactory( Class<?> adaptable, AdapterFactory adapterFactory ) {

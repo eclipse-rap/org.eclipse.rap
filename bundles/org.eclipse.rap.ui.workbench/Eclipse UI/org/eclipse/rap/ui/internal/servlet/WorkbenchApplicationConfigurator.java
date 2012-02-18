@@ -31,7 +31,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.rap.ui.internal.application.ApplicationRegistry;
 import org.eclipse.rap.ui.internal.application.EntryPointApplicationWrapper;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
@@ -41,6 +40,8 @@ import org.eclipse.rwt.application.ApplicationConfiguration.OperationMode;
 import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.application.ApplicationConfigurationImpl;
 import org.eclipse.rwt.internal.util.ClassUtil;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.ResourceLoader;
@@ -210,9 +211,8 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         if( isVisible == null || Boolean.valueOf( isVisible ).booleanValue() ) {
           Bundle bundle = Platform.getBundle( contributorName );
           Class clazz = bundle.loadClass( className );
-          ApplicationRegistry.addMapping( applicationParameter, clazz );
-          configuration.addEntryPointByParameter( applicationParameter,
-                                                  EntryPointApplicationWrapper.class );
+          IEntryPointFactory factory = createApplicationEntryPointFactory( clazz );
+          configuration.addEntryPointByParameter( applicationParameter, factory );
           EntryPointParameters.register( applicationId, applicationParameter );
         }
       } catch( ClassNotFoundException exception ) {
@@ -222,6 +222,16 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         logProblem( text, params, exception, contributorName );
       }
     }
+  }
+
+  private static IEntryPointFactory createApplicationEntryPointFactory( final Class applicationClass )
+  {
+    return new IEntryPointFactory() {
+
+      public IEntryPoint create() {
+        return new EntryPointApplicationWrapper( applicationClass );
+      }
+    };
   }
 
   private void registerThemeableWidgets( ApplicationConfiguration configuration ) {

@@ -16,13 +16,20 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 
 public final class EntryPointApplicationWrapper implements IEntryPoint {
+
   private static final IApplicationContext context = new RAPApplicationContext();
+
+  private final Class<? extends IApplication> applicationClass;
+
+  public EntryPointApplicationWrapper( Class<? extends IApplication> applicationClass ) {
+    this.applicationClass = applicationClass;
+  }
 
   // TODO [bm] implement restart, see IApplication constants
   public int createUI() {
     Object exitCode;
     int result = 0;
-    IApplication application = ApplicationRegistry.createApplication();
+    IApplication application = createApplication();
     try {
       exitCode = application.start( context );
       if( exitCode instanceof Integer ) {
@@ -34,5 +41,16 @@ public final class EntryPointApplicationWrapper implements IEntryPoint {
       application.stop();
     }
     return result;
+  }
+
+  private IApplication createApplication() {
+    IApplication application;
+    try {
+      application = applicationClass.newInstance();
+    } catch( Exception exception ) {
+      String message = "Failed to create application " + applicationClass.getName();
+      throw new IllegalArgumentException( message, exception );
+    }
+    return application;
   }
 }
