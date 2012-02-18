@@ -866,7 +866,7 @@ public class Display_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
     assertEquals( "w1", DisplayUtil.getId( LifeCycleUtil.getSessionDisplay() ) );
-    RWTFactory.getEntryPointManager().deregisterByName( EntryPointUtil.DEFAULT );
+    RWTFactory.getEntryPointManager().deregisterAll();
   }
 
   public void testSetData() {

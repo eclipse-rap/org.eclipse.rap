@@ -56,14 +56,6 @@ public class EntryPointManager {
     doRegisterByName( name, entryPointFactory );
   }
 
-  public void deregisterByName( String name ) {
-    ParamCheck.notNull( name, "name" );
-    synchronized( entryPointsByName ) {
-      checkNameExists( name );
-      entryPointsByName.remove( name );
-    }
-  }
-
   public void deregisterAll() {
     synchronized( entryPointsByPath ) {
       entryPointsByPath.clear();
@@ -93,14 +85,6 @@ public class EntryPointManager {
     Collection<String> result;
     synchronized( entryPointsByPath ) {
       result = new ArrayList<String>( entryPointsByPath.keySet() );
-    }
-    return result;
-  }
-
-  public Collection<String> getEntryPointNames() {
-    Collection<String> result;
-    synchronized( entryPointsByName ) {
-      result = new ArrayList<String>( entryPointsByName.keySet() );
     }
     return result;
   }
@@ -141,13 +125,6 @@ public class EntryPointManager {
   private void checkNameAvailable( String key ) {
     if( entryPointsByName.containsKey( key ) ) {
       String message = "Entry point already registered for name: " + key;
-      throw new IllegalArgumentException( message );
-    }
-  }
-
-  private void checkNameExists( String name ) {
-    if( !entryPointsByName.containsKey( name ) ) {
-      String message = "No entry point registered for name: " + name;
       throw new IllegalArgumentException( message );
     }
   }

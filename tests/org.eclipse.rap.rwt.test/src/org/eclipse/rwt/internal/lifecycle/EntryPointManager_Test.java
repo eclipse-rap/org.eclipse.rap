@@ -224,49 +224,14 @@ public class EntryPointManager_Test extends TestCase {
     assertNull( entryPointManager.getFactoryByName( NAME ) );
   }
 
-  public void testGetEntryPointNames_initallyEmpty() {
-    assertTrue( entryPointManager.getEntryPointNames().isEmpty() );
-  }
-
-  public void testEntryPointNames() {
-    entryPointManager.registerByName( "foo", entryPointFactory );
-    entryPointManager.registerByName( "bar", entryPointFactory );
-
-    assertEquals( 2, entryPointManager.getEntryPointNames().size() );
-    assertTrue( entryPointManager.getEntryPointNames().contains( "foo" ) );
-    assertTrue( entryPointManager.getEntryPointNames().contains( "bar" ) );
-  }
-
-  public void testDeregisterByName_nullName() {
-    try {
-      entryPointManager.deregisterByName( null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  public void testDeregisterByName_nonExistingName() {
-    try {
-      entryPointManager.deregisterByName( "does.not.exist" );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
-  }
-
-  public void testDeregisterByName() {
-    entryPointManager.registerByName( NAME, entryPointFactory );
-    entryPointManager.deregisterByName( NAME );
-
-    assertTrue( entryPointManager.getEntryPointNames().isEmpty() );
-  }
-
   public void testDeregisterAll() {
     entryPointManager.registerByPath( PATH, entryPointFactory );
-    entryPointManager.registerByName( PATH, TestEntryPoint.class );
+    entryPointManager.registerByName( NAME, TestEntryPoint.class );
     entryPointManager.deregisterAll();
 
     assertTrue( entryPointManager.getServletPaths().isEmpty() );
-    assertTrue( entryPointManager.getEntryPointNames().isEmpty() );
+    assertNull( entryPointManager.getFactoryByPath( NAME ) );
+    assertNull( entryPointManager.getFactoryByName( NAME ) );
   }
 
   private void assertRegisterByPathFails( String path, Class<? extends IEntryPoint> type ) {

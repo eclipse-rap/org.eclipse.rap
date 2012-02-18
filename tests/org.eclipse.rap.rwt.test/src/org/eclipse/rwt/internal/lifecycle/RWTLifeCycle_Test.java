@@ -355,7 +355,7 @@ public class RWTLifeCycle_Test extends TestCase {
     lifeCycle.continueLifeCycle();
     returnValue = lifeCycle.createUI();
     assertEquals( 0, returnValue );
-    RWTFactory.getEntryPointManager().deregisterByName( EntryPointUtil.DEFAULT );
+    RWTFactory.getEntryPointManager().deregisterAll();
 
     lifeCycle.continueLifeCycle();
     returnValue = lifeCycle.createUI();
