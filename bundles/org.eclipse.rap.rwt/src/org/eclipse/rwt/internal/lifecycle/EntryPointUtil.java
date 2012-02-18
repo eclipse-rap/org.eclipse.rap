@@ -34,20 +34,71 @@ public class EntryPointUtil {
   }
 
   public static IEntryPoint getCurrentEntryPoint() {
-    String name = getCurrentEntryPointName();
-    return getEntryPointByName( name );
-  }
-
-  static String getCurrentEntryPointName() {
-    String result = readCurrentEntryPointName();
+    // TODO [rst] Is caching still needed here?
+    IEntryPoint result = readCurrentEntryPoint();
     if( result == null ) {
-      result = determineCurrentEntryPointName();
-      storeCurrentEntryPointName( result );
+      result = determineCurrentEntryPoint();
+      storeCurrentEntryPoint( result );
     }
     return result;
   }
 
-  static IEntryPoint getEntryPointByName( String name ) {
+  private static IEntryPoint determineCurrentEntryPoint() {
+    IEntryPoint result;
+    result = findByStartupParameter();
+    if( result == null ) {
+      result = findByServletName();
+      if( result == null ) {
+        result = findByBranding();
+        if( result == null ) {
+          result = getEntryPointByName( DEFAULT );
+        }
+      }
+    }
+    return result;
+  }
+
+  private static IEntryPoint findByStartupParameter() {
+    IEntryPoint result = null;
+    HttpServletRequest request = ContextProvider.getRequest();
+    String name = request.getParameter( RequestParams.STARTUP );
+    if( name != null && name.length() > 0 ) {
+      result = getEntryPointByName( name );
+    }
+    return result;
+  }
+
+  private static IEntryPoint findByServletName() {
+    IEntryPoint result = null;
+    HttpServletRequest request = ContextProvider.getRequest();
+    String path = request.getServletPath();
+    if( path != null && path.length() > 0 ) {
+      result = getEntryPointByPath( path );
+    }
+    return result;
+  }
+
+  private static IEntryPoint findByBranding() {
+    IEntryPoint result = null;
+    AbstractBranding branding = BrandingUtil.determineBranding();
+    String name = branding.getDefaultEntryPoint();
+    if( name != null && name.length() > 0 ) {
+      result = getEntryPointByName( name );
+    }
+    return result;
+  }
+
+  private static IEntryPoint getEntryPointByPath( String path ) {
+    IEntryPoint result = null;
+    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
+    IEntryPointFactory factory = entryPointManager.getFactoryByPath( path );
+    if( factory != null ) {
+      result = factory.create();
+    }
+    return result;
+  }
+
+  private static IEntryPoint getEntryPointByName( String name ) {
     EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
     IEntryPointFactory factory = entryPointManager.getFactoryByName( name );
     if( factory == null ) {
@@ -56,38 +107,14 @@ public class EntryPointUtil {
     return factory.create();
   }
 
-  private static String determineCurrentEntryPointName() {
-    String result;
-    result = readNameFromStartupParameter();
-    if( result == null ) {
-      result = readNameFromBranding();
-      if( result == null ) {
-        result = EntryPointUtil.DEFAULT;
-      }
-    }
-    return result;
-  }
-
-  private static String readNameFromStartupParameter() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String result = request.getParameter( RequestParams.STARTUP );
-    return "".equals( result ) ? null : result;
-  }
-
-  private static String readNameFromBranding() {
-    AbstractBranding branding = BrandingUtil.determineBranding();
-    String result = branding.getDefaultEntryPoint();
-    return "".equals( result ) ? null : result;
-  }
-
-  private static void storeCurrentEntryPointName( String name ) {
+  private static void storeCurrentEntryPoint( IEntryPoint name ) {
     ISessionStore session = ContextProvider.getSessionStore();
     session.setAttribute( ATTR_CURRENT_ENTRY_POINT_NAME, name );
   }
 
-  private static String readCurrentEntryPointName() {
+  private static IEntryPoint readCurrentEntryPoint() {
     ISessionStore session = ContextProvider.getSessionStore();
-    return ( String )session.getAttribute( ATTR_CURRENT_ENTRY_POINT_NAME );
+    return ( IEntryPoint )session.getAttribute( ATTR_CURRENT_ENTRY_POINT_NAME );
   }
 
 }

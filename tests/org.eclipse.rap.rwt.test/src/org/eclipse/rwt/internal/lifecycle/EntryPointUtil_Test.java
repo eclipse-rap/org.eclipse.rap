@@ -18,8 +18,10 @@ import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.branding.TestBranding;
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.IEntryPointFactory;
@@ -42,40 +44,75 @@ public class EntryPointUtil_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testGetCurrentEntryPointName_default() {
-    assertEquals( EntryPointUtil.DEFAULT, EntryPointUtil.getCurrentEntryPointName() );
+  public void testGetCurrentEntryPoint_withDefaultEntryPoint() {
+    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, entryPointFactory );
+
+    IEntryPoint result = EntryPointUtil.getCurrentEntryPoint();
+
+    verify( entryPointFactory ).create();
+    assertSame( entryPoint, result );
   }
 
-  public void testGetCurrentEntryPointName_withStartupParameter() {
-    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
-
-    assertEquals( "foo", EntryPointUtil.getCurrentEntryPointName() );
-  }
-
-  public void testGetCurrentEntryPointName_withBranding() {
-    // register a branding with the default servlet name ("rap")
-    TestBranding branding = new TestBranding( "rap", null, "foo" );
-    RWTFactory.getBrandingManager().register( branding );
-
-    assertEquals( "foo", EntryPointUtil.getCurrentEntryPointName() );
-  }
-
-  public void testGetCurrentEntryPointName_isCached() {
-    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
-    EntryPointUtil.getCurrentEntryPointName();
-    Fixture.fakeRequestParam( RequestParams.STARTUP, "bar" );
-
-    assertEquals( "foo", EntryPointUtil.getCurrentEntryPointName() );
-  }
-
-  public void testGetCurrentEntryPoint() {
+  public void testGetCurrentEntryPoint_withStartupParameter() {
     RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
     Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
 
-    IEntryPoint returnedEntryPoint = EntryPointUtil.getCurrentEntryPoint();
+    IEntryPoint result = EntryPointUtil.getCurrentEntryPoint();
 
     verify( entryPointFactory ).create();
-    assertSame( entryPoint, returnedEntryPoint );
+    assertSame( entryPoint, result );
+  }
+
+  public void testGetCurrentEntryPoint_withServletPath() {
+    RWTFactory.getEntryPointManager().registerByPath( "/foo", entryPointFactory );
+    fakeServletPath( "/foo" );
+
+    IEntryPoint result = EntryPointUtil.getCurrentEntryPoint();
+
+    verify( entryPointFactory ).create();
+    assertSame( entryPoint, result );
+  }
+
+  public void testGetCurrentEntryPoint_withBranding() {
+    RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
+    // register a branding with the default servlet name ("rap")
+    RWTFactory.getBrandingManager().register( new TestBranding( "rap", null, "foo" ) );
+
+    IEntryPoint result = EntryPointUtil.getCurrentEntryPoint();
+
+    verify( entryPointFactory ).create();
+    assertSame( entryPoint, result );
+  }
+
+  public void testGetCurrentEntryPoint_servletPathOverridesBranding() {
+    RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
+    RWTFactory.getBrandingManager().register( new TestBranding( "rap", null, "foo" ) );
+    IEntryPoint entryPointByPath = mockEntryPoint();
+    IEntryPointFactory entryPointFactoryByPath = mockEntryPointFactory( entryPointByPath );
+    RWTFactory.getEntryPointManager().registerByPath( "/rap", entryPointFactoryByPath );
+
+    IEntryPoint result = EntryPointUtil.getCurrentEntryPoint();
+
+    // Servlet path takes precedence over branding
+    verify( entryPointFactory, times( 0 ) ).create();
+    verify( entryPointFactoryByPath ).create();
+    assertSame( entryPointByPath, result );
+  }
+
+  public void testGetCurrentEntryPoint_parameterOverridesServletPath() {
+    RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
+    IEntryPoint entryPointByPath = mockEntryPoint();
+    IEntryPointFactory entryPointFactoryByPath = mockEntryPointFactory( entryPointByPath );
+    RWTFactory.getEntryPointManager().registerByPath( "/bar", entryPointFactoryByPath );
+    fakeServletPath( "/bar" );
+    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
+
+    IEntryPoint result = EntryPointUtil.getCurrentEntryPoint();
+
+    // Request parameter takes precedence over servlet path
+    verify( entryPointFactoryByPath, times( 0 ) ).create();
+    verify( entryPointFactory ).create();
+    assertSame( entryPoint, result );
   }
 
   public void testGetCurrentEntryPoint_isCached() {
@@ -84,28 +121,35 @@ public class EntryPointUtil_Test extends TestCase {
     EntryPointUtil.getCurrentEntryPoint();
     Fixture.fakeRequestParam( RequestParams.STARTUP, "bar" );
 
-    IEntryPoint returnedEntryPoint = EntryPointUtil.getCurrentEntryPoint();
-
-    verify( entryPointFactory, times( 2 ) ).create();
-    assertSame( entryPoint, returnedEntryPoint );
-  }
-
-  public void testGetEntryPoint() {
-    RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
-
-    IEntryPoint returnedEntryPoint = EntryPointUtil.getEntryPointByName( "foo" );
+    IEntryPoint result = EntryPointUtil.getCurrentEntryPoint();
 
     verify( entryPointFactory ).create();
-    assertSame( entryPoint, returnedEntryPoint );
+    assertSame( entryPoint, result );
   }
 
-  public void testGetEntryPoint_withNonExistingEntryPointName() {
+  public void testGetCurrentEntryPoint_withNonExistingEntryPointName() {
+    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
+
     try {
-      EntryPointUtil.getEntryPointByName( "does.not.exist" );
+      EntryPointUtil.getCurrentEntryPoint();
       fail();
     } catch( IllegalArgumentException expected ) {
-      assertEquals( "Entry point not found: does.not.exist", expected.getMessage() );
+      assertEquals( "Entry point not found: foo", expected.getMessage() );
     }
+  }
+
+  public void testGetCurrentEntryPoint_withNonExistingDefaultEntryPoint() {
+    try {
+      EntryPointUtil.getCurrentEntryPoint();
+      fail();
+    } catch( IllegalArgumentException expected ) {
+      assertEquals( "Entry point not found: default", expected.getMessage() );
+    }
+  }
+
+  private static void fakeServletPath( String string ) {
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setServletPath( string );
   }
 
   private static IEntryPointFactory mockEntryPointFactory( IEntryPoint entryPoint ) {
