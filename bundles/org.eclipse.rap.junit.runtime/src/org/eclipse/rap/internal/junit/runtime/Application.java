@@ -13,8 +13,10 @@ package org.eclipse.rap.internal.junit.runtime;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.lifecycle.EntryPointUtil;
+import org.eclipse.rwt.internal.application.RWTFactory;
+import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -44,7 +46,7 @@ public class Application implements IEntryPoint, ITestHarness {
     int result;
     String entryPointName = getEntryPointName();
     if( entryPointName != null ) {
-      IEntryPoint entryPoint = EntryPointUtil.getEntryPoint( entryPointName );
+      IEntryPoint entryPoint = getEntryPoint( entryPointName );
       result = entryPoint.createUI();
     } else {
       result = createAndRunEmptyWorkbench();
@@ -70,6 +72,15 @@ public class Application implements IEntryPoint, ITestHarness {
       result = parameter;
     }
     return result;
+  }
+
+  private IEntryPoint getEntryPoint( String entryPointName ) {
+    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
+    IEntryPointFactory factory = entryPointManager.getFactoryByName( entryPointName );
+    if( factory == null ) {
+      throw new IllegalArgumentException( entryPointName );
+    }
+    return factory.create();
   }
 
   public void runTests() {
