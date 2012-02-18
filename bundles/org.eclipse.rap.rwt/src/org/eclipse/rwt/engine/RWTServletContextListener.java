@@ -19,7 +19,6 @@ import javax.servlet.ServletContextListener;
 import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
-import org.eclipse.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
@@ -31,9 +30,9 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
  */
 public class RWTServletContextListener implements ServletContextListener {
   public static final String ENTRY_POINTS_PARAM = "org.eclipse.rwt.entryPoints";
-  
+
   private Application application;
-  
+
   private static class EntryPointRunnerConfigurator implements ApplicationConfigurator {
 
     private final Class<? extends IEntryPoint> entryPointClass;
@@ -43,10 +42,10 @@ public class RWTServletContextListener implements ServletContextListener {
     }
 
     public void configure( ApplicationConfiguration configuration ) {
-      configuration.addEntryPoint( EntryPointUtil.DEFAULT, entryPointClass );
+      configuration.addEntryPoint( "/rap", entryPointClass );
     }
   }
-    
+
   public void contextInitialized( ServletContextEvent evt ) {
     ServletContext servletContext = evt.getServletContext();
     ApplicationConfigurator configurator = readConfigurator( servletContext );
@@ -72,12 +71,12 @@ public class RWTServletContextListener implements ServletContextListener {
   private boolean hasConfiguratorParam( ServletContext servletContext ) {
     return null != servletContext.getInitParameter( ApplicationConfigurator.CONFIGURATOR_PARAM );
   }
-  
+
   private ApplicationConfigurator readApplicationConfigurator( ServletContext servletContext ) {
     String name = servletContext.getInitParameter( ApplicationConfigurator.CONFIGURATOR_PARAM );
     return newConfigurator( name );
   }
-  
+
   private ApplicationConfigurator newConfigurator( String className ) {
     ClassLoader loader = getClass().getClassLoader();
     return ( ApplicationConfigurator )ClassUtil.newInstance( loader, className );

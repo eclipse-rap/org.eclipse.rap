@@ -90,18 +90,18 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
     applicationContext.getSettingStoreManager().register( settingStoreFactory );
   }
 
-  public void addEntryPoint( String entryPointName, Class<? extends IEntryPoint> type ) {
-    ParamCheck.notNull( entryPointName, "entryPointName" );
+  public void addEntryPoint( String servletPath, Class<? extends IEntryPoint> type ) {
+    ParamCheck.notNull( servletPath, "servletPath" );
     ParamCheck.notNull( type, "type" );
 
-    applicationContext.getEntryPointManager().registerByName( entryPointName, type );
+    applicationContext.getEntryPointManager().registerByPath( servletPath, type );
   }
 
-  public void addEntryPoint( String entryPointName, IEntryPointFactory entryPointFactory ) {
-    ParamCheck.notNull( entryPointName, "entryPointName" );
+  public void addEntryPoint( String servletPath, IEntryPointFactory entryPointFactory ) {
+    ParamCheck.notNull( servletPath, "servletPath" );
     ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
 
-    applicationContext.getEntryPointManager().registerByName( entryPointName, entryPointFactory );
+    applicationContext.getEntryPointManager().registerByPath( servletPath, entryPointFactory );
   }
 
   /*

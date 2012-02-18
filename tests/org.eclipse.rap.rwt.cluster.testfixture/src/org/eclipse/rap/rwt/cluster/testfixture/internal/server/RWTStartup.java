@@ -20,13 +20,13 @@ import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 public class RWTStartup {
-  
-  public static ServletContextListener createServletContextListener( 
-    Class<? extends IEntryPoint> entryPointClass ) 
+
+  public static ServletContextListener createServletContextListener(
+    Class<? extends IEntryPoint> entryPointClass )
   {
     return new TestApplicationController( entryPointClass );
   }
-  
+
   private static class TestApplicationController implements ServletContextListener {
     private final Class<? extends IEntryPoint> entryPointClass;
     private Application application;
@@ -48,14 +48,14 @@ public class RWTStartup {
 
   private static class TestApplicationConfigurator implements ApplicationConfigurator {
     private final Class<? extends IEntryPoint> entryPointClass;
-    
+
     private TestApplicationConfigurator( Class<? extends IEntryPoint> entryPointClass ) {
       this.entryPointClass = entryPointClass;
     }
-    
+
     public void configure( ApplicationConfiguration configuration ) {
       configuration.setOperationMode( OperationMode.SESSION_FAILOVER );
-      configuration.addEntryPoint( "default", entryPointClass );
+      configuration.addEntryPoint( "/rap", entryPointClass );
     }
   }
 }

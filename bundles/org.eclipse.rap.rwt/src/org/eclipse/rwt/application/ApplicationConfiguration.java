@@ -91,16 +91,36 @@ public interface ApplicationConfiguration {
   /**
    * The operation mode in which the application will be running. The default is
    * <code>JEE_COMPATIBILITY</code>.
-   * 
+   *
    * @param operationMode the operation mode to be used, must not be
    *          <code>null</code>
    * @see OperationMode
    */
   void setOperationMode( OperationMode operationMode );
 
-  void addEntryPoint( String entryPointName, Class<? extends IEntryPoint> entryPointType );
+  /**
+   * Registers an entry point at the given servlet path. A servlet path must
+   * begin with slash ('/') and must not end with slash ('/'). The root path
+   * (&quot;/&quot;) is currently not supported, as well as nested paths (e.g.
+   * &quot;/path/subpath&quot;).
+   *
+   * @param servletPath a valid path to register the entry point at
+   * @param entryPointType the entry point class to be registered, must not be
+   *          <code>null</code>
+   */
+  void addEntryPoint( String servletPath, Class<? extends IEntryPoint> entryPointType );
 
-  void addEntryPoint( String entryPointName, IEntryPointFactory entryPointFactory );
+  /**
+   * Registers an entry point factory at the given servlet path. A servlet path
+   * must begin with slash ('/') and must not end with slash ('/'). The root
+   * path (&quot;/&quot;) is currently not supported, as well as nested paths
+   * (e.g. &quot;/path/subpath&quot;).
+   *
+   * @param servletPath a valid path to register the entry point at
+   * @param entryPointFactory the entry point factory to be registered, must not
+   *          be <code>null</code>
+   */
+  void addEntryPoint( String servletPath, IEntryPointFactory entryPointFactory );
 
   void addBranding( AbstractBranding branding );
 

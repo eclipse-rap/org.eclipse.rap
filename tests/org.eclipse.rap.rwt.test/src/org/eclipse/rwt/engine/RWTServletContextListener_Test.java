@@ -103,7 +103,7 @@ public class RWTServletContextListener_Test extends TestCase {
   private void assertEntryPointIsRegistered() {
     ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
     EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
-    assertEquals( 1, entryPointManager.getEntryPointNames().size() );
+    assertEquals( 1, entryPointManager.getServletPaths().size() );
   }
 
   private void assertPhaseListenersAreRegistered() {
@@ -178,7 +178,7 @@ public class RWTServletContextListener_Test extends TestCase {
 
   private static class TestConfigurator implements ApplicationConfigurator {
     public void configure( ApplicationConfiguration configuration ) {
-      configuration.addEntryPoint( "ep", TestEntryPoint.class );
+      configuration.addEntryPoint( "/test", TestEntryPoint.class );
       configuration.addPhaseListener( mock( PhaseListener.class ) );
       configuration.addResource( new TestResource() );
       configuration.addBranding( new TestBranding() );

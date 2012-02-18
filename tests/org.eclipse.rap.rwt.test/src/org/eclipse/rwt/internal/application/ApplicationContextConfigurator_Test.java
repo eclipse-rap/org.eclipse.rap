@@ -191,7 +191,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
 
     checkAdapterFactoriesHaveBeenRemoved();
     checkBrandingHasBeenRemoved();
-    checkEntryPointHasBeenRemoved();
+    checkEntryPointsHaveBeenRemoved();
     checkPhaseListenerHasBeenRemoved();
     checkResourceHasBeenRemoved();
     checkConfigurationHasBeenResetted();
@@ -251,9 +251,9 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   private ApplicationConfigurator createConfigurator() {
     return new ApplicationConfigurator() {
       public void configure( ApplicationConfiguration configuration ) {
-        configuration.addEntryPoint( "entryPoint", TestEntryPoint.class );
+        configuration.addEntryPoint( "/entryPoint", TestEntryPoint.class );
         DefaultEntryPointFactory factory = new DefaultEntryPointFactory( TestEntryPoint.class );
-        configuration.addEntryPoint( "entryPointViaFactory", factory );
+        configuration.addEntryPoint( "/entryPointViaFactory", factory );
         configuration.addResource( testResource );
         configuration.addPhaseListener( testPhaseListener );
         configuration.setSettingStoreFactory( testSettingStoreFactory );
@@ -312,7 +312,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   private void checkEntryPointsHaveBeenAdded() {
-    assertEquals( 2, applicationContext.getEntryPointManager().getEntryPointNames().size() );
+    assertEquals( 2, applicationContext.getEntryPointManager().getServletPaths().size() );
   }
 
   private void checkSettingStoreManagerHasBeenSet() {
@@ -346,8 +346,8 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     assertEquals( 0, applicationContext.getBrandingManager().getAll().length );
   }
 
-  private void checkEntryPointHasBeenRemoved() {
-    assertEquals( 0, applicationContext.getEntryPointManager().getEntryPointNames().size() );
+  private void checkEntryPointsHaveBeenRemoved() {
+    assertEquals( 0, applicationContext.getEntryPointManager().getServletPaths().size() );
   }
 
   private void checkPhaseListenerHasBeenRemoved() {
