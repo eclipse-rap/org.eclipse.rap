@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,6 +92,7 @@ public interface IResourceManager {
       this.name = name;
     }
 
+    @Override
     public String toString() {
       return name;
     }
@@ -107,6 +108,7 @@ public interface IResourceManager {
    * @deprecated Use {@link #register(String, InputStream)} or
    *             {@link #register(String, InputStream, String, RegisterOptions)} instead
    */
+  @Deprecated
   void register( String name );
 
   /**
@@ -123,6 +125,7 @@ public interface IResourceManager {
    *             {@link #register(String, InputStream, String, RegisterOptions)}
    *             instead
    */
+  @Deprecated
   void register( String name, String charset );
 
   /**
@@ -148,6 +151,7 @@ public interface IResourceManager {
    *             {@link #register(String, InputStream, String, RegisterOptions)}
    *             instead
    */
+  @Deprecated
   void register( String name, String charset, RegisterOptions options );
 
   /**
@@ -245,6 +249,7 @@ public interface IResourceManager {
    * @deprecated Use {@link #register(String, InputStream)} or
    *             {@link #register(String, InputStream, String, RegisterOptions)} instead
    */
+  @Deprecated
   URL getResource( String name );
 
   /**
@@ -267,6 +272,7 @@ public interface IResourceManager {
    * @deprecated Use {@link #register(String, InputStream)} or
    *             {@link #register(String, InputStream, String, RegisterOptions)} instead
    */
+  @Deprecated
   InputStream getResourceAsStream( String name );
 
   /**
@@ -296,21 +302,6 @@ public interface IResourceManager {
    * <code>registerXXX</code> or <code>getResourceXXX</code> methods. Note that
    * in case of the <code>getResourceXXX</code> methods the calls are simply
    * delegated to the specified classloader.
-   * <p>
-   * Usage:
-   *
-   * <pre>
-   *   IResourceManager manager = W4TContext.getResourceManager();
-   *   ClassLoader contextLoader = ... // retrieve the classloader
-   *   manager.setContextLoader( contextLoader );
-   *   try {
-   *     manager.register( "resources/images/myimage.gif" );
-   *   } finally {
-   *     manager.setContextLoader( null );
-   * }
-   *
-   * <pre>
-   * </p>
    *
    * @param classLoader the classloader that has access to the resources that
    *          should be loaded or registered via this
@@ -319,6 +310,7 @@ public interface IResourceManager {
    * @deprecated Use {@link #register(String, InputStream)} or
    *             {@link #register(String, InputStream, String, RegisterOptions)} instead
    */
+  @Deprecated
   void setContextLoader( ClassLoader classLoader );
 
   /**
@@ -331,6 +323,7 @@ public interface IResourceManager {
    * @deprecated Use {@link #register(String, InputStream)} or
    *             {@link #register(String, InputStream, String, RegisterOptions)} instead
    */
+  @Deprecated
   ClassLoader getContextLoader();
 
   /**
