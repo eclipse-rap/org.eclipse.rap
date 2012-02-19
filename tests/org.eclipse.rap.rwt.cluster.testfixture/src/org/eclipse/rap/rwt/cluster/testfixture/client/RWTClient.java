@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,28 +25,28 @@ import org.eclipse.swt.dnd.Transfer;
 
 @SuppressWarnings("restriction")
 public class RWTClient {
-  // Keep "text" in sync with TextTransfer#TYPE_NAME 
+  // Keep "text" in sync with TextTransfer#TYPE_NAME
   private static final String TEXT_TRANSFER_DATA_TYPE
     = String.valueOf( Transfer.registerType( "text" ) );
-  
+
   private IServletEngine servletEngine;
   private final IConnectionProvider connectionProvider;
-  private long startTime;
+  private final long startTime;
   private String sessionId;
   private int requestCounter;
 
   public RWTClient( IServletEngine servletEngine ) {
     this( servletEngine, new DefaultConnectionProvider() );
   }
-  
+
   RWTClient( IServletEngine servletEngine, IConnectionProvider connectionProvider ) {
     this.servletEngine = servletEngine;
     this.connectionProvider = connectionProvider;
-    this.startTime = System.currentTimeMillis();
-    this.sessionId = "";
-    this.requestCounter = -2;
+    startTime = System.currentTimeMillis();
+    sessionId = "";
+    requestCounter = -2;
   }
-  
+
   public void changeServletEngine( IServletEngine servletEngine ) {
     this.servletEngine = servletEngine;
   }
@@ -58,45 +58,44 @@ public class RWTClient {
   public String getSessionId() {
     return sessionId;
   }
-  
+
   public Response sendStartupRequest() throws IOException {
-    Map<String,String> parameters = new HashMap<String,String>();
-    parameters.put( "startup", "default" );
     return sendRequest();
   }
-  
+
   public Response sendInitializationRequest() throws IOException {
     Map<String,String> parameters = new HashMap<String,String>();
     parameters.put( "rwt_initialize", "true" );
-    parameters.put( "startup", "default" );
     parameters.put( "uiRoot", "w1" );
-    parameters.put( "w4t_width", "800" );
-    parameters.put( "w4t_height", "600" );
+    parameters.put( "w1.bounds.width", "800" );
+    parameters.put( "w1.bounds.height", "600" );
     parameters.put( "w1.dpi.x", "96" );
     parameters.put( "w1.dpi.y", "96" );
     parameters.put( "w1.colorDepth", "32" );
+    parameters.put( "w1.cursorLocation.x", "0" );
+    parameters.put( "w1.cursorLocation.y", "0" );
     return sendRequest( parameters );
   }
-  
+
   public Response sendDisplayResizeRequest( int width, int height ) throws IOException {
     Map<String, String> parameters = createDefaultParameters();
     parameters.put( "w1.bounds.width", String.valueOf( width ) );
     parameters.put( "w1.bounds.height", String.valueOf( height ) );
     return sendRequest( parameters );
   }
-  
+
   public Response sendWidgetSelectedRequest( String widgetId ) throws IOException {
     Map<String, String> parameters = createDefaultParameters();
     parameters.put( "org.eclipse.swt.events.widgetSelected", widgetId );
     return sendRequest( parameters );
   }
-  
+
   public Response sendShellCloseRequest( String shellId ) throws IOException {
     Map<String, String> parameters = createDefaultParameters();
     parameters.put( "org.eclipse.swt.widgets.Shell_close", shellId );
     return sendRequest( parameters );
   }
-  
+
   public Response sendDragStartRequest( String widgetId ) throws IOException {
     Map<String, String> parameters = createDefaultParameters();
     parameters.put( "org.eclipse.swt.dnd.dragStart", widgetId );
@@ -105,9 +104,9 @@ public class RWTClient {
     parameters.put( "org.eclipse.swt.dnd.dragStart.time", createTimeParam() );
     return sendRequest( parameters );
   }
-  
+
   public Response sendDragFinishedRequest( String sourceWidgetId, String targetWidgetId )
-    throws IOException 
+    throws IOException
   {
     Map<String, String> parameters = createDefaultParameters();
     parameters.put( "org.eclipse.swt.dnd.dropAccept", targetWidgetId );
@@ -131,7 +130,7 @@ public class RWTClient {
     HttpURLConnection connection = createConnection( url, 0 );
     return new Response( connection );
   }
-  
+
   public Response sendUICallBackRequest( int timeout ) throws IOException {
     Map<String,String> parameters = new HashMap<String,String>();
     parameters.put( IServiceHandler.REQUEST_PARAM, UICallBackServiceHandler.HANDLER_ID );
@@ -139,11 +138,11 @@ public class RWTClient {
     HttpURLConnection connection = createConnection( url, timeout );
     return new Response( connection );
   }
-  
+
   Response sendRequest() throws IOException {
     return sendRequest( new HashMap<String,String>() );
   }
-  
+
   Response sendRequest( Map<String,String> parameters ) throws IOException {
     if( requestCounter >= 0 ) {
       parameters.put( "requestCounter", String.valueOf( requestCounter ) );
@@ -173,7 +172,7 @@ public class RWTClient {
     result.connect();
     return result;
   }
-  
+
   private Map<String, String> createDefaultParameters() {
     Map<String,String> result = new HashMap<String,String>();
     result.put( "uiRoot", "w1" );
