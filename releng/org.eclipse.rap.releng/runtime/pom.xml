@@ -56,8 +56,10 @@
     <module>../../../runtime.rwt.test/org.eclipse.rap.rwt.osgi.test</module>
     <module>../../../runtime.ui.test/org.eclipse.rap.ui.forms.test</module>
     <module>../../../runtime.rwt.test/org.eclipse.rap.rwt.themes.test</module>
+    <!-- temporarily disabled, see bug 371993
     <module>../../../runtime.rwt.test/org.eclipse.rap.rwt.cluster.test</module>
     <module>../../../runtime.rwt.test/org.eclipse.rap.rwt.cluster.testfixture.test</module>
+     -->
     <!-- Packaging projects -->
     <module>runtime-feature</module>
     <module>runtime-repository</module>
