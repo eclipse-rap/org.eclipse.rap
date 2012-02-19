@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,9 @@ import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfiguration.OperationMode;
 import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.internal.application.ApplicationConfigurationImpl;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
+
 
 public class RWTStartup {
 
@@ -55,7 +57,10 @@ public class RWTStartup {
 
     public void configure( ApplicationConfiguration configuration ) {
       configuration.setOperationMode( OperationMode.SESSION_FAILOVER );
-      configuration.addEntryPoint( "/rap", entryPointClass );
+      // TODO [rst] Register by path 371993
+      // configuration.addEntryPoint( "/rap", entryPointClass );
+      ((ApplicationConfigurationImpl)configuration).addEntryPointByParameter( "default",
+                                                                              entryPointClass );
     }
   }
 }
