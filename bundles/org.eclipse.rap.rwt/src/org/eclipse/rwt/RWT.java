@@ -24,6 +24,7 @@ import java.util.ResourceBundle;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rwt.internal.lifecycle.LifeCycle;
@@ -341,8 +342,11 @@ public final class RWT {
   public static final String MARKUP_ENABLED = "org.eclipse.rap.rwt.markupEnabled";
 
   /**
-   * Specifies the ID of RWT default theme.
+   * The ID of the default theme. The default theme is the active theme if no
+   * custom theme has been specified. This ID can be used to register theme
+   * contributions to the default theme.
    *
+   * @see ApplicationConfiguration#addStyleSheet(String, String)
    * @since 1.5
    */
   public static final String DEFAULT_THEME_ID = "org.eclipse.rap.rwt.theme.Default";
