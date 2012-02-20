@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,12 @@ import java.util.List;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.rap.examples.*;
 import org.eclipse.rap.examples.pages.Elements.Element;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 
@@ -38,6 +40,15 @@ public class TableViewerExample implements IExamplePage {
   private final ElementsFilter viewerFilter;
   private final ElementsLabelProvider labelProvider;
   private List elements;
+  private Text txtFilter;
+  private Label lblHelp;
+  private TableViewerColumn nrColumn;
+  private TableViewerColumn symColumn;
+  private TableViewerColumn nameColumn;
+  private TableViewerColumn seriesColumn;
+  private TableViewerColumn groupColumn;
+  private TableViewerColumn periodColumn;
+  
 
   private static Color[] SERIES_COLORS = new Color[] {
     null,
@@ -52,7 +63,6 @@ public class TableViewerExample implements IExamplePage {
     Graphics.getColor( 156, 159, 153 ),
     Graphics.getColor( 138, 226, 52 ),
   };
-
   public TableViewerExample() {
     viewerFilter = new ElementsFilter();
     labelProvider = new ElementsLabelProvider();
@@ -60,61 +70,157 @@ public class TableViewerExample implements IExamplePage {
 
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
-
     Group group = new Group( parent, SWT.NONE );
     group.setText( "Table Viewer" );
     group.setLayoutData( ExampleUtil.createFillData() );
-    group.setLayout( ExampleUtil.createGridLayout( 2, false, 10, 10 ) );
+    group.setLayout( ExampleUtil.createGridLayout( 1, true, 10, 10 ) );
+    createTextFilter( group );
+    createViewer( group );
+    createLabelSelection( group );
+    createLabelHelp( group );
+    viewer.getTable().forceFocus();
+    handleSelection( true );
+  }
 
-    Label lblFilter = new Label( group, SWT.NONE );
-    lblFilter.setText( "Filter" );
-    Text txtFilter = new Text( group, SWT.BORDER );
-    txtFilter.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
+  private void createTextFilter( Composite parent ) {
+    txtFilter = new Text( parent, SWT.BORDER );
+    GridData gridData = ExampleUtil.createHorzFillData();
+    gridData.verticalIndent = 10;
+    txtFilter.setLayoutData( gridData );
     txtFilter.addModifyListener( new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
         Text text = ( Text )event.widget;
         viewerFilter.setText( text.getText() );
         viewer.refresh();
+        updateLabel();
       }
     } );
+    txtFilter.addKeyListener( new KeyAdapter() {
+      @Override
+      public void keyPressed( KeyEvent e ) {
+        if( e.keyCode == 13 || e.keyCode == SWT.ESC || e.keyCode == SWT.ARROW_DOWN ) {
+          handleSelection( e.keyCode == SWT.ARROW_DOWN );
+          viewer.getTable().forceFocus();
+        }
+      }
+    } );
+    txtFilter.setData( RWT.ACTIVE_KEYS, new String[]{ "ENTER", "ESCAPE", "ARROW_DOWN" } );
+  }
+
+  private void createViewer( Composite parent ) {
+    viewer = new TableViewer( parent, SWT.BORDER );
+    viewer.getTable().setLayoutData( ExampleUtil.createFillData() );
     elements = Elements.getElements();
-    viewer = new TableViewer( group, SWT.BORDER );
     ColumnViewerToolTipSupport.enableFor( viewer );
     viewer.setUseHashlookup( true );
     viewer.setContentProvider( new ElementsContentProvider() );
     viewer.setLabelProvider( new ElementsLabelProvider() );
-    createColumn( "Nr.", 50, NUMBER );
-    createColumn( "Sym.", 50, SYMBOL );
-    createColumn( "Name", 140, NAME );
-    createColumn( "Series", 180, SERIES );
-    createColumn( "Group", 50, GROUP );
-    createColumn( "Period", 50, PERIOD );
+    viewer.getTable().setHeaderVisible( true );
+    viewer.getTable().setLinesVisible( true );
+    nrColumn = createColumn( "Nr.", 50, NUMBER );
+    symColumn = createColumn( "Sym.", 50, SYMBOL );
+    nameColumn = createColumn( "Name", 140, NAME );
+    seriesColumn = createColumn( "Series", 180, SERIES );
+    groupColumn = createColumn( "Group", 50, GROUP );
+    periodColumn = createColumn( "Period", 50, PERIOD );
     viewer.setInput( elements );
     viewer.addFilter( viewerFilter );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
       public void selectionChanged( SelectionChangedEvent event ) {
-        StructuredSelection sel = ( StructuredSelection )event.getSelection();
-        Element firstElement = ( Element )sel.getFirstElement();
-        if( firstElement != null ) {
-          lblSelection.setText(   firstElement.name
-                                + " ("
-                                + firstElement.symbol
-                                + ")" );
-        } else {
-          lblSelection.setText( "" );
+        updateLabel();
+      }
+    } );
+    addViewerKeyboardControl();
+  }
+
+  private void createLabelSelection( Group group ) {
+    Composite selBorder = new Composite( group, SWT.BORDER );
+    GridData gridData = new GridData( SWT.FILL, SWT.TOP, true, true );
+    gridData.minimumHeight = 25;
+    selBorder.setLayoutData( gridData );
+    FillLayout selBorderLayout = new FillLayout();
+    selBorderLayout.marginHeight = 3;
+    selBorderLayout.marginWidth = 3;
+    selBorder.setLayout( selBorderLayout );
+    lblSelection = new Label( selBorder, SWT.NONE );
+  }
+
+  private void createLabelHelp( Group group ) {
+    lblHelp = new Label( group, SWT.WRAP );
+    lblHelp.setLayoutData( ExampleUtil.createHorzFillData() );
+    String helpContent = "Shortcuts: [CTRL+F] - Filter | ";
+    helpContent += "Sort by: [CTRL+R] - Number, [CTRL+Y] - Symbol, [CTRL+N] - Name";
+    helpContent += "[CTRL+S] - Series, [CTRL+G] - Group, [CTRL+P] - Period";
+    lblHelp.setText( helpContent );
+    lblHelp.setForeground( new Color( lblHelp.getDisplay(), 150, 150, 150 ) );
+    FontData[] font = lblHelp.getFont().getFontData();
+    for( int i = 0; i < font.length; i++ ) {
+      font[ i ].setHeight( font[ i ].getHeight() - 4 );
+    }
+    lblHelp.setFont( new Font( lblHelp.getDisplay(), font ) );
+  }
+
+  private void addViewerKeyboardControl() {
+    viewer.getTable().addKeyListener( new KeyAdapter() {
+      @Override
+      public void keyPressed( KeyEvent e ) {
+        if( e.stateMask == SWT.CTRL ) {
+          switch( e.character ) {
+            case 'f':
+              txtFilter.forceFocus();
+            break;
+            case 'r':
+              sortByColumn( nrColumn.getColumn(), NUMBER, true );
+            break;
+            case 'n':
+              sortByColumn( nameColumn.getColumn(), NAME, true );
+            break;
+            case 'y':
+              sortByColumn( symColumn.getColumn(), SYMBOL, true );
+            break;
+            case 's':
+              sortByColumn( seriesColumn.getColumn(), SERIES, true );
+            break;
+            case 'g':
+              sortByColumn( groupColumn.getColumn(), GROUP, true );
+              break;
+            case 'p':
+              sortByColumn( periodColumn.getColumn(), PERIOD, true );
+            break;
+          } 
         }
       }
     } );
-    viewer.getTable().setHeaderVisible( true );
-    viewer.getTable().setLinesVisible( true );
-    GridData tableData = ExampleUtil.createFillData();
-    tableData.horizontalSpan = 2;
-    viewer.getTable().setLayoutData( tableData );
-    lblSelection = new Label( group, SWT.NONE );
-    GridData labelData = ExampleUtil.createHorzFillData();
-    labelData.horizontalSpan = 2;
-    labelData.minimumHeight = 50;
-    lblSelection.setLayoutData( labelData );
+    String[] shortcuts = new String[]{ 
+      "CTRL+F", "CTRL+N", "CTRL+R", "CTRL+Y", "CTRL+S", "CTRL+G", "CTRL+P" 
+    };
+    viewer.getTable().setData( RWT.ACTIVE_KEYS, shortcuts );
+    viewer.getTable().setData( RWT.CANCEL_KEYS, shortcuts );
+  }
+
+  private void handleSelection( boolean reset ) {
+    if( viewer.getTable().getItemCount() > 0 ) {
+      if( reset || viewer.getSelection().isEmpty() ) {
+        viewer.getTable().select( 0 );
+      }
+      int index = viewer.getTable().getSelectionIndex();
+      // NOTE : setSelection needed as it also sets focus index and scrolls
+      viewer.getTable().setSelection( index );
+    }
+    updateLabel();
+  }
+
+  private void updateLabel() {
+    StructuredSelection sel = ( StructuredSelection )viewer.getSelection();
+    Element firstElement = ( Element )sel.getFirstElement();
+    if( firstElement != null ) {
+      lblSelection.setText(   firstElement.name
+                            + " ("
+                            + firstElement.symbol
+                            + ")" );
+    } else {
+      lblSelection.setText( "" );
+    }
   }
 
   private TableViewerColumn createColumn( String text, int width, final int sortProperty ) {
@@ -125,12 +231,18 @@ public class TableViewerExample implements IExamplePage {
     column.setWidth( width );
     column.setMoveable( true );
     column.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
-        int sortDirection = updateSortDirection( ( TableColumn )event.widget );
-        sort( viewer, sortProperty, sortDirection == SWT.DOWN );
+        sortByColumn( ( TableColumn )event.widget, sortProperty, false );
       }
     } );
     return result;
+  }
+  
+  private void sortByColumn( TableColumn column, int sortProperty, boolean reset ) {
+    int sortDirection = updateSortDirection( column );
+    sort( viewer, sortProperty, sortDirection == SWT.DOWN );
+    handleSelection( false );
   }
 
   private static int updateSortDirection( TableColumn column ) {
@@ -180,8 +292,8 @@ public class TableViewerExample implements IExamplePage {
   }
 
   private static final class ElementsLabelProvider extends CellLabelProvider {
+    @Override
     public void update( ViewerCell cell ) {
-
       Element element = ( Element )cell.getElement();
       int columnIndex = cell.getColumnIndex();
       switch( columnIndex ) {
@@ -207,6 +319,7 @@ public class TableViewerExample implements IExamplePage {
       }
     }
 
+    @Override
     public String getToolTipText( Object object ) {
       Element element = ( Element )object;
       return 
@@ -227,10 +340,12 @@ public class TableViewerExample implements IExamplePage {
       this.ascending = ascending;
     }
 
+    @Override
     public int compare( Viewer viewer, Object object1, Object object2 ) {
       return compare( object1, object2 );
     }
 
+    @Override
     public boolean isSorterProperty( Object elem, String property ) {
       return true;
     }
@@ -278,6 +393,7 @@ public class TableViewerExample implements IExamplePage {
       this.text = string;
     }
 
+    @Override
     public boolean select( Viewer viewer, Object parentElement, Object element ) {
       boolean result = true;
       Element chemElement = ( Element )element;
@@ -297,6 +413,7 @@ public class TableViewerExample implements IExamplePage {
       return result;
     }
 
+    @Override
     public boolean isFilterProperty( Object element, String prop ) {
       return true;
     }
