@@ -15,11 +15,11 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.resources.TestUtil;
 import org.eclipse.rwt.internal.theme.Theme;
-import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.resources.IResourceManager;
 
 
@@ -44,7 +44,7 @@ public class ClientResources_Test extends TestCase {
 
     assertFalse( resourceManager.isRegistered( "qx/lang/Core.js" ) );
     assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
-    Theme defaultTheme = RWTFactory.getThemeManager().getTheme( ThemeUtil.DEFAULT_THEME_ID );
+    Theme defaultTheme = RWTFactory.getThemeManager().getTheme( RWT.DEFAULT_THEME_ID );
     assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".js" ) );
   }
 
@@ -55,7 +55,7 @@ public class ClientResources_Test extends TestCase {
 
     assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
     assertFalse( resourceManager.isRegistered( "qx/lang/Core.js" ) );
-    Theme defaultTheme = RWTFactory.getThemeManager().getTheme( ThemeUtil.DEFAULT_THEME_ID );
+    Theme defaultTheme = RWTFactory.getThemeManager().getTheme( RWT.DEFAULT_THEME_ID );
     assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".js" ) );
   }
 

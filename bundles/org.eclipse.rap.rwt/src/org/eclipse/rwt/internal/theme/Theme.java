@@ -15,6 +15,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.theme.css.CssElementHolder;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.resources.IResourceManager;
@@ -166,7 +168,7 @@ public class Theme {
 
   private static String createUniqueJsId( String id ) {
     String result;
-    if( ThemeUtil.DEFAULT_THEME_ID.equals( id ) ) {
+    if( RWT.DEFAULT_THEME_ID.equals( id ) ) {
       result = JS_THEME_PREFIX + "Default";
     } else if( ThemeManager.FALLBACK_THEME_ID.equals( id ) ) {
       result = JS_THEME_PREFIX + "Fallback";

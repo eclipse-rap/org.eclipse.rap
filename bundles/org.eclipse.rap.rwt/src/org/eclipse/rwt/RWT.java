@@ -341,6 +341,13 @@ public final class RWT {
   public static final String MARKUP_ENABLED = "org.eclipse.rap.rwt.markupEnabled";
 
   /**
+   * Specifies the ID of RWT default theme.
+   *
+   * @since 1.5
+   */
+  public static final String DEFAULT_THEME_ID = "org.eclipse.rap.rwt.theme.Default";
+
+  /**
    * Returns the instance of the life cycle which is currently processed.
    *
    * @return instance of {@link ILifeCycle}

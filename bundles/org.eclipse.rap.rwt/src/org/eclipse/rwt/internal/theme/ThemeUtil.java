@@ -12,6 +12,8 @@
 package org.eclipse.rwt.internal.theme;
 
 import java.io.IOException;
+
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.theme.css.ConditionalValue;
@@ -27,7 +29,6 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class ThemeUtil {
 
-  public static final String DEFAULT_THEME_ID = "org.eclipse.rap.rwt.theme.Default";
   private static final String DEFAULT_THEME_NAME = "RAP Default Theme";
   private static final String DEFAULT_THEME_CSS = "resource/theme/default.css";
 
@@ -51,7 +52,7 @@ public final class ThemeUtil {
     ISessionStore sessionStore = ContextProvider.getSessionStore();
     String result = ( String )sessionStore.getAttribute( CURR_THEME_ATTR );
     if( result == null ) {
-      result = ThemeUtil.DEFAULT_THEME_ID;
+      result = RWT.DEFAULT_THEME_ID;
     }
     return result;
   }
@@ -76,7 +77,7 @@ public final class ThemeUtil {
 
   public static Theme getDefaultTheme() {
     ThemeManager themeManager = RWTFactory.getThemeManager();
-    return themeManager.getTheme( DEFAULT_THEME_ID );
+    return themeManager.getTheme( RWT.DEFAULT_THEME_ID );
   }
 
   private static Theme getFallbackTheme() {
@@ -85,9 +86,9 @@ public final class ThemeUtil {
   }
 
   public static void initializeDefaultTheme( ThemeManager themeManager ) {
-    if( !themeManager.hasTheme( DEFAULT_THEME_ID ) ) {
+    if( !themeManager.hasTheme( RWT.DEFAULT_THEME_ID ) ) {
       StyleSheet defaultStyleSheet = readDafaultThemeStyleSheet();
-      Theme defaultTheme = new Theme( DEFAULT_THEME_ID, DEFAULT_THEME_NAME, defaultStyleSheet );
+      Theme defaultTheme = new Theme( RWT.DEFAULT_THEME_ID, DEFAULT_THEME_NAME, defaultStyleSheet );
       themeManager.registerTheme( defaultTheme );
     }
   }

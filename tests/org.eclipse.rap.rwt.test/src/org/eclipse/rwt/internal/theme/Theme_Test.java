@@ -15,6 +15,7 @@ import static org.eclipse.rwt.internal.theme.ThemeTestUtil.RESOURCE_LOADER;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
@@ -100,7 +101,7 @@ public class Theme_Test extends TestCase {
 
   public void testGetJsIdForDefaultTheme() throws Exception {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_SYNTAX_CSS );
-    String defaultThemeId = ThemeUtil.DEFAULT_THEME_ID;
+    String defaultThemeId = RWT.DEFAULT_THEME_ID;
     Theme defaultTheme = new Theme( defaultThemeId, "Default", styleSheet );
     assertEquals( "org.eclipse.swt.theme.Default", defaultTheme.getJsId() );
   }

@@ -17,11 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.application.ApplicationContext;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeManager;
-import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.resources.ResourceLoader;
 
 
@@ -46,7 +46,7 @@ public class ThemeManagerHelper {
     public void initialize() {
       if( !initialized ) {
         // Register empty default theme. Execute tests against fall-back theme.
-        registerTheme( new Theme( ThemeUtil.DEFAULT_THEME_ID, "RAP Default Theme", null ) );
+        registerTheme( new Theme( RWT.DEFAULT_THEME_ID, "RAP Default Theme", null ) );
         initialized = true;
       }
     }
@@ -163,7 +163,7 @@ public class ThemeManagerHelper {
       List<String> registeredThemeIds = Arrays.asList( getThemeManager().getRegisteredThemeIds() );
       if( registeredThemeIds.size() == 2 ) {
         result =    !registeredThemeIds.contains( ThemeManager.FALLBACK_THEME_ID )
-                 || !registeredThemeIds.contains( ThemeUtil.DEFAULT_THEME_ID );
+                 || !registeredThemeIds.contains( RWT.DEFAULT_THEME_ID );
       }
     }
     return result;

@@ -17,6 +17,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.theme.css.StyleRule;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.swt.widgets.Button;
@@ -85,7 +86,7 @@ public class ThemeManager_Test extends TestCase {
   public void testDefaultThemeInitialized() {
     manager.initialize();
     manager.activate();
-    Theme defaultTheme = manager.getTheme( ThemeUtil.DEFAULT_THEME_ID );
+    Theme defaultTheme = manager.getTheme( RWT.DEFAULT_THEME_ID );
     assertNotNull( defaultTheme.getValuesMap() );
     assertTrue( defaultTheme.getValuesMap().getAllValues().length > 0 );
   }
@@ -96,7 +97,7 @@ public class ThemeManager_Test extends TestCase {
     manager.registerTheme( customTheme );
     manager.initialize();
     manager.activate();
-    Theme defaultTheme = manager.getTheme( ThemeUtil.DEFAULT_THEME_ID );
+    Theme defaultTheme = manager.getTheme( RWT.DEFAULT_THEME_ID );
     assertNotNull( defaultTheme.getValuesMap() );
     assertTrue( defaultTheme.getValuesMap().getAllValues().length > 0 );
     assertNotNull( customTheme.getValuesMap() );
