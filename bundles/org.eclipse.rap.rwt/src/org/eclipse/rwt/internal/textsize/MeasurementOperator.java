@@ -37,7 +37,7 @@ class MeasurementOperator implements SerializableCompatibility {
   private boolean isStartupProbeMeasurementPerformed;
 
   static MeasurementOperator getInstance() {
-    return ( MeasurementOperator )SessionSingletonBase.getInstance( MeasurementOperator.class );
+    return SessionSingletonBase.getInstance( MeasurementOperator.class );
   }
 
   MeasurementOperator() {
