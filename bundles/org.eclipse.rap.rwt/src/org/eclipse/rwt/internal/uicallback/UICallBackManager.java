@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,7 @@ public final class UICallBackManager implements SerializableCompatibility {
     = UICallBackManager.class.getName() + "#forceUICallBack";
 
   public static UICallBackManager getInstance() {
-    return ( UICallBackManager )SessionSingletonBase.getInstance( UICallBackManager.class );
+    return SessionSingletonBase.getInstance( UICallBackManager.class );
   }
 
   private final CallBackActivationTracker callBackActivationTracker;
@@ -204,6 +204,7 @@ public final class UICallBackManager implements SerializableCompatibility {
     return result;
   }
 
+  @SuppressWarnings("resource")
   private static boolean isConnectionAlive( HttpServletResponse response ) {
     boolean result;
     try {
