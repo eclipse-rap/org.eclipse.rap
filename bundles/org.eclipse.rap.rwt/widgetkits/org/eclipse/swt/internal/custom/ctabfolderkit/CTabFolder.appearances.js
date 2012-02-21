@@ -9,7 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-appearances = {
+var appearances = {
 // BEGIN TEMPLATE //
 
   "ctabfolder" : {
@@ -51,7 +51,7 @@ appearances = {
       if( !states.rwt_FLAT ) {
         // get the background color for selected items
         var statesWithSelected = { "selected": true };
-        for( property in states ) {
+        for( var property in states ) {
           statesWithSelected[ property ] = states[ property ];
         }
         var tv = new org.eclipse.swt.theme.ThemeValues( statesWithSelected );
@@ -172,7 +172,7 @@ appearances = {
     style : function( states ) {
       return {
         source : states.over ? "widget/ctabfolder/close_hover.gif" : "widget/ctabfolder/close.gif"
-      }
+      };
     }
   }
     

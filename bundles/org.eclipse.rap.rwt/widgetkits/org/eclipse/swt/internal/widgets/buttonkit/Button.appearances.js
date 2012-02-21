@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-appearances = {
+var appearances = {
 // BEGIN TEMPLATE //
 
   "button" : {
@@ -64,7 +64,7 @@ appearances = {
         cursor : tv.getCssCursor( "Button", "cursor" ),
         opacity : tv.getCssFloat( "Button", "opacity" ),
         textShadow : tv.getCssShadow( "Button", "text-shadow" )
-      }
+      };
     }
   },
 
@@ -88,7 +88,7 @@ appearances = {
         cursor : tv.getCssCursor( "Button", "cursor" ),
         opacity : tv.getCssFloat( "Button", "opacity" ),
         textShadow : tv.getCssShadow( "Button", "text-shadow" )
-      }
+      };
     }
   }
 
