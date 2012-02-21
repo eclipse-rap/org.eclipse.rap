@@ -884,7 +884,7 @@ public class TreeItem extends Item {
    */
   public Rectangle getTextBounds( int index ) {
     checkWidget();
-    if( !parent.checkData( this, index ) ) {
+    if( !parent.checkData( this, this.index ) ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
     Rectangle result = new Rectangle( 0, 0, 0, 0 );
