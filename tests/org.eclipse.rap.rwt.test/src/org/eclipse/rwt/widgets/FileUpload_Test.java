@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -179,24 +179,24 @@ public class FileUpload_Test extends TestCase {
     assertEquals( new Point( 60, 16 ), extent );
     Image image = createImage( Fixture.IMAGE_100x50 );
     FileUpload upload = new FileUpload( shell, SWT.NONE );
-    Point expected = new Point( 12, 16 );
+    Point expected = new Point( 30, 22 );
     assertEquals( expected, upload.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     upload.setText( text );
-    expected = new Point( 72, 22 );
+    expected = new Point( 90, 28 );
     assertEquals( expected, upload.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     upload.setImage( image );
-    expected = new Point( 174, 56 );
+    expected = new Point( 192, 62 );
     assertEquals( expected, upload.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     upload.setText( "" );
-    expected = new Point( 112, 56 );
+    expected = new Point( 130, 62 );
     assertEquals( expected, upload.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     // PUSH button with BORDER
     upload = new FileUpload( shell, SWT.BORDER );
-    expected = new Point( 12, 16 );
+    expected = new Point( 32, 24 );
     assertEquals( expected, upload.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     upload.setText( text );
     upload.setImage( image );
-    expected = new Point( 174, 56 );
+    expected = new Point( 194, 64 );
     assertEquals( expected, upload.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     // fixed size
     expected = new Point( 102, 102 );
@@ -206,7 +206,7 @@ public class FileUpload_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
-    shell = new Shell( display, SWT.NONE );    
+    shell = new Shell( display, SWT.NONE );
   }
 
   protected void tearDown() throws Exception {

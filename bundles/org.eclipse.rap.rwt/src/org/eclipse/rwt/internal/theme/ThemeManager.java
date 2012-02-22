@@ -79,7 +79,8 @@ public class ThemeManager {
     org.eclipse.swt.custom.CLabel.class,
     org.eclipse.swt.browser.Browser.class,
     org.eclipse.swt.custom.ScrolledComposite.class,
-    org.eclipse.swt.widgets.ScrollBar.class
+    org.eclipse.swt.widgets.ScrollBar.class,
+    org.eclipse.rwt.widgets.FileUpload.class
   };
 
   private final Map<String, Theme> themes;

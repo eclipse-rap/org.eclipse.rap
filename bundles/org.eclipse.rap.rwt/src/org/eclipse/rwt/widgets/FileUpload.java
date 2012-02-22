@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,9 @@
 package org.eclipse.rwt.widgets;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.internal.widgets.IFileUploadAdapter;
+import org.eclipse.rwt.internal.widgets.fileuploadkit.FileUploadThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
@@ -42,7 +44,7 @@ import org.eclipse.swt.widgets.*;
  * <dd>(none)</dd>
  * </dl>
  * </p>
- * 
+ *
  * @since 1.4
  * @noextend This class is not intended to be subclassed by clients.
  */
@@ -162,9 +164,9 @@ public class FileUpload extends Canvas {
   /**
    * Returns the selected file name, without the path. If no file name has been selected,
    * <code>null</code> is returned.
-   * 
+   *
    * @return the selected file name
-   * 
+   *
    * @exception SWTException <ul>
    *   <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *   <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
@@ -183,9 +185,9 @@ public class FileUpload extends Canvas {
    * ongoing upload. Due to restrictions of the client, there is no feedback for success or failure
    * of the upload. This information can only be obtained from the server that accepts the upload.
    * </p>
-   * 
+   *
    * @param url the URL to upload to, must not be <code>null</code>
-   * 
+   *
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_NULL_ARGUMENT - if the url is null</li>
    *              </ul>
@@ -201,7 +203,7 @@ public class FileUpload extends Canvas {
     }
     checkWidget();
     if( fileName != null ) {
-      this.url  = url;      
+      this.url  = url;
     }
   }
 
@@ -279,16 +281,13 @@ public class FileUpload extends Canvas {
     if( height == 0 ) {
       height = 10;
     }
-    // TODO [tb] : Adapt when widget is themeable:
-    //    ButtonThemeAdapter themeAdapter
-    //      = ( ButtonThemeAdapter )getAdapter( IThemeAdapter.class );
+    FileUploadThemeAdapter themeAdapter
+      = ( FileUploadThemeAdapter )getAdapter( IThemeAdapter.class );
     if( hasText && hasImage ) {
-      //int spacing = themeAdapter.getSpacing( this );
-      int spacing = 2;
+      int spacing = themeAdapter.getSpacing( this );
       width += spacing;
     }
-    // Rectangle padding = themeAdapter.getPadding( this );
-    Rectangle padding = new Rectangle( 5, 2, 10, 4 );
+    Rectangle padding = themeAdapter.getPadding( this );
     width += padding.width;
     height += padding.height;
     if( wHint != SWT.DEFAULT ) {
@@ -297,8 +296,7 @@ public class FileUpload extends Canvas {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    // int border = getBorderWidth();
-    int border = 1;
+    int border = getBorderWidth();
     width += border * 2;
     height += border * 2;
     return new Point( width, height );
@@ -333,11 +331,11 @@ public class FileUpload extends Canvas {
   // Inner classes
 
   private final class FileUploadAdapter implements IFileUploadAdapter {
-  
+
     public void setFileName( String value ) {
       fileName = value;
     }
-    
+
     public String getAndResetUrl() {
       String result = url;
       url = null;

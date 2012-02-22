@@ -15,7 +15,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.FileUpload", {
 
   construct : function() {
     this.base( arguments, "push" );
-    this.addState( "rwt_PUSH" ); // temporary
+    this.setAppearance( "file-upload" );
     this.addEventListener( "insertDom", this._layoutInputElement, this );
     this.addEventListener( "elementOver", this._onMouseOverElement, this );
     this._formElement = null;
@@ -261,7 +261,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.FileUpload", {
     _showFocusIndicator : function( allow ) {
       var isChrome = org.eclipse.rwt.Client.getBrowser() === "chrome";
       if( !isChrome || allow ) {
-        this.base( arguments );
+        var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
+        var node =   this.getCellNode( 2 ) != null 
+                   ? this.getCellNode( 2 )
+                   : this.getCellNode( 1 );
+        focusIndicator.show( this, "FileUpload-FocusIndicator", node ); 
       }
     },
 

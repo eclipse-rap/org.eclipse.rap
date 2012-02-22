@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -3085,4 +3085,60 @@ ToolItem:selected.viewToolbar {
 ToolItem-DropDownIcon.viewToolbar {
   background-image: url( img/fancy/viewMenu.png );
   border: none;
+}
+
+/* FileUpload */
+
+FileUpload {
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border: 1px solid #A4A4A4;
+  border-radius: 3px;
+  padding: 2px 5px;
+  spacing: 2px;
+  color: #4a4a4a;
+  background-color: #ffffff;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
+  animation: hoverOut 500ms ease-out;
+  cursor: pointer;
+  text-shadow: none;
+  opacity: 1;
+}
+
+FileUpload:disabled {
+  cursor: default;
+}
+
+FileUpload:hover {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
+}
+
+FileUpload:pressed {
+  animation: none;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+  padding: 4px 5px 2px 7px;
+}
+
+FileUpload-FocusIndicator {
+  background-color: transparent; 
+  border: 1px dotted #b8b8b8;
+  margin: 2px;
+  padding: 0px;
+  opacity: 1;
 }

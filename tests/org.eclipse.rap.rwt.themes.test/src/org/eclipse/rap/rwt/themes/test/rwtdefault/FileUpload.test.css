@@ -1,0 +1,63 @@
+/*******************************************************************************
+ * Copyright (c) 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
+ 
+/* FileUpload default theme */
+ 
+FileUpload {
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #f9f9f9 ),
+    to( #e4e4e4 )
+  );
+  border: 1px solid #bdbdbd;
+  border-radius: 2px;
+  padding: 2px 5px;
+  spacing: 2px;
+  cursor: pointer;
+  animation: none;
+  color: #4a4a4a;
+  background-color: #ffffff;
+  opacity: 1;
+  text-shadow: 0 1px 0 #ffffff;
+}
+
+FileUpload:disabled {
+  cursor: default;
+  color: #d2d2d2;
+  background-image: none;
+  background-color: #fafafa;
+  border: 1px solid #d2d2d2;
+}
+
+FileUpload:hover {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #eaeaea ),
+    to( #d5d5d5 )
+  );
+}
+
+FileUpload:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #d5d5d5 ),
+    to( #eaeaea )
+  );
+}
+
+FileUpload-FocusIndicator {
+  background-color: transparent;
+  border: 1px dotted #b8b8b8;
+  margin: 2px;
+  padding: 0px;
+  opacity: 1;
+}
