@@ -17,19 +17,19 @@
     <entrypoint
           class="org.eclipse.rap.demo.DemoWorkbench"
           id="org.eclipse.rap.demo.entrypoint1"
-          parameter="default"/>
+          path="/workbench"/>
     <entrypoint
           class="org.eclipse.rap.demo.RWTDemo"
           id="org.eclipse.rap.demo.entrypoint2"
-          parameter="rwtdemo"/>
+          path="/rwtdemo"/>
     <entrypoint
           class="org.eclipse.rap.demo.controls.LayoutDemo"
           id="org.eclipse.rap.demo.entrypoint3"
-          parameter="layout"/>
+          path="/layout"/>
     <entrypoint
           class="org.eclipse.rap.demo.controls.ControlsDemo"
           id="org.eclipse.rap.demo.entrypoint4"
-          parameter="controls"/>
+          path="/controls"/>
   </extension>
   
   <extension
