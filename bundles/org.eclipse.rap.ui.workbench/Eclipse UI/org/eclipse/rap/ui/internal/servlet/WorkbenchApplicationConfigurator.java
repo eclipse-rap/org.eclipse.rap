@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.equinox.app.IApplication;
 import org.eclipse.rap.ui.internal.application.EntryPointApplicationWrapper;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
@@ -47,10 +48,12 @@ import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.ResourceLoader;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISettingStoreFactory;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.http.HttpService;
 
 
 @SuppressWarnings( "deprecation" )
@@ -72,9 +75,9 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   private static final String PT_APPLICATIONS = "applications"; //$NON-NLS-1$
   private static final String PT_APP_VISIBLE = "visible"; //$NON-NLS-1$
 
-  private final ServiceReference httpServiceReference;
+  private final ServiceReference<HttpService> httpServiceReference;
 
-  WorkbenchApplicationConfigurator( ServiceReference httpServiceReference ) {
+  WorkbenchApplicationConfigurator( ServiceReference<HttpService> httpServiceReference ) {
     this.httpServiceReference = httpServiceReference;
   }
 
@@ -155,6 +158,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
 	return systemBundle.getBundleContext().getProperty( name );
   }
 
+  @SuppressWarnings( "unchecked" )
   private void registerAdapterFactories( ApplicationConfigurationImpl configuration ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_ADAPTER_FACTORY );
@@ -165,9 +169,10 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
       String adaptableName = elements[ i ].getAttribute( "adaptableClass" );
       try {
         Bundle bundle = Platform.getBundle( contributorName );
-        Class factoryClass = bundle.loadClass( factoryName );
-        Class adaptableClass = bundle.loadClass( adaptableName );
-        AdapterFactory adapterFactory = ( AdapterFactory )ClassUtil.newInstance( factoryClass ) ;
+        Class<? extends AdapterFactory> factoryClass
+          = (Class<? extends AdapterFactory>)bundle.loadClass( factoryName );
+        Class<?> adaptableClass = bundle.loadClass( adaptableName );
+        AdapterFactory adapterFactory = ClassUtil.newInstance( factoryClass ) ;
         configuration.addAdapterFactory( adaptableClass, adapterFactory );
       } catch( Throwable thr ) {
         String text = "Could not register adapter factory ''{0}''  for the adapter type ''{1}''.";
@@ -177,6 +182,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     }
   }
 
+  @SuppressWarnings( "unchecked" )
   private void registerWorkbenchEntryPoints( ApplicationConfigurationImpl configuration ) {
     for( IConfigurationElement element : getEntryPointExtensions() ) {
       String contributorName = element.getContributor().getName();
@@ -186,13 +192,14 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
       String id = element.getAttribute( "id" );
       try {
         Bundle bundle = Platform.getBundle( contributorName );
-        Class clazz = bundle.loadClass( className );
+        Class<? extends IEntryPoint> entryPointClass
+          = (Class<? extends IEntryPoint>)bundle.loadClass( className );
         if( parameter != null ) {
-          configuration.addEntryPointByParameter( parameter, clazz );
+          configuration.addEntryPointByParameter( parameter, entryPointClass );
           EntryPointParameters.register( id, parameter );
         }
         if( path != null ) {
-          configuration.addEntryPoint( path, clazz );
+          configuration.addEntryPoint( path, entryPointClass );
         }
       } catch( final Throwable thr ) {
         String text = "Could not register entry point ''{0}'' with id ''{1}''.";
@@ -202,6 +209,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     }
   }
 
+  @SuppressWarnings( "unchecked" )
   private void registerApplicationEntryPoints( ApplicationConfigurationImpl configuration ) {
     for( IExtension extension : getApplicationExtensions() ) {
       IConfigurationElement configElement = extension.getConfigurationElements()[ 0 ];
@@ -216,8 +224,9 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         // ignore invisible applications
         if( isVisible == null || Boolean.valueOf( isVisible ).booleanValue() ) {
           Bundle bundle = Platform.getBundle( contributorName );
-          Class clazz = bundle.loadClass( className );
-          IEntryPointFactory factory = createApplicationEntryPointFactory( clazz );
+          Class<? extends IApplication> applicationClass
+            = (Class<? extends IApplication>)bundle.loadClass( className );
+          IEntryPointFactory factory = createApplicationEntryPointFactory( applicationClass );
           configuration.addEntryPointByParameter( applicationParameter, factory );
           EntryPointParameters.register( applicationId, applicationParameter );
         }
@@ -230,7 +239,8 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     }
   }
 
-  private static IEntryPointFactory createApplicationEntryPointFactory( final Class applicationClass )
+  private static IEntryPointFactory
+    createApplicationEntryPointFactory( final Class<? extends IApplication> applicationClass )
   {
     return new IEntryPointFactory() {
 
@@ -240,6 +250,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     };
   }
 
+  @SuppressWarnings( "unchecked" )
   private void registerThemeableWidgets( ApplicationConfiguration configuration ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( ID_THEMEABLE_WIDGETS );
@@ -249,7 +260,8 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
       String widgetClass = widgetExts[ i ].getAttribute( "class" );
       try {
         final Bundle bundle = Platform.getBundle( contributorName );
-        Class widget = bundle.loadClass( widgetClass );
+        Class<? extends Widget> widget
+          = (Class<? extends Widget>)bundle.loadClass( widgetClass );
         configuration.addThemableWidget( widget );
       } catch( final Throwable thr ) {
         String text = "Could not register themeable widget ''{0}''.";
@@ -321,7 +333,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     return result;
   }
 
-  private void registerResources( ApplicationConfiguration configuration ) {
+  private static void registerResources( ApplicationConfiguration configuration ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_RESOURCES );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -337,7 +349,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         IResource resource = ( IResource )elements[ i ].createExecutableExtension( "class" );
         String resourceId = elements[ i ].getAttribute( "id" );
         IConfigurationElement[] dependsOn = elements[ i ].getChildren( "dependsOn" );
-        List resourceDependencies = new ArrayList();
+        List<String> resourceDependencies = new ArrayList<String>();
         for( int j = 0 ; j < dependsOn.length ; j++ ) {
           String dependency = dependsOn[ j ].getAttribute( "resourceId" );
           resourceDependencies.add( dependency );
@@ -352,8 +364,8 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
 
   private static DependentResource[] sortResources( DependentResource[] resources ) {
     DependentResource[] result = new DependentResource[ resources.length ];
-    List sortedResourceIds = new ArrayList();
-    List deferredResources = new ArrayList();
+    List<String> sortedResourceIds = new ArrayList<String>();
+    List<DependentResource> deferredResources = new ArrayList<DependentResource>();
     int index = 0;
     for( int i = 0; i < resources.length; i++ ) {
       DependentResource resource = resources[ i ];
@@ -369,8 +381,9 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         }
         while( checkDeferredResources ) {
           checkDeferredResources = false;
-          for( Iterator iterator = deferredResources.iterator(); iterator.hasNext(); ) {
-            DependentResource deferredResource = ( DependentResource )iterator.next();
+          Iterator<DependentResource> iterator = deferredResources.iterator();
+          while( iterator.hasNext() ) {
+            DependentResource deferredResource = iterator.next();
             deferredResource.dependencies.removeAll( sortedResourceIds );
             if( deferredResource.dependencies.isEmpty() ) {
               result[ index++ ] = deferredResource;
@@ -390,8 +403,8 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     return result;
   }
 
-  private void registerResources( DependentResource[] resources,
-                                  ApplicationConfiguration configuration )
+  private static void registerResources( DependentResource[] resources,
+                                         ApplicationConfiguration configuration )
   {
     for( int i = 0; i < resources.length; i++ ) {
       if( resources[ i ] != null ) {
@@ -453,9 +466,10 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   private static final class DependentResource {
     public final IResource resource;
     public final String id;
-    public final List dependencies;
+    public final List<String> dependencies;
 
-    public DependentResource( IResource resource, String id, List dependencies ) {
+    public DependentResource( IResource resource, String id, List<String> dependencies )
+    {
       this.resource = resource;
       this.id = id;
       this.dependencies = dependencies;

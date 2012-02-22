@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2012 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,11 +17,11 @@ import java.lang.reflect.InvocationTargetException;
 
 
 public final class ClassUtil {
-  
+
   public static Object newInstance( ClassLoader classLoader, String className ) {
     ParamCheck.notNull( className, "className" );
     ParamCheck.notNull( classLoader, "classLoader" );
-    Class type;
+    Class<?> type;
     try {
       type = classLoader.loadClass( className );
     } catch( ClassNotFoundException cnfe ) {
@@ -29,14 +29,14 @@ public final class ClassUtil {
     }
     return newInstance( type );
   }
-  
-  public static Object newInstance( Class type ) {
+
+  public static <T> T newInstance( Class<T> type ) {
     return newInstance( type, null, null );
   }
 
-  public static Object newInstance( Class type, Class[] paramTypes, Object[] paramValues ) {
+  public static <T> T newInstance( Class<T> type, Class[] paramTypes, Object[] paramValues ) {
     ParamCheck.notNull( type, "type" );
-    Object result = null;
+    T result = null;
     try {
       result = createInstance( type, paramTypes, paramValues );
     } catch( RuntimeException rte ) {
@@ -50,10 +50,10 @@ public final class ClassUtil {
     return result;
   }
 
-  private static Object createInstance( Class<?> type, Class[] paramTypes, Object[] paramValues ) 
-    throws Exception 
+  private static <T> T createInstance( Class<T> type, Class[] paramTypes, Object[] paramValues )
+    throws Exception
   {
-    Constructor<?> constructor = type.getDeclaredConstructor( paramTypes );
+    Constructor<T> constructor = type.getDeclaredConstructor( paramTypes );
     if( !constructor.isAccessible() ) {
       constructor.setAccessible( true );
     }
@@ -66,7 +66,7 @@ public final class ClassUtil {
     }
   }
 
-  private static void throwInstantiationException( Class type, Throwable cause ) {
+  private static void throwInstantiationException( Class<?> type, Throwable cause ) {
     String msg = "Failed to create instance of type: " + type.getName();
     throw new ClassInstantiationException( msg, cause );
   }

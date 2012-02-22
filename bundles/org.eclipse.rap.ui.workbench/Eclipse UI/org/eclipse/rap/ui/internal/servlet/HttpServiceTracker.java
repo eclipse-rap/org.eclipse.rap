@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 EclipseSource and others.
+ * Copyright (c) 2008, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,103 +25,54 @@ import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
 
 
-public class HttpServiceTracker extends ServiceTracker {
-  
-  public static final String DEFAULT_SERVLET = "rap";
+public class HttpServiceTracker extends ServiceTracker<HttpService, HttpService> {
+
   public static final String ID_HTTP_CONTEXT = "org.eclipse.rap.httpcontext";
 
   private HttpContextExtensionService httpCtxExtService;
-  private ServiceTracker httpContextTracker;
-  private ServiceTracker ApplicationLauncherTracker;
+  private HttpContextTracker httpContextTracker;
+  private ApplicationLauncherTracker applicationLauncherTracker;
   private ApplicationLauncher applicationLauncher;
   private ApplicationReference applicationReference;
 
-  private class HttpContextTracker extends ServiceTracker {
-
-    private HttpContextTracker( BundleContext context ) {
-      super( context, HttpContextExtensionService.class.getName(), null );
-    }
-
-    public Object addingService( ServiceReference reference ) {
-      Object result = super.addingService( reference );
-      httpCtxExtService = getHttpCtxExtService( reference );
-      openAsSoonAsApplicationLauncherHasBeenStarted();
-      return result;
-    }
-
-    public void removedService( ServiceReference reference, Object service ) {
-      httpCtxExtService = null;
-      super.removedService( reference, service );
-    }
-  }
-
-  private class ApplicationLauncherTracker extends ServiceTracker {
-
-    private ApplicationLauncherTracker( BundleContext context ) {
-      super( context, ApplicationLauncher.class.getName(), null );
-    }
-
-    public Object addingService( ServiceReference reference ) {
-      Object result = super.addingService( reference );
-      applicationLauncher = ( ApplicationLauncher )context.getService( reference );
-      HttpServiceTracker.super.open();
-      return result;
-    }
-
-    public void removedService( ServiceReference reference, Object service ) {
-      applicationLauncher = null;
-      super.removedService( reference, service );
-    }
-  }
-
-  
   public HttpServiceTracker( BundleContext context ) {
     super( context, HttpService.class.getName(), null );
   }
 
-  public Object addingService( ServiceReference reference ) {
-    HttpService result = getHttpService( reference );
-    HttpContext httpContext = getHttpContext( reference );
+  @Override
+  public HttpService addingService( ServiceReference<HttpService> reference ) {
+    HttpService result = context.getService( reference );
+    HttpContext httpContext = httpCtxExtService.getHttpContext( reference, ID_HTTP_CONTEXT );
     applicationReference = startApplication( reference, result, httpContext );
     return result;
   }
 
-  public void removedService( ServiceReference reference, Object service ) {
+  @Override
+  public void removedService( ServiceReference<HttpService> reference, HttpService service ) {
     applicationReference.stopApplication();
     super.removedService( reference, service );
   }
 
+  @Override
   public void open() {
-    openAsSoonAsHttpContextServiceHasBeenStarted();
-  }
-
-  private void openAsSoonAsHttpContextServiceHasBeenStarted() {
     httpContextTracker = new HttpContextTracker( context );
     httpContextTracker.open();
   }
 
-  private void openAsSoonAsApplicationLauncherHasBeenStarted() {
-    ApplicationLauncherTracker = new ApplicationLauncherTracker( context );
-    ApplicationLauncherTracker.open();
-  }
-  
+  @Override
   public void close() {
     super.close();
     httpContextTracker.close();
-    ApplicationLauncherTracker.close();
   }
 
-  private ApplicationReference startApplication( ServiceReference httpServiceReference,
-                                      HttpService service,
-                                      HttpContext context )
+  private ApplicationReference startApplication( ServiceReference<HttpService> httpServiceReference,
+                                                 HttpService service,
+                                                 HttpContext context )
   {
-    ApplicationConfigurator configurator = newConfigurator( httpServiceReference );
+    ApplicationConfigurator configurator
+      = new WorkbenchApplicationConfigurator( httpServiceReference );
     String contextDirectory = findContextPath().toString();
     return applicationLauncher.launch( configurator, service, context, null, contextDirectory );
-  }
-
-  private ApplicationConfigurator newConfigurator( ServiceReference httpServiceReference ) {
-    return new WorkbenchApplicationConfigurator( httpServiceReference );
   }
 
   private static IPath findContextPath() {
@@ -130,15 +81,57 @@ public class HttpServiceTracker extends ServiceTracker {
     return stateLocation.append( "context" );
   }
 
-  private HttpService getHttpService( ServiceReference reference ) {
-    return ( HttpService )context.getService( reference );
+  private class HttpContextTracker
+    extends ServiceTracker<HttpContextExtensionService, HttpContextExtensionService>
+  {
+
+    private HttpContextTracker( BundleContext context ) {
+      super( context, HttpContextExtensionService.class.getName(), null );
+    }
+
+    @Override
+    public HttpContextExtensionService
+      addingService( ServiceReference<HttpContextExtensionService> reference )
+    {
+      HttpContextExtensionService result = super.addingService( reference );
+      httpCtxExtService = context.getService( reference );
+      applicationLauncherTracker = new ApplicationLauncherTracker( context );
+      applicationLauncherTracker.open();
+      return result;
+    }
+
+    @Override
+    public void removedService( ServiceReference<HttpContextExtensionService> reference,
+                                HttpContextExtensionService service )
+    {
+      applicationLauncherTracker.close();
+      httpCtxExtService = null;
+      super.removedService( reference, service );
+    }
   }
 
-  private HttpContext getHttpContext( ServiceReference reference ) {
-    return httpCtxExtService.getHttpContext( reference, ID_HTTP_CONTEXT );
-  }
+  private class ApplicationLauncherTracker
+    extends ServiceTracker<ApplicationLauncher, ApplicationLauncher>
+  {
 
-  private HttpContextExtensionService getHttpCtxExtService( ServiceReference reference ) {
-    return ( HttpContextExtensionService )context.getService( reference );
+    private ApplicationLauncherTracker( BundleContext context ) {
+      super( context, ApplicationLauncher.class.getName(), null );
+    }
+
+    @Override
+    public ApplicationLauncher addingService( ServiceReference<ApplicationLauncher> reference ) {
+      ApplicationLauncher result = super.addingService( reference );
+      applicationLauncher = context.getService( reference );
+      HttpServiceTracker.super.open();
+      return result;
+    }
+
+    @Override
+    public void removedService( ServiceReference<ApplicationLauncher> reference,
+                                ApplicationLauncher service )
+    {
+      applicationLauncher = null;
+      super.removedService( reference, service );
+    }
   }
 }
