@@ -50,10 +50,9 @@ public abstract class SessionSingletonBase {
    * @return the unique instance of the specified type that is associated
    *         with the current user session context.
    */
-  @SuppressWarnings("unchecked")
   public static <T> T getInstance( Class<T> type ) {
     ParamCheck.notNull( type, "type" );
     ISessionStore sessionStore = ContextProvider.getSessionStore();
-    return ( T )SingletonManager.getInstance( sessionStore ).getSingleton( type );
+    return SingletonManager.getInstance( sessionStore ).getSingleton( type );
   }
 }

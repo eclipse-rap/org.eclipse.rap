@@ -50,6 +50,6 @@ public class LifeCycleFactory {
   }
 
   private LifeCycle newLifeCycle() {
-    return ( LifeCycle )ClassUtil.newInstance( lifeCycleClass );
+    return ClassUtil.newInstance( lifeCycleClass );
   }
 }

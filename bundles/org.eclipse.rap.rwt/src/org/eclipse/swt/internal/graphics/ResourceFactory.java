@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *    Innoopract Informationssysteme GmbH - initial API and implementation
- *    EclipseSource - ongoing development
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
@@ -18,17 +18,17 @@ import org.eclipse.swt.graphics.*;
 
 
 public class ResourceFactory {
-  
+
   private final SharedInstanceBuffer<Integer,Color> colors;
   private final SharedInstanceBuffer<Integer,Font> fonts;
   private final SharedInstanceBuffer<Integer,Cursor> cursors;
-  
+
   public ResourceFactory() {
     colors = new SharedInstanceBuffer<Integer,Color>();
     fonts = new SharedInstanceBuffer<Integer,Font>();
     cursors = new SharedInstanceBuffer<Integer,Cursor>();
   }
-  
+
   public Color getColor( int red, int green, int blue ) {
     int colorNr = ColorUtil.computeColorNr( red, green, blue );
     return getColor( colorNr );
@@ -64,18 +64,18 @@ public class ResourceFactory {
   private static Color createColorInstance( int colorNr ) {
     Class[] paramTypes = new Class[] { int.class };
     Object[] paramValues = new Object[] { new Integer( colorNr ) };
-    return ( Color )ClassUtil.newInstance( Color.class, paramTypes, paramValues );
+    return ClassUtil.newInstance( Color.class, paramTypes, paramValues );
   }
 
   private static Font createFontInstance( FontData fontData ) {
     Class[] paramTypes = new Class[] { FontData.class };
     Object[] paramValues = new Object[] { fontData };
-    return ( Font )ClassUtil.newInstance( Font.class, paramTypes, paramValues );
+    return ClassUtil.newInstance( Font.class, paramTypes, paramValues );
   }
 
   private static Cursor createCursorInstance( int style ) {
     Class[] paramTypes = new Class[] { int.class };
     Object[] paramValues = new Object[] { new Integer( style ) };
-    return ( Cursor )ClassUtil.newInstance( Cursor.class, paramTypes, paramValues );
+    return ClassUtil.newInstance( Cursor.class, paramTypes, paramValues );
   }
 }
