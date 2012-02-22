@@ -77,7 +77,10 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
 
   private final ServiceReference<HttpService> httpServiceReference;
 
-  WorkbenchApplicationConfigurator( ServiceReference<HttpService> httpServiceReference ) {
+  /*
+   * Note [rst]: public as per request in https://bugs.eclipse.org/bugs/show_bug.cgi?id=372183
+   */
+  public WorkbenchApplicationConfigurator( ServiceReference<HttpService> httpServiceReference ) {
     this.httpServiceReference = httpServiceReference;
   }
 
