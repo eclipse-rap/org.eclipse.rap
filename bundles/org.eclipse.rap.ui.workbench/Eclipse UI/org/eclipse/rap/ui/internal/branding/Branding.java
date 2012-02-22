@@ -36,10 +36,10 @@ public final class Branding extends AbstractBranding {
   private final String contributor;
   private String servletName;
   private String defaultEntryPointId;
-  private List entryPointIds;
+  private List<String> entryPointIds;
   private String title;
   private String favIcon;
-  private List headers;
+  private List<Header> headers;
   private String body;
   private IExitConfirmation exitConfirmation;
   private String themeId;
@@ -58,7 +58,7 @@ public final class Branding extends AbstractBranding {
 
   public void addEntryPointId( final String entryPointId ) {
     if( entryPointIds == null ) {
-      entryPointIds = new ArrayList();
+      entryPointIds = new ArrayList<String>();
     }
     entryPointIds.add( entryPointId );
   }
@@ -79,9 +79,9 @@ public final class Branding extends AbstractBranding {
     this.body = body;
   }
 
-  public void addHeader( final String tagName, final Map attributes ) {
+  public void addHeader( final String tagName, final Map<String, String> attributes ) {
     if( headers == null ) {
-      headers = new ArrayList();
+      headers = new ArrayList<Header>();
     }
     Header header = new Header( tagName, attributes );
     headers.add( header );
@@ -102,14 +102,17 @@ public final class Branding extends AbstractBranding {
   ///////////////////////////
   // AbstractBranding implementation
 
+  @Override
   public String getServletName() {
     return servletName;
   }
 
+  @Override
   public String getDefaultEntryPoint() {
     return EntryPointParameters.getById( defaultEntryPointId );
   }
 
+  @Override
   public String[] getEntryPoints() {
     String[] result;
     if( entryPointIds == null ) {
@@ -117,21 +120,24 @@ public final class Branding extends AbstractBranding {
     } else {
       result = new String[ entryPointIds.size() ];
       for( int i = 0; i < result.length; i++ ) {
-        String entryPointId = ( String )entryPointIds.get( i );
+        String entryPointId = entryPointIds.get( i );
         result[ i ] = EntryPointParameters.getById( entryPointId );
       }
     }
     return result;
   }
 
+  @Override
   public String getTitle() {
     return title;
   }
 
+  @Override
   public String getFavIcon() {
     return favIcon;
   }
 
+  @Override
   public Header[] getHeaders() {
     Header[] result;
     if( headers == null ) {
@@ -143,10 +149,12 @@ public final class Branding extends AbstractBranding {
     return result;
   }
 
+  @Override
   public String getBody() {
     return body;
   }
 
+  @Override
   public boolean showExitConfirmation() {
     boolean result = false;
     if( exitConfirmation != null ) {
@@ -155,6 +163,7 @@ public final class Branding extends AbstractBranding {
     return result;
   }
 
+  @Override
   public String getExitConfirmationText() {
     String result = null;
     if( exitConfirmation != null ) {
@@ -163,14 +172,17 @@ public final class Branding extends AbstractBranding {
     return result;
   }
 
+  @Override
   public String getThemeId() {
     return themeId;
   }
 
+  @Override
   public String getId() {
     return brandingId;
   }
 
+  @Override
   public void registerResources() throws IOException {
     if( favIcon != null && !"".equals( favIcon ) ) {
       Bundle bundle = Platform.getBundle( contributor );

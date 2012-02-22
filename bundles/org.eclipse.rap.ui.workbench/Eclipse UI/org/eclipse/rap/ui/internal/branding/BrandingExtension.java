@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.branding;
 
@@ -24,10 +24,11 @@ import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.osgi.framework.*;
+import org.osgi.service.http.HttpService;
 
 
 public final class BrandingExtension {
-  
+
   private static final String EP_BRANDING = "org.eclipse.rap.ui.branding"; //$NON-NLS-1$
   private static final String ATT_ID = "id"; //$NON-NLS-1$
   private static final String ATT_DEFAULT_ENTRYPOINT_ID = "defaultEntrypointId"; //$NON-NLS-1$
@@ -49,12 +50,12 @@ public final class BrandingExtension {
   private static final String ATT_VALUE = "value"; //$NON-NLS-1$
   private static final String ELEM_SERVICE_SELECTOR = "httpServiceFilter"; //$NON-NLS-1$
   private static final String ATT_CLASS = "class"; //$NON-NLS-1$
-  
+
   private final ApplicationConfiguration configuration;
-  private final ServiceReference httpServiceReference;
+  private final ServiceReference<HttpService> httpServiceReference;
 
   public BrandingExtension( ApplicationConfiguration configuration,
-                            ServiceReference httpServiceReference )
+                            ServiceReference<HttpService> httpServiceReference )
   {
     this.configuration = configuration;
     this.httpServiceReference = httpServiceReference;
@@ -108,14 +109,22 @@ public final class BrandingExtension {
         branding.addEntryPointId( entryPointId );
       }
     }
-    Filter serviceFilter = readServiceFilter( element, branding );
-    if( ( serviceFilter == null || serviceFilter.match( httpServiceReference ) ) ) {
+    if( !isFiltered( element ) ) {
       configuration.addBranding( branding );
     }
   }
 
+  private boolean isFiltered( IConfigurationElement element ) {
+    boolean result = false;
+    if( httpServiceReference != null ) {
+      Filter serviceFilter = readServiceFilter( element );
+      result = serviceFilter != null && !serviceFilter.match( httpServiceReference );
+    }
+    return result;
+  }
+
   // EXPERIMENTAL, see bug 241210
-  private Filter readServiceFilter( IConfigurationElement element, Branding branding ) {
+  private Filter readServiceFilter( IConfigurationElement element ) {
     Filter result = null;
     IConfigurationElement[] serviceFilterElements = element.getChildren( ELEM_SERVICE_SELECTOR );
     if( serviceFilterElements.length > 0 ) {
@@ -125,16 +134,16 @@ public final class BrandingExtension {
         try {
           result = ( Filter )serviceFilterElement.createExecutableExtension( ATT_CLASS );
         } catch( CoreException exception ) {
-          String text = "Could not instantiate http service filter for branding ''{0}'': ''{1}''";
-          Object[] param = new Object[] { branding.getId(), exception.getMessage() };
-          String message = MessageFormat.format( text, param );
-          throw new IllegalArgumentException( message );
+          String message = "Could not instantiate http service filter for branding: "
+                         + filterClass;
+          throw new IllegalArgumentException( message, exception );
         }
       }
     }
     return result;
   }
 
+  @SuppressWarnings( "unchecked" )
   private IExitConfirmation findExitConfirmationImpl( IConfigurationElement element ) {
     IExitConfirmation result = null;
     String className = element.getAttribute( ATT_EXIT_CONFIRMATION_CLASS );
@@ -142,7 +151,8 @@ public final class BrandingExtension {
       try {
         String contributorName = element.getContributor().getName();
         Bundle bundle = Platform.getBundle( contributorName );
-        Class clazz = bundle.loadClass( className );
+        Class<? extends IExitConfirmation> clazz
+          = (Class<? extends IExitConfirmation>)bundle.loadClass( className );
         if( !IExitConfirmation.class.isAssignableFrom( clazz ) ) {
           String text = "The argument ''{0}'' must implement {1}.";
           Object[] args = new Object[] {
@@ -153,7 +163,7 @@ public final class BrandingExtension {
           throw new IllegalArgumentException( msg );
         }
         try {
-          result = ( IExitConfirmation )clazz.newInstance();
+          result = clazz.newInstance();
         } catch( Exception e ) {
           String pattern = "Can not instantiate class {0}.";
           Object[] args = new Object[] { clazz.getName() };
@@ -183,9 +193,11 @@ public final class BrandingExtension {
     }
     if( !found ) {
       configuration.addBranding( new AbstractBranding() {
+        @Override
         public String getServletName() {
           return BrandingManager.DEFAULT_SERVLET_NAME;
         }
+        @Override
         public String getTitle() {
           return "RAP Application";
         }
@@ -197,7 +209,7 @@ public final class BrandingExtension {
     IConfigurationElement[] headers = elem.getChildren();
     for( int i = 0; i < headers.length; i++ ) {
       IConfigurationElement header = headers[ i ];
-      Map attributes = new HashMap();
+      Map<String, String> attributes = new HashMap<String, String>();
       // add predefined attributes
       String tagName = header.getName();
       if( TAG_META.equals( tagName ) ) {
