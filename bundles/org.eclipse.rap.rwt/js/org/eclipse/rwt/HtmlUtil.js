@@ -142,18 +142,21 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
       }
     },
 
-    setTextShadow: function( target, shadowObject ) {
-      var property = "textShadow";
-      if( shadowObject ) {
-        var string = shadowObject.slice( 1, 4 ).join( "px " ) + "px";
-        var rgba = qx.util.ColorUtil.stringToRgb( shadowObject[ 5 ] );
-        rgba.push( shadowObject[ 6 ] );
-        string += " rgba(" + rgba.join() + ")";
-        this.setStyleProperty( target, property, string );
-      } else {
-        this.removeStyleProperty( target, property );
-      }
-    },
+    setTextShadow  : qx.core.Variant.select( "qx.client", {
+      "default" : function( target, shadowObject ) {
+        var property = "textShadow";
+        if( shadowObject ) {
+          var string = shadowObject.slice( 1, 4 ).join( "px " ) + "px";
+          var rgba = qx.util.ColorUtil.stringToRgb( shadowObject[ 5 ] );
+          rgba.push( shadowObject[ 6 ] );
+          string += " rgba(" + rgba.join() + ")";
+          this.setStyleProperty( target, property, string );
+        } else {
+          this.removeStyleProperty( target, property );
+        }
+      },
+      "mshtml" : function() {}
+    } ),
 
     setPointerEvents : function( target, value ) {
       var version = org.eclipse.rwt.Client.getVersion();

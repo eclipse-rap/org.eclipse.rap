@@ -556,12 +556,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
         item.setTexts( [ "Test" + i ] );
       }
       TestUtil.flush();
+      
       item.dispose();
       tree.setItemCount( 9 ); // order is relevant: dispose before setItemCount
       TestUtil.flush();
+      
       var sample = tree._rowContainer._getTargetNode().childNodes[ 9 ];
       assertEquals( 1, sample.childNodes.length );
-      assertEquals( "none", sample.childNodes[ 0 ].style.display );
+      assertEquals( "", sample.childNodes[ 0 ].innerHTML );
       tree.destroy();
     },
 
@@ -603,17 +605,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var item = tree._rootItem._children[ 0 ];
       assertEquals( "Test0", item.getText( 0 ) );
       TestUtil.flush();
+
       item.dispose();
       tree.setItemCount( 9 );
       TestUtil.flush();
+
       item = tree._rootItem._children[ 0 ];
       assertEquals( "Test1", item.getText( 0 ) );
       var text0 = tree._rowContainer._children[ 0 ]._getTargetNode().childNodes[ 0 ].innerHTML;
       var text8 = tree._rowContainer._children[ 8 ]._getTargetNode().childNodes[ 0 ].innerHTML;
-      var style9 = tree._rowContainer._children[ 9 ]._getTargetNode().childNodes[ 0 ].style;
+      var text9 = tree._rowContainer._children[ 9 ]._getTargetNode().childNodes[ 0 ].innerHTML;
       assertEquals( "Test1", text0 );
       assertEquals( "Test9", text8 );
-      assertEquals( "none", style9.display );
+      assertEquals( "", text9 );
       tree.destroy();
     },
 

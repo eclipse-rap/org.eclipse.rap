@@ -112,13 +112,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
       TestUtil.flush();
       var node = tree._rowContainer._children[ 2 ]._getTargetNode();
       assertEquals( "item1", node.firstChild.innerHTML );
-      assertEquals( "", node.firstChild.style.display );
       root.setExpanded( false );
       TestUtil.flush();
-      assertEquals( "none", node.firstChild.style.display );
+      assertEquals( "", node.firstChild.innerHTML );
       TestUtil.mouseOver( tree._rowContainer._children[ 2 ] );
 
-      assertEquals( "none", node.firstChild.style.display );
+      assertEquals( "", node.firstChild.innerHTML );
       tree.destroy();
     },
     
