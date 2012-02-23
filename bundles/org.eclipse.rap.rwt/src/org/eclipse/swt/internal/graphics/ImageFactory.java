@@ -60,17 +60,23 @@ public class ImageFactory {
     } );
   }
 
+  private Image createImage( String path, ClassLoader imageLoader ) {
+    Image result;
+    InputStream inputStream = imageLoader.getResourceAsStream( path );
+    try {
+      result = createImage( null, path, inputStream );
+    } finally {
+      if( inputStream != null ) {
+        StreamUtil.close( inputStream );
+      }
+    }
+    return result;
+  }
+
   public Image createImage( Device device, String key, InputStream inputStream ) {
     InternalImageFactory internalImageFactory = RWTFactory.getInternalImageFactory();
     InternalImage internalImage = internalImageFactory.findInternalImage( key, inputStream );
     return createImageInstance( device, internalImage );
-  }
-
-  private Image createImage( String path, ClassLoader imageLoader ) {
-    InputStream inputStream = imageLoader.getResourceAsStream( path );
-    Image result = createImage( null, path, inputStream );
-    StreamUtil.close( inputStream );
-    return result;
   }
 
   private static Image createImageInstance( Device device, InternalImage internalImage ) {
