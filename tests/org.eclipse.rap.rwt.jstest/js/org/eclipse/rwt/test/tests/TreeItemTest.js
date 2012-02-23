@@ -396,8 +396,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     testTextAsMarkup : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
       item.setTexts( [ "<b>Test</b>", "<i>Test2</i>" ] );
-      assertEquals( "<b>Test</b>", item.getText( 0, true ) );
-      assertEquals( "<i>Test2</i>", item.getText( 1, true ) );
+      assertEquals( "<b>Test</b>", item.getText( 0, false ) );
+      assertEquals( "<i>Test2</i>", item.getText( 1, false ) );
     },
 
     testItemFont : function() {

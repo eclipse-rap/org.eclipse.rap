@@ -27,7 +27,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
       "default" : ""
     } ),
     
-    // TODO [tb] : Without IE6-support the browser-switch and opacity parameter could be removed  
+    // TODO [tb] : Without IE6-support the browser-switch and opacity parameter can be removed  
     setBackgroundImage : ( function() {
       var result;
       // For IE6 without transparency we need to use CssFilter for PNG opacity to work:

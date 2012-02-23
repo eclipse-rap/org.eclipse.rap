@@ -43,6 +43,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     }
     this._expanded = this.isRootItem();
     this.addEventListener( "update", this._onUpdate, this );
+    this._escaped = false;
   },
 
   destruct : function() {
@@ -118,19 +119,23 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       this._texts = texts;
       this._update( "content" );
     },
-
-    getText : function( column, asMarkup ) {
+    
+    getText : function( column, doEscape ) { 
       var result = this._texts[ column ];
       if( ( typeof result ) === "string" ) {
-        var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-        if( !asMarkup ) {
-          result = EncodingUtil.escapeText( result, false );
+        if( doEscape !== false && !this._escaped ) {
+          this._escapeTexts();
+          this._escaped = true;
+          result = this._texts[ column ];
         }
-        result = EncodingUtil.replaceWhiteSpaces( result );
       } else {
         result = "";
       }
       return result;
+    },
+    
+    hasText : function( column ) {
+      return !!this._texts[ column ];
     },
 
     setFont : function( font ) {
@@ -481,6 +486,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     
     /////////
     // Helper
+
+    _escapeTexts : function() {
+      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      for( var i = 0; i < this._texts.length; i++ ) {
+        var text = this._texts[ i ];
+        if( text ) {
+          text = EncodingUtil.escapeText( text, false );
+          text = EncodingUtil.replaceWhiteSpaces( text );
+        }
+        this._texts[ i ] = text;
+      }
+    },
 
     _computeVisibleChildrenCount : function() {
       // NOTE: Caching this value speeds up creating and scrolling the tree considerably

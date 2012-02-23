@@ -13,6 +13,12 @@
 /**
  * Represents a visible TreeItem.
  */
+
+(function() {
+
+var HtmlUtil = org.eclipse.rwt.HtmlUtil;
+var Variant = qx.core.Variant;
+
 qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
 
   extend : qx.ui.basic.Terminator,
@@ -21,8 +27,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     this.base( arguments );
     this.setSelectable( false ); // Prevents user from selecting text
     this.setHeight( 16 );
-    this._textNodes = [];
-    this._usedNodes = 0;
     this._styleMap = null;
     this._variant = null;
     // TODO [tb] : store all elements by type for better re-use, currently only needed to identify
@@ -30,14 +34,21 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     this._checkBoxElement = null;
     this._treeColumnElements = [];
     this._cellLabels = [];
+    this._cellImages = [];
+    this._cellBackgrounds = [];
+    this._miscNodes = [];
+    this._usedMiscNodes = 0;
+    this._cellsRendered = 0;
   },
 
   destruct : function() {
-    this._textNodes = null;
     this._expandElement = null;
     this._checkBoxElement = null;
     this._treeColumnElements = null;
     this._cellLabels = null;
+    this._cellImages = null;
+    this._cellBackgrounds = null;
+    this._miscNodes = null;
   },
   
   events : {
@@ -47,8 +58,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
   members : {
 
     renderItem : function( item, config, selected, hoverElement ) {
-      this._cellLabels = [];
-      this._usedNodes = 0;
+      this._usedMiscNodes = 0;
       if( item != null ) {
         var renderSelected = this._renderAsSelected( config, selected );
         var renderFullSelected = renderSelected && config.fullSelection;
@@ -60,12 +70,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         this._renderCheckBox( item, config, hoverElement );
         this._renderCells( item, config, renderSelected, hoverElement );
         this.dispatchSimpleEvent( "itemRendered", item );
+        this._hideRemainingElements();
       } else {
         this.setBackgroundColor( null );
         this.setBackgroundImage( null );
         this.setBackgroundGradient( null );
+        this._hideAllElements();
       }
-      this._hideRemainingElements();
     },
 
     getTargetIdentifier : function( event ) {
@@ -245,7 +256,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         var offset = level * config.indentionWidth;
         var height = this.getHeight();
         var width = nextLevelOffset - offset;
-        var element = this._getImageElement( 3 );
+        var element = this._getImageElement();
         this._setImage( element, source, config.enabled );
         this._setBounds( element, offset, 0, width, height );
         result = element;
@@ -259,18 +270,24 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         this.setState( "over", hoverElement !== null && hoverElement === "checkBox" );
         var image = this._getImageFromAppearance( "check-box", states );
         this._renderOverState( hoverElement );
-        var element = this._getImageElement( 3 );
-        this._setImage( element, image, config.enabled );
+        if( this._checkBoxElement === null ) {
+          this._checkBoxElement = this._createElement( 3 );
+          this._checkBoxElement.style.backgroundRepeat = "no-repeat";
+          this._checkBoxElement.style.backgroundPosition = "center";
+        } 
+        this._setImage( this._checkBoxElement, image, config.enabled );
         var left = this._getCheckBoxLeft( item, config );
         var width = this._getCheckBoxWidth( item, config );
         var height = this.getHeight();
-        this._setBounds( element, left, 0, width, height );
-        this._checkBoxElement = element;
+        this._setBounds( this._checkBoxElement, left, 0, width, height );
       }
     },
 
     _renderCells : function( item, config, selected, hoverElement ) {
       var columns = this._getColumnCount( config );
+      if( this._cellsRendered > columns ) {
+        this._removeCells( columns, this._cellsRendered );
+      }
       if( !config.fullSelection && selected ) { 
         this._renderStates( item, config, false, hoverElement );
       }
@@ -292,13 +309,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
             this._renderCellImage( item, i, config );
             this._renderCellLabel( item, i, config );
           }
+        } else {
+          this._removeCell( i );
         }
       }
+      this._cellsRendered = columns;
     },
 
     _renderSelectionBackground : function( item, cell, config ) {
       if( this._styleMap.itemBackground !== null ) {
-        var element = this._getBackgroundElement( 2 );
+        var element = this._getBackgroundElement();
         element.style.backgroundColor = this._styleMap.itemBackground;
         var padding = config.selectionPadding;
         var left = this._getItemTextLeft( item, cell, config );
@@ -316,7 +336,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     _renderCellBackground : function( item, cell, config ) {
       var background = this._getCellBackground( item, cell, config );
       if( background != "undefined" && background != this._styleMap.backgroundColor ) {
-        var element = this._getBackgroundElement( 1 );
+        var element = this._getBackgroundElement( cell );
         element.style.backgroundColor = background;
         var left = this._getItemLeft( item, cell, config );
         var width = this._getItemWidth( item, cell, config );
@@ -325,6 +345,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
           height -= 1;
         }
         this._setBounds( element, left, 0, width, height );
+      } else if( this._cellBackgrounds[ cell ] ){
+        // TODO [tb] : handle columnCount change and width == 0 
+        this._cellBackgrounds[ cell ].style.display = "none";
       }
     },
 
@@ -332,11 +355,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var source = item.getImage( cell );
       var element = null;
       if( source !== null ) {
-        element = this._getImageElement( 3 );
+        element = this._getImageElement( cell );
         this._setImage( element, source, config.enabled );
         var left = this._getItemImageLeft( item, cell, config );
         var width = this._getItemImageWidth( item, cell, config );
         this._setBounds( element, left, 0, width, this.getHeight() );
+      } else if( this._cellImages[ cell ] ){
+        // TODO [tb] : handle columnCount change and width == 0 
+        this._cellImages[ cell ].style.display = "none";
       }
       return element;
     },
@@ -345,10 +371,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       // NOTE [tb] : When scrolling in Firefox, it may happen that the text
       //             becomes temorarily invisible. This is a browser-bug
       //             that ONLY occurs when Firebug is installed.
-      var text = item.getText( cell, config.markupEnabled );
       var element = null;
-      if( text !== "" ) {
-        element = this._getTextElement( 3 );
+      if( item.hasText( cell) ) {
+        element = this._getTextElement( cell );
         //do not reset since we are about to reassign
         var left = this._getItemTextLeft( item, cell, config );
         var width = this._getItemTextWidth( item, cell, config );
@@ -359,17 +384,33 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         } else {
           element.style.textAlign = this._getAlignment( cell, config );
         }
-        element.innerHTML = text;
+        this._renderElementContent( element, item, cell, config.markupEnabled );
         this._setForeground( element, this._getCellColor( item, cell, config ) );
         this._setBounds( element, left, 0, width, this.getHeight() );
         this._setFont( element, this._getCellFont( item, cell, config ) );
         this._setTextDecoration( element, this._styleMap.textDecoration );
-        org.eclipse.rwt.HtmlUtil.setTextShadow( element, this._styleMap.textShadow );
+        HtmlUtil.setTextShadow( element, this._styleMap.textShadow );
         element.style.lineHeight = config.markupEnabled ? "" : element.style.height;
-        this._cellLabels[ cell ] = element;
+      } else if( this._cellLabels[ cell ] ){
+        // TODO [tb] : handle columnCount change and width == 0 
+        this._cellLabels[ cell ].style.display = "none";
       }
       return element;
     },
+    
+    _renderElementContent : Variant.select( "qx.client", {
+      "mshtml|newmshtml" : function( element, item, cell, markupEnabled ) {
+        if( markupEnabled ) {
+          element.innerHTML = item.getText( cell, false );
+        } else {
+          // innerText is faster does the escaping itself
+          element.innerText = item.getText( cell, false );
+        }
+      },
+      "default" : function( element, item, cell, markupEnabled ) {
+        element.innerHTML = item.getText( cell, !markupEnabled );
+      }
+    } ),
 
     _getCellBackground : function( item, cell, config ) {
       var result;
@@ -385,7 +426,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
 
     _getCellColor : function( item, cell, config ) {
-      var result = item.getCellForeground( cell )
+      var result = item.getCellForeground( cell );
       if(    result === null
           || result === ""
           || config.enabled === false
@@ -456,7 +497,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       }
     },
     
-    _resetFont : qx.core.Variant.select( "qx.client", {
+    _resetFont : Variant.select( "qx.client", {
       "default" : function( element ) {
         element.style.font = "";
         element.style.fontFamily = "";
@@ -501,62 +542,126 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
 
     _setImage : function( element, src, enabled ) {
       var opacity = enabled ? 1 : 0.3;
-      org.eclipse.rwt.HtmlUtil.setBackgroundImage( element, src, opacity );
+      element.style.backgroundImage = src ? "URL(" + src + ")" : "none";
+      HtmlUtil.setOpacity( element, opacity );
     },
 
-    _getTextElement : function( zIndex ) {
-      var result = this._getNextElement( zIndex );
-      org.eclipse.rwt.HtmlUtil.setBackgroundImage( result, null );
-      result.style.backgroundColor = "";
-      // NOTE: It's important for the iPad not to set innerHTML twice. See bug 323988
+    _getTextElement : function( cell ) {
+      var result = this._cellLabels[ cell ];
+      if( !result ) {
+        result = this._createElement( 3 );
+        this._cellLabels[ cell ] = result;
+      }
+      result.style.display = "";
       return result;
     },
 
-    _getImageElement : function( zIndex ) {
-      var result = this._getNextElement( zIndex );
-      result.innerHTML = "";
-      result.style.backgroundColor = "";
+    _getImageElement : function( cell ) {
+      var result;
+      if( arguments.length === 0  ) {
+        result = this._getMiscElement( 3 );
+        result.innerHTML = "";
+        result.style.backgroundColor = "";
+      } else {
+        result = this._cellImages[ cell ];
+        if( !result ) {
+          result = this._createElement( 3 );
+          result.style.backgroundRepeat = "no-repeat";
+          result.style.backgroundPosition = "center";
+          this._cellImages[ cell ] = result;
+        }
+        result.style.display = "";
+      }
+      return result;
+    },
+    
+    _getBackgroundElement : function( cell ) {
+      var result;
+      if( cell === undefined ) {
+        result = this._getMiscElement( 2 );
+        HtmlUtil.setBackgroundImage( result, null );
+        result.innerHTML = "";
+      } else {
+        result = this._cellBackgrounds[ cell ];
+        if( !result ) {
+          result = this._createElement( 1 );
+          this._cellBackgrounds[ cell ] = result;
+        }
+        result.style.display = "";
+      }
       return result;
     },
 
-    _getBackgroundElement : function( zIndex ) {
-      var result = this._getNextElement( zIndex );
-      org.eclipse.rwt.HtmlUtil.setBackgroundImage( result, null );
-      result.innerHTML = "";
-      return result;
-    },
-
-    _getNextElement : function( zIndex ) {
+    _getMiscElement : function( zIndex ) {
       var result;
       var node = this._getTargetNode();
-      if( node.childNodes.length > this._usedNodes ) {
-        result = node.childNodes[ this._usedNodes ];
+      if( this._usedMiscNodes < this._miscNodes.length ) {
+        result = this._miscNodes[ this._usedMiscNodes ];
         result.style.display = "";
+        result.style.zIndex = zIndex;
       } else {
-        result = document.createElement( "div" );
-        result.style.position = "absolute";
-        result.style.overflow = "hidden";
-        node.appendChild( result );
+        result = this._createElement( zIndex );
+        result.style.backgroundRepeat = "no-repeat";
+        result.style.backgroundPosition = "center";
+        this._miscNodes.push( result );
       }
+      this._usedMiscNodes++;
+      return result;
+    },
+    
+    _createElement : function( zIndex ) {
+      var result = document.createElement( "div" );
+      result.style.position = "absolute";
+      result.style.overflow = "hidden";
       result.style.zIndex = zIndex;
-      this._usedNodes++;
+      this._getTargetNode().appendChild( result );
       return result;
     },
 
     _hideRemainingElements : function() {
       var node = this._getTargetNode();
-      for( var i = this._usedNodes; i < node.childNodes.length; i++ ) {
-        node.childNodes[ i ].style.display = "none";
+      for( var i = this._usedMiscNodes; i < this._miscNodes.length; i++ ) {
+        this._miscNodes[ i ].style.display = "none";
       }
     },
 
-    _ieFixLayoutOnAppear : qx.core.Variant.select( "qx.client", {
+    _hideAllElements : function() {
+      var nodes = this._getTargetNode().childNodes;
+      for( var i = 0; i < nodes.length; i++ ) {
+        nodes[ i ].style.display = "none";
+      }
+    },
+    
+    _removeCells : function( from, to ) {
+      for( var i = from; i < to; i++ ) {
+        this._removeCell( i );
+      }
+    },
+    
+    _removeCell : function( cell ) {
+      this._removeNode( this._cellBackgrounds, cell );
+      this._removeNode( this._cellImages, cell );
+      this._removeNode( this._cellLabels, cell );
+    },
+    
+    _removeNode : function( arr, pos ) {
+      var node = arr[ pos ];
+      if( node ) {
+        this._getTargetNode().removeChild( node );
+        arr[ pos ] = null;
+      }
+    },
+
+    _ieFixLayoutOnAppear : Variant.select( "qx.client", {
       "mshtml" : function() {
+        // TODO [tb] : find a faster alternative, possibly delete hidden nodes on disappear or collect hidden elements
         this.base( arguments );
         var node = this._getTargetNode();
-        for( var i = this._usedNodes; i < node.childNodes.length; i++ ) {
-          node.childNodes[ i ].style.display = "";
-          node.childNodes[ i ].style.display = "none";
+        for( var i = 0; i < node.childNodes.length; i++ ) {
+          if( node.childNodes[ i ].style.display === "none" ) {
+            node.childNodes[ i ].style.display = "";
+            node.childNodes[ i ].style.display = "none";
+          }
         }
       }, 
       "default" : qx.lang.Function.returnTrue
@@ -658,3 +763,5 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
   }
 
 } );
+
+}());

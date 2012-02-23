@@ -346,24 +346,24 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
       var row = 0;
       while( item != null && row < this._children.length ) {
         if( row >= from && row <= to ) {
-          this._renderRow( this._children[ row ], item );
+          this._renderRow( this._children[ row ], item, contentOnly );
           this._items[ row ] = item;
         }
         item = item.getNextItem();
         row++;
       }
       for( var i = row; i < this._children.length; i++ ) {
-        this._renderRow( this._children[ i ], null );
+        this._renderRow( this._children[ i ], null, contentOnly );
         this._items[ i ] = null;
       }
     },
     
-    _renderRow : function( row, item ) {
+    _renderRow : function( row, item, contentOnly ) {
        row.renderItem( item,
                        this._config,
                        this._isSelected( item ),
-                       this._getHoverElement( item ) );
-       // TODO [tb] : onRenderVirtual
+                       this._getHoverElement( item ),
+                       contentOnly );
     },
 
     _switchRows : function( newFirstRow ) {
