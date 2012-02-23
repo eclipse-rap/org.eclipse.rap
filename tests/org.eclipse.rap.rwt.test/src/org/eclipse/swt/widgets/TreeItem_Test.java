@@ -1171,17 +1171,29 @@ public class TreeItem_Test extends TestCase {
 
   public void testGetterFireSetDataOnlyOnce() {
     final LoggingListener log = new LoggingListener();
-    Tree tree1 = new Tree( shell, SWT.VIRTUAL );
-    tree1.setItemCount( 100 );
-    tree1.setSize( 100, 100 );
-    tree1.addListener( SWT.SetData, log );
-    Tree tree = tree1;
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setItemCount( 100 );
+    tree.setSize( 100, 100 );
+    tree.addListener( SWT.SetData, log );
     TreeItem item = tree.getItem( 99 );
     item.getBackground();
     item.getBackground();
     item.getForeground();
     item.getForeground();
     assertEquals( 1, log.size() );
+  }
+
+  public void testVirtualSetDataEventItemIndexOnGetTextBounds() {
+    final LoggingListener log = new LoggingListener();
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    createColumns( tree, 3 );
+    tree.setItemCount( 100 );
+    tree.setSize( 100, 100 );
+    tree.addListener( SWT.SetData, log );
+    TreeItem item = tree.getItem( 99 );
+    item.getTextBounds( 2 );
+    assertEquals( 1, log.size() );
+    assertEquals( 99, log.get( 0 ).index );
   }
 
   public void testVirtualSetExpanded() {
