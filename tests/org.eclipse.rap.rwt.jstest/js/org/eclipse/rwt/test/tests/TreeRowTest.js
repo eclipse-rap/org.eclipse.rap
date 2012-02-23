@@ -404,7 +404,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var node = row._getTargetNode().childNodes[ 0 ];
       var url = TestUtil.getCssBackgroundImage( node );
-      console.log( row._getTargetNode().innerHTML );
       assertTrue( url.indexOf( "single.gif" ) != -1 );
       var position = node.style.backgroundPosition;
       assertTrue(    position.indexOf( "center" ) != -1
