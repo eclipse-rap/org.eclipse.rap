@@ -231,7 +231,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
         this._topItemIndex = index;
         var forwards = delta > 0;
         delta = Math.abs( delta );
-        if( delta >= this._children.length ) {
+        if( delta >= ( this._children.length / 2 ) ) {
           this._renderAll( true );
         } else {
           var numberOfShiftingRows = this._children.length - delta;
@@ -338,7 +338,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
       return index !== -1 ? this._children[ index ] : null;
     },
 
-    // TODO [tb] : optimize for scrolling
     _updateRows : function( from, delta, contentOnly ) {
       this._updateRowsEvenState();
       var item = this._topItem;

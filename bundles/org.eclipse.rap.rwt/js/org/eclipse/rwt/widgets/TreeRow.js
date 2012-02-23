@@ -360,7 +360,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       if( source !== null ) {
         var renderBounds = !contentOnly || !this._cellImages[ cell ];
         element = this._getCellImage( cell );
-        this._setImage( element, source, config.enabled );
+        this._setImage( element, source, renderBounds ? config.enabled : null );
         if( renderBounds ) {
           var left = this._getItemImageLeft( item, cell, config );
           var width = this._getItemImageWidth( item, cell, config );
@@ -549,9 +549,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
 
     _setImage : function( element, src, enabled ) {
-      var opacity = enabled ? 1 : 0.3;
       element.style.backgroundImage = src ? "URL(" + src + ")" : "none";
-      HtmlUtil.setOpacity( element, opacity );
+      if( enabled !== null ) {
+        var opacity = enabled ? 1 : 0.3;
+        HtmlUtil.setOpacity( element, opacity );
+      }
     },
 
     _getTextElement : function( cell, config ) {
