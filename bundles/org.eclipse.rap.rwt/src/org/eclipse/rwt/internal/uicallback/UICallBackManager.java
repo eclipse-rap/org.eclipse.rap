@@ -204,7 +204,6 @@ public final class UICallBackManager implements SerializableCompatibility {
     return result;
   }
 
-  @SuppressWarnings("resource")
   private static boolean isConnectionAlive( HttpServletResponse response ) {
     boolean result;
     try {
