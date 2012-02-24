@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,8 @@ public class RWTLifeCycle extends LifeCycle {
 
   private static final String CURRENT_PHASE = RWTLifeCycle.class.getName() + ".currentPhase";
   private static final String PHASE_ORDER = RWTLifeCycle.class.getName() + ".phaseOrder";
+  private static final String UI_THREAD_WAITING_FOR_TERMINATION
+    = UIThreadController.class.getName() + "#UIThreadWaitingForTermination";
   private static final String UI_THREAD_THROWABLE
     = UIThreadController.class.getName() + "#UIThreadThrowable";
   private static final String REQUEST_THREAD_RUNNABLE
@@ -190,7 +192,10 @@ public class RWTLifeCycle extends LifeCycle {
       }
     } else {
       uiThread.setServiceContext( context );
-      uiThread.switchThread();
+      // See bug 354368
+      if( !Boolean.TRUE.equals( session.getAttribute( UI_THREAD_WAITING_FOR_TERMINATION ) ) ) {
+        uiThread.switchThread();
+      }
     }
     // TODO [rh] consider moving this to UIThreadController#run
     if( !uiThread.getThread().isAlive() ) {
@@ -289,6 +294,11 @@ public class RWTLifeCycle extends LifeCycle {
             IServiceStore serviceStore = ContextProvider.getServiceStore();
             serviceStore.setAttribute( UI_THREAD_THROWABLE, thr );
           }
+          // We have to prevent the ui thread from waking up at that point, otherwise
+          // processShutdown would never be executed and session store would not be cleared.
+          // See bug 354368
+          ISessionStore sessionStore = ContextProvider.getSessionStore();
+          sessionStore.setAttribute( UI_THREAD_WAITING_FOR_TERMINATION, Boolean.TRUE );
           // In any case: wait for the thread to be terminated by session timeout
           uiThread.switchThread();
         }

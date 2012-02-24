@@ -159,6 +159,27 @@ public class RWTLifeCycle2_Test extends TestCase {
     }
   }
 
+  public static final class TestClearSessionStoreOnSessionRestartEntryPoint implements IEntryPoint {
+    public int createUI() {
+      createUIEntered = true;
+      try {
+        Display display = new Display();
+        Shell shell = new Shell( display );
+        shell.setSize( 100, 100 );
+        shell.layout();
+        shell.open();
+        while( !shell.isDisposed() ) {
+          if( !display.readAndDispatch() ) {
+            display.sleep();
+          }
+        }
+        return 0;
+      } finally {
+        createUIExited = true;
+      }
+    }
+  }
+
   public static final class TestSessionInvalidateWithDisposeInFinallyEntryPoint
     implements IEntryPoint
   {
@@ -286,6 +307,44 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertTrue( createUIExited );
     assertEquals( PhaseId.PROCESS_ACTION, currentPhase );
     assertEquals( 0, eventLog.size() );
+  }
+
+  /*
+   * 354368: Occasional exception on refresh (F5)
+   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=354368
+   */
+  public void testClearSessionStoreOnSessionRestart() throws Exception {
+    TestRequest request;
+    Class<? extends IEntryPoint> entryPoint = TestClearSessionStoreOnSessionRestartEntryPoint.class;
+    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, entryPoint );
+    // send initial request - response is index.html
+    request = newRequest();
+    request.setParameter( RequestParams.STARTUP, "default" );
+    runRWTDelegate( request );
+    assertTrue( createUIEntered );
+    assertFalse( createUIExited );
+    // send 'application startup' request - response is protocol message to create
+    // client-side representation of what was created in IEntryPoint#createUI
+    request = newRequest();
+    request.setParameter( RequestParams.UIROOT, "w1" );
+    runRWTDelegate( request );
+    assertTrue( createUIEntered );
+    assertFalse( createUIExited );
+    // send a request that closes the main shell
+    request = newRequest();
+    request.setParameter( RequestParams.UIROOT, "w1" );
+    request.setParameter( "org.eclipse.swt.widgets.Shell_close", "w2" );
+    runRWTDelegate( request );
+    assertTrue( createUIExited );
+    // send a request after the createUI has been exited
+    request = newRequest();
+    request.setParameter( RequestParams.UIROOT, "w1" );
+    runRWTDelegate( request );
+    // send 'restart' request
+    request = newRequest();
+    request.setParameter( RequestParams.STARTUP, "default" );
+    runRWTDelegate( request );
+    // ensures that no exceptions has been thrown
   }
 
   private static TestResponse runRWTDelegate( final HttpServletRequest request )
