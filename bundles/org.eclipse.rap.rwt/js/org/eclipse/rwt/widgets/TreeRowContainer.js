@@ -231,7 +231,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
         this._topItemIndex = index;
         var forwards = delta > 0;
         delta = Math.abs( delta );
-        if( delta >= ( this._children.length / 2 ) ) {
+        if( delta >= this._children.length ) {
           this._renderAll( true );
         } else {
           var numberOfShiftingRows = this._children.length - delta;
