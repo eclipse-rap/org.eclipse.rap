@@ -49,7 +49,7 @@ public final class ExampleContributionsTracker
   }
 
   public Collection<String> getContributionIds() {
-    return contributions.keySet();
+    return Collections.unmodifiableCollection( contributions.keySet() );
   }
 
   public IExampleContribution getContribution( String id ) {
