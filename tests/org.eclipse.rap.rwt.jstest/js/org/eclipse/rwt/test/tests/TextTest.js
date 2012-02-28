@@ -1010,6 +1010,46 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( [ 2, 5 ], text.getComputedSelection() );
     },
 
+    testMissedDeleteInputEvent  : qx.core.Variant.select( "qx.client", {
+      "default" : function() {},
+      "newmshtml" : function() {
+        createText();
+        text.setValue( "foobar" );
+        var log = [];
+        text.addEventListener( "input", function( event ) {
+          log.push( event );
+        }, this );
+        
+        TestUtil.keyDown( text, "Delete" );
+        text.getInputElement().value = "fooba";
+        TestUtil.keyUp( text, "Delete" );
+        TestUtil.forceInterval( text._checkTimer );
+        
+        assertEquals( "fooba", text.getValue() );
+        assertEquals( "fooba", text.getComputedValue() );
+        assertEquals( 1, log.length );
+      }
+    } ),
+
+    testMissedInputEventCatchOnBlur  : qx.core.Variant.select( "qx.client", {
+      "default" : function() {},
+      "newmshtml" : function() {
+        createText();
+        text.setValue( "foobar" );
+        var log = [];
+        text.addEventListener( "input", function( event ) {
+          log.push( event );
+        }, this );
+        
+        text.getInputElement().value = "fooba";
+        text.blur();
+        
+        assertEquals( "fooba", text.getValue() );
+        assertEquals( "fooba", text.getComputedValue() );
+        assertEquals( 1, log.length );
+      }
+    } ),
+
     /////////
     // Helper
 

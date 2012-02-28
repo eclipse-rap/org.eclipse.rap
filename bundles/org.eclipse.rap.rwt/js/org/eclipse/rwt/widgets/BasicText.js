@@ -36,6 +36,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     this._updateLineHeight();
     this._typed = null;
     this._selectionNeedsUpdate = false;
+    this._applyBrowserFixes();
   },
 
   destruct : function() {
@@ -48,6 +49,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     }
     this._inputElement = null;
     this.__font = null;
+    if( this._checkTimer ) {
+      this._checkTimer.dispose();
+      this._checkTimer = null;
+    }
   },
 
   events: {
@@ -99,7 +104,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     _inputTag : "input",
     _inputType : "text",
     _inputElement : null,
-    _firstInputFixApplied : false,
     
     /////////
     // API
@@ -391,26 +395,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
         // NOTE [tb] : Non-IE browser also shift text 1px to the right, correcting with margin: 
         this._inputElement.style.margin = "1px 0 1px -1px";
         this._inputElement.addEventListener( "input", this.__oninput, false );
-        if( org.eclipse.rwt.Client.isWebkit() ) {
-          this._webkitMultilineFix();
-        }
+        this._applyBrowserFixesOnCreate();
       },
       "mshtml" : function() {
         this._inputElement.onpropertychange = this.__oninput;
       }
     } ),
-
-    _webkitMultilineFix : function(){
-      this.addEventListener( "keydown", this._preventEnter, this );
-      this.addEventListener( "keypress", this._preventEnter, this );
-      this.addEventListener( "keyup", this._preventEnter, this );
-    },
-
-    _preventEnter : function( event ) {
-      if( event.getKeyIdentifier() === "Enter" ) {
-        event.preventDefault();
-      }
-    },
 
     _postApply : function() {
       this._syncFieldWidth();
@@ -582,31 +572,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       }
     },
 
-    _ieFirstInputFix : function() {
-      if( !this.isDisposed() ) {
-        this._inValueProperty = true;
-        this._inputElement.value = this.getValue() === null ? "" : this.getValue().toString();
-        this._renderSelection();
-        this._firstInputFixApplied = true;
-        delete this._inValueProperty;
-      }
+    _afterAppear : function() {
+      this.base( arguments );
+      this._applyBrowserFixesOnAppear();
+      this._centerFieldVertically();
+      this._renderSelection();
     },
 
-    _afterAppear : qx.core.Variant.select( "qx.client", {
-      "mshtml" : function() {
-        this.base( arguments );
-        if( !this._firstInputFixApplied && this._inputElement ) {
-          qx.client.Timer.once( this._ieFirstInputFix, this, 1 );
-        }
-        this._centerFieldVertically();
-        this._renderSelection();
-      },
-      "default" : function() {
-        this.base( arguments );
-        this._centerFieldVertically();
-        this._renderSelection();
-      }
-    } ),
 
     _centerFieldVertically : function() {
       if( this._inputTag === "input" && this._inputElement ) {
@@ -661,7 +633,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
           doit = this.dispatchEvent( new qx.event.type.DataEvent( "input", this._typed ), true );
         }
         if( doit ) {
-          this.setValue( newValue );
+          this.setValue( newValue ); // if doit is false, the listener has to do this
         } else if( org.eclipse.rwt.Client.isWebkit() || org.eclipse.rwt.Client.isMshtml() ){
           // some browser set new selection after input event, ignoring all changes before that
           qx.client.Timer.once( this._renderSelection, this, 0 );
@@ -725,6 +697,68 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     _onMouseDownUp : function( event ) {
       this._detectSelectionChange();
       this._typed = null;
+    },
+    
+    /////////////////
+    // browser quirks
+
+    _applyBrowserFixes : qx.core.Variant.select( "qx.client", {
+      "default" : function() {},
+      "newmshtml" : function() {
+        // See Bug 372193 - Text widget: Modify Event not fired for Backspace key in IE 
+        this._checkTimer = new qx.client.Timer( 0 );
+        this._checkTimer.addEventListener( "interval", this._checkValueChanged, this );
+        // For delete, backspace, CTRL+X, etc:
+        this.addEventListener( "keypress", this._checkTimer.start, this._checkTimer );
+        // For context menu: (might not catch the change instantly
+        this.addEventListener( "mousemove", this._checkValueChanged, this );
+        this.addEventListener( "mouseout", this._checkValueChanged, this );
+        // Backup for all other cases (e.g. menubar):
+        this.addEventListener( "blur", this._checkValueChanged, this );
+      }
+    } ),
+    
+    _checkValueChanged : function() {
+      this._checkTimer.stop();
+      var newValue = this.getComputedValue();
+      var oldValue = this.getValue();
+      if( newValue !== oldValue ) {
+        this._oninput();
+      }
+    },
+
+    _applyBrowserFixesOnAppear : qx.core.Variant.select( "qx.client", {
+      "default" : function() {},
+      "mshtml" : function() {
+        if( this._firstInputFixApplied !== true && this._inputElement ) {
+          qx.client.Timer.once( this._ieFirstInputFix, this, 1 );
+        }
+      }
+    } ),
+      
+    _ieFirstInputFix : function() {
+      if( !this.isDisposed() ) {
+        this._inValueProperty = true;
+        this._inputElement.value = this.getValue() === null ? "" : this.getValue().toString();
+        this._renderSelection();
+        this._firstInputFixApplied = true;
+        delete this._inValueProperty;
+      }
+    },
+
+    _applyBrowserFixesOnCreate  : qx.core.Variant.select( "qx.client", {
+      "default" : function() {},
+      "webkit" : function() {
+        this.addEventListener( "keydown", this._preventEnter, this );
+        this.addEventListener( "keypress", this._preventEnter, this );
+        this.addEventListener( "keyup", this._preventEnter, this );
+      }
+    } ),
+
+    _preventEnter : function( event ) {
+      if( event.getKeyIdentifier() === "Enter" ) {
+        event.preventDefault();
+      }
     },
 
     /////////
