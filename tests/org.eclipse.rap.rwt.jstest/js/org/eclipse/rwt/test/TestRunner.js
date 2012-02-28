@@ -177,13 +177,13 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
     },
     
     _executeTest : function( fun ) {
-      if( this._currentInstance._setUp instanceof Function ) {
+      if( this._currentInstance.setUp instanceof Function ) {
         // TODO [tb] : execute setUp/tearDown not between multipart tests
-        this._currentInstance._setUp();
+        this._currentInstance.setUp();
       }
       fun.apply( this._currentInstance, this._args );
-      if( this._currentInstance._tearDown instanceof Function ) {
-        this._currentInstance._tearDown();
+      if( this._currentInstance.tearDown instanceof Function ) {
+        this._currentInstance.tearDown();
       }
     },
 

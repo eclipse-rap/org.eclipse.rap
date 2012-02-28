@@ -1013,13 +1013,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     /////////
     // Helper
 
-    _setUp : function() {
+    setUp : function() {
       shell = TestUtil.createShellByProtocol( "w2" );
       TestUtil.clearRequestLog();
       log = [];
     },
 
-    _tearDown : function() {
+    tearDown : function() {
       TestUtil.clearTimerOnceLog();
       shell.destroy();
       if( text ) {
