@@ -23,12 +23,12 @@ public final class Examples {
   private final List<IExampleContribution> contributions;
   private static ExampleContributionsTracker tracker;
 
-  private String[] INCLUDE = new String[] {
+  private final String[] INCLUDE = new String[] {
     "input",
+    "tableviewer",
+    "treeviewer",
     "dialog",
     "drag-and-drop",
-    "treeviewer",
-    "tableviewer",
     "complex-data",
     "canvas",
     "row-layout",
