@@ -98,9 +98,10 @@ public class WrappedRequest_Test extends TestCase {
   }
 
   public void testStartupRequestWithParameter() throws Exception {
-    String p1 = "p1";
-    String v1 = "v1";
-    Fixture.fakeRequestParam( p1, v1 );
+    String param1 = "param1";
+    String value1 = "value1";
+    Fixture.fakeNewGetRequest();
+    Fixture.fakeRequestParam( param1, value1 );
 
     RWTFactory.getServiceManager().getHandler().service();
 
@@ -112,15 +113,16 @@ public class WrappedRequest_Test extends TestCase {
 
     RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
                                                       DefaultEntryPoint.class );
-    Fixture.fakeRequestParam( p1, null );
+    Fixture.fakeNewRequest();
+    Fixture.fakeRequestParam( param1, null );
     Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointUtil.DEFAULT );
-    Fixture.fakeRequestParam( LifeCycleServiceHandler.RWT_INITIALIZE, "true" );
+    Fixture.fakeRequestParam( RequestParams.RWT_INITIALIZE, "true" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setHeader( "User-Agent", "myAgent" );
 
     RWTFactory.getServiceManager().getHandler().service();
 
-    assertEquals( v1, ContextProvider.getRequest().getParameter( p1 ) );
+    assertEquals( value1, ContextProvider.getRequest().getParameter( param1 ) );
   }
 
   @Override

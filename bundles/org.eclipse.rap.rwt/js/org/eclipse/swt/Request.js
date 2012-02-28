@@ -22,7 +22,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
     this._parameters = {};
     // instance variables that hold the essential request parameters
     this._uiRootId = "";
-    this._requestCounter;
+    this._requestCounter = null;
     // Number of currently running or scheduled requests, used to determine when
     // to show the wait hint (e.g. hour-glass cursor)
     this._runningRequestCount = 0;
@@ -121,7 +121,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
       if( !this._inDelayedSend ) {
         this._inDelayedSend = true;
         var func = function() {
-        	this._sendImmediate( true );
+          this._sendImmediate( true );
         };
         qx.client.Timer.once( func, this, 60 );
       }
@@ -170,7 +170,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
     },
 
     _copyParameters : function( request ) {
-      var data = new Array();
+      var data = [];
       for( var parameterName in this._parameters ) {
         data.push(   encodeURIComponent( parameterName )
                    + "="
@@ -204,7 +204,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
       vTransport.addEventListener( "aborted", vRequest._onaborted, vRequest );
       vTransport.addEventListener( "timeout", vRequest._ontimeout, vRequest );
       vTransport.addEventListener( "failed", vRequest._onfailed, vRequest );
-      vTransport._start = ( new Date ).valueOf();
+      vTransport._start = ( new Date() ).valueOf();
       vTransport.send();
       // END WORKAROUND
     },
@@ -237,7 +237,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         if( typeof( request.responseText ) != "unknown" ) {
           text = request.responseText;
         }
-        if( text == "" || text == null ) {
+        if( text === "" || text == null ) {
           content
             = "<p>Request failed.</p><pre>"
             + "HTTP Status Code: "
@@ -248,44 +248,37 @@ qx.Class.define( "org.eclipse.swt.Request", {
         }
         org.eclipse.rwt.ErrorHandler.showError( content );
       }
-      // [if] Dispose the only finished transport - see bug 301261, 317616
+      // [if] Dispose only finished transport - see bug 301261, 317616
       exchange.dispose();
     },
 
     _handleCompleted : function( evt ) {
       var exchange = evt.getTarget();
       var text = exchange.getImplementation().getRequest().responseText;
-      if( text && text.indexOf( "<!DOCTYPE" ) === 0 ) {
-        // Handle request to timed out session: write info page and offer
-        // link to restart application. This way was chosen for two reasons:
-        // - with rendering an anchor tag we can restart the same entry point as
-        //   is currently used
-        // - as clicking the link issues a regular request, we can be sure that
-        //   the stale application will be cleaned up properly by the browser
-        org.eclipse.rwt.ErrorHandler.showTimeout( this._timeoutPage );
-      } else {
-        var errorOccured = false;
-        try {
-          if( text && text.length > 0 ) {
-            org.eclipse.swt.EventUtil.setSuspended( true );
-            var messageObject = JSON.parse( text );
-            org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
-            org.eclipse.swt.EventUtil.setSuspended( false );
-          }
-          org.eclipse.rwt.UICallBack.getInstance().sendUICallBackRequest();
-        } catch( ex ) {
-          org.eclipse.rwt.ErrorHandler.processJavaScriptErrorInResponse( text,
-                                                                         ex,
-                                                                         this._currentRequest );
+      var errorOccured = false;
+      try {
+        var messageObject = JSON.parse( text );
+        if( messageObject.meta.timeout === true ) {
           errorOccured = true;
+          org.eclipse.rwt.ErrorHandler.showTimeout( this._timeoutPage );
+        } else {
+          org.eclipse.swt.EventUtil.setSuspended( true );
+          org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
+          org.eclipse.swt.EventUtil.setSuspended( false );
+          org.eclipse.rwt.UICallBack.getInstance().sendUICallBackRequest();
         }
-        if( !errorOccured ) {
-          this._dispatchReceivedEvent();
-        }
+      } catch( ex ) {
+        org.eclipse.rwt.ErrorHandler.processJavaScriptErrorInResponse( text,
+                                                                       ex,
+                                                                       this._currentRequest );
+        errorOccured = true;
+      }
+      if( !errorOccured ) {
+        this._dispatchReceivedEvent();
       }
       this._runningRequestCount--;
       this._hideWaitHint();
-      // [if] Dispose the only finished transport - see bug 301261, 317616
+      // [if] Dispose only finished transport - see bug 301261, 317616
       exchange.dispose();
     },
 

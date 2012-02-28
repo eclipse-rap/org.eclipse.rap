@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,13 +24,19 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
+import org.eclipse.rwt.internal.application.ApplicationContext;
+import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.util.HTTP;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 
 public class LifeCycleServiceHandler_Test extends TestCase {
@@ -46,6 +52,8 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
   protected void setUp() {
     Fixture.setUp();
+    Class<? extends IEntryPoint> entryPoint = TestEntryPoint.class;
+    RWTFactory.getEntryPointManager().registerByPath( "/test", entryPoint );
   }
 
   protected void tearDown() {
@@ -93,17 +101,23 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
   public void testRequestCounterAfterSessionRestart() throws Exception {
     RWTRequestVersionControl.getInstance().nextRequestId();
-    Integer version = RWTRequestVersionControl.getInstance().nextRequestId();
+    Integer versionBeforeRestart = RWTRequestVersionControl.getInstance().nextRequestId();
+
     simulateInitialUiRequest();
     new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+
     Integer versionAfterRestart = RWTRequestVersionControl.getInstance().getCurrentRequestId();
+    assertEquals( versionBeforeRestart.intValue() + 1, versionAfterRestart.intValue() );
+  }
 
-    assertEquals( version.intValue(), versionAfterRestart.intValue() );
+  public void testApplicationContextAfterSessionRestart() throws IOException {
+    simulateInitialUiRequest();
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
+    ApplicationContext applicationContext = ApplicationContextUtil.getInstance();
 
-    Fixture.fakeNewRequest();
-    Integer versionForNextRequest = RWTRequestVersionControl.getInstance().nextRequestId();
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
 
-    assertFalse( versionAfterRestart.equals( versionForNextRequest ) );
+    assertSame( applicationContext, ApplicationContextUtil.get( sessionStore ) );
   }
 
   public void testFinishesProtocolWriter() throws IOException {
@@ -113,15 +127,6 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertTrue( response.getContent().contains( "\"meta\":" ) );
-  }
-
-  public void testNoJsonAppendedToStartupPage() throws IOException {
-    simulateInitialUiRequest();
-
-    new LifeCycleServiceHandler( mockLifeCycleFactory(), getStartupPage() ).service();
-
-    TestResponse response = ( TestResponse )ContextProvider.getResponse();
-    assertTrue( response.getContent().trim().endsWith( "</html>" ) );
   }
 
   public void testContentType() throws IOException {
@@ -143,7 +148,9 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   }
 
   public void testContentTypeForStartupPage() throws IOException {
-    simulateInitialUiRequest();
+    Fixture.fakeNewRequest();
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setMethod( HTTP.METHOD_GET );
 
     new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
 
@@ -151,23 +158,35 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     assertEquals( "text/html; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }
 
+  public void testRequestParametersAreBuffered() throws IOException {
+    Fixture.fakeNewGetRequest();
+    Fixture.fakeRequestParam( "foo", "bar" );
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+
+    simulateInitialUiRequest();
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+
+    assertEquals( "bar", ContextProvider.getRequest().getParameter( "foo" ) );
+  }
+
   private void simulateInitialUiRequest() {
-    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
-    ISessionStore session = ContextProvider.getSessionStore();
-    session.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED, Boolean.TRUE );
+    Fixture.fakeNewRequest( new Display() );
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setServletPath( "/test" );
+    Fixture.fakeRequestParam( RequestParams.RWT_INITIALIZE, "true" );
   }
 
   private void simulateUiRequest() {
     Fixture.fakeNewRequest( new Display() );
-    ISessionStore session = ContextProvider.getSessionStore();
-    session.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED, Boolean.TRUE );
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setServletPath( "/test" );
   }
 
   private void simulateUiRequestWithIllegalCounter() {
     Fixture.fakeNewRequest( new Display() );
     Fixture.fakeRequestParam( "requestCounter", "23" );
-    ISessionStore session = ContextProvider.getSessionStore();
-    session.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED, Boolean.TRUE );
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setServletPath( "/test" );
   }
 
   private LifeCycleFactory mockLifeCycleFactory() {
@@ -222,6 +241,22 @@ public class LifeCycleServiceHandler_Test extends TestCase {
       } finally {
         ContextProvider.releaseContextHolder();
       }
+    }
+  }
+
+  public static final class TestEntryPoint implements IEntryPoint {
+    public int createUI() {
+      Display display = new Display();
+      Shell shell = new Shell( display );
+      shell.setSize( 100, 100 );
+      shell.layout();
+      shell.open();
+      while( !shell.isDisposed() ) {
+        if( !display.readAndDispatch() ) {
+          display.sleep();
+        }
+      }
+      return 0;
     }
   }
 }

@@ -50,10 +50,10 @@ import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.LifeCycleServiceHandler;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.service.ServiceContext;
 import org.eclipse.rwt.internal.service.ServiceStore;
+import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
@@ -316,16 +316,24 @@ public final class Fixture {
   }
 
   public static void fakeNewRequest() {
+    fakeNewRequest( HTTP.METHOD_POST );
+  }
+
+  public static void fakeNewGetRequest() {
+    fakeNewRequest( HTTP.METHOD_GET );
+  }
+
+  private static void fakeNewRequest( String method ) {
     HttpSession session = ContextProvider.getRequest().getSession();
     TestRequest request = new TestRequest();
     request.setSession( session );
+    request.setMethod( method );
     TestResponse response = new TestResponse();
     ServiceContext serviceContext = new ServiceContext( request, response );
     serviceContext.setServiceStore( new ServiceStore() );
     ContextProvider.disposeContext();
     ContextProvider.setContext( serviceContext );
     fakeResponseWriter();
-    LifeCycleServiceHandler.initializeSession();
   }
 
   public static void fakeRequestParam( String key, String value ) {

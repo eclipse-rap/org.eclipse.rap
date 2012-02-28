@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,23 +18,27 @@ import java.util.Map;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.SingletonManager;
+import org.eclipse.rwt.internal.application.ApplicationContext;
+import org.eclipse.rwt.internal.application.ApplicationContextUtil;
+import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
+import org.eclipse.rwt.internal.theme.JsonValue;
+import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
 
 
 public class LifeCycleServiceHandler implements IServiceHandler {
-  public static final String RWT_INITIALIZE = "rwt_initialize";
-  static final String SESSION_INITIALIZED
-    = LifeCycleServiceHandler.class.getName() + "#isSessionInitialized";
+  private static final String NEW_HTTP_SESSION
+    = LifeCycleServiceHandler.class.getName() + "#isNewHttpSession";
 
   private final LifeCycleFactory lifeCycleFactory;
   private final StartupPage startupPage;
@@ -51,11 +55,28 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   }
 
   void synchronizedService() throws IOException {
-    setJsonResponseHeaders( ContextProvider.getResponse() );
-    if(    RWTRequestVersionControl.getInstance().isValid()
-        || isSessionRestart()
-        || ContextProvider.getRequest().getSession().isNew() )
-    {
+    checkForNewSession();
+    if( HTTP.METHOD_GET.equals( ContextProvider.getRequest().getMethod() ) ) {
+      handleGetRequest();
+    } else {
+      handlePostRequest();
+      clearNewSessionAttribute();
+    }
+  }
+
+  private void handleGetRequest() throws IOException {
+    Map<String, String[]> parameters = ContextProvider.getRequest().getParameterMap();
+    RequestParameterBuffer.store( parameters );
+    startupPage.send();
+  }
+
+  private void handlePostRequest() throws IOException {
+    setJsonResponseHeaders();
+    if( isSessionTimeout() ) {
+      handleSessionTimeout();
+    } else if( isRequestCounterValid() ) {
+      initializeSessionStore();
+      RequestParameterBuffer.merge();
       runLifeCycle();
     } else {
       handleInvalidRequestCounter();
@@ -63,49 +84,18 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     writeProtocolMessage();
   }
 
-  public static void initializeSession() {
-    if( !isSessionInitialized() ) {
-      if( ContextProvider.getRequest().getParameter( RWT_INITIALIZE ) != null ) {
-        ISessionStore session = ContextProvider.getSessionStore();
-        session.setAttribute( SESSION_INITIALIZED, Boolean.TRUE );
-      }
-    }
-  }
-
   private void runLifeCycle() throws IOException {
-    checkRequest();
-    initializeSession();
-    if( isSessionInitialized() ) {
-      RequestParameterBuffer.merge();
-      LifeCycle lifeCycle = ( LifeCycle )lifeCycleFactory.getLifeCycle();
-      lifeCycle.execute();
-    } else {
-      Map<String, String[]> parameters = ContextProvider.getRequest().getParameterMap();
-      RequestParameterBuffer.store( parameters );
-      startupPage.send();
-    }
+    LifeCycle lifeCycle = ( LifeCycle )lifeCycleFactory.getLifeCycle();
+    lifeCycle.execute();
   }
 
   //////////////////
   // helping methods
 
-  private static boolean isSessionRestart() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    boolean startup = request.getParameter( RequestParams.STARTUP ) != null;
-    String uiRoot = request.getParameter( RequestParams.UIROOT );
-    HttpSession session = request.getSession();
-    return    !session.isNew() && !startup && uiRoot == null
-           || startup && isSessionInitialized();
-  }
-
-  private static void writeProtocolMessage() throws IOException {
-    HttpServletResponse response = ContextProvider.getResponse();
-    // TODO [rst] Find a clean way to skip the protocol message when initial page has been rendered
-    if( response.getContentType().startsWith( HTTP.CONTENT_TYPE_JSON ) ) {
-      ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-      String message = protocolWriter.createMessage();
-      response.getWriter().write( message );
-    }
+  private static boolean isRequestCounterValid() {
+    return RWTRequestVersionControl.getInstance().isValid()
+           || isSessionRestart()
+           || isNewHttpSession();
   }
 
   private static void handleInvalidRequestCounter() {
@@ -116,32 +106,85 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     writer.appendCall( "w1", "reload", properties );
   }
 
-  private static boolean isSessionInitialized() {
-    ISessionStore session = ContextProvider.getSessionStore();
-    return Boolean.TRUE.equals( session.getAttribute( SESSION_INITIALIZED ) );
+  private static void handleSessionTimeout() {
+    ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
+    writer.appendMeta( "timeout", JsonValue.TRUE );
   }
 
-  private static void checkRequest() {
+  private static void initializeSessionStore() {
     if( isSessionRestart() ) {
+      ISessionStore sessionStore = ContextProvider.getSessionStore();
+      Integer version = RWTRequestVersionControl.getInstance().getCurrentRequestId();
+      Map<String, String[]> bufferedParameters = RequestParameterBuffer.getBufferedParameters();
+      ApplicationContext applicationContext = ApplicationContextUtil.get( sessionStore );
       clearSessionStore();
+      RWTRequestVersionControl.getInstance().setCurrentRequestId( version );
+      if( bufferedParameters != null ) {
+        RequestParameterBuffer.store( bufferedParameters );
+      }
+      ApplicationContextUtil.set( sessionStore, applicationContext );
+      AbstractBranding branding = BrandingUtil.determineBranding();
+      if( branding.getThemeId() != null ) {
+        ThemeUtil.setCurrentThemeId( branding.getThemeId() );
+      }
     }
   }
 
   private static void clearSessionStore() {
-    Integer version = RWTRequestVersionControl.getInstance().getCurrentRequestId();
     SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSessionStore();
     // clear attributes of session store to enable new startup
     sessionStore.valueUnbound( null );
     // reinitialize session store state
     sessionStore.valueBound( null );
-    // TODO [rh] ContextProvider#getSession() also initializes a session (slightly different)
+    // TODO [rh] ContextProvider#getSessionStore() also initializes a session (slightly different)
     //      merge both code passages
     SingletonManager.install( sessionStore );
-    RWTRequestVersionControl.getInstance().setCurrentRequestId( version );
   }
 
-  private static void setJsonResponseHeaders( ServletResponse response ) {
+  /*
+   * Session restart: we're in the same HttpSession and start over (e.g. by pressing F5)
+   */
+  private static boolean isSessionRestart() {
+    return !isNewHttpSession() && hasInitializeParameter();
+  }
+
+  private static boolean isSessionTimeout() {
+    return isNewHttpSession() && !hasInitializeParameter();
+  }
+
+  private void checkForNewSession() {
+    if( ContextProvider.getRequest().getSession().isNew() ) {
+      ISessionStore sessionStore = ContextProvider.getSessionStore();
+      sessionStore.setAttribute( NEW_HTTP_SESSION, Boolean.TRUE );
+    }
+  }
+
+  private void clearNewSessionAttribute() {
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
+    sessionStore.removeAttribute( NEW_HTTP_SESSION );
+  }
+
+  private static boolean isNewHttpSession() {
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
+    return Boolean.TRUE.equals( sessionStore.getAttribute( NEW_HTTP_SESSION ) );
+  }
+
+  private static boolean hasInitializeParameter() {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String initializeParameter = request.getParameter( RequestParams.RWT_INITIALIZE );
+    return "true".equals( initializeParameter );
+  }
+
+  private static void setJsonResponseHeaders() {
+    ServletResponse response = ContextProvider.getResponse();
     response.setContentType( HTTP.CONTENT_TYPE_JSON );
     response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
+  }
+
+  private static void writeProtocolMessage() throws IOException {
+    HttpServletResponse response = ContextProvider.getResponse();
+    ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
+    String message = protocolWriter.createMessage();
+    response.getWriter().write( message );
   }
 }

@@ -32,8 +32,8 @@ import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.engine.RWTServlet;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.LifeCycleServiceHandler;
 import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -159,7 +159,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     }
   }
 
-  public static final class TestClearSessionStoreOnSessionRestartEntryPoint implements IEntryPoint {
+  public static final class TestEntryPoint implements IEntryPoint {
     public int createUI() {
       createUIEntered = true;
       try {
@@ -210,12 +210,13 @@ public class RWTLifeCycle2_Test extends TestCase {
 
   public void testSessionRestartAfterExceptionInUIThread() throws Exception {
     TestRequest request;
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, ExceptionInReadAndDispatchEntryPoint.class );
+    Class<? extends IEntryPoint> entryPoint = ExceptionInReadAndDispatchEntryPoint.class;
+    RWTFactory.getEntryPointManager().registerByPath( "/test", entryPoint );
     // send initial request - response is index.html
-    request = newRequest();
-    request.setParameter( RequestParams.STARTUP, "default" );
+    request = newGetRequest();
     runRWTDelegate( request );
-    request = newRequest();
+    request = newPostRequest( true );
+    runRWTDelegate( request );
     assertNull( session.getAttribute( TEST_SESSION_ATTRIBUTE ) );
     assertTrue( createUIEntered );
     assertFalse( createUIExited );
@@ -223,7 +224,7 @@ public class RWTLifeCycle2_Test extends TestCase {
 
     // send 'application startup' request - response is JavaScript to create
     // client-side representation of what was created in IEntryPoint#createUI
-    request = newRequest();
+    request = newPostRequest( false );
     request.setParameter( RequestParams.UIROOT, "w1" );
     runRWTDelegate( request );
     assertNull( session.getAttribute( TEST_SESSION_ATTRIBUTE ) );
@@ -232,7 +233,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertEquals( 0, eventLog.size() );
 
     // send 'malicious button click' - response is HTTP 500
-    request = newRequest();
+    request = newPostRequest( false );
     request.setParameter( RequestParams.UIROOT, "w1" );
     request.setParameter( JSConst.EVENT_WIDGET_SELECTED, maliciousButtonId );
     try {
@@ -247,8 +248,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertEquals( 0, eventLog.size() );
 
     // send 'refresh' request - session is restarted, response is index.html
-    request = newRequest();
-    request.setParameter( RequestParams.STARTUP, "default" );
+    request = newPostRequest( true );
     runRWTDelegate( request );
     assertEquals( 1, eventLog.size() );
     assertTrue( eventLog.get( 0 ) instanceof Event );
@@ -257,23 +257,16 @@ public class RWTLifeCycle2_Test extends TestCase {
   public void testEventProcessingOnSessionRestart() throws Exception {
     TestRequest request;
     Class<? extends IEntryPoint> entryPoint = EventProcessingOnSessionRestartEntryPoint.class;
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, entryPoint );
-    // send initial request - response is index.html
-    request = newRequest();
-    request.setParameter( RequestParams.STARTUP, "default" );
-    runRWTDelegate( request );
-    assertTrue( createUIEntered );
-    assertFalse( createUIExited );
+    RWTFactory.getEntryPointManager().registerByPath( "/test", entryPoint );
     // send 'application startup' request - response is JavaScript to create
     // client-side representation of what was created in IEntryPoint#createUI
-    request = newRequest();
+    request = newPostRequest( true );
     request.setParameter( RequestParams.UIROOT, "w1" );
     runRWTDelegate( request );
     assertTrue( createUIEntered );
     assertFalse( createUIExited );
     // send 'restart' request
-    request = newRequest();
-    request.setParameter( RequestParams.STARTUP, "default" );
+    request = newPostRequest( true );
     runRWTDelegate( request );
     assertTrue( createUIExited );
     assertEquals( 1, eventLog.size() );
@@ -287,22 +280,15 @@ public class RWTLifeCycle2_Test extends TestCase {
   public void testSessionInvalidateWithDisposeInFinally() throws Exception {
     TestRequest request;
     Class<? extends IEntryPoint> clazz = TestSessionInvalidateWithDisposeInFinallyEntryPoint.class;
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, clazz );
-    // send initial request - response is index.html
-    request = newRequest();
-    request.setParameter( RequestParams.STARTUP, "default" );
-    runRWTDelegate( request );
-    assertTrue( createUIEntered );
-    // send 'application startup' request - response is JavaScript to create
-    // client-side representation of what was created in IEntryPoint#createUI
-    request = newRequest();
+    RWTFactory.getEntryPointManager().registerByPath( "/test", clazz );
+    // send initial request - response creates ui
+    request = newPostRequest( true );
     request.setParameter( RequestParams.UIROOT, "w1" );
     runRWTDelegate( request );
     assertTrue( createUIEntered );
     assertFalse( createUIExited );
-    // send 'restart' request
-    request = newRequest();
-    request.setParameter( RequestParams.STARTUP, "default" );
+    // send another initial request to restart session
+    request = newPostRequest( true );
     runRWTDelegate( request );
     assertTrue( createUIExited );
     assertEquals( PhaseId.PROCESS_ACTION, currentPhase );
@@ -315,36 +301,71 @@ public class RWTLifeCycle2_Test extends TestCase {
    */
   public void testClearSessionStoreOnSessionRestart() throws Exception {
     TestRequest request;
-    Class<? extends IEntryPoint> entryPoint = TestClearSessionStoreOnSessionRestartEntryPoint.class;
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, entryPoint );
-    // send initial request - response is index.html
-    request = newRequest();
-    request.setParameter( RequestParams.STARTUP, "default" );
-    runRWTDelegate( request );
-    assertTrue( createUIEntered );
-    assertFalse( createUIExited );
-    // send 'application startup' request - response is protocol message to create
-    // client-side representation of what was created in IEntryPoint#createUI
-    request = newRequest();
+    Class<? extends IEntryPoint> entryPoint = TestEntryPoint.class;
+    RWTFactory.getEntryPointManager().registerByPath( "/test", entryPoint );
+    // send initial request - response creates ui
+    request = newPostRequest( true );
     request.setParameter( RequestParams.UIROOT, "w1" );
     runRWTDelegate( request );
     assertTrue( createUIEntered );
     assertFalse( createUIExited );
     // send a request that closes the main shell
-    request = newRequest();
+    request = newPostRequest( false );
     request.setParameter( RequestParams.UIROOT, "w1" );
     request.setParameter( "org.eclipse.swt.widgets.Shell_close", "w2" );
     runRWTDelegate( request );
     assertTrue( createUIExited );
     // send a request after the createUI has been exited
-    request = newRequest();
+    request = newPostRequest( false );
     request.setParameter( RequestParams.UIROOT, "w1" );
     runRWTDelegate( request );
-    // send 'restart' request
-    request = newRequest();
-    request.setParameter( RequestParams.STARTUP, "default" );
+    // send another initial request to restart session
+    request = newPostRequest( true );
     runRWTDelegate( request );
     // ensures that no exceptions has been thrown
+  }
+
+  public void testGetRequestDoesNotClearSessionStore() throws Exception {
+    Class<? extends IEntryPoint> entryPoint = TestEntryPoint.class;
+    RWTFactory.getEntryPointManager().registerByPath( "/test", entryPoint );
+    // inital GET request
+    runRWTDelegate( newGetRequest() );
+    // inital POST request starts the UI thread
+    runRWTDelegate( newPostRequest( true ) );
+    ContextProvider.getSessionStore().setAttribute( "dummy", Boolean.TRUE );
+
+    // subsequent GET request should not run the lifecycle
+    runRWTDelegate( newGetRequest() );
+
+    assertEquals( Boolean.TRUE, ContextProvider.getSessionStore().getAttribute( "dummy" ) );
+  }
+
+  public void testGetRequestAlwaysReturnsHtml() throws Exception {
+    Class<? extends IEntryPoint> entryPoint = TestEntryPoint.class;
+    RWTFactory.getEntryPointManager().registerByPath( "/test", entryPoint );
+    // inital GET request
+    runRWTDelegate( newGetRequest() );
+    // inital POST request starts the UI thread
+    runRWTDelegate( newPostRequest( true ) );
+
+    // subsequent GET request should not run the lifecycle
+    TestResponse response = runRWTDelegate( newGetRequest() );
+
+    assertEquals( "text/html; charset=UTF-8", response.getContentType() );
+  }
+
+  public void testPostRequestReturnsJsonAfterSessionTimeout() throws Exception {
+    Class<? extends IEntryPoint> entryPoint = TestEntryPoint.class;
+    RWTFactory.getEntryPointManager().registerByPath( "/test", entryPoint );
+    // inital GET request
+    runRWTDelegate( newGetRequest() );
+    // inital POST request starts the UI thread
+    runRWTDelegate( newPostRequest( true ) );
+
+    // next POST request - simulate session timeout by not providing session id
+    TestResponse response = runRWTDelegate( newPostRequest( false ) );
+
+    assertEquals( "application/json; charset=UTF-8", response.getContentType() );
   }
 
   private static TestResponse runRWTDelegate( final HttpServletRequest request )
@@ -378,10 +399,22 @@ public class RWTLifeCycle2_Test extends TestCase {
     return response[ 0 ];
   }
 
-  private TestRequest newRequest() {
+  private TestRequest newGetRequest() {
     TestRequest result = new TestRequest();
     result.setSession( session );
-    result.setParameter( LifeCycleServiceHandler.RWT_INITIALIZE, "true" );
+    result.setMethod( HTTP.METHOD_GET );
+    result.setServletPath( "/test" );
+    return result;
+  }
+
+  private TestRequest newPostRequest( boolean initialize) {
+    TestRequest result = new TestRequest();
+    result.setSession( session );
+    result.setMethod( HTTP.METHOD_POST );
+    result.setServletPath( "/test" );
+    if( initialize ) {
+      result.setParameter( RequestParams.RWT_INITIALIZE, "true" );
+    }
     return result;
   }
 
