@@ -962,6 +962,57 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
 
+    testImageBoundsScroll : function() {
+      var tree = this._createTree();
+      var row = this._createRow( tree );
+      row.setHeight( 15 );
+      this._addToDom( row );
+      var parentItem = this._createItem( tree );
+      parentItem.setImages( [ "bla.jpg" ] );
+      var item = this._createItem( parentItem );
+      item.setTexts( [ "" ] );
+      item.setImages( [ "bla.jpg" ] );
+      
+      row.renderItem( parentItem, tree._config, false, null );
+      row.renderItem( item, tree._config, false, null, true ); // true = dont render bounds
+      
+      var node = row._getTargetNode();
+      assertEquals( 2, node.childNodes.length );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var style = node.childNodes[ 1 ].style;
+      assertEquals( 0, parseInt( style.top ) );
+      assertEquals( 56, parseInt( style.left ) );
+      assertEquals( 15, parseInt( style.height ) );
+      assertEquals( 10, parseInt( style.width ) );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testLabelBoundsScroll : function() {
+      var tree = this._createTree();
+      var row = this._createRow( tree );
+      row.setHeight( 15 );
+      this._addToDom( row );
+      var parentItem = this._createItem( tree );
+      parentItem.setTexts( [ "foo" ] );
+      var item = this._createItem( parentItem );
+      item.setTexts( [ "bar" ] );
+      
+      row.renderItem( parentItem, tree._config, false, null );
+      row.renderItem( item, tree._config, false, null, true ); // true = dont render bounds
+      
+      var node = row._getTargetNode();
+      assertEquals( 2, node.childNodes.length );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var style = node.childNodes[ 1 ].style;
+      assertEquals( 0, parseInt( style.top ) );
+      assertEquals( 5 + 2 * 16, parseInt( style.left ) );
+      assertEquals( 15, parseInt( style.height ) );
+      assertEquals( 33, parseInt( style.width ) );
+      tree.destroy();
+      row.destroy();
+    },
+
     testRenderImageAndLabelAndBackground : function() {
       var tree = this._createTree();
       var row = this._createRow( tree );
@@ -1071,7 +1122,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
 
-    testHideUnusedabel : function() {
+    testReUseHiddenImage : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( true );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item1 = this._createItem( tree );
+      item1.setImages( [ "bla.jpg" ] );
+      item1.setTexts( [ "Test" ] );
+      var item2 = this._createItem( tree );
+      item2.setTexts( [ null ] );
+      item2.setImages( [ null ] );
+      
+      row.renderItem( item1, tree._config, false, null );
+      row.renderItem( item2, tree._config, false, null );
+      row.renderItem( item1, tree._config, false, null, true );
+
+      var nodes = row._getTargetNode().childNodes;
+      assertTrue( TestUtil.getCssBackgroundImage( nodes[ 0 ] ).indexOf( "bla.jpg" ) != -1 );
+      assertFalse( TestUtil.hasElementOpacity( nodes[ 0 ] ) );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testHideUnusedLabel : function() {
       var tree = this._createTree();
       var row = this._createRow( tree );
       this._addToDom( row );

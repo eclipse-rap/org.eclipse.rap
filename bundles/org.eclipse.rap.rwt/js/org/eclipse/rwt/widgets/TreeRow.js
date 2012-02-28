@@ -293,13 +293,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         this._renderStates( item, config, false, hoverElement );
       }
       for( var i = 0; i < columns; i++ ) {
+        var treeColumn = this._isTreeColumn( i, config )
         if( this._getItemWidth( item, i, config ) > 0 ) {
           this._renderCellBackground( item, i, config, contentOnly );
-          if( !config.fullSelection && this._isTreeColumn( i, config ) ) {
+          if( !config.fullSelection && treeColumn ) {
             if( selected ) {
               this._renderStates( item, config, true, hoverElement );
             }
-            var imageElement = this._renderCellImage( item, i, config, contentOnly );
+            var imageElement 
+              = this._renderCellImage( item, i, config, treeColumn, contentOnly );
             var labelElement = this._renderCellLabel( item, i, config, contentOnly );
             this._treeColumnElements = [ imageElement, labelElement ];
             if( selected ) {
@@ -307,8 +309,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
               this._renderStates( item, config, false, hoverElement);
             }
           } else {
-            this._renderCellImage( item, i, config, contentOnly );
-            this._renderCellLabel( item, i, config, contentOnly );
+            this._renderCellImage( item, i, config, treeColumn, contentOnly );
+            this._renderCellLabel( item, i, config, treeColumn, contentOnly );
           }
         } else {
           this._removeCell( i );
@@ -354,11 +356,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       }
     },
 
-    _renderCellImage : function( item, cell, config, contentOnly ) {
+    _renderCellImage : function( item, cell, config, treeColumn, contentOnly ) {
       var source = item.getImage( cell );
       var element = null;
       if( source !== null ) {
-        var renderBounds = !contentOnly || !this._cellImages[ cell ];
+        var renderBounds = treeColumn || !contentOnly || !this._cellImages[ cell ];
         element = this._getCellImage( cell );
         this._setImage( element, source, renderBounds ? config.enabled : null );
         if( renderBounds ) {
@@ -366,19 +368,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
           var width = this._getItemImageWidth( item, cell, config );
           this._setBounds( element, left, 0, width, this.getHeight() );
         }
-      } else if( this._cellImages[ cell ] ){
-        this._setImage( this._cellImages[ cell ], null );
+      } else if( this._cellImages[ cell ] ) {
+        this._setImage( this._cellImages[ cell ], null, null );
       }
       return element;
     },
 
-    _renderCellLabel : function( item, cell, config, contentOnly ) {
+    _renderCellLabel : function( item, cell, config, treeColumn, contentOnly ) {
       // NOTE [tb] : When scrolling in Firefox, it may happen that the text
       //             becomes temorarily invisible. This is a browser-bug
       //             that ONLY occurs when Firebug is installed.
       var element = null;
       if( item.hasText( cell ) ) {
-        var renderBounds = !contentOnly || !this._cellLabels[ cell ];
+        var renderBounds = treeColumn || !contentOnly || !this._cellLabels[ cell ];
         element = this._getTextElement( cell, config );
         this._renderElementContent( element, item, cell, config.markupEnabled );
         if( renderBounds ) {
