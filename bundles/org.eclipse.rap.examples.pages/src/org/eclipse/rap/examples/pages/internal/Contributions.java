@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,19 +31,20 @@ class Contributions {
   }
 
   private void collectContributions() {
-    addContribution( "input", "Input Widgets", InputExamplePage.class );
-    addContribution( "dialog", "Dialogs", DialogExamplePage.class );
-    addContribution( "drag-and-drop", "Drag & Drop", ListExample.class );
-    addContribution( "treeviewer", "TreeViewer", TreeViewerExample.class );
-    addContribution( "tableviewer", "TableViewer", TableViewerExample.class );
-    addContribution( "canvas", "Canvas", CanvasExamplePage.class );
-    addContribution( "row-layout", "Row Layout", RowLayoutExample.class );
-    addContribution( "fill-layout", "Fill Layout", FillLayoutExample.class );
-    addContribution( "grid-layout", "Grid Layout", GridLayoutExample.class );
+    addContribution( "input", "Input Widgets", null, InputExamplePage.class );
+    addContribution( "dialog", "Dialogs", null, DialogExamplePage.class );
+    addContribution( "drag-and-drop", "Drag & Drop", null, ListExample.class );
+    addContribution( "treeviewer", "TreeViewer", "Tree and Table", TreeViewerExample.class );
+    addContribution( "tableviewer", "TableViewer", "Tree and Table", TableViewerExample.class );
+    addContribution( "canvas", "Canvas", null, CanvasExamplePage.class );
+    addContribution( "row-layout", "Row Layout", "Layouts", RowLayoutExample.class );
+    addContribution( "fill-layout", "Fill Layout", "Layouts" ,FillLayoutExample.class );
+    addContribution( "grid-layout", "Grid Layout", "Layouts" ,GridLayoutExample.class );
   }
 
   private void addContribution( final String id,
                                 final String title,
+                                final String category,
                                 final Class<? extends IExamplePage> clazz )
   {
     IExampleContribution contribution = new IExampleContribution() {
@@ -54,6 +55,10 @@ class Contributions {
 
       public String getTitle() {
         return title;
+      }
+      
+      public String getCategory() {
+        return category;
       }
 
       public IExamplePage createPage() {

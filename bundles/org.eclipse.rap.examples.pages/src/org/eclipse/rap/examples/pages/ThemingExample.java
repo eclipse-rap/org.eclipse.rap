@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.*;
 public class ThemingExample implements IExamplePage {
 
   public void createControl( final Composite parent ) {
-    parent.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 20 ) );
+    parent.setLayout( ExampleUtil.createGridLayout( 1, false, 20, 10 ) );
     createButtonsArea( parent );
     createMenusArea( parent );
   }
@@ -87,6 +87,7 @@ public class ThemingExample implements IExamplePage {
       item.setData( WidgetUtil.CUSTOM_VARIANT, variant );
     }
     toolItem.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         Rectangle rect = toolItem.getBounds();
         Point point = new Point( rect.x, rect.y + rect.height );

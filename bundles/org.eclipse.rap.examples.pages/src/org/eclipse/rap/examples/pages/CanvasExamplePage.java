@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,12 +67,11 @@ public final class CanvasExamplePage implements IExamplePage {
 
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
-    Group group = new Group( parent, SWT.NONE );
-    group.setText( "Canvas" );
-    group.setLayoutData( ExampleUtil.createFillData() );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 10 ) );
-    createDrawingArea( group );
-    createControlButtons( group );
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayoutData( ExampleUtil.createFillData() );
+    composite.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 0, 10 ) );
+    createDrawingArea( composite );
+    createControlButtons( composite );
     parent.layout();
     clear();
  }
@@ -92,6 +91,7 @@ public final class CanvasExamplePage implements IExamplePage {
     Button polyformButton = new Button( buttonArea, SWT.RADIO );
     polyformButton.setText( "Polyform" );
     polyformButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         newOperation();
         mode = MODE_POLYFORM;
@@ -100,6 +100,7 @@ public final class CanvasExamplePage implements IExamplePage {
     Button ovalButton = new Button( buttonArea, SWT.RADIO );
     ovalButton.setText( "Oval" );
     ovalButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         newOperation();
         mode = MODE_OVAL;
@@ -108,6 +109,7 @@ public final class CanvasExamplePage implements IExamplePage {
     Button stampButton = new Button( buttonArea, SWT.RADIO );
     stampButton.setText( "Stamp" );
     stampButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         newOperation();
         mode = MODE_STAMP;
@@ -116,6 +118,7 @@ public final class CanvasExamplePage implements IExamplePage {
     final Button transparencyButton = new Button( buttonArea, SWT.CHECK );
     transparencyButton.setText( "Transparency" );
     transparencyButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         boolean selected = transparencyButton.getSelection();
         currentAlpha = selected ? 128 : 255;
@@ -124,6 +127,7 @@ public final class CanvasExamplePage implements IExamplePage {
     Button clearButton = new Button( buttonArea, SWT.PUSH );
     clearButton.setText( "Clear" );
     clearButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         clear();
       }
@@ -266,6 +270,7 @@ public final class CanvasExamplePage implements IExamplePage {
   }
 
   private final class DrawingAreaMouseListener extends MouseAdapter {
+    @Override
     public void mouseDown( MouseEvent e ) {
       switch( mode ) {
         case MODE_POLYFORM:

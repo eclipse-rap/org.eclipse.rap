@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.*;
 public class LabelExample implements IExamplePage {
 
   public void createControl( Composite parent ) {
-    parent.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 20 ) );
+    parent.setLayout( ExampleUtil.createGridLayout( 1, false, 20, 10 ) );
     createTextLabels( parent );
     createAlignedLabels( parent );
     createImageLabels( parent );
@@ -37,7 +37,7 @@ public class LabelExample implements IExamplePage {
     Group textGroup = new Group( parent, SWT.NONE );
     textGroup.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
     textGroup.setText( "Text Labels" );
-    textGroup.setLayout( ExampleUtil.createGridLayout( 2, false, 10, 20 ) );
+    textGroup.setLayout( ExampleUtil.createGridLayout( 2, false, 20, 10 ) );
     Label simpleLabel = new Label( textGroup, SWT.NONE );
     simpleLabel.setText( "A simple text label." );
     Label wrappedLabel = new Label( textGroup, SWT.BORDER | SWT.WRAP );
@@ -55,7 +55,7 @@ public class LabelExample implements IExamplePage {
     Group group = new Group( parent, SWT.NONE );
     group.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
     group.setText( "Alignment" );
-    group.setLayout( ExampleUtil.createGridLayout( 3, false, 10, 20 ) );
+    group.setLayout( ExampleUtil.createGridLayout( 3, false, 20, 10 ) );
     Label leftLabel = new Label( group, SWT.BORDER | SWT.LEFT );
     leftLabel.setText( "These lines\nare\nleft-aligned" );
     leftLabel.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
@@ -74,7 +74,7 @@ public class LabelExample implements IExamplePage {
     group.setLayout( ExampleUtil.createGridLayout( 1, false, 0, 0 ) );
     Composite comp = new Composite( group, SWT.NONE );
     comp.setLayoutData( new GridData( SWT.CENTER, SWT.TOP, true, false ) );
-    comp.setLayout( ExampleUtil.createGridLayout( 5, false, 10, 20 ) );
+    comp.setLayout( ExampleUtil.createGridLayout( 5, false, 20, 10 ) );
     ClassLoader classLoader = getClass().getClassLoader();
     Image image1 = Graphics.getImage( "resources/emblem-system.png",
                                       classLoader );
@@ -95,7 +95,7 @@ public class LabelExample implements IExamplePage {
     Group group = new Group( parent, SWT.NONE );
     group.setText( "CLabel" );
     group.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
-    group.setLayout( ExampleUtil.createGridLayout( 3, false, 10, 20 ) );
+    group.setLayout( ExampleUtil.createGridLayout( 3, false, 20, 10 ) );
     ClassLoader classLoader = getClass().getClassLoader();
     Image image4 = Graphics.getImage( "resources/button-image.gif",
                                       classLoader );
@@ -120,13 +120,13 @@ public class LabelExample implements IExamplePage {
     Group group = new Group( parent, SWT.NONE );
     group.setText( "Links" );
     group.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 20 ) );
+    group.setLayout( ExampleUtil.createGridLayout( 1, false, 20, 10 ) );
     Link link = new Link( group, SWT.NONE );
     link.setText( "A link widget with <a>two</a> embedded <a>hyperlinks</a>" );
     final Label linkLabel = new Label( group, SWT.NONE );
     linkLabel.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
     link.addSelectionListener( new SelectionAdapter() {
-  
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         linkLabel.setText( "clicked \"" + e.text + "\"" );
       }

@@ -1,13 +1,18 @@
-*, DateTime {
-  font: 14px Helvetica, Verdana, sans-serif;
-}
+/*******************************************************************************
+ * Copyright (c) 2011, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
 
-*:disabled, Combo:disabled, Text:disabled, Combo[BORDER]:disabled {
-  color: #afafaf;
-}
+/* Theme contribution to RAP default theme for Examples demo */
 
 .mainshell {
-  background-color: #a8a8a8;
+  background-color: #fff;
 }
 
 .header {
@@ -18,63 +23,69 @@
   );
 }
 
-Composite.sidebar {
-  background-color: transparent;
+Composite.mainContentArea {
+  background-color: #fff;
 }
 
-Button[TOGGLE].sidebar {
-  background-color: transparent;
+Composite.centerArea {
+  background-color: #fff;
+}
+
+Composite.nav-bar {
+  background-color: #e5e5e5;
+}
+
+Composite.navigation {
+  background-color: #e5e5e5;
+}
+
+ToolBar.navigation {
+  background-color: #e5e5e5;
+}
+
+ToolItem.navigation {
+  background-color: #e5e5e5;
   background-image: none;
-  color: white;
-  font: bold 18px Helvetica, Verdana, sans-serif;
-  border-radius: 5px;
+  border-radius: 0;
   border: none;
-  padding: 5px 12px;
+  padding: 8px;
   text-shadow: none;
+} 
+
+ToolItem.selected {
+  background-color: transparent;
+  border: 1px solid #31619C;
+  border-radius: 2px;
+  background-image: none;
 }
 
-Button[TOGGLE].sidebar:selected {
-  background-color: #6d6d6d;
+ToolItem.navigation:hover {
+  background-color: transparent;
+  border: 1px solid #bdbdbd;
+  border-radius: 2px;
   background-image: none;
-  color: white;
-  padding: 5px 12px;
-  font: bold 18px Helvetica, Verdana, sans-serif;
-}
-
-Button[TOGGLE].sidebar:hover {
-  background-color: white;
-  background-image: none;
-  color: gray;
-  padding: 5px 12px;
-  font: bold 18px Helvetica, Verdana, sans-serif;
   animation: none;
 }
 
-Button-FocusIndicator[TOGGLE].sidebar {
+Menu.navigation {
+  font: 15px Helvetica, Verdana, sans-serif;
+  background-color: #e5e5e5;
+  background-image: none;
+  box-shadow: none;
   border: none;
+  padding: 0;
 }
 
-.mainarea {
-  background-color: white;
-  border-radius: 10px;
-  padding: 10px;
+MenuItem.navigation {
+  padding: 10px 0 10px 0px;
 }
 
-.statusarea {
-  background-color: transparent;
-  color: white;
-  padding: 0 10px;
+MenuItem.navigation:hover {
+  background-image: none;
+  background-color: #31619C;
 }
 
-Group {
-  font: 18px Helvelica, Verdana, sans-serif;
-  background-color: white;
-}
-
-Group-Frame {
-  border: none;
-}
-
-Button[PUSH], Button[TOGGLE] {
-  padding: 4px 6px;
+Label.heading {
+  font: 20px Helvetica, Verdana, sans-serif;  
+  color: #31619C;
 }

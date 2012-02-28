@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.*;
 
 
 public class FormLayoutExample implements IExamplePage {
-  
+
   private Composite parent;
   private Composite layoutArea;
   private boolean propPrefSize;
@@ -85,11 +85,11 @@ public class FormLayoutExample implements IExamplePage {
     GridData gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
     gridData.horizontalSpan = 2;
     group.setLayoutData( gridData );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 5, 2 ) );
+    group.setLayout( ExampleUtil.createGridLayout( 1, false, 2, 5 ) );
     final Button preferredSizeButton = new Button( group, SWT.CHECK );
     preferredSizeButton.setText( "Shrink containers to their preferred size" );
     preferredSizeButton.addSelectionListener( new SelectionAdapter() {
-      
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         propPrefSize = preferredSizeButton.getSelection();
         createLayoutArea();

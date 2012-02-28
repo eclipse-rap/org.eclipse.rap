@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,7 @@ public class FillLayoutExample implements IExamplePage {
 
   public void createControl( final Composite parent ) {
     this.parent = parent;
-    parent.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 10 ) );
+    parent.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 0, 20 ) );
     createLayoutArea();
     createControlButtons( parent );
   }
@@ -58,12 +58,12 @@ public class FillLayoutExample implements IExamplePage {
   }
 
   private void createLayoutComp( final Composite parent, final int style ) {
-    Group group = new Group( parent, SWT.NONE );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 10 ) );
+    Composite layoutCompContainer = new Composite( parent, SWT.NONE );
+    layoutCompContainer.setLayout( ExampleUtil.createGridLayoutWithOffset( 1, false, 10, 10, 10 ) );
     String orientString = style == SWT.VERTICAL ? "Vertical" : "Horizontal";
     String message = orientString + " FillLayout";
-    group.setText( message );
-    Composite layoutComp = new Composite( group, SWT.BORDER );
+    ExampleUtil.createHeadingLabel( layoutCompContainer, message, 1 );
+    Composite layoutComp = new Composite( layoutCompContainer, SWT.BORDER );
     if( !propPrefSize ) {
       layoutComp.setLayoutData( ExampleUtil.createFillData() );
     }
@@ -84,7 +84,7 @@ public class FillLayoutExample implements IExamplePage {
     GridData gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
     gridData.horizontalSpan = 2;
     group.setLayoutData( gridData );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 5, 2 ) );
+    group.setLayout( ExampleUtil.createGridLayout( 1, false, 2, 0 ) );
     Composite spacingComp = new Composite( group, SWT.NONE );
     RowLayout spacingLayout = new RowLayout();
     spacingLayout.spacing = 5;
@@ -96,7 +96,7 @@ public class FillLayoutExample implements IExamplePage {
     spacingSpinner.setMaximum( 12 );
     spacingSpinner.setSelection( propSpacing );
     spacingSpinner.addSelectionListener( new SelectionAdapter() {
-      
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         propSpacing = spacingSpinner.getSelection();
         createLayoutArea();
@@ -105,7 +105,7 @@ public class FillLayoutExample implements IExamplePage {
     final Button preferredSizeButton = new Button( group, SWT.CHECK );
     preferredSizeButton.setText( "Shrink containers to their preferred size" );
     preferredSizeButton.addSelectionListener( new SelectionAdapter() {
-      
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         propPrefSize = preferredSizeButton.getSelection();
         createLayoutArea();

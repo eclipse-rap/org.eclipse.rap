@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.*;
 public class ButtonExamplePage implements IExamplePage {
 
   public void createControl( final Composite parent ) {
-    parent.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 20 ) );
+    parent.setLayout( ExampleUtil.createGridLayout( 1, false, 20, 10 ) );
     createPushButtons( parent );
     createToggleGroup( parent );
     createRadioAndCheckButtons( parent );
@@ -76,13 +76,11 @@ public class ButtonExamplePage implements IExamplePage {
     toggle1.setToolTipText( "Keep in sync" );
     final Button toggle2 = new Button( group, SWT.TOGGLE | SWT.LEFT );
     toggle2.setText( "Unlocked" );
-    final Image imgLocked = Graphics.getImage( "resources/lockedstate.gif",
-                                               classLoader );
-    final Image imgUnlocked = Graphics.getImage( "resources/unlockedstate.gif",
-                                                 classLoader );
+    final Image imgLocked = Graphics.getImage( "resources/lockedstate.gif", classLoader );
+    final Image imgUnlocked = Graphics.getImage( "resources/unlockedstate.gif", classLoader );
     toggle2.setImage( imgUnlocked );
     toggle2.addSelectionListener( new SelectionAdapter() {
-      
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         boolean selected = toggle2.getSelection();
         toggle2.setText( selected ? "Locked" : "Unlocked" );

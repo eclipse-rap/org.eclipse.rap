@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,26 +45,25 @@ public class InputExamplePage implements IExamplePage {
   }
 
   private void createInputForm( Composite parent ) {
-    Group group = new Group( parent, SWT.NONE );
-    group.setLayoutData( ExampleUtil.createHorzFillData() );
-    group.setText( "Simple Input Widgets" );
-    GridLayout gridLayout = ExampleUtil.createGridLayout( 2, false, 12, 15 );
+    Composite inputComp = new Composite( parent, SWT.NONE );
+    inputComp.setLayoutData( ExampleUtil.createHorzFillData() );
+    GridLayout gridLayout = ExampleUtil.createGridLayoutWithOffset( 2, false, 15, 12, 0 );
     gridLayout.horizontalSpacing = 12;
     gridLayout.verticalSpacing = 8;
-    group.setLayout( gridLayout );
-    final Text firstNameText = createFirstNameField( group );
-    final Text lastNameText = createLastNameField( group );
-    final Text passwordText = createPasswordField( group );
-    final Spinner spinner = createSpinner( group );
-    final Combo countryCombo = createCountryCombo( group );
-    final Combo classCombo = createCombo( group );
-    final DateTime dateTime = createDateField( group );
-
-    new Label( group, SWT.NONE );
-    final Button editableCheckbox = new Button( group, SWT.CHECK );
+    inputComp.setLayout( gridLayout );
+    ExampleUtil.createHeadingLabel( inputComp, "Simple Input Widgets", 2 );
+    final Text firstNameText = createFirstNameField( inputComp );
+    final Text lastNameText = createLastNameField( inputComp );
+    final Text passwordText = createPasswordField( inputComp );
+    final Spinner spinner = createSpinner( inputComp );
+    final Combo countryCombo = createCountryCombo( inputComp );
+    final Combo classCombo = createCombo( inputComp );
+    final DateTime dateTime = createDateField( inputComp );
+    final Button editableCheckbox = new Button( inputComp, SWT.CHECK );
     editableCheckbox.setText( "Editable" );
     editableCheckbox.setSelection( true );
     editableCheckbox.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         boolean editable = editableCheckbox.getSelection();
         firstNameText.setEditable( editable );
@@ -77,14 +76,14 @@ public class InputExamplePage implements IExamplePage {
       }
     } );
   }
-  
-  private void createControlDecoratorsForm( Composite group2 ) {
-    Group formComp = new Group( group2, SWT.NONE );
-    formComp.setText( "Control Decorators" );
-    GridLayout gridLayout = ExampleUtil.createGridLayout( 2, false, 12, 15 );
+
+  private void createControlDecoratorsForm( Composite rightComp ) {
+    Composite formComp = new Composite( rightComp, SWT.NONE );
+    GridLayout gridLayout = ExampleUtil.createGridLayout( 2, false, 15, 12 );
     gridLayout.horizontalSpacing = 12;
     gridLayout.verticalSpacing = 8;
     formComp.setLayout( gridLayout );
+    ExampleUtil.createHeadingLabel( formComp, "Control Decorators", 2 );
     createVerifiedText( formComp );
     createMandatoryText( formComp );
   }
@@ -100,7 +99,7 @@ public class InputExamplePage implements IExamplePage {
     decoration.hide();
     text.setText( "4711" );
     text.addModifyListener( new ModifyListener() {
-      
+
       public void modifyText( ModifyEvent event ) {
         String content = text.getText();
         if( !isNumbers( content ) ) {
@@ -114,7 +113,7 @@ public class InputExamplePage implements IExamplePage {
       }
     } );
   }
-  
+
   private void createMandatoryText( Composite formComp ) {
     new Label( formComp, SWT.NONE ).setText( "Mandatory:" );
     final Text text = new Text( formComp, SWT.SINGLE | SWT.BORDER );
@@ -127,7 +126,7 @@ public class InputExamplePage implements IExamplePage {
     final Color mandatoryColor = new Color( text.getDisplay(), 200, 200, 250 );
     text.setText( "foo" );
     text.addModifyListener( new ModifyListener() {
-      
+
       public void modifyText( ModifyEvent event ) {
         String content = text.getText();
         if( content.trim().length() == 0 ) {
@@ -218,14 +217,14 @@ public class InputExamplePage implements IExamplePage {
   }
 
   private void createMultiline( final Composite parent ) {
-    Group group = new Group( parent, SWT.NONE );
-    group.setText( "Multiline" );
-    group.setLayoutData( ExampleUtil.createHorzFillData() );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 8, 12 ) );
+    Composite multiComp = new Composite( parent, SWT.NONE );
+    ExampleUtil.createHeadingLabel( multiComp, "Multiline", 2 );
+    multiComp.setLayoutData( ExampleUtil.createHorzFillData() );
+    multiComp.setLayout( ExampleUtil.createGridLayout( 1, false, 12, 8 ) );
     String text = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. ";
     text = text + text;
     // left
-    Composite wrapComp = new Composite( group, SWT.NONE );
+    Composite wrapComp = new Composite( multiComp, SWT.NONE );
     wrapComp.setLayoutData( new GridData( 350, 100 ) );
     wrapComp.setLayout( new GridLayout() );
     new Label( wrapComp, SWT.NONE ).setText( "This text box wraps:" );
@@ -236,7 +235,7 @@ public class InputExamplePage implements IExamplePage {
     wrapTextData.minimumHeight = 50;
     wrapText.setLayoutData( wrapTextData );
     // right
-    Composite nowrapComp = new Composite( group, SWT.NONE );
+    Composite nowrapComp = new Composite( multiComp, SWT.NONE );
     nowrapComp.setLayoutData( new GridData( 350, 100 ) );
     nowrapComp.setLayout( new GridLayout() );
     new Label( nowrapComp, SWT.NONE ).setText( "And this one on doesn't:" );
@@ -248,17 +247,17 @@ public class InputExamplePage implements IExamplePage {
     nowrapText.setLayoutData( nowrapData );
   }
 
-  private static void createRadioAndCheckButtons( Composite parent ) {
-    Group group = new Group( parent, SWT.NONE );
-    group.setText( "Checkboxes and Radiobuttons" );
+  private void createRadioAndCheckButtons( Composite parent ) {
+    Composite radioCheckComp = new Composite( parent, SWT.NONE );
+    ExampleUtil.createHeadingLabel( radioCheckComp, "Checkboxes and Radiobuttons", 2 );
     GridLayout layout = new GridLayout( 2, true );
     layout.marginWidth = 10;
     layout.marginHeight = 10;
     layout.horizontalSpacing = 20;
-    group.setLayout( layout );
-    group.setLayoutData( ExampleUtil.createHorzFillData() );
+    radioCheckComp.setLayout( layout );
+    radioCheckComp.setLayoutData( ExampleUtil.createHorzFillData() );
     // Radio buttons
-    Composite radioComp = new Composite( group, SWT.NONE );
+    Composite radioComp = new Composite( radioCheckComp, SWT.NONE );
     RowLayout radioLayout = new RowLayout( SWT.VERTICAL );
     radioLayout.marginWidth = 0;
     radioLayout.marginHeight = 0;
@@ -271,7 +270,7 @@ public class InputExamplePage implements IExamplePage {
     final Button radio3 = new Button( radioComp, SWT.RADIO );
     radio3.setText( "Calzone" );
     // Check boxes
-    Composite checkComp = new Composite( group, SWT.NONE );
+    Composite checkComp = new Composite( radioCheckComp, SWT.NONE );
     RowLayout checkLayout = new RowLayout( SWT.VERTICAL );
     checkLayout.marginWidth = 0;
     checkLayout.marginHeight = 0;
@@ -286,17 +285,17 @@ public class InputExamplePage implements IExamplePage {
   }
 
   private void createPushButtons( final Composite parent ) {
-    Group group = new Group( parent, SWT.NONE );
-    group.setText( "Push and Toggle Buttons" );
-    group.setLayout( ExampleUtil.createGridLayout( 2, false, 10, 10 ) );
-    group.setLayoutData( ExampleUtil.createHorzFillData() );
+    Composite pushComp = new Composite( parent, SWT.NONE );
+    ExampleUtil.createHeadingLabel( pushComp, "Push and Toggle Buttons", 2 );
+    pushComp.setLayout( ExampleUtil.createGridLayout( 2, false, 10, 10 ) );
+    pushComp.setLayoutData( ExampleUtil.createHorzFillData() );
 
-    Composite compositeL1 = new Composite( group, SWT.NONE );
-    Composite compositeR = new Composite( group, SWT.NONE );
+    Composite compositeL1 = new Composite( pushComp, SWT.NONE );
+    Composite compositeR = new Composite( pushComp, SWT.NONE );
     GridData rData = new GridData();
     rData.verticalSpan = 2;
     compositeR.setLayoutData( rData );
-    Composite compositeL2 = new Composite( group, SWT.NONE );
+    Composite compositeL2 = new Composite( pushComp, SWT.NONE );
 
     RowLayout layoutL1 = new RowLayout( SWT.HORIZONTAL );
     layoutL1.marginWidth = 10;
@@ -341,7 +340,7 @@ public class InputExamplePage implements IExamplePage {
     final Image imgUnlocked = Graphics.getImage( "resources/unlockedstate.gif", classLoader );
     toggle2.setImage( imgUnlocked );
     toggle2.addSelectionListener( new SelectionAdapter() {
-      
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         boolean selected = toggle2.getSelection();
         toggle2.setText( selected ? "Locked" : "Unlocked" );

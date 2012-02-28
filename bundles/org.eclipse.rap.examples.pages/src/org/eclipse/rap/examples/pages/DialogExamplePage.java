@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,38 +25,40 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 
-
 public class DialogExamplePage implements IExamplePage {
 
   private Label resultsLabel;
 
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
-    createSwtGroup( parent );
-    createJfaceGroup( parent );
-    createCustomGroup( parent );
+    createSwtArea( parent );
+    createJfaceArea( parent );
+    createCustomArea( parent );
     createResultsComposite( parent );
   }
 
-  private void createSwtGroup( Composite parent ) {
-    Group group = new Group( parent, SWT.NONE );
-    group.setText( "SWT Dialogs" );
-    group.setLayoutData( ExampleUtil.createHorzFillData() );
-    createSwtDialogs( group );
+  private void createSwtArea( Composite parent ) {
+    Composite swtComp = new Composite( parent, SWT.NONE );
+    swtComp.setLayoutData( ExampleUtil.createHorzFillData() );
+    swtComp.setLayout( ExampleUtil.createGridLayout( 3, false, 20, 0 ) );
+    ExampleUtil.createHeadingLabel( swtComp, "SWT Dialogs", 3 );
+    createSwtDialogButtons( swtComp );
   }
 
-  private void createJfaceGroup( Composite parent ) {
-    Group group = new Group( parent, SWT.NONE );
-    group.setText( "JFace Dialogs" );
-    group.setLayoutData( ExampleUtil.createHorzFillData() );
-    createJfaceDialogs( group );
+  private void createJfaceArea( Composite parent ) {
+    Composite jFaceComp = new Composite( parent, SWT.NONE );
+    jFaceComp.setLayoutData( ExampleUtil.createHorzFillData() );
+    jFaceComp.setLayout( ExampleUtil.createGridLayout( 3, false, 20, 0 ) );
+    ExampleUtil.createHeadingLabel( jFaceComp, "JFace Dialogs", 3 );
+    createJfaceDialogButtons( jFaceComp );
   }
 
-  private void createCustomGroup( Composite parent ) {
-    Group group = new Group( parent, SWT.NONE );
-    group.setText( "Custom Dialogs" );
-    group.setLayoutData( ExampleUtil.createHorzFillData() );
-    createCustomDialogs( group );
+  private void createCustomArea( Composite parent ) {
+    Composite customComp = new Composite( parent, SWT.NONE );
+    customComp.setLayoutData( ExampleUtil.createHorzFillData() );
+    customComp.setLayout( ExampleUtil.createGridLayout( 3, false, 20, 0 ) );
+    ExampleUtil.createHeadingLabel( customComp, "Custom Dialogs", 3 );
+    createCustomDialogs( customComp );
   }
 
   private void createResultsComposite( Composite parent ) {
@@ -67,17 +69,20 @@ public class DialogExamplePage implements IExamplePage {
     resultsLabel.setLayoutData( ExampleUtil.createFillData() );
   }
 
-  private void createSwtDialogs( Composite parent ) {
-    parent.setLayout( ExampleUtil.createGridLayout( 3, false, 20, 20 ) );
-    createMessageDialogButton( parent );
-    createColorDialogButton( parent );
-    createFontDialogButton( parent );
+  //////
+  // SWT
+
+  private void createSwtDialogButtons( Composite swtComp ) {
+    createMessageDialogButton( swtComp );
+    createColorDialogButton( swtComp );
+    createFontDialogButton( swtComp );
   }
 
   private void createMessageDialogButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "MessageBox" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         showMessageBox();
       }
@@ -89,6 +94,7 @@ public class DialogExamplePage implements IExamplePage {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "ColorDialog" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         showColorDialog();
       }
@@ -100,6 +106,7 @@ public class DialogExamplePage implements IExamplePage {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "FontDialog" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         showFontDialog();
       }
@@ -107,64 +114,25 @@ public class DialogExamplePage implements IExamplePage {
     button.setLayoutData( createButtonGridData() );
   }
 
-  private void createJfaceDialogs( Composite parent ) {
-    parent.setLayout( ExampleUtil.createGridLayout( 3, false, 20, 20 ) );
+  ////////
+  // JFace
+
+  private void createJfaceDialogButtons( Composite parent ) {
     createInputDialogButton( parent );
     createProgressDialogButton( parent );
     createErrorDialogButton( parent );
-
-    insertSpaceLabels( parent, 3 );
-
-    Button showMessageInfoDlgButton = new Button( parent, SWT.PUSH );
-    showMessageInfoDlgButton.setLayoutData( createButtonGridData() );
-    showMessageInfoDlgButton.setText( "Info Message" );
-    showMessageInfoDlgButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-        showMessageDialogInfo();
-      }
-    } );
-
-    Button showMessageWarningDlgButton = new Button( parent, SWT.PUSH );
-    showMessageWarningDlgButton.setLayoutData( createButtonGridData() );
-    showMessageWarningDlgButton.setText( "Warning Dialog" );
-    showMessageWarningDlgButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-        showMessageDialogWarning();
-      }
-    } );
-
-    Button showMessageErrorDlgButton = new Button( parent, SWT.PUSH );
-    showMessageErrorDlgButton.setLayoutData( createButtonGridData() );
-    showMessageErrorDlgButton.setText( "Error Message" );
-    showMessageErrorDlgButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-        showMessageDialogError();
-      }
-    } );
-
-    Button showMessageQuestionDlgButton = new Button( parent, SWT.PUSH );
-    showMessageQuestionDlgButton.setLayoutData( createButtonGridData() );
-    showMessageQuestionDlgButton.setText( "Question Dialog" );
-    showMessageQuestionDlgButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-        showMessageDialogQuestion();
-      }
-    } );
-
-    Button showMessageConfirmDlgButton = new Button( parent, SWT.PUSH );
-    showMessageConfirmDlgButton.setLayoutData( createButtonGridData() );
-    showMessageConfirmDlgButton.setText( "Confirm Message" );
-    showMessageConfirmDlgButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-        showMessageDialogConfirm();
-      }
-    } );
+    createInfoMessageDialogButton( parent );
+    createWarningMessageDialogButton( parent );
+    createErrorMessageDialogButton( parent );
+    createQuestionMessageDialogButton( parent );
+    createConfirmMessageDialogButton( parent );
   }
 
   private void createInputDialogButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Input Dialog" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         showInputDialog();
       }
@@ -177,6 +145,7 @@ public class DialogExamplePage implements IExamplePage {
     button.setText( "ProgressDialog" );
     button.setLayoutData( createButtonGridData() );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected(final SelectionEvent e) {
         showProgressDialog();
       }
@@ -188,23 +157,86 @@ public class DialogExamplePage implements IExamplePage {
     button.setLayoutData( createButtonGridData() );
     button.setText( "Error Dialog" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         showErrorDialog();
       }
     } );
   }
 
+  private void createInfoMessageDialogButton( Composite parent ) {
+    Button showMessageInfoDlgButton = new Button( parent, SWT.PUSH );
+    showMessageInfoDlgButton.setLayoutData( createButtonGridData() );
+    showMessageInfoDlgButton.setText( "Info Message" );
+    showMessageInfoDlgButton.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        showMessageDialogInfo();
+      }
+    } );
+  }
+
+  private void createWarningMessageDialogButton( Composite parent ) {
+    Button showMessageWarningDlgButton = new Button( parent, SWT.PUSH );
+    showMessageWarningDlgButton.setLayoutData( createButtonGridData() );
+    showMessageWarningDlgButton.setText( "Warning Dialog" );
+    showMessageWarningDlgButton.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        showMessageDialogWarning();
+      }
+    } );
+  }
+
+  private void createErrorMessageDialogButton( Composite parent ) {
+    Button showMessageErrorDlgButton = new Button( parent, SWT.PUSH );
+    showMessageErrorDlgButton.setLayoutData( createButtonGridData() );
+    showMessageErrorDlgButton.setText( "Error Message" );
+    showMessageErrorDlgButton.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        showMessageDialogError();
+      }
+    } );
+  }
+
+  private void createQuestionMessageDialogButton( Composite parent ) {
+    Button showMessageQuestionDlgButton = new Button( parent, SWT.PUSH );
+    showMessageQuestionDlgButton.setLayoutData( createButtonGridData() );
+    showMessageQuestionDlgButton.setText( "Question Dialog" );
+    showMessageQuestionDlgButton.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        showMessageDialogQuestion();
+      }
+    } );
+  }
+
+  private void createConfirmMessageDialogButton( Composite parent ) {
+    Button showMessageConfirmDlgButton = new Button( parent, SWT.PUSH );
+    showMessageConfirmDlgButton.setLayoutData( createButtonGridData() );
+    showMessageConfirmDlgButton.setText( "Confirm Message" );
+    showMessageConfirmDlgButton.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        showMessageDialogConfirm();
+      }
+    } );
+  }
+
+  /////////
+  // Custom
+
   private void createCustomDialogs( Composite parent ) {
-    parent.setLayout( ExampleUtil.createGridLayout( 3, false, 20, 20 ) );
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Login Dialog" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         showLoginDialog();
       }
     } );
     button.setLayoutData( createButtonGridData() );
-    insertSpaceLabels( parent, 2 );
   }
 
   private void showInputDialog() {
@@ -389,13 +421,8 @@ public class DialogExamplePage implements IExamplePage {
     resultsLabel.getParent().pack();
   }
 
-  private static void insertSpaceLabels( Composite parent, int count ) {
-    for( int i = 0; i < count; i++ ) {
-      new Label( parent, SWT.NONE );
-    }
-  }
-
   private static GridData createButtonGridData() {
     return new GridData( 200, 28 );
   }
+
 }

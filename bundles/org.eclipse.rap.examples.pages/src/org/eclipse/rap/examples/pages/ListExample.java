@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,12 +42,9 @@ public class ListExample implements IExamplePage {
 
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
-    Group group = new Group( parent, SWT.NONE );
-    group.setLayoutData( ExampleUtil.createFillData() );
-    group.setText( "Drag && Drop" );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 20 ) );
-    Composite composite = new Composite( group, SWT.NONE );
-    composite.setLayout( ExampleUtil.createGridLayout( 3, false, 5, 20 ) );
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( ExampleUtil.createGridLayout( 1, false, 20, 0 ) );
+    composite.setLayout( ExampleUtil.createGridLayout( 3, false, 20, 0, 10 ) );
     composite.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
     final List leftList = new List( composite, LIST_STYLE );
     leftList.setLayoutData( ExampleUtil.createFillData() );
@@ -65,11 +62,13 @@ public class ListExample implements IExamplePage {
     addDropSupport( rightList );
     leftList.setItems( ELEMENTS );
     addButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         moveSelectedItems( leftList, rightList );
       }
     } );
     removeButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         moveSelectedItems( rightList, leftList );
       }
@@ -80,9 +79,11 @@ public class ListExample implements IExamplePage {
     DragSource dragSource = new DragSource( list, DND.DROP_MOVE );
     dragSource.setTransfer( new Transfer[] { new StringArrayTransfer() } );
     dragSource.addDragListener( new DragSourceAdapter() {
+      @Override
       public void dragSetData( final DragSourceEvent event ) {
         event.data = list.getSelection();
       }
+      @Override
       public void dragFinished( final DragSourceEvent event ) {
         if( event.detail == DND.DROP_MOVE ) {
           String[] items = list.getSelection();
@@ -98,6 +99,7 @@ public class ListExample implements IExamplePage {
     DropTarget dropTarget = new DropTarget( list, DND.DROP_MOVE );
     dropTarget.setTransfer( new Transfer[] { new StringArrayTransfer() } );
     dropTarget.addDropListener( new DropTargetAdapter() {
+      @Override
       public void drop( final DropTargetEvent event ) {
         String[] items = ( String[] )event.data;
         for( int i = 0; i < items.length; i++ ) {
@@ -145,20 +147,24 @@ public class ListExample implements IExamplePage {
     private static final String TYPE_NAME = "string-array";
     private static final int TYPE_ID = registerType( TYPE_NAME );
 
+    @Override
     protected int[] getTypeIds() {
       return new int[] { TYPE_ID };
     }
 
+    @Override
     protected String[] getTypeNames() {
       return new String[] { TYPE_NAME };
     }
 
-    public void javaToNative( final Object object, 
-                              final TransferData transferData ) 
+    @Override
+    public void javaToNative( final Object object,
+                              final TransferData transferData )
     {
       transferData.data = object;
     }
 
+    @Override
     public Object nativeToJava( final TransferData transferData ) {
       return transferData.data;
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,33 +55,31 @@ public class TreeViewerExample implements IExamplePage {
   }
 
   private void createTopLeft( Composite parent ) {
-    Group group = new Group( parent, SWT.NONE );
-    group.setText( "Simple Tree" );
-    group.setLayoutData( ExampleUtil.createFillData() );
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayoutData( ExampleUtil.createFillData() );
     FillLayout layout = new FillLayout();
     layout.marginHeight = 10;
-    layout.marginWidth = 10;
-    group.setLayout( layout );
-    simpleTree = createSimpleTree( group );
+    layout.marginWidth = 0;
+    composite.setLayout( layout );
+    simpleTree = createSimpleTree( composite );
   }
 
   private void createTopRight( Composite parent ) {
-    Group group = new Group( parent, SWT.NONE );
-    group.setText( "Complex Tree" );
-    group.setLayoutData( ExampleUtil.createFillData() );
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayoutData( ExampleUtil.createFillData() );
     FillLayout layout = new FillLayout();
     layout.marginHeight = 10;
-    layout.marginWidth = 10;
-    group.setLayout( layout );
-    complexTree = createComplexTree( group );
+    layout.marginWidth = 0;
+    composite.setLayout( layout );
+    complexTree = createComplexTree( composite );
   }
 
   private void createFooter( Composite parent ) {
-    Group group = new Group( parent, SWT.NONE );
+    Composite footerComp = new Composite( parent, SWT.NONE );
     GridData footerData = ExampleUtil.createHorzFillData();
     footerData.horizontalSpan = 2;
-    group.setLayoutData( footerData );
-    createControlButtons( group );
+    footerComp.setLayoutData( footerData );
+    createControlButtons( footerComp );
   }
 
   private void setFocus() {

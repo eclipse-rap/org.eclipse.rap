@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,11 +44,11 @@ public class RowLayoutExample implements IExamplePage {
   }
 
   private void createLayoutComp( Composite parent, int style ) {
-    Group group = new Group( parent, SWT.NONE );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 10 ) );
+    Composite layoutCompContainer = new Composite( parent, SWT.NONE );
+    layoutCompContainer.setLayout( ExampleUtil.createGridLayoutWithOffset( 1, false, 10, 10, 10 ) );
     String text = style == SWT.VERTICAL ? "Vertical RowLayout" : "Horizontal RowLayout";
-    group.setText( text );
-    Composite layoutComp = new Composite( group, SWT.BORDER );
+    ExampleUtil.createHeadingLabel( layoutCompContainer, text, 1 );
+    Composite layoutComp = new Composite( layoutCompContainer, SWT.BORDER );
     if( !propPrefSize ) {
       layoutComp.setLayoutData( ExampleUtil.createFillData() );
     }
@@ -80,11 +80,11 @@ public class RowLayoutExample implements IExamplePage {
     GridData gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
     gridData.horizontalSpan = 2;
     group.setLayoutData( gridData );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 5, 2 ) );
+    group.setLayout( ExampleUtil.createGridLayout( 1, false, 2, 5 ) );
     final Button centerButton = new Button( group, SWT.CHECK );
     centerButton.setText( "Center all elements in a row" );
     centerButton.addSelectionListener( new SelectionAdapter() {
-      
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         propCenter = centerButton.getSelection();
         relayout( parent );
@@ -93,7 +93,7 @@ public class RowLayoutExample implements IExamplePage {
     final Button fillButton = new Button( group, SWT.CHECK );
     fillButton.setText( "Make all elements the same width / height" );
     fillButton.addSelectionListener( new SelectionAdapter() {
-      
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         propFill = fillButton.getSelection();
         relayout( parent );
@@ -102,7 +102,7 @@ public class RowLayoutExample implements IExamplePage {
     final Button packButton = new Button( group, SWT.CHECK );
     packButton.setText( "Make all elements the same size" );
     packButton.addSelectionListener( new SelectionAdapter() {
-      
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         propPack = !packButton.getSelection();
         relayout( parent );
@@ -111,7 +111,7 @@ public class RowLayoutExample implements IExamplePage {
     final Button justifyButton = new Button( group, SWT.CHECK );
     justifyButton.setText( "Justify elements" );
     justifyButton.addSelectionListener( new SelectionAdapter() {
-      
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         propJustify = justifyButton.getSelection();
         relayout( parent );
@@ -120,7 +120,7 @@ public class RowLayoutExample implements IExamplePage {
     final Button wrapButton = new Button( group, SWT.CHECK );
     wrapButton.setText( "Wrap" );
     wrapButton.addSelectionListener( new SelectionAdapter() {
-      
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         propWrap = wrapButton.getSelection();
         relayout( parent );
@@ -129,7 +129,7 @@ public class RowLayoutExample implements IExamplePage {
     final Button preferredSizeButton = new Button( group, SWT.CHECK );
     preferredSizeButton.setText( "Shrink containers to their preferred size" );
     preferredSizeButton.addSelectionListener( new SelectionAdapter() {
-      
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         propPrefSize = preferredSizeButton.getSelection();
         relayout( parent );

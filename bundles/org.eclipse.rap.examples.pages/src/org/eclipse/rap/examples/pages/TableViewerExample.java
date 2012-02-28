@@ -70,14 +70,13 @@ public class TableViewerExample implements IExamplePage {
 
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
-    Group group = new Group( parent, SWT.NONE );
-    group.setText( "Table Viewer" );
-    group.setLayoutData( ExampleUtil.createFillData() );
-    group.setLayout( ExampleUtil.createGridLayout( 1, true, 10, 10 ) );
-    createTextFilter( group );
-    createViewer( group );
-    createLabelSelection( group );
-    createLabelHelp( group );
+    Composite tableViewerComp = new Composite( parent, SWT.NONE );
+    tableViewerComp.setLayoutData( ExampleUtil.createFillData() );
+    tableViewerComp.setLayout( ExampleUtil.createGridLayout( 1, true, 10, 0 ) );
+    createTextFilter( tableViewerComp );
+    createViewer( tableViewerComp );
+    createLabelSelection( tableViewerComp );
+    createLabelHelp( tableViewerComp );
     viewer.getTable().forceFocus();
     handleSelection( true );
   }
@@ -133,8 +132,8 @@ public class TableViewerExample implements IExamplePage {
     addViewerKeyboardControl();
   }
 
-  private void createLabelSelection( Group group ) {
-    Composite selBorder = new Composite( group, SWT.BORDER );
+  private void createLabelSelection( Composite parent ) {
+    Composite selBorder = new Composite( parent, SWT.BORDER );
     GridData gridData = new GridData( SWT.FILL, SWT.TOP, true, true );
     gridData.minimumHeight = 25;
     selBorder.setLayoutData( gridData );
@@ -145,8 +144,8 @@ public class TableViewerExample implements IExamplePage {
     lblSelection = new Label( selBorder, SWT.NONE );
   }
 
-  private void createLabelHelp( Group group ) {
-    lblHelp = new Label( group, SWT.WRAP );
+  private void createLabelHelp( Composite parent ) {
+    lblHelp = new Label( parent, SWT.WRAP );
     lblHelp.setLayoutData( ExampleUtil.createHorzFillData() );
     String helpContent = "Shortcuts: [CTRL+F] - Filter | ";
     helpContent += "Sort by: [CTRL+R] - Number, [CTRL+Y] - Symbol, [CTRL+N] - Name";

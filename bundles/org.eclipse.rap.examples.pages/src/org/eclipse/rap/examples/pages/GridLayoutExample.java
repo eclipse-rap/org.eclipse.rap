@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,10 +47,10 @@ public class GridLayoutExample implements IExamplePage {
   }
 
   private void createLayoutComp( final Composite parent ) {
-    Group group = new Group( parent, SWT.NONE );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 10 ) );
-    group.setText( "GridLayout" );
-    Composite layoutComp = new Composite( group, SWT.BORDER );
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 0, 10 ) );
+    ExampleUtil.createHeadingLabel( composite, "Grid Layout", 1 );
+    Composite layoutComp = new Composite( composite, SWT.BORDER );
     if( !propPrefSize ) {
       layoutComp.setLayoutData( ExampleUtil.createFillData() );
     }
@@ -75,11 +75,11 @@ public class GridLayoutExample implements IExamplePage {
     GridData gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
     gridData.horizontalSpan = 2;
     group.setLayoutData( gridData );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 5, 2 ) );
+    group.setLayout( ExampleUtil.createGridLayout( 1, false, 2, 0 ) );
     final Button equalWidthButton = new Button( group, SWT.CHECK );
     equalWidthButton.setText( "Make all columns equal width" );
     equalWidthButton.addSelectionListener( new SelectionAdapter() {
-
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         propEqualWidth = equalWidthButton.getSelection();
         createLayoutArea( parent );
@@ -88,7 +88,7 @@ public class GridLayoutExample implements IExamplePage {
     final Button preferredSizeButton = new Button( group, SWT.CHECK );
     preferredSizeButton.setText( "Shrink container to its preferred size" );
     preferredSizeButton.addSelectionListener( new SelectionAdapter() {
-      
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         propPrefSize = preferredSizeButton.getSelection();
         createLayoutArea( parent );
