@@ -38,7 +38,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
     },
 
     processJavaScriptErrorInResponse : function( script, error, currentRequest ) {
-      var content = "<p>Could not evaluate javascript response:</p><pre>";
+      var content = "<p>Could not process server response:</p><pre>";
       content += this._gatherErrorInfo( error, script, currentRequest );
       content += "</pre>";
       this.showError( content );
