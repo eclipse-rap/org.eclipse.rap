@@ -92,6 +92,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     Object httpSessionAttribute = new Object();
     httpSession.setAttribute( HTTP_SESSION_ATTRIBUTE, httpSessionAttribute );
 
+    LifeCycleServiceHandler.markSessionInitialized();
     simulateInitialUiRequest();
     new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
 
@@ -103,6 +104,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     RWTRequestVersionControl.getInstance().nextRequestId();
     Integer versionBeforeRestart = RWTRequestVersionControl.getInstance().nextRequestId();
 
+    LifeCycleServiceHandler.markSessionInitialized();
     simulateInitialUiRequest();
     new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
 
@@ -111,6 +113,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   }
 
   public void testApplicationContextAfterSessionRestart() throws IOException {
+    LifeCycleServiceHandler.markSessionInitialized();
     simulateInitialUiRequest();
     ISessionStore sessionStore = ContextProvider.getSessionStore();
     ApplicationContext applicationContext = ApplicationContextUtil.getInstance();
@@ -118,6 +121,18 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
 
     assertSame( applicationContext, ApplicationContextUtil.get( sessionStore ) );
+  }
+
+  public void testRequestParametersAreBufferedAfterSessionRestart() throws IOException {
+    Fixture.fakeNewGetRequest();
+    Fixture.fakeRequestParam( "foo", "bar" );
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+
+    LifeCycleServiceHandler.markSessionInitialized();
+    simulateInitialUiRequest();
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+
+    assertEquals( "bar", ContextProvider.getRequest().getParameter( "foo" ) );
   }
 
   public void testFinishesProtocolWriter() throws IOException {
@@ -156,17 +171,6 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertEquals( "text/html; charset=UTF-8", response.getHeader( "Content-Type" ) );
-  }
-
-  public void testRequestParametersAreBuffered() throws IOException {
-    Fixture.fakeNewGetRequest();
-    Fixture.fakeRequestParam( "foo", "bar" );
-    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
-
-    simulateInitialUiRequest();
-    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
-
-    assertEquals( "bar", ContextProvider.getRequest().getParameter( "foo" ) );
   }
 
   private void simulateInitialUiRequest() {

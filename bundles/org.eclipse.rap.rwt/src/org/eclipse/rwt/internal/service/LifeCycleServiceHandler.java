@@ -37,8 +37,8 @@ import org.eclipse.rwt.service.ISessionStore;
 
 
 public class LifeCycleServiceHandler implements IServiceHandler {
-  private static final String NEW_HTTP_SESSION
-    = LifeCycleServiceHandler.class.getName() + "#isNewHttpSession";
+  private static final String SESSION_INITIALIZED
+    = LifeCycleServiceHandler.class.getName() + "#isSessionInitialized";
 
   private final LifeCycleFactory lifeCycleFactory;
   private final StartupPage startupPage;
@@ -55,12 +55,11 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   }
 
   void synchronizedService() throws IOException {
-    checkForNewSession();
     if( HTTP.METHOD_GET.equals( ContextProvider.getRequest().getMethod() ) ) {
       handleGetRequest();
     } else {
       handlePostRequest();
-      clearNewSessionAttribute();
+      markSessionInitialized();
     }
   }
 
@@ -95,7 +94,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   private static boolean isRequestCounterValid() {
     return RWTRequestVersionControl.getInstance().isValid()
            || isSessionRestart()
-           || isNewHttpSession();
+           || !isSessionInitialized();
   }
 
   private static void handleInvalidRequestCounter() {
@@ -145,28 +144,22 @@ public class LifeCycleServiceHandler implements IServiceHandler {
    * Session restart: we're in the same HttpSession and start over (e.g. by pressing F5)
    */
   private static boolean isSessionRestart() {
-    return !isNewHttpSession() && hasInitializeParameter();
+    return isSessionInitialized() && hasInitializeParameter();
   }
 
   private static boolean isSessionTimeout() {
-    return isNewHttpSession() && !hasInitializeParameter();
+    // Session is not initialized because we got a new HTTPSession
+    return !isSessionInitialized() && !hasInitializeParameter();
   }
 
-  private void checkForNewSession() {
-    if( ContextProvider.getRequest().getSession().isNew() ) {
-      ISessionStore sessionStore = ContextProvider.getSessionStore();
-      sessionStore.setAttribute( NEW_HTTP_SESSION, Boolean.TRUE );
-    }
-  }
-
-  private void clearNewSessionAttribute() {
+  static void markSessionInitialized() {
     ISessionStore sessionStore = ContextProvider.getSessionStore();
-    sessionStore.removeAttribute( NEW_HTTP_SESSION );
+    sessionStore.setAttribute( SESSION_INITIALIZED, Boolean.TRUE );
   }
 
-  private static boolean isNewHttpSession() {
+  private static boolean isSessionInitialized() {
     ISessionStore sessionStore = ContextProvider.getSessionStore();
-    return Boolean.TRUE.equals( sessionStore.getAttribute( NEW_HTTP_SESSION ) );
+    return Boolean.TRUE.equals( sessionStore.getAttribute( SESSION_INITIALIZED ) );
   }
 
   private static boolean hasInitializeParameter() {
