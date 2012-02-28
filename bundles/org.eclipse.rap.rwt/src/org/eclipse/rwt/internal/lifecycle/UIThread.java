@@ -83,7 +83,7 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
   {
     Thread.interrupted();
     if( uiThreadTerminating ) {
-      // Equip the UI thread that is continuing its execution with a 
+      // Equip the UI thread that is continuing its execution with a
       // service context and the proper phase (see terminateThread).
       updateServiceContext();
       CurrentPhase.set( PhaseId.PROCESS_ACTION );
@@ -175,8 +175,5 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
     ApplicationContext applicationContext = ApplicationContextUtil.get( sessionStore );
     return applicationContext != null && applicationContext.isActivated();
   }
-
-  //////////////////
-  // Helping methods
 
 }
