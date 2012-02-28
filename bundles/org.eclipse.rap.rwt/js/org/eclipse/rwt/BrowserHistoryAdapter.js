@@ -35,7 +35,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.BrowserHistory", {
     "add" : function( object, value ) {
       var entries = value.entries;
       for( var i = 0; i < entries.length; i++) {
-      	object.addToHistory( entries[ i ][ 0 ], entries[ i ][ 1 ] );
+        object.addToHistory( entries[ i ][ 0 ], entries[ i ][ 1 ] );
       }
     }
   }
