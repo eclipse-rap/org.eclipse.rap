@@ -7,7 +7,6 @@
    </configIni>
 
    <launcherArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
    <plugins>
@@ -18,15 +17,15 @@
    </features>
 
    <configurations>
-      <plugin id="org.eclipse.rap.demo" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.rap.examples" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.rap.examples.pages" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.http.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.http.servletbridge" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.rap.demo" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.examples" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.examples.pages" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.rwt" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.rwt.osgi" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.ui" autoStart="true" startLevel="0" />
