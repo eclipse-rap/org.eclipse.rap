@@ -45,11 +45,26 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
     },
 
     processJavaScriptError : function( error ) {
-      var content = "<p>Javascript error occurred:</p><pre>";
-      content += this._gatherErrorInfo( error );
-      content += "</pre>";
-      this.showError( content );
-      throw error;
+      if( typeof console === "object" ) {
+        var msg = "Error: " + ( error.message ? error.message : error );
+        if( typeof console.error !== "undefined" ) { // IE returns "object" for typeof
+          console.error( msg );
+        } else if( typeof console.log !== "undefined" ) {
+          console.log( msg );
+        }
+        if( typeof console.log === "function" && error.stack ) {
+          console.log( "Error stack:\n" + error.stack );
+        } else if( typeof console.trace !== "undefined" ) {
+          console.trace();
+        }
+      }
+      if( qx.core.Variant.isSet( "qx.debug", "on" ) ) {
+        var content = "<p>Javascript error occurred:</p><pre>";
+        content += this._gatherErrorInfo( error );
+        content += "</pre>";
+        this.showError( content );
+        throw error;
+      }
     },
 
     _gatherErrorInfo : function( error, script, currentRequest ) {
@@ -60,10 +75,13 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
           info.push( "Script: " + script );
         }
         if( error instanceof Error ) {
-          for( var key in error ) {
+          for( var key in error ) { // NOTE : does not work in webkit (no iteration)
             info.push( key + ": " + error[ key ] );
           }
-        }
+          if( error.stack ) { // ensures stack is printed in webkit, might be printed twice in gecko  
+            info.push( "Stack: " + error.stack );
+          }
+       }
         info.push( "Debug: " + qx.core.Variant.get( "qx.debug" ) );
         if( currentRequest ) {
           info.push( "Request: " + currentRequest.getData() );

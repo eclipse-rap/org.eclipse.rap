@@ -614,7 +614,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
 
     detachEventTypes : function( vEventTypes, vFunctionPointer ) {
       try {
-        var el = org.eclipse.rwt.Client ? window : document.body;
+        var el = org.eclipse.rwt.Client.isGecko() ? window : document.body;
         for (var i=0, l=vEventTypes.length; i<l; i++) {
           qx.html.EventRegistration.removeEventListener( el, vEventTypes[i], vFunctionPointer );
         }
