@@ -893,7 +893,8 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       "action" : "create",
       "type" : "rwt.widgets.Shell",
       "properties" : {
-        "style" : [ "BORDER" ]
+        "style" : [ "BORDER" ],
+        "visibility" : true
       }
     } );
     return org.eclipse.rwt.protocol.ObjectManager.getObject( id );

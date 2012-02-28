@@ -119,8 +119,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
     renderText( shell );
     renderAlpha( shell );
     renderActiveShell( shell );
-    // Important: Order matters, write setMode() after open() and before
-    // setBounds() - see bug 302224
     renderMode( shell );
     renderMinimumSize( shell );
     renderDefaultButton( shell );

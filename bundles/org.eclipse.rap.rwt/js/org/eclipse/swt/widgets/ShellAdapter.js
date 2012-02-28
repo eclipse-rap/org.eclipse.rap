@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
         result.setParentShell( parentShell );    
       }
       result.initialize();
-      result.show();
     } );
     return result;
   },
@@ -86,6 +85,14 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
     },
     "image" : function( shell, value ) {
       shell.setIcon( value );
+    },
+    "visibility" : function( shell, value ) {
+      if( value ) {
+        shell.show();
+      } else {
+        shell.hide();
+      }
+      org.eclipse.swt.widgets.Shell.reorderShells( shell.getWindowManager() );
     }
   } ),
 

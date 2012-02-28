@@ -42,7 +42,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       assertTrue( shell._onTop );
       assertTrue( shell._appModal );
       org.eclipse.rwt.test.fixture.TestUtil.flush();
-      assertTrue( shell.isSeeable() );
+      assertFalse( shell.isSeeable() );
       this._disposeShell();
     },
 
@@ -224,11 +224,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     // See Bug 354912 - New Shell opens in background, not visible 
     testSetParentShellZIndex : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = this._protocolCreateShell( "wParent" );
       parent.setActive( true ); // otherwise it would not be automatically in front
+      TestUtil.protocolSet( "wParent", { "visibility" : true } );
       org.eclipse.rwt.test.fixture.TestUtil.flush();      
 
       var shell = this._protocolCreateShell( "w3", "wParent" );
+      TestUtil.protocolSet( "w3", { "visibility" : true } );
       
       org.eclipse.rwt.test.fixture.TestUtil.flush();      
       assertTrue( shell.getZIndex() > parent.getZIndex() );

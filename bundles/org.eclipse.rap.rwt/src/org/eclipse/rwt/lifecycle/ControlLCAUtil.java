@@ -413,7 +413,7 @@ public class ControlLCAUtil {
    */
   public static void renderVisible( Control control ) {
     Boolean newValue = Boolean.valueOf( getVisible( control ) );
-    Boolean defValue = Boolean.TRUE;
+    Boolean defValue = control instanceof Shell ? Boolean.FALSE : Boolean.TRUE;
     // TODO [tb] : Can we have a shorthand for this, like in JSWriter?
     if( WidgetLCAUtil.hasChanged( control, Props.VISIBLE, newValue, defValue ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( control );

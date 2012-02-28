@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this._captionTitle.setMode( "html" );
     this._activeControl = null;
     this._focusControl = null;
-    this._activateListenerWidgets = new Array();
+    this._activateListenerWidgets = [];
     this._parentShell = null;
     this._renderZIndex = true;
     this._hasShellListener = false;
@@ -96,7 +96,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         for( var i = 0; i < vLength; i++ ) {
           vZIndex += 10;
           shells[ i ].setZIndex( vZIndex );
-          if( shells[ i ]._appModal ) {
+          if( shells[ i ]._appModal && shells[ i ].getVisibility() && shells[ i ].getDisplay() ) {
             upperModalShell = shells[ i ];
           }
         }
@@ -139,21 +139,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         result = -1;
       }
       // compare by onTop property
-      if( result == 0 ) {
+      if( result === 0 ) {
         result = ( sh1._onTop ? 1 : 0 ) - ( sh2._onTop ? 1 : 0 );
       }
       // compare by appModal property
-      if( result == 0 ) {
+      if( result === 0 ) {
         result = ( sh1._appModal ? 1 : 0 ) - ( sh2._appModal ? 1 : 0 );
       }
       // compare by top-level parent's z-order
-      if( result == 0 ) {
+      if( result === 0 ) {
         var top1 = sh1.getTopLevelShell();
         var top2 = sh2.getTopLevelShell();
         result = top1.getZIndex() - top2.getZIndex();
       }
       // compare by actual z-order
-      if( result == 0 ) {
+      if( result === 0 ) {
         result = sh1.getZIndex() - sh2.getZIndex();
       }
       return result;

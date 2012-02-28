@@ -684,18 +684,17 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findSetProperty( shell, "visibility" ) );
+    assertNull( message.findSetOperation( shell, "visibility" ) );
   }
 
   public void testRenderVisibilityInitiallyTrue() throws IOException {
-    // Client shell is initially visible, SWT shell is not
     ShellLCA lca = new ShellLCA();
 
     shell.open();
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( shell, "visibility" ) );
+    assertEquals( Boolean.TRUE, message.findSetProperty( shell, "visibility" ) );
   }
 
   private static Control getActiveControl( Shell shell ) {
