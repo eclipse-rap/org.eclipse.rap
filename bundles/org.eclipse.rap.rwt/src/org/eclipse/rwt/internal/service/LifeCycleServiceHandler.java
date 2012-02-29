@@ -58,7 +58,11 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     if( HTTP.METHOD_GET.equals( ContextProvider.getRequest().getMethod() ) ) {
       handleGetRequest();
     } else {
-      handlePostRequest();
+      try {
+        handlePostRequest();
+      } finally {
+        markSessionInitialized();
+      }
     }
   }
 
@@ -74,7 +78,6 @@ public class LifeCycleServiceHandler implements IServiceHandler {
       handleSessionTimeout();
     } else if( isRequestCounterValid() ) {
       initializeSessionStore();
-      markSessionInitialized();
       RequestParameterBuffer.merge();
       runLifeCycle();
     } else {
