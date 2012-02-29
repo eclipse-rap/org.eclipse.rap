@@ -32,6 +32,7 @@ public class FileUpload_Test extends TestCase {
 
   public void testStyle() {
     FileUpload upload = new FileUpload( shell, SWT.BORDER | SWT.FLAT );
+
     assertEquals( 0, upload.getStyle() & SWT.FLAT );
     assertEquals( SWT.BORDER, upload.getStyle() & SWT.BORDER );
   }
@@ -41,14 +42,24 @@ public class FileUpload_Test extends TestCase {
 
   public void testGetTextDefaultsToEmpty() {
     FileUpload upload = new FileUpload( shell, SWT.NONE );
+
     assertEquals( "", upload.getText() );
   }
 
-  public void testSetAndGetText() {
+  public void testSetText() {
     FileUpload upload = new FileUpload( shell, SWT.NONE );
+
     upload.setText( "foo" );
+
     assertEquals( "foo", upload.getText() );
+  }
+
+  public void testSetTextTwice() {
+    FileUpload upload = new FileUpload( shell, SWT.NONE );
+
+    upload.setText( "foo" );
     upload.setText( "bar" );
+
     assertEquals( "bar", upload.getText() );
   }
 
@@ -203,12 +214,14 @@ public class FileUpload_Test extends TestCase {
     assertEquals( expected, upload.computeSize( 100, 100 ) );
   }
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
