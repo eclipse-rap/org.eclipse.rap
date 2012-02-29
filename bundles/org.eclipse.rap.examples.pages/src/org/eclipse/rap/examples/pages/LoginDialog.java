@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,12 +27,12 @@ import org.eclipse.swt.widgets.Text;
 public class LoginDialog extends Dialog {
 
   private static final int LOGIN_ID = IDialogConstants.CLIENT_ID + 1;
-  
+
   private Text userText;
   private Text passText;
   private Label mesgLabel;
-  private String title;
-  private String message;
+  private final String title;
+  private final String message;
   private String username;
   private String password;
 
@@ -57,6 +57,7 @@ public class LoginDialog extends Dialog {
     return username;
   }
 
+  @Override
   protected void configureShell( final Shell shell ) {
     super.configureShell( shell );
     if( title != null ) {
@@ -65,12 +66,14 @@ public class LoginDialog extends Dialog {
     // Workaround for RWT Text Size Determination
     shell.addControlListener( new ControlAdapter() {
 
+      @Override
       public void controlResized( ControlEvent e ) {
         initializeBounds();
       }
     } );
   }
 
+  @Override
   protected Control createDialogArea( final Composite parent ) {
     Composite composite = ( Composite )super.createDialogArea( parent );
     composite.setLayout( new GridLayout( 2, false ) );
@@ -90,11 +93,13 @@ public class LoginDialog extends Dialog {
     return composite;
   }
 
+  @Override
   protected void createButtonsForButtonBar( final Composite parent ) {
     createButton( parent, IDialogConstants.CANCEL_ID, "Cancel", false );
     createButton( parent, LOGIN_ID, "Login", true );
   }
 
+  @Override
   protected void buttonPressed( final int buttonId ) {
     if( buttonId == LOGIN_ID ) {
       username = userText.getText();
