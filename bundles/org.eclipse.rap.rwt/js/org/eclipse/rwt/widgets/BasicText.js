@@ -239,6 +239,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
         try {
           if( this.isValidString( el.value ) ) {
             result = el.selectionStart;
+          } else {
+            result = 0;
           }
         } catch( ex ) {
           result = 0;

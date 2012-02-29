@@ -369,6 +369,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       }
     },
 
+    testInitialSelection : function() {
+      createText();
+
+      assertEquals( [ 0, 0 ], text.getSelection() );
+      assertEquals( [ 0, 0 ], text.getComputedSelection() );
+    },
+
     testSetSelection : function() {
       createText();
       text.setValue( "asdfjkloe" );
