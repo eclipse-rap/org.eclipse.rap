@@ -45,7 +45,7 @@ public class RowLayoutExample implements IExamplePage {
 
   private void createLayoutComp( Composite parent, int style ) {
     Composite layoutCompContainer = new Composite( parent, SWT.NONE );
-    layoutCompContainer.setLayout( ExampleUtil.createGridLayoutWithOffset( 1, false, 10, 10, 10 ) );
+    layoutCompContainer.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 0 ) );
     String text = style == SWT.VERTICAL ? "Vertical RowLayout" : "Horizontal RowLayout";
     ExampleUtil.createHeadingLabel( layoutCompContainer, text, 1 );
     Composite layoutComp = new Composite( layoutCompContainer, SWT.BORDER );
@@ -76,12 +76,12 @@ public class RowLayoutExample implements IExamplePage {
   }
 
   private void createControlButtons( final Composite parent ) {
-    Group group = new Group( parent, SWT.NONE );
+    Composite comp = new Composite( parent, SWT.NONE );
     GridData gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
     gridData.horizontalSpan = 2;
-    group.setLayoutData( gridData );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 2, 5 ) );
-    final Button centerButton = new Button( group, SWT.CHECK );
+    comp.setLayoutData( gridData );
+    comp.setLayout( ExampleUtil.createGridLayout( 1, false, 0, 0 ) );
+    final Button centerButton = new Button( comp, SWT.CHECK );
     centerButton.setText( "Center all elements in a row" );
     centerButton.addSelectionListener( new SelectionAdapter() {
       @Override
@@ -90,7 +90,7 @@ public class RowLayoutExample implements IExamplePage {
         relayout( parent );
       }
     } );
-    final Button fillButton = new Button( group, SWT.CHECK );
+    final Button fillButton = new Button( comp, SWT.CHECK );
     fillButton.setText( "Make all elements the same width / height" );
     fillButton.addSelectionListener( new SelectionAdapter() {
       @Override
@@ -99,7 +99,7 @@ public class RowLayoutExample implements IExamplePage {
         relayout( parent );
       }
     } );
-    final Button packButton = new Button( group, SWT.CHECK );
+    final Button packButton = new Button( comp, SWT.CHECK );
     packButton.setText( "Make all elements the same size" );
     packButton.addSelectionListener( new SelectionAdapter() {
       @Override
@@ -108,7 +108,7 @@ public class RowLayoutExample implements IExamplePage {
         relayout( parent );
       }
     } );
-    final Button justifyButton = new Button( group, SWT.CHECK );
+    final Button justifyButton = new Button( comp, SWT.CHECK );
     justifyButton.setText( "Justify elements" );
     justifyButton.addSelectionListener( new SelectionAdapter() {
       @Override
@@ -117,7 +117,7 @@ public class RowLayoutExample implements IExamplePage {
         relayout( parent );
       }
     } );
-    final Button wrapButton = new Button( group, SWT.CHECK );
+    final Button wrapButton = new Button( comp, SWT.CHECK );
     wrapButton.setText( "Wrap" );
     wrapButton.addSelectionListener( new SelectionAdapter() {
       @Override
@@ -126,7 +126,7 @@ public class RowLayoutExample implements IExamplePage {
         relayout( parent );
       }
     } );
-    final Button preferredSizeButton = new Button( group, SWT.CHECK );
+    final Button preferredSizeButton = new Button( comp, SWT.CHECK );
     preferredSizeButton.setText( "Shrink containers to their preferred size" );
     preferredSizeButton.addSelectionListener( new SelectionAdapter() {
       @Override

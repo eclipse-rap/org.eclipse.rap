@@ -59,7 +59,7 @@ public class FillLayoutExample implements IExamplePage {
 
   private void createLayoutComp( final Composite parent, final int style ) {
     Composite layoutCompContainer = new Composite( parent, SWT.NONE );
-    layoutCompContainer.setLayout( ExampleUtil.createGridLayoutWithOffset( 1, false, 10, 10, 10 ) );
+    layoutCompContainer.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 0 ) );
     String orientString = style == SWT.VERTICAL ? "Vertical" : "Horizontal";
     String message = orientString + " FillLayout";
     ExampleUtil.createHeadingLabel( layoutCompContainer, message, 1 );
@@ -80,12 +80,12 @@ public class FillLayoutExample implements IExamplePage {
   }
 
   private void createControlButtons( final Composite parent ) {
-    Group group = new Group( parent, SWT.NONE );
+    Composite composite = new Composite( parent, SWT.NONE );
     GridData gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
     gridData.horizontalSpan = 2;
-    group.setLayoutData( gridData );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 2, 0 ) );
-    Composite spacingComp = new Composite( group, SWT.NONE );
+    composite.setLayoutData( gridData );
+    composite.setLayout( ExampleUtil.createGridLayout( 1, false, 0, 0 ) );
+    Composite spacingComp = new Composite( composite, SWT.NONE );
     RowLayout spacingLayout = new RowLayout();
     spacingLayout.spacing = 5;
     spacingLayout.center = true;
@@ -102,7 +102,7 @@ public class FillLayoutExample implements IExamplePage {
         createLayoutArea();
       }
     } );
-    final Button preferredSizeButton = new Button( group, SWT.CHECK );
+    final Button preferredSizeButton = new Button( composite, SWT.CHECK );
     preferredSizeButton.setText( "Shrink containers to their preferred size" );
     preferredSizeButton.addSelectionListener( new SelectionAdapter() {
       @Override

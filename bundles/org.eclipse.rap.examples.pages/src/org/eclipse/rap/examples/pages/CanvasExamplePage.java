@@ -69,7 +69,8 @@ public final class CanvasExamplePage implements IExamplePage {
     parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayoutData( ExampleUtil.createFillData() );
-    composite.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 0, 10 ) );
+    composite.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 0, 0 ) );
+    ExampleUtil.createHeadingLabel( composite, "Canvas (click to draw shapes)", 1 );
     createDrawingArea( composite );
     createControlButtons( composite );
     parent.layout();

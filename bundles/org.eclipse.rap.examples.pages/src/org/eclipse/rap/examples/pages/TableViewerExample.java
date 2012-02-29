@@ -21,10 +21,8 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
-
 
 public class TableViewerExample implements IExamplePage {
 
@@ -70,13 +68,14 @@ public class TableViewerExample implements IExamplePage {
 
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
-    Composite tableViewerComp = new Composite( parent, SWT.NONE );
-    tableViewerComp.setLayoutData( ExampleUtil.createFillData() );
-    tableViewerComp.setLayout( ExampleUtil.createGridLayout( 1, true, 10, 0 ) );
-    createTextFilter( tableViewerComp );
-    createViewer( tableViewerComp );
-    createLabelSelection( tableViewerComp );
-    createLabelHelp( tableViewerComp );
+    Composite comp = new Composite( parent, SWT.NONE );
+    comp.setLayoutData( ExampleUtil.createFillData() );
+    comp.setLayout( ExampleUtil.createGridLayout( 1, true, 0, 0 ) );
+    ExampleUtil.createHeadingLabel( comp, "TableViewer", 1 );
+    createTextFilter( comp );
+    createViewer( comp );
+    createLabelSelection( comp );
+    createLabelHelp( comp );
     viewer.getTable().forceFocus();
     handleSelection( true );
   }
@@ -108,7 +107,9 @@ public class TableViewerExample implements IExamplePage {
 
   private void createViewer( Composite parent ) {
     viewer = new TableViewer( parent, SWT.BORDER );
-    viewer.getTable().setLayoutData( ExampleUtil.createFillData() );
+    GridData tableLayoutData = ExampleUtil.createFillData();
+    tableLayoutData.verticalIndent = 10;
+    viewer.getTable().setLayoutData( tableLayoutData );
     elements = Elements.getElements();
     ColumnViewerToolTipSupport.enableFor( viewer );
     viewer.setUseHashlookup( true );
@@ -136,6 +137,7 @@ public class TableViewerExample implements IExamplePage {
     Composite selBorder = new Composite( parent, SWT.BORDER );
     GridData gridData = new GridData( SWT.FILL, SWT.TOP, true, true );
     gridData.minimumHeight = 25;
+    gridData.verticalIndent = 10;
     selBorder.setLayoutData( gridData );
     FillLayout selBorderLayout = new FillLayout();
     selBorderLayout.marginHeight = 3;
@@ -146,7 +148,9 @@ public class TableViewerExample implements IExamplePage {
 
   private void createLabelHelp( Composite parent ) {
     lblHelp = new Label( parent, SWT.WRAP );
-    lblHelp.setLayoutData( ExampleUtil.createHorzFillData() );
+    GridData labelHelpLayoutData = ExampleUtil.createHorzFillData();
+    labelHelpLayoutData.verticalIndent = 10;
+    lblHelp.setLayoutData( labelHelpLayoutData );
     String helpContent = "Shortcuts: [CTRL+F] - Filter | ";
     helpContent += "Sort by: [CTRL+R] - Number, [CTRL+Y] - Symbol, [CTRL+N] - Name";
     helpContent += "[CTRL+S] - Series, [CTRL+G] - Group, [CTRL+P] - Period";

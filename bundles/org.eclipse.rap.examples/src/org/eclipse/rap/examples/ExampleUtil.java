@@ -40,7 +40,7 @@ public final class ExampleUtil {
 
   public static GridLayout createColumnLayout() {
     GridLayout result = createGridLayout();
-    result.verticalSpacing = 50;
+    result.verticalSpacing = 20;
     return result;
   }
 

@@ -43,9 +43,10 @@ public class ListExample implements IExamplePage {
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
     Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayout( ExampleUtil.createGridLayout( 1, false, 20, 0 ) );
-    composite.setLayout( ExampleUtil.createGridLayout( 3, false, 20, 0, 10 ) );
+    int colCount = 3;
+    composite.setLayout( ExampleUtil.createGridLayout( colCount, false, 20, 0 ) );
     composite.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
+    ExampleUtil.createHeadingLabel( composite, "Drag && Drop", colCount );
     final List leftList = new List( composite, LIST_STYLE );
     leftList.setLayoutData( ExampleUtil.createFillData() );
     addDragSupport( leftList );

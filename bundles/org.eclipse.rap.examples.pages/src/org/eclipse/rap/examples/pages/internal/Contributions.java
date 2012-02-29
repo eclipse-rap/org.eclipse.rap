@@ -19,7 +19,7 @@ import org.eclipse.rap.examples.pages.*;
 
 class Contributions {
 
-  private List<IExampleContribution> contributions;
+  private final List<IExampleContribution> contributions;
 
   Contributions() {
     contributions = new ArrayList<IExampleContribution>();
@@ -31,20 +31,21 @@ class Contributions {
   }
 
   private void collectContributions() {
-    addContribution( "input", "Input Widgets", null, InputExamplePage.class );
-    addContribution( "dialog", "Dialogs", null, DialogExamplePage.class );
-    addContribution( "drag-and-drop", "Drag & Drop", null, ListExample.class );
-    addContribution( "treeviewer", "TreeViewer", "Tree and Table", TreeViewerExample.class );
-    addContribution( "tableviewer", "TableViewer", "Tree and Table", TableViewerExample.class );
-    addContribution( "canvas", "Canvas", null, CanvasExamplePage.class );
-    addContribution( "row-layout", "Row Layout", "Layouts", RowLayoutExample.class );
-    addContribution( "fill-layout", "Fill Layout", "Layouts" ,FillLayoutExample.class );
-    addContribution( "grid-layout", "Grid Layout", "Layouts" ,GridLayoutExample.class );
+    addContribution( "input", "Input Widgets", null, null, InputExamplePage.class );
+    addContribution( "dialog", "Dialogs", null, null, DialogExamplePage.class );
+    addContribution( "drag-and-drop", "Drag & Drop", null, null, ListExample.class );
+    addContribution( "treeviewer", "TreeViewer", "tree-table", "Trees and Tables", TreeViewerExample.class );
+    addContribution( "tableviewer", "TableViewer", "tree-table", "Trees and Tables", TableViewerExample.class );
+    addContribution( "canvas", "Canvas", null, null, CanvasExamplePage.class );
+    addContribution( "row-layout", "Row Layout", "layouts", "Layouts", RowLayoutExample.class );
+    addContribution( "fill-layout", "Fill Layout", "layouts" , "Layouts", FillLayoutExample.class );
+    addContribution( "grid-layout", "Grid Layout", "layouts" , "Layouts", GridLayoutExample.class );
   }
 
   private void addContribution( final String id,
                                 final String title,
-                                final String category,
+                                final String categoryId,
+                                final String categoryName,
                                 final Class<? extends IExamplePage> clazz )
   {
     IExampleContribution contribution = new IExampleContribution() {
@@ -56,9 +57,13 @@ class Contributions {
       public String getTitle() {
         return title;
       }
-      
-      public String getCategory() {
-        return category;
+
+      public String getCategoryId() {
+        return categoryId;
+      }
+
+      public String getCategoryName() {
+        return categoryName;
       }
 
       public IExamplePage createPage() {

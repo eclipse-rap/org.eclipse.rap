@@ -30,7 +30,9 @@ public class InputExamplePage implements IExamplePage {
   public void createControl( Composite parent ) {
     errorImage = getDecorationImage( FieldDecorationRegistry.DEC_ERROR );
     warningImage = getDecorationImage( FieldDecorationRegistry.DEC_WARNING );
-    parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
+    GridLayout mainLayout = ExampleUtil.createMainLayout( 2 );
+    mainLayout.marginTop = 15;
+    parent.setLayout( mainLayout );
     Composite leftComp = new Composite( parent, SWT.NONE );
     leftComp.setLayout( ExampleUtil.createColumnLayout() );
     leftComp.setLayoutData( ExampleUtil.createHorzFillData() );
@@ -220,13 +222,15 @@ public class InputExamplePage implements IExamplePage {
     Composite multiComp = new Composite( parent, SWT.NONE );
     ExampleUtil.createHeadingLabel( multiComp, "Multiline", 2 );
     multiComp.setLayoutData( ExampleUtil.createHorzFillData() );
-    multiComp.setLayout( ExampleUtil.createGridLayout( 1, false, 12, 8 ) );
+    multiComp.setLayout( ExampleUtil.createGridLayout( 1, false, 12, 0 ) );
     String text = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. ";
     text = text + text;
     // left
     Composite wrapComp = new Composite( multiComp, SWT.NONE );
     wrapComp.setLayoutData( new GridData( 350, 100 ) );
-    wrapComp.setLayout( new GridLayout() );
+    GridLayout wrapCompLayout = new GridLayout();
+    wrapCompLayout.marginWidth = 0;
+    wrapComp.setLayout( wrapCompLayout );
     new Label( wrapComp, SWT.NONE ).setText( "This text box wraps:" );
     int wrapStyle = SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER;
     Text wrapText = new Text( wrapComp, wrapStyle );
@@ -235,12 +239,14 @@ public class InputExamplePage implements IExamplePage {
     wrapTextData.minimumHeight = 50;
     wrapText.setLayoutData( wrapTextData );
     // right
-    Composite nowrapComp = new Composite( multiComp, SWT.NONE );
-    nowrapComp.setLayoutData( new GridData( 350, 100 ) );
-    nowrapComp.setLayout( new GridLayout() );
-    new Label( nowrapComp, SWT.NONE ).setText( "And this one on doesn't:" );
+    Composite noWrapComp = new Composite( multiComp, SWT.NONE );
+    noWrapComp.setLayoutData( new GridData( 350, 100 ) );
+    GridLayout noWrapCompLayout = new GridLayout();
+    noWrapCompLayout.marginWidth = 0;
+    noWrapComp.setLayout( noWrapCompLayout );
+    new Label( noWrapComp, SWT.NONE ).setText( "And this one on doesn't:" );
     int nowrapStyle = SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER;
-    Text nowrapText = new Text( nowrapComp, nowrapStyle );
+    Text nowrapText = new Text( noWrapComp, nowrapStyle );
     nowrapText.setText( text );
     GridData nowrapData = ExampleUtil.createFillData();
     nowrapData.minimumHeight = 50;
@@ -298,14 +304,14 @@ public class InputExamplePage implements IExamplePage {
     Composite compositeL2 = new Composite( pushComp, SWT.NONE );
 
     RowLayout layoutL1 = new RowLayout( SWT.HORIZONTAL );
-    layoutL1.marginWidth = 10;
+    layoutL1.marginWidth = 0;
     layoutL1.marginHeight = 10;
     layoutL1.spacing = 10;
     layoutL1.center = true;
     compositeL1.setLayout( layoutL1 );
 
     RowLayout layoutL2 = new RowLayout( SWT.HORIZONTAL );
-    layoutL2.marginWidth = 10;
+    layoutL2.marginWidth = 0;
     layoutL2.marginHeight = 10;
     layoutL2.spacing = 10;
     layoutL2.center = true;

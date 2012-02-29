@@ -47,7 +47,9 @@ public class TreeViewerExample implements IExamplePage {
   public void createControl( Composite parent ) {
     GridLayout mainLayout = ExampleUtil.createMainLayout( 2 );
     mainLayout.makeColumnsEqualWidth = false;
+    mainLayout.verticalSpacing = 0;
     parent.setLayout( mainLayout );
+    ExampleUtil.createHeadingLabel( parent, "TreeViewer", 2 );
     createTopLeft( parent );
     createTopRight( parent );
     createFooter( parent );

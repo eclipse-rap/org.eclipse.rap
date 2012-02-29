@@ -31,6 +31,7 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.Version;
 
 
+@SuppressWarnings("restriction")
 public class MainUi {
 
   private static final String RAP_PAGE_URL = "http://eclipse.org/rap/";
@@ -153,7 +154,35 @@ public class MainUi {
     contentComposite.setLayout( new FormLayout() );
     contentComposite.setLayoutData( createMainContentFormData( header ) );
     navigation = createNavigation( contentComposite );
-    createCenterArea( contentComposite );
+    Composite footer = createFooter( contentComposite );
+    createCenterArea( contentComposite, footer );
+  }
+
+  private Composite createFooter( Composite contentComposite ) {
+    Composite footer = new Composite( contentComposite, SWT.NONE );
+    footer.setLayout( new FormLayout() );
+    footer.setData(  WidgetUtil.CUSTOM_VARIANT, "footer" );
+    footer.setLayoutData( createFooterFormData() );
+    Label label = new Label( footer, SWT.NONE );
+    label.setText( "RAP version: " + getRapVersion() );
+    label.setLayoutData( createFooterLabelFormData( footer ) );
+    return footer;
+  }
+
+  private FormData createFooterLabelFormData( Composite footer ) {
+    FormData data = new FormData();
+    data.top = new FormAttachment( 50, -10 );
+    data.right = new FormAttachment( 100, -15 );
+    return data;
+  }
+
+  private FormData createFooterFormData() {
+    FormData data = new FormData();
+    data.left = new FormAttachment( 50, -CENTER_AREA_WIDTH / 2 );
+    data.top = new FormAttachment( 100, -40 );
+    data.bottom = new FormAttachment( 100 );
+    data.width = CENTER_AREA_WIDTH;
+    return data;
   }
 
   private FormData createMainContentFormData( Composite header ) {
@@ -203,8 +232,8 @@ public class MainUi {
   }
 
   private void createNavigationControl( Composite parent, final IExampleContribution page ) {
-    String category = page.getCategory();
-    if( category != null ) {
+    String categoryId = page.getCategoryId();
+    if( categoryId != null ) {
       createNavigationDropDown( parent, page );
     } else {
       createNavigationButton( parent, page );
@@ -229,7 +258,7 @@ public class MainUi {
   }
 
   private void createNavigationDropDown( Composite parent, IExampleContribution page ) {
-    DropDownNavigation navigationEntry = getNavigationEntryByCategory( parent, page.getCategory() );
+    DropDownNavigation navigationEntry = getNavigationEntryByCategoryId( parent, page.getCategoryId() );
     if( navigationEntry != null ) {
       navigationEntry.addNavigationItem( page );
     } else {
@@ -242,13 +271,13 @@ public class MainUi {
     }
   }
 
-  private DropDownNavigation getNavigationEntryByCategory( Composite parent, String category ) {
+  private DropDownNavigation getNavigationEntryByCategoryId( Composite parent, String categoryId ) {
     DropDownNavigation result = null;
     Control[] children = parent.getChildren();
     for( Control element : children ) {
       if( element instanceof DropDownNavigation ) {
         DropDownNavigation entry = ( DropDownNavigation ) element;
-        if( entry.getCategory().equals( category ) ) {
+        if( entry.getCategoryId().equals( categoryId ) ) {
           result = entry;
           break;
         }
@@ -257,19 +286,19 @@ public class MainUi {
     return result;
   }
 
-  private void createCenterArea( Composite parent ) {
+  private void createCenterArea( Composite parent, Composite footer ) {
     Composite centerArea = new Composite( parent, SWT.NONE );
     centerArea.setLayout( new FormLayout() );
     centerArea.setData(  WidgetUtil.CUSTOM_VARIANT, "centerArea" );
-    centerArea.setLayoutData( createCenterAreaFormData() );
+    centerArea.setLayoutData( createCenterAreaFormData( footer ) );
     widgetsContainer = createWidgetsContainer( centerArea );
   }
 
-  private FormData createCenterAreaFormData() {
+  private FormData createCenterAreaFormData( Composite footer ) {
     FormData data = new FormData();
     data.left = new FormAttachment( 50, -CENTER_AREA_WIDTH / 2 );
     data.top = new FormAttachment( navigation.getParent() );
-    data.bottom = new FormAttachment( 100 );
+    data.bottom = new FormAttachment( footer );
     data.width = CENTER_AREA_WIDTH;
     return data;
   }
@@ -413,7 +442,6 @@ public class MainUi {
     return resultBuffer.toString();
   }
 
-  @SuppressWarnings("restriction")
   private static void makeLink( Label control, final String url ) {
     control.setCursor( control.getDisplay().getSystemCursor( SWT.CURSOR_HAND ) );
     control.addMouseListener( new MouseAdapter() {

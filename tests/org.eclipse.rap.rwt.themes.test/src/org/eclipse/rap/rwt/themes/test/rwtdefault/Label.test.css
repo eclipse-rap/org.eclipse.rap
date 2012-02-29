@@ -14,7 +14,7 @@
 Label {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
-  background-color: #ffffff;
+  background-color: transparent;
   background-image: none;
   border: none;
   border-radius: 2px;

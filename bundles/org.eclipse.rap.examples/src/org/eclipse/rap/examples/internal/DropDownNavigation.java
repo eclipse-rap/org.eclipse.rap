@@ -26,11 +26,11 @@ import org.eclipse.swt.widgets.*;
 abstract class DropDownNavigation extends Composite {
 
   private final Menu secondLevelNav;
-  private final String category;
+  private final String categoryId;
 
   public DropDownNavigation( Composite parent, IExampleContribution page ) {
     super( parent, SWT.NONE );
-    category = page.getCategory();
+    categoryId = page.getCategoryId();
     secondLevelNav = new Menu( parent.getShell(), SWT.POP_UP );
     secondLevelNav.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
     createDropDownToolItem( page );
@@ -39,8 +39,8 @@ abstract class DropDownNavigation extends Composite {
     setLayoutData( new GridData( SWT.LEFT, SWT.CENTER, true, false ) );
   }
 
-  public String getCategory() {
-    return category;
+  public String getCategoryId() {
+    return categoryId;
   }
 
   @SuppressWarnings("unchecked")
@@ -66,7 +66,7 @@ abstract class DropDownNavigation extends Composite {
     toolBar.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
     ToolItem toolItem = new ToolItem( toolBar, SWT.DROP_DOWN );
     toolItem.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
-    toolItem.setText( page.getCategory() );
+    toolItem.setText( page.getCategoryName() );
     toolItem.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {

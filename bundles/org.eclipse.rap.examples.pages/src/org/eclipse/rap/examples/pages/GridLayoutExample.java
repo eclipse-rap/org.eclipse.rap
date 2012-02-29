@@ -48,7 +48,7 @@ public class GridLayoutExample implements IExamplePage {
 
   private void createLayoutComp( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 0, 10 ) );
+    composite.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 0 ) );
     ExampleUtil.createHeadingLabel( composite, "Grid Layout", 1 );
     Composite layoutComp = new Composite( composite, SWT.BORDER );
     if( !propPrefSize ) {
@@ -71,12 +71,12 @@ public class GridLayoutExample implements IExamplePage {
   }
 
   protected void createControlButtons( final Composite parent ) {
-    Group group = new Group( parent, SWT.NONE );
+    Composite comp = new Composite( parent, SWT.NONE );
     GridData gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
     gridData.horizontalSpan = 2;
-    group.setLayoutData( gridData );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 2, 0 ) );
-    final Button equalWidthButton = new Button( group, SWT.CHECK );
+    comp.setLayoutData( gridData );
+    comp.setLayout( ExampleUtil.createGridLayout( 1, false, 0, 0 ) );
+    final Button equalWidthButton = new Button( comp, SWT.CHECK );
     equalWidthButton.setText( "Make all columns equal width" );
     equalWidthButton.addSelectionListener( new SelectionAdapter() {
       @Override
@@ -85,7 +85,7 @@ public class GridLayoutExample implements IExamplePage {
         createLayoutArea( parent );
       }
     } );
-    final Button preferredSizeButton = new Button( group, SWT.CHECK );
+    final Button preferredSizeButton = new Button( comp, SWT.CHECK );
     preferredSizeButton.setText( "Shrink container to its preferred size" );
     preferredSizeButton.addSelectionListener( new SelectionAdapter() {
       @Override

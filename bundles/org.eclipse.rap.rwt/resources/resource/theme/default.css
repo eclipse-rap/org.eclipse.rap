@@ -179,7 +179,7 @@ Button[TOGGLE]:selected:hover {
 
 Button[CHECK],
 Button[RADIO] {
-  padding: 3px 3px 3px 3px;
+  padding: 3px 3px 3px 0;
   spacing: 7px;
 }
 
@@ -383,7 +383,7 @@ Group-Label {
 Label {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
-  background-color: #ffffff;
+  background-color: transparent;
   background-image: none;
   border: none;
   border-radius: 2px;
@@ -1077,6 +1077,11 @@ Text[BORDER]:focused,
 Text[MULTI][BORDER]:focused {
   border: 1px solid #4f7cb1;
   box-shadow: 0 0 5px #4f7cb1;
+}
+
+Text:read-only,
+Text[MULTI]:read-only {
+  color: #c5c5c5;
 }
 
 Text-Message {
