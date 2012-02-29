@@ -10,27 +10,22 @@
  ******************************************************************************/
 package org.eclipse.rap.examples.internal;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.rap.examples.IExampleContribution;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.service.IApplicationStore;
 
 
 public final class Examples {
-
-  private static final String ATTR_NAME = Examples.class.getName() + ".instance";
-  private final List<IExampleContribution> contributions;
-  private static ExampleContributionsTracker tracker;
 
   private final String[] INCLUDE = new String[] {
     "input",
     "tableviewer",
     "treeviewer",
     "dialog",
+    "canvas",
     "drag-and-drop",
     "complex-data",
-    "canvas",
     "row-layout",
     "fill-layout",
     "grid-layout",
@@ -41,54 +36,44 @@ public final class Examples {
   };
 
   private Examples() {
-    readContributions();
-    contributions = createContributionList();
   }
 
   public static Examples getInstance() {
-    IApplicationStore store = RWT.getApplicationStore();
-    Examples result;
-    synchronized( Examples.class ) {
-      result = ( Examples )store.getAttribute( ATTR_NAME );
-      if( result == null ) {
-        result = new Examples();
-        store.setAttribute( ATTR_NAME, result );
-      }
-    }
-    return result;
+    return new Examples();
   }
 
   public List<IExampleContribution> getContributions() {
-    return Collections.unmodifiableList( contributions );
+    return createContributionList();
   }
 
   public IExampleContribution getContribution( String id ) {
-    return tracker.getContribution( id );
+    return getContributionsTracker().getContribution( id );
   }
 
   private List<IExampleContribution> createContributionList() {
+    long t0 = System.nanoTime();
     List<IExampleContribution> result = new ArrayList<IExampleContribution>();
+    ExampleContributionsTracker tracker = getContributionsTracker();
     List<String> ids = new ArrayList<String>( tracker.getContributionIds() );
     for( String id : INCLUDE ) {
       IExampleContribution contribution = tracker.getContribution( id );
       if( contribution != null ) {
         result.add( contribution );
         ids.remove( id );
-      } else {
-        System.out.println( "Missing contribution " + id );
       }
     }
     for( String id : ids ) {
       IExampleContribution contribution = tracker.getContribution( id );
       if( contribution != null ) {
         result.add( contribution );
-        System.out.println( "Adding contribution " + id );
       }
     }
+    long t1 = System.nanoTime();
+    System.out.println( "get instance: " + ( ( t1 - t0 ) / 1000000.0 ) );
     return result;
   }
 
-  private static void readContributions() {
-    tracker = Activator.getDefault().getExampleContributions();
+  private static ExampleContributionsTracker getContributionsTracker() {
+    return Activator.getDefault().getExampleContributions();
   }
 }
