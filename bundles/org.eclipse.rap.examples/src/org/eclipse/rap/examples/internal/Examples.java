@@ -51,7 +51,6 @@ public final class Examples {
   }
 
   private List<IExampleContribution> createContributionList() {
-    long t0 = System.nanoTime();
     List<IExampleContribution> result = new ArrayList<IExampleContribution>();
     ExampleContributionsTracker tracker = getContributionsTracker();
     List<String> ids = new ArrayList<String>( tracker.getContributionIds() );
@@ -68,8 +67,6 @@ public final class Examples {
         result.add( contribution );
       }
     }
-    long t1 = System.nanoTime();
-    System.out.println( "get instance: " + ( ( t1 - t0 ) / 1000000.0 ) );
     return result;
   }
 
