@@ -498,32 +498,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       this._disposeShell();
     },
 
-    testAllowKeyEvent : function() {
-      var util = org.eclipse.rwt.KeyEventSupport.getInstance();
-      var allow = false;
-      util.allowEvent = function() {
-        allow = true;
-      };
-      var shell = this._protocolCreateShell();
-      this._protocolCall( "w1", "allowEvent" );
-      delete util.allowEvent;
-      assertTrue( allow );
-      this._disposeShell();
-    },
-
-    testCancelKeyEvent : function() {
-      var util = org.eclipse.rwt.KeyEventSupport.getInstance();
-      var cancel = false;
-      util.cancelEvent = function() {
-        cancel = true;
-      };
-      var shell = this._protocolCreateShell();
-      this._protocolCall( "w1", "cancelEvent" );
-      delete util.cancelEvent;
-      assertTrue( cancel );
-      this._disposeShell();
-    },
-    
     testMenuDetectListener : function() {
       var shell = this._protocolCreateShell();
       shell.__listeners = {}; // HACK : Remove all listeners for testing
