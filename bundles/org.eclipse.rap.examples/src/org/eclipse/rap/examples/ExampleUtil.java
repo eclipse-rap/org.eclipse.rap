@@ -27,14 +27,8 @@ public final class ExampleUtil {
     result.marginWidth = 0;
     result.marginHeight = 0;
     result.marginTop = 20;
-    result.verticalSpacing = 20;
-    result.horizontalSpacing = 20;
-    return result;
-  }
-
-  public static GridLayout createMainLayout( int numColumns, int marginLeft ) {
-    GridLayout result = createMainLayout( numColumns );
-    result.marginLeft = marginLeft;
+    result.verticalSpacing = 40;
+    result.horizontalSpacing = 60;
     return result;
   }
 

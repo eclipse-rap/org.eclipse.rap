@@ -23,7 +23,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 public class DialogExamplePage implements IExamplePage {
@@ -31,9 +30,7 @@ public class DialogExamplePage implements IExamplePage {
   private Label resultsLabel;
 
   public void createControl( Composite parent ) {
-    GridLayout mainLayout = ExampleUtil.createMainLayout( 1 );
-    mainLayout.verticalSpacing = 40;
-    parent.setLayout( mainLayout );
+    parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
     createSwtArea( parent );
     createJfaceArea( parent );
     createCustomArea( parent );
