@@ -35,6 +35,7 @@ org.eclipse.rwt.Display.prototype = {
     this._appendWindowSize();
     this._appendSystemDPI();
     this._appendColorDepth();
+    this._appendInitialHistoryEvent();
     this._attachListener();
     this._request._sendImmediate( true );
   },
@@ -179,6 +180,15 @@ org.eclipse.rwt.Display.prototype = {
       depth = depth == 24 ? 32 : depth;
     }
     this._request.addParameter( "w1.colorDepth", String( depth ) );
+  },
+
+  _appendInitialHistoryEvent : function() {
+    var req = org.eclipse.swt.Request.getInstance();
+    var entryId = window.location.hash;
+    if( entryId !== "" ) {
+      req.addParameter( "org.eclipse.rwt.events.historyNavigated", "true" );
+      req.addParameter( "org.eclipse.rwt.events.historyNavigated.entryId", entryId.substr( 1 ) );
+    }
   }
 
 };

@@ -31,6 +31,7 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.Version;
 
 
+@SuppressWarnings("restriction")
 public class MainUi {
 
   private static final String RAP_PAGE_URL = "http://eclipse.org/rap/";
@@ -50,7 +51,7 @@ public class MainUi {
     createContent( shell );
     attachHistoryListener();
     shell.open();
-    selectContribution( Examples.getInstance().getContribution( "input" ) );
+    selectContribution( Examples.getInstance().getContribution( "input" ), false );
     while( !shell.isDisposed() ) {
       if( !display.readAndDispatch() ) {
         display.sleep();
@@ -223,7 +224,7 @@ public class MainUi {
     toolItem.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
-        selectContribution( page );
+        selectContribution( page, true );
       }
     } );
   }
@@ -236,7 +237,7 @@ public class MainUi {
       new DropDownNavigation( parent, page ) {
         @Override
         protected void onSelectContribution( IExampleContribution page ) {
-          MainUi.this.selectContribution( page );
+          MainUi.this.selectContribution( page, true );
         }
       };
     }
@@ -291,9 +292,9 @@ public class MainUi {
     return data;
   }
 
-  private void selectContribution( IExampleContribution page ) {
+  private void selectContribution( IExampleContribution page, boolean createHistoryEntry ) {
     selectNavigationEntry( page );
-    activate( page );
+    activate( page, createHistoryEntry );
   }
 
   private void selectNavigationEntry( IExampleContribution page ) {
@@ -340,10 +341,12 @@ public class MainUi {
     return result;
   }
 
-  private void activate( IExampleContribution page ) {
+  private void activate( IExampleContribution page, boolean createHistoryEntry ) {
     IExamplePage examplePage = page.createPage();
     if( examplePage != null ) {
-      RWT.getBrowserHistory().createEntry( page.getId(), page.getTitle() );
+      if( createHistoryEntry ) {
+        RWT.getBrowserHistory().createEntry( page.getId(), page.getTitle() );
+      }
       Control[] children = widgetsContainer.getChildren();
       for( Control child : children ) {
         child.dispose();
@@ -375,7 +378,7 @@ public class MainUi {
       public void navigated( BrowserHistoryEvent event ) {
         IExampleContribution page = Examples.getInstance().getContribution( event.entryId );
         if( page != null ) {
-          selectContribution( page );
+          selectContribution( page, false );
         }
       }
     } );
@@ -413,7 +416,6 @@ public class MainUi {
     return resultBuffer.toString();
   }
 
-  @SuppressWarnings("restriction")
   private static void makeLink( Label control, final String url ) {
     control.setCursor( control.getDisplay().getSystemCursor( SWT.CURSOR_HAND ) );
     control.addMouseListener( new MouseAdapter() {

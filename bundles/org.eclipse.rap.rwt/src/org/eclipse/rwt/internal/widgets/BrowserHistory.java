@@ -25,6 +25,7 @@ import org.eclipse.rwt.internal.events.*;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.rwt.service.SessionStoreEvent;
@@ -94,7 +95,9 @@ public final class BrowserHistory
   public void afterPhase( PhaseEvent event ) {
     Display sessionDisplay = LifeCycleUtil.getSessionDisplay();
     if( display == sessionDisplay ) {
-      if( event.getPhaseId() == PhaseId.READ_DATA ) {
+      if( event.getPhaseId() == PhaseId.PREPARE_UI_ROOT && isStartup() ) {
+        processNavigationEvent();
+      } else if( event.getPhaseId() == PhaseId.READ_DATA ) {
         preserveNavigationListener();
       } else if( event.getPhaseId() == PhaseId.RENDER ) {
         renderCreate();
@@ -106,13 +109,9 @@ public final class BrowserHistory
 
   public void beforePhase( PhaseEvent event ) {
     Display sessionDisplay = LifeCycleUtil.getSessionDisplay();
-    if( display == sessionDisplay && event.getPhaseId() == PhaseId.PROCESS_ACTION ) {
-      HttpServletRequest request = ContextProvider.getRequest();
-      String isEvent = request.getParameter( EVENT_HISTORY_NAVIGATED );
-      if( Boolean.valueOf( isEvent ).booleanValue() ) {
-        String entryId = request.getParameter( EVENT_HISTORY_NAVIGATED_ENTRY_ID );
-        Event evt = new BrowserHistoryEvent( this, entryId );
-        evt.processEvent();
+    if( display == sessionDisplay ) {
+      if( event.getPhaseId() == PhaseId.PROCESS_ACTION && !isStartup() ) {
+        processNavigationEvent();
       }
     }
   }
@@ -147,6 +146,22 @@ public final class BrowserHistory
 
   //////////////////
   // Helping methods
+
+  private static boolean isStartup() {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String initializeParameter = request.getParameter( RequestParams.RWT_INITIALIZE );
+    return "true".equals( initializeParameter );
+  }
+
+  private void processNavigationEvent() {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String isEvent = request.getParameter( EVENT_HISTORY_NAVIGATED );
+    if( Boolean.valueOf( isEvent ).booleanValue() ) {
+      String entryId = request.getParameter( EVENT_HISTORY_NAVIGATED_ENTRY_ID );
+      Event evt = new BrowserHistoryEvent( this, entryId );
+      evt.processEvent();
+    }
+  }
 
   private void preserveNavigationListener() {
     boolean hasListener = BrowserHistoryEvent.hasListener( this );
