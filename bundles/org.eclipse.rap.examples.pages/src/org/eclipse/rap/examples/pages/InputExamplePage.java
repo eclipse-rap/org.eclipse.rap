@@ -28,40 +28,44 @@ public class InputExamplePage implements IExamplePage {
   protected Image warningImage;
 
   public void createControl( Composite parent ) {
+    createImages();
+    parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
+    Composite upperWestSide = createPart( parent );
+    Composite upperEastSide = createPart( parent );
+    Composite lowerWestSide = createPart( parent );
+    Composite lowerEastSide = createPart( parent );
+    createInputForm( upperWestSide );
+    createControlDecoratorsForm( upperEastSide );
+    createMultiline( upperEastSide );
+    createPushButtons( lowerWestSide );
+    createRadioAndCheckButtons( lowerEastSide );
+  }
+
+  private void createImages() {
     errorImage = getDecorationImage( FieldDecorationRegistry.DEC_ERROR );
     warningImage = getDecorationImage( FieldDecorationRegistry.DEC_WARNING );
-    GridLayout mainLayout = ExampleUtil.createMainLayout( 2 );
-    mainLayout.marginTop = 15;
-    parent.setLayout( mainLayout );
-    Composite leftComp = new Composite( parent, SWT.NONE );
-    leftComp.setLayout( ExampleUtil.createColumnLayout() );
-    leftComp.setLayoutData( ExampleUtil.createHorzFillData() );
-    createInputForm( leftComp );
-    createMultiline( leftComp );
-    Composite rightComp = new Composite( parent, SWT.NONE );
-    rightComp.setLayout( ExampleUtil.createColumnLayout() );
-    rightComp.setLayoutData( ExampleUtil.createHorzFillData() );
-    createControlDecoratorsForm( rightComp );
-    createRadioAndCheckButtons( rightComp );
-    createPushButtons( rightComp );
+  }
+
+  private Composite createPart( Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( ExampleUtil.createColumnLayout() );
+    composite.setLayoutData( ExampleUtil.createHorzFillData() );
+    return composite;
   }
 
   private void createInputForm( Composite parent ) {
-    Composite inputComp = new Composite( parent, SWT.NONE );
-    inputComp.setLayoutData( ExampleUtil.createHorzFillData() );
-    GridLayout gridLayout = ExampleUtil.createGridLayoutWithOffset( 2, false, 15, 12, 0 );
-    gridLayout.horizontalSpacing = 12;
-    gridLayout.verticalSpacing = 8;
-    inputComp.setLayout( gridLayout );
-    ExampleUtil.createHeadingLabel( inputComp, "Simple Input Widgets", 2 );
-    final Text firstNameText = createFirstNameField( inputComp );
-    final Text lastNameText = createLastNameField( inputComp );
-    final Text passwordText = createPasswordField( inputComp );
-    final Spinner spinner = createSpinner( inputComp );
-    final Combo countryCombo = createCountryCombo( inputComp );
-    final Combo classCombo = createCombo( inputComp );
-    final DateTime dateTime = createDateField( inputComp );
-    final Button editableCheckbox = new Button( inputComp, SWT.CHECK );
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayoutData( ExampleUtil.createHorzFillData() );
+    composite.setLayout( createGridLayoutForForm() );
+    ExampleUtil.createHeadingLabel( composite, "Simple Input Widgets", 2 );
+    final Text firstNameText = createFirstNameField( composite );
+    final Text lastNameText = createLastNameField( composite );
+    final Text passwordText = createPasswordField( composite );
+    final Spinner spinner = createSpinner( composite );
+    final Combo countryCombo = createCountryCombo( composite );
+    final Combo classCombo = createReadOnlyCombo( composite );
+    final DateTime dateTime = createDateField( composite );
+    final Button editableCheckbox = new Button( composite, SWT.CHECK );
     editableCheckbox.setText( "Editable" );
     editableCheckbox.setSelection( true );
     editableCheckbox.addSelectionListener( new SelectionAdapter() {
@@ -79,15 +83,14 @@ public class InputExamplePage implements IExamplePage {
     } );
   }
 
-  private void createControlDecoratorsForm( Composite rightComp ) {
-    Composite formComp = new Composite( rightComp, SWT.NONE );
-    GridLayout gridLayout = ExampleUtil.createGridLayout( 2, false, 15, 12 );
-    gridLayout.horizontalSpacing = 12;
-    gridLayout.verticalSpacing = 8;
-    formComp.setLayout( gridLayout );
-    ExampleUtil.createHeadingLabel( formComp, "Control Decorators", 2 );
-    createVerifiedText( formComp );
-    createMandatoryText( formComp );
+  private void createControlDecoratorsForm( Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayoutData( ExampleUtil.createHorzFillData() );
+    GridLayout gridLayout = createGridLayoutForForm();
+    composite.setLayout( gridLayout );
+    ExampleUtil.createHeadingLabel( composite, "Control Decorators", 2 );
+    createVerifiedText( composite );
+    createMandatoryText( composite );
   }
 
   private void createVerifiedText( Composite formComp ) {
@@ -101,7 +104,6 @@ public class InputExamplePage implements IExamplePage {
     decoration.hide();
     text.setText( "4711" );
     text.addModifyListener( new ModifyListener() {
-
       public void modifyText( ModifyEvent event ) {
         String content = text.getText();
         if( !isNumbers( content ) ) {
@@ -141,24 +143,6 @@ public class InputExamplePage implements IExamplePage {
         }
       }
     } );
-  }
-
-  protected boolean isNumbers( String content ) {
-    int length = content.length();
-    for( int i = 0; i < length; i++ ) {
-      char ch = content.charAt( i );
-      if( !Character.isDigit( ch ) ) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private DateTime createDateField( Composite formComp ) {
-    new Label( formComp, SWT.NONE ).setText( "Date:" );
-    int dateTimeStyle = SWT.READ_ONLY | SWT.BORDER;
-    final DateTime dateTime = new DateTime( formComp, dateTimeStyle );
-    return dateTime;
   }
 
   private Text createFirstNameField( Composite formComp ) {
@@ -207,7 +191,7 @@ public class InputExamplePage implements IExamplePage {
     return combo;
   }
 
-  private Combo createCombo( Composite formComp ) {
+  private Combo createReadOnlyCombo( Composite formComp ) {
     new Label( formComp, SWT.NONE ).setText( "Class:" );
     final Combo classCombo = new Combo( formComp, SWT.READ_ONLY | SWT.BORDER );
     String[] classes = new String[] { "Business", "Economy", "Economy Plus" };
@@ -218,9 +202,16 @@ public class InputExamplePage implements IExamplePage {
     return classCombo;
   }
 
+  private DateTime createDateField( Composite formComp ) {
+    new Label( formComp, SWT.NONE ).setText( "Date:" );
+    int dateTimeStyle = SWT.READ_ONLY | SWT.BORDER;
+    final DateTime dateTime = new DateTime( formComp, dateTimeStyle );
+    return dateTime;
+  }
+
   private void createMultiline( final Composite parent ) {
     Composite multiComp = new Composite( parent, SWT.NONE );
-    ExampleUtil.createHeadingLabel( multiComp, "Multiline", 2 );
+    ExampleUtil.createHeadingLabel( multiComp, "Multiline Texts", 2 );
     multiComp.setLayoutData( ExampleUtil.createHorzFillData() );
     multiComp.setLayout( ExampleUtil.createGridLayout( 1, false, 12, 0 ) );
     String text = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. ";
@@ -253,71 +244,21 @@ public class InputExamplePage implements IExamplePage {
     nowrapText.setLayoutData( nowrapData );
   }
 
-  private void createRadioAndCheckButtons( Composite parent ) {
-    Composite radioCheckComp = new Composite( parent, SWT.NONE );
-    ExampleUtil.createHeadingLabel( radioCheckComp, "Checkboxes and Radiobuttons", 2 );
-    GridLayout layout = new GridLayout( 2, true );
-    layout.marginWidth = 10;
-    layout.marginHeight = 10;
-    layout.horizontalSpacing = 20;
-    radioCheckComp.setLayout( layout );
-    radioCheckComp.setLayoutData( ExampleUtil.createHorzFillData() );
-    // Radio buttons
-    Composite radioComp = new Composite( radioCheckComp, SWT.NONE );
-    RowLayout radioLayout = new RowLayout( SWT.VERTICAL );
-    radioLayout.marginWidth = 0;
-    radioLayout.marginHeight = 0;
-    radioComp.setLayout( radioLayout );
-    final Button radio1 = new Button( radioComp, SWT.RADIO );
-    radio1.setText( "Salami" );
-    radio1.setSelection( true );
-    final Button radio2 = new Button( radioComp, SWT.RADIO );
-    radio2.setText( "Funghi" );
-    final Button radio3 = new Button( radioComp, SWT.RADIO );
-    radio3.setText( "Calzone" );
-    // Check boxes
-    Composite checkComp = new Composite( radioCheckComp, SWT.NONE );
-    RowLayout checkLayout = new RowLayout( SWT.VERTICAL );
-    checkLayout.marginWidth = 0;
-    checkLayout.marginHeight = 0;
-    checkComp.setLayout( checkLayout );
-    Button check1 = new Button( checkComp, SWT.CHECK );
-    check1.setText( "Extra Cheese" );
-    Button check2 = new Button( checkComp, SWT.CHECK );
-    check2.setText( "Extra Hot" );
-    Button check3 = new Button( checkComp, SWT.CHECK );
-    check3.setText( "King Size" );
-    check3.setSelection( true );
-  }
-
   private void createPushButtons( final Composite parent ) {
-    Composite pushComp = new Composite( parent, SWT.NONE );
-    ExampleUtil.createHeadingLabel( pushComp, "Push and Toggle Buttons", 2 );
-    pushComp.setLayout( ExampleUtil.createGridLayout( 2, false, 10, 10 ) );
-    pushComp.setLayoutData( ExampleUtil.createHorzFillData() );
+    Composite composite = new Composite( parent, SWT.NONE );
+    ExampleUtil.createHeadingLabel( composite, "Push and Toggle Buttons", 2 );
+    composite.setLayout( createGridLayoutForForm() );
+    composite.setLayoutData( ExampleUtil.createHorzFillData() );
 
-    Composite compositeL1 = new Composite( pushComp, SWT.NONE );
-    Composite compositeR = new Composite( pushComp, SWT.NONE );
-    GridData rData = new GridData();
+    Composite compositeL1 = new Composite( composite, SWT.NONE );
+    compositeL1.setLayout( createRowLayout( SWT.HORIZONTAL ) );
+    Composite compositeR = new Composite( composite, SWT.NONE );
+    compositeR.setLayout( new FillLayout() );
+    Composite compositeL2 = new Composite( composite, SWT.NONE );
+    compositeL2.setLayout( createRowLayout( SWT.HORIZONTAL ) );
+    GridData rData = new GridData( SWT.TOP, SWT.RIGHT, true, false );
     rData.verticalSpan = 2;
     compositeR.setLayoutData( rData );
-    Composite compositeL2 = new Composite( pushComp, SWT.NONE );
-
-    RowLayout layoutL1 = new RowLayout( SWT.HORIZONTAL );
-    layoutL1.marginWidth = 0;
-    layoutL1.marginHeight = 10;
-    layoutL1.spacing = 10;
-    layoutL1.center = true;
-    compositeL1.setLayout( layoutL1 );
-
-    RowLayout layoutL2 = new RowLayout( SWT.HORIZONTAL );
-    layoutL2.marginWidth = 0;
-    layoutL2.marginHeight = 10;
-    layoutL2.spacing = 10;
-    layoutL2.center = true;
-    compositeL2.setLayout( layoutL2 );
-
-    compositeR.setLayout( new FillLayout() );
 
     Button button = new Button( compositeL1, SWT.PUSH );
     button.setText( "Cancel" );
@@ -353,6 +294,67 @@ public class InputExamplePage implements IExamplePage {
         toggle2.setImage( selected ? imgLocked : imgUnlocked );
       }
     } );
+  }
+
+  private void createRadioAndCheckButtons( Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( createGridLayoutForForm() );
+    composite.setLayoutData( ExampleUtil.createHorzFillData() );
+    ExampleUtil.createHeadingLabel( composite, "Checkboxes and Radiobuttons", 2 );
+    // Radio buttons
+    Composite radioComp = new Composite( composite, SWT.NONE );
+    radioComp.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
+    RowLayout radioLayout = createRowLayout( SWT.VERTICAL );
+    radioComp.setLayout( radioLayout );
+    final Button radio1 = new Button( radioComp, SWT.RADIO );
+    radio1.setText( "Salami" );
+    radio1.setSelection( true );
+    final Button radio2 = new Button( radioComp, SWT.RADIO );
+    radio2.setText( "Funghi" );
+    final Button radio3 = new Button( radioComp, SWT.RADIO );
+    radio3.setText( "Calzone" );
+    // Check boxes
+    Composite checkComp = new Composite( composite, SWT.NONE );
+    checkComp.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
+    RowLayout checkLayout = createRowLayout( SWT.VERTICAL );
+    checkComp.setLayout( checkLayout );
+    Button check1 = new Button( checkComp, SWT.CHECK );
+    check1.setText( "Extra Cheese" );
+    Button check2 = new Button( checkComp, SWT.CHECK );
+    check2.setText( "Extra Hot" );
+    Button check3 = new Button( checkComp, SWT.CHECK );
+    check3.setText( "King Size" );
+    check3.setSelection( true );
+  }
+
+  private static boolean isNumbers( String content ) {
+    int length = content.length();
+    for( int i = 0; i < length; i++ ) {
+      char ch = content.charAt( i );
+      if( !Character.isDigit( ch ) ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static GridLayout createGridLayoutForForm() {
+    GridLayout gridLayout = ExampleUtil.createGridLayout( 2, false, 15, 0 );
+    gridLayout.horizontalSpacing = 12;
+    gridLayout.verticalSpacing = 8;
+    return gridLayout;
+  }
+
+  private static RowLayout createRowLayout( int style ) {
+    RowLayout layout = new RowLayout( style );
+    layout.marginTop = 0;
+    layout.marginLeft = 0;
+    layout.marginRight = 0;
+    layout.marginBottom = 0;
+    layout.spacing = 10;
+    layout.fill = true;
+    layout.wrap = false;
+    return layout;
   }
 
   private static Image getDecorationImage( String id ) {
