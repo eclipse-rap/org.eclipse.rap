@@ -170,19 +170,15 @@ qx.Class.define("qx.client.History",
      * @param newTitle {String ? null} the page title to set after the history entry
      *          is done. This title should represent the new state of the application.
      */
-    addToHistory : function(state, newTitle)
-    {
-      if (newTitle != null) {
+    addToHistory : function( state, newTitle ) {
+      if( newTitle != null ) {
         document.title = newTitle;
       }
-      this._titles[state] = document.title;
-      if (state != this._state) {
+      this._titles[ state ] = document.title;
+      if( state != this._state ) {
         // RAP [if] Prevent the event dispatch
         this._state = state;
-        // RAP [if] Fix for bug 295816
-        //top.location.hash = "#" + encodeURIComponent(state)
-        window.location.hash = "#" + encodeURIComponent(state);
-        this.__storeState(state);
+        this.__storeState( state );
       }
     },
 
@@ -319,30 +315,23 @@ qx.Class.define("qx.client.History",
      */
     __storeState : qx.core.Variant.select("qx.client",
     {
-      "mshtml" : function(state)
-      {
+      "mshtml" : function( state ) {
         var html = '<html><body><div id="state">' + encodeURIComponent(state) + '</div></body></html>';
-        try
-        {
+        try {
           var doc = this._iframe.contentWindow.document;
           doc.open();
           doc.write(html);
           doc.close();
-        } catch (ex) {
+        } catch( ex ) {
           return false;
         }
         return true;
       },
 
-      "default" : function(state)
-      {
-        // Opera needs to update the location, after the current thread has
-        // finished to remember the history
-        qx.client.Timer.once(function() {
-          // RAP [if] Fix for bug 295816
-          //top.location.hash = "#" + encodeURIComponent(state);
-          window.location.hash = "#" + encodeURIComponent(state);
-        }, this, 0);
+      "default" : function( state ) {
+        // RAP [if] Fix for bug 295816
+        //top.location.hash = "#" + encodeURIComponent(state);
+        window.location.hash = "#" + encodeURIComponent(state);
         return true;
       }
     }),
