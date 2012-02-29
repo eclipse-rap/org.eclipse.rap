@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 
+@SuppressWarnings("restriction")
 public class ErrorHandlingTab extends ExampleTab {
 
   private static final int DELAY = 2000;
@@ -34,9 +35,11 @@ public class ErrorHandlingTab extends ExampleTab {
     super( topFolder, "Error Handling" );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 1, false ) );
     Label lblInfo = new Label( parent, SWT.WRAP );
@@ -54,6 +57,7 @@ public class ErrorHandlingTab extends ExampleTab {
     btnInvalidateSession.setText( msg );
     final Label lblFeedback = new Label( parent, SWT.NONE );
     btnInvalidateSession.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         lblFeedback.setText( "The session will be invalidated shortly." );
         lblFeedback.getParent().layout();
@@ -74,6 +78,7 @@ public class ErrorHandlingTab extends ExampleTab {
     Button btnErrorResponse = new Button( parent, SWT.PUSH );
     btnErrorResponse.setText( "Deliver response with JavaScript error" );
     btnErrorResponse.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         JSExecutor.executeJS( "this is no valid JavaScript!" );
       }
@@ -81,6 +86,7 @@ public class ErrorHandlingTab extends ExampleTab {
     Button btnClientError = new Button( parent, SWT.PUSH );
     btnClientError.setText( "Throw uncaught client-side JavaScript error" );
     btnClientError.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         StringBuffer script = new StringBuffer();
         script.append( "window.setTimeout( '" );
@@ -93,6 +99,7 @@ public class ErrorHandlingTab extends ExampleTab {
     Button btnServerException = new Button( parent, SWT.PUSH );
     btnServerException.setText( "Throw uncaught server-side exeption" );
     btnServerException.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         throw new RuntimeException( "Some exeption occured" );
       }
@@ -100,6 +107,7 @@ public class ErrorHandlingTab extends ExampleTab {
     Button btnServerError = new Button( parent, SWT.PUSH );
     btnServerError.setText( "Throw uncaught server-side error" );
     btnServerError.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         throw new SWTError( "Some error occured" );
       }
@@ -107,6 +115,7 @@ public class ErrorHandlingTab extends ExampleTab {
     final Button btnStartUICallback = new Button( parent, SWT.CHECK );
     btnStartUICallback.setText( "Enabled UICallback" );
     btnStartUICallback.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         String uiCallbackId = ErrorHandlingTab.class.getName();
         if( btnStartUICallback.getSelection() ) {

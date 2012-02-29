@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import java.io.InputStream;
 import java.util.Iterator;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -56,6 +55,7 @@ public class CTabFolderTab extends ExampleTab {
     super( parent, "CTabFolder" );
   }
 
+  @Override
   protected void createStyleControls( Composite parent ) {
     createStyleButton( "FLAT", SWT.FLAT );
     createStyleButton( "BORDER", SWT.BORDER );
@@ -78,6 +78,7 @@ public class CTabFolderTab extends ExampleTab {
     createTopRightControl( styleComp );
     final Button cbMin = createPropertyButton( "Minimize visible", SWT.CHECK );
     cbMin.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         minVisible = cbMin.getSelection();
         updateProperties();
@@ -85,6 +86,7 @@ public class CTabFolderTab extends ExampleTab {
     } );
     final Button cbMax = createPropertyButton( "Maximize visible", SWT.CHECK );
     cbMax.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         maxVisible = cbMax.getSelection();
         updateProperties();
@@ -96,6 +98,7 @@ public class CTabFolderTab extends ExampleTab {
       String rbText = "Select " + folder.getItem( index ).getText();
       tabRadios[ i ] = createPropertyButton( rbText, SWT.RADIO );
       tabRadios[ i ].addSelectionListener( new SelectionAdapter() {
+        @Override
         public void widgetSelected( SelectionEvent event ) {
           Button radio = ( Button )event.getSource();
           if( radio.getSelection() ) {
@@ -108,6 +111,7 @@ public class CTabFolderTab extends ExampleTab {
     String text = "Set Image";
     Button cbSetImage = createPropertyButton( text, SWT.CHECK );
     cbSetImage.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         Button button = ( Button )event.widget;
         setImage = button.getSelection();
@@ -117,6 +121,7 @@ public class CTabFolderTab extends ExampleTab {
     text = "UnselectedImageVisible";
     Button cbUnselectedImageVisible = createPropertyButton( text, SWT.CHECK );
     cbUnselectedImageVisible.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         Button button = ( Button )event.widget;
         unselectedImageVisible = button.getSelection();
@@ -126,6 +131,7 @@ public class CTabFolderTab extends ExampleTab {
     text = "UnselectedCloseVisible";
     Button cbUnselectedCloseVisible = createPropertyButton( text, SWT.CHECK );
     cbUnselectedCloseVisible.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         Button button = ( Button )event.widget;
         unselectedCloseVisible = button.getSelection();
@@ -135,6 +141,7 @@ public class CTabFolderTab extends ExampleTab {
     text = "showClose on Tab 2";
     Button cbShowClose = createPropertyButton( text, SWT.CHECK );
     cbShowClose.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         Button button = ( Button )event.widget;
         showClose = button.getSelection();
@@ -144,6 +151,7 @@ public class CTabFolderTab extends ExampleTab {
     text = "Custom font on Tab 2";
     Button cbCustomFont = createPropertyButton( text, SWT.CHECK );
     cbCustomFont.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         Button button = ( Button )event.widget;
         customFontOnItem = button.getSelection();
@@ -154,6 +162,7 @@ public class CTabFolderTab extends ExampleTab {
     text = "Switch tabPosition";
     Button btnSwitchTabPosition = createPropertyButton( text, SWT.PUSH );
     btnSwitchTabPosition.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         boolean isTop = folder.getTabPosition() == SWT.TOP;
         folder.setTabPosition( isTop ? SWT.BOTTOM : SWT.TOP );
@@ -161,6 +170,7 @@ public class CTabFolderTab extends ExampleTab {
     } );
     Button borderVisibleButton = createPropertyButton( "Switch borderVisible", SWT.PUSH );
     borderVisibleButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         folder.setBorderVisible( !folder.getBorderVisible() );
       }
@@ -168,6 +178,7 @@ public class CTabFolderTab extends ExampleTab {
     Button btnAddTabItem = new Button( parent, SWT.PUSH );
     btnAddTabItem.setText( "Add Item (SWT.NONE)" );
     btnAddTabItem.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         createTabItem( SWT.NONE );
       }
@@ -175,12 +186,14 @@ public class CTabFolderTab extends ExampleTab {
     Button btnAddCloseableTabItem = new Button( parent, SWT.PUSH );
     btnAddCloseableTabItem.setText( "Add Item (SWT.CLOSE)" );
     btnAddCloseableTabItem.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         createTabItem( SWT.CLOSE );
       }
     } );
   }
 
+  @Override
   protected void createExampleControls( Composite parent ) {
     GridLayout layout = new GridLayout();
     layout.marginHeight = 5;
@@ -193,6 +206,7 @@ public class CTabFolderTab extends ExampleTab {
     }
     folder.setSelection( 0 );
     folder.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         CTabItem item = ( CTabItem )event.item;
         if( tabRadios != null ) {
@@ -202,6 +216,7 @@ public class CTabFolderTab extends ExampleTab {
           }
         }
       }
+      @Override
       public void widgetDefaultSelected( SelectionEvent event ) {
       }
     } );
@@ -261,6 +276,7 @@ public class CTabFolderTab extends ExampleTab {
     final Button button = new Button( parent, SWT.CHECK );
     button.setText( "Top Right Control" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         showTopRightControl = button.getSelection();
         updateTopRightControl();
@@ -272,6 +288,7 @@ public class CTabFolderTab extends ExampleTab {
     final Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Selection Foreground" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         selFgIndex = ( selFgIndex + 1 ) % fgColors.length;
         updateSelFgColor();
@@ -284,6 +301,7 @@ public class CTabFolderTab extends ExampleTab {
     final Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Selection Background" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         selBgIndex = ( selBgIndex + 1 ) % bgColors.length;
         updateSelBgColor();
@@ -296,6 +314,7 @@ public class CTabFolderTab extends ExampleTab {
     final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( "Selection Background Gradient" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         showSelectionBgGradient = button.getSelection();
         updateSelBgGradient();
@@ -308,6 +327,7 @@ public class CTabFolderTab extends ExampleTab {
     final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( "Selection Background Image" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         showSelectionBgImage = button.getSelection();
         updateSelBgImage();
@@ -397,16 +417,10 @@ public class CTabFolderTab extends ExampleTab {
   }
 
   private void updateSelBgImage() {
-    Iterator iter = controls.iterator();
-    while( iter.hasNext() ) {
-      Control control = ( Control )iter.next();
+    for( Control control : controls ) {
       if( control instanceof CTabFolder ) {
         CTabFolder folder = ( CTabFolder )control;
-        InputStream stream
-          = getClass().getClassLoader().getResourceAsStream( "resources/pattern.png" );
-        ImageLoader imageLoader = new ImageLoader();
-        ImageData[] imageData = imageLoader.load( stream );
-        Image image = new Image( control.getDisplay(), imageData[ 0 ] );
+        Image image = Util.loadImage( control.getDisplay(), "resources/pattern.png" );
         if( showSelectionBgImage ) {
           folder.setSelectionBackground( image );
         } else {
@@ -421,6 +435,7 @@ public class CTabFolderTab extends ExampleTab {
       Menu folderMenu = new Menu( folder );
       MenuItem folderMenuItem = new MenuItem( folderMenu, SWT.PUSH );
       folderMenuItem.addSelectionListener( new SelectionAdapter() {
+        @Override
         public void widgetSelected( SelectionEvent event ) {
           String message = "You requested a context menu for the CTabFolder";
           MessageDialog.openInformation( folder.getShell(), "Information", message );
@@ -431,3 +446,4 @@ public class CTabFolderTab extends ExampleTab {
     }
   }
 }
+

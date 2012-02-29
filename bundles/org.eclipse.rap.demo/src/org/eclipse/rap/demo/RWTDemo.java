@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo;
 
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
+
 // TODO: Do we still need this demo ?
 public class RWTDemo implements IEntryPoint {
 
@@ -36,7 +37,7 @@ public class RWTDemo implements IEntryPoint {
 
   class TreeObject {
 
-    private String name;
+    private final String name;
     private TreeParent parent;
 
     public TreeObject( String name ) {
@@ -55,6 +56,7 @@ public class RWTDemo implements IEntryPoint {
       return parent;
     }
 
+    @Override
     public String toString() {
       return getName();
     }
@@ -62,11 +64,11 @@ public class RWTDemo implements IEntryPoint {
 
   class TreeParent extends TreeObject {
 
-    private ArrayList children;
+    private final ArrayList<TreeObject> children;
 
     public TreeParent( String name ) {
       super( name );
-      children = new ArrayList();
+      children = new ArrayList<TreeObject>();
     }
 
     public void addChild( TreeObject child ) {
@@ -80,7 +82,7 @@ public class RWTDemo implements IEntryPoint {
     }
 
     public TreeObject[] getChildren() {
-      return ( TreeObject[] )children.toArray( new TreeObject[ children.size() ] );
+      return children.toArray( new TreeObject[ children.size() ] );
     }
 
     public boolean hasChildren() {
@@ -102,8 +104,9 @@ public class RWTDemo implements IEntryPoint {
 
     public Object[] getElements( Object parent ) {
       if( parent instanceof IEntryPoint ) {
-        if( invisibleRoot == null )
+        if( invisibleRoot == null ) {
           initialize();
+        }
         return getChildren( invisibleRoot );
       }
       return getChildren( parent );
@@ -124,8 +127,9 @@ public class RWTDemo implements IEntryPoint {
     }
 
     public boolean hasChildren( Object parent ) {
-      if( parent instanceof TreeParent )
+      if( parent instanceof TreeParent ) {
         return ( ( TreeParent )parent ).hasChildren();
+      }
       return false;
     }
 
@@ -167,6 +171,7 @@ public class RWTDemo implements IEntryPoint {
     ToolItem item2 = new ToolItem( toolBar, SWT.PUSH );
     item2.setText( "open" );
     item2.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         createShell2( shell.getDisplay() );
       }
@@ -209,6 +214,7 @@ public class RWTDemo implements IEntryPoint {
     treeData.right = new FormAttachment( 100, -2 );
     treeData.bottom = new FormAttachment( 100, -2 );
     tree.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         Item item = ( Item )event.item;
         txtGroupNameTab1.setText( "treeItem selected: " + item.getText() );
@@ -238,6 +244,7 @@ public class RWTDemo implements IEntryPoint {
     topFolder.setSelection( 0 );
     downFolder.setSelection( 0 );
     topFolder.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         previousTabSelected = tabSelected;
         tabSelected = ( ( TabFolder )event.getSource() ).getSelectionIndex();
@@ -248,6 +255,7 @@ public class RWTDemo implements IEntryPoint {
     } );
     content.layout();
     shell.addControlListener( new ControlAdapter() {
+      @Override
       public void controlResized( final ControlEvent event ) {
         layoutShell( shell, toolBar, content );
       }
@@ -290,6 +298,7 @@ public class RWTDemo implements IEntryPoint {
     openItem.setText( "Open" );
     openItem.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         createShell2( shell.getDisplay() );
       }
@@ -356,6 +365,7 @@ public class RWTDemo implements IEntryPoint {
     Sash sash = new Sash( composite, SWT.NONE );
     sash.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         text.setText( "widgetSelected: "
                       + event.getSource()
@@ -374,6 +384,7 @@ public class RWTDemo implements IEntryPoint {
     button.setText( "Push Me" );
     button.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         text.setText( "widgetSelected: "
                       + event.getSource()
@@ -504,6 +515,7 @@ public class RWTDemo implements IEntryPoint {
     list.setToolTipText( "I'm a list" );
     list.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         List list = ( List )e.getSource();
         String selected = "";
@@ -553,6 +565,7 @@ public class RWTDemo implements IEntryPoint {
     table.setSelection( 0 );
     table.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         String selected = "";
         int[] selectionIndices = table.getSelectionIndices();

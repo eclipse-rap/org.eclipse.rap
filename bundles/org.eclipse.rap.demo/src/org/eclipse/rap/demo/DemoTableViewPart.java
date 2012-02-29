@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class DemoTableViewPart extends ViewPart {
 
   private class ViewContentProvider implements IStructuredContentProvider {
     public Object[] getElements( Object inputElement ) {
-      List buffer = new ArrayList();
+      List<String[]> buffer = new ArrayList<String[]>();
       for( int i = 0; i < ROWS; i++ ) {
         String[] row = new String[ COLUMNS ];
         for( int j = 0; j < COLUMNS; j++ ) {
@@ -45,11 +45,8 @@ public class DemoTableViewPart extends ViewPart {
     public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {
     }
   }
-  
-  private class ViewLabelProvider 
-    extends LabelProvider
-    implements ITableLabelProvider
-  {
+
+  private class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
     public Image getColumnImage( Object element, int columnIndex ) {
       return null;
     }
@@ -59,8 +56,9 @@ public class DemoTableViewPart extends ViewPart {
       return result;
     }
   }
-  
-  public void createPartControl( final Composite parent ) {
+
+  @Override
+  public void createPartControl( Composite parent ) {
     viewer = new TableViewer( parent, SWT.NONE );
     viewer.setContentProvider( new ViewContentProvider() );
     viewer.setLabelProvider( new ViewLabelProvider() );
@@ -70,12 +68,13 @@ public class DemoTableViewPart extends ViewPart {
     viewer.getTable().setHeaderVisible( true );
     getSite().setSelectionProvider( viewer );
   }
-  
+
+  @Override
   public void setFocus() {
     viewer.getTable().setFocus();
   }
 
-  private String[] initColumnProperties( final Table table ) {
+  private String[] initColumnProperties( Table table ) {
     String[] result = new String[ COLUMNS ];
     for( int i = 0; i < COLUMNS; i++ ) {
       TableColumn tableColumn = new TableColumn( table, SWT.NONE );

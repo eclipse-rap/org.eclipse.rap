@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.demo;
 
@@ -23,6 +24,7 @@ import org.eclipse.ui.*;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.*;
 
+
 public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
 
   private TreeViewer viewer;
@@ -33,26 +35,27 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
 //    implements ILabelDecorator
 //  {
 //
-//    public String decorateText( final String text, final Object element ) {
+//    public String decorateText( String text, Object element ) {
 //      if( text.startsWith( "Leaf" ) ) {
 //        return text + "*";
 //      }
 //      return text;
 //    }
-//    
-//    public Image decorateImage( final Image image, final Object element ) {
+//
+//    public Image decorateImage( Image image, Object element ) {
 //      return null;
 //    }
 //  }
-  
+
   private static final class ViewLabelProvider extends LabelProvider {
+    @Override
     public Image getImage( Object element ) {
       IWorkbench workbench = PlatformUI.getWorkbench();
       ISharedImages sharedImages = workbench.getSharedImages();
       return sharedImages.getImage( ISharedImages.IMG_OBJ_ELEMENT );
     }
   }
-  
+
   class TreeObject implements IPropertySource {
     private static final String PROP_ID_LOCATION = "location";
     private static final String PROP_ID_NAME = "name";
@@ -60,11 +63,11 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
     private String location;
     private TreeParent parent;
 
-    public TreeObject( final String name ) {
+    public TreeObject( String name ) {
       this( name, "" );
     }
 
-    public TreeObject( final String name, final String location ) {
+    public TreeObject( String name, String location ) {
       this.name = name;
       this.location = location;
     }
@@ -77,7 +80,7 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
       return location;
     }
 
-    public void setParent( final TreeParent parent ) {
+    public void setParent( TreeParent parent ) {
       this.parent = parent;
     }
 
@@ -85,6 +88,7 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
       return parent;
     }
 
+    @Override
     public String toString() {
       return getName();
     }
@@ -100,7 +104,7 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
       };
     }
 
-    public Object getPropertyValue( final Object id ) {
+    public Object getPropertyValue( Object id ) {
       Object result = null;
       if( PROP_ID_NAME.equals( id ) ) {
         result = name;
@@ -110,7 +114,7 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
       return result;
     }
 
-    public boolean isPropertySet( final Object id ) {
+    public boolean isPropertySet( Object id ) {
       boolean result = false;
       if( PROP_ID_NAME.equals( id ) ) {
         result = name != null && !"".equals( name );
@@ -120,7 +124,7 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
       return result;
     }
 
-    public void resetPropertyValue( final Object id ) {
+    public void resetPropertyValue( Object id ) {
       if( PROP_ID_NAME.equals( id ) ) {
         name = "";
       } else if( PROP_ID_LOCATION.equals( id ) ) {
@@ -128,7 +132,7 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
       }
     }
 
-    public void setPropertyValue( final Object id, final Object value ) {
+    public void setPropertyValue( Object id, Object value ) {
       if( PROP_ID_NAME.equals( id ) ) {
         name = ( String )value;
       } else if( PROP_ID_LOCATION.equals( id ) ) {
@@ -137,33 +141,28 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
       update( this );
     }
   }
-  
+
   /**
    * Instances of this type are decorated with an error marker
    */
   private class BrokenTreeObject extends TreeObject {
-    public BrokenTreeObject( final String name ) {
+    public BrokenTreeObject( String name ) {
       super( name );
     }
   }
 
   private class TreeParent extends TreeObject {
 
-    private final List children;
+    private final List<TreeObject> children;
 
-    public TreeParent( final String name ) {
+    public TreeParent( String name ) {
       super( name );
-      children = new ArrayList();
+      children = new ArrayList<TreeObject>();
     }
 
-    public void addChild( final TreeObject child ) {
+    public void addChild( TreeObject child ) {
       children.add( child );
       child.setParent( this );
-    }
-
-    public void removeChild( final TreeObject child ) {
-      children.remove( child );
-      child.setParent( null );
     }
 
     public TreeObject[] getChildren() {
@@ -182,16 +181,13 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
 
     private TreeParent invisibleRoot;
 
-    public void inputChanged( final Viewer v,
-                              final Object oldInput,
-                              final Object newInput )
-    {
+    public void inputChanged( Viewer v, Object oldInput, Object newInput ) {
     }
 
     public void dispose() {
     }
 
-    public Object[] getElements( final Object parent ) {
+    public Object[] getElements( Object parent ) {
       if( parent instanceof IViewPart ) {
         if( invisibleRoot == null ) {
           initialize();
@@ -201,21 +197,21 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
       return getChildren( parent );
     }
 
-    public Object getParent( final Object child ) {
+    public Object getParent( Object child ) {
       if( child instanceof TreeObject ) {
         return ( ( TreeObject )child ).getParent();
       }
       return null;
     }
 
-    public Object[] getChildren( final Object parent ) {
+    public Object[] getChildren( Object parent ) {
       if( parent instanceof TreeParent ) {
         return ( ( TreeParent )parent ).getChildren();
       }
       return new Object[ 0 ];
     }
 
-    public boolean hasChildren( final Object parent ) {
+    public boolean hasChildren( Object parent ) {
       if( parent instanceof TreeParent ) {
         return ( ( TreeParent )parent ).hasChildren();
       }
@@ -250,20 +246,22 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
     }
   }
 
-  public void createPartControl( final Composite parent ) {
+  @Override
+  public void createPartControl( Composite parent ) {
     viewer = new TreeViewer( parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL );
     viewer.setContentProvider( new TreeViewerContentProvider() );
     ILabelDecorator labelDecorator
       = PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator();
     ILabelProvider labelProvider
-      = new DecoratingLabelProvider( new ViewLabelProvider(), labelDecorator );    
+      = new DecoratingLabelProvider( new ViewLabelProvider(), labelDecorator );
     viewer.setLabelProvider( labelProvider );
     viewer.setInput( this );
     viewer.addDoubleClickListener( this );
     getSite().setSelectionProvider( viewer );
   }
-  
-  public Object getAdapter( final Class adapter ) {
+
+  @Override
+  public Object getAdapter( Class adapter ) {
     Object result = super.getAdapter( adapter );
     if( adapter == IPropertySheetPage.class ) {
       if( propertyPage == null ) {
@@ -274,17 +272,18 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
     return result;
   }
 
+  @Override
   public void setFocus() {
     viewer.getTree().setFocus();
   }
 
-  public void doubleClick( final DoubleClickEvent event ) {
+  public void doubleClick( DoubleClickEvent event ) {
     String msg = "You doubleclicked on " + event.getSelection().toString();
     Shell shell = viewer.getTree().getShell();
     MessageDialog.openInformation( shell, "Treeviewer", msg );
   }
 
-  private void update( final TreeObject treeObject ) {
+  private void update( TreeObject treeObject ) {
     getViewer().update( treeObject, null );
   }
 

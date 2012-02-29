@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,10 +9,8 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
-import java.io.InputStream;
 import java.util.Iterator;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -23,6 +21,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
+
 
 public class ButtonTab extends ExampleTab {
 
@@ -46,6 +45,7 @@ public class ButtonTab extends ExampleTab {
     super( folder, "Button" );
   }
 
+  @Override
   protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "FLAT", SWT.FLAT );
@@ -65,12 +65,14 @@ public class ButtonTab extends ExampleTab {
     Button button = createPropertyButton( "Toggle Button", SWT.PUSH );
     button.setToolTipText( "Remote control the toggle button" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         toggleButton.setSelection( !toggleButton.getSelection() );
       }
     } );
   }
 
+  @Override
   protected void createExampleControls( Composite parent ) {
     parent.setLayout( new GridLayout( 1, false ) );
     int style = getStyle();
@@ -111,6 +113,7 @@ public class ButtonTab extends ExampleTab {
     defaultButton.setText( "Default Button" );
     defaultButton.getShell().setDefaultButton( defaultButton );
     defaultButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         String message = "The text You entered: " + text.getText();
         MessageDialog.openInformation( group.getShell(),
@@ -130,11 +133,7 @@ public class ButtonTab extends ExampleTab {
 
   private void createButtonImage( Display display ) {
     if( buttonImage == null ) {
-      ClassLoader classLoader = getClass().getClassLoader();
-      InputStream stream = classLoader.getResourceAsStream( BUTTON_IMAGE_PATH );
-      ImageLoader imageLoader = new ImageLoader();
-      ImageData[] imageData = imageLoader.load( stream );
-      buttonImage = new Image( display, imageData[ 0 ] );
+      buttonImage = Util.loadImage( display, BUTTON_IMAGE_PATH );
     }
   }
 
@@ -142,6 +141,7 @@ public class ButtonTab extends ExampleTab {
     final Button imageButton = new Button( parent, SWT.CHECK );
     imageButton.setText( "Push Button with Image" );
     imageButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         showImage = imageButton.getSelection();
         updateButtonImage( pushButton );
@@ -163,6 +163,7 @@ public class ButtonTab extends ExampleTab {
     final Button grayedButton = new Button( parent, SWT.CHECK );
     grayedButton.setText( "Grayed Check Buttons" );
     grayedButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         setGrayed = grayedButton.getSelection();
         updateButtonGrayed();

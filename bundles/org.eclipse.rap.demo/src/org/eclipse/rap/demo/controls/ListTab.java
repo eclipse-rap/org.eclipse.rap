@@ -6,10 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import java.util.ArrayList;
@@ -23,14 +22,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
+
 public class ListTab extends ExampleTab {
 
-  private static final java.util.List ELEMENTS;
+  private static final java.util.List<String> ELEMENTS;
 
   static {
-    ELEMENTS = new ArrayList();
-    String text
-      = "A very long item that demonstrates horizontal scrolling in a List";
+    ELEMENTS = new ArrayList<String>();
+    String text = "A very long item that demonstrates horizontal scrolling in a List";
     ELEMENTS.add( text );
     text = "An item with a linebreak\n(converted to a whitespace)";
     ELEMENTS.add( text );
@@ -66,6 +65,7 @@ public class ListTab extends ExampleTab {
     super( topFolder, "List" );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "SINGLE", SWT.SINGLE );
@@ -94,6 +94,7 @@ public class ListTab extends ExampleTab {
     createSetSelectionButton( group );
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 2, true ) );
     int style = getStyle();
@@ -109,6 +110,7 @@ public class ListTab extends ExampleTab {
     listViewer.setLabelProvider( new LabelProvider() );
     listViewer.setInput( ELEMENTS );
     list.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetDefaultSelected( SelectionEvent event ) {
         String item = list.getItem( list.getSelectionIndex() );
         String message = "Selected Item: " + item;
@@ -140,7 +142,8 @@ public class ListTab extends ExampleTab {
     link.setText( "See <a>example code</a>" );
     link.setLayoutData( createGridDataWithSpan() );
     link.addSelectionListener( new SelectionAdapter() {
-      private String code = getExampleCode();
+      private final String code = getExampleCode();
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         String title = "ListViewer Example Code";
         HtmlDialog dialog = new HtmlDialog( parent.getShell(), title, code );
@@ -164,6 +167,7 @@ public class ListTab extends ExampleTab {
       item.setText( listItems[ i ] );
     }
     menu.addMenuListener( new MenuAdapter() {
+      @Override
       public void menuShown( MenuEvent e ) {
         MenuItem[] items = menu.getItems();
         for( int i = 0; i < items.length; i++ ) {
@@ -179,6 +183,7 @@ public class ListTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Select first" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         listViewer.setSelection( new StructuredSelection( ELEMENTS.get( 0 ) ) );
       }
@@ -194,6 +199,7 @@ public class ListTab extends ExampleTab {
     Button btnAddItem = new Button( composite, SWT.PUSH );
     btnAddItem.setText( "Item(s)" );
     btnAddItem.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         int count = -1;
         String[] listItems = list2.getItems();
@@ -222,6 +228,7 @@ public class ListTab extends ExampleTab {
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "setTopIndex" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         try {
           int topIndex = Integer.parseInt( txtTopIndex.getText() );
@@ -242,6 +249,7 @@ public class ListTab extends ExampleTab {
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "getTopIndex" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         int topIndex = list2.getTopIndex();
         txtTopIndex.setText( String.valueOf( topIndex ) );
@@ -255,6 +263,7 @@ public class ListTab extends ExampleTab {
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "showSelection" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         list2.showSelection();
       }
@@ -265,6 +274,7 @@ public class ListTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Select All" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         list2.selectAll();
       }
@@ -275,6 +285,7 @@ public class ListTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Deselect All" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         list2.deselectAll();
       }
@@ -285,6 +296,7 @@ public class ListTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Select second item" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         if( list2.getItemCount() > 1 ) {
           list2.select( 1 );
@@ -297,6 +309,7 @@ public class ListTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Deselect second item" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         if( list2.getItemCount() > 1 ) {
           list2.deselect( 1 );
@@ -309,6 +322,7 @@ public class ListTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Set selection to first item" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         if( list2.getItemCount() > 0 ) {
           list2.setSelection( new int[] { 0 } );

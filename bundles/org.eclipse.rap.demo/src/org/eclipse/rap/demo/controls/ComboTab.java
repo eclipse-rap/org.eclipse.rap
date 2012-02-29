@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -21,6 +20,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
+
 
 public class ComboTab extends ExampleTab {
 
@@ -49,6 +49,7 @@ public class ComboTab extends ExampleTab {
     super( topFolder, "Combo" );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "READ_ONLY", SWT.READ_ONLY );
@@ -71,6 +72,7 @@ public class ComboTab extends ExampleTab {
     createEmptyComboButton = new Button( group, SWT.CHECK );
     createEmptyComboButton.setText( "Create Empty Combo" );
     createEmptyComboButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         if( createEmptyComboButton.getSelection() ) {
           empty = true;
@@ -83,6 +85,7 @@ public class ComboTab extends ExampleTab {
     preselectFirstItemButton = new Button( group, SWT.CHECK );
     preselectFirstItemButton.setText( "Preselect First Item" );
     preselectFirstItemButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         if( preselectFirstItemButton.getSelection() ) {
           preselectItem = true;
@@ -107,6 +110,7 @@ public class ComboTab extends ExampleTab {
     createTextButton( grpManioulateCCombo );
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 3, false ) );
     int style = getStyle();
@@ -122,9 +126,11 @@ public class ComboTab extends ExampleTab {
     }
     if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
       firstCombo.addSelectionListener( new SelectionAdapter() {
+        @Override
         public void widgetSelected( final SelectionEvent evt ) {
           show( evt );
         }
+        @Override
         public void widgetDefaultSelected( final SelectionEvent evt ) {
           show( evt );
         }
@@ -140,6 +146,7 @@ public class ComboTab extends ExampleTab {
     Button btnShowSelection = new Button( parent, SWT.PUSH );
     btnShowSelection.setText( "Show Selection" );
     btnShowSelection.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         showSelection( firstCombo.getItems(), firstCombo.getSelectionIndex() );
       }
@@ -207,9 +214,11 @@ public class ComboTab extends ExampleTab {
     cCombo.setEditable( editableButton == null ? true : editableButton.getSelection() );
     if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
       cCombo.addSelectionListener( new SelectionAdapter() {
+        @Override
         public void widgetSelected( final SelectionEvent evt ) {
           show( evt );
         }
+        @Override
         public void widgetDefaultSelected( final SelectionEvent evt ) {
           show( evt );
         }
@@ -225,6 +234,7 @@ public class ComboTab extends ExampleTab {
     Button btnShowSelectionCCombo = new Button( parent, SWT.PUSH );
     btnShowSelectionCCombo.setText( "Show Selection" );
     btnShowSelectionCCombo.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         showSelection( cCombo.getItems(), cCombo.getSelectionIndex() );
       }
@@ -246,6 +256,7 @@ public class ComboTab extends ExampleTab {
     Button btnAddItem = new Button( composite, SWT.PUSH );
     btnAddItem.setText( "Add" );
     btnAddItem.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         firstCombo.add( txtAddItem.getText() );
       }
@@ -256,6 +267,7 @@ public class ComboTab extends ExampleTab {
     Button button = new Button( parent , SWT.PUSH );
     button.setText( "Remove All Items" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         firstCombo.removeAll();
       }
@@ -266,6 +278,7 @@ public class ComboTab extends ExampleTab {
     Button button = new Button( parent , SWT.PUSH );
     button.setText( "Deselect All Items" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         firstCombo.deselectAll();
       }
@@ -276,6 +289,7 @@ public class ComboTab extends ExampleTab {
     Button button = new Button( parent , SWT.PUSH );
     button.setText( "Select First Item" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         if( firstCombo.getItemCount() > 0 ) {
           firstCombo.select( 0 );
@@ -293,6 +307,7 @@ public class ComboTab extends ExampleTab {
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "Set Visible Item Count" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         try {
           int vic = Integer.parseInt( text.getText() );
@@ -321,6 +336,7 @@ public class ComboTab extends ExampleTab {
     Button btnSetSelection = new Button( composite, SWT.PUSH );
     btnSetSelection.setText( "set" );
     btnSetSelection.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         int from = parseInt( txtSelectionFrom.getText() );
         int to = parseInt( txtSelectionTo.getText() );
@@ -342,6 +358,7 @@ public class ComboTab extends ExampleTab {
     Button btnGetSelection = new Button( composite, SWT.PUSH );
     btnGetSelection.setText( "get" );
     btnGetSelection.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         Point selection = firstCombo.getSelection();
         outputSelection.setText( selection.x + ", " + selection.y );
@@ -376,6 +393,7 @@ public class ComboTab extends ExampleTab {
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "Set Text Limit" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         try {
           int textLimit = Integer.parseInt( text.getText() );
@@ -395,6 +413,7 @@ public class ComboTab extends ExampleTab {
     button.setText( "Change Size" );
     button.addSelectionListener( new SelectionAdapter() {
       private boolean customSize;
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         if ( customSize ) {
           GridData gridData = new GridData( SWT.DEFAULT, SWT.DEFAULT );
@@ -405,7 +424,7 @@ public class ComboTab extends ExampleTab {
           cCombo.setLayoutData( gridData );
           customSize = true;
         }
-        Composite parent = ( ( Control )controls.get( 0 ) ).getParent();
+        Composite parent = controls.get( 0 ).getParent();
         parent.layout( true, true );
       }
     } );
@@ -415,6 +434,7 @@ public class ComboTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Toggle List Visibility" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         boolean listVisible = cCombo.getListVisible();
         cCombo.setListVisible( !listVisible );
@@ -427,6 +447,7 @@ public class ComboTab extends ExampleTab {
     editableButton.setText( "Editable" );
     editableButton.setSelection( true );
     editableButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         cCombo.setEditable( editableButton.getSelection() );
       }
@@ -437,6 +458,7 @@ public class ComboTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Change text" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         cCombo.setText( "foo" );
       }

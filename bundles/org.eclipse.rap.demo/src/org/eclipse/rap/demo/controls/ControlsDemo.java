@@ -11,8 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
@@ -35,7 +34,7 @@ public class ControlsDemo implements IEntryPoint, Serializable {
     shell.setBounds( 10, 10, 850, 600 );
     createContent( shell );
     shell.setText( "RWT\u2028 Controls\u2029 Demo" );
-    Image image = loadImage( display, "resources/shell.gif" );
+    Image image = Util.loadImage( display, "resources/shell.gif" );
     shell.setImage( image );
     shell.layout();
     shell.open();
@@ -103,17 +102,11 @@ public class ControlsDemo implements IEntryPoint, Serializable {
     tabs[ 0 ].createContents();
     topFolder.setSelection( 0 );
     topFolder.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent evt ) {
         int index = topFolder.getSelectionIndex();
         tabs[ index ].createContents();
       }
     } );
-  }
-
-  private Image loadImage( Display display, String name ) {
-    InputStream stream = getClass().getClassLoader().getResourceAsStream( name );
-    ImageLoader imageLoader = new ImageLoader();
-    ImageData[] imageData = imageLoader.load( stream );
-    return new Image( display, imageData[ 0 ] );
   }
 }

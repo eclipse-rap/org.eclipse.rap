@@ -28,11 +28,12 @@ import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 
+@SuppressWarnings("restriction")
 abstract class ExampleTab implements Serializable {
 
   private boolean contentCreated;
   private final CTabFolder folder;
-  protected final List controls;
+  protected final List<Control> controls;
 
   private Composite exmplComp;
   protected Composite styleComp;
@@ -54,7 +55,7 @@ abstract class ExampleTab implements Serializable {
   private ColorChooser bgColorChooser;
   private int defaultStyle = SWT.NONE;
   private final CTabItem item;
-  private final Set properties = new HashSet();
+  private final Set<String> properties = new HashSet<String>();
 
   public static final Color BG_COLOR_GREEN = Graphics.getColor( 154, 205, 50 );
   public static final Color BG_COLOR_BLUE = Graphics.getColor( 105, 89, 205 );
@@ -94,7 +95,7 @@ abstract class ExampleTab implements Serializable {
 
   public ExampleTab( final CTabFolder parent, final String title ) {
     folder = parent;
-    controls = new ArrayList();
+    controls = new ArrayList<Control>();
     item = new CTabItem( folder, SWT.NONE );
     item.setText( title + " " );
   }
@@ -197,7 +198,7 @@ abstract class ExampleTab implements Serializable {
    *      controls are created.
    */
   protected void setDefaultStyle( final int style ) {
-    this.defaultStyle = style;
+    defaultStyle = style;
   }
 
   protected Button createStyleButton( final String fieldName,
@@ -212,6 +213,7 @@ abstract class ExampleTab implements Serializable {
     Button button = new Button( styleComp, SWT.CHECK );
     button.setText( name );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         createNew();
       }
@@ -245,6 +247,7 @@ abstract class ExampleTab implements Serializable {
     button.setText( text );
     button.setSelection( checked );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         if( button.getSelection() ) {
           properties.add( prop );
@@ -271,6 +274,7 @@ abstract class ExampleTab implements Serializable {
     button.setText( "Visible" );
     button.setSelection( visible );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         visible = button.getSelection();
         updateVisible();
@@ -289,6 +293,7 @@ abstract class ExampleTab implements Serializable {
     button.setText( "Enabled" );
     button.setSelection( enabled );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         enabled = button.getSelection();
         updateEnabled();
@@ -308,6 +313,7 @@ abstract class ExampleTab implements Serializable {
     final Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Foreground" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         fgIndex = ( fgIndex + 1 ) % fgColors.length;
         updateFgColor();
@@ -328,6 +334,7 @@ abstract class ExampleTab implements Serializable {
     final Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Background" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         bgIndex = ( bgIndex + 1 ) % fgColors.length;
         updateBgColor();
@@ -346,6 +353,7 @@ abstract class ExampleTab implements Serializable {
     final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( "Background Gradient" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         showBgGradient = button.getSelection();
         updateBgGradient();
@@ -364,6 +372,7 @@ abstract class ExampleTab implements Serializable {
     final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( "Background Image" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         showBgImage = button.getSelection();
         updateBgImage();
@@ -376,9 +385,10 @@ abstract class ExampleTab implements Serializable {
     final Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Font" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         fontChooser = new FontDialog( getShell(), SWT.NONE );
-        Control control = ( Control )controls.get( 0 );
+        Control control = controls.get( 0 );
         fontChooser.setFontList( control.getFont().getFontData() );
         if( fontChooser.open() != null ) {
           font = new Font( control.getDisplay(), fontChooser.getFontList() );
@@ -396,6 +406,7 @@ abstract class ExampleTab implements Serializable {
     final Button button = new Button( parent, SWT.PUSH );
     button.setText( "Theme Switcher" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Shell shell = new Shell( parent.getShell(), SWT.DIALOG_TRIM );
         shell.setText( "Theme Switcher" );
@@ -404,6 +415,7 @@ abstract class ExampleTab implements Serializable {
         themeButton.setText( "Switch Theme" );
         themeButton.addSelectionListener( new SelectionAdapter() {
           String[] availableThemeIds = ThemeUtil.getAvailableThemeIds();
+          @Override
           public void widgetSelected( final SelectionEvent e ) {
             int index = 0;
             String currThemeId = ThemeUtil.getCurrentThemeId();
@@ -437,6 +449,7 @@ abstract class ExampleTab implements Serializable {
     combo.select( 0 );
     combo.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         String selection = null;
         int index = combo.getSelectionIndex();
@@ -464,6 +477,7 @@ abstract class ExampleTab implements Serializable {
     final Button buttonColor = new Button( group, SWT.PUSH );
     buttonColor.setLayoutData( new GridData( 20, 20 ) );
     buttonColor.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         rbIndex = ( rbIndex + 1 ) % bgColors.length;
         if( bgColors[ rbIndex ] == null ) {
@@ -493,6 +507,7 @@ abstract class ExampleTab implements Serializable {
     button.setText( "Set" );
     button.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         int width = parseInt( textWidth.getText() );
         Color color = buttonColor.getForeground();
@@ -525,7 +540,7 @@ abstract class ExampleTab implements Serializable {
     content.insert( 0, msg.trim() + text.getLineDelimiter() );
     text.setText( content.toString() );
   }
-  
+
   protected Image loadImage( String name ) {
     InputStream stream = getClass().getClassLoader().getResourceAsStream( name );
     Image result = new Image( folder.getDisplay(), stream );
@@ -621,13 +636,8 @@ abstract class ExampleTab implements Serializable {
   }
 
   private void updateBgImage() {
-    InputStream stream = getClass().getClassLoader().getResourceAsStream( "resources/pattern.png" );
-    ImageLoader imageLoader = new ImageLoader();
-    ImageData[] imageData = imageLoader.load( stream );
-    Iterator iter = controls.iterator();
-    while( iter.hasNext() ) {
-      Control control = ( Control )iter.next();
-      Image image = new Image( control.getDisplay(), imageData[ 0 ] );
+    for( Control control : controls ) {
+      Image image = Util.loadImage( control.getDisplay(), "resources/pattern.png" );
       control.setBackgroundImage( showBgImage ? image : null );
     }
   }
@@ -640,7 +650,7 @@ abstract class ExampleTab implements Serializable {
     }
     // Force layout
     if( controls.size() > 0 ) {
-      Composite parent = ( ( Control )controls.get( 0 ) ).getParent();
+      Composite parent = controls.get( 0 ).getParent();
       parent.layout( true, true );
     }
   }
