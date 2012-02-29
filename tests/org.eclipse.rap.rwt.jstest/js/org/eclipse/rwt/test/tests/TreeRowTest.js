@@ -988,6 +988,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
 
+    testCheckboxIndetScroll : function() {
+      var tree = this._createTree( false, "check" );
+      this._setCheckBox( "mycheckbox.gif" );
+      var row = this._createRow( tree );
+      row.setHeight( 15 );
+      this._addToDom( row );
+      var parentItem = this._createItem( tree );
+      var item = this._createItem( parentItem );
+      
+      row.renderItem( parentItem, tree._config, false, null );
+      row.renderItem( item, tree._config, false, null, true ); // true = dont render bounds
+      
+      var node = row._getTargetNode();
+      assertEquals( 2, node.childNodes.length );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var style = node.childNodes[ 1 ].style;
+      assertEquals( 37, parseInt( style.left ) );
+      tree.destroy();
+      row.destroy();
+    },
+
     testLabelBoundsScroll : function() {
       var tree = this._createTree();
       var row = this._createRow( tree );

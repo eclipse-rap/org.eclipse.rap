@@ -275,7 +275,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
           this._checkBoxElement.style.backgroundPosition = "center";
         } 
         this._setImage( this._checkBoxElement, image, config.enabled );
-        if( !contentOnly ) {
+        if( config.treeColumn !== -1 || !contentOnly ) {
           var left = this._getCheckBoxLeft( item, config );
           var width = this._getCheckBoxWidth( item, config );
           var height = this.getHeight();
