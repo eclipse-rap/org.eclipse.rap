@@ -86,9 +86,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     }
   }
 
-  public static final class ExceptionInReadAndDispatchEntryPoint
-    implements IEntryPoint
-  {
+  public static final class ExceptionInReadAndDispatchEntryPoint implements IEntryPoint {
     public int createUI() {
       createUIEntered = true;
       Display display = new Display();
@@ -125,9 +123,38 @@ public class RWTLifeCycle2_Test extends TestCase {
     }
   }
 
-  public static final class EventProcessingOnSessionRestartEntryPoint
-    implements IEntryPoint
-  {
+  public static final class ExceptionInCreateUIEntryPoint implements IEntryPoint {
+    @SuppressWarnings("unused")
+    public int createUI() {
+      createUIEntered = true;
+      Display display = new Display();
+      try {
+        display.addListener( SWT.Dispose, new Listener() {
+          public void handleEvent( Event event ) {
+            eventLog.add( event );
+          }
+        } );
+        Shell shell = new Shell( display );
+        shell.setLayout( new FillLayout() );
+        shell.setSize( 100, 100 );
+        shell.layout();
+        shell.open();
+        if( !createUIExited ) {
+          int divideByZero = 5 / 0;
+        }
+        while( !shell.isDisposed() ) {
+          if( !display.readAndDispatch() ) {
+            display.sleep();
+          }
+        }
+        return 0;
+      } finally {
+        createUIExited = true;
+      }
+    }
+  }
+
+  public static final class EventProcessingOnSessionRestartEntryPoint implements IEntryPoint {
     public int createUI() {
       createUIEntered = true;
       try {
@@ -247,7 +274,30 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertTrue( createUIExited );
     assertEquals( 0, eventLog.size() );
 
-    // send 'refresh' request - session is restarted, response is index.html
+    // send 'refresh' request - session is restarted
+    request = newPostRequest( true );
+    runRWTDelegate( request );
+    assertEquals( 1, eventLog.size() );
+    assertTrue( eventLog.get( 0 ) instanceof Event );
+  }
+
+  public void testSessionRestartAfterExceptionInInitialRequest() throws Exception {
+    TestRequest request;
+    Class<? extends IEntryPoint> entryPoint = ExceptionInCreateUIEntryPoint.class;
+    RWTFactory.getEntryPointManager().registerByPath( "/test", entryPoint );
+    // send initial request - response creates ui
+    request = newPostRequest( true );
+    try {
+      runRWTDelegate( request );
+      fail();
+    } catch( Exception expected ) {
+      assertEquals( "/ by zero", expected.getMessage() );
+    }
+    assertTrue( createUIEntered );
+    assertTrue( createUIExited );
+    assertEquals( 0, eventLog.size() );
+
+    // send 'refresh' request - session is restarted
     request = newPostRequest( true );
     runRWTDelegate( request );
     assertEquals( 1, eventLog.size() );

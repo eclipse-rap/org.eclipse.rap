@@ -59,7 +59,6 @@ public class LifeCycleServiceHandler implements IServiceHandler {
       handleGetRequest();
     } else {
       handlePostRequest();
-      markSessionInitialized();
     }
   }
 
@@ -75,6 +74,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
       handleSessionTimeout();
     } else if( isRequestCounterValid() ) {
       initializeSessionStore();
+      markSessionInitialized();
       RequestParameterBuffer.merge();
       runLifeCycle();
     } else {
