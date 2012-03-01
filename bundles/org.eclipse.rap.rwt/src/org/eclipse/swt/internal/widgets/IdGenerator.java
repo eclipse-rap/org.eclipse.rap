@@ -16,14 +16,15 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 
 /**
- * <p>Utility class to generate id's for widgets that are unique within a
- * session.</p>
- * <p>Note that this implementation is not synchronized. If multiple
- * threads access methods of this class concurrently, they <i>must</i> be
- * synchronized externally.
+ * Utility class to generate ids for synchronizable widgets that are unique
+ * within a session.
+ * <p>
+ * Note that this implementation is not synchronized. If multiple threads access
+ * methods of this class concurrently, they <i>must</i> be synchronized
+ * externally.
  * </p>
  */
-final class IdGenerator implements SerializableCompatibility {
+public final class IdGenerator implements SerializableCompatibility {
 
   static IdGenerator getInstance() {
     return SessionSingletonBase.getInstance( IdGenerator.class );
