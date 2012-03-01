@@ -31,7 +31,11 @@ qx.Class.define( "org.eclipse.rwt.WidgetRenderAdapter", {
   },
 
   events: {
-    "visibility" : "qx.event.type.DataEvent"
+    "visibility" : "qx.event.type.DataEvent",
+    "height" : "qx.event.type.DataEvent",
+    "opacity" : "qx.event.type.DataEvent",
+    "backgroundColor" : "qx.event.type.DataEvent",
+    "backgroundGradient" : "qx.event.type.DataEvent"      
   },
 
   members : {
@@ -40,12 +44,10 @@ qx.Class.define( "org.eclipse.rwt.WidgetRenderAdapter", {
       var rendererName = this._renderFunctionNames[ type ];
       if( !this.hasEventListeners( type ) ) {
         var that = this;
-        this._widget[ rendererName ] = function( value ) {
-          // NOTE : Could support multiple parameters using arguments object
-          var event = new qx.event.type.DataEvent( type, value );
-          var render = that.dispatchEvent( event, true );
+        this._widget[ rendererName ] = function() {
+          var render = that.dispatchSimpleEvent( type, arguments, false );
           if( render ) {
-            this.constructor.prototype[ rendererName ].call( this, value );
+            this.constructor.prototype[ rendererName ].apply( this, arguments );
           }
         };
       }
@@ -61,15 +63,23 @@ qx.Class.define( "org.eclipse.rwt.WidgetRenderAdapter", {
     },
     
     forceRender : function( type, value ) {
+      this.getOriginalRenderer( type ).call( this._widget, value );
+    },
+    
+    getOriginalRenderer : function( type ) {
       var rendererName = this._renderFunctionNames[ type ];
       var proto = this._widget.constructor.prototype;
-      proto[ rendererName ].call( this._widget, value );
+      return proto[ rendererName ];
     },
 
     // TODO [tb]: AnimationRenderer#getValueFromWidget would also fit here 
     
     _renderFunctionNames :  {
-      "visibility" : "_applyVisibility"
+      "visibility" : "_applyVisibility",
+      "height" : "_renderRuntimeHeight",
+      "opacity" : "_applyOpacity",
+      "backgroundColor" : "_styleBackgroundColor",
+      "backgroundGradient" : "_applyBackgroundGradient"      
     }
 
   }

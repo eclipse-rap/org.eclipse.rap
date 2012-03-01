@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -268,8 +268,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       var widget = this._createWidget();
       var adapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
       var log = [];
-      var logger = function( event ) {
-        log.push( event.getData() );
+      var logger = function( args ) {
+        log.push( args[ 0 ] );
         log.push( this );
       };
       adapter.addRenderListener( "visibility", logger, this );
@@ -301,9 +301,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       var widget = this._createWidget();
       var adapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
       var log = [];
-      var logger = function( event ) {
-        log.push( event )
-        event.preventDefault();
+      var logger = function( args ) {
+        log.push( args[ 0 ] )
+        return false;
       };
       adapter.addRenderListener( "visibility", logger, this );
       widget.hide();
@@ -316,9 +316,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       var widget = this._createWidget();
       var adapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
       var log = [];
-      var logger = function( event ) {
-        log.push( event )
-        event.preventDefault();
+      var logger = function( args ) {
+        log.push( args[ 0 ] )
+        return false;
       };
       adapter.addRenderListener( "visibility", logger, this );
       widget.hide();

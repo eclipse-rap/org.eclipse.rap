@@ -1144,7 +1144,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.disposeMenuBar();            
     },
 
-    testDisposeWithAnimaton : function() {
+    testDisposeWithAnimation : function() {
       this.createSimpleMenu( "push" );
       var menu = this.menu;
       this.TestUtil.flush();
@@ -1152,14 +1152,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
         "slideIn" : [ 100, "easeIn" ]
       } );
       menu.setHasMenuListener( true );
-      assertNotNull( menu._animation );
-      var animation = menu._animation;
-      var renderer = menu._animation.getDefaultRenderer();
+      assertNotNull( menu._appearAnimation );
+      var animation = menu._appearAnimation;
+      var renderer = menu._appearAnimation.getDefaultRenderer();
       assertTrue( menu._hasParent );
       menu.destroy();
       this.TestUtil.flush();
       assertTrue( menu.isDisposed() );
-      assertNull( menu._animation );
+      assertNull( menu._appearAnimation );
       assertTrue( animation.isDisposed() );
       assertTrue( renderer.isDisposed() );
       this.menu = null;
@@ -1175,19 +1175,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
         "slideIn" : [ 100, "easeIn" ]
       } );
       menu.setHasMenuListener( true );
-      assertNotNull( menu._animation );
-      var animation = menu._animation;
-      var renderer = menu._animation.getDefaultRenderer();
+      assertNotNull( menu._appearAnimation );
+      var animation = menu._appearAnimation;
+      var renderer = menu._appearAnimation.getDefaultRenderer();
       menu.show();
       org.eclipse.rwt.Animation._mainLoop();
-      assertTrue( menu._animation.isRunning() );
+      assertTrue( menu._appearAnimation.isRunning() );
       menu.unhideItems();
       org.eclipse.rwt.Animation._mainLoop();
       menu.destroy();
       this.TestUtil.flush();
       org.eclipse.rwt.Animation._mainLoop();
       assertTrue( menu.isDisposed() );
-      assertNull( menu._animation );
+      assertNull( menu._appearAnimation );
       assertTrue( animation.isDisposed() );
       assertTrue( renderer.isDisposed() );
       this.menu = null;

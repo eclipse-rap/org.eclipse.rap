@@ -76,8 +76,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     },
     
     getDefaultRenderer : function( active ) {
-      if( this._defaultRenderer == null || this._defaultRenderer.isDisposed() ) 
-      { 
+      if( this._defaultRenderer == null || this._defaultRenderer.isDisposed() ) {
         this._defaultRenderer = new org.eclipse.rwt.AnimationRenderer( this );
       }
       if( typeof active != "undefined" ) {

@@ -128,12 +128,12 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
     // Set to false to disable calls to setupFunction and renderFunction.
     // Also disables widget-integration.
     setActive : function( value ) {
-      if( this._active != value ) {
+      if( this._active !== value ) {
         if( this._animation.isRunning() ) {
           throw "AnimationRenderer: Can not change \"active\" while running!";
         }
         this._active = value;
-        if( this._renderType != null ) {
+        if( this._renderType !== null ) {
           this._handleAnimationType();
         }
       }
@@ -232,31 +232,30 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
       return result;
     },
 
-    //////////////////////////////////
-    // Public API - Widget integration
+    ///////////////////////////
+    // API - Widget integration
 
     // The RenderType can currently be:  "height", "opacity", "backgroundColor",
     // "backgroundGradient". The AnimationTypes are defined in the statics.
-    // NEVER use two active AnimationRenderer on the same widget!
     animate : function( widget, renderType, animationType ) {
       if(    this._context != widget
           || this._renderType != renderType
           || this._animationType != animationType )
       {
         this.clearAnimation();
+        this._context = widget;
+        this._renderAdapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
+        this._renderType = renderType;
+        this._animationType = animationType;
+        this._renderFunction = this._renderAdapter.getOriginalRenderer( this._renderType );
+        var map = org.eclipse.rwt.AnimationRenderer.converterByRenderType;
+        this.setConverter( map[ this._renderType ] );
+        this._handleAnimationType();
       }
-      this._context = widget;
-      this._renderAdapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
-      this._renderType = renderType;
-      this._animationType = animationType;
-      this._renderFunction = widget[ this._getRenderFunctionName() ];
-      var map = org.eclipse.rwt.AnimationRenderer.converterByRenderType;
-      this.setConverter( map[ this._renderType ] );
-      this._handleAnimationType();
     },
 
     clearAnimation : function() {
-      if( this._renderType != null ) {
+      if( this._renderType !== null ) {
         this._animationType = 0;
         this._handleAnimationType();
         this._renderType = null;
@@ -360,65 +359,50 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
       // Note: Conventional event-handler would not be able to prevent the
       // actual rendering, therefore the functions are overwritten instead.
       if( this.isAnimated() ) {
-        if( !this._context.getUserData( "animationRenderer" ) ) {
-          this._context.setUserData( "animationRenderer", this );
-          this._overwriteApplyVisibility( true );
-          this._overwriteWidgetRenderer( true );
-        }
-        if( this._context.getUserData( "animationRenderer" ) != this ) {
-          throw "Error: Widget already has an active animationRenderer!";
-          // TODO [tb] : Implement a generic solution to integrate multiple
-          // animationRenderer (using adapter-pattern to add listener?).
-        }
+        this._attachToApplyVisibility( true );
+        this._attachToWidgetRenderer( true );
       } else {
-        if( this._context.getUserData( "animationRenderer" ) == this ) {
-          this._context.setUserData( "animationRenderer", null );
-          this._overwriteApplyVisibility( false );
-          this._overwriteWidgetRenderer( false );
-        }
+        this._attachToApplyVisibility( false );
+        this._attachToWidgetRenderer( false );
       }
     },
 
-    _overwriteApplyVisibility : function( value ) {
+    _attachToApplyVisibility : function( value ) {
       if( value ) {
-        this._renderAdapter.addRenderListener( "visibility",
-                                               this._onVisibilityChange,
-                                               this );
+        this._renderAdapter.addRenderListener( "visibility", this._onVisibilityChange, this );
       } else {
-        this._renderAdapter.removeRenderListener( "visibility",
-                                                  this._onVisibilityChange,
-                                                  this );
+        this._renderAdapter.removeRenderListener( "visibility", this._onVisibilityChange, this );
       }
     },
 
-    _overwriteWidgetRenderer : function( value ) {
-      var name = this._getRenderFunctionName();
-      if( !this._context[ name ] ) {
-        throw( "unkown renderfunction " + name );
-      }
+    _attachToWidgetRenderer : function( value ) {
       if( value ) {
-        if( !this.__onOriginalRenderer ) {
-          this.__onOriginalRenderer = qx.lang.Function.bind( this._onOriginalRenderer, this );
-        }
-        this._context[ name ] = this.__onOriginalRenderer;
+        this._renderAdapter.addRenderListener( this._renderType, this._onOriginalRenderer, this );
       } else {
-        delete this._context[ name ];
+        this._renderAdapter.removeRenderListener( this._renderType, this._onOriginalRenderer, this );
       }
+
     },
 
     //////////////////////////////////////
     // Widget integration - event handlers
 
-    _onVisibilityChange : function( event ) {
-      var allow;
-      if( event.getData() ) {
+    _onVisibilityChange : function( originalArgs ) {
+      var value = originalArgs[ 0 ];
+      var allow = false;
+      if( value ) {
         allow = this._onBeforeAppear();
       } else {
-        allow = this._onBeforeDisappear();
+        if( !this._context.isCreated() ) {
+          this._animation.cancel(); // scheduled appear animation
+        }
+        if( this._context.isSeeable() ) {
+          allow = this._onBeforeDisappear();
+        } else {
+          allow = true;
+        }
       }
-      if( !allow ) {
-        event.preventDefault();
-      }
+      return allow;
     },
 
     _onBeforeAppear : function() {
@@ -444,12 +428,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
     },
 
     _onBeforeDisappear : function() {
-      if( this._context.isCreated() ) {
-        // TODO [tb] : using cancel+lastValue instead might look better
-        this._animation.skip();
-      } else {
-        this._animation.cancel();
-      }
+      this._animation.skip();
       var typeDisappear = org.eclipse.rwt.AnimationRenderer.ANIMATION_DISAPPEAR;
       var result = !this.isAnimated( typeDisappear );
       if( !result ) {
@@ -462,7 +441,10 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
       return result;
     },
 
-    _onOriginalRenderer : function( value, oldValue ) {
+    _onOriginalRenderer : function( originalArgs ) {
+      var value = originalArgs[ 0 ];
+      var oldValue = originalArgs[ 1 ];
+      var result = false;
       if( this._animation.isStarted() ) {
         var config = this._animation.getConfig();
         var endValue = this._endValue;
@@ -474,33 +456,29 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
             this.setStartValue( this.getLastValue() );
           }
           if( !this._animation.restart() ) {
-            this.renderValue( value );
+            result = true;
             this.cancelActivateOnce();
           }
         }
       } else {
         var typeChange = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
         if( this.isAnimated( typeChange ) && this._context.isSeeable() ) {
-          this.setStartValue(   typeof oldValue != "undefined"
+          this.setStartValue(   typeof oldValue !== "undefined"
                               ? oldValue
                               : this.getValueFromWidget() );
           this.setEndValue( value );
           if( !this._autoStart( typeChange ) && this._autoStartEnabled ) {
-            this.renderValue( value );
+            result = true;
           }
         } else {
-          this.renderValue( value );
+          result = true;
         }
       }
+      return result;
     },
 
     //////////////////////////////
     // Widget integration - helper
-
-    _getRenderFunctionName : function() {
-      var map = org.eclipse.rwt.AnimationRenderer.renderFunctionNames;
-      return map[ this._renderType ];
-    },
 
     // Forces the widget to call the renderer, may be asynchronous due to flush.
     _forceWidgetRenderer : function() {
@@ -559,13 +537,6 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
     ANIMATION_APPEAR : 1,
     ANIMATION_DISAPPEAR : 2,
     ANIMATION_CHANGE : 4,
-
-    renderFunctionNames : {
-      "height" : "_renderRuntimeHeight",
-      "opacity" : "_applyOpacity",
-      "backgroundColor" : "_styleBackgroundColor",
-      "backgroundGradient" : "_applyBackgroundGradient"
-    },
 
     applyFunctionNames : {
       "height" : "_applyHeight",

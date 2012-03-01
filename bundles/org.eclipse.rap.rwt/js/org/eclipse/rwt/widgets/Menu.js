@@ -10,6 +10,7 @@
 
 qx.Class.define( "org.eclipse.rwt.widgets.Menu", {  
   extend : qx.ui.popup.Popup,
+  include : org.eclipse.rwt.VisibilityAnimationMixin,
 
   construct : function() {
     this.base( arguments );
@@ -45,7 +46,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
     this._openTimer.addEventListener( "interval", this._onopentimer, this );
     this._closeTimer = new qx.client.Timer( 250 );
     this._closeTimer.addEventListener( "interval", this._onclosetimer, this );
-    this._renderAppearance();
     this.addToDocument();    
   },
 
@@ -115,14 +115,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
     appearance : {
       refine : true,
       init : "menu"
-    },
-
-    animation : {
-      check : "Object",
-      nullable : false,
-      init : null,
-      apply : "_applyAnimation",      
-      themeable : true
     }
 
   },
@@ -614,46 +606,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
         menu.setLocation( x, y );
         menu.show();
       }
-    },
-
-    ////////////
-    // Animation
-
-    _applyAnimation : function( newValue, oldValue ) {
-      // TODO [tb] : Rounded borders are not relayouted during the animation.
-      var animationType = 0;
-      if( newValue[ "slideIn" ] ) {
-        animationType |= org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR; 
-        animationType |= org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE; 
-      } 
-      if( newValue[ "slideOut" ] ) {
-        animationType |= org.eclipse.rwt.AnimationRenderer.ANIMATION_DISAPPEAR;        
-      }
-      if( animationType != 0 ) {
-        if( this._animation == null ) {
-          this._animation = new org.eclipse.rwt.Animation();
-        } 
-        var renderer = this._animation.getDefaultRenderer();
-        renderer.animate( this, "height", animationType );
-        this._animation.addEventListener( "init", this._initAnimation, this );
-        this._animation.addEventListener( "cancel", this._finishAnimation, this );
-      } else if( this._animation != null ) {
-        this._animation.setEnabled( false );
-      }
-    },
-
-    _initAnimation : function( event ) {
-      this.setContainerOverflow( false );
-      if( event.getData() == "disappear" ) {
-        this._animation.setProperties( this.getAnimation()[ "slideOut" ] );
-      } else {
-        // There might also be a resize due to "unhideItems"
-        this._animation.setProperties( this.getAnimation()[ "slideIn" ] );
-      }
-    },
-    
-    _finishAnimation : function( event ) {
-      this.setContainerOverflow( true );
     }
 
   }

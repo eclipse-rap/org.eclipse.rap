@@ -235,6 +235,7 @@ qx.Class.define("qx.core.Target",
     dispatchSimpleEvent : function( type, data, bubbles ) {
       var listeners = this.__listeners;
       var propagate = bubbles === true;
+      var result = true;
       if( listeners ) {
         var typeListeners = listeners[ type ];
         if( typeListeners ) {
@@ -244,7 +245,7 @@ qx.Class.define("qx.core.Target",
             // Shortcuts for handler and object
             func = typeListeners[ hashCode ].handler;
             obj = typeListeners[ hashCode ].object || this;
-            var result = func.call( obj, data ) ;
+            result = func.call( obj, data ) && result !== false;
             if( result === false ) {
               propagate = false;
             }
@@ -257,6 +258,7 @@ qx.Class.define("qx.core.Target",
           parent.dispatchSimpleEvent( type, data, bubbles );
         }
       }
+      return result !== false;
     },
 
     /**

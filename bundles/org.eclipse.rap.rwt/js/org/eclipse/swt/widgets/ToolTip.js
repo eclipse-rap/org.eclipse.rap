@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2012 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@
  
 qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
   extend : qx.ui.popup.Popup,
-  include : org.eclipse.rwt.FadeAnimationMixin,
+  include : org.eclipse.rwt.VisibilityAnimationMixin,
   
   construct : function( style ) {
     this.base( arguments );

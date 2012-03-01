@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource.
+ * Copyright (c) 2009, 2012 EclipseSource.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@
 qx.Class.define( "org.eclipse.rwt.widgets.WidgetToolTip", {
   type : "singleton",
   extend : qx.ui.popup.ToolTip,
-  include : org.eclipse.rwt.FadeAnimationMixin,
+  include : org.eclipse.rwt.VisibilityAnimationMixin,
   
   construct : function() {
     this.base( arguments );
