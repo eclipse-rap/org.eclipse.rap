@@ -39,25 +39,33 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 
 
+@SuppressWarnings("deprecation")
 public class JSWriter_Test extends TestCase {
 
   private static final String PROPERTY_NAME = "propertyName";
   private static final String PROP_SELECTION_LISTENER = "listener_selection";
   private static final String WM_SETUP_CODE
     = "var wm = org.eclipse.swt.WidgetManager.getInstance();";
-  private static final String W2_SETUP_CODE = "var w = wm.findWidgetById( \"w2\" );";
 
   private Display display;
   private TestShell shell;
+  private String shellId;
+  private String buttonId;
+  private String textId;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
     Fixture.fakePhase( PhaseId.RENDER );
     display = new Display();
     shell = new TestShell( display );
+    shellId = WidgetUtil.getId( shell );
+    buttonId = WidgetUtil.getId( shell.button );
+    textId = WidgetUtil.getId( shell.text );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -76,8 +84,8 @@ public class JSWriter_Test extends TestCase {
 
     String expected =   WM_SETUP_CODE
                       + "var w = new rap.Button();"
-                      + "wm.add( w, \"w2\", true );"
-                      + "wm.setParent( w, \"w3\" );";
+                      + "wm.add( w, \"" + buttonId + "\", true );"
+                      + "wm.setParent( w, \"" + shellId + "\" );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -91,8 +99,8 @@ public class JSWriter_Test extends TestCase {
 
     String expected =   WM_SETUP_CODE
                       + "var w = new rap.Button();"
-                      + "wm.add( w, \"w2\", true );"
-                      + "wm.setParent( w, \"w3\" );"
+                      + "wm.add( w, \"" + buttonId + "\", true );"
+                      + "wm.setParent( w, \"" + shellId + "\" );"
                       + "w.setWidth( 5 );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
@@ -105,7 +113,11 @@ public class JSWriter_Test extends TestCase {
 
     String expected =   WM_SETUP_CODE
                       + "var w = new rap.Button();"
-                      + "wm.add( w, \"w2\", true );wm.setParent( w, \"w3\" );"
+                      + "wm.add( w, \""
+                      + buttonId
+                      + "\", true );wm.setParent( w, \""
+                      + shellId
+                      + "\" );"
                       + "w.setText( \"xyz\" );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
@@ -118,9 +130,13 @@ public class JSWriter_Test extends TestCase {
     // Ensure that the "widget reference is set"-flag is set
     writer.set( "Text", "xyz" );
 
-    String expected =   WM_SETUP_CODE
+    String expected = WM_SETUP_CODE
                       + "var w = new rap.Button( \"abc\", [\"#ff0000\" ] );"
-                      + "wm.add( w, \"w2\", true );wm.setParent( w, \"w3\" );"
+                      + "wm.add( w, \""
+                      + buttonId
+                      + "\", true );wm.setParent( w, \""
+                      + shellId
+                      + "\" );"
                       + "w.setText( \"xyz\" );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
@@ -132,8 +148,10 @@ public class JSWriter_Test extends TestCase {
     // Ensures that an Item is added and marked as a 'no-control' and setParent is not called
     writer.newWidget( "TreeItem", null );
 
-    String expected =   WM_SETUP_CODE
-                      + "var w = new TreeItem();wm.add( w, \"w2\", false );";
+    String itemId = WidgetUtil.getId( item );
+    String expected = WM_SETUP_CODE
+                      + "var w = new TreeItem();"
+                      + "wm.add( w, \"" + itemId + "\", false );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -141,9 +159,9 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell );
     writer.reset( "testProperty" );
 
-    String expected =   WM_SETUP_CODE
+    String expected = WM_SETUP_CODE
                       + "var w = wm.findWidgetById( \""
-                      + WidgetUtil.getId( shell )
+                      + shellId
                       + "\" );w.resetTestProperty();";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
@@ -152,9 +170,9 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell );
     writer.reset( new String[] { "labelObject", "testProperty" } );
 
-    String expected =   WM_SETUP_CODE
+    String expected = WM_SETUP_CODE
                       + "var w = wm.findWidgetById( \""
-                      + WidgetUtil.getId( shell )
+                      + shellId
                       + "\" );w.getLabelObject().resetTestProperty();";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
@@ -172,7 +190,7 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.set( "text", "xyz" );
 
-    String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setText( \"xyz\" );";
+    String expected = WM_SETUP_CODE + getSetupCode( shell.button ) + "w.setText( \"xyz\" );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -181,7 +199,7 @@ public class JSWriter_Test extends TestCase {
     // use a high value to test separator avoidance...
     writer.set( "width", 20000000 );
 
-    String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setWidth( 20000000 );";
+    String expected = WM_SETUP_CODE + getSetupCode( shell.button ) + "w.setWidth( 20000000 );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -189,7 +207,7 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.set( "allowStretchY", true );
 
-    String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setAllowStretchY( true );";
+    String expected = WM_SETUP_CODE + getSetupCode( shell.button ) + "w.setAllowStretchY( true );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -198,7 +216,9 @@ public class JSWriter_Test extends TestCase {
     // test regular strings
     writer.call( "setTextValues", new String[] { "abc", "xyz" } );
 
-    String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setTextValues( \"abc\", \"xyz\" );";
+    String expected = WM_SETUP_CODE
+                      + getSetupCode( shell.button )
+                      + "w.setTextValues( \"abc\", \"xyz\" );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
 
     // test string with newline
@@ -213,7 +233,7 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.call( "setIntegerValues", new Integer[] { new Integer( 1 ), new Integer( 2 ) } );
 
-    String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setIntegerValues( 1, 2 );";
+    String expected = WM_SETUP_CODE + getSetupCode( shell.button ) + "w.setIntegerValues( 1, 2 );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -222,7 +242,7 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.call( "setColor", new Object[] { salmon } );
 
-    String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setColor( \"#fa8072\" );";
+    String expected = WM_SETUP_CODE + getSetupCode( shell.button ) + "w.setColor( \"#fa8072\" );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -231,7 +251,7 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.call( "setColor", new Object[] { salmon } );
 
-    String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setColor( \"#fa8072\" );";
+    String expected = WM_SETUP_CODE + getSetupCode( shell.button ) + "w.setColor( \"#fa8072\" );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -239,7 +259,7 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.set( "intValues", new int[] { 1, 2 } );
 
-    String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setIntValues( 1, 2 );";
+    String expected = WM_SETUP_CODE + getSetupCode( shell.button ) + "w.setIntValues( 1, 2 );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -247,7 +267,9 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.set( "boolValues", new boolean[] { true, false } );
 
-    String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setBoolValues( true, false );";
+    String expected = WM_SETUP_CODE
+                      + getSetupCode( shell.button )
+                      + "w.setBoolValues( true, false );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -256,19 +278,20 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell );
     writer.set( "buttons", "buttons", new Widget[ 0 ], null );
 
-    String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setButtons( [] );";
+    String expected = WM_SETUP_CODE + getSetupCode( shell ) + "w.setButtons( [] );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testSetWidgetArray2() throws IOException {
-    Widget widget1 = new Button( shell, SWT.PUSH );
+    Widget button = new Button( shell, SWT.PUSH );
     JSWriter writer = JSWriter.getWriterFor( shell );
     // set property value to an array that contains one item
-    writer.set( "buttons", "buttons", new Object[] { widget1 }, null );
+    writer.set( "buttons", "buttons", new Object[] { button }, null );
 
+    String buttonId = WidgetUtil.getId( button );
     String expected = WM_SETUP_CODE
-                      + W2_SETUP_CODE
-                      + "w.setButtons( [wm.findWidgetById( \"w3\" ) ] );";
+                      + getSetupCode( shell )
+                      + "w.setButtons( [wm.findWidgetById( \"" + buttonId + "\" ) ] );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -279,10 +302,12 @@ public class JSWriter_Test extends TestCase {
     // set property value to an array that contains two items
     writer.set( "buttons", "buttons", new Object[] { widget1, widget2 }, null );
 
+    String widgetId1 = WidgetUtil.getId( widget1 );
+    String widgetId2 = WidgetUtil.getId( widget2 );
     String expected = WM_SETUP_CODE
-                      + W2_SETUP_CODE
-                      + "w.setButtons( [wm.findWidgetById( \"w3\" ),"
-                      + "wm.findWidgetById( \"w4\" ) ] );";
+                      + getSetupCode( shell )
+                      + "w.setButtons( [wm.findWidgetById( \"" + widgetId1 + "\" ),"
+                      + "wm.findWidgetById( \"" + widgetId2 + "\" ) ] );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
@@ -291,7 +316,9 @@ public class JSWriter_Test extends TestCase {
     writer.set( new String[] { "prop1", "prop2" },
                 new Object[] { new JSVar( "var1" ), new JSVar( "var2" ) } );
 
-    String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.getProp1().setProp2( var1, var2 );";
+    String expected = WM_SETUP_CODE
+                      + getSetupCode( shell.button )
+                      + "w.getProp1().setProp2( var1, var2 );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -331,7 +358,7 @@ public class JSWriter_Test extends TestCase {
     writer.set( "text", "value", shell.text.getText() );
 
     String expected = WM_SETUP_CODE
-                      + "var w = wm.findWidgetById( \"w4\" );"
+                      + "var w = wm.findWidgetById( \"" + textId + "\" );"
                       + "w.setValue( \"\" );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
@@ -365,7 +392,7 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.call( "function1", null );
 
-    String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.function1();";
+    String expected = WM_SETUP_CODE + getSetupCode( shell.button ) + "w.function1();";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -374,7 +401,7 @@ public class JSWriter_Test extends TestCase {
     writer.call( "function1", null );
     writer.call( "function2", null );
 
-    String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.function1();w.function2();";
+    String expected = WM_SETUP_CODE + getSetupCode( shell.button ) + "w.function1();w.function2();";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -398,7 +425,8 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.callStatic( "doSomethingStaticWithButton", new Object[]{ shell.button } );
 
-    String expected = WM_SETUP_CODE + "doSomethingStaticWithButton( wm.findWidgetById( \"w2\" ) );";
+    String expected = WM_SETUP_CODE
+                      + "doSomethingStaticWithButton( wm.findWidgetById( \"" + buttonId + "\" ) );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -408,7 +436,7 @@ public class JSWriter_Test extends TestCase {
     writer.callStatic( "doSomethingStaticWithButtonRef", new Object[]{ shell.button } );
 
     String expected = WM_SETUP_CODE
-                      + W2_SETUP_CODE
+                      + getSetupCode( shell.button )
                       + "w.test();doSomethingStaticWithButtonRef( w );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
@@ -426,8 +454,8 @@ public class JSWriter_Test extends TestCase {
     writer.call( shell, "doSomethingWithShell", new Object[]{ shell } );
 
     String expected = WM_SETUP_CODE
-                      + "var t = wm.findWidgetById( \"w2\" );"
-                      + "t.doSomethingWithShell( wm.findWidgetById( \"w2\" ) );";
+                      + "var t = wm.findWidgetById( \"" + shellId + "\" );"
+                      + "t.doSomethingWithShell( wm.findWidgetById( \"" + shellId + "\" ) );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -435,7 +463,8 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.call( shell, "doSomething", new Object[ 0 ] );
 
-    String expected = WM_SETUP_CODE + "var t = wm.findWidgetById( \"w2\" );t.doSomething();";
+    String expected = WM_SETUP_CODE
+                      + "var t = wm.findWidgetById( \"" + shellId + "\" );t.doSomething();";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -443,7 +472,9 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.call( shell, "doSomething", new Object[]{ new Integer( 123 ) } );
 
-    String expected = WM_SETUP_CODE + "var t = wm.findWidgetById( \"w2\" );t.doSomething( 123 );";
+    String expected = WM_SETUP_CODE
+                      + "var t = wm.findWidgetById( \"" + shellId + "\" );"
+                      + "t.doSomething( 123 );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -452,7 +483,8 @@ public class JSWriter_Test extends TestCase {
     writer.call( shell, "doSomething", new Object[] { "abc", new Integer( 123 ) } );
 
     String expected = WM_SETUP_CODE
-                      + "var t = wm.findWidgetById( \"w2\" );t.doSomething( \"abc\", 123 );";
+                      + "var t = wm.findWidgetById( \"" + shellId + "\" );"
+                      + "t.doSomething( \"abc\", 123 );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -461,8 +493,8 @@ public class JSWriter_Test extends TestCase {
     writer.call( shell, "doSomething", new Object[] { shell, shell.combo.getItems() } );
 
     String expected = WM_SETUP_CODE
-                      + "var t = wm.findWidgetById( \"w2\" );"
-                      + "t.doSomething( wm.findWidgetById( \"w2\" ), "
+                      + "var t = wm.findWidgetById( \"" + shellId + "\" );"
+                      + "t.doSomething( wm.findWidgetById( \"" + shellId + "\" ), "
                       + "[ \"test\", \"test2\", \"test3\" ] );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
@@ -473,9 +505,8 @@ public class JSWriter_Test extends TestCase {
     writer.call( shell, "doSomething", args );
 
     String expected = WM_SETUP_CODE
-                      + "var t = wm.findWidgetById( \"w2\" );"
-                      + "t.doSomething( wm.findWidgetById( \"w2\" ), "
-                      + "[] );";
+                      + "var t = wm.findWidgetById( \"" + shellId + "\" );"
+                      + "t.doSomething( wm.findWidgetById( \"" + shellId + "\" ), [] );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -483,7 +514,8 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.call( shell, "doSomething", null );
 
-    String expected = WM_SETUP_CODE + "var t = wm.findWidgetById( \"w2\" );t.doSomething();";
+    String expected = WM_SETUP_CODE
+                      + "var t = wm.findWidgetById( \"" + shellId + "\" );t.doSomething();";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -492,7 +524,7 @@ public class JSWriter_Test extends TestCase {
     writer.call( shell, "doSomething", new Object[] { null } );
 
     String expected = WM_SETUP_CODE
-                      + "var t = wm.findWidgetById( \"w2\" );"
+                      + "var t = wm.findWidgetById( \"" + shellId + "\" );"
                       + "t.doSomething( null );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
@@ -501,7 +533,7 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.call( shell.button, "buttonFunction", null );
 
-    String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.buttonFunction();";
+    String expected = WM_SETUP_CODE + getSetupCode( shell.button ) + "w.buttonFunction();";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -527,7 +559,7 @@ public class JSWriter_Test extends TestCase {
     writer.addListener( "execute", "buttonExecuted1" );
 
     String expected = WM_SETUP_CODE
-                      + W2_SETUP_CODE
+                      + getSetupCode( shell.button )
                       + "w.addEventListener( \"execute\", buttonExecuted1 );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
@@ -539,7 +571,7 @@ public class JSWriter_Test extends TestCase {
     writer.addListener( "execute", "buttonExecuted2" );
 
     String expected = WM_SETUP_CODE
-                      + W2_SETUP_CODE
+                      + getSetupCode( shell.button )
                       + "w.addEventListener( \"execute\", buttonExecuted1 );"
                       + "w.addEventListener( \"execute\", buttonExecuted2 );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
@@ -551,7 +583,7 @@ public class JSWriter_Test extends TestCase {
     writer.addListener( "prop", "type", "jshandler" );
 
     String expected = WM_SETUP_CODE
-                      + W2_SETUP_CODE
+                      + getSetupCode( shell.button )
                       + "w.getProp().addEventListener( \"type\", jshandler );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
@@ -562,7 +594,7 @@ public class JSWriter_Test extends TestCase {
     writer.removeListener( "execute", "buttonExecuted1" );
 
     String expected = WM_SETUP_CODE
-                      + W2_SETUP_CODE
+                      + getSetupCode( shell.button )
                       + "w.removeEventListener( \"execute\", buttonExecuted1 );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
@@ -574,7 +606,7 @@ public class JSWriter_Test extends TestCase {
     writer.removeListener( "execute", "buttonExecuted2" );
 
     String expected = WM_SETUP_CODE
-                      + W2_SETUP_CODE
+                      + getSetupCode( shell.button )
                       + "w.removeEventListener( \"execute\", buttonExecuted1 );"
                       + "w.removeEventListener( \"execute\", buttonExecuted2 );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
@@ -586,7 +618,7 @@ public class JSWriter_Test extends TestCase {
     writer.removeListener( "prop", "type", "jshandler" );
 
     String expected = WM_SETUP_CODE
-                      + W2_SETUP_CODE
+                      + getSetupCode( shell.button )
                       + "w.getProp().removeEventListener( \"type\", jshandler );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
@@ -597,7 +629,7 @@ public class JSWriter_Test extends TestCase {
     writer.removeListener( "type", "this.jshandler" );
 
     String expected = WM_SETUP_CODE
-                      + W2_SETUP_CODE
+                      + getSetupCode( shell.button )
                       + "w.removeEventListener( \"type\", w.jshandler, w );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
@@ -923,7 +955,7 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.dispose();
 
-    String expected = WM_SETUP_CODE + "wm.dispose( \"w2\" );";
+    String expected = WM_SETUP_CODE + "wm.dispose( \"" + buttonId + "\" );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -932,7 +964,7 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.dispose();
 
-    String expected = WM_SETUP_CODE + "wm.dispose( \"w2\" );";
+    String expected = WM_SETUP_CODE + "wm.dispose( \"" + buttonId + "\" );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -968,7 +1000,7 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell );
     writer.varAssignment( new JSVar( "foo" ), "getFoo" );
 
-    String expected = WM_SETUP_CODE + W2_SETUP_CODE + "var foo = w.getFoo();";
+    String expected = WM_SETUP_CODE + getSetupCode( shell ) + "var foo = w.getFoo();";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
@@ -977,8 +1009,8 @@ public class JSWriter_Test extends TestCase {
     writer.call( "foo", null );
     writer.call( "bar", null );
 
-    String expected = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-                      + "var w = wm.findWidgetById( \"w2\" );"
+    String expected = WM_SETUP_CODE
+                      + "var w = wm.findWidgetById( \"" + shellId + "\" );"
                       + "w.foo();"
                       + "w.bar();";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
@@ -994,11 +1026,11 @@ public class JSWriter_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     CallOperation operation1 = ( CallOperation )message.getOperation( 0 );
     CallOperation operation2 = ( CallOperation )message.getOperation( 2 );
-    String expected1 = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-                       + "var w = wm.findWidgetById( \"w2\" );"
+    String expected1 = WM_SETUP_CODE
+                       + "var w = wm.findWidgetById( \"" + shellId + "\" );"
                        + "w.foo();";
-    String expected2 = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-                       + "var w = wm.findWidgetById( \"w2\" );"
+    String expected2 = WM_SETUP_CODE
+                       + "var w = wm.findWidgetById( \"" + shellId + "\" );"
                        + "w.bar();";
     assertEquals( expected1, operation1.getProperty( "content" ) );
     assertEquals( expected2, operation2.getProperty( "content" ) );

@@ -221,13 +221,15 @@ public class DisplayLCA_Test extends TestCase {
     lifeCycle.execute();
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
+    final Shell[] shell = new Shell[ 1 ];
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
       public PhaseId getPhaseId() {
         return PhaseId.PROCESS_ACTION;
       }
       public void beforePhase( PhaseEvent event ) {
-        Display.getCurrent().getShells()[ 0 ].dispose();
+        shell[ 0 ] = Display.getCurrent().getShells()[ 0 ];
+        shell[ 0 ].dispose();
       }
       public void afterPhase( PhaseEvent event ) {
       }
@@ -237,7 +239,8 @@ public class DisplayLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertTrue( message.getOperation( 0 ) instanceof DestroyOperation );
-    assertEquals( "w2", message.getOperation( 0 ).getTarget() );
+    String shellId = WidgetUtil.getId( shell[ 0 ] );
+    assertEquals( shellId, message.getOperation( 0 ).getTarget() );
   }
 
   public void testRenderRunnableIsExecutedAndCleared() throws IOException {

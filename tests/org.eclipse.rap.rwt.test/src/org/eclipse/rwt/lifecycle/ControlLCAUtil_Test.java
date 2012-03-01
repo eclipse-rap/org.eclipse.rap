@@ -308,9 +308,9 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     ControlLCAUtil.writeKeyListener( shell );
 
-    String expected
-      = "var w = wm.findWidgetById( \"w2\" );"
-      + "w.setUserData( \"keyListener\", true );";
+    String shellId = WidgetUtil.getId( shell );
+    String expected = "var w = wm.findWidgetById( \"" + shellId + "\" );"
+                      + "w.setUserData( \"keyListener\", true );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
@@ -330,8 +330,9 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     ControlLCAUtil.writeTraverseListener( shell );
 
+    String shellId = WidgetUtil.getId( shell );
     String expected
-      = "var w = wm.findWidgetById( \"w2\" );"
+      = "var w = wm.findWidgetById( \"" + shellId + "\" );"
       + "w.setUserData( \"traverseListener\", true );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
@@ -573,11 +574,10 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.writeBackgroundImage( control );
     String imageLocation = ImageFactory.getImagePath( image );
 
-    String expected = "var w = wm.findWidgetById( \"w2\" );"
+    String controlId = WidgetUtil.getId( control );
+    String expected = "var w = wm.findWidgetById( \"" + controlId + "\" );"
                       + "w.setUserData( \"backgroundImageSize\", [58,12 ] );"
-                      + "w.setBackgroundImage( \""
-                      + imageLocation
-                      + "\" );";
+                      + "w.setBackgroundImage( \"" + imageLocation + "\" );";
     assertEquals( expected, ProtocolTestUtil.getMessageScript() );
 
     Fixture.fakeResponseWriter();
@@ -616,7 +616,10 @@ public class ControlLCAUtil_Test extends TestCase {
     control.addMouseListener( new MouseAdapter() {} );
     ControlLCAUtil.writeChanges( control );
 
-    String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"mouse\", true );";
+    String controlId = WidgetUtil.getId( control );
+    String expected = "wm.setHasListener( wm.findWidgetById( \""
+                      + controlId
+                      + "\" ), \"mouse\", true );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
@@ -630,7 +633,10 @@ public class ControlLCAUtil_Test extends TestCase {
     control.addFocusListener( new FocusAdapter() {} );
     ControlLCAUtil.writeChanges( control );
 
-    String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"focus\", true );";
+    String controlId = WidgetUtil.getId( control );
+    String expected = "wm.setHasListener( wm.findWidgetById( \""
+                      + controlId
+                      + "\" ), \"focus\", true );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
@@ -660,7 +666,10 @@ public class ControlLCAUtil_Test extends TestCase {
     } );
     ControlLCAUtil.writeChanges( control );
 
-    String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"menuDetect\", true );";
+    String controlId = WidgetUtil.getId( control );
+    String expected = "wm.setHasListener( wm.findWidgetById( \""
+                      + controlId
+                      + "\" ), \"menuDetect\", true );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 

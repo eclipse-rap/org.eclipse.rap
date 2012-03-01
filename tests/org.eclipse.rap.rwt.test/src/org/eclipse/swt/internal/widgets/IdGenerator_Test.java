@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,24 +16,33 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class IdGenerator_Test extends TestCase {
-  
+
   private IdGenerator idGenerator;
+
+  @Override
+  protected void setUp() throws Exception {
+    idGenerator = new IdGenerator();
+  }
 
   public void testNewId() {
     String id1 = idGenerator.newId();
     String id2 = idGenerator.newId();
+
     assertFalse( id1.equals( id2 ) );
   }
-  
-  public void testSerialize() throws Exception {
-    idGenerator.newId();
-    
-    IdGenerator deserializedIdGenerator = Fixture.serializeAndDeserialize( idGenerator );
-    
-    assertEquals( "w3", deserializedIdGenerator.newId() );
+
+  public void testReproducibleIds() {
+    String id1 = idGenerator.newId();
+    String id2 = new IdGenerator().newId();
+
+    assertEquals( id1, id2 );
   }
-  
-  protected void setUp() throws Exception {
-    idGenerator = new IdGenerator();
+
+  public void testSerialize() throws Exception {
+    String id1 = idGenerator.newId();
+
+    IdGenerator deserializedIdGenerator = Fixture.serializeAndDeserialize( idGenerator );
+
+    assertFalse( id1.equals( deserializedIdGenerator.newId() ) );
   }
 }

@@ -294,7 +294,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.preserveFont( label, font );
     WidgetLCAUtil.writeFont( label, null );
 
-    String expected = "var w = wm.findWidgetById( \"w2\" );w.resetFont();";
+    String labelId = WidgetUtil.getId( label );
+    String expected = "var w = wm.findWidgetById( \"" + labelId + "\" );w.resetFont();";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
@@ -306,7 +307,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.preserveForeground( label, red );
     WidgetLCAUtil.writeForeground( label, null );
 
-    String expected = "var w = wm.findWidgetById( \"w2\" );w.resetTextColor();";
+    String labelId = WidgetUtil.getId( label );
+    String expected = "var w = wm.findWidgetById( \"" + labelId + "\" );w.resetTextColor();";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
@@ -489,10 +491,16 @@ public class WidgetLCAUtil_Test extends TestCase {
 
     // for an un-initialized control: render menu, if any
     Fixture.fakeResponseWriter();
-    label.setMenu( new Menu( label ) );
+    Menu menu = new Menu( label );
+    label.setMenu( menu );
     WidgetLCAUtil.writeMenu( label, label.getMenu() );
-    String expected
-      = "wm.setContextMenu( wm.findWidgetById( \"w2\" ), wm.findWidgetById( \"w3\" ) );";
+    String labelId = WidgetUtil.getId( label );
+    String menuId = WidgetUtil.getId( menu );
+    String expected = "wm.setContextMenu( wm.findWidgetById( \""
+                      + labelId
+                      + "\" ), wm.findWidgetById( \""
+                      + menuId
+                      + "\" ) );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
 
     // for an initialized control with change menu: render it
@@ -501,7 +509,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     label.setMenu( null );
     WidgetLCAUtil.writeMenu( label, label.getMenu() );
-    expected = "wm.setContextMenu( wm.findWidgetById( \"w2\" ), null );";
+    expected = "wm.setContextMenu( wm.findWidgetById( \"" + labelId + "\" ), null );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
@@ -534,10 +542,12 @@ public class WidgetLCAUtil_Test extends TestCase {
     int[] percents = new int[] { 0, 100 };
     gfxAdapter.setBackgroundGradient( gradientColors, percents, true );
     WidgetLCAUtil.writeBackgroundGradient( control );
-    String expected
-      = "wm.setBackgroundGradient"
-      + "( wm.findWidgetById( \"w2\" ), [\"#00ff00\",\"#0000ff\" ], "
-      + "[0,100 ], true );";
+    String controlId = WidgetUtil.getId( control );
+    String expected = "wm.setBackgroundGradient"
+                      + "( wm.findWidgetById( \""
+                      + controlId
+                      + "\" ), [\"#00ff00\",\"#0000ff\" ], "
+                      + "[0,100 ], true );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
 
     Fixture.fakeResponseWriter();
@@ -552,7 +562,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeBackgroundGradient( control );
     expected
       = "wm.setBackgroundGradient"
-      + "( wm.findWidgetById( \"w2\" ), [\"#ff0000\",\"#00ff00\",\"#0000ff\" ],"
+      + "( wm.findWidgetById( \"" + controlId + "\" ), [\"#ff0000\",\"#00ff00\",\"#0000ff\" ],"
       + " [0,50,100 ], true );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
 
@@ -565,7 +575,9 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.preserveBackgroundGradient( control );
     gfxAdapter.setBackgroundGradient( null, null, true );
     WidgetLCAUtil.writeBackgroundGradient( control );
-    expected = "wm.setBackgroundGradient( wm.findWidgetById( \"w2\" ), null, null, true );";
+    expected = "wm.setBackgroundGradient( wm.findWidgetById( \""
+               + controlId
+               + "\" ), null, null, true );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
@@ -584,9 +596,10 @@ public class WidgetLCAUtil_Test extends TestCase {
     int[] percents = new int[] { 0, 100 };
     gfxAdapter.setBackgroundGradient( gradientColors, percents, false );
     WidgetLCAUtil.writeBackgroundGradient( control );
+    String controlId = WidgetUtil.getId( control );
     String expected
       = "wm.setBackgroundGradient"
-      + "( wm.findWidgetById( \"w2\" ), [\"#00ff00\",\"#0000ff\" ], "
+      + "( wm.findWidgetById( \"" + controlId + "\" ), [\"#00ff00\",\"#0000ff\" ], "
       + "[0,100 ], false );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
@@ -602,9 +615,11 @@ public class WidgetLCAUtil_Test extends TestCase {
     Color color = Graphics.getColor( 0, 255, 0 );
     graphicsAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
     WidgetLCAUtil.writeRoundedBorder( widget );
-    String expected
-      = "wm.setRoundedBorder"
-      + "( wm.findWidgetById( \"w2\" ), 2, \"#00ff00\", 5, 6, 7, 8 );";
+    String widgetId = WidgetUtil.getId( widget );
+    String expected = "wm.setRoundedBorder"
+                      + "( wm.findWidgetById( \""
+                      + widgetId
+                      + "\" ), 2, \"#00ff00\", 5, 6, 7, 8 );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
 
     Fixture.fakeResponseWriter();
@@ -616,18 +631,20 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.preserveRoundedBorder( widget );
     graphicsAdapter.setRoundedBorder( 4, color, 5, 6, 7, 8 );
     WidgetLCAUtil.writeRoundedBorder( widget );
-    expected
-      = "wm.setRoundedBorder"
-      + "( wm.findWidgetById( \"w2\" ), 4, \"#00ff00\", 5, 6, 7, 8 );";
+    expected = "wm.setRoundedBorder"
+               + "( wm.findWidgetById( \""
+               + widgetId
+               + "\" ), 4, \"#00ff00\", 5, 6, 7, 8 );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
 
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveRoundedBorder( widget );
     graphicsAdapter.setRoundedBorder( 4, color, 5, 4, 7, 8 );
     WidgetLCAUtil.writeRoundedBorder( widget );
-    expected
-      = "wm.setRoundedBorder"
-      + "( wm.findWidgetById( \"w2\" ), 4, \"#00ff00\", 5, 4, 7, 8 );";
+    expected = "wm.setRoundedBorder"
+               + "( wm.findWidgetById( \""
+               + widgetId
+               + "\" ), 4, \"#00ff00\", 5, 4, 7, 8 );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
@@ -641,7 +658,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     } );
     WidgetLCAUtil.writeHelpListener( widget );
 
-    String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"help\", true );";
+    String widgetId = WidgetUtil.getId( widget );
+    String expected = "wm.setHasListener( wm.findWidgetById( \"" + widgetId + "\" ), \"help\", true );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 

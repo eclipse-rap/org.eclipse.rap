@@ -67,172 +67,32 @@ public class RWTLifeCycle2_Test extends TestCase {
   private static String maliciousButtonId;
   private static boolean createUIEntered;
   private static boolean createUIExited;
+  private static Shell testShell;
   private static java.util.List<Object> eventLog;
   private static PhaseId currentPhase;
 
   private HttpSession session;
 
-  public static class FakeResourceManagerFactory
-    implements IResourceManagerFactory
-  {
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setSystemProperties();
+    Fixture.createApplicationContext();
+    Fixture.createServiceContext();
 
-    public IResourceManager create() {
-      return new TestResourceManager() {
-        @Override
-        public Enumeration getResources( String name ) {
-          return null;
-        }
-      };
-    }
+    maliciousButtonId = null;
+    createUIEntered = false;
+    createUIExited = false;
+    testShell = null;
+    eventLog = new LinkedList<Object>();
+    registerTestLogger();
   }
 
-  public static final class ExceptionInReadAndDispatchEntryPoint implements IEntryPoint {
-    public int createUI() {
-      createUIEntered = true;
-      Display display = new Display();
-      try {
-        display.addListener( SWT.Dispose, new Listener() {
-          public void handleEvent( Event event ) {
-            eventLog.add( event );
-          }
-        } );
-        Shell shell = new Shell( display );
-        shell.setLayout( new FillLayout() );
-        Button maliciousButton = new Button( shell, SWT.PUSH );
-        maliciousButton.addSelectionListener( new SelectionAdapter() {
-          @Override
-          public void widgetSelected( SelectionEvent e ) {
-            HttpSession httpSession = RWT.getSessionStore().getHttpSession();
-            httpSession.setAttribute( TEST_SESSION_ATTRIBUTE, new Object() );
-            throw new RuntimeException( EXCEPTION_MSG );
-          }
-        } );
-        maliciousButtonId = WidgetUtil.getId( maliciousButton );
-        shell.setSize( 100, 100 );
-        shell.layout();
-        shell.open();
-        while( !shell.isDisposed() ) {
-          if( !display.readAndDispatch() ) {
-            display.sleep();
-          }
-        }
-        return 0;
-      } finally {
-        createUIExited = true;
-      }
-    }
-  }
-
-  public static final class ExceptionInCreateUIEntryPoint implements IEntryPoint {
-    @SuppressWarnings("unused")
-    public int createUI() {
-      createUIEntered = true;
-      Display display = new Display();
-      try {
-        display.addListener( SWT.Dispose, new Listener() {
-          public void handleEvent( Event event ) {
-            eventLog.add( event );
-          }
-        } );
-        Shell shell = new Shell( display );
-        shell.setLayout( new FillLayout() );
-        shell.setSize( 100, 100 );
-        shell.layout();
-        shell.open();
-        if( !createUIExited ) {
-          int divideByZero = 5 / 0;
-        }
-        while( !shell.isDisposed() ) {
-          if( !display.readAndDispatch() ) {
-            display.sleep();
-          }
-        }
-        return 0;
-      } finally {
-        createUIExited = true;
-      }
-    }
-  }
-
-  public static final class EventProcessingOnSessionRestartEntryPoint implements IEntryPoint {
-    public int createUI() {
-      createUIEntered = true;
-      try {
-        Display display = new Display();
-        final Shell shell = new Shell( display );
-        shell.addDisposeListener( new DisposeListener() {
-          public void widgetDisposed( DisposeEvent event ) {
-            eventLog.add(  event );
-          }
-        } );
-        ISessionStore sessionStore = RWT.getSessionStore();
-        sessionStore.addSessionStoreListener( new SessionStoreListener() {
-          public void beforeDestroy( SessionStoreEvent event ) {
-            shell.dispose();
-          }
-        } );
-        shell.setSize( 100, 100 );
-        shell.layout();
-        shell.open();
-        while( !shell.isDisposed() ) {
-          if( !display.readAndDispatch() ) {
-            display.sleep();
-          }
-        }
-        return 0;
-      } finally {
-        createUIExited = true;
-      }
-    }
-  }
-
-  public static final class TestEntryPoint implements IEntryPoint {
-    public int createUI() {
-      createUIEntered = true;
-      try {
-        Display display = new Display();
-        Shell shell = new Shell( display );
-        shell.setSize( 100, 100 );
-        shell.layout();
-        shell.open();
-        while( !shell.isDisposed() ) {
-          if( !display.readAndDispatch() ) {
-            display.sleep();
-          }
-        }
-        return 0;
-      } finally {
-        createUIExited = true;
-      }
-    }
-  }
-
-  public static final class TestSessionInvalidateWithDisposeInFinallyEntryPoint
-    implements IEntryPoint
-  {
-    public int createUI() {
-      createUIEntered = true;
-      Display display = new Display();
-      try {
-        Shell shell = new Shell( display );
-        while( !shell.isDisposed() ) {
-          if( !display.readAndDispatch() ) {
-            display.sleep();
-          }
-        }
-      } finally {
-        createUIExited = true;
-        currentPhase = CurrentPhase.get();
-        try {
-          // Access a session singleton to ensure that we have a valid context
-          SessionSingletonBase.getInstance( this.getClass() );
-        } catch( Throwable thr ) {
-          eventLog.add( thr );
-        }
-        display.dispose();
-      }
-      return 0;
-    }
+  @Override
+  protected void tearDown() throws Exception {
+    session = null;
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfApplicationContext();
+    Fixture.unsetSystemProperties();
   }
 
   public void testSessionRestartAfterExceptionInUIThread() throws Exception {
@@ -351,8 +211,8 @@ public class RWTLifeCycle2_Test extends TestCase {
    */
   public void testClearSessionStoreOnSessionRestart() throws Exception {
     TestRequest request;
-    Class<? extends IEntryPoint> entryPoint = TestEntryPoint.class;
-    RWTFactory.getEntryPointManager().registerByPath( "/test", entryPoint );
+    Class<? extends IEntryPoint> entryPointClass = TestEntryPoint.class;
+    RWTFactory.getEntryPointManager().registerByPath( "/test", entryPointClass );
     // send initial request - response creates ui
     request = newPostRequest( true );
     request.setParameter( RequestParams.UIROOT, "w1" );
@@ -362,7 +222,8 @@ public class RWTLifeCycle2_Test extends TestCase {
     // send a request that closes the main shell
     request = newPostRequest( false );
     request.setParameter( RequestParams.UIROOT, "w1" );
-    request.setParameter( "org.eclipse.swt.widgets.Shell_close", "w2" );
+    String shellId = WidgetUtil.getId( testShell );
+    request.setParameter( "org.eclipse.swt.widgets.Shell_close", shellId );
     runRWTDelegate( request );
     assertTrue( createUIExited );
     // send a request after the createUI has been exited
@@ -468,19 +329,6 @@ public class RWTLifeCycle2_Test extends TestCase {
     return result;
   }
 
-  @Override
-  protected void setUp() throws Exception {
-    Fixture.setSystemProperties();
-    Fixture.createApplicationContext();
-    Fixture.createServiceContext();
-
-    maliciousButtonId = null;
-    createUIEntered = false;
-    createUIExited = false;
-    eventLog = new LinkedList<Object>();
-    registerTestLogger();
-  }
-
   private void registerTestLogger() {
     session = ContextProvider.getSessionStore().getHttpSession();
     ServletContext servletContext = session.getServletContext();
@@ -495,11 +343,168 @@ public class RWTLifeCycle2_Test extends TestCase {
     } );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
-    session = null;
-    Fixture.disposeOfServiceContext();
-    Fixture.disposeOfApplicationContext();
-    Fixture.unsetSystemProperties();
+  public static class FakeResourceManagerFactory
+    implements IResourceManagerFactory
+  {
+
+    public IResourceManager create() {
+      return new TestResourceManager() {
+        @Override
+        public Enumeration getResources( String name ) {
+          return null;
+        }
+      };
+    }
+  }
+
+  public static final class ExceptionInReadAndDispatchEntryPoint implements IEntryPoint {
+    public int createUI() {
+      createUIEntered = true;
+      Display display = new Display();
+      try {
+        display.addListener( SWT.Dispose, new Listener() {
+          public void handleEvent( Event event ) {
+            eventLog.add( event );
+          }
+        } );
+        Shell shell = new Shell( display );
+        shell.setLayout( new FillLayout() );
+        Button maliciousButton = new Button( shell, SWT.PUSH );
+        maliciousButton.addSelectionListener( new SelectionAdapter() {
+          @Override
+          public void widgetSelected( SelectionEvent e ) {
+            HttpSession httpSession = RWT.getSessionStore().getHttpSession();
+            httpSession.setAttribute( TEST_SESSION_ATTRIBUTE, new Object() );
+            throw new RuntimeException( EXCEPTION_MSG );
+          }
+        } );
+        maliciousButtonId = WidgetUtil.getId( maliciousButton );
+        shell.setSize( 100, 100 );
+        shell.layout();
+        shell.open();
+        while( !shell.isDisposed() ) {
+          if( !display.readAndDispatch() ) {
+            display.sleep();
+          }
+        }
+        return 0;
+      } finally {
+        createUIExited = true;
+      }
+    }
+  }
+
+  public static final class ExceptionInCreateUIEntryPoint implements IEntryPoint {
+    @SuppressWarnings("unused")
+    public int createUI() {
+      createUIEntered = true;
+      Display display = new Display();
+      try {
+        display.addListener( SWT.Dispose, new Listener() {
+          public void handleEvent( Event event ) {
+            eventLog.add( event );
+          }
+        } );
+        Shell shell = new Shell( display );
+        shell.setLayout( new FillLayout() );
+        shell.setSize( 100, 100 );
+        shell.layout();
+        shell.open();
+        if( !createUIExited ) {
+          int divideByZero = 5 / 0;
+        }
+        while( !shell.isDisposed() ) {
+          if( !display.readAndDispatch() ) {
+            display.sleep();
+          }
+        }
+        return 0;
+      } finally {
+        createUIExited = true;
+      }
+    }
+  }
+
+  public static final class EventProcessingOnSessionRestartEntryPoint implements IEntryPoint {
+    public int createUI() {
+      createUIEntered = true;
+      try {
+        Display display = new Display();
+        final Shell shell = new Shell( display );
+        shell.addDisposeListener( new DisposeListener() {
+          public void widgetDisposed( DisposeEvent event ) {
+            eventLog.add(  event );
+          }
+        } );
+        ISessionStore sessionStore = RWT.getSessionStore();
+        sessionStore.addSessionStoreListener( new SessionStoreListener() {
+          public void beforeDestroy( SessionStoreEvent event ) {
+            shell.dispose();
+          }
+        } );
+        shell.setSize( 100, 100 );
+        shell.layout();
+        shell.open();
+        while( !shell.isDisposed() ) {
+          if( !display.readAndDispatch() ) {
+            display.sleep();
+          }
+        }
+        return 0;
+      } finally {
+        createUIExited = true;
+      }
+    }
+  }
+
+  public static final class TestEntryPoint implements IEntryPoint {
+
+    public int createUI() {
+      createUIEntered = true;
+      try {
+        Display display = new Display();
+        Shell shell = new Shell( display );
+        shell.setSize( 100, 100 );
+        shell.layout();
+        shell.open();
+        testShell = shell;
+        while( !shell.isDisposed() ) {
+          if( !display.readAndDispatch() ) {
+            display.sleep();
+          }
+        }
+        return 0;
+      } finally {
+        createUIExited = true;
+      }
+    }
+  }
+
+  public static final class TestSessionInvalidateWithDisposeInFinallyEntryPoint
+    implements IEntryPoint
+  {
+    public int createUI() {
+      createUIEntered = true;
+      Display display = new Display();
+      try {
+        Shell shell = new Shell( display );
+        while( !shell.isDisposed() ) {
+          if( !display.readAndDispatch() ) {
+            display.sleep();
+          }
+        }
+      } finally {
+        createUIExited = true;
+        currentPhase = CurrentPhase.get();
+        try {
+          // Access a session singleton to ensure that we have a valid context
+          SessionSingletonBase.getInstance( this.getClass() );
+        } catch( Throwable thr ) {
+          eventLog.add( thr );
+        }
+        display.dispose();
+      }
+      return 0;
+    }
   }
 }
