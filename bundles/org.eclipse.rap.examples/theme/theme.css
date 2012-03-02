@@ -45,6 +45,7 @@ Composite.navigation {
 }
 
 ToolBar.navigation {
+  font: 15px 'Open Sans', Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: #e5e5e5;
 }
 
@@ -73,7 +74,7 @@ ToolItem.navigation:hover {
 }
 
 Menu.navigation {
-  font: 15px Helvetica, Verdana, sans-serif;
+  font: 15px 'Open Sans', Helvetica, Verdana, sans-serif;
   background-color: #e5e5e5;
   background-image: none;
   box-shadow: none;
@@ -91,6 +92,15 @@ MenuItem.navigation:hover {
 }
 
 Label.heading {
-  font: 20px Helvetica, Verdana, sans-serif;  
+  font: 20px 'Open Sans', Helvetica, Verdana, sans-serif;
   color: #31619C;
+}
+
+Label.title {
+  font: 25px 'Open Sans', Helvetica, Verdana, sans-serif;  
+  color: #fff;
+}
+
+Label.footerLabel {
+  font: 14px 'Open Sans', Helvetica, Verdana, sans-serif;  
 }
