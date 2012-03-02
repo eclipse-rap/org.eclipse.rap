@@ -76,15 +76,15 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     setJsonResponseHeaders();
     if( isSessionTimeout() ) {
       handleSessionTimeout();
-    } else if( isRequestCounterValid() ) {
+    } else if( !isRequestCounterValid() ) {
+      handleInvalidRequestCounter();
+    } else {
       if( isSessionRestart() ) {
         reinitializeSessionStore();
         clearServiceStore();
       }
       RequestParameterBuffer.merge();
       runLifeCycle();
-    } else {
-      handleInvalidRequestCounter();
     }
     writeProtocolMessage();
   }
@@ -98,9 +98,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   // helping methods
 
   private static boolean isRequestCounterValid() {
-    return RWTRequestVersionControl.getInstance().isValid()
-           || isSessionRestart()
-           || !isSessionStarted();
+    return hasInitializeParameter() || RWTRequestVersionControl.getInstance().isValid();
   }
 
   private static void handleInvalidRequestCounter() {
@@ -148,7 +146,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     ServiceStore serviceStore = ( ServiceStore )ContextProvider.getServiceStore();
     serviceStore.clear();
   }
-
+  
   /*
    * Session restart: we're in the same HttpSession and start over (e.g. by pressing F5)
    */
