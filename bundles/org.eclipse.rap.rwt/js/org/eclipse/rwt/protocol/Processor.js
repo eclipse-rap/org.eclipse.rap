@@ -17,7 +17,7 @@ org.eclipse.rwt.protocol.Processor = {
     this.processMeta( messageObject.meta );
     var operations = messageObject.operations;
     for( var i = 0; i < operations.length; i++ ) {
-      this.processOperation( operations[ i ] );
+      this.processOperationArray( operations[ i ] );
     }
   },
 
@@ -28,27 +28,48 @@ org.eclipse.rwt.protocol.Processor = {
     }
   },
 
-  processOperation : function( operation ) {
+  processOperationArray : function( operation ) {
+    var action = operation[ 0 ];
     try {
-      switch( operation.action ) {
+      switch( action ) {
         case "create":
-          this._processCreate( operation.target, operation.type, operation.properties );
+          this._processCreate( operation[ 1 ], operation[ 2 ], operation[ 3 ] );
         break;
         case "set":
-          this._processSet( operation.target, operation.properties );
-        break; 
-        case "destroy":
-          this._processDestroy( operation.target );
-        break; 
-        case "call":
-          this._processCall( operation.target, operation.method, operation.properties );
+          this._processSet( operation[ 1 ], operation[ 2 ] );
         break; 
         case "listen":
-          this._processListen( operation.target, operation.properties );
+          this._processListen( operation[ 1 ], operation[ 2 ] );
+        break; 
+        case "call":
+          this._processCall( operation[ 1 ], operation[ 2 ], operation[ 3 ] );
+        break; 
+        case "destroy":
+          this._processDestroy( operation[ 1 ] );
         break; 
       }
     } catch( ex ) {
       this._processError( ex, operation );
+    }
+  },
+
+  processOperation : function( operation ) {
+    switch( operation.action ) {
+      case "create":
+        this._processCreate( operation.target, operation.type, operation.properties );
+      break;
+      case "set":
+        this._processSet( operation.target, operation.properties );
+      break; 
+      case "destroy":
+        this._processDestroy( operation.target );
+      break; 
+      case "call":
+        this._processCall( operation.target, operation.method, operation.properties );
+      break; 
+      case "listen":
+        this._processListen( operation.target, operation.properties );
+      break; 
     }
   },
 
@@ -133,9 +154,9 @@ org.eclipse.rwt.protocol.Processor = {
     } else {
       errorstr = "No Error given!";
     }
-    var msg = "Operation \"" + operation.action + "\"";
-    msg += " on target \"" +  operation.target + "\"";
-    var objectEntry = org.eclipse.rwt.protocol.ObjectManager.getEntry( operation.target );
+    var msg = "Operation \"" + operation[ 0 ] + "\"";
+    msg += " on target \"" +  operation[ 1 ] + "\"";
+    var objectEntry = org.eclipse.rwt.protocol.ObjectManager.getEntry( operation[ 1 ] );
     var target = objectEntry ? objectEntry.object : null;
     msg += " of type \"" +  ( target && target.classname ? target.classname : target ) + "\"";
     msg += " failed:";
@@ -146,8 +167,22 @@ org.eclipse.rwt.protocol.Processor = {
   
   _getPropertiesString : function( operation ) {
     var result = "";
-    for( var key in operation.properties ) {
-      result += key + " = " + operation.properties[ key ] + "\n";
+    var properties;
+    switch( operation[ 0 ] ) {
+      case "set":
+      case "listen":
+        properties = operation[ 2 ];
+      break;
+      case "create":
+      case "call":
+        properties = operation[ 3 ];
+      break;
+      default:
+        properties = {};
+      break;
+    }
+    for( var key in properties ) {
+      result += key + " = " + properties[ key ] + "\n";
     }
     return result;
   },

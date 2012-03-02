@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
@@ -521,8 +522,7 @@ public class TreeLCA_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    String expected =  "\"type\": \"rwt.widgets.TreeItem\"";
-    assertEquals( 7, countOccurences( expected, message.toString() ) );
+    assertEquals( 7, countCreateOperations( "rwt.widgets.TreeItem", message ) );
   }
 
   public void testVirtualReadSelection() {
@@ -554,12 +554,16 @@ public class TreeLCA_Test extends TestCase {
     assertSame( item.getItem( 50 ), tree.getSelection()[ 0 ] );
   }
 
-  private static int countOccurences( String searchString, String stringToSearch ) {
+  private static int countCreateOperations( String type, Message message ) {
     int result = 0;
-    int index = stringToSearch.indexOf( searchString );
-    while( index != -1 ) {
-      result++;
-      index = stringToSearch.indexOf( searchString, index + 1 );
+    int operations = message.getOperationCount();
+    for( int i = 0; i < operations; i++ ) {
+      Operation operation = message.getOperation( i );
+      if( operation instanceof CreateOperation ) {
+        if( type.equals( ( ( CreateOperation )operation ).getType() ) ) {
+          result++;
+        }
+      }
     }
     return result;
   }

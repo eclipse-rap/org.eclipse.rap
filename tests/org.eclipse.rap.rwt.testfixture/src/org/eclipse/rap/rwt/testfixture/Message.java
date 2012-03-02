@@ -64,7 +64,7 @@ public final class Message {
 
   public Operation getOperation( int position ) {
     Operation result;
-    JSONObject operation = getOperationAsJson( position );
+    JSONArray operation = getOperationAsJson( position );
     String action = getOperationAction( operation );
     if( action.equals( "create" ) ) {
       result = new CreateOperation( operation );
@@ -197,20 +197,20 @@ public final class Message {
     return result;
   }
 
-  private JSONObject getOperationAsJson( int position ) {
-    JSONObject result;
+  private JSONArray getOperationAsJson( int position ) {
+    JSONArray result;
     try {
-      result = operations.getJSONObject( position );
+      result = operations.getJSONArray( position );
     } catch( JSONException e ) {
       throw new IllegalStateException( "Could not find operation at position " + position );
     }
     return result;
   }
 
-  private String getOperationAction( JSONObject operation ) {
+  private String getOperationAction( JSONArray operation ) {
     String action;
     try {
-      action = operation.getString( "action" );
+      action = operation.getString( 0 );
     } catch( JSONException e ) {
       throw new IllegalStateException( "Could not find action for operation " + operation );
     }
@@ -220,11 +220,15 @@ public final class Message {
   public abstract class Operation {
 
     private final String target;
-    private final JSONObject operation;
+    protected final JSONArray operation;
 
-    private Operation( JSONObject operation ) {
+    private Operation( JSONArray operation ) {
       this.operation = operation;
-      target = ( String )getDetail( "target" );
+      try {
+        target = operation.getString( 1 );
+      } catch( JSONException e ) {
+        throw new IllegalStateException( "Invalid operation target", e );
+      }
     }
 
     public String getTarget() {
@@ -248,30 +252,13 @@ public final class Message {
       return result;
     }
 
-    protected JSONObject getProperties() {
-      JSONObject properties;
-      try {
-        properties = operation.getJSONObject( "properties" );
-      } catch( JSONException exception ) {
-        throw new IllegalStateException( "Properties object missing in operation" );
-      }
-      return properties;
-    }
+    abstract protected JSONObject getProperties();
 
-    protected Object getDetail( String key ) {
-      Object result;
-      try {
-        result = operation.get( key );
-      } catch( JSONException e ) {
-        throw new IllegalStateException( "Value is not valid for key: " + key );
-      }
-      return result;
-    }
   }
 
   public final class CreateOperation extends Operation {
 
-    private CreateOperation( JSONObject operation ) {
+    private CreateOperation( JSONArray operation ) {
       super( operation );
     }
 
@@ -280,7 +267,23 @@ public final class Message {
     }
 
     public String getType() {
-      return ( String )getDetail( "type" );
+      String result;
+      try {
+        result = operation.getString( 2 );
+      } catch( JSONException e ) {
+        throw new IllegalStateException( "Invalid create operation type", e );
+      }
+      return result;
+    }
+
+    protected JSONObject getProperties() {
+      JSONObject properties;
+      try {
+        properties = operation.getJSONObject( 3 );
+      } catch( JSONException e ) {
+        throw new IllegalStateException( "Properties object missing in operation", e );
+      }
+      return properties;
     }
 
     public Object[] getStyles() {
@@ -304,38 +307,82 @@ public final class Message {
 
   public final class CallOperation extends Operation {
 
-    private CallOperation( JSONObject operation ) {
+    private CallOperation( JSONArray operation ) {
       super( operation );
     }
 
     public String getMethodName() {
-      return ( String )getDetail( "method" );
+      String result;
+      try {
+        result = operation.getString( 2 );
+      } catch( JSONException e ) {
+        throw new IllegalStateException( "Invalid call operation method name", e );
+      }
+      return result;
     }
+
+    protected JSONObject getProperties() {
+      JSONObject properties;
+      try {
+        properties = operation.getJSONObject( 3 );
+      } catch( JSONException e ) {
+        throw new IllegalStateException( "Properties object missing in operation", e );
+      }
+      return properties;
+    }
+
   }
 
   public final class SetOperation extends Operation {
 
-    private SetOperation( JSONObject operation ) {
+    private SetOperation( JSONArray operation ) {
       super( operation );
     }
+
+    protected JSONObject getProperties() {
+      JSONObject properties;
+      try {
+        properties = operation.getJSONObject( 2 );
+      } catch( JSONException e ) {
+        throw new IllegalStateException( "Properties object missing in operation", e );
+      }
+      return properties;
+    }
+
   }
 
   public final class ListenOperation extends Operation {
 
-    private ListenOperation( JSONObject operation ) {
+    private ListenOperation( JSONArray operation ) {
       super( operation );
     }
 
     public boolean listensTo( String eventName ) {
       return ( ( Boolean )getProperty( eventName ) ).booleanValue();
     }
+
+    protected JSONObject getProperties() {
+      JSONObject properties;
+      try {
+        properties = operation.getJSONObject( 2 );
+      } catch( JSONException e ) {
+        throw new IllegalStateException( "Properties object missing in operation", e );
+      }
+      return properties;
+    }
+    
   }
 
   public final class DestroyOperation extends Operation {
 
-    private DestroyOperation( JSONObject operation ) {
+    private DestroyOperation( JSONArray operation ) {
       super( operation );
     }
+    
+    protected JSONObject getProperties() {
+      throw new IllegalStateException( "Destroy operation has no properties" );
+    }
+
   }
 
 }

@@ -18,11 +18,7 @@ org.eclipse.rwt.System.getInstance().addEventListener( "uiready", function() {
     "meta": {
       "requestCounter": -1
     },
-    "operations": [ {
-      "target": "w1",
-      "action": "create",
-      "type": "rwt.Display"
-    } ]
+    "operations": [ [ "create", "w1", "rwt.Display" ] ]
   } );
   org.eclipse.swt.Request.getInstance().setRequestCounter( 0 );
   org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();

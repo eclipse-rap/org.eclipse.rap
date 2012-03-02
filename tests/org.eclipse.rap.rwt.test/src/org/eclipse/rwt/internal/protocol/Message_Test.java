@@ -141,7 +141,7 @@ public class Message_Test extends TestCase {
     try {
       message.getOperation( 0 );
       fail();
-    } catch( IllegalArgumentException expected ) {
+    } catch( IllegalStateException expected ) {
     }
   }
 

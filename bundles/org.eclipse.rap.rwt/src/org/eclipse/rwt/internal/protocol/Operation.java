@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
-import org.eclipse.rwt.internal.theme.JsonObject;
+import org.eclipse.rwt.internal.theme.JsonArray;
 import org.eclipse.rwt.internal.theme.JsonValue;
 
 
@@ -69,19 +71,19 @@ final class Operation {
     details.put( key, value );
   }
 
-  JsonObject toJson() {
-    JsonObject json = new JsonObject();
-    json.append( ProtocolConstants.OPERATION_TARGET, target );
-    json.append( ProtocolConstants.OPERATION_ACTION, action );
+  JsonValue toJson() {
+    JsonArray json = new JsonArray();
+    json.append( action );
+    json.append( target );
     if( !details.isEmpty() ) {
       Set<String> keySet = details.keySet();
       for( String key : keySet ) {
-        json.append( key, JsonUtil.createJsonValue( details.get( key ) ) );
+        json.append( JsonUtil.createJsonValue( details.get( key ) ) );
       }
     }
     if( !properties.isEmpty() ) {
       JsonValue jsonObject = JsonUtil.createJsonObject( properties );
-      json.append( ProtocolConstants.OPERATION_PROPERTIES, jsonObject );
+      json.append( jsonObject );
     }
     return json;
   }
