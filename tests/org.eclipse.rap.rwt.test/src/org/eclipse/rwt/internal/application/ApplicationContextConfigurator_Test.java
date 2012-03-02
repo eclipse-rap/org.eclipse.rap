@@ -30,7 +30,6 @@ import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.engine.RWTConfigurationImpl;
-import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rwt.internal.theme.Theme;
@@ -320,8 +319,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   private void checkPhaseListenersHaveBeenAdded() {
-    assertEquals( 3, applicationContext.getPhaseListenerRegistry().getAll().length );
-    assertEquals( true, findPhaseListener( CurrentPhase.Listener.class ) );
+    assertEquals( 2, applicationContext.getPhaseListenerRegistry().getAll().length );
     assertEquals( true, findPhaseListener( MeasurementListener.class ) );
     assertEquals( true, findPhaseListener( TestPhaseListener.class ) );
   }

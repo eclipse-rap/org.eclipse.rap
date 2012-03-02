@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,13 +30,14 @@ abstract class PhaseExecutor {
     PhaseId currentPhaseId = startPhaseId;
     while( currentPhaseId != null ) {
       IPhase currentPhase = findPhase( currentPhaseId );
+      CurrentPhase.set( currentPhaseId );
       phaseListenerManager.notifyBeforePhase( currentPhaseId );
       PhaseId nextPhaseId = currentPhase.execute( getDisplay() );
       phaseListenerManager.notifyAfterPhase( currentPhaseId );
       currentPhaseId = nextPhaseId;
     }
   }
-  
+
   abstract Display getDisplay();
 
   private IPhase findPhase( PhaseId phaseId ) {

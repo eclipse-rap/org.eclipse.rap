@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener.PhaseEventInfo;
 import org.eclipse.rwt.lifecycle.*;
@@ -30,6 +31,7 @@ public class PhaseExecutor_Test extends TestCase {
       super( phaseListenerManager, phases );
     }
 
+    @Override
     Display getDisplay() {
       return null;
     }
@@ -41,13 +43,13 @@ public class PhaseExecutor_Test extends TestCase {
     public void addPhaseListener( PhaseListener listener ) {
     }
   }
-  
+
   private static class TestPhase implements IPhase {
 
     private final List<IPhase> executionLog;
     private final PhaseId phaseId;
     private final PhaseId nextPhaseId;
-    
+
     TestPhase( List<IPhase> executionLog, PhaseId phaseId, PhaseId nextPhaseId ) {
       this.executionLog = executionLog;
       this.phaseId = phaseId;
@@ -69,9 +71,9 @@ public class PhaseExecutor_Test extends TestCase {
 
   public void testExecute() throws IOException {
     List<IPhase> executionLog = new LinkedList<IPhase>();
-    IPhase[] phases = new IPhase[] { 
-      new TestPhase( executionLog, PhaseId.PREPARE_UI_ROOT, PhaseId.RENDER ), 
-      new TestPhase( executionLog, PhaseId.RENDER, null ) 
+    IPhase[] phases = new IPhase[] {
+      new TestPhase( executionLog, PhaseId.PREPARE_UI_ROOT, PhaseId.RENDER ),
+      new TestPhase( executionLog, PhaseId.RENDER, null )
     };
     PhaseExecutor phaseExecutor = new TestPhaseExecutor( phaseListenerManager, phases );
     phaseExecutor.execute( PhaseId.PREPARE_UI_ROOT );
@@ -79,12 +81,12 @@ public class PhaseExecutor_Test extends TestCase {
     assertSame( phases[ 0 ], executionLog.get( 0 ) );
     assertSame( phases[ 1 ], executionLog.get( 1 ) );
   }
-  
+
   public void testExecuteNotifiesPhaseListener() throws IOException {
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
     phaseListenerManager.addPhaseListener( phaseListener );
-    IPhase[] phases = new IPhase[] { 
-      new TestPhase( new LinkedList<IPhase>(), PhaseId.PREPARE_UI_ROOT, null ), 
+    IPhase[] phases = new IPhase[] {
+      new TestPhase( new LinkedList<IPhase>(), PhaseId.PREPARE_UI_ROOT, null ),
     };
     PhaseExecutor phaseExecutor = new TestPhaseExecutor( phaseListenerManager, phases );
     phaseExecutor.execute( PhaseId.PREPARE_UI_ROOT );
@@ -100,8 +102,15 @@ public class PhaseExecutor_Test extends TestCase {
     assertSame( lifeCycle, afterPrepareUIRoot.source );
   }
 
+  @Override
   protected void setUp() throws Exception {
+    Fixture.setUp();
     lifeCycle = new TestLifeCycle();
     phaseListenerManager = new PhaseListenerManager( lifeCycle );
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
   }
 }

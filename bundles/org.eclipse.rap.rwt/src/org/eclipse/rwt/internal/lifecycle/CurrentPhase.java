@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,23 +18,7 @@ import org.eclipse.rwt.service.IServiceStore;
 
 public final class CurrentPhase {
 
-  public static final class Listener implements PhaseListener {
-
-    public void beforePhase( PhaseEvent event ) {
-      set( event.getPhaseId() );
-    }
-
-    public void afterPhase( PhaseEvent event ) {
-      // do nothing
-    }
-
-    public PhaseId getPhaseId() {
-      return PhaseId.ANY;
-    }
-  }
-
-  private static final String ATTR_CURRENT_PHASE
-    = CurrentPhase.class.getName() + "#value";
+  private static final String ATTR_CURRENT_PHASE = CurrentPhase.class.getName() + "#value";
 
   private CurrentPhase() {
     // prevent instantiation

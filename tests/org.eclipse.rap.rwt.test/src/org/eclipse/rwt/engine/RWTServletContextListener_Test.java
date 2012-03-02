@@ -108,7 +108,7 @@ public class RWTServletContextListener_Test extends TestCase {
 
   private void assertPhaseListenersAreRegistered() {
     ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-    assertEquals( 3, applicationContext.getPhaseListenerRegistry().getAll().length );
+    assertEquals( 2, applicationContext.getPhaseListenerRegistry().getAll().length );
   }
 
   private void assertResourceIsRegistered() {

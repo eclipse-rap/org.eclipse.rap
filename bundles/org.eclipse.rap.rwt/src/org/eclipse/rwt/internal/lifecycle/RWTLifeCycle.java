@@ -145,6 +145,7 @@ public class RWTLifeCycle extends LifeCycle {
       boolean interrupted = false;
       for( int i = start; !interrupted && i < phaseOrder.length; i++ ) {
         IPhase phase = phaseOrder[ i ];
+        CurrentPhase.set( phase.getPhaseId() );
         phaseListenerManager.notifyBeforePhase( phase.getPhaseId() );
         if( phase instanceof IInterruptible ) {
           // IInterruptible phases return control to the user code, thus they don't call
