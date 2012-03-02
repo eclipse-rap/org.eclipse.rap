@@ -152,8 +152,8 @@ public class TableViewerExample implements IExamplePage {
     labelHelpLayoutData.verticalIndent = 10;
     lblHelp.setLayoutData( labelHelpLayoutData );
     String helpContent = "Shortcuts: [CTRL+F] - Filter | ";
-    helpContent += "Sort by: [CTRL+R] - Number, [CTRL+Y] - Symbol, [CTRL+N] - Name";
-    helpContent += "[CTRL+S] - Series, [CTRL+G] - Group, [CTRL+P] - Period";
+    helpContent += "Sort by: [CTRL+R] - Number, [CTRL+Y] - Symbol, [CTRL+N] - Name, ";
+    helpContent += "[CTRL+S] - Series, [CTRL+G] - Group, [CTRL+E] - Period";
     lblHelp.setText( helpContent );
     lblHelp.setForeground( new Color( lblHelp.getDisplay(), 150, 150, 150 ) );
     FontData[] font = lblHelp.getFont().getFontData();
@@ -187,7 +187,7 @@ public class TableViewerExample implements IExamplePage {
             case 'g':
               sortByColumn( groupColumn.getColumn(), GROUP, true );
               break;
-            case 'p':
+            case 'e':
               sortByColumn( periodColumn.getColumn(), PERIOD, true );
             break;
           } 
@@ -195,7 +195,7 @@ public class TableViewerExample implements IExamplePage {
       }
     } );
     String[] shortcuts = new String[]{ 
-      "CTRL+F", "CTRL+N", "CTRL+R", "CTRL+Y", "CTRL+S", "CTRL+G", "CTRL+P" 
+      "CTRL+F", "CTRL+N", "CTRL+R", "CTRL+Y", "CTRL+S", "CTRL+G", "CTRL+E" 
     };
     viewer.getTable().setData( RWT.ACTIVE_KEYS, shortcuts );
     viewer.getTable().setData( RWT.CANCEL_KEYS, shortcuts );
