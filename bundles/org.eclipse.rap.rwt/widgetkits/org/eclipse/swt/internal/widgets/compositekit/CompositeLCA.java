@@ -39,7 +39,7 @@ public class CompositeLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     Composite composite = ( Composite )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( composite );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( composite );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( composite.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( composite, ALLOWED_STYLES ) );
@@ -53,7 +53,7 @@ public class CompositeLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
 }

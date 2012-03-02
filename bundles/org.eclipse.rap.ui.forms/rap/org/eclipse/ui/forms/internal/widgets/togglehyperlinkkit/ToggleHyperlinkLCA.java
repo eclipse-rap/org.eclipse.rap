@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit;
 
 import java.io.IOException;
@@ -22,6 +21,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.widgets.*;
+
 
 /* (intentionally non-JavaDoc'ed)
  * This class serves as the LCA for org.eclipse.ui.forms.widgets.TreeNode and
@@ -65,7 +65,7 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     ToggleHyperlink hyperlink = ( ToggleHyperlink )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( hyperlink );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( hyperlink );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( hyperlink.getParent() ) ); //$NON-NLS-1$
     WidgetLCAUtil.renderProperty( hyperlink, PROP_IMAGES, getImages( hyperlink ), DEFAULT_IMAGES );
@@ -81,7 +81,7 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   //////////////////

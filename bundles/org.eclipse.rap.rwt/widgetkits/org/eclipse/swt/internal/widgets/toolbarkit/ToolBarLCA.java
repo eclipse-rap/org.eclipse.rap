@@ -41,7 +41,7 @@ public class ToolBarLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     ToolBar toolBar = ( ToolBar )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( toolBar );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( toolBar );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( toolBar.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( toolBar, ALLOWED_STYLES ) );
@@ -54,7 +54,7 @@ public class ToolBarLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
 }

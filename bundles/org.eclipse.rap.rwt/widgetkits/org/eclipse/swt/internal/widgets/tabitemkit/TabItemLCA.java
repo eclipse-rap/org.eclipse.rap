@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.tabitemkit;
 
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -57,7 +56,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
   public void renderInitialization( Widget widget ) throws IOException {
     TabItem tabItem = ( TabItem )widget;
     TabFolder parent = tabItem.getParent();
-    IClientObject clientObject = ClientObjectFactory.getForWidget( tabItem );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( tabItem );
     clientObject.create( TYPE );
     clientObject.set( "id", WidgetUtil.getId( tabItem ) );
     clientObject.set( "parent", WidgetUtil.getId( parent ) );
@@ -73,6 +72,6 @@ public class TabItemLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 }

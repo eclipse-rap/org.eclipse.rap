@@ -34,6 +34,7 @@ import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
+
 public final class TreeLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Tree";
@@ -117,7 +118,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( tree );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( tree );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( tree.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( tree, ALLOWED_STYLES ) );
@@ -169,7 +170,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   public void doRedrawFake( Control control ) {
@@ -423,7 +424,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
           itemMetrics[ i ].textWidth
         };
       }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( tree );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( tree );
       clientObject.set( PROP_ITEM_METRICS, metrics );
     }
   }

@@ -96,7 +96,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     Browser browser = ( Browser )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( browser );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( browser.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( browser, ALLOWED_STYLES ) );
@@ -115,7 +115,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   private static void fireProgressEvent( Browser browser ) {
@@ -145,7 +145,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   private static void renderUrl( Browser browser ) throws IOException {
     if( hasUrlChanged( browser ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( browser );
       clientObject.set( "url", getUrl( browser ) );
       browser.getAdapter( IBrowserAdapter.class ).resetUrlChanged();
     }
@@ -184,7 +184,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
         public void afterPhase( PhaseEvent event ) {
           if( browser.getDisplay() == LifeCycleUtil.getSessionDisplay() ) {
             try {
-              IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
+              IClientObject clientObject = ClientObjectFactory.getClientObject( browser );
               Map<String, Object> properties = new HashMap<String, Object>();
               properties.put( PARAM_SCRIPT, executeScript );
               clientObject.call( METHOD_EVALUATE, properties );
@@ -232,7 +232,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     String id = WidgetUtil.getId( browser );
     String[] functions = ( String[] )serviceStore.getAttribute( FUNCTIONS_TO_CREATE + id );
     if( functions != null ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( browser );
       Map<String, Object> properties = new HashMap<String, Object>();
       properties.put( PARAM_FUNCTIONS, functions );
       clientObject.call( METHOD_CREATE_FUNCTIONS, properties );
@@ -244,7 +244,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     String id = WidgetUtil.getId( browser );
     String[] functions = ( String[] )serviceStore.getAttribute( FUNCTIONS_TO_DESTROY + id );
     if( functions != null ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( browser );
       Map<String, Object> properties = new HashMap<String, Object>();
       properties.put( PARAM_FUNCTIONS, functions );
       clientObject.call( METHOD_DESTROY_FUNCTIONS, properties );
@@ -286,7 +286,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     if( name != null ) {
       Object result = serviceStore.getAttribute( EXECUTED_FUNCTION_RESULT + id );
       String error = ( String )serviceStore.getAttribute( EXECUTED_FUNCTION_ERROR + id );
-      IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( browser );
       Object[] value = new Object[] {
         name, result, error
       };

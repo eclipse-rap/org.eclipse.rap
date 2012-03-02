@@ -28,6 +28,7 @@ import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.ControlDecorator;
 import org.eclipse.swt.widgets.Widget;
 
+
 public class ControlDecoratorLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ControlDecorator";
@@ -57,7 +58,7 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     ControlDecorator decorator = ( ControlDecorator )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( decorator );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( decorator );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( decorator.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( decorator, ALLOWED_STYLES ) );
@@ -77,7 +78,7 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   ////////////////////////////////////////////////////

@@ -199,7 +199,7 @@ class MeasurementOperator implements SerializableCompatibility {
   private static void callDisplayMethod( String method, String property, Object value ) {
     Display display = Display.getCurrent();
     if( display != null ) {
-      IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( display );
       Map<String, Object> args = new HashMap<String, Object>();
       args.put( property, value );
       clientObject.call( method, args );

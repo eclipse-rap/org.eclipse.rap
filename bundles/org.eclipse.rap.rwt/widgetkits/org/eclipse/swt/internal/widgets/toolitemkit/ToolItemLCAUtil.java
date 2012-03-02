@@ -70,7 +70,7 @@ final class ToolItemLCAUtil {
     //           this could lead to an incorrect order of the items on the
     //           client, which is problematic with the keyboard-control
     //           and radio-groups.
-    IClientObject clientObject = ClientObjectFactory.getForWidget( toolItem );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( toolItem );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( toolItem.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( toolItem, ALLOWED_STYLES ) );

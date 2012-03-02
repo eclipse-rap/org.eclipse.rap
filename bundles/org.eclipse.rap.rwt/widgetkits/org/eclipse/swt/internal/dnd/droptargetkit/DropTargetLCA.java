@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     DropTarget dropTarget = ( DropTarget )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( dropTarget );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( dropTarget );
     clientObject.create( TYPE );
     clientObject.set( "control", WidgetUtil.getId( dropTarget.getControl() ) );
     clientObject.set( "style", DNDLCAUtil.convertOperations( dropTarget.getStyle() ) );
@@ -56,14 +56,14 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   private static void renderTransfer( DropTarget dropTarget ) {
     Transfer[] newValue = dropTarget.getTransfer();
     if( WidgetLCAUtil.hasChanged( dropTarget, PROP_TRANSFER, newValue, DEFAULT_TRANSFER ) ) {
       String[] renderValue = DNDLCAUtil.convertTransferTypes( newValue );
-      ClientObjectFactory.getForWidget( dropTarget ).set( "transfer", renderValue );
+      ClientObjectFactory.getClientObject( dropTarget ).set( "transfer", renderValue );
     }
   }
 

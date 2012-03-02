@@ -122,7 +122,7 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     Table table = ( Table )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( table );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( table );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( table.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( table, ALLOWED_STYLES ) );
@@ -174,7 +174,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   public void doRedrawFake( Control control ) {
@@ -419,7 +419,7 @@ public final class TableLCA extends AbstractWidgetLCA {
           itemMetrics[ i ].textWidth
         };
       }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( table );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( table );
       clientObject.set( PROP_ITEM_METRICS, metrics );
     }
   }

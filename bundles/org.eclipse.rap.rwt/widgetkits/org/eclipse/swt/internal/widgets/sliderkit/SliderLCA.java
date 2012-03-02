@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.sliderkit;
 
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -77,7 +76,7 @@ public class SliderLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     Slider slider = ( Slider )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( slider );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( slider );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( slider.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( slider, ALLOWED_STYLES ) );
@@ -98,6 +97,6 @@ public class SliderLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 }

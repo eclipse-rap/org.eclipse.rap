@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,21 +40,21 @@ public class ClientObjectFactory_Test extends TestCase {
   }
 
   public void testCreate() {
-    IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
 
     assertNotNull( clientObject );
   }
 
   public void testSameInstance() {
-    IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
 
-    assertSame( clientObject, ClientObjectFactory.getForWidget( shell ) );
+    assertSame( clientObject, ClientObjectFactory.getClientObject( shell ) );
   }
 
   public void testCreateDisposed() {
     shell.dispose();
 
-    IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
 
     assertNotNull( clientObject );
   }
@@ -62,49 +62,56 @@ public class ClientObjectFactory_Test extends TestCase {
   public void testCreateDisplayDisposed() {
     display.dispose();
 
-    IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
 
     assertNotNull( clientObject );
   }
-  
+
   public void testGetClientObjectForDisplay() {
-    IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
-    
+    IClientObject clientObject = ClientObjectFactory.getClientObject( display );
+
     assertNotNull( clientObject );
-  }  
+  }
 
   public void testDisplaySameInstance() {
-    IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( display );
 
-    assertSame( clientObject, ClientObjectFactory.getForDisplay( display ) );
+    assertSame( clientObject, ClientObjectFactory.getClientObject( display ) );
   }
 
   public void testDiaplayCreateDisposed() {
     display.dispose();
 
-    IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( display );
 
     assertNotNull( clientObject );
   }
 
   public void testGetClientObjectForGC() {
     IClientObject clientObject = ClientObjectFactory.getForGC( shell );
-    
+
     assertNotNull( clientObject );
-  }  
+  }
+
+  public void testGetClientObjectForGCDiffersFromWidget() {
+    IClientObject clientObjectForShell = ClientObjectFactory.getClientObject( shell );
+    IClientObject clientObjectForGC = ClientObjectFactory.getForGC( shell );
+
+    assertNotSame( clientObjectForShell, clientObjectForGC );
+  }
 
   public void testGetClientObjectForGCSameInstance() {
     IClientObject clientObject = ClientObjectFactory.getForGC( shell );
-    
+
     assertNotNull( clientObject );
-  }  
-  
+  }
+
   public void testGetClientObjectForGCDisposed() {
     shell.dispose();
     IClientObject clientObject = ClientObjectFactory.getForGC( shell );
-    
+
     assertSame( clientObject, ClientObjectFactory.getForGC( shell ) );
-  }  
+  }
 
   public void testCreateFromNonUIThreadFails() throws InterruptedException {
     final List<Exception> log = new ArrayList<Exception>();
@@ -116,7 +123,7 @@ public class ClientObjectFactory_Test extends TestCase {
 
           public void run() {
             try {
-              ClientObjectFactory.getForWidget( shell );
+              ClientObjectFactory.getClientObject( shell );
             } catch( Exception exception ) {
               log.add( exception );
             }

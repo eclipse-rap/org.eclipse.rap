@@ -60,7 +60,7 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     ProgressBar progressBar = ( ProgressBar )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( progressBar );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( progressBar );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( progressBar.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( progressBar, ALLOWED_STYLES ) );
@@ -77,7 +77,7 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   //////////////////

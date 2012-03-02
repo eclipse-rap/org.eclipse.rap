@@ -163,7 +163,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     CTabFolder folder = ( CTabFolder )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( folder );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( folder );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( folder.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( folder, ALLOWED_STYLES ) );
@@ -208,7 +208,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   /////////////////////////////////////////
@@ -259,7 +259,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
         }
         gradient = new Object[] { colors, percents, bgGradientVertical };
       }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( folder );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( folder );
       clientObject.set( PROP_SELECTION_BG_GRADIENT, gradient );
     }
   }

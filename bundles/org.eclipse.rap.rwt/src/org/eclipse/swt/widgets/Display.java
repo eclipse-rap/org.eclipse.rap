@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServletLog;
 import org.eclipse.rwt.internal.theme.*;
@@ -254,6 +255,7 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
+  @Override
   public Rectangle getBounds() {
     checkDevice();
     return new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
@@ -676,6 +678,7 @@ public class Display extends Device implements Adaptable {
     }
   }
 
+  @Override
   protected void release() {
     sendDisposeEvent();
     disposeShells();
@@ -686,6 +689,7 @@ public class Display extends Device implements Adaptable {
     }
   }
 
+  @Override
   protected void destroy() {
     deregister();
   }
@@ -726,7 +730,7 @@ public class Display extends Device implements Adaptable {
   private void runDisposeExecs() {
     if( disposeList != null ) {
       for( int i = 0; i < disposeList.length; i++ ) {
-        if( disposeList[ i ] != null )
+        if( disposeList[ i ] != null ) {
           try {
             disposeList[ i ].run();
           } catch( Throwable thr ) {
@@ -736,6 +740,7 @@ public class Display extends Device implements Adaptable {
         }
       }
     }
+  }
 
   /////////////////////
   // Adaptable override
@@ -748,7 +753,7 @@ public class Display extends Device implements Adaptable {
         displayAdapter = new DisplayAdapter();
       }
       result = ( T )displayAdapter;
-    } else if( adapter == IWidgetAdapter.class ) {
+    } else if( adapter == IClientObjectAdapter.class || adapter == IWidgetAdapter.class ) {
       if( widgetAdapter == null ) {
         widgetAdapter = new WidgetAdapter( "w1" );
       }
@@ -1333,6 +1338,7 @@ public class Display extends Device implements Adaptable {
    *
    * @see SWT
    */
+  @Override
   public Color getSystemColor( int id ) {
     checkDevice();
     Color result = null;
@@ -2210,6 +2216,7 @@ public class Display extends Device implements Adaptable {
     return thread == Thread.currentThread ();
   }
 
+  @Override
   protected void checkDevice() {
     if( !isValidThread() ) {
       error( SWT.ERROR_THREAD_INVALID_ACCESS );
@@ -2320,6 +2327,7 @@ public class Display extends Device implements Adaptable {
       Shell[] shells = display.getShells();
       for( int i = 0; control == null && i < shells.length; i++ ) {
         WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
+          @Override
           public boolean doVisit( Widget widget ) {
             boolean result = true;
             if( widget instanceof Control ) {

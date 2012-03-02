@@ -75,7 +75,7 @@ public class ListLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     List list = ( List )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( list );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( list );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( list.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( list, ALLOWED_STYLES ) );
@@ -104,7 +104,7 @@ public class ListLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   ////////////////////////////////////////////

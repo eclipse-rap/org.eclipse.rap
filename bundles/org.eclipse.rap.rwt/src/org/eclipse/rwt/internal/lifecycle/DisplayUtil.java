@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,19 +33,18 @@ public final class DisplayUtil {
     return result;
   }
 
+  public static String getId( Display display ) {
+    return getAdapter( display ).getId();
+  }
+
   public static IWidgetAdapter getAdapter( Display display ) {
-    IWidgetAdapter result;
-    result = display.getAdapter( IWidgetAdapter.class );
+    IWidgetAdapter result = display.getAdapter( IWidgetAdapter.class );
     if( result == null ) {
       throwAdapterException( IWidgetAdapter.class );
     }
     return result;
   }
-  
-  public static String getId( Display display ) {
-    return getAdapter( display ).getId();
-  }
-  
+
   private static void throwAdapterException( Class clazz ) {
     String text =   "Could not retrieve an instance of ''{0}''. Probably the "
                   + "AdapterFactory was not properly registered.";

@@ -74,7 +74,7 @@ public final class ScaleLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     Scale scale = ( Scale )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( scale );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( scale );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( scale.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( scale, ALLOWED_STYLES ) );
@@ -94,6 +94,6 @@ public final class ScaleLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 }

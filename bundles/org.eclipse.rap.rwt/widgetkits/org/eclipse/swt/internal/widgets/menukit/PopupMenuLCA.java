@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,7 +50,7 @@ final class PopupMenuLCA extends MenuDelegateLCA {
     if( menu.isVisible() ) {
       IMenuAdapter adapter = menu.getAdapter( IMenuAdapter.class );
       Point location = adapter.getLocation();
-      IClientObject clientObject = ClientObjectFactory.getForWidget( menu );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( menu );
       Map<String, Object> args = new HashMap<String, Object>();
       args.put( "x", Integer.valueOf( location.x ) );
       args.put( "y", Integer.valueOf( location.y ) );

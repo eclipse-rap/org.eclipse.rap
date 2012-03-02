@@ -102,7 +102,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       parent = item.getParentItem();
       index = item.getParentItem().indexOf( item );
     }
-    IClientObject clientObject = ClientObjectFactory.getForWidget( item );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( item );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( parent ) );
     clientObject.set( "index", index );
@@ -143,7 +143,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
     if( !itemAdapter.isParentDisposed() ) {
       // The tree disposes the items itself on the client (faster)
-      ClientObjectFactory.getForWidget( widget ).destroy();
+      ClientObjectFactory.getClientObject( widget ).destroy();
     }
   }
 

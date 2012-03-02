@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.dragsourcekit;
 
@@ -46,7 +47,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     DragSource dragSource = ( DragSource )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( dragSource );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( dragSource );
     clientObject.create( TYPE );
     clientObject.set( "control", WidgetUtil.getId( dragSource.getControl() ) );
     clientObject.set( "style", DNDLCAUtil.convertOperations( dragSource.getStyle() ) );
@@ -63,14 +64,14 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   private static void renderTransfer( DragSource dragSource ) {
     Transfer[] newValue = dragSource.getTransfer();
     if( WidgetLCAUtil.hasChanged( dragSource, PROP_TRANSFER, newValue, DEFAULT_TRANSFER ) ) {
       String[] renderValue = DNDLCAUtil.convertTransferTypes( newValue );
-      ClientObjectFactory.getForWidget( dragSource ).set( "transfer", renderValue );
+      ClientObjectFactory.getClientObject( dragSource ).set( "transfer", renderValue );
     }
   }
 
@@ -80,7 +81,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     if( dndAdapter.hasDetailChanged() ) { 
       String[] operations = DNDLCAUtil.convertOperations( dndAdapter.getDetailChangedValue() );
       String detail = operations.length > 0 ? operations[ 0 ] : "DROP_NONE"; 
-      IClientObject clientObject = ClientObjectFactory.getForWidget( dragSource );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( dragSource );
       Map<String, Object> properties = new HashMap<String, Object>();
       properties.put( "detail", detail );
       properties.put( "control", WidgetUtil.getId( dndAdapter.getDetailChangedControl() ) );
@@ -93,7 +94,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     // TODO [tb] : would be rendered by all DragSources:
     if( dndAdapter.hasFeedbackChanged() ) {
       int value = dndAdapter.getFeedbackChangedValue();
-      IClientObject clientObject = ClientObjectFactory.getForWidget( dragSource );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( dragSource );
       Map<String, Object> properties = new HashMap<String, Object>();
       properties.put( "control", WidgetUtil.getId( dndAdapter.getFeedbackChangedControl() ) );
       properties.put( "flags", new Integer( value ) );
@@ -106,7 +107,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     IDNDAdapter dndAdapter = dragSource.getAdapter( IDNDAdapter.class  );
     // TODO [tb] : would be rendered by all DragSources:
     if( dndAdapter.hasDataTypeChanged() ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( dragSource );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( dragSource );
       Map<String, Object> properties = new HashMap<String, Object>();
       properties.put( "control", WidgetUtil.getId( dndAdapter.getDataTypeChangedControl() ) );
       properties.put( "dataType", new Integer( dndAdapter.getDataTypeChangedValue().type ) );
@@ -118,7 +119,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     IDNDAdapter dndAdapter = dragSource.getAdapter( IDNDAdapter.class  );
     // TODO [tb] : would be rendered by all DragSources:
     if( dndAdapter.isCanceled() ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( dragSource );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( dragSource );
       clientObject.call( "cancel", null );
     }
   }

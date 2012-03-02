@@ -70,7 +70,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     ExpandItem item = ( ExpandItem )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( item );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( item );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( item.getParent() ) );
   }
@@ -85,7 +85,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   ////////////////

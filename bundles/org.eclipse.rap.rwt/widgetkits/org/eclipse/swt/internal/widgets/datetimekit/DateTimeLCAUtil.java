@@ -52,7 +52,7 @@ final class DateTimeLCAUtil {
   }
 
   static void renderInitialization( DateTime dateTime ) {
-    IClientObject clientObject = ClientObjectFactory.getForWidget( dateTime );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( dateTime );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( dateTime.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( dateTime, ALLOWED_STYLES ) );
@@ -69,37 +69,37 @@ final class DateTimeLCAUtil {
 
   static void renderCellSize( DateTime dateTime ) {
     Point cellSize = getDateTimeAdapter( dateTime ).getCellSize();
-    IClientObject clientObject = ClientObjectFactory.getForWidget( dateTime );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( dateTime );
     clientObject.set( PROP_CELL_SIZE, new int[] { cellSize.x, cellSize.y } );
   }
 
   static void renderMonthNames( DateTime dateTime ) {
     String[] monthNames = getDateTimeAdapter( dateTime ).getMonthNames();
-    IClientObject clientObject = ClientObjectFactory.getForWidget( dateTime );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( dateTime );
     clientObject.set( PROP_MONTH_NAMES, monthNames );
   }
 
   static void renderWeekdayNames( DateTime dateTime ) {
     String[] weekdayNames = getDateTimeAdapter( dateTime ).getWeekdayNames();
-    IClientObject clientObject = ClientObjectFactory.getForWidget( dateTime );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( dateTime );
     clientObject.set( PROP_WEEKDAY_NAMES, weekdayNames );
   }
 
   static void renderWeekdayShortNames( DateTime dateTime ) {
     String[] weekdayShortNames = getDateTimeAdapter( dateTime ).getWeekdayShortNames();
-    IClientObject clientObject = ClientObjectFactory.getForWidget( dateTime );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( dateTime );
     clientObject.set( PROP_WEEKDAY_SHORT_NAMES, weekdayShortNames );
   }
 
   static void renderDateSeparator( DateTime dateTime ) {
     String dateSeparator = getDateTimeAdapter( dateTime ).getDateSeparator();
-    IClientObject clientObject = ClientObjectFactory.getForWidget( dateTime );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( dateTime );
     clientObject.set( PROP_DATE_SEPARATOR, dateSeparator );
   }
 
   static void renderDatePattern( DateTime dateTime ) {
     String datePattern = getDateTimeAdapter( dateTime ).getDatePattern();
-    IClientObject clientObject = ClientObjectFactory.getForWidget( dateTime );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( dateTime );
     clientObject.set( PROP_DATE_PATTERN, datePattern );
   }
 
@@ -119,7 +119,7 @@ final class DateTimeLCAUtil {
           subWidgetBounds[ i ].height,
         };
       }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( dateTime );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( dateTime );
       clientObject.set( PROP_SUB_WIDGETS_BOUNDS, bounds );
     }
   }

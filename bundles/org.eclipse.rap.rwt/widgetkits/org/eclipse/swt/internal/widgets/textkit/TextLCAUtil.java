@@ -85,7 +85,7 @@ final class TextLCAUtil {
   }
 
   static void renderInitialization( Text text ) {
-    IClientObject clientObject = ClientObjectFactory.getForWidget( text );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( text );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( text.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( text, getAllowedStyles( text ) ) );

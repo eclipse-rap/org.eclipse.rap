@@ -65,7 +65,7 @@ public class LinkLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     Link link = ( Link )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( link );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( link );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( link.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( link, ALLOWED_STYLES ) );
@@ -80,7 +80,7 @@ public class LinkLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   ///////////////////////////////////////////////////
@@ -89,7 +89,7 @@ public class LinkLCA extends AbstractWidgetLCA {
   private static void renderText( Link link ) {
     String newValue = link.getText();
     if( WidgetLCAUtil.hasChanged( link, PROP_TEXT, newValue, "" ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( link );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( link );
       clientObject.set( PROP_TEXT, getTextObject( link ) );
     }
   }

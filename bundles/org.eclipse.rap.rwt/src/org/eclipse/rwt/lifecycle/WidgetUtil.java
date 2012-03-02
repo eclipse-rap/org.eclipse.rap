@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -120,7 +120,7 @@ public final class WidgetUtil {
    */
   public static String getId( Widget widget ) {
     // TODO [rh] consider overriding the id when Widget#setData is called
-    //      - safer 1: in case someone tries to obtain id directly from addapter
+    //      - safer 1: in case someone tries to obtain id directly from adapter
     //      - safer 2: changing the id after widget was initialized could be
     //        detected and prevented
     //      - less memory: new 'data' array created per widget to hold the id
@@ -194,6 +194,7 @@ public final class WidgetUtil {
     final Widget[] result = { null };
     if( id != null ) {
       WidgetTreeVisitor.accept( root, new AllWidgetTreeVisitor() {
+        @Override
         public boolean doVisit( Widget widget ) {
           if( getId( widget ).equals( id ) ) {
             result[ 0 ] = widget;

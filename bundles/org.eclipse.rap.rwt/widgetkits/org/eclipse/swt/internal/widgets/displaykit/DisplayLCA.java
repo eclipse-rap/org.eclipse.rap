@@ -210,7 +210,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     Object oldThemeId = adapter.getPreserved( PROP_CURRENT_THEME );
     if( !currThemeId.equals( oldThemeId ) ) {
       Theme theme = RWTFactory.getThemeManager().getTheme( currThemeId );
-      IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( display );
       clientObject.set( PROP_CURRENT_THEME, theme.getJsId() );
     }
   }
@@ -220,7 +220,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     Object oldTimeoutPage = adapter.getPreserved( PROP_TIMEOUT_PAGE );
     if( !timeoutPage.equals( oldTimeoutPage ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( display );
       clientObject.set( PROP_TIMEOUT_PAGE, timeoutPage );
     }
   }
@@ -250,7 +250,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
                        ? oldExitConfirmation != null
                        : !exitConfirmation.equals( oldExitConfirmation );
     if( hasChanged ) {
-      IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( display );
       clientObject.set( PROP_EXIT_CONFIRMATION, exitConfirmation );
     }
   }
@@ -310,7 +310,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         // TODO [rst] Added null check as a NPE occurred in some rare cases
         Control focusControl = display.getFocusControl();
         if( focusControl != null ) {
-          IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+          IClientObject clientObject = ClientObjectFactory.getClientObject( display );
           clientObject.set( PROP_FOCUS_CONTROL,
                                     WidgetUtil.getId( display.getFocusControl() ) );
         }
@@ -322,7 +322,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     IDisplayAdapter displayAdapter = getDisplayAdapter( display );
     if( displayAdapter.isBeepCalled() ) {
       displayAdapter.resetBeep();
-      IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( display );
       clientObject.call( METHOD_BEEP, null );
     }
   }
@@ -331,7 +331,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     if( UITestUtil.isEnabled() ) {
       WidgetAdapter adapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
       if( !adapter.isInitialized() ) {
-        IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+        IClientObject clientObject = ClientObjectFactory.getClientObject( display );
         clientObject.set( "enableUiTests", true );
       }
     }

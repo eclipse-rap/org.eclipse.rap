@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.events.EventAdapter;
 import org.eclipse.rwt.internal.events.IEventAdapter;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory;
+import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
@@ -163,13 +164,13 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     // good reason
     T result;
     if( adapter == IEventAdapter.class ) {
-      // Note: This is not implemented via the AdapterManager, since the manager's mapping mechanism 
+      // Note: This is not implemented via the AdapterManager, since the manager's mapping mechanism
       // prevents the component being released unless the session is invalidated.
       if( eventAdapter == null ) {
         eventAdapter = new EventAdapter();
       }
       result = ( T )eventAdapter;
-    } else if( adapter == IWidgetAdapter.class ) {
+    } else if( adapter == IClientObjectAdapter.class || adapter == IWidgetAdapter.class ) {
       if( widgetAdapter == null ) {
         widgetAdapter = new WidgetAdapter();
       }
@@ -695,6 +696,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    *
    * @return a string representation of the receiver
    */
+  @Override
   public String toString() {
     String string = "*Disposed*";
     if( !isDisposed() ) {

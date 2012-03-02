@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.sashkit;
 
 import java.io.IOException;
@@ -51,7 +50,7 @@ public final class SashLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     Sash sash = ( Sash )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( sash );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( sash );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( sash.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( sash, ALLOWED_STYLES ) );
@@ -64,7 +63,7 @@ public final class SashLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   private static void processSelection( Sash sash ) {

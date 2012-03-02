@@ -28,6 +28,7 @@ import org.eclipse.ui.forms.internal.widgets.*;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.internal.forms.widgets.*;
 
+
 public class FormTextLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "forms.widgets.FormText"; //$NON-NLS-1$
@@ -65,7 +66,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     FormText formText = ( FormText )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( formText );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( formText );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( formText.getParent() ) ); //$NON-NLS-1$
   }
@@ -86,7 +87,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   ////////////////////////////
@@ -103,7 +104,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
         getColorAsArray( foreground ),
         getColorAsArray( activeForeground )
       };
-      IClientObject clientObject = ClientObjectFactory.getForWidget( formText );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( formText );
       clientObject.set( PROP_HYPERLINK_SETTINGS, args );
     }
   }
@@ -124,7 +125,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
         ParagraphSegment[] segments = paragraph.getSegments();
         appendSegments( formText, segments, buffer );
       }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( formText );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( formText );
       clientObject.set( PROP_TEXT, buffer.toArray( new Object[ 0 ] ) );
     }
   }

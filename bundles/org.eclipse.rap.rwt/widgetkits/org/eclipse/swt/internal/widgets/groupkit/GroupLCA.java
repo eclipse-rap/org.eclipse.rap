@@ -53,7 +53,7 @@ public class GroupLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     Group group = ( Group )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( group );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( group );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( group.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( group, ALLOWED_STYLES ) );
@@ -67,6 +67,6 @@ public class GroupLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 }

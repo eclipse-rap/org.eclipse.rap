@@ -373,7 +373,7 @@ public class ControlLCAUtil {
     Integer newValue = new Integer( getTabIndex( control ) );
     // there is no reliable default value for all controls
     if( WidgetLCAUtil.hasChanged( control, PROP_TAB_INDEX, newValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( control );
       clientObject.set( "tabIndex", newValue );
     }
   }
@@ -416,7 +416,7 @@ public class ControlLCAUtil {
     Boolean defValue = control instanceof Shell ? Boolean.FALSE : Boolean.TRUE;
     // TODO [tb] : Can we have a shorthand for this, like in JSWriter?
     if( WidgetLCAUtil.hasChanged( control, Props.VISIBLE, newValue, defValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( control );
       clientObject.set( "visibility", newValue );
     }
   }
@@ -498,7 +498,7 @@ public class ControlLCAUtil {
   static void renderCursor( Control control ) {
     Cursor newValue = control.getCursor();
     if( WidgetLCAUtil.hasChanged( control, PROP_CURSOR, newValue, null ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( control );
       clientObject.set( PROP_CURSOR, getQxCursor( newValue ) );
     }
   }

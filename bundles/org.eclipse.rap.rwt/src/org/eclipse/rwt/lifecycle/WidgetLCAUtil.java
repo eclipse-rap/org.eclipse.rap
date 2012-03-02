@@ -372,7 +372,7 @@ public final class WidgetLCAUtil {
       if( newValue != null ) {
         value = "variant_" + newValue;
       }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( "customVariant", value );
     }
   }
@@ -434,7 +434,7 @@ public final class WidgetLCAUtil {
    */
   public static void renderFont( Widget widget, Font font ) {
     if( WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, null ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( PROP_FONT, getFontAsArray( font ) );
     }
   }
@@ -486,7 +486,7 @@ public final class WidgetLCAUtil {
    */
   public static void renderForeground( Widget widget, Color newColor ) {
     if( WidgetLCAUtil.hasChanged( widget, PROP_FOREGROUND, newColor, null ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( PROP_FOREGROUND, getColorValueAsArray( newColor, false ) );
     }
   }
@@ -546,7 +546,7 @@ public final class WidgetLCAUtil {
                                                             Boolean.FALSE );
     boolean colorChanged = WidgetLCAUtil.hasChanged( widget, PROP_BACKGROUND, background, null );
     if( transparencyChanged || colorChanged ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       int[] color = null;
       if( transparency || background != null ) {
         color = getColorValueAsArray( background, transparency );
@@ -588,7 +588,7 @@ public final class WidgetLCAUtil {
           new Boolean( bgGradientVertical )
         };
       }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( "backgroundGradient", args );
     }
   }
@@ -640,7 +640,7 @@ public final class WidgetLCAUtil {
           new Integer( radius.height )
         };
       }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( "roundedBorder", args );
     }
   }
@@ -786,7 +786,7 @@ public final class WidgetLCAUtil {
                                      Object defaultValue )
   {
     if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( property, newValue );
     }
   }
@@ -853,7 +853,7 @@ public final class WidgetLCAUtil {
                                      Image defaultValue )
   {
     if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( property, getImageAsArray( newValue ) );
     }
   }
@@ -880,7 +880,7 @@ public final class WidgetLCAUtil {
       for( int i = 0; i < images.length; i++ ) {
         images[ i ] = getImageAsArray( newValue[ i ] );
       }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( property, images );
     }
   }
@@ -903,7 +903,7 @@ public final class WidgetLCAUtil {
                                      Color defaultValue )
   {
     if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( property, getColorValueAsArray( newValue, false ) );
     }
   }
@@ -934,7 +934,7 @@ public final class WidgetLCAUtil {
         }
         colors[ i ] = colorProperties;
       }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( property, colors );
     }
   }
@@ -961,7 +961,7 @@ public final class WidgetLCAUtil {
       for( int i = 0; i < fonts.length; i++ ) {
         fonts[ i ] = getFontAsArray( newValue[ i ] );
       }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( property, fonts );
     }
   }
@@ -988,7 +988,7 @@ public final class WidgetLCAUtil {
       if( newValue != null ) {
         args = new int[] { newValue.x, newValue.y };
       }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( property, args );
     }
   }
@@ -1015,7 +1015,7 @@ public final class WidgetLCAUtil {
       if( newValue != null ) {
         args = new int[] { newValue.x, newValue.y, newValue.width, newValue.height };
       }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( property, args );
     }
   }
@@ -1039,7 +1039,7 @@ public final class WidgetLCAUtil {
   {
     if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
       String widgetId = newValue == null ? null : WidgetUtil.getId( newValue );
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( property, widgetId );
     }
   }
@@ -1065,7 +1065,7 @@ public final class WidgetLCAUtil {
     Boolean newValueObject = new Boolean( newValue );
     Boolean defaultValueObject = new Boolean( defaultValue );
     if( WidgetLCAUtil.hasChanged( widget, property, newValueObject, defaultValueObject ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.listen( listener, newValue );
     }
   }

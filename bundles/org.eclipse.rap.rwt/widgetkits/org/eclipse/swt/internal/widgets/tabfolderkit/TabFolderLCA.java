@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.tabfolderkit;
 
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -50,7 +49,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     TabFolder folder = ( TabFolder )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( folder );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( folder );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( folder.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( folder, ALLOWED_STYLES ) );
@@ -64,7 +63,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   //////////////////

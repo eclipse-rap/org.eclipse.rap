@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
 
 import java.io.IOException;
@@ -22,6 +21,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.internal.widgets.IHyperlinkAdapter;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+
 
 public class HyperlinkLCA extends AbstractWidgetLCA {
 
@@ -61,7 +61,7 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     Hyperlink hyperlink = ( Hyperlink )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( hyperlink );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( hyperlink );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( hyperlink.getParent() ) ); //$NON-NLS-1$
     clientObject.set( "style", WidgetLCAUtil.getStyles( hyperlink, ALLOWED_STYLES ) ); //$NON-NLS-1$
@@ -90,7 +90,7 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   //////////////////

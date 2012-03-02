@@ -69,7 +69,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   public void renderInitialization( Widget widget ) throws IOException {
     CTabItem item = ( CTabItem )widget;
     CTabFolder parent = item.getParent();
-    IClientObject clientObject = ClientObjectFactory.getForWidget( item );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( item );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( parent ) );
     clientObject.set( "index", parent.indexOf( item ) );
@@ -89,7 +89,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   ////////////////////////////////////////////

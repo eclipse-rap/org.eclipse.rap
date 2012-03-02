@@ -50,7 +50,7 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
   }
 
   void renderInitialization( Label label ) throws IOException {
-    IClientObject clientObject = ClientObjectFactory.getForWidget( label );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( label );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( label.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( label, ALLOWED_STYLES ) );

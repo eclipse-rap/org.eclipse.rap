@@ -56,7 +56,7 @@ final class ButtonLCAUtil {
   }
 
   static void renderInitialization( Button button ) {
-    IClientObject clientObject = ClientObjectFactory.getForWidget( button );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( button );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( button.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( button, ALLOWED_STYLES ) );

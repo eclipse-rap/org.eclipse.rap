@@ -95,7 +95,7 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     Combo combo = ( Combo )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( combo );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( combo.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( combo, ALLOWED_STYLES ) );
@@ -120,7 +120,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   ///////////////////////////////////////
@@ -180,7 +180,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   private static void renderItemHeight( Combo combo ) {
     Integer newValue = new Integer( getItemHeight( combo ) );
     if( WidgetLCAUtil.hasChanged( combo, PROP_ITEM_HEIGHT, newValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( combo );
       clientObject.set( PROP_ITEM_HEIGHT, newValue );
     }
   }
@@ -210,7 +210,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     boolean textChanged
       = !isEditable( combo ) && WidgetLCAUtil.hasChanged( combo, PROP_TEXT, combo.getText(), "" );
     if( selectionChanged || textChanged ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( combo );
       clientObject.set( PROP_SELECTION_INDEX, newValue );
     }
   }

@@ -102,7 +102,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
     clientObject.create( TYPE );
     clientObject.set( "style", WidgetLCAUtil.getStyles( shell, ALLOWED_STYLES ) );
     Composite parent = shell.getParent();
@@ -129,7 +129,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   @Override
   public void renderDispose( Widget widget ) throws IOException {
-    IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
     clientObject.destroy();
   }
 
@@ -147,7 +147,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   private static void renderMinimumSize( Shell shell ) {
     Point newValue = shell.getMinimumSize();
     if( WidgetLCAUtil.hasChanged( shell, PROP_MINIMUM_SIZE, newValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
       clientObject.set( "minimumSize", new int[]{ newValue.x, newValue.y } );
     }
   }
@@ -155,7 +155,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   private static void renderDefaultButton( Shell shell ) {
     Button defaultButton = shell.getDefaultButton();
     if( WidgetLCAUtil.hasChanged( shell, PROP_DEFAULT_BUTTON, defaultButton, null ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
       String defaultButtonId = null;
       if( defaultButton != null ) {
         defaultButtonId = WidgetUtil.getId( defaultButton );
@@ -171,7 +171,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     Shell activeShell = shell.getDisplay().getActiveShell();
     boolean hasChanged = WidgetLCAUtil.hasChanged( shell, PROP_ACTIVE_SHELL, activeShell, null );
     if( shell == activeShell && hasChanged ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
       clientObject.set( "active", true );
     }
   }
@@ -204,7 +204,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
       if( activeControl != null ) {
         activeControlId = WidgetUtil.getId( activeControl );
       }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
       clientObject.set( "activeControl", activeControlId );
     }
   }
@@ -252,7 +252,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
         }
       }
       if( WidgetLCAUtil.hasChanged( shell, PROP_IMAGE, image, null ) ) {
-        IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+        IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
         clientObject.set( "image", ImageFactory.getImagePath( image ) );
       }
     }
@@ -283,7 +283,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     Object defValue = null;
     Object newValue = getMode( shell );
     if( WidgetLCAUtil.hasChanged( shell, PROP_MODE, newValue, defValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
       clientObject.set( "mode", newValue );
     }
   }

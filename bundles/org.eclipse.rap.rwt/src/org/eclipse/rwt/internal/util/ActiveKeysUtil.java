@@ -121,7 +121,7 @@ public final class ActiveKeysUtil {
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_ACTIVE_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
       if( hasChanged ) {
-        IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+        IClientObject clientObject = ClientObjectFactory.getClientObject( display );
         clientObject.set( "activeKeys", translateKeySequences( newValue ) );
       }
     }
@@ -134,7 +134,7 @@ public final class ActiveKeysUtil {
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_ACTIVE_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
       if( hasChanged ) {
-        IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+        IClientObject clientObject = ClientObjectFactory.getClientObject( control );
         clientObject.set( "activeKeys", translateKeySequences( newValue ) );
       }
     }
@@ -147,7 +147,7 @@ public final class ActiveKeysUtil {
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_CANCEL_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
       if( hasChanged ) {
-        IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+        IClientObject clientObject = ClientObjectFactory.getClientObject( display );
         clientObject.set( "cancelKeys", translateKeySequences( newValue ) );
       }
     }
@@ -160,7 +160,7 @@ public final class ActiveKeysUtil {
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_CANCEL_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
       if( hasChanged ) {
-        IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+        IClientObject clientObject = ClientObjectFactory.getClientObject( control );
         clientObject.set( "cancelKeys", translateKeySequences( newValue ) );
       }
     }

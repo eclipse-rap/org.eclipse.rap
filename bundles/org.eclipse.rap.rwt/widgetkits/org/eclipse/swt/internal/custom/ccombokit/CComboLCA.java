@@ -90,7 +90,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     CCombo ccombo = ( CCombo )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( ccombo );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( ccombo.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( ccombo, ALLOWED_STYLES ) );
@@ -116,7 +116,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   ///////////////////////////////////////
@@ -176,7 +176,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
   private static void renderItemHeight( CCombo ccombo ) {
     Integer newValue = new Integer( ccombo.getItemHeight() );
     if( WidgetLCAUtil.hasChanged( ccombo, PROP_ITEM_HEIGHT, newValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( ccombo );
       clientObject.set( PROP_ITEM_HEIGHT, newValue );
     }
   }
@@ -206,7 +206,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     boolean textChanged = !ccombo.getEditable()
                           && WidgetLCAUtil.hasChanged( ccombo, PROP_TEXT, ccombo.getText(), "" );
     if( selectionChanged || textChanged ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( ccombo );
       clientObject.set( PROP_SELECTION_INDEX, newValue );
     }
   }

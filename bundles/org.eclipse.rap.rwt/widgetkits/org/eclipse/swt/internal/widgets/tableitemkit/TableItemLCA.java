@@ -73,7 +73,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     TableItem item = ( TableItem )widget;
     Table parent = item.getParent();
     int index = parent.indexOf( item );
-    IClientObject clientObject = ClientObjectFactory.getForWidget( item );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( item );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( parent ) );
     clientObject.set( "index", index );
@@ -105,7 +105,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     TableItem item = ( TableItem )widget;
     if( !isParentDisposed( item ) ) {
       // The tree disposes the items itself on the client (faster)
-      ClientObjectFactory.getForWidget( widget ).destroy();
+      ClientObjectFactory.getClientObject( widget ).destroy();
     }
   }
 
@@ -146,7 +146,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   private static void renderClear( TableItem item ) {
-    IClientObject clientObject = ClientObjectFactory.getForWidget( item );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( item );
     clientObject.call( "clear", null );
   }
 

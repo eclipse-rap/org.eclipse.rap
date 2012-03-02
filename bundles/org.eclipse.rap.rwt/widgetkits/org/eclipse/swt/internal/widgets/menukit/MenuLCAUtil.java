@@ -48,7 +48,7 @@ final class MenuLCAUtil {
   }
 
   static void renderInitialization( Menu menu ) {
-    IClientObject clientObject = ClientObjectFactory.getForWidget( menu );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( menu );
     clientObject.create( TYPE );
     clientObject.set( "style", WidgetLCAUtil.getStyles( menu, ALLOWED_STYLES ) );
   }
@@ -78,7 +78,7 @@ final class MenuLCAUtil {
   static void renderUnhideItems( Menu menu ) {
     if( WidgetLCAUtil.wasEventSent( menu, JSConst.EVENT_MENU_SHOWN ) ) {
       Boolean reveal = Boolean.valueOf( menu.getItemCount() > 0 );
-      IClientObject clientObject = ClientObjectFactory.getForWidget( menu );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( menu );
       Map<String, Object> args = new HashMap<String, Object>();
       args.put( "reveal", reveal );
       clientObject.call( METHOD_UNHIDE_ITEMS, args );

@@ -49,7 +49,7 @@ final class MenuItemLCAUtil {
   }
 
   static void renderInitialization( MenuItem item ) {
-    IClientObject clientObject = ClientObjectFactory.getForWidget( item );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( item );
     clientObject.create( TYPE );
     Menu parent = item.getParent();
     clientObject.set( "parent", WidgetUtil.getId( parent ) );

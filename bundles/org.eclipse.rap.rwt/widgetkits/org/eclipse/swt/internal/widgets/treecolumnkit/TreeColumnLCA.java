@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.treecolumnkit;
 
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -29,6 +28,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.widgets.*;
+
 
 public final class TreeColumnLCA extends AbstractWidgetLCA {
 
@@ -94,7 +94,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     TreeColumn column = ( TreeColumn )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( column );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( column );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( column.getParent() ) );
   }
@@ -114,7 +114,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   //////////////////////////////////////////////////

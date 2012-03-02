@@ -91,7 +91,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     Spinner spinner = ( Spinner )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( spinner );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( spinner );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( spinner.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( spinner, ALLOWED_STYLES ) );
@@ -114,7 +114,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   ///////////////////////////////////////////////////

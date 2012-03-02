@@ -40,7 +40,7 @@ public class ClientObject_Test extends TestCase {
     Display display = new Display();
     shell = new Shell( display );
     shellId = WidgetUtil.getId( shell );
-    clientObject = ClientObjectFactory.getForWidget( shell );
+    clientObject = ClientObjectFactory.getClientObject( shell );
   }
 
   @Override

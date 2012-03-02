@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
 
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
@@ -97,7 +96,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     TableColumn column = ( TableColumn )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( column );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( column );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( column.getParent() ) );
   }
@@ -118,7 +117,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   //////////////////////////////////////////////////

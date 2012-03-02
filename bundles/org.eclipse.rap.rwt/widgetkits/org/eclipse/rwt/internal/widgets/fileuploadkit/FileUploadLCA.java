@@ -44,7 +44,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     FileUpload fileUpload = ( FileUpload ) widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( fileUpload );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( fileUpload );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( fileUpload.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( fileUpload, ALLOWED_STYLES ) );
@@ -65,7 +65,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   /////////
@@ -84,7 +84,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
   private static void renderSubmit( FileUpload fileUpload ) {
     String url = fileUpload.getAdapter( IFileUploadAdapter.class ).getAndResetUrl();
     if( url != null ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( fileUpload );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( fileUpload );
       Map<String, Object> args = new HashMap<String, Object>();
       args.put( "url", url );
       clientObject.call( "submit", args );
