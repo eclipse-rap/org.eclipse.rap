@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.application.RWTFactory;
@@ -214,6 +215,8 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     registerBrandingResources( branding );
     if( branding.getThemeId() != null ) {
       ThemeUtil.setCurrentThemeId( branding.getThemeId() );
+    } else {
+      ThemeUtil.setCurrentThemeId( RWT.DEFAULT_THEME_ID );
     }
     replacePlaceholder( template, StartupPageTemplateHolder.VAR_BODY, branding.getBody() );
     replacePlaceholder( template, StartupPageTemplateHolder.VAR_TITLE, branding.getTitle() );
