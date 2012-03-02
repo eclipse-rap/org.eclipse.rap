@@ -92,7 +92,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     Object httpSessionAttribute = new Object();
     httpSession.setAttribute( HTTP_SESSION_ATTRIBUTE, httpSessionAttribute );
 
-    LifeCycleServiceHandler.markSessionInitialized();
+    LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
     new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
 
@@ -104,7 +104,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     RWTRequestVersionControl.getInstance().nextRequestId();
     Integer versionBeforeRestart = RWTRequestVersionControl.getInstance().nextRequestId();
 
-    LifeCycleServiceHandler.markSessionInitialized();
+    LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
     new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
 
@@ -113,7 +113,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   }
 
   public void testApplicationContextAfterSessionRestart() throws IOException {
-    LifeCycleServiceHandler.markSessionInitialized();
+    LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
     ISessionStore sessionStore = ContextProvider.getSessionStore();
     ApplicationContext applicationContext = ApplicationContextUtil.getInstance();
@@ -128,7 +128,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     Fixture.fakeRequestParam( "foo", "bar" );
     new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
 
-    LifeCycleServiceHandler.markSessionInitialized();
+    LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
     new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
 
@@ -142,7 +142,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
    * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=373084
    */
   public void testClearServiceStoreAfterSessionRestart() throws IOException {
-    LifeCycleServiceHandler.markSessionInitialized();
+    LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
     new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
 
