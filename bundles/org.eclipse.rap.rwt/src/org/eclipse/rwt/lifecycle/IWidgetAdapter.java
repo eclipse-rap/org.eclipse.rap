@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.lifecycle;
 
-import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -23,7 +22,14 @@ import org.eclipse.swt.widgets.Widget;
  *
  * @since 1.0
  */
-public interface IWidgetAdapter extends IClientObjectAdapter {
+public interface IWidgetAdapter {
+
+  /**
+   * Returns the id that identifies the widget on the client.
+   *
+   * @return the widget id
+   */
+  String getId();
 
   /**
    * Indicates whether this widget has been initialized already. A widget is

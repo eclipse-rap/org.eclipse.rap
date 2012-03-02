@@ -1,26 +1,32 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
+import org.eclipse.rwt.internal.protocol.ClientObjectAdapter;
+import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Widget;
 
-public final class WidgetAdapter implements IWidgetAdapter, SerializableCompatibility {
+
+public final class WidgetAdapter
+  implements IWidgetAdapter, IClientObjectAdapter, SerializableCompatibility
+{
 
   private final String id;
   private boolean initialized;
@@ -28,9 +34,10 @@ public final class WidgetAdapter implements IWidgetAdapter, SerializableCompatib
   private String jsParent;
   private transient IRenderRunnable renderRunnable;
   private transient String cachedVariant;
+  private ClientObjectAdapter gcObjectAdapter;
 
   public WidgetAdapter() {
-    this( IdGenerator.getInstance().newId() );
+    this( IdGenerator.getInstance().newId( "w" ) );
   }
 
   public WidgetAdapter( String id ) {
@@ -102,7 +109,27 @@ public final class WidgetAdapter implements IWidgetAdapter, SerializableCompatib
       DisposedWidgets.add( widget );
     }
   }
-  
+
+  public Adaptable getGCForClient() {
+    if( gcObjectAdapter == null ) {
+      gcObjectAdapter = new ClientObjectAdapter( "gc" );
+    }
+    return createGcAdaptable();
+  }
+
+  @SuppressWarnings("unchecked")
+  private Adaptable createGcAdaptable() {
+    return new Adaptable() {
+
+      public <T> T getAdapter( Class<T> adapter ) {
+        if( adapter == IClientObjectAdapter.class ) {
+          return ( T )gcObjectAdapter;
+        }
+        return null;
+      }
+    };
+  }
+
   private Object readResolve() {
     initialize();
     return this;

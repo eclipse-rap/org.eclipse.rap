@@ -12,10 +12,12 @@ package org.eclipse.swt.internal.widgets.canvaskit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.internal.graphics.*;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
 
 
@@ -25,6 +27,7 @@ public final class CanvasLCA extends AbstractWidgetLCA {
   private static final String TYPE_GC = "rwt.GC";
   private static final String[] ALLOWED_STYLES = new String[] { "NO_RADIO_GROUP", "BORDER" };
 
+  @Override
   public void preserveValues( Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
     WidgetLCAUtil.preserveCustomVariant( widget );
@@ -38,17 +41,19 @@ public final class CanvasLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processMenuDetect( ( Control )widget );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Canvas canvas = ( Canvas )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( canvas );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( canvas.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( canvas, ALLOWED_STYLES ) );
-    IClientObject clientObjectGC = ClientObjectFactory.getForGC( canvas );
+    IClientObject clientObjectGC = ClientObjectFactory.getClientObject( getGC( canvas ) );
     clientObjectGC.create( TYPE_GC );
     clientObjectGC.set( "parent", WidgetUtil.getId( canvas ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     ControlLCAUtil.renderChanges( ( Control )widget );
     WidgetLCAUtil.renderBackgroundGradient( widget );
@@ -57,9 +62,10 @@ public final class CanvasLCA extends AbstractWidgetLCA {
     writeGCOperations( ( Canvas )widget );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
-    ClientObjectFactory.getForGC( widget ).destroy();
+    ClientObjectFactory.getClientObject( getGC( widget ) ).destroy();
   }
 
   private static void writeGCOperations( Canvas canvas ) {
@@ -76,4 +82,10 @@ public final class CanvasLCA extends AbstractWidgetLCA {
     adapter.clearGCOperations();
     adapter.setForceRedraw( false );
   }
+
+  private static Adaptable getGC( Widget widget ) {
+    WidgetAdapter adapter = ( WidgetAdapter )widget.getAdapter( IWidgetAdapter.class );
+    return adapter.getGCForClient();
+  }
+
 }

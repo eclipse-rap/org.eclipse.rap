@@ -25,24 +25,29 @@ public class IdGenerator_Test extends TestCase {
   }
 
   public void testNewId() {
-    String id1 = idGenerator.newId();
-    String id2 = idGenerator.newId();
+    String id1 = idGenerator.newId( "w" );
+    String id2 = idGenerator.newId( "w" );
 
     assertFalse( id1.equals( id2 ) );
   }
 
   public void testReproducibleIds() {
-    String id1 = idGenerator.newId();
-    String id2 = new IdGenerator().newId();
+    String id1 = idGenerator.newId( "w" );
+    String id2 = new IdGenerator().newId( "w" );
 
     assertEquals( id1, id2 );
   }
 
+  public void testIdsArePrefixed() {
+    assertTrue( idGenerator.newId( "x" ).startsWith( "x" ) );
+    assertTrue( idGenerator.newId( "y" ).startsWith( "y" ) );
+  }
+
   public void testSerialize() throws Exception {
-    String id1 = idGenerator.newId();
+    String id1 = idGenerator.newId( "w" );
 
     IdGenerator deserializedIdGenerator = Fixture.serializeAndDeserialize( idGenerator );
 
-    assertFalse( id1.equals( deserializedIdGenerator.newId() ) );
+    assertFalse( id1.equals( deserializedIdGenerator.newId( "w" ) ) );
   }
 }

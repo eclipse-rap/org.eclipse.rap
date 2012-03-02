@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
@@ -18,22 +18,27 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
 
+
 public class WidgetAdapter_Test extends TestCase {
 
   private Display display;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -163,5 +168,46 @@ public class WidgetAdapter_Test extends TestCase {
     assertNull( deserializedAdapter.getCachedVariant() );
     assertNull( deserializedAdapter.getRenderRunnable() );
     assertNull( deserializedAdapter.getPreserved( property ) );
+  }
+
+  public void testGetGCForClient() {
+    WidgetAdapter adapter = new WidgetAdapter();
+
+    Adaptable gc = adapter.getGCForClient();
+
+    assertNotNull( gc );
+  }
+
+  public void testGetGCForClientAdapter() {
+    WidgetAdapter adapter = new WidgetAdapter();
+    Adaptable gc = adapter.getGCForClient();
+
+    assertNotNull( gc.getAdapter( IClientObjectAdapter.class ) );
+  }
+
+  public void testGetGCForClientAdapterWithInvalidClass() {
+    WidgetAdapter adapter = new WidgetAdapter();
+    Adaptable gc = adapter.getGCForClient();
+
+    assertNull( gc.getAdapter( IWidgetAdapter.class ) );
+  }
+
+  public void testGetGCForClientAdapterId() {
+    WidgetAdapter adapter = new WidgetAdapter();
+    Adaptable gc = adapter.getGCForClient();
+
+    String id = gc.getAdapter( IClientObjectAdapter.class ).getId();
+
+    assertTrue( id.startsWith( "gc" ) );
+  }
+
+  public void testGetGCForClientAdapterHasSameId() {
+    WidgetAdapter adapter = new WidgetAdapter();
+    Adaptable gc = adapter.getGCForClient();
+
+    String id1 = gc.getAdapter( IClientObjectAdapter.class ).getId();
+    String id2 = gc.getAdapter( IClientObjectAdapter.class ).getId();
+
+    assertEquals( id1, id2 );
   }
 }

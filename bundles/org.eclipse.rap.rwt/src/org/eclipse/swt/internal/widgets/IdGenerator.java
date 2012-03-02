@@ -26,7 +26,7 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  */
 public final class IdGenerator implements SerializableCompatibility {
 
-  static IdGenerator getInstance() {
+  public static IdGenerator getInstance() {
     return SessionSingletonBase.getInstance( IdGenerator.class );
   }
 
@@ -36,8 +36,8 @@ public final class IdGenerator implements SerializableCompatibility {
     // prevent instantiation from outside
   }
 
-  String newId() {
+  public String newId( String prefix ) {
     lastId++;
-    return "w" + lastId;
+    return prefix + lastId;
   }
 }

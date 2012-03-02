@@ -19,6 +19,9 @@ import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
+import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -30,10 +33,12 @@ import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawLine;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -45,6 +50,7 @@ public class CanvasLCA_Test extends TestCase {
   private CanvasLCA lca;
   private Canvas canvas;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -54,6 +60,7 @@ public class CanvasLCA_Test extends TestCase {
     canvas = new Canvas( shell, SWT.NONE );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -76,7 +83,7 @@ public class CanvasLCA_Test extends TestCase {
     assertEquals( "rwt.widgets.Canvas", canvasCreate.getType() );
     assertEquals( WidgetUtil.getId( shell ), canvasCreate.getProperty( "parent" ) );
     String canvasId = WidgetUtil.getId( canvas );
-    CreateOperation gcCreate = message.findCreateOperation( canvasId + "#gc" );
+    CreateOperation gcCreate = message.findCreateOperation( getGcId( canvas ) );
     assertEquals( "rwt.GC", gcCreate.getType() );
     assertEquals( canvasId, gcCreate.getProperty( "parent" ) );
   }
@@ -89,7 +96,7 @@ public class CanvasLCA_Test extends TestCase {
     DestroyOperation gcDestroy = ( DestroyOperation )message.getOperation( 1 );
     String canvasId = WidgetUtil.getId( canvas );
     assertEquals( canvasId, canvasDestroy.getTarget() );
-    assertEquals( canvasId + "#gc", gcDestroy.getTarget() );
+    assertEquals( getGcId( canvas ), gcDestroy.getTarget() );
   }
 
   public void testWriqteSingleGCOperation() throws IOException, JSONException {
@@ -319,8 +326,14 @@ public class CanvasLCA_Test extends TestCase {
 
   private static CallOperation getGCOperation( Canvas canvas, String method ) {
     Message message = Fixture.getProtocolMessage();
-    String id = WidgetUtil.getId( canvas ) + "#gc";
+    String id = getGcId( canvas );
     return message.findCallOperation( id, method );
+  }
+
+  static String getGcId( Widget widget ) {
+    WidgetAdapter adapter = ( WidgetAdapter )widget.getAdapter( IWidgetAdapter.class );
+    Adaptable gcForClient = adapter.getGCForClient();
+    return gcForClient.getAdapter( IClientObjectAdapter.class ).getId();
   }
 
 }

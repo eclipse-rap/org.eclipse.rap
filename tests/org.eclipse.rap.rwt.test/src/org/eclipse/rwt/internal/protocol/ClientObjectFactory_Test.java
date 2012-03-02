@@ -10,13 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -43,6 +40,28 @@ public class ClientObjectFactory_Test extends TestCase {
     IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
 
     assertNotNull( clientObject );
+  }
+
+  public void testCreateWithNullParameter() {
+    try {
+      ClientObjectFactory.getClientObject( null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+
+  public void testCreateWithInvalidAdaptable() {
+    Adaptable illegalAdaptable = new Adaptable() {
+
+      public <T> T getAdapter( Class<T> adapter ) {
+        return null;
+      }
+    };
+    try {
+      ClientObjectFactory.getClientObject( illegalAdaptable );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 
   public void testSameInstance() {
@@ -79,62 +98,12 @@ public class ClientObjectFactory_Test extends TestCase {
     assertSame( clientObject, ClientObjectFactory.getClientObject( display ) );
   }
 
-  public void testDiaplayCreateDisposed() {
+  public void testDisplayCreateDisposed() {
     display.dispose();
 
     IClientObject clientObject = ClientObjectFactory.getClientObject( display );
 
     assertNotNull( clientObject );
-  }
-
-  public void testGetClientObjectForGC() {
-    IClientObject clientObject = ClientObjectFactory.getForGC( shell );
-
-    assertNotNull( clientObject );
-  }
-
-  public void testGetClientObjectForGCDiffersFromWidget() {
-    IClientObject clientObjectForShell = ClientObjectFactory.getClientObject( shell );
-    IClientObject clientObjectForGC = ClientObjectFactory.getForGC( shell );
-
-    assertNotSame( clientObjectForShell, clientObjectForGC );
-  }
-
-  public void testGetClientObjectForGCSameInstance() {
-    IClientObject clientObject = ClientObjectFactory.getForGC( shell );
-
-    assertNotNull( clientObject );
-  }
-
-  public void testGetClientObjectForGCDisposed() {
-    shell.dispose();
-    IClientObject clientObject = ClientObjectFactory.getForGC( shell );
-
-    assertSame( clientObject, ClientObjectFactory.getForGC( shell ) );
-  }
-
-  public void testCreateFromNonUIThreadFails() throws InterruptedException {
-    final List<Exception> log = new ArrayList<Exception>();
-    Thread backgroundThread = new Thread() {
-
-      @Override
-      public void run() {
-        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
-
-          public void run() {
-            try {
-              ClientObjectFactory.getClientObject( shell );
-            } catch( Exception exception ) {
-              log.add( exception );
-            }
-          }
-        } );
-      }
-    };
-    backgroundThread.start();
-    backgroundThread.join();
-    assertEquals( 1, log.size() );
-    assertEquals( IllegalStateException.class, log.get( 0 ).getClass() );
   }
 
 }

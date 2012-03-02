@@ -14,8 +14,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
@@ -34,7 +36,9 @@ import org.eclipse.swt.internal.graphics.GCOperation.DrawText;
 import org.eclipse.swt.internal.graphics.GCOperation.FillGradientRectangle;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 import org.eclipse.swt.internal.graphics.ImageFactory;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Widget;
 
 
 final class GCOperationWriter {
@@ -52,7 +56,7 @@ final class GCOperationWriter {
 
   void initialize() {
     if( !initialized ) {
-      IClientObject gc = ClientObjectFactory.getForGC( control );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( getGC( control ) );
       Point size = control.getSize();
       lineWidth = 1;
       foreground = control.getForeground().getRGB();
@@ -63,7 +67,7 @@ final class GCOperationWriter {
       arg.put( "font", toCSSFont( FontUtil.getData( control.getFont() ) ) );
       arg.put( "fillStyle", getColorValueAsArray( control.getBackground() ) );
       arg.put( "strokeStyle", getColorValueAsArray( control.getForeground() ) );
-      gc.call( "init", arg );
+      clientObject.call( "init", arg );
       operations = new ArrayList<Object[]>();
       initialized = true;
     }
@@ -101,10 +105,10 @@ final class GCOperationWriter {
     if( operations != null ) {
       Object[] array = operations.toArray();
       if( array.length > 0 ) {
-        IClientObject gc = ClientObjectFactory.getForGC( control );
+        IClientObject clientObject = ClientObjectFactory.getClientObject( getGC( control ) );
         Map<String, Object> arg = new HashMap<String, Object>();
         arg.put( "operations", array );
-        gc.call( "draw", arg );
+        clientObject.call( "draw", arg );
       }
       operations = null;
     }
@@ -362,6 +366,11 @@ final class GCOperationWriter {
       operation[ i ] = new Float( numbers[ i - objects.length ] );
     }
     operations.add( operation );
+  }
+
+  private static Adaptable getGC( Widget widget ) {
+    WidgetAdapter adapter = ( WidgetAdapter )widget.getAdapter( IWidgetAdapter.class );
+    return adapter.getGCForClient();
   }
 
   private static String toCSSFont( FontData fontData ) {

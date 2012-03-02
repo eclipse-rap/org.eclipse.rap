@@ -16,7 +16,6 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -38,6 +37,7 @@ public class GCOperationWriter_Test extends TestCase {
   private Canvas canvas;
   private GC gc;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
@@ -47,6 +47,7 @@ public class GCOperationWriter_Test extends TestCase {
     gc = new GC( canvas );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -506,7 +507,7 @@ public class GCOperationWriter_Test extends TestCase {
   private static JSONArray getGCOperations( Canvas canvas ) {
     writeGCOperations( canvas );
     Message message = Fixture.getProtocolMessage();
-    String id = WidgetUtil.getId( canvas ) + "#gc";
+    String id = CanvasLCA_Test.getGcId( canvas );
     CallOperation draw = message.findCallOperation( id, "draw" );
     JSONArray operations = ( JSONArray )draw.getProperty( "operations" );
     return operations;
