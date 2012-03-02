@@ -135,6 +135,24 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     assertEquals( "bar", ContextProvider.getRequest().getParameter( "foo" ) );
   }
 
+  /*
+   * When cleaning the session store, the display is disposed. This put a list with all disposed
+   * widgets into the service store. As application is restarted in the same request, we have to
+   * prevent these dispose calls to be rendered.
+   * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=373084
+   */
+  public void testClearServiceStoreAfterSessionRestart() throws IOException {
+    LifeCycleServiceHandler.markSessionInitialized();
+    simulateInitialUiRequest();
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+
+    simulateInitialUiRequest();
+    ContextProvider.getServiceStore().setAttribute( "foo", "bar" );
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+
+    assertNull( ContextProvider.getServiceStore().getAttribute( "foo" ) );
+  }
+
   public void testFinishesProtocolWriter() throws IOException {
     simulateUiRequest();
 

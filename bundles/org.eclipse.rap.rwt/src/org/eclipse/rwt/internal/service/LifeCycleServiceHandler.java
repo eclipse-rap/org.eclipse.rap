@@ -77,7 +77,10 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     if( isSessionTimeout() ) {
       handleSessionTimeout();
     } else if( isRequestCounterValid() ) {
-      initializeSessionStore();
+      if( isSessionRestart() ) {
+        reinitializeSessionStore();
+        clearServiceStore();
+      }
       RequestParameterBuffer.merge();
       runLifeCycle();
     } else {
@@ -113,22 +116,20 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     writer.appendMeta( "timeout", JsonValue.TRUE );
   }
 
-  private static void initializeSessionStore() {
-    if( isSessionRestart() ) {
-      ISessionStore sessionStore = ContextProvider.getSessionStore();
-      Integer version = RWTRequestVersionControl.getInstance().getCurrentRequestId();
-      Map<String, String[]> bufferedParameters = RequestParameterBuffer.getBufferedParameters();
-      ApplicationContext applicationContext = ApplicationContextUtil.get( sessionStore );
-      clearSessionStore();
-      RWTRequestVersionControl.getInstance().setCurrentRequestId( version );
-      if( bufferedParameters != null ) {
-        RequestParameterBuffer.store( bufferedParameters );
-      }
-      ApplicationContextUtil.set( sessionStore, applicationContext );
-      AbstractBranding branding = BrandingUtil.determineBranding();
-      if( branding.getThemeId() != null ) {
-        ThemeUtil.setCurrentThemeId( branding.getThemeId() );
-      }
+  private static void reinitializeSessionStore() {
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
+    Integer version = RWTRequestVersionControl.getInstance().getCurrentRequestId();
+    Map<String, String[]> bufferedParameters = RequestParameterBuffer.getBufferedParameters();
+    ApplicationContext applicationContext = ApplicationContextUtil.get( sessionStore );
+    clearSessionStore();
+    RWTRequestVersionControl.getInstance().setCurrentRequestId( version );
+    if( bufferedParameters != null ) {
+      RequestParameterBuffer.store( bufferedParameters );
+    }
+    ApplicationContextUtil.set( sessionStore, applicationContext );
+    AbstractBranding branding = BrandingUtil.determineBranding();
+    if( branding.getThemeId() != null ) {
+      ThemeUtil.setCurrentThemeId( branding.getThemeId() );
     }
   }
 
@@ -141,6 +142,11 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     // TODO [rh] ContextProvider#getSessionStore() also initializes a session (slightly different)
     //      merge both code passages
     SingletonManager.install( sessionStore );
+  }
+
+  private static void clearServiceStore() {
+    ServiceStore serviceStore = ( ServiceStore )ContextProvider.getServiceStore();
+    serviceStore.clear();
   }
 
   /*
