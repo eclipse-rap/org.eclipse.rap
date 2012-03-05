@@ -279,6 +279,21 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertEquals( "application/json; charset=UTF-8", response.getContentType() );
   }
 
+  /*
+   * Ensures that there is no deadlock when synchronizing on the session store in session store
+   * listener beforeDestroy method.
+   * see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=372946
+   */
+  public void testGetLockOnSessionStore() throws Exception {
+    Class<? extends IEntryPoint> entryPoint = EntryPointWithSynchronizationOnSessionStore.class;
+    RWTFactory.getEntryPointManager().registerByPath( "/test", entryPoint );
+    // inital POST request starts the UI thread
+    runRWTDelegate( newPostRequest( true ) );
+
+    // simulate session restart
+    runRWTDelegate( newPostRequest( true ) );
+  }
+
   private static TestResponse runRWTDelegate( final HttpServletRequest request )
     throws Exception
   {
@@ -454,6 +469,29 @@ public class RWTLifeCycle2_Test extends TestCase {
       } finally {
         createUIExited = true;
       }
+    }
+  }
+
+  public static final class EntryPointWithSynchronizationOnSessionStore implements IEntryPoint {
+    public int createUI() {
+      Display display = new Display();
+      Shell shell = new Shell( display );
+      final ISessionStore sessionStore = RWT.getSessionStore();
+      sessionStore.addSessionStoreListener( new SessionStoreListener() {
+        public void beforeDestroy( SessionStoreEvent event ) {
+          synchronized( sessionStore ) {
+            sessionStore.removeAttribute( "foo" );
+          }
+        }
+      } );
+      shell.setSize( 100, 100 );
+      shell.open();
+      while( !shell.isDisposed() ) {
+        if( !display.readAndDispatch() ) {
+          display.sleep();
+        }
+      }
+      return 0;
     }
   }
 

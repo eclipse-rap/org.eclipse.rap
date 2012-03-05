@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
@@ -24,21 +24,22 @@ import org.eclipse.rwt.internal.util.SerializableLock;
 import org.eclipse.rwt.service.*;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
-public final class SessionStoreImpl 
-  implements ISessionStore, HttpSessionBindingListener, SerializableCompatibility 
+public final class SessionStoreImpl
+  implements ISessionStore, HttpSessionBindingListener, SerializableCompatibility
 {
 
   public static final String ATTR_SESSION_STORE = SessionStoreImpl.class.getName();
-  
+
   public static SessionStoreImpl getInstanceFromSession( HttpSession httpSession ) {
     return ( SessionStoreImpl )httpSession.getAttribute( ATTR_SESSION_STORE );
   }
-  
+
   public static void attachInstanceToSession( HttpSession httpSession, ISessionStore sessionStore )
   {
     httpSession.setAttribute( ATTR_SESSION_STORE, sessionStore );
   }
-  
+
+  private final SerializableLock requestLock;
   private final SerializableLock lock;
   private final Map<String,Object> attributes;
   private final Set<SessionStoreListener> sessionStoreListeners;
@@ -48,9 +49,10 @@ public final class SessionStoreImpl
   private boolean aboutUnbound;
   private transient ISessionShutdownAdapter shutdownAdapter;
 
-  
+
   public SessionStoreImpl( HttpSession httpSession ) {
     ParamCheck.notNull( httpSession, "httpSession" );
+    this.requestLock = new SerializableLock();
     this.lock = new SerializableLock();
     this.attributes = new HashMap<String,Object>();
     this.sessionStoreListeners = new HashSet<SessionStoreListener>();
@@ -58,7 +60,7 @@ public final class SessionStoreImpl
     this.bound = true;
     this.httpSession = httpSession;
   }
-  
+
   public void setShutdownAdapter( ISessionShutdownAdapter adapter ) {
     shutdownAdapter = adapter;
     if( shutdownAdapter != null ) {
@@ -70,14 +72,14 @@ public final class SessionStoreImpl
       } );
     }
   }
-  
+
   public ISessionShutdownAdapter getShutdownAdapter() {
     return shutdownAdapter;
   }
-  
+
   //////////////////////////
   // interface ISessionStore
-  
+
   public Object getAttribute( String name ) {
     ParamCheck.notNull( name, "name" );
     Object result = null;
@@ -100,7 +102,7 @@ public final class SessionStoreImpl
     }
     return result;
   }
-  
+
   public boolean removeAttribute( String name ) {
     ParamCheck.notNull( name, "name" );
     boolean result = false;
@@ -120,20 +122,20 @@ public final class SessionStoreImpl
   public String getId() {
     return id;
   }
-  
+
   public HttpSession getHttpSession() {
     synchronized( lock ) {
       return httpSession;
     }
   }
-  
+
   public void attachHttpSession( HttpSession httpSession ) {
     ParamCheck.notNull( httpSession, "httpSession" );
     synchronized( lock ) {
       this.httpSession = httpSession;
     }
   }
-  
+
   public boolean isBound() {
     synchronized( lock ) {
       return bound;
@@ -164,17 +166,17 @@ public final class SessionStoreImpl
     return result;
   }
 
-  
+
   ///////////////////////////////////////
   // interface HttpSessionBindingListener
-  
+
   public void valueBound( HttpSessionBindingEvent event ) {
     synchronized( lock ) {
       bound = true;
       aboutUnbound = false;
     }
   }
-  
+
   public void valueUnbound( HttpSessionBindingEvent event ) {
     if( shutdownAdapter != null ) {
       shutdownAdapter.interceptShutdown();
@@ -194,10 +196,14 @@ public final class SessionStoreImpl
       }
     }
   }
-  
+
+  Object getRequestLock() {
+    return requestLock;
+  }
+
   //////////////////
   // helping methods
-  
+
   private void removeAttributeInternal( String name ) {
     Object removed = attributes.remove( name );
     fireValueUnbound( name, removed );
@@ -205,12 +211,12 @@ public final class SessionStoreImpl
 
   private void doValueUnbound() {
     Map<String,Object> attributesCopy;
-    synchronized( lock ) {      
+    synchronized( lock ) {
       aboutUnbound = true;
       attributesCopy = new HashMap<String,Object>( attributes );
     }
     fireBeforeDestroy();
-    // leave all attributes in place while firing valueUnbound events to allow a defined shutdown 
+    // leave all attributes in place while firing valueUnbound events to allow a defined shutdown
     // of the application
     Iterator iterator = attributesCopy.entrySet().iterator();
     while( iterator.hasNext() ) {
@@ -273,8 +279,8 @@ public final class SessionStoreImpl
     httpSession.getServletContext().log( msg, exception );
   }
 
-  private void handleExceptionInValueUnbound( HttpSessionBindingListener listener, 
-                                              RuntimeException exception ) 
+  private void handleExceptionInValueUnbound( HttpSessionBindingListener listener,
+                                              RuntimeException exception )
   {
     String txt = "Could not execute {0}.valueUnbound(HttpSessionBindingEvent).";
     Object[] param = new Object[] { listener.getClass().getName() };
@@ -282,15 +288,15 @@ public final class SessionStoreImpl
     httpSession.getServletContext().log( msg, exception );
   }
 
-  private void handleExceptionInValueBound( HttpSessionBindingListener listener, 
-                                            RuntimeException exception ) 
+  private void handleExceptionInValueBound( HttpSessionBindingListener listener,
+                                            RuntimeException exception )
   {
     String txt = "Could not execute {0}.valueBound(HttpSessionBindingEvent).";
     Object[] param = new Object[] { listener.getClass().getName() };
     String msg = MessageFormat.format( txt, param );
     httpSession.getServletContext().log( msg, exception );
   }
-  
+
   private Enumeration<String> createAttributeNameEnumeration() {
     Set<String> names;
     synchronized( lock ) {

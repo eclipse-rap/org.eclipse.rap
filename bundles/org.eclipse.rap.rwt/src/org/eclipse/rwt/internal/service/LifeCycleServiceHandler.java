@@ -49,7 +49,10 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   }
 
   public void service() throws IOException {
-    synchronized( ContextProvider.getSessionStore() ) {
+    // Do not use session store itself as a lock
+    // see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=372946
+    SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSessionStore();
+    synchronized( sessionStore.getRequestLock() ) {
       synchronizedService();
     }
   }
@@ -146,7 +149,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     ServiceStore serviceStore = ( ServiceStore )ContextProvider.getServiceStore();
     serviceStore.clear();
   }
-  
+
   /*
    * Session restart: we're in the same HttpSession and start over (e.g. by pressing F5)
    */
