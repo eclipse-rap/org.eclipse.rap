@@ -839,12 +839,16 @@ public class Display extends Device implements Adaptable {
   final void removeShell( Shell shell ) {
     shells.remove( shell );
     if( shell == activeShell ) {
-      if( shells.size() > 0 ) {
-        // activate the least recently added / activated element
-        setActiveShell( shells.get( shells.size() - 1 ) );
-      } else {
-        setActiveShell( null );
+      int counter = 0;
+      Shell lastVisibleShell = null;
+      while( lastVisibleShell == null && counter < shells.size() ) {
+        counter++;
+        Shell currentShell = shells.get( shells.size() - counter );
+        if( currentShell.isVisible() ) {
+          lastVisibleShell = currentShell;
+        }
       }
+      setActiveShell( lastVisibleShell );
     }
   }
 

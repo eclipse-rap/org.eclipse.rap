@@ -647,8 +647,6 @@ public class Display_Test extends TestCase {
   }
 
   public void testActiveShell() {
-    // TODO [rh] This test needs to be reworked when Shell.open() is implemented
-    //      since it assumes opened shells.
     Display display = new Display();
     assertNull( display.getActiveShell() );
     Shell shell1 = new Shell( display, SWT.NONE );
@@ -1379,6 +1377,32 @@ public class Display_Test extends TestCase {
     thread.join( 5000 );
     assertFalse( thread.isAlive() );
     assertFalse( executed.get() );
+  }
+
+  public void testRemoveShell_VisibleActiveShell() {
+    Display display = new Display();
+    Shell visibleShell = new Shell( display );
+    visibleShell.open();
+    Shell invisibleShell = new Shell( display );
+    Shell shell = new Shell( display );
+    shell.open();
+
+    shell.dispose();
+
+    assertFalse( invisibleShell.isVisible() );
+    assertSame( visibleShell, display.getActiveShell() );
+  }
+
+  public void testRemoveShell_NoActiveShell() {
+    Display display = new Display();
+    Shell invisibleShell = new Shell( display );
+    Shell shell = new Shell( display );
+    shell.open();
+
+    shell.dispose();
+
+    assertFalse( invisibleShell.isVisible() );
+    assertNull( display.getActiveShell() );
   }
 
   private static void setCursorLocation( Display display, int x, int y ) {
