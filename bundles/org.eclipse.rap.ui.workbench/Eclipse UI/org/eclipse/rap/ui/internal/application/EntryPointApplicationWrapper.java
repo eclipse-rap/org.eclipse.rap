@@ -25,20 +25,23 @@ public final class EntryPointApplicationWrapper implements IEntryPoint {
     this.applicationClass = applicationClass;
   }
 
-  // TODO [bm] implement restart, see IApplication constants
+  /*
+   * Note [rst]: We don't call IApplication#stop(). According to the documentation, stop() is "only
+   * called to force an application to exit" and "not called if an application exits normally from
+   * start()".
+   * See also https://bugs.eclipse.org/bugs/show_bug.cgi?id=372946
+   */
   public int createUI() {
-    Object exitCode;
     int result = 0;
     IApplication application = createApplication();
     try {
-      exitCode = application.start( context );
+      Object exitCode = application.start( context );
       if( exitCode instanceof Integer ) {
         result = ( ( Integer )exitCode ).intValue();
       }
     } catch( Exception exception  ) {
-      throw new RuntimeException( "Failed to run application", exception );
-    } finally {
-      application.stop();
+      String message = "Exception while executing application " + applicationClass.getName();
+      throw new RuntimeException( message, exception );
     }
     return result;
   }
