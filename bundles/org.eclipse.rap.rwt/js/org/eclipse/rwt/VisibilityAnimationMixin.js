@@ -30,7 +30,6 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
   
   construct : function() {
     this.hide(); // forces _applyVisibility to be called on show() - not a good practice
-    this._renderAppearance(); // apply animation before show() is called - also not ideal
   },
 
   destruct : function() {
@@ -50,23 +49,38 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
 
     _applyAnimation : function( newValue, oldValue ) {
       this._configureAppearAnimation( newValue );
-      this._configureDisappearAnimation( newValue );      
+      this._configureDisappearAnimation( newValue );     
     },
     
     _configureAppearAnimation : function( config ) {
-      if( config.fadeIn ) {
+      var type = null;
+      for( type in config ) { 
+        break; 
+      }
+      if( type !== null ) {
+        var props = config[ type ];
         var animation = this._getAppearAnimation();
+        animation.setProperties( props );  
         var renderer = animation.getDefaultRenderer();
-        renderer.animate( this, "opacity", AnimationRenderer.ANIMATION_APPEAR );
-        animation.setProperties( config.fadeIn );  
-      } else if( config.slideIn ) {
-        var animation = this._getAppearAnimation();
-        var renderer = animation.getDefaultRenderer();
-        var animationType = AnimationRenderer.ANIMATION_APPEAR | AnimationRenderer.ANIMATION_CHANGE; 
-        renderer.animate( this, "height", animationType );
-        animation.addEventListener( "init", this._initSlideAnimation, this );
-        animation.addEventListener( "cancel", this._finishSlideAnimation, this );
-        animation.setProperties( config.slideIn );  
+        switch( type ) {
+          case "fadeIn":
+            renderer.animate( this, "opacity", AnimationRenderer.ANIMATION_APPEAR );
+          break;
+          case "slideIn":
+            var animationType = AnimationRenderer.ANIMATION_APPEAR | AnimationRenderer.ANIMATION_CHANGE; 
+            renderer.animate( this, "height", animationType );
+            animation.addEventListener( "init", this._initSlideAnimation, this );
+            animation.addEventListener( "cancel", this._finishSlideAnimation, this );
+          break;
+          case "flyInTop":
+          case "flyInLeft":
+          case "flyInRight":
+          case "flyInBottom":
+            var animationType = AnimationRenderer.ANIMATION_APPEAR; 
+            renderer.animate( this, "top", animationType );
+            renderer.setInvisibilityGetter( org.eclipse.rwt.VisibilityAnimationMixin.hideTop )
+          break;
+        }
       } else if( this._appearAnimation != null ) {
         this._appearAnimation.getDefaultRenderer().setActive( false );        
       }
@@ -115,6 +129,14 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
       this.setContainerOverflow( true );
     }
 
+ },
+ 
+ statics : {
+   
+   hideTop : function( widget ) {
+     return parseInt( widget.getHeightValue(), 10 ) * -1;
+   }
+   
  }
 
 } );

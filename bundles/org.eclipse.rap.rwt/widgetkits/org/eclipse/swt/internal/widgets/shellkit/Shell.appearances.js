@@ -26,6 +26,7 @@ var appearances = {
       result.minHeight = states.rwt_TITLE ? 25 : 5;
       result.opacity = tv.getCssFloat( "Shell", "opacity" );
       result.shadow = tv.getCssShadow( "Shell", "box-shadow" );
+      result.animation = tv.getCssAnimation( "Shell", "animation" );
       return result;
     }
   },

@@ -14,6 +14,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
 
   extend : qx.ui.window.Window,
 
+  include : org.eclipse.rwt.VisibilityAnimationMixin,
+
   construct : function( styles ) {
     this.base( arguments );
     this.setShowMinimize( styles.MIN === true );

@@ -20,6 +20,7 @@
 qx.Class.define("qx.ui.core.ClientDocumentBlocker",
 {
   extend : qx.ui.basic.Terminator,
+  include : org.eclipse.rwt.VisibilityAnimationMixin,
 
 
 

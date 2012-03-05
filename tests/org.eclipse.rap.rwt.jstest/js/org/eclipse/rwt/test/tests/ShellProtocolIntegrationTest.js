@@ -517,7 +517,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
     
     testDisposeShell : function() {
       var shell = this._protocolCreateShell();
-      assertTrue( shell.getVisibility() );
+      shell.setVisibility( true );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",

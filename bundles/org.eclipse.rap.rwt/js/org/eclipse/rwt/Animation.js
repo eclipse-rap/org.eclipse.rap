@@ -57,11 +57,15 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     /////////////
     // Public API
     
-    // Time in seconds
+    // Time in milliseconds
     setDuration : function( value ) {
       this._duration = value;
     },
     
+    getDuration : function( value ) {
+      return this._duration;
+    },
+
     setTransition : function( type ) {
       this._transitionFunction = org.eclipse.rwt.Animation.transitions[ type ];
     },
@@ -186,7 +190,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     },
 
     _loop : function( time ) {
-      if( this._startOn == null ) {
+      if( this._startOn === null ) {
         this._startOn = new Date().getTime();
         this._finishOn = this._startOn + ( this._duration );
         this._totalTime = this._duration;

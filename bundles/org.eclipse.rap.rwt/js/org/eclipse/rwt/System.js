@@ -72,7 +72,6 @@ qx.Class.define( "org.eclipse.rwt.System", {
       } else {
         qx.Class.patch( org.eclipse.swt.widgets.ProgressBar, org.eclipse.rwt.GraphicsMixin );
       }
-      qx.Class.patch( qx.ui.core.ClientDocumentBlocker, org.eclipse.rwt.VisibilityAnimationMixin );
       qx.Class.patch( qx.event.type.DomEvent, org.eclipse.rwt.DomEventPatch );
     },
 

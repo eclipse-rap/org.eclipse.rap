@@ -23,7 +23,11 @@ public class QxAnimation implements QxType {
       "fadeIn",
       "fadeOut",
       "slideIn",
-      "slideOut"
+      "slideOut",
+      "flyInLeft",
+      "flyInTop",
+      "flyInRight",
+      "flyInBottom"
     };
 
     private final String[] PREDEFINED_TIMING_FUNCTIONS = new String[] {

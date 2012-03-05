@@ -73,6 +73,7 @@ public class RWTTestsContribution implements TestContribution {
     "tests/TreeTest.js",
     "tests/TreeUtilTest.js",
     "tests/AnimationTest.js",
+    "tests/VisibilityAnimationMixinTest.js",
     "tests/GCTest.js",
     "tests/GCCanvasTest.js",
     "tests/GCVMLTest.js",

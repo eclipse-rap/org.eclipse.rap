@@ -307,10 +307,12 @@ org.eclipse.rwt.protocol.AdapterUtil = {
   /////////////////////
   // Helper for handler
 
-  addStatesForStyles : function( targetOject, styleArray ) {
+  addStatesForStyles : function( targetObject, styleArray ) {
     for( var i = 0; i < styleArray.length; i++ ) {
-      targetOject.addState( "rwt_" + styleArray[ i ] );
+      targetObject.addState( "rwt_" + styleArray[ i ] );
     }
+    targetObject._renderAppearance();
+    delete targetObject._isInGlobalStateQueue;
   },
 
   createStyleMap : function( styleArray ) {

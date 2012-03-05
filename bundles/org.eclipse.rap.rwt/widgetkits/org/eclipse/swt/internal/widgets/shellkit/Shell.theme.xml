@@ -41,8 +41,18 @@
     <property name="box-shadow" 
         description="The shadow behind the shell." />
 
+    <property name="animation">
+      <description>
+        No support yet.
+      </description>
+    </property>
+    
+
     <style name="BORDER"
         description="Indicates that the shell should have a border." />
+
+    <style name="APPLICATION_MODAL"
+        description="Indicates that the shell is modal." />
 
     <style name="TOOL"
         description="Indicates that the shell should behave like a tool window." />

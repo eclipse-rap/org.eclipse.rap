@@ -506,6 +506,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
         setParent : function( parent ) {
           this._parent = parent;
         },
+        _renderAppearance : function() {
+        },
         getParent : function() {
           return this._parent;
         },

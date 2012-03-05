@@ -31,7 +31,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
     this._active = true;
     this._activeOnce = false;
     // Widget integration:
-    this._invisibilityValue = 0;
+    this._invisibilityGetter = qx.lang.Function.returnZero;
     this._fullVisibilityValue = null;
     this._autoStartEnabled = true;
     this._renderType = null;
@@ -46,7 +46,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
     this._animation = null;
     this._startValue = null;
     this._endValue = null;
-    this._invisibilityValue = null;
+    this._invisibilityGetter = null;
     this._lastValue = null;
     this._setupFunction = null;
     this._converterFunction = null;
@@ -275,9 +275,8 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
       return result;
     },
 
-    // Default is 0.
-    setInvisibilityValue : function( value ) {
-      this._invisibilityValue = value;
+    setInvisibilityGetter : function( value ) {
+      this._invisibilityGetter = value;
     },
 
     // default is true
@@ -292,7 +291,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
       this._autoCheck = value;
     },
 
-    // Return the actual or last known rendered value from the widget.
+    // Return the actual, planned or last known value from the widget.
     getValueFromWidget : function() {
       var result = null;
       switch( this._renderType ) {
@@ -300,13 +299,20 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
           result = this._context.getOpacity();
         break;
         case "height":
-          if( this._context.isCreated() ) {
+          if( this._context.isCreated() && this._context._style.height ) {
             result = parseInt( this._context._style.height, 10 );
           } else {
             result = this._context.getHeightValue();
             this._context._computedHeightValue = null;
             this._context._invalidatePreferredInnerHeight();
             this._context._invalidatePreferredBoxHeight();
+          }
+        break;
+        case "top":
+          if( this._context.isCreated() && this._context._style.top ) {
+            result = parseInt( this._context._style.top, 10 );
+          } else {
+            result = this._context.getTopValue();
           }
         break;
         case "backgroundColor":
@@ -370,8 +376,10 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
     _attachToApplyVisibility : function( value ) {
       if( value ) {
         this._renderAdapter.addRenderListener( "visibility", this._onVisibilityChange, this );
+        this._context.addEventListener( "create", this._onCreate, this );
       } else {
         this._renderAdapter.removeRenderListener( "visibility", this._onVisibilityChange, this );
+        this._context.removeEventListener( "create", this._onCreate, this );
       }
     },
 
@@ -405,6 +413,13 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
       return allow;
     },
 
+
+    _onCreate : function() {
+      if( this._context.isDisplayable() ) {
+       this._onBeforeAppear();
+      }
+    },
+
     _onBeforeAppear : function() {
       if( this._context.isCreated() ) {
         this._animation.skip();
@@ -412,15 +427,11 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
         this._animation.cancel();
       }
       var typeAppear = org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR;
-      if( this.isAnimated( typeAppear ) ) {
+      if( this._context.isCreated() && this.isAnimated( typeAppear ) ) {
         this.setEndValue( this.getValueFromWidget() );
-        if( this._invisibilityValue != null ) {
-          this.setStartValue( this._invisibilityValue );
-          if( this._context.isCreated() ) {
-            this._render( 0 );
-          } else {
-            this._renderStartValueOnCreate();
-          }
+        if( this._invisibilityGetter != null ) {
+          this.setStartValue( this._invisibilityGetter( this._context ) );
+          this._render( 0 );
         }
         this._autoStart( typeAppear );
       }
@@ -432,8 +443,8 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
       var typeDisappear = org.eclipse.rwt.AnimationRenderer.ANIMATION_DISAPPEAR;
       var result = !this.isAnimated( typeDisappear );
       if( !result ) {
-        if( this._invisibilityValue != null ) {
-          this.setEndValue( this._invisibilityValue );
+        if( this._invisibilityGetter !== null ) {
+          this.setEndValue( this._invisibilityGetter( this._context ) );
         }
         this.setStartValue( this.getValueFromWidget() );
         this._autoStart( typeDisappear );
@@ -519,15 +530,6 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
     _updateWidgetVisibility : function() {
       var value = this._context.getVisibility();
       this._renderAdapter.forceRender( "visibility", value );
-    },
-
-    _renderStartValueOnCreate : function() {
-      this._context.addEventListener( "create", this._onCreate, this );
-    },
-
-    _onCreate : function() {
-      this._context.removeEventListener( "create", this._onCreate, this );
-      this._render( 0 );
     }
 
   },
@@ -547,11 +549,12 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
 
     converterByRenderType : {
       "height" : "numericPositiveRound",
+      "top" : "numericRound",
       "opacity" : "factor",
       "backgroundColor" : "color",
       "backgroundGradient" : "gradient"
     },
-
+    
     converter : {
 
       // Converter working without startValue/EndValue

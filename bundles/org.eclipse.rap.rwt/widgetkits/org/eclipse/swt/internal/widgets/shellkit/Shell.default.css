@@ -20,6 +20,7 @@ Shell {
   padding: 0;
   opacity: 1;
   box-shadow: none;
+  animation: none;
 }
 
 Shell[TITLE], Shell[BORDER] {
