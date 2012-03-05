@@ -272,10 +272,12 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
   }
 
   private static void writeScriptTag( StringBuilder buffer, String library ) {
-    buffer.append( "<script type=\"text/javascript\" src=\"" );
-    buffer.append( library );
-    buffer.append( "\" charset=\"" );
-    buffer.append( HTTP.CHARSET_UTF_8 );
-    buffer.append( "\"></script>\n" );
+    if( library != null ) {
+      buffer.append( "<script type=\"text/javascript\" src=\"" );
+      buffer.append( library );
+      buffer.append( "\" charset=\"" );
+      buffer.append( HTTP.CHARSET_UTF_8 );
+      buffer.append( "\"></script>\n" );
+    }
   }
 }
