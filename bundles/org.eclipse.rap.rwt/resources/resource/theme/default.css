@@ -1928,7 +1928,7 @@ FileUpload {
   );
   border: 1px solid #bdbdbd;
   border-radius: 2px;
-  padding: 2px 5px;
+  padding: 6px 15px;
   spacing: 2px;
   cursor: pointer;
   animation: none;
