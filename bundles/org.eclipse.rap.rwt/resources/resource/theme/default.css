@@ -1079,11 +1079,6 @@ Text[MULTI][BORDER]:focused {
   box-shadow: 0 0 5px #4f7cb1;
 }
 
-Text:read-only,
-Text[MULTI]:read-only {
-  color: #c5c5c5;
-}
-
 Text-Message {
   color: #4a4a4a;
   text-shadow: none;
