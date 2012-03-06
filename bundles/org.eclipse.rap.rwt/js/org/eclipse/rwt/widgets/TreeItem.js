@@ -117,10 +117,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
 
     setTexts : function( texts ) {
       this._texts = texts;
+      this._escaped = false;
       this._update( "content" );
     },
     
-    getText : function( column, doEscape ) { 
+    getText : function( column, doEscape ) {
       var result = this._texts[ column ];
       if( ( typeof result ) === "string" ) {
         if( doEscape !== false && !this._escaped ) {

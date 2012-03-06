@@ -293,7 +293,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         this._renderStates( item, config, false, hoverElement );
       }
       for( var i = 0; i < columns; i++ ) {
-        var treeColumn = this._isTreeColumn( i, config )
+        var treeColumn = this._isTreeColumn( i, config );
         if( this._getItemWidth( item, i, config ) > 0 ) {
           this._renderCellBackground( item, i, config, contentOnly );
           if( !config.fullSelection && treeColumn ) {
@@ -404,14 +404,22 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     _renderElementContent : Variant.select( "qx.client", {
       "mshtml|newmshtml" : function( element, item, cell, markupEnabled ) {
         if( markupEnabled ) {
-          element.innerHTML = item ? item.getText( cell, false ) : "";
+          var html = item ? item.getText( cell, false ) : "";
+          if( element.rap_Markup !== html ) {
+            element.innerHTML = html;
+            element.rap_Markup = html;
+          }
         } else {
           // innerText is faster, does the escaping itself
           element.innerText = item ? item.getText( cell, false ) : "";
         }
       },
       "default" : function( element, item, cell, markupEnabled ) {
-        element.innerHTML = item ? item.getText( cell, !markupEnabled ) : "";
+        var html = item ? item.getText( cell, !markupEnabled ) : "";
+        if( !markupEnabled || html !== element.rap_Markup ) {
+          element.innerHTML = html;
+          element.rap_Markup = html;
+        } 
       }
     } ),
     
@@ -460,7 +468,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
 
     _getVisualTextWidth : function( item, cell, config ) {
-      var text = item.getText( cell, config.markupEnabled );
+      var text = item.getText( cell, !config.markupEnabled );
       var font = this._getCellFont( item, cell, config );
       var fontProps = this._getFontProps( font );
       var calc = org.eclipse.swt.FontSizeCalculation;

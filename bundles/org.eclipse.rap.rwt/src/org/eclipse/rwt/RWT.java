@@ -322,10 +322,16 @@ public final class RWT {
    * <dd>renders its content as instance of a variable or program argument</dd>
    * <dt>{@literal <cite>}</dt>
    * <dd>renders its content as citation</dd>
+   * <dt>{@literal <q>}</dt>
+   * <dd>renders its content as short inline quotation</dd>
+   * <dt>{@literal <abbr>}</dt>
+   * <dd>renders its content as abbreviation</dd>
    * <dt>{@literal <span>}</dt>
    * <dd>generic style container</dd>
    * <dt>{@literal <img>}</dt>
    * <dd>renders an image</dd>
+   * <dt>{@literal <a>}</dt>
+   * <dd>renders a hyperlink</dd>
    * </dl>
    * The visual representation of the above tags can be specified in a <code>style</code>
    * attribute.
