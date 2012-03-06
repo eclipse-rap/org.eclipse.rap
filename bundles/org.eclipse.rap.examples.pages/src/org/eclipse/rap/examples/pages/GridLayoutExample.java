@@ -33,10 +33,8 @@ public class GridLayoutExample implements IExamplePage {
   private void createLayoutArea( Composite parent ) {
     if( layoutArea == null || layoutArea.isDisposed() ) {
       layoutArea = new Composite( parent, SWT.NONE );
+      layoutArea.setLayout( ExampleUtil.createFillLayout( true ) );
       layoutArea.setLayoutData( ExampleUtil.createFillData() );
-      FillLayout layout = new FillLayout();
-      layout.spacing = 10;
-      layoutArea.setLayout( layout );
     }
     Control[] children = layoutArea.getChildren();
     for( int i = 0; i < children.length; i++ ) {
@@ -48,8 +46,7 @@ public class GridLayoutExample implements IExamplePage {
 
   private void createLayoutComp( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 0 ) );
-    ExampleUtil.createHeadingLabel( composite, "Grid Layout", 1 );
+    composite.setLayout( ExampleUtil.createGridLayoutWithoutMargin( 1, false ) );
     Composite layoutComp = new Composite( composite, SWT.BORDER );
     if( !propPrefSize ) {
       layoutComp.setLayoutData( ExampleUtil.createFillData() );
@@ -72,10 +69,7 @@ public class GridLayoutExample implements IExamplePage {
 
   protected void createControlButtons( final Composite parent ) {
     Composite comp = new Composite( parent, SWT.NONE );
-    GridData gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
-    gridData.horizontalSpan = 2;
-    comp.setLayoutData( gridData );
-    comp.setLayout( ExampleUtil.createGridLayout( 1, false, 0, 0 ) );
+    comp.setLayout( ExampleUtil.createGridLayout( 1, false, false, false ) );
     final Button equalWidthButton = new Button( comp, SWT.CHECK );
     equalWidthButton.setText( "Make all columns equal width" );
     equalWidthButton.addSelectionListener( new SelectionAdapter() {

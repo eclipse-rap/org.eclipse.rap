@@ -20,10 +20,6 @@
             servletName="examples"
             body="html/body.html"
             title="RAP Examples">
-            <additionalHeaders>
-              <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700">
-              </link>
-            </additionalHeaders>
       </branding>
    </extension>
 

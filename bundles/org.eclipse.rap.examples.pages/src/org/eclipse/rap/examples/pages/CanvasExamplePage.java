@@ -17,7 +17,6 @@ import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
 
 
@@ -69,8 +68,8 @@ public final class CanvasExamplePage implements IExamplePage {
     parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayoutData( ExampleUtil.createFillData() );
-    composite.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 0, 0 ) );
-    ExampleUtil.createHeadingLabel( composite, "Canvas (click to draw shapes)", 1 );
+    composite.setLayout( ExampleUtil.createGridLayout( 1, false, true, true ) );
+    ExampleUtil.createHeading( composite, "click to draw shapes", 1 );
     createDrawingArea( composite );
     createControlButtons( composite );
     parent.layout();
@@ -87,8 +86,7 @@ public final class CanvasExamplePage implements IExamplePage {
 
   private void createControlButtons( Composite parent ) {
     Composite buttonArea = new Composite( parent, SWT.NONE );
-    buttonArea.setLayoutData( ExampleUtil.createHorzFillData() );
-    buttonArea.setLayout( new RowLayout( SWT.HORIZONTAL ) );
+    buttonArea.setLayout( ExampleUtil.createRowLayout( SWT.HORIZONTAL, false ) );
     Button polyformButton = new Button( buttonArea, SWT.RADIO );
     polyformButton.setText( "Polyform" );
     polyformButton.addSelectionListener( new SelectionAdapter() {

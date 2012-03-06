@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.*;
 public class LabelExample implements IExamplePage {
 
   public void createControl( Composite parent ) {
-    parent.setLayout( ExampleUtil.createGridLayout( 1, false, 20, 10 ) );
+    parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
     createTextLabels( parent );
     createAlignedLabels( parent );
     createImageLabels( parent );
@@ -37,7 +37,7 @@ public class LabelExample implements IExamplePage {
     Group textGroup = new Group( parent, SWT.NONE );
     textGroup.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
     textGroup.setText( "Text Labels" );
-    textGroup.setLayout( ExampleUtil.createGridLayout( 2, false, 20, 10 ) );
+    textGroup.setLayout( ExampleUtil.createGridLayout( 2, false, true, true ) );
     Label simpleLabel = new Label( textGroup, SWT.NONE );
     simpleLabel.setText( "A simple text label." );
     Label wrappedLabel = new Label( textGroup, SWT.BORDER | SWT.WRAP );
@@ -55,7 +55,7 @@ public class LabelExample implements IExamplePage {
     Group group = new Group( parent, SWT.NONE );
     group.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
     group.setText( "Alignment" );
-    group.setLayout( ExampleUtil.createGridLayout( 3, false, 20, 10 ) );
+    group.setLayout( ExampleUtil.createGridLayout( 3, false, true, true ) );
     Label leftLabel = new Label( group, SWT.BORDER | SWT.LEFT );
     leftLabel.setText( "These lines\nare\nleft-aligned" );
     leftLabel.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
@@ -71,15 +71,15 @@ public class LabelExample implements IExamplePage {
     Group group = new Group( parent, SWT.NONE );
     group.setText( "Image Labels" );
     group.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 0, 0 ) );
+    group.setLayout( ExampleUtil.createGridLayoutWithoutMargin( 1, false ) );
     Composite comp = new Composite( group, SWT.NONE );
     comp.setLayoutData( new GridData( SWT.CENTER, SWT.TOP, true, false ) );
-    comp.setLayout( ExampleUtil.createGridLayout( 5, false, 20, 10 ) );
+    comp.setLayout( ExampleUtil.createGridLayout( 5, false, true, true ) );
     ClassLoader classLoader = getClass().getClassLoader();
     Image image1 = Graphics.getImage( "resources/emblem-system.png",
                                       classLoader );
     Image image2 = Graphics.getImage( "resources/go-bottom.png", classLoader );
-    Image image3 = Graphics.getImage( "resources/system-search.png", 
+    Image image3 = Graphics.getImage( "resources/system-search.png",
                                       classLoader );
     Label imageLabel1 = new Label( comp, SWT.NONE );
     imageLabel1.setImage( image1 );
@@ -95,7 +95,7 @@ public class LabelExample implements IExamplePage {
     Group group = new Group( parent, SWT.NONE );
     group.setText( "CLabel" );
     group.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
-    group.setLayout( ExampleUtil.createGridLayout( 3, false, 20, 10 ) );
+    group.setLayout( ExampleUtil.createGridLayout( 3, false, true, true ) );
     ClassLoader classLoader = getClass().getClassLoader();
     Image image4 = Graphics.getImage( "resources/button-image.gif",
                                       classLoader );
@@ -120,7 +120,7 @@ public class LabelExample implements IExamplePage {
     Group group = new Group( parent, SWT.NONE );
     group.setText( "Links" );
     group.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 20, 10 ) );
+    group.setLayout( ExampleUtil.createGridLayout( 1, false, true, true ) );
     Link link = new Link( group, SWT.NONE );
     link.setText( "A link widget with <a>two</a> embedded <a>hyperlinks</a>" );
     final Label linkLabel = new Label( group, SWT.NONE );

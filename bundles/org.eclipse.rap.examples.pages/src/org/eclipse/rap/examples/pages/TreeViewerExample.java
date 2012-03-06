@@ -21,17 +21,15 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 
 public class TreeViewerExample implements IExamplePage {
 
-  private static final int EDITOR_ACTIVATE
-    =   ColumnViewerEditor.TABBING_HORIZONTAL
-      | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR
-      | ColumnViewerEditor.TABBING_VERTICAL
-      | ColumnViewerEditor.KEYBOARD_ACTIVATION;
+  private static final int EDITOR_ACTIVATE =   ColumnViewerEditor.TABBING_HORIZONTAL
+                                             | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR
+                                             | ColumnViewerEditor.TABBING_VERTICAL
+                                             | ColumnViewerEditor.KEYBOARD_ACTIVATION;
 
   private final static int MODERN_STYLE = 0;
   private final static int TABLE_STYLE = 1;
@@ -45,11 +43,7 @@ public class TreeViewerExample implements IExamplePage {
   // create widgets
 
   public void createControl( Composite parent ) {
-    GridLayout mainLayout = ExampleUtil.createMainLayout( 2 );
-    mainLayout.makeColumnsEqualWidth = false;
-    mainLayout.verticalSpacing = 0;
-    parent.setLayout( mainLayout );
-    ExampleUtil.createHeadingLabel( parent, "TreeViewer", 2 );
+    parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
     createTopLeft( parent );
     createTopRight( parent );
     createFooter( parent );
@@ -59,28 +53,20 @@ public class TreeViewerExample implements IExamplePage {
   private void createTopLeft( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayoutData( ExampleUtil.createFillData() );
-    FillLayout layout = new FillLayout();
-    layout.marginHeight = 10;
-    layout.marginWidth = 0;
-    composite.setLayout( layout );
+    composite.setLayout( ExampleUtil.createFillLayout(true) );
     simpleTree = createSimpleTree( composite );
   }
 
   private void createTopRight( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayoutData( ExampleUtil.createFillData() );
-    FillLayout layout = new FillLayout();
-    layout.marginHeight = 10;
-    layout.marginWidth = 0;
-    composite.setLayout( layout );
+    composite.setLayout( ExampleUtil.createFillLayout(true) );
     complexTree = createComplexTree( composite );
   }
 
   private void createFooter( Composite parent ) {
     Composite footerComp = new Composite( parent, SWT.NONE );
-    GridData footerData = ExampleUtil.createHorzFillData();
-    footerData.horizontalSpan = 2;
-    footerComp.setLayoutData( footerData );
+    footerComp.setLayout( ExampleUtil.createRowLayout( SWT.HORIZONTAL, true ) );
     createControlButtons( footerComp );
   }
 
@@ -91,11 +77,6 @@ public class TreeViewerExample implements IExamplePage {
   }
 
   private void createControlButtons( Composite parent ) {
-    RowLayout layout = new RowLayout();
-    layout.fill = true;
-    layout.marginHeight = 5;
-    layout.marginTop = 0;
-    parent.setLayout( layout );
     Button newButton = new Button( parent, SWT.PUSH );
     newButton.setText( "New Item" );
     newButton.addSelectionListener( new NewButtonSelectionHandler() );
@@ -105,7 +86,7 @@ public class TreeViewerExample implements IExamplePage {
   }
 
   private TreeViewer createSimpleTree( Composite parent ) {
-    Tree tree = new Tree( parent, SWT.BORDER | SWT.MULTI );
+    Tree tree = new Tree( parent, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION );
     TreeViewer result = new TreeViewer( tree );
     result.setContentProvider( new TreeContentProvider() );
     TreeLabelProvider labelProvider = new TreeLabelProvider( parent.getDisplay(), MODERN_STYLE );
@@ -122,8 +103,8 @@ public class TreeViewerExample implements IExamplePage {
   private TreeViewer createComplexTree( Composite parent ) {
     int style = SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK;
     Tree tree = new Tree( parent, style );
-    createColumn( tree, "City", SWT.LEFT, 155 );
-    createColumn( tree, "Timezone", SWT.CENTER, 65 );
+    createColumn( tree, "City", SWT.LEFT, 185 );
+    createColumn( tree, "Timezone", SWT.CENTER, 85 );
     createColumn( tree, "Offset", SWT.CENTER, 65 );
     tree.setLinesVisible( true );
     tree.setHeaderVisible( true );
@@ -430,8 +411,9 @@ public class TreeViewerExample implements IExamplePage {
       if( transferData != null ) {
         int[] types = getTypeIds();
         for( int i = 0; !result && i < types.length; i++ ) {
-          if( transferData.type == types[ i ] )
+          if( transferData.type == types[ i ] ) {
             result = true;
+          }
         }
       }
       return result;
@@ -590,15 +572,15 @@ public class TreeViewerExample implements IExamplePage {
     }
 
     public void setTimeZone( String tz ) {
-      this.timezone = tz;
+      timezone = tz;
     }
 
     private int getOffset() {
-      return this.offset;
+      return offset;
     }
 
     public String getTimeZone() {
-      return this.timezone;
+      return timezone;
     }
   }
 
@@ -618,21 +600,21 @@ public class TreeViewerExample implements IExamplePage {
     private final Font continentFont;
     private final Color timezoneTextColor;
     private final Color offsetTextColor;
-    private int style;
+    private final int style;
 
     TreeLabelProvider( Device device, int style ) {
       this.device = device;
       this.style = style;
-      this.cityFont = createFont( "Times New Roman", 13, SWT.NONE );
-      this.continentFont = createFont( "Arial", 14, SWT.ITALIC );
-      this.timezoneTextColor = Graphics.getColor( 239, 41, 41 );
-      this.offsetTextColor = Graphics.getColor( 252, 175, 62 );
+      cityFont = createFont( "Times New Roman", 13, SWT.NONE );
+      continentFont = createFont( "Arial", 14, SWT.ITALIC );
+      timezoneTextColor = Graphics.getColor( 239, 41, 41 );
+      offsetTextColor = Graphics.getColor( 252, 175, 62 );
       if( style == MODERN_STYLE ) {
-        this.continentImage = createImage( ICON_EARTH );
-        this.cityImage = createImage( ICON_GREENDOT );
+        continentImage = createImage( ICON_EARTH );
+        cityImage = createImage( ICON_GREENDOT );
       } else {
-        this.continentImage = createImage( ICON_WORLD );
-        this.cityImage = createImage( ICON_GREENDOT );
+        continentImage = createImage( ICON_WORLD );
+        cityImage = createImage( ICON_GREENDOT );
       }
     }
 

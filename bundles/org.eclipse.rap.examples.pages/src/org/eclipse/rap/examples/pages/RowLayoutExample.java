@@ -20,7 +20,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
-
 public class RowLayoutExample implements IExamplePage {
 
   private boolean propCenter = false;
@@ -45,9 +44,9 @@ public class RowLayoutExample implements IExamplePage {
 
   private void createLayoutComp( Composite parent, int style ) {
     Composite layoutCompContainer = new Composite( parent, SWT.NONE );
-    layoutCompContainer.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 0 ) );
-    String text = style == SWT.VERTICAL ? "Vertical RowLayout" : "Horizontal RowLayout";
-    ExampleUtil.createHeadingLabel( layoutCompContainer, text, 1 );
+    layoutCompContainer.setLayout( ExampleUtil.createGridLayout( 1, true, true, true ) );
+    String text = style == SWT.VERTICAL ? "Vertical" : "Horizontal";
+    ExampleUtil.createHeading( layoutCompContainer, text, 1 );
     Composite layoutComp = new Composite( layoutCompContainer, SWT.BORDER );
     if( !propPrefSize ) {
       layoutComp.setLayoutData( ExampleUtil.createFillData() );
@@ -80,7 +79,7 @@ public class RowLayoutExample implements IExamplePage {
     GridData gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
     gridData.horizontalSpan = 2;
     comp.setLayoutData( gridData );
-    comp.setLayout( ExampleUtil.createGridLayout( 1, false, 0, 0 ) );
+    comp.setLayout( ExampleUtil.createGridLayout( 1, true, false, false ) );
     final Button centerButton = new Button( comp, SWT.CHECK );
     centerButton.setText( "Center all elements in a row" );
     centerButton.addSelectionListener( new SelectionAdapter() {

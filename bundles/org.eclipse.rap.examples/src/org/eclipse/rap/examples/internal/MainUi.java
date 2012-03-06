@@ -15,8 +15,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rap.examples.IExampleContribution;
-import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.examples.*;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rwt.events.BrowserHistoryListener;
@@ -39,12 +38,12 @@ public class MainUi {
   private static final int CONTENT_MIN_HEIGHT = 600;
   private static final int HEADER_HEIGHT = 155;
   private static final int HEADER_BAR_HEIGHT = 15;
-  private static final int CENTER_AREA_WIDTH = 978;
+  private static final int CENTER_AREA_WIDTH = 998;
 
   private static final RGB HEADER_BG = new RGB(49, 97, 156);
   private static final RGB HEADER_BAR_BG = new RGB( 52, 51, 47 );
 
-  private Composite widgetsContainer;
+  private Composite centerArea;
   private Composite navigation;
 
   public int createUI() {
@@ -117,7 +116,6 @@ public class MainUi {
     return data;
   }
 
-
   private Composite createHeaderCenterArea( Composite parent ) {
     Composite headerCenterArea = new Composite( parent, SWT.NONE );
     headerCenterArea.setLayout( new FormLayout() );
@@ -157,12 +155,11 @@ public class MainUi {
     navigation = createNavigation( contentComposite );
     Composite footer = createFooter( contentComposite );
     ScrolledComposite scrolledComp = createScrolledComp( contentComposite, footer );
-    createCenterArea( scrolledComp );
+    centerArea = createCenterArea( scrolledComp );
   }
 
   private ScrolledComposite createScrolledComp( Composite parent, Composite footer ) {
     ScrolledComposite scrolledComp = new ScrolledComposite( parent, SWT.V_SCROLL );
-    scrolledComp.setLayout( new FormLayout() );
     scrolledComp.setLayoutData( createScrolledCompFormData( footer ) );
     scrolledComp.setMinHeight( CONTENT_MIN_HEIGHT );
     scrolledComp.setExpandVertical( true );
@@ -171,12 +168,21 @@ public class MainUi {
   }
 
   private FormData createScrolledCompFormData( Composite footer ) {
+    int centerWidthPlusMargin = CENTER_AREA_WIDTH + 20;
     FormData data = new FormData();
-    data.left = new FormAttachment( 50, -CENTER_AREA_WIDTH / 2 );
+    data.left = new FormAttachment( 50, - ( centerWidthPlusMargin / 2 ) );
     data.top = new FormAttachment( navigation.getParent() );
     data.bottom = new FormAttachment( footer );
-    data.width = CENTER_AREA_WIDTH;
+    data.width = centerWidthPlusMargin;
     return data;
+  }
+
+  private Composite createCenterArea( ScrolledComposite parent ) {
+    Composite centerArea = new Composite( parent, SWT.NONE );
+    centerArea.setLayout( new FillLayout() );
+    centerArea.setData(  WidgetUtil.CUSTOM_VARIANT, "centerArea" );
+    parent.setContent( centerArea );
+    return centerArea;
   }
 
   private Composite createFooter( Composite contentComposite ) {
@@ -193,10 +199,10 @@ public class MainUi {
 
   private FormData createFooterFormData() {
     FormData data = new FormData();
-    data.left = new FormAttachment( 50, ( -CENTER_AREA_WIDTH / 2 ) - 2 );
+    data.left = new FormAttachment( 50, ( -CENTER_AREA_WIDTH / 2 ) );
     data.top = new FormAttachment( 100, -40 );
     data.bottom = new FormAttachment( 100 );
-    data.width = CENTER_AREA_WIDTH;
+    data.width = CENTER_AREA_WIDTH + 10 - 2;
     return data;
   }
 
@@ -280,9 +286,9 @@ public class MainUi {
   }
 
   private void createNavigationDropDown( Composite parent, IExampleContribution page ) {
-    DropDownNavigation navigationEntry = getNavigationEntryByCategoryId( parent, page.getCategoryId() );
-    if( navigationEntry != null ) {
-      navigationEntry.addNavigationItem( page );
+    DropDownNavigation existingDropDown = getNavigationEntryByCategoryId( parent, page.getCategoryId() );
+    if( existingDropDown != null ) {
+      existingDropDown.addNavigationItem( page );
     } else {
       new DropDownNavigation( parent, page ) {
         @Override
@@ -306,31 +312,6 @@ public class MainUi {
       }
     }
     return result;
-  }
-
-  private void createCenterArea( ScrolledComposite parent ) {
-    Composite centerArea = new Composite( parent, SWT.NONE );
-    centerArea.setLayout( new FormLayout() );
-    centerArea.setData(  WidgetUtil.CUSTOM_VARIANT, "centerArea" );
-    parent.setContent( centerArea );
-    widgetsContainer = createWidgetsContainer( centerArea );
-  }
-
-  private Composite createWidgetsContainer( Composite parent ) {
-    Composite widgetsComp = new Composite( parent, SWT.NONE );
-    widgetsComp.setData(  WidgetUtil.CUSTOM_VARIANT, "widgetsComp" );
-    widgetsComp.setLayout( new FillLayout() );
-    widgetsComp.setLayoutData( createWidgetsContainerFormData() );
-    return widgetsComp;
-  }
-
-  private FormData createWidgetsContainerFormData() {
-    FormData data = new FormData();
-    data.top = new FormAttachment( navigation, 15 );
-    data.left = new FormAttachment( 0 );
-    data.right = new FormAttachment( 100 );
-    data.bottom = new FormAttachment( 100, -15 );
-    return data;
   }
 
   private void selectContribution( IExampleContribution page ) {
@@ -386,13 +367,13 @@ public class MainUi {
     IExamplePage examplePage = page.createPage();
     if( examplePage != null ) {
       RWT.getBrowserHistory().createEntry( page.getId(), page.getTitle() );
-      Control[] children = widgetsContainer.getChildren();
+      Control[] children = centerArea.getChildren();
       for( Control child : children ) {
         child.dispose();
       }
-      Composite wrapper = new Composite( widgetsContainer, SWT.NONE );
-      examplePage.createControl( wrapper );
-      widgetsContainer.layout( true, true );
+      Composite contentComp = ExampleUtil.initPage( page.getTitle(), centerArea );
+      examplePage.createControl( contentComp );
+      centerArea.layout( true, true );
     }
   }
 

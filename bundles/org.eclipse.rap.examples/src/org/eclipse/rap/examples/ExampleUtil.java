@@ -12,86 +12,93 @@ package org.eclipse.rap.examples;
 
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 
 public final class ExampleUtil {
 
+  private static final int DEFAULT_SPACE = 10;
+
+  public static Composite initPage( String title, Composite parent ) {
+    Composite pageComp = new Composite( parent, SWT.NONE );
+    pageComp.setLayout( ExampleUtil.createGridLayoutWithoutMargin( 1, false ) );
+    Label label = createHeadlineLabel( pageComp, title );
+    label.setLayoutData( createHeadlineLayoutData() );
+    Composite contentComp = new Composite( pageComp, SWT.NONE );
+    contentComp.setLayoutData( ExampleUtil.createFillData() );
+    return contentComp;
+  }
+
+  public static void createHeading( Composite parent, String text, int horizontalSpan ) {
+    Label label = new Label( parent, SWT.NONE );
+    label.setText( text );
+    label.setData(  WidgetUtil.CUSTOM_VARIANT, "heading" );
+    GridData labelLayoutData = new GridData();
+    labelLayoutData.horizontalSpan = horizontalSpan;
+    label.setLayoutData( labelLayoutData );
+  }
+
   public static GridLayout createMainLayout( int numColumns ) {
-    GridLayout result = createGridLayout();
-    result.makeColumnsEqualWidth = true;
-    result.numColumns = numColumns;
+    GridLayout result = new GridLayout( numColumns, true );
     result.marginWidth = 0;
     result.marginHeight = 0;
-    result.marginTop = 20;
-    result.verticalSpacing = 40;
+    result.marginTop = 0;
+    result.verticalSpacing = 0;
     result.horizontalSpacing = 60;
     return result;
   }
 
-  public static GridLayout createColumnLayout() {
-    GridLayout result = createGridLayout();
-    result.verticalSpacing = 20;
-    return result;
-  }
-
-  public static GridLayout createGridLayout( int numColumns, boolean makeColumnsEqual ) {
-    return createGridLayout( numColumns, makeColumnsEqual, 0, 0 );
-  }
-
   public static GridLayout createGridLayout( int numColumns,
-                                             boolean makeColumnsEqual,
-                                             int spacing,
-                                             int margin )
+                                             boolean makeColsEqualWidth,
+                                             boolean setTopMargin,
+                                             boolean setVertSpacing )
   {
-    GridLayout result = new GridLayout( numColumns, makeColumnsEqual );
-    result.horizontalSpacing = spacing;
-    result.verticalSpacing = spacing;
-    result.marginWidth = margin;
-    result.marginHeight = margin;
+    GridLayout result = new GridLayout( numColumns, makeColsEqualWidth );
+    result.marginWidth = DEFAULT_SPACE;
+    result.marginHeight = 0;
+    result.marginBottom = DEFAULT_SPACE;
+    result.horizontalSpacing = DEFAULT_SPACE;
+    if( setTopMargin ) {
+      result.marginTop = DEFAULT_SPACE;
+    }
+    if( setVertSpacing ) {
+      result.verticalSpacing = DEFAULT_SPACE;
+    }
     return result;
   }
 
-  public static GridLayout createGridLayoutWithOffset( int numColumns,
-                                                       boolean makeColumnsEqual,
-                                                       int spacing,
-                                                       int marginRight,
-                                                       int marginTop )
+  public static GridLayout createGridLayoutWithoutMargin( int numColumns,
+                                                          boolean makeColsEqualWidth )
   {
-    GridLayout result = new GridLayout( numColumns, makeColumnsEqual );
-    result.horizontalSpacing = spacing;
-    result.verticalSpacing = spacing;
+    GridLayout result = new GridLayout( numColumns, makeColsEqualWidth );
+    result.marginHeight = 0;
     result.marginWidth = 0;
+    return result;
+  }
+
+  public static RowLayout createRowLayout( int type, boolean setMargin ) {
+    RowLayout result = new RowLayout( type );
+    result.marginTop = 0;
     result.marginLeft = 0;
-    result.marginRight = marginRight;
-    result.marginTop =  marginTop;
+    result.marginHeight = 0;
+    if( setMargin ) {
+      result.marginBottom = DEFAULT_SPACE;
+      result.marginWidth = DEFAULT_SPACE;
+    } else {
+      result.marginBottom = 0;
+      result.marginWidth = 0;
+    }
     return result;
   }
 
-  public static GridLayout createGridLayout( int numColumns,
-                                             boolean makeColumnsEqual,
-                                             int spacing,
-                                             int marginWidth,
-                                             int marginHeight )
-  {
-    GridLayout result = new GridLayout( numColumns, makeColumnsEqual );
-    result.horizontalSpacing = spacing;
-    result.verticalSpacing = spacing;
-    result.marginWidth = marginWidth;
-    result.marginHeight = marginHeight;
-    return result;
-  }
-
-  public static GridLayout createGridLayout() {
-    GridLayout result = new GridLayout();
-    result.horizontalSpacing = 0;
-    result.verticalSpacing = 0;
-    result.marginWidth = 0;
-    result.marginHeight = 0;
-    result.marginHeight = 0;
+  public static FillLayout createFillLayout( boolean setMargin ) {
+    FillLayout result = new FillLayout();
+    if( setMargin ) {
+      result.marginWidth = DEFAULT_SPACE;
+      result.marginHeight = DEFAULT_SPACE;
+    }
     return result;
   }
 
@@ -103,13 +110,18 @@ public final class ExampleUtil {
     return new GridData( SWT.FILL, SWT.FILL, true, true );
   }
 
-  public static void createHeadingLabel( Composite parent, String text, int horizontalSpan ) {
+  private static Label createHeadlineLabel( Composite parent, String text ) {
     Label label = new Label( parent, SWT.NONE );
-    label.setText( text );
-    label.setData(  WidgetUtil.CUSTOM_VARIANT, "heading" );
-    GridData labelLayoutData = new GridData();
-    labelLayoutData.horizontalSpan = horizontalSpan;
-    label.setLayoutData( labelLayoutData );
+    label.setText( text.replace( "&", "&&" ) );
+    label.setData(  WidgetUtil.CUSTOM_VARIANT, "pageHeadline" );
+    return label;
+  }
+
+  private static GridData createHeadlineLayoutData() {
+    GridData layoutData = new GridData();
+    layoutData.verticalIndent = 30;
+    layoutData.horizontalIndent = DEFAULT_SPACE;
+    return layoutData;
   }
 
   private ExampleUtil() {

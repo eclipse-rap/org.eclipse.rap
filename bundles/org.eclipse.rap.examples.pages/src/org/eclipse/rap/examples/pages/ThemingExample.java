@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.*;
 public class ThemingExample implements IExamplePage {
 
   public void createControl( final Composite parent ) {
-    parent.setLayout( ExampleUtil.createGridLayout( 1, false, 20, 10 ) );
+    parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
     createButtonsArea( parent );
     createMenusArea( parent );
   }

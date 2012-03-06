@@ -46,7 +46,7 @@ public class TableViewerExample implements IExamplePage {
   private TableViewerColumn seriesColumn;
   private TableViewerColumn groupColumn;
   private TableViewerColumn periodColumn;
-  
+
 
   private static Color[] SERIES_COLORS = new Color[] {
     null,
@@ -68,14 +68,12 @@ public class TableViewerExample implements IExamplePage {
 
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
-    Composite comp = new Composite( parent, SWT.NONE );
-    comp.setLayoutData( ExampleUtil.createFillData() );
-    comp.setLayout( ExampleUtil.createGridLayout( 1, true, 0, 0 ) );
-    ExampleUtil.createHeadingLabel( comp, "TableViewer", 1 );
-    createTextFilter( comp );
-    createViewer( comp );
-    createLabelSelection( comp );
-    createLabelHelp( comp );
+    parent.setLayout( ExampleUtil.createGridLayout( 1, true, true, true ) );
+    parent.setLayoutData( ExampleUtil.createFillData() );
+    createTextFilter( parent );
+    createViewer( parent );
+    createLabelSelection( parent );
+    createLabelHelp( parent );
     viewer.getTable().forceFocus();
     handleSelection( true );
   }
@@ -83,7 +81,6 @@ public class TableViewerExample implements IExamplePage {
   private void createTextFilter( Composite parent ) {
     txtFilter = new Text( parent, SWT.BORDER );
     GridData gridData = ExampleUtil.createHorzFillData();
-    gridData.verticalIndent = 10;
     txtFilter.setLayoutData( gridData );
     txtFilter.addModifyListener( new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
@@ -108,7 +105,6 @@ public class TableViewerExample implements IExamplePage {
   private void createViewer( Composite parent ) {
     viewer = new TableViewer( parent, SWT.BORDER );
     GridData tableLayoutData = ExampleUtil.createFillData();
-    tableLayoutData.verticalIndent = 10;
     viewer.getTable().setLayoutData( tableLayoutData );
     elements = Elements.getElements();
     ColumnViewerToolTipSupport.enableFor( viewer );
@@ -135,21 +131,16 @@ public class TableViewerExample implements IExamplePage {
 
   private void createLabelSelection( Composite parent ) {
     Composite selBorder = new Composite( parent, SWT.BORDER );
-    GridData gridData = new GridData( SWT.FILL, SWT.TOP, true, true );
+    selBorder.setLayout( ExampleUtil.createFillLayout(true) );
+    GridData gridData = ExampleUtil.createFillData();
     gridData.minimumHeight = 25;
-    gridData.verticalIndent = 10;
     selBorder.setLayoutData( gridData );
-    FillLayout selBorderLayout = new FillLayout();
-    selBorderLayout.marginHeight = 3;
-    selBorderLayout.marginWidth = 3;
-    selBorder.setLayout( selBorderLayout );
     lblSelection = new Label( selBorder, SWT.NONE );
   }
 
   private void createLabelHelp( Composite parent ) {
     lblHelp = new Label( parent, SWT.WRAP );
     GridData labelHelpLayoutData = ExampleUtil.createHorzFillData();
-    labelHelpLayoutData.verticalIndent = 10;
     lblHelp.setLayoutData( labelHelpLayoutData );
     String helpContent = "Shortcuts: [CTRL+F] - Filter | ";
     helpContent += "Sort by: [CTRL+R] - Number, [CTRL+Y] - Symbol, [CTRL+N] - Name, ";
@@ -190,12 +181,12 @@ public class TableViewerExample implements IExamplePage {
             case 'e':
               sortByColumn( periodColumn.getColumn(), PERIOD, true );
             break;
-          } 
+          }
         }
       }
     } );
-    String[] shortcuts = new String[]{ 
-      "CTRL+F", "CTRL+N", "CTRL+R", "CTRL+Y", "CTRL+S", "CTRL+G", "CTRL+E" 
+    String[] shortcuts = new String[]{
+      "CTRL+F", "CTRL+N", "CTRL+R", "CTRL+Y", "CTRL+S", "CTRL+G", "CTRL+E"
     };
     viewer.getTable().setData( RWT.ACTIVE_KEYS, shortcuts );
     viewer.getTable().setData( RWT.CANCEL_KEYS, shortcuts );
@@ -241,7 +232,7 @@ public class TableViewerExample implements IExamplePage {
     } );
     return result;
   }
-  
+
   private void sortByColumn( TableColumn column, int sortProperty, boolean reset ) {
     int sortDirection = updateSortDirection( column );
     sort( viewer, sortProperty, sortDirection == SWT.DOWN );
@@ -325,11 +316,11 @@ public class TableViewerExample implements IExamplePage {
     @Override
     public String getToolTipText( Object object ) {
       Element element = ( Element )object;
-      return 
-          element.symbol 
-        + ": " 
-        + element.name 
-        + ", " 
+      return
+          element.symbol
+        + ": "
+        + element.name
+        + ", "
         + element.getSeriesName();
     }
   }

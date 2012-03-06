@@ -26,7 +26,7 @@ public class FormLayoutExample implements IExamplePage {
 
   public void createControl( Composite parent ) {
     this.parent = parent;
-    parent.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 10 ) );
+    parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
     createLayoutArea();
     createControlButtons( parent );
   }
@@ -34,11 +34,8 @@ public class FormLayoutExample implements IExamplePage {
   private void createLayoutArea() {
     if( layoutArea == null ) {
       layoutArea = new Composite( parent, SWT.NONE );
-      GridData layoutData = ExampleUtil.createFillData();
-      layoutArea.setLayoutData( layoutData );
-      FillLayout layout = new FillLayout();
-      layout.spacing = 10;
-      layoutArea.setLayout( layout );
+      layoutArea.setLayout( ExampleUtil.createFillLayout( false ) );
+      layoutArea.setLayoutData( ExampleUtil.createFillData() );
     }
     Control[] children = layoutArea.getChildren();
     for( int i = 0; i < children.length; i++ ) {
@@ -50,8 +47,7 @@ public class FormLayoutExample implements IExamplePage {
 
   protected void createLayoutComp( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayout( ExampleUtil.createGridLayout( 1, false ) );
-    new Label( composite, SWT.NONE ).setText( "FormLayout" );
+    composite.setLayout( ExampleUtil.createGridLayout( 1, false, true, true ) );
     Composite layoutComp = new Composite( composite, SWT.BORDER );
     if( !propPrefSize ) {
       layoutComp.setLayoutData( ExampleUtil.createFillData() );
@@ -61,9 +57,6 @@ public class FormLayoutExample implements IExamplePage {
 
     Label label = new Label( layoutComp, SWT.NONE );
     label.setText( "Label" );
-//    FormData labelData = new FormData();
-//    labelData.left = new FormAttachment( 0, 0 );
-//    label.setLayoutData( labelData );
 
     Text text = new Text( layoutComp, SWT.MULTI | SWT.BORDER | SWT.READ_ONLY );
     text.setText( "Text" );
@@ -81,12 +74,9 @@ public class FormLayoutExample implements IExamplePage {
   }
 
   protected void createControlButtons( final Composite parent ) {
-    Group group = new Group( parent, SWT.NONE );
-    GridData gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
-    gridData.horizontalSpan = 2;
-    group.setLayoutData( gridData );
-    group.setLayout( ExampleUtil.createGridLayout( 1, false, 2, 5 ) );
-    final Button preferredSizeButton = new Button( group, SWT.CHECK );
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( ExampleUtil.createGridLayout( 1, false, false, true ) );
+    final Button preferredSizeButton = new Button( composite, SWT.CHECK );
     preferredSizeButton.setText( "Shrink containers to their preferred size" );
     preferredSizeButton.addSelectionListener( new SelectionAdapter() {
       @Override

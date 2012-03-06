@@ -25,21 +25,21 @@ public class FillLayoutExample implements IExamplePage {
 
   private static final Color BG_COLOR = Graphics.getColor( 220, 220, 200 );
 
-  private Composite parent;
+  private Composite contentComp;
   private int propSpacing = 5;
   private boolean propPrefSize;
   private Composite layoutArea;
 
   public void createControl( final Composite parent ) {
-    this.parent = parent;
-    parent.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 0, 20 ) );
+    contentComp = parent;
+    contentComp.setLayout( ExampleUtil.createMainLayout( 1 ) );
     createLayoutArea();
     createControlButtons( parent );
   }
 
   private void createLayoutArea() {
     if( layoutArea == null || layoutArea.isDisposed() ) {
-      layoutArea = new SashForm( parent, SWT.NONE );
+      layoutArea = new SashForm( contentComp, SWT.NONE );
       GridData layoutData = ExampleUtil.createFillData();
       layoutArea.setLayoutData( layoutData );
       FillLayout layout = new FillLayout();
@@ -59,10 +59,10 @@ public class FillLayoutExample implements IExamplePage {
 
   private void createLayoutComp( final Composite parent, final int style ) {
     Composite layoutCompContainer = new Composite( parent, SWT.NONE );
-    layoutCompContainer.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 0 ) );
+    layoutCompContainer.setLayout( ExampleUtil.createGridLayout( 1, false, false, false ) );
     String orientString = style == SWT.VERTICAL ? "Vertical" : "Horizontal";
     String message = orientString + " FillLayout";
-    ExampleUtil.createHeadingLabel( layoutCompContainer, message, 1 );
+    ExampleUtil.createHeading( layoutCompContainer, message, 1 );
     Composite layoutComp = new Composite( layoutCompContainer, SWT.BORDER );
     if( !propPrefSize ) {
       layoutComp.setLayoutData( ExampleUtil.createFillData() );
@@ -84,7 +84,7 @@ public class FillLayoutExample implements IExamplePage {
     GridData gridData = new GridData( SWT.FILL, SWT.TOP, true, false );
     gridData.horizontalSpan = 2;
     composite.setLayoutData( gridData );
-    composite.setLayout( ExampleUtil.createGridLayout( 1, false, 0, 0 ) );
+    composite.setLayout( ExampleUtil.createGridLayout( 1, false, false, false ) );
     Composite spacingComp = new Composite( composite, SWT.NONE );
     RowLayout spacingLayout = new RowLayout();
     spacingLayout.spacing = 5;

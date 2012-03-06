@@ -25,6 +25,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 
+
 public class DialogExamplePage implements IExamplePage {
 
   private Label resultsLabel;
@@ -40,30 +41,30 @@ public class DialogExamplePage implements IExamplePage {
   private void createSwtArea( Composite parent ) {
     Composite swtComp = new Composite( parent, SWT.NONE );
     swtComp.setLayoutData( ExampleUtil.createHorzFillData() );
-    swtComp.setLayout( ExampleUtil.createGridLayout( 3, false, 20, 0 ) );
-    ExampleUtil.createHeadingLabel( swtComp, "SWT Dialogs", 3 );
+    swtComp.setLayout( ExampleUtil.createGridLayout( 3, false, true, true ) );
+    ExampleUtil.createHeading( swtComp, "SWT Dialogs", 3 );
     createSwtDialogButtons( swtComp );
   }
 
   private void createJfaceArea( Composite parent ) {
     Composite jFaceComp = new Composite( parent, SWT.NONE );
     jFaceComp.setLayoutData( ExampleUtil.createHorzFillData() );
-    jFaceComp.setLayout( ExampleUtil.createGridLayout( 3, false, 20, 0 ) );
-    ExampleUtil.createHeadingLabel( jFaceComp, "JFace Dialogs", 3 );
+    jFaceComp.setLayout( ExampleUtil.createGridLayout( 3, false, true, true ) );
+    ExampleUtil.createHeading( jFaceComp, "JFace Dialogs", 3 );
     createJfaceDialogButtons( jFaceComp );
   }
 
   private void createCustomArea( Composite parent ) {
     Composite customComp = new Composite( parent, SWT.NONE );
     customComp.setLayoutData( ExampleUtil.createHorzFillData() );
-    customComp.setLayout( ExampleUtil.createGridLayout( 3, false, 20, 0 ) );
-    ExampleUtil.createHeadingLabel( customComp, "Custom Dialogs", 3 );
+    customComp.setLayout( ExampleUtil.createGridLayout( 3, false, true, true ) );
+    ExampleUtil.createHeading( customComp, "Custom Dialogs", 3 );
     createCustomDialogs( customComp );
   }
 
   private void createResultsComposite( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayout( ExampleUtil.createGridLayout() );
+    composite.setLayout( ExampleUtil.createGridLayout( 3, false, true, true ) );
     composite.setLayoutData( ExampleUtil.createHorzFillData() );
     resultsLabel = new Label( composite, SWT.WRAP );
     resultsLabel.setLayoutData( ExampleUtil.createFillData() );
