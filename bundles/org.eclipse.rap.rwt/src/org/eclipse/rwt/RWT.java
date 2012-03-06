@@ -324,6 +324,8 @@ public final class RWT {
    * <dd>renders its content as citation</dd>
    * <dt>{@literal <span>}</dt>
    * <dd>generic style container</dd>
+   * <dt>{@literal <img>}</dt>
+   * <dd>renders an image</dd>
    * </dl>
    * The visual representation of the above tags can be specified in a <code>style</code>
    * attribute.

@@ -84,7 +84,7 @@ public class MarkupValidator {
     result.put( "var", new String[] { "style" } );
     result.put( "cite", new String[] { "style" } );
     result.put( "span", new String[] { "style" } );
-//    result.put( "img", new String[] { "style", "src", "width", "height" } );
+    result.put( "img", new String[] { "style", "src", "width", "height" } );
 //    result.put( "a", new String[] { "style", "href", "target" } );
     return result;
   }
