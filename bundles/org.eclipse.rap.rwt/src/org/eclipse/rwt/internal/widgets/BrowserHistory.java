@@ -95,11 +95,11 @@ public final class BrowserHistory
   public void afterPhase( PhaseEvent event ) {
     Display sessionDisplay = LifeCycleUtil.getSessionDisplay();
     if( display == sessionDisplay ) {
-      if( event.getPhaseId() == PhaseId.PREPARE_UI_ROOT && isStartup() ) {
+      if( PhaseListenerUtil.isPrepareUIRoot( event ) && isStartup() ) {
         processNavigationEvent();
-      } else if( event.getPhaseId() == PhaseId.READ_DATA ) {
+      } else if( PhaseListenerUtil.isReadData( event ) ) {
         preserveNavigationListener();
-      } else if( event.getPhaseId() == PhaseId.RENDER ) {
+      } else if( PhaseListenerUtil.isRender( event ) ) {
         renderCreate();
         renderNavigationListener();
         renderAdd();
@@ -110,7 +110,7 @@ public final class BrowserHistory
   public void beforePhase( PhaseEvent event ) {
     Display sessionDisplay = LifeCycleUtil.getSessionDisplay();
     if( display == sessionDisplay ) {
-      if( event.getPhaseId() == PhaseId.PROCESS_ACTION && !isStartup() ) {
+      if( PhaseListenerUtil.isProcessAction( event ) && !isStartup() ) {
         processNavigationEvent();
       }
     }
