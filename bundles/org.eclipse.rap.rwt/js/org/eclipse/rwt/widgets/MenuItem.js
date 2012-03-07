@@ -99,7 +99,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
   },
   
   events : {
-  	"subMenuChanged" : "qx.event.type.Event"
+    "subMenuChanged" : "qx.event.type.Event"
   },
 
   members : {
@@ -187,7 +187,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     _beforeComputeInnerWidth : function() {
       if( this._parentMenu instanceof org.eclipse.rwt.widgets.Menu ) {
         for( var i = 0; i < 4; i++ ) {
-          this._setCellWidth( i, this._parentMenu.getMaxCellWidth( i ) )
+          this._setCellWidth( i, this._parentMenu.getMaxCellWidth( i ) );
         }
       }
     },
