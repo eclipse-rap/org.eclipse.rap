@@ -398,7 +398,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
       if( this._openItem && this._openItem.getMenu() ) {
         this._openItem.setSubMenuOpen( false );
         var oldMenu = this._openItem.getMenu();
-        oldMenu.hide();        
+        oldMenu.hide();
+        this._makeActive();
       }
       this._openItem = item;
       // in theory an item could have lost it's assigned menu (by eval-code)

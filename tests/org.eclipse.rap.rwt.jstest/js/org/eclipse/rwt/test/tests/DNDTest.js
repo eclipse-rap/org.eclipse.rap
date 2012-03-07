@@ -305,13 +305,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 19, 19 );
       assertEquals( 1, TestUtil.getRequestsSend() );
       var request = TestUtil.getRequestLog()[ 0 ];
-      var dragStart = "org.eclipse.swt.dnd.dragStart=w1";
+      var dragStart = "org.eclipse.swt.dnd.dragStart=w11";
       assertTrue( request.search( dragStart ) != -1 );
       TestUtil.clearRequestLog();
       TestUtil.fakeMouseEventDOM( node, "mouseup", leftButton, 19, 19 );
       assertEquals( 1, TestUtil.getRequestsSend() );
       var request = TestUtil.getRequestLog()[ 0 ];
-      var dragFinished = "org.eclipse.swt.dnd.dragFinished=w1";
+      var dragFinished = "org.eclipse.swt.dnd.dragFinished=w11";
       assertTrue( request.search( dragFinished ) != -1 );
       assertFalse( dndSupport._blockDrag );
       dndSupport.deregisterDragSource( source );
@@ -352,7 +352,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 19, 19 );
       assertEquals( 1, TestUtil.getRequestsSend() );
       var request = TestUtil.getRequestLog()[ 0 ];      
-      var dragStart = "org.eclipse.swt.dnd.dragStart=w1";
+      var dragStart = "org.eclipse.swt.dnd.dragStart=w11";
       assertTrue( request.search( dragStart ) != -1 );
       TestUtil.clearRequestLog();
       dndSupport.cancel();
@@ -388,7 +388,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
       assertEquals( 1, TestUtil.getRequestsSend() );
       var request = TestUtil.getRequestLog()[ 0 ];
-      assertTrue( request.search( dragStart + "=w1" ) != -1 );
+      assertTrue( request.search( dragStart + "=w11" ) != -1 );
       assertTrue( request.search( dragStart + ".x=25" ) != -1 );
       assertTrue( request.search( dragStart + ".y=15" ) != -1 );
       TestUtil.clearRequestLog();
@@ -401,11 +401,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       var request = TestUtil.getRequestLog()[ 0 ];      
       assertTrue( request.search( dragOver + "=w2" ) != -1 );
-      assertTrue( request.search( dragOver + ".source=w1" ) != -1 );
+      assertTrue( request.search( dragOver + ".source=w11" ) != -1 );
       assertTrue( request.search( dragOver + ".x=32" ) != -1 );
       assertTrue( request.search( dragOver + ".y=15" ) != -1 );
       assertTrue( request.search( dragMove + "=w2" ) != -1 );
-      assertTrue( request.search( dragMove + ".source=w1" ) != -1 );
+      assertTrue( request.search( dragMove + ".source=w11" ) != -1 );
       assertTrue( request.search( dragMove + ".x=32" ) != -1 );
       assertTrue( request.search( dragMove + ".y=15" ) != -1 );
       TestUtil.clearTimerOnceLog();
@@ -417,7 +417,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       var request = TestUtil.getRequestLog()[ 0 ];
       assertTrue( request.search( dragMove + "=w2" ) != -1 );
-      assertTrue( request.search( dragMove + ".source=w1" ) != -1 );
+      assertTrue( request.search( dragMove + ".source=w11" ) != -1 );
       assertTrue( request.search( dragMove + ".x=33" ) != -1 );
       assertTrue( request.search( dragMove + ".y=15" ) != -1 );
       TestUtil.clearTimerOnceLog();
@@ -430,7 +430,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       var request = TestUtil.getRequestLog()[ 0 ];
       assertTrue( request.search( dragOut + "=w2" ) != -1 );
-      assertTrue( request.search( dragOut + ".source=w1" ) != -1 );
+      assertTrue( request.search( dragOut + ".source=w11" ) != -1 );
       assertTrue( request.search( dragOut + ".x=42" ) != -1 );
       assertTrue( request.search( dragOut + ".y=15" ) != -1 );
       TestUtil.clearTimerOnceLog();
@@ -470,7 +470,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.forceTimerOnce();
       assertEquals( 2, TestUtil.getRequestsSend() );
       var request = TestUtil.getRequestLog()[ 0 ];      
-      assertTrue( request.search( dragStart + "=w1" ) != -1 );
+      assertTrue( request.search( dragStart + "=w11" ) != -1 );
       request = TestUtil.getRequestLog()[ 1 ];      
       assertTrue( request.search( dragOver + "=w2" ) != -1 );
       assertTrue( request.search( dragMove + "=w2" ) != -1 );
@@ -706,7 +706,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       var request = TestUtil.getRequestLog()[ 0 ];
       assertTrue( request.search( dragOut + "=w2" ) != -1 );
-      assertTrue( request.search( dragOut + ".source=w1" ) != -1 );
+      assertTrue( request.search( dragOut + ".source=w11" ) != -1 );
       assertTrue( request.search( dragOut + ".x=42" ) != -1 );
       assertTrue( request.search( dragOut + ".y=15" ) != -1 );
       assertFalse( request.search( dragMove ) != -1 );
@@ -747,7 +747,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
       assertEquals( 1, TestUtil.getRequestsSend() );
       var request = TestUtil.getRequestLog()[ 0 ];
-      assertTrue( request.search( dragStart + "=w1" ) != -1 );
+      assertTrue( request.search( dragStart + "=w11" ) != -1 );
       TestUtil.clearRequestLog();
       TestUtil.clearTimerOnceLog();
       // Over
@@ -768,7 +768,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       var request = TestUtil.getRequestLog()[ 0 ];
       assertTrue( request.search( dragDrop + "=w2" ) != -1 );
-      assertTrue( request.search( dragDrop + ".source=w1" ) != -1 );
+      assertTrue( request.search( dragDrop + ".source=w11" ) != -1 );
       assertTrue( request.search( dragDrop + ".x=32" ) != -1 );
       assertTrue( request.search( dragDrop + ".y=16" ) != -1 );
       TestUtil.clearTimerOnceLog();
@@ -867,7 +867,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertEquals(2, TestUtil.getRequestsSend() );
       var request = TestUtil.getRequestLog()[ 0 ];
       assertTrue( request.search( dragDrop + "=w2" ) != -1 );
-      assertTrue( request.search( dragDrop + ".source=w1" ) != -1 );
+      assertTrue( request.search( dragDrop + ".source=w11" ) != -1 );
       assertTrue( request.search( dragDrop + ".x=32" ) != -1 );
       assertTrue( request.search( dragDrop + ".y=16" ) != -1 );
       assertTrue( request.search( dragEnd ) != -1 );
@@ -1466,7 +1466,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.clearRequestLog();
       TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
       var request = TestUtil.getRequestLog()[ 0 ];
-      assertTrue( request.search( dragStart + "=w1" ) != -1 );
+      assertTrue( request.search( dragStart + "=w11" ) != -1 );
       TestUtil.clearRequestLog();
       TestUtil.clearTimerOnceLog();
       // Over
@@ -1516,7 +1516,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       result.setLocation( 10, 10 );
       result.setDimension( 10, 10 );
       result.addToDocument();
-      org.eclipse.swt.WidgetManager.getInstance().add( result, "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( result, "w11" );
       result.setUserData( "isControl", true );
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var actions = [ "copy", "move", "alias" ];

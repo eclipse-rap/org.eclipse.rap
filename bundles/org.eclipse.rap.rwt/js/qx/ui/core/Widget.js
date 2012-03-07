@@ -360,6 +360,9 @@ qx.Class.define( "qx.ui.core.Widget", {
           // appending all widget elements to fragment
           for (var i=0, l=vLazyQueue.length; i<l; i++) {
             vWidget = vLazyQueue[i];
+            if (vWidget.getVisibility()) {
+              vWidget._beforeAppear();
+            }
             vFragment.appendChild(vWidget.getElement());
           }
           // append all fragment data at once to
@@ -375,7 +378,9 @@ qx.Class.define( "qx.ui.core.Widget", {
           for (var i=0, l=vLazyQueue.length; i<l; i++)
           {
             vWidget = vLazyQueue[i];
-
+            if (vWidget.getVisibility()) {
+              vWidget._beforeAppear();
+            }
             vWidget.getParent()._getTargetNode().appendChild(vWidget.getElement());
             vWidget._afterInsertDom();
           }
@@ -3275,7 +3280,8 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     _visualizeFocus : function() {
-      if (!qx.event.handler.FocusHandler.mouseFocus && this.getEnableElementFocus()) {
+      var FocusHandler = qx.event.handler.FocusHandler;
+      if (!FocusHandler.mouseFocus && !FocusHandler.blockFocus && this.getEnableElementFocus()) {
         try {
           this.getElement().focus();
         } catch(ex) {}

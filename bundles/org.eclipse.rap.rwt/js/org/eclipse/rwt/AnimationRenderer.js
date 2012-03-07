@@ -138,6 +138,10 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
         }
       }
     },
+    
+    isActive : function() {
+      return this._active;
+    },
 
     // Sets active to false as soon as animation is finished
     activateOnce : function() {
@@ -313,6 +317,13 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
             result = parseInt( this._context._style.top, 10 );
           } else {
             result = this._context.getTopValue();
+          }
+        break;
+        case "left":
+          if( this._context.isCreated() && this._context._style.left ) {
+            result = parseInt( this._context._style.left, 10 );
+          } else {
+            result = this._context.getLeftValue();
           }
         break;
         case "backgroundColor":
@@ -550,6 +561,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
     converterByRenderType : {
       "height" : "numericPositiveRound",
       "top" : "numericRound",
+      "left" : "numericRound",
       "opacity" : "factor",
       "backgroundColor" : "color",
       "backgroundGradient" : "gradient"

@@ -651,7 +651,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     testSendSelectionChangeOnMouseDown : function() {
       createText();
       text.setValue( "foobar" );
-      
+
       TestUtil.fakeMouseEvent( text, "mousedown" );
       setSelection( [ 3, 3 ] );
       TestUtil.fakeMouseEvent( text, "mouseup" );
@@ -1087,6 +1087,7 @@ var createText = function( noflush, arg ) {
     TestUtil.flush();
     TestUtil.forceTimerOnce(); // apply first input fix in IE
     text.focus();
+    TestUtil.clearRequestLog();
   }
 };
 

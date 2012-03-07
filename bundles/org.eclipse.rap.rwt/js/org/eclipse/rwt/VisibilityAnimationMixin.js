@@ -30,6 +30,7 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
   
   construct : function() {
     this.hide(); // forces _applyVisibility to be called on show() - not a good practice
+    this.addEventListener( "beforeAppear", this._blockFocusOnAppear, this );
   },
 
   destruct : function() {
@@ -53,45 +54,91 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
     },
     
     _configureAppearAnimation : function( config ) {
-      var type = null;
-      for( type in config ) { 
-        break; 
+      if( this._appearAnimation != null ) {
+        this._appearAnimation.getDefaultRenderer().setActive( false );        
       }
-      if( type !== null ) {
-        var props = config[ type ];
-        var animation = this._getAppearAnimation();
-        animation.setProperties( props );  
-        var renderer = animation.getDefaultRenderer();
+      for( var type in config ) {
         switch( type ) {
           case "fadeIn":
-            renderer.animate( this, "opacity", AnimationRenderer.ANIMATION_APPEAR );
+            this._configureFadeIn( config[ type ] );
           break;
           case "slideIn":
-            var animationType = AnimationRenderer.ANIMATION_APPEAR | AnimationRenderer.ANIMATION_CHANGE; 
-            renderer.animate( this, "height", animationType );
-            animation.addEventListener( "init", this._initSlideAnimation, this );
-            animation.addEventListener( "cancel", this._finishSlideAnimation, this );
+            this._configureSlideIn( config[ type ] );
           break;
           case "flyInTop":
           case "flyInLeft":
           case "flyInRight":
           case "flyInBottom":
-            var animationType = AnimationRenderer.ANIMATION_APPEAR; 
-            renderer.animate( this, "top", animationType );
-            renderer.setInvisibilityGetter( org.eclipse.rwt.VisibilityAnimationMixin.hideTop )
+            this._configureFlyIn( config[ type ], type );
           break;
         }
-      } else if( this._appearAnimation != null ) {
-        this._appearAnimation.getDefaultRenderer().setActive( false );        
       }
     },
     
+    _configureFadeIn : function( props ) {
+      var animation = this._getAppearAnimation();
+      animation.setProperties( props );  
+      animation.getDefaultRenderer().animate( this, "opacity", AnimationRenderer.ANIMATION_APPEAR );
+    },
+    
+    _configureSlideIn : function( props ) {
+      var animation = this._getAppearAnimation();
+      animation.setProperties( props );  
+      var renderer = animation.getDefaultRenderer();
+      var animationType = AnimationRenderer.ANIMATION_APPEAR | AnimationRenderer.ANIMATION_CHANGE;
+      renderer.animate( this, "height", animationType );
+      animation.addEventListener( "init", this._initSlideAnimation, this );
+      animation.addEventListener( "cancel", this._finishSlideAnimation, this );
+    },
+    
+    _configureFlyIn : function( props, type ) {
+      var animation = this._getAppearAnimation();
+      animation.setProperties( props );  
+      var renderer = animation.getDefaultRenderer();
+      var animationType = AnimationRenderer.ANIMATION_APPEAR;
+      switch( type ) {
+        case "flyInTop":
+          renderer.animate( this, "top", animationType );
+          renderer.setInvisibilityGetter( org.eclipse.rwt.VisibilityAnimationMixin.hideTop );
+        break;
+        case "flyInBottom":
+          renderer.animate( this, "top", animationType );
+          renderer.setInvisibilityGetter( org.eclipse.rwt.VisibilityAnimationMixin.hideBottom );
+        break;
+        case "flyInLeft":
+          renderer.animate( this, "left", animationType );
+          renderer.setInvisibilityGetter( org.eclipse.rwt.VisibilityAnimationMixin.hideLeft );
+        break;
+        case "flyInRight":
+          renderer.animate( this, "left", animationType );
+          renderer.setInvisibilityGetter( org.eclipse.rwt.VisibilityAnimationMixin.hideRight );
+        break;
+      } 
+    },
+   
     _getAppearAnimation : function() {
       if( this._appearAnimation === null ) {
         this._appearAnimation = new Animation();
+        this._appearAnimation.addEventListener( "cancel", this._onAppearFinish, this );
       }
       this._appearAnimation.getDefaultRenderer().setActive( true );
       return this._appearAnimation;
+    },
+    
+    _blockFocusOnAppear : function() {
+      if( this._appearAnimation && this._appearAnimation.getDefaultRenderer().isActive() ) {
+        qx.event.handler.FocusHandler.blockFocus = true;
+      }
+    },
+
+    _onAppearFinish : function() {
+      if( qx.event.handler.FocusHandler.blockFocus ) {
+        qx.event.handler.FocusHandler.blockFocus = false;
+        var focused = this.getFocusRoot() ? this.getFocusRoot().getFocusedChild() : null;
+        if( focused ) {
+          focused._visualizeFocus();
+        }
+      }
     },
 
     _configureDisappearAnimation : function( config ) {
@@ -132,9 +179,21 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
  },
  
  statics : {
-   
+
    hideTop : function( widget ) {
      return parseInt( widget.getHeightValue(), 10 ) * -1;
+   },
+
+   hideBottom : function( widget ) {
+     return widget.getParent().getInnerHeight();
+   },
+
+   hideLeft : function( widget ) {
+     return parseInt( widget.getWidthValue(), 10 ) * -1;
+   },
+
+   hideRight : function( widget ) {
+     return widget.getParent().getInnerWidth();
    }
    
  }

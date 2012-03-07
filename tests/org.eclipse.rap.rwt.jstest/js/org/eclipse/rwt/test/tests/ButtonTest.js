@@ -393,7 +393,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       //var button = new org.eclipse.swt.widgets.CheckBox();
       var button = new org.eclipse.rwt.widgets.Button( "check" );
       button.addState( "rwt_CHECK" );
-      org.eclipse.swt.WidgetManager.getInstance().add( button, "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( button, "w11" );
       this._currentButton = button;
       button.addToDocument();
       qx.ui.core.Widget.flushGlobalQueues();
@@ -402,7 +402,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertEquals( 0, this.TestUtil.getRequestsSend() );
       assertTrue( button.hasState( "selected" ) );
       assertTrue(
-        org.eclipse.swt.Request.getInstance()._parameters[ "w1.selection" ]
+        org.eclipse.swt.Request.getInstance()._parameters[ "w11.selection" ]
       );
       button.setHasSelectionListener( true );
       button.setSelection( false );
@@ -411,23 +411,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       this.TestUtil.click( button );
       assertTrue( button.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );
-      assertContains( "w1.selection=true",  this.TestUtil.getMessage() );
+      assertContains( "w11.selection=true",  this.TestUtil.getMessage() );
       this.TestUtil.clearRequestLog();
       this.TestUtil.click( button );
       assertFalse( button.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );
-      assertContains( "w1.selection=false",  this.TestUtil.getMessage() );
+      assertContains( "w11.selection=false",  this.TestUtil.getMessage() );
       this.TestUtil.clearRequestLog();
       this.TestUtil.press( button, "Space" );
       assertTrue( button.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );
-      assertContains( "w1.selection=true",  this.TestUtil.getMessage() );
+      assertContains( "w11.selection=true",  this.TestUtil.getMessage() );
     },
     
     testExecuteRadioButton : function() {
       var button = new org.eclipse.rwt.widgets.Button( "radio" );
       button.addState( "rwt_RADIO" );
-      org.eclipse.swt.WidgetManager.getInstance().add( button, "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( button, "w11" );
       this._currentButton = button;
       button.addToDocument();
       qx.ui.core.Widget.flushGlobalQueues();
@@ -435,7 +435,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       this.TestUtil.click( button );
       assertEquals( 0, this.TestUtil.getRequestsSend() );      
       assertTrue(
-        org.eclipse.swt.Request.getInstance()._parameters[ "w1.selection" ]
+        org.eclipse.swt.Request.getInstance()._parameters[ "w11.selection" ]
       );
       button.setSelection( false );      
       button.setHasSelectionListener( true );
@@ -443,7 +443,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       this.TestUtil.click( button );
       assertEquals( 1, this.TestUtil.getRequestsSend() );
       assertTrue( button.hasState( "selected" ) );      
-      assertContains( "w1.selection=true",  this.TestUtil.getMessage() );
+      assertContains( "w11.selection=true",  this.TestUtil.getMessage() );
       var button2 = new org.eclipse.rwt.widgets.Button( "radio" );
       button2.addState( "rwt_RADIO" );
       org.eclipse.swt.WidgetManager.getInstance().add( button2, "w2" );
@@ -456,7 +456,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertTrue( button2.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );      
       var msg = this.TestUtil.getMessage();      
-      assertContains( "w1.selection=false", msg );
+      assertContains( "w11.selection=false", msg );
       assertContains( "w2.selection=true", msg );
       this.TestUtil.clearRequestLog();
       this.TestUtil.press( button2, "Up" );
@@ -464,14 +464,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertFalse( button2.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );
       var msg = this.TestUtil.getMessage();
-      assertContains( "w1.selection=true", msg );
+      assertContains( "w11.selection=true", msg );
       assertContains( "w2.selection=false", msg );
     },
 
     testExecuteRadioButton_NoRadioGroup : function() {
       var button1 = new org.eclipse.rwt.widgets.Button( "radio" );
       button1.addState( "rwt_RADIO" );
-      org.eclipse.swt.WidgetManager.getInstance().add( button1, "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( button1, "w11" );
       button1.setNoRadioGroup( true );
       button1.setHasSelectionListener( true );
       button1.addToDocument();
@@ -488,7 +488,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertFalse( button2.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );      
       var msg = this.TestUtil.getMessage();      
-      assertContains( "w1.selection=true", msg );
+      assertContains( "w11.selection=true", msg );
       assertContainsNot( "w2.selection", msg );
       this.TestUtil.clearRequestLog();
       this.TestUtil.click( button2 );
@@ -496,7 +496,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertTrue( button2.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );      
       var msg = this.TestUtil.getMessage();      
-      assertContainsNot( "w1.selection", msg );
+      assertContainsNot( "w11.selection", msg );
       assertContains( "w2.selection=true", msg );
       this.TestUtil.clearRequestLog();
       this.TestUtil.click( button2 );
@@ -504,7 +504,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertFalse( button2.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );      
       var msg = this.TestUtil.getMessage();      
-      assertContainsNot( "w1.selection", msg );
+      assertContainsNot( "w11.selection", msg );
       assertContains( "w2.selection=false", msg );
     },
 
@@ -514,7 +514,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       this._currentButton = button;
       button.addToDocument();
       qx.ui.core.Widget.flushGlobalQueues();
-      org.eclipse.swt.WidgetManager.getInstance().add( button, "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( button, "w11" );
       this.TestUtil.clearRequestLog();
       this.TestUtil.click( button );
       assertEquals( 0, this.TestUtil.getRequestsSend() );      
@@ -525,7 +525,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertFalse( button.hasState( "selected" ) );      
       var msg = this.TestUtil.getMessage();
       assertContains( "widgetSelected=w1",  msg );
-      assertContainsNot( "w1.selection=true",  msg );   
+      assertContainsNot( "w11.selection=true",  msg );   
       this.TestUtil.clearRequestLog();
       this.TestUtil.press( button, "Enter" );
       assertFalse( button.hasState( "selected" ) );      

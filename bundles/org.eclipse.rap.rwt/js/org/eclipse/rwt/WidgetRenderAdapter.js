@@ -34,6 +34,7 @@ qx.Class.define( "org.eclipse.rwt.WidgetRenderAdapter", {
     "visibility" : "qx.event.type.DataEvent",
     "height" : "qx.event.type.DataEvent",
     "top" : "qx.event.type.DataEvent",
+    "left" : "qx.event.type.DataEvent",
     "opacity" : "qx.event.type.DataEvent",
     "backgroundColor" : "qx.event.type.DataEvent",
     "backgroundGradient" : "qx.event.type.DataEvent"      
@@ -79,6 +80,7 @@ qx.Class.define( "org.eclipse.rwt.WidgetRenderAdapter", {
       "visibility" : "_applyVisibility",
       "height" : "_renderRuntimeHeight",
       "top" : "_renderRuntimeTop",
+      "left" : "_renderRuntimeLeft",
       "opacity" : "_applyOpacity",
       "backgroundColor" : "_styleBackgroundColor",
       "backgroundGradient" : "_applyBackgroundGradient"      

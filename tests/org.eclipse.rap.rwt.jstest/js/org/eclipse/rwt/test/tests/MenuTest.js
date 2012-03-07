@@ -666,7 +666,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testMenuShowEvent : function() {
       this.createMenuBar( "push" );
-      org.eclipse.swt.WidgetManager.getInstance().add( this.menu, "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( this.menu, "w3" );
       this.TestUtil.clearRequestLog();
       this.TestUtil.flush();
       this.TestUtil.click( this.menuBarItem );
@@ -702,7 +702,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testExecutePushItem : function() {
       this.createSimpleMenu( "push" );
-      org.eclipse.swt.WidgetManager.getInstance().add( this.menuItem, "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( this.menuItem, "w3" );
       this.TestUtil.flush();
       this.TestUtil.clearRequestLog();
       this.TestUtil.click( this.menuItem );
@@ -713,22 +713,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertEquals( 1, this.TestUtil.getRequestsSend() );
       assertFalse( this.menuItem.hasState( "selected" ) );      
       var msg = this.TestUtil.getMessage();
-      assertContains( "widgetSelected=w1",  msg );
-      assertContainsNot( "w1.selection=true",  msg );   
+      assertContains( "widgetSelected=w3",  msg );
+      assertContainsNot( "w3.selection=true",  msg );   
       this.TestUtil.clearRequestLog();
       this.disposeMenu();
     },    
 
     testExecuteCheckItem: function() { 
       this.createSimpleMenu( "check" );
-      org.eclipse.swt.WidgetManager.getInstance().add( this.menuItem, "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( this.menuItem, "w3" );
       this.TestUtil.flush();
       this.TestUtil.clearRequestLog();
       this.TestUtil.click( this.menuItem );
       assertEquals( 0, this.TestUtil.getRequestsSend() );      
       assertTrue( this.menuItem.hasState( "selected" ) );
       assertTrue(
-        org.eclipse.swt.Request.getInstance()._parameters[ "w1.selection" ]
+        org.eclipse.swt.Request.getInstance()._parameters[ "w3.selection" ]
       );
       this.TestUtil.clearRequestLog();
       this.menuItem.setHasSelectionListener( true );
@@ -738,24 +738,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.TestUtil.click( this.menuItem );
       assertEquals( 1, this.TestUtil.getRequestsSend() );
       assertTrue( this.menuItem.hasState( "selected" ) );
-      assertContains( "w1.selection=true",  this.TestUtil.getMessage() );
+      assertContains( "w3.selection=true",  this.TestUtil.getMessage() );
       this.TestUtil.clearRequestLog();
       this.TestUtil.click( this.menuItem );
       assertFalse( this.menuItem.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );
-      assertContains( "w1.selection=false",  this.TestUtil.getMessage() );
+      assertContains( "w3.selection=false",  this.TestUtil.getMessage() );
       this.disposeMenu();
     },
 
     testExecuteRadioButton : function() {
       this.createSimpleMenu( "radio" );
-      org.eclipse.swt.WidgetManager.getInstance().add( this.menuItem, "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( this.menuItem, "w3" );
       this.TestUtil.flush();      
       this.TestUtil.clearRequestLog();
       this.TestUtil.click( this.menuItem );
       assertEquals( 0, this.TestUtil.getRequestsSend() );      
       assertTrue(
-        org.eclipse.swt.Request.getInstance()._parameters[ "w1.selection" ]
+        org.eclipse.swt.Request.getInstance()._parameters[ "w3.selection" ]
       );
       this.menuItem.setSelection( false );      
       this.menuItem.setHasSelectionListener( true );
@@ -763,12 +763,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.TestUtil.click( this.menuItem );
       assertEquals( 1, this.TestUtil.getRequestsSend() );
       assertTrue( this.menuItem.hasState( "selected" ) );      
-      assertContains( "w1.selection=true",  this.TestUtil.getMessage() );
+      assertContains( "w3.selection=true",  this.TestUtil.getMessage() );
       this.TestUtil.clearRequestLog();
       this.TestUtil.click( this.menuItem );
       assertEquals( 1, this.TestUtil.getRequestsSend() );
       assertTrue( this.menuItem.hasState( "selected" ) );      
-      assertContains( "w1.selection=true",  this.TestUtil.getMessage() );
+      assertContains( "w3.selection=true",  this.TestUtil.getMessage() );
       var item2 = new this._menuItemClass( "radio" );
       this.menu.addMenuItemAt( item2, 0 );      
       org.eclipse.swt.WidgetManager.getInstance().add( item2, "w2" );
@@ -780,7 +780,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertTrue( item2.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );      
       var msg = this.TestUtil.getMessage();      
-      assertContains( "w1.selection=false", msg );
+      assertContains( "w3.selection=false", msg );
       assertContains( "w2.selection=true", msg );
       this.TestUtil.clearRequestLog();
       // bug 328437
@@ -789,7 +789,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertTrue( item2.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );
       var msg = this.TestUtil.getMessage();
-      assertContainsNot( "w1.selection=false", msg );
+      assertContainsNot( "w3.selection=false", msg );
       assertContains( "w2.selection=true", msg );
       this.TestUtil.clearRequestLog();
       this.disposeMenu();
@@ -797,7 +797,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testExecuteRadioButton_NoRadioGroup : function() {
       this.createSimpleMenu( "radio" );
-      org.eclipse.swt.WidgetManager.getInstance().add( this.menuItem, "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( this.menuItem, "w3" );
       this.menuItem.setNoRadioGroup( true );
       this.menuItem.setHasSelectionListener( true );
       var menuItem2 = new this._menuItemClass( "radio" );
@@ -812,7 +812,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertFalse( menuItem2.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );      
       var msg = this.TestUtil.getMessage();      
-      assertContains( "w1.selection=true", msg );
+      assertContains( "w3.selection=true", msg );
       assertContainsNot( "w2.selection", msg );
       this.TestUtil.clearRequestLog();
       this.TestUtil.click( menuItem2 );
@@ -820,7 +820,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertTrue( menuItem2.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );      
       var msg = this.TestUtil.getMessage();      
-      assertContainsNot( "w1.selection", msg );
+      assertContainsNot( "w3.selection", msg );
       assertContains( "w2.selection=true", msg );
       this.TestUtil.clearRequestLog();
       this.TestUtil.click( menuItem2 );
@@ -828,7 +828,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertFalse( menuItem2.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );      
       var msg = this.TestUtil.getMessage();      
-      assertContainsNot( "w1.selection", msg );
+      assertContainsNot( "w3.selection", msg );
       assertContains( "w2.selection=false", msg );
     },
 
@@ -907,7 +907,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.TestUtil.press( subMenu, "Left", true );
       this.TestUtil.flush();     
       assertFalse( subMenu.isSeeable() );
+
       assertTrue( this.TestUtil.isActive( this.menu ) );
+
       assertTrue( item3.hasState( "over") );
       this.TestUtil.press( this.menu, "Enter", true );
       this.TestUtil.flush();     
@@ -915,7 +917,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertTrue( subMenu.isSeeable() );
       assertTrue( this.TestUtil.isActive( subMenu ) );
       assertTrue( subMenuItem.hasState( "over" ) );
-      org.eclipse.swt.WidgetManager.getInstance().add( subMenuItem, "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( subMenuItem, "w3" );
       subMenuItem.setHasSelectionListener( true );
       this.TestUtil.clearRequestLog();
       this.TestUtil.press( subMenu, "Enter", true );
@@ -924,8 +926,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertFalse( this.menu.isSeeable() );
       assertEquals( 2, this.TestUtil.getRequestsSend() );
       var msg = this.TestUtil.getMessage();
-      assertContains( "widgetSelected=w1",  msg );
-      assertContainsNot( "w1.selection=true",  msg );   
+      assertContains( "widgetSelected=w3",  msg );
+      assertContainsNot( "w3.selection=true",  msg );   
       this.TestUtil.clearRequestLog();      
       this.disposeMenuBar();
     },

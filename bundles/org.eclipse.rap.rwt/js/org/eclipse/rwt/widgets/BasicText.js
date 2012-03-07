@@ -558,10 +558,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
 
     _visualizeFocus : function() {
       this.base( arguments );
-      try {
-        this._inputElement.focus();
-      } catch( ex ) {
-        // ignore
+      if( !qx.event.handler.FocusHandler.blockFocus ) {
+        try {
+          this._inputElement.focus();
+        } catch( ex ) {
+          // ignore
+        }
       }
     },
 
