@@ -325,8 +325,11 @@ qx.Class.define( "qx.core.Property", {
       }
 
       // Attach methods
-      config.group ? this.__attachGroupMethods( clazz, config, prefix, postfix )
-                   : this.__attachPropertyMethods( clazz, config, prefix, postfix );
+      if( config.group ) {
+        this.__attachGroupMethods( clazz, config, prefix, postfix );
+      } else {
+        this.__attachPropertyMethods( clazz, config, prefix, postfix );
+      }
     },
 
     /**
@@ -442,42 +445,42 @@ qx.Class.define( "qx.core.Property", {
       method.get[name] = prefix + "get" + postfix;
       members[method.get[name]] = function() {
         return qx.core.Property.executeOptimizedGetter( this, clazz, name, "get" );
-      }
+      };
 
       method.set[name] = prefix + "set" + postfix;
       members[method.set[name]] = function( value ) {
         return qx.core.Property.executeOptimizedSetter( this, clazz, name, "set", arguments );
-      }
+      };
 
       method.reset[name] = prefix + "reset" + postfix;
       members[method.reset[name]] = function() {
         return qx.core.Property.executeOptimizedSetter( this, clazz, name, "reset" );
-      }
+      };
 
       if( config.inheritable || config.apply || config.event || config.deferredInit ) {
         method.init[name] = prefix + "init" + postfix;
         members[method.init[name]] = function(value) {
           return qx.core.Property.executeOptimizedSetter( this, clazz, name, "init", arguments );
-        }
+        };
       }
 
       if( config.inheritable ) {
         method.refresh[name] = prefix + "refresh" + postfix;
         members[method.refresh[name]] = function( value ) {
           return qx.core.Property.executeOptimizedSetter( this, clazz, name, "refresh", arguments );
-        }
+        };
       }
 
       if( config.themeable ) {
         method.style[name] = prefix + "style" + postfix;
         members[method.style[name]] = function( value ) {
           return qx.core.Property.executeOptimizedSetter( this, clazz, name, "style", arguments );
-        }
+        };
 
         method.unstyle[name] = prefix + "unstyle" + postfix;
         members[method.unstyle[name]] = function() {
           return qx.core.Property.executeOptimizedSetter( this, clazz, name, "unstyle" );
-        }
+        };
       }
 
       if( config.check === "Boolean" ) {

@@ -11,6 +11,8 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
+/*global console: false */
+
 /**
  * The qooxdoo root class. All other classes are direct or indirect subclasses of this one.
  *
@@ -463,7 +465,7 @@ qx.Class.define("qx.core.Object",
 
       for (var i=0, l=arguments.length; i<l; i++)
       {
-        var name = arguments[i]
+        var name = arguments[i];
 
         if (this[name] == null) {
           continue;
@@ -492,7 +494,7 @@ qx.Class.define("qx.core.Object",
 
       for (var i=0, l=arguments.length; i<l; i++)
       {
-        var name = arguments[i]
+        var name = arguments[i];
 
         if (this[name] == null) {
           continue;
