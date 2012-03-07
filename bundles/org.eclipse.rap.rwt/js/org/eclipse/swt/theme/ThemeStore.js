@@ -87,7 +87,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
   members : {
 
     setCurrentTheme : function( themeId ) {
-    	this._currentTheme = themeId;
+      this._currentTheme = themeId;
     },
 
     /////////////
@@ -96,7 +96,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
     defineValues : function( values ) {
       for( var type in this._values ) {
         if( type in values ) {
-          for( key in values[ type ] ) {
+          for( var key in values[ type ] ) {
             if( !( key in this._values[ type ] ) ) {
               this._values[ type ][ key ] = values[ type ][ key ];
             }
@@ -151,6 +151,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
     },
 
     getImage : function( element, states, property, theme ) {
+      var result;
       var key = this._getCssValue( element, states, property, theme );
       var imageArray = this._values.images[ key ];
       if( imageArray != null ) {
@@ -268,7 +269,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       if( value ) {
         // TODO [if] remove this check when values are rendered only once
         if( value.colors && value.percents ) {
-          var gradient = new Array();
+          var gradient = [];
           for( var i = 0; i < value.colors.length; i++ ) {
             gradient[ i ] = [ value.percents[ i ] / 100, value.colors[ i ] ];
           }
@@ -293,7 +294,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
     _getCssValue : function( element, states, property, theme ) {
       var result;
       if( theme == null ) {
-      	theme = this._currentTheme;
+        theme = this._currentTheme;
       }
       if(    this._cssValues[ theme ] !== undefined
           && this._cssValues[ theme ][ element ] !== undefined
@@ -355,7 +356,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
           result[ i ] = this.getNamedColor( colorArr[ i ] );
         }
       }
-      return result
+      return result;
     },
 
     // Fills a map with named colors necessary for border-definitions
