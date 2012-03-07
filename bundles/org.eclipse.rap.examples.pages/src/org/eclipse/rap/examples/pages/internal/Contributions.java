@@ -40,6 +40,7 @@ class Contributions {
     addContribution( "row-layout", "Row Layout", RowLayoutExample.class );
     addContribution( "fill-layout", "Fill Layout", FillLayoutExample.class );
     addContribution( "grid-layout", "Grid Layout", GridLayoutExample.class );
+    addContribution( "table-markup", "Table with Markup", MarkupExample.class );
   }
 
   private void addContribution( final String id,

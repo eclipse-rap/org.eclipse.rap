@@ -8,4 +8,11 @@
             base-name="/description">
       </resource>
    </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.resources">
+      <resource
+            alias="/cars/images"
+            base-name="/images">
+      </resource>
+   </extension>
 </plugin>
