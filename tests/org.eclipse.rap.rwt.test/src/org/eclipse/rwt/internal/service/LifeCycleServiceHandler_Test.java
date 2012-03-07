@@ -19,11 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rwt.internal.application.ApplicationContext;
@@ -189,6 +191,29 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertEquals( "text/html; charset=UTF-8", response.getHeader( "Content-Type" ) );
+  }
+
+  public void testHandleInvalidRequestCounter() throws IOException {
+    LifeCycleServiceHandler.markSessionStarted();
+    simulateUiRequestWithIllegalCounter();
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
+    assertEquals( "invalid request counter", message.getError() );
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    assertEquals( HttpServletResponse.SC_PRECONDITION_FAILED, response.getStatus() );
+  }
+
+  public void testHandleSessionTimeout() throws IOException {
+    simulateUiRequest();
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
+    assertEquals( "session timeout", message.getError() );
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    assertEquals( HttpServletResponse.SC_FORBIDDEN, response.getStatus() );
   }
 
   private void simulateInitialUiRequest() {

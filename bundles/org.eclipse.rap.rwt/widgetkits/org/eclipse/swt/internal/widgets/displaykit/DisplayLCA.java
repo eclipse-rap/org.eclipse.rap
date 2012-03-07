@@ -12,12 +12,9 @@
 package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.IOException;
-import java.text.MessageFormat;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
@@ -135,7 +132,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_FOCUS_CONTROL, display.getFocusControl() );
     adapter.preserve( PROP_CURRENT_THEME, ThemeUtil.getCurrentThemeId() );
-    adapter.preserve( PROP_TIMEOUT_PAGE, getTimeoutPage() );
     adapter.preserve( PROP_EXIT_CONFIRMATION, getExitConfirmation() );
     ActiveKeysUtil.preserveActiveKeys( display );
     ActiveKeysUtil.preserveCancelKeys( display );
@@ -161,7 +157,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       disposeWidgets();
       renderRequestCounter();
       renderTheme( display );
-      renderErrorPages( display );
       renderExitConfirmation( display );
       renderEnableUiTests( display );
       renderShells( display );
@@ -213,33 +208,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       IClientObject clientObject = ClientObjectFactory.getClientObject( display );
       clientObject.set( PROP_CURRENT_THEME, theme.getJsId() );
     }
-  }
-
-  private static void renderErrorPages( Display display ) {
-    String timeoutPage = getTimeoutPage();
-    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
-    Object oldTimeoutPage = adapter.getPreserved( PROP_TIMEOUT_PAGE );
-    if( !timeoutPage.equals( oldTimeoutPage ) ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( display );
-      clientObject.set( PROP_TIMEOUT_PAGE, timeoutPage );
-    }
-  }
-
-  private static String getTimeoutPage() {
-    String timeoutTitle = RWTMessages.getMessage( "RWT_SessionTimeoutPageTitle" );
-    String timeoutHeadline = RWTMessages.getMessage( "RWT_SessionTimeoutPageHeadline" );
-    String pattern = RWTMessages.getMessage( "RWT_SessionTimeoutPageMessage" );
-    Object[] arguments = new Object[]{ "<a {HREF_URL}>", "</a>" };
-    String timeoutMessage = MessageFormat.format( pattern, arguments );
-    // TODO Escape umlauts etc
-    String timeoutPage = "<html><head><title>"
-                         + timeoutTitle
-                         + "</title></head><body><p>"
-                         + timeoutHeadline
-                         + "</p><p>"
-                         + timeoutMessage
-                         + "</p></body></html>";
-    return timeoutPage;
   }
 
   private static void renderExitConfirmation( Display display ) {

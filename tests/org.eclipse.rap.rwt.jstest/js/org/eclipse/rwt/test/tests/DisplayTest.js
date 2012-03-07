@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,6 +63,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
     },
 
     testSetFocusControlByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var button = new org.eclipse.rwt.widgets.Button( "push" );
       org.eclipse.swt.WidgetManager.getInstance().add( button, "btn1" );
       button.addToDocument();
@@ -92,26 +93,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       assertEquals( "myTheme", org.eclipse.swt.theme.ThemeStore.getInstance()._currentTheme );
     },
 
-    testSetTimeoutPageByProtocol : function() {
-      var processor = org.eclipse.rwt.protocol.Processor;
-      processor.processOperation( {
-        "target" : "w1",
-        "action" : "set",
-        "properties" : {
-          "timeoutPage" : "Timeout occur!!!"
-        }
-      } );
-      assertEquals( "Timeout occur!!!", org.eclipse.swt.Request.getInstance()._timeoutPage );
-    },
-
     testSetEnableUiTests : function() {
       org.eclipse.rwt.Display._current = undefined;
-    	var display = new org.eclipse.rwt.Display();
+      var display = new org.eclipse.rwt.Display();
 
-    	display.setEnableUiTests( true );
+      display.setEnableUiTests( true );
 
-    	assertIdentical( true, qx.ui.core.Widget._renderHtmlIds );
-    	display.setEnableUiTests( false );
+      assertIdentical( true, qx.ui.core.Widget._renderHtmlIds );
+      display.setEnableUiTests( false );
     }
 
   }

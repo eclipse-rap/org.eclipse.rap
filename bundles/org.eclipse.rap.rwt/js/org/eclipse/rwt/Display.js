@@ -57,13 +57,6 @@ org.eclipse.rwt.Display.prototype = {
     org.eclipse.rwt.KeyEventSupport.getInstance().cancelEvent();
   },
 
-  reload : function( args ) {
-    if( confirm( args.message ) ) {
-      this.setExitConfirmation( null );
-      window.location.reload( false );
-    }
-  },
-
   beep : function() {
     // do nothing for now, used by native clients
   },
@@ -83,10 +76,6 @@ org.eclipse.rwt.Display.prototype = {
 
   setCurrentTheme : function( themeId ) {
     org.eclipse.swt.theme.ThemeStore.getInstance().setCurrentTheme( themeId );
-  },
-
-  setTimeoutPage : function( content ) {
-    org.eclipse.swt.Request.getInstance().setTimeoutPage( content );
   },
 
   setEnableUiTests : function( value ) {

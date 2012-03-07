@@ -245,8 +245,8 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     domEvent.screenX = left;
     domEvent.screenY = top;
     domEvent.ctrlKey = ( qx.event.type.DomEvent.CTRL_MASK & mod ) != 0;
-    domEvent.altKey = ( qx.event.type.DomEvent.ALT_MASK  & mod ) != 0;
-    domEvent.shiftKey = ( qx.event.type.DomEvent.SHIFT_MASK  & mod ) != 0;
+    domEvent.altKey = ( qx.event.type.DomEvent.ALT_MASK & mod ) != 0;
+    domEvent.shiftKey = ( qx.event.type.DomEvent.SHIFT_MASK & mod ) != 0;
     if( this.isMobileWebkit() ) {
       domEvent.originalEvent = {};
     }
@@ -276,7 +276,6 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       break;
       default:
         throw "fireFakeDomEvent: Unkown dom-event " + domEvent.type;
-      break;
     }
   },
   
@@ -431,7 +430,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       ) {
         result = this._convertToCharCode( stringOrKeyCode );
       } else {
-        result = 0
+        result = 0;
       }
       return result;
     }
@@ -579,7 +578,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     var target = widget._getTargetNode();
     var type =   qx.core.Variant.isSet( "qx.client", "gecko" ) 
                ? "DOMMouseScroll" 
-               : "mousewheel"
+               : "mousewheel";
     var domEvent = 
     this._createFakeMouseEventDOM( target, type, 0, 0, 0, 0 );
     this._addWheelDelta( domEvent, value );
@@ -710,7 +709,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   initErrorPageLog : function() {
     var handler = org.eclipse.rwt.ErrorHandler;
     org.eclipse.rwt.test.fixture.TestUtil.clearErrorPage();
-    handler.showError = function( content ) {
+    handler.showErrorPage = function( content ) {
       TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil._errorPage = content;
     };
@@ -737,7 +736,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     qx.client.Timer.once = function( func, obj, timeout ) {
       var source = arguments.callee.caller;
       this._onceCallsLog.push( [ func, obj, timeout, source ] );
-    } 
+    }; 
   },
   
   getTimerOnceLog : function() {
@@ -802,7 +801,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   _appearanceBackups : {},
   
   _clearAppearanceCache : function() {
-    var manager = qx.theme.manager.Appearance.getInstance()
+    var manager = qx.theme.manager.Appearance.getInstance();
     manager.__cache[ manager.getCurrentTheme().name ] = {};
   },
   

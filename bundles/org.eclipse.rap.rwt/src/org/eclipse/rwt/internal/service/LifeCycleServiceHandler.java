@@ -12,7 +12,7 @@
 package org.eclipse.rwt.internal.service;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.text.MessageFormat;
 import java.util.Map;
 
 import javax.servlet.ServletResponse;
@@ -37,6 +37,8 @@ import org.eclipse.rwt.service.ISessionStore;
 
 
 public class LifeCycleServiceHandler implements IServiceHandler {
+  private static final String PROP_ERROR = "error";
+  private static final String PROP_MESSAGE = "message";
   private static final String SESSION_STARTED
     = LifeCycleServiceHandler.class.getName() + "#isSessionStarted";
 
@@ -105,16 +107,29 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   }
 
   private static void handleInvalidRequestCounter() {
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( "message", RWTMessages.getMessage( "RWT_MultipleInstancesError" ) );
-    ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
-    // TODO [tb] : do not assume "w1" as id for display
-    writer.appendCall( "w1", "reload", properties );
+    int statusCode = HttpServletResponse.SC_PRECONDITION_FAILED;
+    String errorType = "invalid request counter";
+    String errorMessage = RWTMessages.getMessage( "RWT_MultipleInstancesErrorMessage" );
+    renderError( statusCode, errorType, formatMessage( errorMessage ) );
   }
 
   private static void handleSessionTimeout() {
+    int statusCode = HttpServletResponse.SC_FORBIDDEN;
+    String errorType = "session timeout";
+    String errorMessage = RWTMessages.getMessage( "RWT_SessionTimeoutErrorMessage" );
+    renderError( statusCode, errorType, formatMessage( errorMessage ) );
+  }
+
+  private static String formatMessage( String message ) {
+    Object[] arguments = new Object[]{ "<a {HREF_URL}>", "</a>" };
+    return MessageFormat.format( message, arguments );
+  }
+
+  private static void renderError( int statusCode, String errorType, String errorMessage) {
+    ContextProvider.getResponse().setStatus( statusCode );
     ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
-    writer.appendMeta( "timeout", JsonValue.TRUE );
+    writer.appendMeta( PROP_ERROR, JsonValue.valueOf( errorType ) );
+    writer.appendMeta( PROP_MESSAGE, JsonValue.valueOf( errorMessage ) );
   }
 
   private static void reinitializeSessionStore() {

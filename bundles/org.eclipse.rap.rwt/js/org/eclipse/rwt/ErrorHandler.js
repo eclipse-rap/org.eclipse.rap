@@ -13,35 +13,11 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
 
   statics : {
 
-    showError : function( content ) {
-      this._enableTextSelection();
-      this._freezeApplication();
-      document.title = "Error Page";
-      this._createErrorArea().innerHTML = content;
-    },
-
-    showTimeout : function( content ) {
-      var location = String( window.location );
-      var index = location.indexOf( "#" );
-      if( index != -1 ) {
-        location = location.substring( 0, index );
-      }
-      var hrefAttr = "href=\"" + location + "\"";
-      var html = content.replace( /\{HREF_URL\}/, hrefAttr );
-      this._freezeApplication();
-      this._createOverlay();
-      var element = this._createTimeoutArea( 400, 100 );
-      element.innerHTML = html;
-      var hyperlink = element.getElementsByTagName( "a" )[ 0 ];
-      hyperlink.style.outline = "none";
-      hyperlink.focus();
-    },
-
     processJavaScriptErrorInResponse : function( script, error, currentRequest ) {
       var content = "<p>Could not process server response:</p><pre>";
       content += this._gatherErrorInfo( error, script, currentRequest );
       content += "</pre>";
-      this.showError( content );
+      this.showErrorPage( content );
     },
 
     processJavaScriptError : function( error ) {
@@ -62,9 +38,34 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
         var content = "<p>Javascript error occurred:</p><pre>";
         content += this._gatherErrorInfo( error );
         content += "</pre>";
-        this.showError( content );
+        this.showErrorPage( content );
         throw error;
       }
+    },
+
+    showErrorPage : function( content ) {
+      this._enableTextSelection();
+      this._freezeApplication();
+      document.title = "Error Page";
+      this._createErrorPageArea().innerHTML = content;
+    },
+
+    showErrorBox : function( content ) {
+      var location = String( window.location );
+      var index = location.indexOf( "#" );
+      if( index != -1 ) {
+        location = location.substring( 0, index );
+      }
+      var hrefAttr = "href=\"" + location + "\"";
+      var html = content.replace( /\{HREF_URL\}/, hrefAttr );
+      html = org.eclipse.rwt.protocol.EncodingUtil.replaceNewLines( html, "<br/>" );
+      this._freezeApplication();
+      this._createOverlay();
+      var element = this._createErrorBoxArea( 400, 100 );
+      element.innerHTML = html;
+      var hyperlink = element.getElementsByTagName( "a" )[ 0 ];
+      hyperlink.style.outline = "none";
+      hyperlink.focus();
     },
 
     _gatherErrorInfo : function( error, script, currentRequest ) {
@@ -109,7 +110,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       return element;
     },
 
-    _createErrorArea : function() {
+    _createErrorPageArea : function() {
       var element = document.createElement( "div" );
       var style = element.style;
       style.position = "absolute";
@@ -123,7 +124,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       return element;
     },
 
-    _createTimeoutArea : function( width, height ) {
+    _createErrorBoxArea : function( width, height ) {
       var element = document.createElement( "div" );
       var style = element.style;
       style.position = "absolute";
@@ -148,7 +149,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       return element;
     },
 
-    /*global console: false */
+    /* global console: false */
     _freezeApplication : function() {
       try {
         var display = org.eclipse.rwt.Display.getCurrent();

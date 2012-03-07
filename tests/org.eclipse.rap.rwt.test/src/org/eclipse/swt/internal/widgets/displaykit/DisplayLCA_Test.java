@@ -333,16 +333,6 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( expected, message.findSetProperty( displayId, "currentTheme" ) );
   }
 
-  public void testRenderTimeoutPage() throws IOException {
-    Fixture.fakeNewRequest( display );
-
-    displayLCA.render( display );
-
-    Message message = Fixture.getProtocolMessage();
-    String actual = ( String )message.findSetProperty( displayId, "timeoutPage" );
-    assertTrue( actual.startsWith( "<html><head><title>" ) );
-  }
-
   public void testRenderBeep() throws IOException {
     Fixture.fakeNewRequest( display );
 

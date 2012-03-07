@@ -37,7 +37,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
     requestQueue.setMaxConcurrentRequests( 1 );
     // References the currently running request or null if no request is active
     this._currentRequest = null;
-    this._timeoutPage = "";
   },
 
   destruct : function() {
@@ -73,10 +72,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
 
     getRequestCounter : function() {
       return this._requestCounter;
-    },
-
-    setTimeoutPage : function( content ) {
-      this._timeoutPage = content;
     },
 
     /**
@@ -229,24 +224,25 @@ qx.Class.define( "org.eclipse.swt.Request", {
       }
       if( giveUp ) {
         this._hideWaitHint();
-        var content;
-        var text = null;
         var request = exchange.getImplementation().getRequest();
+        var text = request.responseText;
         // [if] typeof(..) == "unknown" is IE specific. Used to prevent error:
         // "The data  necessary to complete this operation is not yet available"
-        if( typeof( request.responseText ) != "unknown" ) {
-          text = request.responseText;
+        if( typeof( text ) == "unknown" ) {
+          text = undefined;
         }
-        if( text === "" || text == null ) {
-          content
-            = "<p>Request failed.</p><pre>"
-            + "HTTP Status Code: "
-            + String( evt.getStatusCode() )
-            + "</pre>";
+        if( text && text.length > 0 ) {
+          if( this._isJsonResponse( request ) ) {
+            var messageObject = JSON.parse( text );
+            org.eclipse.rwt.ErrorHandler.showErrorBox( messageObject.meta.message );
+          } else {
+            org.eclipse.rwt.ErrorHandler.showErrorPage( text );
+          }
         } else {
-          content = text;
+          var statusCode = String( evt.getStatusCode() );
+          text = "<p>Request failed.</p><pre>HTTP Status Code: " + statusCode + "</pre>";
+          org.eclipse.rwt.ErrorHandler.showErrorPage( text );
         }
-        org.eclipse.rwt.ErrorHandler.showError( content );
       }
       // [if] Dispose only finished transport - see bug 301261, 317616
       exchange.dispose();
@@ -258,15 +254,10 @@ qx.Class.define( "org.eclipse.swt.Request", {
       var errorOccured = false;
       try {
         var messageObject = JSON.parse( text );
-        if( messageObject.meta.timeout === true ) {
-          errorOccured = true;
-          org.eclipse.rwt.ErrorHandler.showTimeout( this._timeoutPage );
-        } else {
-          org.eclipse.swt.EventUtil.setSuspended( true );
-          org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
-          org.eclipse.swt.EventUtil.setSuspended( false );
-          org.eclipse.rwt.UICallBack.getInstance().sendUICallBackRequest();
-        }
+        org.eclipse.swt.EventUtil.setSuspended( true );
+        org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
+        org.eclipse.swt.EventUtil.setSuspended( false );
+        org.eclipse.rwt.UICallBack.getInstance().sendUICallBackRequest();
       } catch( ex ) {
         org.eclipse.rwt.ErrorHandler.processJavaScriptErrorInResponse( text,
                                                                        ex,
@@ -351,6 +342,11 @@ qx.Class.define( "org.eclipse.swt.Request", {
         return statusCode === 0;
       }
     } ),
+
+    _isJsonResponse : function( request ) {
+      var contentType = request.getResponseHeader( "Content-Type" );
+      return contentType.indexOf( qx.util.Mime.JSON ) !== -1;
+    },
 
     ///////////////////////////////////////////////////
     // Wait hint - UI feedback while request is running

@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.*;
+import org.eclipse.rwt.internal.theme.JsonValue;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -388,6 +389,34 @@ public class Message_Test extends TestCase {
       getMessage().getOperation( 1 );
       fail();
     } catch ( IllegalStateException expected ) {
+    }
+  }
+
+  public void testGetError() {
+    writer.appendMeta( "error", JsonValue.valueOf( "test error" ) );
+
+    assertEquals( "test error", getMessage().getError() );
+  }
+
+  public void testGetNoError() {
+    try {
+      getMessage().getError();
+      fail();
+    } catch ( RuntimeException expected ) {
+    }
+  }
+
+  public void testGetErrorMessage() {
+    writer.appendMeta( "message", JsonValue.valueOf( "test message" ) );
+
+    assertEquals( "test message", getMessage().getErrorMessage() );
+  }
+
+  public void testGetNoErrorMessage() {
+    try {
+      getMessage().getErrorMessage();
+      fail();
+    } catch ( RuntimeException expected ) {
     }
   }
 

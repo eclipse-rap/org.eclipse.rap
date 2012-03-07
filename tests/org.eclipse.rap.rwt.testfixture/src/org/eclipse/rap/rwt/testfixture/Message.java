@@ -58,6 +58,22 @@ public final class Message {
     }
   }
 
+  public String getError() {
+    try {
+      return message.getJSONObject( "meta" ).getString( "error" );
+    } catch( JSONException e ) {
+      throw new RuntimeException( "Getting error failed" );
+    }
+  }
+
+  public String getErrorMessage() {
+    try {
+      return message.getJSONObject( "meta" ).getString( "message" );
+    } catch( JSONException e ) {
+      throw new RuntimeException( "Getting error message failed" );
+    }
+  }
+
   public int getOperationCount() {
     return operations.length();
   }
@@ -370,7 +386,7 @@ public final class Message {
       }
       return properties;
     }
-    
+
   }
 
   public final class DestroyOperation extends Operation {
@@ -378,7 +394,7 @@ public final class Message {
     private DestroyOperation( JSONArray operation ) {
       super( operation );
     }
-    
+
     protected JSONObject getProperties() {
       throw new IllegalStateException( "Destroy operation has no properties" );
     }

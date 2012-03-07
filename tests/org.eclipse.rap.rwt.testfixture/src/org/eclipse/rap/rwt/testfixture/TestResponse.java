@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ public class TestResponse implements HttpServletResponse {
   private final Map<String,Cookie> cookies;
   private final Map<String,String> headers;
   private int errorStatus;
+  private int status;
   private String redirect;
   private PrintWriter printWriter;
 
@@ -119,6 +120,7 @@ public class TestResponse implements HttpServletResponse {
   }
 
   public void setStatus( int arg0 ) {
+    status = arg0;
   }
 
   public void setStatus( int arg0, String arg1 ) {
@@ -203,7 +205,7 @@ public class TestResponse implements HttpServletResponse {
   }
 
   public int getStatus() {
-    return 0;
+    return status;
   }
 
   public Collection<String> getHeaders( String name ) {

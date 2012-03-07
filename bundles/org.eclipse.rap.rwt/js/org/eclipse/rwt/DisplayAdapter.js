@@ -21,7 +21,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.Display", {
     "exitConfirmation",
     "focusControl",
     "currentTheme",
-    "timeoutPage",
     "enableUiTests",
     "activeKeys",
     "cancelKeys"
@@ -35,7 +34,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.Display", {
     "measureStrings",
     "allowEvent",
     "cancelEvent",
-    "reload",
     "beep"
   ],
   
