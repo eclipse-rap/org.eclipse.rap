@@ -3639,38 +3639,38 @@ qx.Class.define( "qx.ui.core.Widget", {
         var pv = value;
         var pn = "overflow";
         if( org.eclipse.rwt.Client.getVersion() < 9.8 ) {
-	        switch( pv ) {
-	          case "scrollX":
-	          case "scrollY":
-	            pv = "scroll";
+          switch( pv ) {
+            case "scrollX":
+            case "scrollY":
+              pv = "scroll";
             break;
-	        }
+          }
         } else {
           switch( pv ) {
-	          case "scrollX":
-	            pn = "overflowX";
-	            pv = "scroll";
-            break;	
-	          case "scrollY":
-	            pn = "overflowY";
-	            pv = "scroll";
-	          break;
-	        }
-	        // Clear up concurrenting rules
-	        var a = [ "overflow", "overflowX", "overflowY" ];	
-	        for( var i = 0; i < a.length; i++ ) {
-	          if( a[ i ] != pn ) {
-	            this.removeStyleProperty( a[ i ] );
-	          }
-	        }	
-	        switch( value ) {
-	          case "scrollX":
-	            this.setStyleProperty( "overflowY", "hidden" );
-	          break;	
-	          case "scrollY":
-	            this.setStyleProperty( "overflowX", "hidden" );
-	          break;
-	        }
+            case "scrollX":
+              pn = "overflowX";
+              pv = "scroll";
+            break;  
+            case "scrollY":
+              pn = "overflowY";
+              pv = "scroll";
+            break;
+          }
+          // Clear up concurrenting rules
+          var a = [ "overflow", "overflowX", "overflowY" ];  
+          for( var i = 0; i < a.length; i++ ) {
+            if( a[ i ] != pn ) {
+              this.removeStyleProperty( a[ i ] );
+            }
+          }  
+          switch( value ) {
+            case "scrollX":
+              this.setStyleProperty( "overflowY", "hidden" );
+            break;  
+            case "scrollY":
+              this.setStyleProperty( "overflowX", "hidden" );
+            break;
+          }
         }
         this._renderOverflow(pn, pv, value, old);
         this.addToQueue("overflow");
@@ -4077,7 +4077,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     applyObjectId : function( id ) {
-    	if( qx.ui.core.Widget._renderHtmlIds ) {
+      if( qx.ui.core.Widget._renderHtmlIds ) {
         this.setHtmlAttribute( "id", id );
       }
     }
