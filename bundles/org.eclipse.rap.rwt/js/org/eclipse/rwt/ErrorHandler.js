@@ -9,6 +9,8 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+/*global console: false */
+
 qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
 
   statics : {
