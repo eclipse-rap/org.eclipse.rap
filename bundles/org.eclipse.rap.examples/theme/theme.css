@@ -16,11 +16,7 @@
 }
 
 .header {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e8e8e8 ),
-    to( #bababa )
-  );
+  background-color: #31619C;
 }
 
 .footer {
@@ -37,50 +33,54 @@ Composite.centerArea {
 }
 
 Composite.nav-bar {
-  background-color: #e5e5e5;
+  background-color: #34332F;
 }
 
 Composite.navigation {
-  background-color: #e5e5e5;
+  background-color: transparent;
 }
 
 ToolBar.navigation {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  background-color: #e5e5e5;
+  background-color: #34332F;
 }
 
 ToolItem.navigation {
-  background-color: #e5e5e5;
+  color: #bdbdbd;
+  background-color: #34332F;
   background-image: none;
-  border-radius: 0;
+  border-radius: 2px;
   border: none;
   padding: 8px;
   text-shadow: none;
-} 
-
-ToolItem.selected {
-  background-color: transparent;
-  border: 1px solid #31619C;
-  border-radius: 2px;
-  background-image: none;
-}
-
-ToolItem.selected {
-  cursor: pointer;
 }
 
 ToolItem.navigation:hover {
   cursor: pointer;
+  color: white;
   background-color: transparent;
-  border: 1px solid #bdbdbd;
   border-radius: 2px;
   background-image: none;
   animation: none;
 }
 
+ToolItem.selected {
+  color: white;
+  border: none;
+  background-color: transparent;
+  background-image: none;
+}
+
+ToolItem-DropDownIcon:hover,
+ToolItem-DropDownIcon.selected, {
+  border: none;
+  background-image: url( /theme/images/down.png );
+}
+
 Menu.navigation {
+  background-color: #34332F;
+  color: white;
   font: 14px Helvetica, Verdana, sans-serif;
-  background-color: #e5e5e5;
   background-image: none;
   box-shadow: none;
   border: none;
@@ -88,10 +88,13 @@ Menu.navigation {
 }
 
 MenuItem.navigation {
+  color: #e5e5e5;
   padding: 10px 0 10px 0px;
+  background-color: #34332F;
 }
 
 MenuItem.navigation:hover {
+  color: #e5e5e5;
   background-image: none;
   background-color: #31619C;
 }
