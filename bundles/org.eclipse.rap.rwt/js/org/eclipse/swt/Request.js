@@ -10,6 +10,8 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
+/*global confirm: false*/
+
 qx.Class.define( "org.eclipse.swt.Request", {
   type : "singleton",
   extend : qx.core.Target,
@@ -314,7 +316,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         requestQueue._timer.start();
       }
     },
-    
+
     _isConnectionError : qx.core.Variant.select( "qx.client", {
       "mshtml" : function( statusCode ) {
         // for a description of the IE status codes, see

@@ -6,27 +6,28 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
- 
+
 /**
- * Maps widget id's to their respective object references. Allows for 
+ * Maps widget id's to their respective object references. Allows for
  * adding, removing and disposing of widgets and their id. In addition
  * the mapping of widgets and their respective id's can be queried.
  */
 qx.Class.define( "org.eclipse.swt.WidgetManager", {
+
   type : "singleton",
   extend : qx.core.Object,
 
   construct : function() {
     this.base( arguments );
-    
+
     // this field is needed as Opera has some problems with
     // accessing local variables in eval expressions.
     this._current = null;
-    
-    this._fontPool = new Object();
+
+    this._fontPool = {};
   },
 
   statics : {
@@ -34,19 +35,18 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     _onAppearFocus : function( evt ) {
       var widget = this;
       widget.focus();
-      widget.removeEventListener( 
-        "appear", 
-        org.eclipse.swt.WidgetManager._onAppearFocus, 
-        widget );
+      widget.removeEventListener( "appear",
+                                  org.eclipse.swt.WidgetManager._onAppearFocus,
+                                  widget );
     }
   },
 
   members : {
     /**
-     * Disposes of the widget that is registered with the given id. The widget 
-     * is disconnected from its parent, its 'dispose' method is called and it is 
+     * Disposes of the widget that is registered with the given id. The widget
+     * is disconnected from its parent, its 'dispose' method is called and it is
      * removed from this WidgetManager (see remove).
-     * No action is taken if there is no widget registered for the given id or 
+     * No action is taken if there is no widget registered for the given id or
      * the widget was already disposed of.
      */
     dispose : function( id ) {
@@ -64,7 +64,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      * Registers the given widget under the given id at the WidgetManager.
      */
     add : function( widget, id, isControl, adapter ) {
-      if( isControl != "undefined" && isControl == true ) {
+      if( isControl === true ) {
         widget.setUserData( "isControl", true );
       }
       org.eclipse.rwt.protocol.ObjectManager.add( id, widget, adapter );
@@ -80,7 +80,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     },
 
     /**
-     * Returns the widget for the given id or null if there is no widget 
+     * Returns the widget for the given id or null if there is no widget
      * registered for the given id exists.
      */
     findWidgetById : function( id ) {
@@ -104,11 +104,11 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       if( widget != null ) {
         data = widget.getUserData( "isControl" );
       }
-      return data != null && data == true;
+      return data === true;
     },
-    
+
     /**
-     * Returns the nearest SWT-control in the hierarchy for the given qxWidget 
+     * Returns the nearest SWT-control in the hierarchy for the given qxWidget
      * or null if no parent control could be found. If the given qxWidget
      * represents a control, it is returned.
      */
@@ -117,7 +117,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       while( parent != null && !this.isControl( parent ) ) {
         parent = parent.getParent ? parent.getParent() : null;
       }
-      return parent;   
+      return parent;
     },
 
     /**
@@ -129,7 +129,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       //      when using add sizes and clipping are treated differently
       // parent.add( widget );
       if( parent instanceof org.eclipse.swt.custom.ScrolledComposite ) {
-        // [if] do nothing, parent is set in ScrolledComposite#setContent which is called from the 
+        // [if] do nothing, parent is set in ScrolledComposite#setContent which is called from the
         // server-side - see bug 349161
       } else if ( parent instanceof qx.ui.pageview.tabview.TabView ) {
         // [if] do nothing, parent is set when the control is set on the tab item
@@ -139,11 +139,11 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
         widget.setParent( parent );
       }
     },
-    
+
     setHtmlId : function( widget, id ) {
-      // Test if 'widget' isn't undefined and provides a setHtmlProperty method, 
+      // Test if 'widget' isn't undefined and provides a setHtmlProperty method,
       // fail silently otherwise
-      if(    widget instanceof Object 
+      if(    widget instanceof Object
           && typeof widget.setHtmlProperty == "function" )
       {
         widget.setHtmlProperty( "id", id );
@@ -189,12 +189,12 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      * removes the tool tip of the widget.
      */
     setToolTip : function( widget, toolTipText ) {
-      if( toolTipText != null && toolTipText != "" ) {
+      if( toolTipText != null && toolTipText !== "" ) {
         widget.setUserData( "toolTipText", toolTipText );
-        var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance()
+        var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
         widget.setToolTip( toolTip );
         // make sure "boundToWidget" is initialized:
-        if( toolTip.getParent() != null ) {  
+        if( toolTip.getParent() != null ) {
           if( toolTip.getBoundToWidget() == widget ) {
             toolTip.updateText( widget );
           }
@@ -203,15 +203,15 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
         this._removeToolTipPopup( widget );
       }
     },
-    
+
     _removeToolTipPopup : function( widget ) {
       widget.setToolTip( null );
       widget.setUserData( "toolTipText", null );
     },
-   
+
     ///////////////////////////////
     // Background gradient handling
-    
+
     /**
      * Sets the background gradient for the given widget. A null colors or null
      * percents removes the background gradient of the widget.
@@ -223,7 +223,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     {
       var gradient = null;
       if( gradientColor != null && percents != null ) {
-        gradient = new Array();
+        gradient = [];
         for( var i = 0; i < gradientColor.length; i++ ) {
           gradient[ i ] = [ percents[ i ] / 100, gradientColor[ i ] ];
         }
@@ -231,12 +231,12 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       }
       widget.setBackgroundGradient( gradient );
     },
-    
+
     //////////////////////////
     // Rounded border handling
 
     /**
-     * Sets the rounded border for the given widget. A zero border width, 
+     * Sets the rounded border for the given widget. A zero border width,
      * null color or non positive radii removes the rounded border of the widget.
      */
     setRoundedBorder : function( widget,
@@ -261,10 +261,10 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
         widget.resetBorder();
       }
     },
-    
+
     ////////////////////////
     // Context menu handling
-    
+
     /**
      * Sets the context menu for the given widget.
      */
@@ -310,58 +310,58 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     },
 
     _listenerMap : {
-      "focus" : [ 
-        { 
-          nativeType : "focusin", 
-          context : undefined, 
-          listener : org.eclipse.swt.EventUtil.focusGained 
+      "focus" : [
+        {
+          nativeType : "focusin",
+          context : undefined,
+          listener : org.eclipse.swt.EventUtil.focusGained
         },
-        { 
-          nativeType : "focusout", 
-          context : undefined, 
-          listener : org.eclipse.swt.EventUtil.focusLost 
+        {
+          nativeType : "focusout",
+          context : undefined,
+          listener : org.eclipse.swt.EventUtil.focusLost
         }
       ],
       "mouse" : [
-        { 
-          nativeType : "mousedown", 
-          context : undefined, 
-          listener : org.eclipse.swt.EventUtil.mouseDown 
+        {
+          nativeType : "mousedown",
+          context : undefined,
+          listener : org.eclipse.swt.EventUtil.mouseDown
         },
-        { 
-          nativeType : "mouseup", 
-          context : undefined, 
+        {
+          nativeType : "mouseup",
+          context : undefined,
           listener : org.eclipse.swt.EventUtil.mouseUp
         }
       ],
       "help" : [
-        { 
-          nativeType : "keydown", 
-          context : undefined, 
+        {
+          nativeType : "keydown",
+          context : undefined,
           listener : org.eclipse.swt.EventUtil.helpRequested
         }
       ],
       "contextMenu" : [
-        { 
-          nativeType : "keydown", 
-          context : undefined, 
+        {
+          nativeType : "keydown",
+          context : undefined,
           listener : org.eclipse.rwt.widgets.Menu.menuDetectedByKey
         },
-        { 
-          nativeType : "mouseup", 
-          context : undefined, 
+        {
+          nativeType : "mouseup",
+          context : undefined,
           listener : org.eclipse.rwt.widgets.Menu.menuDetectedByMouse
         }
       ],
       "menuDetect" : [
-        { 
-          nativeType : "keydown", 
-          context : undefined, 
+        {
+          nativeType : "keydown",
+          context : undefined,
           listener : org.eclipse.swt.EventUtil.menuDetectedByKey
         },
-        { 
-          nativeType : "mouseup", 
-          context : undefined, 
+        {
+          nativeType : "mouseup",
+          context : undefined,
           listener : org.eclipse.swt.EventUtil.menuDetectedByMouse
         }
       ]

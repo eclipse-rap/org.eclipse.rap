@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 /**
@@ -17,11 +17,11 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
 
   statics : {
     _suspended : false,
-    
+
     setSuspended : function( value ) {
       this._suspended = value;
     },
-    
+
     getSuspended : function() {
       return this._suspended;
     },
@@ -86,8 +86,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         var modifier = org.eclipse.swt.EventUtil._getKeyModifier();
         if( modifier !== "" ) {
           var req = org.eclipse.swt.Request.getInstance();
-          req.addParameter( "org.eclipse.swt.events.widgetSelected.modifier",
-                            modifier );
+          req.addParameter( "org.eclipse.swt.events.widgetSelected.modifier", modifier );
         }
       }
     },
@@ -318,7 +317,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         // stop further handling and default handling by the browser
         evt.stopPropagation();
         evt.preventDefault();
-        var x = qx.event.type.MouseEvent.getPageX();;
+        var x = qx.event.type.MouseEvent.getPageX();
         var y = qx.event.type.MouseEvent.getPageY();
         org.eclipse.swt.EventUtil.sendMenuDetected( evt.getTarget(), x, y );
       }
