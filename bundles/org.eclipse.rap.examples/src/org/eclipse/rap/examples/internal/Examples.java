@@ -42,10 +42,10 @@ public final class Examples {
   private static List<ExampleCategory> createCategories() {
     List<ExampleCategory> exampleCategories = new ArrayList<ExampleCategory>();
     exampleCategories.add( createCategory( "Basic Widgets", "input", "canvas", "dialog" ) );
-    exampleCategories.add( createCategory( "Trees && Tables", "treeviewer", "tableviewer", "table-markup" ) );
-    exampleCategories.add( createCategory( "Layouts", "row-layout", "fill-layout", "grid-layout" ) );
-    exampleCategories.add( createCategory( "Key Features", "drag-and-drop", "file-upload", "complex-data" ) );
-    exampleCategories.add( createCategory( "Custom Widgets", "gmaps", "carousel", "oscilloscope" ) );
+    exampleCategories.add( createCategory( "Trees & Tables", "tableviewer", "treeviewer", "table-markup" ) );
+    exampleCategories.add( createCategory( "Key Features", "complex-data", "drag-and-drop", "file-upload" ) );
+    exampleCategories.add( createCategory( "Layouts", "grid-layout", "row-layout", "fill-layout" ) );
+    exampleCategories.add( createCategory( "Custom Widgets", "gmaps", "oscilloscope", "carousel" ) );
     return exampleCategories;
   }
 

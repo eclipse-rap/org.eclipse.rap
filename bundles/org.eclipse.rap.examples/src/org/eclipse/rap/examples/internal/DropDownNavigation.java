@@ -57,7 +57,7 @@ abstract class DropDownNavigation extends Composite {
 
   private void createMenuItem( final IExampleContribution contribution ) {
     MenuItem item = new MenuItem( pullDownMenu, SWT.PUSH | SWT.LEFT );
-    item.setText( contribution.getTitle() );
+    item.setText( contribution.getTitle().replace( "&", "&&" ) );
     item.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
     item.addSelectionListener( new SelectionAdapter() {
       @Override
@@ -72,7 +72,7 @@ abstract class DropDownNavigation extends Composite {
     toolBar.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
     ToolItem toolItem = new ToolItem( toolBar, SWT.DROP_DOWN );
     toolItem.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
-    toolItem.setText( category.getName() );
+    toolItem.setText( category.getName().replace( "&", "&&" ) );
     toolItem.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
