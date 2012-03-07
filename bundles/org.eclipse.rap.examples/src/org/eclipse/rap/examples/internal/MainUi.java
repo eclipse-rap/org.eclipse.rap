@@ -12,7 +12,6 @@ package org.eclipse.rap.examples.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.rap.examples.*;
@@ -253,65 +252,23 @@ public class MainUi {
   }
 
   private void createNavigationControls( Composite parent ) {
-    List<IExampleContribution> contributions = Examples.getInstance().getContributions();
-    for( final IExampleContribution page : contributions ) {
-      createNavigationControl( parent, page );
+    List<ExampleCategory> categories = Examples.getInstance().getCategories();
+    for( ExampleCategory category : categories ) {
+      createNavigationControl( parent, category );
     }
   }
 
-  private void createNavigationControl( Composite parent, final IExampleContribution page ) {
-    String categoryId = page.getCategoryId();
-    if( categoryId != null ) {
-      createNavigationDropDown( parent, page );
-    } else {
-      createNavigationButton( parent, page );
-    }
+  private void createNavigationControl( Composite parent, final ExampleCategory category ) {
+    createNavigationDropDown( parent, category );
   }
 
-  private void createNavigationButton( Composite parent, final IExampleContribution page ) {
-    ToolBar toolBar = new ToolBar( parent, SWT.HORIZONTAL );
-    GridData layoutData = new GridData( SWT.LEFT, SWT.LEFT, true, false );
-    toolBar.setLayoutData( layoutData );
-    toolBar.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
-    toolBar.setData( page.getId() );
-    final ToolItem toolItem = new ToolItem( toolBar, SWT.PUSH );
-    toolItem.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
-    toolItem.setText( page.getTitle().replace( "&", "&&" ) );
-    toolItem.addSelectionListener( new SelectionAdapter() {
+  private void createNavigationDropDown( Composite parent, ExampleCategory category ) {
+    new DropDownNavigation( parent, category ) {
       @Override
-      public void widgetSelected( SelectionEvent e ) {
-        selectContribution( page );
+      protected void contributionSelected( IExampleContribution page ) {
+        MainUi.this.selectContribution( page );
       }
-    } );
-  }
-
-  private void createNavigationDropDown( Composite parent, IExampleContribution page ) {
-    DropDownNavigation existingDropDown = getNavigationEntryByCategoryId( parent, page.getCategoryId() );
-    if( existingDropDown != null ) {
-      existingDropDown.addNavigationItem( page );
-    } else {
-      new DropDownNavigation( parent, page ) {
-        @Override
-        protected void onSelectContribution( IExampleContribution page ) {
-          MainUi.this.selectContribution( page );
-        }
-      };
-    }
-  }
-
-  private DropDownNavigation getNavigationEntryByCategoryId( Composite parent, String categoryId ) {
-    DropDownNavigation result = null;
-    Control[] children = parent.getChildren();
-    for( Control element : children ) {
-      if( element instanceof DropDownNavigation ) {
-        DropDownNavigation entry = ( DropDownNavigation ) element;
-        if( entry.getCategoryId().equals( categoryId ) ) {
-          result = entry;
-          break;
-        }
-      }
-    }
-    return result;
+    };
   }
 
   private void selectContribution( IExampleContribution page ) {
@@ -319,13 +276,13 @@ public class MainUi {
     activate( page );
   }
 
-  private void selectNavigationEntry( IExampleContribution page ) {
+  private void selectNavigationEntry( IExampleContribution contribution ) {
     Control[] children = navigation.getChildren();
     for( Control control : children ) {
       if( control instanceof ToolBar ) {
-        changeSelectedToolBarEntry( page, (ToolBar) control );
+        changeSelectedToolBarEntry( contribution, (ToolBar) control );
       } else if( control instanceof DropDownNavigation ) {
-        changeSelectedDropDownEntry( page, (DropDownNavigation) control );
+        changeSelectedDropDownEntry( contribution, (DropDownNavigation) control );
       }
     }
   }
@@ -339,9 +296,9 @@ public class MainUi {
     }
   }
 
-  private void changeSelectedDropDownEntry( IExampleContribution page,
+  private void changeSelectedDropDownEntry( IExampleContribution contribution,
                                             DropDownNavigation navEntry ) {
-    boolean belongsToDropDownNav = pageBelongsToDropDownNav( page, navEntry );
+    boolean belongsToDropDownNav = pageBelongsToDropDownNav( contribution, navEntry );
     ToolItem item = ( (ToolBar) navEntry.getChildren()[ 0 ] ).getItem( 0 );
     if( belongsToDropDownNav ) {
       item.setData( WidgetUtil.CUSTOM_VARIANT, "selected" );
@@ -350,17 +307,11 @@ public class MainUi {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  private boolean pageBelongsToDropDownNav( IExampleContribution page, DropDownNavigation navEntry ) {
-    boolean result = false;
-    ArrayList<String> navEntryData = (ArrayList<String>) navEntry.getData();
-    for( String id : navEntryData ) {
-      if( page.getId().equals( id ) ) {
-        result = true;
-        break;
-      }
-    }
-    return result;
+  private boolean pageBelongsToDropDownNav( IExampleContribution contribution,
+                                            DropDownNavigation navEntry )
+  {
+    ExampleCategory category = navEntry.getCategory();
+    return category.getContributionIds().contains( contribution.getId() );
   }
 
   private void activate( IExampleContribution page ) {

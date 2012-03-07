@@ -16,10 +16,6 @@ public interface IExampleContribution {
   String getId();
 
   String getTitle();
-  
-  String getCategoryId();
-
-  String getCategoryName();
 
   IExamplePage createPage();
 }

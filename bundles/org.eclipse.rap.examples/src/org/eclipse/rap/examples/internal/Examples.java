@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,30 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.examples.internal;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.rap.examples.IExampleContribution;
 
 
 public final class Examples {
 
-  private final String[] INCLUDE = new String[] {
-    "input",
-    "tableviewer",
-    "treeviewer",
-    "dialog",
-    "canvas",
-    "drag-and-drop",
-    "complex-data",
-    "row-layout",
-    "fill-layout",
-    "grid-layout",
-    "file-upload",
-    "oscilloscope",
-    "carousel",
-    "gmaps"
-  };
+  private static final List<ExampleCategory> EXAMPLE_CATEGORIES = createCategories();
 
   private Examples() {
   }
@@ -42,35 +26,36 @@ public final class Examples {
     return new Examples();
   }
 
-  public List<IExampleContribution> getContributions() {
-    return createContributionList();
+  public List<ExampleCategory> getCategories() {
+    return Collections.unmodifiableList( EXAMPLE_CATEGORIES );
   }
 
   public IExampleContribution getContribution( String id ) {
     return getContributionsTracker().getContribution( id );
   }
 
-  private List<IExampleContribution> createContributionList() {
-    List<IExampleContribution> result = new ArrayList<IExampleContribution>();
-    ExampleContributionsTracker tracker = getContributionsTracker();
-    List<String> ids = new ArrayList<String>( tracker.getContributionIds() );
-    for( String id : INCLUDE ) {
-      IExampleContribution contribution = tracker.getContribution( id );
-      if( contribution != null ) {
-        result.add( contribution );
-        ids.remove( id );
-      }
-    }
-    for( String id : ids ) {
-      IExampleContribution contribution = tracker.getContribution( id );
-      if( contribution != null ) {
-        result.add( contribution );
-      }
-    }
-    return result;
-  }
-
   private static ExampleContributionsTracker getContributionsTracker() {
     return Activator.getDefault().getExampleContributions();
   }
+
+  // TODO [rst] Read from configuration file
+  private static List<ExampleCategory> createCategories() {
+    List<ExampleCategory> exampleCategories = new ArrayList<ExampleCategory>();
+    exampleCategories.add( createCategory( "Basic Widgets", "input", "canvas", "dialog" ) );
+    exampleCategories.add( createCategory( "Trees && Tables", "treeviewer", "tableviewer", "complex-data" ) );
+    exampleCategories.add( createCategory( "Layouts", "row-layout", "fill-layout", "grid-layout" ) );
+    exampleCategories.add( createCategory( "Key Features", "drag-and-drop", "file-upload" ) );
+    exampleCategories.add( createCategory( "Custom Widgets", "oscilloscope", "carousel", "gmaps" ) );
+    exampleCategories.add( createCategory( "Other" ) );
+    return exampleCategories;
+  }
+
+  private static ExampleCategory createCategory( String name, String... contributions ) {
+    ExampleCategory exampleCategory = new ExampleCategory( name );
+    for( String contribution : contributions ) {
+      exampleCategory.addContributionId( contribution );
+    }
+    return exampleCategory;
+  }
+
 }

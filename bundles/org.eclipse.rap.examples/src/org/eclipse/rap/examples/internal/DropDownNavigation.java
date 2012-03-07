@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.examples.internal;
 
-import java.util.ArrayList;
-
 import org.eclipse.rap.examples.IExampleContribution;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -25,62 +23,84 @@ import org.eclipse.swt.widgets.*;
 
 abstract class DropDownNavigation extends Composite {
 
-  private final Menu secondLevelNav;
-  private final String categoryId;
+  private final Menu pullDownMenu;
+  private final ExampleCategory category;
 
-  public DropDownNavigation( Composite parent, IExampleContribution page ) {
+  public DropDownNavigation( Composite parent, ExampleCategory category ) {
     super( parent, SWT.NONE );
-    categoryId = page.getCategoryId();
-    secondLevelNav = new Menu( parent.getShell(), SWT.POP_UP );
-    secondLevelNav.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
-    createDropDownToolItem( page );
-    addNavigationItem( page );
+    this.category = category;
+    pullDownMenu = createMenu( parent );
     setLayout( new FillLayout() );
     setLayoutData( new GridData( SWT.LEFT, SWT.CENTER, true, false ) );
+    createMenuItems();
+    createDropDownToolItem();
   }
 
-  public String getCategoryId() {
-    return categoryId;
+  public ExampleCategory getCategory() {
+    return category;
   }
 
-  @SuppressWarnings("unchecked")
-  public void addNavigationItem( final IExampleContribution page ) {
-    MenuItem item = new MenuItem( secondLevelNav, SWT.PUSH | SWT.LEFT );
-    item.setText( page.getTitle() );
-    ArrayList<String> objectData = (ArrayList<String>) this.getData();
-    objectData.add( page.getId() );
+  private Menu createMenu( Composite parent ) {
+    Menu menu = new Menu( parent.getShell(), SWT.POP_UP );
+    menu.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
+    return menu;
+  }
+
+  private void createMenuItems() {
+    for( String id : category.getContributionIds() ) {
+      final IExampleContribution contribution = Examples.getInstance().getContribution( id );
+      if( contribution != null ) {
+        createMenuItem( contribution );
+      }
+    }
+  }
+
+  private void createMenuItem( final IExampleContribution contribution ) {
+    MenuItem item = new MenuItem( pullDownMenu, SWT.PUSH | SWT.LEFT );
+    item.setText( contribution.getTitle() );
     item.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
     item.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
-        onSelectContribution( page );
+        contributionSelected( contribution );
       }
     } );
   }
 
-  private void createDropDownToolItem( final IExampleContribution page ) {
+  private void createDropDownToolItem() {
     final ToolBar toolBar = new ToolBar( this, SWT.HORIZONTAL );
-    ArrayList<String> objectData = new ArrayList<String>();
-    objectData.add( page.getId() );
-    this.setData( objectData );
     toolBar.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
     ToolItem toolItem = new ToolItem( toolBar, SWT.DROP_DOWN );
     toolItem.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
-    toolItem.setText( page.getCategoryName() );
+    toolItem.setText( category.getName() );
     toolItem.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
         if( event.detail == SWT.ARROW ) {
-          Point point = toolBar.toDisplay( event.x, event.y );
-          secondLevelNav.setLocation( point );
-          secondLevelNav.setVisible( true );
+          openMenu( toolBar.toDisplay( event.x, event.y ) );
         } else {
-          onSelectContribution( page );
+          openFirstContribution();
         }
       }
+
     } );
   }
 
-  protected abstract void onSelectContribution( IExampleContribution page );
+  private void openMenu( Point point ) {
+    pullDownMenu.setLocation( point );
+    pullDownMenu.setVisible( true );
+  }
+
+  private void openFirstContribution() {
+    for( String id : category.getContributionIds() ) {
+      IExampleContribution contribution = Examples.getInstance().getContribution( id );
+      if( contribution != null ) {
+        contributionSelected( contribution );
+        break;
+      }
+    }
+  }
+
+  protected abstract void contributionSelected( IExampleContribution contribution );
 
 }
