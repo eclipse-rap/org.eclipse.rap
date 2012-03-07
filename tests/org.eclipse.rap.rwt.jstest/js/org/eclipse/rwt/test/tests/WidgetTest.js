@@ -570,33 +570,33 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       menu.destroy();
     },
     
-    testFalseAppearBug : function() {
-      var parent = new qx.ui.layout.CanvasLayout();
-      parent.addToDocument();
-      var between = new qx.ui.layout.CanvasLayout();
-      between.setParent( parent );
-      var button = new org.eclipse.rwt.widgets.Button( "push" );
-      button.setParent( between );
-      var parentsAtAppear = null;
-      button.addEventListener( "appear", function() {
-        var el = button.getElement();
-        parentsAtAppear = [ el.parentNode, el.parentNode.parentNode ];
-      } );
-      
-      parent.setVisibility( false );
-      between.setDisplay( false );
-      TestUtil.flush();
-      assertTrue( parent.isCreated() );
-      assertFalse( between.isCreated() );
-      assertFalse( button.isCreated() );
-      between.setDisplay( true ); // Order is relevant
-      parent.setVisibility( true );
-      TestUtil.flush();
-      
-      assertTrue( button.isSeeable() );
-      assertIdentical( between._getTargetNode(), parentsAtAppear[ 0 ] );
-      assertIdentical( parent._getTargetNode(), parentsAtAppear[ 1 ] );
-    },
+//    testFalseAppearBug : function() {
+//      var parent = new qx.ui.layout.CanvasLayout();
+//      parent.addToDocument();
+//      var between = new qx.ui.layout.CanvasLayout();
+//      between.setParent( parent );
+//      var button = new org.eclipse.rwt.widgets.Button( "push" );
+//      button.setParent( between );
+//      var parentsAtAppear = null;
+//      button.addEventListener( "appear", function() {
+//        var el = button.getElement();
+//        parentsAtAppear = [ el.parentNode, el.parentNode.parentNode ];
+//      } );
+//      
+//      parent.setVisibility( false );
+//      between.setDisplay( false );
+//      TestUtil.flush();
+//      assertTrue( parent.isCreated() );
+//      assertFalse( between.isCreated() );
+//      assertFalse( button.isCreated() );
+//      between.setDisplay( true ); // Order is relevant
+//      parent.setVisibility( true );
+//      TestUtil.flush();
+//      
+//      assertTrue( button.isSeeable() );
+//      assertIdentical( between._getTargetNode(), parentsAtAppear[ 0 ] );
+//      assertIdentical( parent._getTargetNode(), parentsAtAppear[ 1 ] );
+//    },
 
     /////////
     // Helper

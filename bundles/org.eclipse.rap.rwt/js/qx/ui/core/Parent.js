@@ -467,7 +467,7 @@ qx.Class.define("qx.ui.core.Parent",
       {
         var vChild = vChildren[i];
 
-        if (vChild._isDisplayable && vChild._isCreated ) {
+        if (vChild._isDisplayable ) {
           vVisible.push(vChild);
         }
       }
