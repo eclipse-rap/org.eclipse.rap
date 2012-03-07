@@ -13,7 +13,7 @@
         TODO: re-enable -registryMultiLanguage after switching to platform M6
         See bug 371103
        -->
-      <param-value>-console 4711 -consoleLog <!-- -registryMultiLanguage --></param-value>
+      <param-value>-console 10001<!-- -registryMultiLanguage -consoleLog --></param-value>
     </init-param>
 
     <init-param>
