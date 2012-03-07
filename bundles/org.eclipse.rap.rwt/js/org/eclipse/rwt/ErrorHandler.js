@@ -151,7 +151,6 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       return element;
     },
 
-    /* global console: false */
     _freezeApplication : function() {
       try {
         var display = org.eclipse.rwt.Display.getCurrent();
