@@ -631,6 +631,7 @@ ProgressBar-Indicator:error {
 /* Shell default theme */
 
 Shell {
+  animation: none;
   border: none;
   border-radius: 2px;
   background-color: #ffffff;
