@@ -11,3 +11,4 @@ Require-Bundle: org.eclipse.rap.examples;bundle-version="1.0.0",
 Bundle-Vendor: Eclipse.org - RAP
 Export-Package: org.eclipse.rap.examples.pages
 Bundle-Activator: org.eclipse.rap.examples.pages.internal.Activator
+Import-Package: javax.servlet.http;version="2.6.0"

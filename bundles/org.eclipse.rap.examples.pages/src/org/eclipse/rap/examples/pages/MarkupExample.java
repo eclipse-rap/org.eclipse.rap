@@ -72,9 +72,12 @@ public class MarkupExample implements IExamplePage {
 
   private static String formatData( String text, int column ) {
     StringBuilder builder = new StringBuilder();
+    String imageUrl = RWT.getRequest().getContextPath() + "/cars/images/car.png";
     switch( column ) {
       case 0:
-        builder.append( "<img src=\"/cars/images/car.png\" style=\"float:left;padding:5px\"/>" );
+        builder.append( "<img src=\"" );
+        builder.append( imageUrl );
+        builder.append( "\" style=\"float:left;padding:5px\"/>" );
         builder.append( "<i><b>" );
         builder.append( text );
         builder.append( "</b></i>" );
