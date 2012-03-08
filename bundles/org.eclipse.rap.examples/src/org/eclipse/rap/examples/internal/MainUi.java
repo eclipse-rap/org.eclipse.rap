@@ -224,7 +224,7 @@ public class MainUi {
 
   private FormData createNavigationFormData() {
     FormData data = new FormData();
-    data.left = new FormAttachment( 50, ( -CENTER_AREA_WIDTH / 2 ) - 13 );
+    data.left = new FormAttachment( 50, ( -CENTER_AREA_WIDTH / 2 ) - 7 );
     data.top = new FormAttachment( 0 );
     data.bottom = new FormAttachment( 100 );
     data.width = CENTER_AREA_WIDTH;
