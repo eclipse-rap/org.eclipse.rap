@@ -72,7 +72,7 @@ ToolItem.selected {
 }
 
 ToolItem-DropDownIcon:hover,
-ToolItem-DropDownIcon.selected, {
+ToolItem-DropDownIcon.selected {
   border: none;
   background-image: url( /theme/images/down.png );
 }
