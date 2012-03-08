@@ -460,9 +460,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
         if( this._isIndeterminate() ) {
           GraphicsUtil.setDisplay( this._separatorStartShape, position != 0 );
         }
-        var displayPosition =   position 
-                              + this._gfxBorderWidth 
-                              - this._separatorWidth; 
+        var displayPosition = position + this._gfxBorderWidth - this._separatorWidth; 
         var displayLength = length + 2 * this._separatorWidth;
         if( this._isVertical() ) {
           var left = this._gfxBorderWidth;

@@ -246,9 +246,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       }
       if( !this._editable ) {
         var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
-        var cssSelector = this._ccombo
-                        ? "CCombo-FocusIndicator"
-                        : "Combo-FocusIndicator"
+        var cssSelector = this._ccombo ? "CCombo-FocusIndicator" : "Combo-FocusIndicator";
         focusIndicator.show( this, cssSelector, null );
       }
       this.addState( "focused" );
@@ -294,7 +292,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         var browserWidth = qx.html.Window.getInnerWidth( window );
         var itemsWidth = this._list.getPreferredWidth();
         var listWidth = Math.min( browserWidth - listLeft, itemsWidth );
-        listWidth = Math.max( this.getWidth(), listWidth )
+        listWidth = Math.max( this.getWidth(), listWidth );
         var itemsHeight = this._list.getItemsCount() * this._itemHeight;
         var listHeight = Math.min( this._getListMaxHeight(), itemsHeight );
         listHeight += this._list.getFrameHeight();
