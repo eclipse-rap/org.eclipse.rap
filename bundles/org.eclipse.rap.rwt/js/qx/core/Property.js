@@ -545,7 +545,7 @@ qx.Class.define( "qx.core.Property", {
           members[store] = new Function( "value", code.join( "" ) );
           // eval("members[store] = function " + instance.classname.replace(/\./g, "_") + "$" + store + "(value) { " + code.join("") + "}");
         } catch( ex ) {
-          alert( "Malformed generated code to unwrap method: " + this.$$method[variant][name] + "\n" + code.join( "" ) );
+          throw new Error( "Malformed generated code to unwrap method: " + this.$$method[variant][name] + "\n" + code.join( "" ) );
         }
       }
       else {
