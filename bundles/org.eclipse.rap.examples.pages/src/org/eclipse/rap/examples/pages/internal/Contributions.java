@@ -31,7 +31,8 @@ class Contributions {
   }
 
   private void collectContributions() {
-    addContribution( "input", "Input Widgets", InputExamplePage.class );
+    addContribution( "button", "Buttons", ButtonExamplePage.class );
+    addContribution( "input", "Input Widgets", TextInputExamplePage.class );
     addContribution( "dialog", "Dialogs", DialogExamplePage.class );
     addContribution( "drag-and-drop", "Drag & Drop", ListExample.class );
     addContribution( "treeviewer", "TreeViewer", TreeViewerExample.class );

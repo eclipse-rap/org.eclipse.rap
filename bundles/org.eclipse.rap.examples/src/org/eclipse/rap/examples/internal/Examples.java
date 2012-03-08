@@ -41,7 +41,7 @@ public final class Examples {
   // TODO [rst] Read from configuration file
   private static List<ExampleCategory> createCategories() {
     List<ExampleCategory> exampleCategories = new ArrayList<ExampleCategory>();
-    exampleCategories.add( createCategory( "Basic Widgets", "input", "canvas", "dialog" ) );
+    exampleCategories.add( createCategory( "Basic Widgets", "input", "button", "canvas", "dialog" ) );
     exampleCategories.add( createCategory( "Trees & Tables", "tableviewer", "treeviewer", "table-markup" ) );
     exampleCategories.add( createCategory( "Key Features", "complex-data", "drag-and-drop", "file-upload" ) );
     exampleCategories.add( createCategory( "Layouts", "grid-layout", "row-layout", "fill-layout" ) );
