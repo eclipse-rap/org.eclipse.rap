@@ -32,6 +32,7 @@ public class Table_Test extends TestCase {
   private Display display;
   private Shell shell;
 
+  @Override
   protected void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -39,6 +40,7 @@ public class Table_Test extends TestCase {
     shell = new Shell( display );
   }
 
+  @Override
   protected void tearDown() {
     Fixture.tearDown();
   }
@@ -602,6 +604,7 @@ public class Table_Test extends TestCase {
       new TableItem( table, SWT.NONE );
     }
     table.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         eventFired[ 0 ] = true;
       }
@@ -1324,6 +1327,7 @@ public class Table_Test extends TestCase {
   public void testSetColumnOrder() {
     final StringBuilder log = new StringBuilder();
     ControlAdapter controlAdapter = new ControlAdapter() {
+      @Override
       public void controlMoved( ControlEvent event ) {
         TableColumn column = ( TableColumn )event.widget;
         log.append( column.getText() + " moved|" );
@@ -2412,7 +2416,7 @@ public class Table_Test extends TestCase {
 
     try {
       item.setText( "invalid xhtml: <<&>>" );
-    } catch( Exception notExpected ) {
+    } catch( IllegalArgumentException notExpected ) {
       fail();
     }
   }
@@ -2426,6 +2430,19 @@ public class Table_Test extends TestCase {
       item.setText( "invalid xhtml: <<&>>" );
       fail();
     } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
+    Table table = new Table( shell, SWT.NONE );
+    table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    table.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    try {
+      item.setText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
     }
   }
 

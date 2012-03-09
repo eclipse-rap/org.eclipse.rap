@@ -25,6 +25,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 
 
 @SuppressWarnings("deprecation")
@@ -1637,6 +1638,19 @@ public class Tree_Test extends TestCase {
       item.setText( "invalid xhtml: <<&>>" );
       fail();
     } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    tree.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    try {
+      item.setText( "invalid xhtml: <<&>>" );
+    } catch( Exception notExpected ) {
+      fail();
     }
   }
 

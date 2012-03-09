@@ -246,6 +246,7 @@ public class Table extends Composite {
   }
 
   private final class ResizeListener extends ControlAdapter {
+    @Override
     public void controlResized( ControlEvent event ) {
       if( ( Table.this.style & SWT.VIRTUAL ) != 0 ) {
         Table.this.checkData();
@@ -289,6 +290,7 @@ public class Table extends Composite {
   private Rectangle bufferedCellPadding;
   private int bufferedCellSpacing;
   boolean markupEnabled;
+  boolean markupValidationDisabled;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -337,10 +339,12 @@ public class Table extends Composite {
     addControlListener( resizeListener );
   }
 
+  @Override
   void initState() {
     state &= ~( /* CANVAS | */ THEME_BACKGROUND );
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -359,11 +363,14 @@ public class Table extends Composite {
     return result;
   }
 
+  @Override
   public void setData( String key, Object value ) {
     if( RWT.CUSTOM_ITEM_HEIGHT.equals( key ) ) {
       setCustomItemHeight( value );
     } else if( RWT.MARKUP_ENABLED.equals( key ) && !markupEnabled ) {
       markupEnabled = Boolean.TRUE.equals( value );
+    } else if( MarkupValidator.MARKUP_VALIDATION_DISABLED.equals( key ) ) {
+      markupValidationDisabled = Boolean.TRUE.equals( value );
     }
     super.setData( key, value );
   }
@@ -1983,6 +1990,7 @@ public class Table extends Composite {
     SelectionEvent.removeListener( this, listener );
   }
 
+  @Override
   public void setFont( Font font ) {
     super.setFont( font );
     clearItemsTextWidths();
@@ -1992,6 +2000,7 @@ public class Table extends Composite {
   ////////////////////
   // Widget dimensions
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
@@ -2222,6 +2231,7 @@ public class Table extends Composite {
   ////////////////
   // Destroy table
 
+  @Override
   void releaseChildren() {
     Item[] tableItems = new TableItem[ this.items.length ];
     System.arraycopy( this.items, 0, tableItems, 0, this.items.length );
@@ -2238,6 +2248,7 @@ public class Table extends Composite {
     }
   }
 
+  @Override
   void releaseWidget() {
     removeControlListener( resizeListener );
     super.releaseWidget();
@@ -2397,6 +2408,7 @@ public class Table extends Composite {
     return hasHScrollBar;
   }
 
+  @Override
   int getVScrollBarWidth() {
     int result = 0;
     if( hasVScrollBar() ) {
@@ -2405,6 +2417,7 @@ public class Table extends Composite {
     return result;
   }
 
+  @Override
   int getHScrollBarHeight() {
     int result = 0;
     if( hasHScrollBar() ) {
@@ -2693,6 +2706,7 @@ public class Table extends Composite {
   ///////////////////
   // Skinning support
 
+  @Override
   void reskinChildren( int flags ) {
     if( items != null ) {
       for( int i = 0; i < items.length; i++ ) {

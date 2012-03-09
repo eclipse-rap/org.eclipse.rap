@@ -121,6 +121,7 @@ public class Tree extends Composite {
   boolean isFlatIndexValid;
   private int visibleItemsCount;
   boolean markupEnabled;
+  boolean markupValidationDisabled;
 
   /**
    * Constructs a new instance of this class given its parent and a style value
@@ -1606,6 +1607,8 @@ public class Tree extends Composite {
       setCustomItemHeight( value );
     } else if( RWT.MARKUP_ENABLED.equals( key ) && !markupEnabled ) {
       markupEnabled = Boolean.TRUE.equals( value );
+    } else if( MarkupValidator.MARKUP_VALIDATION_DISABLED.equals( key ) ) {
+      markupValidationDisabled = Boolean.TRUE.equals( value );
     }
     super.setData( key, value );
   }

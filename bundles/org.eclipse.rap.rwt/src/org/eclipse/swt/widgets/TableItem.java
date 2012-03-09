@@ -196,6 +196,7 @@ public class TableItem extends Item {
     }
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -231,6 +232,7 @@ public class TableItem extends Item {
   ///////////////////////////
   // Methods to get/set texts
 
+  @Override
   public void setText( String text ) {
     checkWidget();
     setText( 0, text );
@@ -255,7 +257,7 @@ public class TableItem extends Item {
     if( text == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( parent.markupEnabled ) {
+    if( parent.markupEnabled && !parent.markupValidationDisabled ) {
       MarkupValidator.validate( text );
     }
     int count = Math.max( 1, parent.getColumnCount() );
@@ -301,6 +303,7 @@ public class TableItem extends Item {
     }
   }
 
+  @Override
   public String getText() {
     checkWidget();
     return getText( 0 );
@@ -333,6 +336,7 @@ public class TableItem extends Item {
   ////////////////////////////
   // Methods to get/set images
 
+  @Override
   public void setImage( Image image ) {
     checkWidget();
     setImage( 0, image );
@@ -402,6 +406,7 @@ public class TableItem extends Item {
     }
   }
 
+  @Override
   public Image getImage() {
     checkWidget();
     return getImage( 0 );
@@ -1144,10 +1149,12 @@ public class TableItem extends Item {
   /////////////////////////////
   // Widget and Item overrides
 
+  @Override
   void releaseParent() {
     parent.destroyItem( this, parent.indexOf( this ) );
   }
 
+  @Override
   String getNameText() {
     if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
       if( !cached ) {
