@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2009, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,7 @@ public class Control_Test extends TestCase {
       this.log = log;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result = null;
@@ -65,19 +66,24 @@ public class Control_Test extends TestCase {
     public void readData( Widget widget ) {
     }
 
+    @Override
     public void preserveValues( Widget widget ) {
     }
 
+    @Override
     public void renderInitialization( Widget widget ) throws IOException {
     }
 
+    @Override
     public void doRedrawFake( Control control ) {
       log.add( control );
     }
 
+    @Override
     public void renderChanges( Widget widget ) throws IOException {
     }
 
+    @Override
     public void renderDispose( Widget widget ) throws IOException {
     }
   }
@@ -85,6 +91,7 @@ public class Control_Test extends TestCase {
   private Display display;
   private Shell shell;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -92,6 +99,7 @@ public class Control_Test extends TestCase {
     shell = new Shell( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -646,11 +654,31 @@ public class Control_Test extends TestCase {
     assertSame( null, display.getFocusControl() );
   }
 
+  // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=373770
+  public void testDisposeOfFocusedInFocusLostEvent() {
+    final Control control1 = new Button( shell, SWT.PUSH );
+    control1.addFocusListener( new FocusAdapter() {
+      @Override
+      public void focusLost( FocusEvent event ) {
+        control1.dispose();
+      }
+    } );
+    Control control2 = new Button( shell, SWT.PUSH );
+    shell.open();
+    control1.setFocus();
+
+    control2.setFocus();
+
+    // ensures no exception is thrown
+    assertTrue( control1.isDisposed() );
+  }
+
   // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=265634
   public void testNoFocusOutOnDispose() {
     final StringBuilder log = new StringBuilder();
     Control control = new Button( shell, SWT.PUSH );
     control.addFocusListener( new FocusAdapter() {
+      @Override
       public void focusLost( FocusEvent event ) {
         log.append( "focusout" );
       }
@@ -700,10 +728,12 @@ public class Control_Test extends TestCase {
     final StringBuilder log = new StringBuilder();
     final Control control1 = new Button( shell, SWT.PUSH );
     control1.addFocusListener( new FocusAdapter() {
+      @Override
       public void focusGained( FocusEvent event ) {
         assertSame( control1, event.getSource() );
         log.append( "focusGained" );
       }
+      @Override
       public void focusLost( FocusEvent event ) {
         log.append( "focusLost" );
       }
