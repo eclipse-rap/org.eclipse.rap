@@ -51,7 +51,7 @@ public class MainUi {
     scrolledArea.setContent( content );
     attachHistoryListener();
     shell.open();
-    selectContribution( Examples.getInstance().getContribution( "input" ) );
+    selectInitialContribution();
     while( !shell.isDisposed() ) {
       if( !display.readAndDispatch() ) {
         display.sleep();
@@ -59,6 +59,31 @@ public class MainUi {
     }
     display.dispose();
     return 0;
+  }
+
+  private void selectInitialContribution() {
+    IExampleContribution contribution = findInitialContribution();
+    if( contribution != null ) {
+      selectContribution( contribution );
+    }
+  }
+
+  private IExampleContribution findInitialContribution() {
+    IExampleContribution contribution = null;
+    List<ExampleCategory> categories = Examples.getInstance().getCategories();
+    if( !categories.isEmpty() ) {
+      contribution = getFirstContribution( categories.get( 0 ) );
+    }
+    return contribution;
+  }
+
+  private static IExampleContribution getFirstContribution( ExampleCategory category ) {
+    IExampleContribution contribution = null;
+    List<String> contributionIds = category.getContributionIds();
+    if( !contributionIds.isEmpty() ) {
+      contribution = Examples.getInstance().getContribution( contributionIds.get( 0 ) );
+    }
+    return contribution;
   }
 
   private Shell createMainShell( Display display ) {
@@ -234,51 +259,36 @@ public class MainUi {
   private void createNavigationControls( Composite parent ) {
     List<ExampleCategory> categories = Examples.getInstance().getCategories();
     for( ExampleCategory category : categories ) {
-      createNavigationControl( parent, category );
+      createNavigationDropDown( parent, category );
     }
-  }
-
-  private void createNavigationControl( Composite parent, final ExampleCategory category ) {
-    createNavigationDropDown( parent, category );
   }
 
   private void createNavigationDropDown( Composite parent, ExampleCategory category ) {
     new DropDownNavigation( parent, category ) {
       @Override
-      protected void contributionSelected( IExampleContribution page ) {
-        MainUi.this.selectContribution( page );
+      protected void contributionSelected( IExampleContribution contribution ) {
+        MainUi.this.selectContribution( contribution );
       }
     };
   }
 
-  private void selectContribution( IExampleContribution page ) {
-    selectNavigationEntry( page );
-    activate( page );
+  private void selectContribution( IExampleContribution contribution ) {
+    selectNavigationEntry( contribution );
+    activate( contribution );
   }
 
   private void selectNavigationEntry( IExampleContribution contribution ) {
     Control[] children = navigation.getChildren();
     for( Control control : children ) {
-      if( control instanceof ToolBar ) {
-        changeSelectedToolBarEntry( contribution, (ToolBar) control );
-      } else if( control instanceof DropDownNavigation ) {
+      if( control instanceof DropDownNavigation ) {
         changeSelectedDropDownEntry( contribution, (DropDownNavigation) control );
       }
     }
   }
 
-  private void changeSelectedToolBarEntry( IExampleContribution page, ToolBar navEntry ) {
-    ToolItem item = navEntry.getItem( 0 );
-    if( navEntry.getData().equals( page.getId() ) ) {
-      item.setData( WidgetUtil.CUSTOM_VARIANT, "selected" );
-    } else {
-      item.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
-    }
-  }
-
   private void changeSelectedDropDownEntry( IExampleContribution contribution,
                                             DropDownNavigation navEntry ) {
-    boolean belongsToDropDownNav = pageBelongsToDropDownNav( contribution, navEntry );
+    boolean belongsToDropDownNav = contributionBelongsToDropDownNav( contribution, navEntry );
     ToolItem item = ( (ToolBar) navEntry.getChildren()[ 0 ] ).getItem( 0 );
     if( belongsToDropDownNav ) {
       item.setData( WidgetUtil.CUSTOM_VARIANT, "selected" );
@@ -287,22 +297,22 @@ public class MainUi {
     }
   }
 
-  private boolean pageBelongsToDropDownNav( IExampleContribution contribution,
-                                            DropDownNavigation navEntry )
+  private boolean contributionBelongsToDropDownNav( IExampleContribution contribution,
+                                                    DropDownNavigation navEntry )
   {
     ExampleCategory category = navEntry.getCategory();
     return category.getContributionIds().contains( contribution.getId() );
   }
 
-  private void activate( IExampleContribution page ) {
-    IExamplePage examplePage = page.createPage();
+  private void activate( IExampleContribution contribution ) {
+    IExamplePage examplePage = contribution.createPage();
     if( examplePage != null ) {
-      RWT.getBrowserHistory().createEntry( page.getId(), page.getTitle() );
+      RWT.getBrowserHistory().createEntry( contribution.getId(), contribution.getTitle() );
       Control[] children = centerArea.getChildren();
       for( Control child : children ) {
         child.dispose();
       }
-      Composite contentComp = ExampleUtil.initPage( page.getTitle(), centerArea );
+      Composite contentComp = ExampleUtil.initPage( contribution.getTitle(), centerArea );
       examplePage.createControl( contentComp );
       centerArea.layout( true, true );
     }
@@ -327,9 +337,9 @@ public class MainUi {
     RWT.getBrowserHistory().addBrowserHistoryListener( new BrowserHistoryListener() {
 
       public void navigated( BrowserHistoryEvent event ) {
-        IExampleContribution page = Examples.getInstance().getContribution( event.entryId );
-        if( page != null ) {
-          selectContribution( page );
+        IExampleContribution contribution = Examples.getInstance().getContribution( event.entryId );
+        if( contribution != null ) {
+          selectContribution( contribution );
         }
       }
     } );
