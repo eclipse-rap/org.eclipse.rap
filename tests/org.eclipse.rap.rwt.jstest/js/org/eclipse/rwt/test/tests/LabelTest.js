@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,45 +34,76 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LabelTest", {
       assertEquals( "top", labelWidget.getVerticalChildrenAlign() );
       assertEquals( "label-wrapper", labelWidget.getAppearance() );
       assertEquals( "hidden", labelWidget.getOverflow() );
-      var labelObject = labelWidget.getLabelObject();
-      assertEquals( "html", labelObject.getMode() );
-      assertEquals( false, labelObject.getTextOverflow() );
-      assertEquals( "label-graytext", labelObject.getAppearance() );
-      assertEquals( "", labelWidget.getLabel() );
+      assertEquals( "", this.getTextContent() );
       assertEquals( true, labelWidget.getHideFocus() );
-      assertTrue( labelWidget.hasEventListeners( "mouseover" ) );
-      assertTrue( labelWidget.hasEventListeners( "mouseout" ) );
-      assertFalse( labelObject.getWrap() );
+      assertEquals( -1, labelWidget.getFlexibleCell() );
+      assertEquals( "label-wrapper", labelWidget.getAppearance() );
+    },
+
+    testCreateByProtocolCLabel : function() {
+      this.createLabel( [ "LEFT" ], { "appearance" : "clabel" } );
+
+      assertEquals( "clabel", labelWidget.getAppearance() );
+    },
+
+    testHover : function() {
+      this.createLabel( [ "LEFT" ] );
+
+      TestUtil.mouseOver( labelWidget );
+      assertTrue( labelWidget.hasState( "over" ) );
+      TestUtil.mouseOut( labelWidget );
+      assertFalse( labelWidget.hasState( "over" ) );
     },
 
     testCreateByProtocolWithWRAP : function() {
       this.createLabel( [ "WRAP" ] );
 
-      assertTrue( labelWidget.getLabelObject().getWrap() );
+      assertEquals( 1, labelWidget.getFlexibleCell() );
     },
 
     testSetText : function() {
       this.createLabel( [ "LEFT" ], { "text" : "bla  \n<" } );
 
-      var content = this.getTextElement().innerHTML.toLowerCase().replace(/^\s+|\s+$/g, '');
+      var content = this.getTextContent();
       assertTrue( content === "bla&nbsp; <br>&lt;" || content === "bla&nbsp; <br/>&lt;" );
     },
 
     testSetImageByProtocol : function() {
       this.createLabel( [ "LEFT" ], { "image" : [ "image.png", 10, 20 ] } );
 
-      assertEquals( "image.png", labelWidget.getIcon() );
-      // TODO [tb] : test url directly, currently not possible
-//      var src = TestUtil.getCssBackgroundImage( this.getImageElement() );
-//      assertTrue( src.indexOf( "image.png" ) !== -1 );
+      var src = TestUtil.getCssBackgroundImage( this.getImageElement() );
+      assertTrue( src.indexOf( "image.png" ) !== -1 );
+    },
+
+    testReSetImage : function() {
+      this.createLabel( [ "LEFT" ], { "image" : [ "image.png", 10, 20 ] } );
+      
+      labelWidget.setImage( null );
+      TestUtil.flush();
+
+      assertNull( this.getImageElement() );
+      assertEquals( [ 0, 0 ], labelWidget.getCellDimension( 0 ) );
     },
 
     testSetAlignmentByProtocol : function() {
-      // TODO [tb] : setting a text should not be necessary
       this.createLabel( [ "LEFT" ], { "alignment" : "right", "text" : "bla" } ); 
 
       assertEquals( "right", labelWidget.getHorizontalChildrenAlign() );
-      assertEquals( "right", this.getTextElement().style.textAlign );
+      assertEquals( "right", labelWidget.getElement().style.textAlign );
+    },
+    
+    testSetMarginByProtocol : function() {
+      this.createLabel( [ "LEFT" ], { 
+        "leftMargin" : 1, 
+        "topMargin" : 2, 
+        "rightMargin" : 3, 
+        "bottomMargin" : 4
+      } ); 
+
+      assertEquals( 1, labelWidget.getPaddingLeft() );
+      assertEquals( 2, labelWidget.getPaddingTop() );
+      assertEquals( 3, labelWidget.getPaddingRight() );
+      assertEquals( 4, labelWidget.getPaddingBottom() );
     },
     
     /////////
@@ -114,11 +145,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LabelTest", {
     },
     
     getTextElement : function() {
-      return labelWidget.getLabelObject()._getTargetNode();
+      return labelWidget.getCellNode( 1 );
+    },
+    
+    getTextContent : function() {
+      var el = this.getTextElement();
+      return el ? el.innerHTML.toLowerCase().replace( /^\s+|\s+$/g, "" ) : "";
     },
 
     getImageElement : function() {
-      return labelWidget.getIconObject()._image;
+      return labelWidget.getCellNode( 0 );
     }
 
   }

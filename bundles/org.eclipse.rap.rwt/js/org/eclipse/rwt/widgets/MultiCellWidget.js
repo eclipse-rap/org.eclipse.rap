@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -198,7 +198,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       this._flexibleCell = value;
     },
 
-    // TODO [tb] : Only needed by Tests, remove
+    getFlexibleCell : function() {
+      return this._flexibleCell;
+    },
+
+    // NOTE : Only needed by Tests
     getCellDimension : function( cell ) {
       var width = this.getCellWidth( cell );
       var height = this.getCellHeight( cell );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,11 @@
 org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Label", {
 
   factory : function( properties ) {
-    var result = new qx.ui.basic.Atom();
+    var styleMap = org.eclipse.rwt.protocol.AdapterUtil.createStyleMap( properties.style );
+    var result = new org.eclipse.rwt.widgets.Label( styleMap );
     org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );
     org.eclipse.rwt.protocol.AdapterUtil.setParent( result, properties.parent );
-    org.eclipse.swt.LabelUtil.initialize( result );
-    org.eclipse.swt.LabelUtil.setWrap( result, properties.style.indexOf( "WRAP" ) != -1 );    
     return result;
   },
 
@@ -26,28 +25,17 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Label", {
   properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
     "text",
     "image",
-    "alignment"
+    "alignment",
+    "appearance",
+    "leftMargin",
+    "topMargin",
+    "rightMargin",
+    "bottomMargin",
+    "backgroundGradient"
   ] ),
-
+  
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
-    "text" : function( widget, value ) {
-      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      // Order is important here: escapeText, replace line breaks
-      var text = EncodingUtil.escapeText( value, true );
-      text = EncodingUtil.replaceNewLines( text, "<br/>" );
-      text = EncodingUtil.replaceWhiteSpaces( text ); // fixes bug 192634
-      org.eclipse.swt.LabelUtil.setText( widget, text );
-    },
-    "image" : function( widget, value ) {
-      if( value === null ) {
-        org.eclipse.swt.LabelUtil.setImage( widget, null );
-      } else {
-        org.eclipse.swt.LabelUtil.setImage( widget, value[ 0 ] );
-      }
-    },
-    "alignment" : function( widget, value ) {
-      org.eclipse.swt.LabelUtil.setAlignment( widget, value );
-    }
+    "backgroundGradient" : org.eclipse.rwt.protocol.AdapterUtil.getBackgroundGradientHandler()
   } ),
 
   listeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [] ),

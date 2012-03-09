@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class CLabelLCA extends AbstractWidgetLCA {
 
-  private static final String TYPE = "rwt.widgets.CLabel";
+  private static final String TYPE = "rwt.widgets.Label";
   private static final String[] ALLOWED_STYLES = new String[] {
     "SHADOW_IN", "SHADOW_OUT", "SHADOW_NONE", "BORDER"
   };
@@ -71,6 +71,8 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( clabel.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( clabel, ALLOWED_STYLES ) );
+    // NOTE : This is consistent with Tree and Table, but might change - See Bug 373764
+    clientObject.set( "appearance", "clabel" );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

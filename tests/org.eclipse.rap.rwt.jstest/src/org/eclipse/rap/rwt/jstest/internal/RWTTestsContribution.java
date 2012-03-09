@@ -49,7 +49,6 @@ public class RWTTestsContribution implements TestContribution {
     "tests/LabelTest.js",
     "tests/LinkTest.js",
     "tests/SeparatorTest.js",
-    "tests/CLabelTest.js",
     "tests/CoolItemTest.js",
     "tests/ScaleTest.js",
     "tests/SliderTest.js",
