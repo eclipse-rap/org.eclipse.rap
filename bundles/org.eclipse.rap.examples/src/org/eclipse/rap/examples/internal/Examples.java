@@ -34,6 +34,24 @@ public final class Examples {
     return getContributionsTracker().getContribution( id );
   }
 
+  public IExampleContribution findInitialContribution() {
+    IExampleContribution contribution = null;
+    List<ExampleCategory> categories = getInstance().getCategories();
+    if( !categories.isEmpty() ) {
+      contribution = Examples.getFirstContribution( categories.get( 0 ) );
+    }
+    return contribution;
+  }
+
+  private static IExampleContribution getFirstContribution( ExampleCategory category ) {
+    IExampleContribution contribution = null;
+    List<String> contributionIds = category.getContributionIds();
+    if( !contributionIds.isEmpty() ) {
+      contribution = getInstance().getContribution( contributionIds.get( 0 ) );
+    }
+    return contribution;
+  }
+
   private static ExampleContributionsTracker getContributionsTracker() {
     return Activator.getDefault().getExampleContributions();
   }

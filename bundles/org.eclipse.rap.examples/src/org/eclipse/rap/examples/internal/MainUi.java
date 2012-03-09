@@ -12,7 +12,6 @@ package org.eclipse.rap.examples.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import org.eclipse.rap.examples.*;
 import org.eclipse.rwt.RWT;
@@ -40,7 +39,8 @@ public class MainUi {
   private static final int CENTER_AREA_WIDTH = 998;
 
   private Composite centerArea;
-  private Composite navigation;
+  private Navigation navigation;
+  private Composite navBar;
 
   public int createUI() {
     Display display = new Display();
@@ -62,28 +62,21 @@ public class MainUi {
   }
 
   private void selectInitialContribution() {
-    IExampleContribution contribution = findInitialContribution();
+    IExampleContribution contribution = Examples.getInstance().findInitialContribution();
     if( contribution != null ) {
       selectContribution( contribution );
     }
   }
 
-  private IExampleContribution findInitialContribution() {
-    IExampleContribution contribution = null;
-    List<ExampleCategory> categories = Examples.getInstance().getCategories();
-    if( !categories.isEmpty() ) {
-      contribution = getFirstContribution( categories.get( 0 ) );
-    }
-    return contribution;
-  }
-
-  private static IExampleContribution getFirstContribution( ExampleCategory category ) {
-    IExampleContribution contribution = null;
-    List<String> contributionIds = category.getContributionIds();
-    if( !contributionIds.isEmpty() ) {
-      contribution = Examples.getInstance().getContribution( contributionIds.get( 0 ) );
-    }
-    return contribution;
+  private void attachHistoryListener() {
+    RWT.getBrowserHistory().addBrowserHistoryListener( new BrowserHistoryListener() {
+      public void navigated( BrowserHistoryEvent event ) {
+        IExampleContribution contribution = Examples.getInstance().getContribution( event.entryId );
+        if( contribution != null ) {
+          selectContribution( contribution );
+        }
+      }
+    } );
   }
 
   private Shell createMainShell( Display display ) {
@@ -182,7 +175,7 @@ public class MainUi {
 
   private FormData createCenterAreaFormData( Composite footer ) {
     FormData data = new FormData();
-    data.top = new FormAttachment( navigation.getParent(), 0, SWT.BOTTOM );
+    data.top = new FormAttachment( navBar, 0, SWT.BOTTOM );
     data.bottom = new FormAttachment( footer, 0, SWT.TOP );
     data.left = new FormAttachment( 50, ( -CENTER_AREA_WIDTH / 2 ) -10  );
     data.width = CENTER_AREA_WIDTH + 10;
@@ -226,82 +219,26 @@ public class MainUi {
     return data;
   }
 
-  private Composite createNavigation( Composite parent ) {
-    Composite navBar = new Composite( parent, SWT.NONE );
+  private Navigation createNavigation( Composite parent ) {
+    navBar = new Composite( parent, SWT.NONE );
     navBar.setLayout( new FormLayout() );
     navBar.setLayoutData( createNavBarFormData() );
     navBar.setData(  WidgetUtil.CUSTOM_VARIANT, "nav-bar" );
-    Composite nav = new Composite( navBar, SWT.NONE );
-    nav.setLayout( ExampleUtil.createGridLayoutWithoutMargin( 9, false ) );
-    nav.setLayoutData( createNavigationFormData() );
-    nav.setData(  WidgetUtil.CUSTOM_VARIANT, "navigation" );
-    createNavigationControls( nav );
-    return nav;
-  }
-
-  private FormData createNavBarFormData() {
-    FormData data = new FormData();
-    data.top = new FormAttachment( 0 );
-    data.left = new FormAttachment( 0 );
-    data.right = new FormAttachment( 100 );
-    return data;
-  }
-
-  private FormData createNavigationFormData() {
-    FormData data = new FormData();
-    data.left = new FormAttachment( 50, ( -CENTER_AREA_WIDTH / 2 ) - 7 );
-    data.top = new FormAttachment( 0 );
-    data.bottom = new FormAttachment( 100 );
-    data.width = CENTER_AREA_WIDTH;
-    return data;
-  }
-
-  private void createNavigationControls( Composite parent ) {
-    List<ExampleCategory> categories = Examples.getInstance().getCategories();
-    for( ExampleCategory category : categories ) {
-      createNavigationDropDown( parent, category );
-    }
-  }
-
-  private void createNavigationDropDown( Composite parent, ExampleCategory category ) {
-    new DropDownNavigation( parent, category ) {
+    Navigation navigation = new Navigation( navBar ) {
       @Override
-      protected void contributionSelected( IExampleContribution contribution ) {
+      protected void selectContribution( IExampleContribution contribution ) {
         MainUi.this.selectContribution( contribution );
       }
     };
+    Control navigationControl = navigation.getControl();
+    navigationControl.setLayoutData( createNavigationFormData() );
+    navigationControl.setData(  WidgetUtil.CUSTOM_VARIANT, "navigation" );
+    return navigation;
   }
 
   private void selectContribution( IExampleContribution contribution ) {
-    selectNavigationEntry( contribution );
+    navigation.selectNavigationEntry( contribution );
     activate( contribution );
-  }
-
-  private void selectNavigationEntry( IExampleContribution contribution ) {
-    Control[] children = navigation.getChildren();
-    for( Control control : children ) {
-      if( control instanceof DropDownNavigation ) {
-        changeSelectedDropDownEntry( contribution, (DropDownNavigation) control );
-      }
-    }
-  }
-
-  private void changeSelectedDropDownEntry( IExampleContribution contribution,
-                                            DropDownNavigation navEntry ) {
-    boolean belongsToDropDownNav = contributionBelongsToDropDownNav( contribution, navEntry );
-    ToolItem item = ( (ToolBar) navEntry.getChildren()[ 0 ] ).getItem( 0 );
-    if( belongsToDropDownNav ) {
-      item.setData( WidgetUtil.CUSTOM_VARIANT, "selected" );
-    } else {
-      item.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
-    }
-  }
-
-  private boolean contributionBelongsToDropDownNav( IExampleContribution contribution,
-                                                    DropDownNavigation navEntry )
-  {
-    ExampleCategory category = navEntry.getCategory();
-    return category.getContributionIds().contains( contribution.getId() );
   }
 
   private void activate( IExampleContribution contribution ) {
@@ -318,7 +255,7 @@ public class MainUi {
     }
   }
 
-  private FormData createLogoFormData( Image rapLogo ) {
+  private static FormData createLogoFormData( Image rapLogo ) {
     FormData data = new FormData();
     data.left = new FormAttachment( 0 );
     int logoHeight = rapLogo.getBounds().height;
@@ -326,23 +263,28 @@ public class MainUi {
     return data;
   }
 
-  private FormData createTitleFormData() {
+  private static FormData createTitleFormData() {
     FormData data = new FormData();
     data.bottom = new FormAttachment( 100, -26 );
     data.left = new FormAttachment( 0, 250 );
     return data;
   }
 
-  private void attachHistoryListener() {
-    RWT.getBrowserHistory().addBrowserHistoryListener( new BrowserHistoryListener() {
+  private static FormData createNavBarFormData() {
+    FormData data = new FormData();
+    data.top = new FormAttachment( 0 );
+    data.left = new FormAttachment( 0 );
+    data.right = new FormAttachment( 100 );
+    return data;
+  }
 
-      public void navigated( BrowserHistoryEvent event ) {
-        IExampleContribution contribution = Examples.getInstance().getContribution( event.entryId );
-        if( contribution != null ) {
-          selectContribution( contribution );
-        }
-      }
-    } );
+  private static FormData createNavigationFormData() {
+    FormData data = new FormData();
+    data.left = new FormAttachment( 50, ( -CENTER_AREA_WIDTH / 2 ) - 7 );
+    data.top = new FormAttachment( 0 );
+    data.bottom = new FormAttachment( 100 );
+    data.width = CENTER_AREA_WIDTH;
+    return data;
   }
 
   private static Image getImage( Display display, String path ) {
