@@ -1624,7 +1624,7 @@ public class Tree_Test extends TestCase {
 
     try {
       item.setText( "invalid xhtml: <<&>>" );
-    } catch( Exception notExpected ) {
+    } catch( IllegalArgumentException notExpected ) {
       fail();
     }
   }
@@ -1649,7 +1649,7 @@ public class Tree_Test extends TestCase {
 
     try {
       item.setText( "invalid xhtml: <<&>>" );
-    } catch( Exception notExpected ) {
+    } catch( IllegalArgumentException notExpected ) {
       fail();
     }
   }
