@@ -40,6 +40,7 @@ public class CLabelLCA_Test extends TestCase {
   private Shell shell;
   private CLabelLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -48,6 +49,7 @@ public class CLabelLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -97,7 +99,7 @@ public class CLabelLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
-    assertEquals( "rwt.widgets.CLabel", operation.getType() );
+    assertEquals( "rwt.widgets.Label", operation.getType() );
   }
 
   public void testRenderCreateWithShadowIn() throws IOException {
@@ -107,7 +109,7 @@ public class CLabelLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
-    assertEquals( "rwt.widgets.CLabel", operation.getType() );
+    assertEquals( "rwt.widgets.Label", operation.getType() );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "SHADOW_IN" ) );
   }
