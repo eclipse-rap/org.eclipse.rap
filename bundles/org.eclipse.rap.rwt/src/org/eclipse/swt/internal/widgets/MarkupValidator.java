@@ -71,7 +71,7 @@ public class MarkupValidator {
     result.put( "i", new String[] { "style" } );
     result.put( "sub", new String[] { "style" } );
     result.put( "sup", new String[] { "style" } );
-    result.put( "br", new String[] { "style" } );
+    result.put( "br", new String[ 0 ] );
     result.put( "big", new String[] { "style" } );
     result.put( "small", new String[] { "style" } );
     result.put( "del", new String[] { "style" } );
