@@ -451,7 +451,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       }
       this._gfxCanvasAppended = true;
       this.addEventListener( "insertDom", this._onCanvasAppear );
-      if( this.isSeeable() ) {
+      if( this._isInDom ) {
         this._onCanvasAppear();
       }
     },

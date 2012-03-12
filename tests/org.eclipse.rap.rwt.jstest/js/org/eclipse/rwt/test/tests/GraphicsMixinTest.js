@@ -13,11 +13,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
 
   extend : qx.core.Object,
 
-	construct : function(){
-	  this.gfxBorder = new org.eclipse.rwt.Border( 1, "rounded", "black", 0 );
-	  this.cssBorder = new org.eclipse.rwt.Border( 1, "solid", "black" );
-	  this.gradient = [ [ 0, "red" ], [ 1, "yellow" ] ];
-	},
+  construct : function(){
+    this.gfxBorder = new org.eclipse.rwt.Border( 1, "rounded", "black", 0 );
+    this.cssBorder = new org.eclipse.rwt.Border( 1, "solid", "black" );
+    this.gradient = [ [ 0, "red" ], [ 1, "yellow" ] ];
+  },
 
   members : {
     
@@ -356,6 +356,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       assertEquals( [ "widget1", "widget2" ], log );
       widget1.destroy();
       widget2.destroy();
+    },
+
+    testFalseAppearBug : function() {
+      var log = [];
+      var parent = new qx.ui.layout.CanvasLayout();
+      parent.addToDocument();
+      var between = new qx.ui.layout.CanvasLayout();
+      between.setParent( parent );
+      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      button.setBorder( this.gfxBorder );
+      button.setParent( between );
+      button._onCanvasAppear = function(){ log.push( button._element.parentNode ); };
+  
+      parent.setVisibility( false );
+      between.setDisplay( false );
+      TestUtil.flush();
+      assertTrue( parent.isCreated() );
+      assertFalse( between.isCreated() );
+      assertFalse( button.isCreated() );
+      between.setDisplay( true ); // Order is relevant
+      parent.setVisibility( true );
+      TestUtil.flush(); 
+      
+      assertEquals( [ between._getTargetNode() ], log );
     },
 
     testOnCanvasAppearOnSetDisplay : function() {
