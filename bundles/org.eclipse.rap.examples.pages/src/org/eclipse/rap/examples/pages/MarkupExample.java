@@ -77,7 +77,7 @@ public class MarkupExample implements IExamplePage {
       case 0:
         builder.append( "<img src=\"" );
         builder.append( imageUrl );
-        builder.append( "\" style=\"float:left;padding:5px\"/>" );
+        builder.append( "\" style=\"float:left;padding:5px\" width=\"130\" height=\"70\" />" );
         builder.append( "<i><b>" );
         builder.append( text );
         builder.append( "</b></i>" );

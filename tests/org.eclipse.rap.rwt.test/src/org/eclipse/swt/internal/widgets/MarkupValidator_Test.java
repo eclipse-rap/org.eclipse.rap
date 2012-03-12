@@ -63,4 +63,30 @@ public class MarkupValidator_Test extends TestCase {
     }
   }
 
+  public void testValidate_MissingMandatoryAttribute() {
+    String markup = "<img src=\"image.png\" width=\"10\" />";
+    try {
+      MarkupValidator.validate( markup );
+      fail( "validation should throw an exception" );
+    } catch( Exception expected ) {
+      assertTrue( expected instanceof IllegalArgumentException );
+      String expectedMessage
+        = "Mandatory attribute \"height\" for element \"img\" is missing or not a valid integer";
+      assertEquals( expectedMessage, expected.getMessage() );
+    }
+  }
+
+  public void testValidate_InvalidIntAttribute() {
+    String markup = "<img src=\"image.png\" width=\"10\" height=\"abc\" />";
+    try {
+      MarkupValidator.validate( markup );
+      fail( "validation should throw an exception" );
+    } catch( Exception expected ) {
+      assertTrue( expected instanceof IllegalArgumentException );
+      String expectedMessage
+        = "Mandatory attribute \"height\" for element \"img\" is missing or not a valid integer";
+      assertEquals( expectedMessage, expected.getMessage() );
+    }
+  }
+
 }

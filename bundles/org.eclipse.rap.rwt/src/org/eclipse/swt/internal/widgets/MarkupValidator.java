@@ -96,20 +96,54 @@ public class MarkupValidator {
 
     @Override
     public void startElement( String uri, String localName, String name, Attributes attributes ) {
-      if( !SUPPORTED_ELEMENTS.containsKey( name ) ) {
-        throw new IllegalArgumentException( "Unsupported element in markup text: " + name );
-      } else if( attributes.getLength() > 0 ) {
-        List<String> supportedAttributes = Arrays.asList( SUPPORTED_ELEMENTS.get( name ) );
+      checkSupportedElements( name, attributes );
+      checkSupportedAttributes( name, attributes );
+      checkMandatoryAttributes( name, attributes );
+    }
+
+    private static void checkSupportedElements( String elementName, Attributes attributes ) {
+      if( !SUPPORTED_ELEMENTS.containsKey( elementName ) ) {
+        throw new IllegalArgumentException( "Unsupported element in markup text: " + elementName );
+      }
+    }
+
+    private static void checkSupportedAttributes( String elementName, Attributes attributes ) {
+      if( attributes.getLength() > 0 ) {
+        List<String> supportedAttributes = Arrays.asList( SUPPORTED_ELEMENTS.get( elementName ) );
         int index = 0;
         String attributeName = attributes.getQName( index );
         while( attributeName != null ) {
           if( !supportedAttributes.contains( attributeName ) ) {
             String message = "Unsupported attribute \"{0}\" for element \"{1}\" in markup text";
-            message = MessageFormat.format( message, new Object[] { attributeName, name } );
+            message = MessageFormat.format( message, new Object[] { attributeName, elementName } );
             throw new IllegalArgumentException( message );
           }
           index++;
           attributeName = attributes.getQName( index );
+        }
+      }
+    }
+
+    private static void checkMandatoryAttributes( String elementName, Attributes attributes ) {
+      checkIntAttribute( elementName, attributes, "img", "width" );
+      checkIntAttribute( elementName, attributes, "img", "height" );
+    }
+
+    private static void checkIntAttribute( String elementName,
+                                           Attributes attributes,
+                                           String checkedElementName,
+                                           String checkedAttributeName )
+    {
+      if( checkedElementName.equals( elementName ) ) {
+        String attribute = attributes.getValue( checkedAttributeName );
+        try {
+          Integer.parseInt( attribute );
+        } catch( NumberFormatException exception ) {
+          String message
+            = "Mandatory attribute \"{0}\" for element \"{1}\" is missing or not a valid integer";
+          Object[] arguments = new Object[] { checkedAttributeName, checkedElementName };
+          message = MessageFormat.format( message, arguments );
+          throw new IllegalArgumentException( message );
         }
       }
     }
