@@ -158,7 +158,7 @@ public class Application_Test extends TestCase {
     verify( servletContext ).setAttribute( anyString(), argument.capture() );
     ApplicationContext applicationContext = argument.getValue();
     EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
-    entryPointManager.registerByPath( "/" + SERVLET_NAME, TestEntryPoint.class );
+    entryPointManager.registerByPath( "/" + SERVLET_NAME, TestEntryPoint.class, null );
 //    configurator = new ApplicationConfigurator() {
 //      public void configure( ApplicationConfiguration configuration ) {
 //        configuration.addEntryPoint( SERVLET_NAME, TestEntryPoint.class );

@@ -14,6 +14,7 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.rwt.internal.util.ParamCheck;
@@ -24,25 +25,32 @@ import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 
 public class EntryPointManager {
 
-  private final Map<String, IEntryPointFactory> entryPointsByPath;
+  private final Map<String, EntryPointRegistration> entryPointsByPath;
   private final Map<String, IEntryPointFactory> entryPointsByName;
 
   public EntryPointManager() {
-    entryPointsByPath = new HashMap<String, IEntryPointFactory>();
+    entryPointsByPath = new HashMap<String, EntryPointRegistration>();
     entryPointsByName = new HashMap<String, IEntryPointFactory>();
   }
 
-  public void registerByPath( String path, Class<? extends IEntryPoint> type ) {
+  public void registerByPath( String path,
+                              Class<? extends IEntryPoint> type,
+                              Map<String, Object> properties )
+  {
     ParamCheck.notNull( path, "path" );
     checkValidPath( path );
-    doRegisterByPath( path, new DefaultEntryPointFactory( type ) );
+    doRegisterByPath( path, new DefaultEntryPointFactory( type ), properties );
   }
 
-  public void registerByPath( String path, IEntryPointFactory entryPointFactory ) {
+
+  public void registerByPath( String path,
+                              IEntryPointFactory entryPointFactory,
+                              Map<String, Object> properties )
+  {
     ParamCheck.notNull( path, "path" );
     ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
     checkValidPath( path );
-    doRegisterByPath( path, entryPointFactory );
+    doRegisterByPath( path, entryPointFactory, properties );
   }
 
   public void registerByName( String name, Class<? extends IEntryPoint> type ) {
@@ -68,7 +76,17 @@ public class EntryPointManager {
   public IEntryPointFactory getFactoryByPath( String path ) {
     IEntryPointFactory result;
     synchronized( entryPointsByPath ) {
-      result = entryPointsByPath.get( path );
+      EntryPointRegistration registration = entryPointsByPath.get( path );
+      result = registration == null ? null : registration.factory;
+    }
+    return result;
+  }
+
+  public Map<String, Object> getPropertiesByPath( String path ) {
+    Map<String, Object> result;
+    synchronized( entryPointsByPath ) {
+      EntryPointRegistration registration = entryPointsByPath.get( path );
+      result = registration == null ? null : registration.properties;
     }
     return result;
   }
@@ -89,10 +107,13 @@ public class EntryPointManager {
     return result;
   }
 
-  private void doRegisterByPath( String key, IEntryPointFactory entryPointFactory ) {
+  private void doRegisterByPath( String key,
+                                 IEntryPointFactory factory,
+                                 Map<String, Object> properties )
+  {
     synchronized( entryPointsByPath ) {
       checkPathAvailable( key );
-      entryPointsByPath.put( key, entryPointFactory );
+      entryPointsByPath.put( key, new EntryPointRegistration( factory, properties ) );
     }
   }
 
@@ -129,4 +150,23 @@ public class EntryPointManager {
     }
   }
 
+  private static class EntryPointRegistration {
+    final IEntryPointFactory factory;
+    final Map<String, Object> properties;
+
+    EntryPointRegistration( IEntryPointFactory factory, Map<String, Object> properties ) {
+      this.factory = factory;
+      this.properties = createPropertiesCopy( properties );
+    }
+
+    private static Map<String, Object> createPropertiesCopy( Map<String, Object> properties ) {
+      Map<String, Object> result;
+      if( properties != null ) {
+        result = new HashMap<String, Object>( properties );
+      } else {
+        result = Collections.emptyMap();
+      }
+      return Collections.unmodifiableMap( result );
+    }
+  }
 }

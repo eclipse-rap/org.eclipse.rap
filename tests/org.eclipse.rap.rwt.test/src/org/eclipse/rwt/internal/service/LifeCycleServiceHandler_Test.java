@@ -55,7 +55,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   protected void setUp() {
     Fixture.setUp();
     Class<? extends IEntryPoint> entryPoint = TestEntryPoint.class;
-    RWTFactory.getEntryPointManager().registerByPath( "/test", entryPoint );
+    RWTFactory.getEntryPointManager().registerByPath( "/test", entryPoint, null );
   }
 
   protected void tearDown() {

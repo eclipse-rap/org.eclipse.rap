@@ -64,7 +64,7 @@ public class EntryPointUtil_Test extends TestCase {
   }
 
   public void testGetCurrentEntryPoint_withServletPath() {
-    RWTFactory.getEntryPointManager().registerByPath( "/foo", entryPointFactory );
+    RWTFactory.getEntryPointManager().registerByPath( "/foo", entryPointFactory, null );
     fakeServletPath( "/foo" );
 
     IEntryPoint result = EntryPointUtil.getCurrentEntryPoint();
@@ -89,7 +89,7 @@ public class EntryPointUtil_Test extends TestCase {
     RWTFactory.getBrandingManager().register( new TestBranding( "rap", null, "foo" ) );
     IEntryPoint entryPointByPath = mockEntryPoint();
     IEntryPointFactory entryPointFactoryByPath = mockEntryPointFactory( entryPointByPath );
-    RWTFactory.getEntryPointManager().registerByPath( "/rap", entryPointFactoryByPath );
+    RWTFactory.getEntryPointManager().registerByPath( "/rap", entryPointFactoryByPath, null );
 
     IEntryPoint result = EntryPointUtil.getCurrentEntryPoint();
 
@@ -103,7 +103,7 @@ public class EntryPointUtil_Test extends TestCase {
     RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
     IEntryPoint entryPointByPath = mockEntryPoint();
     IEntryPointFactory entryPointFactoryByPath = mockEntryPointFactory( entryPointByPath );
-    RWTFactory.getEntryPointManager().registerByPath( "/bar", entryPointFactoryByPath );
+    RWTFactory.getEntryPointManager().registerByPath( "/bar", entryPointFactoryByPath, null );
     fakeServletPath( "/bar" );
     Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
 

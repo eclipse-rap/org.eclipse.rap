@@ -94,14 +94,14 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
     ParamCheck.notNull( servletPath, "servletPath" );
     ParamCheck.notNull( type, "type" );
 
-    applicationContext.getEntryPointManager().registerByPath( servletPath, type );
+    applicationContext.getEntryPointManager().registerByPath( servletPath, type, null );
   }
 
   public void addEntryPoint( String servletPath, IEntryPointFactory entryPointFactory ) {
     ParamCheck.notNull( servletPath, "servletPath" );
     ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
 
-    applicationContext.getEntryPointManager().registerByPath( servletPath, entryPointFactory );
+    applicationContext.getEntryPointManager().registerByPath( servletPath, entryPointFactory, null );
   }
 
   /*
