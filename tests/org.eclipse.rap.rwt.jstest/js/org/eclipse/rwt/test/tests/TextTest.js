@@ -563,6 +563,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     } ),
 
     // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=330857 
+    // NOTE [tb] : This test seems to fail at random in IE9?
     testGetSelectionWithLineBreakAtTheEnd : function() {
       createText( true, true );
       text.setValue( "0123456789\r\n" );
