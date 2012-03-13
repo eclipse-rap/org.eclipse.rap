@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -187,7 +187,13 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testGetPreferredWidthMultiLineHeader() {
-    Table table = createMultiLineHeaderTable( shell );
+    Table result = new Table( shell, SWT.NONE );
+    for( int i = 0; i < 3; i++ ) {
+      TableColumn column1 = new TableColumn( result, SWT.NONE );
+      column1.setWidth( 50 );
+      column1.setText( "Column " + i );
+    }
+    Table table = result;
     table.setHeaderVisible( true );
     TableColumn column = table.getColumn( 1 );
 
@@ -358,17 +364,6 @@ public class TableColumn_Test extends TestCase {
       TableColumn column = new TableColumn( result, SWT.NONE );
       column.setWidth( 50 );
     }
-    return result;
-  }
-
-  private Table createMultiLineHeaderTable( Shell shell ) {
-    Table result = new Table( shell, SWT.NONE );
-    for( int i = 0; i < 3; i++ ) {
-      TableColumn column = new TableColumn( result, SWT.NONE );
-      column.setWidth( 50 );
-      column.setText( "Column " + i );
-    }
-    result.setData( "multiLineHeader", Boolean.TRUE );
     return result;
   }
 }
