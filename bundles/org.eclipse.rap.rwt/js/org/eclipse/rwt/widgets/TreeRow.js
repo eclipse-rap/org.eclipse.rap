@@ -468,12 +468,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
 
     _getVisualTextWidth : function( item, cell, config ) {
-      var text = item.getText( cell, !config.markupEnabled );
-      var font = this._getCellFont( item, cell, config );
-      var fontProps = this._getFontProps( font );
       var calc = org.eclipse.swt.FontSizeCalculation;
-      var dimensions = calc.computeTextDimensions( text, fontProps );
-      return dimensions[ 0 ];
+      var result = 0;
+      if( this._cellLabels[ cell ] ) {
+        var font = this._getCellFont( item, cell, config );
+        var fontProps = this._getFontProps( font );
+        var text = this._cellLabels[ cell ].innerHTML; 
+        var dimensions = calc.computeTextDimensions( text, fontProps );
+        result = dimensions[ 0 ];
+      }
+      return result;
     },
 
     _renderAsUnfocused : function( config ) {

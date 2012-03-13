@@ -2099,6 +2099,38 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       tree.destroy();
       row.destroy();
     },
+    
+    testSelectionBackgroundRendering_Bug373900 : qx.core.Variant.select( "qx.client", {
+      "mshtml|newmshtml" : function() {
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var tree = this._createTree();
+        TestUtil.fakeAppearance( "tree-row", {
+          style : function( states ) {
+            var result = {};
+            if( states.selected ) {
+              result.itemBackground = "blue";
+            } else {
+              result.itemBackground = "#888888";
+            }
+            result.itemBackgroundGradient = null;
+            result.itemBackgroundImage = null;
+            return result;
+          }
+        } );
+        var row = this._createRow( tree );
+        this._addToDom( row );
+        var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
+        item.setTexts( [ "a&b" ] );
+        tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 100 );
+  
+        row.renderItem( item, tree._config, true, null );
+        
+        assertEquals( "a&b", item.getText( 0, false ) );
+        tree.destroy();
+        row.destroy();
+      },
+      "default" : function(){}
+    } ),
 
     testSelectionBackgroundLayoutCutOff : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
