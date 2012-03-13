@@ -15,6 +15,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -115,18 +119,6 @@ public class EntryPointUtil_Test extends TestCase {
     assertSame( entryPoint, result );
   }
 
-  public void testGetCurrentEntryPoint_isCached() {
-    RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
-    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
-    EntryPointUtil.getCurrentEntryPoint();
-    Fixture.fakeRequestParam( RequestParams.STARTUP, "bar" );
-
-    IEntryPoint result = EntryPointUtil.getCurrentEntryPoint();
-
-    verify( entryPointFactory ).create();
-    assertSame( entryPoint, result );
-  }
-
   public void testGetCurrentEntryPoint_withNonExistingEntryPointName() {
     Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
 
@@ -145,6 +137,34 @@ public class EntryPointUtil_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
       assertEquals( "Entry point not found: default", expected.getMessage() );
     }
+  }
+
+  public void testGetCurrentEntryPointProperties_withDefaultEntryPoint() {
+    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, entryPointFactory );
+
+    Map<String, Object> properties = EntryPointUtil.getCurrentEntryPointProperties();
+
+    assertTrue( properties.isEmpty() );
+  }
+
+  public void testGetCurrentEntryPointParameter_withStartupParameter() {
+    RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
+    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
+
+    Map<String, Object> properties = EntryPointUtil.getCurrentEntryPointProperties();
+
+    assertTrue( properties.isEmpty() );
+  }
+
+  public void testGetCurrentEntryPointProperties_withServletPath() {
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( "test", Boolean.TRUE );
+    RWTFactory.getEntryPointManager().registerByPath( "/foo", entryPointFactory, parameters );
+    fakeServletPath( "/foo" );
+
+    Map<String, Object> properties = EntryPointUtil.getCurrentEntryPointProperties();
+
+    assertEquals( Boolean.TRUE, properties.get( "test" ) );
   }
 
   private static void fakeServletPath( String string ) {

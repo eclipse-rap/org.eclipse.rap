@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.branding.AbstractBranding;
@@ -24,7 +26,7 @@ import org.eclipse.rwt.service.ISessionStore;
 
 public class EntryPointUtil {
 
-  private static final String ATTR_CURRENT_ENTRY_POINT_NAME
+  private static final String ATTR_CURRENT_ENTRY_POINT
     = EntryPointUtil.class.getName() + "#currentEntryPoint";
 
   public static final String DEFAULT = "default";
@@ -34,20 +36,29 @@ public class EntryPointUtil {
   }
 
   public static IEntryPoint getCurrentEntryPoint() {
-    // TODO [rst] Is caching still needed here?
-    IEntryPoint result = readCurrentEntryPoint();
-    if( result == null ) {
-      result = determineCurrentEntryPoint();
-      storeCurrentEntryPoint( result );
-    }
-    return result;
+    EntryPointRegistration registration = getCurrentEntryPointRegistration();
+    return registration.getFactory().create();
   }
 
-  private static IEntryPoint determineCurrentEntryPoint() {
-    IEntryPoint result;
+  public static Map<String, Object> getCurrentEntryPointProperties() {
+    EntryPointRegistration registration = getCurrentEntryPointRegistration();
+    return registration.getProperties();
+  }
+
+  private static EntryPointRegistration getCurrentEntryPointRegistration() {
+    EntryPointRegistration registration = readCurrentEntryPointRegistration();
+    if( registration == null ) {
+      registration = determineCurrentEntryPoint();
+      storeCurrentEntryPointRegistration( registration );
+    }
+    return registration;
+  }
+
+  private static EntryPointRegistration determineCurrentEntryPoint() {
+    EntryPointRegistration result;
     result = findByStartupParameter();
     if( result == null ) {
-      result = findByServletName();
+      result = findByServletPath();
       if( result == null ) {
         result = findByBranding();
         if( result == null ) {
@@ -58,8 +69,8 @@ public class EntryPointUtil {
     return result;
   }
 
-  private static IEntryPoint findByStartupParameter() {
-    IEntryPoint result = null;
+  private static EntryPointRegistration findByStartupParameter() {
+    EntryPointRegistration result = null;
     HttpServletRequest request = ContextProvider.getRequest();
     String name = request.getParameter( RequestParams.STARTUP );
     if( name != null && name.length() > 0 ) {
@@ -68,18 +79,19 @@ public class EntryPointUtil {
     return result;
   }
 
-  private static IEntryPoint findByServletName() {
-    IEntryPoint result = null;
+  private static EntryPointRegistration findByServletPath() {
+    EntryPointRegistration result = null;
     HttpServletRequest request = ContextProvider.getRequest();
     String path = request.getServletPath();
     if( path != null && path.length() > 0 ) {
-      result = getEntryPointByPath( path );
+      EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
+      result = entryPointManager.getRegistrationByPath( path );
     }
     return result;
   }
 
-  private static IEntryPoint findByBranding() {
-    IEntryPoint result = null;
+  private static EntryPointRegistration findByBranding() {
+    EntryPointRegistration result = null;
     AbstractBranding branding = BrandingUtil.determineBranding();
     String name = branding.getDefaultEntryPoint();
     if( name != null && name.length() > 0 ) {
@@ -88,33 +100,23 @@ public class EntryPointUtil {
     return result;
   }
 
-  private static IEntryPoint getEntryPointByPath( String path ) {
-    IEntryPoint result = null;
-    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
-    IEntryPointFactory factory = entryPointManager.getFactoryByPath( path );
-    if( factory != null ) {
-      result = factory.create();
-    }
-    return result;
-  }
-
-  private static IEntryPoint getEntryPointByName( String name ) {
+  private static EntryPointRegistration getEntryPointByName( String name ) {
     EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
     IEntryPointFactory factory = entryPointManager.getFactoryByName( name );
     if( factory == null ) {
       throw new IllegalArgumentException( "Entry point not found: " + name );
     }
-    return factory.create();
+    return new EntryPointRegistration( factory, null );
   }
 
-  private static void storeCurrentEntryPoint( IEntryPoint name ) {
+  private static void storeCurrentEntryPointRegistration( EntryPointRegistration registration ) {
     ISessionStore session = ContextProvider.getSessionStore();
-    session.setAttribute( ATTR_CURRENT_ENTRY_POINT_NAME, name );
+    session.setAttribute( ATTR_CURRENT_ENTRY_POINT, registration );
   }
 
-  private static IEntryPoint readCurrentEntryPoint() {
+  private static EntryPointRegistration readCurrentEntryPointRegistration() {
     ISessionStore session = ContextProvider.getSessionStore();
-    return ( IEntryPoint )session.getAttribute( ATTR_CURRENT_ENTRY_POINT_NAME );
+    return ( EntryPointRegistration )session.getAttribute( ATTR_CURRENT_ENTRY_POINT );
   }
 
 }

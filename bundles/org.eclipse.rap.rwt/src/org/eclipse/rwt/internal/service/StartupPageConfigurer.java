@@ -79,6 +79,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     readContent();
     template.reset();
     applyBranding();
+    applyLocalizeableMessages();
     addThemeDefinitions();
     template.replace( StartupPageTemplateHolder.VAR_LIBRARIES, getJsLibraries() );
     template.replace( StartupPageTemplateHolder.VAR_APPSCRIPT, getAppScript() );
@@ -222,6 +223,9 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     replacePlaceholder( template, StartupPageTemplateHolder.VAR_TITLE, branding.getTitle() );
     String headers = BrandingUtil.headerMarkup( branding );
     replacePlaceholder( template, StartupPageTemplateHolder.VAR_HEADERS, headers );
+  }
+
+  private void applyLocalizeableMessages() {
     String noScriptWarning = RWTMessages.getMessage( "RWT_NoScriptWarning" );
     replacePlaceholder( template, StartupPageTemplateHolder.VAR_NO_SCRIPT_MESSAGE, noScriptWarning );
   }

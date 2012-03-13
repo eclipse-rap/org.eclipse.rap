@@ -14,7 +14,6 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.rwt.internal.util.ParamCheck;
@@ -73,22 +72,10 @@ public class EntryPointManager {
     }
   }
 
-  public IEntryPointFactory getFactoryByPath( String path ) {
-    IEntryPointFactory result;
+  public EntryPointRegistration getRegistrationByPath( String path ) {
     synchronized( entryPointsByPath ) {
-      EntryPointRegistration registration = entryPointsByPath.get( path );
-      result = registration == null ? null : registration.factory;
+      return entryPointsByPath.get( path );
     }
-    return result;
-  }
-
-  public Map<String, Object> getPropertiesByPath( String path ) {
-    Map<String, Object> result;
-    synchronized( entryPointsByPath ) {
-      EntryPointRegistration registration = entryPointsByPath.get( path );
-      result = registration == null ? null : registration.properties;
-    }
-    return result;
   }
 
   public IEntryPointFactory getFactoryByName( String name ) {
@@ -147,26 +134,6 @@ public class EntryPointManager {
     if( entryPointsByName.containsKey( key ) ) {
       String message = "Entry point already registered for name: " + key;
       throw new IllegalArgumentException( message );
-    }
-  }
-
-  private static class EntryPointRegistration {
-    final IEntryPointFactory factory;
-    final Map<String, Object> properties;
-
-    EntryPointRegistration( IEntryPointFactory factory, Map<String, Object> properties ) {
-      this.factory = factory;
-      this.properties = createPropertiesCopy( properties );
-    }
-
-    private static Map<String, Object> createPropertiesCopy( Map<String, Object> properties ) {
-      Map<String, Object> result;
-      if( properties != null ) {
-        result = new HashMap<String, Object>( properties );
-      } else {
-        result = Collections.emptyMap();
-      }
-      return Collections.unmodifiableMap( result );
     }
   }
 }
