@@ -124,6 +124,10 @@ public class Table extends Composite {
       return margin.x;
     }
 
+    public int getFixedColumns() {
+      return Table.this.getFixedColumns();
+    }
+    
     public int getCheckWidth() {
       TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
       return themeAdapter.getCheckBoxImageSize( Table.this ).x;
@@ -2504,7 +2508,7 @@ public class Table extends Composite {
   private int getFixedColumns() {
     int result = -1;
     try {
-      Integer data = ( Integer )getData( "fixedColumns" );
+      Integer data = ( Integer )getData( RWT.FIXED_COLUMNS );
       if( data != null ) {
         result = data.intValue();
       }

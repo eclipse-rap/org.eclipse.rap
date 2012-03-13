@@ -857,7 +857,7 @@ public class TableLCA_Test extends TestCase {
 
   public void testRenderCreateWithFixedColumns() throws IOException {
     Table table = new Table( shell, SWT.NONE );
-    table.setData( "fixedColumns", Integer.valueOf( 1 ) );
+    table.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
 
     lca.renderInitialization( table );
 
@@ -1059,14 +1059,14 @@ public class TableLCA_Test extends TestCase {
     CreateOperation operation = message.findCreateOperation( table );
     assertTrue( operation.getPropertyNames().indexOf( "fixedColumns" ) == -1 );
   }
-
+  
   public void testRenderFixedColumns() throws IOException {
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-
-    table.setData( "fixedColumns", Integer.valueOf( 1 ) );
+    
+    table.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
     lca.renderChanges( table );
-
+    
     Message message = Fixture.getProtocolMessage();
     assertEquals( Integer.valueOf( 1 ), message.findSetProperty( table, "fixedColumns" ) );
   }

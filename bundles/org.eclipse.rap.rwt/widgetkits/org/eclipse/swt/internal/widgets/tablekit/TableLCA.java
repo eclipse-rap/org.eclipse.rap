@@ -86,7 +86,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     preserveProperty( table, PROP_ITEM_HEIGHT, table.getItemHeight() );
     preserveProperty( table, PROP_ITEM_METRICS, getItemMetrics( table ) );
     preserveProperty( table, PROP_COLUMN_COUNT, table.getColumnCount() );
-    preserveProperty( table, PROP_FIXED_COLUMNS, widget.getData( PROP_FIXED_COLUMNS ) );
+    preserveProperty( table, PROP_FIXED_COLUMNS, getFixedColumns( table ) );
     preserveProperty( table, PROP_HEADER_HEIGHT, table.getHeaderHeight() );
     preserveProperty( table, PROP_HEADER_VISIBLE, table.getHeaderVisible() );
     preserveProperty( table, PROP_LINES_VISIBLE, table.getLinesVisible() );
@@ -132,8 +132,7 @@ public final class TableLCA extends AbstractWidgetLCA {
       int[] checkMetrics = new int[] { adapter.getCheckLeft(), adapter.getCheckWidth() };
       clientObject.set( "checkBoxMetrics", checkMetrics );
     }
-    Integer fixedColumns = ( Integer )widget.getData( PROP_FIXED_COLUMNS );
-    if( fixedColumns != null ) {
+    if( getFixedColumns( table ) >= 0 ) {
       clientObject.set( "splitContainer", true );
     }
     clientObject.set( "indentionWidth", 0 );
@@ -149,7 +148,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     renderProperty( table, PROP_ITEM_HEIGHT, table.getItemHeight(), ZERO );
     renderItemMetrics( table );
     renderProperty( table, PROP_COLUMN_COUNT, table.getColumnCount(), ZERO );
-    renderProperty( table, PROP_FIXED_COLUMNS, table.getData( PROP_FIXED_COLUMNS ), null );
+    renderProperty( table, PROP_FIXED_COLUMNS, getFixedColumns( table ), -1 );
     renderProperty( table, PROP_HEADER_HEIGHT, table.getHeaderHeight(), ZERO );
     renderProperty( table, PROP_HEADER_VISIBLE, table.getHeaderVisible(), false );
     renderProperty( table, PROP_LINES_VISIBLE, table.getLinesVisible(), false );
@@ -172,6 +171,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     renderProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ), false );
     renderProperty( table, PROP_CELL_TOOLTIP_TEXT, getCellToolTipText( table ), null );
   }
+
 
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
@@ -321,6 +321,11 @@ public final class TableLCA extends AbstractWidgetLCA {
       result[ i ] = WidgetUtil.getId( selection[ i ] );
     }
     return result;
+  }
+
+  private int getFixedColumns( Table table ) {
+    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
+    return tableAdapter.getFixedColumns();
   }
 
   private static int getScrollLeft( Table table ) {

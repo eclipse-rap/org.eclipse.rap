@@ -350,6 +350,29 @@ public final class RWT {
   public static final String MARKUP_ENABLED = "org.eclipse.rap.rwt.markupEnabled";
 
   /**
+   * Controls the number of fixed columns. This constant must be passed to <code>setData()</code> 
+   * together with an <code>Integer</code> object. The given number of columns, starting 
+   * with the current leftmost one, will not scroll horizontally. The call to <code>setData()</code> 
+   * must be placed directly after the control is created.
+   * <p>
+   * For example:
+   * <code><pre>
+   *   Table table = new Table( parent, SWT.NONE );
+   *   table.setData( RWT.FIXED_COLUMNS, new Integer( 2 ) );
+   * </pre></code>
+   * </p>
+   * <b>Used By:</b>
+   * <ul>
+   * <li><code>Table</code></li>
+   * </ul>
+   * </p>
+   *
+   * @see Control#setData(String,Object)
+   * @since 1.5
+   */
+  public static final String FIXED_COLUMNS = "org.eclipse.rap.rwt.fixedColumns";
+  
+  /**
    * The ID of the default theme. The default theme is the active theme if no
    * custom theme has been specified. This ID can be used to register theme
    * contributions to the default theme.

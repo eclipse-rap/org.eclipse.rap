@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
@@ -359,7 +360,7 @@ public class TableColumn_Test extends TestCase {
 
   private Table createFixedColumnsTable( Shell shell ) {
     Table result = new Table( shell, SWT.NONE );
-    result.setData( "fixedColumns", new Integer( 1 ) );
+    result.setData( RWT.FIXED_COLUMNS, new Integer( 1 ) );
     for( int i = 0; i < 10; i++ ) {
       TableColumn column = new TableColumn( result, SWT.NONE );
       column.setWidth( 50 );

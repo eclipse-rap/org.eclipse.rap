@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
@@ -751,7 +752,7 @@ public class TableColumnLCA_Test extends TestCase {
   public void testRenderFixed() throws IOException {
     TableColumn column = new TableColumn( table, SWT.NONE );
 
-    table.setData( "fixedColumns", Integer.valueOf( 1 ) );
+    table.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
@@ -819,7 +820,7 @@ public class TableColumnLCA_Test extends TestCase {
 
   private Table createFixedColumnsTable( Shell shell ) {
     Table table = new Table( shell, SWT.NONE );
-    table.setData( "fixedColumns", new Integer( 1 ) );
+    table.setData( RWT.FIXED_COLUMNS, new Integer( 1 ) );
     for( int i = 0; i < 10; i++ ) {
       TableColumn column = new TableColumn( table, SWT.NONE );
       column.setWidth( 50 );

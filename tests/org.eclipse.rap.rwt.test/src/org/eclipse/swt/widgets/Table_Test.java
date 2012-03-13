@@ -2521,7 +2521,7 @@ public class Table_Test extends TestCase {
 
   private Table createFixedColumnsTable() {
     Table result = new Table( shell, SWT.NONE );
-    result.setData( "fixedColumns", new Integer( 2 ) );
+    result.setData( RWT.FIXED_COLUMNS, new Integer( 2 ) );
     return result;
   }
 
@@ -2532,7 +2532,6 @@ public class Table_Test extends TestCase {
       column.setWidth( 50 );
       column.setText( "Column " + i );
     }
-    result.setData( "multiLineHeader", Boolean.TRUE );
     return result;
   }
 
