@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,16 +27,59 @@ public final class BrandingUtil {
   private static final String ATTR_BRANDING_ID = BrandingUtil.class.getName() + "#brandingId";
 
   public static String headerMarkup( AbstractBranding branding ) {
-    Header[] headers = branding.getHeaders();
     StringBuilder buffer = new StringBuilder();
     appendFavIconMarkup( buffer, branding );
+    appendHeaderMarkup( buffer, branding );
+    return buffer.toString();
+  }
+
+  private static void appendFavIconMarkup( StringBuilder buffer, AbstractBranding branding ) {
+    String favIcon = branding.getFavIcon();
+    if( favIcon != null && !"".equals( favIcon ) ) {
+      Header header = createHeaderForFavIcon( favIcon );
+      buffer.append( createMarkupForHeaders( header ) );
+    }
+  }
+
+  private static void appendHeaderMarkup( StringBuilder buffer, AbstractBranding branding ) {
+    Header[] headers = branding.getHeaders();
     if( headers != null ) {
-      for( int i = 0; i < headers.length; i++ ) {
-        Header header = headers[ i ];
-        appendHeaderMarkup( buffer, header );
-        buffer.append( "\n" );
+      buffer.append( createMarkupForHeaders( headers ) );
+    }
+  }
+
+  public static Header createHeaderForFavIcon( String favIcon ) {
+    String[] names = new String[]{ "rel", "type", "href" };
+    String favIconUrl = RWT.getResourceManager().getLocation( favIcon );
+    String[] values = new String[]{ "shortcut icon", "image/x-icon", favIconUrl };
+    return new Header( "link", names, values );
+  }
+
+  public static String createMarkupForHeaders( Header... headers ) {
+    StringBuilder buffer = new StringBuilder();
+    for( Header header : headers ) {
+      appendHeaderMarkup( buffer, header );
+    }
+    return buffer.toString();
+  }
+
+  private static String appendHeaderMarkup( StringBuilder buffer, Header header ) {
+    buffer.append( "<" );
+    buffer.append( header.getTagName() );
+    buffer.append( " " );
+    String[] names = header.getNames();
+    String[] values = header.getValues();
+    for( int i = 0; i < names.length; i++ ) {
+      String name = names[ i ];
+      String value = values[ i ];
+      if( name != null && value != null ) {
+        buffer.append( name );
+        buffer.append( "=\"" );
+        buffer.append( value );
+        buffer.append( "\" " );
       }
     }
+    buffer.append( "/>\n" );
     return buffer.toString();
   }
 
@@ -56,41 +99,6 @@ public final class BrandingUtil {
    */
   public static String getCurrentBrandingId() {
     return ( String )RWT.getSessionStore().getAttribute( ATTR_BRANDING_ID );
-  }
-
-  //////////////////
-  // Helping methods
-
-  private static void appendFavIconMarkup( StringBuilder buffer, AbstractBranding branding ) {
-    String favIcon = branding.getFavIcon();
-    if( favIcon != null && !"".equals( favIcon ) ) {
-      String[] names = new String[] { "rel", "type", "href" };
-      String favIconUrl = RWT.getResourceManager().getLocation( favIcon );
-      String[] values = new String[] { "shortcut icon", "image/x-icon", favIconUrl };
-      Header header = new Header( "link", names, values );
-      appendHeaderMarkup( buffer, header );
-      buffer.append( "\n" );
-    }
-  }
-
-  private static String appendHeaderMarkup( StringBuilder buffer, Header header ) {
-    buffer.append( "<" );
-    buffer.append( header.getTagName() );
-    buffer.append( " " );
-    String[] names = header.getNames();
-    String[] values = header.getValues();
-    for( int i = 0; i < names.length; i++ ) {
-      String name = names[ i ];
-      String value = values[ i ];
-      if( name != null && value != null ) {
-        buffer.append( name );
-        buffer.append( "=\"" );
-        buffer.append( value );
-        buffer.append( "\" " );
-      }
-    }
-    buffer.append( "/>" );
-    return buffer.toString();
   }
 
   private BrandingUtil() {
