@@ -18,25 +18,21 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
-import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.Display;
 
 
 public class WrappedRequest_Test extends TestCase {
 
-  private static final int TOKEN_INDEX_TITLE = 1;
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+  }
 
-  public static final class DefaultEntryPoint implements IEntryPoint {
-    public int createUI() {
-      Display display = new Display();
-      if( display.readAndDispatch() ) {
-        display.sleep();
-      }
-      return 0;
-    }
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
   }
 
   public void testAdditionalParameters() {
@@ -98,41 +94,27 @@ public class WrappedRequest_Test extends TestCase {
   }
 
   public void testStartupRequestWithParameter() throws Exception {
-    String param1 = "param1";
-    String value1 = "value1";
+    RWTFactory.getEntryPointManager().registerByPath( "/rap", DefaultEntryPoint.class, null );
     Fixture.fakeNewGetRequest();
-    Fixture.fakeRequestParam( param1, value1 );
-
+    Fixture.fakeRequestParam( "param", "value" );
     RWTFactory.getServiceManager().getHandler().service();
 
-    TestResponse response = ( TestResponse )ContextProvider.getResponse();
-    String content = response.getContent();
-    StartupPage startupPage = RWTFactory.getStartupPage();
-    String title = startupPage.getConfigurer().getTemplate().getTokens() [ TOKEN_INDEX_TITLE ];
-    assertTrue( content.contains( title ) );
-
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
-                                                      DefaultEntryPoint.class );
     Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( param1, null );
-    Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointUtil.DEFAULT );
+    Fixture.fakeRequestParam( "param", null );
     Fixture.fakeRequestParam( RequestParams.RWT_INITIALIZE, "true" );
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.setHeader( "User-Agent", "myAgent" );
-
     RWTFactory.getServiceManager().getHandler().service();
 
-    assertEquals( value1, ContextProvider.getRequest().getParameter( param1 ) );
+    assertEquals( "value", ContextProvider.getRequest().getParameter( "param" ) );
   }
 
-  @Override
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public static final class DefaultEntryPoint implements IEntryPoint {
+    public int createUI() {
+      Display display = new Display();
+      if( display.readAndDispatch() ) {
+        display.sleep();
+      }
+      return 0;
+    }
   }
 
 }
