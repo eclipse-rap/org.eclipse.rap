@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,41 +7,28 @@
  *
  * Contributors:
  *    Innoopract Informationssysteme GmbH - initial API and implementation
- *    EclipseSource - ongoing implementation
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
+ *    EclipseSource - ongoing implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
-
-import java.io.IOException;
-
-import javax.servlet.ServletException;
 
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.IServiceManager;
 
 
 public class ServiceManager implements IServiceManager {
-  private final ServiceHandlerRegistry customHandlers;
-  private final IServiceHandler handlerDispatcher;
   private final IServiceHandler lifeCycleRequestHandler;
-  
-  private class HandlerDispatcher implements IServiceHandler {
-    public void service() throws ServletException, IOException {
-      if( isCustomHandler() ) {
-        IServiceHandler customHandler = getCustomHandler();
-        customHandler.service();
-      } else {
-        getLifeCycleRequestHandler().service();
-      }
-    }
-  }
-  
+  private final ServiceHandlerRegistry customHandlers;
+
   public ServiceManager( IServiceHandler lifeCycleRequestHandler ) {
     this.lifeCycleRequestHandler = lifeCycleRequestHandler;
-    this.customHandlers = new ServiceHandlerRegistry();
-    this.handlerDispatcher = new HandlerDispatcher();
+    customHandlers = new ServiceHandlerRegistry();
   }
-  
+
+  public IServiceHandler getServiceHandler( String customId ) {
+    return customHandlers.get( customId );
+  }
+
   public void registerServiceHandler( String id, IServiceHandler handler ) {
     customHandlers.put( id, handler );
   }
@@ -49,35 +36,32 @@ public class ServiceManager implements IServiceManager {
   public void unregisterServiceHandler( String id ) {
     customHandlers.remove( id );
   }
-  
-  public IServiceHandler getHandler() {
-    return handlerDispatcher;
-  }
 
   public void clear() {
     customHandlers.clear();
   }
-  
-  public IServiceHandler getCustomHandler( String customHandlerId ) {
-    return customHandlers.get( customHandlerId );
+
+  public IServiceHandler getHandler() {
+    IServiceHandler result;
+    String customId = getCustomHandlerId();
+    if( customId != null && customId.length() > 0 ) {
+      result = getCustomHandlerChecked( customId );
+    } else {
+      result = lifeCycleRequestHandler;
+    }
+    return result;
   }
-  
-  //////////////////
-  // helping methods
-  
+
+  private IServiceHandler getCustomHandlerChecked( String customId ) {
+    IServiceHandler customHandler = customHandlers.get( customId );
+    if( customHandler == null ) {
+      throw new IllegalArgumentException( "No service handler registered with id " + customId );
+    }
+    return customHandler;
+  }
+
   private static String getCustomHandlerId() {
     return ContextProvider.getRequest().getParameter( IServiceHandler.REQUEST_PARAM );
   }
-  
-  private IServiceHandler getLifeCycleRequestHandler() {
-    return lifeCycleRequestHandler;
-  }
 
-  private boolean isCustomHandler() {
-    return customHandlers.isCustomHandler( getCustomHandlerId() );
-  }
-  
-  private IServiceHandler getCustomHandler() {
-    return getCustomHandler( getCustomHandlerId() );
-  }
 }

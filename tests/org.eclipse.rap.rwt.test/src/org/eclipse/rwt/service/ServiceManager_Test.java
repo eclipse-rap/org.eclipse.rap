@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,6 @@
 package org.eclipse.rwt.service;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -26,65 +24,77 @@ public class ServiceManager_Test extends TestCase {
 
   private IServiceHandler lifeCycleServiceHandler;
   private ServiceManager serviceManager;
-  
-  public void testRegisterServiceHandler() throws Exception {
-    IServiceHandler serviceHandler = mock( IServiceHandler.class );
-    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
 
-    Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, SERVICE_HANDLER_ID );
-    serviceManager.getHandler().service();
-
-    verify( serviceHandler ).service();
-  }
-
-  public void testRegisterServiceHandlerTwice() throws Exception {
-    IServiceHandler firstHandler = mock( IServiceHandler.class );
-    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, firstHandler );
-    IServiceHandler secondHandler = mock( IServiceHandler.class );
-    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, secondHandler );
-
-    Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, SERVICE_HANDLER_ID );
-    serviceManager.getHandler().service();
-    
-    verifyZeroInteractions( firstHandler );
-    verify( secondHandler ).service();
-  }
-  
-  public void testUnregsiterServiceHandler() throws Exception {
-    IServiceHandler serviceHandler = mock( IServiceHandler.class );
-    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
-
-    serviceManager.unregisterServiceHandler( SERVICE_HANDLER_ID );
-
-    Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, SERVICE_HANDLER_ID );
-    serviceManager.getHandler().service();
-    verifyZeroInteractions( serviceHandler );
-  }
-  
-  public void testClear() throws Exception {
-    IServiceHandler serviceHandler = mock( IServiceHandler.class );
-    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
-
-    serviceManager.clear();
-
-    Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, SERVICE_HANDLER_ID );
-    serviceManager.getHandler().service();
-    verifyZeroInteractions( serviceHandler );
-  }
-  
-  public void testLifeCycleServiceHandler() throws Exception {
-    serviceManager.getHandler().service();
-    
-    verify( lifeCycleServiceHandler ).service();
-  }
-
+  @Override
   protected void setUp() {
     Fixture.setUp();
     lifeCycleServiceHandler = mock( IServiceHandler.class );
     serviceManager = new ServiceManager( lifeCycleServiceHandler );
   }
 
+  @Override
   protected void tearDown() {
     Fixture.tearDown();
+  }
+
+  public void testRegisterServiceHandler() throws Exception {
+    IServiceHandler serviceHandler = mock( IServiceHandler.class );
+
+    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
+
+    assertSame( serviceHandler, serviceManager.getServiceHandler( SERVICE_HANDLER_ID ) );
+  }
+
+  public void testRegisterServiceHandlerTwice() throws Exception {
+    IServiceHandler firstHandler = mock( IServiceHandler.class );
+    IServiceHandler secondHandler = mock( IServiceHandler.class );
+
+    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, firstHandler );
+    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, secondHandler );
+
+    assertSame( secondHandler, serviceManager.getServiceHandler( SERVICE_HANDLER_ID ) );
+  }
+
+  public void testUnregisterServiceHandler() throws Exception {
+    IServiceHandler serviceHandler = mock( IServiceHandler.class );
+    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
+
+    serviceManager.unregisterServiceHandler( SERVICE_HANDLER_ID );
+
+    assertNull( serviceManager.getServiceHandler( SERVICE_HANDLER_ID ) );
+  }
+
+  public void testClear() throws Exception {
+    IServiceHandler serviceHandler = mock( IServiceHandler.class );
+    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
+
+    serviceManager.clear();
+
+    assertNull( serviceManager.getServiceHandler( SERVICE_HANDLER_ID ) );
+  }
+
+  public void testGetHandler_default() throws Exception {
+    assertSame( lifeCycleServiceHandler, serviceManager.getHandler() );
+  }
+
+  public void testGetHandler_custom() throws Exception {
+    IServiceHandler serviceHandler = mock( IServiceHandler.class );
+    serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
+
+    Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, SERVICE_HANDLER_ID );
+    IServiceHandler handler = serviceManager.getHandler();
+
+    assertSame( serviceHandler, handler );
+  }
+
+  public void testGetHandler_unknownId() throws Exception {
+    Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, SERVICE_HANDLER_ID );
+
+    try {
+      serviceManager.getHandler();
+      fail();
+    } catch( IllegalArgumentException expected ) {
+      assertTrue( expected.getMessage().contains( SERVICE_HANDLER_ID ) );
+    }
   }
 }

@@ -203,8 +203,8 @@ public class ApplicationContextConfigurator_Test extends TestCase {
 
   private void checkServiceHandlersHaveBeenAdded() {
     ServiceManager serviceManager = applicationContext.getServiceManager();
-    assertSame( testServiceHandler, serviceManager.getCustomHandler( testServiceHandlerId ) );
-    assertNotNull( serviceManager.getCustomHandler( UICallBackServiceHandler.HANDLER_ID ) );
+    assertSame( testServiceHandler, serviceManager.getServiceHandler( testServiceHandlerId ) );
+    assertNotNull( serviceManager.getServiceHandler( UICallBackServiceHandler.HANDLER_ID ) );
   }
 
   private void checkResourceHasBeenAdded() {
@@ -270,7 +270,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
 
   private void checkServiceHandlerHasBeenRemoved() {
     ServiceManager serviceManager = applicationContext.getServiceManager();
-    assertNull( serviceManager.getCustomHandler( testServiceHandlerId ) );
+    assertNull( serviceManager.getServiceHandler( testServiceHandlerId ) );
   }
 
   private void checkSettingStoreFactoryHasBeenRemoved() {
