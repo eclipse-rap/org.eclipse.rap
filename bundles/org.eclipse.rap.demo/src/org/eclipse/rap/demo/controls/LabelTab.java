@@ -41,10 +41,12 @@ public class LabelTab extends ExampleTab {
     text1 = "Some Text";
     text2 = "Some Other Text";
     markup = "<big><i>Some</i></big> <b>Other</b> <small>Text With Markup</small> - 2<sup>16</sup>";
+    markupEnabled = true;
     labelImage = null;
     labelText = "A Label with text";
   }
 
+  @Override
   protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "SEPARATOR", SWT.SEPARATOR );
@@ -69,6 +71,7 @@ public class LabelTab extends ExampleTab {
     createChangeToolTipControl( parent );
   }
 
+  @Override
   protected void createExampleControls( Composite parent ) {
     int style = getStyle();
     RowLayout rowLayout = new RowLayout( SWT.VERTICAL );
@@ -88,6 +91,7 @@ public class LabelTab extends ExampleTab {
     Button text1Button = new Button( buttons, SWT.PUSH );
     text1Button.setText( "Text 1" );
     text1Button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         labelText = text1;
         labelImage = null;
@@ -97,6 +101,7 @@ public class LabelTab extends ExampleTab {
     Button text2Button = new Button( buttons, SWT.PUSH );
     text2Button.setText( "Text 2" );
     text2Button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         labelText = text2;
         labelImage = null;
@@ -106,6 +111,7 @@ public class LabelTab extends ExampleTab {
     Button markupButton = new Button( buttons, SWT.PUSH );
     markupButton.setText( "Markup Text" );
     markupButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         labelText = markup;
         labelImage = null;
@@ -115,6 +121,7 @@ public class LabelTab extends ExampleTab {
     Button image1Button = new Button( buttons, SWT.PUSH );
     image1Button.setText( "Image 1" );
     image1Button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         labelImage = image1;
         updateLabel( varSizeLabel );
@@ -123,6 +130,7 @@ public class LabelTab extends ExampleTab {
     Button image2Button = new Button( buttons, SWT.PUSH );
     image2Button.setText( "Image 2" );
     image2Button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         labelImage = image2;
         updateLabel( varSizeLabel );
@@ -136,6 +144,7 @@ public class LabelTab extends ExampleTab {
     button.setText( "Enable Markup" );
     button.setSelection( markupEnabled );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         markupEnabled = button.getSelection();
         createNew();
@@ -153,6 +162,7 @@ public class LabelTab extends ExampleTab {
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "Change" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         varSizeLabel.setText( text.getText() );
         text.setText( "" );
@@ -170,6 +180,7 @@ public class LabelTab extends ExampleTab {
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "Change" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         varSizeLabel.setToolTipText( text.getText() );
       }
