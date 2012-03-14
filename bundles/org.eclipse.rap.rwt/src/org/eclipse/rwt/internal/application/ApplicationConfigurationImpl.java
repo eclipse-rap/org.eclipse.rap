@@ -14,6 +14,7 @@ package org.eclipse.rwt.internal.application;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.util.Map;
 
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.AdapterFactory;
@@ -91,18 +92,32 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration, A
     applicationContext.getSettingStoreManager().register( settingStoreFactory );
   }
 
-  public void addEntryPoint( String servletPath, Class<? extends IEntryPoint> type ) {
-    ParamCheck.notNull( servletPath, "servletPath" );
-    ParamCheck.notNull( type, "type" );
-
-    applicationContext.getEntryPointManager().registerByPath( servletPath, type, null );
+  public void addEntryPoint( String path, Class<? extends IEntryPoint> entryPointType ) {
+    addEntryPoint( path, entryPointType, null );
   }
 
-  public void addEntryPoint( String servletPath, IEntryPointFactory entryPointFactory ) {
-    ParamCheck.notNull( servletPath, "servletPath" );
+  public void addEntryPoint( String path,
+                             Class<? extends IEntryPoint> entryPointType,
+                             Map<String, String> properties )
+  {
+    ParamCheck.notNull( path, "path" );
+    ParamCheck.notNull( entryPointType, "entryPointType" );
+
+    applicationContext.getEntryPointManager().registerByPath( path, entryPointType, properties );
+  }
+
+  public void addEntryPoint( String path, IEntryPointFactory entryPointFactory ) {
+    addEntryPoint( path, entryPointFactory, null );
+  }
+
+  public void addEntryPoint( String path,
+                             IEntryPointFactory entryPointFactory,
+                             Map<String, String> properties )
+  {
+    ParamCheck.notNull( path, "path" );
     ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
 
-    applicationContext.getEntryPointManager().registerByPath( servletPath, entryPointFactory, null );
+    applicationContext.getEntryPointManager().registerByPath( path, entryPointFactory, properties );
   }
 
   /*
@@ -207,7 +222,7 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration, A
     }
     return result;
   }
-  
+
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result = null;

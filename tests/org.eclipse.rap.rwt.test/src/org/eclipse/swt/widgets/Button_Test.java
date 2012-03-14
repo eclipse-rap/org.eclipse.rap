@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import java.io.IOException;
@@ -262,7 +261,7 @@ public class Button_Test extends TestCase {
 
   public void testComputeSizeWithCustomTheme() throws IOException {
     String css = "Button {\nspacing: 10px;\n}";
-    ThemeTestUtil.registerCustomTheme( "custom", css, null );
+    ThemeTestUtil.registerTheme( "custom", css, null );
     ThemeUtil.setCurrentThemeId( "custom" );
 
     // Text and image to use

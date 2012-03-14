@@ -26,7 +26,7 @@ import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.application.ApplicationContext;
 import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.PhaseListener;
@@ -114,12 +114,6 @@ public class RWTServletContextListener_Test extends TestCase {
     IResource[] resources = applicationContext.getResourceRegistry().get();
     assertEquals( 1, resources.length );
     assertEquals( TestResource.class, resources[ 0 ].getClass() );
-  }
-
-  public static class TestEntryPoint implements IEntryPoint {
-    public int createUI() {
-      return 0;
-    }
   }
 
   public static class TestPhaseListener implements PhaseListener {

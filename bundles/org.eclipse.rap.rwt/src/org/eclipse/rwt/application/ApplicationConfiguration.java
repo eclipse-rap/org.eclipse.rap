@@ -11,8 +11,11 @@
  ******************************************************************************/
 package org.eclipse.rwt.application;
 
+import java.util.Map;
+
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
+import org.eclipse.rwt.client.WebClient;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rwt.lifecycle.PhaseListener;
@@ -100,15 +103,34 @@ public interface ApplicationConfiguration {
 
   /**
    * Registers an entry point at the given servlet path. A servlet path must
-   * begin with slash ('/') and must not end with slash ('/'). The root path
+   * begin with slash ('/') and must not end with a slash ('/'). The root path
    * (&quot;/&quot;) is currently not supported, as well as nested paths (e.g.
    * &quot;/path/subpath&quot;).
    *
-   * @param servletPath a valid path to register the entry point at
+   * @param path a valid path to register the entry point at
    * @param entryPointType the entry point class to be registered, must not be
    *          <code>null</code>
    */
-  void addEntryPoint( String servletPath, Class<? extends IEntryPoint> entryPointType );
+  void addEntryPoint( String path, Class<? extends IEntryPoint> entryPointType );
+
+  /**
+   * Registers an entry point at the given servlet path. A servlet path must
+   * begin with slash ('/') and must not end with a slash ('/'). The root path
+   * (&quot;/&quot;) is currently not supported, as well as nested paths (e.g.
+   * &quot;/path/subpath&quot;). Properties can be specified to control
+   * client-specific aspects of the entrypoint such as theme, icons, etc. The
+   * acceptable keys and values depend on the client implementation. The class
+   * {@link WebClient} provides constants for the default RAP client.
+   *
+   * @param path a valid path to register the entry point at
+   * @param entryPointType the entry point class to be registered, must not be
+   *          <code>null</code>
+   * @param properties properties that control client-specific aspects of the
+   *          application, such as theme, icons, etc., may be <code>null</code>
+   */
+  void addEntryPoint( String path,
+                      Class<? extends IEntryPoint> entryPointType,
+                      Map<String, String> properties );
 
   /**
    * Registers an entry point factory at the given servlet path. A servlet path
@@ -116,11 +138,30 @@ public interface ApplicationConfiguration {
    * path (&quot;/&quot;) is currently not supported, as well as nested paths
    * (e.g. &quot;/path/subpath&quot;).
    *
-   * @param servletPath a valid path to register the entry point at
+   * @param path a valid path to register the entry point at
    * @param entryPointFactory the entry point factory to be registered, must not
    *          be <code>null</code>
    */
-  void addEntryPoint( String servletPath, IEntryPointFactory entryPointFactory );
+  void addEntryPoint( String path, IEntryPointFactory entryPointFactory );
+
+  /**
+   * Registers an entry point factory at the given servlet path. A servlet path
+   * must begin with slash ('/') and must not end with slash ('/'). The root
+   * path (&quot;/&quot;) is currently not supported, as well as nested paths
+   * (e.g. &quot;/path/subpath&quot;). Properties can be specified to control
+   * client-specific aspects of the entrypoint such as theme, icons, etc. The
+   * acceptable keys and values depend on the client implementation. The class
+   * {@link WebClient} provides constants for the default RAP client.
+   *
+   * @param path a valid path to register the entry point at
+   * @param entryPointFactory the entry point factory to be registered, must not
+   *          be <code>null</code>
+   * @param properties properties that control client-specific aspects of the
+   *          application, such as theme, icons, etc., may be <code>null</code>
+   */
+  void addEntryPoint( String path,
+                      IEntryPointFactory entryPointFactory,
+                      Map<String, String> properties );
 
   void addBranding( AbstractBranding branding );
 

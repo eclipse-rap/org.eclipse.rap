@@ -16,7 +16,6 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
@@ -24,10 +23,12 @@ import org.eclipse.rwt.internal.theme.css.StyleSheet;
 public class ThemeUtil_Test extends TestCase {
   private static final String CUSTOM_THEME_ID = "customThemeId";
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -39,7 +40,7 @@ public class ThemeUtil_Test extends TestCase {
 
   public void testRegisterThemeDoesNotChangeCurrentTheme() throws Exception {
     Theme theme = createTheme( CUSTOM_THEME_ID );
-    registerTheme( theme );
+    ThemeTestUtil.registerTheme( theme );
 
     assertNotNull( ThemeUtil.getDefaultTheme() );
     assertSame( ThemeUtil.getDefaultTheme(), ThemeUtil.getCurrentTheme() );
@@ -47,7 +48,7 @@ public class ThemeUtil_Test extends TestCase {
 
   public void testSetCurrentTheme() throws Exception {
     Theme theme = createTheme( CUSTOM_THEME_ID );
-    registerTheme( theme );
+    ThemeTestUtil.registerTheme( theme );
     ThemeUtil.setCurrentThemeId( CUSTOM_THEME_ID );
 
     assertEquals( CUSTOM_THEME_ID, ThemeUtil.getCurrentThemeId() );
@@ -66,14 +67,6 @@ public class ThemeUtil_Test extends TestCase {
   private static Theme createTheme( String themeId ) throws IOException {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     return new Theme( themeId, "Custom Theme", styleSheet );
-  }
-
-  private static void registerTheme( Theme theme ) {
-    ThemeManagerHelper.resetThemeManager();
-    ThemeManager manager = RWTFactory.getThemeManager();
-    manager.initialize();
-    manager.registerTheme( theme );
-    manager.activate();
   }
 
 }

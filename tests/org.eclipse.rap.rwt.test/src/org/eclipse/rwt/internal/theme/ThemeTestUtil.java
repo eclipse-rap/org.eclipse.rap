@@ -72,15 +72,18 @@ public final class ThemeTestUtil {
   }
 
   public static void setCustomTheme( String css ) throws IOException {
-    registerCustomTheme( "customTestTheme", css, null );
+    registerTheme( "customTestTheme", css, null );
     ThemeUtil.setCurrentThemeId( "customTestTheme" );
   }
 
-  public static void registerCustomTheme( String themeId, String cssCode, ResourceLoader loader )
+  public static void registerTheme( String themeId, String cssCode, ResourceLoader loader )
     throws IOException
   {
+    registerTheme( createTheme( themeId, cssCode, loader ) );
+  }
+
+  public static void registerTheme( Theme theme ) {
     ThemeManagerHelper.resetThemeManager();
-    Theme theme = createTheme( themeId, cssCode, loader );
     ThemeManager manager = RWTFactory.getThemeManager();
     manager.initialize();
     manager.registerTheme( theme );

@@ -19,9 +19,9 @@ import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 
 class EntryPointRegistration {
   private final IEntryPointFactory factory;
-  private final Map<String, Object> properties;
+  private final Map<String, String> properties;
 
-  public EntryPointRegistration( IEntryPointFactory factory, Map<String, Object> properties ) {
+  public EntryPointRegistration( IEntryPointFactory factory, Map<String, String> properties ) {
     this.factory = factory;
     this.properties = createPropertiesCopy( properties );
   }
@@ -30,14 +30,14 @@ class EntryPointRegistration {
     return factory;
   }
 
-  public Map<String, Object> getProperties() {
+  public Map<String, String> getProperties() {
     return properties;
   }
 
-  private static Map<String, Object> createPropertiesCopy( Map<String, Object> properties ) {
-    Map<String, Object> result;
+  private static Map<String, String> createPropertiesCopy( Map<String, String> properties ) {
+    Map<String, String> result;
     if( properties != null ) {
-      result = new HashMap<String, Object>( properties );
+      result = new HashMap<String, String>( properties );
     } else {
       result = Collections.emptyMap();
     }

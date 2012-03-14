@@ -35,12 +35,6 @@ public class EntryPointManager_Test extends TestCase {
   private IEntryPointFactory entryPointFactory;
   private IEntryPoint entryPoint;
 
-  public static class TestEntryPoint implements IEntryPoint {
-    public int createUI() {
-      return 0;
-    }
-  }
-
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
@@ -107,7 +101,7 @@ public class EntryPointManager_Test extends TestCase {
   }
 
   public void testRegisterEntryPointByPath_withProperties() {
-    Map<String,Object> map = new HashMap<String, Object>();
+    Map<String, String> map = new HashMap<String, String>();
     map.put( "foo", "bar" );
 
     entryPointManager.registerByPath( PATH, TestEntryPoint.class, map );
@@ -155,7 +149,7 @@ public class EntryPointManager_Test extends TestCase {
   }
 
   public void testRegisterFactoryByPath_withProperties() {
-    Map<String,Object> map = new HashMap<String, Object>();
+    Map<String, String> map = new HashMap<String, String>();
     map.put( "foo", "bar" );
 
     entryPointManager.registerByPath( PATH, entryPointFactory, map );
@@ -175,12 +169,11 @@ public class EntryPointManager_Test extends TestCase {
   }
 
   public void testGetRegistrationByPath_propertiesNotModifiable() {
-    entryPointManager.registerByPath( PATH, entryPointFactory, new HashMap<String, Object>() );
-
-    Map<String, Object> properties = entryPointManager.getRegistrationByPath( PATH ).getProperties();
+    entryPointManager.registerByPath( PATH, entryPointFactory, new HashMap<String, String>() );
+    Map<String, String> properties = entryPointManager.getRegistrationByPath( PATH ).getProperties();
 
     try {
-      properties.put( "foo", Boolean.TRUE );
+      properties.put( "foo", "bar" );
       fail();
     } catch( Exception e ) {
       // expected

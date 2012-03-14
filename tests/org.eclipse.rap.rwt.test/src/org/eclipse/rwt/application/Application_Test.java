@@ -29,7 +29,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.application.ApplicationContext;
 import org.eclipse.rwt.internal.branding.BrandingManager;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rwt.internal.lifecycle.TestEntryPoint;
 import org.mockito.ArgumentCaptor;
 
 
@@ -179,12 +179,6 @@ public class Application_Test extends TestCase {
 
   private void checkApplicationContextGetsDeregisteredAnyway() {
     verify( servletContext, times( 2 ) ).removeAttribute( any( String.class ) );
-  }
-
-  static class TestEntryPoint implements IEntryPoint {
-    public int createUI() {
-      return 0;
-    }
   }
 
 }

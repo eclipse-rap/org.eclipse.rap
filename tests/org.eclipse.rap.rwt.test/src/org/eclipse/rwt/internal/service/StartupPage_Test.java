@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rwt.internal.application.RWTFactory;
+import org.eclipse.rwt.internal.lifecycle.TestEntryPoint;
 
 
 public class StartupPage_Test extends TestCase {
@@ -27,6 +28,7 @@ public class StartupPage_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
+    RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, null );
   }
 
   @Override

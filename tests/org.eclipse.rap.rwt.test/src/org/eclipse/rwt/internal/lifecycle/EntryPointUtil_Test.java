@@ -142,7 +142,7 @@ public class EntryPointUtil_Test extends TestCase {
   public void testGetCurrentEntryPointProperties_withDefaultEntryPoint() {
     RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, entryPointFactory );
 
-    Map<String, Object> properties = EntryPointUtil.getCurrentEntryPointProperties();
+    Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
 
     assertTrue( properties.isEmpty() );
   }
@@ -151,20 +151,20 @@ public class EntryPointUtil_Test extends TestCase {
     RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
     Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
 
-    Map<String, Object> properties = EntryPointUtil.getCurrentEntryPointProperties();
+    Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
 
     assertTrue( properties.isEmpty() );
   }
 
   public void testGetCurrentEntryPointProperties_withServletPath() {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "test", Boolean.TRUE );
+    Map<String, String> parameters = new HashMap<String, String>();
+    parameters.put( "test", "true" );
     RWTFactory.getEntryPointManager().registerByPath( "/foo", entryPointFactory, parameters );
     fakeServletPath( "/foo" );
 
-    Map<String, Object> properties = EntryPointUtil.getCurrentEntryPointProperties();
+    Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
 
-    assertEquals( Boolean.TRUE, properties.get( "test" ) );
+    assertEquals( "true", properties.get( "test" ) );
   }
 
   private static void fakeServletPath( String string ) {

@@ -25,9 +25,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
+import org.eclipse.rwt.client.WebClient;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
+import org.eclipse.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.StartupPageTemplateHolder.Variable;
@@ -71,6 +73,7 @@ final class StartupPageConfigurer {
     readContent();
     template.reset();
     applyBranding();
+    applyEntryPointProperties();
     applyLocalizeableMessages();
     addThemeDefinitions();
     template.replace( StartupPageTemplateHolder.VAR_LIBRARIES, getJsLibraries() );
@@ -181,6 +184,14 @@ final class StartupPageConfigurer {
     replacePlaceholder( template, StartupPageTemplateHolder.VAR_TITLE, branding.getTitle() );
     String headers = BrandingUtil.headerMarkup( branding );
     replacePlaceholder( template, StartupPageTemplateHolder.VAR_HEADERS, headers );
+  }
+
+  private void applyEntryPointProperties() {
+    Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
+    String themeId = properties.get( WebClient.THEME_ID );
+    if( themeId != null && themeId.length() > 0 ) {
+      ThemeUtil.setCurrentThemeId( themeId );
+    }
   }
 
   private void applyLocalizeableMessages() {

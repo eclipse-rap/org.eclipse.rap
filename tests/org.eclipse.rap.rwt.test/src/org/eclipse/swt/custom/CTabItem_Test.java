@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.custom;
 
 import java.io.IOException;
@@ -252,7 +251,7 @@ public class CTabItem_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     String css = "CTabItem { font: 22px Verdana, sans-serif; }"
                + "CTabItem:selected { font: 24px Verdana, sans-serif; }";
-    ThemeTestUtil.registerCustomTheme( "custom", css, null );
+    ThemeTestUtil.registerTheme( "custom", css, null );
     ThemeUtil.setCurrentThemeId( "custom" );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     CTabItem item = new CTabItem( folder, SWT.NONE );

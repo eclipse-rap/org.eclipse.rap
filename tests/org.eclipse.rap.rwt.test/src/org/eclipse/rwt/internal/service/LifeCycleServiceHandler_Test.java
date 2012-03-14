@@ -52,12 +52,14 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
   private final StringBuilder log = new StringBuilder();
 
+  @Override
   protected void setUp() {
     Fixture.setUp();
-    Class<? extends IEntryPoint> entryPoint = TestEntryPoint.class;
-    RWTFactory.getEntryPointManager().registerByPath( "/test", entryPoint, null );
+    RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, null );
+    RWTFactory.getEntryPointManager().registerByPath( "/test", TestEntryPoint.class, null );
   }
 
+  @Override
   protected void tearDown() {
     Fixture.tearDown();
   }
@@ -257,6 +259,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
       super( lifeCycleFactory, startupPage );
     }
 
+    @Override
     void synchronizedService() {
       log.append( ENTER );
       try {

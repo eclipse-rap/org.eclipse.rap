@@ -40,7 +40,7 @@ public class EntryPointUtil {
     return registration.getFactory().create();
   }
 
-  public static Map<String, Object> getCurrentEntryPointProperties() {
+  public static Map<String, String> getCurrentEntryPointProperties() {
     EntryPointRegistration registration = getCurrentEntryPointRegistration();
     return registration.getProperties();
   }

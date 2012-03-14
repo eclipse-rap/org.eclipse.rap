@@ -29,12 +29,12 @@ import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.engine.RWTConfigurationImpl;
+import org.eclipse.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler;
 import org.eclipse.rwt.lifecycle.DefaultEntryPointFactory;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.PhaseListener;
@@ -313,12 +313,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   private static class TestSettingStoreFactory implements ISettingStoreFactory {
     public ISettingStore createSettingStore( String storeId ) {
       return new MemorySettingStore( "" );
-    }
-  }
-
-  private static class TestEntryPoint implements IEntryPoint {
-    public int createUI() {
-      return 0;
     }
   }
 

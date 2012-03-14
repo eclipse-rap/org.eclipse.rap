@@ -34,7 +34,7 @@ public class EntryPointManager {
 
   public void registerByPath( String path,
                               Class<? extends IEntryPoint> type,
-                              Map<String, Object> properties )
+                              Map<String, String> properties )
   {
     ParamCheck.notNull( path, "path" );
     checkValidPath( path );
@@ -44,7 +44,7 @@ public class EntryPointManager {
 
   public void registerByPath( String path,
                               IEntryPointFactory entryPointFactory,
-                              Map<String, Object> properties )
+                              Map<String, String> properties )
   {
     ParamCheck.notNull( path, "path" );
     ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
@@ -96,7 +96,7 @@ public class EntryPointManager {
 
   private void doRegisterByPath( String key,
                                  IEntryPointFactory factory,
-                                 Map<String, Object> properties )
+                                 Map<String, String> properties )
   {
     synchronized( entryPointsByPath ) {
       checkPathAvailable( key );

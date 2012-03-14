@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,7 +58,7 @@ public class ControlThemeAdapter_Test extends TestCase {
 
   public void testGetBorderWidthForCompositeSubclass() throws IOException {
     String css = "Composite.special { border: 23px solid gray }";
-    ThemeTestUtil.registerCustomTheme( "custom", css, null );
+    ThemeTestUtil.registerTheme( "custom", css, null );
     ThemeUtil.setCurrentThemeId( "custom" );
 
     Composite subclassedComposite = new Composite( shell, SWT.BORDER ) {
