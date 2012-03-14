@@ -21,10 +21,6 @@ import org.eclipse.swt.internal.graphics.FontUtil;
 
 public class MeasurementUtil {
 
-  public static int getProbeCount() {
-    return RWTFactory.getProbeStore().getSize();
-  }
-
   public static Object getStartupProbeObject() {
     Object[] result = null;
     Probe[] probeList = RWTFactory.getProbeStore().getProbes();
