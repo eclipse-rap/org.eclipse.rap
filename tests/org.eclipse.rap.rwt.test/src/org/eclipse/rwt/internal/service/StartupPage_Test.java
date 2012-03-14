@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,11 +23,13 @@ import org.eclipse.rwt.internal.application.RWTFactory;
 
 public class StartupPage_Test extends TestCase {
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -50,6 +52,15 @@ public class StartupPage_Test extends TestCase {
 
     String successiveContent = getResponseContent();
     assertEquals( initialContent, successiveContent );
+  }
+
+  public void testHttpHeaders() throws IOException {
+    RWTFactory.getStartupPage().send();
+
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+
+    assertEquals( "text/html; charset=UTF-8", response.getHeader( "Content-Type" ) );
+    assertTrue( response.getHeader( "Cache-Control" ).contains( "no-store" ) );
   }
 
   private static String getResponseContent() {

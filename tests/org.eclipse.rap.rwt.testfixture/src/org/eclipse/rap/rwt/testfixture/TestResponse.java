@@ -111,6 +111,7 @@ public class TestResponse implements HttpServletResponse {
   }
 
   public void addHeader( String arg0, String arg1 ) {
+    headers.put( arg0, arg1 );
   }
 
   public void setIntHeader( String arg0, int arg1 ) {

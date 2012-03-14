@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
@@ -57,14 +56,10 @@ final class StartupPageConfigurer {
   private final ResourceRegistry resourceRegistry;
   private final List<String> jsLibraries;
   private final List<String> themeDefinitions;
-  // TODO [fappel]: think about clusters cache control variables
-  private int probeCount;
-  private long lastModified;
   private StartupPageTemplateHolder template;
 
   StartupPageConfigurer( ResourceRegistry resourceRegistry ) {
     this.resourceRegistry = resourceRegistry;
-    lastModified = System.currentTimeMillis();
     jsLibraries = new ArrayList<String>();
     themeDefinitions = new ArrayList<String>();
   }
@@ -81,39 +76,6 @@ final class StartupPageConfigurer {
     template.replace( StartupPageTemplateHolder.VAR_LIBRARIES, getJsLibraries() );
     template.replace( StartupPageTemplateHolder.VAR_APPSCRIPT, getAppScript() );
     return template;
-  }
-
-  public synchronized boolean isModifiedSince() {
-    boolean result;
-
-    int currentProbeCount = MeasurementUtil.getProbeCount();
-    if( probeCount != currentProbeCount ) {
-      lastModified = System.currentTimeMillis();
-      probeCount = currentProbeCount;
-    }
-
-    HttpServletRequest request = ContextProvider.getRequest();
-    HttpServletResponse response = ContextProvider.getResponse();
-    // TODO [rh] this is a preliminary fix for a behavior that was easily
-    //      reproducible in IE but also happened in FF: when restarting a
-    //      web app (hit return in location bar), the browser used a cached
-    //      version of the index.html *without* sending a request to ask
-    //      whether the cached page can be used.
-    //      fix for bug 220733: append no-store to the Cache-Control header
-    response.addHeader( "Cache-Control", "max-age=0, no-cache, must-revalidate, no-store" );
-    long dateHeader = request.getDateHeader( "If-Modified-Since" );
-    // Because browser store the date in format with seconds as smallest unit
-    // add one second to avoid rounding problems...
-    if( dateHeader + 1000 < lastModified ) {
-      result = true;
-      response.addDateHeader( "Last-Modified", lastModified );
-      // TODO [fappel]: Think about "expires"-header for proxy usage.
-      // TODO [fappel]: Seems as if Safari doesn't react to last-modified.
-    } else {
-      result = false;
-      response.setStatus( HttpServletResponse.SC_NOT_MODIFIED );
-    }
-    return result;
   }
 
   public void addJsLibrary( String location ) {

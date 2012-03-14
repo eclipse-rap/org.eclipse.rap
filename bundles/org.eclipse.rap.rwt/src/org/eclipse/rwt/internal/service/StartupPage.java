@@ -18,8 +18,6 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.util.*;
@@ -41,29 +39,27 @@ public final class StartupPage {
   }
 
   void send() throws IOException {
-    if( configurer.isModifiedSince() ) {
-      render();
-    } else {
-      AbstractBranding branding = BrandingUtil.determineBranding();
-      if( branding.getThemeId() != null ) {
-        ThemeUtil.setCurrentThemeId( branding.getThemeId() );
-      }
-    }
+    HttpServletResponse response = ContextProvider.getResponse();
+    setResponseHeaders( response );
+    StartupPageTemplateHolder template = configurer.getTemplate();
+    processTemplate( template );
+    writeTemplate( response, template );
   }
 
-  private void render() throws IOException {
-    HttpServletResponse response = ContextProvider.getResponse();
+  private static void setResponseHeaders( HttpServletResponse response ) {
     response.setContentType( HTTP.CONTENT_TYPE_HTML );
     response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
-    StartupPageTemplateHolder template = configurer.getTemplate();
+    // TODO [rh] this is a preliminary fix for a behavior that was easily
+    //      reproducible in IE but also happened in FF: when restarting a
+    //      web app (hit return in location bar), the browser used a cached
+    //      version of the index.html *without* sending a request to ask
+    //      whether the cached page can be used.
+    //      fix for bug 220733: append no-store to the Cache-Control header
+    response.addHeader( "Cache-Control", "max-age=0, no-cache, must-revalidate, no-store" );
+  }
+
+  private static void processTemplate( StartupPageTemplateHolder template ) {
     template.replace( StartupPageTemplateHolder.VAR_BACKGROUND_IMAGE, getBgImage() );
-    String[] tokens = template.getTokens();
-    PrintWriter writer = response.getWriter();
-    for( int i = 0; i < tokens.length; i++ ) {
-      if( tokens[ i ] != null ) {
-        writer.write( tokens[ i ] );
-      }
-    }
   }
 
   private static String getBgImage() {
@@ -78,6 +74,17 @@ public final class StartupPage {
       }
     }
     return result;
+  }
+
+  private static void writeTemplate( HttpServletResponse response,
+                                     StartupPageTemplateHolder template ) throws IOException
+  {
+    PrintWriter writer = response.getWriter();
+    for( String token : template.getTokens() ) {
+      if( token != null ) {
+        writer.write( token );
+      }
+    }
   }
 
 }
