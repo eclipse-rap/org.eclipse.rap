@@ -26,7 +26,6 @@ import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
-import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.engine.RWTConfigurationImpl;
@@ -63,89 +62,16 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   private TestResource testResource;
   private TestServiceHandler testServiceHandler;
   private String testServiceHandlerId;
-  private TestBranding testBranding;
   private ApplicationContext applicationContext;
 
-  private static class TestPhaseListener implements PhaseListener {
-    public void beforePhase( PhaseEvent event ) {
-    }
-
-    public void afterPhase( PhaseEvent event ) {
-    }
-
-    public PhaseId getPhaseId() {
-      return null;
-    }
-  }
-
-  private static class TestSettingStoreFactory implements ISettingStoreFactory {
-    public ISettingStore createSettingStore( String storeId ) {
-      return new MemorySettingStore( "" );
-    }
-  }
-
-  private static class TestEntryPoint implements IEntryPoint {
-    public int createUI() {
-      return 0;
-    }
-  }
-
-  private static class TestAdapterFactory implements AdapterFactory {
-    public Object getAdapter( Object adaptable, Class adapter ) {
-      return new TestAdapter() {};
-    }
-
-    public Class[] getAdapterList() {
-      return new Class[] { TestAdapter.class };
-    }
-  }
-
-  private static class TestAdaptable implements Adaptable  {
-    public <T> T getAdapter( Class<T> adapter ) {
-      return null;
-    }
-  }
-
-  private interface TestAdapter {}
-
-  private class TestResource implements IResource {
-
-    public ClassLoader getLoader() {
-      return null;
-    }
-
-    public String getLocation() {
-      return null;
-    }
-
-    public String getCharset() {
-      return null;
-    }
-
-    public RegisterOptions getOptions() {
-      return null;
-    }
-
-    public boolean isJSLibrary() {
-      return false;
-    }
-
-    public boolean isExternal() {
-      return true;
-    }
-  }
-
-  private static class TestServiceHandler implements IServiceHandler {
-    public void service() throws IOException, ServletException {
-    }
-  }
-
-  private static class TestBranding extends AbstractBranding {}
-
-  private static class TestWidget extends Composite {
-    TestWidget( Composite parent ) {
-      super( parent, SWT.NONE );
-    }
+  @Override
+  protected void setUp() {
+    testPhaseListener = new TestPhaseListener();
+    testSettingStoreFactory = new TestSettingStoreFactory();
+    testAdapterFactory = new TestAdapterFactory();
+    testResource = new TestResource();
+    testServiceHandler = new TestServiceHandler();
+    testServiceHandlerId = "testServiceHandlerId";
   }
 
   public void testConfigure() {
@@ -158,7 +84,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     checkAdapterFactoriesHaveBeenAdded();
     checkResourceHasBeenAdded();
     checkServiceHandlersHaveBeenAdded();
-    checkBrandingHasBeenAdded();
     checkThemeHasBeenAdded();
     checkThemableWidgetHasBeenAdded();
     checkThemeContributionHasBeenAdded();
@@ -198,17 +123,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     checkSettingStoreFactoryHasBeenRemoved();
     checkThemeManagerHasBeenResetted();
     checkApplicationStoreHasBeenResetted();
-  }
-
-  @Override
-  protected void setUp() {
-    testPhaseListener = new TestPhaseListener();
-    testSettingStoreFactory = new TestSettingStoreFactory();
-    testAdapterFactory = new TestAdapterFactory();
-    testResource = new TestResource();
-    testServiceHandler = new TestServiceHandler();
-    testServiceHandlerId = "testServiceHandlerId";
-    testBranding = new TestBranding();
   }
 
   private void activateApplicationContext( ApplicationConfigurator configurator ) {
@@ -257,7 +171,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
         configuration.addPhaseListener( testPhaseListener );
         configuration.setSettingStoreFactory( testSettingStoreFactory );
         configuration.addServiceHandler( testServiceHandlerId, testServiceHandler );
-        configuration.addBranding( testBranding );
         configuration.addStyleSheet( THEME_ID, STYLE_SHEET );
         configuration.addStyleSheet( THEME_ID, STYLE_SHEET_CONTRIBUTION );
         configuration.addThemableWidget( TestWidget.class );
@@ -286,11 +199,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
 
   private void checkThemeHasBeenAdded() {
     assertNotNull( applicationContext.getThemeManager().getTheme( THEME_ID ) );
-  }
-
-  private void checkBrandingHasBeenAdded() {
-    assertEquals( 1, applicationContext.getBrandingManager().getAll().length );
-    assertSame( testBranding, applicationContext.getBrandingManager().getAll()[ 0 ] );
   }
 
   private void checkServiceHandlersHaveBeenAdded() {
@@ -388,5 +296,85 @@ public class ApplicationContextConfigurator_Test extends TestCase {
       }
     }
     return result;
+  }
+
+  private static class TestPhaseListener implements PhaseListener {
+    public void beforePhase( PhaseEvent event ) {
+    }
+
+    public void afterPhase( PhaseEvent event ) {
+    }
+
+    public PhaseId getPhaseId() {
+      return null;
+    }
+  }
+
+  private static class TestSettingStoreFactory implements ISettingStoreFactory {
+    public ISettingStore createSettingStore( String storeId ) {
+      return new MemorySettingStore( "" );
+    }
+  }
+
+  private static class TestEntryPoint implements IEntryPoint {
+    public int createUI() {
+      return 0;
+    }
+  }
+
+  private static class TestAdapterFactory implements AdapterFactory {
+    public Object getAdapter( Object adaptable, Class adapter ) {
+      return new TestAdapter() {};
+    }
+
+    public Class[] getAdapterList() {
+      return new Class[] { TestAdapter.class };
+    }
+  }
+
+  private static class TestAdaptable implements Adaptable  {
+    public <T> T getAdapter( Class<T> adapter ) {
+      return null;
+    }
+  }
+
+  private interface TestAdapter {}
+
+  private class TestResource implements IResource {
+
+    public ClassLoader getLoader() {
+      return null;
+    }
+
+    public String getLocation() {
+      return null;
+    }
+
+    public String getCharset() {
+      return null;
+    }
+
+    public RegisterOptions getOptions() {
+      return null;
+    }
+
+    public boolean isJSLibrary() {
+      return false;
+    }
+
+    public boolean isExternal() {
+      return true;
+    }
+  }
+
+  private static class TestServiceHandler implements IServiceHandler {
+    public void service() throws IOException, ServletException {
+    }
+  }
+
+  private static class TestWidget extends Composite {
+    TestWidget( Composite parent ) {
+      super( parent, SWT.NONE );
+    }
   }
 }

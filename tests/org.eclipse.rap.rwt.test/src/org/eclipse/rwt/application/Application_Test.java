@@ -28,14 +28,15 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.application.ApplicationContext;
-import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.mockito.ArgumentCaptor;
 
 
 public class Application_Test extends TestCase {
 
-  private static final String SERVLET_NAME = "servletName";
+  private static final String SERVLET_PATH = "/foo";
+  private static final String SERVLET_NAME = "bar";
 
   private ServletContext servletContext;
   private ApplicationConfigurator configurator;
@@ -90,12 +91,14 @@ public class Application_Test extends TestCase {
     assertTrue( servletPaths.isEmpty() );
   }
 
-  public void testGetServletNames_withBranding() {
-    startWithBrandingConfiguration();
+  public void testGetServletNames_withEntryPointAndBranding() {
+    startWithEntryPointConfiguration();
+    fakeBranding();
 
     Collection<String> servletPaths = application.getServletPaths();
 
-    assertEquals( 1, servletPaths.size() );
+    assertEquals( 2, servletPaths.size() );
+    assertTrue( servletPaths.contains( SERVLET_PATH ) );
     assertTrue( servletPaths.contains( "/" + SERVLET_NAME ) );
   }
 
@@ -105,7 +108,7 @@ public class Application_Test extends TestCase {
     Collection<String> servletPaths = application.getServletPaths();
 
     assertEquals( 1, servletPaths.size() );
-    assertTrue( servletPaths.contains( "/" + SERVLET_NAME ) );
+    assertTrue( servletPaths.contains( SERVLET_PATH ) );
   }
 
   public void testParamServletContextMustNotBeNull() {
@@ -136,36 +139,29 @@ public class Application_Test extends TestCase {
     verify( servletContext ).removeAttribute( any( String.class ) );
   }
 
-  private void startWithBrandingConfiguration() {
+  private void fakeBranding() {
+    // TODO [rst] Remove when brandings are not supported anymore
+    AbstractBranding branding = new AbstractBranding() {
+      @Override
+      public String getServletName() {
+        return SERVLET_NAME;
+      }
+    };
+    ArgumentCaptor<ApplicationContext> argument = ArgumentCaptor.forClass( ApplicationContext.class );
+    verify( servletContext ).setAttribute( anyString(), argument.capture() );
+    ApplicationContext applicationContext = argument.getValue();
+    BrandingManager brandingManager = applicationContext.getBrandingManager();
+    brandingManager.register( branding );
+  }
+
+  private void startWithEntryPointConfiguration() {
     configurator = new ApplicationConfigurator() {
       public void configure( ApplicationConfiguration configuration ) {
-        configuration.addBranding( new AbstractBranding() {
-          @Override
-          public String getServletName() {
-            return SERVLET_NAME;
-          }
-        } );
+        configuration.addEntryPoint( SERVLET_PATH, TestEntryPoint.class );
       }
     };
     application = new Application( configurator, servletContext );
     application.start();
-  }
-
-  private void startWithEntryPointConfiguration() {
-    application.start();
-    // TODO [rst] Replace with entrypoint configuration when switched to register-by-path
-    ArgumentCaptor<ApplicationContext> argument = ArgumentCaptor.forClass( ApplicationContext.class );
-    verify( servletContext ).setAttribute( anyString(), argument.capture() );
-    ApplicationContext applicationContext = argument.getValue();
-    EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
-    entryPointManager.registerByPath( "/" + SERVLET_NAME, TestEntryPoint.class, null );
-//    configurator = new ApplicationConfigurator() {
-//      public void configure( ApplicationConfiguration configuration ) {
-//        configuration.addEntryPoint( SERVLET_NAME, TestEntryPoint.class );
-//      }
-//    };
-//    application = new Application( configurator, servletContext );
-//    application.start();
   }
 
   private void createConfiguratorWithProblem() {

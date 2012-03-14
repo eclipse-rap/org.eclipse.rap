@@ -23,7 +23,6 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
-import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.application.ApplicationContext;
 import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
@@ -92,7 +91,6 @@ public class RWTServletContextListener_Test extends TestCase {
     assertEntryPointIsRegistered();
     assertPhaseListenersAreRegistered();
     assertResourceIsRegistered();
-    assertBrandingIsRegistered();
   }
 
   private void assertResourceManagerIsRegistered() {
@@ -116,13 +114,6 @@ public class RWTServletContextListener_Test extends TestCase {
     IResource[] resources = applicationContext.getResourceRegistry().get();
     assertEquals( 1, resources.length );
     assertEquals( TestResource.class, resources[ 0 ].getClass() );
-  }
-
-  private void assertBrandingIsRegistered() {
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-    AbstractBranding[] allBrandings = applicationContext.getBrandingManager().getAll();
-    assertEquals( 1, allBrandings.length );
-    assertEquals( TestBranding.class, allBrandings[ 0 ].getClass() );
   }
 
   public static class TestEntryPoint implements IEntryPoint {
@@ -173,15 +164,11 @@ public class RWTServletContextListener_Test extends TestCase {
     }
   }
 
-  private static class TestBranding extends AbstractBranding {
-  }
-
   private static class TestConfigurator implements ApplicationConfigurator {
     public void configure( ApplicationConfiguration configuration ) {
       configuration.addEntryPoint( "/test", TestEntryPoint.class );
       configuration.addPhaseListener( mock( PhaseListener.class ) );
       configuration.addResource( new TestResource() );
-      configuration.addBranding( new TestBranding() );
     }
   }
 }

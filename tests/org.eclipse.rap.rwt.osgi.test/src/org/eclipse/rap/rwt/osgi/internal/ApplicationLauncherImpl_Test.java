@@ -31,7 +31,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.application.*;
-import org.eclipse.rwt.branding.AbstractBranding;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osgi.framework.*;
@@ -44,8 +44,8 @@ public class ApplicationLauncherImpl_Test extends TestCase {
 
   private static final String CONTEXT_NAME = "context";
   private static final String FILTER_EXPRESSION = "(key=value)";
-  private static final String SERVLET_NAME_1 = "servlet1";
-  private static final String SERVLET_NAME_2 = "servlet2";
+  private static final String SERVLET_PATH_1 = "/servlet1";
+  private static final String SERVLET_PATH_2 = "/servlet2";
 
   private BundleContext bundleContext;
   private HttpService httpService;
@@ -126,24 +126,24 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   }
 
   public void testLaunchWithMultipleServletNames() {
-    createAliasConfigurator( SERVLET_NAME_1, SERVLET_NAME_2 );
+    createAliasConfigurator( SERVLET_PATH_1, SERVLET_PATH_2 );
     createApplicationLauncher();
 
     launchApplication();
 
-    checkAliasHasBeenRegistered( "/" + SERVLET_NAME_1 );
-    checkAliasHasBeenRegistered( "/" + SERVLET_NAME_2 );
+    checkAliasHasBeenRegistered( SERVLET_PATH_1 );
+    checkAliasHasBeenRegistered( SERVLET_PATH_2 );
   }
 
   public void testStopApplicationWithMultipleServletNames() {
-    createAliasConfigurator( SERVLET_NAME_1, SERVLET_NAME_2 );
+    createAliasConfigurator( SERVLET_PATH_1, SERVLET_PATH_2 );
     createApplicationLauncher();
     ApplicationReference applicationReference = launchApplication();
 
     applicationReference.stopApplication();
 
-    checkAliasHasBeenUnregistered( "/" + SERVLET_NAME_1 );
-    checkAliasHasBeenUnregistered( "/" + SERVLET_NAME_2 );
+    checkAliasHasBeenUnregistered( SERVLET_PATH_1 );
+    checkAliasHasBeenUnregistered( SERVLET_PATH_2 );
   }
 
   public void testLaunchWithContextName() {
@@ -439,12 +439,11 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   }
 
 
-  private void createAliasConfigurator( final String servletName1, final String servletName2 ) {
+  private void createAliasConfigurator( final String servletPath1, final String servletPath2 ) {
     configurator = new ApplicationConfigurator() {
       public void configure( ApplicationConfiguration configuration ) {
-        // TODO [rst] replace with addEntryPoint when switched to register-by-path
-        configuration.addBranding( mockBranding( servletName1 ) );
-        configuration.addBranding( mockBranding( servletName2 ) );
+        configuration.addEntryPoint( servletPath1, TestEntryPoint.class );
+        configuration.addEntryPoint( servletPath2, TestEntryPoint.class );
       }
     };
     mockBundleContext();
@@ -520,12 +519,6 @@ public class ApplicationLauncherImpl_Test extends TestCase {
       .thenReturn( serviceRegistration );
   }
 
-  private AbstractBranding mockBranding( String servletName ) {
-    AbstractBranding result = mock( AbstractBranding.class );
-    when( result.getServletName() ).thenReturn( servletName );
-    return result;
-  }
-
   private ApplicationReference launchApplication() {
     String location = applicationLauncher.getLocation( null, configurator, httpService );
     return launchApplicationReference( location );
@@ -545,4 +538,12 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     doThrow( new IllegalStateException() ).when( result ).stopApplication();
     return result;
   }
+
+  private static class TestEntryPoint implements IEntryPoint {
+
+    public int createUI() {
+      return 0;
+    }
+  }
+
 }

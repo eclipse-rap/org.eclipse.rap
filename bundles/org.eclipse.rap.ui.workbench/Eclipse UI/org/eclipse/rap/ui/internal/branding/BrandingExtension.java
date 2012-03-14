@@ -18,12 +18,20 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.rap.ui.branding.IExitConfirmation;
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.branding.AbstractBranding;
+import org.eclipse.rwt.internal.application.ApplicationContext;
 import org.eclipse.rwt.internal.branding.BrandingManager;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Filter;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 
 
@@ -110,7 +118,7 @@ public final class BrandingExtension {
       }
     }
     if( !isFiltered( element ) ) {
-      configuration.addBranding( branding );
+      register( branding );
     }
   }
 
@@ -192,7 +200,7 @@ public final class BrandingExtension {
       }
     }
     if( !found ) {
-      configuration.addBranding( new AbstractBranding() {
+      register( new AbstractBranding() {
         @Override
         public String getServletName() {
           return BrandingManager.DEFAULT_SERVLET_NAME;
@@ -203,6 +211,12 @@ public final class BrandingExtension {
         }
       } );
     }
+  }
+
+  private void register( AbstractBranding branding ) {
+    // TODO [rst] Find a better way to obtain the branding manager
+    ApplicationContext context = ((Adaptable) configuration).getAdapter( ApplicationContext.class );
+    context.getBrandingManager().register( branding );
   }
 
   private void readAdditionalHeader( Branding branding, IConfigurationElement elem ) {
