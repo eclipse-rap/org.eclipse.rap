@@ -99,7 +99,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     STATE_HORIZONTAL : "horizontal",
     PADDING : 8,
     SCALE_LINE_OFFSET : 9,
-    THUMB_OFFSET : 10,
+    THUMB_OFFSET : 9,
     HALF_THUMB : 5,
     
     _isNoModifierPressed : function( evt ) {
