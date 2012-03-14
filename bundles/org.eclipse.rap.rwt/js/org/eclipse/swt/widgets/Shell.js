@@ -188,7 +188,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
   },
 
   events : {
-    "close" : "qx.event.type.DataEvent"
+    "close" : "qx.event.type.DataEvent",
+    "parentShellChanged" : "qx.event.type.Event"
   },
 
   members : {
@@ -240,6 +241,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       if( parentShell != null ) {
         parentShell.addEventListener( "close", listener, this );
       }
+      this.dispatchSimpleEvent( "parentShellChanged" );
     },
 
     isDisableResize : function() {

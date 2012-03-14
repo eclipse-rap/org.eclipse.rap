@@ -590,6 +590,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( 0, counter );
       shell.destroy();      
     },
+    
+    testFiresChangeReadOnlyEvent : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var text = new org.eclipse.rwt.widgets.Text( false );
+      text.addToDocument();
+      TestUtil.flush();
+      var log = 0;
+      text.addEventListener( "changeReadOnly", function(){
+        log++;
+      } );
+      
+      text.setReadOnly( true );
+            
+      assertTrue( log > 0 );
+      text.destroy();
+    },
 
     testFirstInputIE : qx.core.Variant.select( "qx.client", {
       "default" : function() {},

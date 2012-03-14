@@ -674,35 +674,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.destroy();
     },
     
-    //////////////////////////
-    // test apply subelement IDs
-    
-    testApplyListItemIds_renderHtmlIdsDeactivated : function() {
-      qx.ui.core.Widget._renderHtmlIds = false;
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var list = this._createDefaultList();
-      list.applyObjectId( "123" );
-
-      list.setItems( [ "item1", "item2", "item3"] );
-      TestUtil.flush();
-      
-      assertEquals( "", list.getItems()[ 0 ].getHtmlAttribute( "id" ) );
-      list.destroy();
-    },
-    
-    testApplyListItemIds_renderHtmlIdsActivated : function() {
-      qx.ui.core.Widget._renderHtmlIds = true;
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var list = this._createDefaultList();
-      list.applyObjectId( "123" );
-
-      list.setItems( [ "item1", "item2", "item3"] );
-      TestUtil.flush();
-      
-      assertEquals( "123-listitem-0", list.getItems()[ 0 ].getHtmlAttribute( "id" ) );
-      list.destroy();
-    },
-    
     //////////
     // Helpers
     
@@ -710,7 +681,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = new org.eclipse.swt.widgets.List( true );
       list.setItemDimensions( 100, 20 );
-      list.addToDocument(),
+      list.addToDocument();
       list.setSpace( 5, 238, 5, 436 );
       if( noflush !== true ) {
         TestUtil.flush();

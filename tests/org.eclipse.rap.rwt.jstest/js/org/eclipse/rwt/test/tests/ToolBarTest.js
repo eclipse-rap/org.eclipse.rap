@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -567,6 +567,33 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       assertFalse( executed );
       text.dispose();
       this.disposeToolBar();
+    },
+    
+    testToolItemFiresDropDownClickedEvent : function() {
+      var item = new org.eclipse.rwt.widgets.ToolItem( "dropDown" );
+      this.item = item; 
+      item.setLeft( 100 );
+      item.setTop( 100 );
+      item.setText( "hallo" );
+      item.setDropDownArrow( [ "bla.jpg", 13, 13 ] );
+      this._currentItem = item;
+      item.addToDocument();
+      qx.ui.core.Widget.flushGlobalQueues();
+      var lineStyle = item.getCellNode( 3 ).style;
+      org.eclipse.swt.WidgetManager.getInstance().add( item, "w1" );
+      this.TestUtil.clearRequestLog();
+      item.setHasSelectionListener( true );
+      var log = 0;
+      item.addEventListener( "dropDownClicked", function() {
+        log++;
+      } );
+      
+      this.TestUtil.fakeMouseClick( item, 103 + parseInt( lineStyle.left ), 103 );
+      
+      assertTrue( log > 0 );
+      this.TestUtil.clearRequestLog();
+      item.destroy();
+      this.item = null;
     },
 
     /////////

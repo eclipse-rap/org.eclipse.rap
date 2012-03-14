@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -178,8 +178,36 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       assertFalse( button.hasState( "default") );
       button.destroy();
       shell.destroy();
+    },
+    
+    testFiresParentShellChangedEvent : function() {
+      var shell = this._createDefaultShell( {} );
+      var parentShell = this._createDefaultShell( {} );
+      var log = 0;
+      shell.addEventListener( "parentShellChanged", function() {
+        log++;
+      } );
+      
+      shell.setParentShell( parentShell );
+      
+      assertTrue( log > 0 );
+      shell.destroy();
+      parentShell.destroy();
+    },
+    
+    _createDefaultShell : function( styles, noFlush ) {
+      var shell = new org.eclipse.swt.widgets.Shell( styles );
+      shell.initialize(); 
+      shell.open();
+      shell.setActive( true );
+      shell.setSpace( 50, 300, 50, 200 );
+      shell.setVisibility( true );
+      if( !noFlush ) {
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        TestUtil.flush();
+      }
+      return shell;
     }
-
   }
   
 } );

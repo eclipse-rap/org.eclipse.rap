@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -104,6 +104,19 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
     _layoutPost : function( changes ) {
       this.base( arguments, changes );
       this._frameObject._layoutPost( changes );
+    },
+
+    //////////////////
+    // apply subelement IDs
+    
+    applyObjectId : function( id ) {
+      this.base( arguments, id )
+      if( qx.ui.core.Widget._renderHtmlIds ) {
+        var labelObject = this.getLegendObject().getLabelObject();
+        labelObject.setHtmlAttribute( "id", id + "-label" );
+      }
     }
+    
   }
+  
 });

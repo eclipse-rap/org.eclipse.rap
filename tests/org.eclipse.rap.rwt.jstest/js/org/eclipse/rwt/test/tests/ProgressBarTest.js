@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -794,7 +794,88 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertEquals( [ 0, 4, 6, 0 ], bar._getIndicatorRadii( 156, 40 ) );
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
-    }
+    },
+    
+    testFiresSelectionChangedEvent : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.ProgressBar",
+        "properties" : {
+          "style" : [ "HORIZONTAL" ],
+          "parent" : "w2"
+        }
+      } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var progressBar = ObjectManager.getObject( "w3" );
+      var log = 0;
+      progressBar.addEventListener( "selectionChanged", function() {
+        log++;
+      } );
+      
+      progressBar.setSelection( 33 );
+
+      assertEquals( 1, log );
+      shell.destroy();
+      progressBar.destroy();
+    },
+    
+    testFiresMinimumChangedEvent : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.ProgressBar",
+        "properties" : {
+          "style" : [ "HORIZONTAL" ],
+          "parent" : "w2"
+        }
+      } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var progressBar = ObjectManager.getObject( "w3" );
+      var log = 0;
+      progressBar.addEventListener( "minimumChanged", function() {
+        log++;
+      } );
+      
+      progressBar.setMinimum( 5 );
+
+      assertEquals( 1, log );
+      shell.destroy();
+      progressBar.destroy();
+    },
+
+    testFiresMaximumChangedEvent : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.ProgressBar",
+        "properties" : {
+          "style" : [ "HORIZONTAL" ],
+          "parent" : "w2"
+        }
+      } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var progressBar = ObjectManager.getObject( "w3" );
+      var log = 0;
+      progressBar.addEventListener( "maximumChanged", function() {
+        log++;
+      } );
+      
+      progressBar.setMaximum( 200 );
+
+      assertEquals( 1, log );
+      shell.destroy();
+      progressBar.destroy();
+    },
 
   } 
 

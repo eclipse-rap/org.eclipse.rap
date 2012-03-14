@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,6 +55,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
       var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( "foo &amp; &lt;&gt; &quot; bar", widget.getLegend() );
+      shell.destroy();
+      widget.destroy();
+    },
+    
+    testApplyGroupLabelId : function(){
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Group",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
+      var labelObject = widget.getLegendObject().getLabelObject();
+      
+      assertEquals( "w3-label", labelObject.getHtmlAttribute( "id" ) );
+      
       shell.destroy();
       widget.destroy();
     }

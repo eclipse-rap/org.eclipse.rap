@@ -94,7 +94,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     readOnly : {
       check : "Boolean",
       apply : "_applyReadOnly",
-      init : false
+      init : false,
+      event : "changeReadOnly"
     }
 
   },

@@ -55,6 +55,12 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     UNDETERMINED_SIZE : 40
   },
 
+  events : {
+    "minimumChanged" : "qx.event.type.Event",
+    "maximumChanged" : "qx.event.type.Event",
+    "selectionChanged" : "qx.event.type.Event"
+  },
+
   properties : {
 
     indicatorColor : {
@@ -109,15 +115,18 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
 
     setMinimum : function( minimum ) {
       this._minimum = minimum;
+      this.dispatchSimpleEvent( "minimumChanged" );
     },
     
     setMaximum : function( maximum ) {
       this._maximum = maximum;
+      this.dispatchSimpleEvent( "maximumChanged" );
     },
     
     setSelection : function( selection ) {
       this._selection = selection;
       this.addToQueue( "indicatorSelection" );
+      this.dispatchSimpleEvent( "selectionChanged" );
     },
 
     addState : function( state ) {
