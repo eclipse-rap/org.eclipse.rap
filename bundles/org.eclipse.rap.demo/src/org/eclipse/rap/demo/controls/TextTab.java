@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ public class TextTab extends ExampleTab {
     super( topFolder, "Text" );
     selectionListener = new SelectionAdapter() {
 
+      @Override
       public void widgetDefaultSelected( SelectionEvent event ) {
         String msg = "You pressed the Enter key.";
         MessageDialog.openInformation( getShell(), "Information", msg );
@@ -74,6 +75,7 @@ public class TextTab extends ExampleTab {
     };
   }
 
+  @Override
   protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "WRAP", SWT.WRAP );
@@ -103,7 +105,8 @@ public class TextTab extends ExampleTab {
     createMessage( parent );
   }
 
-  protected void createExampleControls( Composite parent ) {
+  @Override
+  protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout() );
     Composite textComposite = new Composite( parent, SWT.NONE );
     textComposite.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
@@ -121,6 +124,7 @@ public class TextTab extends ExampleTab {
     btnGetText.setText( "getText" );
     btnGetText.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         textLabel.setText( text.getText() );
       }
@@ -129,6 +133,7 @@ public class TextTab extends ExampleTab {
     btnGetSelection.setText( "getSelection" );
     btnGetSelection.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         Point selection = text.getSelection();
         selectionLabel.setText( selection.x + ", " + selection.y );
@@ -138,9 +143,10 @@ public class TextTab extends ExampleTab {
     btnFixedSize.setText( "200 x 100" );
     btnFixedSize.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         text.setLayoutData( new GridData( 200, 100 ) );
-        text.getParent().layout();
+        parent.layout();
       }
     } );
     // output form
@@ -170,6 +176,7 @@ public class TextTab extends ExampleTab {
     defaultButton.setText( "Default" );
     defaultButton.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         String message = "Default button triggered";
         MessageDialog.openInformation( parent.getShell(), "Info", message  );
@@ -179,6 +186,7 @@ public class TextTab extends ExampleTab {
     setDefaultButton.setText( "set as defaultButton" );
     setDefaultButton.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         if( setDefaultButton.getSelection() ) {
           parent.getShell().setDefaultButton( defaultButton );
@@ -195,6 +203,7 @@ public class TextTab extends ExampleTab {
     btnModifyListener = createPropertyButton( "ModifyListener" );
     btnModifyListener.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         updateModifyListener();
       }
@@ -206,6 +215,7 @@ public class TextTab extends ExampleTab {
       = createPropertyButton( "VerifyListener (numbers only)" );
     btnNumbersOnlyVerifyListener.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         updateNumbersOnlyVerifyListener();
       }
@@ -217,6 +227,7 @@ public class TextTab extends ExampleTab {
       = createPropertyButton( "VerifyListener (reject all)" );
     btnBlockingVerifyListener.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         updateBlockingVerifyListener();
       }
@@ -227,6 +238,7 @@ public class TextTab extends ExampleTab {
     btnSelectionListener = createPropertyButton( "SelectionListener" );
     btnSelectionListener.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         updateSelectionListener();
       }
@@ -238,6 +250,7 @@ public class TextTab extends ExampleTab {
     btnEditable.setSelection( true );
     btnEditable.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         updateEditable();
       }
@@ -248,6 +261,7 @@ public class TextTab extends ExampleTab {
     btnEchoChar= createPropertyButton( "EchoChar" );
     btnEchoChar.setSelection( false );
     btnEchoChar.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         updateEchoChar();
       }
@@ -268,6 +282,7 @@ public class TextTab extends ExampleTab {
     Button btnChange = new Button( composite, SWT.PUSH );
     btnChange.setText( "Set" );
     btnChange.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         int from = parseInt( txtSelectionFrom.getText() );
         int to = parseInt( txtSelectionTo.getText() );
@@ -287,6 +302,7 @@ public class TextTab extends ExampleTab {
     Button selectAllButton = new Button( composite, SWT.PUSH );
     selectAllButton.setText( "Select all" );
     selectAllButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         text.selectAll();
         text.setFocus();
@@ -319,6 +335,7 @@ public class TextTab extends ExampleTab {
     limitText.addListener( SWT.DefaultSelection, changeListener );
     setButton.addListener( SWT.Selection, changeListener  );
     resetButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         text.setTextLimit( Text.LIMIT );
         limitText.setText( "" );
@@ -336,6 +353,7 @@ public class TextTab extends ExampleTab {
     Button setButton = new Button( group, SWT.PUSH );
     setButton.setText( "Set" );
     setButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         text.setText( setText.getText() );
       }
@@ -345,6 +363,7 @@ public class TextTab extends ExampleTab {
     Button appendButton = new Button( group, SWT.PUSH );
     appendButton.setText( "Append" );
     appendButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         text.append( appendText.getText() );
       }
@@ -354,6 +373,7 @@ public class TextTab extends ExampleTab {
     Button insertButton = new Button( group, SWT.PUSH );
     insertButton.setText( "Insert" );
     insertButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         text.insert( insertText.getText() );
       }
@@ -370,6 +390,7 @@ public class TextTab extends ExampleTab {
     Button setButton = new Button( composite, SWT.PUSH );
     setButton.setText( "Set" );
     setButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         text.setMessage( message.getText() );
       }
