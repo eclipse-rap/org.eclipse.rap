@@ -14,8 +14,8 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
   
   statics : {
 
-    MEASUREMENT_LABEL : new qx.ui.basic.Label(),
-    
+    _measureNode : null,
+
     probe : function( probeList ) {
       for( var i = 0; i < probeList.length; i++ ) {
         var item = probeList[ i ];
