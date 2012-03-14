@@ -164,6 +164,8 @@ org.eclipse.rwt.TreeRowContainerWrapper.prototype = {
     var rightColumnsOffset = 0;
     if( columnOrder.length > this._fixedColumns ) {
       rightColumnsOffset = this._config.itemLeft[ columnOrder[ this._fixedColumns ] ];
+    } else {
+      rightColumnsOffset = this._width;
     }
     for( var i = 0; i < columnOrder.length; i++ ) {
       var column = columnOrder[ i ];

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2011, 2012 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -179,6 +179,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       assertEquals( 90, sub2.getChildren()[ 0 ].getWidth() );
       container.destroy();
     },
+    
+    testFixedColumnsEqualsTotalColumns : function() {
+      var container = this._createSplitContainer();
+      
+      container.setFixedColumns( 5 );
+      container.renderAll();
+      
+      var sub1 = container.getSubContainer( 0 );
+      var sub2 = container.getSubContainer( 1 );
+      assertEquals( 100, container.getWidth() );
+      assertEquals( 100, sub1.getWidth() );
+      assertEquals( 100, sub2.getLeft() );
+      assertEquals( 0, sub2.getWidth() );
+      container.destroy();
+    },
 
     testSetRowWidthSmallerWidth : function() {
       var container = this._createSplitContainer();
@@ -203,7 +218,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       assertEquals( 20, sub2.getScrollLeft() );
       container.destroy();
     },
-    
+
     ////////////////////////
     // Tests with "real" Tree
 
