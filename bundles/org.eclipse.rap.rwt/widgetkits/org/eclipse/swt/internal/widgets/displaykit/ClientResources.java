@@ -422,7 +422,7 @@ public final class ClientResources {
     try {
       resourceManager.register( name, inputStream, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
       String location = resourceManager.getLocation( name );
-      RWTFactory.getStartupPage().getConfigurer().addJsLibrary( location );
+      RWTFactory.getStartupPage().addJsLibrary( location );
     } finally {
       inputStream.close();
     }

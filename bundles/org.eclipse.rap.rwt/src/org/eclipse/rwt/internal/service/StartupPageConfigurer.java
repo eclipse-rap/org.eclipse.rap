@@ -31,7 +31,6 @@ import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
-import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
 import org.eclipse.rwt.internal.service.StartupPageTemplateHolder.Variable;
 import org.eclipse.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rwt.internal.theme.Theme;
@@ -42,7 +41,8 @@ import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.resources.IResource;
 
 
-final class StartupPageConfigurer implements IStartupPageConfigurer {
+final class StartupPageConfigurer {
+
   private static final String PACKAGE_NAME = StartupPageConfigurer.class.getPackage().getName();
   private final static String FOLDER = PACKAGE_NAME.replace( '.', '/' );
   private final static String INDEX_TEMPLATE = FOLDER + "/rwt-index.html";
