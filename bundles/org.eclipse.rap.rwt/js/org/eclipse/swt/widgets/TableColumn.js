@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     this._inMove = false;
     this._offsetX = 0;
     this._initialLeft = 0;
+    this._fixed = false;
     this._index = 0;
     // Init width property, without this Table._updateScrollWidth would 
     // accidentially calculate a width of "0auto"
@@ -175,7 +176,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         if( this._isResizeLocation( evt.getPageX() ) ) {
           this._inResize = true;
           var position = this.getLeft() + this.getWidth();
-          this._table._showResizeLine( position );
+          this._table._showResizeLine( position, this._fixed );
           this._resizeStartX = evt.getPageX();
           this.setCapture( true );
           evt.stopPropagation();
@@ -235,7 +236,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         if( position < this.getLeft() + 5 ) {
           position = this.getLeft() + 5;
         }
-        this._table._showResizeLine( position );
+        this._table._showResizeLine( position, this._fixed );
       } else if( this._inMove ) {
         this.setLeft( evt.getPageX() - this._offsetX );
         this.addState( org.eclipse.swt.widgets.TableColumn.STATE_MOVING );
@@ -268,8 +269,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
       var result = false;
       if( this._resizable ) {
         var columnRight 
-          = qx.bom.element.Location.getLeft( this.getElement() ) 
-          + this.getWidth();
+          = qx.bom.element.Location.getLeft( this.getElement() ) + this.getWidth();
         if( pageX >= columnRight - 5 && pageX <= columnRight ) {
           result = true;
         }
@@ -316,4 +316,4 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     }
 
   }
-});
+} );

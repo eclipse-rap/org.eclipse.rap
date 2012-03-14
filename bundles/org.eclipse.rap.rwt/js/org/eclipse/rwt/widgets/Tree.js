@@ -546,7 +546,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     // TODO [tb] : handle by event via TableHeader instead of direct call
-    _showResizeLine : function( x ) {
+    _showResizeLine : function( x, fixed ) {
       if( this._resizeLine === null ) {
         this._resizeLine = new qx.ui.basic.Terminator();
         this._resizeLine.setAppearance( "table-column-resizer" );
@@ -555,7 +555,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
       var top = this._rowContainer.getTop();
       this._resizeLine._renderRuntimeTop( top );
-      var left = x - 2 - this._horzScrollBar.getValue();
+      var left = x - 2 - ( !fixed ? this._horzScrollBar.getValue() : 0 );
       this._resizeLine._renderRuntimeLeft( left );
       var height = this._rowContainer.getHeight();
       this._resizeLine._renderRuntimeHeight( height );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,13 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+
+var shell;
+
+  
 qx.Class.define( "org.eclipse.rwt.test.tests.TableColumnTest", {
 
   extend : qx.core.Object,
@@ -16,11 +23,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableColumnTest", {
   members : {
 
     testCreateTableColumnByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var processor = org.eclipse.rwt.protocol.Processor;
-      processor.processOperation( {
+      var Processor = org.eclipse.rwt.protocol.Processor;
+      Processor.processOperation( {
         "target" : "w4",
         "action" : "create",
         "type" : "rwt.widgets.TableColumn",
@@ -29,151 +35,181 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableColumnTest", {
           "parent" : "w3"
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w4" );
       assertTrue( widget instanceof org.eclipse.swt.widgets.TableColumn );
       assertIdentical( tree._columnArea, widget.getParent() );
       assertEquals( "tree-column", widget.getAppearance() );
-      shell.destroy();
       widget.destroy();
       tree.destroy();
     },
 
     testSetIndexByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       TestUtil.protocolSet( "w4", { "index" : 3 } );
       assertEquals( 3, column.getIndex() );
-      shell.destroy();
       column.destroy();
       tree.destroy();
     },
 
     testSetLeftByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       TestUtil.protocolSet( "w4", { "left" : 3 } );
       assertEquals( 3, column.getLeft() );
-      shell.destroy();
       column.destroy();
       tree.destroy();
     },
 
     testSetWidthByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       TestUtil.protocolSet( "w4", { "width" : 3 } );
       assertEquals( 3, column.getWidth() );
-      shell.destroy();
       column.destroy();
       tree.destroy();
     },
 
     testSetTextByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       TestUtil.protocolSet( "w4", { "text" : "foo<>\" bar" } );
       assertEquals( "foo&lt;&gt;&quot; bar", column.getLabel().toString() );
-      shell.destroy();
       column.destroy();
       tree.destroy();
     },
 
     testSetImageByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       TestUtil.protocolSet( "w4", { "image" : [ "image.png", 10, 20 ] } );
       assertEquals( "image.png", column.getIcon() );
-      shell.destroy();
       column.destroy();
       tree.destroy();
     },
 
     testSetToolTipByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       TestUtil.protocolSet( "w4", { "toolTip" : "hello blue world" } );
       assertEquals( "hello blue world", column.getUserData( "toolTipText" ) );
       assertTrue( column.getToolTip() !== null );
-      shell.destroy();
       column.destroy();
       tree.destroy();
     },
 
     testSetResizableByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       TestUtil.protocolSet( "w4", { "resizable" : false } );
       assertFalse( column._resizable );
-      shell.destroy();
       column.destroy();
       tree.destroy();
     },
 
     testSetMoveableByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       TestUtil.protocolSet( "w4", { "moveable" : true } );
       assertTrue( column._moveable );
-      shell.destroy();
       column.destroy();
       tree.destroy();
     },
 
     testSetAlignmentByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       TestUtil.protocolSet( "w4", { "alignment" : "right" } );
       assertEquals( "right", column.getLabelObject().getTextAlign() );
       assertEquals( "right", column.getHorizontalChildrenAlign() );
       assertEquals( "right", tree.getRenderConfig().alignment[ 0 ] );
-      shell.destroy();
       column.destroy();
       tree.destroy();
     },
 
     testSetFixedByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       TestUtil.protocolSet( "w4", { "fixed" : true } );
       assertTrue( "right", column.isFixed() );
-      shell.destroy();
       column.destroy();
       tree.destroy();
     },
 
     testSetCustomVariantByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       TestUtil.protocolSet( "w4", { "customVariant" : "variant_blue" } );
       assertTrue( column.hasState( "variant_blue" ) );
-      shell.destroy();
       column.destroy();
       tree.destroy();
     },
 
+    testShowResizeLine : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderVisible( true );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20 } );
+      TestUtil.flush();
+      assertNotNull( column.getElement() );
+      var button = qx.event.type.MouseEvent.buttons.left;
+      
+      TestUtil.fakeMouseEventDOM( column.getElement(), "mousedown", button, 23, 3 );
+      TestUtil.flush();
+      
+      var line = tree._resizeLine;
+      assertEquals( "", line.getStyleProperty( "visibility" ) );
+      assertEquals( 21, parseInt( line._style.left, 10 ) );
+      column.destroy();
+      tree.destroy();
+    },
+
+    testShowResizeLineScrolled : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setItemMetrics( 0, 0, 200, 0, 0, 0, 0 );
+      tree.setScrollLeft( 10 );
+      tree.setHeaderVisible( true );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      this._createColumnByProtocol( "w5", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20 } );
+      TestUtil.protocolSet( "w5", { "left" : 23, "width" : 177 } ); // makes header scrollable
+      TestUtil.flush();
+      assertNotNull( column.getElement() );
+      var button = qx.event.type.MouseEvent.buttons.left;
+      
+      TestUtil.fakeMouseEventDOM( column.getElement(), "mousedown", button, 13, 3 );
+      TestUtil.flush();
+      
+      var line = tree._resizeLine;
+      assertEquals( "", line.getStyleProperty( "visibility" ) );
+      assertEquals( 11, parseInt( line._style.left, 10 ) );
+      column.destroy();
+      tree.destroy();
+    },
+    
+    testShowResizeLineFixedScrolled : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setItemMetrics( 0, 0, 200, 0, 0, 0, 0 );
+      tree.setScrollLeft( 10 );
+      tree.setHeaderVisible( true );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      this._createColumnByProtocol( "w5", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20, "fixed" : true } );
+      TestUtil.protocolSet( "w5", { "left" : 23, "width" : 177 } ); // makes header scrollable
+      TestUtil.flush();
+      assertNotNull( column.getElement() );
+      var button = qx.event.type.MouseEvent.buttons.left;
+      
+      TestUtil.fakeMouseEventDOM( column.getElement(), "mousedown", button, 23, 3 );
+      TestUtil.flush();
+      
+      var line = tree._resizeLine;
+      assertEquals( "", line.getStyleProperty( "visibility" ) );
+      assertEquals( 21, parseInt( line._style.left, 10 ) );
+      column.destroy();
+      tree.destroy();
+    },
+    
     //////////////////
     // Helping methods
 
@@ -207,8 +243,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableColumnTest", {
         }
       } );
       return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+    },
+    
+    setUp : function() {
+      shell = TestUtil.createShellByProtocol( "w2" );
+    },
+    
+    tearDown : function() {
+      shell.destroy();
+      shell = null;
     }
 
   }
   
 } );
+
+}());
