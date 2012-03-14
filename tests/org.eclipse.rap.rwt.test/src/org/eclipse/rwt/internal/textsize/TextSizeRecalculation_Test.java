@@ -185,8 +185,16 @@ public class TextSizeRecalculation_Test extends TestCase {
   private void fakeMeasurementResults() {
     ProbeResultStore.getInstance().createProbeResult( new Probe( FONT_DATA ), new Point( 4, 20 ) );
     RWTFactory.getTextSizeStorage().storeFont( FONT_DATA );
-    TextSizeStorageUtil.store( FONT_DATA, TEXT_TO_MEASURE, 0, new Point( 100, 20 ) );
-    TextSizeStorageUtil.store( FONT_DATA, TEXT_TO_MEASURE, SWT.DEFAULT, new Point( 100, 20 ) );
+    TextSizeStorageUtil.store( FONT_DATA,
+                               TEXT_TO_MEASURE,
+                               SWT.DEFAULT,
+                               TextSizeUtil.TEXT_EXTENT,
+                               new Point( 100, 20 ) );
+    TextSizeStorageUtil.store( FONT_DATA,
+                               TEXT_TO_MEASURE,
+                               SWT.DEFAULT,
+                               TextSizeUtil.STRING_EXTENT,
+                               new Point( 100, 20 ) );
   }
 
   private final class ResizeListener implements ControlListener {

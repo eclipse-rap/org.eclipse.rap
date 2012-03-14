@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,13 +18,15 @@ class MeasurementItem implements SerializableCompatibility {
   private final int wrapWidth;
   private final FontData fontData;
   private final String string;
+  private final int mode;
 
-  MeasurementItem( String textToMeasure, FontData fontData, int wrapWidth ) {
+  MeasurementItem( String textToMeasure, FontData fontData, int wrapWidth, int mode ) {
     ParamCheck.notNull( textToMeasure, "textToMeasure" );
     ParamCheck.notNull( fontData, "fontData" );
     this.wrapWidth = wrapWidth;
     this.fontData = fontData;
     this.string = textToMeasure;
+    this.mode = mode;
   }
 
   FontData getFontData() {
@@ -39,15 +41,20 @@ class MeasurementItem implements SerializableCompatibility {
     return wrapWidth;
   }
 
+  int getMode() {
+    return mode;
+  }
+
   public int hashCode() {
     final int prime = 31;
     int result = 1;
     result = prime * result + fontData.hashCode();
     result = prime * result + string.hashCode();
     result = prime * result + wrapWidth;
+    result = prime * result + mode;
     return result;
   }
-  
+
   public boolean equals( Object object ) {
     boolean result = false;
     if( object != null && getClass() == object.getClass() ) {
@@ -57,7 +64,8 @@ class MeasurementItem implements SerializableCompatibility {
         MeasurementItem other = ( MeasurementItem )object;
         result =    fontData.equals( other.fontData )
                  && string.equals( other.string )
-                 && wrapWidth == other.wrapWidth;
+                 && wrapWidth == other.wrapWidth
+                 && mode == other.mode;
       }
     }
     return result;

@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
  
 qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
@@ -29,7 +29,8 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
     measureStringItems : function( items ) {      
       for( var i = 0; i < items.length; i++ ) {
         var item = items[ i ];
-        var size = this._measureItem( item, true );
+        var isMarkup = item[ 7 ];
+        var size = this._measureItem( item, !isMarkup );
         var param = size[ 0 ] + "," + size[ 1 ];
         var id = item[ 0 ];
         this._addRequestParam( id, param );

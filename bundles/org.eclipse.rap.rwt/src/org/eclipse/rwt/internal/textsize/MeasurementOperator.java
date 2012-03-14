@@ -165,7 +165,8 @@ class MeasurementOperator implements SerializableCompatibility {
     FontData fontData = item.getFontData();
     String textToMeasure = item.getTextToMeasure();
     int wrapWidth = item.getWrapWidth();
-    TextSizeStorageUtil.store( fontData, textToMeasure, wrapWidth, size );
+    int mode = item.getMode();
+    TextSizeStorageUtil.store( fontData, textToMeasure, wrapWidth, mode, size );
   }
 
   private static Point readMeasuredItemSize( MeasurementItem item ) {

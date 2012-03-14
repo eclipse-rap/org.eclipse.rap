@@ -67,23 +67,23 @@ public class MarkupValidator {
   private static Map<String, String[]> createSupportedElementsMap() {
     Map<String, String[]> result = new HashMap<String, String[]>();
     result.put( "html", new String[ 0 ] );
+    result.put( "br", new String[ 0 ] );
     result.put( "b", new String[] { "style" } );
+    result.put( "strong", new String[] { "style" } );
     result.put( "i", new String[] { "style" } );
+    result.put( "em", new String[] { "style" } );
     result.put( "sub", new String[] { "style" } );
     result.put( "sup", new String[] { "style" } );
-    result.put( "br", new String[ 0 ] );
     result.put( "big", new String[] { "style" } );
     result.put( "small", new String[] { "style" } );
     result.put( "del", new String[] { "style" } );
     result.put( "ins", new String[] { "style" } );
-    result.put( "em", new String[] { "style" } );
-    result.put( "strong", new String[] { "style" } );
-    result.put( "dfn", new String[] { "style" } );
     result.put( "code", new String[] { "style" } );
     result.put( "samp", new String[] { "style" } );
     result.put( "kbd", new String[] { "style" } );
     result.put( "var", new String[] { "style" } );
     result.put( "cite", new String[] { "style" } );
+    result.put( "dfn", new String[] { "style" } );
     result.put( "q", new String[] { "style" } );
     result.put( "abbr", new String[] { "style", "title" } );
     result.put( "span", new String[] { "style" } );

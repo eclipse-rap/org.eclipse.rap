@@ -60,7 +60,7 @@ public class TextSizeUtil_Test extends TestCase {
 
   public void testStringExtentUsesStoreageForKnowStrings() {
     Point storedSize = new Point( 100, 10 );
-    fakeMeasurement( TEST_STRING, SWT.DEFAULT, storedSize );
+    fakeMeasurement( TEST_STRING, SWT.DEFAULT, TextSizeUtil.STRING_EXTENT, storedSize );
 
     Point determinedSize = TextSizeUtil.stringExtent( getFont(), TEST_STRING );
 
@@ -143,7 +143,7 @@ public class TextSizeUtil_Test extends TestCase {
   }
 
   public void testHeightAdjustmentInCaseOfWhitespaceText() {
-    fakeMeasurement( " ", 0, new Point( 2, 0 ) );
+    fakeMeasurement( " ", SWT.DEFAULT, TextSizeUtil.TEXT_EXTENT, new Point( 2, 0 ) );
 
     Point size = TextSizeUtil.textExtent( getFont(), " ", 0 );
 
@@ -152,17 +152,17 @@ public class TextSizeUtil_Test extends TestCase {
 
   public void testHeightAdjustmentInCaseOfMultiLineLengthGreaterThanWrapWidth() {
     String textToMeasure = "multi\nline\ntext";
-    fakeMeasurement( textToMeasure, 2, new Point( 6, 10 ) );
+    fakeMeasurement( textToMeasure, 2, TextSizeUtil.TEXT_EXTENT, new Point( 6, 10 ) );
 
     Point size = TextSizeUtil.textExtent( Graphics.getFont( FONT_DATA ), textToMeasure, 2 );
 
     assertEquals( 40, size.y );
   }
 
-  private void fakeMeasurement( String text, int wrapWidth, Point size ) {
+  private void fakeMeasurement( String text, int wrapWidth, int mode, Point size ) {
     ProbeResultStore.getInstance().createProbeResult( new Probe( FONT_DATA ), new Point( 10, 10 ) );
     RWTFactory.getTextSizeStorage().storeFont( FONT_DATA );
-    TextSizeStorageUtil.store( FONT_DATA, text, wrapWidth, size );
+    TextSizeStorageUtil.store( FONT_DATA, text, wrapWidth, mode, size );
   }
 
   private MeasurementItem[] getMeasurementItems() {

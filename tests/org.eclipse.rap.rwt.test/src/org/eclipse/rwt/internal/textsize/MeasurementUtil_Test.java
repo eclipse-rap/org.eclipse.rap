@@ -48,7 +48,7 @@ public class MeasurementUtil_Test extends TestCase {
   private void checkItemObject( Object itemObject, MeasurementItem item ) {
     assertTrue( itemObject instanceof Object[] );
     Object[] itemObjectArray = ( Object[] )itemObject;
-    assertEquals( 7, itemObjectArray.length );
+    assertEquals( 8, itemObjectArray.length );
     assertEquals( new Integer( item.hashCode() ),  itemObjectArray[ 0 ] );
     String escaped = " text \"to\" measure ";
     assertEquals( escaped, itemObjectArray[ 1 ] );
@@ -60,6 +60,7 @@ public class MeasurementUtil_Test extends TestCase {
     assertEquals( Boolean.FALSE, itemObjectArray[ 4 ] );
     assertEquals( Boolean.FALSE, itemObjectArray[ 5 ] );
     assertEquals( new Integer( 17 ), itemObjectArray[ 6 ] );
+    assertEquals( Boolean.FALSE, itemObjectArray[ 7 ] );
   }
 
   private void checkProbeObject( Object probeObject, Probe probe ) {
@@ -84,7 +85,6 @@ public class MeasurementUtil_Test extends TestCase {
 
   private MeasurementItem createMeasurementItem() {
     FontData fontData = new FontData( "fontName", 1, SWT.NORMAL );
-    int wrapWidth = 17;
-    return new MeasurementItem( TEXT_TO_MEASURE, fontData, wrapWidth );
+    return new MeasurementItem( TEXT_TO_MEASURE, fontData, 17, TextSizeUtil.STRING_EXTENT );
   }
 }

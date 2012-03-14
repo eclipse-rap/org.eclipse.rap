@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
@@ -24,25 +25,35 @@ public class TextSizeEstimation_Test extends TestCase {
 
   private Font font10;
 
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    new Display();
+    font10 = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testAvgCharWidth() {
     float avgCharWidth = TextSizeEstimation.getAvgCharWidth( font10 );
     assertTrue( avgCharWidth > 3 );
     assertTrue( avgCharWidth < 6 );
   }
-  
+
   public void testAvgCharWithUsesProbeResults() {
     Probe probe = new Probe( "X", font10.getFontData()[ 0 ] );
     ProbeResultStore.getInstance().createProbeResult( probe, new Point( 4711, 0 ) );
     float avgCharWidth = TextSizeEstimation.getAvgCharWidth( font10 );
     assertEquals( 4711.0, avgCharWidth, 0.01 );
   }
-  
+
   public void testCharHeight() {
     int charHeight = TextSizeEstimation.getCharHeight( font10 );
     assertTrue( charHeight > 9 );
     assertTrue( charHeight < 13 );
   }
-  
+
   public void testStringExtent() {
     String string = "TestString";
     int charHeight = TextSizeEstimation.getCharHeight( font10 );
@@ -65,7 +76,7 @@ public class TextSizeEstimation_Test extends TestCase {
     assertTrue( extent.y >= charHeight * 2 );
     assertTrue( extent.y < charHeight * 1.5 * 5 );
   }
-  
+
   public void testTextExtent() {
     int charHeight = TextSizeEstimation.getCharHeight( font10 );
     assertTrue( charHeight > 9 );
@@ -87,7 +98,7 @@ public class TextSizeEstimation_Test extends TestCase {
     assertTrue( textExtent5L.y >= charHeight * 5 );
     assertTrue( textExtent5L.y < charHeight * 5 + charHeight * 1.5 );
   }
-  
+
   // Test for a case where text width == wrapWidth
   public void testEndlessLoopProblem() {
     Font font = Graphics.getFont( "Helvetica", 11, SWT.NORMAL );
@@ -95,13 +106,63 @@ public class TextSizeEstimation_Test extends TestCase {
     assertEquals( 100, extent.x );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    new Display();
-    font10 = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
+  public void testMarkupExtent_SingleLine() {
+    int charHeight = TextSizeEstimation.getCharHeight( font10 );
+    String testMarkup = "foo <b>bar</b> and <img src=\"image.png\" /><sup>image</sup>";
+
+    Point markupExtent = TextSizeEstimation.markupExtent( font10 , testMarkup, SWT.DEFAULT );
+
+    assertTrue( markupExtent.x > 70 );
+    assertTrue( markupExtent.x < 90 );
+    assertTrue( markupExtent.y >= charHeight );
+    assertTrue( markupExtent.y < charHeight * 1.5 );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testMarkupExtent_MultipleLines() {
+    int charHeight = TextSizeEstimation.getCharHeight( font10 );
+    String testMarkup = "foo <b>bar</b><br/> and <img src=\"image.png\" /><br/><sup>image</sup>";
+
+    Point markupExtent = TextSizeEstimation.markupExtent( font10 , testMarkup, SWT.DEFAULT );
+
+    assertTrue( markupExtent.x > 30 );
+    assertTrue( markupExtent.x < 40 );
+    assertTrue( markupExtent.y >= charHeight * 3 );
+    assertTrue( markupExtent.y < charHeight * 4 );
   }
+
+  public void testMarkupExtent_WithoutWrapWidth() {
+    int charHeight = TextSizeEstimation.getCharHeight( font10 );
+    String testMarkup = "Test1 <b>Test2</b> <sup>Test3</sup> Test4 <i>Test5</i>";
+
+    Point markupExtent = TextSizeEstimation.markupExtent( font10 , testMarkup, SWT.DEFAULT );
+
+    assertTrue( markupExtent.y >= charHeight );
+    assertTrue( markupExtent.y < charHeight * 1.5 );
+  }
+
+  public void testMarkupExtent_WithWrapWidth() {
+    int charHeight = TextSizeEstimation.getCharHeight( font10 );
+    String testMarkup = "Test1 <b>Test2</b> <sup>Test3</sup> Test4 <i>Test5</i>";
+
+    Point markupExtent = TextSizeEstimation.markupExtent( font10 , testMarkup, 40 );
+
+    assertTrue( markupExtent.x <= 40 );
+    assertTrue( markupExtent.y >= charHeight * 2 );
+    assertTrue( markupExtent.y < charHeight * 1.5 * 5 );
+  }
+
+  public void testRemoveAllTags() {
+    String markup = "foo <b>bar</b> and <img src=\"image.png\" /><sup>image</sup>";
+
+    String expected = "foo bar and image";
+    assertEquals( expected, TextSizeEstimation.removeAllTags( markup ) );
+  }
+
+  public void testRemoveAllTagsWithLineBreaks() {
+    String markup = "foo <b>bar</b><br/> and <img src=\"image.png\" /><br/><sup>image</sup>";
+
+    String expected = "foo bar\n and \nimage";
+    assertEquals( expected, TextSizeEstimation.removeAllTags( markup ) );
+  }
+
 }

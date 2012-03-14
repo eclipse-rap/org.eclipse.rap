@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,28 +25,29 @@ import org.eclipse.swt.graphics.Point;
 public class TextSizeStorageUtil_Test extends TestCase {
   private static final FontData FONT_DATA = new FontData( "arial", 10, SWT.NORMAL );
   private static final String TEST_STRING = "test";
+  private static final int MODE = TextSizeUtil.STRING_EXTENT;
 
-  
+
   public void testLookupOfNotExistingText() {
-    assertNull( TextSizeStorageUtil.lookup( FONT_DATA, TEST_STRING, SWT.DEFAULT ) );
+    assertNull( TextSizeStorageUtil.lookup( FONT_DATA, TEST_STRING, SWT.DEFAULT, MODE ) );
   }
-  
+
   public void testStoreWithUnprobedFont() {
     try {
-      TextSizeStorageUtil.store( FONT_DATA, TEST_STRING, SWT.DEFAULT, new Point( 1, 1 ) );
+      TextSizeStorageUtil.store( FONT_DATA, TEST_STRING, SWT.DEFAULT, MODE, new Point( 1, 1 ) );
       fail( "No probe available." );
     } catch( IllegalStateException ise ) {
     }
   }
-  
+
   public void testStoreAndLookup() {
     ProbeResultStore probeResultStore = ProbeResultStore.getInstance();
     probeResultStore.createProbeResult( new Probe( FONT_DATA ), new Point( 2, 10 ) );
     Point storedSize = new Point( 10, 10 );
-    
-    TextSizeStorageUtil.store( FONT_DATA, TEST_STRING, SWT.DEFAULT, storedSize );
-    Point lookupSize = TextSizeStorageUtil.lookup( FONT_DATA, TEST_STRING, SWT.DEFAULT );
-    
+
+    TextSizeStorageUtil.store( FONT_DATA, TEST_STRING, SWT.DEFAULT, MODE, storedSize );
+    Point lookupSize = TextSizeStorageUtil.lookup( FONT_DATA, TEST_STRING, SWT.DEFAULT, MODE );
+
     assertEquals( storedSize, lookupSize );
   }
 
@@ -59,7 +60,7 @@ public class TextSizeStorageUtil_Test extends TestCase {
       Probe probe = new Probe( text, FONT_DATA );
       Point size = new Point( 1, 2 );
       ProbeResultStore.getInstance().createProbeResult( probe, size );
-      Integer key = TextSizeStorageUtil.getKey( FONT_DATA, text, -1 );
+      Integer key = TextSizeStorageUtil.getKey( FONT_DATA, text, SWT.DEFAULT, MODE );
       assertFalse( takenKeys.contains( key ) );
       takenKeys.add( key );
     }

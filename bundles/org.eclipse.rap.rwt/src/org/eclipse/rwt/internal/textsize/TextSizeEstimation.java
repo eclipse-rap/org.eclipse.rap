@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2006, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
@@ -29,14 +29,14 @@ public final class TextSizeEstimation {
     int height = getCharHeight( font ) + 2;
     return new Point( width, height );
   }
-  
+
   /**
    * Estimates the size of a given text, respecting line breaks and wrapping at
    * a given width.
    * @param font the font to perform the estimation for
    * @param string the text whose size to estimate
-   * @param wrapWidth the width to wrap at in pixels, 0 stands for no wrapping
-   * 
+   * @param wrapWidth the width to wrap at in pixels, 0 or negative stands for no wrapping
+   *
    * @return the estimated size
    */
   static Point textExtent( Font font, String string, int wrapWidth ) {
@@ -69,11 +69,24 @@ public final class TextSizeEstimation {
     int height = Math.round( getCharHeight( font ) * 1.25f * lineCount );
     return new Point( maxWidth, height );
   }
-  
+
+  /**
+   * Estimates the size of a given markup text, respecting wrapping at a given width.
+   * Line break tag is replaced with a new line character. All other tags are removed.
+   * @param font the font to perform the estimation for
+   * @param markup the markup text whose size to estimate
+   * @param wrapWidth the width to wrap at in pixels, 0 or negative stands for no wrapping
+   *
+   * @return the estimated size
+   */
+  static Point markupExtent( Font font, String markup, int wrapWidth ) {
+    return textExtent( font, removeAllTags( markup ), wrapWidth );
+  }
+
   /**
    * Returns the character height in pixels. The returned value is only a rough
    * estimation.
-   * 
+   *
    * @param font the font to perform the estimation for
    * @return the estimated character height in pixels
    */
@@ -81,11 +94,11 @@ public final class TextSizeEstimation {
     // at 72 dpi, 1 pt == 1 px
     return FontUtil.getData( font ).getHeight();
   }
-  
+
   /**
    * Returns the average character weight in pixels. The returned value is only
    * a rough estimation that does not take the font family into account.
-   * 
+   *
    * @param font the font to perform the estimation for
    * @return the estimated average character width in pixels
    */
@@ -105,7 +118,33 @@ public final class TextSizeEstimation {
     }
     return result;
   }
-  
+
+  static String removeAllTags( String markup ) {
+    StringBuilder result = new StringBuilder();
+    StringBuilder tag = new StringBuilder();
+    boolean inTag = false;
+    int length = markup.length();
+    for( int i = 0; i < length; i++ ) {
+      char ch = markup.charAt( i );
+      if( ch == '<' ) {
+        inTag = true;
+      } else if( ch == '>' ) {
+        if( tag.toString().equalsIgnoreCase( "br" ) ) {
+          result.append( "\n" );
+        }
+        tag.setLength( 0 );
+        inTag = false;
+      } else if( inTag ) {
+        if( Character.isLetterOrDigit( ch ) ) {
+          tag.append( ch );
+        }
+      } else {
+        result.append( ch );
+      }
+    }
+    return result.toString();
+  }
+
   /**
    * Returns the length of the longest substring, whose width is smaller or
    * equal to wrapWidth. If there is no such substring, zero is returned. The
@@ -130,7 +169,7 @@ public final class TextSizeEstimation {
     }
     return result;
   }
-  
+
   /**
    * Returns the next substring that can be wrapped.
    */
@@ -142,7 +181,7 @@ public final class TextSizeEstimation {
     }
     return result;
   }
-  
+
   /**
    * Returns the width of a given string in pixels. Line breaks are ignored.
    */

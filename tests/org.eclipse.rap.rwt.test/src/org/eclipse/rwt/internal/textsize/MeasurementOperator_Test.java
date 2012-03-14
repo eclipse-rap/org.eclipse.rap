@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,10 +30,11 @@ public class MeasurementOperator_Test extends TestCase {
   private static final FontData FONT_DATA_1 = new FontData( "arial", 12, SWT.NONE );
   private static final FontData FONT_DATA_2 = new FontData( "courier", 14, SWT.BOLD );
   private static final String TEXT_TO_MEASURE = "textToMeasure";
+  private static final int MODE = TextSizeUtil.STRING_EXTENT;
   private static final MeasurementItem MEASUREMENT_ITEM_1
-    = new MeasurementItem( TEXT_TO_MEASURE, FONT_DATA_1, -1 );
+    = new MeasurementItem( TEXT_TO_MEASURE, FONT_DATA_1, SWT.DEFAULT, MODE );
   private static final MeasurementItem MEASUREMENT_ITEM_2
-    = new MeasurementItem( TEXT_TO_MEASURE, FONT_DATA_2, -1 );
+    = new MeasurementItem( TEXT_TO_MEASURE, FONT_DATA_2, SWT.DEFAULT, MODE );
 
   private Display display;
   private MeasurementOperator operator;
@@ -138,20 +139,16 @@ public class MeasurementOperator_Test extends TestCase {
   }
 
   public void testAddItemToMeasure() {
-    MeasurementItem item = createItem();
+    operator.addItemToMeasure( MEASUREMENT_ITEM_1 );
 
-    operator.addItemToMeasure( item );
-
-    checkMeasurementItemBuffering( item );
+    checkMeasurementItemBuffering( MEASUREMENT_ITEM_1 );
   }
 
   public void testAddItemToMeasureIsIdempotent() {
-    MeasurementItem item = createItem();
+    operator.addItemToMeasure( MEASUREMENT_ITEM_1 );
+    operator.addItemToMeasure( MEASUREMENT_ITEM_1 );
 
-    operator.addItemToMeasure( item );
-    operator.addItemToMeasure( item );
-
-    checkMeasurementItemBuffering( item );
+    checkMeasurementItemBuffering( MEASUREMENT_ITEM_1 );
   }
 
   public void testGetItemsToMeasureWithEmptyResult() {
@@ -222,17 +219,6 @@ public class MeasurementOperator_Test extends TestCase {
     operator.addProbeToMeasure( fontData1 );
   }
 
-  private MeasurementItem createItem() {
-    FontData fontData = new FontData( "arial", 13, SWT.BOLD );
-    String textToMeasure = "textToMeasure";
-    int wrapWidth = 2;
-    return createItem( fontData, textToMeasure, wrapWidth );
-  }
-
-  private MeasurementItem createItem( FontData fontData, String textToMeasure, int wrapWidth ) {
-    return new MeasurementItem( textToMeasure, fontData, wrapWidth );
-  }
-
   private void checkMeasurementItemBuffering( MeasurementItem item ) {
     assertEquals( 1, MeasurementOperator.getInstance().getItems().length );
     assertSame( item, MeasurementOperator.getInstance().getItems() [ 0 ] );
@@ -277,9 +263,9 @@ public class MeasurementOperator_Test extends TestCase {
 
   private String[] getMeasurementCall() {
     return new String[] {
-      ",\"FirstString\",[\"arial\"],10,true,false,-1]",
-      ",\"SecondString\",[\"helvetia\",\"ms sans serif\"],12,true,false,-1]",
-      ",\"Weird \\\" String \\\\\",[\"Bogus  Font  Name\"],12,true,false,-1]"
+      ",\"FirstString\",[\"arial\"],10,true,false,-1,false]",
+      ",\"SecondString\",[\"helvetia\",\"ms sans serif\"],12,true,false,-1,false]",
+      ",\"Weird \\\" String \\\\\",[\"Bogus  Font  Name\"],12,true,false,-1,false]"
     };
   }
 

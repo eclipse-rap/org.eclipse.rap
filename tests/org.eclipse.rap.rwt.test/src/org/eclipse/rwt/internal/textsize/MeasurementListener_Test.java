@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,7 @@ public class MeasurementListener_Test extends TestCase {
   }
 
   public void testAfterPhaseWithMeasurementItems() {
-    MeasurementOperator.getInstance().addItemToMeasure( new MeasurementItem( "text", FONT_DATA, 0 ) );
+    MeasurementOperator.getInstance().addItemToMeasure( createItem() );
 
     listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
 
@@ -73,7 +73,7 @@ public class MeasurementListener_Test extends TestCase {
   }
 
   public void testAfterPhaseWithMeasurementItemsButWrongPhaseId() {
-    MeasurementOperator.getInstance().addItemToMeasure( new MeasurementItem( "text", FONT_DATA, 0 ) );
+    MeasurementOperator.getInstance().addItemToMeasure( createItem() );
 
     executeNonRenderPhases();
 
@@ -179,7 +179,7 @@ public class MeasurementListener_Test extends TestCase {
   }
 
   private void fakeRequestWithItemMeasurementResults() {
-    MeasurementItem itemToMeasure = new MeasurementItem( "text", FONT_DATA, -1 );
+    MeasurementItem itemToMeasure = createItem();
     MeasurementOperator.getInstance().addItemToMeasure( itemToMeasure );
     fakeRequestWithProbeMeasurementResults();
     TestRequest request = ( TestRequest )RWT.getRequest();
@@ -200,5 +200,9 @@ public class MeasurementListener_Test extends TestCase {
         resizeCount++;
       }
     } );
+  }
+
+  private MeasurementItem createItem() {
+    return new MeasurementItem( "text", FONT_DATA, SWT.DEFAULT, TextSizeUtil.STRING_EXTENT );
   }
 }

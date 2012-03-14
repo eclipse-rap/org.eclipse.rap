@@ -8,6 +8,36 @@
     <!--- IE9 render in standard mode, all older versions in quirksmode ---> 
     <meta http-equiv="X-UA-Compatible" content="IE=5,9;" >
     ${headers}
+    <!-- Default presentation of supported markup elements --> 
+    <style type="text/css">
+      big {
+        font-size: 1.2em;
+      }
+      small, sup, sub {
+        font-size: 0.8em;
+      }
+      q:before, q:after {
+        content: "";
+      }
+      b, strong {
+        font-weight: 700;
+      }
+      i, em, var, cite, dfn {
+        font-style: italic;
+      }
+      ins {
+        text-decoration: underline;
+      }
+      del {
+        text-decoration: line-through;
+      }
+      code, samp, kbd {
+        font-family: "Courier New", Courier, "Nimbus Mono L", monospace;
+      }
+      abbr {
+        border-bottom: 1px dotted;
+      }
+    </style>
   </head>
 
   <body background="${backgroundImage}">

@@ -38,34 +38,39 @@ public class MeasurementUtil {
   }
 
   static Object createItemParamObject( MeasurementItem item ) {
-    Object[] result = new Object[ 7 ];
-    result[ 0 ] = new Integer( item.hashCode() );
+    Object[] result = new Object[ 8 ];
+    result[ 0 ] = Integer.valueOf( item.hashCode() );
     result[ 1 ] = item.getTextToMeasure();
     FontData fontData = item.getFontData();
     result[ 2 ] = WidgetLCAUtil.parseFontName( fontData.getName() );
-    result[ 3 ] = new Integer( fontData.getHeight() );
+    result[ 3 ] = Integer.valueOf( fontData.getHeight() );
     result[ 4 ] = Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 );
     result[ 5 ] = Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 );
-    result[ 6 ] = new Integer( item.getWrapWidth() );
+    result[ 6 ] = Integer.valueOf( item.getWrapWidth() );
+    result[ 7 ] = Boolean.valueOf( isMarkup( item.getMode() ) );
     return result;
   }
 
   static Object createProbeParamObject( Probe probe ) {
     Object[] result = new Object[ 6 ];
     FontData fontData = probe.getFontData();
-    result[ 0 ] = new Integer( fontData.hashCode() );
+    result[ 0 ] = Integer.valueOf( fontData.hashCode() );
     result[ 1 ] = probe.getText();
     result[ 2 ] = WidgetLCAUtil.parseFontName( fontData.getName() );
-    result[ 3 ] = new Integer( fontData.getHeight() );
+    result[ 3 ] = Integer.valueOf( fontData.getHeight() );
     result[ 4 ] = Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 );
     result[ 5 ] = Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 );
     return result;
   }
 
-  static void addItemToMeasure( String toMeasure, Font font, int wrapWidth ) {
+  static void addItemToMeasure( String toMeasure, Font font, int wrapWidth, int mode ) {
     FontData fontData = FontUtil.getData( font );
-    MeasurementItem newItem = new MeasurementItem( toMeasure, fontData, wrapWidth );
+    MeasurementItem newItem = new MeasurementItem( toMeasure, fontData, wrapWidth, mode );
     MeasurementOperator.getInstance().addItemToMeasure( newItem );
+  }
+
+  private static boolean isMarkup( int mode ) {
+    return mode == TextSizeUtil.MARKUP_EXTENT;
   }
 
   private MeasurementUtil() {
