@@ -32,6 +32,7 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
   private TestServletContext servletContext;
   private ApplicationContext applicationContext;
   private ApplicationConfigurationImpl applicationConfiguration;
+  private ApplicationConfigurator applicationConfigurator;
   
   public void testDefaultOperationMode() {
     applicationContext.activate();
@@ -104,11 +105,18 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
     assertSame( applicationContext, context );
   }
   
+  public void testGetConfiguratorViaAdapter() throws Exception {
+    ApplicationConfigurator configurator 
+      = applicationConfiguration.getAdapter( ApplicationConfigurator.class );
+    
+    assertSame( applicationConfigurator, configurator );
+  }
+  
   protected void setUp() throws Exception {
-    ApplicationConfigurator configurator = mock( ApplicationConfigurator.class );
+    applicationConfigurator = mock( ApplicationConfigurator.class );
     servletContext = new TestServletContext();
-    applicationContext = new ApplicationContext( configurator, servletContext );
-    applicationConfiguration = new ApplicationConfigurationImpl( applicationContext, configurator );
+    applicationContext = new ApplicationContext( applicationConfigurator, servletContext );
+    applicationConfiguration = new ApplicationConfigurationImpl( applicationContext, applicationConfigurator );
   }
 
   private void assertFilterRegistered( Class<RWTClusterSupport> filterClass ) {

@@ -213,6 +213,8 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration, A
     T result = null;
     if( adapter == ApplicationContext.class ) {
       result = ( T )applicationContext;
+    } else if( adapter == ApplicationConfigurator.class ) {
+      result = ( T )configurator;
     }
     return result;
   }
