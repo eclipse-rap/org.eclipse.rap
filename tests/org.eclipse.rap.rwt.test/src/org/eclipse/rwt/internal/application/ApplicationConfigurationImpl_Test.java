@@ -98,6 +98,12 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
     }
   }
   
+  public void testGetContextViaAdapter() throws Exception {
+    ApplicationContext context = applicationConfiguration.getAdapter( ApplicationContext.class );
+    
+    assertSame( applicationContext, context );
+  }
+  
   protected void setUp() throws Exception {
     ApplicationConfigurator configurator = mock( ApplicationConfigurator.class );
     servletContext = new TestServletContext();

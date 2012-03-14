@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
@@ -37,7 +38,7 @@ import org.eclipse.swt.widgets.Widget;
 
 
 @SuppressWarnings("deprecation")
-public class ApplicationConfigurationImpl implements ApplicationConfiguration {
+public class ApplicationConfigurationImpl implements ApplicationConfiguration, Adaptable {
 
   private final ApplicationContext applicationContext;
   private final ApplicationConfigurator configurator;
@@ -55,7 +56,7 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
     }
   }
 
-  ApplicationConfigurationImpl( ApplicationContext applicationContext,
+  public ApplicationConfigurationImpl( ApplicationContext applicationContext,
                                 ApplicationConfigurator configurator )
   {
     this.applicationContext = applicationContext;
@@ -203,6 +204,15 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
       Object[] args = new Object[] { styleSheetLocation };
       String msg = MessageFormat.format( text, args );
       throw new IllegalArgumentException( msg );
+    }
+    return result;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result = null;
+    if( adapter == ApplicationContext.class ) {
+      result = ( T )applicationContext;
     }
     return result;
   }
