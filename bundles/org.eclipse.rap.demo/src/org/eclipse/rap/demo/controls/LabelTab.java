@@ -1,17 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -28,20 +29,23 @@ public class LabelTab extends ExampleTab {
   private final Image image2;
   private final String text1;
   private final String text2;
+  private final String markup;
   private Image labelImage;
   private String labelText;
+  private boolean markupEnabled;
 
-  public LabelTab( final CTabFolder topFolder ) {
+  public LabelTab( CTabFolder topFolder ) {
     super( topFolder, "Label" );
     image1 = loadImage( "resources/button-image.gif" );
     image2 = loadImage( "resources/newfile_wiz.gif" );
     text1 = "Some Text";
     text2 = "Some Other Text";
+    markup = "<big><i>Some</i></big> <b>Other</b> <small>Text With Markup</small> - 2<sup>16</sup>";
     labelImage = null;
     labelText = "A Label with text";
   }
 
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "SEPARATOR", SWT.SEPARATOR );
     createStyleButton( "HORIZONTAL", SWT.HORIZONTAL );
@@ -53,6 +57,7 @@ public class LabelTab extends ExampleTab {
     createStyleButton( "CENTER", SWT.CENTER );
     createStyleButton( "RIGHT", SWT.RIGHT );
     createStyleButton( "WRAP", SWT.WRAP );
+    createMarkupButton();
     createVisibilityButton();
     createEnablementButton();
     createFgColorButton();
@@ -64,16 +69,16 @@ public class LabelTab extends ExampleTab {
     createChangeToolTipControl( parent );
   }
 
-  protected void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( Composite parent ) {
     int style = getStyle();
     RowLayout rowLayout = new RowLayout( SWT.VERTICAL );
     parent.setLayout( rowLayout );
     fixedSizeLabel = new Label( parent, style );
-    fixedSizeLabel.setText(   "Fixed size Label with some very long text\n"
-                              + "and another line" );
+    fixedSizeLabel.setText( "Fixed size Label with some very long text\nand another line" );
     fixedSizeLabel.setLayoutData( new RowData( 100, 100 ) );
     new Label( parent, SWT.NONE );
     varSizeLabel = new Label( parent, style );
+    varSizeLabel.setData( RWT.MARKUP_ENABLED, markupEnabled ? Boolean.TRUE : null );
     registerControl( varSizeLabel );
     registerControl( fixedSizeLabel );
 
@@ -98,6 +103,15 @@ public class LabelTab extends ExampleTab {
         updateLabel( varSizeLabel );
       }
     } );
+    Button markupButton = new Button( buttons, SWT.PUSH );
+    markupButton.setText( "Markup Text" );
+    markupButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent e ) {
+        labelText = markup;
+        labelImage = null;
+        updateLabel( varSizeLabel );
+      }
+    } );
     Button image1Button = new Button( buttons, SWT.PUSH );
     image1Button.setText( "Image 1" );
     image1Button.addSelectionListener( new SelectionAdapter() {
@@ -117,7 +131,20 @@ public class LabelTab extends ExampleTab {
     updateLabel( varSizeLabel );
   }
 
-  private void createChangeTextControl( final Composite parent ) {
+  private Button createMarkupButton() {
+    final Button button = new Button( styleComp, SWT.CHECK );
+    button.setText( "Enable Markup" );
+    button.setSelection( markupEnabled );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        markupEnabled = button.getSelection();
+        createNew();
+      }
+    } );
+    return button;
+  }
+
+  private void createChangeTextControl( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     Label label = new Label( composite, SWT.NONE );
@@ -134,7 +161,7 @@ public class LabelTab extends ExampleTab {
     } );
   }
 
-  private void createChangeToolTipControl( final Composite parent ) {
+  private void createChangeToolTipControl( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     Label label = new Label( composite, SWT.NONE );
@@ -149,7 +176,7 @@ public class LabelTab extends ExampleTab {
     } );
   }
 
-  private void updateLabel( final Label label ) {
+  private void updateLabel( Label label ) {
     if( labelImage != null ) {
       label.setImage( labelImage );
     } else {

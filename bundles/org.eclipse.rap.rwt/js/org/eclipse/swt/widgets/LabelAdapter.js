@@ -13,6 +13,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Label", {
 
   factory : function( properties ) {
     var styleMap = org.eclipse.rwt.protocol.AdapterUtil.createStyleMap( properties.style );
+    styleMap.MARKUP_ENABLED = properties.markupEnabled;
     var result = new org.eclipse.rwt.widgets.Label( styleMap );
     org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );

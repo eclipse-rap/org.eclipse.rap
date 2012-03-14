@@ -23,6 +23,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Label", {
     if( styles.WRAP ) {
       this.setFlexibleCell( 1 );
     }
+    this._markupEnabled = styles.MARKUP_ENABLED === true;
   },
 
   members : {
@@ -44,11 +45,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Label", {
     },
 
     setText : function( value ) {
-      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      // Order is important here: escapeText, replace line breaks
-      var text = EncodingUtil.escapeText( value, true );
-      text = EncodingUtil.replaceNewLines( text, "<br/>" );
-      text = EncodingUtil.replaceWhiteSpaces( text ); // fixes bug 192634
+      var text = value;
+      if( !this._markupEnabled ) {
+        var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+        // Order is important here: escapeText, replace line breaks
+        text = EncodingUtil.escapeText( value, true );
+        text = EncodingUtil.replaceNewLines( text, "<br/>" );
+        text = EncodingUtil.replaceWhiteSpaces( text ); // fixes bug 192634
+      }
       this.setCellContent( 1, text );
     },
     

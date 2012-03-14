@@ -20,6 +20,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.protocol.*;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
@@ -271,6 +272,19 @@ public class LabelLCA_Test extends TestCase {
     assertEquals( "rwt.widgets.Label", operation.getType() );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "WRAP" ) );
+    assertFalse( operation.getPropertyNames().contains( "markupEnabled" ) );
+  }
+
+  public void testRenderCreateWithMarkupEnabled() throws IOException {
+    Label label = new Label( shell, SWT.WRAP );
+    label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    LabelLCA lca = new LabelLCA();
+
+    lca.renderInitialization( label );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( label );
+    assertEquals( Boolean.TRUE, operation.getProperty( "markupEnabled" ) );
   }
 
   public void testRenderInitialImage() throws IOException {

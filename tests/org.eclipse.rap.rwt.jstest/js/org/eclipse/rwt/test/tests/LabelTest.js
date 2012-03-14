@@ -38,12 +38,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LabelTest", {
       assertEquals( true, labelWidget.getHideFocus() );
       assertEquals( -1, labelWidget.getFlexibleCell() );
       assertEquals( "label-wrapper", labelWidget.getAppearance() );
+      assertFalse( labelWidget._markupEnabled );
     },
 
     testCreateByProtocolCLabel : function() {
       this.createLabel( [ "LEFT" ], { "appearance" : "clabel" } );
 
       assertEquals( "clabel", labelWidget.getAppearance() );
+    },
+
+    testCreateByProtocolWithMarkupEnabled : function() {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Label",
+        "properties" : {
+          "style" : [ "LEFT" ],
+          "parent" : "w2",
+          "markupEnabled" : true
+        }
+      } );
+      labelWidget = ObjectManager.getObject( "w3" );
+
+      assertTrue( labelWidget._markupEnabled );
     },
 
     testHover : function() {
@@ -66,6 +83,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LabelTest", {
 
       var content = this.getTextContent();
       assertTrue( content === "bla&nbsp; <br>&lt;" || content === "bla&nbsp; <br/>&lt;" );
+    },
+
+    testSetTextWithMarkupEnabled : function() {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Label",
+        "properties" : {
+          "style" : [ "LEFT" ],
+          "parent" : "w2",
+          "markupEnabled" : true,
+          "text" : "<b>foo</b>"
+        }
+      } );
+      TestUtil.flush();
+      labelWidget = ObjectManager.getObject( "w3" );
+
+      assertEquals( "<b>foo</b>", this.getTextContent() );
     },
 
     testSetImageByProtocol : function() {

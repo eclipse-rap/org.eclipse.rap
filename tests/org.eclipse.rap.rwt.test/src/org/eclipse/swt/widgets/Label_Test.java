@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -17,16 +17,29 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 
 
 public class Label_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display , SWT.NONE );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testInitialValues() {
     Label label = new Label( shell, SWT.NONE );
@@ -164,26 +177,71 @@ public class Label_Test extends TestCase {
     expected = new Point( 100, 100 );
     assertEquals( expected, label.computeSize( 100, 100 ) );
   }
-  
+
+  public void testComputeSizeWithMarkupEnabled() {
+    Label label = new Label( shell, SWT.NONE );
+    label.setText( "foo bar" );
+    Point textExtent = label.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+
+    label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    label.setText( "<span>foo</span>" );
+    Point markupExtent = label.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+
+    assertTrue( markupExtent.x < textExtent.x );
+    assertEquals( markupExtent.y, textExtent.y );
+  }
+
   public void testIsSerializable() throws Exception {
     String text = "labelText";
     Label label = new Label( shell, SWT.NONE );
     label.setText( text );
 
     Label deserializedLabel = Fixture.serializeAndDeserialize( label );
-    
+
     assertEquals( text, deserializedLabel.getText() );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display = new Display();
-    shell = new Shell( display , SWT.NONE );
+  public void testMarkupTextWithoutMarkupEnabled() {
+    Label label = new Label( shell, SWT.NONE );
+    label.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
+
+    try {
+      label.setText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testMarkupTextWithMarkupEnabled() {
+    Label label = new Label( shell, SWT.NONE );
+    label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    try {
+      label.setText( "invalid xhtml: <<&>>" );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
+    Label label = new Label( shell, SWT.NONE );
+    label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    label.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+
+    try {
+      label.setText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  public void testDisableMarkupIsIgnored() {
+    Label label = new Label( shell, SWT.NONE );
+    label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    label.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
+
+    assertTrue( label.markupEnabled );
   }
 
   private Image createImage() throws IOException {

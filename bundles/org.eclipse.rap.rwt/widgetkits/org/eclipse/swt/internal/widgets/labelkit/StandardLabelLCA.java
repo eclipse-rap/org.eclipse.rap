@@ -16,6 +16,7 @@ import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
@@ -31,6 +32,7 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
   private static final String PROP_TEXT = "text";
   private static final String PROP_ALIGNMENT = "alignment";
   private static final String PROP_IMAGE = "image";
+  private static final String PROP_MARKUP_ENABLED = "markupEnabled";
 
   private static final String DEFAULT_ALIGNMENT = "left";
 
@@ -54,6 +56,7 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( label.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( label, ALLOWED_STYLES ) );
+    renderProperty( label, PROP_MARKUP_ENABLED, isMarkupEnabled( label ), false );
   }
 
   void renderChanges( Label label ) throws IOException {
@@ -66,6 +69,10 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   //////////////////
   // Helping methods
+
+  private static boolean isMarkupEnabled( Label label ) {
+    return Boolean.TRUE.equals( label.getData( RWT.MARKUP_ENABLED ) );
+  }
 
   private static String getAlignment( Label label ) {
     int alignment = label.getAlignment();

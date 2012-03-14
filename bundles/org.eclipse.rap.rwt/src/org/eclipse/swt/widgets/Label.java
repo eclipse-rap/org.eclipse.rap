@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.labelkit.LabelThemeAdapter;
 
 
@@ -60,6 +63,8 @@ public class Label extends Control {
 
   private String text = "";
   private Image image;
+  boolean markupEnabled;
+  private boolean markupValidationDisabled;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -139,6 +144,9 @@ public class Label extends Control {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( ( style & SWT.SEPARATOR ) == 0 ) {
+      if( markupEnabled && !markupValidationDisabled ) {
+        MarkupValidator.validate( text );
+      }
       this.text = text;
       image = null;
     }
@@ -277,7 +285,12 @@ public class Label extends Control {
       if( ( style & SWT.WRAP ) != 0 && wHint != SWT.DEFAULT ) {
         wrapWidth = wHint;
       }
-      Point extent = Graphics.textExtent( getFont(), text, wrapWidth );
+      Point extent;
+      if( markupEnabled ) {
+        extent = TextSizeUtil.markupExtent( getFont(), text, wrapWidth );
+      } else {
+        extent = Graphics.textExtent( getFont(), text, wrapWidth );
+      }
       width = extent.x;
       height = extent.y + 2;
     } else {
@@ -297,6 +310,16 @@ public class Label extends Control {
 
   String getNameText() {
     return getText();
+  }
+
+  @Override
+  public void setData( String key, Object value ) {
+    if( RWT.MARKUP_ENABLED.equals( key ) && !markupEnabled ) {
+      markupEnabled = Boolean.TRUE.equals( value );
+    } else if( MarkupValidator.MARKUP_VALIDATION_DISABLED.equals( key ) ) {
+      markupValidationDisabled = Boolean.TRUE.equals( value );
+    }
+    super.setData( key, value );
   }
 
   //////////////////
@@ -320,8 +343,8 @@ public class Label extends Control {
   }
 
   private int getSeparatorLineWidth() {
-    LabelThemeAdapter themeAdapter
-      = ( LabelThemeAdapter )getAdapter( IThemeAdapter.class );
+    LabelThemeAdapter themeAdapter = ( LabelThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getSeparatorLineWidth( this );
   }
+
 }
