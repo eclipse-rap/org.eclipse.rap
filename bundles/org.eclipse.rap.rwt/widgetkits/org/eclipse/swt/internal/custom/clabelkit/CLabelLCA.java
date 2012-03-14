@@ -16,6 +16,7 @@ import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
@@ -33,16 +34,18 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     "SHADOW_IN", "SHADOW_OUT", "SHADOW_NONE", "BORDER"
   };
 
-  static final String PROP_TEXT = "text";
-  static final String PROP_IMAGE = "image";
-  static final String PROP_ALIGNMENT = "alignment";
-  static final String PROP_LEFT_MARGIN = "leftMargin";
-  static final String PROP_TOP_MARGIN = "topMargin";
-  static final String PROP_RIGHT_MARGIN = "rightMargin";
-  static final String PROP_BOTTOM_MARGIN = "bottomMargin";
+  private static final String PROP_TEXT = "text";
+  private static final String PROP_IMAGE = "image";
+  private static final String PROP_ALIGNMENT = "alignment";
+  private static final String PROP_LEFT_MARGIN = "leftMargin";
+  private static final String PROP_TOP_MARGIN = "topMargin";
+  private static final String PROP_RIGHT_MARGIN = "rightMargin";
+  private static final String PROP_BOTTOM_MARGIN = "bottomMargin";
+  private static final String PROP_MARKUP_ENABLED = "markupEnabled";
 
   private static final String DEFAULT_ALIGNMENT = "left";
 
+  @Override
   public void preserveValues( Widget widget ) {
     CLabel label = ( CLabel )widget;
     ControlLCAUtil.preserveValues( label );
@@ -65,6 +68,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( label );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     CLabel clabel = ( CLabel )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( clabel );
@@ -73,8 +77,10 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     clientObject.set( "style", WidgetLCAUtil.getStyles( clabel, ALLOWED_STYLES ) );
     // NOTE : This is consistent with Tree and Table, but might change - See Bug 373764
     clientObject.set( "appearance", "clabel" );
+    renderProperty( clabel, PROP_MARKUP_ENABLED, isMarkupEnabled( clabel ), false );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     CLabel clabel = ( CLabel )widget;
     ControlLCAUtil.renderChanges( clabel );
@@ -86,6 +92,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderBackgroundGradient( clabel );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }
@@ -105,6 +112,10 @@ public final class CLabelLCA extends AbstractWidgetLCA {
 
   //////////////////
   // Helping methods
+
+  private static boolean isMarkupEnabled( CLabel clabel ) {
+    return Boolean.TRUE.equals( clabel.getData( RWT.MARKUP_ENABLED ) );
+  }
 
   private static String getAlignment( CLabel clabel ) {
     int alignment = clabel.getAlignment();

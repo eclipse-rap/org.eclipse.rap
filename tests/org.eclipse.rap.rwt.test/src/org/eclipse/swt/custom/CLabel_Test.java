@@ -1,19 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
@@ -21,6 +22,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.clabelkit.CLabelThemeAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -28,6 +30,19 @@ public class CLabel_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testSetBackgroundColor() {
     CLabel label = new CLabel( shell, SWT.RIGHT );
@@ -238,20 +253,53 @@ public class CLabel_Test extends TestCase {
   public void testIsSerializable() throws Exception {
     CLabel label = new CLabel( shell, SWT.NONE );
     label.setText( "text" );
-    
+
     CLabel deserializedLabel = Fixture.serializeAndDeserialize( label );
-  
+
     assertEquals( "text", deserializedLabel.getText() );
   }
-  
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display = new Display();
-    shell = new Shell( display );
+
+  public void testMarkupTextWithoutMarkupEnabled() {
+    CLabel label = new CLabel( shell, SWT.NONE );
+    label.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
+
+    try {
+      label.setText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testMarkupTextWithMarkupEnabled() {
+    CLabel label = new CLabel( shell, SWT.NONE );
+    label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    try {
+      label.setText( "invalid xhtml: <<&>>" );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
   }
+
+  public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
+    CLabel label = new CLabel( shell, SWT.NONE );
+    label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    label.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+
+    try {
+      label.setText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  public void testDisableMarkupIsIgnored() {
+    CLabel label = new CLabel( shell, SWT.NONE );
+    label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    label.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
+
+    assertTrue( label.markupEnabled );
+  }
+
 }

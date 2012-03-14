@@ -19,9 +19,9 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.protocol.*;
-import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -54,31 +54,6 @@ public class CLabelLCA_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testPreserveValues() {
-    CLabel label = new CLabel( shell, SWT.NONE );
-    Fixture.markInitialized( display );
-    label.setText( "text" );
-    label.setAlignment( SWT.LEFT );
-    label.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
-    label.setMargins( 1, 2, 3, 4 );
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( label );
-    String text = ( String )adapter.getPreserved( CLabelLCA.PROP_TEXT );
-    assertEquals( "text", text );
-    Image image = ( Image )adapter.getPreserved( CLabelLCA.PROP_IMAGE );
-    assertEquals( Graphics.getImage( Fixture.IMAGE_100x50 ), image );
-    String alignment = ( String )adapter.getPreserved( CLabelLCA.PROP_ALIGNMENT );
-    assertEquals( "left", alignment );
-    Integer leftMargin = ( Integer )adapter.getPreserved( CLabelLCA.PROP_LEFT_MARGIN );
-    assertEquals( 1, leftMargin.intValue() );
-    Integer topMargin = ( Integer )adapter.getPreserved( CLabelLCA.PROP_TOP_MARGIN );
-    assertEquals( 2, topMargin.intValue() );
-    Integer rightMargin = ( Integer )adapter.getPreserved( CLabelLCA.PROP_RIGHT_MARGIN );
-    assertEquals( 3, rightMargin.intValue() );
-    Integer bottomMargin = ( Integer )adapter.getPreserved( CLabelLCA.PROP_BOTTOM_MARGIN );
-    assertEquals( 4, bottomMargin.intValue() );
-  }
-
   /*
    * 280291: [CLabel] causes NullPointerException when rendered uninitialized
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=280291
@@ -100,6 +75,18 @@ public class CLabelLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
     assertEquals( "rwt.widgets.Label", operation.getType() );
+    assertFalse( operation.getPropertyNames().contains( "markupEnabled" ) );
+  }
+
+  public void testRenderCreateWithMarkupEnabled() throws IOException {
+    CLabel clabel = new CLabel( shell, SWT.NONE );
+    clabel.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    lca.renderInitialization( clabel );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( clabel );
+    assertEquals( Boolean.TRUE, operation.getProperty( "markupEnabled" ) );
   }
 
   public void testRenderCreateWithShadowIn() throws IOException {

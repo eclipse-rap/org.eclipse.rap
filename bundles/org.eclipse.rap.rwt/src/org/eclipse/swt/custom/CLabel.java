@@ -1,17 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -21,6 +23,7 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.custom.clabelkit.CLabelThemeAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
@@ -49,7 +52,7 @@ import org.eclipse.swt.widgets.Composite;
  * @since 1.0
  */
 public class CLabel extends Canvas {
-  
+
 	private class LabelDisposeListener implements DisposeListener, SerializableCompatibility  {
     public void widgetDisposed( DisposeEvent event ) {
       onDispose( event );
@@ -78,6 +81,8 @@ public class CLabel extends Canvas {
 
   private Image backgroundImage;
   private Color background;
+  boolean markupEnabled;
+  private boolean markupValidationDisabled;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -139,6 +144,7 @@ public class CLabel extends Canvas {
     return result |= SWT.NO_FOCUS;
   }
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int borderWidth = getCLabelThemeAdapter().getBorderWidth( this );
@@ -185,26 +191,30 @@ public class CLabel extends Canvas {
   private Point getTotalSize( Image image, String text ) {
     Point size = new Point( 0, 0 );
     int spacing = getCLabelThemeAdapter().getSpacing( this );
-    if ( image != null ) {
-      Rectangle r = image.getBounds();
-      size.x += r.width;
-      size.y += r.height;
+    if( image != null ) {
+      Rectangle imageBounds = image.getBounds();
+      size.x += imageBounds.width;
+      size.y += imageBounds.height;
     }
-
     if ( text != null && text.length() > 0 ) {
-      Point e = Graphics.textExtent( getFont(), text, 0 );
-      size.x += e.x;
-      size.y = Math.max( size.y, e.y );
+      Point extent;
+      if( markupEnabled ) {
+        extent = TextSizeUtil.markupExtent( getFont(), text, SWT.DEFAULT );
+      } else {
+        extent = Graphics.textExtent( getFont(), text, SWT.DEFAULT );
+      }
+      size.x += extent.x;
+      size.y = Math.max( size.y, extent.y );
       if ( image != null )
         size.x += spacing;
     } else {
       int charHeight = Graphics.getCharHeight( getFont() );
       size.y = Math.max( size.y, charHeight );
     }
-
     return size;
   }
 
+  @Override
   public int getStyle() {
     int style = super.getStyle();
     switch (align) {
@@ -231,6 +241,7 @@ public class CLabel extends Canvas {
     return text;
   }
 
+  @Override
   public String getToolTipText() {
     checkWidget();
     return appToolTipText;
@@ -265,6 +276,7 @@ public class CLabel extends Canvas {
     }
   }
 
+  @Override
   public void setBackground( Color color ) {
     super.setBackground( color );
     // Are these settings the same as before?
@@ -400,6 +412,7 @@ public class CLabel extends Canvas {
     adapter.setBackgroundGradient( colors, percents, vertical );
   }
 
+  @Override
   public void setFont( Font font ) {
     super.setFont( font );
   }
@@ -433,16 +446,19 @@ public class CLabel extends Canvas {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  @SuppressWarnings("all")
   public void setText( String text ) {
     checkWidget();
-    if ( text == null )
-      text = ""; //$NON-NLS-1$
-    if ( !text.equals( this.text ) ) {
+    if( text == null ) {
+      this.text = "";
+    } else if( !text.equals( this.text ) ) {
+      if( markupEnabled && !markupValidationDisabled ) {
+        MarkupValidator.validate( text );
+      }
       this.text = text;
     }
   }
 
+  @Override
   public void setToolTipText( String string ) {
     super.setToolTipText( string );
     appToolTipText = super.getToolTipText();
@@ -651,6 +667,16 @@ public class CLabel extends Canvas {
   public int getBottomMargin() {
     //checkWidget();    // [if] Commented in SWT
     return bottomMargin;
+  }
+
+  @Override
+  public void setData( String key, Object value ) {
+    if( RWT.MARKUP_ENABLED.equals( key ) && !markupEnabled ) {
+      markupEnabled = Boolean.TRUE.equals( value );
+    } else if( MarkupValidator.MARKUP_VALIDATION_DISABLED.equals( key ) ) {
+      markupValidationDisabled = Boolean.TRUE.equals( value );
+    }
+    super.setData( key, value );
   }
 
   private void initMargins() {
