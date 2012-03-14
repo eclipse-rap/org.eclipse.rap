@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +54,6 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
   private static final String PROPERTY_ROOT_ID = "rootId";
   private static final String METHOD_INIT = "init";
 
-  private final List<AbstractBranding> registeredBrandings;
   private final ResourceRegistry resourceRegistry;
   private final List<String> jsLibraries;
   private final List<String> themeDefinitions;
@@ -67,7 +65,6 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
   StartupPageConfigurer( ResourceRegistry resourceRegistry ) {
     this.resourceRegistry = resourceRegistry;
     lastModified = System.currentTimeMillis();
-    registeredBrandings = new LinkedList<AbstractBranding>();
     jsLibraries = new ArrayList<String>();
     themeDefinitions = new ArrayList<String>();
   }
@@ -212,8 +209,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
 
   private void applyBranding() throws IOException {
     AbstractBranding branding = BrandingUtil.determineBranding();
-    // TODO: [bm][rh] move into util
-    registerBrandingResources( branding );
+    BrandingUtil.registerResources( branding );
     if( branding.getThemeId() != null ) {
       ThemeUtil.setCurrentThemeId( branding.getThemeId() );
     } else {
@@ -237,15 +233,6 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     themeDefinitions.add( fallbackTheme.getRegisteredLocation() );
     Theme theme = ThemeUtil.getCurrentTheme();
     themeDefinitions.add( theme.getRegisteredLocation() );
-  }
-
-  private void registerBrandingResources( AbstractBranding branding ) throws IOException {
-    synchronized( registeredBrandings ) {
-      if( !registeredBrandings.contains( branding ) ) {
-        branding.registerResources();
-        registeredBrandings.add( branding );
-      }
-    }
   }
 
   private String getJsLibraries() {

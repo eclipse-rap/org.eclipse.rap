@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,14 +11,27 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.branding;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.internal.application.RWTFactory;
+import org.eclipse.rwt.internal.util.URLHelper;
 
 
 public class BrandingUtil_Test extends TestCase {
+
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testHeaderMarkup() {
     String expected;
@@ -94,11 +107,21 @@ public class BrandingUtil_Test extends TestCase {
     }
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
+  public void testRegisterResources() throws IOException {
+    Fixture.fakeResponseWriter();
+    String servletName = URLHelper.getServletName();
+    TestBranding branding = new TestBranding( servletName, null, "default" );
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    // check precondition
+    RWTFactory.getBrandingManager().register( branding );
+    assertEquals( 0, branding.registerResourcesCallCount );
+
+    // access branding for the first time: registerResources must be called
+    BrandingUtil.registerResources( branding );
+    assertEquals( 1, branding.registerResourcesCallCount );
+
+    // access branding another time: registerResources must *not* be called
+    BrandingUtil.registerResources( branding );
+    assertEquals( 1, branding.registerResourcesCallCount );
   }
 }

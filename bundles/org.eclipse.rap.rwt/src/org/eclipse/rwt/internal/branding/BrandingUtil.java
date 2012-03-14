@@ -11,6 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.branding;
 
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.RWT;
@@ -20,11 +24,16 @@ import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.util.URLHelper;
+import org.eclipse.rwt.service.IApplicationStore;
 
 
 public final class BrandingUtil {
 
-  private static final String ATTR_BRANDING_ID = BrandingUtil.class.getName() + "#brandingId";
+  private static final String ATTR_CURRENT_BRANDING_ID
+    = BrandingUtil.class.getName() + "#currentBrandingId";
+  private static final String ATTR_REG_BRANDINGS
+    = BrandingUtil.class.getName() + "#registeredBrandings";
+  private static final Object LOCK = new Object();
 
   public static String headerMarkup( AbstractBranding branding ) {
     StringBuilder buffer = new StringBuilder();
@@ -88,7 +97,7 @@ public final class BrandingUtil {
     String servletName = URLHelper.getServletName();
     String entryPoint = request.getParameter( RequestParams.STARTUP );
     AbstractBranding result = RWTFactory.getBrandingManager().find( servletName, entryPoint );
-    RWT.getSessionStore().setAttribute( ATTR_BRANDING_ID, result.getId() );
+    RWT.getSessionStore().setAttribute( ATTR_CURRENT_BRANDING_ID, result.getId() );
     return result;
   }
 
@@ -98,7 +107,36 @@ public final class BrandingUtil {
    * @return the id of the current branding or <code>null</code>.
    */
   public static String getCurrentBrandingId() {
-    return ( String )RWT.getSessionStore().getAttribute( ATTR_BRANDING_ID );
+    return ( String )RWT.getSessionStore().getAttribute( ATTR_CURRENT_BRANDING_ID );
+  }
+
+  public static void registerResources( AbstractBranding branding ) throws IOException {
+    if( needsRegistration( branding ) ) {
+      branding.registerResources();
+    }
+  }
+
+  private static boolean needsRegistration( AbstractBranding branding ) {
+    boolean result;
+    Set<AbstractBranding> registeredBrandings = getRegisteredBrandings();
+    synchronized( LOCK ) {
+      result = registeredBrandings.add( branding );
+    }
+    return result;
+  }
+
+  @SuppressWarnings("unchecked")
+  private static Set<AbstractBranding> getRegisteredBrandings() {
+    Set<AbstractBranding> result;
+    IApplicationStore store = RWT.getApplicationStore();
+    synchronized( LOCK ) {
+      result = ( Set<AbstractBranding> )store.getAttribute( ATTR_REG_BRANDINGS );
+      if( result == null ) {
+        result = new HashSet<AbstractBranding>();
+        store.setAttribute( ATTR_REG_BRANDINGS, result );
+      }
+    }
+    return result;
   }
 
   private BrandingUtil() {
