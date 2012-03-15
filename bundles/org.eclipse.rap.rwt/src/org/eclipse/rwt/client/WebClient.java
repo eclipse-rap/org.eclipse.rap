@@ -15,6 +15,7 @@ import java.util.Map;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.lifecycle.IEntryPointFactory;
+import org.eclipse.rwt.resources.IResource;
 
 
 /**
@@ -58,5 +59,21 @@ public class WebClient {
    *      Map)
    */
   public static final String PAGE_TITLE = PREFIX + ".pageTitle";
+
+  /**
+   * Entrypoint property name for the website icon (a.k.a favicon or shortcut
+   * icon) that will be displayed by the web browser. The value must contain a
+   * valid path where the image can be accessed on the server.
+   * <p>
+   * <strong>Note:</strong> if this property is provided, the image resource
+   * must be registered to be available.
+   * </p>
+   *
+   * @see ApplicationConfiguration#addResource(IResource)
+   * @see ApplicationConfiguration#addEntryPoint(String, Class, Map)
+   * @see ApplicationConfiguration#addEntryPoint(String, IEntryPointFactory,
+   *      Map)
+   */
+  public static final String FAVICON = PREFIX + ".favicon";
 
 }

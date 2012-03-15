@@ -103,6 +103,17 @@ public class StartupPageConfigurer_Test extends TestCase {
     assertTrue( page.contains( "<title>custom title</title>" ) );
   }
 
+  public void testFavIconFromProperties() throws IOException {
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put( WebClient.FAVICON, "images/site-icon.png" );
+    RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, properties );
+
+    String page = getContent( new StartupPageConfigurer( new ResourceRegistry() ).getTemplate() );
+
+    assertTrue( page.contains( "<link rel=\"shortcut icon\" type=\"image/x-icon\""
+                               + " href=\"rwt-resources/images/site-icon.png\" />" ) );
+  }
+
   private static String getContent( StartupPageTemplateHolder template ) {
     StringBuilder builder = new StringBuilder();
     for( String token : template.getTokens() ) {

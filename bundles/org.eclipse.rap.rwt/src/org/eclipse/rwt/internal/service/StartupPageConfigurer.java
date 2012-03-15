@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
+import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.client.WebClient;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.application.RWTFactory;
@@ -196,6 +197,13 @@ final class StartupPageConfigurer {
     replacePlaceholder( template, StartupPageTemplateHolder.VAR_BODY, bodyHtml );
     String title = properties.get( WebClient.PAGE_TITLE );
     replacePlaceholder( template, StartupPageTemplateHolder.VAR_TITLE, title );
+    String headerMarkup = "";
+    String favIcon = properties.get( WebClient.FAVICON );
+    if( favIcon != null && favIcon.length() > 0 ) {
+      Header header = BrandingUtil.createHeaderForFavIcon( favIcon );
+      headerMarkup += BrandingUtil.createMarkupForHeaders( header );
+    }
+    replacePlaceholder( template, StartupPageTemplateHolder.VAR_HEADERS, headerMarkup );
   }
 
   private void applyLocalizeableMessages() {
