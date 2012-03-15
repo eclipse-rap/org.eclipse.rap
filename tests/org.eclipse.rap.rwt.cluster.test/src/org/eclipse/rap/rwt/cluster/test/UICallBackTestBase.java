@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,8 +62,8 @@ public abstract class UICallBackTestBase extends TestCase {
     Response response = client.sendUICallBackRequest( 0 );
     thread.join();
 
-    String expected = "\"target\": \"uicb\",\n\"action\": \"call\",\n\"method\": \"sendUIRequest\"";
-    assertTrue( response.getContentText().trim().contains( expected ) );
+    String expected = "[ \"call\", \"uicb\", \"sendUIRequest\" ]";
+    assertTrue( response.getContentText().contains( expected ) );
   }
 
   public void testAbortConnectionDuringUICallbackRequest() throws Exception {
@@ -112,11 +112,13 @@ public abstract class UICallBackTestBase extends TestCase {
     assertTrue( SessionTimeoutEntryPoint.isSessionInvalidated() );
   }
 
+  @Override
   protected void setUp() throws Exception {
     servletEngine = getServletEngineFactory().createServletEngine();
     client = new RWTClient( servletEngine );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     servletEngine.stop();
   }
