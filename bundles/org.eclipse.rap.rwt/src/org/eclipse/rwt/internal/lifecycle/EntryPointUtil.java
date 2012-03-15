@@ -21,13 +21,9 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.IEntryPointFactory;
-import org.eclipse.rwt.service.ISessionStore;
 
 
 public class EntryPointUtil {
-
-  private static final String ATTR_CURRENT_ENTRY_POINT
-    = EntryPointUtil.class.getName() + "#currentEntryPoint";
 
   public static final String DEFAULT = "default";
 
@@ -36,25 +32,16 @@ public class EntryPointUtil {
   }
 
   public static IEntryPoint getCurrentEntryPoint() {
-    EntryPointRegistration registration = getCurrentEntryPointRegistration();
+    EntryPointRegistration registration = findCurrentEntryPointRegistration();
     return registration.getFactory().create();
   }
 
   public static Map<String, String> getCurrentEntryPointProperties() {
-    EntryPointRegistration registration = getCurrentEntryPointRegistration();
+    EntryPointRegistration registration = findCurrentEntryPointRegistration();
     return registration.getProperties();
   }
 
-  private static EntryPointRegistration getCurrentEntryPointRegistration() {
-    EntryPointRegistration registration = readCurrentEntryPointRegistration();
-    if( registration == null ) {
-      registration = determineCurrentEntryPoint();
-      storeCurrentEntryPointRegistration( registration );
-    }
-    return registration;
-  }
-
-  private static EntryPointRegistration determineCurrentEntryPoint() {
+  private static EntryPointRegistration findCurrentEntryPointRegistration() {
     EntryPointRegistration result;
     result = findByStartupParameter();
     if( result == null ) {
@@ -107,16 +94,6 @@ public class EntryPointUtil {
       throw new IllegalArgumentException( "Entry point not found: " + name );
     }
     return new EntryPointRegistration( factory, null );
-  }
-
-  private static void storeCurrentEntryPointRegistration( EntryPointRegistration registration ) {
-    ISessionStore session = ContextProvider.getSessionStore();
-    session.setAttribute( ATTR_CURRENT_ENTRY_POINT, registration );
-  }
-
-  private static EntryPointRegistration readCurrentEntryPointRegistration() {
-    ISessionStore session = ContextProvider.getSessionStore();
-    return ( EntryPointRegistration )session.getAttribute( ATTR_CURRENT_ENTRY_POINT );
   }
 
 }
