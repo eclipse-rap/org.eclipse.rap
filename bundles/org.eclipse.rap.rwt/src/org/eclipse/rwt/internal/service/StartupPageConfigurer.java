@@ -192,6 +192,8 @@ final class StartupPageConfigurer {
     if( themeId != null && themeId.length() > 0 ) {
       ThemeUtil.setCurrentThemeId( themeId );
     }
+    String bodyHtml = properties.get( WebClient.BODY_HTML );
+    replacePlaceholder( template, StartupPageTemplateHolder.VAR_BODY, bodyHtml );
   }
 
   private void applyLocalizeableMessages() {
