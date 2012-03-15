@@ -875,7 +875,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertEquals( 1, log );
       shell.destroy();
       progressBar.destroy();
-    },
+    }
 
   } 
 
