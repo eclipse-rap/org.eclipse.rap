@@ -60,7 +60,7 @@ public class RWTClient {
   }
 
   public Response sendStartupRequest() throws IOException {
-    return sendRequest();
+    return sendRequest( "GET", new HashMap<String,String>() );
   }
 
   public Response sendInitializationRequest() throws IOException {
@@ -74,26 +74,26 @@ public class RWTClient {
     parameters.put( "w1.colorDepth", "32" );
     parameters.put( "w1.cursorLocation.x", "0" );
     parameters.put( "w1.cursorLocation.y", "0" );
-    return sendRequest( parameters );
+    return sendPostRequest( parameters );
   }
 
   public Response sendDisplayResizeRequest( int width, int height ) throws IOException {
     Map<String, String> parameters = createDefaultParameters();
     parameters.put( "w1.bounds.width", String.valueOf( width ) );
     parameters.put( "w1.bounds.height", String.valueOf( height ) );
-    return sendRequest( parameters );
+    return sendPostRequest( parameters );
   }
 
   public Response sendWidgetSelectedRequest( String widgetId ) throws IOException {
     Map<String, String> parameters = createDefaultParameters();
     parameters.put( "org.eclipse.swt.events.widgetSelected", widgetId );
-    return sendRequest( parameters );
+    return sendPostRequest( parameters );
   }
 
   public Response sendShellCloseRequest( String shellId ) throws IOException {
     Map<String, String> parameters = createDefaultParameters();
     parameters.put( "org.eclipse.swt.widgets.Shell_close", shellId );
-    return sendRequest( parameters );
+    return sendPostRequest( parameters );
   }
 
   public Response sendDragStartRequest( String widgetId ) throws IOException {
@@ -102,7 +102,7 @@ public class RWTClient {
     parameters.put( "org.eclipse.swt.dnd.dragStart.x", "100" );
     parameters.put( "org.eclipse.swt.dnd.dragStart.y", "100" );
     parameters.put( "org.eclipse.swt.dnd.dragStart.time", createTimeParam() );
-    return sendRequest( parameters );
+    return sendPostRequest( parameters );
   }
 
   public Response sendDragFinishedRequest( String sourceWidgetId, String targetWidgetId )
@@ -122,12 +122,12 @@ public class RWTClient {
     parameters.put( "org.eclipse.swt.dnd.dragFinished.x", "100" );
     parameters.put( "org.eclipse.swt.dnd.dragFinished.y", "100" );
     parameters.put( "org.eclipse.swt.dnd.dragFinished.time", createTimeParam() );
-    return sendRequest( parameters );
+    return sendPostRequest( parameters );
   }
 
   public Response sendResourceRequest( String resourceLocation ) throws IOException {
     URL url = createUrl( resourceLocation, new HashMap<String,String>() );
-    HttpURLConnection connection = createConnection( url, 0 );
+    HttpURLConnection connection = createConnection( "GET", url, 0 );
     return new Response( connection );
   }
 
@@ -135,20 +135,24 @@ public class RWTClient {
     Map<String,String> parameters = new HashMap<String,String>();
     parameters.put( IServiceHandler.REQUEST_PARAM, UICallBackServiceHandler.HANDLER_ID );
     URL url = createUrl( IServletEngine.SERVLET_NAME, parameters );
-    HttpURLConnection connection = createConnection( url, timeout );
+    HttpURLConnection connection = createConnection( "GET", url, timeout );
     return new Response( connection );
   }
 
-  Response sendRequest() throws IOException {
-    return sendRequest( new HashMap<String,String>() );
+  Response sendPostRequest() throws IOException {
+    return sendPostRequest( new HashMap<String,String>() );
   }
 
-  Response sendRequest( Map<String,String> parameters ) throws IOException {
+  Response sendPostRequest( Map<String, String> parameters ) throws IOException {
+    return sendRequest( "POST", parameters );
+  }
+
+  Response sendRequest( String method, Map<String,String> parameters ) throws IOException {
     if( requestCounter >= 0 ) {
       parameters.put( "requestCounter", String.valueOf( requestCounter ) );
     }
     URL url = createUrl( IServletEngine.SERVLET_NAME, parameters );
-    HttpURLConnection connection = createConnection( url, 0 );
+    HttpURLConnection connection = createConnection( method, url, 0 );
     parseSessionId( connection );
     requestCounter++;
     return new Response( connection );
@@ -162,11 +166,13 @@ public class RWTClient {
     return urlBuilder.toUrl();
   }
 
-  private HttpURLConnection createConnection( URL url, int timeout ) throws IOException {
+  private HttpURLConnection createConnection( String method, URL url, int timeout )
+    throws IOException
+  {
     HttpURLConnection result = ( HttpURLConnection )connectionProvider.createConnection( url );
     result.setInstanceFollowRedirects( false );
     result.setAllowUserInteraction( false );
-    result.setRequestMethod( "GET" );
+    result.setRequestMethod( method );
     result.setConnectTimeout( timeout );
     result.setReadTimeout( timeout );
     result.connect();
