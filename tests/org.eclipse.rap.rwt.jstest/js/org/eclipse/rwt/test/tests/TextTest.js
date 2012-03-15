@@ -1075,6 +1075,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       }
     } ),
 
+    testTextFieldPreventEnter : qx.core.Variant.select( "qx.client", {
+      "default" : function() {},
+      "webkit" : function() {
+        createText();
+        
+        var event = TestUtil.createFakeDomKeyEvent( text._inputElement, "keypress", "Enter" );
+        TestUtil.fireFakeDomEvent( event );
+
+        assertTrue( org.eclipse.rwt.EventHandlerUtil.wasStopped( event ) );
+      }
+    } ),
+    
+    testTextAreaNotPreventEnter : qx.core.Variant.select( "qx.client", {
+      "default" : function() {},
+      "webkit" : function() {
+        createText( false, true );
+        
+        var event = TestUtil.createFakeDomKeyEvent( text._inputElement, "keypress", "Enter" );
+        TestUtil.fireFakeDomEvent( event );
+        
+        assertFalse( org.eclipse.rwt.EventHandlerUtil.wasStopped( event ) );
+      }
+    } ),
+
     /////////
     // Helper
 

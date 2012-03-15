@@ -339,6 +339,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       this._renderMessageCursor();
     },
     
+    // Overwritten
+    _preventEnter : function( event ) {
+      if( this._inputTag !== "textarea" ) {
+        this.base( arguments, event );
+      }
+    },
+
     _updateMessage : function() {
       if( this._isCreated ) {
         if( this._message != null && this._message !== "" && this._messageElement == null ) {
@@ -376,7 +383,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
         style.top = Math.round( this.getInnerHeight() / 2 - messageHeight / 2 ) + "px";
       }
     },
-    
+
     _getMessageStyle : function() {
       var manager = qx.theme.manager.Appearance.getInstance();
       return manager.styleFrom( "text-field-message", {} );
