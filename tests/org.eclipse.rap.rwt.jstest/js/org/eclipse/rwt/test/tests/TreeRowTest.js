@@ -68,6 +68,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
 
+    testRenderItemWithMarkupEnabled_Bug374263 : function() {
+      var tree = this._createTree( false, "markupEnabled" );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setTexts( [ "<b>Test</b>" ] );
+      
+      row.renderItem( item, tree._config, false, null );
+      row.renderItem( null, tree._config, false, null );
+      row.renderItem( item, tree._config, false, null );
+      
+      assertEquals( 2, row._getTargetNode().childNodes.length );
+      assertEquals( "<b>test</b>", row._getTargetNode().childNodes[ 1 ].innerHTML.toLowerCase() );
+      tree.destroy();
+      row.destroy();
+    },
+
+
     testRenderEmptyItem : function() {
       var tree = this._createTree();
       var row = this._createRow( tree );
@@ -100,12 +118,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       item.setImages( [ "bla.jpg" ] );
 
       row.renderItem( item, tree._config, false, null );
-      row.renderItem( null );
+      row.renderItem( null, tree._config, false, null );
 
       assertEquals( 4, row._getTargetNode().childNodes.length );
       var nodes = row._getTargetNode().childNodes;
       assertEquals( "none", nodes[ 0 ].style.display );
       assertEquals( "transparent", nodes[ 1 ].style.backgroundColor );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       assertEquals( "", TestUtil.getCssBackgroundImage( nodes[ 2 ] ) );
       assertEquals( "", nodes[ 3 ].innerHTML );
       tree.destroy();
@@ -323,7 +342,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
       row.renderItem( item, tree._config, false, null );
-      node = row._getTargetNode().childNodes[ 1 ];
+      var node = row._getTargetNode().childNodes[ 1 ];
       assertEquals( 3, parseInt( node.style.zIndex ) );
       assertEquals( "absolute", node.style.position );
       assertEquals( "middle", node.style.verticalAlign );
@@ -353,7 +372,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
       row.renderItem( item, tree._config, false, null );
-      node = row._getTargetNode().childNodes[ 1 ];
+      var node = row._getTargetNode().childNodes[ 1 ];
       assertEquals( "line-through", node.style.textDecoration );
       tree.destroy();
       row.destroy();
@@ -1840,7 +1859,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       item.setTexts( [ "Test1", "Test2" ] );
       item.setCellForegrounds( [ "red", "red" ] );
       row.renderItem( item, tree._config, false, null );
-      nodes = row._getTargetNode().childNodes;
+      var nodes = row._getTargetNode().childNodes;
       assertEquals( 3, nodes.length );
       assertEquals( "red", nodes[ 1 ].style.color );
       assertEquals( "red", nodes[ 2 ].style.color );

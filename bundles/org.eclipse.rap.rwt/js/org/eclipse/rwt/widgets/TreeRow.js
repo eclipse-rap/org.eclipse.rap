@@ -74,7 +74,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         this.setBackgroundColor( null );
         this.setBackgroundImage( null );
         this.setBackgroundGradient( null );
-        this._clearContent();
+        this._clearContent( config );
       }
     },
 
@@ -416,9 +416,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       },
       "default" : function( element, item, cell, markupEnabled ) {
         var html = item ? item.getText( cell, !markupEnabled ) : "";
-        if( !markupEnabled || html !== element.rap_Markup ) {
+        if( markupEnabled ) {
+          if( html !== element.rap_Markup ) {
+            element.innerHTML = html;
+            element.rap_Markup = html;
+          } 
+        } else {
           element.innerHTML = html;
-          element.rap_Markup = html;
         } 
       }
     } ),
@@ -641,7 +645,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       return result;
     },
 
-    _clearContent : function() {
+    _clearContent : function( config ) {
       for( var i = 0; i < this._cellBackgrounds.length; i++ ) {
         if( this._cellBackgrounds[ i ] ) {
           this._cellBackgrounds[ i ].style.backgroundColor = "transparent";
@@ -654,7 +658,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       }
       for( var i = 0; i < this._cellLabels.length; i++ ) {
         if( this._cellLabels[ i ] ) {
-          this._renderElementContent( this._cellLabels[ i ], null );
+          this._renderElementContent( this._cellLabels[ i ], null, -1, config.markupEnabled );
         }
       }
       if( this._checkBoxElement ) {
