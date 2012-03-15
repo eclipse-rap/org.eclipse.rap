@@ -15,6 +15,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
   statics : {
 
     _measureNode : null,
+    _offset : org.eclipse.rwt.Client.isZoomed() ? 1 : 0,
 
     probe : function( probeList ) {
       for( var i = 0; i < probeList.length; i++ ) {
@@ -37,7 +38,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
         org.eclipse.swt.Request.getInstance().send();
       }
     },
-  
+
     _measureItem : function( item, escapeText ) {
       var text = escapeText ? this._escapeText( item[ 1 ] ) : item[ 1 ];
       var fontProps = {
@@ -86,7 +87,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
         } else {
           result = [ element.scrollWidth, element.scrollHeight ];
         }
-        return result;
+        return [ result[ 0 ] + this._offset, result[ 1 ] + this._offset ];
       },
       "newmshtml" : function( element ) {
         var computed = window.getComputedStyle( element, null );
@@ -94,7 +95,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
           Math.ceil( parseFloat( computed.width ) ), 
           Math.ceil( parseFloat( computed.height ) ) 
         ];
-        return result;
+        return [ result[ 0 ] + this._offset, result[ 1 ] + this._offset ];
       }
     } ),
 

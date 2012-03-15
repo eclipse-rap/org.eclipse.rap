@@ -173,6 +173,22 @@ qx.Class.define( "org.eclipse.rwt.Client", {
       return result;
     },
 
+    // NOTE [tb] : only works in IE right now.
+    // Inspired by https://github.com/yonran/detect-zoom
+    isZoomed : function() {
+      var result = false;
+      if( this._engineName === "mshtml" || this._engineName === "newmshtml" ) {
+        if( this._engineVersionMajor >= 8 ) {
+          result = ( screen.deviceXDPI / screen.logicalXDPI ) !== 1;
+        } else {
+          var rect = document.body.getBoundingClientRect();
+          var zoom = ( rect.right - rect.left ) / document.body.offsetWidth;
+          result = zoom !== 1;
+        }
+      }
+      return result;
+    },
+
     //////////
     // Helper
 
