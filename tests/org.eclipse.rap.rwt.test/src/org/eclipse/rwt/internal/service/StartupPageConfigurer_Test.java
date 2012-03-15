@@ -49,13 +49,13 @@ public class StartupPageConfigurer_Test extends TestCase {
     StartupPageConfigurer.replacePlaceholder( template,
                                               StartupPageTemplateHolder.VAR_BODY,
                                               "replacement" );
-    assertEquals( "replacement", getTemplateContent( template ).toString() );
+    assertEquals( "replacement", getContent( template ) );
 
     template.reset();
     StartupPageConfigurer.replacePlaceholder( template,
                                               StartupPageTemplateHolder.VAR_BODY,
                                               null );
-    assertEquals( "", getTemplateContent( template ).toString() );
+    assertEquals( "", getContent( template ) );
   }
 
   // bug 373156
@@ -81,13 +81,34 @@ public class StartupPageConfigurer_Test extends TestCase {
     assertEquals( "foo.theme", ThemeUtil.getCurrentThemeId() );
   }
 
-  private StringBuilder getTemplateContent( StartupPageTemplateHolder template ) {
-    String[] tokens = template.getTokens();
-    StringBuilder result = new StringBuilder();
-    for( int i = 0; i < tokens.length; i++ ) {
-      result.append( tokens[ i ] );
+  public void testBodyHtmlFromProperties() throws IOException {
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put( WebClient.BODY_HTML, "<b>custom stuff</b>" );
+    RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, properties );
+
+    String page = getContent( new StartupPageConfigurer( new ResourceRegistry() ).getTemplate() );
+
+    assertTrue( page.contains( "<b>custom stuff</b>" ) );
+    assertTrue( page.indexOf( "<body" ) < page.indexOf( "<b>custom stuff</b>" ) );
+    assertTrue( page.indexOf( "<b>custom stuff</b>" ) < page.indexOf( "</body>" ) );
+  }
+
+  public void testPageTitleFromProperties() throws IOException {
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put( WebClient.PAGE_TITLE, "custom title" );
+    RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, properties );
+
+    String page = getContent( new StartupPageConfigurer( new ResourceRegistry() ).getTemplate() );
+
+    assertTrue( page.contains( "<title>custom title</title>" ) );
+  }
+
+  private static String getContent( StartupPageTemplateHolder template ) {
+    StringBuilder builder = new StringBuilder();
+    for( String token : template.getTokens() ) {
+      builder.append( token );
     }
-    return result;
+    return builder.toString();
   }
 
 }

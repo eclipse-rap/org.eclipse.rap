@@ -194,6 +194,8 @@ final class StartupPageConfigurer {
     }
     String bodyHtml = properties.get( WebClient.BODY_HTML );
     replacePlaceholder( template, StartupPageTemplateHolder.VAR_BODY, bodyHtml );
+    String title = properties.get( WebClient.PAGE_TITLE );
+    replacePlaceholder( template, StartupPageTemplateHolder.VAR_TITLE, title );
   }
 
   private void applyLocalizeableMessages() {

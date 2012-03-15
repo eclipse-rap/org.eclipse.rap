@@ -49,4 +49,14 @@ public class WebClient {
    */
   public static final String BODY_HTML = PREFIX + ".bodyHtml";
 
+  /**
+   * Entrypoint property name for the title that will be displayed in the
+   * browser window. The value must be the title string without any HTML markup.
+   *
+   * @see ApplicationConfiguration#addEntryPoint(String, Class, Map)
+   * @see ApplicationConfiguration#addEntryPoint(String, IEntryPointFactory,
+   *      Map)
+   */
+  public static final String PAGE_TITLE = PREFIX + ".pageTitle";
+
 }
