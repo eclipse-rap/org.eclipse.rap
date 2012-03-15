@@ -510,6 +510,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( "textarea", text._inputTag );
       assertEquals( "textarea", text._inputElement.tagName.toLowerCase() );
       assertEquals( "text-area", text.getAppearance() );
+      assertEquals( "auto", text._inputElement.style.overflow );
       text.setWrap( true );
       var wrapProperty = "";
       var wrapAttribute = "";

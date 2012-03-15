@@ -37,6 +37,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     this._typed = null;
     this._selectionNeedsUpdate = false;
     this._applyBrowserFixes();
+    this._inputOverflow = "hidden";
   },
 
   destruct : function() {
@@ -371,7 +372,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
         istyle.margin = 0;
         istyle.border = "0 none";
         istyle.background = "transparent";
-        istyle.overflow = "hidden";
+        istyle.overflow = this._inputOverflow;
         istyle.outline = "none";
         istyle.resize = "none";
         istyle.WebkitAppearance = "none";
