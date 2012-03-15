@@ -102,12 +102,15 @@ qx.Class.define( "org.eclipse.rwt.System", {
     },
 
     _onload : function(e) {
-      if( this._onloadDone ) {
-        return;
+      if( !this._onloadDone ) {
+        if( this._isSupported() ) {
+          this._onloadDone = true;
+          qx.ui.core.ClientDocument.getInstance();
+          qx.client.Timer.once( this._preload, this, 0 );
+        } else {
+          this._handleUnsupportedBrowser();
+        }
       }
-      this._onloadDone = true;
-      qx.ui.core.ClientDocument.getInstance();
-      qx.client.Timer.once( this._preload, this, 0 );
     },
 
     _preload : function() {
@@ -147,7 +150,25 @@ qx.Class.define( "org.eclipse.rwt.System", {
       org.eclipse.rwt.EventHandler.detachEvents();
       org.eclipse.rwt.EventHandler.cleanUp();
       qx.core.Object.dispose( true );
+    },
+    
+    _isSupported : function() {
+      var result = true;
+      var engine = org.eclipse.rwt.Client.getEngine();
+      var version = org.eclipse.rwt.Client.getMajor();
+      if( engine === "mshtml" && version < 7 ) {
+        result = false;
+      }
+      return result;
+    },
+    
+    _handleUnsupportedBrowser : function() {
+      document.write( "<big style='background-color:white;color:black;'>" );
+      document.write( "Unsupported Browser: You're using an " );
+      document.write( "outdated browser version that is not supported anymore." );
+      document.write( "</big>" );
     }
+    
   },
 
   destruct : function() {
