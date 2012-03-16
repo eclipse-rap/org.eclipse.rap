@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package org.eclipse.swt.graphics;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
@@ -21,6 +20,17 @@ import org.eclipse.swt.widgets.Display;
 public class Cursor_Test extends TestCase {
 
   private Display device;
+
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    device = new Display();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testConstructorWithNullDevice() {
     device.dispose();
@@ -30,7 +40,7 @@ public class Cursor_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
   public void testConstructorWithInvaidStyle() {
     try {
       new Cursor( device, -8 );
@@ -38,12 +48,12 @@ public class Cursor_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
   public void testGetDevice() {
     Cursor cursor = new Cursor( device, SWT.CURSOR_ARROW );
     assertSame( device, cursor.getDevice() );
   }
-  
+
   public void testEquality() {
     Cursor cursor1 = device.getSystemCursor( SWT.CURSOR_ARROW );
     Cursor cursor2 = new Cursor( device, SWT.CURSOR_ARROW );
@@ -61,7 +71,7 @@ public class Cursor_Test extends TestCase {
     cursor.dispose();
     assertTrue( cursor.isDisposed() );
   }
-  
+
   public void testDisposeFactoryCreated() {
     Cursor cursor = device.getSystemCursor( SWT.CURSOR_ARROW );
     try {
@@ -71,43 +81,24 @@ public class Cursor_Test extends TestCase {
       assertFalse( cursor.isDisposed() );
     }
   }
-  
+
   public void testSerializeSessionCursor() throws Exception {
     Cursor cursor = new Cursor( device, SWT.CURSOR_ARROW );
 
     Cursor deserializedCurosr = Fixture.serializeAndDeserialize( cursor );
-    
+
     assertEquals( cursor, deserializedCurosr );
     assertFalse( deserializedCurosr.isDisposed() );
     assertNotNull( deserializedCurosr.getDevice() );
     assertNotSame( cursor.getDevice(), deserializedCurosr.getDevice() );
   }
-  
+
   public void testSerializeSystemCursor() throws Exception {
     Cursor cursor = device.getSystemCursor( SWT.CURSOR_CROSS );
 
     Cursor deserializedCurosr = Fixture.serializeAndDeserialize( cursor );
-    
+
     assertEquals( cursor, deserializedCurosr );
     assertFalse( deserializedCurosr.isDisposed() );
-  }
-  
-  @SuppressWarnings("deprecation")
-  public void testSerializeSharedCursor() throws Exception {
-    Cursor cursor = Graphics.getCursor( SWT.CURSOR_ARROW );
-
-    Cursor deserializedCurosr = Fixture.serializeAndDeserialize( cursor );
-    
-    assertEquals( cursor, deserializedCurosr );
-    assertFalse( deserializedCurosr.isDisposed() );
-  }
-  
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    device = new Display();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 }

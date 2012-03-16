@@ -157,6 +157,7 @@ public final class Graphics {
    * @deprecated Use {@link #getImage(String, ClassLoader)} or
    *             {@link #getImage(String, InputStream)} instead.
    */
+  @Deprecated
   public static Image getImage( String path ) {
     checkThread();
     if( path == null ) {
@@ -231,48 +232,6 @@ public final class Graphics {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
     return RWTFactory.getImageFactory().findImage( path, inputStream );
-  }
-
-  /**
-   * Returns an instance of {@link Cursor} based on a style constant describing
-   * the desired cursor appearance.
-   *
-   * <p>Note: it is considered an error to attempt to dispose of cursors
-   * that were created by this method. An <code>IllegalStateException</code> is
-   * thrown in this case.</p>
-   *
-   * @param style the style of the cursor to create
-   * @return the cursor
-   *
-   * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the current display's UI thread</li>
-   * </ul>
-   *
-   * @see SWT#CURSOR_ARROW
-   * @see SWT#CURSOR_WAIT
-   * @see SWT#CURSOR_CROSS
-   * @see SWT#CURSOR_HELP
-   * @see SWT#CURSOR_SIZEALL
-   * @see SWT#CURSOR_SIZENS
-   * @see SWT#CURSOR_SIZEWE
-   * @see SWT#CURSOR_SIZEN
-   * @see SWT#CURSOR_SIZES
-   * @see SWT#CURSOR_SIZEE
-   * @see SWT#CURSOR_SIZEW
-   * @see SWT#CURSOR_SIZENE
-   * @see SWT#CURSOR_SIZESE
-   * @see SWT#CURSOR_SIZESW
-   * @see SWT#CURSOR_SIZENW
-   * @see SWT#CURSOR_IBEAM
-   * @see SWT#CURSOR_HAND
-   *
-   * @since 1.2
-   * @deprecated use {@link org.eclipse.swt.widgets.Display#getSystemCursor(int)
-   * Display#getSystemCursor(int)}
-   */
-  public static Cursor getCursor( int style ) {
-    checkThread();
-    return RWTFactory.getResourceFactory().getCursor( style );
   }
 
   //////////////////////////

@@ -13,7 +13,6 @@ package org.eclipse.ui.internal.layout;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -209,13 +208,11 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 		update(true);
 
     	// Set the cursor affordance
-		//Cursor dragCursor = getControl().getDisplay().getSystemCursor(SWT.CURSOR_SIZEALL);
-		Cursor dragCursor = Graphics.getCursor( SWT.CURSOR_SIZEALL );
+		Cursor dragCursor = getControl().getDisplay().getSystemCursor(SWT.CURSOR_SIZEALL);
 		cb.setCursor(dragCursor);
 
     	// Now, we have to explicity set the arrow for the TB
-    	//Cursor tbCursor = getControl().getDisplay().getSystemCursor(SWT.CURSOR_ARROW);
-		Cursor tbCursor = Graphics.getCursor( SWT.CURSOR_ARROW );
+    	Cursor tbCursor = getControl().getDisplay().getSystemCursor(SWT.CURSOR_ARROW);
 		tb.setCursor(tbCursor);
 
     	//cb.setBackground(cb.getDisplay().getSystemColor(SWT.COLOR_RED));

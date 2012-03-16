@@ -12,7 +12,6 @@ package org.eclipse.ui.internal.layout;
 
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -322,8 +321,7 @@ public class TrimCommonUIHandle extends Composite {
 	 * trim can be dragged
 	 */
 	private void setDragCursor() {
-		//Cursor dragCursor = toDrag.getDisplay().getSystemCursor(SWT.CURSOR_SIZEALL);
-	    Cursor dragCursor = Graphics.getCursor( SWT.CURSOR_SIZEALL );
+		Cursor dragCursor = toDrag.getDisplay().getSystemCursor(SWT.CURSOR_SIZEALL);
 	    setCursor(dragCursor);
 	}
 

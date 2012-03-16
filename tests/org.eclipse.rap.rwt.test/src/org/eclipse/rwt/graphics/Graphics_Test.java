@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,13 +42,13 @@ public class Graphics_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
   public void testGetColorRGBReturnsEqualColorAsGetColor() {
     Color color1 = Graphics.getColor( new RGB( 1, 1, 1 ) );
     Color color2 = Graphics.getColor( 1, 1, 1 );
     assertEquals( color1, color2 );
   }
-  
+
   public void testTextExtentNull() {
     Font font = Graphics.getFont( "Arial", 12, SWT.BOLD );
     try {
@@ -76,7 +76,7 @@ public class Graphics_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
   public void testGetCharHeightNull() {
     try {
       Graphics.getCharHeight( null );
@@ -84,7 +84,7 @@ public class Graphics_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
   public void testGetAvgCharWidth() {
     float result = Graphics.getAvgCharWidth( display.getSystemFont() );
     assertTrue( result > 0 );
@@ -96,11 +96,6 @@ public class Graphics_Test extends TestCase {
       fail( "Null font should throw IAE" );
     } catch( IllegalArgumentException expected ) {
     }
-  }
-  
-  public void testGetCursor() {
-    Cursor cursor = Graphics.getCursor( SWT.CURSOR_ARROW );
-    assertSame( display.getSystemCursor( SWT.CURSOR_ARROW ), cursor );
   }
 
   public void testGetImage() {
@@ -133,7 +128,7 @@ public class Graphics_Test extends TestCase {
     ClassLoader classLoader = classLoaderFromFile( Fixture.WEB_CONTEXT_DIR );
 
     Image image = Graphics.getImage( resourceName, classLoader );
-    
+
     assertNotNull( image );
   }
 
@@ -230,7 +225,7 @@ public class Graphics_Test extends TestCase {
       assertFalse( font.isDisposed() );
     }
   }
-  
+
   public void testCheckThreadFromUIThread() {
     try {
       Graphics.checkThread();
@@ -249,7 +244,7 @@ public class Graphics_Test extends TestCase {
       assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, expected.code );
     }
   }
-  
+
   public void testCheckThreadFromBackgroundThread() throws InterruptedException {
     final Throwable[] exception = { null };
     Thread thread = new Thread( new Runnable() {
@@ -268,12 +263,14 @@ public class Graphics_Test extends TestCase {
     assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swtException.code );
   }
 
+  @Override
   protected void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
     display = new Display();
   }
 
+  @Override
   protected void tearDown() {
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
