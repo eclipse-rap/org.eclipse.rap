@@ -88,7 +88,6 @@ public class StartupPageConfigurer_Test extends TestCase {
 
     String page = getContent( new StartupPageConfigurer( new ResourceRegistry() ).getTemplate() );
 
-    System.out.println( page );
     assertTrue( page.contains( "<meta test>" ) );
     assertTrue( page.indexOf( "<head" ) < page.indexOf( "<meta test>" ) );
     assertTrue( page.indexOf( "<meta test>" ) < page.indexOf( "</head>" ) );
