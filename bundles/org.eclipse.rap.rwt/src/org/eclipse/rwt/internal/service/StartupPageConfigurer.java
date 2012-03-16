@@ -203,6 +203,10 @@ final class StartupPageConfigurer {
       Header header = BrandingUtil.createHeaderForFavIcon( favIcon );
       headerMarkup += BrandingUtil.createMarkupForHeaders( header );
     }
+    String headHtml = properties.get( WebClient.HEAD_HTML );
+    if( headHtml != null ) {
+      headerMarkup += headHtml;
+    }
     replacePlaceholder( template, StartupPageTemplateHolder.VAR_HEADERS, headerMarkup );
   }
 

@@ -40,9 +40,34 @@ public class WebClient {
   public static final String THEME_ID = PREFIX + ".themeId";
 
   /**
+   * Entrypoint property name for additional HTML elements to be added to the
+   * &lt;head&gt; section of the startup page. The value must contain a valid
+   * HTML snippet that consists only of HTML elements that are permissible
+   * sub-elements of <code>head</code> such as <code>meta</code> or
+   * <code>link</code>.
+   * <p>
+   * <strong>Warning:</strong> the property value will not be validated by the
+   * framework. Invalid HTML can break the application entirely or lead to
+   * problems that are hard to identify. It's the responsibility of the
+   * developer to ensure the correctness of the resulting page.
+   * </p>
+   *
+   * @see ApplicationConfiguration#addEntryPoint(String, Class, Map)
+   * @see ApplicationConfiguration#addEntryPoint(String, IEntryPointFactory,
+   *      Map)
+   */
+  public static final String HEAD_HTML = PREFIX + ".additionalHeaders";
+
+  /**
    * Entrypoint property name for custom HTML code to be placed inside the
-   * <code>&lt;body&gt;</code> tag of the main page. The value must be proper
-   * HTML 4.0 in order not to break the surrounding page.
+   * <code>body</code> of the startup page. The value must be proper HTML 4.0 in
+   * order not to break the surrounding page.
+   * <p>
+   * <strong>Warning:</strong> the property value will not be validated by the
+   * framework. Invalid HTML can break the application entirely or lead to
+   * problems that are hard to identify. It's the responsibility of the
+   * developer to ensure the correctness of the resulting page.
+   * </p>
    *
    * @see ApplicationConfiguration#addEntryPoint(String, Class, Map)
    * @see ApplicationConfiguration#addEntryPoint(String, IEntryPointFactory,

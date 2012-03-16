@@ -81,6 +81,19 @@ public class StartupPageConfigurer_Test extends TestCase {
     assertEquals( "foo.theme", ThemeUtil.getCurrentThemeId() );
   }
 
+  public void testHeadHtmlFromProperties() throws IOException {
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put( WebClient.HEAD_HTML, "<meta test>" );
+    RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, properties );
+
+    String page = getContent( new StartupPageConfigurer( new ResourceRegistry() ).getTemplate() );
+
+    System.out.println( page );
+    assertTrue( page.contains( "<meta test>" ) );
+    assertTrue( page.indexOf( "<head" ) < page.indexOf( "<meta test>" ) );
+    assertTrue( page.indexOf( "<meta test>" ) < page.indexOf( "</head>" ) );
+  }
+
   public void testBodyHtmlFromProperties() throws IOException {
     Map<String, String> properties = new HashMap<String, String>();
     properties.put( WebClient.BODY_HTML, "<b>custom stuff</b>" );
