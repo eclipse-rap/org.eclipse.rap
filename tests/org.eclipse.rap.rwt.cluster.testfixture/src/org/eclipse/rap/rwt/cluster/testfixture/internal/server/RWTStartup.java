@@ -57,7 +57,7 @@ public class RWTStartup {
 
     public void configure( ApplicationConfiguration configuration ) {
       configuration.setOperationMode( OperationMode.SESSION_FAILOVER );
-      configuration.addEntryPoint( IServletEngine.SERVLET_PATH, entryPointClass );
+      configuration.addEntryPoint( IServletEngine.SERVLET_PATH, entryPointClass, null );
     }
   }
 }

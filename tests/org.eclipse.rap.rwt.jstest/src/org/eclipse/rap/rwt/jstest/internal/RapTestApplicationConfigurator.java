@@ -22,11 +22,12 @@ public class RapTestApplicationConfigurator implements ApplicationConfigurator {
   public void configure( ApplicationConfiguration configuration ) {
     IServiceHandler serviceHandler = new ClientResourcesServiceHandler();
     configuration.addServiceHandler( ClientResourcesServiceHandler.ID, serviceHandler );
-    configuration.addEntryPoint( "/test", new IEntryPointFactory() {
+    IEntryPointFactory factory = new IEntryPointFactory() {
       public IEntryPoint create() {
         return null;
       }
-    } );
+    };
+    configuration.addEntryPoint( "/test", factory, null );
   }
 
 }

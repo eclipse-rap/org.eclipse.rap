@@ -164,9 +164,9 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   private ApplicationConfigurator createConfigurator() {
     return new ApplicationConfigurator() {
       public void configure( ApplicationConfiguration configuration ) {
-        configuration.addEntryPoint( "/entryPoint", TestEntryPoint.class );
+        configuration.addEntryPoint( "/entryPoint", TestEntryPoint.class, null );
         DefaultEntryPointFactory factory = new DefaultEntryPointFactory( TestEntryPoint.class );
-        configuration.addEntryPoint( "/entryPointViaFactory", factory );
+        configuration.addEntryPoint( "/entryPointViaFactory", factory, null );
         configuration.addResource( testResource );
         configuration.addPhaseListener( testPhaseListener );
         configuration.setSettingStoreFactory( testSettingStoreFactory );

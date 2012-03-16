@@ -442,8 +442,8 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   private void createAliasConfigurator( final String servletPath1, final String servletPath2 ) {
     configurator = new ApplicationConfigurator() {
       public void configure( ApplicationConfiguration configuration ) {
-        configuration.addEntryPoint( servletPath1, TestEntryPoint.class );
-        configuration.addEntryPoint( servletPath2, TestEntryPoint.class );
+        configuration.addEntryPoint( servletPath1, TestEntryPoint.class, null );
+        configuration.addEntryPoint( servletPath2, TestEntryPoint.class, null );
       }
     };
     mockBundleContext();

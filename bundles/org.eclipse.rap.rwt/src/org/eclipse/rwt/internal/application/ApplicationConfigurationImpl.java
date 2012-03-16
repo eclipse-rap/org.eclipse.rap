@@ -91,10 +91,6 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration, A
     applicationContext.getSettingStoreManager().register( settingStoreFactory );
   }
 
-  public void addEntryPoint( String path, Class<? extends IEntryPoint> entryPointType ) {
-    addEntryPoint( path, entryPointType, null );
-  }
-
   public void addEntryPoint( String path,
                              Class<? extends IEntryPoint> entryPointType,
                              Map<String, String> properties )
@@ -103,10 +99,6 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration, A
     ParamCheck.notNull( entryPointType, "entryPointType" );
 
     applicationContext.getEntryPointManager().registerByPath( path, entryPointType, properties );
-  }
-
-  public void addEntryPoint( String path, IEntryPointFactory entryPointFactory ) {
-    addEntryPoint( path, entryPointFactory, null );
   }
 
   public void addEntryPoint( String path,

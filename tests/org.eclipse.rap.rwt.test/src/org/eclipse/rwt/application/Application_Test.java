@@ -157,7 +157,7 @@ public class Application_Test extends TestCase {
   private void startWithEntryPointConfiguration() {
     configurator = new ApplicationConfigurator() {
       public void configure( ApplicationConfiguration configuration ) {
-        configuration.addEntryPoint( SERVLET_PATH, TestEntryPoint.class );
+        configuration.addEntryPoint( SERVLET_PATH, TestEntryPoint.class, null );
       }
     };
     application = new Application( configurator, servletContext );

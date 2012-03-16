@@ -202,7 +202,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
           EntryPointParameters.register( id, parameter );
         }
         if( path != null ) {
-          configuration.addEntryPoint( path, entryPointClass );
+          configuration.addEntryPoint( path, entryPointClass, null );
         }
       } catch( final Throwable thr ) {
         String text = "Could not register entry point ''{0}'' with id ''{1}''.";

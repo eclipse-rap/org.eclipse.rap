@@ -160,7 +160,7 @@ public class RWTServletContextListener_Test extends TestCase {
 
   private static class TestConfigurator implements ApplicationConfigurator {
     public void configure( ApplicationConfiguration configuration ) {
-      configuration.addEntryPoint( "/test", TestEntryPoint.class );
+      configuration.addEntryPoint( "/test", TestEntryPoint.class, null );
       configuration.addPhaseListener( mock( PhaseListener.class ) );
       configuration.addResource( new TestResource() );
     }

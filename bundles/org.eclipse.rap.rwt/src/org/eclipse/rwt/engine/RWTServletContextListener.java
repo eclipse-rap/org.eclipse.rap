@@ -42,7 +42,7 @@ public class RWTServletContextListener implements ServletContextListener {
     }
 
     public void configure( ApplicationConfiguration configuration ) {
-      configuration.addEntryPoint( "/rap", entryPointClass );
+      configuration.addEntryPoint( "/rap", entryPointClass, null );
     }
   }
 
