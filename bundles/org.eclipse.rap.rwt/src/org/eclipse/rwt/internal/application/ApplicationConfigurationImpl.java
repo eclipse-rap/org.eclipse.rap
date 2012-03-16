@@ -20,7 +20,6 @@ import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
-import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.theme.Theme;
@@ -164,12 +163,6 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration, A
 
     ServiceManager serviceManager = applicationContext.getServiceManager();
     serviceManager.registerServiceHandler( serviceHandlerId, serviceHandler );
-  }
-
-  public void addBranding( AbstractBranding branding ) {
-    ParamCheck.notNull( branding, "branding" );
-
-    applicationContext.getBrandingManager().register( branding );
   }
 
   public void addStyleSheet( String themeId, String styleSheetLocation ) {

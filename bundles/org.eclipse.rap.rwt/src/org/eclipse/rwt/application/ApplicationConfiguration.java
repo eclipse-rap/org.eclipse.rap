@@ -14,7 +14,6 @@ package org.eclipse.rwt.application;
 import java.util.Map;
 
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.client.WebClient;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.IEntryPointFactory;
@@ -162,8 +161,6 @@ public interface ApplicationConfiguration {
   void addEntryPoint( String path,
                       IEntryPointFactory entryPointFactory,
                       Map<String, String> properties );
-
-  void addBranding( AbstractBranding branding );
 
   /**
    * Adds a stylesheet that contains a theme or a theme contribution to the
