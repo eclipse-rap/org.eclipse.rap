@@ -110,7 +110,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
         var text = EncodingUtil.escapeText( value, false );
         text = EncodingUtil.replaceNewLines( text, "<br/>" );
         widget.setUserData( "toolTipText", text );
-        var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance()
+        var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
         widget.setToolTip( toolTip );
         // make sure "boundToWidget" is initialized:
         if( toolTip.getParent() != null ) {  
