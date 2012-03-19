@@ -21,10 +21,6 @@
   <version>1.5.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <prerequisites>
-    <maven>3.0</maven>
-  </prerequisites>
-
   <properties>
     <tycho-version>0.13.0</tycho-version>
     <surefire-version>2.9</surefire-version>
@@ -32,6 +28,10 @@
     <mockito-version>1.8.4</mockito-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
+  <prerequisites>
+    <maven>3.0</maven>
+  </prerequisites>
 
   <modules>
     <!-- Runtime projects -->
@@ -71,7 +71,7 @@
         TODO [rst]: Because of bug 348045, we cannot add the entire platform repository to the
                     target platform, try target definitions instead.
         -->
-      <url>http://build.eclipse.org/rt/rap/base-platforms/1.5M5/runtime-base</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/1.5M6/runtime-base</url>
     </repository>
     <repository>
       <id>extra-dependencies-repository</id>
