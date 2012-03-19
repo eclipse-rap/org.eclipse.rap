@@ -164,8 +164,7 @@ public class TrimCommonUIHandle extends Composite {
 	public void setup(TrimLayout layout, IWindowTrim trim, int curSide) {
     	this.layout = layout;
     	this.trim = trim;
-    	// RAP [bm]:
-//    	this.toDrag = trim.getControl();
+    	this.toDrag = trim.getControl();
     	this.radioVal.set(curSide);
 
     	// remember the orientation to use
