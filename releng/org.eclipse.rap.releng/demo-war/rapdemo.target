@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
 
-<target name="RAP 1.5 milestones" sequenceNumber="18">
+<target name="RAP 1.5 milestones" sequenceNumber="19">
 <locations>
-<location includeAllPlatforms="false" includeMode="slicer" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.equinox.executable.feature.group" version="3.6.0.v20120123-1704-7P7OFvNFLWUl76sUqHOCz0ZV"/>
-<unit id="org.eclipse.equinox.serverside.sdk.feature.group" version="3.8.0.v20111114-2124-9Q7dFb8FRWti6-ZMXXy00Ekoai5G"/>
-<repository location="http://download.eclipse.org/eclipse/updates/3.8milestones/S-3.8M5-201201251800/"/>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="false" type="InstallableUnit">
+<unit id="org.eclipse.equinox.executable.feature.group" version="3.6.0.v20120305-1541-7P7OFvNFLWUl7Dqyq6OBBmS"/>
+<unit id="org.eclipse.equinox.serverside.sdk.feature.group" version="3.8.0.v20111114-2124-9Q7dFbMFYGirlx2KL6qF5j3Hz0Sv"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.2milestones/S-4.2M6-201203151300/"/>
 </location>
-<location includeAllPlatforms="false" includeMode="slicer" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.rap.runtime.requirements.feature.group" version="1.5.0.20120227-0217"/>
-<unit id="org.eclipse.rap.runtime.feature.group" version="1.5.0.20120227-0217"/>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="false" type="InstallableUnit">
+<unit id="org.eclipse.rap.runtime.requirements.feature.group" version="1.5.0.20120320-0122"/>
+<unit id="org.eclipse.rap.runtime.feature.group" version="1.5.0.20120320-0122"/>
 <repository location="http://download.eclipse.org/rt/rap/nightly/runtime"/>
 </location>
 </locations>
