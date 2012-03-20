@@ -27,6 +27,27 @@ public class MarkupExample implements IExamplePage {
     new String[] { "Ford Focus ZETEC AUTO", "2002", "189 000<br/>EUR", "Motcomp Ltd" },
     new String[] { "Austin 1300 1300", "1972", "145 000<br/>EUR", "Cars Shop Ltd" },
     new String[] { "Mini Cooper 1.6", "2008", "95 000<br/>EUR", "Public Sale" },
+    new String[] { "Aston Martin V8 (420)", "2011", "101 000<br/>EUR", "Automob GmbH" },
+    new String[] { "Nissan GT-R 3.8 Premium Edition", "2009", "42 000<br/>EUR", "Public Sale" },
+    new String[] { "Audi R8 5.2 Gt Quattro", "2011", "300 000<br/>EUR", "Cars Shop Ltd" },
+    new String[] { "Ferrari 599 GTB Fiorano F1 2dr", "2010", "169 000<br/>EUR", "Automob GmbH" },
+    new String[] { "Ford Focus ZETEC AUTO", "2002", "189 000<br/>EUR", "Motcomp Ltd" },
+    new String[] { "Austin 1300 1300", "1972", "145 000<br/>EUR", "Cars Shop Ltd" },
+    new String[] { "Mini Cooper 1.6", "2008", "95 000<br/>EUR", "Public Sale" },
+    new String[] { "Aston Martin V8 (420)", "2011", "101 000<br/>EUR", "Automob GmbH" },
+    new String[] { "Nissan GT-R 3.8 Premium Edition", "2009", "42 000<br/>EUR", "Public Sale" },
+    new String[] { "Audi R8 5.2 Gt Quattro", "2011", "300 000<br/>EUR", "Cars Shop Ltd" },
+    new String[] { "Ferrari 599 GTB Fiorano F1 2dr", "2010", "169 000<br/>EUR", "Automob GmbH" },
+    new String[] { "Ford Focus ZETEC AUTO", "2002", "189 000<br/>EUR", "Motcomp Ltd" },
+    new String[] { "Austin 1300 1300", "1972", "145 000<br/>EUR", "Cars Shop Ltd" },
+    new String[] { "Mini Cooper 1.6", "2008", "95 000<br/>EUR", "Public Sale" },
+    new String[] { "Aston Martin V8 (420)", "2011", "101 000<br/>EUR", "Automob GmbH" },
+    new String[] { "Nissan GT-R 3.8 Premium Edition", "2009", "42 000<br/>EUR", "Public Sale" },
+    new String[] { "Audi R8 5.2 Gt Quattro", "2011", "300 000<br/>EUR", "Cars Shop Ltd" },
+    new String[] { "Ferrari 599 GTB Fiorano F1 2dr", "2010", "169 000<br/>EUR", "Automob GmbH" },
+    new String[] { "Ford Focus ZETEC AUTO", "2002", "189 000<br/>EUR", "Motcomp Ltd" },
+    new String[] { "Austin 1300 1300", "1972", "145 000<br/>EUR", "Cars Shop Ltd" },
+    new String[] { "Mini Cooper 1.6", "2008", "95 000<br/>EUR", "Public Sale" },
     new String[] { "Aston Martin V8 (420)", "2011", "101 000<br/>EUR", "Automob GmbH" }
   };
 
@@ -78,13 +99,15 @@ public class MarkupExample implements IExamplePage {
         builder.append( "<img src=\"" );
         builder.append( imageUrl );
         builder.append( "\" style=\"float:left;padding:5px\" width=\"130\" height=\"70\" />" );
-        builder.append( "<i><b>" );
+        builder.append( "<b>" );
         builder.append( text );
-        builder.append( "</b></i>" );
-        builder.append( "<small>" );
-        builder.append( "<br/>Gearbox: Manual" );
-        builder.append( "<br/>Fuel Type: Petrol" );
-        builder.append( "<br/><a href=\"https://www.google.com/search?q=" );
+        builder.append( "</b>" );
+        builder.append( "<small><br/>" );
+        builder.append( createGearboxImageTag() );
+        builder.append( "<i>Gearbox: Manual</i><br/>" );
+        builder.append( createFuelImageTag() );
+        builder.append( "<i>Fuel Type: Petrol</i>" );
+        builder.append( "<br/><a style='color:#' href=\"https://www.google.com/search?q=" );
         builder.append( text );
         builder.append( "\" target=\"_blank\">More Info</a>" );
         builder.append( "</small>" );
@@ -95,19 +118,28 @@ public class MarkupExample implements IExamplePage {
         builder.append( "</b>" );
       break;
       case 2:
-        builder.append( "<span style=\"color:red\">" );
+        builder.append( "<span >" );
         builder.append( text );
         builder.append( "</span>" );
       break;
       case 3:
-        builder.append( "<em>" );
         builder.append( text );
-        builder.append( "</em>" );
-        builder.append( "<small>" );
-        builder.append( "<br/>Contacts: none" );
-        builder.append( "</small>" );
+        builder.append( "<br/><i><small>" );
+        builder.append( "Contacts: none" );
+        builder.append( "</small></i>" );
       break;
     }
     return builder.toString();
   }
+
+  private static String createGearboxImageTag() {
+    String imageUrl = RWT.getRequest().getContextPath() + "/cars/images/gear.png";
+    return "<img src='" + imageUrl + "' width='10' height='10' style='padding-right:5px'/>";
+  }
+
+  private static String createFuelImageTag() {
+    String imageUrl = RWT.getRequest().getContextPath() + "/cars/images/fuel.png";
+    return "<img src='" + imageUrl + "' width='10' height='10' style='padding-right:5px'/>";
+  }
+
 }

@@ -64,7 +64,7 @@ public final class Examples {
     exampleCategories.add( createCategory( "Trees & Tables",
                                            "tableviewer", "treeviewer", "table-markup" ) );
     exampleCategories.add( createCategory( "Key Features",
-                                           "complex-data", "validation", "drag-and-drop", "file-upload" ) );
+                                           "complex-data", "rich-label", "validation", "drag-and-drop", "file-upload" ) );
     exampleCategories.add( createCategory( "Layouts",
                                            "grid-layout", "row-layout", "fill-layout" ) );
     exampleCategories.add( createCategory( "Custom Widgets",

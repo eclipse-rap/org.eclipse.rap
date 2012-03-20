@@ -10,15 +10,18 @@
  ******************************************************************************/
 package org.eclipse.rap.examples.pages;
 
-import org.eclipse.jface.fieldassist.*;
-import org.eclipse.rap.examples.ExampleUtil;
-import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.rap.examples.*;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 
 
 public class ButtonExamplePage implements IExamplePage {
@@ -28,9 +31,13 @@ public class ButtonExamplePage implements IExamplePage {
 
   public void createControl( Composite parent ) {
     createImages();
-    parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
+    parent.setLayout( ExampleUtil.createMainLayout( 3, 30 ) );
     createPushButtons( parent );
     createRadioAndCheckButtons( parent );
+    Infobox infobox = new Infobox( parent );
+    infobox.addParagraph( "Use the Button widget to create push buttons, toggle buttons, checkboxes and radiobuttons." );
+    infobox.addParagraph( "Push and toggle buttons also support images." );
+
   }
 
   private void createImages() {
@@ -40,42 +47,32 @@ public class ButtonExamplePage implements IExamplePage {
 
   private void createPushButtons( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
-    ExampleUtil.createHeading( composite, "Push and Toggle Buttons", 2 );
-    composite.setLayout( ExampleUtil.createGridLayout( 2, false, true, true ) );
+    composite.setLayout( ExampleUtil.createGridLayout( 3, false, true, true ) );
     composite.setLayoutData( ExampleUtil.createHorzFillData() );
+    ExampleUtil.createHeading( composite, "Push and Toggle Buttons", 3 );
 
-    Composite compositeL1 = new Composite( composite, SWT.NONE );
-    compositeL1.setLayout( createRowLayout( SWT.HORIZONTAL ) );
-    Composite compositeR = new Composite( composite, SWT.NONE );
-    compositeR.setLayout( new FillLayout() );
-    Composite compositeL2 = new Composite( composite, SWT.NONE );
-    compositeL2.setLayout( createRowLayout( SWT.HORIZONTAL ) );
-    GridData rData = new GridData( SWT.TOP, SWT.RIGHT, true, false );
-    rData.verticalSpan = 2;
-    compositeR.setLayoutData( rData );
-
-    Button button = new Button( compositeL1, SWT.PUSH );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setLayoutData( ExampleUtil.createHorzFillData() );
     button.setText( "Cancel" );
-    Button button1 = new Button( compositeL1, SWT.PUSH );
+    Button button1 = new Button( composite, SWT.PUSH );
     button1.setText( "Add" );
+    button1.setLayoutData( ExampleUtil.createHorzFillData() );
     ClassLoader classLoader = getClass().getClassLoader();
     Image imgAdd = Graphics.getImage( "resources/add_obj.png", classLoader );
     button1.setImage( imgAdd );
-    Button button2 = new Button( compositeL1, SWT.PUSH );
+    Button button2 = new Button( composite, SWT.PUSH );
+    button2.setLayoutData( ExampleUtil.createHorzFillData() );
     button2.setText( "Delete" );
     Image imgDelete = Graphics.getImage( "resources/delete_obj.png", classLoader );
     button2.setImage( imgDelete );
 
-    Button button3 = new Button( compositeR, SWT.PUSH );
-    Image imageDownload = Graphics.getImage( "resources/go-bottom.png", classLoader );
-    button3.setImage( imageDownload );
-    button3.setToolTipText( "Download" );
-
-    Button toggle1 = new Button( compositeL2, SWT.TOGGLE );
+    Button toggle1 = new Button( composite, SWT.TOGGLE );
+    toggle1.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
     Image imgSynced = Graphics.getImage( "resources/synced.png", classLoader );
     toggle1.setImage( imgSynced );
     toggle1.setToolTipText( "Keep in sync" );
-    final Button toggle2 = new Button( compositeL2, SWT.TOGGLE | SWT.LEFT );
+    final Button toggle2 = new Button( composite, SWT.TOGGLE | SWT.LEFT );
+    toggle2.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, true ) );
     toggle2.setText( "Unlocked" );
     final Image imgLocked = Graphics.getImage( "resources/lockedstate.png", classLoader );
     final Image imgUnlocked = Graphics.getImage( "resources/unlockedstate.png", classLoader );
@@ -88,6 +85,12 @@ public class ButtonExamplePage implements IExamplePage {
         toggle2.setImage( selected ? imgLocked : imgUnlocked );
       }
     } );
+
+    Button button3 = new Button( composite, SWT.PUSH );
+    button3.setLayoutData( ExampleUtil.createFillData() );
+    Image imageDownload = Graphics.getImage( "resources/go-bottom.png", classLoader );
+    button3.setImage( imageDownload );
+    button3.setToolTipText( "Download" );
   }
 
   private void createRadioAndCheckButtons( Composite parent ) {

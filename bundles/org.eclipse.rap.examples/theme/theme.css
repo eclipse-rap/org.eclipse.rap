@@ -36,6 +36,11 @@ Composite.nav-bar {
   background-color: #34332F;
 }
 
+Composite.infobox {
+  background-color: #34332F;
+  border-radius: 0 50px 0 50px;
+}
+
 Composite.navigation {
   background-color: transparent;
 }
@@ -64,11 +69,19 @@ ToolItem.navigation:hover {
   animation: none;
 }
 
+ToolItem.navigation:pressed {
+  padding: 8px 8px 8px 8px;
+}
+
 ToolItem.selected {
   color: white;
   border: none;
   background-color: transparent;
   background-image: none;
+}
+
+ToolItem.selected:pressed {
+  padding: 8px 8px 8px 8px;
 }
 
 ToolItem-DropDownIcon:hover,
@@ -116,4 +129,30 @@ Label.title {
 
 Label.footerLabel {
   font: 14px Helvetica, Verdana, sans-serif;  
+}
+
+Label.infobox {
+  color: #e5e5e5;
+}
+
+Label.infobox-heading {
+  font: 16px Helvetica, Verdana, sans-serif;
+  color: #357cd4;
+}
+
+Label.markup {
+  font: 22px Helvetica, Verdana, sans-serif;  
+}
+
+Label.error {
+  color: red;
+}
+
+Text[MULTI].error {
+  border: 1px solid red;
+}
+
+Text[MULTI].error:focused {
+  border: 1px solid red;
+  box-shadow: 0 0 5px red;
 }

@@ -50,6 +50,16 @@ public final class ExampleUtil {
     return result;
   }
 
+  public static GridLayout createMainLayout( int numColumns, int horzSpacing ) {
+    GridLayout result = new GridLayout( numColumns, true );
+    result.marginWidth = 0;
+    result.marginHeight = 0;
+    result.marginTop = 0;
+    result.verticalSpacing = 0;
+    result.horizontalSpacing = horzSpacing;
+    return result;
+  }
+
   public static GridLayout createGridLayout( int numColumns,
                                              boolean makeColsEqualWidth,
                                              boolean setTopMargin,
@@ -127,4 +137,5 @@ public final class ExampleUtil {
   private ExampleUtil() {
     // prevent instantiation
   }
+
 }

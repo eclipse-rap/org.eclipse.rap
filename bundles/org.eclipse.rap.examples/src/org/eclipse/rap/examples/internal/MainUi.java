@@ -142,7 +142,7 @@ public class MainUi {
 
   private void createLogo( Composite headerComp ) {
     Label logoLabel = new Label( headerComp, SWT.NONE );
-    Image rapLogo = getImage( headerComp.getDisplay(), "RAP-logo.png" );
+    Image rapLogo = MainUi.getImage( headerComp.getDisplay(), "RAP-logo.png" );
     logoLabel.setImage( rapLogo );
     logoLabel.setLayoutData( createLogoFormData( rapLogo ) );
     makeLink( logoLabel, RAP_PAGE_URL );
@@ -287,7 +287,7 @@ public class MainUi {
     return data;
   }
 
-  private static Image getImage( Display display, String path ) {
+  public static Image getImage( Display display, String path ) {
     ClassLoader classLoader = MainUi.class.getClassLoader();
     InputStream inputStream = classLoader.getResourceAsStream( "resources/" + path );
     Image result = null;
