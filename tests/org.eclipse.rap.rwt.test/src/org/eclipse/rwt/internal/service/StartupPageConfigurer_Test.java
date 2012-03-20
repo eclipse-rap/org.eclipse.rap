@@ -22,6 +22,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rwt.client.WebClient;
 import org.eclipse.rwt.internal.application.RWTFactory;
+import org.eclipse.rwt.internal.branding.TestBranding;
 import org.eclipse.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.theme.ThemeTestUtil;
@@ -124,6 +125,19 @@ public class StartupPageConfigurer_Test extends TestCase {
 
     assertTrue( page.contains( "<link rel=\"shortcut icon\" type=\"image/x-icon\""
                                + " href=\"rwt-resources/images/site-icon.png\" />" ) );
+  }
+
+  public void testFavIconFromBranding() throws IOException {
+    Map<String, String> properties = new HashMap<String, String>();
+    RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, properties );
+    TestBranding branding = new TestBranding( "rap", null, null );
+    branding.setFavIcon( "site-icon.png" );
+    RWTFactory.getBrandingManager().register( branding );
+
+    String page = getContent( new StartupPageConfigurer( new ResourceRegistry() ).getTemplate() );
+
+    assertTrue( page.contains( "<link rel=\"shortcut icon\" type=\"image/x-icon\""
+                               + " href=\"rwt-resources/site-icon.png\" />" ) );
   }
 
   private static String getContent( StartupPageTemplateHolder template ) {

@@ -189,25 +189,27 @@ final class StartupPageConfigurer {
 
   private void applyEntryPointProperties() {
     Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
-    String themeId = properties.get( WebClient.THEME_ID );
-    if( themeId != null && themeId.length() > 0 ) {
-      ThemeUtil.setCurrentThemeId( themeId );
+    if( !properties.isEmpty() ) {
+      String themeId = properties.get( WebClient.THEME_ID );
+      if( themeId != null && themeId.length() > 0 ) {
+        ThemeUtil.setCurrentThemeId( themeId );
+      }
+      String bodyHtml = properties.get( WebClient.BODY_HTML );
+      replacePlaceholder( template, StartupPageTemplateHolder.VAR_BODY, bodyHtml );
+      String title = properties.get( WebClient.PAGE_TITLE );
+      replacePlaceholder( template, StartupPageTemplateHolder.VAR_TITLE, title );
+      String headerMarkup = "";
+      String favIcon = properties.get( WebClient.FAVICON );
+      if( favIcon != null && favIcon.length() > 0 ) {
+        Header header = BrandingUtil.createHeaderForFavIcon( favIcon );
+        headerMarkup += BrandingUtil.createMarkupForHeaders( header );
+      }
+      String headHtml = properties.get( WebClient.HEAD_HTML );
+      if( headHtml != null ) {
+        headerMarkup += headHtml;
+      }
+      replacePlaceholder( template, StartupPageTemplateHolder.VAR_HEADERS, headerMarkup );
     }
-    String bodyHtml = properties.get( WebClient.BODY_HTML );
-    replacePlaceholder( template, StartupPageTemplateHolder.VAR_BODY, bodyHtml );
-    String title = properties.get( WebClient.PAGE_TITLE );
-    replacePlaceholder( template, StartupPageTemplateHolder.VAR_TITLE, title );
-    String headerMarkup = "";
-    String favIcon = properties.get( WebClient.FAVICON );
-    if( favIcon != null && favIcon.length() > 0 ) {
-      Header header = BrandingUtil.createHeaderForFavIcon( favIcon );
-      headerMarkup += BrandingUtil.createMarkupForHeaders( header );
-    }
-    String headHtml = properties.get( WebClient.HEAD_HTML );
-    if( headHtml != null ) {
-      headerMarkup += headHtml;
-    }
-    replacePlaceholder( template, StartupPageTemplateHolder.VAR_HEADERS, headerMarkup );
   }
 
   private void applyLocalizeableMessages() {
