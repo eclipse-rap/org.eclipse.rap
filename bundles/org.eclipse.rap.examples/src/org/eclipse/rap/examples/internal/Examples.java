@@ -68,7 +68,7 @@ public final class Examples {
     exampleCategories.add( createCategory( "Layouts",
                                            "grid-layout", "row-layout", "fill-layout" ) );
     exampleCategories.add( createCategory( "Custom Widgets",
-                                           "gmaps", "oscilloscope", "carousel" ) );
+                                           "gmaps", "ckeditor", "oscilloscope", "carousel" ) );
     return exampleCategories;
   }
 
