@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,9 +59,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
       var widget = ObjectManager.getObject( "w3" );
       var expected 
         = "text1 "
-        + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"0\">link1</span>"
+        + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"w3#0\">link1</span>"
         + " text2 "
-        + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"1\">link2</span>";
+        + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"w3#1\">link2</span>";
       assertEquals( expected, widget._link.getHtml() );
       assertEquals( 2, widget._linksCount );
       shell.destroy();
@@ -86,7 +86,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
       var widget = ObjectManager.getObject( "w3" );
       var expected 
         = "text<br/>text "
-        + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"0\">link<br/>link</span>";
+        + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"w3#0\">"
+        + "link<br/>link"
+        + "</span>";
       assertEquals( expected, widget._link.getHtml() );
       assertEquals( 1, widget._linksCount );
       shell.destroy();
@@ -111,7 +113,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
       var widget = ObjectManager.getObject( "w3" );
       var expected 
         = "foo &amp;&amp; &lt;&gt; &quot; bar "
-        + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"0\">"
+        + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"w3#0\">"
         + "foo &amp;&amp; &lt;&gt; &quot; bar"
         + "</span>";
       assertEquals( expected, widget._link.getHtml() );

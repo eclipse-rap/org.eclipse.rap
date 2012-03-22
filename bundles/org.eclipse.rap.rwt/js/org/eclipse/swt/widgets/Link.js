@@ -23,7 +23,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     this._hasSelectionListener = false;
     this._hyperlinksHaveListeners = false;
     this._readyToSendChanges = true;
-    this._currentFocusedLink = -1;
+    this._focusedLinkIndex = -1;
     this._linksCount = 0;
     this._link = new qx.ui.embed.HtmlEmbed();
     this._link.setAppearance( "link-text" );
@@ -101,11 +101,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     },
 
     addLink : function( text, index ) {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var id = widgetManager.findIdByWidget( this ) + "#" + index;
       this._text += "<span tabIndex=\"1\" ";
       this._text += "style=\"";
       this._text += "text-decoration:underline; ";
       this._text += "\" ";
-      this._text += "id=\"" + index + "\"";
+      this._text += "id=\"" + id + "\"";
       this._text += ">";
       this._text += text;
       this._text += "</span>";
@@ -114,7 +116,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
 
     applyText : function() {
       this._link.setHtml( this._text );
-      if ( this._linksCount === 0 ) {
+      if( this._linksCount === 0 ) {
         this.setTabIndex( null );
       } else {
         this.setTabIndex( 1 );
@@ -125,7 +127,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       this._removeEventListeners();
       this._text = "";
       this._linksCount = 0;
-      this._currentFocusedLink = -1;
+      this._focusedLinkIndex = -1;
     },
 
     _applyHyperlinksStyleProperties : function() {
@@ -188,7 +190,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
 
     _onMouseDown : function( e ) {
       var target = this._getEventTarget( e );
-      var index = parseInt( target.id, 10 );
+      var index = this._getLinkIndex( target );
       this._setFocusedLink( index );
       var leftBtnPressed = this._isLeftMouseButtonPressed( e );
       if( this.isEnabled() && leftBtnPressed && this._readyToSendChanges ) {
@@ -204,7 +206,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       var leftBtnPressed;
       if( e.which ) {
         leftBtnPressed = ( e.which === 1 );
-      } else if ( e.button ) {
+      } else if( e.button ) {
         if( org.eclipse.rwt.Client.isMshtml() ) {
           leftBtnPressed = ( e.button === 1 );
         } else {
@@ -217,9 +219,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     _onKeyDown : function( e ) {
       if( this.isEnabled() && e.keyCode === 13 ) {
         var target = this._getEventTarget( e );
-        var index = target.id;
+        var index = this._getLinkIndex( target );
         this._sendChanges( index );
       }
+    },
+
+    _getLinkIndex : function( element ) {
+      var id = element.id;
+      var index = id.substr( id.lastIndexOf( "#" ) + 1 );
+      return parseInt( index, 10 );
     },
 
     _getEventTarget : function( e ) {
@@ -234,31 +242,26 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
 
     // Override of the _ontabfocus method from qx.ui.core.Widget
     _ontabfocus : function() {
-      if( this._currentFocusedLink === -1 && this._linksCount > 0 ) {
+      if( this._focusedLinkIndex === -1 && this._linksCount > 0 ) {
         this._setFocusedLink( 0 );
       }
     },
 
     _onKeyPress : function( evt ) {
       if( this.isFocused() && evt.getKeyIdentifier() === "Tab" && this._linksCount > 0 ) {
-        if(    !evt.isShiftPressed()
-            && this._currentFocusedLink >= 0
-            && this._currentFocusedLink < this._linksCount - 1 )
-        {
+        var index = this._focusedLinkIndex;
+        if( !evt.isShiftPressed() && index >= 0 && index < this._linksCount - 1 ) {
           evt.stopPropagation();
           evt.preventDefault();
-          this._setFocusedLink( this._currentFocusedLink + 1 );
-        } else if( !evt.isShiftPressed() && this._currentFocusedLink === -1 ) {
+          this._setFocusedLink( index + 1 );
+        } else if( !evt.isShiftPressed() && index === -1 ) {
           evt.stopPropagation();
           evt.preventDefault();
           this._setFocusedLink( 0 );
-        } else if(    evt.isShiftPressed()
-                   && this._currentFocusedLink > 0
-                   && this._currentFocusedLink <= this._linksCount - 1 )
-        {
+        } else if( evt.isShiftPressed() && index > 0 && index <= this._linksCount - 1 ) {
           evt.stopPropagation();
           evt.preventDefault();
-          this._setFocusedLink( this._currentFocusedLink - 1 );
+          this._setFocusedLink( index - 1 );
         }
       }
     },
@@ -267,30 +270,26 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       this._setFocusedLink( -1 );
     },
 
-    _setFocusedLink : function( id ) {
+    _setFocusedLink : function( index ) {
       var hyperlink = this._getFocusedHyperlinkElement();
       if( hyperlink !== null ) {
         hyperlink.blur();
-        if( org.eclipse.rwt.Client.isWebkit() ) {
-          hyperlink.style.outline = "none";
-        }
+        hyperlink.style.outline = "none";
       }
-      this._currentFocusedLink = id;
+      this._focusedLinkIndex = index;
       hyperlink = this._getFocusedHyperlinkElement();
       if( hyperlink !== null ) {
         hyperlink.focus();
-        if( org.eclipse.rwt.Client.isWebkit() ) {
-          hyperlink.style.outline = "1px dotted";
-        }
+        hyperlink.style.outline = "1px dotted";
       }
     },
 
     _getFocusedHyperlinkElement : function() {
       var result = null;
       var hyperlinks = this._getHyperlinkElements();
-      var number =  this._currentFocusedLink;
-      if( number >= 0 && number < hyperlinks.length ) {
-        result = hyperlinks[ number ];
+      var index = this._focusedLinkIndex;
+      if( index >= 0 && index < hyperlinks.length ) {
+        result = hyperlinks[ index ];
       }
       return result;
     },
