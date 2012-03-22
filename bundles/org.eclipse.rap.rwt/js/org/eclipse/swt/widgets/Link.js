@@ -188,11 +188,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       }
     },
 
-    _onMouseDown : function( e ) {
-      var target = this._getEventTarget( e );
+    _onMouseDown : function( evt ) {
+      var target = this._getEventTarget( evt );
       var index = this._getLinkIndex( target );
       this._setFocusedLink( index );
-      var leftBtnPressed = this._isLeftMouseButtonPressed( e );
+      var leftBtnPressed = this._isLeftMouseButtonPressed( evt );
       if( this.isEnabled() && leftBtnPressed && this._readyToSendChanges ) {
         // [if] Fix for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=252559
         this._readyToSendChanges = false;
@@ -202,23 +202,23 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       }
     },
 
-    _isLeftMouseButtonPressed : function( e ) {
+    _isLeftMouseButtonPressed : function( evt ) {
       var leftBtnPressed;
-      if( e.which ) {
-        leftBtnPressed = ( e.which === 1 );
-      } else if( e.button ) {
+      if( evt.which ) {
+        leftBtnPressed = ( evt.which === 1 );
+      } else if( evt.button ) {
         if( org.eclipse.rwt.Client.isMshtml() ) {
-          leftBtnPressed = ( e.button === 1 );
+          leftBtnPressed = ( evt.button === 1 );
         } else {
-          leftBtnPressed = ( e.button === 0 );
+          leftBtnPressed = ( evt.button === 0 );
         }
       }
       return leftBtnPressed;
     },
 
-    _onKeyDown : function( e ) {
-      if( this.isEnabled() && e.keyCode === 13 ) {
-        var target = this._getEventTarget( e );
+    _onKeyDown : function( evt ) {
+      if( this.isEnabled() && evt.keyCode === 13 ) {
+        var target = this._getEventTarget( evt );
         var index = this._getLinkIndex( target );
         this._sendChanges( index );
       }
@@ -230,12 +230,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       return parseInt( index, 10 );
     },
 
-    _getEventTarget : function( e ) {
+    _getEventTarget : function( evt ) {
       var target;
       if( org.eclipse.rwt.Client.isMshtml() ) {
         target = window.event.srcElement;
       } else {
-        target = e.target;
+        target = evt.target;
       }
       return target;
     },
