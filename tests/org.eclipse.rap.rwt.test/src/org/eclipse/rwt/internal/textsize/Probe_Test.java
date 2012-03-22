@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,13 +25,13 @@ public class Probe_Test extends TestCase {
   public void testGetter() {
     Probe probe1 = new Probe( PROBE_STRING, FONT_DATA );
     Probe probe2 = new Probe( FONT_DATA );
-    
+
     assertSame( FONT_DATA, probe1.getFontData() );
     assertSame( PROBE_STRING, probe1.getText() );
     assertSame( FONT_DATA, probe2.getFontData() );
     assertSame( Probe.DEFAULT_PROBE_STRING, probe2.getText() );
   }
-  
+
   public void testParamTextMustNotBeNull() {
     try {
       new Probe( null, FONT_DATA );
@@ -47,10 +47,10 @@ public class Probe_Test extends TestCase {
     } catch( NullPointerException expected ) {
     }
   }
-  
+
   public void testEquals() {
     Probe probe = new Probe( FONT_DATA );
-    
+
     assertTrue( probe.equals( probe ) );
     assertTrue( probe.equals( new Probe( FONT_DATA ) ) );
     assertFalse( probe.equals( null ) );
@@ -58,17 +58,22 @@ public class Probe_Test extends TestCase {
     assertFalse( probe.equals( new Probe( "otherText", FONT_DATA ) ) );
     assertFalse( probe.equals( new Probe( new FontData( "helvetia", 23, SWT.BOLD ) ) ) );
   }
-  
+
   public void testHashcode() {
-    assertEquals( 930413418, new Probe( FONT_DATA ).hashCode() );
+    assertEquals( -290887150, new Probe( FONT_DATA ).hashCode() );
   }
-  
+
   public void testIsSerializable() throws Exception {
     Probe probe = new Probe( "text", new FontData( "name", 1, SWT.ITALIC ) );
-    
+
     Probe deserializedProbe = Fixture.serializeAndDeserialize( probe );
-    
+
     assertEquals( probe.getText(), deserializedProbe.getText() );
     assertEquals( probe.getFontData(), deserializedProbe.getFontData() );
+  }
+
+  // see bug 374914
+  public void testDefaultProbeString() {
+    assertTrue( Probe.DEFAULT_PROBE_STRING.indexOf( "AzByCx" ) != -1 );
   }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,13 +16,17 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 class Probe implements SerializableCompatibility {
-  
+
   final static String DEFAULT_PROBE_STRING;
   static {
     StringBuilder result = new StringBuilder();
-    for( int i = 33; i < 122; i++ ) {
+    for( int i = 33; i < 97; i++ ) {
       if( i != 34 && i != 39 ) {
         result.append( ( char ) i );
+      }
+      // Create sequence "AzBy...YbZa" to workaround bug 374914
+      if( Character.isLetter( ( char ) i ) ) {
+        result.append( ( char ) ( 187 - i ) );
       }
     }
     DEFAULT_PROBE_STRING = result.toString();
@@ -34,7 +38,7 @@ class Probe implements SerializableCompatibility {
   Probe( FontData fontData ) {
     this( DEFAULT_PROBE_STRING, fontData );
   }
-  
+
   Probe( String text, FontData fontData ) {
     ParamCheck.notNull( text, "text" );
     ParamCheck.notNull( fontData, "fontData" );
@@ -50,6 +54,7 @@ class Probe implements SerializableCompatibility {
     return text;
   }
 
+  @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
@@ -58,6 +63,7 @@ class Probe implements SerializableCompatibility {
     return result;
   }
 
+  @Override
   public boolean equals( Object obj ) {
     boolean result = false;
     if( obj != null && getClass() == obj.getClass() ) {
