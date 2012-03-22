@@ -19,26 +19,19 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
   construct : function() {
     this.base( arguments );
     this.setAppearance( "link" );
-    // Default values
     this._text = "";
     this._hasSelectionListener = false;
     this._hyperlinksHaveListeners = false;
-    // indicates that the next request can be sent
     this._readyToSendChanges = true;
-    // innerTab handling
     this._currentFocusedLink = -1;
     this._linksCount = 0;
-    //
     this._link = new qx.ui.embed.HtmlEmbed();
     this._link.setAppearance( "link-text" );
     this.add( this._link );
-    //
     this.setSelectable( false );
     this.setHideFocus( true );
-    //
     this.__onMouseDown = qx.lang.Function.bindEvent( this._onMouseDown, this );
     this.__onKeyDown = qx.lang.Function.bindEvent( this._onKeyDown, this );
-    //
     this.addEventListener( "appear", this._onAppear, this );
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
     this.addEventListener( "contextmenu", this._onContextMenu, this );
@@ -260,10 +253,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     },
 
     _onKeyPress : function( evt ) {
-      if(    this.isFocused()
-          && evt.getKeyIdentifier() === "Tab"
-          && this._linksCount > 0 )
-      {
+      if( this.isFocused() && evt.getKeyIdentifier() === "Tab" && this._linksCount > 0 ) {
         if(    !evt.isShiftPressed()
             && this._currentFocusedLink >= 0
             && this._currentFocusedLink < this._linksCount - 1 )
@@ -271,9 +261,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
           evt.stopPropagation();
           evt.preventDefault();
           this._setFocusedLink( this._currentFocusedLink + 1 );
-        } else if(    !evt.isShiftPressed()
-                   && this._currentFocusedLink === -1 )
-        {
+        } else if( !evt.isShiftPressed() && this._currentFocusedLink === -1 ) {
           evt.stopPropagation();
           evt.preventDefault();
           this._setFocusedLink( 0 );
