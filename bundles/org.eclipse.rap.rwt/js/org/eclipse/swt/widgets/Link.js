@@ -34,11 +34,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     this.__onKeyDown = qx.lang.Function.bindEvent( this._onKeyDown, this );
     this.addEventListener( "appear", this._onAppear, this );
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
-    this.addEventListener( "contextmenu", this._onContextMenu, this );
-    // Event listener used for inner TabIndex change
     this.addEventListener( "keypress", this._onKeyPress );
     this.addEventListener( "focusout", this._onFocusOut );
-    //
     this._link.addEventListener( "changeHtml", this._onChangeHtml, this );
   },
 
@@ -47,7 +44,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     delete this.__onMouseDown;
     delete this.__onKeyDown;
     this.removeEventListener( "appear", this._onAppear, this );
-    this.removeEventListener( "contextmenu", this._onContextMenu, this );
     this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
     this.removeEventListener( "keypress", this._onKeyPress );
     this.removeEventListener( "focusout", this._onFocusOut );
@@ -56,15 +52,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
   },
 
   members : {
-    _onContextMenu : function( evt ) {
-      var menu = this.getContextMenu();
-      if( menu != null ) {
-        menu.setLocation( evt.getPageX(), evt.getPageY() );
-        menu.setOpener( this );
-        menu.show();
-        evt.stopPropagation();
-      }
-    },
 
     _onAppear : function( evt ) {
       this._link.setTabIndex( null );
@@ -333,6 +320,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       }
       this._readyToSendChanges = true;
     }
+
   }
 
 } );
