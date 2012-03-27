@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.widgets.Widget;
 
 
 public final class UITestUtil {
@@ -24,9 +23,8 @@ public final class UITestUtil {
     enabled = Boolean.valueOf( property ).booleanValue();
   }
 
-  public static void checkId( Widget widget ) {
+  public static void checkId( String id ) {
     if( isEnabled() ) {
-      String id = WidgetUtil.getId( widget );
       if( !isValidId( id ) ) {
         String msg = "The widget id contains illegal characters: " + id;
         throw new IllegalArgumentException( msg ) ;

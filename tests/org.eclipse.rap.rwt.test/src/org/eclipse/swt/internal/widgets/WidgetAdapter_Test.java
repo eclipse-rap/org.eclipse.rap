@@ -14,7 +14,6 @@ package org.eclipse.swt.internal.widgets;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -79,6 +78,25 @@ public class WidgetAdapter_Test extends TestCase {
     display = new Display();
     IWidgetAdapter adapter2 = display.getAdapter( IWidgetAdapter.class );
     assertEquals( adapter1.getId(), adapter2.getId() );
+  }
+
+  public void testCustomIdWithoutUITestEnabled() {
+    Shell shell = new Shell( display, SWT.NONE );
+
+    shell.setData( WidgetUtil.CUSTOM_WIDGET_ID, "myShell" );
+
+    assertFalse( WidgetUtil.getId( shell ).equals( "myShell" ) );
+  }
+
+  public void testCustomIdAfterWidgetIsInitialised() {
+    Shell shell = new Shell( display, SWT.NONE );
+    Fixture.markInitialized( shell );
+
+    try {
+      shell.setData( WidgetUtil.CUSTOM_WIDGET_ID, "myShell" );
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
   }
 
   public void testInitializedForShell() throws IOException {

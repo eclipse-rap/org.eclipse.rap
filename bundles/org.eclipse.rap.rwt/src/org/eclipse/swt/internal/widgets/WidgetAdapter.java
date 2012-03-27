@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.Map;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
+import org.eclipse.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rwt.internal.protocol.ClientObjectAdapter;
 import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
@@ -29,6 +30,7 @@ public final class WidgetAdapter
 {
 
   private final String id;
+  private String customId;
   private boolean initialized;
   private transient Map<String,Object> preservedValues;
   private String jsParent;
@@ -50,7 +52,22 @@ public final class WidgetAdapter
   }
 
   public String getId() {
-    return id;
+    String result = null;
+    if( UITestUtil.isEnabled() ) {
+      result = customId;
+    }
+    if( result == null ) {
+      result = id;
+    }
+    return result;
+  }
+
+  public void setCustomId( String customId ) {
+    if( isInitialized() ) {
+      throw new IllegalStateException( "Widget is already initialized" );
+    }
+    UITestUtil.checkId( customId );
+    this.customId = customId;
   }
 
   public boolean isInitialized() {

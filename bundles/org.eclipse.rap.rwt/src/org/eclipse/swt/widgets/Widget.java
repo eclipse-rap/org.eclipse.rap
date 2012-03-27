@@ -20,6 +20,7 @@ import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
@@ -329,6 +330,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     if( key == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
+    handleCustomId( key, value );
     int index = 1;
     Object[] table = null;
     if( ( state & KEYED_DATA ) != 0 ) {
@@ -373,6 +375,13 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     }
     if( key.equals( SWT.SKIN_CLASS ) || key.equals( SWT.SKIN_ID ) ) {
       reskin( SWT.ALL );
+    }
+  }
+
+  private void handleCustomId( String key, Object value ) {
+    if( key.equals( WidgetUtil.CUSTOM_WIDGET_ID ) && value instanceof String ) {
+      WidgetAdapter adapter = ( WidgetAdapter )getAdapter( IWidgetAdapter.class );
+      adapter.setCustomId( ( String )value );
     }
   }
 

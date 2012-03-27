@@ -13,7 +13,6 @@ package org.eclipse.rwt.lifecycle;
 
 import java.text.MessageFormat;
 
-import org.eclipse.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
@@ -119,21 +118,7 @@ public final class WidgetUtil {
    * @return the id for the given <code>widget</code>
    */
   public static String getId( Widget widget ) {
-    // TODO [rh] consider overriding the id when Widget#setData is called
-    //      - safer 1: in case someone tries to obtain id directly from adapter
-    //      - safer 2: changing the id after widget was initialized could be
-    //        detected and prevented
-    //      - less memory: new 'data' array created per widget to hold the id
-    //      - illegal id's could be rejected immediately (close to error source)
-    //      - faster (?): only "return getAdapter( widget ).getId();" in here
-    String result = null;
-    if( UITestUtil.isEnabled() ) {
-      result = ( String )widget.getData( CUSTOM_WIDGET_ID );
-    }
-    if( result == null ) {
-      result = getAdapter( widget ).getId();
-    }
-    return result;
+    return getAdapter( widget ).getId();
   }
 
   /**

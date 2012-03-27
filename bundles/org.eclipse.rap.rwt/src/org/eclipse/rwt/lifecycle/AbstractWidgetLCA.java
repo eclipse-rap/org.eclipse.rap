@@ -13,7 +13,6 @@ package org.eclipse.rwt.lifecycle;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.Control;
@@ -31,7 +30,6 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
   public final void render( Widget widget ) throws IOException {
     WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
     if( !adapter.isInitialized() ) {
-      UITestUtil.checkId( widget );
       renderInitialization( widget );
     }
     renderChanges( widget );

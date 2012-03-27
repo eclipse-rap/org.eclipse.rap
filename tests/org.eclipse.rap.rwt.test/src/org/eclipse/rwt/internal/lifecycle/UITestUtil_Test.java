@@ -23,11 +23,13 @@ public class UITestUtil_Test extends TestCase {
 
   private Display display;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
     UITestUtil.enabled = false;
@@ -63,13 +65,12 @@ public class UITestUtil_Test extends TestCase {
     assertEquals( customId, WidgetUtil.getId( widget ) );
   }
 
-  public void testCheckIds() {
+  public void testInvalidCustomId() {
     UITestUtil.enabled = true;
     Shell shell = new Shell( display, SWT.NONE );
-    shell.setData( WidgetUtil.CUSTOM_WIDGET_ID, "a/8" );
 
     try {
-      UITestUtil.checkId( shell );
+      shell.setData( WidgetUtil.CUSTOM_WIDGET_ID, "a/8" );
       fail( "widget id contains illegal characters" );
     } catch( IllegalArgumentException iae ) {
     }

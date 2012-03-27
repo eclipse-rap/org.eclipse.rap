@@ -357,7 +357,7 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, firstOperation.getProperty( "enableUiTests" ) );
   }
 
-  public void testRenderEnableUiTests_whenAlreadyInitialized() throws IOException {
+  public void testRenderEnableUiTests_WhenAlreadyInitialized() throws IOException {
     Fixture.fakeNewRequest( display );
     Fixture.markInitialized( display );
     setEnableUiTests( true );
@@ -368,19 +368,29 @@ public class DisplayLCA_Test extends TestCase {
     assertNull( message.findSetOperation( displayId, "enableUiTests" ) );
   }
 
-  public void testCheckUiTests() throws IOException {
+  public void testInvalidCustomId() {
     Fixture.fakeNewRequest( display );
     Fixture.markInitialized( display );
     setEnableUiTests( true );
     Shell shell = new Shell( display );
-    shell.setData( WidgetUtil.CUSTOM_WIDGET_ID, "in/valid id" );
 
     try {
-      displayLCA.render( display );
+      shell.setData( WidgetUtil.CUSTOM_WIDGET_ID, "in/valid id" );
       fail();
     } catch( IllegalArgumentException e ) {
       assertTrue( e.getMessage().contains( "widget id contains illegal characters" ) );
     }
+  }
+
+  public void testRenderWithCustomId() throws IOException {
+    Shell shell = new Shell( display, SWT.NONE );
+    setEnableUiTests( true );
+
+    shell.setData( WidgetUtil.CUSTOM_WIDGET_ID, "myShell" );
+    WidgetUtil.getLCA( shell ).renderInitialization( shell );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCreateOperation( "myShell" ) );
   }
 
   private void clearLogs() {
