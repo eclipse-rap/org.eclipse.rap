@@ -76,7 +76,7 @@ Display {
 Composite {
   padding: 0;
   opacity: 1;
-  background-color: #ffffff;
+  background-color: transparent;
   background-image: none;
   border: none;
   box-shadow: none;
@@ -363,7 +363,7 @@ Group {
 
 Group-Frame {
   margin: 20px 10px 10px 10px;
-  padding: 15px 8px 8px 8px;
+  padding: 15px 0 0 0;
   border: 1px solid #bdbdbd;
   border-radius: 2px;
 }
@@ -386,7 +386,7 @@ Label {
   background-color: transparent;
   background-image: none;
   border: none;
-  border-radius: 2px;
+  border-radius: 0;
   text-decoration: none;
   cursor: default;
   opacity: 1;
@@ -985,6 +985,11 @@ TableItem:linesvisible:even:selected {
 
 TableItem:linesvisible:even:selected:unfocused {
   background-color: #959595;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #b5b5b5 ),
+    to( #818181 )
+  );
   color: #ffffff;
   text-decoration: none;
   text-shadow: none;
@@ -1398,14 +1403,22 @@ Tree-Indent:first:last:expanded:hover {
 /* Scale default theme */
 
 Scale {
-  background-color: white;
-  border-radius: 0;
+  background-color: transparent;
+  border-radius: 3px;
+}
+
+Scale:focused {
+  border: 1px solid #e5e5e5;
 }
 
 Scale-Thumb {
-  background-color: #00589f;
+  background-color: #e5e5e5;
   border: 1px solid #a4a4a4;
   border-radius: 2px 2px 2px 2px;
+}
+
+Scale-Thumb:focused {
+  border: 1px solid #4f7cb1;
 }
 
 /* DateTime default theme */
