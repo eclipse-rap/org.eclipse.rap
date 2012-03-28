@@ -129,7 +129,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
       var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var result = EncodingUtil.escapeText( text, true );
       result = EncodingUtil.replaceNewLines( result, "<br/>" );
-      result = EncodingUtil.escapeLeadingTrailingSpaces( result );
+      result = EncodingUtil.replaceWhiteSpaces( result );
       return result;
     }
 
