@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
      *  - To assign the last created linear gradient as a style, use "linearGradient" as the value.
      *  - strokeText behaves like fillText and fillText draws a rectangular background
      *  - "arc" is differing from the HTML5-Canvas implementation in that it takes two radii (x,y).
-     *    This might be fixed if transformations are supported in IE (like exCanvas does).
+     *    TODO [tb] : This should be changed to "ellipse"
      */    
     draw : function( operations ) {
       for( var i = 0; i < operations.length; i++ ) {
