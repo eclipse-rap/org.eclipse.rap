@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,7 +63,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       TestUtil.flush();
     },
 
-    testDrawArc : function() {
+    testDrawEllipse : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       var radiusY = height / 2;
       gc.draw( [
         [ "beginPath" ],
-        [ "arc", x + radiusX, y + radiusY, radiusX, radiusY, -1 * startAngle, -1 * ( startAngle + arcAngle ), true ],
+        [ "ellipse", x + radiusX, y + radiusY, radiusX, radiusY, 0, -1 * startAngle, -1 * ( startAngle + arcAngle ), true ],
         [ "fill" ]
       ] );
             

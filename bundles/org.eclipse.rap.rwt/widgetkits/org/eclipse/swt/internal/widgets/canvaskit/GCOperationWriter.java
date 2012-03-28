@@ -204,22 +204,26 @@ final class GCOperationWriter {
   private void drawArc( DrawArc operation ) {
     double factor = Math.PI / 180;
     float offset = getOffset( operation.fill );
-    float x = operation.x + offset;
-    float y = operation.y + offset;
-    float width = operation.width;
-    float height = operation.height;
+    float rx = operation.width / 2;
+    float ry = operation.height / 2;
+    float cx = operation.x + rx + offset ;
+    float cy = operation.y + ry + offset;
     float startAngle = round( operation.startAngle * factor * -1, 4 );
     float arcAngle = round( operation.arcAngle * factor * -1, 4 );
     addClientOperation( "beginPath" );
+    if( operation.fill ) {
+      addClientOperation( "moveTo", cx, cy  );
+    }
     addToOperations(
-      "arc",
-      new Float( x + width / 2 ),
-      new Float( y + height / 2 ),
-      new Float( width / 2 ),
-      new Float( height / 2 ),
+      "ellipse",
+      new Float( cx ),
+      new Float( cy ),
+      new Float( rx ),
+      new Float( ry ),
+      new Float( 0 ),
       new Float( startAngle ),
       new Float( startAngle + arcAngle ),
-      Boolean.TRUE
+      arcAngle < 0 ? Boolean.TRUE : Boolean.FALSE
     );
     addClientOperation( operation.fill ? "fill" : "stroke" );
   }

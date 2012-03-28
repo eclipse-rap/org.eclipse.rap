@@ -391,7 +391,7 @@ public class GCOperationWriter_Test extends TestCase {
 
     JSONArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"arc\",60,120,50,100,-0.8727,-2.618,true", getOperation( 2, ops ) );
+    assertEquals( "\"ellipse\",60,120,50,100,0,-0.8727,-2.618,true", getOperation( 2, ops ) );
     assertEquals( "\"stroke\"", getOperation( 3, ops ) );
   }
 
@@ -401,7 +401,7 @@ public class GCOperationWriter_Test extends TestCase {
 
     JSONArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"arc\",60.5,120.5,50,100,-0.8727,-2.618,true", getOperation( 2, ops ) );
+    assertEquals( "\"ellipse\",60.5,120.5,50,100,0,-0.8727,-2.618,true", getOperation( 2, ops ) );
     assertEquals( "\"stroke\"", getOperation( 3, ops ) );
   }
 
@@ -411,10 +411,22 @@ public class GCOperationWriter_Test extends TestCase {
 
     JSONArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
-    assertEquals( "\"arc\",60,120,50,100,-0.8727,-2.618,true", getOperation( 2, ops ) );
-    assertEquals( "\"fill\"", getOperation( 3, ops ) );
+    assertEquals( "\"moveTo\",60,120", getOperation( 2, ops ) );
+    assertEquals( "\"ellipse\",60,120,50,100,0,-0.8727,-2.618,true", getOperation( 3, ops ) );
+    assertEquals( "\"fill\"", getOperation( 4, ops ) );
   }
 
+  public void testFillArcClockwise() {
+    gc.setLineWidth( 2 );
+    gc.fillArc( 10, 20, 100, 200, 50, -100 );
+    
+    JSONArray ops = getGCOperations( canvas );
+    assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
+    assertEquals( "\"moveTo\",60,120", getOperation( 2, ops ) );
+    assertEquals( "\"ellipse\",60,120,50,100,0,-0.8727,0.8726001,false", getOperation( 3, ops ) );
+    assertEquals( "\"fill\"", getOperation( 4, ops ) );
+  }
+  
   public void testDrawImage() {
     Image image = Graphics.getImage( Fixture.IMAGE_50x100, canvas.getClass().getClassLoader() );
     String imageLocation = ImageFactory.getImagePath( image );

@@ -83,8 +83,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
      *  - "addColorStop" will automatically applied to the last created gradient.
      *  - To assign the last created linear gradient as a style, use "linearGradient" as the value.
      *  - strokeText behaves like fillText and fillText draws a rectangular background
-     *  - "arc" is differing from the HTML5-Canvas implementation in that it takes two radii (x,y).
-     *    TODO [tb] : This should be changed to "ellipse"
+     *  - ellipse is not a W3C standard, only WHATWG, but we need it for SWT arc to work.
      */    
     draw : function( operations ) {
       for( var i = 0; i < operations.length; i++ ) {
@@ -92,11 +91,11 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
           var op = operations[ i ][ 0 ];
           switch( op ) {
             case "fillStyle":
-            case "strokeStyle": 
-            case "globalAlpha": 
-            case "lineWidth": 
-            case "lineCap": 
-            case "lineJoin": 
+            case "strokeStyle":
+            case "globalAlpha":
+            case "lineWidth":
+            case "lineCap":
+            case "lineJoin":
             case "font": 
               this._setProperty( operations[ i ] );
             break;
@@ -104,7 +103,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
             case "addColorStop": 
             case "fillText": 
             case "strokeText": 
-            case "arc":
+            case "ellipse":
             case "drawImage":
               this[ "_" + op ]( operations[ i ] );
             break;
@@ -181,7 +180,8 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       this._context.font = font;
     },
 
-    _arc : qx.core.Variant.select( "qx.client", {
+    // See http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#building-paths
+    _ellipse : qx.core.Variant.select( "qx.client", {
       "mshtml" : function( operation ) {
         this._context[ operation[ 0 ] ].apply( this._context, operation.slice( 1 ) );
       }, 
@@ -190,9 +190,10 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
         var cy = operation[ 2 ];
         var rx = operation[ 3 ];
         var ry = operation[ 4 ];
-        var startAngle = operation[ 5 ];
-        var endAngle = operation[ 6 ];
-        var dir = operation[ 7 ];
+        var rotation = operation[ 5 ]; // not supported
+        var startAngle = operation[ 6 ];
+        var endAngle = operation[ 7 ];
+        var dir = operation[ 8 ];
         if( rx > 0 && ry > 0 ) {
           this._context.save();
           this._context.translate( cx, cy );

@@ -120,7 +120,7 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
       this.closePath();
     },
 
-    arc : function( x, y, radiusX, radiusY, startAngle, endAngle, antiCW ) {
+    ellipse : function( x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiCW ) {
       if( this._currentPath.length === 0 ) {  
         var startX = x + Math.cos( startAngle ) * radiusX;
         var startY = y + Math.sin( startAngle ) * radiusY;
