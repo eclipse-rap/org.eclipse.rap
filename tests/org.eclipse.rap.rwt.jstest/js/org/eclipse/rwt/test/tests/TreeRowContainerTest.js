@@ -238,7 +238,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
       assertEquals( null, config.textColor );
       assertEquals( null, config.font );
       assertEquals( true, config.enabled );
-      assertEquals( true, config.focused );
+      assertEquals( false, config.focused );
       assertEquals( false, config.linesVisible );
       assertEquals( false, config.fullSelection );
       assertEquals( false, config.hasCheckBoxes );

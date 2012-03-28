@@ -56,7 +56,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
         "textColor" : null,
         "font" : null,
         "enabled" : true,
-        "focused" : true,
+        "focused" : false,
         "linesVisible" : false,
         "fullSelection" : false,
         "hideSelection" : false,
