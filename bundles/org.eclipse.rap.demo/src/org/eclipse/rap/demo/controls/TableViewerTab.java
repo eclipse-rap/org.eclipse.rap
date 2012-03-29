@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.*;
 
 public class TableViewerTab extends ExampleTab {
 
-  private static final int ADD_ITEMS = 10000;
+  private static final int ADD_ITEMS = 100;
 
   private static final int COL_FIRST_NAME = 0;
   private static final int COL_LAST_NAME = 1;
@@ -56,6 +56,7 @@ public class TableViewerTab extends ExampleTab {
     checkedImage = loadImage( "resources/checked.png" );
   }
 
+  @Override
   protected void createStyleControls( Composite parent ) {
     createStyleButton( "MULTI", SWT.MULTI );
     createStyleButton( "VIRTUAL", SWT.VIRTUAL );
@@ -66,6 +67,7 @@ public class TableViewerTab extends ExampleTab {
     lblSelection = new Label( styleComp, SWT.WRAP );
   }
 
+  @Override
   protected void createExampleControls( Composite parent ) {
     if( btnCreateCellEditor != null && !btnCreateCellEditor.isDisposed() ) {
       btnCreateCellEditor.setEnabled( true );
@@ -149,6 +151,7 @@ public class TableViewerTab extends ExampleTab {
     column.setWidth( 170 );
     column.setMoveable( true );
     column.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         int sortDirection = updateSortDirection( ( TableColumn )event.widget );
         sort( viewer, COL_FIRST_NAME, sortDirection == SWT.DOWN );
@@ -165,6 +168,7 @@ public class TableViewerTab extends ExampleTab {
     column.setWidth( 120 );
     column.setMoveable( true );
     column.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         int sortDirection = updateSortDirection( ( TableColumn )event.widget );
         sort( viewer, COL_LAST_NAME, sortDirection == SWT.DOWN );
@@ -181,6 +185,7 @@ public class TableViewerTab extends ExampleTab {
     column.setWidth( 80 );
     column.setMoveable( true );
     column.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         int sortDirection = updateSortDirection( ( TableColumn )event.widget );
         sort( viewer, COL_AGE, sortDirection == SWT.DOWN );
@@ -197,6 +202,7 @@ public class TableViewerTab extends ExampleTab {
     column.setWidth( 60 );
     column.setMoveable( true );
     column.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         int sortDirection = updateSortDirection( ( TableColumn )event.widget );
         sort( viewer, COL_MARRIED, sortDirection == SWT.DOWN );
@@ -209,9 +215,11 @@ public class TableViewerTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Add " + ADD_ITEMS + " Items" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         for( int i = 0; i < ADD_ITEMS; i++ ) {
-          persons.add( new Person( "new", "person", 11 + i, false ) );
+          int counter = 11 + i;
+          persons.add( new Person( "new " + counter, "person " + counter, counter, false ) );
         }
         getViewer().setInput( persons );
         if( ( getStyle() & SWT.VIRTUAL ) != 0 ) {
@@ -225,6 +233,7 @@ public class TableViewerTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Select youngest Person" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         Person youngestPerson = null;
         int minAge = Integer.MAX_VALUE;
@@ -245,6 +254,7 @@ public class TableViewerTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Remove selected rows" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         IStructuredSelection selection = ( IStructuredSelection )getViewer().getSelection();
         Iterator iter = selection.iterator();
@@ -265,6 +275,7 @@ public class TableViewerTab extends ExampleTab {
     btnCreateCellEditor = new Button( styleComp, SWT.PUSH );
     btnCreateCellEditor.setText( "Create Cell Editor" );
     btnCreateCellEditor.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         createCellEditor();
         btnCreateCellEditor.setEnabled( false );
@@ -347,6 +358,7 @@ public class TableViewerTab extends ExampleTab {
       this.married = married;
     }
 
+    @Override
     public String toString() {
       return firstName + " " + lastName + " " + age + " " + married;
     }
@@ -396,6 +408,7 @@ public class TableViewerTab extends ExampleTab {
       this.nameBackground = new Color( Display.getCurrent(), 248, 248, 248 );
     }
 
+    @Override
     public String getText( Object element ) {
       Person person = ( Person )element;
       String result = person.toString();
@@ -416,6 +429,7 @@ public class TableViewerTab extends ExampleTab {
       return result;
     }
 
+    @Override
     public Image getImage( Object element ) {
       Image result = null;
       if( columnIndex == COL_MARRIED ) {
@@ -424,7 +438,8 @@ public class TableViewerTab extends ExampleTab {
       }
       return result;
     }
-    
+
+    @Override
     public Color getBackground( Object element ) {
       Color result = null;
       switch( columnIndex ) {
@@ -436,6 +451,7 @@ public class TableViewerTab extends ExampleTab {
       return result;
     }
 
+    @Override
     public String getToolTipText( Object element ) {
       Person person = ( Person )element;
       String text = null;
@@ -468,10 +484,12 @@ public class TableViewerTab extends ExampleTab {
       this.ascending = ascending;
     }
 
+    @Override
     public int compare( Viewer viewer, Object object1, Object object2 ) {
       return compare( ( Person )object1, ( Person )object2 );
     }
 
+    @Override
     public boolean isSorterProperty( Object elem, String property ) {
       return true;
     }
@@ -504,6 +522,7 @@ public class TableViewerTab extends ExampleTab {
       text = string;
     }
 
+    @Override
     public boolean select( Viewer viewer, Object parentElement, Object element ) {
       boolean result = true;
       Person person = ( Person )element;
@@ -513,6 +532,7 @@ public class TableViewerTab extends ExampleTab {
       }
       return result;
     }
+    @Override
     public boolean isFilterProperty( Object element, String prop ) {
       return true;
     }
@@ -525,6 +545,7 @@ public class TableViewerTab extends ExampleTab {
       setEnableEditorActivationWithKeyboard( true );
     }
 
+    @Override
     protected boolean isEditorActivationEvent( ColumnViewerEditorActivationEvent event ) {
       boolean result;
       if( event.character == '\r' ) {
@@ -543,14 +564,17 @@ public class TableViewerTab extends ExampleTab {
       editor = new TextCellEditor( viewer.getTable() );
     }
 
+    @Override
     protected boolean canEdit( Object element ) {
       return true;
     }
 
+    @Override
     protected CellEditor getCellEditor( Object element ) {
       return editor;
     }
 
+    @Override
     protected Object getValue( Object element ) {
       Person person = ( Person )element;
       String result;
@@ -558,6 +582,7 @@ public class TableViewerTab extends ExampleTab {
       return result;
     }
 
+    @Override
     protected void setValue( Object element, Object value ) {
       Person person = ( Person )element;
       person.firstName = ( String )value;
@@ -572,14 +597,17 @@ public class TableViewerTab extends ExampleTab {
       editor = new ComboBoxCellEditor( viewer.getTable(), suggestions, SWT.NONE );
     }
 
+    @Override
     protected boolean canEdit( Object element ) {
       return true;
     }
 
+    @Override
     protected CellEditor getCellEditor( Object element ) {
       return editor;
     }
 
+    @Override
     protected Object getValue( Object element ) {
       Person person = ( Person )element;
       CCombo ccombo = ( CCombo )editor.getControl();
@@ -587,6 +615,7 @@ public class TableViewerTab extends ExampleTab {
       return new Integer( -2 );
     }
 
+    @Override
     protected void setValue( Object element, Object value ) {
       Person person = ( Person )element;
       CCombo ccombo = ( CCombo )editor.getControl();
@@ -614,19 +643,23 @@ public class TableViewerTab extends ExampleTab {
       });
     }
 
+    @Override
     protected boolean canEdit( Object element ) {
       return true;
     }
 
+    @Override
     protected CellEditor getCellEditor( Object element ) {
       return editor;
     }
 
+    @Override
     protected Object getValue( Object element ) {
       Person person = ( Person )element;
       return String.valueOf( person.age );
     }
 
+    @Override
     protected void setValue( Object element, Object value ) {
       if( value != null ) {
         Person person = ( Person )element;
@@ -637,15 +670,18 @@ public class TableViewerTab extends ExampleTab {
   }
 
   private static class MarriedEditingSupport extends CheckboxEditingSupport {
+    @Override
     public boolean canEdit( Object element ) {
       return true;
     }
 
+    @Override
     public Boolean getValue( Object element ) {
       Person person = ( Person )element;
       return Boolean.valueOf( person.married );
     }
 
+    @Override
     public void setValue( Object element, Boolean value ) {
       Person person = ( Person )element;
       person.married = value.booleanValue();
