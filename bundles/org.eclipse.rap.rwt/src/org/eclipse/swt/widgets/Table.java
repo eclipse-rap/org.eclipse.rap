@@ -155,7 +155,7 @@ public class Table extends Composite {
     }
 
     public int getLeftOffset() {
-      return Table.this.getColumnLeftOffset( -1 );
+      return Table.this.leftOffset;
     }
 
     public void setLeftOffset( int leftOffset ) {
