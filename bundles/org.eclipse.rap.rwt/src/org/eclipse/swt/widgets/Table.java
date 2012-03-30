@@ -124,10 +124,6 @@ public class Table extends Composite {
       return margin.x;
     }
 
-    public int getFixedColumns() {
-      return Table.this.getFixedColumns();
-    }
-    
     public int getCheckWidth() {
       TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
       return themeAdapter.getCheckBoxImageSize( Table.this ).x;
@@ -194,10 +190,6 @@ public class Table extends Composite {
       return result;
     }
 
-    public boolean isFixedColumn( TableColumn column ) {
-      return Table.this.isFixedColumn( Table.this.indexOf( column ) );
-    }
-
     public boolean isItemVisible( TableItem item ) {
       int index = Table.this.indexOf( item );
       return index != -1 && Table.this.isItemVisible( index );
@@ -246,6 +238,14 @@ public class Table extends Composite {
 
     public void setCellToolTipText( String toolTipText ) {
       this.toolTipText = toolTipText;
+    }
+
+    public int getFixedColumns() {
+      return Table.this.getFixedColumns();
+    }
+
+    public boolean isFixedColumn( TableColumn column ) {
+      return Table.this.isFixedColumn( Table.this.indexOf( column ) );
     }
   }
 
