@@ -27,7 +27,11 @@ public class QxAnimation implements QxType {
       "flyInLeft",
       "flyInTop",
       "flyInRight",
-      "flyInBottom"
+      "flyInBottom",
+      "flyOutLeft",
+      "flyOutTop",
+      "flyOutRight",
+      "flyOutBottom"
     };
 
     private final String[] PREDEFINED_TIMING_FUNCTIONS = new String[] {

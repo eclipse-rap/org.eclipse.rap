@@ -695,17 +695,11 @@ qx.Class.define("qx.ui.window.Window",
         if (this.getFocused()) {
           this.setFocused(false);
         }
-
         if (this.getWindowManager().getActiveWindow() == this) {
           this.getWindowManager().setActiveWindow(null);
         }
+        this._setActiveState( false );
 
-        this.removeState("active");
-        this._captionBar.removeState("active");
-        this._minimizeButton.removeState("active");
-        this._restoreButton.removeState("active");
-        this._maximizeButton.removeState("active");
-        this._closeButton.removeState("active");
       }
       else
       {
@@ -715,16 +709,30 @@ qx.Class.define("qx.ui.window.Window",
         if (!this.getFocusedChild()) {
           this.setFocused(true);
         }
-
+        this._setActiveState( true );
         this.getWindowManager().setActiveWindow(this);
         this.bringToFront();
 
-        this.addState("active");
-        this._captionBar.addState("active");
-        this._minimizeButton.addState("active");
-        this._restoreButton.addState("active");
-        this._maximizeButton.addState("active");
-        this._closeButton.addState("active");
+      }
+    },
+    
+    _setActiveState : function( value ) {
+      if( !this.getWindowManager().blockActiveState ) {
+        if( value ) {
+          this.addState("active");
+          this._captionBar.addState("active");
+          this._minimizeButton.addState("active");
+          this._restoreButton.addState("active");
+          this._maximizeButton.addState("active");
+          this._closeButton.addState("active");
+        } else {
+          this.removeState("active");
+          this._captionBar.removeState("active");
+          this._minimizeButton.removeState("active");
+          this._restoreButton.removeState("active");
+          this._maximizeButton.removeState("active");
+          this._closeButton.removeState("active");
+        }
       }
     },
 

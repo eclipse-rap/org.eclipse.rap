@@ -555,7 +555,9 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
       "height" : "_applyHeight",
       "opacity" : "_applyOpacity",
       "backgroundColor" : "_applyBackgroundColor",
-      "backgroundGradient" : "_applyBackgroundGradient"
+      "backgroundGradient" : "_applyBackgroundGradient",
+      "top" : "_applyTop",
+      "left" : "_applyLeft"
     },
 
     converterByRenderType : {

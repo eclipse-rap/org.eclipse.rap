@@ -867,8 +867,12 @@ qx.Class.define("qx.ui.core.Parent",
       }
     },
 
-
-
+    _markInDispose : function() {
+      this._isInGlobalDisposeQueue = true;
+      if( this.forEachChild ) {
+        this.forEachChild( arguments.callee );
+      }
+    },
 
     /*
     ---------------------------------------------------------------------------

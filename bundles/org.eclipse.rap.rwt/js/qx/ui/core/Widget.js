@@ -412,14 +412,7 @@ qx.Class.define( "qx.ui.core.Widget", {
           qx.ui.core.Widget._initAutoFlush( qx.ui.core.Widget._FLUSH_PHASE_DISPOSE );
         }
         qx.ui.core.Widget._globalDisposeQueue.push(vWidget);
-        vWidget._isInGlobalDisposeQueue = true;
-      }
-    },
-
-    removeFromGlobalDisposeQueue : function(vWidget) {
-      if (vWidget._isInGlobalDisposeQueue) {
-        qx.lang.Array.remove(qx.ui.core.Widget._globalDisposeQueue, vWidget);
-        delete vWidget._isInGlobalDisposeQueue;
+        vWidget._markInDispose();
       }
     },
 
@@ -1848,8 +1841,16 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     destroy : function () {
-      this.setParent(null);
-      qx.ui.core.Widget.addToGlobalDisposeQueue(this);
+      if( this.getParent() === null || !this.getParent()._isInGlobalDisposeQueue ) {
+        if( this.dispatchSimpleEvent( "destroy" ) ) {
+          this.setParent( null );
+          qx.ui.core.Widget.addToGlobalDisposeQueue( this );
+        }
+      }
+    },
+    
+    _markInDispose : function() {
+      this._isInGlobalDisposeQueue = true;
     },
     
     ///////////////////////
@@ -4141,6 +4142,20 @@ qx.Class.define( "qx.ui.core.Widget", {
     var elem = this.getElement();
     if (elem) {
       elem.qx_Widget = null;
+      try {
+        if( elem.parentNode ) {
+          elem.parentNode.removeChild( elem );
+        }
+      } catch( ex ) {
+        //ignore exception
+      }
+      try {
+        if( this._targetNode && this._targetNode.parentNode ) {
+          this._targetNode.parentNode.removeChild( this._targetNode );
+        }
+      } catch( ex ) {
+        //ignore exception
+      }
     }
     this._disposeObjectDeep( "_adapters", 1 );
     this._disposeFields( 

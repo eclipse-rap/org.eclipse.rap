@@ -570,6 +570,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       menu.destroy();
     },
 
+    
+    testDisposeChildrenWithParent : function() {
+      var widget = new qx.ui.basic.Terminator();
+      var composite = new org.eclipse.swt.widgets.Composite();
+      composite.addToDocument();
+      widget.setParent( composite );
+      TestUtil.flush();
+      var node = widget.getElement();
+      var parentNode = widget.getElement().parentNode;
+      
+      composite.destroy();
+      TestUtil.flush();
+      
+      assertTrue( composite.isDisposed() );
+      assertTrue( widget.isDisposed() );
+      assertTrue( node.parentNode !== parentNode );
+    },
+
     /////////
     // Helper
     
