@@ -53,6 +53,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static final String PROP_ITEM_HEIGHT = "itemHeight";
   private static final String PROP_ITEM_METRICS = "itemMetrics";
   private static final String PROP_COLUMN_COUNT = "columnCount";
+  private static final String PROP_FIXED_COLUMNS = "fixedColumns";
   private static final String PROP_TREE_COLUMN = "treeColumn";
   private static final String PROP_HEADER_HEIGHT = "headerHeight";
   private static final String PROP_HEADER_VISIBLE = "headerVisible";
@@ -75,6 +76,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static final boolean[] DEFAULT_SCROLLBARS_VISIBLE = new boolean[] { false, false };
   private static final String DEFAULT_SORT_DIRECTION = "none";
 
+  @Override
   public void preserveValues( Widget widget ) {
     Tree tree = ( Tree )widget;
     ControlLCAUtil.preserveValues( ( Control )widget );
@@ -83,6 +85,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     preserveProperty( tree, PROP_ITEM_HEIGHT, tree.getItemHeight() );
     preserveProperty( tree, PROP_ITEM_METRICS, getItemMetrics( tree ) );
     preserveProperty( tree, PROP_COLUMN_COUNT, tree.getColumnCount() );
+    preserveProperty( tree, PROP_FIXED_COLUMNS, getFixedColumns( tree ) );
     preserveProperty( tree, PROP_TREE_COLUMN, getTreeColumn( tree ) );
     preserveProperty( tree, PROP_HEADER_HEIGHT, tree.getHeaderHeight() );
     preserveProperty( tree, PROP_HEADER_VISIBLE, tree.getHeaderVisible() );
@@ -116,6 +119,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( tree );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( tree );
@@ -128,6 +132,9 @@ public final class TreeLCA extends AbstractWidgetLCA {
       int[] checkMetrics = new int[] { adapter.getCheckLeft(), adapter.getCheckWidth() };
       clientObject.set( "checkBoxMetrics", checkMetrics );
     }
+    if( getFixedColumns( tree ) >= 0 ) {
+      clientObject.set( "splitContainer", true );
+    }
     if( ( tree.getStyle() & SWT.FULL_SELECTION ) == 0 ) {
       Rectangle textMargin = getTreeAdapter( tree ).getTextMargin();
       int[] selectionPadding = new int[] { textMargin.x, textMargin.width - textMargin.x };
@@ -136,6 +143,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     clientObject.set( "indentionWidth", adapter.getIndentionWidth() );
     clientObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( tree ) );  }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
     ControlLCAUtil.renderChanges( tree );
@@ -144,6 +152,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     renderProperty( tree, PROP_ITEM_HEIGHT, tree.getItemHeight(), ZERO );
     renderItemMetrics( tree );
     renderProperty( tree, PROP_COLUMN_COUNT, tree.getColumnCount(), ZERO );
+    renderProperty( tree, PROP_FIXED_COLUMNS, getFixedColumns( tree ), -1 );
     renderProperty( tree, PROP_TREE_COLUMN, getTreeColumn( tree ), ZERO );
     renderProperty( tree, PROP_HEADER_HEIGHT, tree.getHeaderHeight(), ZERO );
     renderProperty( tree, PROP_HEADER_VISIBLE, tree.getHeaderVisible(), false );
@@ -169,10 +178,12 @@ public final class TreeLCA extends AbstractWidgetLCA {
     renderProperty( tree, PROP_CELL_TOOLTIP_TEXT, getCellToolTipText( tree ), null );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
+  @Override
   public void doRedrawFake( Control control ) {
     Tree tree = ( Tree )control;
     tree.getAdapter( ITreeAdapter.class ).checkData();
@@ -311,14 +322,16 @@ public final class TreeLCA extends AbstractWidgetLCA {
     return result;
   }
 
+  private int getFixedColumns( Tree tree ) {
+    return getTreeAdapter( tree ).getFixedColumns();
+  }
+
   private static int getScrollLeft( Tree tree ) {
-    ITreeAdapter treeAdapter = getTreeAdapter( tree );
-    return treeAdapter.getScrollLeft();
+    return getTreeAdapter( tree ).getScrollLeft();
   }
 
   private static int getTopItemIndex( Tree tree ) {
-    ITreeAdapter treeAdapter = getTreeAdapter( tree );
-    return treeAdapter.getTopItemIndex();
+    return getTreeAdapter( tree ).getTopItemIndex();
   }
 
   private static TreeItem getFocusItem( Tree tree ) {
@@ -456,6 +469,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     int textLeft;
     int textWidth;
 
+    @Override
     public boolean equals( Object obj ) {
       boolean result;
       if( obj == this ) {
@@ -474,6 +488,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
       return result;
     }
 
+    @Override
     public int hashCode() {
       String msg = "ItemMetrics#hashCode() not implemented";
       throw new UnsupportedOperationException( msg );

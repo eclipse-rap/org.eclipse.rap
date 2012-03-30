@@ -12,7 +12,9 @@
 package org.eclipse.swt.internal.widgets.treekit;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -27,15 +29,35 @@ import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.CellToolTipUtil;
+import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
+import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
+import org.eclipse.swt.internal.widgets.ITreeAdapter;
+import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.internal.widgets.treekit.TreeLCA.ItemMetrics;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -46,6 +68,7 @@ public class TreeLCA_Test extends TestCase {
   private Shell shell;
   private TreeLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -54,6 +77,7 @@ public class TreeLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -598,9 +622,11 @@ public class TreeLCA_Test extends TestCase {
     private LoggingSelectionListener( List<SelectionEvent> events ) {
       this.events = events;
     }
+    @Override
     public void widgetSelected( SelectionEvent event ) {
       events.add( event );
     }
+    @Override
     public void widgetDefaultSelected( SelectionEvent event ) {
       events.add( event );
     }
@@ -620,6 +646,17 @@ public class TreeLCA_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[3,5]", actual ) );
     assertFalse( operation.getPropertyNames().contains( "checkBoxMetrics" ) );
     assertEquals( Boolean.FALSE, operation.getProperty( "markupEnabled" ) );
+  }
+
+  public void testRenderCreateWithFixedColumns() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    tree.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
+
+    lca.renderInitialization( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertEquals( Boolean.TRUE, operation.getProperty( "splitContainer" ) );
   }
 
   public void testRenderParent() throws IOException {
@@ -805,6 +842,41 @@ public class TreeLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( tree, "columnCount" ) );
+  }
+
+  public void testRenderInitialFixedColumns() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "fixedColumns" ) == -1 );
+  }
+
+  public void testRenderFixedColumns() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+
+    tree.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( tree, "fixedColumns" ) );
+  }
+
+  public void testRenderFixedColumnsUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setData( "fixedColumns", Integer.valueOf( 1 ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "fixedColumns" ) );
   }
 
   public void testRenderInitialTreeColumn() throws IOException {

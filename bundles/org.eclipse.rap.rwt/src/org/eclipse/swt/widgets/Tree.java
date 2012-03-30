@@ -11,7 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.rwt.RWT;
@@ -20,11 +21,25 @@ import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.TreeEvent;
+import org.eclipse.swt.events.TreeListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.events.SetDataEvent;
-import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
+import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
+import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
+import org.eclipse.swt.internal.widgets.ITreeAdapter;
+import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
+import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.treekit.TreeThemeAdapter;
 
@@ -572,20 +587,35 @@ public class Tree extends Composite {
       int index = indexOf( column );
       if( 0 <= index && index < getColumnCount() ) {
         int leftColumnsWidth = 0;
+        int rightColumnsWidth = 0;
         int columnWidth = column.getWidth();
         int clientWidth = getClientArea().width;
         int[] columnOrder = getColumnOrder();
         boolean found = false;
-        for( int i = 0; i < columnOrder.length && !found; i++ ) {
-          found = index == columnOrder[ i ];
-          if( !found ) {
-            leftColumnsWidth += getColumn( columnOrder[ i ] ).getWidth();
+        for( int i = 0; i < columnOrder.length; i++ ) {
+          if( index != columnOrder[ i ] ) {
+            int currentColumnWidth = getColumn( columnOrder[ i ] ).getWidth();
+            if( found ) {
+              rightColumnsWidth += currentColumnWidth;
+            } else {
+              if( isFixedColumn( columnOrder[ i ] ) ) {
+                clientWidth -= currentColumnWidth;
+              } else {
+                leftColumnsWidth += currentColumnWidth;
+              }
+            }
+          } else {
+            found = true;
           }
         }
-        if( scrollLeft > leftColumnsWidth ) {
+        if( getColumnLeftOffset( index ) > leftColumnsWidth ) {
           scrollLeft = leftColumnsWidth;
         } else if( scrollLeft < leftColumnsWidth + columnWidth - clientWidth ) {
-          scrollLeft = leftColumnsWidth + columnWidth - clientWidth;
+          if( columnWidth + rightColumnsWidth < clientWidth ) {
+            scrollLeft = leftColumnsWidth + columnWidth + rightColumnsWidth - clientWidth;
+          } else {
+            scrollLeft = leftColumnsWidth;
+          }
         }
       }
     }
@@ -1798,7 +1828,7 @@ public class Tree extends Composite {
   }
 
   int getVisualCellLeft( int index, TreeItem item ) {
-    int result = getCellLeft( index ) - scrollLeft;
+    int result = getCellLeft( index ) - getColumnLeftOffset( index );
     if( isTreeColumn( index ) ) {
       result += getIndentionOffset( item );
     }
@@ -1864,6 +1894,41 @@ public class Tree extends Composite {
   boolean isTreeColumn( int index ) {
     return    index == 0 && getColumnCount() == 0
            || getColumnCount() > 0 && getColumnOrder()[ 0 ] == index;
+  }
+
+  /**
+   * Returns the scroll-offset of the column, which is the leftOffset unless it is a fixed column.
+   */
+  final int getColumnLeftOffset( int columnIndex ) {
+    int result = scrollLeft;
+    if( columnIndex >= 0 ) {
+      result = isFixedColumn( columnIndex ) ? 0 : scrollLeft;
+    }
+    return result;
+  }
+
+  private boolean isFixedColumn( int index ) {
+    int[] columnOrder = getColumnOrder();
+    int visualIndex = -1;
+    for( int i = 0; i < columnOrder.length && visualIndex == -1; i++ ) {
+      if( index == columnOrder[ i ] ) {
+        visualIndex = i;
+      }
+    }
+    return visualIndex < getFixedColumns();
+  }
+
+  private int getFixedColumns() {
+    int result = -1;
+    try {
+      Integer data = ( Integer )getData( RWT.FIXED_COLUMNS );
+      if( data != null ) {
+        result = data.intValue();
+      }
+    } catch( ClassCastException ex ) {
+      // not a valid fixedColumns value
+    }
+    return result;
   }
 
   private boolean hasCheckBoxes( int index ) {
@@ -1969,6 +2034,11 @@ public class Tree extends Composite {
       int textHeight = Graphics.getCharHeight( headerFont );
       int imageHeight = 0;
       for( int i = 0; i < getColumnCount(); i++ ) {
+        TreeColumn column = columnHolder.getItem( i );
+        if( column.getText().contains( "\n" ) ) {
+          int columnTextHeight = Graphics.textExtent( headerFont, column.getText(), 0 ).y;
+          textHeight = Math.max( textHeight, columnTextHeight );
+        }
         Image image = getColumn( i ).getImage();
         int height = image == null ? 0 : image.getBounds().height;
         if( height > imageHeight ) {
@@ -2274,11 +2344,11 @@ public class Tree extends Composite {
     }
 
     public void setScrollLeft( int left ) {
-      scrollLeft = left;
+      Tree.this.scrollLeft = left;
     }
 
     public int getScrollLeft() {
-      return scrollLeft;
+      return Tree.this.scrollLeft;
     }
 
     public boolean isCached( TreeItem item ) {
@@ -2360,6 +2430,14 @@ public class Tree extends Composite {
 
     public void setCellToolTipText( String toolTipText ) {
       this.toolTipText = toolTipText;
+    }
+
+    public int getFixedColumns() {
+      return Tree.this.getFixedColumns();
+    }
+
+    public boolean isFixedColumn( TreeColumn column ) {
+      return Tree.this.isFixedColumn( Tree.this.indexOf( column ) );
     }
 
   }

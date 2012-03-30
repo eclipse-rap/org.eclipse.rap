@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,10 @@ import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.IColumnAdapter;
@@ -200,6 +203,7 @@ public class TreeColumn extends Item {
     return checkBits( style, SWT.LEFT, SWT.CENTER, SWT.RIGHT, 0, 0, 0 );
   }
 
+  @Override
   public void dispose() {
     if( !isDisposed() ) {
       dispose( true );
@@ -486,6 +490,7 @@ public class TreeColumn extends Item {
     }
   }
 
+  @Override
   public void setText( String value ) {
     checkWidget();
     if( value == null ) {
@@ -493,6 +498,7 @@ public class TreeColumn extends Item {
     }
     if( !value.equals( text ) ) {
       super.setText( value );
+      parent.layoutCache.invalidateHeaderHeight();
     }
   }
 
@@ -540,6 +546,7 @@ public class TreeColumn extends Item {
     }
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result = null;
@@ -551,11 +558,13 @@ public class TreeColumn extends Item {
     return result;
   }
 
+  @Override
   public void setImage( Image image ) {
     super.setImage( image );
     parent.layoutCache.invalidateHeaderHeight();
   }
 
+  @Override
   public void setData( String key, Object value ) {
     super.setData( key, value );
     if( WidgetUtil.CUSTOM_VARIANT.equals( key ) ) {
@@ -563,6 +572,7 @@ public class TreeColumn extends Item {
     }
   }
 
+  @Override
   void releaseParent() {
     super.releaseParent();
     parent.destroyColumn( this );

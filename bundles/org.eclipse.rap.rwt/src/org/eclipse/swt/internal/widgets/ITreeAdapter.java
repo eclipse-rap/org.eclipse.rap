@@ -13,7 +13,8 @@ package org.eclipse.swt.internal.widgets;
 
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
 
 
 public interface ITreeAdapter {
@@ -41,4 +42,7 @@ public interface ITreeAdapter {
   int getColumnLeft( TreeColumn column );
 
   void checkData();
+
+  int getFixedColumns();
+  boolean isFixedColumn( TreeColumn column );
 }

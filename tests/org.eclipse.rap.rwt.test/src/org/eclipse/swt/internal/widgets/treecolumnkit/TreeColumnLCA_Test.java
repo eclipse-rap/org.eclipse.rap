@@ -12,21 +12,30 @@
 package org.eclipse.swt.internal.widgets.treecolumnkit;
 
 import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
+import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +48,7 @@ public class TreeColumnLCA_Test extends TestCase {
   private Tree tree;
   private TreeColumnLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -48,6 +58,7 @@ public class TreeColumnLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -284,6 +295,46 @@ public class TreeColumnLCA_Test extends TestCase {
     assertEquals( 1, columnOrder[ 0 ] );
     assertEquals( 0, columnOrder[ 1 ] );
     assertEquals( 2, columnOrder[ 2 ] );
+  }
+
+  public void testMoveColumnFixedColumnTarget() {
+    Tree tree = createFixedColumnsTree( shell );
+    tree.setSize( 200, 200 );
+    ITreeAdapter adapter = tree.getAdapter( ITreeAdapter.class );
+    adapter.setScrollLeft( 80 );
+    TreeColumn column3 = tree.getColumn( 3 );
+    TreeColumnLCA.moveColumn( column3, 105 );
+    int[] columnOrder = tree.getColumnOrder();
+    assertEquals( 0, columnOrder[ 0 ] );
+    assertEquals( 1, columnOrder[ 1 ] );
+    assertEquals( 2, columnOrder[ 2 ] );
+    assertEquals( 3, columnOrder[ 3 ] );
+  }
+
+  public void testMoveColumnFixedColumnSource() {
+    Tree tree = createFixedColumnsTree( shell );
+    tree.setSize( 200, 200 );
+    TreeColumn column0 = tree.getColumn( 0 );
+    TreeColumnLCA.moveColumn( column0, 105 );
+    int[] columnOrder = tree.getColumnOrder();
+    assertEquals( 0, columnOrder[ 0 ] );
+    assertEquals( 1, columnOrder[ 1 ] );
+    assertEquals( 2, columnOrder[ 2 ] );
+    assertEquals( 3, columnOrder[ 3 ] );
+  }
+
+  public void testMoveColumnFixedColumnRightHalfTarget() {
+    Tree tree = createFixedColumnsTree( shell );
+    tree.setSize( 200, 200 );
+    ITreeAdapter adapter = tree.getAdapter( ITreeAdapter.class );
+    adapter.setScrollLeft( 100 );
+    TreeColumn column3 = tree.getColumn( 3 );
+    TreeColumnLCA.moveColumn( column3, 145 );
+    int[] columnOrder = tree.getColumnOrder();
+    assertEquals( 0, columnOrder[ 0 ] );
+    assertEquals( 1, columnOrder[ 1 ] );
+    assertEquals( 2, columnOrder[ 2 ] );
+    assertEquals( 3, columnOrder[ 3 ] );
   }
 
   public void testRenderCreate() throws IOException {
@@ -668,6 +719,38 @@ public class TreeColumnLCA_Test extends TestCase {
     assertNull( message.findSetOperation( column, "alignment" ) );
   }
 
+  public void testRenderInitialFixed() throws IOException {
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+
+    lca.render( column );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( column );
+    assertTrue( operation.getPropertyNames().indexOf( "fixed" ) == -1 );
+  }
+
+  public void testRenderFixed() throws IOException {
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+
+    tree.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( column, "fixed" ) );
+  }
+
+  public void testRenderFixedUnchanged() throws IOException {
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+
+    tree.setData( "fixedColumns", Integer.valueOf( 1 ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( column, "fixed" ) );
+  }
 
   public void testRenderAddSelectionListener() throws Exception {
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
@@ -709,5 +792,16 @@ public class TreeColumnLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( column, "selection" ) );
+  }
+
+  private Tree createFixedColumnsTree( Shell shell ) {
+    Tree tree = new Tree( shell, SWT.NONE );
+    tree.setData( RWT.FIXED_COLUMNS, new Integer( 1 ) );
+    for( int i = 0; i < 10; i++ ) {
+      TreeColumn column = new TreeColumn( tree, SWT.NONE );
+      column.setWidth( 50 );
+      column.setText( "Column " + i );
+    }
+    return tree;
   }
 }

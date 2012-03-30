@@ -11,10 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treecolumnkit;
 
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -22,12 +22,19 @@ import java.util.Arrays;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.Widget;
 
 
 public final class TreeColumnLCA extends AbstractWidgetLCA {
@@ -40,11 +47,13 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
   static final String PROP_RESIZABLE = "resizable";
   static final String PROP_MOVEABLE = "moveable";
   static final String PROP_ALIGNMENT = "alignment";
+  static final String PROP_FIXED = "fixed";
   static final String PROP_SELECTION_LISTENER = "selection";
 
   private static final int ZERO = 0;
   private static final String DEFAULT_ALIGNMENT = "left";
 
+  @Override
   public void preserveValues( Widget widget ) {
     TreeColumn column = ( TreeColumn )widget;
     WidgetLCAUtil.preserveToolTipText( column, column.getToolTipText() );
@@ -56,6 +65,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     preserveProperty( column, PROP_RESIZABLE, column.getResizable() );
     preserveProperty( column, PROP_MOVEABLE, column.getMoveable() );
     preserveProperty( column, PROP_ALIGNMENT, getAlignment( column ) );
+    preserveProperty( column, PROP_FIXED, isFixed( column ) );
     preserveListener( column, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( column ) );
   }
 
@@ -92,6 +102,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processSelection( column, null, false );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     TreeColumn column = ( TreeColumn )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( column );
@@ -99,6 +110,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     clientObject.set( "parent", WidgetUtil.getId( column.getParent() ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     TreeColumn column = ( TreeColumn )widget;
     WidgetLCAUtil.renderToolTip( column, column.getToolTipText() );
@@ -110,9 +122,11 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     renderProperty( column, PROP_RESIZABLE, column.getResizable(), true );
     renderProperty( column, PROP_MOVEABLE, column.getMoveable(), false );
     renderProperty( column, PROP_ALIGNMENT, getAlignment( column ), DEFAULT_ALIGNMENT );
+    renderProperty( column, PROP_FIXED, isFixed( column ), false );
     renderListener( column, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( column ), false );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }
@@ -125,9 +139,8 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
   }
 
   static int getLeft( TreeColumn column ) {
-    Object adapter = column.getParent().getAdapter( ITreeAdapter.class );
-    ITreeAdapter treeAdapter = ( ITreeAdapter )adapter;
-    return treeAdapter.getColumnLeft( column );
+    ITreeAdapter adapter = column.getParent().getAdapter( ITreeAdapter.class );
+    return adapter.getColumnLeft( column );
   }
 
   private static String getAlignment( TreeColumn column ) {
@@ -139,6 +152,11 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
       result = "right";
     }
     return result;
+  }
+
+  private static boolean isFixed( TreeColumn column ) {
+    ITreeAdapter adapter = column.getParent().getAdapter( ITreeAdapter.class );
+    return adapter.isFixedColumn( column );
   }
 
   /////////////////////////////////
@@ -154,6 +172,9 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     if( orderIndex < targetColumn ) {
       targetColumn--;
     }
+    if( isFixed( column ) || isFixed( tree.getColumn( targetColumn ) ) ) {
+      targetColumn = tree.indexOf( column );
+    }
     columnOrder = arrayInsert( columnOrder, targetColumn, index );
     if( Arrays.equals( columnOrder, tree.getColumnOrder() ) ) {
       // TODO [rh] HACK mark left as changed
@@ -164,6 +185,9 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
       }
     } else {
       tree.setColumnOrder( columnOrder );
+      // [if] HACK mark left as changed - see bug 336340
+      IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
+      adapter.preserve( PROP_LEFT, null );
     }
   }
 
@@ -181,11 +205,15 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
       result = 0;
     } else {
       for( int i = 0; result == -1 && i < columns.length; i++ ) {
-        int left = getLeft( columns[ i ] );
-        int width = columns[ i ].getWidth();
+        TreeColumn column = columns[ columnOrder [ i ] ];
+        int left = getLeft( column );
+        int width = column.getWidth();
+        if( isFixed( column ) ) {
+          left += getLeftOffset( column );
+        }
         if( newLeft >= left && newLeft <= left + width ) {
-          result = columnOrder[ i ];
-          if( newLeft >= left + width / 2 && result < columns.length ) {
+          result = i;
+          if( newLeft >= left + width / 2 && result < columns.length && !isFixed( column ) ) {
             result++;
           }
         }
@@ -196,6 +224,11 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
       result = columns.length;
     }
     return result;
+  }
+
+  private static int getLeftOffset( TreeColumn column ) {
+    ITreeAdapter adapter = column.getParent().getAdapter( ITreeAdapter.class );
+    return adapter.getScrollLeft();
   }
 
   private static int arrayIndexOf( int[] array, int value ) {
