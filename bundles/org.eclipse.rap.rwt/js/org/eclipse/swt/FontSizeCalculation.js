@@ -87,7 +87,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
         } else {
           result = [ element.scrollWidth, element.scrollHeight ];
         }
-        return [ result[ 0 ] + this._offset, result[ 1 ] + this._offset ];
+        return this._addOffset( result );
       },
       "newmshtml" : function( element ) {
         var computed = window.getComputedStyle( element, null );
@@ -95,9 +95,15 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
           Math.ceil( parseFloat( computed.width ) ), 
           Math.ceil( parseFloat( computed.height ) ) 
         ];
-        return [ result[ 0 ] + this._offset, result[ 1 ] + this._offset ];
+        return this._addOffset( result );
       }
     } ),
+    
+    _addOffset : function( bounds ) {
+      var x = bounds[ 0 ] > 0 ? bounds[ 0 ] + this._offset : 0;
+      var y = bounds[ 1 ] > 0 ? bounds[ 1 ] + this._offset : 0;
+      return [ x, y ];
+    },
 
     _getMeasureNode : function() {
       var node = this._measureNode;
