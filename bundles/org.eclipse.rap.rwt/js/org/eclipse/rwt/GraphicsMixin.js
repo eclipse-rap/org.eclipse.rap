@@ -417,14 +417,10 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     
     _prepareForCanvas : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
-        this.__outerElementStyleProperties.filter = true;
         this.prepareEnhancedBorder();
         this._applyOpacity( this.getOpacity() );
       },
       "gecko" : function() {
-        var outline = null;
-        this.__outerElementStyleProperties.opacity = true;
-        this.__outerElementStyleProperties.MozOpacity = true;
         this.prepareEnhancedBorder();
         this._applyOpacity( this.getOpacity() );
       },
@@ -432,12 +428,10 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         var outline = this.getStyleProperty( "outline" );
         this.removeStyleProperty( "outline" );
         this.__outerElementStyleProperties.outline = true;
-        this.__outerElementStyleProperties.opacity = true;
         this.setStyleProperty( "outline", outline );
         this._applyOpacity( this.getOpacity() );
       },
       "default" : function() {
-        this.__outerElementStyleProperties.opacity = true;
         this.prepareEnhancedBorder();
         this._applyOpacity( this.getOpacity() );
       }

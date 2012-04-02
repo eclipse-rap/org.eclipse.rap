@@ -98,7 +98,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
       assertTrue( css2.indexOf( "filter" ) == -1 );      
       widget.destroy();
     },
-    
+
     testSetOpacityBeforeWidgetCreation : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widgetNormal = this._createWidget( true );
@@ -114,6 +114,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
       assertTrue( css.indexOf( "filter" ) == -1 );
       widgetNormal.destroy();
       widgetTransp.destroy();
+    },
+
+    testSetOpacityOnOuterElement : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var HtmlUtil = org.eclipse.rwt.HtmlUtil;
+      var element = document.createElement( "div" );
+      var widget = this._createWidget();
+      widget.prepareEnhancedBorder();
+      HtmlUtil.setOpacity( element, 0.5 );
+      HtmlUtil.setOpacity( widget, 0.5 );
+      assertTrue( TestUtil.hasElementOpacity( element ) );
+      assertTrue( TestUtil.hasElementOpacity( widget.getElement() ) );
+      HtmlUtil.setOpacity( element, 1 );
+      HtmlUtil.setOpacity( widget, 1 );
+      assertFalse( TestUtil.hasElementOpacity( element ) );
+      assertFalse( TestUtil.hasElementOpacity( widget.getElement() ) );
+      var css1 = element.style.cssText.toLowerCase();
+      var css2 = widget.getElement().style.cssText.toLowerCase();
+      // additional check for IE:
+      assertTrue( css1.indexOf( "filter" ) == -1 );
+      assertTrue( css2.indexOf( "filter" ) == -1 );      
+      widget.destroy();
     },
 
     testSetRemoveTextShadow : function() {

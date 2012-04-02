@@ -3139,7 +3139,10 @@ qx.Class.define( "qx.ui.core.Widget", {
       display : true,
       visibility : true,
       outline : true,
-      boxShadow : true
+      boxShadow : true,
+      filter : true,
+      opacity : true,
+      MozOpacity : true
     },
 
     setStyleProperty : function(propName, value) {
