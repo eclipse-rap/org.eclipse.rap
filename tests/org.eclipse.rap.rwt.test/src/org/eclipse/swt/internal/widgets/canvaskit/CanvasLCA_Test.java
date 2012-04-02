@@ -116,8 +116,8 @@ public class CanvasLCA_Test extends TestCase {
     assertEquals( "11px Arial", init.getProperty( "font" ) );
     String fillStyle = ( ( JSONArray )init.getProperty( "fillStyle" ) ).join( "," );
     String strokeStyle = ( ( JSONArray )init.getProperty( "strokeStyle" ) ).join( "," );
-    assertEquals( "255,255,255", fillStyle );
-    assertEquals( "74,74,74", strokeStyle );
+    assertEquals( "255,255,255,255", fillStyle );
+    assertEquals( "74,74,74,255", strokeStyle );
     CallOperation draw = getGCOperation( canvas, "draw" );
     JSONArray operations = ( JSONArray )draw.getProperty( "operations" );
     assertEquals( 4, operations.length() );

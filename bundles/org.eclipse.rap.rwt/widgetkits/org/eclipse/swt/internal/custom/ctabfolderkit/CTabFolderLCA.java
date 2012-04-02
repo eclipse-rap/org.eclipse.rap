@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
+import org.eclipse.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
@@ -81,6 +82,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   private static final String DEFAULT_MIN_MAX_STATE = "normal";
   private static final Rectangle ZERO_BOUNDS = new Rectangle( 0, 0, 0, 0 );
 
+  @Override
   public void preserveValues( Widget widget ) {
     CTabFolder folder = ( CTabFolder )widget;
     ControlLCAUtil.preserveValues( folder );
@@ -161,6 +163,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( folder );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     CTabFolder folder = ( CTabFolder )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( folder );
@@ -177,6 +180,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     clientObject.set( PROP_TOOLTIP_TEXTS, toolTipTexts );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     CTabFolder folder = ( CTabFolder )widget;
     ControlLCAUtil.renderChanges( folder );
@@ -207,6 +211,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     renderListener( folder, PROP_FOLDER_LISTENER, CTabFolderEvent.hasListener( folder ), false );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }
@@ -252,7 +257,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
         Object[] colors = new Object[ bgGradientColors.length ];
         Integer[] percents = new Integer[ bgGradientPercents.length ];
         for( int i = 0; i < colors.length; i++ ) {
-          colors[ i ] = getColorValueAsArray( bgGradientColors[ i ] );
+          colors[ i ] = ProtocolUtil.getColorAsArray( bgGradientColors[ i ], false );
         }
         for( int i = 0; i < bgGradientPercents.length; i++ ) {
           percents[ i ] =  Integer.valueOf( bgGradientPercents[ i ] );
@@ -337,14 +342,5 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
 
   private static ICTabFolderAdapter getCTabFolderAdapter( CTabFolder folder ) {
     return folder.getAdapter( ICTabFolderAdapter.class );
-  }
-
-  private static int[] getColorValueAsArray( Color color ) {
-    int[] result = null;
-    if( color != null ) {
-      RGB rgb = color.getRGB();
-      result = new int[] { rgb.red, rgb.green, rgb.blue, 255 };
-    }
-    return result;
   }
 }

@@ -12,7 +12,7 @@
 package org.eclipse.rwt.internal.textsize;
 
 import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -38,7 +38,7 @@ public class MeasurementUtil {
     result[ 0 ] = Integer.valueOf( item.hashCode() );
     result[ 1 ] = item.getTextToMeasure();
     FontData fontData = item.getFontData();
-    result[ 2 ] = WidgetLCAUtil.parseFontName( fontData.getName() );
+    result[ 2 ] = ProtocolUtil.parseFontName( fontData.getName() );
     result[ 3 ] = Integer.valueOf( fontData.getHeight() );
     result[ 4 ] = Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 );
     result[ 5 ] = Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 );
@@ -52,7 +52,7 @@ public class MeasurementUtil {
     FontData fontData = probe.getFontData();
     result[ 0 ] = Integer.valueOf( fontData.hashCode() );
     result[ 1 ] = probe.getText();
-    result[ 2 ] = WidgetLCAUtil.parseFontName( fontData.getName() );
+    result[ 2 ] = ProtocolUtil.parseFontName( fontData.getName() );
     result[ 3 ] = Integer.valueOf( fontData.getHeight() );
     result[ 4 ] = Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 );
     result[ 5 ] = Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 );

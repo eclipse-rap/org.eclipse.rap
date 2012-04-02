@@ -21,6 +21,7 @@ import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
@@ -220,7 +221,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     String systemFontName
       = "\"Segoe UI\", Corbel, Calibri, Tahoma, \"Lucida Sans Unicode\", "
       + "sans-serif";
-    String[] fontNames = WidgetLCAUtil.parseFontName( systemFontName );
+    String[] fontNames = ProtocolUtil.parseFontName( systemFontName );
     assertEquals( 6, fontNames.length );
     assertEquals( "Segoe UI", fontNames[ 0 ] );
     assertEquals( "Corbel", fontNames[ 1 ] );
@@ -231,7 +232,7 @@ public class WidgetLCAUtil_Test extends TestCase {
 
     // Empty font names don't cause trouble (at least for the browsers
     // currently tested - therefore don't make extra effort to eliminate them
-    fontNames = WidgetLCAUtil.parseFontName( "a, , b" );
+    fontNames = ProtocolUtil.parseFontName( "a, , b" );
     assertEquals( 3, fontNames.length );
     assertEquals( "a", fontNames[ 0 ] );
     assertEquals( "", fontNames[ 1 ] );

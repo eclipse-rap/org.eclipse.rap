@@ -72,14 +72,14 @@ public class GCOperationWriter_Test extends TestCase {
     gc.setForeground( new Color( display, 155, 11, 24 ) );
 
     JSONArray ops = getGCOperations( canvas );
-    assertEquals( "\"strokeStyle\",[155,11,24]", getOperation( 0, ops ) );
+    assertEquals( "\"strokeStyle\",[155,11,24,255]", getOperation( 0, ops ) );
   }
 
-  public void testbackground() {
+  public void testBackground() {
     gc.setBackground( new Color( display, 155, 11, 24 ) );
 
     JSONArray ops = getGCOperations( canvas );
-    assertEquals( "\"fillStyle\",[155,11,24]", getOperation( 0, ops ) );
+    assertEquals( "\"fillStyle\",[155,11,24,255]", getOperation( 0, ops ) );
   }
 
   public void testAlpha() {
@@ -166,9 +166,9 @@ public class GCOperationWriter_Test extends TestCase {
     gc.drawPoint( 27, 44 );
 
     JSONArray ops = getGCOperations( canvas );
-    assertEquals( "\"strokeStyle\",[255,0,7]", getOperation( 0, ops ) );
+    assertEquals( "\"strokeStyle\",[255,0,7,255]", getOperation( 0, ops ) );
     assertEquals( "\"save\"", getOperation( 1, ops ) );
-    assertEquals( "\"fillStyle\",[255,0,7]", getOperation( 2, ops ) );
+    assertEquals( "\"fillStyle\",[255,0,7,255]", getOperation( 2, ops ) );
     assertEquals( "\"lineWidth\",1", getOperation( 3, ops ) );
     assertEquals( "\"beginPath\"", getOperation( 4, ops ) );
     assertEquals( "\"rect\",27,44,1,1", getOperation( 5, ops ) );
@@ -322,8 +322,8 @@ public class GCOperationWriter_Test extends TestCase {
     JSONArray ops = getGCOperations( canvas );
     assertEquals( "\"save\"", getOperation( 3, ops ) );
     assertEquals( "\"createLinearGradient\",10,20,10,220", getOperation( 4, ops ) );
-    assertEquals( "\"addColorStop\",0,[0,10,20]", getOperation( 5, ops ) );
-    assertEquals( "\"addColorStop\",1,[30,40,50]", getOperation( 6, ops ) );
+    assertEquals( "\"addColorStop\",0,[0,10,20,255]", getOperation( 5, ops ) );
+    assertEquals( "\"addColorStop\",1,[30,40,50,255]", getOperation( 6, ops ) );
     assertEquals( "\"fillStyle\",\"linearGradient\"", getOperation( 7, ops ) );
     assertEquals( "\"beginPath\"", getOperation( 8, ops ) );
     assertEquals( "\"rect\",10,20,100,200", getOperation( 9, ops ) );
@@ -340,8 +340,8 @@ public class GCOperationWriter_Test extends TestCase {
     JSONArray ops = getGCOperations( canvas );
     assertEquals( "\"save\"", getOperation( 3, ops ) );
     assertEquals( "\"createLinearGradient\",10,20,110,20", getOperation( 4, ops ) );
-    assertEquals( "\"addColorStop\",0,[0,10,20]", getOperation( 5, ops ) );
-    assertEquals( "\"addColorStop\",1,[30,40,50]", getOperation( 6, ops ) );
+    assertEquals( "\"addColorStop\",0,[0,10,20,255]", getOperation( 5, ops ) );
+    assertEquals( "\"addColorStop\",1,[30,40,50,255]", getOperation( 6, ops ) );
     assertEquals( "\"fillStyle\",\"linearGradient\"", getOperation( 7, ops ) );
     assertEquals( "\"beginPath\"", getOperation( 8, ops ) );
     assertEquals( "\"rect\",10,20,100,200", getOperation( 9, ops ) );
@@ -358,8 +358,8 @@ public class GCOperationWriter_Test extends TestCase {
     JSONArray ops = getGCOperations( canvas );
     assertEquals( "\"save\"", getOperation( 3, ops ) );
     assertEquals( "\"createLinearGradient\",90,180,90,200", getOperation( 4, ops ) );
-    assertEquals( "\"addColorStop\",0,[30,40,50]", getOperation( 5, ops ) );
-    assertEquals( "\"addColorStop\",1,[0,10,20]", getOperation( 6, ops ) );
+    assertEquals( "\"addColorStop\",0,[30,40,50,255]", getOperation( 5, ops ) );
+    assertEquals( "\"addColorStop\",1,[0,10,20,255]", getOperation( 6, ops ) );
     assertEquals( "\"fillStyle\",\"linearGradient\"", getOperation( 7, ops ) );
     assertEquals( "\"beginPath\"", getOperation( 8, ops ) );
     assertEquals( "\"rect\",90,180,-10,-20", getOperation( 9, ops ) );
@@ -376,8 +376,8 @@ public class GCOperationWriter_Test extends TestCase {
     JSONArray ops = getGCOperations( canvas );
     assertEquals( "\"save\"", getOperation( 3, ops ) );
     assertEquals( "\"createLinearGradient\",90,180,100,180", getOperation( 4, ops ) );
-    assertEquals( "\"addColorStop\",0,[30,40,50]", getOperation( 5, ops ) );
-    assertEquals( "\"addColorStop\",1,[0,10,20]", getOperation( 6, ops ) );
+    assertEquals( "\"addColorStop\",0,[30,40,50,255]", getOperation( 5, ops ) );
+    assertEquals( "\"addColorStop\",1,[0,10,20,255]", getOperation( 6, ops ) );
     assertEquals( "\"fillStyle\",\"linearGradient\"", getOperation( 7, ops ) );
     assertEquals( "\"beginPath\"", getOperation( 8, ops ) );
     assertEquals( "\"rect\",90,180,-10,-20", getOperation( 9, ops ) );
@@ -419,14 +419,14 @@ public class GCOperationWriter_Test extends TestCase {
   public void testFillArcClockwise() {
     gc.setLineWidth( 2 );
     gc.fillArc( 10, 20, 100, 200, 50, -100 );
-    
+
     JSONArray ops = getGCOperations( canvas );
     assertEquals( "\"beginPath\"", getOperation( 1, ops ) );
     assertEquals( "\"moveTo\",60,120", getOperation( 2, ops ) );
     assertEquals( "\"ellipse\",60,120,50,100,0,-0.8727,0.8726001,false", getOperation( 3, ops ) );
     assertEquals( "\"fill\"", getOperation( 4, ops ) );
   }
-  
+
   public void testDrawImage() {
     Image image = Graphics.getImage( Fixture.IMAGE_50x100, canvas.getClass().getClassLoader() );
     String imageLocation = ImageFactory.getImagePath( image );
@@ -491,7 +491,7 @@ public class GCOperationWriter_Test extends TestCase {
     color.dispose();
 
     JSONArray ops = getGCOperations( canvas );
-    assertEquals( "\"strokeStyle\",[1,2,3]", getOperation( 0, ops ) );
+    assertEquals( "\"strokeStyle\",[1,2,3,255]", getOperation( 0, ops ) );
   }
 
   // bug 351216: [GC] Throws unexpected "Graphic is diposed" exception

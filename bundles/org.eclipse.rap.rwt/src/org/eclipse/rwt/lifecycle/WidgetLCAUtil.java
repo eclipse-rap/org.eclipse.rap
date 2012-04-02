@@ -13,16 +13,12 @@ package org.eclipse.rwt.lifecycle;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.*;
-import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.HelpEvent;
@@ -73,15 +69,7 @@ public final class WidgetLCAUtil {
 
   static final String LISTENER_PREFIX = "listener_";
 
-  private static final Pattern FONT_NAME_FILTER_PATTERN = Pattern.compile( "\"|\\\\" );
   private static final Rectangle DEF_ROUNDED_BORDER_RADIUS = new Rectangle( 0, 0, 0, 0 );
-
-  //////////////////////////////////////////////////////////////////////////////
-  // TODO [fappel]: Experimental - profiler seems to indicate that buffering
-  //                improves performance - still under investigation.
-  private final static SharedInstanceBuffer<String,String[]> parsedFonts
-    = new SharedInstanceBuffer<String,String[]>();
-  //////////////////////////////////////////////////////////////////////////////
 
   private WidgetLCAUtil() {
     // prevent instantiation
@@ -435,40 +423,8 @@ public final class WidgetLCAUtil {
   public static void renderFont( Widget widget, Font font ) {
     if( WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, null ) ) {
       IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
-      clientObject.set( PROP_FONT, getFontAsArray( font ) );
+      clientObject.set( PROP_FONT, ProtocolUtil.getFontAsArray( font ) );
     }
-  }
-
-  private static Object[] getFontAsArray( Font font ) {
-    Object[] result = null;
-    if( font != null ) {
-      FontData fontData = FontUtil.getData( font );
-      result = new Object[] {
-        parseFontName( fontData.getName() ),
-        Integer.valueOf( fontData.getHeight() ),
-        Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 ),
-        Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 )
-      };
-    }
-    return result;
-  }
-
-  public static String[] parseFontName( final String name ) {
-    return parsedFonts.get( name, new IInstanceCreator<String[]>() {
-      public String[] createInstance() {
-        return parseFontNameInternal( name );
-      }
-    } );
-  }
-
-  private static String[] parseFontNameInternal( String name ) {
-    String[] result = name.split( "," );
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = result[ i ].trim();
-      Matcher matcher = FONT_NAME_FILTER_PATTERN.matcher( result[ i ] );
-      result[ i ] = matcher.replaceAll( "" );
-    }
-    return result;
   }
 
   /**
@@ -487,24 +443,8 @@ public final class WidgetLCAUtil {
   public static void renderForeground( Widget widget, Color newColor ) {
     if( WidgetLCAUtil.hasChanged( widget, PROP_FOREGROUND, newColor, null ) ) {
       IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
-      clientObject.set( PROP_FOREGROUND, getColorValueAsArray( newColor, false ) );
+      clientObject.set( PROP_FOREGROUND, ProtocolUtil.getColorAsArray( newColor, false ) );
     }
-  }
-
-  // TODO [tb] : merge with GCOperationWriter#getColorValueAsArray?
-  private static int[] getColorValueAsArray( Color color, boolean transparent ) {
-    int[] result = null;
-    if( color != null ) {
-      RGB rgb = color.getRGB();
-      result = new int[ 4 ];
-      result[ 0 ] = rgb.red;
-      result[ 1 ] = rgb.green;
-      result[ 2 ] = rgb.blue;
-      result[ 3 ] = transparent ? 0 : 255;
-    } else if( transparent ) {
-      result = new int[] { 0, 0, 0, 0 };
-    }
-    return result;
   }
 
   /**
@@ -549,7 +489,7 @@ public final class WidgetLCAUtil {
       IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       int[] color = null;
       if( transparency || background != null ) {
-        color = getColorValueAsArray( background, transparency );
+        color = ProtocolUtil.getColorAsArray( background, transparency );
       }
       clientObject.set( PROP_BACKGROUND, color );
     }
@@ -576,7 +516,7 @@ public final class WidgetLCAUtil {
         int[] bgGradientPercents = graphicsAdapter.getBackgroundGradientPercents();
         Integer[] percents = new Integer[ bgGradientPercents.length ];
         for( int i = 0; i < colors.length; i++ ) {
-          colors[ i ] = getColorValueAsArray( bgGradientColors[ i ], false );
+          colors[ i ] = ProtocolUtil.getColorAsArray( bgGradientColors[ i ], false );
         }
         for( int i = 0; i < bgGradientPercents.length; i++ ) {
           percents[ i ] =  new Integer( bgGradientPercents[ i ] );
@@ -633,7 +573,7 @@ public final class WidgetLCAUtil {
         Rectangle radius = graphicAdapter.getRoundedBorderRadius();
         args = new Object[] {
           new Integer( width ),
-          getColorValueAsArray( color, false ),
+          ProtocolUtil.getColorAsArray( color, false ),
           new Integer( radius.x ),
           new Integer( radius.y ),
           new Integer( radius.width ),
@@ -854,7 +794,7 @@ public final class WidgetLCAUtil {
   {
     if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
       IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
-      clientObject.set( property, getImageAsArray( newValue ) );
+      clientObject.set( property, ProtocolUtil.getImageAsArray( newValue ) );
     }
   }
 
@@ -878,7 +818,7 @@ public final class WidgetLCAUtil {
     if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
       Object[] images = new Object[ newValue.length ];
       for( int i = 0; i < images.length; i++ ) {
-        images[ i ] = getImageAsArray( newValue[ i ] );
+        images[ i ] = ProtocolUtil.getImageAsArray( newValue[ i ] );
       }
       IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( property, images );
@@ -904,7 +844,7 @@ public final class WidgetLCAUtil {
   {
     if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
       IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
-      clientObject.set( property, getColorValueAsArray( newValue, false ) );
+      clientObject.set( property, ProtocolUtil.getColorAsArray( newValue, false ) );
     }
   }
 
@@ -930,7 +870,7 @@ public final class WidgetLCAUtil {
       for( int i = 0; i < colors.length; i++ ) {
         int[] colorProperties = null;
         if( newValue[ i ] != null ) {
-          colorProperties = getColorValueAsArray( newValue[ i ], false );
+          colorProperties = ProtocolUtil.getColorAsArray( newValue[ i ], false );
         }
         colors[ i ] = colorProperties;
       }
@@ -959,7 +899,7 @@ public final class WidgetLCAUtil {
     if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
       Object[] fonts = new Object[ newValue.length ];
       for( int i = 0; i < fonts.length; i++ ) {
-        fonts[ i ] = getFontAsArray( newValue[ i ] );
+        fonts[ i ] = ProtocolUtil.getFontAsArray( newValue[ i ] );
       }
       IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.set( property, fonts );
@@ -1188,20 +1128,6 @@ public final class WidgetLCAUtil {
     return result;
   }
 
-  private static Object[] getImageAsArray( Image image ) {
-    Object[] result = null;
-    if( image != null ) {
-      String imagePath = ImageFactory.getImagePath( image );
-      Rectangle bounds = image.getBounds();
-      result = new Object[] {
-        imagePath,
-        Integer.valueOf( bounds.width ),
-        Integer.valueOf( bounds.height )
-      };
-    }
-    return result;
-  }
-
   /////////////////////
   // Deprecated methods
 
@@ -1383,7 +1309,7 @@ public final class WidgetLCAUtil {
       JSWriter writer = JSWriter.getWriterFor( widget );
       if( font != null ) {
         FontData fontData = FontUtil.getData( font );
-        String[] names = parseFontName( fontData.getName() );
+        String[] names = ProtocolUtil.parseFontName( fontData.getName() );
         Object[] args = new Object[]{
           widget,
           names,

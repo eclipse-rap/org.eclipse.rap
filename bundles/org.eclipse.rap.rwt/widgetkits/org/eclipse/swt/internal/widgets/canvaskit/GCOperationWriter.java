@@ -17,9 +17,9 @@ import java.util.Map;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
+import org.eclipse.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
@@ -65,8 +65,8 @@ final class GCOperationWriter {
       arg.put( "width", new Integer( size.x ) );
       arg.put( "height", new Integer( size.y ) );
       arg.put( "font", toCSSFont( FontUtil.getData( control.getFont() ) ) );
-      arg.put( "fillStyle", getColorValueAsArray( control.getBackground() ) );
-      arg.put( "strokeStyle", getColorValueAsArray( control.getForeground() ) );
+      arg.put( "fillStyle", ProtocolUtil.getColorAsArray( background, false ) );
+      arg.put( "strokeStyle", ProtocolUtil.getColorAsArray( foreground, false ) );
       clientObject.call( "init", arg );
       operations = new ArrayList<Object[]>();
       initialized = true;
@@ -126,7 +126,7 @@ final class GCOperationWriter {
     float x = operation.x;
     float y = operation.y;
     addClientOperation( "save" );
-    addToOperations( "fillStyle", getColorValueAsArray( foreground ) );
+    addToOperations( "fillStyle", ProtocolUtil.getColorAsArray( foreground, false ) );
     addClientOperation( "lineWidth", 1 );
     addClientOperation( "beginPath" );
     addClientOperation( "rect", x, y, 1, 1 );
@@ -170,8 +170,12 @@ final class GCOperationWriter {
     float y2 = vertical ? y1 + Math.abs( height ) : y1;
     addClientOperation( "save" );
     addClientOperation( "createLinearGradient", x1, y1, x2, y2 );
-    addToOperations( "addColorStop", new Integer( 0 ), getColorValueAsArray( startColor ) );
-    addToOperations( "addColorStop", new Integer( 1 ), getColorValueAsArray( endColor ) );
+    addToOperations( "addColorStop",
+                     Integer.valueOf( 0 ),
+                     ProtocolUtil.getColorAsArray( startColor, false ) );
+    addToOperations( "addColorStop",
+                     Integer.valueOf( 1 ),
+                     ProtocolUtil.getColorAsArray( endColor, false ) );
     addClientOperation( "fillStyle", "linearGradient" );
     addClientOperation( "beginPath" );
     addClientOperation( "rect", x1, y1, width, height );
@@ -288,12 +292,12 @@ final class GCOperationWriter {
       case SetProperty.FOREGROUND:
         name = "strokeStyle";
         foreground = ( RGB )operation.value;
-        value = getColorValueAsArray( foreground );
+        value = ProtocolUtil.getColorAsArray( foreground, false );
       break;
       case SetProperty.BACKGROUND:
         name = "fillStyle";
         background = ( RGB )operation.value;
-        value = getColorValueAsArray( background );
+        value = ProtocolUtil.getColorAsArray( background, false );
       break;
       case SetProperty.ALPHA:
         float alpha = ( ( Integer )operation.value ).floatValue();
@@ -390,19 +394,6 @@ final class GCOperationWriter {
     String name = fontData.getName().replaceAll( "\"", "'" );
     result.append( name );
     return result.toString();
-  }
-
-  private static int[] getColorValueAsArray( Color color ) {
-    RGB rgb = color == null ? new RGB( 0, 0, 0 ) : color.getRGB();
-    return getColorValueAsArray( rgb );
-  }
-
-  private static int[] getColorValueAsArray( RGB rgb ) {
-    int[] result = new int[ 3 ];
-    result[ 0 ] = rgb.red;
-    result[ 1 ] = rgb.green;
-    result[ 2 ] = rgb.blue;
-    return result;
   }
 
   private float getOffset( boolean fill ) {

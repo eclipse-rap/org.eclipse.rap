@@ -213,7 +213,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       } else if( value instanceof Array ) {
         value = qx.util.ColorUtil.rgbToRgbString( value );
       }
-       this._context[ property ] = value;
+      this._context[ property ] = value;
     },
 
     _strokeText : function( operation ) {
