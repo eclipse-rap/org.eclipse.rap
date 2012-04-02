@@ -25,10 +25,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
+      gc.init( 300, 300, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       var vmlCanvas = gc._context._canvas;
       assertEquals( 0, vmlCanvas.node.childNodes.length );
-      gc._initFields( "10px Arial", [ 1, 2, 3 ], [ 4, 5, 6 ] );
+      gc._initFields( [ [ "Arial" ], 10, false, false ], [ 1, 2, 3 ], [ 4, 5, 6 ] );
       this._setProperty( gc, "globalAlpha", 0.5 );
       this._setProperty( gc, "lineWidth", 4 );
       this._setProperty( gc, "lineCap", "round" ); // "round"
@@ -59,10 +59,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
+      gc.init( 300, 300, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       var vmlCanvas = gc._context._canvas;
       assertEquals( 0, vmlCanvas.node.childNodes.length );
-      gc._initFields( "10px Arial", [ 1, 2, 3 ], [ 4, 5, 6 ] );
+      gc._initFields( [ [ "Arial" ], 10, false, false ], [ 1, 2, 3 ], [ 4, 5, 6 ] );
       this._setProperty( gc, "globalAlpha", 0.5 );
       this._drawRectangle( gc, 10, 10, 20, 20, true );
       assertEquals( 1, vmlCanvas.node.childNodes.length );
@@ -85,10 +85,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       var vmlCanvas = gc._context._canvas;
-      gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
+      gc.init( 300, 300, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       gc.draw( [ [ "beginPath" ], [ "moveTo", 10.5, 10.5 ], [ "lineTo", 20.5, 10.5 ], [ "stroke" ] ] );
       assertEquals( 1, vmlCanvas.node.childNodes.length );
-      gc.init( 400, 500, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
+      gc.init( 400, 500, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       assertEquals( 0, vmlCanvas.node.childNodes.length );
       canvas.destroy();
       TestUtil.flush();
@@ -101,7 +101,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
+      gc.init( 300, 300, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       gc.draw( [ [ "beginPath" ], [ "moveTo", 10.5, 10.5 ], [ "lineTo", 20.5, 10.5 ], [ "stroke" ] ] );
       assertEquals( "m100,100 l200,100 e", this._getLastPath( gc ) );
       canvas.destroy();
@@ -116,7 +116,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       context = gc._context;
-      gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
+      gc.init( 300, 300, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       gc.draw( [ [ "beginPath" ], [ "rect", 40, 30, 1, 1 ], [ "fill" ] ] ); 
       var expected = "m395,295 l405,295,405,305,395,305 xe";
       var path = this._getLastPath( gc );
@@ -135,7 +135,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       context = gc._context;
-      gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
+      gc.init( 300, 300, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       gc.draw( [ [ "beginPath" ], [ "rect", 10.5, 20.5, 30, 40 ], [ "stroke" ] ] );
       var expected = "m100,200 l400,200,400,600,100,600 xe";
       assertEquals( expected, this._getLastPath( gc ) );
@@ -151,7 +151,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       context = gc._context;
-      gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
+      gc.init( 300, 300, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       this._drawRoundRectangle( gc, 2, 4, 20, 30, 4, 10 );      
       var expected =   "m15,95 l15,275 qb15,335 l45,335,185,335 qb215,335 l215,275,215,95 qb215,35 l185,35,45,35 qb15,35 l15,95 e";
       assertEquals( expected, this._getLastPath( gc ) );
@@ -167,7 +167,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       context = gc._context;
-      gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
+      gc.init( 300, 300, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       this._fillGradientRectangle( gc, 40, 60, -30, -40, [ 255, 0, 0 ], [ 0, 0, 255 ] );      
       var expected = "m395,595 l95,595,95,195,395,195 xe"
       assertEquals( expected, this._getLastPath( gc ) );
@@ -186,7 +186,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
+      gc.init( 300, 300, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       //gc.drawArc( 100, 100, 60, 30, 180, 180, true );
       var x = 100;
       var y = 100;
@@ -214,7 +214,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
+      gc.init( 300, 300, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       gc.draw( [
         [ "beginPath" ],
         [ "moveTo", 10, 10 ],
@@ -237,7 +237,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", [ 255, 0, 0 ], [ 0, 0, 255 ] );
+      gc.init( 300, 300, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       var vmlCanvas = gc._context._canvas;
       var shape = org.eclipse.rwt.VML.createShape( "image" );
       org.eclipse.rwt.VML.setImageData( shape, 
@@ -269,7 +269,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       var vmlCanvas = gc._context._canvas;
-      gc._initFields( "10px Arial", [ 1, 2, 3 ], [ 4, 5, 6 ] );
+      gc._initFields( [ [ "Arial" ], 10, false, false ], [ 1, 2, 3 ], [ 4, 5, 6 ] );
       this._drawRectangle( gc,  10, 10, 20, 20, true )
       this._drawRectangle( gc,  10, 10, 20, 20, false );
       var node1 = vmlCanvas.node.childNodes[ 0 ];
@@ -291,7 +291,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       var vmlCanvas = gc._context._canvas;
-      gc._initFields( "10px Arial", [ 1, 2, 3 ], [ 4, 5, 6 ] );
+      gc._initFields( [ [ "Arial" ], 10, false, false ], [ 1, 2, 3 ], [ 4, 5, 6 ] );
       this._setProperty( gc, "lineWidth", 4 ); 
       this._drawRectangle( gc, 10, 10, 20, 20, false );
       var node = vmlCanvas.node.childNodes[ 0 ];
