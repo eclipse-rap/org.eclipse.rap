@@ -214,9 +214,6 @@ final class GCOperationWriter {
     float startAngle = round( operation.startAngle * factor * -1, 4 );
     float arcAngle = round( operation.arcAngle * factor * -1, 4 );
     addClientOperation( "beginPath" );
-    if( operation.fill ) {
-      addClientOperation( "moveTo", cx, cy  );
-    }
     addToOperations(
       "ellipse",
       new Float( cx ),
@@ -228,6 +225,9 @@ final class GCOperationWriter {
       new Float( startAngle + arcAngle ),
       arcAngle < 0 ? Boolean.TRUE : Boolean.FALSE
     );
+    if( operation.fill ) {
+      addClientOperation( "lineTo", cx, cy  );
+    }
     addClientOperation( operation.fill ? "fill" : "stroke" );
   }
 
