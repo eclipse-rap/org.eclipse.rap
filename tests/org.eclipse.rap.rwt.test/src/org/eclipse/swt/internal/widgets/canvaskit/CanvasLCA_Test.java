@@ -113,7 +113,11 @@ public class CanvasLCA_Test extends TestCase {
     CallOperation init = getGCOperation( canvas, "init" );
     assertEquals( new Integer( 50 ), init.getProperty( "width" ) );
     assertEquals( new Integer( 50 ), init.getProperty( "height" ) );
-    assertEquals( "11px Arial", init.getProperty( "font" ) );
+    JSONArray fontArray = ( JSONArray )init.getProperty( "font" );
+    assertEquals( "Arial", fontArray.getJSONArray( 0 ).getString( 0 ) );
+    assertEquals( 11, fontArray.getInt( 1 ) );
+    assertFalse( fontArray.getBoolean( 2 ) );
+    assertFalse( fontArray.getBoolean( 3 ) );
     String fillStyle = ( ( JSONArray )init.getProperty( "fillStyle" ) ).join( "," );
     String strokeStyle = ( ( JSONArray )init.getProperty( "strokeStyle" ) ).join( "," );
     assertEquals( "255,255,255,255", fillStyle );

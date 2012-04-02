@@ -137,7 +137,7 @@ public class GCOperationWriter_Test extends TestCase {
     gc.setFont( new Font( display, "Arial", 12, SWT.BOLD ) );
 
     JSONArray ops = getGCOperations( canvas );
-    assertEquals( "\"font\",\"bold 12px Arial\"", getOperation( 0, ops ) );
+    assertEquals( "\"font\",[[\"Arial\"],12,true,false]", getOperation( 0, ops ) );
   }
 
   public void testDrawLine() {
@@ -501,7 +501,7 @@ public class GCOperationWriter_Test extends TestCase {
     font.dispose();
 
     JSONArray ops = getGCOperations( canvas );
-    assertEquals( "\"font\",\"1px font-name\"", getOperation( 0, ops ) );
+    assertEquals( "\"font\",[[\"font-name\"],1,false,false]", getOperation( 0, ops ) );
   }
 
   // bug 351216: [GC] Throws unexpected "Graphic is diposed" exception

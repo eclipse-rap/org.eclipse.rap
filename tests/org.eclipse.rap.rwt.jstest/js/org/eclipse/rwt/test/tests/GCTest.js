@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -164,7 +164,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       this._setProperty( gc, "lineWidth", 4 );
       this._setProperty( gc, "lineCap", "round" ); 
       this._setProperty( gc, "lineJoin", "bevel" );
-      this._setProperty( gc, "font", "italic bold 16px Arial" );
+      this._setProperty( gc, "font", [ [ "Arial" ], 16, true, true ] );
       assertEquals( [ 1, 2, 3 ], qx.util.ColorUtil.stringToRgb( gc._context.strokeStyle ) );
       assertEquals( [ 4, 5, 6 ], qx.util.ColorUtil.stringToRgb( gc._context.fillStyle ) );
       assertEquals( 128, Math.round( gc._context.globalAlpha * 1000 ) );
@@ -173,7 +173,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       assertEquals( "bevel", gc._context.lineJoin );
       assertTrue(    gc._context.font === "italic bold 16px Arial" 
                   || gc._context.font === "bold italic 16px Arial" );
-      gc.init( 300, 300, "10px Arial", [ 255, 255, 255 ], [ 0, 0, 0 ] );
+      gc.init( 300, 300,
+               [ [ "Arial" ], 10, false, false ],
+               [ 255, 255, 255, 255 ], [ 0, 0, 0, 255 ] );
       assertEquals( [ 0, 0, 0 ], qx.util.ColorUtil.stringToRgb( gc._context.strokeStyle ) );
       assertEquals( [ 255, 255, 255 ], qx.util.ColorUtil.stringToRgb( gc._context.fillStyle ) );
       assertEquals( 1, gc._context.globalAlpha );
@@ -192,17 +194,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
-      this._setProperty( gc, "strokeStyle", [ 1,2,3 ] );
-      this._setProperty( gc, "fillStyle", [ 4, 5, 6 ] );
+      this._setProperty( gc, "strokeStyle", [ 1,2,3, 255 ] );
+      this._setProperty( gc, "fillStyle", [ 4, 5, 6, 255 ] );
       this._setProperty( gc, "globalAlpha", 0.128 );
       this._setProperty( gc, "lineWidth", 4 );
       this._setProperty( gc, "lineCap", "round" ); // "round"
       this._setProperty( gc, "lineJoin", "bevel" ); // "bevel"
-      this._setProperty( gc, "font", "italic bold 16px Arial" );
+      this._setProperty( gc, "font", [ [ "Arial" ], 16, true, true ] );
       gc._context.save();
       // Do not use "init" as setting the dimension clears the stack
-      gc._context.clearRect( 0,0,300,300 );
-      gc._initFields( "10px Arial", [ 255, 255, 255 ], [ 0, 0, 0 ] );
+      gc._context.clearRect( 0, 0, 300, 300 );
+      gc._initFields( [ [ "Arial" ], 10, false, false ], [ 255, 255, 255, 255 ], [ 0, 0, 0, 255 ] );
       assertEquals( [ 0, 0, 0 ], qx.util.ColorUtil.stringToRgb( gc._context.strokeStyle ) );
       assertEquals( [ 255, 255, 255 ], qx.util.ColorUtil.stringToRgb( gc._context.fillStyle ) );
       assertEquals( 1, gc._context.globalAlpha );
@@ -230,7 +232,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", [ 255, 255, 255 ], [ 0, 0, 0 ] );
+      gc.init( 300, 300, 
+               [ [ "Arial" ], 10, false, false ],
+               [ 255, 255, 255, 255 ], [ 0, 0, 0, 255 ] );
       assertEquals( 0, gc._textCanvas.childNodes.length );
       gc.draw( [ [ "fillText", "Hello World", false, false, false, 40, 50 ] ]);
       assertEquals( 1, gc._textCanvas.childNodes.length );
@@ -241,7 +245,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       assertTrue( textNode.style.font.indexOf( "Arial" ) != -1 );
       assertEquals( [ 0, 0, 0 ], qx.util.ColorUtil.stringToRgb( textNode.style.color ) );
       assertEquals( [ 255, 255, 255 ], qx.util.ColorUtil.stringToRgb( textNode.style.backgroundColor ) );
-      gc.init( 300, 300, "10px Arial", [ 255, 255, 255 ], [ 0, 0, 0 ] );
+      gc.init( 300, 300,
+               [ [ "Arial" ], 10, false, false ],
+               [ 255, 255, 255 ], [ 0, 0, 0 ] );
       assertEquals( 0, gc._textCanvas.childNodes.length );
       canvas.destroy();
       TestUtil.flush();

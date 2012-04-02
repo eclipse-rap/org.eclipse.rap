@@ -23,7 +23,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.graphics.GCOperation;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawArc;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawImage;
@@ -64,7 +63,7 @@ final class GCOperationWriter {
       Map<String, Object> arg = new HashMap<String, Object>();
       arg.put( "width", new Integer( size.x ) );
       arg.put( "height", new Integer( size.y ) );
-      arg.put( "font", toCSSFont( FontUtil.getData( control.getFont() ) ) );
+      arg.put( "font", ProtocolUtil.getFontAsArray( control.getFont() ) );
       arg.put( "fillStyle", ProtocolUtil.getColorAsArray( background, false ) );
       arg.put( "strokeStyle", ProtocolUtil.getColorAsArray( foreground, false ) );
       clientObject.call( "init", arg );
@@ -344,7 +343,7 @@ final class GCOperationWriter {
       break;
       case SetProperty.FONT:
         name = "font";
-        value = toCSSFont( ( FontData )operation.value );
+        value = ProtocolUtil.getFontAsArray( ( FontData )operation.value );
       break;
       default:
         String msg = "Unsupported operation id: " + operation.id;
@@ -379,21 +378,6 @@ final class GCOperationWriter {
   private static Adaptable getGC( Widget widget ) {
     WidgetAdapter adapter = ( WidgetAdapter )widget.getAdapter( IWidgetAdapter.class );
     return adapter.getGCForClient();
-  }
-
-  private static String toCSSFont( FontData fontData ) {
-    StringBuilder result = new StringBuilder();
-    if( ( fontData.getStyle() & SWT.ITALIC ) != 0 ) {
-      result.append( "italic " );
-    }
-    if( ( fontData.getStyle() & SWT.BOLD ) != 0 ) {
-      result.append( "bold " );
-    }
-    result.append( fontData.getHeight() );
-    result.append( "px " );
-    String name = fontData.getName().replaceAll( "\"", "'" );
-    result.append( name );
-    return result.toString();
   }
 
   private float getOffset( boolean fill ) {

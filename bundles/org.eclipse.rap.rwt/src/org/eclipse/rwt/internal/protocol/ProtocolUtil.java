@@ -42,9 +42,13 @@ public final class ProtocolUtil {
   }
 
   public static Object[] getFontAsArray( Font font ) {
+    FontData fontData = font == null ? null : FontUtil.getData( font );
+    return getFontAsArray( fontData );
+  }
+
+  public static Object[] getFontAsArray( FontData fontData ) {
     Object[] result = null;
-    if( font != null ) {
-      FontData fontData = FontUtil.getData( font );
+    if( fontData != null ) {
       result = new Object[] {
         parseFontName( fontData.getName() ),
         Integer.valueOf( fontData.getHeight() ),

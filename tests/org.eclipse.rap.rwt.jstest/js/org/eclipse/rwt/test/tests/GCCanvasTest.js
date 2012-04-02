@@ -25,9 +25,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
+      gc.init( 300, 300,
+               [ [ "Arial" ], 10, false, false ],
+               [ 255, 0, 0, 255 ], [ 0, 0, 255, 255 ] );
       gc.draw( [ [ "beginPath" ], [ "moveTo", 10, 10 ], [ "lineTo", 20, 10 ], [ "stroke" ] ] );
-      gc.init( 400, 500, "10px Arial", "#ffffff", "#000000" );
+      gc.init( 400, 500,
+               [ [ "Arial" ], 10, false, false ],
+               [ 255, 255, 255, 255 ], [ 0, 0, 0, 255 ] );
       assertEquals( 400, parseInt( gc._canvas.width ) );
       assertEquals( 400, parseInt( gc._canvas.style.width ) );
       assertEquals( 500, parseInt( gc._canvas.height ) );
@@ -50,7 +54,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
+      gc.init( 300, 300,
+               [ [ "Arial" ], 10, false, false ],
+               [ 255, 0, 0, 255 ], [ 0, 0, 255, 255 ] );
       gc.draw( [ [ "beginPath" ], [ "moveTo", 10.5, 10.5 ], [ "lineTo", 20.5, 10.5 ], [ "stroke" ] ] );
       var context = gc._context;
       context.lineTo( 15, 15 );
@@ -70,7 +76,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
+      gc.init( 300, 300,
+               [ [ "Arial" ], 10, false, false ],
+               [ 255, 0, 0, 255 ], [ 0, 0, 255, 255 ] );
 
       //gc.drawArc( 100, 100, 60, 30, 180, 180, true );
 

@@ -177,7 +177,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       this._context.lineWidth = 1;
       this._context.lineCap = "butt";
       this._context.lineJoin = "miter";
-      this._context.font = font;
+      this._context.font = this._toCssFont( font );
     },
 
     // See http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#building-paths
@@ -210,8 +210,10 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       var value = operation[ 1 ];
       if( value === "linearGradient" ) {
         value = this._linearGradient;
-      } else if( value instanceof Array ) {
+      } else if( property === "fillStyle" || property === "strokeStyle" ) {
         value = qx.util.ColorUtil.rgbToRgbString( value );
+      } else if( property === "font" ) {
+        value = this._toCssFont( value );
       }
       this._context[ property ] = value;
     },
@@ -283,6 +285,19 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
         operation[ 1 ],
         qx.util.ColorUtil.rgbToRgbString( operation[ 2 ] ) 
       );
+    },
+
+    _toCssFont : function( fontArray ) {
+      var result = "";
+      if( fontArray[ 3 ] ) {
+        result += "italic ";
+      }
+      if( fontArray[ 2 ] ) {
+        result += "bold ";
+      }
+      result += fontArray[ 1 ] + "px ";
+      result += fontArray[ 0 ].join( "," );
+      return result;
     }
 
   }

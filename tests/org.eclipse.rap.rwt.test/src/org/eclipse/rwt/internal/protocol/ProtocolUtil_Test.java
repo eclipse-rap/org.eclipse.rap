@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.widgets.Display;
 
 import junit.framework.TestCase;
@@ -75,6 +76,14 @@ public class ProtocolUtil_Test extends TestCase {
     checkFontArray( new String[] { "Arial" }, 22, false, false, array );
   }
 
+  public void testFontAsArray_FontData() {
+    Font font = new Font( display, "Arial", 22, SWT.NONE );
+
+    Object[] array = ProtocolUtil.getFontAsArray( FontUtil.getData( font ) );
+
+    checkFontArray( new String[] { "Arial" }, 22, false, false, array );
+  }
+
   public void testFontAsArray_Bold() {
     Font font = new Font( display, "Arial", 22, SWT.BOLD );
 
@@ -92,7 +101,7 @@ public class ProtocolUtil_Test extends TestCase {
   }
 
   public void testFontAsArray_Null() {
-    assertNull( ProtocolUtil.getFontAsArray( null ) );
+    assertNull( ProtocolUtil.getFontAsArray( ( Font )null ) );
   }
 
   @SuppressWarnings("deprecation")
