@@ -20,6 +20,7 @@ org.eclipse.rwt.UICallBack = function() {
   this._retryInterval = 0;
   this._active = false;
   this._running = false;
+  this._initUICallBackRequestTimer();
 };
 
 org.eclipse.rwt.UICallBack.getInstance = function() {
@@ -42,15 +43,26 @@ org.eclipse.rwt.UICallBack.prototype = {
   sendUICallBackRequest : function() {
     if( this._active && !this._running ) {
       this._running = true;
-      var url = org.eclipse.swt.Request.getInstance().getUrl();
-      var request = new qx.io.remote.Request( url, "GET", "application/javascript" );
-      request.addEventListener( "completed", this._handleFinished, this );
-      request.addEventListener( "failed", this._handleFailed, this );
-      request.setParameter(
-        "custom_service_handler",
-        "org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler" );
-      org.eclipse.swt.Request.getInstance()._sendStandalone( request );
+      this._requestTimer.start();
     }
+  },
+
+  _initUICallBackRequestTimer : function() {
+    this._requestTimer = new qx.client.Timer( 0 );
+    this._requestTimer.addEventListener( "interval", this._doSendUICallBackRequest, this );
+  },
+
+  // workaround for bug 353819 - send UICallBackRequest with a timer
+  _doSendUICallBackRequest : function() {
+    this._requestTimer.stop();
+    var url = org.eclipse.swt.Request.getInstance().getUrl();
+    var request = new qx.io.remote.Request( url, "GET", "application/javascript" );
+    request.addEventListener( "completed", this._handleFinished, this );
+    request.addEventListener( "failed", this._handleFailed, this );
+    request.setParameter(
+      "custom_service_handler",
+      "org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler" );
+    org.eclipse.swt.Request.getInstance()._sendStandalone( request );
   },
 
   _handleFinished : function( event ) {
