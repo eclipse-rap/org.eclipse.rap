@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 EclipseSource and others.
+ * Copyright (c) 2008, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@ package org.eclipse.rap.internal.design.example.managers;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.internal.provisional.action.ToolBarManager2;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -26,6 +28,7 @@ public class ViewToolBarManager extends ToolBarManager2 {
   private static final String STYLING_VARIANT = "viewToolbar"; //$NON-NLS-1$
   private ItemData[] itemsData;
 
+  @Override
   public ToolBar createControl( final Composite parent ) {
     ToolBar toolBar = getControl();
     if( !toolBarExist() && parent != null ) {
@@ -35,6 +38,7 @@ public class ViewToolBarManager extends ToolBarManager2 {
     return toolBar;
   }
 
+  @Override
   public void update( final boolean force ) {
     if( isDirty() || force ) {
       if( toolBarExist() ) {
@@ -166,16 +170,18 @@ public class ViewToolBarManager extends ToolBarManager2 {
   private void updateItemsData() {
     ToolBar toolBar = getControl();
     ToolItem[] items = toolBar.getItems();
-    itemsData = new ItemData[ items.length ];
+    List<ItemData> data = new ArrayList<ItemData>();
     for( int i = 0; i < items.length; i++ ) {
-      IContributionItem contributionItem
-        = ( IContributionItem )items[ i ].getData();
-      ItemData data = new ItemData( contributionItem.getId(),
-                                    items[ i ].getText(),
-                                    items[ i ].getToolTipText(),
-                                    items[ i ].getImage() );
-      itemsData[ i ] = data;
+      IContributionItem contributionItem = ( IContributionItem )items[ i ].getData();
+      if( !contributionItem.isGroupMarker() && !contributionItem.isSeparator() ) {
+        ItemData itemData = new ItemData( contributionItem.getId(),
+                                          items[ i ].getText(),
+                                          items[ i ].getToolTipText(),
+                                          items[ i ].getImage() );
+        data.add( itemData );
+      }
     }
+    itemsData = data.toArray( new ItemData[ 0 ] );
   }
 
   private void disposeInvisibleItems() {

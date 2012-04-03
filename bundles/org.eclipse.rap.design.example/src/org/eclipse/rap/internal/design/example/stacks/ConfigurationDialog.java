@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 EclipseSource and others.
+ * Copyright (c) 2008, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,6 +84,7 @@ public class ConfigurationDialog extends PopupDialog {
     viewMenuVisChanged = false;
   }
 
+  @Override
   protected void adjustBounds() {
     getShell().layout();
     IWorkbench workbench = PlatformUI.getWorkbench();
@@ -107,6 +108,7 @@ public class ConfigurationDialog extends PopupDialog {
     return close();
   }
 
+  @Override
   public boolean close() {
     ConfigurableStack stackPresentation
       = ( ConfigurableStack ) action.getStackPresentation();
@@ -118,6 +120,7 @@ public class ConfigurationDialog extends PopupDialog {
     return super.close();
   }
 
+  @Override
   protected Control createDialogArea( final Composite parent ) {
     Composite background = new Composite( parent, SWT.NONE );
     background.setLayout( new FormLayout() );
@@ -147,6 +150,7 @@ public class ConfigurationDialog extends PopupDialog {
     fdCancel.right = new FormAttachment( 100, 0 );
     fdCancel.width = 90;
     cancel.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         close( false );
       };
@@ -160,6 +164,7 @@ public class ConfigurationDialog extends PopupDialog {
     fdOK.bottom = fdCancel.bottom;
     fdOK.width = 90;
     ok.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         close( true );
       };
@@ -239,8 +244,7 @@ public class ConfigurationDialog extends PopupDialog {
           Button check = new Button( container, SWT.CHECK );
           check.setText( text );
           check.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
-          boolean selected
-            = action.isViewActionVisibile( paneId, itemId );
+          boolean selected = action.isViewActionVisibile( paneId, itemId );
           FormData fdCheck = new FormData();
           check.setLayoutData( fdCheck );
           fdCheck.left = new FormAttachment( imageLabel, OFFSET + 5 );
@@ -255,6 +259,7 @@ public class ConfigurationDialog extends PopupDialog {
     }
   }
 
+  @Override
   public int open() {
     int result = super.open();
     Shell shell = getShell();
