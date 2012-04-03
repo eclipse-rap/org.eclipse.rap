@@ -125,6 +125,9 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
       if( this._appearAnimation === null ) {
         this._appearAnimation = new Animation();
         this._appearAnimation.addEventListener( "cancel", this._releaseFocus, this );
+        if( org.eclipse.rwt.Client.isMshtml() && this instanceof org.eclipse.swt.widgets.Shell) {
+          this._appearAnimation.setExclusive( true );
+        }
       }
       this._appearAnimation.getDefaultRenderer().setActive( true );
       return this._appearAnimation;
@@ -220,6 +223,9 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
         if( this instanceof org.eclipse.swt.widgets.Shell ) {
           this._disappearAnimation.addEventListener( "init", this._lockActiveState, this );
           this._disappearAnimation.addEventListener( "cancel", this._unlockActiveState, this );
+          if( org.eclipse.rwt.Client.isMshtml() ) {
+            this._disappearAnimation.setExclusive( true );
+          }
         }
       }
       this._disappearAnimation.getDefaultRenderer().setActive( true );

@@ -27,6 +27,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
   
       var animation = this.getAppearAnimation( shell );
       assertEquals( 400, animation.getDuration() );
+      assertEquals( org.eclipse.rwt.Client.isMshtml(), animation.getExclusive() );
     },
 
     testShellFlyInTopStart : function() {
@@ -192,6 +193,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
   
       var animation = this.getDisappearAnimation( shell );
       assertEquals( 400, animation.getDuration() );
+      assertEquals( org.eclipse.rwt.Client.isMshtml(), animation.getExclusive() );
     },
 
     testShellFlyOutTopStart : function() {

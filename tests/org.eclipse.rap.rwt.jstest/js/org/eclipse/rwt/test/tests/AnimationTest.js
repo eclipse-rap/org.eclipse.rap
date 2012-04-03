@@ -70,7 +70,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       assertNull( org.eclipse.rwt.Animation._interval );
       animation.dispose();
     },
-    
+
     testStartTime : function() {
       var animation = new org.eclipse.rwt.Animation();
       animation.setDuration( 2 );
@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       assertNull( org.eclipse.rwt.Animation._interval );
       animation.dispose();
     },
-    
+
     testDisposeAnimation : function() {
       var animation = new org.eclipse.rwt.Animation();
       var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
@@ -190,6 +190,58 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       animation.dispose();
     },
 
+    testExclusiveAnimation : function() {
+      var animation = new org.eclipse.rwt.Animation();
+      var animation2 = new org.eclipse.rwt.Animation();
+      animation.setDuration( 1000 );
+      animation2.setDuration( 1000 );
+      var start = new Date().getTime();
+
+      animation.setExclusive( true );
+      animation2.start();
+      animation.start();
+      org.eclipse.rwt.Animation._mainLoop();
+
+      assertTrue( animation.isRunning() );
+      assertFalse( animation2.isRunning() );
+      animation.dispose();
+      animation2.dispose();
+    },
+    
+    testSingleExclusiveAnimation : function() {
+      var animation = new org.eclipse.rwt.Animation();
+      animation.setDuration( 1000 );
+      
+      animation.setExclusive( true );
+      animation.start();
+      org.eclipse.rwt.Animation._mainLoop();
+      
+      assertTrue( animation.isRunning() );
+      animation.dispose();
+    },
+    
+    
+    testExclusiveAnimationCanceled : function() {
+      var animation = new org.eclipse.rwt.Animation();
+      var animation2 = new org.eclipse.rwt.Animation();
+      animation.setDuration( 1000 );
+      animation2.setDuration( 1000 );
+      var start = new Date().getTime();
+      
+      animation.setExclusive( true );
+      animation2.start();
+      animation.start();
+      org.eclipse.rwt.Animation._mainLoop();
+      animation.cancel(); // TODO [tb] : split
+      org.eclipse.rwt.Animation._mainLoop();
+    
+      assertFalse( animation.isRunning() );
+      assertTrue( animation2.isRunning() );
+      animation.dispose();
+      animation2.dispose();
+    },
+    
+    
     /////////////////////////
     // AnimationRenderer core
     

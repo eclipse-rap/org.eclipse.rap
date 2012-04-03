@@ -28,6 +28,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     // state info:
     this._isRunning = false;
     this._inQueue = false;
+    this._exclusive = false;
   },
 
   destruct : function() {
@@ -100,7 +101,15 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     getConfig : function() {
       return this._config;
     },
+    
+    setExclusive : function( value ) {
+      this._exclusive = value;
+    },
 
+    getExclusive : function() {
+      return this._exclusive;
+    },
+    
     // config can by any value, but "appear", "disappear" and "change" are
     // used by AnimationRenderer when autoStart is enabled. When using 
     // the widget-integration of AnimationRenderer, those should be used
@@ -204,7 +213,6 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     },
 
     _render : function( position ) {
-      var maxRenderer = this._renderer.length;
       if( !this._isRunning ) {
         for( var i = 0; i < this._numberRenderer; i++ ) {
           this._renderer[ i ]._setup( this._config );
@@ -237,17 +245,26 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     FPS : 60,
     _queue : [],
     _interval : null,
+    _exclusive : null,
 
     _addToQueue : function( animation ) {
-      this._queue.push( animation );  
+      if( animation.getExclusive() ) {
+        this._exclusive = animation;
+      } else {
+        this._queue.push( animation );
+      }
       if ( this._interval == null ) {
         this._startLoop();
       }
     },
 
     _removeFromLoop : function( animation ) {
-      qx.lang.Array.remove( this._queue, animation );  
-      if( this._queue.length === 0 ) {
+      if( animation === this._exclusive ) {
+        this._exclusive = null;
+      } else {
+        qx.lang.Array.remove( this._queue, animation );  
+      }
+      if( this._exclusive === null && this._queue.length === 0 ) {
         this._stopLoop();
       }
     },
@@ -265,11 +282,15 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
       try {
         if( !org.eclipse.swt.EventUtil.getSuspended() ) {
           var time = new Date().getTime();
-          var queue = org.eclipse.rwt.Animation._queue;
-          try{
-            for( var i=0, len = queue.length; i < len; i++ ) {
-              if( queue[ i ] ) {
-                queue[ i ]._loop( time );
+          var Animation = org.eclipse.rwt.Animation;
+          try {
+            if( Animation._exclusive !== null ) {
+              Animation._exclusive._loop( time );
+            } else {
+              for( var i=0, len = Animation._queue.length; i < len; i++ ) {
+                if( Animation._queue[ i ] ) {
+                  Animation._queue[ i ]._loop( time );
+                }
               }
             }
           } catch( e ) {
