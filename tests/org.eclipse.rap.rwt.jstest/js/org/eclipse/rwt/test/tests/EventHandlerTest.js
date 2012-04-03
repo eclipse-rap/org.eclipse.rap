@@ -481,6 +481,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget1.destroy();
       widget2.destroy();
     },
+    
+    testDontFocusClientDocumentOnMouseDown : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      TestUtil.flush();
+      TestUtil.click( shell );
+
+      TestUtil.click( qx.ui.core.ClientDocument.getInstance() );
+      
+      assertTrue( shell.getFocused() );
+      assertFalse( qx.ui.core.ClientDocument.getInstance().getFocused() );
+      assertEquals( shell, org.eclipse.rwt.EventHandler.getFocusRoot() );
+      shell.destroy();
+    },
 
     testFocusWithCapturedWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;

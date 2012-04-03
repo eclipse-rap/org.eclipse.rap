@@ -341,7 +341,9 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           EventHandlerUtil.stopDomEvent( vDomEvent );
         } 
       }
-      if( vDispatchTarget.getEnabled() && vType == "mousedown" ) {
+      if(    vDispatchTarget.getEnabled()
+          && !( vDispatchTarget instanceof qx.ui.core.ClientDocument )
+          && vType == "mousedown" ) {
         qx.event.handler.FocusHandler.mouseFocus = true;
         var vRoot = vDispatchTarget.getFocusRoot();
         if( vRoot ) {
