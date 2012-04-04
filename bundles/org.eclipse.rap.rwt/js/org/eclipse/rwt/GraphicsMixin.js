@@ -32,13 +32,10 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
             this._shadowSupport = version >= 7;
           break;
           case "opera":
-            // [if] Temporary disable shadows. See bug 344687
-            // this._shadowSupport = version >= 9.8;
-            this._shadowSupport = false;
+            this._shadowSupport = version >= 11.6;
           break;
           case "webkit":
-            var browser = org.eclipse.rwt.Client.getBrowser();
-            this._shadowSupport = /* browser === "chrome" && */ version >= 532.9;
+            this._shadowSupport = version >= 532.9;
           break;
         }
       }

@@ -200,8 +200,11 @@ qx.Class.define( "org.eclipse.rwt.Client", {
           this._browserName = "opera";
           this._engineName = "opera";
           var version = RegExp.$1;
-          // Fix Opera version to match wikipedia style
           version = version.substring( 0, 3 ) + "." + version.substring ( 3);
+          ( /Version[\s\/]([0-9\.]*)/ ).test( navigator.userAgent );
+          if( RegExp.$1 ) { // Newer Opera note the "real" version after "Version/".
+            version = RegExp.$1;
+          }
           this._parseVersion( version );
         }
       }
