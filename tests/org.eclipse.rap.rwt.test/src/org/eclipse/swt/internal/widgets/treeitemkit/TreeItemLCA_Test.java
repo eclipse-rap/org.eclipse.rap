@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
@@ -286,6 +287,37 @@ public class TreeItemLCA_Test extends TestCase {
     CreateOperation operation = message.findCreateOperation( item );
     assertEquals( "rwt.widgets.TreeItem", operation.getType() );
     assertEquals( Integer.valueOf( 1 ), operation.getProperty( "index" ) );
+  }
+
+  public void testRenderDispose() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    lca.renderDispose( item );
+
+    Message message = Fixture.getProtocolMessage();
+    DestroyOperation operation = ( DestroyOperation )message.getOperation( 0 );
+    assertEquals( WidgetUtil.getId( item ), operation.getTarget() );
+  }
+
+  public void testRenderDisposeWithDisposedTree() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    tree.dispose();
+
+    lca.renderDispose( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
+  }
+
+  public void testRenderDisposeWithDisposedParentItem() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    TreeItem subitem = new TreeItem( item, SWT.NONE );
+    item.dispose();
+
+    lca.renderDispose( subitem );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
   }
 
   public void testRenderParent() throws IOException {

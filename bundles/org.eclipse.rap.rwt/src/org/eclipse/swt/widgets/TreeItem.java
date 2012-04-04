@@ -1593,7 +1593,8 @@ public class TreeItem extends Item {
   {
 
     public boolean isParentDisposed() {
-      return parent.isDisposed();
+      Widget itemParent = parentItem == null ? parent : parentItem;
+      return itemParent.isDisposed();
     }
 
     public Color getUserBackground() {
