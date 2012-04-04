@@ -119,6 +119,7 @@ org.eclipse.rwt.Display.prototype = {
   _onBeforeUnload : function( event ) {
     if( this._exitConfirmation !== null && this._exitConfirmation !== "" ) {
       event.getDomEvent().returnValue = this._exitConfirmation;
+      event.setUserData( "returnValue", this._exitConfirmation );
     }
   },
 

@@ -142,7 +142,10 @@ qx.Class.define( "org.eclipse.rwt.System", {
 
     _onbeforeunload : function( e ) {
       var event = new qx.event.type.DomEvent( "beforeunload", e, window, this );
-      this.dispatchEvent( event, true );      
+      this.dispatchEvent( event, false );
+      var msg = event.getUserData( "returnValue" );
+      event.dispose();
+      return msg;
     },
 
     _onunload : function( e ) {
