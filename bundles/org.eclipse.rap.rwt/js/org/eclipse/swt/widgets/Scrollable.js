@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -166,6 +166,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
       var el = this._clientArea._getTargetNode();
       var eventUtil = qx.html.EventRegistration;
       eventUtil.addEventListener( el, "scroll", this.__onscroll );
+      qx.html.Scroll.disableScrolling( this._clientArea.getElement() );
     },
     
     _onClientLayout : qx.core.Variant.select( "qx.client", {
