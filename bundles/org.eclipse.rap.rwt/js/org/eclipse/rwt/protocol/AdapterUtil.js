@@ -68,9 +68,13 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     "background" : function( widget, value ) {
       if( value === null ) {
         widget.resetBackgroundColor();
-        widget.resetBackgroundGradient();
+        if( widget.__user$backgroundGradient == null ) {
+          widget.resetBackgroundGradient();
+        }
       } else {
-        widget.setBackgroundGradient( null );
+        if( widget.__user$backgroundGradient == null ) {
+          widget.setBackgroundGradient( null );
+        }
         var color = value[ 3 ] === 0 ? "transparent" : qx.util.ColorUtil.rgbToRgbString( value );
         widget.setBackgroundColor( color );
       }

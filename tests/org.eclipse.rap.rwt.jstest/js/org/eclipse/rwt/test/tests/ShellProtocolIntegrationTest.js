@@ -370,23 +370,58 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
     testResetBackground : function() {
       var shell = this._protocolCreateShell();
       var orgColor = shell.getBackgroundColor();
-      var orgGradient = shell.getBackgroundGradient();
       shell.setBackgroundColor( "red" );
       shell.setBackgroundGradient( [ [ 0, "red" ], [ 1, "yellow" ] ] );
       this._protocolSet( { "background" : null } );
       assertEquals( orgColor, shell.getBackgroundColor() );
-      assertEquals( orgGradient, shell.getBackgroundGradient() );
       this._disposeShell();
     },
 
-    testSetBackgroundGradientToNull : function() {
+    testSetThemingBackgroundGradientToNull : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.fakeAppearance( "window", {
+        style : function( states ) {
+          var result = {};
+          result.backgroundGradient = [ [ 0, "red" ], [ 1, "yellow" ] ];
+          result.minWidth = 80;
+          result.minHeight = 25;
+          result.opacity = 1;
+          return result;
+        }
+      } );
       var shell = this._protocolCreateShell();
-      shell.setBackgroundGradient( [ [ 0, "red" ], [ 1, "yellow" ] ] );
       this._protocolSet( { "background" : [ 0, 0, 255, 255 ] } );
       assertNull( shell.getBackgroundGradient() );
       this._disposeShell();
     },
 
+    testSetThemingBackgroundGradientToNullAndBack : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.fakeAppearance( "window", {
+        style : function( states ) {
+          var result = {};
+          result.backgroundGradient = [ [ 0, "red" ], [ 1, "yellow" ] ];
+          result.minWidth = 80;
+          result.minHeight = 25;
+          result.opacity = 1;
+          return result;
+        }
+      } );
+      var shell = this._protocolCreateShell();
+      this._protocolSet( { "background" : [ 0, 0, 255, 255 ] } );
+      this._protocolSet( { "background" : null } );
+      assertNotNull( shell.getBackgroundGradient() );
+      this._disposeShell();
+    },
+
+    testSetServerBackgroundGradientToNull : function() {
+      var shell = this._protocolCreateShell();
+      shell.setBackgroundGradient( [ [ 0, "red" ], [ 1, "yellow" ] ] );
+      this._protocolSet( { "background" : [ 0, 0, 255, 255 ] } );
+      assertNotNull( shell.getBackgroundGradient() );
+      this._disposeShell();
+    },
+    
     testSetFont : function() {
       var shell = this._protocolCreateShell();
       var name = "Arial";
