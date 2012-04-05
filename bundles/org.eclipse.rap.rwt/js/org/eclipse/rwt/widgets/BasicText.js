@@ -605,7 +605,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     },
     
     _getInputElementHeight : qx.core.Variant.select( "qx.client", {
-      "mshtml|newmshtml" : function() {
+      "mshtml" : function() {
         var result = qx.html.Dimension.getBoxHeight( this._inputElement );
         if( result !== 0 ) {
           result -= 2;
