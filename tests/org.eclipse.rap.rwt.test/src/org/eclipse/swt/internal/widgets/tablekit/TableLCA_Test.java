@@ -440,6 +440,23 @@ public class TableLCA_Test extends TestCase {
     assertTrue( isItemVirtual( table, 2 ) );
   }
 
+  public void testReadSelectionDisposedItem() {
+    Table table = new Table( shell, SWT.MULTI );
+    String tableId = WidgetUtil.getId( table );
+    TableItem item1 = new TableItem( table, SWT.NONE );
+    String item1Id = WidgetUtil.getId( item1 );
+    new TableItem( table, SWT.NONE );
+    item1.dispose();
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( tableId + ".selection", item1Id );
+    Fixture.executeLifeCycleFromServerThread();
+
+    TableItem[] selectedItems = table.getSelection();
+    assertEquals( 0, selectedItems.length );
+  }
+
+
   /*
    * Ensures that checkData calls with an invalid index are silently ignored.
    * This may happen, when the itemCount is reduced during a SetData event.
@@ -667,6 +684,26 @@ public class TableLCA_Test extends TestCase {
     TableLCA tableLCA = new TableLCA();
     tableLCA.readData( table );
     assertEquals( 4, tableAdapter.getFocusIndex() );
+  }
+
+  public void testReadDisposedFocusItem() {
+    Table table = new Table( shell, SWT.MULTI );
+    for( int i = 0; i < 5; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    String tableId = WidgetUtil.getId( table );
+    // ensure that reading selection parameter does not override focusIndex
+    String items = indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } );
+    Fixture.fakeRequestParam( tableId + ".selection", items );
+    
+    Fixture.fakeRequestParam( tableId + ".focusItem", indexToId( table, 4 ) );
+    TableLCA tableLCA = new TableLCA();
+    table.getItem( 4 ).dispose();
+    tableLCA.readData( table );
+    
+    assertEquals( -1, tableAdapter.getFocusIndex() );
   }
 
   public void testReadTopIndex() {

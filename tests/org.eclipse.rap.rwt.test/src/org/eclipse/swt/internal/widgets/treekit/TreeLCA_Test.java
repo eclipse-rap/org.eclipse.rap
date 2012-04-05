@@ -578,6 +578,37 @@ public class TreeLCA_Test extends TestCase {
     assertSame( item.getItem( 50 ), tree.getSelection()[ 0 ] );
   }
 
+  public void testReadSelectionItem() {
+    Tree tree = new Tree( shell, SWT.MULTI );
+    String treeId = WidgetUtil.getId( tree );
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    String item1Id = WidgetUtil.getId( item1 );
+    new TreeItem( tree, SWT.NONE );
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( treeId + ".selection", item1Id );
+    Fixture.executeLifeCycleFromServerThread();
+
+    TreeItem[] selectedItems = tree.getSelection();
+    assertEquals( 1, selectedItems.length );
+  }
+
+  public void testReadSelectionDisposedItem() {
+    Tree tree = new Tree( shell, SWT.MULTI );
+    String treeId = WidgetUtil.getId( tree );
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    String item1Id = WidgetUtil.getId( item1 );
+    new TreeItem( tree, SWT.NONE );
+    item1.dispose();
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( treeId + ".selection", item1Id );
+    Fixture.executeLifeCycleFromServerThread();
+
+    TreeItem[] selectedItems = tree.getSelection();
+    assertEquals( 0, selectedItems.length );
+  }
+
   private static int countCreateOperations( String type, Message message ) {
     int result = 0;
     int operations = message.getOperationCount();

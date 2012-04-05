@@ -198,7 +198,11 @@ public final class TableLCA extends AbstractWidgetLCA {
           TableItem item = null;
           String itemId = selectedItems[ i ];
           item = getItem( table, itemId );
-          newSelection[ i ] = table.indexOf( item );
+          if( item != null ) {
+            newSelection[ i ] = table.indexOf( item );
+          } else {
+            newSelection[ i ] = -1;
+          }
         }
       }
       table.deselectAll();
@@ -221,7 +225,9 @@ public final class TableLCA extends AbstractWidgetLCA {
     if( value != null ) {
       TableItem item = getItem( table, value );
       ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
-      adapter.setFocusIndex( table.indexOf( item ) );
+      if( item != null ) {
+        adapter.setFocusIndex( table.indexOf( item ) );
+      }
     }
   }
 
