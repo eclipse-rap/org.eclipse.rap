@@ -8,7 +8,7 @@
 * Contributors:
 *    EclipseSource - initial API and implementation
 *******************************************************************************/
-package org.eclipse.rap.rwt.test;
+package org.eclipse.rwt.test;
 
 import java.io.*;
 import java.net.*;

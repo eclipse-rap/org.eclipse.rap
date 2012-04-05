@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
-Bundle-SymbolicName: org.eclipse.rap.rwt.test.all
+Bundle-SymbolicName: org.eclipse.rwt.test.all
 Bundle-Version: 1.5.0.qualifier
-Export-Package: org.eclipse.rap.rwt.test
+Export-Package: org.eclipse.rwt.test
 Bundle-Vendor: %Bundle-Vendor
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: junit.framework;version="3.8.2",
