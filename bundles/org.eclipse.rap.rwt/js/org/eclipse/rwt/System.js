@@ -145,7 +145,7 @@ qx.Class.define( "org.eclipse.rwt.System", {
       this.dispatchEvent( event, false );
       var msg = event.getUserData( "returnValue" );
       event.dispose();
-      return msg;
+      return msg !== null ? msg : undefined;
     },
 
     _onunload : function( e ) {
