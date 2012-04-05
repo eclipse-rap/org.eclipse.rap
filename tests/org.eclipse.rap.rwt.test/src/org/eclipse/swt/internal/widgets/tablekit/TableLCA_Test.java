@@ -49,6 +49,7 @@ public class TableLCA_Test extends TestCase {
   private Shell shell;
   private TableLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -57,6 +58,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -283,6 +285,7 @@ public class TableLCA_Test extends TestCase {
     shell.setSize( 100, 100 );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         table[ 0 ] = new Table( shell, SWT.VIRTUAL );
         table[ 0 ].setItemCount( 500 );
@@ -691,19 +694,17 @@ public class TableLCA_Test extends TestCase {
     for( int i = 0; i < 5; i++ ) {
       new TableItem( table, SWT.NONE );
     }
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     String tableId = WidgetUtil.getId( table );
     // ensure that reading selection parameter does not override focusIndex
     String items = indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } );
     Fixture.fakeRequestParam( tableId + ".selection", items );
-    
+
     Fixture.fakeRequestParam( tableId + ".focusItem", indexToId( table, 4 ) );
     TableLCA tableLCA = new TableLCA();
     table.getItem( 4 ).dispose();
     tableLCA.readData( table );
-    
-    assertEquals( -1, tableAdapter.getFocusIndex() );
+
+    assertEquals( -1, table.getAdapter( ITableAdapter.class ).getFocusIndex() );
   }
 
   public void testReadTopIndex() {
@@ -774,6 +775,7 @@ public class TableLCA_Test extends TestCase {
       new TableItem( table, SWT.NONE );
     }
     SelectionListener listener = new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         log.add( "scrollbarSelected" );
       }
@@ -806,6 +808,7 @@ public class TableLCA_Test extends TestCase {
     TableItem item = table.getItem( 3 );
     String itemId = WidgetUtil.getId( item );
     SelectionListener listener = new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         log.add( event.item );
       }
@@ -829,6 +832,7 @@ public class TableLCA_Test extends TestCase {
     String tableId = WidgetUtil.getId( table );
     table.setItemCount( 3 );
     SelectionListener listener = new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         log.add( event.item );
       }
@@ -1096,14 +1100,14 @@ public class TableLCA_Test extends TestCase {
     CreateOperation operation = message.findCreateOperation( table );
     assertTrue( operation.getPropertyNames().indexOf( "fixedColumns" ) == -1 );
   }
-  
+
   public void testRenderFixedColumns() throws IOException {
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    
+
     table.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
     lca.renderChanges( table );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( Integer.valueOf( 1 ), message.findSetProperty( table, "fixedColumns" ) );
   }

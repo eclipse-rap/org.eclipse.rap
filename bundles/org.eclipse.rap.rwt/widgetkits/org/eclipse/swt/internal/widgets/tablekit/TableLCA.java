@@ -78,6 +78,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final boolean[] DEFAULT_SCROLLBARS_VISIBLE = new boolean[] { false, false };
   private static final String DEFAULT_SORT_DIRECTION = "none";
 
+  @Override
   public void preserveValues( Widget widget ) {
     Table table = ( Table )widget;
     ControlLCAUtil.preserveValues( table );
@@ -120,6 +121,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processMenuDetect( table );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Table table = ( Table )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( table );
@@ -140,6 +142,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     clientObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( table ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     Table table = ( Table )widget;
     ControlLCAUtil.renderChanges( table );
@@ -173,10 +176,12 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
 
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
+  @Override
   public void doRedrawFake( Control control ) {
     Table table = ( Table )control;
     table.getAdapter( ITableAdapter.class ).checkData();
@@ -195,9 +200,8 @@ public final class TableLCA extends AbstractWidgetLCA {
         String[] selectedItems = value.split( "," );
         newSelection = new int[ selectedItems.length ];
         for( int i = 0; i < selectedItems.length; i++ ) {
-          TableItem item = null;
           String itemId = selectedItems[ i ];
-          item = getItem( table, itemId );
+          TableItem item = getItem( table, itemId );
           if( item != null ) {
             newSelection[ i ] = table.indexOf( item );
           } else {
@@ -224,9 +228,8 @@ public final class TableLCA extends AbstractWidgetLCA {
     String value = WidgetLCAUtil.readPropertyValue( table, "focusItem" );
     if( value != null ) {
       TableItem item = getItem( table, value );
-      ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
       if( item != null ) {
-        adapter.setFocusIndex( table.indexOf( item ) );
+        table.getAdapter( ITableAdapter.class ).setFocusIndex( table.indexOf( item ) );
       }
     }
   }
@@ -487,6 +490,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     int textLeft;
     int textWidth;
 
+    @Override
     public boolean equals( Object obj ) {
       boolean result;
       if( obj == this ) {
@@ -505,6 +509,7 @@ public final class TableLCA extends AbstractWidgetLCA {
       return result;
     }
 
+    @Override
     public int hashCode() {
       String msg = "ItemMetrics#hashCode() not implemented";
       throw new UnsupportedOperationException( msg );
