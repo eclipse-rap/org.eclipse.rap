@@ -58,13 +58,13 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   static final String PROP_FOCUS_CONTROL = "focusControl";
   static final String PROP_CURRENT_THEME = "currentTheme";
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
-  static final String PROP_TIMEOUT_PAGE = "timeoutPage";
   private static final String METHOD_BEEP = "beep";
 
   private static final class RenderVisitor extends AllWidgetTreeVisitor {
 
     private IOException ioProblem;
 
+    @Override
     public boolean doVisit( Widget widget ) {
       ioProblem = null;
       boolean result = true;
@@ -107,6 +107,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     readCursorLocation( display );
     readFocusControl( display );
     WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
+      @Override
       public boolean doVisit( Widget widget ) {
         IWidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );
         adapter.readData( widget );
@@ -139,6 +140,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       Shell[] shells = getShells( display );
       for( int i = 0; i < shells.length; i++ ) {
         WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
+          @Override
           public boolean doVisit( Widget widget ) {
             AbstractWidgetLCA widgetLCA = WidgetUtil.getLCA( widget );
             widgetLCA.preserveValues( widget );
@@ -175,6 +177,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     Composite[] shells = getShells( display );
     for( int i = 0; i < shells.length; i++ ) {
       WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
+        @Override
         public boolean doVisit( Widget widget ) {
           WidgetAdapter widgetAdapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
           widgetAdapter.clearPreserved();
