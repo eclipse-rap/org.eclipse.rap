@@ -40,6 +40,7 @@ public class BrowserLCA_Test extends TestCase {
   private Shell shell;
   private BrowserLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -48,6 +49,7 @@ public class BrowserLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -158,6 +160,7 @@ public class BrowserLCA_Test extends TestCase {
     final StringBuilder log = new StringBuilder();
     Browser browser = new Browser( shell, SWT.NONE );
     new BrowserFunction( browser, "func" ) {
+      @Override
       public Object function( Object[] arguments ) {
         for( int i = 0; i < arguments.length; i++ ) {
           log.append( arguments[ i ].toString() );
@@ -291,6 +294,49 @@ public class BrowserLCA_Test extends TestCase {
     assertEquals( "completed", log.get( 1 ) );
   }
 
+  public void testProgressEvent_InvisibleBrowser() {
+    final ArrayList<String> log = new ArrayList<String>();
+    Fixture.markInitialized( display );
+    Browser browser = new Browser( shell, SWT.NONE );
+    browser.setVisible( false );
+    browser.addProgressListener( new ProgressListener() {
+      public void changed( ProgressEvent event ) {
+        log.add( "changed" );
+      }
+      public void completed( ProgressEvent event ) {
+        log.add( "completed" );
+      }
+    } );
+    String browserId = WidgetUtil.getId( browser );
+    Fixture.fakeRequestParam( BrowserLCA.EVENT_PROGRESS_COMPLETED, browserId );
+    Fixture.readDataAndProcessAction( browser );
+    assertEquals( 2, log.size() );
+    assertEquals( "changed", log.get( 0 ) );
+    assertEquals( "completed", log.get( 1 ) );
+  }
+
+  public void testProgressEvent_DisabledBrowser() {
+    final ArrayList<String> log = new ArrayList<String>();
+    Fixture.markInitialized( display );
+    Browser browser = new Browser( shell, SWT.NONE );
+    browser.setEnabled( false );
+    browser.setVisible( false );
+    browser.addProgressListener( new ProgressListener() {
+      public void changed( ProgressEvent event ) {
+        log.add( "changed" );
+      }
+      public void completed( ProgressEvent event ) {
+        log.add( "completed" );
+      }
+    } );
+    String browserId = WidgetUtil.getId( browser );
+    Fixture.fakeRequestParam( BrowserLCA.EVENT_PROGRESS_COMPLETED, browserId );
+    Fixture.readDataAndProcessAction( browser );
+    assertEquals( 2, log.size() );
+    assertEquals( "changed", log.get( 0 ) );
+    assertEquals( "completed", log.get( 1 ) );
+  }
+
   public void testRenderCreate() throws IOException {
     Browser browser = new Browser( shell, SWT.NONE );
 
@@ -404,6 +450,7 @@ public class BrowserLCA_Test extends TestCase {
 
   public void testCallEvaluate() {
     Browser browser = new Browser( shell, SWT.NONE ) {
+      @Override
       public boolean execute( String script ) {
         executeScript = script;
         return true;
@@ -455,6 +502,7 @@ public class BrowserLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
     new BrowserFunction( browser, "func" ) {
+      @Override
       public Object function( Object[] arguments ) {
         return new Object[]{
           Short.valueOf( ( short )3 ),

@@ -12,7 +12,6 @@ package org.eclipse.swt.browser;
 
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
-import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -68,6 +67,7 @@ public class ProgressEvent extends TypedEvent {
     super( source, id );
   }
 
+  @Override
   protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case CHANGED:
@@ -81,12 +81,14 @@ public class ProgressEvent extends TypedEvent {
     }
   }
 
+  @Override
   protected Class getListenerType() {
     return LISTENER;
   }
 
+  @Override
   protected boolean allowProcessing() {
-    return EventUtil.isAccessible( widget );
+    return true;
   }
 
   public static boolean hasListener( Adaptable adaptable ) {
@@ -111,6 +113,7 @@ public class ProgressEvent extends TypedEvent {
    *
    * @return a string representation of the event
    */
+  @Override
   public String toString() {
     String string = super.toString();
     return string.substring( 0, string.length() - 1 ) // remove trailing '}'
