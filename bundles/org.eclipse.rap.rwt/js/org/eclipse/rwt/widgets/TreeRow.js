@@ -300,9 +300,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
             if( selected ) {
               this._renderStates( item, config, true, hoverElement );
             }
-            var imageElement 
-              = this._renderCellImage( item, i, config, treeColumn, contentOnly );
-            var labelElement = this._renderCellLabel( item, i, config, contentOnly );
+            var imageElement = this._renderCellImage( item, i, config, treeColumn, contentOnly );
+            var labelElement = this._renderCellLabel( item, i, config, treeColumn, contentOnly );
             this._treeColumnElements = [ imageElement, labelElement ];
             if( selected ) {
               this._renderSelectionBackground( item, i, config );
@@ -359,17 +358,20 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     _renderCellImage : function( item, cell, config, treeColumn, contentOnly ) {
       var source = item.getImage( cell );
       var element = null;
+      var renderBounds = false;
       if( source !== null ) {
-        var renderBounds = treeColumn || !contentOnly || !this._cellImages[ cell ];
+        renderBounds = treeColumn || !contentOnly || !this._cellImages[ cell ];
         element = this._getCellImage( cell );
         this._setImage( element, source, renderBounds ? config.enabled : null );
-        if( renderBounds ) {
-          var left = this._getItemImageLeft( item, cell, config );
-          var width = this._getItemImageWidth( item, cell, config );
-          this._setBounds( element, left, 0, width, this.getHeight() );
-        }
       } else if( this._cellImages[ cell ] ) {
-        this._setImage( this._cellImages[ cell ], null, null );
+        renderBounds = treeColumn;
+        element = this._getCellImage( cell );
+        this._setImage( element, null, null );
+      }
+      if( element !== null && renderBounds ) {
+        var left = this._getItemImageLeft( item, cell, config );
+        var width = this._getItemImageWidth( item, cell, config );
+        this._setBounds( element, left, 0, width, this.getHeight() );
       }
       return element;
     },
@@ -379,24 +381,25 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       //             becomes temorarily invisible. This is a browser-bug
       //             that ONLY occurs when Firebug is installed.
       var element = null;
+      var renderBounds = false;
       if( item.hasText( cell ) ) {
-        var renderBounds = treeColumn || !contentOnly || !this._cellLabels[ cell ];
+        renderBounds = treeColumn || !contentOnly || !this._cellLabels[ cell ];
         element = this._getTextElement( cell, config );
         this._renderElementContent( element, item, cell, config.markupEnabled );
         if( renderBounds ) {
-          if( this._isTreeColumn( cell, config ) ) {
-            element.style.textAlign = "left";
-          } else {
-            element.style.textAlign = this._getAlignment( cell, config );
-          }
-          var left = this._getItemTextLeft( item, cell, config );
-          var width = this._getItemTextWidth( item, cell, config );
-          this._setBounds( element, left, 0, width, this.getHeight() );
+          element.style.textAlign = treeColumn ? "left" : this._getAlignment( cell, config );
         }
         this._styleLabel( element, item, cell, config );
+      } else if( this._cellLabels[ cell ] ) {
+        renderBounds = treeColumn;
+        element = this._getTextElement( cell, config );
+        this._renderElementContent( element, null );
+      }
+      if( element !== null && renderBounds ) {
+        var left = this._getItemTextLeft( item, cell, config );
+        var width = this._getItemTextWidth( item, cell, config );
+        this._setBounds( element, left, 0, width, this.getHeight() );
         element.style.lineHeight = config.markupEnabled ? "" : element.style.height;
-      } else if( this._cellLabels[ cell ] ){
-        this._renderElementContent( this._cellLabels[ cell ], null );
       }
       return element;
     },

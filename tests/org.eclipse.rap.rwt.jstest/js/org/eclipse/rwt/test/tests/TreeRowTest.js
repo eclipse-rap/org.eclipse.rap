@@ -981,6 +981,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
 
+    testImageBoundsUpdatedWithoutImage : function() {
+      var tree = this._createTree();
+      var row = this._createRow( tree );
+      row.setHeight( 15 );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setTexts( [ "foo" ] );
+      item.setImages( [ "bla.jpg" ] );
+      row.renderItem( item, tree._config, false, null );
+      var node = row._getTargetNode();
+      assertEquals( 3, node.childNodes.length );
+      var left1 = parseInt( node.childNodes[ 1 ].style.left );
+      var subitem = this._createItem( item );
+      subitem.setTexts( [ "bar" ] );
+      row.renderItem( subitem, tree._config, false, null );
+      node = row._getTargetNode();
+      assertEquals( 3, node.childNodes.length );
+      var left2 = parseInt( node.childNodes[ 1 ].style.left );
+      assertTrue( left2 > left1 );
+      tree.destroy();
+      row.destroy();
+    },
+
     testImageBoundsScroll : function() {
       var tree = this._createTree();
       var row = this._createRow( tree );
@@ -1024,6 +1047,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var style = node.childNodes[ 1 ].style;
       assertEquals( 37, parseInt( style.left ) );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testLabelBoundsUpdatedWithoutLabel : function() {
+      var tree = this._createTree();
+      var row = this._createRow( tree );
+      row.setHeight( 15 );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setTexts( [ "foo" ] );
+      item.setImages( [ "bla.jpg" ] );
+      row.renderItem( item, tree._config, false, null );
+      var node = row._getTargetNode();
+      assertEquals( 3, node.childNodes.length );
+      var left1 = parseInt( node.childNodes[ 2 ].style.left );
+      var subitem = this._createItem( item );
+      subitem.setImages( [ "bla.jpg" ] );
+      row.renderItem( subitem, tree._config, false, null );
+      node = row._getTargetNode();
+      assertEquals( 3, node.childNodes.length );
+      var left2 = parseInt( node.childNodes[ 2 ].style.left );
+      assertTrue( left2 > left1 );
       tree.destroy();
       row.destroy();
     },
