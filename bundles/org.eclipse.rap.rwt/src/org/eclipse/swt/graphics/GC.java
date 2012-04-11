@@ -69,7 +69,7 @@ import org.eclipse.swt.widgets.Control;
  * @since 1.3
  */
 public class GC extends Resource {
-  
+
   private final GCDelegate delegate;
   private boolean advanced;
   private int antialias;
@@ -157,10 +157,7 @@ public class GC extends Resource {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
     Font newFont = font != null ? font : delegate.getDefaultFont();
-    if( !newFont.equals( delegate.getFont() ) ) {
-      delegate.setFont( newFont );
-    }
-
+    delegate.setFont( newFont );
   }
 
   /**
@@ -292,9 +289,7 @@ public class GC extends Resource {
     if( color.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    if( !delegate.getBackground().equals( color ) ) {
-      delegate.setBackground( color );
-    }
+    delegate.setBackground( color );
   }
 
   /**
@@ -333,9 +328,7 @@ public class GC extends Resource {
     if( color.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    if( !delegate.getForeground().equals( color ) ) {
-      delegate.setForeground( color );
-    }
+    delegate.setForeground( color );
   }
 
   /**
@@ -584,7 +577,7 @@ public class GC extends Resource {
   /**
    * Sets the receiver to always use the operating system's advanced graphics
    * subsystem for all graphics operations if the argument is <code>true</code>.
-   * If the argument is <code>false</code>, the advanced graphics subsystem is 
+   * If the argument is <code>false</code>, the advanced graphics subsystem is
    * no longer used, advanced graphics state is cleared and the normal graphics
    * subsystem is used from now on.
    * <p>
@@ -609,13 +602,13 @@ public class GC extends Resource {
    * @exception SWTException <ul>
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @see #setAlpha
    * @see #setAntialias
    * @see #setLineAttributes
    * @see #setTextAntialias
    * @see #getAdvanced
-   * 
+   *
    * @since 1.4
    */
 //  * @see #setClipping(Path)
@@ -634,7 +627,7 @@ public class GC extends Resource {
   }
 
   /**
-   * Sets the receiver's anti-aliasing value to the parameter, 
+   * Sets the receiver's anti-aliasing value to the parameter,
    * which must be one of <code>SWT.DEFAULT</code>, <code>SWT.OFF</code>
    * or <code>SWT.ON</code>. Note that this controls anti-aliasing for all
    * <em>non-text drawing</em> operations.
@@ -654,11 +647,11 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_NO_GRAPHICS_LIBRARY - if advanced graphics are not available</li>
    * </ul>
-   * 
+   *
    * @see #getAdvanced
    * @see #setAdvanced
    * @see #setTextAntialias
-   * 
+   *
    * @since 1.5
    */
   public void setAntialias( int antialias ) {
@@ -680,9 +673,9 @@ public class GC extends Resource {
    * @exception SWTException <ul>
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @see #getTextAntialias
-   * 
+   *
    * @since 1.5
    */
   public int getAntialias() {
@@ -690,7 +683,7 @@ public class GC extends Resource {
   }
 
   /**
-   * Sets the receiver's text anti-aliasing value to the parameter, 
+   * Sets the receiver's text anti-aliasing value to the parameter,
    * which must be one of <code>SWT.DEFAULT</code>, <code>SWT.OFF</code>
    * or <code>SWT.ON</code>. Note that this controls anti-aliasing only
    * for all <em>text drawing</em> operations.
@@ -699,7 +692,7 @@ public class GC extends Resource {
    * graphics subsystem which may not be available on some
    * platforms.
    * </p>
-   * 
+   *
    * @param antialias the anti-aliasing setting
    *
    * @exception IllegalArgumentException <ul>
@@ -710,11 +703,11 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_NO_GRAPHICS_LIBRARY - if advanced graphics are not available</li>
    * </ul>
-   * 
+   *
    * @see #getAdvanced
    * @see #setAdvanced
    * @see #setAntialias
-   * 
+   *
    * @since 1.5
    */
   public void setTextAntialias( int antialias ) {
@@ -736,9 +729,9 @@ public class GC extends Resource {
    * @exception SWTException <ul>
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @see #getAntialias
-   * 
+   *
    * @since 1.5
    */
   public int getTextAntialias() {
@@ -765,16 +758,16 @@ public class GC extends Resource {
    * @exception SWTException <ul>
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @see #setAdvanced
-   * 
+   *
    * @since 1.4
    */
   public boolean getAdvanced() {
     checkDisposed();
     return advanced;
   }
-  
+
   /**
    * Draws a line, using the foreground color, between the points
    * (<code>x1</code>, <code>y1</code>) and (<code>x2</code>, <code>y2</code>).
@@ -897,8 +890,7 @@ public class GC extends Resource {
    *
    * @see #drawRectangle(int, int, int, int)
    */
-  public void fillRectangle( int x, int y, int width, int height )
-  {
+  public void fillRectangle( int x, int y, int width, int height ) {
     checkDisposed();
     drawRectangle( x, y, width, height, 0, 0, true );
   }
@@ -1547,7 +1539,7 @@ public class GC extends Resource {
     }
     return result;
   }
-  
+
   void writeObject( ObjectOutputStream stream ) throws IOException {
     throw new NotSerializableException( getClass().getName() );
   }
