@@ -28,6 +28,7 @@ public class List_Test extends TestCase {
 
   private Shell shell;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -35,6 +36,7 @@ public class List_Test extends TestCase {
     shell = new Shell( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -492,6 +494,7 @@ public class List_Test extends TestCase {
     list.add( "item1" );
     list.add( "item2" );
     SelectionListener listener = new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         String msg
           = "SelectionEvent must not be fired when selecting programmatically";
@@ -1320,5 +1323,26 @@ public class List_Test extends TestCase {
     List deserializedList = Fixture.serializeAndDeserialize( list );
 
     assertEquals( listItem, deserializedList.getItem( 0 ) );
+  }
+
+  public void testIsSelected_IdenticalItems() throws Exception {
+    List list = new List( shell, SWT.MULTI );
+    String[] items = { "text1", "text2", "text2" }; // two identical
+    list.setItems( items );
+
+    list.setSelection( items );
+
+    assertTrue( list.isSelected( 0 ) );
+    assertTrue( list.isSelected( 1 ) );
+    assertTrue( list.isSelected( 2 ) );
+  }
+
+  public void testSetInvalidSelectionForMulti() {
+    List list = new List( shell, SWT.MULTI );
+    list.setItems( new String[] { "text1", "text2", "text2" } );
+
+    list.setSelection( new String[] { "non-existing", "text2", "text2" } );
+
+    assertEquals( 2, list.getSelectionCount() );
   }
 }

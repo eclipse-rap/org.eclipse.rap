@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,20 @@ public class CCombo_Test extends TestCase {
 
   private boolean listenerCalled;
   private Display display;
-  private Composite shell;
+  private Shell shell;
+
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testDeselect() {
     CCombo combo = new CCombo( shell, SWT.NONE );
@@ -682,14 +695,20 @@ public class CCombo_Test extends TestCase {
     assertEquals( "1", deserializedCombo.getItem( 1 ) );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display = new Display();
-    shell = new Shell( display, SWT.NONE );
-  }
+  public void testSelectionIndex() throws Exception {
+    CCombo combo = new CCombo( shell, SWT.NONE );
+    combo.add( "test" );
+    combo.add( "test" );
+    combo.add( "test" );
+    assertEquals(-1, combo.getSelectionIndex() );
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    combo.select( 0 );
+    assertEquals( 0, combo.getSelectionIndex() );
+
+    combo.select( 1 );
+    assertEquals( 1, combo.getSelectionIndex() );
+
+    combo.select( 2 );
+    assertEquals( 2, combo.getSelectionIndex() );
   }
 }

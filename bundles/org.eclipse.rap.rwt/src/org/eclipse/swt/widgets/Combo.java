@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -120,6 +120,7 @@ public class Combo extends Composite {
     model = new ListModel( true );
   }
 
+  @Override
   void initState() {
     state &= ~( /* CANVAS | */THEME_BACKGROUND );
   }
@@ -697,15 +698,10 @@ public class Combo extends Composite {
    */
   public int indexOf( String string, int start ) {
     checkWidget();
-    if( string == null )
+    if( string == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
-    if( !( 0 <= start && start < model.getItemCount() ) )
-      return -1;
-    for( int i = start; i < model.getItemCount(); i++ ) {
-      if( string.equals( model.getItem( i ) ) )
-        return i;
     }
-    return -1;
+    return model.indexOf( string, start );
   }
 
   /**
@@ -762,27 +758,11 @@ public class Combo extends Composite {
     }
     if( ( style & SWT.READ_ONLY ) != 0 ) {
       int index = indexOf( string );
-      if( index == -1 ) {
-        return;
+      if( index != -1 ) {
+        select( index );
       }
-      select( index );
-    }
-    String verifiedText = verifyText( string, 0, text.length() );
-    if( verifiedText != null ) {
-      model.deselectAll();
-      String[] items = model.getItems();
-      for( int i = 0; i < items.length; i++ ) {
-        if( verifiedText.equals( items[i] ) ) {
-          model.setSelection( i );
-          break;
-        }
-      }
-      if( verifiedText.length() > textLimit ) {
-        this.text = verifiedText.substring( 0, textLimit );
-      } else {
-        this.text = verifiedText;
-      }
-      fireModifyEvent();
+    } else {
+      internalSetText( string, true );
     }
   }
 
@@ -864,6 +844,7 @@ public class Combo extends Composite {
 
   // TODO [rst] Revise: In SWT, a width or height hint of 0 does not result in
   //      the DEFAULT_WIDTH/HEIGHT.
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed )
   {
     checkWidget();
@@ -1053,10 +1034,12 @@ public class Combo extends Composite {
   }
 
 
+  @Override
   boolean isTabGroup() {
     return true;
   }
 
+  @Override
   String getNameText() {
     return getText();
   }
@@ -1064,8 +1047,39 @@ public class Combo extends Composite {
   //////////////////
   // Helping methods
 
-  private String verifyText( String text, int start, int end )
-  {
+  private void updateText() {
+    if( ( style & SWT.READ_ONLY ) == 0 ) {
+      int selectionIndex = getSelectionIndex();
+      String text = selectionIndex != -1 ? getItem( selectionIndex ) : "";
+      internalSetText( text, false );
+    } else {
+      fireModifyEvent();
+    }
+  }
+
+  private void internalSetText( String text, boolean updateSelection ) {
+    String verifiedText = verifyText( text, 0, this.text.length() );
+    if( verifiedText != null ) {
+      if( updateSelection ) {
+        int index = -1;
+        String[] items = model.getItems();
+        for( int i = 0; index == -1 && i < items.length; i++ ) {
+          if( verifiedText.equals( items[ i ] ) ) {
+            index = i;
+          }
+        }
+        model.setSelection( index );
+      }
+      if( verifiedText.length() > textLimit ) {
+        this.text = verifiedText.substring( 0, textLimit );
+      } else {
+        this.text = verifiedText;
+      }
+      fireModifyEvent();
+    }
+  }
+
+  private String verifyText( String text, int start, int end ) {
     VerifyEvent event = new VerifyEvent( this );
     event.text = text;
     event.start = start;
@@ -1085,34 +1099,18 @@ public class Combo extends Composite {
     return result;
   }
 
-  private void updateText() {
-    if( ( style & SWT.READ_ONLY ) == 0 ) {
-      int selectionIndex = getSelectionIndex();
-      if( selectionIndex != -1 ) {
-        setText( getItem( selectionIndex ) );
-      } else {
-        setText( "" );
-      }
-    } else {
-      // Covers "SWT.READ_ONLY selection" use case
-      fireModifyEvent();
-    }
-  }
-
   private void fireModifyEvent() {
     ModifyEvent modifyEvent = new ModifyEvent( this );
     modifyEvent.processEvent();
   }
 
   private Rectangle getFieldPadding() {
-    ComboThemeAdapter adapter
-      = ( ComboThemeAdapter )getAdapter( IThemeAdapter.class );
+    ComboThemeAdapter adapter = ( ComboThemeAdapter )getAdapter( IThemeAdapter.class );
     return adapter.getFieldPadding( this );
   }
 
   private int getButtonWidth() {
-    ComboThemeAdapter adapter
-      = ( ComboThemeAdapter )getAdapter( IThemeAdapter.class );
+    ComboThemeAdapter adapter = ( ComboThemeAdapter )getAdapter( IThemeAdapter.class );
     return adapter.getButtonWidth( this );
   }
 

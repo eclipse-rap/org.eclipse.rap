@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ import org.eclipse.swt.internal.widgets.listkit.ListThemeAdapter;
 public class List extends Scrollable {
 
   private final class ResizeListener extends ControlAdapter {
+    @Override
     public void controlResized( ControlEvent event ) {
       List.this.updateScrollBars();
     }
@@ -98,6 +99,7 @@ public class List extends Scrollable {
   /////////////////////
   // Adaptable override
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -970,14 +972,7 @@ public class List extends Scrollable {
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    int result = -1;
-    int count = getItemCount();
-    for( int i = start; result == -1 && i < count; i++ ) {
-      if( string.equals( getItem( i ) ) ) {
-        result = i;
-      }
-    }
-    return result;
+    return model.indexOf( string, start );
   }
 
   /**
@@ -1051,11 +1046,13 @@ public class List extends Scrollable {
     SelectionEvent.removeListener( this, listener );
   }
 
+  @Override
   public void setFont( Font font ) {
     super.setFont( font );
     updateScrollBars();
   }
 
+  @Override
   boolean isTabGroup() {
     return true;
   }
@@ -1063,6 +1060,7 @@ public class List extends Scrollable {
   /////////////////////////////////////////
   // Widget dimensions
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget ();
     int width = getMaxItemWidth();
@@ -1194,6 +1192,7 @@ public class List extends Scrollable {
     return ( style & SWT.H_SCROLL ) != 0 && hasHScrollBar;
   }
 
+  @Override
   int getVScrollBarWidth() {
     int result = 0;
     if( hasVScrollBar() ) {
@@ -1202,6 +1201,7 @@ public class List extends Scrollable {
     return result;
   }
 
+  @Override
   int getHScrollBarHeight() {
     int result = 0;
     if( hasHScrollBar() ) {

@@ -1,18 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.SerializableCompatibility;
@@ -48,7 +50,7 @@ public final class ListModel implements SerializableCompatibility {
     System.arraycopy( selection, 0, result, 0, selection.length );
     return result;
   }
-  
+
   public int getSelectionCount() {
     return selection.length;
   }
@@ -89,7 +91,7 @@ public final class ListModel implements SerializableCompatibility {
       }
     }
   }
-  
+
   public void setSelection( int start, int end ) {
     deselectAll();
     if( end >= 0 && start <= end && start <= getItemCount() - 1 ) {
@@ -109,7 +111,7 @@ public final class ListModel implements SerializableCompatibility {
       }
     }
   }
-  
+
   public void setSelection( String[] selection ) {
     if( selection == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -117,20 +119,24 @@ public final class ListModel implements SerializableCompatibility {
     deselectAll();
     int length = selection.length;
     if( ( single && length == 1 ) || ( !single && length > 0 ) ) {
+      Map<String, Integer>lastFoundIndices = new HashMap<String, Integer>();
+      int[] newSelection = new int[ length ];
       int newLength = 0;
       for( int i = 0; i < length; i++ ) {
-        if( selection[ i ] != null && indexOf( selection[ i ] ) != -1 ) {
-          newLength++;
+        if( selection[ i ] != null ) {
+          String item = selection[ i ];
+          Integer lastFoundIndexObject = lastFoundIndices.get( item );
+          int lastFoundIndex = lastFoundIndexObject != null ? lastFoundIndexObject.intValue() : -1;
+          int index = indexOf( item, lastFoundIndex + 1 );
+          if( index >= 0 ) {
+            newSelection[ newLength ] = index;
+            newLength++;
+            lastFoundIndices.put( item, Integer.valueOf( index ) );
+          }
         }
       }
       this.selection = new int[ newLength ];
-      int pos = 0;
-      for( int i = 0; i < length; i++ ) {
-        if( selection[ i ] != null && indexOf( selection[ i ] ) != -1 ) {
-          this.selection[ pos ] = indexOf( selection[ i ] );
-          pos++;
-        }
-      }
+      System.arraycopy( newSelection, 0, this.selection, 0, newLength );
     }
   }
 
@@ -164,10 +170,10 @@ public final class ListModel implements SerializableCompatibility {
   public void deselectAll() {
     this.selection = EMPTY_SELECTION;
   }
-  
+
   ////////////////////////////////
   // Methods to maintain the items
-  
+
   public void add( String string ) {
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -198,7 +204,7 @@ public final class ListModel implements SerializableCompatibility {
       remove( i );
     }
   }
-  
+
   public void remove( int[] indices ) {
     if( indices == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -219,7 +225,7 @@ public final class ListModel implements SerializableCompatibility {
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    int index = indexOf( string );
+    int index = indexOf( string, 0 );
     checkIndex( index );
     remove( index );
   }
@@ -240,7 +246,7 @@ public final class ListModel implements SerializableCompatibility {
   public void setItems( String[] items ) {
     if( items == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    } 
+    }
     for( int i = 0; i < items.length; i++ ) {
       if( items[ i ] == null ) {
         SWT.error( SWT.ERROR_INVALID_ARGUMENT );
@@ -264,9 +270,22 @@ public final class ListModel implements SerializableCompatibility {
     return items.toArray( new String[ items.size() ] );
   }
 
+  public int indexOf( String string, int startIndex ) {
+    int result = -1;
+    if( 0 <= startIndex && startIndex < getItemCount() ) {
+      for( int i = startIndex; result == -1 && i < getItemCount(); i++ ) {
+        String item = items.get( i );
+        if( string.equals( item ) ) {
+          result = i;
+        }
+      }
+    }
+    return result;
+  }
+
   //////////////////
-  // Helping methods 
-  
+  // Helping methods
+
   /* If the given index is contained in the selection, it will be removed. */
   private void removeFromSelection( int index ) {
     boolean found = false;
@@ -287,10 +306,6 @@ public final class ListModel implements SerializableCompatibility {
         found = true;
       }
     }
-  }
-  
-  private int indexOf( String string ) {
-    return items.indexOf( string );
   }
 
   private void checkIndex( int index ) {

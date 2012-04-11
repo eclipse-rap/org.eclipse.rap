@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,10 +32,22 @@ import org.eclipse.swt.graphics.Point;
 public class Combo_Test extends TestCase {
 
   protected boolean listenerCalled;
+  private Display display;
+  private Shell shell;
+
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display , SWT.NONE );
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testDeselect() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "item1" );
     combo.add( "item2" );
@@ -54,8 +66,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testGetText() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.READ_ONLY );
     combo.add( "item1" );
     combo.add( "item2" );
@@ -81,8 +91,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testIndexOf() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.READ_ONLY );
     combo.add( "string0" );
     try {
@@ -92,37 +100,45 @@ public class Combo_Test extends TestCase {
     }
     combo.removeAll();
     int number = 5;
-    for( int i = 0; i < number; i++ )
+    for( int i = 0; i < number; i++ ) {
       combo.add( "fred" + i );
-    for( int i = 0; i < number; i++ )
+    }
+    for( int i = 0; i < number; i++ ) {
       assertEquals( i, combo.indexOf( "fred" + i ) );
-    for( int i = 0; i < number; i++ )
+    }
+    for( int i = 0; i < number; i++ ) {
       combo.add( "fred" + i );
+    }
     combo.removeAll();
-    for( int i = 0; i < number; i++ )
+    for( int i = 0; i < number; i++ ) {
       assertEquals( -1, combo.indexOf( "fred" + i ) );
-    for( int i = 0; i < number; i++ )
+    }
+    for( int i = 0; i < number; i++ ) {
       combo.add( "fred" + i );
+    }
     combo.remove( "fred3" );
-    for( int i = 0; i < 3; i++ )
+    for( int i = 0; i < 3; i++ ) {
       assertEquals( i, combo.indexOf( "fred" + i ) );
+    }
     assertEquals( -1, combo.indexOf( "fred3" ) );
-    for( int i = 4; i < number; i++ )
+    for( int i = 4; i < number; i++ ) {
       assertEquals( i - 1, combo.indexOf( "fred" + i ) );
+    }
     combo.removeAll();
-    for( int i = 0; i < number; i++ )
+    for( int i = 0; i < number; i++ ) {
       combo.add( "fred" + i );
+    }
     combo.remove( 2 );
-    for( int i = 0; i < 2; i++ )
+    for( int i = 0; i < 2; i++ ) {
       assertEquals( i, combo.indexOf( "fred" + i ) );
+    }
     assertEquals( -1, combo.indexOf( "fred2" ) );
-    for( int i = 3; i < number; i++ )
+    for( int i = 3; i < number; i++ ) {
       assertEquals( i - 1, combo.indexOf( "fred" + i ) );
+    }
   }
 
   public void testIndexOfI() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.READ_ONLY );
     combo.add( "string0" );
     try {
@@ -133,25 +149,30 @@ public class Combo_Test extends TestCase {
     assertEquals( -1, combo.indexOf( "string0", -1 ) );
     combo.removeAll();
     int number = 5;
-    for( int i = 0; i < number; i++ )
+    for( int i = 0; i < number; i++ ) {
       combo.add( "fred" + i );
-    for( int i = 0; i < number; i++ )
+    }
+    for( int i = 0; i < number; i++ ) {
       assertTrue( ":a:" + i, combo.indexOf( "fred" + i, 0 ) == i );
-    for( int i = 0; i < number; i++ )
+    }
+    for( int i = 0; i < number; i++ ) {
       assertTrue( ":b:" + i, combo.indexOf( "fred" + i, i + 1 ) == -1 );
-    for( int i = 0; i < number; i++ )
+    }
+    for( int i = 0; i < number; i++ ) {
       combo.add( "fred" + i );
-    for( int i = 0; i < 3; i++ )
+    }
+    for( int i = 0; i < 3; i++ ) {
       assertTrue( ":a:" + i, combo.indexOf( "fred" + i, 0 ) == i );
-    for( int i = 3; i < number; i++ )
+    }
+    for( int i = 3; i < number; i++ ) {
       assertTrue( ":b:" + i, combo.indexOf( "fred" + i, 3 ) == i );
-    for( int i = 0; i < number; i++ )
+    }
+    for( int i = 0; i < number; i++ ) {
       assertTrue( ":b:" + i, combo.indexOf( "fred" + i, i ) == i );
+    }
   }
 
   public void testSetText() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.DROP_DOWN );
     try {
       combo.setText( null );
@@ -182,8 +203,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testSetTextForReadOnly() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Combo combo = new Combo( shell, SWT.READ_ONLY );
     combo.add( "item0" );
     combo.add( "item1" );
@@ -195,8 +214,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testTextLimit() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.DROP_DOWN );
     assertEquals( Combo.LIMIT, combo.getTextLimit() );
     try {
@@ -218,8 +235,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testSelection() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.select( 0 );
@@ -232,8 +247,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testSelection2() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.select( 0 );
@@ -254,8 +267,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testSelection3() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test1" );
@@ -305,8 +316,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testSelectWithInvalidIndex() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test1" );
@@ -326,8 +335,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testSetTextSelect() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test2" );
@@ -338,8 +345,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testTextSelection() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
     // test clearSelection
     combo.setText( "abc" );
@@ -358,8 +363,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testRemoveAll() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "1" );
     combo.add( "2" );
@@ -368,8 +371,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testRemoveAllForReadOnly() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Combo combo = new Combo( shell, SWT.READ_ONLY );
     combo.add( "item" );
     combo.select( 0 );
@@ -380,8 +381,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testRemoveForReadOnly() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Combo combo = new Combo( shell, SWT.READ_ONLY );
     combo.add( "item" );
     combo.select( 0 );
@@ -391,8 +390,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testRemoveOutOfRange() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test1" );
@@ -424,8 +421,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testDispose() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.dispose();
@@ -434,8 +429,6 @@ public class Combo_Test extends TestCase {
 
   public void testAddModifyListener() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
     combo.setItems (new String [] {"A-1", "B-1", "C-1"});
     ModifyListener listener = new ModifyListener() {
@@ -503,8 +496,6 @@ public class Combo_Test extends TestCase {
 
   public void testAddModifyListenerReadOnly() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display );
     Combo combo = new Combo( shell, SWT.READ_ONLY );
     combo.setItems (new String [] {"A-1", "B-1", "C-1"});
     ModifyListener listener = new ModifyListener() {
@@ -571,8 +562,6 @@ public class Combo_Test extends TestCase {
     VerifyListener verifyListener;
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<TypedEvent> log = new ArrayList<TypedEvent>();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final Combo combo = new Combo( shell, SWT.NONE );
     combo.addModifyListener( new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
@@ -651,8 +640,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testVisibleItemCount() {
-	  Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "1" );
     combo.add( "2" );
@@ -668,8 +655,6 @@ public class Combo_Test extends TestCase {
 
   public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
     Point expected = new Point( 66, 28 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -687,8 +672,6 @@ public class Combo_Test extends TestCase {
 
   public void testSetTextAndSelection() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test1" );
@@ -703,8 +686,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testListVisible() {
-    Display display = new Display();
-    Composite shell = new Shell( display );
     Combo combo = new Combo( shell, SWT.NONE );
     combo.setListVisible( true );
     assertTrue( combo.getListVisible() );
@@ -713,8 +694,6 @@ public class Combo_Test extends TestCase {
   }
 
   public void testGetTextHeight() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Combo combo = new Combo( shell, SWT.NONE );
     // default theme font is 11px
     assertEquals( 16, combo.getTextHeight() );
@@ -723,24 +702,31 @@ public class Combo_Test extends TestCase {
     combo.setFont( null );
     assertEquals( 16, combo.getTextHeight() );
   }
-  
+
   public void testIsSerializable() throws Exception {
     String item = "foo";
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Combo combo = new Combo( shell, SWT.NONE );
     combo.add( item );
-    
+
     Combo deserializedCombo = Fixture.serializeAndDeserialize( combo );
-    
+
     assertEquals( item, deserializedCombo.getItem( 0 ) );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
+  public void testSelectionIndex() throws Exception {
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.add( "test" );
+    combo.add( "test" );
+    combo.add( "test" );
+    assertEquals( -1, combo.getSelectionIndex() );
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    combo.select( 0 );
+    assertEquals( 0, combo.getSelectionIndex() );
+
+    combo.select( 1 );
+    assertEquals( 1, combo.getSelectionIndex() );
+
+    combo.select( 2 );
+    assertEquals( 2, combo.getSelectionIndex() );
   }
 }

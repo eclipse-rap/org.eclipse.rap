@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
@@ -116,6 +117,7 @@ public final class CCombo extends Composite {
   	model = new ListModel( true );
   }
 
+  @Override
   public int getStyle() {
     int result = super.getStyle();
     result &= ~SWT.READ_ONLY;
@@ -177,8 +179,8 @@ public final class CCombo extends Composite {
     checkWidget();
     if( index == model.getSelectionIndex() ) {
       model.setSelection( -1 );
+      updateText();
     }
-    updateText();
   }
 
   /**
@@ -698,7 +700,6 @@ public final class CCombo extends Composite {
    */
   public int indexOf( String string ) {
     checkWidget();
-    if( string == null ) SWT.error ( SWT.ERROR_NULL_ARGUMENT );
     return indexOf( string, 0 );
   }
 
@@ -723,14 +724,10 @@ public final class CCombo extends Composite {
    */
   public int indexOf ( String string, int start ) {
     checkWidget();
-    if( string == null ) SWT.error ( SWT.ERROR_NULL_ARGUMENT );
-    if( !( 0 <= start && start < model.getItemCount() ) )
-      return -1;
-    for( int i = start; i < model.getItemCount(); i++ ) {
-      if( string.equals( model.getItem( i ) ) )
-        return i;
+    if( string == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    return -1;
+    return model.indexOf( string, start );
   }
 
   /**
@@ -759,23 +756,7 @@ public final class CCombo extends Composite {
     if( string == null ) {
       SWT.error ( SWT.ERROR_NULL_ARGUMENT );
     }
-    String verifiedText = verifyText( string, 0, text.length() );
-    if( verifiedText != null ) {
-      model.deselectAll();
-      String[] items = model.getItems();
-      for( int i = 0; i < items.length; i++ ) {
-        if( verifiedText.equals( items[i] ) ) {
-          model.setSelection( i );
-          break;
-        }
-      }
-      if( verifiedText.length() > textLimit ) {
-        this.text = verifiedText.substring( 0, textLimit );
-      } else {
-        this.text = verifiedText;
-      }
-      fireModifyEvent();
-    }
+    internalSetText( string, true );
   }
 
   /**
@@ -826,6 +807,7 @@ public final class CCombo extends Composite {
     return editable;
   }
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
@@ -1012,6 +994,7 @@ public final class CCombo extends Composite {
     VerifyEvent.removeListener( this, verifyListener );
   }
 
+  @Override
   public Control[] getChildren() {
   	checkWidget();
   	return new Control[ 0 ];
@@ -1032,6 +1015,7 @@ public final class CCombo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
+  @Override
   public void setLayout( Layout layout ) {
   	checkWidget();
   	return;
@@ -1039,6 +1023,34 @@ public final class CCombo extends Composite {
 
   //////////////////
   // Helping methods
+
+  private void updateText() {
+    int selectionIndex = getSelectionIndex();
+    String text = selectionIndex != -1 ? getItem( selectionIndex ) : "";
+    internalSetText( text, false );
+  }
+
+  private void internalSetText( String text, boolean updateSelection ) {
+    String verifiedText = verifyText( text, 0, this.text.length() );
+    if( verifiedText != null ) {
+      if( updateSelection ) {
+        int index = -1;
+        String[] items = model.getItems();
+        for( int i = 0; index == -1 && i < items.length; i++ ) {
+          if( verifiedText.equals( items[ i ] ) ) {
+            index = i;
+          }
+        }
+        model.setSelection( index );
+      }
+      if( verifiedText.length() > textLimit ) {
+        this.text = verifiedText.substring( 0, textLimit );
+      } else {
+        this.text = verifiedText;
+      }
+      fireModifyEvent();
+    }
+  }
 
   // Direct copy from Combo.java
   private String verifyText( String text, int start, int end ) {
@@ -1059,15 +1071,6 @@ public final class CCombo extends Composite {
       return null;
     }
     return result;
-  }
-
-  private void updateText() {
-    int selectionIndex = getSelectionIndex();
-    if( selectionIndex != -1 ) {
-      setText( getItem( selectionIndex ) );
-    } else {
-      setText( "" );
-    }
   }
 
   private void fireModifyEvent() {
