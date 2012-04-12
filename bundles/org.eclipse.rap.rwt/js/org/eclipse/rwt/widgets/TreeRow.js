@@ -49,7 +49,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     this._cellBackgrounds = null;
     this._miscNodes = null;
   },
-  
+
   events : {
     "itemRendered" : "qx.event.type.Event"
   },
@@ -97,7 +97,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
 
     updateEvenState : function( index ) {
-      this.setState( "even", index % 2 == 0 );
+      this.setState( "even", index % 2 === 0 );
     },
 
     ////////////
@@ -206,7 +206,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
 
     _getExpandSymbol : function( item, config, hoverElement ) {
       var states = this._getParentStates( config );
-      if( item.getLevel() == 0 && !item.hasPreviousSibling() ) {
+      if( item.getLevel() === 0 && !item.hasPreviousSibling() ) {
         states.first = true;
       }
       if( !item.hasNextSibling() ) {
@@ -273,7 +273,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
           this._checkBoxElement = this._createElement( 3 );
           this._checkBoxElement.style.backgroundRepeat = "no-repeat";
           this._checkBoxElement.style.backgroundPosition = "center";
-        } 
+        }
         this._setImage( this._checkBoxElement, image, config.enabled );
         if( config.treeColumn !== -1 || !contentOnly ) {
           var left = this._getCheckBoxLeft( item, config );
@@ -289,7 +289,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       if( this._cellsRendered > columns ) {
         this._removeCells( columns, this._cellsRendered );
       }
-      if( !config.fullSelection && selected ) { 
+      if( !config.fullSelection && selected ) {
         this._renderStates( item, config, false, hoverElement );
       }
       for( var i = 0; i < columns; i++ ) {
@@ -423,13 +423,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
           if( html !== element.rap_Markup ) {
             element.innerHTML = html;
             element.rap_Markup = html;
-          } 
+          }
         } else {
           element.innerHTML = html;
-        } 
+        }
       }
     } ),
-    
+
     _styleLabel : function( element, item, cell, config ) {
       this._setForeground( element, this._getCellColor( item, cell, config ) );
       this._setFont( element, this._getCellFont( item, cell, config ) );
@@ -480,7 +480,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       if( this._cellLabels[ cell ] ) {
         var font = this._getCellFont( item, cell, config );
         var fontProps = this._getFontProps( font );
-        var text = this._cellLabels[ cell ].innerHTML; 
+        var text = this._cellLabels[ cell ].innerHTML;
         var dimensions = calc.computeTextDimensions( text, fontProps );
         result = dimensions[ 0 ];
       }
@@ -525,7 +525,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         }
       }
     },
-    
+
     _resetFont : Variant.select( "qx.client", {
       "default" : function( element ) {
         element.style.font = "";
@@ -587,7 +587,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       }
       return result;
     },
-    
+
     _getCellImage : function( cell ) {
       var result = this._cellImages[ cell ];
       if( !result ) {
@@ -638,7 +638,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       this._usedMiscNodes++;
       return result;
     },
-    
+
     _createElement : function( zIndex ) {
       var result = document.createElement( "div" );
       result.style.position = "absolute";
@@ -669,7 +669,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       }
       this._hideRemainingElements();
     },
-    
+
     _hideRemainingElements : function() {
       var node = this._getTargetNode();
       for( var i = this._usedMiscNodes; i < this._miscNodes.length; i++ ) {
@@ -682,13 +682,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         this._removeCell( i );
       }
     },
-    
+
     _removeCell : function( cell ) {
       this._removeNode( this._cellBackgrounds, cell );
       this._removeNode( this._cellImages, cell );
       this._removeNode( this._cellLabels, cell );
     },
-    
+
     _removeNode : function( arr, pos ) {
       var node = arr[ pos ];
       if( node ) {
@@ -708,7 +708,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
             node.childNodes[ i ].style.display = "none";
           }
         }
-      }, 
+      },
       "default" : qx.lang.Function.returnTrue
     } ),
 
