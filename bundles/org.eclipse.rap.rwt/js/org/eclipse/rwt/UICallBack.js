@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,8 @@ org.eclipse.rwt.UICallBack = function() {
   this._retryInterval = 0;
   this._active = false;
   this._running = false;
-  this._initUICallBackRequestTimer();
+  this._requestTimer = new qx.client.Timer( 0 );
+  this._requestTimer.addEventListener( "interval", this._doSendUICallBackRequest, this );
 };
 
 org.eclipse.rwt.UICallBack.getInstance = function() {
@@ -45,11 +46,6 @@ org.eclipse.rwt.UICallBack.prototype = {
       this._running = true;
       this._requestTimer.start();
     }
-  },
-
-  _initUICallBackRequestTimer : function() {
-    this._requestTimer = new qx.client.Timer( 0 );
-    this._requestTimer.addEventListener( "interval", this._doSendUICallBackRequest, this );
   },
 
   // workaround for bug 353819 - send UICallBackRequest with a timer
