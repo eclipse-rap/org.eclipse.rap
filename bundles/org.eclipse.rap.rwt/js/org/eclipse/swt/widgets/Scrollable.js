@@ -1,6 +1,6 @@
 /*******************************************************************************
- *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
- *                       and EclipseSource
+ * Copyright (c) 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                          and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
@@ -28,7 +28,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
     this._configureClientArea();
     this.__onscroll = qx.lang.Function.bindEvent( this._onscroll, this );
   },
-  
+
   destruct : function() {
     var el = this._clientArea._getTargetNode();
     if( el ) {
@@ -40,14 +40,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
     this._horzScrollBar = null;
     this._vertScrollBar = null;
   },
-  
+
   events : {
     "userScroll" : "qx.event.type.Event"
   },
-  
+
   statics : {
     _nativeWidth : null,
-    
+
     getNativeScrollBarWidth : function() {
       if( this._nativeWidth === null ) {
         var dummy = document.createElement( "div" );
@@ -65,12 +65,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
   },
 
   members : {
-    
+
     /////////
     // Public
-    
+
     setScrollBarsVisible : function( horizontal, vertical ) {
-      this._horzScrollBar.setDisplay( horizontal );  
+      this._horzScrollBar.setDisplay( horizontal );
       this._vertScrollBar.setDisplay( vertical );
       var overflow = "hidden";
       if( horizontal && vertical ) {
@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
       this._layoutX();
       this._layoutY();
     },
- 
+
     setHBarSelection : function( value ) {
       this._internalChangeFlag = true;
       this._horzScrollBar.setValue( value );
@@ -96,11 +96,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
       this._vertScrollBar.setValue( value );
       this._internalChangeFlag = false;
     },
-    
+
     setBlockScrolling : function( value ) {
       this._blockScrolling = value;
     },
- 
+
     /////////
     // Layout
 
@@ -110,10 +110,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
       this._clientArea.setTop( 0 );
       this._clientArea.addEventListener( "create", this._onClientCreate, this );
       this._clientArea.addEventListener( "appear", this._onClientAppear, this );
-      // TOOD [tb] : Do this with an eventlistner after fixing Bug 327023 
+      // TOOD [tb] : Do this with an eventlistner after fixing Bug 327023
       this._clientArea._layoutPost = qx.lang.Function.bindEvent( this._onClientLayout, this );
     },
-    
+
     _configureScrollBars : function() {
       var dragBlocker = function( event ) { event.stopPropagation(); };
       this._horzScrollBar.setLeft( 0 );
@@ -121,24 +121,24 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
       this._vertScrollBar.setTop( 0 );
       this._vertScrollBar.addEventListener( "dragstart", dragBlocker );
       this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
-      this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );      
+      this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
     },
 
     _applyWidth : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
       this._layoutX();
     },
-    
+
     _applyHeight : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
       this._layoutY();
     },
-    
+
     _applyBorder : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
       this._layoutX();
       this._layoutY();
-    },    
+    },
 
     _layoutX : function() {
       var clientWidth = this.getWidth() - this.getFrameWidth();
@@ -150,11 +150,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
       this._horzScrollBar.setWidth( clientWidth );
     },
 
-    _layoutY : function() {        
+    _layoutY : function() {
       var clientHeight = this.getHeight() - this.getFrameHeight();
       if( this._horzScrollBar.getDisplay() ) {
         clientHeight -= this._horzScrollBar.getHeight();
-      } 
+      }
       this._clientArea.setHeight( clientHeight );
       this._vertScrollBar.setHeight( clientHeight );
       this._horzScrollBar.setTop( clientHeight );
@@ -168,15 +168,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
       eventUtil.addEventListener( el, "scroll", this.__onscroll );
       qx.html.Scroll.disableScrolling( this._clientArea.getElement() );
     },
-    
+
     _onClientLayout : qx.core.Variant.select( "qx.client", {
       "default" : function() {
         var barWidth = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
         var node = this._clientArea._getTargetNode();
         var el = this._clientArea.getElement();
         var overflow = this._clientArea.getOverflow();
-        var width = parseInt( el.style.width );
-        var height = parseInt( el.style.height );
+        var width = parseInt( el.style.width, 10 );
+        var height = parseInt( el.style.height, 10 );
         if( overflow === "scroll" || overflow === "scrollY" ) {
           width += barWidth;
         }
@@ -193,8 +193,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
         var node = this._clientArea._getTargetNode();
         var el = this._clientArea.getElement();
         var overflow = this._clientArea.getOverflow();
-        var width = parseInt( el.style.width );
-        var height = parseInt( el.style.height );
+        var width = parseInt( el.style.width, 10 );
+        var height = parseInt( el.style.height, 10 );
         if( overflow === "scroll" || overflow === "scrollY" ) {
           width += ( 2 * barWidth );
         }
@@ -205,10 +205,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
         node.style.height = height + "px";
       }
     } ),
-    
+
     ////////////
     // Scrolling
-   
+
     _onHorzScrollBarChangeValue : function() {
       if( this._isCreated ) {
         this._syncClientArea( true, false );
@@ -216,7 +216,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
       if( !this._internalChangeFlag ) {
         this.createDispatchEvent( "userScroll" );
       }
-    }, 
+    },
 
     _onVertScrollBarChangeValue : function() {
       if( this._isCreated ) {
@@ -232,14 +232,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
       this._syncClientArea( true, true );
       this._internalChangeFlag = false;
     },
-     
+
     _onscroll : function( evt ) {
       if( !this._internalChangeFlag ) {
         org.eclipse.rwt.EventHandlerUtil.stopDomEvent( evt );
         var blockH = this._blockScrolling || !this._horzScrollBar.getDisplay();
         var blockV = this._blockScrolling || !this._vertScrollBar.getDisplay();
         this._internalChangeFlag = true;
-        this._syncClientArea( blockH, blockV );        
+        this._syncClientArea( blockH, blockV );
         this._internalChangeFlag = false;
         this._syncScrollBars();
       }
