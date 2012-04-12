@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,6 +68,7 @@ public class UICallBackManager_Test extends TestCase {
   private UICallBackManager manager;
   private UICallBackServiceHandler uiCallBackServiceHandler;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     log = "";
@@ -76,6 +77,7 @@ public class UICallBackManager_Test extends TestCase {
     uiCallBackServiceHandler = new UICallBackServiceHandler();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -278,7 +280,7 @@ public class UICallBackManager_Test extends TestCase {
     fakeRequestParam();
     Fixture.executeLifeCycleFromServerThread();
     // let request thread finish off and die
-    callBackRequestSimulator.requestThread.join( 10 );
+    callBackRequestSimulator.requestThread.join( 100 );
 
     assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
     assertFalse( manager.isCallBackRequestBlocked() );
