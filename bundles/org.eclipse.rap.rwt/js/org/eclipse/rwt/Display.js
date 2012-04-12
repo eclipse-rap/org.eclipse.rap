@@ -144,16 +144,16 @@ org.eclipse.rwt.Display.prototype = {
   _appendSystemDPI : function() {
     var dpi = [ 0, 0 ];
     if( typeof screen.systemXDPI == "number" ) {
-      dpi[ 0 ] = parseInt( screen.systemXDPI );
-      dpi[ 1 ] = parseInt( screen.systemYDPI );
+      dpi[ 0 ] = parseInt( screen.systemXDPI, 10 );
+      dpi[ 1 ] = parseInt( screen.systemYDPI, 10 );
     } else {
       var testElement = document.createElement( "div" );
       testElement.style.width = "1in";
       testElement.style.height = "1in";
       testElement.style.padding = 0;
       document.body.appendChild( testElement );
-      dpi[ 0 ] = parseInt( testElement.offsetWidth );
-      dpi[ 1 ] = parseInt( testElement.offsetHeight );
+      dpi[ 0 ] = parseInt( testElement.offsetWidth, 10 );
+      dpi[ 1 ] = parseInt( testElement.offsetHeight, 10 );
       document.body.removeChild( testElement );
     }
     this._request.addParameter( "w1.dpi.x", String( dpi[ 0 ] ) );
@@ -163,7 +163,7 @@ org.eclipse.rwt.Display.prototype = {
   _appendColorDepth : function() {
     var depth = 16;
     if( typeof screen.colorDepth == "number" ) {
-      depth = parseInt( screen.colorDepth );
+      depth = parseInt( screen.colorDepth, 10 );
     }
     if( org.eclipse.rwt.Client.isGecko() ) {
       // Firefox detects 24bit and 32bit as 24bit, but 32bit is more likely
