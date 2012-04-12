@@ -195,12 +195,12 @@ qx.Class.define( "org.eclipse.rwt.Client", {
     _initOpera : function() {
       if( this._engineName === null ) {
         var isOpera =    window.opera
-                       && /Opera[\s\/]([0-9\.]*)/.test( navigator.userAgent );
+                      && /Opera[\s\/]([0-9\.]*)/.test( navigator.userAgent );
         if( isOpera ) {
           this._browserName = "opera";
           this._engineName = "opera";
           var version = RegExp.$1;
-          version = version.substring( 0, 3 ) + "." + version.substring ( 3);
+          version = version.substring( 0, 3 ) + "." + version.substring( 3 );
           ( /Version[\s\/]([0-9\.]*)/ ).test( navigator.userAgent );
           if( RegExp.$1 ) { // Newer Opera note the "real" version after "Version/".
             version = RegExp.$1;
@@ -233,7 +233,7 @@ qx.Class.define( "org.eclipse.rwt.Client", {
         if( isWebkit ) {
           this._engineName = "webkit";
           var version = RegExp.$1;
-          var invalidCharacter = RegExp("[^\\.0-9]").exec( version );
+          var invalidCharacter = /[^\.0-9]/.exec( version );
           if( invalidCharacter ) {
             version = version.slice( 0, invalidCharacter.index );
           }
