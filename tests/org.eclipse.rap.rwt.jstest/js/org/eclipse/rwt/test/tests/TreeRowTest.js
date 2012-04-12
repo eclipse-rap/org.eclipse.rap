@@ -16,7 +16,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
   // TODO [tb] : Since TreeRow has been refactored to work without reference to Tree, the
   //             tests could also be refactored to not use the an tree instance anymore.
   members : {
-  
+
     _gradient : [ [ 0, "red" ], [ 1, "yellow" ] ],
 
     testCreateRow : function() {
@@ -74,11 +74,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       this._addToDom( row );
       var item = this._createItem( tree );
       item.setTexts( [ "<b>Test</b>" ] );
-      
+
       row.renderItem( item, tree._config, false, null );
       row.renderItem( null, tree._config, false, null );
       row.renderItem( item, tree._config, false, null );
-      
+
       assertEquals( 2, row._getTargetNode().childNodes.length );
       assertEquals( "<b>test</b>", row._getTargetNode().childNodes[ 1 ].innerHTML.toLowerCase() );
       tree.destroy();
@@ -241,9 +241,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       this._addToDom( row );
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
-      
+
       row.renderItem( item, tree._config, false, null );
-      
+
       var node = row._getTargetNode();
       assertEquals( 2, node.childNodes.length );
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -305,7 +305,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
 
       tree.setItemMetrics( 1, 50, 0, 50, 12, 65, 12 );
       row.renderItem( item, tree._config, false, null );
-      
+
       assertEquals( 3, row._getTargetNode().childNodes.length );
       assertEquals( "Test1", row._getTargetNode().childNodes[ 1 ].innerHTML );
       assertEquals( "Test3", row._getTargetNode().childNodes[ 2 ].innerHTML );
@@ -327,7 +327,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
 
       tree.setColumnCount( 2 );
       row.renderItem( item, tree._config, false, null );
-      
+
       assertEquals( 3, row._getTargetNode().childNodes.length );
       assertEquals( "Test1", row._getTargetNode().childNodes[ 1 ].innerHTML );
       assertEquals( "Test2", row._getTargetNode().childNodes[ 2 ].innerHTML );
@@ -343,7 +343,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       item.setTexts( [ "Test" ] );
       row.renderItem( item, tree._config, false, null );
       var node = row._getTargetNode().childNodes[ 1 ];
-      assertEquals( 3, parseInt( node.style.zIndex ) );
+      assertEquals( 3, parseInt( node.style.zIndex, 10 ) );
       assertEquals( "absolute", node.style.position );
       assertEquals( "middle", node.style.verticalAlign );
       assertEquals( "nowrap", node.style.whiteSpace );
@@ -399,12 +399,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var row = this._createRow( tree );
       this._addToDom( row );
       var item = this._createItem( tree );
-      
+
       item.setTexts( [ "Test1", "Test2" ] );
       row.renderItem( item, tree._config, false, null );
       item.setTexts( [ "Test1", "" ] );
       row.renderItem( item, tree._config, false, null );
-      
+
       var element = row._getTargetNode().childNodes[ 2 ];
       assertEquals( "", element.innerHTML );
       tree.destroy();
@@ -418,14 +418,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var row = this._createRow( tree );
       this._addToDom( row );
       var item = this._createItem( tree );
-      
+
       item.setTexts( [ "Test1", "Test2" ] );
       row.renderItem( item, tree._config, false, null );
       item.setTexts( [ "Test1", "" ] );
       row.renderItem( item, tree._config, false, null );
       item.setTexts( [ "Test1", "Test2" ] );
       row.renderItem( item, tree._config, false, null );
-      
+
       var element = row._getTargetNode().childNodes[ 2 ];
       assertEquals( "Test2", element.innerHTML );
       assertEquals( "", element.style.display );
@@ -439,9 +439,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       this._addToDom( row );
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
-      
+
       row.renderItem( item, tree._config, false, null );
-      
+
       assertEquals( 2, row._getTargetNode().childNodes.length );
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var node = row._getTargetNode().childNodes[ 0 ];
@@ -840,7 +840,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var children = row._getTargetNode().childNodes;
       assertEquals( 5, children.length );
       assertEquals( "red", children[ 1 ].style.backgroundColor );
-      assertEquals( 1, parseInt( children[ 1 ].style.zIndex ) );
+      assertEquals( 1, parseInt( children[ 1 ].style.zIndex, 10 ) );
       assertEquals( "Test", children[ 2 ].innerHTML );
       assertEquals( "green", children[ 3 ].style.backgroundColor );
       assertEquals( "Test2", children[ 4 ].innerHTML );
@@ -926,7 +926,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var nodes = row._getTargetNode().childNodes;
       assertEquals( 3, nodes.length );
-      assertEquals( 3, parseInt( nodes[ 1 ].style.zIndex ) );
+      assertEquals( 3, parseInt( nodes[ 1 ].style.zIndex, 10 ) );
       var position = nodes[ 1 ].style.backgroundPosition;
       assertTrue(    position.indexOf( "center" ) != -1
                   || position.indexOf( "50%" ) != -1 );
@@ -973,10 +973,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       assertEquals( 2, node.childNodes.length );
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var style = node.childNodes[ 1 ].style;
-      assertEquals( 0, parseInt( style.top ) );
-      assertEquals( 40, parseInt( style.left ) );
-      assertEquals( 15, parseInt( style.height ) );
-      assertEquals( 10, parseInt( style.width ) );
+      assertEquals( 0, parseInt( style.top, 10 ) );
+      assertEquals( 40, parseInt( style.left, 10 ) );
+      assertEquals( 15, parseInt( style.height, 10 ) );
+      assertEquals( 10, parseInt( style.width, 10 ) );
       tree.destroy();
       row.destroy();
     },
@@ -992,13 +992,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.renderItem( item, tree._config, false, null );
       var node = row._getTargetNode();
       assertEquals( 3, node.childNodes.length );
-      var left1 = parseInt( node.childNodes[ 1 ].style.left );
+      var left1 = parseInt( node.childNodes[ 1 ].style.left, 10 );
       var subitem = this._createItem( item );
       subitem.setTexts( [ "bar" ] );
       row.renderItem( subitem, tree._config, false, null );
       node = row._getTargetNode();
       assertEquals( 3, node.childNodes.length );
-      var left2 = parseInt( node.childNodes[ 1 ].style.left );
+      var left2 = parseInt( node.childNodes[ 1 ].style.left, 10 );
       assertTrue( left2 > left1 );
       tree.destroy();
       row.destroy();
@@ -1014,18 +1014,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var item = this._createItem( parentItem );
       item.setTexts( [ "" ] );
       item.setImages( [ "bla.jpg" ] );
-      
+
       row.renderItem( parentItem, tree._config, false, null );
       row.renderItem( item, tree._config, false, null, true ); // true = dont render bounds
-      
+
       var node = row._getTargetNode();
       assertEquals( 2, node.childNodes.length );
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var style = node.childNodes[ 1 ].style;
-      assertEquals( 0, parseInt( style.top ) );
-      assertEquals( 56, parseInt( style.left ) );
-      assertEquals( 15, parseInt( style.height ) );
-      assertEquals( 10, parseInt( style.width ) );
+      assertEquals( 0, parseInt( style.top, 10 ) );
+      assertEquals( 56, parseInt( style.left, 10 ) );
+      assertEquals( 15, parseInt( style.height, 10 ) );
+      assertEquals( 10, parseInt( style.width, 10 ) );
       tree.destroy();
       row.destroy();
     },
@@ -1038,15 +1038,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       this._addToDom( row );
       var parentItem = this._createItem( tree );
       var item = this._createItem( parentItem );
-      
+
       row.renderItem( parentItem, tree._config, false, null );
       row.renderItem( item, tree._config, false, null, true ); // true = dont render bounds
-      
+
       var node = row._getTargetNode();
       assertEquals( 2, node.childNodes.length );
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var style = node.childNodes[ 1 ].style;
-      assertEquals( 37, parseInt( style.left ) );
+      assertEquals( 37, parseInt( style.left, 10 ) );
       tree.destroy();
       row.destroy();
     },
@@ -1062,13 +1062,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.renderItem( item, tree._config, false, null );
       var node = row._getTargetNode();
       assertEquals( 3, node.childNodes.length );
-      var left1 = parseInt( node.childNodes[ 2 ].style.left );
+      var left1 = parseInt( node.childNodes[ 2 ].style.left, 10 );
       var subitem = this._createItem( item );
       subitem.setImages( [ "bla.jpg" ] );
       row.renderItem( subitem, tree._config, false, null );
       node = row._getTargetNode();
       assertEquals( 3, node.childNodes.length );
-      var left2 = parseInt( node.childNodes[ 2 ].style.left );
+      var left2 = parseInt( node.childNodes[ 2 ].style.left, 10 );
       assertTrue( left2 > left1 );
       tree.destroy();
       row.destroy();
@@ -1083,18 +1083,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       parentItem.setTexts( [ "foo" ] );
       var item = this._createItem( parentItem );
       item.setTexts( [ "bar" ] );
-      
+
       row.renderItem( parentItem, tree._config, false, null );
       row.renderItem( item, tree._config, false, null, true ); // true = dont render bounds
-      
+
       var node = row._getTargetNode();
       assertEquals( 2, node.childNodes.length );
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var style = node.childNodes[ 1 ].style;
-      assertEquals( 0, parseInt( style.top ) );
-      assertEquals( 5 + 2 * 16, parseInt( style.left ) );
-      assertEquals( 15, parseInt( style.height ) );
-      assertEquals( 33, parseInt( style.width ) );
+      assertEquals( 0, parseInt( style.top, 10 ) );
+      assertEquals( 5 + 2 * 16, parseInt( style.left, 10 ) );
+      assertEquals( 15, parseInt( style.height, 10 ) );
+      assertEquals( 33, parseInt( style.width, 10 ) );
       tree.destroy();
       row.destroy();
     },
@@ -1131,11 +1131,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       item1.setCellBackgrounds( [ "green" ] );
       item2.setTexts( [ "Test" ] );
       var nodes = row._getTargetNode().childNodes;
-      
+
       row.renderItem( item1, tree._config, false, null );
       assertEquals( "green", nodes[ 1 ].style.backgroundColor );
       row.renderItem( item2, tree._config, false, null );
-      
+
       assertEquals( "transparent", nodes[ 1 ].style.backgroundColor );
       tree.destroy();
       row.destroy();
@@ -1152,11 +1152,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       item1.setTexts( [ "Test" ] );
       item2.setCellBackgrounds( [ "blue" ] );
       var nodes = row._getTargetNode().childNodes;
-      
+
       row.renderItem( item1, tree._config, false, null );
       assertEquals( "green", nodes[ 1 ].style.backgroundColor );
       row.renderItem( item2, tree._config, false, null );
-      
+
       assertEquals( "blue", nodes[ 1 ].style.backgroundColor );
       assertEquals( "", nodes[ 1 ].style.display );
       tree.destroy();
@@ -1173,7 +1173,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       item1.setImages( [ "bla.jpg" ] );
       var item2 = this._createItem( tree );
       item2.setTexts( [ "Test" ] );
-      
+
       row.renderItem( item1, tree._config, false, null );
       var nodes = row._getTargetNode().childNodes;
       var image = TestUtil.getCssBackgroundImage( nodes[ 1 ] );
@@ -1196,7 +1196,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var item2 = this._createItem( tree );
       item2.setTexts( [ "" ] );
       item2.setImages( [ "bla2.jpg" ] );
-      
+
       row.renderItem( item1, tree._config, false, null );
       var nodes = row._getTargetNode().childNodes;
       assertTrue( TestUtil.getCssBackgroundImage( nodes[ 1 ] ).indexOf( "bla.jpg" ) != -1 );
@@ -1219,7 +1219,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var item2 = this._createItem( tree );
       item2.setTexts( [ null ] );
       item2.setImages( [ null ] );
-      
+
       row.renderItem( item1, tree._config, false, null );
       row.renderItem( item2, tree._config, false, null );
       row.renderItem( item1, tree._config, false, null, true );
@@ -1287,12 +1287,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.renderItem( item, tree._config, false, null );
       var nodes = row._getTargetNode().childNodes;
       assertEquals( 7, nodes.length );
-      assertEquals( 0, parseInt( nodes[ 1 ].style.left ) );
-      assertEquals( 16, parseInt( nodes[ 2 ].style.left ) );
-      assertEquals( 30, parseInt( nodes[ 3 ].style.left ) );
-      assertEquals( 50, parseInt( nodes[ 4 ].style.left ) );
-      assertEquals( 50, parseInt( nodes[ 5 ].style.left ) );
-      assertEquals( 65, parseInt( nodes[ 6 ].style.left ) );
+      assertEquals( 0, parseInt( nodes[ 1 ].style.left, 10 ) );
+      assertEquals( 16, parseInt( nodes[ 2 ].style.left, 10 ) );
+      assertEquals( 30, parseInt( nodes[ 3 ].style.left, 10 ) );
+      assertEquals( 50, parseInt( nodes[ 4 ].style.left, 10 ) );
+      assertEquals( 50, parseInt( nodes[ 5 ].style.left, 10 ) );
+      assertEquals( 65, parseInt( nodes[ 6 ].style.left, 10 ) );
       tree.destroy();
       row.destroy();
     },
@@ -1312,12 +1312,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       item.setCellBackgrounds( [ "green", "blue" ] );
       row.renderItem( item, tree._config, false, null );
       var nodes = row._getTargetNode().childNodes;
-      assertEquals( 0, parseInt( nodes[ 1 ].style.left ) );
-      assertEquals( 48, parseInt( nodes[ 2 ].style.left ) );
-      assertEquals( 62, parseInt( nodes[ 3 ].style.left ) );
-      assertEquals( 50, parseInt( nodes[ 4 ].style.left ) );
-      assertEquals( 50, parseInt( nodes[ 5 ].style.left ) );
-      assertEquals( 65, parseInt( nodes[ 6 ].style.left ) );
+      assertEquals( 0, parseInt( nodes[ 1 ].style.left, 10 ) );
+      assertEquals( 48, parseInt( nodes[ 2 ].style.left, 10 ) );
+      assertEquals( 62, parseInt( nodes[ 3 ].style.left, 10 ) );
+      assertEquals( 50, parseInt( nodes[ 4 ].style.left, 10 ) );
+      assertEquals( 50, parseInt( nodes[ 5 ].style.left, 10 ) );
+      assertEquals( 65, parseInt( nodes[ 6 ].style.left, 10 ) );
       tree.destroy();
       row.destroy();
     },
@@ -1456,10 +1456,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       this._setCheckBox( "mycheckbox.gif" );
       row.renderItem( item, tree._config, false, null );
       var style = row._getTargetNode().childNodes[ 1 ].style;
-      assertEquals( 0, parseInt( style.top ) );
-      assertEquals( 15, parseInt( style.height ) );
-      assertEquals( 21, parseInt( style.left ) );
-      assertEquals( 20, parseInt( style.width ) );
+      assertEquals( 0, parseInt( style.top, 10 ) );
+      assertEquals( 15, parseInt( style.height, 10 ) );
+      assertEquals( 21, parseInt( style.left, 10 ) );
+      assertEquals( 20, parseInt( style.width, 10 ) );
       tree.destroy();
       row.destroy();
     },
@@ -1626,10 +1626,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       assertEquals( 4, row._getTargetNode().childNodes.length );
       var selNode = row._getTargetNode().childNodes[ 2 ];
       assertEquals( "", selNode.innerHTML );
-      var width = parseInt( selNode.style.width );
+      var width = parseInt( selNode.style.width, 10 );
       assertEquals( "green", selNode.style.backgroundColor );
-      assertEquals( 2, parseInt( selNode.style.zIndex ) );
-      assertEquals( 18, parseInt( selNode.style.left ) );
+      assertEquals( 2, parseInt( selNode.style.zIndex, 10 ) );
+      assertEquals( 18, parseInt( selNode.style.left, 10 ) );
       // Since we dont know the scrollwidth of the node, this is a bit fuzzy:
       assertTrue( width > 10 && width < 45 );
       tree.destroy();
@@ -1651,10 +1651,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       assertEquals( 4, row._getTargetNode().childNodes.length );
       var selNode = row._getTargetNode().childNodes[ 2 ];
       assertEquals( "", selNode.innerHTML );
-      var width = parseInt( selNode.style.width );
+      var width = parseInt( selNode.style.width, 10 );
       assertEquals( "green", selNode.style.backgroundColor );
-      assertEquals( 2, parseInt( selNode.style.zIndex ) );
-      assertEquals( 18, parseInt( selNode.style.left ) );
+      assertEquals( 2, parseInt( selNode.style.zIndex, 10 ) );
+      assertEquals( 18, parseInt( selNode.style.left, 10 ) );
       // Since we dont know the scrollwidth of the node, this is a bit fuzzy:
       assertEquals( 48, width );
       tree.destroy();
@@ -1676,7 +1676,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       assertEquals( "green", row.getBackgroundColor() );
       assertEquals( 4, row._getTargetNode().childNodes.length );
       var selNode = row._getTargetNode().childNodes[ 2 ];
-      var width = parseInt( selNode.style.width );
+      var width = parseInt( selNode.style.width, 10 );
       assertEquals( "green", selNode.style.backgroundColor );
       // Since we dont know the scrollwidth of the node, this is a bit fuzzy:
       assertTrue( width > 10 && width < 45 );
@@ -2159,12 +2159,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       assertEquals( "blue", color );
       var textWidth = row._getVisualTextWidth( item, 0, tree._config );
       //parseInt( rowNode.childNodes[ 1 ].style.width );
-      var selectionWidth = parseInt( rowNode.childNodes[ 2 ].style.width );
+      var selectionWidth = parseInt( rowNode.childNodes[ 2 ].style.width, 10 );
       assertEquals( textWidth + selectionPadding, selectionWidth );
       tree.destroy();
       row.destroy();
     },
-    
+
     testSelectionBackgroundRendering_Bug373900 : qx.core.Variant.select( "qx.client", {
       "mshtml|newmshtml" : function() {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -2187,9 +2187,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
         var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
         item.setTexts( [ "a&b" ] );
         tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 100 );
-  
+
         row.renderItem( item, tree._config, true, null );
-        
+
         assertEquals( "a&b", item.getText( 0, false ) );
         tree.destroy();
         row.destroy();
@@ -2221,8 +2221,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 25 );
       row.renderItem( item, tree._config, true, null );
       var rowNode = row._getTargetNode();
-      var textWidth = parseInt( rowNode.childNodes[ 1 ].style.width );
-      var selectionWidth = parseInt( rowNode.childNodes[ 2 ].style.width );
+      var textWidth = parseInt( rowNode.childNodes[ 1 ].style.width, 10 );
+      var selectionWidth = parseInt( rowNode.childNodes[ 2 ].style.width, 10 );
       assertEquals( textWidth + selectionPadding, selectionWidth );
       tree.destroy();
       row.destroy();
@@ -2251,12 +2251,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 0 );
       row.renderItem( item, tree._config, true, null );
       var rowNode = row._getTargetNode();
-      var selectionWidth = parseInt( rowNode.childNodes[ 2 ].style.width );
+      var selectionWidth = parseInt( rowNode.childNodes[ 2 ].style.width, 10 );
       assertEquals( 0, selectionWidth );
       tree.destroy();
       row.destroy();
     },
-    
+
     testTreeRowFiresItemRenderedEvent : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createTree();
@@ -2269,9 +2269,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       treeRow.addEventListener( "itemRendered", function() {
         log++;
       } );
-      
+
       treeRow.renderItem( item, tree._config, false, null );
-      
+
       assertTrue( log > 0 );
       tree.destroy();
       treeRow.destroy();
