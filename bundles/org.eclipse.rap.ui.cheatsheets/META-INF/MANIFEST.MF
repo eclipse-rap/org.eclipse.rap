@@ -30,5 +30,5 @@ Import-Package: com.ibm.icu.text,
  javax.xml.parsers,
  org.w3c.dom,
  org.xml.sax
-Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
