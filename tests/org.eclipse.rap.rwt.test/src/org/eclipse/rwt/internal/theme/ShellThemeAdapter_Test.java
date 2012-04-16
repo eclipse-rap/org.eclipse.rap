@@ -31,12 +31,14 @@ public class ShellThemeAdapter_Test extends TestCase {
 
   private Display display;
 
+  @Override
   protected void setUp() {
     Fixture.setUp();
     Fixture.fakeNewRequest();
     display = new Display();
   }
 
+  @Override
   protected void tearDown() {
     Fixture.tearDown();
   }
@@ -81,6 +83,42 @@ public class ShellThemeAdapter_Test extends TestCase {
     shell.setData( WidgetUtil.CUSTOM_VARIANT, "special" );
 
     assertEquals( new Rectangle( 4, 1, 6, 4 ), shellThemeAdapter.getTitleBarMargin( shell ) );
+  }
+
+  public void testStyle_APPLICATION_MODAL() throws IOException {
+    Shell shell = new Shell( display, SWT.APPLICATION_MODAL );
+    ShellThemeAdapter shellThemeAdapter = getShellThemeAdapter( shell );
+
+    setCustomTheme( "Shell[APPLICATION_MODAL] { padding: 23px 57px }" );
+
+    assertEquals( new Rectangle( 57, 23, 114, 46 ), shellThemeAdapter.getPadding( shell ) );
+  }
+
+  public void testStyle_TOOL() throws IOException {
+    Shell shell = new Shell( display, SWT.TOOL );
+    ShellThemeAdapter shellThemeAdapter = getShellThemeAdapter( shell );
+
+    setCustomTheme( "Shell[TOOL] { padding: 23px 57px }" );
+
+    assertEquals( new Rectangle( 57, 23, 114, 46 ), shellThemeAdapter.getPadding( shell ) );
+  }
+
+  public void testStyle_TITLE() throws IOException {
+    Shell shell = new Shell( display, SWT.TITLE );
+    ShellThemeAdapter shellThemeAdapter = getShellThemeAdapter( shell );
+
+    setCustomTheme( "Shell[TITLE] { padding: 23px 57px }" );
+
+    assertEquals( new Rectangle( 57, 23, 114, 46 ), shellThemeAdapter.getPadding( shell ) );
+  }
+
+  public void testStyle_SHEET() throws IOException {
+    Shell shell = new Shell( display, SWT.SHEET );
+    ShellThemeAdapter shellThemeAdapter = getShellThemeAdapter( shell );
+
+    setCustomTheme( "Shell[SHEET] { padding: 23px 57px }" );
+
+    assertEquals( new Rectangle( 57, 23, 114, 46 ), shellThemeAdapter.getPadding( shell ) );
   }
 
   private static ShellThemeAdapter getShellThemeAdapter( Shell shell ) {

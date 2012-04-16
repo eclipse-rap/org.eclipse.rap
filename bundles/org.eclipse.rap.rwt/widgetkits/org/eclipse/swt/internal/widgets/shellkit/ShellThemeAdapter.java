@@ -27,9 +27,13 @@ public final class ShellThemeAdapter extends ControlThemeAdapter {
 
   private static final int MENU_BAR_MIN_HEIGHT = 20;
 
+  @Override
   protected void configureMatcher( WidgetMatcher matcher ) {
     super.configureMatcher( matcher );
     matcher.addStyle( "TITLE", SWT.TITLE );
+    matcher.addStyle( "APPLICATION_MODAL", SWT.APPLICATION_MODAL );
+    matcher.addStyle( "TOOL", SWT.TOOL );
+    matcher.addStyle( "SHEET", SWT.SHEET );
     matcher.addState( "maximized", new Constraint() {
 
       public boolean matches( Widget widget ) {
