@@ -1407,10 +1407,6 @@ Scale {
   border-radius: 3px;
 }
 
-Scale:focused {
-  border: 1px solid #e5e5e5;
-}
-
 Scale-Thumb {
   background-color: #e5e5e5;
   border: 1px solid #a4a4a4;
