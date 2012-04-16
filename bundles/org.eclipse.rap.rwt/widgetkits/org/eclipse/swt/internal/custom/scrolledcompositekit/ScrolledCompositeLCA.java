@@ -50,11 +50,12 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   private static final Point DEFAULT_ORIGIN = new Point( 0, 0 );
   private static final boolean[] DEFAULT_SCROLLBARS_VISIBLE = new boolean[] { true, true };
 
+  @Override
   public void preserveValues( Widget widget ) {
     ScrolledComposite composite = ( ScrolledComposite )widget;
     ControlLCAUtil.preserveValues( composite );
     WidgetLCAUtil.preserveCustomVariant( composite );
-    preserveProperty( composite, PROP_ORIGIN, composite.getOrigin() );
+    preserveProperty( composite, PROP_ORIGIN, getOrigin( composite ) );
     preserveProperty( composite, PROP_CONTENT, composite.getContent() );
     preserveProperty( composite, PROP_SHOW_FOCUSED_CONTROL, composite.getShowFocusedControl() );
     preserveProperty( composite, PROP_SCROLLBARS_VISIBLE, getScrollBarsVisible( composite ) );
@@ -85,21 +86,22 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( composite );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ScrolledComposite scrolledComposite = ( ScrolledComposite )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( scrolledComposite );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( scrolledComposite.getParent() ) );
-    clientObject.set( "style",
-                              WidgetLCAUtil.getStyles( scrolledComposite, ALLOWED_STYLES ) );
+    clientObject.set( "style", WidgetLCAUtil.getStyles( scrolledComposite, ALLOWED_STYLES ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     ScrolledComposite composite = ( ScrolledComposite )widget;
     ControlLCAUtil.renderChanges( composite );
     WidgetLCAUtil.renderCustomVariant( composite );
     renderProperty( composite, PROP_CONTENT, composite.getContent(), null );
-    renderProperty( composite, PROP_ORIGIN, composite.getOrigin(), DEFAULT_ORIGIN );
+    renderProperty( composite, PROP_ORIGIN, getOrigin( composite ), DEFAULT_ORIGIN );
     renderProperty( composite,
                     PROP_SHOW_FOCUSED_CONTROL,
                     composite.getShowFocusedControl(),
@@ -114,12 +116,26 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
                     false );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   //////////////////
   // Helping methods
+
+  private static Point getOrigin( ScrolledComposite composite ) {
+    Point result = new Point( 0, 0 );
+    ScrollBar horizontalBar = composite.getHorizontalBar();
+    if( horizontalBar != null ) {
+      result.x = horizontalBar.getSelection();
+    }
+    ScrollBar verticalBar = composite.getVerticalBar();
+    if( verticalBar != null ) {
+      result.y = verticalBar.getSelection();
+    }
+    return result;
+  }
 
   private static boolean[] getScrollBarsVisible( ScrolledComposite composite ) {
     return new boolean[] { hasHScrollBar( composite ), hasVScrollBar( composite ) };

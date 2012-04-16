@@ -43,6 +43,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   private Shell shell;
   private ScrolledCompositeLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -51,6 +52,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -160,6 +162,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     ScrolledComposite sc = new ScrolledComposite( shell, scStyle );
     sc.setContent( new Composite( sc, SWT.NONE ) );
     SelectionListener selectionListener = new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         log.add( "widgetSelected" );
       }
@@ -273,6 +276,20 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     sc.setContent( content );
 
     sc.setOrigin( 1, 2 );
+    lca.renderChanges( sc );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( sc, "origin" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 2 ]", actual ) );
+  }
+
+  public void testRenderOrigin_SetByScrollbar() throws IOException, JSONException {
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    Composite content = new Composite( sc, SWT.NONE );
+    sc.setContent( content );
+
+    sc.getHorizontalBar().setSelection( 1 );
+    sc.getVerticalBar().setSelection( 2 );
     lca.renderChanges( sc );
 
     Message message = Fixture.getProtocolMessage();
