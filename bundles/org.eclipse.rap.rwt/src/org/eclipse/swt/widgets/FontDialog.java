@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Ralf Zahn (ARS) - initial API and implementation
- *   EclipseSource - ongoing development
+ *    Ralf Zahn (ARS) - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -14,6 +15,8 @@ import java.util.*;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.RWTMessages;
+import org.eclipse.rwt.widgets.DialogCallback;
+import org.eclipse.rwt.widgets.DialogUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
@@ -170,6 +173,7 @@ public class FontDialog extends Dialog {
     return fontData;
   }
 
+  @Override
   protected void prepareOpen() {
     initializeDefaults();
     createShell();
@@ -216,6 +220,7 @@ public class FontDialog extends Dialog {
     shell = new Shell( parent, SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL );
     shell.setText( getText() );
     shell.addShellListener( new ShellAdapter() {
+      @Override
       public void shellClosed( ShellEvent event ) {
         handleShellClose();
       }
@@ -281,6 +286,7 @@ public class FontDialog extends Dialog {
     GridData listData = new GridData( SWT.FILL, SWT.FILL, true, true );
     lstFontFamily.setLayoutData( listData );
     lstFontFamily.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         int selectionIndex = lstFontFamily.getSelectionIndex();
         if( selectionIndex != -1 ) {
@@ -332,6 +338,7 @@ public class FontDialog extends Dialog {
     Button changeColorButton = new Button( result, SWT.PUSH );
     changeColorButton.setText( RWTMessages.getMessage( "RWT_FontDialogFontColorSelect" ) );
     changeColorButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         openColorDialog();
       }
@@ -339,17 +346,22 @@ public class FontDialog extends Dialog {
   }
 
   private void openColorDialog() {
-    ColorDialog dialog = new ColorDialog( shell );
+    final ColorDialog dialog = new ColorDialog( shell );
     dialog.setRGB( rgb );
-    RGB selected = dialog.open();
-    if( selected != null ) {
-      rgb = selected;
-      updateControls();
-    }
+    DialogUtil.open( dialog, new DialogCallback() {
+      public void dialogClosed( int returnCode ) {
+        RGB selected = dialog.getRGB();
+        if( selected != null ) {
+          rgb = selected;
+          updateControls();
+        }
+      }
+    } );
   }
 
   private void addChangeListeners() {
     SelectionListener selectionListener = new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         updateFontData();
       }
@@ -405,6 +417,7 @@ public class FontDialog extends Dialog {
     data.widthHint = Math.max( widthHint, minSize.x );
     result.setLayoutData( data );
     result.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         FontDialog.this.returnCode = returnCode;
         shell.close();
