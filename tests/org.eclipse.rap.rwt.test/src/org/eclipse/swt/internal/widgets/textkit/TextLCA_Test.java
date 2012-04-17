@@ -55,6 +55,7 @@ public class TextLCA_Test extends TestCase {
   private Shell shell;
   private TextLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -64,6 +65,7 @@ public class TextLCA_Test extends TestCase {
     shell = new Shell( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -584,6 +586,23 @@ public class TextLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     JSONArray actual = ( JSONArray )message.findSetProperty( text, "selection" );
     assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 3 ]", actual ) );
+  }
+
+  public void testRenderSelectionAfterTextChange() throws IOException, JSONException {
+    Text text = new Text( shell, SWT.SINGLE );
+    text.setText( "foo bar" );
+    text.selectAll();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+    Fixture.preserveWidgets();
+
+    text.setText( "bar foo" );
+    text.selectAll();
+    lca.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( text, "selection" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ 0, 7 ]", actual ) );
   }
 
   public void testRenderSelectionUnchanged() throws IOException {

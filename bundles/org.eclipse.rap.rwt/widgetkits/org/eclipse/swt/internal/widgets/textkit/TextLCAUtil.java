@@ -15,6 +15,7 @@ import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
@@ -64,7 +65,7 @@ final class TextLCAUtil {
   static final String PROP_VERIFY_LISTENER = "verify";
   static final String PROP_SELECTION_LISTENER = "selection";
 
-  private static final Point DEFAULT_SELECTION = new Point( 0, 0 );
+  private static final Point ZERO_SELECTION = new Point( 0, 0 );
 
   private TextLCAUtil() {
     // prevent instantiation
@@ -96,7 +97,7 @@ final class TextLCAUtil {
     WidgetLCAUtil.renderCustomVariant( text );
     renderProperty( text, PROP_TEXT, text.getText(), "" );
     renderProperty( text, PROP_EDITABLE, text.getEditable(), true );
-    renderProperty( text, PROP_SELECTION, text.getSelection(), DEFAULT_SELECTION );
+    renderSelection( text );
     renderProperty( text, PROP_TEXT_LIMIT, getTextLimit( text ), null );
     renderProperty( text, PROP_ECHO_CHAR, getEchoChar( text ), null );
     renderProperty( text, PROP_MESSAGE, text.getMessage(), "" );
@@ -154,6 +155,18 @@ final class TextLCAUtil {
       }
     }
     return result;
+  }
+
+  private static void renderSelection( Text text ) {
+    Point newValue = text.getSelection();
+    boolean changed = hasChanged( text, PROP_SELECTION, newValue, ZERO_SELECTION );
+    if( !changed ) {
+      changed = hasChanged( text, PROP_TEXT, text.getText() ) && !newValue.equals( ZERO_SELECTION );
+    }
+    if( changed ) {
+      IClientObject clientObject = ClientObjectFactory.getClientObject( text );
+      clientObject.set( PROP_SELECTION, new int[] { newValue.x, newValue.y } );
+    }
   }
 
   //////////////////
