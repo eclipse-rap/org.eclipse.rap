@@ -120,6 +120,7 @@ public final class Fixture {
   public static void disposeOfServletContext() {
     servletContext = null;
   }
+
   public static void setInitParameter( String name, String value ) {
     ensureServletContext();
     servletContext.setInitParameter( name, value );
