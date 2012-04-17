@@ -1,19 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.rwt.widgets.ExternalBrowser;
+import org.eclipse.rwt.widgets.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.*;
 import org.eclipse.swt.custom.CTabFolder;
@@ -41,21 +41,33 @@ final class BrowserTab extends ExampleTab {
 
   private Browser browser;
   private BrowserFunction function;
+  private boolean useBrowserCallback;
 
   public BrowserTab( CTabFolder folder ) {
     super( folder, "Browser" );
   }
 
+  @Override
   protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createVisibilityButton();
     createEnablementButton();
     createUrlAndHTMLSelector( parent );
     createPropertyCheckbox( "Add Progress Listener", PROP_PROGRESS_LISTENER );
+    final Button cbUseBrowserCallback = new Button( parent, SWT.CHECK );
+    cbUseBrowserCallback.setText( "Use BrowserCallback" );
+    cbUseBrowserCallback.setSelection( useBrowserCallback );
+    cbUseBrowserCallback.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        useBrowserCallback = cbUseBrowserCallback.getSelection();
+      }
+    } );
     createExternalBrowserSelector( parent );
     createBrowserFunctionSelector( parent );
   }
 
+  @Override
   protected void createExampleControls( Composite parent ) {
     parent.setLayout( new FillLayout() );
     browser = new Browser( parent, getStyle() );
@@ -83,6 +95,7 @@ final class BrowserTab extends ExampleTab {
     Button btnURL = new Button( composite, SWT.PUSH );
     btnURL.setText( "Go" );
     btnURL.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         browser.setUrl( txtURL.getText() );
       }
@@ -98,6 +111,7 @@ final class BrowserTab extends ExampleTab {
     Button btnHTML = new Button( composite, SWT.PUSH );
     btnHTML.setText( "Go" );
     btnHTML.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         browser.setText( txtHTML.getText() );
       }
@@ -110,12 +124,25 @@ final class BrowserTab extends ExampleTab {
     Button btnExecButton = new Button( composite, SWT.PUSH );
     btnExecButton.setText( "Go" );
     btnExecButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
-        boolean result = browser.execute( txtExecute.getText() );
-        String msg = result
-                   ? "Execution was successful."
-                   : "Execution was not successful.";
-        log( msg );
+        if( useBrowserCallback ) {
+          BrowserCallback browserCallback = new BrowserCallback() {
+            public void evaluationSucceeded( Object result ) {
+              log( "Execution was successful." );
+            }
+            public void evaluationFailed( Exception exception ) {
+              log( "Execution was not successful." );
+            }
+          };
+          BrowserUtil.evaluate( browser, txtExecute.getText(), browserCallback );
+        } else {
+          boolean result = browser.execute( txtExecute.getText() );
+          String msg = result
+                     ? "Execution was successful."
+                     : "Execution was not successful.";
+          log( msg );
+        }
       }
     });
   }
@@ -147,6 +174,7 @@ final class BrowserTab extends ExampleTab {
     btnOpen.setLayoutData( horizontalSpan2() );
     btnOpen.setText( "open( id, url, style )" );
     btnOpen.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         boolean locationBar = cbLocationBar.getSelection();
         boolean statusBar = cbStatusBar.getSelection();
@@ -159,6 +187,7 @@ final class BrowserTab extends ExampleTab {
     btnClose.setLayoutData( horizontalSpan2() );
     btnClose.setText( "close( id )" );
     btnClose.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         ExternalBrowser.close( txtId.getText() );
       }
@@ -167,6 +196,7 @@ final class BrowserTab extends ExampleTab {
     btnMailTo.setText( "mailto:..." );
     btnMailTo.setLayoutData( horizontalSpan2() );
     btnMailTo.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         boolean locationBar = cbLocationBar.getSelection();
         boolean statusBar = cbStatusBar.getSelection();
@@ -192,6 +222,7 @@ final class BrowserTab extends ExampleTab {
     Button btnHTML = new Button( group, SWT.PUSH );
     btnHTML.setText( "Go" );
     btnHTML.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         browser.setText( txtHTML.getText() );
         function = new CustomFunction( browser, "theJavaFunction" );
@@ -204,6 +235,7 @@ final class BrowserTab extends ExampleTab {
     createButton.setLayoutData( buttonsGridData );
     createButton.setText( "Create theJavaFunction" );
     createButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event) {
         function = new CustomFunction( browser, "theJavaFunction" );
       }
@@ -212,6 +244,7 @@ final class BrowserTab extends ExampleTab {
     disposeButton.setLayoutData( buttonsGridData );
     disposeButton.setText( "Dispose theJavaFunction" );
     disposeButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event) {
         function.dispose();
       }
@@ -276,6 +309,7 @@ final class BrowserTab extends ExampleTab {
       super( browser, name );
     }
 
+    @Override
     public Object function( Object[] arguments ) {
       StringBuffer buffer = new StringBuffer();
       buffer.append( "theJavaFunction() called from javascript with args:\n" );

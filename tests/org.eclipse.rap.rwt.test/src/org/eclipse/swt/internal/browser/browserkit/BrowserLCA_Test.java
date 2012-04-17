@@ -23,6 +23,8 @@ import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.widgets.BrowserCallback;
+import org.eclipse.rwt.widgets.BrowserUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.*;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
@@ -449,22 +451,22 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   public void testCallEvaluate() {
-    Browser browser = new Browser( shell, SWT.NONE ) {
-      @Override
-      public boolean execute( String script ) {
-        executeScript = script;
-        return true;
+    Browser browser = new Browser( shell, SWT.NONE );
+    BrowserCallback browserCallback = new BrowserCallback() {
+      public void evaluationSucceeded( Object result ) {
+      }
+      public void evaluationFailed( Exception exception ) {
       }
     };
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
 
-    browser.execute( "alert('33');" );
+    BrowserUtil.evaluate( browser, "alert('33');", browserCallback );
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
     CallOperation callOperation = message.findCallOperation( browser, "evaluate" );
-    assertEquals( "alert('33');", callOperation.getProperty( "script" ) );
+    assertEquals( "(function(){alert('33');})();", callOperation.getProperty( "script" ) );
   }
 
   public void testCallCreateFunctions() throws JSONException, IOException {

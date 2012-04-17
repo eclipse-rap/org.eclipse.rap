@@ -17,6 +17,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rwt.service.IServiceStore;
+import org.eclipse.rwt.widgets.BrowserCallback;
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -50,47 +51,6 @@ import org.eclipse.swt.widgets.Display;
 // TODO [rh] bring focus events to work
 public class Browser extends Composite {
 
-  private final class BrowserAdapter implements IBrowserAdapter {
-
-    public String getText() {
-      return html;
-    }
-
-    public String getExecuteScript() {
-      return executeScript;
-    }
-
-    public void setExecuteResult( final boolean result, final Object value ) {
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          executeResult = Boolean.valueOf( result );
-          evaluateResult = value;
-        }
-      } );
-    }
-
-    public void setExecutePending( boolean executePending ) {
-      Browser.this.executePending = executePending;
-    }
-
-    public boolean getExecutePending() {
-      return executePending;
-    }
-
-    public BrowserFunction[] getBrowserFunctions() {
-      return Browser.this.getBrowserFunctions();
-    }
-
-    public boolean hasUrlChanged() {
-      return urlChanged;
-    }
-
-    public void resetUrlChanged() {
-      urlChanged = false;
-    }
-
-  }
-
   private static final String FUNCTIONS_TO_CREATE
     = Browser.class.getName() + "#functionsToCreate.";
   private static final String FUNCTIONS_TO_DESTROY
@@ -101,10 +61,11 @@ public class Browser extends Composite {
   private String url;
   private String html;
   private boolean urlChanged;
-  public String executeScript;
+  private String executeScript;
   private Boolean executeResult;
   private boolean executePending;
   private Object evaluateResult;
+  private BrowserCallback browserCallback;
   private transient IBrowserAdapter browserAdapter;
   private final List<BrowserFunction> functions;
 
@@ -347,13 +308,9 @@ public class Browser extends Composite {
     if( script == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    StringBuilder buffer = new StringBuilder( "(function(){" );
-    buffer.append( script );
-    buffer.append( "})();" );
-    boolean success = execute( buffer.toString() );
+    boolean success = execute( prepareScript( script ) );
     if( !success ) {
-      String errorString = "Failed to evaluate Javascript expression";
-      throw new SWTException( SWT.ERROR_FAILED_EVALUATE, errorString );
+      throw createException();
     }
     return evaluateResult;
   }
@@ -449,6 +406,7 @@ public class Browser extends Composite {
     ProgressEvent.removeListener( this, listener );
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -525,8 +483,9 @@ public class Browser extends Composite {
     serviceStore.setAttribute( key, newList );
   }
 
+  @Override
   protected void checkWidget() {
-    super.checkWidget ();
+    super.checkWidget();
   }
 
   private void onDispose() {
@@ -534,6 +493,49 @@ public class Browser extends Composite {
     evaluateResult = null;
     executeScript = null;
     executePending = false;
+  }
+
+  //////////////////
+  // Helping methods
+
+  private static String prepareScript( String script ) {
+    StringBuilder buffer = new StringBuilder( "(function(){" );
+    buffer.append( script );
+    buffer.append( "})();" );
+    return buffer.toString();
+  }
+
+  private void setExecuteResult( final boolean success, final Object result ) {
+    ProcessActionRunner.add( new Runnable() {
+      public void run() {
+        executeResult = Boolean.valueOf( success );
+        evaluateResult = result;
+        if( browserCallback != null ) {
+          if( success ) {
+            browserCallback.evaluationSucceeded( result );
+          } else {
+            browserCallback.evaluationFailed( createException() );
+          }
+          browserCallback = null;
+          executeScript = null;
+          executePending = false;
+        }
+      }
+    } );
+  }
+
+  private void evaluateNonBlocking( String script, BrowserCallback browserCallback ) {
+    checkWidget();
+    if( executeScript == null ) {
+      this.browserCallback = browserCallback;
+      executeScript = prepareScript( script );
+    }
+  }
+
+  private static SWTException createException() {
+    // TODO: Get the error message from the client
+    String errorString = "Failed to evaluate Javascript expression";
+    return new SWTException( SWT.ERROR_FAILED_EVALUATE, errorString );
   }
 
   ////////////////
@@ -544,4 +546,45 @@ public class Browser extends Composite {
       onDispose();
     }
   }
+
+  private final class BrowserAdapter implements IBrowserAdapter {
+
+    public String getText() {
+      return html;
+    }
+
+    public String getExecuteScript() {
+      return executeScript;
+    }
+
+    public void setExecuteResult( boolean success, Object result ) {
+      Browser.this.setExecuteResult( success, result );
+    }
+
+    public void setExecutePending( boolean executePending ) {
+      Browser.this.executePending = executePending;
+    }
+
+    public boolean getExecutePending() {
+      return executePending;
+    }
+
+    public BrowserFunction[] getBrowserFunctions() {
+      return Browser.this.getBrowserFunctions();
+    }
+
+    public boolean hasUrlChanged() {
+      return urlChanged;
+    }
+
+    public void resetUrlChanged() {
+      urlChanged = false;
+    }
+
+    public void evaluateNonBlocking( String script, BrowserCallback browserCallback ) {
+      Browser.this.evaluateNonBlocking( script, browserCallback );
+    }
+
+  }
+
 }
