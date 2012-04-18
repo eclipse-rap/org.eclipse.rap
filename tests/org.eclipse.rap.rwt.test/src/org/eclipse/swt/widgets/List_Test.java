@@ -1337,12 +1337,47 @@ public class List_Test extends TestCase {
     assertTrue( list.isSelected( 2 ) );
   }
 
+  public void testIsSelected_IdenticalItems2() throws Exception {
+    List list = new List( shell, SWT.MULTI );
+    String[] items = { "text1", "text2", "text2" }; // two identical
+    list.setItems( items );
+
+    list.setSelection( new String[] { "text1", "text2" } );
+
+    assertTrue( list.isSelected( 0 ) );
+    assertTrue( list.isSelected( 1 ) );
+    assertTrue( list.isSelected( 2 ) );
+  }
+
+  public void testSelection_DuplicateSelectionIndices() {
+    List list = new List( shell, SWT.MULTI );
+    String[] items = { "text1", "text2", "text2", "text3" };
+    list.setItems( items );
+
+    list.setSelection( new String[] { "text1", "text1", "text2" } );
+
+
+    assertFalse( hasDuplicateIndices( list.getSelectionIndices() ) );
+  }
+
   public void testSetInvalidSelectionForMulti() {
     List list = new List( shell, SWT.MULTI );
     list.setItems( new String[] { "text1", "text2", "text2" } );
 
-    list.setSelection( new String[] { "non-existing", "text2", "text2" } );
+    list.setSelection( new String[] { "non-existing", "text2" } );
 
     assertEquals( 2, list.getSelectionCount() );
+  }
+
+  private boolean hasDuplicateIndices( int[] indices ) {
+    boolean result = false;
+    for( int i = 0; i < indices.length && !result; i++ ) {
+      for( int j = i + 1; j < indices.length && !result; j++ ) {
+        if( indices[ i ] == indices[ j ] ) {
+          result = true;
+        }
+      }
+    }
+    return result;
   }
 }

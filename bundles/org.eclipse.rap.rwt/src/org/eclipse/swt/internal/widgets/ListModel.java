@@ -13,8 +13,7 @@ package org.eclipse.swt.internal.widgets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.SerializableCompatibility;
@@ -119,19 +118,18 @@ public final class ListModel implements SerializableCompatibility {
     deselectAll();
     int length = selection.length;
     if( ( single && length == 1 ) || ( !single && length > 0 ) ) {
-      Map<String, Integer>lastFoundIndices = new HashMap<String, Integer>();
-      int[] newSelection = new int[ length ];
+      List<String> alreadySelected = new ArrayList<String>();
+      int[] newSelection = new int[ getItemCount() ];
       int newLength = 0;
       for( int i = 0; i < length; i++ ) {
-        if( selection[ i ] != null ) {
-          String item = selection[ i ];
-          Integer lastFoundIndexObject = lastFoundIndices.get( item );
-          int lastFoundIndex = lastFoundIndexObject != null ? lastFoundIndexObject.intValue() : -1;
-          int index = indexOf( item, lastFoundIndex + 1 );
-          if( index >= 0 ) {
-            newSelection[ newLength ] = index;
-            newLength++;
-            lastFoundIndices.put( item, Integer.valueOf( index ) );
+        if( selection[ i ] != null && !alreadySelected.contains( selection[ i ] ) ) {
+          alreadySelected.add( selection[ i ] );
+          for( int index = 0; index < getItemCount(); index++ ) {
+            String item = items.get( index );
+            if( item.equals( selection[ i ] ) ) {
+              newSelection[ newLength ] = index;
+              newLength++;
+            }
           }
         }
       }
