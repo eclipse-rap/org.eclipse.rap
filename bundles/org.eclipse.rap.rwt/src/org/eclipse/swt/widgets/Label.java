@@ -107,6 +107,7 @@ public class Label extends Control {
     super( parent, checkStyle( style ) );
   }
 
+  @Override
   void initState() {
     state |= THEME_BACKGROUND;
   }
@@ -145,7 +146,7 @@ public class Label extends Control {
     }
     if( ( style & SWT.SEPARATOR ) == 0 ) {
       if( markupEnabled && !markupValidationDisabled ) {
-        MarkupValidator.validate( text );
+        MarkupValidator.getInstance().validate( text );
       }
       this.text = text;
       image = null;
@@ -263,6 +264,7 @@ public class Label extends Control {
     return result;
   }
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
@@ -308,6 +310,7 @@ public class Label extends Control {
     return new Point( width, height );
   }
 
+  @Override
   String getNameText() {
     return getText();
   }

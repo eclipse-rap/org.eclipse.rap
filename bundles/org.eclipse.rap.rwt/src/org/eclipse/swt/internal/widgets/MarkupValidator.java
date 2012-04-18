@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.eclipse.rwt.SessionSingletonBase;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.DefaultHandler;
@@ -31,21 +32,25 @@ public class MarkupValidator {
   public static final String MARKUP_VALIDATION_DISABLED
     = "org.eclipse.rap.rwt.markupValidationDisabled";
 
-  private static final SAXParser SAX_PARSER = createSAXParser();
   private static final Map<String, String[]> SUPPORTED_ELEMENTS = createSupportedElementsMap();
+  private final SAXParser saxParser;
 
-  private MarkupValidator() {
-    // prevent instantiation
+  public static MarkupValidator getInstance() {
+    return SessionSingletonBase.getInstance( MarkupValidator.class );
   }
 
-  public static void validate( String text ) {
+  public MarkupValidator() {
+    saxParser = createSAXParser();
+  }
+
+  public void validate( String text ) {
     StringBuilder markup = new StringBuilder();
     markup.append( "<html>" );
     markup.append( text );
     markup.append( "</html>" );
     InputSource inputSource = new InputSource( new StringReader( markup.toString() ) );
     try {
-      SAX_PARSER.parse( inputSource, new MarkupHandler() );
+      saxParser.parse( inputSource, new MarkupHandler() );
     } catch( RuntimeException exception ) {
       throw exception;
     } catch( Exception exception ) {

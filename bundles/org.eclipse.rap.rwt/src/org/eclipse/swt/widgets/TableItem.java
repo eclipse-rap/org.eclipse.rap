@@ -258,7 +258,7 @@ public class TableItem extends Item {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( parent.markupEnabled && !parent.markupValidationDisabled ) {
-      MarkupValidator.validate( text );
+      MarkupValidator.getInstance().validate( text );
     }
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {

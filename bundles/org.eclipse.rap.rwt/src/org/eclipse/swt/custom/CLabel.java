@@ -452,7 +452,7 @@ public class CLabel extends Canvas {
       this.text = "";
     } else if( !text.equals( this.text ) ) {
       if( markupEnabled && !markupValidationDisabled ) {
-        MarkupValidator.validate( text );
+        MarkupValidator.getInstance().validate( text );
       }
       this.text = text;
     }

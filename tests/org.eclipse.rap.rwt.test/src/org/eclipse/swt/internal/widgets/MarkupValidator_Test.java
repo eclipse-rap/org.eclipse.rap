@@ -15,11 +15,18 @@ import junit.framework.TestCase;
 
 public class MarkupValidator_Test extends TestCase {
 
+  private MarkupValidator validator;
+
+  @Override
+  protected void setUp() throws Exception {
+    validator = new MarkupValidator();
+  }
+
   public void testValidate() {
     String markup = "<b>foo</b><br/><span style=\"background-color: blue\">bar</span>";
 
     try {
-      MarkupValidator.validate( markup );
+      validator.validate( markup );
     } catch( Exception ex ) {
       ex.printStackTrace();
       fail( ex.getMessage() );
@@ -30,7 +37,7 @@ public class MarkupValidator_Test extends TestCase {
     String markup = "<b>foo<br/><i>bar</i>";
 
     try {
-      MarkupValidator.validate( markup );
+      validator.validate( markup );
       fail( "validation should throw an exception" );
     } catch( Exception expected ) {
       assertTrue( expected instanceof IllegalArgumentException );
@@ -42,7 +49,7 @@ public class MarkupValidator_Test extends TestCase {
     String markup = "<ul>foo</ul><br/><i>bar</i>";
 
     try {
-      MarkupValidator.validate( markup );
+      validator.validate( markup );
       fail( "validation should throw an exception" );
     } catch( Exception expected ) {
       assertTrue( expected instanceof IllegalArgumentException );
@@ -54,7 +61,7 @@ public class MarkupValidator_Test extends TestCase {
     String markup = "<b>foo</b><br/><span href=\"abc\">bar</span>";
 
     try {
-      MarkupValidator.validate( markup );
+      validator.validate( markup );
       fail( "validation should throw an exception" );
     } catch( Exception expected ) {
       assertTrue( expected instanceof IllegalArgumentException );
@@ -66,7 +73,7 @@ public class MarkupValidator_Test extends TestCase {
   public void testValidate_MissingMandatoryAttribute() {
     String markup = "<img src=\"image.png\" width=\"10\" />";
     try {
-      MarkupValidator.validate( markup );
+      validator.validate( markup );
       fail( "validation should throw an exception" );
     } catch( Exception expected ) {
       assertTrue( expected instanceof IllegalArgumentException );
@@ -79,7 +86,7 @@ public class MarkupValidator_Test extends TestCase {
   public void testValidate_InvalidIntAttribute() {
     String markup = "<img src=\"image.png\" width=\"10\" height=\"abc\" />";
     try {
-      MarkupValidator.validate( markup );
+      validator.validate( markup );
       fail( "validation should throw an exception" );
     } catch( Exception expected ) {
       assertTrue( expected instanceof IllegalArgumentException );
