@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,16 +84,16 @@ public class SimpleLifeCycle extends LifeCycle {
 
     public void interceptShutdown() {
       final Display display = LifeCycleUtil.getSessionDisplay( sessionStore );
-      if( isDisplayActive( display ) && isApplicationContextActive() ) {
-        FakeContextUtil.runNonUIThreadWithFakeContext( display, new Runnable() {
-          public void run() {
+      FakeContextUtil.runNonUIThreadWithFakeContext( display, new Runnable() {
+        public void run() {
+          if( isDisplayActive( display ) && isApplicationContextActive() ) {
             attachThread( display, sessionStore );
             CurrentPhase.set( PhaseId.PROCESS_ACTION );
             display.dispose();
           }
-        } );
-      }
-      shutdownCallback.run();
+          shutdownCallback.run();
+        }
+      } );
     }
 
     public void processShutdown() {

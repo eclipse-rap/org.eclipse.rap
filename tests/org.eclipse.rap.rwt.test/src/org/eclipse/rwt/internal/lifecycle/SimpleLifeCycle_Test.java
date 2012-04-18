@@ -19,12 +19,16 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener.PhaseEventInfo;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rwt.service.SessionStoreEvent;
+import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -226,6 +230,35 @@ public class SimpleLifeCycle_Test extends TestCase {
     } catch( UnsupportedOperationException expected ) {
       assertTrue( expected.getMessage().length() > 0 );
     }
+  }
+
+  public void testContextOnShutdownFromBackgroundThread() throws Exception {
+    final boolean[] log = new boolean[ 1 ];
+    // Activate SimpleLifeCycle
+    RWTFactory.getLifeCycleFactory().deactivate();
+    RWTFactory.getLifeCycleFactory().activate();
+    registerEntryPoint( TestEntryPoint.class );
+    final SessionStoreImpl sessionStore = ( SessionStoreImpl )RWT.getSessionStore();
+    sessionStore.addSessionStoreListener( new SessionStoreListener() {
+      public void beforeDestroy( SessionStoreEvent event ) {
+        log[ 0 ] = ContextProvider.hasContext();
+      }
+    } );
+    // Initialize shutdown adapter
+    ( ( LifeCycle )RWT.getLifeCycle() ).execute();
+
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        sessionStore.getShutdownAdapter().interceptShutdown();
+        // Prevents NPE in tearDown
+        sessionStore.setShutdownAdapter( null );
+      }
+    } );
+    thread.setDaemon( true );
+    thread.start();
+    thread.join();
+
+    assertTrue( log[ 0 ] );
   }
 
   private void assertBeforePhaseEvent( PhaseEventInfo beforePrepareUIRoot, PhaseId phaseId ) {
