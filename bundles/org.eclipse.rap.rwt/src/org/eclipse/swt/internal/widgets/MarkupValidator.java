@@ -87,8 +87,8 @@ public class MarkupValidator {
     result.put( "q", new String[] { "style" } );
     result.put( "abbr", new String[] { "style", "title" } );
     result.put( "span", new String[] { "style" } );
-    result.put( "img", new String[] { "style", "src", "width", "height" } );
-    result.put( "a", new String[] { "style", "href", "target" } );
+    result.put( "img", new String[] { "style", "src", "width", "height", "title", "alt" } );
+    result.put( "a", new String[] { "style", "href", "target", "title" } );
     return result;
   }
 
