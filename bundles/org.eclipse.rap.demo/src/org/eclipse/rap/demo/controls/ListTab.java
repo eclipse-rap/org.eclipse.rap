@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -196,6 +196,7 @@ public class ListTab extends ExampleTab {
     Label lblAddItem = new Label( composite, SWT.NONE );
     lblAddItem.setText( "Add" );
     final Text txtAddItem = new Text( composite, SWT.BORDER );
+    txtAddItem.setLayoutData( new GridData( 50, SWT.DEFAULT) );
     Button btnAddItem = new Button( composite, SWT.PUSH );
     btnAddItem.setText( "Item(s)" );
     btnAddItem.addSelectionListener( new SelectionAdapter() {
@@ -225,6 +226,7 @@ public class ListTab extends ExampleTab {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 2, false ) );
     final Text txtTopIndex = new Text( composite, SWT.BORDER );
+    txtTopIndex.setLayoutData( new GridData( 50, SWT.DEFAULT) );
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "setTopIndex" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -245,6 +247,7 @@ public class ListTab extends ExampleTab {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 2, false ) );
     final Text txtTopIndex = new Text( composite, SWT.BORDER );
+    txtTopIndex.setLayoutData( new GridData( 50, SWT.DEFAULT) );
     txtTopIndex.setEditable( false );
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "getTopIndex" );
