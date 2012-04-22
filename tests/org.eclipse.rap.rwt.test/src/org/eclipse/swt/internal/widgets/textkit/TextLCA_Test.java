@@ -589,6 +589,7 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionAfterTextChange() throws IOException, JSONException {
+    // See bug 376957
     Text text = new Text( shell, SWT.SINGLE );
     text.setText( "foo bar" );
     text.selectAll();
