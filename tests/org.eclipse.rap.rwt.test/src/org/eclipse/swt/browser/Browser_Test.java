@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
@@ -29,6 +30,7 @@ public class Browser_Test extends TestCase {
   private Display display;
   private Shell shell;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -36,6 +38,7 @@ public class Browser_Test extends TestCase {
     shell = new Shell( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -273,6 +276,34 @@ public class Browser_Test extends TestCase {
     boolean result = browser.execute( "var x = 2;" );
 
     assertFalse( result );
+  }
+
+  public void testExecute_JEE_COMPATIBILITY() {
+    // Activate SimpleLifeCycle
+    RWTFactory.getLifeCycleFactory().deactivate();
+    RWTFactory.getLifeCycleFactory().activate();
+    Browser browser = new Browser( shell, SWT.NONE );
+
+    try {
+      browser.execute( "var x = 2;" );
+      fail();
+    } catch( UnsupportedOperationException expected ) {
+      assertEquals( "Method not supported in JEE_COMPATIBILITY mode.", expected.getMessage() );
+    }
+  }
+
+  public void testEvaluate_JEE_COMPATIBILITY() {
+    // Activate SimpleLifeCycle
+    RWTFactory.getLifeCycleFactory().deactivate();
+    RWTFactory.getLifeCycleFactory().activate();
+    Browser browser = new Browser( shell, SWT.NONE );
+
+    try {
+      browser.evaluate( "var x = 2;" );
+      fail();
+    } catch( UnsupportedOperationException expected ) {
+      assertEquals( "Method not supported in JEE_COMPATIBILITY mode.", expected.getMessage() );
+    }
   }
 
   private static String getText( Browser browser ) {

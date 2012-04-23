@@ -13,6 +13,8 @@ package org.eclipse.swt.browser;
 
 import java.util.*;
 
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -221,6 +223,8 @@ public class Browser extends Composite {
    * Since the execution context of an <code>IFRAME</code> is not fully
    * isolated from the surrounding document it may break the client-side
    * application.</p>
+   * <p>This method is not supported when running the application in JEE_COMPATIBILITY mode.
+   * Use BrowserUtil#evaluate instead.</p>
    * <!-- End RAP specific -->
    *
    * @param script the script with javascript commands
@@ -237,9 +241,14 @@ public class Browser extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
    * </ul>
    *
+   * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
+   *
+   * @see org.eclipse.rwt.application.ApplicationConfiguration.OperationMode
+   *
    * @since 1.1
    */
   public boolean execute( String script ) {
+    checkOperationMode();
     checkWidget();
     if( script == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -285,6 +294,17 @@ public class Browser extends Composite {
    * unsupported type, or if evaluating the script causes a javascript
    * error to be thrown.
    *
+   * <!-- Begin RAP specific -->
+   * <p><strong>Note:</strong> Care should be taken when using this method.
+   * The given <code>script</code> is executed in an <code>IFRAME</code>
+   * inside the document that represents the client-side application.
+   * Since the execution context of an <code>IFRAME</code> is not fully
+   * isolated from the surrounding document it may break the client-side
+   * application.</p>
+   * <p>This method is not supported when running the application in JEE_COMPATIBILITY mode.
+   * Use BrowserUtil#evaluate instead.</p>
+   * <!-- End RAP specific -->
+   *
    * @param script the script with javascript commands
    *
    * @return the return value, if any, of executing the script
@@ -300,11 +320,15 @@ public class Browser extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
    * </ul>
    *
+   * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
+   *
    * @see ProgressListener#completed(ProgressEvent)
+   * @see org.eclipse.rwt.application.ApplicationConfiguration.OperationMode
    *
    * @since 1.4
    */
   public Object evaluate( String script ) throws SWTException {
+    checkOperationMode();
     if( script == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -486,6 +510,12 @@ public class Browser extends Composite {
   @Override
   protected void checkWidget() {
     super.checkWidget();
+  }
+
+  private void checkOperationMode() {
+    if( RWT.getLifeCycle() instanceof SimpleLifeCycle ) {
+      throw new UnsupportedOperationException( "Method not supported in JEE_COMPATIBILITY mode." );
+    }
   }
 
   private void onDispose() {
