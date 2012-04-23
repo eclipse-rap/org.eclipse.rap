@@ -28,7 +28,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateEvent;
-import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
@@ -251,10 +250,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
           image = defaultImages[0];
         }
       }
-      if( WidgetLCAUtil.hasChanged( shell, PROP_IMAGE, image, null ) ) {
-        IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
-        clientObject.set( "image", ImageFactory.getImagePath( image ) );
-      }
+      renderProperty( shell, PROP_IMAGE, image, null );
     }
   }
 

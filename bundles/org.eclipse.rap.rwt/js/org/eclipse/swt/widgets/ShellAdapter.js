@@ -84,7 +84,11 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
       shell.setCaption( text );
     },
     "image" : function( shell, value ) {
-      shell.setIcon( value );
+      if( value === null ) {
+        widget.setIcon( value );
+      } else {
+        shell.setIcon( value[ 0 ] );
+      }
     },
     "visibility" : function( shell, value ) {
       if( value ) {

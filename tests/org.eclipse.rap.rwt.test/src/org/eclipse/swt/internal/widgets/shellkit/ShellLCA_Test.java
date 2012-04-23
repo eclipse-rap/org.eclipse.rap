@@ -21,6 +21,7 @@ import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -30,6 +31,7 @@ import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.*;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 
@@ -630,8 +632,10 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    String expected = ImageFactory.getImagePath( shell.getImage() );
-    assertEquals( expected, message.findSetProperty( shell, "image" ) );
+    String imageLocation = ImageFactory.getImagePath( shell.getImage() );
+    String expected = "[\"" + imageLocation + "\", 58, 12 ]";
+    JSONArray actual = ( JSONArray )message.findSetProperty( shell, "image" );
+    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
   public void testTitleImageWithoutCaptionBar() throws Exception {
@@ -659,8 +663,10 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    String expected = ImageFactory.getImagePath( shell.getImage() );
-    assertEquals( expected, message.findSetProperty( shell, "image" ) );
+    String imageLocation = ImageFactory.getImagePath( shell.getImage() );
+    String expected = "[\"" + imageLocation + "\", 58, 12 ]";
+    JSONArray actual = ( JSONArray )message.findSetProperty( shell, "image" );
+    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
   public void testTitleImageWithMultipleImages() throws Exception {
@@ -674,8 +680,10 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    String expected = ImageFactory.getImagePath( shell.getImages()[0] );
-    assertEquals( expected, message.findSetProperty( shell, "image" ) );
+    String imageLocation = ImageFactory.getImagePath( shell.getImages()[ 0 ] );
+    String expected = "[\"" + imageLocation + "\", 58, 12 ]";
+    JSONArray actual = ( JSONArray )message.findSetProperty( shell, "image" );
+    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
   public void testRenderVisibilityIntiallyFalse() throws IOException {

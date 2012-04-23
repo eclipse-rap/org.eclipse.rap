@@ -63,7 +63,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     testSetImage : function() {
       var shell = this._protocolCreateShell();
-      this._protocolSet( { "image" : "blue.jpg" } );
+      this._protocolSet( { "image" : [ "blue.jpg", 10, 20 ] } );
       assertEquals( "blue.jpg", shell.getIcon() );
       this._disposeShell();
     },
