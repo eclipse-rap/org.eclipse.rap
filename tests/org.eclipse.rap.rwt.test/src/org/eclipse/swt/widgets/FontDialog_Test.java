@@ -1,18 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Ralf Zahn (ARS) - initial API and implementation
+ *    Ralf Zahn (ARS) - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
@@ -21,12 +23,16 @@ import org.eclipse.swt.graphics.RGB;
 public class FontDialog_Test extends TestCase {
 
   private Display display;
+  private Shell shell;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
+    shell = new Shell( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -41,8 +47,7 @@ public class FontDialog_Test extends TestCase {
   }
 
   public void testDefaults() {
-    Shell parent = new Shell( display );
-    FontDialog fontDialog = new FontDialog( parent );
+    FontDialog fontDialog = new FontDialog( shell );
     int defaultStyle = SWT.APPLICATION_MODAL | SWT.LEFT_TO_RIGHT;
     assertEquals( defaultStyle, fontDialog.getStyle() );
     assertNull( fontDialog.getFontList() );
@@ -50,8 +55,7 @@ public class FontDialog_Test extends TestCase {
   }
 
   public void testSetRGB() {
-    Shell parent = new Shell( display );
-    FontDialog fontDialog = new FontDialog( parent );
+    FontDialog fontDialog = new FontDialog( shell );
     RGB rgb = new RGB( 1, 2, 3 );
     fontDialog.setRGB( rgb );
     assertSame( rgb, fontDialog.getRGB() );
@@ -60,8 +64,7 @@ public class FontDialog_Test extends TestCase {
   }
 
   public void testSetFontList() {
-    Shell parent = new Shell( display );
-    FontDialog fontDialog = new FontDialog( parent );
+    FontDialog fontDialog = new FontDialog( shell );
     FontData fontData = new FontData( "Test", 12, SWT.BOLD );
     FontData[] fontList = new FontData[]{ fontData };
     fontDialog.setFontList( fontList );
@@ -71,22 +74,19 @@ public class FontDialog_Test extends TestCase {
   }
 
   public void testSetFontListEmpty() {
-    Shell parent = new Shell( display );
-    FontDialog fontDialog = new FontDialog( parent );
+    FontDialog fontDialog = new FontDialog( shell );
     fontDialog.setFontList( new FontData[ 0 ] );
     assertNull( fontDialog.getFontList() );
   }
 
   public void testSetFontListWithTwoElements() {
-    Shell parent = new Shell( display );
-    FontDialog fontDialog = new FontDialog( parent );
+    FontDialog fontDialog = new FontDialog( shell );
     fontDialog.setFontList( new FontData[ 0 ] );
     assertNull( fontDialog.getFontList() );
   }
 
   public void testSetNullFontList() {
-    Shell parent = new Shell( display );
-    FontDialog fontDialog = new FontDialog( parent );
+    FontDialog fontDialog = new FontDialog( shell );
     FontData fontData1 = new FontData( "Test", 12, SWT.BOLD );
     FontData fontData2 = new FontData( "Test", 12, SWT.ITALIC );
     FontData[] fontList = new FontData[]{ fontData1, fontData2 };
@@ -113,5 +113,19 @@ public class FontDialog_Test extends TestCase {
     assertEquals( "Test One", result );
     result = FontDialog.getFirstFontName( "\"Test One\", \"Test Two\", serif" );
     assertEquals( "Test One", result );
+  }
+
+  public void testOpen_JEE_COMPATIBILITY() {
+    // Activate SimpleLifeCycle
+    RWTFactory.getLifeCycleFactory().deactivate();
+    RWTFactory.getLifeCycleFactory().activate();
+    FontDialog dialog = new FontDialog( shell );
+
+    try {
+      dialog.open();
+      fail();
+    } catch( UnsupportedOperationException expected ) {
+      assertEquals( "Method not supported in JEE_COMPATIBILITY mode.", expected.getMessage() );
+    }
   }
 }
