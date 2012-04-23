@@ -12,6 +12,8 @@
 package org.eclipse.rwt.internal.textsize;
 
 import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.Display;
@@ -19,6 +21,7 @@ import org.eclipse.swt.widgets.Shell;
 
 
 class TextSizeRecalculation {
+  static final String TEMPORARY_RESIZE = TextSizeRecalculation.class.getName() + "#temporaryResize";
   static final String KEY_SCROLLED_COMPOSITE_CONTENT_SIZE = "org.eclipse.rap.content-size";
   static final String KEY_SCROLLED_COMPOSITE_ORIGIN = "org.eclipse.rap.sc-origin";
   static final int RESIZE_OFFSET = 1000;
@@ -35,11 +38,13 @@ class TextSizeRecalculation {
     Rectangle boundsBuffer = shell.getBounds();
     bufferScrolledCompositeOrigins( shell );
     clearLayoutBuffers( shell );
-    markLayoutNeeded( shell );
+    setTemporaryResize( true );
     enlargeShell( shell );
-    rePack( shell );
     enlargeScrolledCompositeContent( shell );
+    setTemporaryResize( false );
     clearLayoutBuffers( shell );
+    markLayoutNeeded( shell );
+    rePack( shell );
     restoreShellSize( shell, boundsBuffer, isPacked );
     restoreScrolledCompositeOrigins( shell );
   }
@@ -101,5 +106,14 @@ class TextSizeRecalculation {
 
   private void setShellSize( Shell shell, Rectangle bounds ) {
     shell.getAdapter( IShellAdapter.class ).setBounds( bounds );
+  }
+
+  private void setTemporaryResize( boolean value ) {
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    if( value ) {
+      serviceStore.setAttribute( TEMPORARY_RESIZE, Boolean.TRUE );
+    } else {
+      serviceStore.removeAttribute( TEMPORARY_RESIZE );
+    }
   }
 }

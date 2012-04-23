@@ -14,7 +14,9 @@ package org.eclipse.rwt.internal.textsize;
 
 import java.math.BigDecimal;
 
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.EncodingUtil;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontUtil;
@@ -69,6 +71,12 @@ public class TextSizeUtil {
       addProbeToMeasure( font );
     }
     return result;
+  }
+
+  public static boolean isTemporaryResize() {
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    Object attribute = serviceStore.getAttribute( TextSizeRecalculation.TEMPORARY_RESIZE );
+    return Boolean.TRUE.equals( attribute );
   }
 
   //////////////////

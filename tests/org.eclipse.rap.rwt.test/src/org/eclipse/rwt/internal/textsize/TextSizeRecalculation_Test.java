@@ -40,12 +40,14 @@ public class TextSizeRecalculation_Test extends TestCase {
   private TableColumn packedTableColumn;
   private TreeColumn packedTreeColumn;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -101,6 +103,7 @@ public class TextSizeRecalculation_Test extends TestCase {
     recalculation.execute();
 
     assertEquals( 1, resizeListener.resizeCount() );
+    assertEquals( "false|", resizeListener.getResizeLog() );
   }
 
   private void checkResizeTookPlace() {
@@ -108,6 +111,8 @@ public class TextSizeRecalculation_Test extends TestCase {
     assertEquals( getInitialCompositeBounds(), scrolledCompositeContent.getBounds() );
     assertEquals( 2, shellResizeListener.resizeCount() );
     assertEquals( 2, scrolledCompositeContentResizeListener.resizeCount() );
+    assertEquals( "true|false|", shellResizeListener.getResizeLog() );
+    assertEquals( "true|false|", scrolledCompositeContentResizeListener.getResizeLog() );
   }
 
   private void checkRePackTookPlace() {
@@ -199,9 +204,12 @@ public class TextSizeRecalculation_Test extends TestCase {
 
   private final class ResizeListener implements ControlListener {
     private int resizeCount;
+    private StringBuilder resizeLog = new StringBuilder();
 
     public void controlResized( ControlEvent e ) {
       resizeCount++;
+      resizeLog.append( TextSizeUtil.isTemporaryResize() );
+      resizeLog.append( "|" );
     }
 
     public void controlMoved( ControlEvent e ) {
@@ -209,6 +217,10 @@ public class TextSizeRecalculation_Test extends TestCase {
 
     public int resizeCount() {
       return resizeCount;
+    }
+
+    public String getResizeLog() {
+      return resizeLog.toString();
     }
   }
 

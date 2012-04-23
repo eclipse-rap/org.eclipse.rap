@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
@@ -249,17 +250,6 @@ public class Table extends Composite {
     }
   }
 
-  private final class ResizeListener extends ControlAdapter {
-    @Override
-    public void controlResized( ControlEvent event ) {
-      if( ( Table.this.style & SWT.VIRTUAL ) != 0 ) {
-        Table.this.checkData();
-      }
-      clearItemsTextWidths();
-      updateScrollBars();
-    }
-  }
-
   /**
    * <strong>IMPORTANT:</strong> This field is <em>not</em> part of the SWT
    * public API. It is marked public only so that it can be shared
@@ -273,7 +263,6 @@ public class Table extends Composite {
 
   private transient CompositeItemHolder itemHolder;
   private final ITableAdapter tableAdapter;
-  private final ControlListener resizeListener;
   private int customItemHeight;
   private int itemCount;
   private TableItem[] items;
@@ -338,9 +327,7 @@ public class Table extends Composite {
     setTableEmpty();
     selection = EMPTY_SELECTION;
     customItemHeight = -1;
-    resizeListener = new ResizeListener();
     bufferedCellSpacing = -1;
-    addControlListener( resizeListener );
   }
 
   @Override
@@ -2252,12 +2239,6 @@ public class Table extends Composite {
     }
   }
 
-  @Override
-  void releaseWidget() {
-    removeControlListener( resizeListener );
-    super.releaseWidget();
-  }
-
   ///////////////////////////////////
   // Helping methods - item retrieval
 
@@ -2445,6 +2426,19 @@ public class Table extends Composite {
 
   ////////////////////////////
   // Helping methods - various
+
+  @Override
+  void notifyResize( Point oldSize ) {
+    if( !oldSize.equals( getSize() ) && !TextSizeUtil.isTemporaryResize() ) {
+      if( ( style & SWT.VIRTUAL ) != 0 ) {
+        checkData();
+      }
+      clearItemsTextWidths();
+      updateScrollBars();
+      adjustTopIndex();
+    }
+    super.notifyResize( oldSize );
+  }
 
   final Point getCheckSize( int index ) {
     Point result = new Point( 0, 0 );

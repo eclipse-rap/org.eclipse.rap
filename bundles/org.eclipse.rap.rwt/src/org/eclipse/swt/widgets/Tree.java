@@ -17,11 +17,11 @@ import java.util.List;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -125,7 +125,6 @@ public class Tree extends Composite {
   private TreeColumn sortColumn;
   private int sortDirection;
   private boolean headerVisible;
-  private final ResizeListener resizeListener;
   private final ITreeAdapter treeAdapter;
   private int scrollLeft;
   private int topItemIndex;
@@ -178,8 +177,6 @@ public class Tree extends Composite {
     sortDirection = SWT.NONE;
     selection = EMPTY_SELECTION;
     customItemHeight = -1;
-    resizeListener = new ResizeListener();
-    addControlListener( resizeListener );
     layoutCache = new LayoutCache();
   }
 
@@ -553,7 +550,7 @@ public class Tree extends Composite {
     }
   }
 
-  int getTopIndex() {
+  int getTopItemIndex() {
     return topItemIndex;
   }
 
@@ -1647,14 +1644,6 @@ public class Tree extends Composite {
   // Methods to cleanup on dispose
 
   @Override
-  void releaseWidget() {
-    if( resizeListener != null ) {
-      removeControlListener( resizeListener );
-    }
-    super.releaseWidget();
-  }
-
-  @Override
   void releaseChildren() {
     for( int i = items.length - 1; i >= 0; i-- ) {
       if( items[ i ] != null ) {
@@ -2069,6 +2058,36 @@ public class Tree extends Composite {
   ///////////////////
   // Helping methods
 
+  @Override
+  void notifyResize( Point oldSize ) {
+    if( !oldSize.equals( getSize() ) && !TextSizeUtil.isTemporaryResize() ) {
+      updateAllItems();
+      updateScrollBars();
+      adjustTopItemIndex();
+    }
+    super.notifyResize( oldSize );
+  }
+
+  private void adjustTopItemIndex() {
+    int visibleRowCount = getVisibleRowCount( false );
+    if( topItemIndex > visibleItemsCount - visibleRowCount - 1 ) {
+      topItemIndex = Math.max( 0, visibleItemsCount - visibleRowCount - 1 );
+    }
+  }
+
+  private int getVisibleRowCount( boolean includePartlyVisible ) {
+    int clientHeight = getBounds().height - getHeaderHeight() - getHScrollBarHeight();
+    int result = 0;
+    if( clientHeight >= 0 ) {
+      int itemHeight = getItemHeight();
+      result = clientHeight / itemHeight;
+      if( includePartlyVisible && clientHeight % itemHeight != 0 ) {
+        result++;
+      }
+    }
+    return result;
+  }
+
   void updateAllItems() {
     int flatIndex = 0;
     for( int index = 0; index < itemCount; index++ ) {
@@ -2103,7 +2122,7 @@ public class Tree extends Composite {
     boolean result = false;
     int headerHeight = getHeaderHeight();
     int itemHeight = getItemHeight();
-    int itemPosition = headerHeight + ( flatIndex - getTopIndex() ) * itemHeight;
+    int itemPosition = headerHeight + ( flatIndex - getTopItemIndex() ) * itemHeight;
     // TODO shouldn't we call getClientArea() instead?
     if( itemPosition >= 0 && itemPosition <= getSize().y ) {
       result = true;
@@ -2404,7 +2423,7 @@ public class Tree extends Composite {
     }
 
     public int getTopItemIndex() {
-      return getTopIndex();
+      return Tree.this.getTopItemIndex();
     }
 
     public void setTopItemIndex( int index ) {
@@ -2440,15 +2459,6 @@ public class Tree extends Composite {
       return Tree.this.isFixedColumn( Tree.this.indexOf( column ) );
     }
 
-  }
-
-  private static final class ResizeListener extends ControlAdapter {
-    @Override
-    public void controlResized( ControlEvent event ) {
-      Tree tree = ( Tree )event.widget;
-      tree.updateAllItems();
-      tree.updateScrollBars();
-    }
   }
 
   static final class LayoutCache implements SerializableCompatibility {

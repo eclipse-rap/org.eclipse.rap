@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -20,7 +21,9 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -1351,6 +1354,47 @@ public class Tree_Test extends TestCase {
     assertTrue( items[ 54 ].getExpanded() );
   }
 
+  public void testTopItemOnResize() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    tree.setSize( 100, 100 );
+    createTreeItems( tree, 10 );
+    tree.setTopItem( tree.getItem( 5 ) );
+
+    tree.setSize( 100, 165 );
+
+    assertEquals( tree.getItem( 3 ), tree.getTopItem() );
+  }
+
+  public void testTopIndexOnTemporaryResize() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    tree.setSize( 100, 100 );
+    createTreeItems( tree, 10 );
+    tree.setTopItem( tree.getItem( 5 ) );
+
+    markTemporaryResize();
+    tree.setSize( 1100, 1100 );
+
+    assertEquals( tree.getItem( 5 ), tree.getTopItem() );
+  }
+
+  public void testTopItemInResizeEvent() {
+    final TreeItem[] log = new TreeItem[ 1 ];
+    final Tree tree = new Tree( composite, SWT.NONE );
+    tree.setSize( 100, 100 );
+    createTreeItems( tree, 10 );
+    tree.setTopItem( tree.getItem( 5 ) );
+    tree.addControlListener( new ControlAdapter() {
+      @Override
+      public void controlResized( ControlEvent e ) {
+        log[ 0 ] = tree.getTopItem();
+      }
+    } );
+
+    tree.setSize( 100, 165 );
+
+    assertSame( tree.getItem( 3 ), log[ 0 ] );
+  }
+
   public void testSetTopItemTwice() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 300, 85 );
@@ -1495,13 +1539,32 @@ public class Tree_Test extends TestCase {
     assertTrue( width2 > width1 );
   }
 
-  public void testVirtualSetItemCountDoesMaterializeItems() {
+  public void testSetItemCountDoesNotResolveVirtualItems() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setSize( 300, 50 );
 
     tree.setItemCount( 1 );
 
     assertFalse( tree.getItem( 0 ).isCached() );
+  }
+
+  public void testTemporaryResizeDoesNotResolveVirtualItems() {
+    final java.util.List<Event> eventLog = new LinkedList<Event>();
+    composite.setSize( 100, 100 );
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
+    tree.setItemCount( 1000 );
+    tree.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( Event event ) {
+        eventLog.add( event );
+      }
+    } );
+    redrawTable( tree );
+    eventLog.clear();
+
+    markTemporaryResize();
+    tree.setSize( 1000, 1000 );
+
+    assertEquals( 0, eventLog.size() );
   }
 
   public void testVirtualMaterializeItemOnScroll() {
@@ -1808,6 +1871,7 @@ public class Tree_Test extends TestCase {
     TreeItem[] result = new TreeItem[ number ];
     for( int i = 0; i < number; i++ ) {
       result[ i ] = new TreeItem( tree, 0 );
+      result[ i ].setText( "item" + i );
     }
     return result;
   }
@@ -1842,5 +1906,16 @@ public class Tree_Test extends TestCase {
 
   private ITreeAdapter getTreeAdapter( Tree tree ) {
     return tree.getAdapter( ITreeAdapter.class );
+  }
+
+  private static void redrawTable( Tree tree ) {
+    ITreeAdapter treeAdapter = tree.getAdapter( ITreeAdapter.class );
+    treeAdapter.checkData();
+  }
+
+  private void markTemporaryResize() {
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    String key = "org.eclipse.rwt.internal.textsize.TextSizeRecalculation#temporaryResize";
+    serviceStore.setAttribute( key, Boolean.TRUE );
   }
 }

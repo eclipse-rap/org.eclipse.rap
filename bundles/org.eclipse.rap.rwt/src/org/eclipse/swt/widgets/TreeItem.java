@@ -1451,7 +1451,7 @@ public class TreeItem extends Item {
   int getItemTop() {
     int headerHeight = parent.getHeaderHeight();
     int itemHeight = parent.getItemHeight();
-    return headerHeight + ( getFlatIndex() - parent.getTopIndex() ) * itemHeight;
+    return headerHeight + ( getFlatIndex() - parent.getTopItemIndex() ) * itemHeight;
   }
 
   int getFlatIndex() {

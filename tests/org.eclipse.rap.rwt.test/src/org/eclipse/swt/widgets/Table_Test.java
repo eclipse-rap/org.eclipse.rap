@@ -18,7 +18,9 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
@@ -273,6 +275,47 @@ public class Table_Test extends TestCase {
     int itemCount = table.getItemCount();
     int visibleItemCount = table.getVisibleItemCount( false );
     assertEquals( itemCount - visibleItemCount - 1, table.getTopIndex() );
+  }
+
+  public void testTopIndexOnResize() {
+    Table table = new Table( shell, SWT.NONE );
+    table.setSize( 100, 100 );
+    createTableItems( table, 10 );
+    table.setTopIndex( 5 );
+
+    table.setSize( 100, 165 );
+
+    assertEquals( 3, table.getTopIndex() );
+  }
+
+  public void testTopIndexOnTemporaryResize() {
+    Table table = new Table( shell, SWT.NONE );
+    table.setSize( 100, 100 );
+    createTableItems( table, 10 );
+    table.setTopIndex( 5 );
+
+    markTemporaryResize();
+    table.setSize( 1100, 1100 );
+
+    assertEquals( 5, table.getTopIndex() );
+  }
+
+  public void testTopIndexInResizeEvent() {
+    final int[] log = new int[ 1 ];
+    final Table table = new Table( shell, SWT.NONE );
+    table.setSize( 100, 100 );
+    createTableItems( table, 10 );
+    table.setTopIndex( 5 );
+    table.addControlListener( new ControlAdapter() {
+      @Override
+      public void controlResized( ControlEvent e ) {
+        log[ 0 ] = table.getTopIndex();
+      }
+    } );
+
+    table.setSize( 100, 165 );
+
+    assertEquals( 3, log[ 0 ] );
   }
 
   public void testDispose() {
@@ -2352,6 +2395,25 @@ public class Table_Test extends TestCase {
     assertEquals( 0, eventLog.size() );
   }
 
+  public void testTemporaryResizeDoesNotResolveVirtualItems() {
+    final java.util.List<Event> eventLog = new LinkedList<Event>();
+    shell.setSize( 100, 100 );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.setItemCount( 1000 );
+    table.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( Event event ) {
+        eventLog.add( event );
+      }
+    } );
+    redrawTable( table );
+    eventLog.clear();
+
+    markTemporaryResize();
+    table.setSize( 1000, 1000 );
+
+    assertEquals( 0, eventLog.size() );
+  }
+
   public void testIsSerializable() throws Exception {
     Table table = createTable( SWT.VIRTUAL, 1 );
     new TableItem( table, 0 );
@@ -2481,6 +2543,7 @@ public class Table_Test extends TestCase {
     TableItem[] result = new TableItem[ number ];
     for( int i = 0; i < number; i++ ) {
       result[ i ] = new TableItem( table, 0 );
+      result[ i ].setText( "item" + i );
     }
     return result;
   }
@@ -2533,6 +2596,12 @@ public class Table_Test extends TestCase {
       column.setText( "Column " + i );
     }
     return result;
+  }
+
+  private void markTemporaryResize() {
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    String key = "org.eclipse.rwt.internal.textsize.TextSizeRecalculation#temporaryResize";
+    serviceStore.setAttribute( key, Boolean.TRUE );
   }
 
 }
