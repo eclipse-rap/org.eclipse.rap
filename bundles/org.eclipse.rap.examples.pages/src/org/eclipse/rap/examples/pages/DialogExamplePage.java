@@ -17,10 +17,11 @@ import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.window.Window;
 import org.eclipse.rap.examples.*;
+import org.eclipse.rwt.widgets.DialogCallback;
+import org.eclipse.rwt.widgets.DialogUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
@@ -253,18 +254,31 @@ public class DialogExamplePage implements IExamplePage {
     String title = "Input Dialog";
     String mesg = "Enter at least five characters";
     String def = "default text";
-    final InputDialog dlg;
-    dlg = new InputDialog( getShell(), title, mesg, def, val );
-    int returnCode = dlg.open();
-    String resultText = "Result: " + getReturnCodeText( returnCode );
-    if( returnCode == Window.OK ) {
-      resultText += ", value: " + dlg.getValue();
-    }
-    showResult( resultText );
+    final InputDialog dialog = new InputDialog( getShell(), title, mesg, def, val ) {
+      @Override
+      public boolean close() {
+        boolean result = super.close();
+        int returnCode = getReturnCode();
+        String resultText = "Result: " + getReturnCodeText( returnCode );
+        if( returnCode == Window.OK ) {
+          resultText += ", value: " + getValue();
+        }
+        showResult( resultText );
+        return result;
+      }
+    };
+    dialog.setBlockOnOpen( false );
+    dialog.open();
   }
 
   private void showProgressDialog() {
-    ProgressMonitorDialog dialog = new ProgressMonitorDialog( getShell() );
+    ProgressMonitorDialog dialog = new ProgressMonitorDialog( getShell() ) {
+      @Override
+      public boolean close() {
+        return super.close();
+      }
+    };
+    dialog.setBlockOnOpen( false );
     try {
       dialog.run( true, true, new IRunnableWithProgress() {
         public void run( IProgressMonitor monitor )
@@ -279,77 +293,114 @@ public class DialogExamplePage implements IExamplePage {
         }
       } );
     } catch( Exception e ) {
-      MessageDialog.openError( getShell(), "Error", e.getMessage() );
+      MessageDialogUtil.openError( getShell(), "Error", e.getMessage(), null );
     }
   }
 
   private void showMessageDialogInfo() {
     String title = "Information";
-    String mesg = "This is a RAP MessageDialog.";
-    MessageDialog.openInformation( getShell(), title, mesg );
-    showResult( "Result: none" );
+    String message = "This is a RAP MessageDialog.";
+    DialogCallback callback = new DialogCallback() {
+      public void dialogClosed( int returnCode ) {
+        showResult( "Result: none" );
+      }
+    };
+    MessageDialogUtil.openInformation( getShell(), title, message, callback );
   }
 
   private void showMessageDialogError() {
     String title = "Error";
-    String mesg = "A weird error occured.\n " + "Please reboot.";
-    MessageDialog.openError( getShell(), title, mesg );
-    showResult( "Result: none" );
+    String message = "A weird error occured.\n " + "Please reboot.";
+    DialogCallback callback = new DialogCallback() {
+      public void dialogClosed( int returnCode ) {
+        showResult( "Result: none" );
+      }
+    };
+    MessageDialogUtil.openError( getShell(), title, message, callback );
   }
 
   private void showMessageDialogQuestion() {
     String title = "Question";
-    String mesg = "Would you like to see the demo?\n\n"
+    String message = "Would you like to see the demo?\n\n"
                   + "You can have multiple lines of text here. "
                   + "Note that pressing <Return> here selects the default button.";
-    boolean result = MessageDialog.openQuestion( getShell(), title, mesg );
-    showResult( "Result: " + result );
+    DialogCallback callback = new DialogCallback() {
+      public void dialogClosed( int returnCode ) {
+        showResult( "Result: " + returnCode );
+      }
+    };
+    MessageDialogUtil.openQuestion( getShell(), title, message, callback );
   }
 
   private void showMessageDialogConfirm() {
     String title = "Confirmation";
-    String mesg = "Nothing will be done. Ok?";
-    boolean result = MessageDialog.openConfirm( getShell(), title, mesg );
-    showResult( "Result: " + result );
+    String message = "Nothing will be done. Ok?";
+    DialogCallback callback = new DialogCallback() {
+      public void dialogClosed( int returnCode ) {
+        showResult( "Result: " + returnCode );
+      }
+    };
+    MessageDialogUtil.openConfirm( getShell(), title, message, callback );
   }
 
   private void showMessageDialogWarning() {
     String title = "Warning";
-    String mesg = "You have been warned.";
-    MessageDialog.openWarning( getShell(), title, mesg );
-    showResult( "Result: none" );
+    String message = "You have been warned.";
+    DialogCallback callback = new DialogCallback() {
+      public void dialogClosed( int returnCode ) {
+        showResult( "Result: " + returnCode );
+      }
+    };
+    MessageDialogUtil.openWarning( getShell(), title, message, callback );
   }
 
   private void showErrorDialog() {
+    MultiStatus status = createStatus();
     String title = "Error";
-    int code = 23;
-    String mesg = "Weird weird error occured";
-    String reason = "Illegal array offset";
-    Exception exception = new IndexOutOfBoundsException( "negative index: -1" );
-    exception = new RuntimeException( exception );
+    String message = "An error occured while processing this command";
+    int displayMask = IStatus.OK | IStatus.INFO | IStatus.WARNING | IStatus.ERROR;
+    ErrorDialog errorDialog = new ErrorDialog( getShell(), title, message, status, displayMask ) {
+      @Override
+      public boolean close() {
+        boolean result = super.close();
+        int returnCode = getReturnCode();
+        showResult( "Result: " + getReturnCodeText( returnCode ) );
+        return result;
+      }
+    };
+    errorDialog.setBlockOnOpen( false );
+    errorDialog.open();
+  }
+
+  private static MultiStatus createStatus() {
     String pluginId = "org.eclipse.rap.demo";
-    IStatus status1 = new Status( IStatus.ERROR, pluginId, code, reason, exception );
-    String mesg2 = "Illegal array offset";
-    MultiStatus multiStatus = new MultiStatus( pluginId, code, mesg2, new RuntimeException() );
-    multiStatus.add( status1 );
-    int returnCode = ErrorDialog.openError( getShell(), title, mesg, multiStatus );
-    showResult( "Result: " + getReturnCodeText( returnCode ) );
+    int code = 23;
+    String message = "Illegal array offset";
+    MultiStatus multiStatus = new MultiStatus( pluginId, code, message, new RuntimeException() );
+    Exception exception = new IndexOutOfBoundsException( "negative index: -1" );
+    multiStatus.add( new Status( IStatus.ERROR, pluginId, code, message, exception ) );
+    return multiStatus;
   }
 
   private void showLoginDialog() {
     String message = "Please sign in with your username and password:";
-    final LoginDialog loginDialog
-      = new LoginDialog( getShell(), "Login", message );
+    final LoginDialog loginDialog = new LoginDialog( getShell(), "Login", message ) {
+      @Override
+      public boolean close() {
+        boolean result = super.close();
+        int returnCode = getReturnCode();
+        String resultText = "Result: " + getReturnCodeText( returnCode );
+        if( returnCode == Window.OK ) {
+          String pwInfo = getPassword() == null ? "n/a" : getPassword().length() + " chars";
+          resultText += ", user: " + getUsername() + ", password: " + pwInfo;
+        }
+        showResult( resultText );
+        return result;
+      }
+    };
     loginDialog.setUsername( "john" );
-    int returnCode = loginDialog.open();
-    String resultText = "Result: " + getReturnCodeText( returnCode );
-    if( returnCode == Window.OK ) {
-      String username = loginDialog.getUsername();
-      String password = loginDialog.getPassword();
-      String pwInfo = password == null ? "n/a" : password.length() + " chars";
-      resultText += ", user: " + username + ", password: " + pwInfo;
-    }
-    showResult( resultText );
+    loginDialog.setBlockOnOpen( false );
+    loginDialog.open();
   }
 
   private Shell getShell() {
@@ -371,50 +422,60 @@ public class DialogExamplePage implements IExamplePage {
   private void showMessageBox() {
     String title = "MessageBox Title";
     String mesg = "Lorem ipsum dolor sit amet consectetuer adipiscing elit.";
-    MessageBox mb = new MessageBox( getShell(), SWT.YES | SWT.NO );
-    mb.setText( title );
-    mb.setMessage( mesg );
-    int result = mb.open();
-    String strResult = "";
-    switch( result ) {
-      case SWT.OK:
-        strResult = "SWT.OK";
-      break;
-      case SWT.YES:
-        strResult = "SWT.YES";
-      break;
-      case SWT.NO:
-        strResult = "SWT.NO";
-      break;
-      case SWT.CANCEL:
-        strResult = "SWT.CANCEL";
-      break;
-      case SWT.ABORT:
-        strResult = "SWT.ABORT";
-      break;
-      case SWT.RETRY:
-        strResult = "SWT.RETRY";
-      break;
-      case SWT.IGNORE:
-        strResult = "SWT.IGNORE";
-      break;
-      default:
-        strResult = "" + result;
-      break;
-    }
-    showResult( "Result: " + strResult );
+    MessageBox messageBox = new MessageBox( getShell(), SWT.YES | SWT.NO );
+    messageBox.setText( title );
+    messageBox.setMessage( mesg );
+    DialogUtil.open( messageBox, new DialogCallback() {
+      public void dialogClosed( int returnCode ) {
+        String strResult = "";
+        switch( returnCode ) {
+          case SWT.OK:
+            strResult = "SWT.OK";
+            break;
+          case SWT.YES:
+            strResult = "SWT.YES";
+            break;
+          case SWT.NO:
+            strResult = "SWT.NO";
+            break;
+          case SWT.CANCEL:
+            strResult = "SWT.CANCEL";
+            break;
+          case SWT.ABORT:
+            strResult = "SWT.ABORT";
+            break;
+          case SWT.RETRY:
+            strResult = "SWT.RETRY";
+            break;
+          case SWT.IGNORE:
+            strResult = "SWT.IGNORE";
+            break;
+          default:
+            strResult = "" + returnCode;
+            break;
+        }
+        showResult( "Result: " + strResult );
+      }
+    } );
   }
 
   private void showColorDialog() {
-    ColorDialog dialog = new ColorDialog( getShell() );
-    RGB result = dialog.open();
-    showResult( "Result: " + result );
+    final ColorDialog dialog = new ColorDialog( getShell() );
+    DialogUtil.open( dialog, new DialogCallback() {
+      public void dialogClosed( int returnCode ) {
+        RGB result = dialog.getRGB();
+        showResult( "Result: " + result );
+      }
+    } );
   }
 
   protected void showFontDialog() {
-    FontDialog dialog = new FontDialog( getShell(), SWT.SHELL_TRIM );
-    FontData result = dialog.open();
-    showResult( "Result: " + result + " / " + dialog.getRGB() );
+    final FontDialog dialog = new FontDialog( getShell(), SWT.SHELL_TRIM );
+    DialogUtil.open( dialog, new DialogCallback() {
+      public void dialogClosed( int returnCode ) {
+        showResult( "Result: " + dialog.getFontList()[ 0 ] + " / " + dialog.getRGB() );
+      }
+    } );
   }
 
   private void showResult( String resultText ) {
