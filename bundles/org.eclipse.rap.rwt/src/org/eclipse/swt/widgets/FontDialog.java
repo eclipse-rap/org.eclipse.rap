@@ -159,6 +159,11 @@ public class FontDialog extends Dialog {
   /**
    * Makes the dialog visible and brings it to the front of the display.
    *
+   * <!-- Begin RAP specific -->
+   * <p>This method is not supported when running the application in JEE_COMPATIBILITY mode.
+   * Use DialogUtil#open instead.</p>
+   * <!-- End RAP specific -->
+   *
    * @return a FontData object describing the font that was selected, or null if
    *         the dialog was cancelled or an error occurred
    * @exception SWTException <ul>
@@ -166,8 +171,12 @@ public class FontDialog extends Dialog {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the dialog</li>
    *              </ul>
+   * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
+   *
+   * @see org.eclipse.rwt.application.ApplicationConfiguration.OperationMode
    */
   public FontData open() {
+    checkOperationMode();
     prepareOpen();
     runEventLoop( shell );
     return fontData;

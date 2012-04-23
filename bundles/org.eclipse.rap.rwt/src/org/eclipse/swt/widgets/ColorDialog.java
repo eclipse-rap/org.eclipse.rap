@@ -1,11 +1,12 @@
-/******************************************************************************* 
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved. This
- * program and the accompanying materials are made available under the terms of
- * the Eclipse Public License v1.0 which accompanies this distribution, and is
- * available at http://www.eclipse.org/legal/epl-v10.html
+/*******************************************************************************
+ * Copyright (c) 2010, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -32,11 +33,11 @@ import org.eclipse.swt.layout.GridLayout;
  * IMPORTANT: This class is intended to be subclassed <em>only</em> within the
  * SWT implementation.
  * </p>
- * 
+ *
  * @since 1.2
  */
 public class ColorDialog extends Dialog {
-  
+
   private class PaletteListener extends MouseAdapter {
     private RGB rgb;
 
@@ -44,11 +45,12 @@ public class ColorDialog extends Dialog {
       this.rgb = rgb;
     }
 
+    @Override
     public void mouseDown( MouseEvent event ) {
       setColorFromPalette( rgb );
     }
   }
-  
+
   private class SpinnerListener implements ModifyListener {
     private final Spinner spinner;
     private final int colorIndex;
@@ -62,20 +64,20 @@ public class ColorDialog extends Dialog {
       setColorFomSpinner( colorIndex, spinner.getSelection() );
     }
   }
-  
+
   // Layout
   private static final int BUTTON_WIDTH = 60;
   private static final int PALETTE_BOX_SIZE = 12;
   private static final int PALETTE_BOXES_IN_ROW = 14;
   private static final int COLOR_DISPLAY_BOX_SIZE = 76;
-  
+
   private static final int MAX_RGB_COMPONENT_VALUE = 255;
 
   // Color components
   private static final int RED = 0;
   private static final int GREEN = 1;
   private static final int BLUE = 2;
-  
+
   // Palette colors
   private static final RGB[] PALETTE_COLORS = new RGB[] {
     new RGB( 0, 0, 0 ),
@@ -107,16 +109,16 @@ public class ColorDialog extends Dialog {
     new RGB( 84, 109, 142 ),
     new RGB( 181, 165, 213 )
   };
-  
+
   private RGB rgb;
   private Label colorDisplay;
-  private Spinner spRed; 
+  private Spinner spRed;
   private Spinner spBlue;
   private Spinner spGreen;
 
   /**
    * Constructs a new instance of this class given only its parent.
-   * 
+   *
    * @param parent a composite control which will be the parent of the new
    *          instance
    * @exception IllegalArgumentException <ul>
@@ -147,7 +149,7 @@ public class ColorDialog extends Dialog {
    * constants. The class description lists the style constants that are
    * applicable to the class. Style bits are also inherited from superclasses.
    * </p>
-   * 
+   *
    * @param parent a composite control which will be the parent of the new
    *          instance (cannot be null)
    * @param style the style of control to construct
@@ -172,7 +174,12 @@ public class ColorDialog extends Dialog {
 
   /**
    * Makes the receiver visible and brings it to the front of the display.
-   * 
+   *
+   * <!-- Begin RAP specific -->
+   * <p>This method is not supported when running the application in JEE_COMPATIBILITY mode.
+   * Use DialogUtil#open instead.</p>
+   * <!-- End RAP specific -->
+   *
    * @return the selected color, or null if the dialog was cancelled, no color
    *         was selected, or an error occurred
    * @exception SWTException <ul>
@@ -180,8 +187,12 @@ public class ColorDialog extends Dialog {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
+   * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
+   *
+   * @see org.eclipse.rwt.application.ApplicationConfiguration.OperationMode
    */
   public RGB open() {
+    checkOperationMode();
     prepareOpen();
     runEventLoop( shell );
     return rgb;
@@ -189,7 +200,7 @@ public class ColorDialog extends Dialog {
 
   /**
    * Returns the currently selected color in the receiver.
-   * 
+   *
    * @return the RGB value for the selected color, may be null
    * @see PaletteData#getRGBs
    */
@@ -199,7 +210,7 @@ public class ColorDialog extends Dialog {
 
   /**
    * Sets the receiver's selected color to be the argument.
-   * 
+   *
    * @param rgb the new RGB value for the selected color, may be null to let the
    *          platform select a default when open() is called
    * @see PaletteData#getRGBs
@@ -208,6 +219,7 @@ public class ColorDialog extends Dialog {
     this.rgb = rgb;
   }
 
+  @Override
   protected void prepareOpen() {
     createShell();
     createControls();
@@ -222,6 +234,7 @@ public class ColorDialog extends Dialog {
   private void createShell() {
     shell = new Shell( parent, SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL );
     shell.addShellListener( new ShellAdapter() {
+      @Override
       public void shellClosed( ShellEvent event ) {
         if( returnCode == SWT.CANCEL ) {
           ColorDialog.this.rgb = null;
@@ -339,6 +352,7 @@ public class ColorDialog extends Dialog {
     result.setLayoutData( data );
     result.setText( text );
     result.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         ColorDialog.this.returnCode = buttonId;
         shell.close();

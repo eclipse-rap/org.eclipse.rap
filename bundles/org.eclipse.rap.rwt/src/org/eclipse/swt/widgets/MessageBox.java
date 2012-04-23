@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -132,6 +132,11 @@ public class MessageBox extends Dialog {
    * Makes the dialog visible and brings it to the front
    * of the display.
    *
+   * <!-- Begin RAP specific -->
+   * <p>This method is not supported when running the application in JEE_COMPATIBILITY mode.
+   * Use DialogUtil#open instead.</p>
+   * <!-- End RAP specific -->
+   *
    * @return the ID of the button that was selected to dismiss the
    *         message box (e.g. SWT.OK, SWT.CANCEL, etc.)
    *
@@ -139,13 +144,18 @@ public class MessageBox extends Dialog {
    *    <li>ERROR_WIDGET_DISPOSED - if the dialog has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the dialog</li>
    * </ul>
+   * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
+   *
+   * @see org.eclipse.rwt.application.ApplicationConfiguration.OperationMode
    */
   public int open() {
+    checkOperationMode();
     prepareOpen();
     runEventLoop( shell );
     return returnCode;
   }
-  
+
+  @Override
   protected void prepareOpen() {
     determineImageFromStyle();
     shell = new Shell( parent, SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL );
@@ -242,6 +252,7 @@ public class MessageBox extends Dialog {
       result.setLayoutData( data );
       result.setText( text );
       result.addSelectionListener( new SelectionAdapter() {
+        @Override
         public void widgetSelected( SelectionEvent event ) {
           MessageBox.this.returnCode = buttonId;
           shell.close();

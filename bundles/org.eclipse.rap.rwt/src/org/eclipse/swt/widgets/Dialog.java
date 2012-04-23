@@ -1,19 +1,21 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.application.RWTFactory;
+import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rwt.internal.widgets.IDialogAdapter;
 import org.eclipse.rwt.widgets.DialogCallback;
 import org.eclipse.swt.SWT;
@@ -39,7 +41,7 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  * by every subclass on every platform. If a modality style is
  * not supported, it is "upgraded" to a more restrictive modality
  * style that is supported.  For example, if <code>PRIMARY_MODAL</code>
- * is not supported by a particular dialog, it would be upgraded to 
+ * is not supported by a particular dialog, it would be upgraded to
  * <code>APPLICATION_MODAL</code>. In addition, as is the case
  * for shells, the window manager for the desktop on which the
  * instance is visible has ultimate control over the appearance
@@ -54,7 +56,7 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  * Note: Only one of the styles APPLICATION_MODAL, PRIMARY_MODAL,
  * and SYSTEM_MODAL may be specified.
  * </p>
- * 
+ *
  * @see Shell
  */
 public abstract class Dialog implements Adaptable, SerializableCompatibility {
@@ -67,6 +69,7 @@ public abstract class Dialog implements Adaptable, SerializableCompatibility {
       returnCode = SWT.CANCEL;
       shell.open();
       shell.addShellListener( new ShellAdapter() {
+        @Override
         public void shellClosed( ShellEvent event ) {
           if( dialogCallback != null ) {
             dialogCallback.dialogClosed( returnCode );
@@ -105,7 +108,7 @@ public abstract class Dialog implements Adaptable, SerializableCompatibility {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -120,7 +123,7 @@ public abstract class Dialog implements Adaptable, SerializableCompatibility {
    * @exception SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
    * </ul>
-   * 
+   *
    * <!--@see SWT#PRIMARY_MODAL-->
    * @see SWT#APPLICATION_MODAL
    * <!--@see SWT#SYSTEM_MODAL-->
@@ -152,7 +155,7 @@ public abstract class Dialog implements Adaptable, SerializableCompatibility {
    * <p>
    * Note that, the value which is returned by this method <em>may
    * not match</em> the value which was provided to the constructor
-   * when the receiver was created. 
+   * when the receiver was created.
    * </p>
    *
    * @return the style bits
@@ -169,7 +172,7 @@ public abstract class Dialog implements Adaptable, SerializableCompatibility {
   /**
    * Returns the receiver's text, which is the string that the
    * window manager will typically display as the receiver's
-   * <em>title</em>. If the text has not previously been set, 
+   * <em>title</em>. If the text has not previously been set,
    * returns an empty string.
    *
    * @return the text
@@ -186,7 +189,7 @@ public abstract class Dialog implements Adaptable, SerializableCompatibility {
   /**
    * Sets the receiver's text, which is the string that the
    * window manager will typically display as the receiver's
-   * <em>title</em>, to the argument, which must not be null. 
+   * <em>title</em>, to the argument, which must not be null.
    *
    * @param string the new text
    *
@@ -204,7 +207,7 @@ public abstract class Dialog implements Adaptable, SerializableCompatibility {
     }
     title = string;
   }
-  
+
   /**
    * Implementation of the <code>Adaptable</code> interface.
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
@@ -223,13 +226,19 @@ public abstract class Dialog implements Adaptable, SerializableCompatibility {
     }
     return result;
   }
-  
+
   protected void prepareOpen() {
   }
-  
+
   protected void checkSubclass() {
     if( !Display.isValidClass( getClass() ) ) {
       SWT.error( SWT.ERROR_INVALID_SUBCLASS );
+    }
+  }
+
+  protected void checkOperationMode() {
+    if( RWT.getLifeCycle() instanceof SimpleLifeCycle ) {
+      throw new UnsupportedOperationException( "Method not supported in JEE_COMPATIBILITY mode." );
     }
   }
 
