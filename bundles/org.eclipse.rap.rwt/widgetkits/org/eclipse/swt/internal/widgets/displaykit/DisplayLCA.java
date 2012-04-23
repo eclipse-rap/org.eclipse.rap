@@ -156,12 +156,12 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     // Note [rst] Startup page created in LifecycleServiceHandler#runLifeCycle
     // TODO [rh] should be replaced by requestCounter != 0
     if( request.getParameter( RequestParams.UIROOT ) != null ) {
-      createSingletons( display );
       disposeWidgets();
       renderRequestCounter();
       renderTheme( display );
       renderExitConfirmation( display );
       renderEnableUiTests( display );
+      createSingletons( display );
       renderShells( display );
       renderFocus( display );
       renderBeep( display );
