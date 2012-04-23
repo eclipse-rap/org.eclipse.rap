@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2004 IBM Corporation and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    IBM Corporation - initial API and implementation
- *******************************************************************************/
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ ******************************************************************************/
 package org.eclipse.swt.browser;
 
 import org.eclipse.rwt.Adaptable;
@@ -17,31 +18,28 @@ import org.eclipse.swt.events.TypedEvent;
 /**
  * A <code>LocationEvent</code> is sent by a {@link Browser} to
  * {@link LocationListener}'s when the <code>Browser</code>
- * navigates to a different URL. This notification typically 
- * occurs when the application navigates to a new location with 
+ * navigates to a different URL. This notification typically
+ * occurs when the application navigates to a new location with
  * {@link Browser#setUrl(String)} or when the user activates a
  * hyperlink.
- * 
- * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of 
- * this class are <em>not</em> part of the RWT public API. They are marked 
- * public only so that they can be shared within the packages provided by RWT. 
+ *
+ * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of
+ * this class are <em>not</em> part of the RWT public API. They are marked
+ * public only so that they can be shared within the packages provided by RWT.
  * They should never be accessed from application code.
  * </p>
- * 
+ *
  * @since 1.0
  */
 public class LocationEvent extends TypedEvent {
-  
+
   private static final long serialVersionUID = 1L;
 
-  // TODO [fappel]: Think about a better solution!
-  //                Do not use SWT.None (0) as event handler identifier 
-  //                -> causes problems with the filter implementation
-  public static final int CHANGING = 1;
-  public static final int CHANGED = 2;
-  
+  public static final int CHANGING = 5011;
+  public static final int CHANGED = 5012;
+
   private static final Class LISTENER = LocationListener.class;
-  
+
   /** current location */
   public String location;
 
@@ -62,6 +60,7 @@ public class LocationEvent extends TypedEvent {
     this.location = location;
   }
 
+  @Override
   protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case CHANGING:
@@ -75,10 +74,12 @@ public class LocationEvent extends TypedEvent {
     }
   }
 
+  @Override
   protected Class getListenerType() {
     return LISTENER;
   }
-  
+
+  @Override
   protected boolean allowProcessing() {
     // It is safe to always allow to fire this event as it is only generated
     // server-side
@@ -88,7 +89,7 @@ public class LocationEvent extends TypedEvent {
   public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
-  
+
   public static void addListener( Adaptable adaptable, LocationListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }

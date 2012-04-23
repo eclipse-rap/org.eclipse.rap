@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,6 +57,7 @@ public class MouseEvent_Test extends TestCase {
   private Shell shell;
   private List<Object> events;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -65,6 +66,7 @@ public class MouseEvent_Test extends TestCase {
     events = new LinkedList<Object>();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -107,7 +109,7 @@ public class MouseEvent_Test extends TestCase {
     assertSame( upEvent, events.get( 1 ) );
     assertSame( doubleClickEvent, events.get( 2 ) );
   }
-  
+
   public void testRemoveListener() {
     MouseListener listener = new LoggingMouseListener( events );
     MouseEvent.addListener( shell, listener );
@@ -181,7 +183,7 @@ public class MouseEvent_Test extends TestCase {
     assertEquals( 53, mouseUp.y );
     assertTrue( ( mouseUp.stateMask & SWT.BUTTON1 ) != 0 );
   }
-  
+
   public void testTypedMouseEventOrderWithDoubleClick() {
     shell.setLocation( 100, 100 );
     shell.open();
@@ -245,7 +247,7 @@ public class MouseEvent_Test extends TestCase {
     assertEquals( 15, mouseEvent.x );
     assertEquals( 53, mouseEvent.y );
   }
-  
+
   public void testUntypedMouseEventOrderWithDoubleClick() {
     shell.setBounds( 100, 100, 200, 200 );
     shell.open();
@@ -313,12 +315,7 @@ public class MouseEvent_Test extends TestCase {
   }
 
   public void testNoMouseEventOnScrollBars() {
-    Table table = new Table( shell, SWT.NONE );
-    table.setSize( 100, 100 );
-    for( int i = 0; i < 50; i++ ) {
-      new TableItem( table, SWT.NONE);
-    }
-    table.addMouseListener( new LoggingMouseListener( events ) );
+    Table table = createTableWithMouseListener();
     assertEquals( new Rectangle( 0, 0, 90, 100 ), table.getClientArea() );
     // Simulate request that sends a mouseDown + mouseUp on scrollbar
     Fixture.fakeNewRequest( display );
@@ -326,6 +323,77 @@ public class MouseEvent_Test extends TestCase {
     fakeMouseUpRequest( table, 93, 50 );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 0, events.size() );
+  }
+
+  public void testMouseSelectionEventsOrder() {
+    Table table = createTableWithMouseListener();
+    table.addSelectionListener( new SelectionListener() {
+      public void widgetSelected( SelectionEvent event ) {
+        events.add( event );
+      }
+      public void widgetDefaultSelected( SelectionEvent event ) {
+        events.add( event );
+      }
+    } );
+    Fixture.fakeNewRequest( display );
+    fakeMouseDownRequest( table, 30, 50 );
+    fakeMouseDoubleClickRequest( table, 30, 50 );
+    fakeMouseUpRequest( table, 30, 50 );
+    fakeSelectionRequest( table, table.getItem( 1 ) );
+
+    events.clear();
+    Fixture.readDataAndProcessAction( display );
+
+    assertEquals( 4, events.size() );
+    assertEquals( SWT.MouseDown, ( ( TypedEvent )events.get( 0 ) ).getID() );
+    assertEquals( SWT.MouseDoubleClick, ( ( TypedEvent )events.get( 1 ) ).getID() );
+    assertEquals( SWT.Selection, ( ( TypedEvent )events.get( 2 ) ).getID() );
+    assertEquals( SWT.MouseUp, ( ( TypedEvent )events.get( 3 ) ).getID() );
+  }
+
+  public void testMouseMenuDetectEventsOrder() {
+    Table table = createTableWithMouseListener();
+    table.addMenuDetectListener( new MenuDetectListener() {
+      public void menuDetected( MenuDetectEvent event ) {
+        events.add( event );
+      }
+    } );
+    Fixture.fakeNewRequest( display );
+    fakeMouseDownRequest( table, 30, 50 );
+    fakeMouseUpRequest( table, 30, 50 );
+    fakeMenuDetectRequest( table, 30, 50 );
+
+    events.clear();
+    Fixture.readDataAndProcessAction( display );
+
+    assertEquals( 3, events.size() );
+    assertEquals( SWT.MouseDown, ( ( TypedEvent )events.get( 0 ) ).getID() );
+    assertEquals( SWT.MenuDetect, ( ( TypedEvent )events.get( 1 ) ).getID() );
+    assertEquals( SWT.MouseUp, ( ( TypedEvent )events.get( 2 ) ).getID() );
+  }
+
+  private Table createTableWithMouseListener() {
+    Table result = new Table( shell, SWT.NONE );
+    result.setSize( 100, 100 );
+    for( int i = 0; i < 5; i++ ) {
+      new TableItem( result, SWT.NONE);
+    }
+    result.addMouseListener( new LoggingMouseListener( events ) );
+    return result;
+  }
+
+  private static void fakeSelectionRequest( Widget widget, Widget item ) {
+    String widgetId = WidgetUtil.getId( widget );
+    String itemId = WidgetUtil.getId( item );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, widgetId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, itemId );
+  }
+
+  private static void fakeMenuDetectRequest( Widget widget, int x, int y ) {
+    String widgetId = WidgetUtil.getId( widget );
+    Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT, widgetId );
+    Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT_X, String.valueOf( x ) );
+    Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT_Y, String.valueOf( y ) );
   }
 
   private static void fakeMouseDoubleClickRequest( Widget widget, int x, int y ) {

@@ -23,12 +23,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.custom.CTabFolderEvent;
-import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.internal.events.DeselectionEvent;
-import org.eclipse.swt.internal.events.SetDataEvent;
-import org.eclipse.swt.internal.events.ShowEvent;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
 import org.eclipse.swt.widgets.Display;
@@ -48,33 +44,55 @@ public class TypedEvent extends Event {
   private static final String ATTR_SCHEDULED_EVENT_LIST
     = TypedEvent.class.getName() + "#scheduledEventList";
 
-  private static final Class[] EVENT_ORDER = {
-    ControlEvent.class,
-    ActivateEvent.class,
-    ShowEvent.class,
-    DisposeEvent.class,
-    SetDataEvent.class,
-    FocusEvent.class,
-    MenuDetectEvent.class,
-    MouseEvent.class,
-    VerifyEvent.class,
-    ModifyEvent.class,
-    TreeEvent.class,
-    CTabFolderEvent.class,
-    ExpandEvent.class,
-    DeselectionEvent.class,
-    SelectionEvent.class,
-    LocationEvent.class,
-    ProgressEvent.class,
-    ShellEvent.class,
-    MenuEvent.class,
-    KeyEvent.class,
-    DragDetectEvent.class,
-    DragSourceEvent.class,
-    DropTargetEvent.class,
-    HelpEvent.class,
-    ArmEvent.class,
-    PaintEvent.class
+  private static final int[] EVENT_ORDER = {
+    SWT.Move,
+    SWT.Resize,
+    SWT.Deactivate,
+    SWT.Activate,
+    SWT.Close,
+    SWT.Hide,
+    SWT.Show,
+    SWT.Dispose,
+    SWT.SetData,
+    SWT.FocusIn,
+    SWT.FocusOut,
+    SWT.Traverse,
+    SWT.KeyDown,
+    SWT.Expand,
+    SWT.Collapse,
+    SWT.Verify,
+    SWT.Modify,
+    SWT.MouseDown,
+    SWT.MouseDoubleClick,
+    SWT.MenuDetect,
+    CTabFolderEvent.CLOSE,
+    CTabFolderEvent.MINIMIZE,
+    CTabFolderEvent.MAXIMIZE,
+    CTabFolderEvent.RESTORE,
+    CTabFolderEvent.SHOW_LIST,
+    DeselectionEvent.WIDGET_DESELECTED,
+    SWT.Selection,
+    SWT.DefaultSelection,
+    SWT.MouseUp,
+    SWT.Help,
+    SWT.KeyUp,
+    // TODO: Find the correct place of drag events - MouseDown/MouseUp/Selection
+    SWT.DragDetect,
+    DND.DragStart,
+    DND.DragEnd,
+    DND.DragSetData,
+    DND.DragEnter,
+    DND.DragOver,
+    DND.DragLeave,
+    DND.DropAccept,
+    DND.Drop,
+    DND.DragOperationChanged,
+    LocationEvent.CHANGING,
+    LocationEvent.CHANGED,
+    ProgressEvent.CHANGED,
+    ProgressEvent.COMPLETED,
+    SWT.Arm,
+    9 // SWT.Paint
   };
 
   private org.eclipse.swt.widgets.Event sourceEvent;
@@ -136,6 +154,7 @@ public class TypedEvent extends Event {
     display = widget.getDisplay();
   }
 
+  @Override
   public Object getSource() {
     // [rh] introduced to get rid of discouraged access warning when
     // application code accesses getSource() which is defined in
@@ -150,6 +169,7 @@ public class TypedEvent extends Event {
    * from application code.
    * </p>
    */
+  @Override
   public final void processEvent() {
     // TODO: [fappel] In case of session invalidation there's no phase.
     //                So no event processing should take place, this situation
@@ -259,7 +279,7 @@ public class TypedEvent extends Event {
     for( int i = 0; i < EVENT_ORDER.length; i++ ) {
       for( int k = 0; k < list.size(); k++ ) {
         TypedEvent event = list.get( k );
-        if( EVENT_ORDER[ i ].equals( event.getClass() ) ) {
+        if( EVENT_ORDER[ i ] == event.getID() ) {
           sortedEvents.add( event );
         }
       }
@@ -290,12 +310,14 @@ public class TypedEvent extends Event {
   }
 
   // Exception to get rid of abstract TypedEvent
+  @Override
   protected void dispatchToObserver( Object listener ) {
   	String msg = "Derived classes must override dispatchToObserver.";
   	throw new UnsupportedOperationException( msg );
   }
 
   // Exception to get rid of abstract TypedEvent
+  @Override
   protected Class getListenerType() {
   	String msg = "Derived classes must override getListenerType.";
   	throw new UnsupportedOperationException( msg );
@@ -305,6 +327,7 @@ public class TypedEvent extends Event {
   // toString & getName from SWT
 
   // this implementation is extended by subclasses
+  @Override
   public String toString() {
     return getName()
         + "{"

@@ -32,11 +32,8 @@ public class ProgressEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  // TODO [if]: Think about a better solution!
-  //            Do not use SWT.None (0) as event handler identifier
-  //            -> causes problems with the filter implementation
-  public static final int CHANGED = 1;
-  public static final int COMPLETED = 2;
+  public static final int CHANGED = 5021;
+  public static final int COMPLETED = 5022;
 
   private static final Class LISTENER = ProgressListener.class;
 

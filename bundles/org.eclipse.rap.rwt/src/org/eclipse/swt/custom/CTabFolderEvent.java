@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
@@ -19,30 +19,27 @@ import org.eclipse.swt.widgets.Widget;
 
 /**
  * This event is sent when an event is generated in the <code>CTabFolder</code>.
- * 
- * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of 
- * this class are <em>not</em> part of the RWT public API. They are marked 
- * public only so that they can be shared within the packages provided by RWT. 
+ *
+ * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of
+ * this class are <em>not</em> part of the RWT public API. They are marked
+ * public only so that they can be shared within the packages provided by RWT.
  * They should never be accessed from application code.
  * </p>
- * 
+ *
  * @since 1.0
  */
 public class CTabFolderEvent extends TypedEvent {
-  
+
   private static final long serialVersionUID = 1L;
 
-  // TODO [fappel]: Think about a better solution!
-  //                Do not use SWT.None (0) as event handler identifier 
-  //                -> causes problems with the filter implementation
-  public static final int CLOSE = 1;
-  public static final int MINIMIZE = 2;
-  public static final int MAXIMIZE = 3;
-  public static final int RESTORE = 4;
-  public static final int SHOW_LIST = 5;
-  
+  public static final int CLOSE = 5031;
+  public static final int MINIMIZE = 5032;
+  public static final int MAXIMIZE = 5033;
+  public static final int RESTORE = 5034;
+  public static final int SHOW_LIST = 5035;
+
   private static final Class LISTENER = CTabFolder2Listener.class;
-  
+
   /**
    * The tab item for the operation.
    */
@@ -54,7 +51,7 @@ public class CTabFolderEvent extends TypedEvent {
    * Applies to the close and showList events.
    */
   public boolean doit;
-  
+
   /**
    * The widget-relative, x coordinate of the chevron button
    * at the time of the event.  Applies to the showList event.
@@ -66,7 +63,7 @@ public class CTabFolderEvent extends TypedEvent {
    * at the time of the event.  Applies to the showList event.
    */
   public int y;
-  
+
   /**
    * The width of the chevron button at the time of the event.
    * Applies to the showList event.
@@ -78,12 +75,12 @@ public class CTabFolderEvent extends TypedEvent {
    * Applies to the showList event.
    */
   public int height;
-  
+
   /**
-   * Constructs a new instance of this class. 
+   * Constructs a new instance of this class.
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed 
+   * within the packages provided by RWT. It should never be accessed
    * from application code.
    * </p>
    */
@@ -91,6 +88,7 @@ public class CTabFolderEvent extends TypedEvent {
     super( source, id );
   }
 
+  @Override
   protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case CLOSE:
@@ -113,18 +111,20 @@ public class CTabFolderEvent extends TypedEvent {
     }
   }
 
+  @Override
   protected Class getListenerType() {
     return LISTENER;
   }
-  
+
+  @Override
   protected boolean allowProcessing() {
     return EventUtil.isAccessible( widget );
   }
-  
+
   public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
-  
+
   public static void addListener( Adaptable adaptable, CTabFolder2Listener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
@@ -136,7 +136,8 @@ public class CTabFolderEvent extends TypedEvent {
   public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
-  
+
+  @Override
   public String toString() {
     String string = super.toString();
     return string.substring( 0, string.length() - 1 ) // remove trailing '}'

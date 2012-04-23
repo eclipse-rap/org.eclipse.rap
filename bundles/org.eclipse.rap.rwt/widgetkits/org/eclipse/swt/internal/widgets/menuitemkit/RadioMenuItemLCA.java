@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,10 +23,12 @@ import org.eclipse.swt.widgets.MenuItem;
 
 final class RadioMenuItemLCA extends MenuItemDelegateLCA {
 
+  @Override
   void preserveValues( MenuItem item ) {
     MenuItemLCAUtil.preserveValues( item );
   }
 
+  @Override
   void readData( MenuItem item ) {
     if( readSelection( item ) ) {
       processSelectionEvent( item );
@@ -36,10 +38,12 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
     MenuItemLCAUtil.processArmEvent( item );
   }
 
+  @Override
   void renderInitialization( MenuItem item ) throws IOException {
     MenuItemLCAUtil.renderInitialization( item );
   }
 
+  @Override
   void renderChanges( MenuItem item ) throws IOException {
     MenuItemLCAUtil.renderChanges( item );
   }
@@ -62,7 +66,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
       if( item.getSelection() ) {
         event = new SelectionEvent( item, null, type );
       } else {
-        event = new DeselectionEvent( item, null, type );
+        event = new DeselectionEvent( item );
       }
       event.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
       event.processEvent();

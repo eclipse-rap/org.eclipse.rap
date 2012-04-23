@@ -158,28 +158,22 @@ public class ControlLCAUtil {
       final int charCode = readIntParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE );
       final int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_KEY_DOWN_MODIFIER );
       final int traverseKey = getTraverseKey( keyCode, stateMask );
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          Event event;
-          if( traverseKey != SWT.TRAVERSE_NONE ) {
-            event = createEvent( control, TraverseEvent.KEY_TRAVERSED );
-            initializeKeyEvent( event, keyCode, charCode, stateMask );
-            event.detail = traverseKey;
-            TraverseEvent traverseEvent = new TraverseEvent( event );
-            traverseEvent.processEvent();
-          }
-          event = createEvent( control, KeyEvent.KEY_PRESSED );
-          initializeKeyEvent( event, keyCode, charCode, stateMask );
-          KeyEvent pressedEvent = new KeyEvent( event );
-          pressedEvent.processEvent();
-          if( pressedEvent.doit ) {
-            event = createEvent( control, KeyEvent.KEY_RELEASED );
-            initializeKeyEvent( event, keyCode, charCode, stateMask );
-            KeyEvent releasedEvent = new KeyEvent( event );
-            releasedEvent.processEvent();
-          }
-        }
-      } );
+      Event event;
+      if( traverseKey != SWT.TRAVERSE_NONE ) {
+        event = createEvent( control, TraverseEvent.KEY_TRAVERSED );
+        initializeKeyEvent( event, keyCode, charCode, stateMask );
+        event.detail = traverseKey;
+        TraverseEvent traverseEvent = new TraverseEvent( event );
+        traverseEvent.processEvent();
+      }
+      event = createEvent( control, KeyEvent.KEY_PRESSED );
+      initializeKeyEvent( event, keyCode, charCode, stateMask );
+      KeyEvent pressedEvent = new KeyEvent( event );
+      pressedEvent.processEvent();
+      event = createEvent( control, KeyEvent.KEY_RELEASED );
+      initializeKeyEvent( event, keyCode, charCode, stateMask );
+      KeyEvent releasedEvent = new KeyEvent( event );
+      releasedEvent.processEvent();
     }
   }
 

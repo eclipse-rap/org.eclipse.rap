@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,10 +23,12 @@ import org.eclipse.swt.widgets.Button;
 
 final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
+  @Override
   void preserveValues( Button button ) {
     ButtonLCAUtil.preserveValues( button );
   }
 
+  @Override
   void readData( Button button ) {
     // [if] The selection event is based on the request "selection" parameter
     // and not on the selection event, because it is not possible to fire the
@@ -41,10 +43,12 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     WidgetLCAUtil.processHelp( button );
   }
 
+  @Override
   void renderInitialization( Button button ) throws IOException {
     ButtonLCAUtil.renderInitialization( button );
   }
 
+  @Override
   void renderChanges( Button button ) throws IOException {
     ButtonLCAUtil.renderChanges( button );
   }
@@ -56,7 +60,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
       if( button.getSelection() ) {
         event = new SelectionEvent( button, null, type );
       } else {
-        event = new DeselectionEvent( button, null, type );
+        event = new DeselectionEvent( button );
       }
       event.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
       event.processEvent();
