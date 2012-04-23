@@ -37,7 +37,6 @@ qx.Class.define( "org.eclipse.rwt.System", {
     var eventHandler = org.eclipse.rwt.EventHandler;
     eventHandler.setAllowContextMenu( org.eclipse.rwt.widgets.Menu.getAllowContextMenu );
     eventHandler.setMenuManager( org.eclipse.rwt.MenuManager.getInstance() );
-    this._registerSingletons();
   },
 
   events : {
@@ -73,28 +72,6 @@ qx.Class.define( "org.eclipse.rwt.System", {
         qx.Class.patch( org.eclipse.swt.widgets.ProgressBar, org.eclipse.rwt.GraphicsMixin );
       }
       qx.Class.patch( qx.event.type.DomEvent, org.eclipse.rwt.DomEventPatch );
-    },
-
-    _registerSingletons : function() {
-      var AdapterRegistry = org.eclipse.rwt.protocol.AdapterRegistry;
-      var uiCallBack = org.eclipse.rwt.UICallBack.getInstance();
-      org.eclipse.rwt.protocol.ObjectManager.add( 
-        "uicb", 
-        uiCallBack, 
-        AdapterRegistry.getAdapter( "rwt.UICallBack" ) 
-      );
-      var jsExecutor = org.eclipse.rwt.JSExecutor.getInstance();
-      org.eclipse.rwt.protocol.ObjectManager.add( 
-        "jsex", 
-        jsExecutor, 
-        AdapterRegistry.getAdapter( "rwt.JSExecutor" ) 
-      );
-      var browser = org.eclipse.rwt.widgets.ExternalBrowser.getInstance();
-      org.eclipse.rwt.protocol.ObjectManager.add( 
-        "eb", 
-        browser, 
-        AdapterRegistry.getAdapter( "rwt.widgets.ExternalBrowser" ) 
-      );
     },
 
     getStartupTime : function() {

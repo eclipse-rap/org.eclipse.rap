@@ -9,34 +9,26 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
+var Processor = org.eclipse.rwt.protocol.Processor;
+var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+
 qx.Class.define( "org.eclipse.rwt.test.tests.JSExecutorTest", {
 
   extend : qx.core.Object,
 
   members : {
 
-    testJSExecutorExists : function() {
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var externalBrowser = ObjectManager.getObject( "jsex" );
-      assertTrue( externalBrowser instanceof org.eclipse.rwt.JSExecutor );
-    },
-
     testCreateJSExecutorByProtocol : function() {
-      var jsExecutor = org.eclipse.rwt.JSExecutor.getInstance();
-      org.eclipse.rwt.protocol.Processor.processOperation( {
-        "target" : "jsex",
-        "action" : "create",
-        "type" : "rwt.JSExecutor",
-        "properties" : {}
-      } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
-      assertIdentical( jsExecutor, ObjectManager.getObject( "jsex" ) );
+      var jsExecutor = this._createJSExecutor();
+      assertTrue( jsExecutor instanceof org.eclipse.rwt.JSExecutor );
+      assertIdentical( jsExecutor, org.eclipse.rwt.JSExecutor.getInstance() );
     },
 
     testExecuteByProtocol : function() {
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var uiCallBack = ObjectManager.getObject( "jsex" );
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      var jsExecutor = this._createJSExecutor();
+      Processor.processOperation( {
         "target" : "jsex",
         "action" : "call",
         "method" : "execute",
@@ -46,8 +38,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.JSExecutorTest", {
       } );
       assertEquals( 33, window.foo );
       foo = undefined; // IE doesnt like delete window.foo or delete foo;
+    },
+
+    _createJSExecutor : function() {
+      Processor.processOperation( {
+        "target" : "jsex",
+        "action" : "create",
+        "type" : "rwt.JSExecutor"
+      } );
+      return ObjectManager.getObject( "jsex" );
     }
 
   }
 
 } );
+
+}());

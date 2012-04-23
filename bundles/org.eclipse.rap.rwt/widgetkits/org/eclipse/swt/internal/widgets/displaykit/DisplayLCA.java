@@ -156,6 +156,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     // Note [rst] Startup page created in LifecycleServiceHandler#runLifeCycle
     // TODO [rh] should be replaced by requestCounter != 0
     if( request.getParameter( RequestParams.UIROOT ) != null ) {
+      createSingletons( display );
       disposeWidgets();
       renderRequestCounter();
       renderTheme( display );
@@ -240,6 +241,16 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   /////////////////////////////
   // Helping methods for render
+
+  private static void createSingletons( Display display ) {
+    WidgetAdapter adapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
+    if( !adapter.isInitialized() ) {
+      ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
+      protocolWriter.appendCreate( "uicb", "rwt.UICallBack" );
+      protocolWriter.appendCreate( "jsex", "rwt.JSExecutor" );
+      protocolWriter.appendCreate( "eb", "rwt.widgets.ExternalBrowser" );
+    }
+  }
 
   private static void disposeWidgets() throws IOException {
     Widget[] disposedWidgets = DisposedWidgets.getAll();

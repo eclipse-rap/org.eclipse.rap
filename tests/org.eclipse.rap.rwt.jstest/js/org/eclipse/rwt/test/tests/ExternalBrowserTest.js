@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,29 +9,21 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
+var Processor = org.eclipse.rwt.protocol.Processor;
+var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+
 qx.Class.define( "org.eclipse.rwt.test.tests.ExternalBrowserTest", {
 
   extend : qx.core.Object,
 
   members : {
 
-    testExternalBrowserExists : function() {
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var externalBrowser = ObjectManager.getObject( "eb" );
-      assertTrue( externalBrowser instanceof org.eclipse.rwt.widgets.ExternalBrowser );
-    },
-
     testCreateExternalBrowserByProtocol : function() {
-      var externalBrowser = org.eclipse.rwt.widgets.ExternalBrowser.getInstance();
-      org.eclipse.rwt.protocol.Processor.processOperation( {
-        "target" : "eb",
-        "action" : "create",
-        "type" : "rwt.widgets.ExternalBrowser",
-        "properties" : {}
-      } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = ObjectManager.getObject( "eb" );
-      assertIdentical( externalBrowser, widget );
+      var externalBrowser = this._createExternalBrowser();
+      assertTrue( externalBrowser instanceof org.eclipse.rwt.widgets.ExternalBrowser );
+      assertIdentical( externalBrowser, org.eclipse.rwt.widgets.ExternalBrowser.getInstance() );
     },
 
     testEscapeId : function() {
@@ -55,8 +47,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExternalBrowserTest", {
       assertEquals( "1", escapedId1 );
       escapedId2 = externalBrowser._escapeId( "2" );
       assertEquals( "2", escapedId2 );
+    },
+
+    _createExternalBrowser : function() {
+      Processor.processOperation( {
+        "target" : "eb",
+        "action" : "create",
+        "type" : "rwt.widgets.ExternalBrowser"
+      } );
+      return ObjectManager.getObject( "eb" );
     }
 
   }
   
 } );
+
+}());
