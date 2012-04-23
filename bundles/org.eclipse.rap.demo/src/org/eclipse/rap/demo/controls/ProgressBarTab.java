@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ public class ProgressBarTab extends ExampleTab {
     super( parent, title );
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     int style = getStyle() == 0 ? SWT.HORIZONTAL : getStyle();
 
@@ -45,6 +46,7 @@ public class ProgressBarTab extends ExampleTab {
     final Button button = new Button( parent, SWT.PUSH );
     button.setText( "Start Background Process" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent evt ) {
         button.setEnabled( false );
         // activate UI-callback mechanism
@@ -56,21 +58,20 @@ public class ProgressBarTab extends ExampleTab {
       }
     } );
     button.addControlListener( new ControlAdapter() {
+      @Override
       public void controlResized( final ControlEvent evt ) {
         Point size = button.getSize();
-        int width = Math.max( ( int )( size.x + size.x * 0.25 ),
-                              progressBar.getSize().x );
-        int height = Math.max( size.y, progressBar.getSize().y );
         if( ( progressBar.getStyle() & SWT.HORIZONTAL ) != 0 ) {
-          progressBar.setLayoutData( new GridData( width, height ) );
+          progressBar.setLayoutData( new GridData( Math.max( 200, size.x ), SWT.DEFAULT ) );
         } else {
-          progressBar.setLayoutData( new GridData( height, width ) );
+          progressBar.setLayoutData( new GridData( SWT.DEFAULT, 150 ) );
         }
       }
     } );
     parent.layout();
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     createStyleButton( "HORIZONTAL", SWT.HORIZONTAL, true );
     createStyleButton( "VERTICAL", SWT.VERTICAL, false );
@@ -87,6 +88,7 @@ public class ProgressBarTab extends ExampleTab {
     combo.setItems( new String[] { "SWT.NORMAL", "SWT.PAUSED", "SWT.ERROR" } );
     combo.select( 0 );
     combo.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         int index = combo.getSelectionIndex();
         if( index == 2 ) {
