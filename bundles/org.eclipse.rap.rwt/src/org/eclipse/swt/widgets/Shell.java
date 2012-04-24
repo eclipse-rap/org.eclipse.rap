@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -393,6 +393,7 @@ public class Shell extends Decorations {
     this( parent != null ? parent.display : null, parent, style, 0 );
   }
 
+  @Override
   Shell internalGetShell() {
     return this;
   }
@@ -496,6 +497,7 @@ public class Shell extends Decorations {
   // Shell measurements
 
   // TODO [rst] Move to class Decorations, as soon as it exists
+  @Override
   public Rectangle getClientArea() {
     checkWidget();
     Rectangle bounds = getBounds();
@@ -512,6 +514,7 @@ public class Shell extends Decorations {
   }
 
   // TODO [rst] Move to class Decorations, as soon as it exists
+  @Override
   public Rectangle computeTrim( int x, int y, int width, int height ) {
     checkWidget();
     int hTopTrim;
@@ -558,6 +561,7 @@ public class Shell extends Decorations {
     return result;
   }
 
+  @Override
   public int getBorderWidth() {
     return getFullScreen() ? 0 : super.getBorderWidth();
   }
@@ -585,10 +589,12 @@ public class Shell extends Decorations {
     return themeAdapter.getMenuBarHeight( this );
   }
 
+  @Override
   Composite findDeferredControl() {
     return layoutCount > 0 ? this : null;
   }
 
+  @Override
   void updateMode() {
     mode &= ~MODE_MAXIMIZED;
     mode &= ~MODE_MINIMIZED;
@@ -598,6 +604,7 @@ public class Shell extends Decorations {
   /////////////////////
   // Adaptable override
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -615,6 +622,7 @@ public class Shell extends Decorations {
   /////////////
   // Enablement
 
+  @Override
   public void setEnabled( boolean enabled ) {
     checkWidget();
     if( getEnabled() != enabled ) {
@@ -627,6 +635,7 @@ public class Shell extends Decorations {
     }
   }
 
+  @Override
   public boolean isEnabled() {
     checkWidget();
     return getEnabled();
@@ -635,11 +644,13 @@ public class Shell extends Decorations {
   /////////////
   // Visibility
 
+  @Override
   public boolean isVisible() {
     checkWidget();
     return getVisible();
   }
 
+  @Override
   public void setVisible( boolean visible ) {
     checkWidget();
     boolean wasVisible = getVisible();
@@ -704,8 +715,7 @@ public class Shell extends Decorations {
     checkWidget();
     ProcessActionRunner.add( new Runnable() {
       public void run() {
-        ShellEvent event
-          = new ShellEvent( Shell.this, ShellEvent.SHELL_CLOSED );
+        ShellEvent event = new ShellEvent( Shell.this, ShellEvent.SHELL_CLOSED );
         event.processEvent();
         if( event.doit ) {
           Shell.this.dispose();
@@ -1014,6 +1024,7 @@ public class Shell extends Decorations {
     return new Point( minWidth,  minHeight );
   }
 
+  @Override
   public void setBounds( Rectangle bounds ) {
     int newWidth = Math.max( bounds.width, minWidth );
     int newHeight = Math.max( bounds.height, minHeight );
@@ -1093,6 +1104,7 @@ public class Shell extends Decorations {
   ///////////
   // Disposal
 
+  @Override
   void releaseChildren() {
     super.releaseChildren();
     Shell[] dialogShells = internalGetShells();
@@ -1112,6 +1124,7 @@ public class Shell extends Decorations {
     }
   }
 
+  @Override
   void releaseParent() {
     // Do not call super.releaseParent()
     // This method would try to remove a child-shell from its ControlHolder
@@ -1463,6 +1476,7 @@ public class Shell extends Decorations {
   // Widget overrides
 
   // TODO [rh] move to class Decorations as soon as it exists
+  @Override
   String getNameText() {
     return getText();
   }
@@ -1505,6 +1519,7 @@ public class Shell extends Decorations {
   ///////////////////
   // Skinning support
 
+  @Override
   void reskinChildren( int flags ) {
     Shell[] shells = getShells();
     for( int i = 0; i < shells.length; i++ ) {
