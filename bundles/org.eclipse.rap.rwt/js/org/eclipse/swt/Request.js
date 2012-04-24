@@ -258,6 +258,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         var messageObject = JSON.parse( text );
         org.eclipse.swt.EventUtil.setSuspended( true );
         org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
+        qx.ui.core.Widget.flushGlobalQueues();
         org.eclipse.swt.EventUtil.setSuspended( false );
         org.eclipse.rwt.UICallBack.getInstance().sendUICallBackRequest();
       } catch( ex ) {
