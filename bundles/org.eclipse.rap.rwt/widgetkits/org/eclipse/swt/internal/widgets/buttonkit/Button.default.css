@@ -29,7 +29,13 @@ Button {
 
 Button[PUSH],
 Button[TOGGLE],
+Button[ARROW],
 Button[BORDER] {
+  border: 1px solid #aaaaaa;
+}
+
+Button[ARROW] {
+  padding: 4px;
   border: 1px solid #aaaaaa;
 }
 
@@ -57,6 +63,22 @@ Button-RadioIcon {
 
 Button-RadioIcon:selected {
   background-image: url( resource/widget/rap/button/radio-selected.png );
+}
+
+Button-ArrowIcon[UP] {
+  background-image: url( resource/widget/rap/button/arrow-up.png );
+}
+
+Button-ArrowIcon[DOWN] {
+  background-image: url( resource/widget/rap/button/arrow-down.png );
+}
+
+Button-ArrowIcon[LEFT] {
+  background-image: url( resource/widget/rap/button/arrow-left.png );
+}
+
+Button-ArrowIcon[RIGHT] {
+  background-image: url( resource/widget/rap/button/arrow-right.png );
 }
 
 Button-FocusIndicator {

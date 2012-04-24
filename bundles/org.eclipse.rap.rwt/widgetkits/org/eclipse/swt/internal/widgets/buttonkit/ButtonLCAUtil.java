@@ -27,7 +27,7 @@ final class ButtonLCAUtil {
 
   private static final String TYPE = "rwt.widgets.Button";
   private static final String[] ALLOWED_STYLES = new String[] {
-    "CHECK", "PUSH", "RADIO", "TOGGLE", "FLAT", "WRAP", "BORDER"
+    "ARROW", "CHECK", "PUSH", "RADIO", "TOGGLE", "FLAT", "WRAP", "BORDER"
   };
 
   static final String PROP_TEXT = "text";
@@ -93,6 +93,10 @@ final class ButtonLCAUtil {
       result = "center";
     } else if( ( alignment & SWT.RIGHT ) != 0 ) {
       result = "right";
+    } else if( ( alignment & SWT.UP ) != 0 ) {
+      result = "up";
+    } else if( ( alignment & SWT.DOWN ) != 0 ) {
+      result = "down";
     } else {
       result = "left";
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,16 +15,21 @@ qx.Class.define( "org.eclipse.rwt.widgets.Button", {
 
   construct : function( buttonType ) {
     this.base( arguments, buttonType );
+    this._alignment = buttonType === "arrow" ? "up" : "center";
     switch( buttonType ) {
-     case "push" :
+     case "arrow":
+       this.addState( "rwt_UP" );
+       this.setAppearance( "push-button" );
+     break;
+     case "push":
      case "toggle":
-      this.setAppearance( "push-button" );
+       this.setAppearance( "push-button" );
      break;
      case "check":
-      this.setAppearance( "check-box" );
+       this.setAppearance( "check-box" );
      break;
      case "radio":
-      this.setAppearance( "radio-button" );
+       this.setAppearance( "radio-button" );
     }
     this.initTabIndex();
     this.addEventListener( "focus", this._onFocus );
@@ -42,6 +47,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.Button", {
   
   members : {
 
+    setAlignment : function( value ) {
+      if( this.hasState( "rwt_ARROW" ) ) {
+        this.removeState( "rwt_" + this._alignment.toUpperCase() );
+        this.addState( "rwt_" + value.toUpperCase() );
+      } else {
+        this.setHorizontalChildrenAlign( value );
+      }
+      this._alignment = value;
+    },
+
     setWrap : function( value ) {
       if( value ) {
         this.setFlexibleCell( 2 );
@@ -57,9 +72,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Button", {
     
     _showFocusIndicator : function() {
       var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
-      var node =   this.getCellNode( 2 ) != null 
-                 ? this.getCellNode( 2 )
-                 : this.getCellNode( 1 );
+      var node = this.getCellNode( 2 ) != null ? this.getCellNode( 2 ) : this.getCellNode( 1 );
       focusIndicator.show( this, "Button-FocusIndicator", node );      
     },
     

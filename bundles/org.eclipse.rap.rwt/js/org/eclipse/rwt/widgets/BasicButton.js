@@ -30,24 +30,25 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
     }
     this.addState( buttonType );
     switch( buttonType ) {
-     case "push":
-      this._isSelectable = false;
-      this._isDeselectable = false;
-      this._sendEvent = true;
-     break;
-     case "toggle":
-     case "check":
-      this._isSelectable = true;
-      this._isDeselectable = true;
-      this._sendEvent = true;
-     break;
-     case "radio":
-      this._isSelectable = true;
-      this._sendEvent = false;
-      this.setNoRadioGroup( false );
-      org.eclipse.rwt.RadioButtonUtil.registerExecute( this );
-      org.eclipse.rwt.RadioButtonUtil.registerKeypress( this );
-     break;
+      case "arrow":
+      case "push":
+        this._isSelectable = false;
+        this._isDeselectable = false;
+        this._sendEvent = true;
+      break;
+      case "toggle":
+      case "check":
+        this._isSelectable = true;
+        this._isDeselectable = true;
+        this._sendEvent = true;
+      break;
+      case "radio":
+        this._isSelectable = true;
+        this._sendEvent = false;
+        this.setNoRadioGroup( false );
+        org.eclipse.rwt.RadioButtonUtil.registerExecute( this );
+        org.eclipse.rwt.RadioButtonUtil.registerKeypress( this );
+      break;
     }
 
   },

@@ -1,12 +1,13 @@
 /*******************************************************************************
-* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   EclipseSource - initial API and implementation
-*******************************************************************************/
+ * Copyright (c) 2010, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
 
 /* Test values for Business theme */
 
@@ -31,7 +32,26 @@ Button[PUSH], Button[TOGGLE] {
   opacity: 1;
 }
 
-Button[PUSH][BORDER], Button[TOGGLE][BORDER] {
+Button[ARROW] {
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;
+  background-color: white;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
+  border: 1px solid #a4a4a4;
+  border-radius: 3px;
+  cursor: pointer;
+  padding: 4px;
+  animation: hoverOut 500ms ease-out;
+  opacity: 1;
+}
+
+Button[ARROW][BORDER], Button[PUSH][BORDER], Button[TOGGLE][BORDER] {
   color: #4a4a4a;
   background-color: white;
   background-image: gradient(
@@ -66,6 +86,7 @@ Button[TOGGLE]:selected:hover {
   opacity: 1;
 }
 
+Button[ARROW]:hover,
 Button[PUSH]:hover,
 Button[TOGGLE]:hover {
   background-image: gradient(
@@ -78,6 +99,7 @@ Button[TOGGLE]:hover {
   opacity: 1;
 }
 
+Button[ARROW]:pressed,
 Button[PUSH]:pressed,
 Button[TOGGLE]:pressed {
   background-image: gradient(
@@ -90,6 +112,7 @@ Button[TOGGLE]:pressed {
   opacity: 1;
 }
 
+Button[ARROW]:disabled,
 Button[PUSH]:disabled,
 Button[TOGGLE]:disabled {
   background-image: gradient(
@@ -104,6 +127,7 @@ Button[TOGGLE]:disabled {
   opacity: 1;
 }
 
+Button-FocusIndicator[ARROW],
 Button-FocusIndicator[PUSH],
 Button-FocusIndicator[TOGGLE] {
   background-color: transparent;
@@ -140,6 +164,22 @@ Button[PUSH]:disabled,
 Button[TOGGLE]:disabled {
   cursor: default;
   color: #cfcfcf;
+}
+
+Button-ArrowIcon[UP] {
+  background-image: url( theme/resources/button/arrow-up.png );
+}
+
+Button-ArrowIcon[DOWN] {
+  background-image: url( theme/resources/button/arrow-down.png );
+}
+
+Button-ArrowIcon[LEFT] {
+  background-image: url( theme/resources/button/arrow-left.png );
+}
+
+Button-ArrowIcon[RIGHT] {
+  background-image: url( theme/resources/button/arrow-right.png );
 }
 
 Button-FocusIndicator[RADIO],

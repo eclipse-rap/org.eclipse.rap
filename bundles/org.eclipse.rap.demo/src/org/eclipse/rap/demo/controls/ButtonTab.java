@@ -52,6 +52,8 @@ public class ButtonTab extends ExampleTab {
     createStyleButton( "LEFT", SWT.LEFT );
     createStyleButton( "CENTER", SWT.CENTER );
     createStyleButton( "RIGHT", SWT.RIGHT );
+    createStyleButton( "UP", SWT.UP );
+    createStyleButton( "DOWN", SWT.DOWN );
     createStyleButton( "WRAP", SWT.WRAP );
     createVisibilityButton();
     createEnablementButton();
@@ -93,6 +95,7 @@ public class ButtonTab extends ExampleTab {
     radioButton2.setText( "Radio 2" );
     radioButton3 = new Button( parent, style | SWT.RADIO );
     radioButton3.setText( "Radio 3" );
+    Button arrowButton = new Button( parent, style | SWT.ARROW );
     registerControl( pushButton );
     registerControl( toggleButton );
     registerControl( checkButton1 );
@@ -100,6 +103,7 @@ public class ButtonTab extends ExampleTab {
     registerControl( radioButton1 );
     registerControl( radioButton2 );
     registerControl( radioButton3 );
+    registerControl( arrowButton );
     // default button
     final Group group = new Group( parent, SWT.NONE );
     group.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );

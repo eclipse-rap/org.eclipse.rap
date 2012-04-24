@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -208,6 +208,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( "right", widget.getHorizontalChildrenAlign() );
+      assertEquals( "right", widget._alignment );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetAlignmentByProtocol_Arrow : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "ARROW" ],
+          "parent" : "w2",
+          "alignment" : "down"
+        }
+      } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
+      assertTrue( widget.hasState( "rwt_DOWN" ) );
+      assertEquals( "down", widget._alignment );
       shell.destroy();
       widget.destroy();
     },
@@ -286,7 +309,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           }
         }
         return result;
-      }
+      };
       var focudIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
       var button = new org.eclipse.rwt.widgets.Button( "push" );
       button.addState( "rwt_PUSH" );
@@ -319,7 +342,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           }
         }
         return result;
-      }
+      };
       var focudIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
       var button = new org.eclipse.rwt.widgets.Button( "check" );      
       button.addState( "rwt_CHECK" );
@@ -463,7 +486,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertTrue( button.hasState( "selected" ) );
       assertFalse( button2.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );
-      var msg = this.TestUtil.getMessage();
+      msg = this.TestUtil.getMessage();
       assertContains( "w11.selection=true", msg );
       assertContains( "w2.selection=false", msg );
     },
@@ -495,7 +518,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertTrue( button1.hasState( "selected" ) );
       assertTrue( button2.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );      
-      var msg = this.TestUtil.getMessage();      
+      msg = this.TestUtil.getMessage();      
       assertContainsNot( "w11.selection", msg );
       assertContains( "w2.selection=true", msg );
       this.TestUtil.clearRequestLog();
@@ -503,7 +526,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertTrue( button1.hasState( "selected" ) );
       assertFalse( button2.hasState( "selected" ) );
       assertEquals( 1, this.TestUtil.getRequestsSend() );      
-      var msg = this.TestUtil.getMessage();      
+      msg = this.TestUtil.getMessage();      
       assertContainsNot( "w11.selection", msg );
       assertContains( "w2.selection=false", msg );
     },
@@ -530,7 +553,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       this.TestUtil.press( button, "Enter" );
       assertFalse( button.hasState( "selected" ) );      
       assertEquals( 1, this.TestUtil.getRequestsSend() );
-      var msg = this.TestUtil.getMessage();
+      msg = this.TestUtil.getMessage();
       assertContains( "widgetSelected=w1",  msg );      
     },
     

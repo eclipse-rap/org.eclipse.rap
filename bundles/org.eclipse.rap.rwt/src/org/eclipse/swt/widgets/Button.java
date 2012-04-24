@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ import org.eclipse.swt.internal.widgets.buttonkit.ButtonThemeAdapter;
 
 /**
  * Instances of this class represent a selectable user interface object that
- * issues notification when pressed and released. 
+ * issues notification when pressed and released.
  * <dl>
  * <dt><b>Styles:</b></dt>
  * <dd><!--ARROW, -->CHECK, PUSH, RADIO, TOGGLE, FLAT, WRAP</dd>
@@ -32,20 +32,19 @@ import org.eclipse.swt.internal.widgets.buttonkit.ButtonThemeAdapter;
  * <dd>Selection</dd>
  * </dl>
  * <p>
- * Note: Only one of the styles <!--ARROW, -->CHECK, PUSH, RADIO, and TOGGLE
+ * Note: Only one of the styles ARROW, CHECK, PUSH, RADIO, and TOGGLE
  * may be specified.
  * </p><p>
  * Note: Only one of the styles LEFT, RIGHT, and CENTER may be specified.
- * </p><!--<p>
+ * </p><p>
  * Note: Only one of the styles UP, DOWN, LEFT, and RIGHT may be specified
  * when the ARROW style is specified.
- * </p>--><p>
+ * </p><p>
  * IMPORTANT: This class is intended to be subclassed <em>only</em>
  * within the SWT implementation.
  * </p>
  * @since 1.0
  */
-// TODO [rst] Remove comments from javadoc when fully implemented
 public class Button extends Control {
 
   private String text = "";
@@ -95,6 +94,7 @@ public class Button extends Control {
     super( parent, checkStyle( style ) );
   }
 
+  @Override
   void initState() {
     if( ( style & ( SWT.PUSH | SWT.TOGGLE ) ) == 0 ) {
       state |= THEME_BACKGROUND;
@@ -297,12 +297,10 @@ public class Button extends Control {
    * Returns a value which describes the position of the
    * text or image in the receiver. The value will be one of
    * <code>LEFT</code>, <code>RIGHT</code> or <code>CENTER</code>
-   * <!--
    * unless the receiver is an <code>ARROW</code> button, in
    * which case, the alignment will indicate the direction of
    * the arrow (one of <code>LEFT</code>, <code>RIGHT</code>,
    * <code>UP</code> or <code>DOWN</code>)
-   * -->.
    *
    * @return the alignment
    *
@@ -373,6 +371,7 @@ public class Button extends Control {
     }
   }
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
@@ -386,10 +385,10 @@ public class Button extends Control {
     }
     if( hasText ) {
       Point extent;
-      if( ( style & SWT.WRAP ) != 0 ) {        
-        extent = Graphics.textExtent( getFont(), text, wHint );        
+      if( ( style & SWT.WRAP ) != 0 ) {
+        extent = Graphics.textExtent( getFont(), text, wHint );
       } else {
-        extent = Graphics.stringExtent( getFont(), text );        
+        extent = Graphics.stringExtent( getFont(), text );
       }
       width += extent.x;
       height = Math.max( height, extent.y );
@@ -397,8 +396,7 @@ public class Button extends Control {
     if( height == 0 ) {
       height = 10;
     }
-    ButtonThemeAdapter themeAdapter
-      = ( ButtonThemeAdapter )getAdapter( IThemeAdapter.class );
+    ButtonThemeAdapter themeAdapter = ( ButtonThemeAdapter )getAdapter( IThemeAdapter.class );
     if( hasText && hasImage ) {
       int spacing = themeAdapter.getSpacing( this );
       width += spacing;
@@ -410,6 +408,9 @@ public class Button extends Control {
         width += themeAdapter.getCheckSpacing( this );
       }
       height = Math.max( height, checkSize.y );
+    } else if( ( style & SWT.ARROW ) != 0 ) {
+      width = themeAdapter.getArrowSize( this ).x;
+      height = themeAdapter.getArrowSize( this ).y;
     }
     Rectangle padding = themeAdapter.getPadding( this );
     width += padding.width;
@@ -494,10 +495,12 @@ public class Button extends Control {
   ///////////////////
   // Widget overrides
 
+  @Override
   boolean isTabGroup() {
     return true;
   }
 
+  @Override
   String getNameText() {
     return getText();
   }

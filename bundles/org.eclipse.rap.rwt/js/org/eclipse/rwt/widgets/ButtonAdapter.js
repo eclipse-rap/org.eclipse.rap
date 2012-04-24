@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Button", {
       buttonType = "toggle";
     } else if( styleMap.RADIO ) {
       buttonType = "radio";
+    } else if( styleMap.ARROW ) {
+      buttonType = "arrow";
     }
     var result = new org.eclipse.rwt.widgets.Button( buttonType );
     result.setWrap( styleMap.WRAP );
@@ -50,9 +52,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Button", {
         text = EncodingUtil.replaceNewLines( text, "<br/>" );
       }
       widget.setText( text === "" ? null : text );
-    },
-    "alignment" : function( widget, value ) {
-      widget.setHorizontalChildrenAlign( value );
     },
     "image" : function( widget, value ) {
       if( value === null ) {

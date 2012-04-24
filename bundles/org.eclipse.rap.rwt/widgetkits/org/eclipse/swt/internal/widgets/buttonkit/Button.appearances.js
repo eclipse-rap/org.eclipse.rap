@@ -41,6 +41,9 @@ var appearances = {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.animation = tv.getCssAnimation( "Button", "animation" );
+      if( states.rwt_ARROW ) {
+        result.icon = tv.getCssSizedImage( "Button-ArrowIcon", "background-image" );
+      }
       return result;
     }
   },

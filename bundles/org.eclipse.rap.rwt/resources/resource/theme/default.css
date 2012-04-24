@@ -123,6 +123,21 @@ Button[TOGGLE][FLAT] {
   text-shadow: 0 1px 0 #ffffff;
 }
 
+Button[ARROW],
+Button[ARROW][BORDER],
+Button[ARROW][FLAT] {
+  border: 1px solid #bdbdbd;
+  border-radius: 2px;
+  padding: 10px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #f9f9f9 ),
+    to( #e4e4e4 )
+  );
+  cursor: pointer;
+}
+
+Button[ARROW]:default,
 Button[PUSH]:default,
 Button[TOGGLE]:default {
   background-color: #416693;
@@ -134,6 +149,7 @@ Button[TOGGLE]:default {
   border: 1px solid #a0b3ca;
 }
 
+Button[ARROW]:disabled,
 Button[PUSH]:disabled,
 Button[TOGGLE]:disabled {
   cursor: default;
@@ -143,6 +159,7 @@ Button[TOGGLE]:disabled {
   border: 1px solid #d2d2d2;
 }
 
+Button[ARROW]:hover,
 Button[PUSH]:hover,
 Button[TOGGLE]:hover {
   background-image: gradient(
@@ -152,6 +169,7 @@ Button[TOGGLE]:hover {
   );
 }
 
+Button[ARROW]:pressed,
 Button[PUSH]:pressed,
 Button[TOGGLE]:pressed {
   background-image: gradient(
@@ -231,7 +249,23 @@ Button-RadioIcon:selected:hover {
   background-image: url( resource/widget/rap/button/radio-selected-hover.png );
 }
 
-Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
+Button-ArrowIcon[UP] {
+  background-image: url( resource/widget/rap/button/arrow-up.png );
+}
+
+Button-ArrowIcon[DOWN] {
+  background-image: url( resource/widget/rap/button/arrow-down.png );
+}
+
+Button-ArrowIcon[LEFT] {
+  background-image: url( resource/widget/rap/button/arrow-left.png );
+}
+
+Button-ArrowIcon[RIGHT] {
+  background-image: url( resource/widget/rap/button/arrow-right.png );
+}
+
+Button-FocusIndicator[ARROW], Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
   background-color: transparent;
   border: 1px dotted #b8b8b8;
   margin: 2px;

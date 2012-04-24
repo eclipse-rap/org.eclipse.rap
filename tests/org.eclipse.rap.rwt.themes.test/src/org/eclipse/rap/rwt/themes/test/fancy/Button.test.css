@@ -1,12 +1,13 @@
 /*******************************************************************************
-* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   EclipseSource - initial API and implementation
-*******************************************************************************/
+ * Copyright (c) 2010, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
 
 /* Button */
 
@@ -31,12 +32,27 @@ Button[PUSH], Button[TOGGLE], Button[BORDER] {
   opacity: 1;
 }
 
-Button[PUSH], Button[TOGGLE] {
+Button[ARROW], Button[ARROW][BORDER] {
+  border: 1px solid #A4A4A4;
+  border-radius: 3px;
+  padding: 4px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
+  animation: hoverOut 500ms ease-out;
+  opacity: 1;
+}
+
+Button[ARROW], Button[PUSH], Button[TOGGLE] {
   cursor: pointer;
   opacity: 1;
 }
 
-Button[PUSH]:disabled, Button[TOGGLE]:disabled {
+Button[ARROW]:disabled, Button[PUSH]:disabled, Button[TOGGLE]:disabled {
   cursor: default;
   opacity: 1;
 }
@@ -64,7 +80,7 @@ Button[TOGGLE]:selected:hover {
   opacity: 1;
 }
 
-Button[PUSH]:hover, Button[TOGGLE]:hover {
+Button[ARROW]:hover, Button[PUSH]:hover, Button[TOGGLE]:hover {
   background-image: gradient(
     linear, left top, left bottom,
     from( #ffffff ),
@@ -75,7 +91,7 @@ Button[PUSH]:hover, Button[TOGGLE]:hover {
   opacity: 1;
 }
 
-Button[PUSH]:pressed, Button[TOGGLE]:pressed {
+Button[ARROW]:pressed, Button[PUSH]:pressed, Button[TOGGLE]:pressed {
   background-image: gradient(
     linear, left top, left bottom,
     from( #e0e0e0 ),
@@ -94,7 +110,7 @@ Button[RADIO][BORDER] {
   opacity: 1;
 }
 
-Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
+Button-FocusIndicator[ARROW], Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
   background-color: transparent; 
   border: 1px dotted #b8b8b8;
   margin: 2px;
@@ -152,4 +168,20 @@ Button-RadioIcon:hover {
 
 Button-RadioIcon:selected:hover {
   background-image: url( theme/fancy/icons/radio-selected-hover.png );
+}
+
+Button-ArrowIcon[UP] {
+  background-image: url( theme/resources/button/arrow-up.png );
+}
+
+Button-ArrowIcon[DOWN] {
+  background-image: url( theme/resources/button/arrow-down.png );
+}
+
+Button-ArrowIcon[LEFT] {
+  background-image: url( theme/resources/button/arrow-left.png );
+}
+
+Button-ArrowIcon[RIGHT] {
+  background-image: url( theme/resources/button/arrow-right.png );
 }

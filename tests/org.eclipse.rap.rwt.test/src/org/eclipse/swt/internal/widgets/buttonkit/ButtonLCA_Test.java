@@ -407,6 +407,18 @@ public class ButtonLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "PUSH" ) );
   }
 
+  public void testRenderCreateArrow() throws IOException {
+    Button pushButton = new Button( shell, SWT.ARROW );
+
+    lca.renderInitialization( pushButton );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( pushButton );
+    assertEquals( "rwt.widgets.Button", operation.getType() );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "ARROW" ) );
+  }
+
   public void testRenderParent() throws IOException {
     Button pushButton = new Button( shell, SWT.PUSH );
 
@@ -478,6 +490,15 @@ public class ButtonLCA_Test extends TestCase {
     assertNull( message.findSetOperation( button, "alignment" ) );
   }
 
+  public void testRenderInitialAlignment_Arrow() throws IOException {
+    Button button = new Button( shell, SWT.ARROW );
+
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "up", message.findSetProperty( button, "alignment" ) );
+  }
+
   public void testRenderAlignment() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
 
@@ -486,6 +507,15 @@ public class ButtonLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( "right", message.findSetProperty( button, "alignment" ) );
+  }
+
+  public void testRenderAlignment_Arrow() throws IOException {
+    Button button = new Button( shell, SWT.ARROW | SWT.DOWN );
+
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "down", message.findSetProperty( button, "alignment" ) );
   }
 
   public void testRenderAlignmentUnchanged() throws IOException {
