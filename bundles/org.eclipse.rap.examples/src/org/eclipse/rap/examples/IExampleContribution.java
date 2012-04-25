@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.examples;
 
+import org.eclipse.rwt.application.ApplicationConfiguration;
+
 
 public interface IExampleContribution {
 
@@ -18,4 +20,6 @@ public interface IExampleContribution {
   String getTitle();
 
   IExamplePage createPage();
+
+  void configure( ApplicationConfiguration configuration );
 }
