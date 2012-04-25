@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *   Innoopract Informationssysteme GmbH - initial API and implementation
+ *   EclipseSource - ongoing development
  ******************************************************************************/
 
 /**
@@ -110,7 +110,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
     // apply subelement IDs
     
     applyObjectId : function( id ) {
-      this.base( arguments, id )
+      this.base( arguments, id );
       if( qx.ui.core.Widget._renderHtmlIds ) {
         var labelObject = this.getLegendObject().getLabelObject();
         labelObject.setHtmlAttribute( "id", id + "-label" );

@@ -1,37 +1,25 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright (c) 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                          and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
- *    1&1 Internet AG and others - original API and implementation
- *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
+ * Contributors:
+ *   1&1 Internet AG and others - original API and implementation
+ *   EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define("qx.ui.pageview.AbstractButton",
-{
+qx.Class.define("qx.ui.pageview.AbstractButton", {
+
   type : "abstract",
   extend : qx.ui.basic.Atom,
 
-
-
-
-  /*
-  *****************************************************************************
-     CONSTRUCTOR
-  *****************************************************************************
-  */
-
-  construct : function(vText, vIcon, vIconWidth, vIconHeight, vFlash)
-  {
-    this.base(arguments, vText, vIcon, vIconWidth, vIconHeight, vFlash);
-
+  construct : function( vText, vIcon, vIconWidth, vIconHeight, vFlash ) {
+    this.base( arguments, vText, vIcon, vIconWidth, vIconHeight, vFlash );
     this.initChecked();
     this.initTabIndex();
-
     this.addEventListener("mouseover", this._onmouseover);
     this.addEventListener("mouseout", this._onmouseout);
     this.addEventListener("mousedown", this._onmousedown);
@@ -39,79 +27,46 @@ qx.Class.define("qx.ui.pageview.AbstractButton",
     this.addEventListener("keypress", this._onkeypress);
   },
 
+  properties : {
 
-
-
-  /*
-  *****************************************************************************
-     PROPERTIES
-  *****************************************************************************
-  */
-
-  properties :
-  {
-    tabIndex :
-    {
+    tabIndex : {
       refine : true,
       init : 1
     },
 
-
     /** If this tab is the currently selected/active one */
-    checked :
-    {
+    checked : {
       check :"Boolean",
       init : false,
       apply : "_applyChecked",
       event : "changeChecked"
     },
 
-
     /** The attached page of this tab */
-    page :
-    {
+    page : {
       check : "qx.ui.pageview.AbstractPage",
       apply : "_applyPage",
       nullable : true
     },
 
-
     /** The assigned qx.ui.selection.RadioManager which handles the switching between registered buttons */
-    manager :
-    {
+    manager : {
       check  : "qx.ui.selection.RadioManager",
       nullable : true,
       apply : "_applyManager"
     },
 
-
     /**
      * The name of the radio group. All the radio elements in a group (registered by the same manager)
      *  have the same name (and could have a different value).
      */
-    name :
-    {
+    name : {
       check : "String",
       apply : "_applyName"
     }
   },
 
-
-
-
-  /*
-  *****************************************************************************
-     MEMBERS
-  *****************************************************************************
-  */
-
-  members :
-  {
-    /*
-    ---------------------------------------------------------------------------
-      UTILITIES
-    ---------------------------------------------------------------------------
-    */
+  members : {
 
     /**
      * TODOC
@@ -119,21 +74,11 @@ qx.Class.define("qx.ui.pageview.AbstractButton",
      * @type member
      * @return {var} TODOC
      */
-    getView : function()
-    {
+    getView : function() {
       var pa = this.getParent();
       return pa ? pa.getParent() : null;
     },
 
-
-
-
-    /*
-    ---------------------------------------------------------------------------
-      APPLY ROUTINES
-    ---------------------------------------------------------------------------
-    */
-
     /**
      * TODOC
      *
@@ -141,17 +86,14 @@ qx.Class.define("qx.ui.pageview.AbstractButton",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyManager : function(value, old)
-    {
-      if (old) {
-        old.remove(this);
+    _applyManager : function( value, old ) {
+      if( old ) {
+        old.remove( this );
       }
-
-      if (value) {
-        value.add(this);
+      if( value ) {
+        value.add( this );
       }
     },
-
 
     /**
      * TODOC
@@ -161,19 +103,15 @@ qx.Class.define("qx.ui.pageview.AbstractButton",
      * @param old {var} Previous value
      * @return {var} TODOC
      */
-    _applyParent : function(value, old)
-    {
-      this.base(arguments, value, old);
-
-      if (old) {
-        old.getManager().remove(this);
+    _applyParent : function( value, old ) {
+      this.base( arguments, value, old );
+      if ( old ) {
+        old.getManager().remove( this );
       }
-
-      if (value) {
-        value.getManager().add(this);
+      if( value ) {
+        value.getManager().add( this );
       }
     },
-
 
     /**
      * TODOC
@@ -182,19 +120,19 @@ qx.Class.define("qx.ui.pageview.AbstractButton",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyPage : function(value, old)
-    {
-      if (old) {
-        old.setButton(null);
+    _applyPage : function( value, old ) {
+      if( old ) {
+        old.setButton( null );
       }
-
-      if (value)
-      {
-        value.setButton(this);
-        this.getChecked() ? value.show() : value.hide();
+      if( value ) {
+        value.setButton( this );
+        if( this.getChecked() ) {
+          value.show();
+        } else {
+          value.hide();
+        }
       }
     },
-
 
     /**
      * TODOC
@@ -203,26 +141,28 @@ qx.Class.define("qx.ui.pageview.AbstractButton",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyChecked : function(value, old)
+    _applyChecked : function( value, old )
     {
-      if (this._hasParent)
-      {
+      if( this._hasParent ) {
         var vManager = this.getManager();
-
-        if (vManager) {
+        if( vManager ) {
           vManager.handleItemChecked(this, value);
         }
       }
-
-      value ? this.addState("checked") : this.removeState("checked");
-
+      if( value ) {
+        this.addState( "checked" );
+      } else {
+        this.removeState( "checked" );
+      }
       var vPage = this.getPage();
-
-      if (vPage) {
-        this.getChecked() ? vPage.show() : vPage.hide();
+      if( vPage ) {
+        if( this.getChecked() ) {
+          vPage.show();
+        } else {
+          vPage.hide();
+        }
       }
     },
-
 
     /**
      * TODOC
@@ -231,22 +171,12 @@ qx.Class.define("qx.ui.pageview.AbstractButton",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyName : function(value, old)
-    {
-      if (this.getManager()) {
+    _applyName : function( value, old ) {
+      if( this.getManager() ) {
         this.getManager().setName(value);
       }
     },
 
-
-
-
-    /*
-    ---------------------------------------------------------------------------
-      EVENT HANDLER
-    ---------------------------------------------------------------------------
-    */
-
     /**
      * TODOC
      *
@@ -254,11 +184,10 @@ qx.Class.define("qx.ui.pageview.AbstractButton",
      * @param e {Event} TODOC
      * @return {void}
      */
-    _onmousedown : function(e) {
-      this.setChecked(true);
+    _onmousedown : function( e ) {
+      this.setChecked( true );
     },
 
-
     /**
      * TODOC
      *
@@ -266,11 +195,10 @@ qx.Class.define("qx.ui.pageview.AbstractButton",
      * @param e {Event} TODOC
      * @return {void}
      */
-    _onmouseover : function(e) {
-      this.addState("over");
+    _onmouseover : function( e ) {
+      this.addState( "over" );
     },
 
-
     /**
      * TODOC
      *
@@ -278,10 +206,18 @@ qx.Class.define("qx.ui.pageview.AbstractButton",
      * @param e {Event} TODOC
      * @return {void}
      */
-    _onmouseout : function(e) {
-      this.removeState("over");
+    _onmouseout : function( e ) {
+      this.removeState( "over" );
     },
 
+    /**
+     * TODOC
+     *
+     * @type member
+     * @param e {Event} TODOC
+     * @return {void}
+     */
+    _onkeydown : function( e ) {},
 
     /**
      * TODOC
@@ -290,16 +226,8 @@ qx.Class.define("qx.ui.pageview.AbstractButton",
      * @param e {Event} TODOC
      * @return {void}
      */
-    _onkeydown : function(e) {},
+    _onkeypress : function( e ) {}
 
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param e {Event} TODOC
-     * @return {void}
-     */
-    _onkeypress : function(e) {}
   }
+
 });

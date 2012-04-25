@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,25 +42,24 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
    * @param date {Date ? null} The initial date to show. If <code>null</code>
    *        the current day (today) is shown.
    */
-  construct : function(date) {
-    this.base(arguments);
-
-    this.setOrientation("vertical");
+  construct : function( date ) {
+    this.base( arguments );
+    this.setOrientation( "vertical" );
 
     // Create the navigation bar
-    var navBar = new qx.ui.layout.BoxLayout;
+    var navBar = new qx.ui.layout.BoxLayout();
     navBar.setAppearance("calendar-navBar");
 
-    navBar.set({
+    navBar.set( {
       height  : "auto",
       spacing : 1
-    });
+    } );
 
-    var lastYearBt = new qx.ui.form.Button;
-    var lastMonthBt = new qx.ui.form.Button;
-    var monthYearLabel = new qx.ui.basic.Label;
-    var nextMonthBt = new qx.ui.form.Button;
-    var nextYearBt = new qx.ui.form.Button;
+    var lastYearBt = new qx.ui.form.Button();
+    var lastMonthBt = new qx.ui.form.Button();
+    var monthYearLabel = new qx.ui.basic.Label();
+    var nextMonthBt = new qx.ui.form.Button();
+    var nextYearBt = new qx.ui.form.Button();
 
     var wm = org.eclipse.swt.WidgetManager.getInstance();
     wm.setToolTip( lastYearBt, "Previous year" );
@@ -68,29 +67,29 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
     wm.setToolTip( nextMonthBt, "Next month" );
     wm.setToolTip( nextYearBt, "Next year" );
 
-    lastYearBt.set({
+    lastYearBt.set( {
       show    : 'icon',
       spacing : 0,
       tabIndex: null
-    });
+    } );
     lastYearBt.setUserData( "calendar-button", true );
 
-    lastMonthBt.set({
+    lastMonthBt.set( {
       show    : 'icon',
       tabIndex: null
-    });
+    } );
     lastMonthBt.setUserData( "calendar-button", true );
 
-    nextMonthBt.set({
+    nextMonthBt.set( {
       show    : 'icon',
       tabIndex: null
-    });
+    } );
     nextMonthBt.setUserData( "calendar-button", true );
 
-    nextYearBt.set({
+    nextYearBt.set( {
       show    : 'icon',
       tabIndex: null
-    });
+    } );
     nextYearBt.setUserData( "calendar-button", true );
 
     lastYearBt.setAppearance("calendar-toolbar-previous-year-button");
@@ -109,97 +108,95 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
     this._nextYearBt = nextYearBt;
 
     monthYearLabel.setAppearance("calendar-monthyear");
-    monthYearLabel.set({ width : "1*" });
+    monthYearLabel.set( { width : "1*" } );
 
     navBar.add(lastYearBt, lastMonthBt, monthYearLabel, nextMonthBt, nextYearBt);
     this._monthYearLabel = monthYearLabel;
     navBar.setHtmlProperty("id", "navBar");
 
     // Create the date pane
-    var datePane = new qx.ui.layout.CanvasLayout;
+    var datePane = new qx.ui.layout.CanvasLayout();
     datePane.setAppearance("calendar-datepane");
 
-    datePane.set({
+    datePane.set( {
       width  : org.eclipse.swt.widgets.Calendar.CELL_WIDTH * 8,
       height : org.eclipse.swt.widgets.Calendar.CELL_HEIGHT * 7
-    });
+    } );
 
     // Create the weekdays
     // Add an empty label as spacer for the week numbers
-    var label = new qx.ui.basic.Label;
-    label.setAppearance("calendar-week");
+    var label = new qx.ui.basic.Label();
+    label.setAppearance( "calendar-week" );
 
-    label.set(
-    {
+    label.set( {
       width  : org.eclipse.swt.widgets.Calendar.CELL_WIDTH,
       height : org.eclipse.swt.widgets.Calendar.CELL_HEIGHT,
       left   : 0
-    });
+    } );
 
-    label.addState("header");
-    datePane.add(label);
+    label.addState( "header" );
+    datePane.add( label );
 
     this._weekdayLabelArr = [];
 
-    for (var i=1; i<8; i++) {
-      var label = new qx.ui.basic.Label;
-      label.setAppearance("calendar-weekday");
-      label.setSelectable(false);
-      label.setCursor("default");
+    for( var i=1; i<8; i++ ) {
+      var label = new qx.ui.basic.Label();
+      label.setAppearance( "calendar-weekday" );
+      label.setSelectable( false );
+      label.setCursor( "default" );
 
-      label.set({
+      label.set( {
         width  : org.eclipse.swt.widgets.Calendar.CELL_WIDTH,
         height : org.eclipse.swt.widgets.Calendar.CELL_HEIGHT,
         left   : i * org.eclipse.swt.widgets.Calendar.CELL_WIDTH
-      });
+      } );
 
-      datePane.add(label);
-      this._weekdayLabelArr.push(label);
+      datePane.add( label );
+      this._weekdayLabelArr.push( label );
     }
 
     // Add the days
     this._dayLabelArr = [];
     this._weekLabelArr = [];
 
-    for (var y=0; y<6; y++) {
+    for( var y = 0; y < 6; y++ ) {
       // Add the week label
-      var label = new qx.ui.basic.Label;
-      label.setAppearance("calendar-week");
-      label.setSelectable(false);
-      label.setCursor("default");
+      var label = new qx.ui.basic.Label();
+      label.setAppearance( "calendar-week" );
+      label.setSelectable( false );
+      label.setCursor( "default" );
 
-      label.set(
-      {
+      label.set( {
         width  : org.eclipse.swt.widgets.Calendar.CELL_WIDTH,
         height : org.eclipse.swt.widgets.Calendar.CELL_HEIGHT,
         left   : 0,
         top    : (y + 1) * org.eclipse.swt.widgets.Calendar.CELL_HEIGHT
-      });
+      } );
 
-      datePane.add(label);
-      this._weekLabelArr.push(label);
+      datePane.add( label );
+      this._weekLabelArr.push( label );
 
       // Add the day labels
       for (var x=1; x<8; x++) {
-        var label = new qx.ui.basic.Label;
-        label.setAppearance("calendar-day");
-        label.setSelectable(false);
-        label.setCursor("default");
+        var label = new qx.ui.basic.Label();
+        label.setAppearance( "calendar-day" );
+        label.setSelectable( false );
+        label.setCursor( "default" );
 
-        label.set({
+        label.set( {
           width  : org.eclipse.swt.widgets.Calendar.CELL_WIDTH,
           height : org.eclipse.swt.widgets.Calendar.CELL_HEIGHT,
           left   : x * org.eclipse.swt.widgets.Calendar.CELL_WIDTH,
           top    : (y + 1) * org.eclipse.swt.widgets.Calendar.CELL_HEIGHT
-        });
+        } );
 
         label.addEventListener( "mousedown", this._onDayClicked, this );
         label.addEventListener( "dblclick", this._onDayDblClicked, this );
         label.addEventListener( "mouseover", this._onDayMouseOver, this );
         label.addEventListener( "mouseout", this._onDayMouseOut, this );
         label.setUserData( "calendar-day", true );
-        datePane.add(label);
-        this._dayLabelArr.push(label);
+        datePane.add( label );
+        this._dayLabelArr.push( label );
       }
     }
 
@@ -209,12 +206,12 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
     // this.addEventListener("keypress", this._onkeypress);
 
     // Show the right date
-    var shownDate = (date != null) ? date : new Date();
-    this.showMonth(shownDate.getMonth(), shownDate.getFullYear());
+    var shownDate = ( date != null ) ? date : new Date();
+    this.showMonth( shownDate.getMonth(), shownDate.getFullYear() );
 
     // Add the main widgets
-    this.add(navBar);
-    this.add(datePane);
+    this.add( navBar );
+    this.add( datePane );
 
     // Initialize dimensions
     this.initWidth();
@@ -365,9 +362,8 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
               dayLabel.removeState("selected");
             }
           } else {
-            var day = parseInt(dayLabel.getText());
-
-            if (day == newDay) {
+            var day = parseInt( dayLabel.getText(), 10 );
+            if( day == newDay ) {
               dayLabel.addState("selected");
             } else if (dayLabel.hasState("selected")) {
               dayLabel.removeState("selected");
@@ -442,11 +438,11 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
     _onDayDblClicked : function() {
       this.createDispatchDataEvent("select", this.getDate());
     },
-    
+
     _onDayMouseOver : function( evt ) {
       evt.getTarget().addState( "over" );
     },
-    
+
     _onDayMouseOut : function( evt ) {
       evt.getTarget().removeState( "over" );
     },
@@ -458,12 +454,12 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
      * @param evt {Map} the event.
      * @return {boolean | void} TODOC
      */
-    _onkeypress : function(evt) {
+    _onkeypress : function( evt ) {
       var dayIncrement = null;
       var monthIncrement = null;
       var yearIncrement = null;
-      if (evt.getModifiers() == 0) {
-        switch(evt.getKeyIdentifier()) {
+      if( evt.getModifiers() === 0 ) {
+        switch( evt.getKeyIdentifier() ) {
           case "Left":
             dayIncrement = -1;
             evt.preventDefault();
@@ -555,9 +551,15 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
         if (date == null) {
           date = new Date();
         } else {
-          if (dayIncrement != null) date.setDate(date.getDate() + dayIncrement);
-          if (monthIncrement != null) date.setMonth(date.getMonth() + monthIncrement);
-          if (yearIncrement != null) date.setFullYear(date.getFullYear() + yearIncrement);
+          if( dayIncrement != null ) {
+            date.setDate( date.getDate() + dayIncrement );
+          }
+          if( monthIncrement != null ) {
+            date.setMonth( date.getMonth() + monthIncrement );
+          }
+          if( yearIncrement != null ) {
+            date.setFullYear( date.getFullYear() + yearIncrement );
+          }
         }
 
         this.setDate(date);
@@ -927,4 +929,4 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
     this._disposeObjectDeep("_dayLabelArr", 1);
     this._disposeObjectDeep("_weekLabelArr", 1);
   }
-});
+} );

@@ -1,35 +1,25 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright (c) 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                          and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
- *    1&1 Internet AG and others - original API and implementation
- *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
+ * Contributors:
+ *   1&1 Internet AG and others - original API and implementation
+ *   EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
 /**
  * @appearance menu-separator
  * @appearance menu-separator-line {qx.ui.basic.Terminator}
  */
-qx.Class.define("qx.ui.menu.Separator",
-{
+qx.Class.define( "qx.ui.menu.Separator", {
+
   extend : qx.ui.layout.CanvasLayout,
 
-
-
-
-  /*
-  *****************************************************************************
-     CONSTRUCTOR
-  *****************************************************************************
-  */
-
-  construct : function()
-  {
+  construct : function() {
     this.base(arguments);
 
     this.initHeight();
@@ -38,56 +28,30 @@ qx.Class.define("qx.ui.menu.Separator",
     this.setStyleProperty("fontSize", "0");
     this.setStyleProperty("lineHeight", "0");
 
-    // ************************************************************************
-    //   LINE
-    // ************************************************************************
-    this._line = new qx.ui.basic.Terminator;
+    // LINE
+    this._line = new qx.ui.basic.Terminator();
     this._line.setAnonymous(true);
     this._line.setAppearance("menu-separator-line");
     this.add(this._line);
 
-    // ************************************************************************
-    //   EVENTS
-    // ************************************************************************
+    // EVENTS
     // needed to stop the event, and keep the menu showing
     this.addEventListener("mousedown", this._onmousedown);
   },
 
-
-
-
-  /*
-  *****************************************************************************
-     PROPERTIES
-  *****************************************************************************
-  */
-
-  properties :
-  {
-    height :
-    {
+  properties : {
+    height : {
       refine : true,
       init : "auto"
     },
 
-    appearance :
-    {
+    appearance : {
       refine : true,
       init : "menu-separator"
     }
   },
 
-
-
-
-  /*
-  *****************************************************************************
-     MEMBERS
-  *****************************************************************************
-  */
-
-  members :
-  {
+  members : {
 
     /**
      * Returns <code>false</code> to clarify that the Separator widget has no icon
@@ -135,16 +99,8 @@ qx.Class.define("qx.ui.menu.Separator",
     }
   },
 
-
-
-
-  /*
-  *****************************************************************************
-     DESTRUCTOR
-  *****************************************************************************
-  */
-
   destruct : function() {
-    this._disposeObjects("_line");
+    this._disposeObjects( "_line" );
   }
-});
+
+} );

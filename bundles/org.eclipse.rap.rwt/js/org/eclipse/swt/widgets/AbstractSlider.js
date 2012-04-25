@@ -1,16 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Innoopract Informationssysteme GmbH - initial API and implementation
- *    EclipseSource - ongoing development
+ *   Innoopract Informationssysteme GmbH - initial API and implementation
+ *   EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
+
   extend : qx.ui.layout.CanvasLayout,
 
   construct : function( horizontal ) {
@@ -26,9 +27,9 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     this._thumbLength = 10;
     // state:
     this._pxStep = 1.38; // ratio of virtual units to real (pixel) length
-    this._thumbDragOffset = 0; 
-    this._autoRepeat = ""; // string indicating to auto-repeat an action  
-    this._mouseOffset = 0; // horizontal or vertical offset to slider start    
+    this._thumbDragOffset = 0;
+    this._autoRepeat = ""; // string indicating to auto-repeat an action
+    this._mouseOffset = 0; // horizontal or vertical offset to slider start
     this._delayTimer = new qx.client.Timer( 250 ); // delay auto-repeated actions
     this._repeatTimer = new qx.client.Timer( 100 ); // for auto-repeated actions
     // subwidgets:
@@ -53,11 +54,11 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     this._repeatTimer = null;
     this._thumb = null;
     this._minButton = null;
-    this._maxButton = null;    
+    this._maxButton = null;
   },
 
   members : {
-    
+
     ////////////
     // protected
 
@@ -91,7 +92,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       this._thumbLength = value;
       this._updateThumbSize();
     },
-    
+
     ////////////////
     // Eventhandlers
 
@@ -116,14 +117,14 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       this._maxButton.addEventListener( "stateOverChanged", this._onMaxButtonMouseEvent, this );
 
     },
-    
+
     _selectionChanged : function() {
       this._updateThumbPosition();
       if( this._autoRepeat !== "" && !this._repeatTimer.isEnabled() ) {
         this._delayTimer.start();
       }
     },
-    
+
     _onChangeSize : function( event ) {
       this._updateThumbSize();
     },
@@ -131,7 +132,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     _onChangeEnabled : function( event ) {
       this._thumb.setVisibility( event.getValue() );
     },
-    
+
     _onMouseWheel : function( event ) {
       if ( event.getTarget() === this ) {
         event.preventDefault();
@@ -141,10 +142,10 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
         var sel = this._selection - change;
         if( sel < this._minimum ) {
           sel = this._minimum;
-        } 
+        }
         if( sel > ( this._maximum - this._thumbWidth ) ) {
           sel = this._maximum - this._thumbWidth;
-        } 
+        }
         this._setSelection( sel );
       }
     },
@@ -219,7 +220,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       event.stopPropagation();
       if( this._thumb.getCapture() ) {
         var mousePos = this._getMouseOffset( event );
-        var newSelection 
+        var newSelection
           = this._getSelectionFromPosition( mousePos - this._thumbDragOffset );
         this._setSelection( newSelection );
       }
@@ -256,11 +257,11 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       this._maxButton.setTabIndex( null );
       this._thumb.setTabIndex( null );
     },
-    
+
     _setStates : function() {
       var style = this._horizontal ? "rwt_HORIZONTAL" : "rwt_VERTICAL";
       var state = this._horizontal ? "horizontal" : "vertical";
-      this.addState( style ); 
+      this.addState( style );
       this._minButton.addState( style );
       this._minButton.addState( state );
       this._maxButton.addState( style );
@@ -279,7 +280,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       this.base( arguments );
       this._thumb.addState( "focused" );
     },
-    
+
     // overwritten:
     _visualizeBlur : function() {
       this.base( arguments );
@@ -328,7 +329,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     },
 
     _updateThumbPosition : function() {
-      var pos = this._getMinButtonWidth(); 
+      var pos = this._getMinButtonWidth();
       pos += this._pxStep * ( this._selection - this._minimum );
       if( this._horizontal ) {
         this._thumb.setLeft( pos );
@@ -351,8 +352,8 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
 
     _updateStepsize : function() {
       var numSteps = this._maximum - this._minimum - this._thumbLength;
-      if( numSteps != 0 ) {
-        var numPixels = this._getLineSize() - this._getThumbSize()
+      if( numSteps !== 0 ) {
+        var numPixels = this._getLineSize() - this._getThumbSize();
         this._pxStep = numPixels / numSteps;
       } else {
         this._pxStep = 0;
@@ -360,7 +361,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       this._selection = this._limitSelection( this._selection );
       this._updateThumbPosition();
     },
-    
+
     //////////
     // Helpers
 
@@ -374,7 +375,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       var result = value;
       if( value >= ( this._maximum - this._thumbLength ) ) {
         result = this._maximum - this._thumbLength;
-      } 
+      }
       if( result <= this._minimum ) {
         result = this._minimum;
       }
@@ -391,7 +392,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       }
       return result;
     },
-    
+
     _getThumbPosition : function() {
       var result;
       if( this._horizontal ) {
@@ -401,7 +402,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       }
       return result;
     },
-    
+
     _getThumbSize : function() {
       var result;
       if( this._horizontal ) {
@@ -429,7 +430,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       }
       return result;
     },
-    
+
     _getMinButtonWidth : function() {
       var result;
       if( this._horizontal ) {
@@ -439,7 +440,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       }
       return result;
     },
-    
+
     _getMaxButtonWidth : function() {
       var result;
       if( this._horizontal ) {
