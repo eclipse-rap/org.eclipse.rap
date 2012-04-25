@@ -26,36 +26,34 @@ import org.eclipse.rwt.internal.util.ParamCheck;
 
 
 /**
- * This class represents an instance of an RWT web application at runtime.
- *
+ * An instance of an RWT web application at runtime.
  * <p>
- * An <code>Application</code> shares the same scope and life cycle as the
- * <code>ServletContext</code>.
- * In order to serve requests for an RWT application, an <code>Application</code>
- * must be created and started for the <code>ServletContext</code> which receives
- * the requests.
+ * An <code>ApplicationInstance</code> shares the same scope and life cycle as
+ * the <code>ServletContext</code>. In order to serve requests for an RWT
+ * application, it must be created and started for the
+ * <code>ServletContext</code> which receives the requests.
  * </p>
  * <p>
- * To create an <code>Application</code>, the <code>ServletContext</code> it should be bound
- * to must be given along with an <code>ApplicationConfigurator</code> with which clients can
- * configure the application before it is started.
- * Usually, the <code>Application</code> is constructed and started in the
- * <code>contextInitialized()</code> method of a <code>ServletContextListener</code> and stopped
- * in its <code>contextDestroyed()</code> method.
+ * To create an <code>ApplicationInstance</code>, the <code>ServletContext</code>
+ * it should be bound to must be given along with an
+ * <code>ApplicationConfigurator</code> with which clients can configure the
+ * application before it is started. Usually, the
+ * <code>ApplicationInstance</code> is constructed and started in the
+ * <code>contextInitialized()</code> method of a
+ * <code>ServletContextListener</code> and stopped in its
+ * <code>contextDestroyed()</code> method.
  * </p>
  * <p>
- * Alternatively this task can be delegated to the <code>RWTServletContextListener</code>.
- * If this class is specified as a listener in the deployment descriptor (web.xml), it starts
- * an Application when the servlet context is initialized and stops it when the servlet
- * context is destroyed.
- * The <code>RWTServletContextListener</code> looks for an <code>org.eclipse.rwt.Configurator</code>
- * init-parameter.
- * Its value is assumed to be a class that implements <code>ApplicationConfigurator</code>
- * and is used to configure the application.
+ * Alternatively, this task can be delegated to the
+ * <code>RWTServletContextListener</code>. If this class is specified as a
+ * listener in the deployment descriptor (web.xml), it starts an
+ * ApplicationInstance when the servlet context is initialized and stops it when
+ * the servlet context is destroyed. The <code>RWTServletContextListener</code>
+ * looks for an <code>org.eclipse.rwt.Configurator</code> init-parameter. Its
+ * value is assumed to be a class that implements
+ * <code>ApplicationConfigurator</code> and is used to configure the
+ * application.
  * </p>
- *
- * <p><strong>Note:</strong> This API is <em>provisional</em>. It is likely to change before the
- * final release.</p>
  *
  * @since 1.5
  * @see ApplicationConfigurator
@@ -64,21 +62,22 @@ import org.eclipse.rwt.internal.util.ParamCheck;
  * @see javax.servlet.ServletContextListener
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class Application {
+public class ApplicationInstance {
 
   public final static String RESOURCES = ResourceManagerImpl.RESOURCES;
 
   private final ApplicationContext applicationContext;
 
   /**
-   * Constructs a new instance of this class given a configurator and the servlet context it
-   * is bound to.
-   * @param configurator the the configurator to configure the application. Must not be
-   *   <code>null</code>.
-   * @param servletContext the servlet context this application is bound to. Must not be
-   *   <code>null</code>.
+   * Constructs a new instance of this class given a configurator and the
+   * servlet context it is bound to.
+   *
+   * @param configurator the the configurator to configure the application. Must
+   *          not be <code>null</code>.
+   * @param servletContext the servlet context this application is bound to.
+   *          Must not be <code>null</code>.
    */
-  public Application( ApplicationConfigurator configurator, ServletContext servletContext ) {
+  public ApplicationInstance( ApplicationConfigurator configurator, ServletContext servletContext ) {
     ParamCheck.notNull( configurator, "configurator" );
     ParamCheck.notNull( servletContext, "servletContext" );
 

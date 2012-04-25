@@ -6,9 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Innoopract Informationssysteme GmbH - initial API and implementation
- *    EclipseSource - ongoing development
- *    Frank Appel - replaced singletons and static fields (Bug 337787)
+ *   Innoopract Informationssysteme GmbH - initial API and implementation
+ *   Frank Appel - replaced singletons and static fields (Bug 337787)
+ *   EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.engine;
 
@@ -16,7 +16,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.eclipse.rwt.application.Application;
+import org.eclipse.rwt.application.ApplicationInstance;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.util.ClassUtil;
@@ -29,33 +29,21 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class RWTServletContextListener implements ServletContextListener {
+
   public static final String ENTRY_POINTS_PARAM = "org.eclipse.rwt.entryPoints";
 
-  private Application application;
+  private ApplicationInstance applicationInstance;
 
-  private static class EntryPointRunnerConfigurator implements ApplicationConfigurator {
-
-    private final Class<? extends IEntryPoint> entryPointClass;
-
-    private EntryPointRunnerConfigurator( Class<? extends IEntryPoint> entryPointClass ) {
-      this.entryPointClass = entryPointClass;
-    }
-
-    public void configure( ApplicationConfiguration configuration ) {
-      configuration.addEntryPoint( "/rap", entryPointClass, null );
-    }
-  }
-
-  public void contextInitialized( ServletContextEvent evt ) {
-    ServletContext servletContext = evt.getServletContext();
+  public void contextInitialized( ServletContextEvent event ) {
+    ServletContext servletContext = event.getServletContext();
     ApplicationConfigurator configurator = readConfigurator( servletContext );
-    application = new Application( configurator, servletContext );
-    application.start();
+    applicationInstance = new ApplicationInstance( configurator, servletContext );
+    applicationInstance.start();
   }
 
-  public void contextDestroyed( ServletContextEvent evt ) {
-    application.stop();
-    application = null;
+  public void contextDestroyed( ServletContextEvent event ) {
+    applicationInstance.stop();
+    applicationInstance = null;
   }
 
   private ApplicationConfigurator readConfigurator( ServletContext servletContext ) {
@@ -99,4 +87,18 @@ public class RWTServletContextListener implements ServletContextListener {
     Class<?> entryPointClass = loader.loadClass( className );
     return new EntryPointRunnerConfigurator( ( Class<? extends IEntryPoint> )entryPointClass );
   }
+
+  private static class EntryPointRunnerConfigurator implements ApplicationConfigurator {
+
+    private final Class<? extends IEntryPoint> entryPointClass;
+
+    private EntryPointRunnerConfigurator( Class<? extends IEntryPoint> entryPointClass ) {
+      this.entryPointClass = entryPointClass;
+    }
+
+    public void configure( ApplicationConfiguration configuration ) {
+      configuration.addEntryPoint( "/rap", entryPointClass, null );
+    }
+  }
+
 }

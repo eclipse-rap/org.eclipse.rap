@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Widget;
  * change before the final release.
  * </p>
  *
- * @see Application
+ * @see ApplicationInstance
  * @see ApplicationConfigurator
  * @noimplement This interface is not intended to be implemented by clients.
  * @since 1.5

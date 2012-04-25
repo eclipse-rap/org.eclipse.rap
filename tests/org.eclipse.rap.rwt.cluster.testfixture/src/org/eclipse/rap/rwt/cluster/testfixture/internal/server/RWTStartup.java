@@ -14,7 +14,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rwt.application.Application;
+import org.eclipse.rwt.application.ApplicationInstance;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfiguration.OperationMode;
 import org.eclipse.rwt.application.ApplicationConfigurator;
@@ -31,7 +31,7 @@ public class RWTStartup {
 
   private static class TestApplicationController implements ServletContextListener {
     private final Class<? extends IEntryPoint> entryPointClass;
-    private Application application;
+    private ApplicationInstance applicationInstance;
 
     private TestApplicationController( Class<? extends IEntryPoint> entryPointClass ) {
       this.entryPointClass = entryPointClass;
@@ -39,12 +39,12 @@ public class RWTStartup {
 
     public void contextInitialized( ServletContextEvent event ) {
       ApplicationConfigurator configurator = new TestApplicationConfigurator( entryPointClass );
-      application = new Application( configurator, event.getServletContext() );
-      application.start();
+      applicationInstance = new ApplicationInstance( configurator, event.getServletContext() );
+      applicationInstance.start();
     }
 
     public void contextDestroyed( ServletContextEvent event ) {
-      application.stop();
+      applicationInstance.stop();
     }
   }
 

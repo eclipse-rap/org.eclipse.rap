@@ -33,14 +33,14 @@ import org.eclipse.rwt.internal.lifecycle.TestEntryPoint;
 import org.mockito.ArgumentCaptor;
 
 
-public class Application_Test extends TestCase {
+public class ApplicationInstance_Test extends TestCase {
 
   private static final String SERVLET_PATH = "/foo";
   private static final String SERVLET_NAME = "bar";
 
   private ServletContext servletContext;
   private ApplicationConfigurator configurator;
-  private Application application;
+  private ApplicationInstance applicationInstance;
 
   @Override
   protected void setUp() {
@@ -48,11 +48,11 @@ public class Application_Test extends TestCase {
     when( servletContext.getRealPath( "/" ) )
       .thenReturn( Fixture.WEB_CONTEXT_RWT_RESOURCES_DIR.getPath() );
     configurator = mock( ApplicationConfigurator.class );
-    application = new Application( configurator, servletContext );
+    applicationInstance = new ApplicationInstance( configurator, servletContext );
   }
 
   public void testStart() {
-    application.start();
+    applicationInstance.start();
 
     checkContexthasBeenConfigured();
     checkApplicationContextHasBeenRegistered();
@@ -67,9 +67,9 @@ public class Application_Test extends TestCase {
   }
 
   public void testStop() {
-    application.start();
+    applicationInstance.start();
 
-    application.stop();
+    applicationInstance.stop();
 
     checkApplicationContextHasBeenDeregistered();
   }
@@ -78,15 +78,15 @@ public class Application_Test extends TestCase {
     createConfiguratorWithProblem();
     startWithProblem();
 
-    application.stop();
+    applicationInstance.stop();
 
     checkApplicationContextGetsDeregisteredAnyway();
   }
 
   public void testGetDefaultServletNames() {
-    application.start();
+    applicationInstance.start();
 
-    Collection<String> servletPaths = application.getServletPaths();
+    Collection<String> servletPaths = applicationInstance.getServletPaths();
 
     assertTrue( servletPaths.isEmpty() );
   }
@@ -95,7 +95,7 @@ public class Application_Test extends TestCase {
     startWithEntryPointConfiguration();
     fakeBranding();
 
-    Collection<String> servletPaths = application.getServletPaths();
+    Collection<String> servletPaths = applicationInstance.getServletPaths();
 
     assertEquals( 2, servletPaths.size() );
     assertTrue( servletPaths.contains( SERVLET_PATH ) );
@@ -105,7 +105,7 @@ public class Application_Test extends TestCase {
   public void testGetServletNames_withEntryPoint() {
     startWithEntryPointConfiguration();
 
-    Collection<String> servletPaths = application.getServletPaths();
+    Collection<String> servletPaths = applicationInstance.getServletPaths();
 
     assertEquals( 1, servletPaths.size() );
     assertTrue( servletPaths.contains( SERVLET_PATH ) );
@@ -113,7 +113,7 @@ public class Application_Test extends TestCase {
 
   public void testParamServletContextMustNotBeNull() {
     try {
-      new Application( mock( ApplicationConfigurator.class ), null );
+      new ApplicationInstance( mock( ApplicationConfigurator.class ), null );
       fail();
     } catch( NullPointerException expected ) {
     }
@@ -121,7 +121,7 @@ public class Application_Test extends TestCase {
 
   public void testParamConfiguratorMustNotBeNull() {
     try {
-      new Application( null, mock( ServletContext.class ) );
+      new ApplicationInstance( null, mock( ServletContext.class ) );
       fail();
     } catch( NullPointerException expected ) {
     }
@@ -160,8 +160,8 @@ public class Application_Test extends TestCase {
         configuration.addEntryPoint( SERVLET_PATH, TestEntryPoint.class, null );
       }
     };
-    application = new Application( configurator, servletContext );
-    application.start();
+    applicationInstance = new ApplicationInstance( configurator, servletContext );
+    applicationInstance.start();
   }
 
   private void createConfiguratorWithProblem() {
@@ -171,7 +171,7 @@ public class Application_Test extends TestCase {
 
   private void startWithProblem() {
     try {
-      application.start();
+      applicationInstance.start();
       fail();
     } catch( IllegalStateException expected ) {
     }

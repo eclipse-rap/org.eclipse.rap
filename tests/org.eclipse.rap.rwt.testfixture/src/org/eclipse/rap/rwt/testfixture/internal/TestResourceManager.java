@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-import org.eclipse.rwt.application.Application;
+import org.eclipse.rwt.application.ApplicationInstance;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.resources.IResourceManager;
@@ -110,7 +110,7 @@ public class TestResourceManager implements IResourceManager {
   private void createResourcesDirectory() {
     if( registeredResources.isEmpty() ) {
       File contextDirectory = RWTFactory.getConfiguration().getContextDirectory();
-      File file = new File( contextDirectory, Application.RESOURCES );
+      File file = new File( contextDirectory, ApplicationInstance.RESOURCES );
       if( !file.exists() ) {
         file.mkdirs();
       }
