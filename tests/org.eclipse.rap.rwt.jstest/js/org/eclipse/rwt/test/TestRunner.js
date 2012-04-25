@@ -58,7 +58,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
     // helper for debugging
     getLog = function() {
       return org.eclipse.rwt.test.TestRunner.getInstance().getLog();
-    }
+    };
   },
 
   members : {
@@ -200,7 +200,9 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
     },
 
     _handleException : function( e ) {
-      if( this._FREEZEONFAIL ) this._freezeQooxdoo();
+      if( this._FREEZEONFAIL ) {
+        this._freezeQooxdoo();
+      }
       this._presenter.setFailed( true );
       this._failed = true;
       var classname = this._testFunctions[ this._currentFunction ];
@@ -352,13 +354,12 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
     _disableAutoFlush : function() {
       qx.ui.core.Widget._removeAutoFlush();
       qx.ui.core.Widget._initAutoFlush = function(){};
-      qx.ui.core.Widget.__orgFlushGlobalQueues
-       = qx.ui.core.Widget.flushGlobalQueues;
+      qx.ui.core.Widget.__orgFlushGlobalQueues = qx.ui.core.Widget.flushGlobalQueues;
       qx.ui.core.Widget.flushGlobalQueues = function() {
         if( this.__allowFlushs ) {
           qx.ui.core.Widget.__orgFlushGlobalQueues();
         }
-      }
+      };
       qx.ui.core.Widget.__allowFlushs = true;
     },
 
@@ -439,7 +440,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
           result = found;
         }
         return result;
-      }
+      };
       return filter;
     },
 
@@ -460,7 +461,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
       var testClassName = testInstance.classname.split( "." ).pop();
       var param = this._getFilterParam();
       param = param ? param : [];
-      var filterStr = null;;
+      var filterStr = null;
       for( var i = 0; i < param.length && filterStr === null; i++ ) {
         if( param[ i ].indexOf( testClassName + this._FILTERCHAR ) !== -1 ) {
           filterStr = param[ i ].split( this._FILTERCHAR )[ 1 ];

@@ -574,8 +574,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var item = tree._rootItem.getLastChild();
       TestUtil.flush();
       item.dispose();
-	    item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 9 );
-	    item.setTexts( [ "newItem" ] );
+      item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 9 );
+      item.setTexts( [ "newItem" ] );
       TestUtil.flush();
       var sample = tree._rowContainer._getTargetNode().childNodes[ 9 ];
       assertEquals( 1, sample.childNodes.length );
@@ -628,7 +628,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       for( var i = 0; i < 10; i++ ) {
         var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), i );
         item.setTexts( [ "Test" + i ] );
-	      item.setItemCount( 1 );
+        item.setItemCount( 1 );
         var subitem = new org.eclipse.rwt.widgets.TreeItem( item, 0 );
         subitem.setTexts( [ "Test" + i + "sub" ] );
       }
@@ -3818,15 +3818,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
         itemNr++;
         item.setTexts( [ "Test" + i ] );
         if( subItems ) {
-	        item.setItemCount( 1 );
-	        var subitem = new org.eclipse.rwt.widgets.TreeItem( item, 0 );
-	        if( flatCount ) {
-	        	item.setExpanded( true );
-	        	i++
-		        subitem.setTexts( [ "Test" + i ] );
-	        } else {
-		        subitem.setTexts( [ "Test" + i + "sub" ] );
-	        }
+          item.setItemCount( 1 );
+          var subitem = new org.eclipse.rwt.widgets.TreeItem( item, 0 );
+          if( flatCount ) {
+            item.setExpanded( true );
+            i++
+            subitem.setTexts( [ "Test" + i ] );
+          } else {
+            subitem.setTexts( [ "Test" + i + "sub" ] );
+          }
         }
         i++;
       }

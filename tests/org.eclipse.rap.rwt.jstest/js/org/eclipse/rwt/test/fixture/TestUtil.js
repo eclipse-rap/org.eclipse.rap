@@ -18,12 +18,13 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   
   getElementBounds : function( node ) {
     var style = node.style;
+    var ps;
     try {
-      var ps = node.parentNode.style;
+      ps = node.parentNode.style;
     } catch( e ) {
       throw( "Could not get bounds: no parentNode!" );
     }
-    var space = {}; 
+    var space = {};
     space.width =   this._parseLength( ps.width ) 
                   - this._parseLength( ps.borderLeftWidth || 0 ) 
                   - this._parseLength( ps.borderRightWidth || 0 ); 
@@ -56,8 +57,8 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
   
   _parseLength : function( value ) {
-    var result = value ? parseInt( value ) : 0;
-    if(    result != 0 
+    var result = value ? parseInt( value, 10 ) : 0;
+    if(    result !== 0 
         && typeof value == "string" 
         && value.indexOf( "px" ) == -1 ) 
     {
@@ -68,7 +69,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   
   getElementFont : function( element ) {
     var font = element.style.font;
-    if( font == "" || typeof font != "string" ) {
+    if( font === "" || typeof font !== "string" ) {
       var fontData = [ 
         element.style.fontSize, 
         element.style.fontStyle,
@@ -122,12 +123,12 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     var edge = [ "Top", "Left", "Bottom", "Right" ];
     for( var i=0; i < 4; i++ ) {
       if( !result ) {
-        var width = parseInt( node.style[ "border" + edge[ i ] + "Width" ] );
+        var width = parseInt( node.style[ "border" + edge[ i ] + "Width" ], 10 );
         var color = node.style[ "border" + edge[ i ] + "Color" ];
         var style = node.style[ "border" + edge[ i ] + "Style" ];
         var hasWidth = !isNaN( width ) && width > 0; 
-        var hasColor = color != "transparent"; 
-        var hasStyle = style != "" && style != "none";
+        var hasColor = color !== "transparent";
+        var hasStyle = style !== "" && style !== "none";
         result = hasWidth && hasColor && hasStyle; 
       }        
     } 
@@ -213,9 +214,6 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     }
     if( typeof mod === "undefined" ) {
       mod = 0;
-    }
-    if( typeof filter === "undefined" ) {
-      filter = false;
     }
     var clientX = left;
     var clientY = top;

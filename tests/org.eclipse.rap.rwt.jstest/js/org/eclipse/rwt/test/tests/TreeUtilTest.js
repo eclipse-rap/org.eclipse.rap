@@ -550,15 +550,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
         itemNr++;
         item.setTexts( [ "Test" + i ] );
         if( subItems ) {
-	        item.setItemCount( 1 );
-	        var subitem = new org.eclipse.rwt.widgets.TreeItem( item, 0 );
-	        if( flatCount ) {
-	        	item.setExpanded( true );
-	        	i++
-		        subitem.setTexts( [ "Test" + i ] );
-	        } else {
-		        subitem.setTexts( [ "Test" + i + "sub" ] );
-	        }
+          item.setItemCount( 1 );
+          var subitem = new org.eclipse.rwt.widgets.TreeItem( item, 0 );
+          if( flatCount ) {
+            item.setExpanded( true );
+            i++
+            subitem.setTexts( [ "Test" + i ] );
+          } else {
+            subitem.setTexts( [ "Test" + i + "sub" ] );
+          }
         }
         i++;
       }

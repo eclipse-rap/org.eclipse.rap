@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    EclipseSource - initial API and implementation
+ *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.test.fixture.RAPServer", {
@@ -15,7 +15,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.RAPServer", {
 
   construct : function() {
     this.base( arguments );    
-    this._timer = new qx.client.Timer(0);
+    this._timer = new qx.client.Timer( 0 );
     this._timer.addEventListener( "interval", this._onTimer, this );
   },
   
@@ -35,7 +35,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.RAPServer", {
     requestHandler : {
       check : "Function",
       nullable : true,
-      init : null    	
+      init : null
     }
     
   },

@@ -42,9 +42,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ObjectManagerTest", {
       var manager = org.eclipse.rwt.protocol.ObjectManager;
       var log = "";
       var obj = {
-      	applyObjectId : function( id ) {
-      		log += id;
-      	}
+        applyObjectId : function( id ) {
+          log += id;
+        }
       };
 
       manager.add( "myId", obj, "myType" );
@@ -55,8 +55,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ObjectManagerTest", {
 
     _clearObjectManager: function() {
       var manager = org.eclipse.rwt.protocol.ObjectManager;
-    	manager._map = {};
-    	manager._callbacks = {};
+      manager._map = {};
+      manager._callbacks = {};
     }
   }
   

@@ -181,7 +181,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       assertNull( org.eclipse.rwt.Animation._interval );
       var expected = [];
       expected.push( "init", "myConfig", "setup", "myConfig" );
-      expected.push( "[object org.eclipse.rwt.AnimationRenderer]" )
+      expected.push( "[object org.eclipse.rwt.AnimationRenderer]" );
       expected.push( "convert", "number", 10, 20, "render", "number" );
       expected.push( "convert", "number", 10, 20, "render", "number" );
       expected.push( "cancel", "myConfig", "finish", "myConfig" );

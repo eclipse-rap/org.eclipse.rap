@@ -136,7 +136,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertEquals( 17, foo );
         assertEquals( 33, win.foo );
         var msg = TestUtil.getMessage();
-        assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 )
+        assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 );
         browser.destroy();
         delete foo;
       }
@@ -171,8 +171,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           }
         } );
         var msg = TestUtil.getMessage();
-        assertTrue( msg.indexOf( "w3.evaluateResult=%5B33%5D" ) != -1 )
-        assertTrue( msg.indexOf( "w3.executeResult=true" ) != -1 )
+        assertTrue( msg.indexOf( "w3.evaluateResult=%5B33%5D" ) != -1 );
+        assertTrue( msg.indexOf( "w3.executeResult=true" ) != -1 );
         browser.destroy();
       }
     ],
@@ -303,8 +303,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         TestUtil.initRequestLog();
         browser.execute( "( function(){ return function(){}; } )();" );
         var msg = TestUtil.getMessage();
-        assertTrue( msg.indexOf( "w6.evaluateResult=%5B%5B%5D%5D" ) != -1 )
-        assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 )
+        assertTrue( msg.indexOf( "w6.evaluateResult=%5B%5B%5D%5D" ) != -1 );
+        assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 );
         browser.destroy();
       }
     ],
@@ -544,8 +544,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertTrue( typeof( win.abc ) === "function" );
         assertTrue( typeof( win.abc_impl ) === "function" );
         TestUtil.scheduleResponse( function() {
-	        browser.setFunctionResult( "abc", null, "error" );
-	      } );
+          browser.setFunctionResult( "abc", null, "error" );
+        } );
         try {
           var result = win.abc();
           throw "Browser function should throw an error";

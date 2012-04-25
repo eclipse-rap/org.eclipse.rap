@@ -172,7 +172,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       child.destroy();
     },
 
-	  // See Bug 359665 - "Background transparent don't work in IE"
+    // See Bug 359665 - "Background transparent don't work in IE"
     testNoInsertDomEventOnRoundedBorderRender : function() {
       var parent = new qx.ui.layout.CanvasLayout();
       parent.addToDocument();
@@ -540,7 +540,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
     
     testFiresChangeEnabledEvent : function() {
-    	var button = new org.eclipse.rwt.widgets.Button( "push" );
+      var button = new org.eclipse.rwt.widgets.Button( "push" );
       button.addToDocument();
       var log = 0;
       button.addEventListener( "changeEnabled", function() {
