@@ -18,6 +18,7 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rwt.events.BrowserHistoryListener;
 import org.eclipse.rwt.internal.widgets.JSExecutor;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -30,8 +31,9 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.Version;
 
 
+
 @SuppressWarnings("restriction")
-public class MainUi {
+public class MainUi implements IEntryPoint {
 
   private static final String RAP_PAGE_URL = "http://eclipse.org/rap/";
   private static final int CONTENT_MIN_HEIGHT = 800;
@@ -52,12 +54,6 @@ public class MainUi {
     attachHistoryListener();
     shell.open();
     selectInitialContribution();
-    while( !shell.isDisposed() ) {
-      if( !display.readAndDispatch() ) {
-        display.sleep();
-      }
-    }
-    display.dispose();
     return 0;
   }
 
