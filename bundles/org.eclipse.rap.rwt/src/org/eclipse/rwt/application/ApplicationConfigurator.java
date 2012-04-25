@@ -15,40 +15,55 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 
 /**
- * <p><strong>Note:</strong> This API is <em>provisional</em>. It is likely to change before the final
- * release.</p>
- *
- * An <code>ApplicationConfigurator</code> instance is used to provide an RWT
- * <code>{@link ApplicationConfiguration ApplicationConfiguration}</code> to the RWT runtime system.
- * The latter is represented by an <code>{@link ApplicationInstance ApplicationProcess}</code>.
- * Each <code>ApplicationProcess</code> takes exactly one configurator.
- *
- * <p>The simplest implementation of an <code>ApplicationConfigurator</code> looks like this:
- * <pre>
- *   public class ExampleApplicationConfigurator implements ApplicationConfigurator {
- *    public void configure( ApplicationConfiguration configuration ) {
- *      configuration.addEntryPoint( "example", ExampleEntryPoint.class );
- *    }
- *  }</pre>
- * The <code>{@link ApplicationConfigurator#configure(ApplicationConfiguration) configure}</code>
- * method serves as callback for the <code>Application</code> instance. The application uses this
- * method to retrieve the configuration at runtime. The example above shows how to register an
- * <code>{@link IEntryPoint IEntryPoint}</code> that will be used by the application at runtime
- * to provide application specific UIs.
+ * <p>
+ * <strong>Note:</strong> This API is <em>provisional</em>. It is likely to
+ * change before the final release.
  * </p>
+ * <p>
+ * An <code>ApplicationConfigurator</code> instance is used to provide an RWT
+ * <code>{@link ApplicationConfiguration ApplicationConfiguration}</code> to the
+ * RWT runtime system. The latter is represented by an
+ * <code>{@link ApplicationInstance ApplicationInstance}</code>. Each
+ * <code>ApplicationInstance</code> takes exactly one configurator.
+ * <p>
+ * The simplest implementation of an <code>ApplicationConfigurator</code> looks
+ * like this:
+ * </p>
+ * <pre>
+ * public class ExampleApplicationConfigurator implements ApplicationConfigurator {
  *
- * <p>In general RWT developers do not have to interact with the <code>Application</code> instance
- * directly. An <code>ApplicationConfigurator</code> implementation generally gets picked up
- * by the declaration system of the surrounding container. In case of a servlet container for
- * example the configurator is registered as <code>context-param</code> in the
- * <code>web.xml</code>, with <code>OSGi</code> you might register it as a service using DS and
- * in the RAP workbench you do not see it at all as configuration is supplied via
- * <code>extension-points</code>.</p>
- *
- * <p>Note that the configurator is called only once during application lifetime. Configuration
- * of the application takes place before the system gets activated. Therefore manipulation of
- * the configuration instance at a later point in time is not an intended use case and will
- * likely have no effect to the system.</p>
+ *   public void configure( ApplicationConfiguration configuration ) {
+ *     configuration.addEntryPoint( &quot;example&quot;, ExampleEntryPoint.class, null );
+ *   }
+ * }
+ * </pre>
+ * <p>
+ * The
+ * <code>{@link ApplicationConfigurator#configure(ApplicationConfiguration) configure}</code>
+ * method serves as callback for the <code>ApplicationInstance</code>. The
+ * application uses this method to retrieve the configuration at runtime. The
+ * example above shows how to register an
+ * <code>{@link IEntryPoint IEntryPoint}</code> that will be used by the
+ * application at runtime to provide application specific UIs.
+ * </p>
+ * <p>
+ * In general RWT developers do not have to interact with the
+ * <code>ApplicationInstance</code> directly. An
+ * <code>ApplicationConfigurator</code> implementation generally gets picked up
+ * by the declaration system of the surrounding container. In case of a servlet
+ * container for example the configurator is registered as
+ * <code>context-param</code> in the <code>web.xml</code>, with
+ * <code>OSGi</code> you might register it as a service using DS and in the RAP
+ * workbench you do not see it at all as configuration is supplied via
+ * <code>extension-points</code>.
+ * </p>
+ * <p>
+ * Note that the configurator is called only once during application lifetime.
+ * Configuration of the application takes place before the system gets
+ * activated. Therefore manipulation of the configuration instance at a later
+ * point in time is not an intended use case and will likely have no effect to
+ * the system.
+ * </p>
  *
  * @see ApplicationInstance
  * @see ApplicationConfiguration

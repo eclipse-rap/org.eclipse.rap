@@ -28,8 +28,8 @@ import org.eclipse.swt.widgets.Widget;
 
 
 /**
- * This interface allows to configure various aspects of an
- * <code>Application</code> before it is started.
+ * This interface allows to configure various aspects of an RWT application
+ * before it is started.
  * <p>
  * <strong>Note:</strong> This API is <em>provisional</em>. It is likely to
  * change before the final release.
