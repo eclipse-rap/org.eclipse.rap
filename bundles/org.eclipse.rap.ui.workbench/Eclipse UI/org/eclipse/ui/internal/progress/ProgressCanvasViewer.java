@@ -16,16 +16,12 @@ import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -80,20 +76,7 @@ public class ProgressCanvasViewer extends AbstractProgressViewer {
         maxCharacterWidth = numChars;
         // RAP [bm]: 
 //        canvas = new Canvas(parent, style);
-        canvas = new Label(parent, style | SWT.CENTER );
-        canvas.addControlListener( new ControlAdapter() {
-          public void controlResized( final ControlEvent evt ) {
-            canvas.removeControlListener( this );
-            Rectangle bounds = canvas.getParent().getClientArea();
-            Point oldSize = canvas.getSize();
-            canvas.setText( "Trallala" );
-            canvas.pack();
-            canvas.setText( "" );
-            Point size = canvas.getSize();
-            int top = ( bounds.height - size.y ) / 2;
-            canvas.setBounds( bounds.x, top, oldSize.x, size.y );
-          }
-        } );
+        canvas = new Label( parent, style | SWT.CENTER );
         // RAPEND: [bm] 
 
         hookControl(canvas);
