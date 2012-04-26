@@ -118,7 +118,7 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     },
     
     _onChangeFocusedChild : function( evt ) {
-      var focusedChild = this.getFocusRoot().getFocusedChild();
+      var focusedChild = evt.getValue();
       this.setBlockScrolling( !this._showFocusedControl && focusedChild !== this );
     },
 
