@@ -16,11 +16,13 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.EncodingUtil;
+import org.eclipse.rwt.internal.widgets.JSExecutor;
 import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -1000,6 +1002,7 @@ public final class JSWriter {
   }
 
   private static void write( String code ) {
+    ensureJSExecutor();
     IServiceStore serviceStore = ContextProvider.getServiceStore();
     ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
     // HACK [rst] ProtocolMessageWriter clears these state info attributes
@@ -1020,6 +1023,10 @@ public final class JSWriter {
     if( bufferCurrentWidgetRef != null ) {
       serviceStore.setAttribute( CURRENT_WIDGET_REF, bufferCurrentWidgetRef );
     }
+  }
+
+  private static void ensureJSExecutor() {
+    SessionSingletonBase.getInstance( JSExecutor.class );
   }
 
 }

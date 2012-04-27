@@ -247,7 +247,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     if( !adapter.isInitialized() ) {
       ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
       protocolWriter.appendCreate( "uicb", "rwt.UICallBack" );
-      protocolWriter.appendCreate( "jsex", "rwt.JSExecutor" );
     }
   }
 

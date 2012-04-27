@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
+import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
@@ -1024,14 +1025,16 @@ public class JSWriter_Test extends TestCase {
     writer.call( "bar", null );
 
     Message message = Fixture.getProtocolMessage();
-    CallOperation operation1 = ( CallOperation )message.getOperation( 0 );
-    CallOperation operation2 = ( CallOperation )message.getOperation( 2 );
+    CreateOperation createOperation = ( CreateOperation )message.getOperation( 0 );
+    CallOperation operation1 = ( CallOperation )message.getOperation( 1 );
+    CallOperation operation2 = ( CallOperation )message.getOperation( 3 );
     String expected1 = WM_SETUP_CODE
                        + "var w = wm.findWidgetById( \"" + shellId + "\" );"
                        + "w.foo();";
     String expected2 = WM_SETUP_CODE
                        + "var w = wm.findWidgetById( \"" + shellId + "\" );"
                        + "w.bar();";
+    assertEquals( "jsex", createOperation.getTarget() );
     assertEquals( expected1, operation1.getProperty( "content" ) );
     assertEquals( expected2, operation2.getProperty( "content" ) );
   }

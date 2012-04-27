@@ -321,7 +321,7 @@ public class DisplayLCA_Test extends TestCase {
     displayLCA.render( display );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( "uicb", "active" ) );
+    assertEquals( Boolean.TRUE, message.findCreateProperty( "uicb", "active" ) );
   }
 
   public void testRenderCurrentTheme() throws IOException {
@@ -402,8 +402,6 @@ public class DisplayLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( "uicb" );
     assertEquals( "rwt.UICallBack", operation.getType() );
-    operation = message.findCreateOperation( "jsex" );
-    assertEquals( "rwt.JSExecutor", operation.getType() );
   }
 
   public void testCreateSingletons_Initialized() throws IOException {
@@ -414,7 +412,6 @@ public class DisplayLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findCreateOperation( "uicb" ) );
-    assertNull( message.findCreateOperation( "jsex" ) );
   }
 
   private void clearLogs() {

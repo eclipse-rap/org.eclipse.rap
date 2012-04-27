@@ -45,8 +45,10 @@ public class ProtocolTestUtil {
     String result = "";
     Message message = Fixture.getProtocolMessage();
     if( message.getOperationCount() > 0 ) {
-      CallOperation operation = ( CallOperation )message.getOperation( 0 );
-      result = ( String )operation.getProperty( "content" );
+      CallOperation operation = message.findCallOperation( "jsex", "execute" );
+      if( operation != null ) {
+        result = ( String )operation.getProperty( "content" );
+      }
     }
     return result;
   }
