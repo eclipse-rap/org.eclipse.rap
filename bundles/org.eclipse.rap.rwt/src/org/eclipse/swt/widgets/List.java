@@ -400,10 +400,7 @@ public class List extends Scrollable {
    */
   public void select( int start, int end ) {
     checkWidget();
-    if(    end >= 0
-        && start <= end
-        && ( ( style & SWT.SINGLE ) == 0 || start == end ) )
-    {
+    if( end >= 0 && start <= end && ( ( style & SWT.SINGLE ) == 0 || start == end ) ) {
       int count = model.getItemCount();
       if( count != 0 && start < count ) {
         int startIndex = Math.max( 0, start );
@@ -988,8 +985,7 @@ public class List extends Scrollable {
    */
   public int getItemHeight() {
     checkWidget();
-    int margin = getItemPadding().height;
-    return Graphics.getCharHeight( getFont() ) + margin;
+    return Graphics.getCharHeight( getFont() ) + getItemPadding().height;
   }
 
   /////////////////////////////////////////
