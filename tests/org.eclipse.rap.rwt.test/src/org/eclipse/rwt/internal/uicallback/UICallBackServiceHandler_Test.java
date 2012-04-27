@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,6 +54,16 @@ public class UICallBackServiceHandler_Test extends TestCase {
     assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }
 
+  public void testCreateUICallBack() throws Exception {
+    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    ProtocolMessageWriter protocolWriter = new ProtocolMessageWriter();
+
+    UICallBackServiceHandler.writeUICallBackActivation( protocolWriter );
+
+    Message message = new Message( protocolWriter.createMessage() );
+    assertNotNull( message.findCreateOperation( UI_CALLBACK_ID ) );
+  }
+
   public void testWriteUICallBackActivation() throws Exception {
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
     ProtocolMessageWriter protocolWriter = new ProtocolMessageWriter();
@@ -61,7 +71,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
     UICallBackServiceHandler.writeUICallBackActivation( protocolWriter );
 
     Message message = new Message( protocolWriter.createMessage() );
-    assertEquals( Boolean.TRUE, message.findSetProperty( UI_CALLBACK_ID, PROP_ACTIVE ) );
+    assertEquals( Boolean.TRUE, message.findCreateProperty( UI_CALLBACK_ID, PROP_ACTIVE ) );
   }
 
   public void testWriteUICallBackDeactivate() throws Exception {

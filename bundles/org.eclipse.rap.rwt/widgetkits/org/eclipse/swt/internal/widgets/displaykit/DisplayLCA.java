@@ -161,7 +161,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       renderTheme( display );
       renderExitConfirmation( display );
       renderEnableUiTests( display );
-      createSingletons( display );
       renderShells( display );
       renderFocus( display );
       renderBeep( display );
@@ -241,14 +240,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   /////////////////////////////
   // Helping methods for render
-
-  private static void createSingletons( Display display ) {
-    WidgetAdapter adapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
-    if( !adapter.isInitialized() ) {
-      ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-      protocolWriter.appendCreate( "uicb", "rwt.UICallBack" );
-    }
-  }
 
   private static void disposeWidgets() throws IOException {
     Widget[] disposedWidgets = DisposedWidgets.getAll();

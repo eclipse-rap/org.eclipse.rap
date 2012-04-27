@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
 import org.eclipse.rwt.internal.application.RWTFactory;
@@ -392,26 +391,6 @@ public class DisplayLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNotNull( message.findCreateOperation( "myShell" ) );
-  }
-
-  public void testCreateSingletons() throws IOException {
-    Fixture.fakeNewRequest( display );
-
-    displayLCA.render( display );
-
-    Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( "uicb" );
-    assertEquals( "rwt.UICallBack", operation.getType() );
-  }
-
-  public void testCreateSingletons_Initialized() throws IOException {
-    Fixture.fakeNewRequest( display );
-    Fixture.markInitialized( display );
-
-    displayLCA.render( display );
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findCreateOperation( "uicb" ) );
   }
 
   private void clearLogs() {
