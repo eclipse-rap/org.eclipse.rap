@@ -101,6 +101,43 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       return domEvent._prevented ? true : false;
     },
 
+    
+    blockUserDomEvents : function( element, value ) {
+      var eventUtil = qx.html.EventRegistration;
+      if( value ) {
+        for( var i = 0; i < this._userEventTypes.length; i++ ) {
+          eventUtil.addEventListener( element, this._userEventTypes[ i ], this._domEventBlocker );     
+        }
+      } else {
+        for( var i = 0; i < this._userEventTypes.length; i++ ) {
+          eventUtil.removeEventListener( element, this._userEventTypes[ i ], this._domEventBlocker );     
+        }
+      }
+    },
+
+    _userEventTypes : [
+      "mouseover", 
+      "mousemove", 
+      "mouseout", 
+      "mousedown", 
+      "mouseup", 
+      "click",
+      "dblclick", 
+      "contextmenu",
+      ( org.eclipse.rwt.Client.isGecko() ? "DOMMouseScroll" : "mousewheel" ),
+      "keydown", 
+      "keypress", 
+      "keyup" 
+    ],
+    
+    _domEventBlocker : function( event ) {
+      org.eclipse.rwt.EventHandlerUtil.stopDomEvent( event );
+      event.cancelBubble = true; // MSIE
+      if( event.stopPropagation ) {
+        event.stopPropagation();
+      }
+    },
+    
     // BUG: http://xscroll.mozdev.org/
     // If your Mozilla was built with an option `--enable-default-toolkit=gtk2',
     // it can not return the correct event target for DOMMouseScroll.

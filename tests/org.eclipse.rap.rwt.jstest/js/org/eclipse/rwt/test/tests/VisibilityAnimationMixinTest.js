@@ -212,6 +212,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
       assertEquals( 40, TestUtil.getElementBounds( shell.getElement() ).top );
     },
 
+//   TODO [tb] : This is untestable until "real" (browser-native) events are used for testing
+//    testShellFlyOutBlockEvents : function() {
+//      var log = [];
+//      shell.setAnimation( { "flyOutTop" : [ 400, "linear" ] } );
+//      shell.show();
+//      shell.addEventListener( "click", function( event ) {
+//        log.push( event ); 
+//      } );
+//      TestUtil.flush();
+//      
+//      shell.hide();
+//      TestUtil.click( shell );
+//      TestUtil.flush();
+//      
+//      assertEquals( 0, log.length );
+//    },
+//    
     testShellFlyOutTopRun : function() {
       shell.setAnimation( { "flyOutTop" : [ 400, "linear" ] } );
       shell.show();

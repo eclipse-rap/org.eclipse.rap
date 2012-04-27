@@ -13,6 +13,7 @@
 
 var Animation = org.eclipse.rwt.Animation;
 var AnimationRenderer = org.eclipse.rwt.AnimationRenderer;
+var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
 
 qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
 
@@ -31,6 +32,7 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
   construct : function() {
     this.hide(); // forces _applyVisibility to be called on show() - not a good practice
     this.addEventListener( "beforeAppear", this._blockFocus, this );
+    this.addEventListener( "changeVisibility", this._blockUserEvents, this );
     this.addEventListener( "destroy", this._onDestroyAnim, this );
   },
 
@@ -243,6 +245,13 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
     _finishSlideAnimation : function( event ) {
       // TODO : could container overflow just be generally false, or use _applyHeight instead? 
       this.setContainerOverflow( true );
+    },
+    
+    _blockUserEvents : function( changeEvent ) {
+      var element = this.getElement();
+      if( element ) {
+        EventHandlerUtil.blockUserDomEvents( element, !changeEvent.getValue() );
+      }
     },
     
     _blockFocus : function() {
