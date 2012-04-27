@@ -581,6 +581,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         result = this._createElement( 3 );
         result.style.verticalAlign = "middle";
         result.style.whiteSpace = "nowrap";
+        if( org.eclipse.rwt.Client.isNewMshtml() ) {
+          result.style.backgroundColor = "rgba(0, 0, 0, 0)";
+        }        
         this._cellLabels[ cell ] = result;
       }
       return result;
