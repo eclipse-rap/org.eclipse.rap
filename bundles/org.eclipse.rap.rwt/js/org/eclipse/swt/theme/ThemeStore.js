@@ -51,6 +51,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       "TreeItem" : {
         "unfocused" : "parent_unfocused"
       },
+      "Tree-RowOverlay" : {
+        "unfocused" : "parent_unfocused"
+      },
       "TreeColumn" : {
         "hover" : "mouseover"
       },
@@ -73,6 +76,9 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         "hover" : "mouseover"
       },
       "TableItem" : {
+        "unfocused" : "parent_unfocused"
+      },
+      "Table-RowOverlay" : {
         "unfocused" : "parent_unfocused"
       },
       "TabItem" : {

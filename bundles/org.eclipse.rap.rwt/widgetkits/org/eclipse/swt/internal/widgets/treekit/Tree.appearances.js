@@ -24,7 +24,6 @@ var appearances = {
     }
   },
 
-
   "tree-row" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
@@ -33,6 +32,10 @@ var appearances = {
       result.itemBackgroundImage = tv.getCssImage( "TreeItem", "background-image" );
       result.itemBackgroundGradient = tv.getCssGradient( "TreeItem", "background-image" );
       result.itemForeground = tv.getCssColor( "TreeItem", "color" );
+      result.overlayBackground = tv.getCssColor( "Tree-RowOverlay", "background-color" );
+      result.overlayBackgroundImage = tv.getCssImage( "Tree-RowOverlay", "background-image" );
+      result.overlayBackgroundGradient = tv.getCssGradient( "Tree-RowOverlay", "background-image" );
+      result.overlayForeground = tv.getCssColor( "Tree-RowOverlay", "color" );
       result.textDecoration = tv.getCssIdentifier( "TreeItem", "text-decoration" );
       result.textShadow = tv.getCssShadow( "TreeItem", "text-shadow" );
       return result;

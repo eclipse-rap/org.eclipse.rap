@@ -51,6 +51,12 @@ TableItem:selected {
   background-color: #5882b5;
 }
 
+Table-RowOverlay {
+  background-color: transparent;
+  color: inherit;
+  background-image: none;
+}
+
 TableColumn-SortIndicator {
   background-image: none;
 }

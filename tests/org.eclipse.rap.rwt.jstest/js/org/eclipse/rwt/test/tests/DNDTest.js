@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2012 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -1542,11 +1542,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     },
     
     createTreeTarget : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var argsMap = {
         "appearance" : "tree",
         "selectionPadding" : [ 2, 2 ]
       };
+      TestUtil.fakeAppearance( "tree-row",  {
+        style : function( states ) {
+          return {
+            "itemBackground" : states.over ? "#b5b5b5" : "undefined",
+            "itemBackgroundGradient" : "undefined",
+            "itemBackgroundImage" : "undefined",
+            "itemForeground" : "undefined",
+            "checkBox" : null,
+            "overlayBackground" : states.selected ? "blue" : "undefined",
+            "overlayBackgroundImage" : null,
+            "overlayBackgroundGradient" : null,
+            "overlayForeground" : "undefined"
+          };
+        }
+      } );       
       var tree = new org.eclipse.rwt.widgets.Tree( argsMap );
       org.eclipse.swt.WidgetManager.getInstance().add( tree, "w2" );
       tree.setUserData( "isControl", true );

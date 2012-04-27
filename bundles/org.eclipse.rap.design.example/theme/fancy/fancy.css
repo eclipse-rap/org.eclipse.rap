@@ -893,34 +893,40 @@ TableItem {
   background-image: none;
 }
 
-TableItem:hover {
-  background-color: #dae9f7;
-}
-
-TableItem:selected {
-  color: white;
-  background-color: #00589f;
-}
-
-TableItem:selected:unfocused {
-  background-color: #959595;
-  color: #ffffff;
-}
-
 TableItem:linesvisible:even {
   background-color: #f3f3f4;
 }
 
-TableItem:linesvisible:even:hover {
+Table-RowOverlay {
+  background-color: transparent;
+  color: inherit;
+  background-image: none;
+}
+
+Table-RowOverlay:hover {
   background-color: #dae9f7;
 }
 
-TableItem:linesvisible:even:selected {
+Table-RowOverlay:selected {
+  color: white;
+  background-color: #00589f;
+}
+
+Table-RowOverlay:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
+}
+
+Table-RowOverlay:linesvisible:even:hover {
+  background-color: #dae9f7;
+}
+
+Table-RowOverlay:linesvisible:even:selected {
   background-color: #00589f;
   color: white;
 }
 
-TableItem:linesvisible:even:selected:unfocused {
+Table-RowOverlay:linesvisible:even:selected:unfocused {
   background-color: #959595;
   color: #ffffff;
 }
@@ -1134,34 +1140,40 @@ TreeItem {
   background-image: none;
 }
 
-TreeItem:hover {
-  background-color: #dae9f7;
-}
-
-TreeItem:selected {
-  background-color: #00589f;
-  color: #ffffff;
-}
-
-TreeItem:selected:unfocused {
-  background-color: #959595;
-  color: #ffffff;
-}
-
 TreeItem:linesvisible:even {
   background-color: #f3f3f4;
 }
 
-TreeItem:linesvisible:even:hover {
+Tree-RowOverlay {
+  background-color: transparent;
+  color: inherit;
+  background-image: none;
+}
+
+Table-RowOverlay:hover {
   background-color: #dae9f7;
 }
 
-TreeItem:linesvisible:even:selected {
+Table-RowOverlay:selected {
+  background-color: #00589f;
+  color: #ffffff;
+}
+
+Table-RowOverlay:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
+}
+
+Table-RowOverlay:linesvisible:even:hover {
+  background-color: #dae9f7;
+}
+
+Table-RowOverlay:linesvisible:even:selected {
   background-color: #00589f;
   color: white;
 }
 
-TreeItem:linesvisible:even:selected:unfocused {
+Table-RowOverlay:linesvisible:even:selected:unfocused {
   background-color: #959595;
   color: #ffffff;
 }
@@ -2397,16 +2409,16 @@ TreeItem {
   color: inherit;
 }
 
-TreeItem:hover {
+Tree-RowOverlay:hover {
   background-color: #e9f3d2;
 }
 
-TreeItem:selected {
+Tree-RowOverlay:selected {
   background-color: #abe033;
   color: #ffffff;
 }
 
-TreeItem:selected:unfocused {
+Tree-RowOverlay:selected:unfocused {
   background-color: #959595;
   color: #ffffff;
 }
@@ -2505,15 +2517,15 @@ TableColumn:hover {
   background-image: url( "theme/fancy/icons/table-column-hover.png" );
 }
 
-TableItem:hover {
+Table-RowOverlay:hover {
   background-color: #e9f3d2;
 }
 
-TableItem:selected {
+Table-RowOverlay:selected {
   background-color: #abe033;
 }
 
-TableItem:selected:unfocused {
+Table-RowOverlay:selected:unfocused {
   background-color: #959595;
 }
 
@@ -2521,15 +2533,15 @@ TableItem:even {
   background-color: #f3f3f4;
 }
 
-TableItem:even:hover {
+Table-RowOverlay:even:hover {
   background-color: #e9f3d2;
 }
 
-TableItem:even:selected {
+Table-RowOverlay:even:selected {
   background-color: #abe033;
 }
 
-TableItem:even:selected:unfocused {
+Table-RowOverlay:even:selected:unfocused {
   background-color: #959595;
 }
 

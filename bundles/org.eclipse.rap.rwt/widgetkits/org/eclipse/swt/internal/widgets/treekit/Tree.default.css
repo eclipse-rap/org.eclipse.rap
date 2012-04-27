@@ -39,6 +39,12 @@ TreeItem:selected {
   background-color: #5882b5;
 }
 
+Tree-RowOverlay {
+  background-color: transparent;
+  color: inherit;
+  background-image: none;
+}
+
 TreeColumn {
   font: 14px Arial, sans-serif;
   color: #4a4a4a;

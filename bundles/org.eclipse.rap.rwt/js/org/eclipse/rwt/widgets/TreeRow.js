@@ -155,35 +155,31 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var color = null;
       var image = null;
       var gradient = null;
-      if( this._getRenderThemingBackground( item, config, selected ) ) {
+      if( this._hasOverlayBackground() ) {
+        // TODO [tb] : would currently not behave in an actual overlay (if semi-transparent)
+        color = this._styleMap.overlayBackground;
+        image = this._styleMap.overlayBackgroundImage;
+        gradient = this._styleMap.overlayBackgroundGradient;
+      } else if( config.enabled !== false && item !== null && item.getBackground() !== null ) {
+        color = item.getBackground();
+      } else {
         color = this._styleMap.itemBackground;
         image = this._styleMap.itemBackgroundImage;
         gradient = this._styleMap.itemBackgroundGradient;
-      } else {
-        color = item.getBackground();
       }
       // Note: "undefined" is a string stored in the themestore
       this.setBackgroundColor( color !== "undefined" ? color : null );
       this.setBackgroundImage( image !== "undefined" ? image : null );
       this.setBackgroundGradient( gradient !== "undefined" ? gradient : null );
     },
-
-    _getRenderThemingBackground : function( item, config, selected ) {
-      var renderFullSelection = selected && config.fullSelection;
-      var hasItemBackground = item !== null && item.getBackground() !== null;
-      var result =    !hasItemBackground
-                   || renderFullSelection
-                   || this._hasHoverBackground()
-                   || config.enabled === false;
+    
+    _hasOverlayBackground : function() {
+      var result =    this._styleMap.overlayBackground !== "undefined"
+                   || this._styleMap.overlayBackgroundImage !== null
+                   || this._styleMap.overlayBackgroundGradient !== null;
       return result;
     },
-
-    _hasHoverBackground : function() {
-      // TODO [tb] : This detection is not prefect; Should the item be hovered,
-      // but a hover-independent theming-background be set, this returns true.
-      return this.hasState( "over" ) && this._styleMap.itemBackground !== "undefined";
-    },
-
+    
     _renderIndention : function( item, config, hoverElement ) {
       var expandSymbol = this._getExpandSymbol( item, config, hoverElement );
       if( expandSymbol != null ) {
@@ -321,7 +317,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     _renderSelectionBackground : function( item, cell, config ) {
       if( this._styleMap.itemBackground !== null ) {
         var element = this._getMiscBackground();
-        element.style.backgroundColor = this._styleMap.itemBackground;
+        element.style.backgroundColor = this._styleMap.overlayBackground;
         var padding = config.selectionPadding;
         var left = this._getItemTextLeft( item, cell, config );
         left -= padding[ 0 ];
@@ -439,9 +435,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
 
     _getCellBackgroundColor : function( item, cell, config ) {
       var result;
-      if(    this.hasState( "selected" )
-          || config.enabled === false
-          || this._hasHoverBackground()
+      if(    config.enabled === false 
+          || this._styleMap.overlayBackground !== "undefined" 
       ) {
         result = "undefined";
       } else {
@@ -451,13 +446,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
 
     _getCellColor : function( item, cell, config ) {
-      var result = item.getCellForeground( cell );
-      if(    result === null
-          || result === ""
-          || config.enabled === false
-          || this.hasState( "selected" )
-          || this._hasHoverBackground()
-      ) {
+      var result = null;
+      if( this._styleMap.overlayForeground !== "undefined" ) {
+        result = this._styleMap.overlayForeground;
+      } else if( config.enabled !== false && item.getCellForeground( cell ) ) {
+        result = item.getCellForeground( cell );
+      } else {
         result = this._styleMap.itemForeground;
         if( result === "undefined" ) {
           result = config.textColor;

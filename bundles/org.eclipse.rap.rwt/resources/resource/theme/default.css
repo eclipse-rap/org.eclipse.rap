@@ -962,7 +962,20 @@ TableItem {
   background-image: none;
 }
 
-TableItem:hover {
+
+TableItem:linesvisible:even {
+  background-color: #f0f0f0;
+  color: #4a4a4a;
+}
+
+
+Table-RowOverlay {
+  background-color: transparent;
+  color: inherit;
+  background-image: none;
+}
+
+Table-RowOverlay:hover {
   color: #4a4a4a;
   background-color: #b5b5b5;
   background-image: gradient(
@@ -972,7 +985,7 @@ TableItem:hover {
   );
 }
 
-TableItem:selected {
+Table-RowOverlay:selected {
   color: #ffffff;
   background-color: #5882b5;
   background-image: gradient(
@@ -982,7 +995,7 @@ TableItem:selected {
   );
 }
 
-TableItem:selected:unfocused {
+Table-RowOverlay:selected:unfocused {
   color: #ffffff;
   background-color: #b5b5b5;
   background-image: gradient(
@@ -992,12 +1005,7 @@ TableItem:selected:unfocused {
   );
 }
 
-TableItem:linesvisible:even {
-  background-color: #f0f0f0;
-  color: #4a4a4a;
-}
-
-TableItem:linesvisible:even:hover {
+Table-RowOverlay:linesvisible:even:hover {
   color: #4a4a4a;
   background-color: #b5b5b5;
   background-image: gradient(
@@ -1007,7 +1015,7 @@ TableItem:linesvisible:even:hover {
   );
 }
 
-TableItem:linesvisible:even:selected {
+Table-RowOverlay:linesvisible:even:selected {
   color: #ffffff;
   background-color: #5882b5;
   background-image: gradient(
@@ -1017,7 +1025,7 @@ TableItem:linesvisible:even:selected {
   );
 }
 
-TableItem:linesvisible:even:selected:unfocused {
+Table-RowOverlay:linesvisible:even:selected:unfocused {
   background-color: #959595;
   background-image: gradient(
     linear, left top, left bottom,
@@ -1025,9 +1033,8 @@ TableItem:linesvisible:even:selected:unfocused {
     to( #818181 )
   );
   color: #ffffff;
-  text-decoration: none;
-  text-shadow: none;
 }
+
 
 TableColumn-SortIndicator {
   background-image: none;
@@ -1211,7 +1218,19 @@ TreeItem {
   background-image: none;
 }
 
-TreeItem:hover {
+TreeItem:linesvisible:even {
+  background-color: #f0f0f0;
+  color: #4a4a4a;
+  border: none;
+}
+
+Tree-RowOverlay {
+  background-color: transparent;
+  color: inherit;
+  background-image: none;
+}
+
+Tree-RowOverlay:hover {
   color: #4a4a4a;
   background-color: #b5b5b5;
   background-image: gradient(
@@ -1221,7 +1240,7 @@ TreeItem:hover {
   );
 }
 
-TreeItem:selected {
+Tree-RowOverlay:selected {
   color: #ffffff;
   background-color: #5882b5;
   background-image: gradient(
@@ -1231,7 +1250,7 @@ TreeItem:selected {
   );
 }
 
-TreeItem:selected:unfocused {
+Tree-RowOverlay:selected:unfocused {
   color: #ffffff;
   background-color: #b5b5b5;
   background-image: gradient(
@@ -1241,13 +1260,7 @@ TreeItem:selected:unfocused {
   );
 }
 
-TreeItem:linesvisible:even {
-  background-color: #f0f0f0;
-  color: #4a4a4a;
-  border: none;
-}
-
-TreeItem:linesvisible:even:hover {
+Tree-RowOverlay:linesvisible:even:hover {
   color: #4a4a4a;
   background-color: #b5b5b5;
   background-image: gradient(
@@ -1257,7 +1270,7 @@ TreeItem:linesvisible:even:hover {
   );
 }
 
-TreeItem:linesvisible:even:selected {
+Tree-RowOverlay:linesvisible:even:selected {
   color: #ffffff;
   background-color: #5882b5;
   background-image: gradient(
@@ -1267,7 +1280,7 @@ TreeItem:linesvisible:even:selected {
   );
 }
 
-TreeItem:linesvisible:even:selected:unfocused {
+Tree-RowOverlay:linesvisible:even:selected:unfocused {
   color: #ffffff;
   background-color: #b5b5b5;
   background-image: gradient(

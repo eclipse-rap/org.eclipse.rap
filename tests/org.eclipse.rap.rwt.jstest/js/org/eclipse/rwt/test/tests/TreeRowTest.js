@@ -363,6 +363,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           result.itemBackgroundGradient = null;
           result.itemBackgroundImage = null;
           result.itemForeground = "white";
+          result.overlayBackground = "undefined";
+          result.overlayBackgroundImage = null;
+          result.overlayBackgroundGradient = null;
+          result.overlayForeground = "undefined";
           result.textDecoration = "line-through";
           return result;
         }
@@ -805,7 +809,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
       item.setBackground( "red" );
+
       row.renderItem( item, tree._config, false, null );
+
       var node = row._getTargetNode();
       assertEquals( "red", node.style.backgroundColor );
       tree.destroy();
@@ -1621,7 +1627,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var item = this._createItem( tree );
       item.setTexts( [ "T1", "T2" ] );
       this._setItemBackground( "green" );
+
       row.renderItem( item, tree._config, true, null );
+
       assertEquals( "green", row.getBackgroundColor() );
       assertEquals( 4, row._getTargetNode().childNodes.length );
       var selNode = row._getTargetNode().childNodes[ 2 ];
@@ -1646,7 +1654,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var item = this._createItem( tree );
       item.setTexts( [ "Teeeeeeeeeeeeessssst1", "T2" ] );
       this._setItemBackground( "green" );
+
       row.renderItem( item, tree._config, true, null );
+
       assertEquals( "green", row.getBackgroundColor() );
       assertEquals( 4, row._getTargetNode().childNodes.length );
       var selNode = row._getTargetNode().childNodes[ 2 ];
@@ -1695,6 +1705,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           } else {
             result.itemBackground = "#888888";
           }
+          result.overlayBackground = "undefined";
+          result.overlayBackgroundImage = null;
+          result.overlayBackgroundGradient = null;
+          result.overlayForeground = "undefined";
           result.itemBackgroundGradient = null;
           result.itemBackgroundImage = null;
           return result;
@@ -1714,7 +1728,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
 
-    testFullSelectionOverwritesTheming : function() {
+    testItemSelectionThemingDoesNotOverwriteCustomColors : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createTree( false, false, "fullSelection" );
       TestUtil.fakeAppearance( "tree-row", {
@@ -1729,6 +1743,95 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           }
           result.itemBackgroundGradient = null;
           result.itemBackgroundImage = null;
+          result.overlayBackground = "undefined";
+          result.overlayBackgroundImage = null;
+          result.overlayBackgroundGradient = null;
+          result.overlayForeground = "undefined";
+          return result;
+        }
+      } );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      row.setAppearance( "tree-row" );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test1" ] );
+      item.setCellBackgrounds( [ "red" ] );
+      item.setCellForegrounds( [ "yellow" ] );
+
+      row.renderItem( item, tree._config, true, null );
+
+      var children = row._getTargetNode().childNodes;
+      assertEquals( "blue", row.getBackgroundColor() );
+      assertEquals( "red", children[ 1 ].style.backgroundColor );
+      assertEquals( "yellow", children[ 2 ].style.color );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testItemHoverThemingDoesNotOverwriteCustomColors : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( false, false, "fullSelection" );
+      TestUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          var result = {};
+          if( states.over ) {
+            result.itemBackground = "blue";
+            result.itemForeground = "white";
+          } else {
+            result.itemBackground = "#888888";
+            result.itemForeground = "black";
+          }
+          result.itemBackgroundGradient = null;
+          result.itemBackgroundImage = null;
+          result.overlayBackground = "undefined";
+          result.overlayBackgroundImage = null;
+          result.overlayBackgroundGradient = null;
+          result.overlayForeground = "undefined";
+          return result;
+        }
+      } );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      row.setAppearance( "tree-row" );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test1" ] );
+      item.setCellBackgrounds( [ "red" ] );
+      item.setBackground( "black" );
+      item.setCellForegrounds( [ "yellow" ] );
+      row.renderItem( item, tree._config, false, null );
+      var children = row._getTargetNode().childNodes;
+      assertEquals( "black", row.getBackgroundColor() );
+
+      row.renderItem( item, tree._config, row.getElement() );
+
+      assertEquals( "black", row.getBackgroundColor() );
+      assertEquals( "red", children[ 1 ].style.backgroundColor );
+      assertEquals( "yellow", children[ 2 ].style.color );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testFullSelectionOverlayOverwritesTheming : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( false, false, "fullSelection" );
+      TestUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          var result = {};
+          result.overlayBackground = "undefined";
+          result.overlayBackgroundImage = null;
+          result.overlayBackgroundGradient = null;
+          result.overlayForeground = "undefined";
+          result.itemBackgroundGradient = null; // TODO TEST
+          result.itemBackgroundImage = null;  // TODO TEST
+          if( states.selected ) {
+            result.itemBackground = "yellow";
+            result.itemForeground = "yellow";
+            result.overlayBackground = "blue";
+            result.overlayForeground = "white";
+          } else {
+            result.itemBackground = "#888888";
+            result.itemForeground = "black";
+          }
           return result;
         }
       } );
@@ -1744,82 +1847,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       assertEquals( "#888888", row.getBackgroundColor() );
       assertEquals( "red", children[ 1 ].style.backgroundColor );
       assertEquals( "yellow", children[ 2 ].style.color );
-
+      
       row.renderItem( item, tree._config, true, null );
-
+      
       assertEquals( "blue", row.getBackgroundColor() );
       assertEquals( "transparent", children[ 1 ].style.backgroundColor );
       assertEquals( "white", children[ 2 ].style.color );
       tree.destroy();
       row.destroy();
     },
-
-   testHoverColorsOverwritesTheming : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree( false, false, "fullSelection" );
-      TestUtil.fakeAppearance( "tree-row", {
-        style : function( states ) {
-          var result = {};
-          if( states.over ) {
-            result.itemBackground = "blue";
-            result.itemForeground = "white";
-          } else {
-            result.itemBackground = "#888888";
-            result.itemForeground = "black";
-          }
-          result.itemBackgroundGradient = null;
-          result.itemBackgroundImage = null;
-          return result;
-        }
-      } );
-      var row = this._createRow( tree );
-      this._addToDom( row );
-      row.setAppearance( "tree-row" );
-      var item = this._createItem( tree );
-      item.setTexts( [ "Test1" ] );
-      item.setCellBackgrounds( [ "red" ] );
-      item.setBackground( "black" );
-      item.setCellForegrounds( [ "yellow" ] );
-      row.renderItem( item, tree._config, false, null );
-      var children = row._getTargetNode().childNodes;
-      assertEquals( "black", row.getBackgroundColor() );
-      assertEquals( "red", children[ 1 ].style.backgroundColor );
-      assertEquals( "yellow", children[ 2 ].style.color );
-
-      row.renderItem( item, tree._config, row.getElement() );
-      assertEquals( "blue", row.getBackgroundColor() );
-      assertEquals( "transparent", children[ 1 ].style.backgroundColor );
-      assertEquals( "white", children[ 2 ].style.color );
-
-      tree.destroy();
-      row.destroy();
-    },
-
-   testHoverWithoutColorDoesNotOverwriteTheming : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree( false, false, "fullSelection" );
-      var row = this._createRow( tree );
-      this._addToDom( row );
-      row.setAppearance( "tree-row" );
-      var item = this._createItem( tree );
-      item.setTexts( [ "Test1" ] );
-      item.setCellBackgrounds( [ "red" ] );
-      item.setBackground( "black" );
-      item.setCellForegrounds( [ "yellow" ] );
-      row.renderItem( item, tree._config, false, null );
-      var children = row._getTargetNode().childNodes;
-      assertEquals( "black", row.getBackgroundColor() );
-      assertEquals( "red", children[ 1 ].style.backgroundColor );
-      assertEquals( "yellow", children[ 2 ].style.color );
-      row.renderItem( item, tree._config, false, row.getElement() );
-      assertEquals( "black", row.getBackgroundColor() );
-      assertEquals( "red", children[ 1 ].style.backgroundColor );
-      assertEquals( "yellow", children[ 2 ].style.color );
-      row.renderItem( item, tree._config, false, null );
-      tree.destroy();
-      row.destroy();
-    },
-
 
     testRenderThemingItemForeground : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -1855,6 +1891,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           } else {
             result.itemForeground = "black";
           }
+          result.overlayBackground = "undefined";
+          result.overlayBackgroundImage = null;
+          result.overlayBackgroundGradient = null;
+          result.overlayForeground = "undefined";
           result.itemBackgroundGradient = null;
           result.itemBackgroundImage = null;
           return result;
@@ -1893,6 +1933,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           } else {
             result.itemForeground = "black";
           }
+          result.overlayBackground = "undefined";
+          result.overlayBackgroundImage = null;
+          result.overlayBackgroundGradient = null;
+          result.overlayForeground = "undefined";
           result.itemBackgroundGradient = null;
           result.itemBackgroundImage = null;
           return result;
@@ -1904,13 +1948,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var item = this._createItem( tree );
       item.setTexts( [ "Test1", "Test2" ] );
       item.setCellForegrounds( [ "red", "red" ] );
-      row.renderItem( item, tree._config, false, null );
-      var nodes = row._getTargetNode().childNodes;
-      assertEquals( 3, nodes.length );
-      assertEquals( "red", nodes[ 1 ].style.color );
-      assertEquals( "red", nodes[ 2 ].style.color );
+
       row.renderItem( item, tree._config, true, null );
-      assertEquals( "white", nodes[ 1 ].style.color );
+      
+      var nodes = row._getTargetNode().childNodes;
+      assertEquals( "red", nodes[ 1 ].style.color );
       assertEquals( "red", nodes[ 2 ].style.color );
       tree.destroy();
       row.destroy();
@@ -1932,6 +1974,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           } else {
             result.itemForeground = "black";
           }
+          result.overlayBackground = "undefined";
+          result.overlayBackgroundImage = null;
+          result.overlayBackgroundGradient = null;
+          result.overlayForeground = "undefined";
           result.itemBackgroundGradient = null;
           result.itemBackgroundImage = null;
           return result;
@@ -1970,6 +2016,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           } else {
             result.itemForeground = "black";
           }
+          result.overlayBackground = "undefined";
+          result.overlayBackgroundImage = null;
+          result.overlayBackgroundGradient = null;
+          result.overlayForeground = "undefined";
           result.itemBackgroundGradient = null;
           result.itemBackgroundImage = null;
           return result;
@@ -2137,8 +2187,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       TestUtil.fakeAppearance( "tree-row", {
         style : function( states ) {
           var result = {};
+          result.overlayBackground = "undefined";
+          result.overlayBackgroundImage = null;
+          result.overlayBackgroundGradient = null;
+          result.overlayForeground = "undefined";
           if( states.selected ) {
-            result.itemBackground = "blue";
+            result.overlayBackground = "blue";
           } else {
             result.itemBackground = "#888888";
           }
@@ -2177,6 +2231,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             } else {
               result.itemBackground = "#888888";
             }
+            result.overlayBackground = "undefined";
+            result.overlayBackgroundImage = null;
+            result.overlayBackgroundGradient = null;
+            result.overlayForeground = "undefined";
             result.itemBackgroundGradient = null;
             result.itemBackgroundImage = null;
             return result;
@@ -2208,6 +2266,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           } else {
             result.itemBackground = "#888888";
           }
+          result.overlayBackground = "undefined";
+          result.overlayBackgroundImage = null;
+          result.overlayBackgroundGradient = null;
+          result.overlayForeground = "undefined";
           result.itemBackgroundGradient = null;
           result.itemBackgroundImage = null;
           return result;
@@ -2239,6 +2301,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           } else {
             result.itemBackground = "#888888";
           }
+          result.overlayBackground = "undefined";
+          result.overlayBackgroundImage = null;
+          result.overlayBackgroundGradient = null;
+          result.overlayForeground = "undefined";
           result.itemBackgroundGradient = null;
           result.itemBackgroundImage = null;
           return result;
@@ -2306,7 +2372,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             "itemBackgroundGradient" : "undefined",
             "itemBackgroundImage" : "undefined",
             "itemForeground" : "undefined",
-            "checkBox" : null
+            "checkBox" : null,
+            "overlayBackground" : "undefined",
+            "overlayBackgroundImage" : null,
+            "overlayBackgroundGradient" : null,
+            "overlayForeground" : "undefined"
           };
         }
       } );
@@ -2396,7 +2466,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             "itemForeground" : "undefined",
             "itemBackgroundGradient" : null,
             "itemBackgroundImage" : null,
-            "checkBox" : null
+            "checkBox" : null,
+            "overlayBackground" : value,
+            "overlayBackgroundImage" : null,
+            "overlayBackgroundGradient" : null,
+            "overlayForeground" : "undefined"
           };
         }
       } );
@@ -2411,7 +2485,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             "itemBackground" : "transparent",
             "itemBackgroundImage" : null,
             "itemForeground" : "undefined",
-            "checkBox" : null
+            "checkBox" : null,
+            "overlayBackground" : "undefined",
+            "overlayBackgroundImage" : null,
+            "overlayBackgroundGradient" : value,
+            "overlayForeground" : "undefined"
           };
         }
       } );
@@ -2426,7 +2504,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             "itemBackgroundGradient" : null,
             "itemBackground" : "transparent",
             "itemForeground" : "undefined",
-            "checkBox" : null
+            "checkBox" : null,
+            "overlayBackground" : "undefined",
+            "overlayBackgroundImage" : value,
+            "overlayBackgroundGradient" : null,
+            "overlayForeground" : "undefined"
           };
         }
       } );
@@ -2441,7 +2523,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             "itemBackgroundGradient" : "undefined",
             "itemBackgroundImage" : null,
             "itemForeground" : value,
-            "checkBox" : null
+            "checkBox" : null,
+            "overlayBackground" : "undefined",
+            "overlayBackgroundImage" : null,
+            "overlayBackgroundGradient" : null,
+            "overlayForeground" : "undefined"
           };
         }
       } );

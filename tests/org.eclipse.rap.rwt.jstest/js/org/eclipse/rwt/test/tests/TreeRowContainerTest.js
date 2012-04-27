@@ -133,8 +133,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
             "itemBackgroundGradient" : states.selected ?  grad1 : grad2, 
             "itemBackgroundImage" : states.selected ? "foo.jpg" : "bar.jpg",
             "itemForeground" : "undefined",
+            "overlayBackground" : states.selected ? "red" : "blue",
+            "overlayBackgroundGradient" : states.selected ?  grad1 : grad2, 
+            "overlayBackgroundImage" : states.selected ? "foo.jpg" : "bar.jpg",
+            "overlayForeground" : "undefined",
             "backgroundImage" : null
-          }
+          };
         }
       } ); 
       tree.setItemCount( 1 );
@@ -297,6 +301,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
             "itemBackgroundGradient" : "undefined",
             "itemBackgroundImage" : null,
             "itemForeground" : "undefined",
+            "overlayBackground" : "undefined",
+            "overlayBackgroundGradient" : "undefined",
+            "overlayBackgroundImage" : null,
+            "overlayForeground" : "undefined",
             "backgroundImage" : null
           }
         }

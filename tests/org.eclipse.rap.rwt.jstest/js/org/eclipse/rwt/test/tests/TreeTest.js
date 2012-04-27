@@ -1968,7 +1968,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
           return {
             itemBackground : states.over ? "red" : "green",
             itemBackgroundGradient : null,
-            itemBackgroundImage : null
+            itemBackgroundImage : null,
+            overlayBackground : states.over ? "red" : "green",
+            overlayBackgroundGradient : null,
+            overlayBackgroundImage : null
           };
         }
       } );
@@ -1994,7 +1997,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
           return {
             itemBackground : states.over ? "red" : "green",
             itemBackgroundGradient : null,
-            itemBackgroundImage : null
+            itemBackgroundImage : null,
+            overlayBackground : states.over ? "red" : "green",
+            overlayBackgroundGradient : null,
+            overlayBackgroundImage : null
           };
         }
       } );
@@ -2815,11 +2821,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
           var result = {};
           if( states.selected ) {
             result.itemBackground = "blue";
+            result.overlayBackground = "blue";
           } else {
             result.itemBackground = "white";
+            result.overlayBackground = "white";
           }
           result.itemBackgroundGradient = null;
           result.itemBackgroundImage = null;
+          result.overlayBackgroundGradient = null;
+          result.overlayBackgroundImage = null;
           return result;
         }
       } );  
@@ -3822,11 +3832,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
           var subitem = new org.eclipse.rwt.widgets.TreeItem( item, 0 );
           if( flatCount ) {
             item.setExpanded( true );
-            i++
+            i++;
             subitem.setTexts( [ "Test" + i ] );
           } else {
             subitem.setTexts( [ "Test" + i + "sub" ] );
-          }
+          }        
         }
         i++;
       }
@@ -3841,8 +3851,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
             "itemBackgroundGradient" : "undefined",
             "itemBackgroundImage" : null,
             "itemForeground" : "undefined",
+            "overlayBackground" : "undefined",
+            "overlayBackgroundGradient" : "undefined",
+            "overlayBackgroundImage" : null,
+            "overlayForeground" : "undefined",
             "backgroundImage" : null
-          }
+          };
         }
       }; 
       TestUtil.fakeAppearance( "tree-row-indent", empty );

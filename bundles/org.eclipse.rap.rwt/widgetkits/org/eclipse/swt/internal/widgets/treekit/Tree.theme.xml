@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -68,6 +68,38 @@
           
       <state name="hover"
           description="Mouse over state." />
+
+    </element>
+
+    <element name="Tree-RowOverlay"
+        description="Item overlay that can be used to overwrite the items own colors">
+
+      <property name="color"
+          description="Tree item text color" />
+
+      <property name="background-color"
+          description="Tree item background color" />
+
+      <property name="background-image"
+          description="Tree item background image/gradient" />
+
+      <state name="selected"
+          description="Applies when tree item is selected." />
+
+      <state name="unfocused"
+          description="Applies to items on unfocused tree." />
+
+      <state name="even"
+          description="Applies when the tree item has an even index" />
+
+      <state name="disabled"
+          description="Applies to the items of a disabled tree." />
+
+      <state name="linesvisible"
+          description="Applies to the items of a tree with gridlines." />
+
+      <state name="hover"
+          description="Applies while the user hovers over the tree item." />
 
     </element>
 

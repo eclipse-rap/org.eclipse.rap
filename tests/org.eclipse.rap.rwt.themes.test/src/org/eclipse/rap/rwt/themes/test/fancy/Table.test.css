@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,18 +46,14 @@ TableItem {
 }
 
 TableItem:hover {
-  background-color: #e9f3d2;
-}
-
-TableItem:selected {
-  background-color: #abe033;
-  color: #ffffff;
+  background-color: transparent;
+  color: inherit;
   background-image: none;
 }
 
-TableItem:selected:unfocused {
-  background-color: #959595;
-  color: #ffffff;
+TableItem:selected {
+  background-color: transparent;
+  color: inherit;
   background-image: none;
 }
 
@@ -65,16 +61,39 @@ TableItem:even {
   background-color: #f3f3f4;
 }
 
-TableItem:even:hover {
+
+Table-RowOverlay {
+  background-color: transparent;
+  color: inherit;
+  background-image: none;
+}
+
+Table-RowOverlay:hover {
   background-color: #e9f3d2;
 }
 
-TableItem:even:selected {
+Table-RowOverlay:selected {
+  background-color: #abe033;
+  color: #ffffff;
+  background-image: none;
+}
+
+Table-RowOverlay:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
+  background-image: none;
+}
+
+Table-RowOverlay:even:hover {
+  background-color: #e9f3d2;
+}
+
+Table-RowOverlay:even:selected {
   background-color: #abe033;
   color: #ffffff;
 }
 
-TableItem:even:selected:unfocused {
+Table-RowOverlay:even:selected:unfocused {
   background-color: #959595;
   color: #ffffff;
 }

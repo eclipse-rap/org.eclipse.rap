@@ -88,6 +88,10 @@ var appearances = {
       result.itemBackgroundImage = tv.getCssImage( "TableItem", "background-image" );
       result.itemBackgroundGradient = tv.getCssGradient( "TableItem", "background-image" );
       result.itemForeground = tv.getCssColor( "TableItem", "color" );
+      result.overlayBackground = tv.getCssColor( "Table-RowOverlay", "background-color" );
+      result.overlayBackgroundImage = tv.getCssImage( "Table-RowOverlay", "background-image" );
+      result.overlayBackgroundGradient = tv.getCssGradient( "Table-RowOverlay", "background-image" );
+      result.overlayForeground = tv.getCssColor( "Table-RowOverlay", "color" );
       result.textDecoration = tv.getCssIdentifier( "TableItem", "text-decoration" );
       result.textShadow = tv.getCssShadow( "TableItem", "text-shadow" );
       return result;

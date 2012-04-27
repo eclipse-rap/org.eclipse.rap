@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -56,6 +56,38 @@
 
       <property name="text-shadow"
           description="Shadow for item text." />
+
+      <state name="selected"
+          description="Applies when table item is selected." />
+
+      <state name="unfocused"
+          description="Applies to items on unfocused table." />
+
+      <state name="even"
+          description="Applies when the table item has an even index" />
+
+      <state name="disabled"
+          description="Applies to the items of a disabled table." />
+
+      <state name="linesvisible"
+          description="Applies to the items of a table with gridlines." />
+
+      <state name="hover"
+          description="Applies while the user hovers over the table item." />
+
+    </element>
+
+    <element name="Table-RowOverlay"
+        description="Item overlay that can be used to overwrite the items own colors">
+
+      <property name="color"
+          description="Table item text color" />
+
+      <property name="background-color"
+          description="Table item background color" />
+
+      <property name="background-image"
+          description="Tree item background image/gradient" />
 
       <state name="selected"
           description="Applies when table item is selected." />
