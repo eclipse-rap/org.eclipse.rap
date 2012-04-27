@@ -2218,6 +2218,41 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       tree.destroy();
       row.destroy();
     },
+    
+    testSelectionBackgroundUsesItemColor : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree();
+      TestUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          var result = {};
+          result.overlayBackground = "undefined";
+          result.overlayBackgroundImage = null;
+          result.overlayBackgroundGradient = null;
+          result.overlayForeground = "undefined";
+          if( states.selected ) {
+            result.itemBackground = "red";
+          } else {
+            result.itemBackground = "undefined";
+          }
+          result.itemBackgroundGradient = null;
+          result.itemBackgroundImage = null;
+          return result;
+        }
+      } );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
+      item.setTexts( [ "Test1" ] );
+      tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 100 );
+
+      row.renderItem( item, tree._config, true, null );
+      
+      var rowNode = row._getTargetNode();
+      var color = rowNode.childNodes[ 2 ].style.backgroundColor;
+      assertEquals( "red", color );
+      tree.destroy();
+      row.destroy();
+    },
 
     testSelectionBackgroundRendering_Bug373900 : qx.core.Variant.select( "qx.client", {
       "mshtml|newmshtml" : function() {

@@ -172,7 +172,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       this.setBackgroundImage( image !== "undefined" ? image : null );
       this.setBackgroundGradient( gradient !== "undefined" ? gradient : null );
     },
-    
+
     _hasOverlayBackground : function() {
       var result =    this._styleMap.overlayBackground !== "undefined"
                    || this._styleMap.overlayBackgroundImage !== null
@@ -315,9 +315,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
 
     _renderSelectionBackground : function( item, cell, config ) {
-      if( this._styleMap.itemBackground !== null ) {
+      var overlayBg = this._styleMap.overlayBackground;
+      var itemBg = this._styleMap.itemBackground;
+      var hasOverlayBg = overlayBg !== "undefined" && overlayBg !== null;
+      var hasItemBg = itemBg !== "undefined" && itemBg !== null;
+      if( hasItemBg || hasOverlayBg ) {
         var element = this._getMiscBackground();
-        element.style.backgroundColor = this._styleMap.overlayBackground;
+        element.style.backgroundColor = hasOverlayBg ? overlayBg : itemBg;
         var padding = config.selectionPadding;
         var left = this._getItemTextLeft( item, cell, config );
         left -= padding[ 0 ];
