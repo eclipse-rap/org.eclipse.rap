@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
+import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.EntryPointUtil;
@@ -93,15 +94,32 @@ public class ExternalBrowser_Test extends TestCase {
     lifeCycle.execute();
 
     Message message = Fixture.getProtocolMessage();
+    int createIndex = indexOfCreateOperation( message );
     int open1Index = indexOfCallOperation( message, "open", "1" );
     int close1Index = indexOfCallOperation( message, "close", "1" );
     int open2Index = indexOfCallOperation( message, "open", "2" );
     int close2Index = indexOfCallOperation( message, "close", "2" );
+    assertTrue( createIndex != -1 && createIndex < open1Index );
     assertTrue( open1Index != -1 && close1Index != -1 );
     assertTrue( open2Index != -1 && close2Index != -1 );
     assertTrue( open1Index < close1Index );
     assertTrue( open2Index < close2Index );
     assertTrue( open1Index < open2Index );
+  }
+
+  private int indexOfCreateOperation( Message message ) {
+    int result = -1;
+    int operationCount = message.getOperationCount();
+    for( int position = 0; position < operationCount; position++ ) {
+      Operation operation = message.getOperation( position );
+      if( operation instanceof CreateOperation ) {
+        CreateOperation createOperation = ( CreateOperation )operation;
+        if( createOperation.getTarget().equals( "eb" ) ) {
+          result = position;
+        }
+      }
+    }
+    return result;
   }
 
   private int indexOfCallOperation( Message message, String method, String idProperty ) {

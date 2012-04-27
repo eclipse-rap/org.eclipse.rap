@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
@@ -56,6 +57,7 @@ public final class ExternalBrowser {
   public static final int STATUS = 1 << 3;
 
   private static final String EXTERNAL_BROWSER_ID = "eb";
+  private static final String EXTERNAL_BROWSER_TYPE = "rwt.widgets.ExternalBrowser";
   private static final String METHOD_OPEN = "open";
   private static final String METHOD_CLOSE = "close";
   private static final String PROPERTY_ID = "id";
@@ -85,6 +87,7 @@ public final class ExternalBrowser {
    */
   public static void open( String id, String url, int style ) {
     checkWidget();
+    ensureInstance();
     if( id == null || url == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -111,6 +114,7 @@ public final class ExternalBrowser {
    */
   public static void close( String id ) {
     checkWidget();
+    ensureInstance();
     if( id == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -122,6 +126,10 @@ public final class ExternalBrowser {
 
   //////////////////
   // Helping methods
+
+  private static void ensureInstance() {
+    SessionSingletonBase.getInstance( ExternalBrowser.class );
+  }
 
   private static void renderOpen( String id, String url, int style ) {
     ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
@@ -160,6 +168,7 @@ public final class ExternalBrowser {
   }
 
   private ExternalBrowser() {
-    // prevent instantiation
+    ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
+    protocolWriter.appendCreate( EXTERNAL_BROWSER_ID, EXTERNAL_BROWSER_TYPE );
   }
 }

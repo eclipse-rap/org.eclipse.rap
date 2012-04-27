@@ -404,8 +404,6 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( "rwt.UICallBack", operation.getType() );
     operation = message.findCreateOperation( "jsex" );
     assertEquals( "rwt.JSExecutor", operation.getType() );
-    operation = message.findCreateOperation( "eb" );
-    assertEquals( "rwt.widgets.ExternalBrowser", operation.getType() );
   }
 
   public void testCreateSingletons_Initialized() throws IOException {
@@ -417,7 +415,6 @@ public class DisplayLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findCreateOperation( "uicb" ) );
     assertNull( message.findCreateOperation( "jsex" ) );
-    assertNull( message.findCreateOperation( "eb" ) );
   }
 
   private void clearLogs() {
