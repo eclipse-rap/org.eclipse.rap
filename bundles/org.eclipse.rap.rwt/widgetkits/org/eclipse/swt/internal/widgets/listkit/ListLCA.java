@@ -18,6 +18,7 @@ import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
@@ -40,6 +41,7 @@ public class ListLCA extends AbstractWidgetLCA {
   private static final String PROP_SCROLLBARS_VISIBLE = "scrollBarsVisible";
   private static final String PROP_ITEM_DIMENSIONS = "itemDimensions";
   private static final String PROP_SELECTION_LISTENER = "selection";
+  private static final String PROP_MARKUP_ENABLED = "markupEnabled";
 
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
   private static final int[] DEFAUT_SELECTION_INDICES = new int[ 0 ];
@@ -48,6 +50,7 @@ public class ListLCA extends AbstractWidgetLCA {
   private static final boolean[] DEFAULT_SCROLLBARS_VISIBLE = new boolean[] { true, true };
   private static final Point DEFAULT_ITEM_DIMENSIONS = new Point( 0, 0 );
 
+  @Override
   public void preserveValues( Widget widget ) {
     List list = ( List  )widget;
     ControlLCAUtil.preserveValues( list );
@@ -73,14 +76,17 @@ public class ListLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( list );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     List list = ( List )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( list );
     clientObject.create( TYPE );
     clientObject.set( "parent", WidgetUtil.getId( list.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( list, ALLOWED_STYLES ) );
+    clientObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( list ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     List list = ( List )widget;
     ControlLCAUtil.renderChanges( list );
@@ -103,6 +109,7 @@ public class ListLCA extends AbstractWidgetLCA {
                     DEFAULT_ITEM_DIMENSIONS );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }
@@ -144,6 +151,10 @@ public class ListLCA extends AbstractWidgetLCA {
 
   //////////////////
   // Helping methods
+
+  private static boolean isMarkupEnabled( List list ) {
+    return Boolean.TRUE.equals( list.getData( RWT.MARKUP_ENABLED ) );
+  }
 
   private static boolean[] getScrollBarsVisible( List list ) {
     return new boolean[] { hasHScrollBar( list ), hasVScrollBar( list ) };

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,16 +34,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Combo", {
   ] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
-    "items" : function( widget, value ) {
-      var items = value;
-      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      for( var i = 0; i < items.length; i++ ) {
-        items[ i ] = EncodingUtil.replaceNewLines( items[ i ], " " );
-        items[ i ] = EncodingUtil.escapeText( items[ i ], false );
-        items[ i ] = EncodingUtil.replaceWhiteSpaces( items[ i ] );
-      }
-      widget.setItems( items );
-    },
     "selectionIndex" : function( widget, value ) {
       widget.select( value );
     },

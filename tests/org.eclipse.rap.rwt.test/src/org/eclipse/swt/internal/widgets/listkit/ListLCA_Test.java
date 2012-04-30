@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
@@ -40,6 +41,7 @@ public class ListLCA_Test extends TestCase {
   private Shell shell;
   private ListLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -48,6 +50,7 @@ public class ListLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -195,6 +198,7 @@ public class ListLCA_Test extends TestCase {
     list.setSelection( -1 );
     list.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         log.append( "selectionEvent" );
         assertSame( list, event.getSource() );
@@ -562,6 +566,16 @@ public class ListLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( list, "selection" ) );
+  }
+
+  public void testRenderMarkupEnabled() throws IOException {
+    List list = new List( shell, SWT.NONE );
+    list.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    lca.render( list );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findCreateProperty( list, "markupEnabled" ) );
   }
 
   private static void setFocusIndex( List list, int focusIndex ) {

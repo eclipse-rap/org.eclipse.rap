@@ -16,12 +16,14 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 
 
 public class List_Test extends TestCase {
@@ -1367,6 +1369,96 @@ public class List_Test extends TestCase {
     list.setSelection( new String[] { "non-existing", "text2" } );
 
     assertEquals( 2, list.getSelectionCount() );
+  }
+
+  public void testSetCustomItemHeight() {
+    List list = new List( shell, SWT.NONE );
+    list.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( 123 ) );
+    assertEquals( 123, list.getItemHeight() );
+  }
+
+  public void testGetCustomItemHeight() {
+    Integer itemHeight = new Integer( 123 );
+    List list = new List( shell, SWT.NONE );
+    list.setData( RWT.CUSTOM_ITEM_HEIGHT, itemHeight );
+
+    Object returnedItemHeight = list.getData( RWT.CUSTOM_ITEM_HEIGHT );
+
+    assertEquals( itemHeight, returnedItemHeight );
+  }
+
+  public void testResetCustomItemHeight() {
+    List list = new List( shell, SWT.NONE );
+    int calculatedItemHeight = list.getItemHeight();
+    list.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( 123 ) );
+    list.setData( RWT.CUSTOM_ITEM_HEIGHT, null );
+    assertEquals( calculatedItemHeight, list.getItemHeight() );
+  }
+
+  public void testDefaultCustomItemHeight() {
+    List list = new List( shell, SWT.NONE );
+    assertEquals( 26, list.getItemHeight() );
+  }
+
+  public void testSetCustomItemHeightWithNegativeValue() {
+    List list = new List( shell, SWT.NONE );
+    try {
+      list.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( -1 ) );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testSetCustomItemHeightWithNonIntegerValue() {
+    List list = new List( shell, SWT.NONE );
+    try {
+      list.setData( RWT.CUSTOM_ITEM_HEIGHT, new Object() );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testMarkupTextWithoutMarkupEnabled() {
+    List list = new List( shell, SWT.NONE );
+    list.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
+
+    try {
+      list.setItems( new String[] { "invalid xhtml: <<&>>" } );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  public void testMarkupTextWithMarkupEnabled() {
+    List list = new List( shell, SWT.NONE );
+    list.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    try {
+      list.setItems( new String[] { "invalid xhtml: <<&>>" } );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
+    List list = new List( shell, SWT.NONE );
+    list.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    list.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+
+    try {
+      list.setItems( new String[] { "invalid xhtml: <<&>>" } );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  public void testDisableMarkupIsIgnored() {
+    List list = new List( shell, SWT.NONE );
+    list.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    list.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
+
+    assertTrue( list.markupEnabled );
   }
 
   private boolean hasDuplicateIndices( int[] indices ) {

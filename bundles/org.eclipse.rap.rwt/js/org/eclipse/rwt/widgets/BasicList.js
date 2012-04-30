@@ -22,7 +22,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
     this.addEventListener( "mouseover", this._onmouseover );
     this.addEventListener( "mousedown", this._onmousedown );
     this.addEventListener( "mouseup", this._onmouseup );
-    this.addEventListener( "keydown", this._onkeydown );
     this.addEventListener( "keypress", this._onkeypress );
     this.addEventListener( "keypress", this._onkeyinput );
     this.initOverflow();
@@ -31,6 +30,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
     this._lastKeyPress = 0;
     this._itemWidth = 0;
     this._itemHeight = 0;
+    this._markupEnabled = false;
     var selMgr = this.getManager();
     selMgr.setMultiSelection( multiSelection );
     selMgr.setDragSelection( false );
@@ -44,6 +44,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
 
   members : {
 
+    setMarkupEnabled : function( value ) {
+      this._markupEnabled = value;
+    },
+
     getManager : function() {
       return this._manager;
     },
@@ -52,10 +56,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
       var result = 0;
       var items = this.getItems();
       for( var i = 0; i < items.length; i++ ) {
-        var paddingWidth
-          = items[ i ].getPaddingLeft() + items[ i ].getPaddingRight();
-        var itemWidth
-          = items[ i ].getLabelObject().getPreferredBoxWidth() + paddingWidth;
+        var paddingWidth = items[ i ].getPaddingLeft() + items[ i ].getPaddingRight();
+        var itemWidth = items[ i ].getPreferredBoxWidth() + paddingWidth;
         result = Math.max( result, itemWidth );
       }
       result += this._vertScrollBar.getWidth();
@@ -120,16 +122,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
       }
     },
 
-    _onkeydown : function( event ) {
-      // Execute action on press <ENTER>
-      if( event.getKeyIdentifier() == "Enter" && !event.isAltPressed() ) {
-        var items = this.getSelectedItems();
-        for( var i = 0; i < items.length; i++ ) {
-          items[i].createDispatchEvent( "action" );
-        }
-      }
-    },
-
     _onkeypress : function( event ) {
       // Give control to selectionManager
       this._manager.handleKeyPress( event );
@@ -175,10 +167,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
     },
 
     findString : function( vText, vStartIndex ) {
-      return this._findItem( vText, vStartIndex || 0, "String" );
+      return this._findItem( vText, vStartIndex || 0 );
     },
 
-    _findItem : function( vUserValue, vStartIndex, vType ) {
+    _findItem : function( vUserValue, vStartIndex ) {
       var vAllItems = this.getItems();
       // If no startIndex given try to get it by current selection
       if( vStartIndex == null ) {
@@ -187,23 +179,23 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
           vStartIndex = 0;
         }
       }
-      var methodName = "matches" + vType;
       // Mode #1: Find all items after the startIndex
       for( var i = vStartIndex; i < vAllItems.length; i++ ) {
-        if( vAllItems[ i ][ methodName ]( vUserValue ) ) {
+        if( vAllItems[ i ].matchesString( vUserValue ) ) {
           return vAllItems[i];
         }
       }
       // Mode #2: Find all items before the startIndex
       for( var i = 0; i < vStartIndex; i++ ) {
-        if( vAllItems[ i ][ methodName ]( vUserValue ) ) {
+        if( vAllItems[ i ].matchesString( vUserValue ) ) {
           return vAllItems[i];
         }
       }
       return null;
     },
 
-    setItems : function( items ) {
+    setItems : function( value ) {
+      var items = this._escapeItems( value );
       // preserve selection and focused item
       var manager = this.getManager();
       var oldLeadItem = manager.getLeadItem();
@@ -217,20 +209,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
         } else {
           // TODO [rh] optimize this: context menu should be handled by the List
           //      itself for all its ListItems
-          var item = new qx.ui.form.ListItem();
+          var item = new org.eclipse.rwt.widgets.ListItem();
           item.addEventListener( "mouseover", this._onListItemMouseOver, this );
           item.addEventListener( "mouseout", this._onListItemMouseOut, this );
-          // [if] Omit the focused item outline border - see bug 286902
-          item.setStyleProperty( "outline", "0px none" );
-          item.handleStateChange = function() {};
           // prevent items from being drawn outside the list
-          item.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
           item.setWidth( this._itemWidth );
           item.setHeight( this._itemHeight );
           item.setContextMenu( this.getContextMenu() );
           item.setTabIndex( null );
-          item.setLabel( "(empty)" );
-          item.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );
           item.setLabel( items[ i ] );
           if( i % 2 === 0 ) {
             item.addState( "even" );
@@ -257,6 +243,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
         manager.setAnchorItem( oldAnchorItem );
       }
       this._updateScrollDimension();
+    },
+
+    _escapeItems : function( items ) {
+      var result = items;
+      if( !this._markupEnabled ) {
+        var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+        for( var i = 0; i < result.length; i++ ) {
+          result[ i ] = EncodingUtil.replaceNewLines( result[ i ], " " );
+          result[ i ] = EncodingUtil.escapeText( result[ i ], false );
+          result[ i ] = EncodingUtil.replaceWhiteSpaces( result[ i ] );
+        }
+      }
+      return result;
     },
 
     getItems : function() {

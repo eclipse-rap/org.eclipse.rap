@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -58,6 +59,9 @@ public class List extends Scrollable {
   private boolean hasVScrollBar;
   private boolean hasHScrollBar;
   private Rectangle bufferedItemPadding;
+  private int customItemHeight;
+  boolean markupEnabled;
+  private boolean markupValidationDisabled;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -92,6 +96,7 @@ public class List extends Scrollable {
     super( parent, checkStyle( style ) );
     model = new ListModel( ( style & SWT.SINGLE ) != 0 );
     focusIndex = -1;
+    customItemHeight = -1;
     resizeListener = new ResizeListener();
     addControlListener( resizeListener );
   }
@@ -841,6 +846,7 @@ public class List extends Scrollable {
    */
   public void setItem( int index, String string ) {
     checkWidget();
+    validateMarkup( new String[] { string } );
     model.setItem( index, string );
     updateScrollBars();
   }
@@ -861,6 +867,7 @@ public class List extends Scrollable {
    */
   public void setItems( String[] items ) {
     checkWidget();
+    validateMarkup( items );
     model.setItems( items );
     updateScrollBars();
   }
@@ -985,7 +992,11 @@ public class List extends Scrollable {
    */
   public int getItemHeight() {
     checkWidget();
-    return Graphics.getCharHeight( getFont() ) + getItemPadding().height;
+    int result = customItemHeight;
+    if( result == -1 ) {
+      result = Graphics.getCharHeight( getFont() ) + getItemPadding().height;
+    }
+    return result;
   }
 
   /////////////////////////////////////////
@@ -1051,6 +1062,18 @@ public class List extends Scrollable {
   @Override
   boolean isTabGroup() {
     return true;
+  }
+
+  @Override
+  public void setData( String key, Object value ) {
+    if( RWT.CUSTOM_ITEM_HEIGHT.equals( key ) ) {
+      setCustomItemHeight( value );
+    } else if( RWT.MARKUP_ENABLED.equals( key ) && !markupEnabled ) {
+      markupEnabled = Boolean.TRUE.equals( value );
+    } else if( MarkupValidator.MARKUP_VALIDATION_DISABLED.equals( key ) ) {
+      markupValidationDisabled = Boolean.TRUE.equals( value );
+    }
+    super.setData( key, value );
   }
 
   /////////////////////////////////////////
@@ -1175,6 +1198,31 @@ public class List extends Scrollable {
       bufferedItemPadding = themeAdapter.getItemPadding( this );
     }
     return bufferedItemPadding;
+  }
+
+  private void setCustomItemHeight( Object value ) {
+    if( value == null ) {
+      customItemHeight = -1;
+    } else {
+      if( !( value instanceof Integer ) ) {
+        error( SWT.ERROR_INVALID_ARGUMENT );
+      }
+      int itemHeight = ( ( Integer )value ).intValue();
+      if( itemHeight < 0 ) {
+        error( SWT.ERROR_INVALID_RANGE );
+      }
+      customItemHeight = itemHeight;
+    }
+  }
+
+  private void validateMarkup( String[] items ) {
+    if( markupEnabled && !markupValidationDisabled && items != null ) {
+      for( int i = 0; i < items.length; i++ ) {
+        if( items[ i ] != null ) {
+          MarkupValidator.getInstance().validate( items[ i ] );
+        }
+      }
+    }
   }
 
   ///////////////////////////////////////

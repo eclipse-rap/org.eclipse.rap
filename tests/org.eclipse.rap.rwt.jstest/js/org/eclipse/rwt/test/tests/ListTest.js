@@ -34,6 +34,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
       assertFalse( widget.getManager().getMultiSelection() );
+      assertFalse( widget._markupEnabled );
       shell.destroy();
       widget.destroy();
     },
@@ -54,6 +55,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.getManager().getMultiSelection() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testCreateListWithMarkupEnabled : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.List",
+        "properties" : {
+          "style" : [ "MULTI" ],
+          "parent" : "w2",
+          "markupEnabled" : true
+        }
+      } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
+      assertTrue( widget._markupEnabled );
       shell.destroy();
       widget.destroy();
     },
@@ -101,6 +123,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var widget = ObjectManager.getObject( "w3" );
       var items = widget.getItems();
       assertEquals( "&nbsp; foo &amp; bar&nbsp;", items[ 0 ].getLabel() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetItemsWithMarkupEnabledByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.List",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "markupEnabled" : true,
+          "items" : [ "<b>bold</b>  </br>  <i>italic</i>" ]
+        }
+      } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
+      var items = widget.getItems();
+      assertEquals( "<b>bold</b>  </br>  <i>italic</i>", items[ 0 ].getLabel() );
       shell.destroy();
       widget.destroy();
     },
@@ -363,13 +408,41 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var list = this._createDefaultList();
       list.setItems( [ "Akira", "Boogiepop", "C something", "Daria" ] );
       TestUtil.flush();
-      TestUtil.press( list, "c" )
+      TestUtil.press( list, "c" );
       var selection = this._getSelection( list ); 
       assertEquals( 1, selection.length );
       assertEquals( "C something", selection[ 0 ].getLabel() );
       list.destroy();
     },
 
+    testSelectMarkupItemByCharacter : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.List",
+        "properties" : {
+          "style" : [ "MULTI" ],
+          "parent" : "w2",
+          "markupEnabled" : true
+        }
+      } );
+      var list = ObjectManager.getObject( "w3" );
+      
+      list.setItems( [ "Akira", "Boogiepop", "<i>C</i> something", "Daria" ] );
+      TestUtil.flush();
+
+      TestUtil.press( list, "c" );
+
+      var selection = this._getSelection( list ); 
+      assertEquals( 1, selection.length );
+      assertEquals( "<i>C</i> something", selection[ 0 ].getLabel() );
+      list.destroy();
+    },
+    
     testSelectItems : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
@@ -500,19 +573,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setScrollBarsVisible( false, false );
-      TestUtil.flush()
+      TestUtil.flush();
       assertFalse( this._isScrollbarVisible( list, true ) );
       assertFalse( this._isScrollbarVisible( list, false ) );
       list.setScrollBarsVisible( true, false );
-      TestUtil.flush()
+      TestUtil.flush();
       assertTrue( this._isScrollbarVisible( list, true ) );
       assertFalse( this._isScrollbarVisible( list, false ) );
       list.setScrollBarsVisible( false, true );
-      TestUtil.flush()
+      TestUtil.flush();
       assertFalse( this._isScrollbarVisible( list, true ) );
       assertTrue( this._isScrollbarVisible( list, false ) );
       list.setScrollBarsVisible( true, true );
-      TestUtil.flush()
+      TestUtil.flush();
       assertTrue( this._isScrollbarVisible( list, true ) );
       assertTrue( this._isScrollbarVisible( list, false ) );
       list.destroy();
@@ -527,7 +600,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var clientBounds = TestUtil.getElementBounds( client.getElement() );
       list.setScrollBarsVisible( true, false );
       TestUtil.flush();
-      newClientBounds = TestUtil.getElementBounds( client.getElement() );
+      var newClientBounds = TestUtil.getElementBounds( client.getElement() );
       assertTrue( clientBounds.width < newClientBounds.width );
       assertTrue( clientBounds.height > newClientBounds.height );
       list.destroy();
@@ -537,7 +610,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 10 );
-      list.setItemDimensions( 240, 25 )
+      list.setItemDimensions( 240, 25 );
       var item = list._clientArea.getFirstChild();
       TestUtil.flush();
       assertEquals( 240, list._horzScrollBar.getMaximum() );

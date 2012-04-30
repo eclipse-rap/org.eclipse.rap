@@ -262,6 +262,7 @@ public final class RWT {
    * <p><b>Used By:</b><ul>
    * <li><code>Table</code></li>
    * <li><code>Tree</code></li>
+   * <li><code>List</code></li>
    * </ul></p>
    *
    * @see Control#setData(String,Object)
@@ -341,6 +342,9 @@ public final class RWT {
    * <ul>
    * <li><code>Table</code></li>
    * <li><code>Tree</code></li>
+   * <li><code>List</code></li>
+   * <li><code>Label</code></li>
+   * <li><code>CLabel</code></li>
    * </ul>
    * </p>
    *
@@ -350,9 +354,9 @@ public final class RWT {
   public static final String MARKUP_ENABLED = "org.eclipse.rap.rwt.markupEnabled";
 
   /**
-   * Controls the number of fixed columns. This constant must be passed to <code>setData()</code> 
-   * together with an <code>Integer</code> object. The given number of columns, starting 
-   * with the current leftmost one, will not scroll horizontally. The call to <code>setData()</code> 
+   * Controls the number of fixed columns. This constant must be passed to <code>setData()</code>
+   * together with an <code>Integer</code> object. The given number of columns, starting
+   * with the current leftmost one, will not scroll horizontally. The call to <code>setData()</code>
    * must be placed directly after the control is created.
    * <p>
    * For example:
@@ -371,7 +375,7 @@ public final class RWT {
    * @since 1.5
    */
   public static final String FIXED_COLUMNS = "org.eclipse.rap.rwt.fixedColumns";
-  
+
   /**
    * The ID of the default theme. The default theme is the active theme if no
    * custom theme has been specified. This ID can be used to register theme

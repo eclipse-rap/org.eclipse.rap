@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.List", {
   factory : function( properties ) {
     var multiSelection = properties.style.indexOf( "MULTI" ) != -1;
     var result = new org.eclipse.swt.widgets.List( multiSelection );
+    result.setMarkupEnabled( properties.markupEnabled === true );
     org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );
     org.eclipse.rwt.protocol.AdapterUtil.setParent( result, properties.parent );
@@ -33,16 +34,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.List", {
   ] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
-    "items" : function( widget, value ) {
-      var items = value;
-      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      for( var i = 0; i < items.length; i++ ) {
-        items[ i ] = EncodingUtil.replaceNewLines( items[ i ], " " );
-        items[ i ] = EncodingUtil.escapeText( items[ i ], false );
-        items[ i ] = EncodingUtil.replaceWhiteSpaces( items[ i ] );
-      }
-      widget.setItems( items );
-    },
     "selectionIndices" : function( widget, value ) {
       if( widget.hasState( "rwt_MULTI" ) ) {
         if( widget.getItemsCount() === value.length ) {

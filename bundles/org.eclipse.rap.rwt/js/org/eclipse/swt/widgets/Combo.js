@@ -449,7 +449,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         // Redirecting the action, according to the click target 
         var target = evt.getTarget();
         // Click is on a list item 
-        if(    target instanceof qx.ui.form.ListItem
+        if(    target instanceof org.eclipse.rwt.widgets.ListItem
             && target === this._list.getListItemTarget( target ) )
         {
           this._reDispatch( evt );
@@ -509,7 +509,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     
     _onMouseOver : function( evt ) {
       var target = evt.getTarget();
-      if( target instanceof qx.ui.form.ListItem ) {
+      if( target instanceof org.eclipse.rwt.widgets.ListItem ) {
         this._setListSelection( target );
       } else if( target == this._button ) {
         this._button.addState( "over" );
