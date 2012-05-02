@@ -133,7 +133,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.FileUpload", {
     },
 
     _layoutInputElement : function() {
-      if( this.getEnabled() && this.isSeeable() ) {
+      if( this.getEnabled() && this.isSeeable() && !org.eclipse.rwt.Client.isMobileSafari() ) {
         //Assumed maximal padding between input button and input outer dimensions:
         var padding = 10; 
         this._layoutInputElementHorizontal( padding );

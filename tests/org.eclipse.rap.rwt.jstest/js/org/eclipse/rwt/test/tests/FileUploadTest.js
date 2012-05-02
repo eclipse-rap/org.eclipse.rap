@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -480,18 +480,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     _checkInputLayout : function( upload ) {
-      var input = upload._inputElement;
-      var widgetWidth = upload.getBoxWidth();
-      var widgetHeight = upload.getBoxHeight();
-      var padding = 10;
-      var inputLeft = parseInt( input.style.left );
-      var inputTop = parseInt( input.style.top );
-      var inputWidth = parseInt( input.offsetWidth ); 
-      var inputHeight = parseInt( input.offsetHeight );
-      assertEquals( -1 * padding, inputTop ); 
-      assertEquals( widgetHeight + padding * 2, inputHeight ); 
-      assertTrue( inputWidth > ( widgetWidth * 1.4 + padding * 2 ) ); 
-      assertTrue( inputLeft < ( ( inputWidth * -0.4 ) - padding ) );      
+      if( !org.eclipse.rwt.Client.isMobileSafari() ) {
+        var input = upload._inputElement;
+        var widgetWidth = upload.getBoxWidth();
+        var widgetHeight = upload.getBoxHeight();
+        var padding = 10;
+        var inputLeft = parseInt( input.style.left );
+        var inputTop = parseInt( input.style.top );
+        var inputWidth = parseInt( input.offsetWidth ); 
+        var inputHeight = parseInt( input.offsetHeight );
+        assertEquals( -1 * padding, inputTop ); 
+        assertEquals( widgetHeight + padding * 2, inputHeight ); 
+        assertTrue( inputWidth > ( widgetWidth * 1.4 + padding * 2 ) ); 
+        assertTrue( inputLeft < ( ( inputWidth * -0.4 ) - padding ) );
+      }
     },
 
     _setFileName : function( upload, value ) {

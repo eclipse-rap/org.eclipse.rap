@@ -32,7 +32,6 @@ qx.Class.define( "org.eclipse.rwt.System", {
     qx.io.Alias.getInstance().add( "static", "./rwt-resources/resource/static" );
     qx.io.Alias.getInstance().add( "widget", "./rwt-resources/resource/widget/rap" );
     this._applyPatches();
-    org.eclipse.rwt.MobileWebkitSupport.init();
     org.eclipse.rwt.GraphicsUtil.init();
     var eventHandler = org.eclipse.rwt.EventHandler;
     eventHandler.setAllowContextMenu( org.eclipse.rwt.widgets.Menu.getAllowContextMenu );
@@ -83,6 +82,7 @@ qx.Class.define( "org.eclipse.rwt.System", {
         if( this._isSupported() ) {
           this._onloadDone = true;
           qx.ui.core.ClientDocument.getInstance();
+          org.eclipse.rwt.MobileWebkitSupport.init();
           qx.client.Timer.once( this._preload, this, 0 );
         } else {
           this._handleUnsupportedBrowser();

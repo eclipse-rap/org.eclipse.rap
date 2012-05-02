@@ -23,6 +23,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
     },
 
     processJavaScriptError : function( error ) {
+      this.errorObject = error; // for later inspection by developer
       if( typeof console === "object" ) {
         var msg = "Error: " + ( error.message ? error.message : error );
         if( typeof console.error !== "undefined" ) { // IE returns "object" for typeof
@@ -36,7 +37,13 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
           console.trace();
         }
       }
-      if( qx.core.Variant.isSet( "qx.debug", "on" ) ) {
+      var debug = true;
+      try {
+        debug = qx.core.Variant.isSet( "qx.debug", "on" );
+      } catch( ex ) {
+        // ignore: Variant may not be loaded yet
+      }
+      if( debug ) {
         var content = "<p>Javascript error occurred:</p><pre>";
         content += this._gatherErrorInfo( error );
         content += "</pre>";

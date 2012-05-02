@@ -64,6 +64,7 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
   private void deliverFilesList() throws IOException {
     HttpServletResponse response = RWT.getResponse();
     response.setContentType( "text/javascript" );
+    response.setCharacterEncoding( "UTF-8" );
     PrintWriter writer = response.getWriter();
     writer.write( "( function() {\n" );
     Collection<TestContribution> contributions = getContributions().values();
@@ -78,6 +79,7 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
   {
     HttpServletResponse response = RWT.getResponse();
     response.setContentType( "text/javascript" );
+    response.setCharacterEncoding( "UTF-8" );
     InputStream inputStream = contribution.getResourceAsStream( resource );
     if( inputStream != null ) {
       try {

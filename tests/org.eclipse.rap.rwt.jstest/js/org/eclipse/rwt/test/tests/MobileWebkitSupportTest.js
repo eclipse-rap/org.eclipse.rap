@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     
     ///////////////
     // Test helpers
-    
+
     testFakeTouchEvents : function() {
       var div = document.createElement( "div" );
       document.body.appendChild( div );
@@ -455,7 +455,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
     
     testIsDraggableShell : function() {
-      var widget = new org.eclipse.swt.widgets.Shell();
+      var widget = new org.eclipse.swt.widgets.Shell( {} );
       widget.addToDocument();
       widget.initialize();
       widget.open();
@@ -529,26 +529,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       widget.destroy();
     },
     
-    testIsDraggableTableScrollBarAndColumn : function() {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var widget = new org.eclipse.swt.widgets.Table( "table", "" );
-      widget.addToDocument();
-      widgetManager.add( widget, "table", true );
-      var column = new org.eclipse.swt.widgets.TableColumn( widget );
-      column.setLabel( "test" );
-      column.setIcon( "http://blah.blah" );
-      widgetManager.add( column, "table-column", false );
-      assertTrue( this._isDraggable( column ) );
-      assertTrue( this._isDraggable( column.getLabelObject() ) );
-      assertTrue( this._isDraggable( column._iconObject ) );
-      assertTrue( this._isDraggable( widget._horzScrollBar._thumb ) );
-      assertTrue( this._isDraggable( widget._vertScrollBar._thumb ) );
-      widget.destroy();
-    },
-      
+
     testIsDraggableTreeScrollBarAndColumn : function() {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var widget = new org.eclipse.rwt.widgets.Tree();
+      var widget = new org.eclipse.rwt.widgets.Tree( {
+        appearance : "tree"
+      } );
       widget.addToDocument();
       widgetManager.add( widget, "tree", true );
       var column = new org.eclipse.swt.widgets.TableColumn( widget );
