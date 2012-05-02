@@ -30,12 +30,14 @@ public class TextTab extends ExampleTab {
   private Button btnBlockingVerifyListener;
   private Button btnNumbersOnlyVerifyListener;
   private Button btnModifyListener;
+  private Button btnKeyListener;
   private Button btnEditable;
   private Button btnEchoChar;
   private final SelectionListener selectionListener;
   private final VerifyListener blockingVerifyListener;
   private final VerifyListener numberOnlyVerifyListener;
   private final ModifyListener modifyListener;
+  private final KeyListener keyListener;
 
   public TextTab( CTabFolder topFolder ) {
     super( topFolder, "Text" );
@@ -73,6 +75,7 @@ public class TextTab extends ExampleTab {
         textLabel.setText( text.getText() );
       }
     };
+    keyListener = new KeyAdapter() {};
   }
 
   @Override
@@ -95,6 +98,7 @@ public class TextTab extends ExampleTab {
     createBlockingVerifyListenerButton();
     createNumbersOnlyVerifyListenerButton();
     createModifyListenerButton();
+    createKeyListenerButton();
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
@@ -206,6 +210,16 @@ public class TextTab extends ExampleTab {
       @Override
       public void widgetSelected( SelectionEvent event ) {
         updateModifyListener();
+      }
+    } );
+  }
+  
+  private void createKeyListenerButton() {
+    btnKeyListener = createPropertyButton( "KeyListener" );
+    btnKeyListener.addSelectionListener( new SelectionAdapter() {
+      
+      public void widgetSelected( final SelectionEvent event ) {
+        updateKeyListener();
       }
     } );
   }
@@ -443,6 +457,16 @@ public class TextTab extends ExampleTab {
         text.addModifyListener( modifyListener );
       } else {
         text.removeModifyListener( modifyListener );
+      }
+    }
+  }
+  
+  private void updateKeyListener() {
+    if( btnKeyListener != null ) {
+      if( btnKeyListener.getSelection() ) {
+        text.addKeyListener( keyListener );
+      } else {
+        text.removeKeyListener( keyListener );
       }
     }
   }
