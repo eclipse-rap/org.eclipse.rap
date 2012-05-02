@@ -193,7 +193,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     // Visuals
 
     testTabHighlightHidden : function() {
-      var head = document.childNodes[ 0 ].childNodes[ 0 ];
+      var head = document.head;
       var headertext = head.innerHTML;
       var expected = "* { -webkit-tap-highlight-color: rgba(0,0,0,0); }";
       assertTrue( headertext.indexOf( expected ) != -1 );

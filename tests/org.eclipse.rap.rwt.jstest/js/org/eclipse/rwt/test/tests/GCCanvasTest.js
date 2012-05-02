@@ -14,7 +14,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
 
   members : {
 
-    TARGETENGINE : [ "gecko", "webkit" ],
+    TARGETENGINE : [ "gecko", "webkit", "newmshtml" ],
     
     // NOTE: drawImage can not be tested 
 
@@ -57,9 +57,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       gc.init( 300, 300,
                [ [ "Arial" ], 10, false, false ],
                [ 255, 0, 0, 255 ], [ 0, 0, 255, 255 ] );
-      gc.draw( [ [ "beginPath" ], [ "moveTo", 10.5, 10.5 ], [ "lineTo", 20.5, 10.5 ], [ "stroke" ] ] );
+      gc.draw( [ 
+        [ "beginPath" ], 
+        [ "moveTo", 10.5, 10.5 ], 
+        [ "lineTo", 20.5, 10.5 ], 
+        [ "stroke" ] 
+      ] );
       var context = gc._context;
-      context.lineTo( 15, 15 );
+      context.lineTo( 20.5, 20.5 );
+      context.lineTo( 10.5, 20.5 );
       assertFalse( context.isPointInPath( 10, 10 ) );
       assertTrue( context.isPointInPath( 11, 11 ) );
       assertTrue( context.isPointInPath( 16, 11 ) );
@@ -100,8 +106,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       assertTrue( context.isPointInPath( 101, 115 ) );
       assertTrue( context.isPointInPath( 159, 115 ) );
       assertTrue( context.isPointInPath( 104, 122 ) );
-      assertTrue( context.isPointInPath( 156, 122 ) );
-      assertTrue( context.isPointInPath( 130, 130 ) );
+      assertTrue( context.isPointInPath( 155, 122 ) );
+      assertTrue( context.isPointInPath( 130, 129 ) );
       assertFalse( context.isPointInPath( 99, 115 ) );
       assertFalse( context.isPointInPath( 161, 115 ) );
       assertFalse( context.isPointInPath( 102, 122 ) );

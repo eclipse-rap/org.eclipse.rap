@@ -141,7 +141,7 @@ qx.Class.define( "org.eclipse.rwt.Client", {
     },
 
     isAndroidBrowser : function() {
-      return this.getPlatform() === "android" && this.getBrowser() === "chrome";
+      return this.getPlatform() === "android" && this.getBrowser() === "android";
     },
 
     supportsVml : function() {
@@ -157,7 +157,7 @@ qx.Class.define( "org.eclipse.rwt.Client", {
                    || engine === "opera" && version >= 9
                    || engine === "newmshtml";
       if( this.isAndroidBrowser() ) {
-        result = false;
+        result = version >= 534; // only Android 3+ supports SVG
       }
       return result;
     },
@@ -242,7 +242,7 @@ qx.Class.define( "org.eclipse.rwt.Client", {
             this._browserName = "chrome";
           } else if( userAgent.indexOf( "Safari" ) != -1 ) {
             if( userAgent.indexOf( "Android" ) != -1 ) {
-              this._browserName = "chrome";
+              this._browserName = "android";
             } else {
               this._browserName = "safari";
             }
