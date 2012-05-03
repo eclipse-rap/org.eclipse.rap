@@ -18,6 +18,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     // Eventlistener are detached by TestRunner to prevent user-interference,
     // but we need them here...
     org.eclipse.rwt.EventHandler.attachEvents();
+    if( org.eclipse.rwt.Client.isAndroidBrowser() ) {
+      org.eclipse.rwt.MobileWebkitSupport._getTouch = function( event ) {
+        // touches is always null on faked TouchEvent, use fakedTouches instead
+        var touches = event.fakeTouches;
+        return touches.item( 0 );
+      };
+    }
   },
   
   destruct : function() {
@@ -27,15 +34,46 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
   members : {
 
     TARGETENGINE : [ "webkit" ],
-    TARGETPLATFORM : [ "ios" ],
+    TARGETPLATFORM : [ "ios", "android" ],
     
     ///////////////
     // Test helpers
 
+    testCreateTouch : function() {
+      var div = document.createElement( "div" );
+      var touch = this.createTouch( div, 3, 6 );
+      assertEquals( 3, touch.screenX );
+      assertEquals( 6, touch.screenY );
+      assertIdentical( div, touch.target );
+    },
+    
+    testCreateTouchEvent : function() {
+      var touches = [ 
+        this.createTouch( document.body, 3, 6 ), 
+        this.createTouch( document.body, 4, 6 ) 
+      ];      
+      var list = this.createTouchList( touches );
+      var event = this.createTouchEvent( "touchstart", list );
+      assertTrue( "touchstart" === event.type );
+      assertTrue( list === event.touches || list === event.fakeTouches );
+    },
+
+    testCreateTouchList : function() {
+      var div = document.createElement( "div" );
+      var touches = [ 
+        this.createTouch( div, 3, 6 ), 
+        this.createTouch( div, 4, 6 ) 
+      ];
+      var list = this.createTouchList( touches );
+      assertEquals( 2, list.length );
+      assertIdentical( touches[ 0 ], list.item( 0 ) );
+      assertIdentical( touches[ 1 ], list.item( 1 ) );
+    },
+
     testFakeTouchEvents : function() {
       var div = document.createElement( "div" );
       document.body.appendChild( div );
-      var log = [];
+      log = [];
       var logger = function( event ) {
         log.push( event.type );
       };
@@ -72,37 +110,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       document.body.removeChild( div );
     },
 
-    testCreateTouch : function() {
-      var div = document.createElement( "div" );
-      var touch = this.createTouch( div, 3, 6 );
-      assertTrue( touch instanceof Touch );
-      assertEquals( 3, touch.screenX );
-      assertEquals( 6, touch.screenY );
-      assertIdentical( div, touch.target );
-    },
-
-    testCreateTouchList : function() {
-      var touches = [ new Touch(), new Touch() ];
-      var list = this.createTouchList( touches );
-      assertTrue( list instanceof TouchList );
-      assertEquals( 2, list.length );
-      assertIdentical( touches[ 0 ], list.item( 0 ) );
-      assertIdentical( touches[ 1 ], list.item( 1 ) );
-    },
-
-    testCreateTouchEvent : function() {
-      var list = this.createTouchList( [] );
-      var event = this.createTouchEvent( "touchstart", list );
-      assertEquals( "touchstart", event.type );
-      assertIdentical( list, event.touches );
-    },
-
     testFakeTouchEventsTouchNumber : function() {
       var div = document.createElement( "div" );
       document.body.appendChild( div );
       var log = [];
       var logger = function( event ) {
-        log.push( event.touches.length );
+        var touches = event.fakeTouches || event.touches; 
+        log.push( touches.length );
       };
       div.ontouchstart = logger;  
       div.ontouchmove = logger;
@@ -126,7 +140,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       document.body.appendChild( div );
       var log = [];
       var logger = function( event ) {
-        log.push( event.touches );
+        var touches = event.fakeTouches || event.touches;
+        log.push( touches );
       };
       div.ontouchstart = logger;  
       div.ontouchmove = logger;
@@ -140,53 +155,56 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testFakeGestureEvent : function() {
-      var div = document.createElement( "div" );
-      var touches = [ new Touch(), new Touch() ];
-      document.body.appendChild( div );
-      var log = [];
-      var logger = function( event ) {
-        log.push( event.type );
-      };
-      div.ontouchstart = logger;  
-      div.ontouchmove = logger;
-      div.ontouchend = logger;
-      div.ontouchcancel = logger;
-      div.ongesturestart = logger;
-      div.ongesturechange = logger;
-      div.ongestureend = logger;
-      this.gesture( div, "gesturestart" );
-      this.gesture( div, "gesturechange" );
-      this.gesture( div, "gestureend" );
-      var expected = [
-        "touchstart",
-        "gesturestart",
-        "touchstart",
-        "gesturechange",
-        "touchmove",
-        "gestureend",
-        "touchend"
-      ];
-      assertEquals( expected, log );
-      document.body.removeChild( div );
+      if( !org.eclipse.rwt.Client.isAndroidBrowser() ) { // android can't fake gestures at all
+        var div = document.createElement( "div" );
+        document.body.appendChild( div );
+        var log = [];
+        var logger = function( event ) {
+          log.push( event.type );
+        };
+        div.ontouchstart = logger;  
+        div.ontouchmove = logger;
+        div.ontouchend = logger;
+        div.ontouchcancel = logger;
+        div.ongesturestart = logger;
+        div.ongesturechange = logger;
+        div.ongestureend = logger;
+        this.gesture( div, "gesturestart" );
+        this.gesture( div, "gesturechange" );
+        this.gesture( div, "gestureend" );
+        var expected = [
+          "touchstart",
+          "gesturestart",
+          "touchstart",
+          "gesturechange",
+          "touchmove",
+          "gestureend",
+          "touchend"
+        ];
+        assertEquals( expected, log );
+        document.body.removeChild( div );
+      }
     },
 
-    testFakeGestureEventTouche : function() {
-      var div = document.createElement( "div" );
-      var touches = [ new Touch(), new Touch() ];
-      document.body.appendChild( div );
-      var log = [];
-      var logger = function( event ) {
-        log.push( event.touches.length );
-      };
-      div.ontouchstart = logger;  
-      div.ontouchmove = logger;
-      div.ontouchend = logger;
-      this.gesture( div, "gesturestart" );
-      this.gesture( div, "gesturechange" );
-      this.gesture( div, "gestureend" );
-      var expected = [ 1, 2, 2, 2 ];
-      assertEquals( expected, log );
-      document.body.removeChild( div );
+    testFakeGestureEventTouch : function() {
+      if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
+        var div = document.createElement( "div" );
+        var touches = [ new Touch(), new Touch() ];
+        document.body.appendChild( div );
+        var log = [];
+        var logger = function( event ) {
+          log.push( event.touches.length );
+        };
+        div.ontouchstart = logger;  
+        div.ontouchmove = logger;
+        div.ontouchend = logger;
+        this.gesture( div, "gesturestart" );
+        this.gesture( div, "gesturechange" );
+        this.gesture( div, "gestureend" );
+        var expected = [ 1, 2, 2, 2 ];
+        assertEquals( expected, log );
+        document.body.removeChild( div );
+      }
     },
 
     //////////
@@ -204,24 +222,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     
     // See Bug 323803 -  [ipad] Browser-widget/iframe broken  
     testIFrameDimensionBug : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var iframe = new qx.ui.embed.Iframe();
-      iframe.addToDocument();
-      iframe.setWidth( 300 );
-      iframe.setHeight( 400 );
-      TestUtil.flush();
-      var node = iframe.getIframeNode();
-      var widgetNode = iframe.getElement();
-      assertEquals( 300, parseInt( widgetNode.style.width ) );
-      assertEquals( 400, parseInt( widgetNode.style.height ) );
-      assertEquals( "", node.width );
-      assertEquals( "", node.height );
-      assertEquals( "", node.style.width );
-      assertEquals( "", node.style.height );
-      assertEquals( "300px", node.style.minWidth );
-      assertEquals( "400px", node.style.minHeight );
-      assertEquals( "300px", node.style.maxWidth );
-      assertEquals( "400px", node.style.maxHeight );
+      if( org.eclipse.rwt.Client.isMobileSafari() ) {
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var iframe = new qx.ui.embed.Iframe();
+        iframe.addToDocument();
+        iframe.setWidth( 300 );
+        iframe.setHeight( 400 );
+        TestUtil.flush();
+        var node = iframe.getIframeNode();
+        var widgetNode = iframe.getElement();
+        assertEquals( 300, parseInt( widgetNode.style.width, 10 ) );
+        assertEquals( 400, parseInt( widgetNode.style.height, 10 ) );
+        assertEquals( "", node.width );
+        assertEquals( "", node.height );
+        assertEquals( "", node.style.width );
+        assertEquals( "", node.style.height );
+        assertEquals( "300px", node.style.minWidth );
+        assertEquals( "400px", node.style.minHeight );
+        assertEquals( "300px", node.style.maxWidth );
+        assertEquals( "400px", node.style.maxHeight );
+      }
     },
     
     testTextFocus : function() {
@@ -568,41 +588,43 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
     
     testCancelOnGesture : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var doc = qx.ui.core.ClientDocument.getInstance();
-      var widget = new qx.ui.basic.Terminator();
-      widget.addToDocument();
-      TestUtil.flush();      
-      var widgetLog = [];
-      var widgetLogger = function( event ){ 
-        widgetLog.push( event.getType() );
-        event.stopPropagation(); 
-      };
-      var docLog = [];
-      var docLogger = function( event ){ 
-        docLog.push( event.getType() ); 
-      };
-      widget.addEventListener( "mouseover", widgetLogger );
-      widget.addEventListener( "mouseout", widgetLogger );
-      widget.addEventListener( "mousedown", widgetLogger );
-      widget.addEventListener( "mouseup", widgetLogger );
-      widget.addEventListener( "click", widgetLogger );
-      doc.addEventListener( "mouseover", docLogger );
-      doc.addEventListener( "mouseout", docLogger );
-      doc.addEventListener( "mousedown", docLogger );
-      doc.addEventListener( "mouseup", docLogger );
-      doc.addEventListener( "click", docLogger );
-      var node = widget._getTargetNode();
-      this.gesture( node, "gesturestart" );
-      this.touch( node, "touchstart", 3 );
-      this.touch( node, "touchend", 2 );
-      this.gesture( node, "gestureend" );
-      var widgetExpected = [ "mouseover", "mousedown", "mouseout" ];
-      var docExpected = [ "mouseover", "mouseup" ];      
-      assertEquals( widgetExpected, widgetLog );
-      assertEquals( docExpected, docLog );
-      widget.destroy();
-      this.resetMobileWebkitSupport();
+      if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var doc = qx.ui.core.ClientDocument.getInstance();
+        var widget = new qx.ui.basic.Terminator();
+        widget.addToDocument();
+        TestUtil.flush();      
+        var widgetLog = [];
+        var widgetLogger = function( event ){ 
+          widgetLog.push( event.getType() );
+          event.stopPropagation(); 
+        };
+        var docLog = [];
+        var docLogger = function( event ){ 
+          docLog.push( event.getType() ); 
+        };
+        widget.addEventListener( "mouseover", widgetLogger );
+        widget.addEventListener( "mouseout", widgetLogger );
+        widget.addEventListener( "mousedown", widgetLogger );
+        widget.addEventListener( "mouseup", widgetLogger );
+        widget.addEventListener( "click", widgetLogger );
+        doc.addEventListener( "mouseover", docLogger );
+        doc.addEventListener( "mouseout", docLogger );
+        doc.addEventListener( "mousedown", docLogger );
+        doc.addEventListener( "mouseup", docLogger );
+        doc.addEventListener( "click", docLogger );
+        var node = widget._getTargetNode();
+        this.gesture( node, "gesturestart" );
+        this.touch( node, "touchstart", 3 );
+        this.touch( node, "touchend", 2 );
+        this.gesture( node, "gestureend" );
+        var widgetExpected = [ "mouseover", "mousedown", "mouseout" ];
+        var docExpected = [ "mouseover", "mouseup" ];      
+        assertEquals( widgetExpected, widgetLog );
+        assertEquals( docExpected, docLog );
+        widget.destroy();
+        this.resetMobileWebkitSupport();
+      }
     },
     
     testCancelOnSwipe : function() {
@@ -641,11 +663,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var docExpected = [ "mouseover", "mouseup" ];      
       assertEquals( widgetExpected, widgetLog );
       assertEquals( docExpected, docLog );
-      var widgetLog = [];
-      var docLog = [];
+      widgetLog = [];
+      docLog = [];
       this.touch( node, "touchstart" );
-      var widgetExpected = [ "mouseover", "mousedown" ];
-      var docExpected = [ "mouseout" ];      
+      widgetExpected = [ "mouseover", "mousedown" ];
+      docExpected = [ "mouseout" ];      
       assertEquals( widgetExpected, widgetLog );
       assertEquals( docExpected, docLog );
       widget.destroy();
@@ -812,37 +834,67 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
     
     createTouchList : function( touches ) {
-      var args = [];
-      for( var i = 0; i < touches.length; i++ ) {
-        args.push( "touches[ " + i + "]" );
+      var result;
+      if( org.eclipse.rwt.Client.isAndroidBrowser() ) {
+        // "real" TouchList does not work propperly (length is always 0)
+        result = {};
+        result.length = touches.length;
+        result.item = function( offset ) {
+          return touches[ offset ];
+        };
+      } else {
+        var args = [];
+        for( var i = 0; i < touches.length; i++ ) {
+          args.push( "touches[ " + i + "]" );
+        }
+        result = eval( "document.createTouchList(" + args.join() + ")" );
       }
-      return eval( "document.createTouchList(" + args.join() + ")" );
+      return result;
     },
     
     createTouchEvent : function( type, touchList ) {
       // Note: the screen/client values are not used in real touch-events.
       var result = document.createEvent( "TouchEvent" );
-      result.initTouchEvent(
-        type,
-        true, //canBubble
-        true, //cancelable
-        window, //view
-        0, //detail
-        0, //screenX
-        0, //screenY
-        0, //clientX
-        0, //clientY
-        false, //ctrlKey
-        false, //altKey
-        false, //shiftKey
-        false, //metaKey
-        touchList, //touches
-        touchList, //targetTouches
-        touchList, //changedTouches
-        0, //scale
-        0 //rotation
-      );
-      result.touches = touchList;
+      if( org.eclipse.rwt.Client.isAndroidBrowser() ) {
+        result.initTouchEvent(
+            touchList, 
+            touchList, 
+            touchList, 
+            type, 
+            window, 
+            0, 
+            0, 
+            0, 
+            0, 
+            true, 
+            false, 
+            false, 
+            false
+          );
+        result.fakeTouches = touchList; // touches does not work and can not be overwritten
+      } else {
+        result.initTouchEvent(
+            type,
+            true, //canBubble
+            true, //cancelable
+            window, //view
+            0, //detail
+            0, //screenX
+            0, //screenY
+            0, //clientX
+            0, //clientY
+            false, //ctrlKey
+            false, //altKey
+            false, //shiftKey
+            false, //metaKey
+            touchList, //touches
+            touchList, //targetTouches
+            touchList, //changedTouches
+            0, //scale
+            0 //rotation
+        );
+        result.touches = touchList;
+      }
       // So we can test if preventDefault has been called:
       result.preventDefault = function() {
         this.prevented = true;
@@ -850,10 +902,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       result.prevented = false;      
       return result;
     },
-
+    
     createGestureEvent : function( type, target ) {
       // Note: the screen/client values are not used in real touch-events.
-      var result = document.createEvent( "GestureEvent" );
+      var result = document.createEvent( "GestureEvent" ); // not supported in Android (yet)
       result.initGestureEvent(
         type,
         true, // canBubble,
@@ -900,7 +952,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         if( typeof touchesNumberOrArray === "number" ) {
           number = touchesNumberOrArray;
         }
-        while( touches.length < number ) { 
+        while( touches.length < number ) {
           touches.push( this.createTouch( node, 0, 0 ) );
         }
       }
