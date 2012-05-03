@@ -152,7 +152,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
         if( this.hasModifyListener() || this.hasVerifyListener() ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( this );
-          var req = org.eclipse.swt.Request.getInstance();
           req.addEvent( "org.eclipse.swt.events.modifyText", id );
           qx.client.Timer.once( this._delayedSend, this, 500 );
         }
@@ -171,6 +170,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       var id = widgetManager.findIdByWidget( this );
       var req = org.eclipse.swt.Request.getInstance();
       req.addParameter( id + ".text", this.getComputedValue() );
+      this._detectSelectionChange();
       req.removeEventListener( "send", this._onSend, this );
       this._requestScheduled = false;
     },
