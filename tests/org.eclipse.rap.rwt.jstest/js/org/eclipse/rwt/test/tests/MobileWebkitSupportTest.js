@@ -797,26 +797,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       widget.destroy();
       this.resetMobileWebkitSupport();
     },
-    
-    testZoomedNotPreventDefaultOnSwipe : function() {
-      this.fakeZoom( true );
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
-      widget.addToDocument();
-      TestUtil.flush();
-      var log = [];
-      var logger = function( event ) {
-        log.push( event.getDomEvent().originalEvent );
-      };
-      widget.addEventListener( "mouseout", logger );
-      var node = widget._getTargetNode();
-      this.touchAt( node, "touchstart", 0, 0  );
-      this.touchAt( node, "touchmove", 19, 19 );
-      assertFalse( log[ 0 ].prevented );
-      widget.destroy();
-      this.resetMobileWebkitSupport();
-    },
-    
+
     /////////
     // Helper
     

@@ -94,7 +94,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       toolTip.setShowInterval( 600 );
       toolTip.setHideInterval( 15000 );
       toolTip.setMousePointerOffsetX( -35 );
-      toolTip.setMousePointerOffsetY( -60 );
+      toolTip.setMousePointerOffsetY( -100 );
       var manager = qx.ui.popup.ToolTipManager.getInstance();
       manager.handleMouseEvent = function( event ) {
         var type = event.getType();
@@ -126,6 +126,18 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       target.ongesturechange = this.__onGestureEvent;
       target.ongestureend = this.__onGestureEvent;
       target.onorientationchange = this.__onOrientationEvent;
+    },
+    
+    _removeListeners : function() {
+      var target = document.body;
+      target.ontouchstart = null;
+      target.ontouchmove = null
+      target.ontouchend = null
+      target.ontouchcancel = null
+      target.ongesturestart = null
+      target.ongesturechange = null
+      target.ongestureend = null
+      target.onorientationchange = null
     },
 
     _registerFilter : function() {
@@ -185,6 +197,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     },
 
     _handleTouchStart : function( domEvent ) {
+      domEvent.preventDefault();
       var touch = this._getTouch( domEvent );
       var target = domEvent.target;
       var pos = [ touch.clientX, touch.clientY ];
@@ -195,10 +208,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     },
 
     _handleTouchMove : function( domEvent ) {
-      if( !this._isZoomed() ) {
-        // Prevents wipe/scrolling when it's not useful:
-        domEvent.preventDefault();
-      }
+      domEvent.preventDefault();
       if( this._lastMouseDownPosition !== null ) {
         var oldPos = this._lastMouseDownPosition;
         var target = domEvent.target;
@@ -279,6 +289,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     },
 
     _onGestureEvent : function( domEvent ) {
+      domEvent.preventDefault();
       var type = domEvent.type;
       if( this._gestureListener !== null ) {
         this._gestureListener[ 0 ].call( this._gestureListener[ 1 ], domEvent );
