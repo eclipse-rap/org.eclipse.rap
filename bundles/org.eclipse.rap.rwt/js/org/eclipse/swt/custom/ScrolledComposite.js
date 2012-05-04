@@ -17,6 +17,9 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     this.base( arguments, new qx.ui.layout.CanvasLayout() );
     this._clientArea.addEventListener( "mousewheel", this._onMouseWheel, this );
     this._clientArea.addEventListener( "keypress", this._onKeyPress, this );
+    if( org.eclipse.rwt.Client.supportsTouch() ) {
+      this._clientArea.addEventListener( "mousedown", this._onTouch, this );
+    }
     this.addEventListener( "userScroll", this._onUserScroll );
     this._content = null;
     this._hasSelectionListener = false;
@@ -91,6 +94,10 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     },
     
     _onMouseWheel : function( evt ) {
+      this.setBlockScrolling( false );
+    },
+    
+    _onTouch : function( evt ) {
       this.setBlockScrolling( false );
     },
     

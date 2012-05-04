@@ -21,7 +21,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     if( org.eclipse.rwt.Client.isAndroidBrowser() ) {
       org.eclipse.rwt.MobileWebkitSupport._getTouch = function( event ) {
         // touches is always null on faked TouchEvent, use fakedTouches instead
-        var touches = event.fakeTouches;
+        var touches = event.touches || event.fakeTouches;
         return touches.item( 0 );
       };
     }
@@ -779,23 +779,114 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       this.resetMobileWebkitSupport();
     },
     
-    testNotZoomedPreventDefaultOnSwipe : function() {
-      this.fakeZoom( false );
+    testPreventDefaultOnSwipe : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
       var logger = function( event ) {
-        log.push( event.getDomEvent().originalEvent );
+        //log.push( event.getDomEvent().originalEvent );
+        log.push( event );
       };
-      widget.addEventListener( "mouseout", logger );
+      //widget.addEventListener( "mouseout", logger );
+      document.body.addEventListener( "touchstart", logger );
+      document.body.addEventListener( "touchmove", logger );
       var node = widget._getTargetNode();
       this.touchAt( node, "touchstart", 0, 0  );
       this.touchAt( node, "touchmove", 19, 19 );
       assertTrue( log[ 0 ].prevented );
+      assertTrue( log[ 1 ].prevented );
       widget.destroy();
       this.resetMobileWebkitSupport();
+    },
+
+    testAllowSwipeOnScrollable : function() {
+      if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var widget = new org.eclipse.swt.custom.ScrolledComposite();
+        widget.addToDocument();
+        TestUtil.flush();
+        var log = [];
+        var logger = function( event ) {
+          //log.push( event.getDomEvent().originalEvent );
+          log.push( event );
+        };
+        //widget._clientArea.addEventListener( "mouseout", logger );
+        document.body.addEventListener( "touchstart", logger );
+        document.body.addEventListener( "touchmove", logger );
+        var node = widget._clientArea._getTargetNode();
+        this.touchAt( node, "touchstart", 0, 0  );
+        this.touchAt( node, "touchmove", 19, 19 );
+        assertFalse( log[ 0 ].prevented );
+        assertFalse( log[ 1 ].prevented );
+        widget.destroy();
+        this.resetMobileWebkitSupport();
+      }
+    },
+    
+    testAllowSwipeOnScrollableChild : function() {
+      if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var parent = new org.eclipse.swt.custom.ScrolledComposite();
+        var widget = new qx.ui.basic.Terminator();
+        parent.setContent( widget );
+        parent.addToDocument();
+        TestUtil.flush();
+        var log = [];
+        var logger = function( event ) {
+          //log.push( event.getDomEvent().originalEvent );
+          log.push( event );
+        };
+        //widget._clientArea.addEventListener( "mouseout", logger );
+        document.body.addEventListener( "touchstart", logger );
+        document.body.addEventListener( "touchmove", logger );
+        var node = widget._getTargetNode();
+        this.touchAt( node, "touchstart", 0, 0  );
+        this.touchAt( node, "touchmove", 19, 19 );
+        assertFalse( log[ 0 ].prevented );
+        assertFalse( log[ 1 ].prevented );
+        widget.destroy();
+        this.resetMobileWebkitSupport();
+      }
+    },
+
+    testDoNotBlockScrolling : function() {
+      if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var composite = new org.eclipse.swt.custom.ScrolledComposite();
+        composite.setLeft( 10 );
+        composite.setTop( 10 );
+        composite.setWidth( 100 );
+        composite.setHeight( 100 );
+        composite.addToDocument();
+        var area = new org.eclipse.swt.widgets.Composite();
+        area.setLeft( 0 );
+        area.setTop( 0 );
+        composite.setContent( area );
+        area.setWidth( 200 );
+        area.setHeight( 200 );
+        TestUtil.prepareTimerUse();
+        var child = new qx.ui.basic.Terminator();
+        child.setParent( area );
+        child.setLeft( 0 );
+        child.setTop( 0 );
+        TestUtil.flush();
+        composite.setHBarSelection( 10 );
+        composite.setVBarSelection( 20 );
+  
+        child.focus(); // this usually blocks scrolling
+        this.touch( area._getTargetNode(), "touchstart" ); // this makes is a swipe-scrolling
+        composite._clientArea.setScrollLeft( 50 );
+        composite._clientArea.setScrollTop( 70 );
+        composite._onscroll( {} );
+  
+        TestUtil.forceTimerOnce();
+        var client = composite._clientArea;
+        var position = [ client.getScrollLeft(), client.getScrollTop() ];
+        assertEquals( [ 50, 70 ], position );      
+        composite.destroy();
+      }
     },
 
     /////////

@@ -31,14 +31,13 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       "org.eclipse.rwt.widgets.Tree" : [ "tree-column", "label", "image", "scrollbar-thumb" ]
     },
     _lastMouseOverTarget : null,
-    _lastMouseDownTarget : null,
-    _lastMouseDownPosition : null,
     _lastMouseClickTarget : null,
     _lastMouseClickTime : null,
     _mouseEnabled : true,
     _fullscreen : window.navigator.standalone,
     _touchListener : null,
     _gestureListener : null,
+    _touchSession : null,  
 
     _allowedMouseEvents : {
       "INPUT" : {
@@ -55,7 +54,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     },
 
     init : function() {
-      if( org.eclipse.rwt.Client.isMobileSafari() || org.eclipse.rwt.Client.isAndroidBrowser() ) {
+      if( org.eclipse.rwt.Client.supportsTouch() ) {
         this._configureToolTip();
         this._hideTabHighlight();
         this._bindListeners();
@@ -162,28 +161,31 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     },
 
     _onTouchEvent : function( domEvent ) {
-      var type = domEvent.type;
-      if( this._fullscreen ) {
-        // Zoom is disabled in Fullscreen (by webkit), therefore
-        // wipe or pinch gestures can be disabled completely:
-        domEvent.preventDefault();
-      }
-      if( this._mouseEnabled ) {
-        switch( type ) {
+      try {
+        var type = domEvent.type;
+        if( this._mouseEnabled ) {
+          switch( type ) {
           case "touchstart":
             this._handleTouchStart( domEvent );
-          break;
+            break;
           case "touchend":
             this._handleTouchEnd( domEvent );
-          break;
+            break;
           case "touchmove":
             this._handleTouchMove( domEvent );
-          break;
+            break;
+          }
+        } else {
+          if( this._touchListener !== null ) {
+            this._touchListener[ 0 ].call( this._touchListener[ 1 ], domEvent );
+          }
         }
-      } else {
-        if( this._touchListener !== null ) {
-          this._touchListener[ 0 ].call( this._touchListener[ 1 ], domEvent );
-        }
+      } catch( ex ) {
+        // problem: touch events emulate mouse events. When an error occurs in the emulation
+        // layer, it would be ignored. However, if the ErrorHandler is called here, it will be 
+        // called twice if the error occurs within the mouse event handling. Therefore only
+        // alert is used for now: 
+        alert( "Error in touch event handling:" + ex );
       }
     },
 
@@ -197,27 +199,47 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     },
 
     _handleTouchStart : function( domEvent ) {
-      domEvent.preventDefault();
       var touch = this._getTouch( domEvent );
       var target = domEvent.target;
       var pos = [ touch.clientX, touch.clientY ];
+      this._touchSession = {
+       "type" : this._getSessionType( domEvent ),
+       "initialTarget" : target,
+       "initialPosition" : pos
+      };
+      if( this._touchSession.type !== "scroll" ) {
+        domEvent.preventDefault();
+      }
       this._moveMouseTo( target, domEvent );
-      this._lastMouseDownTarget = target;
-      this._lastMouseDownPosition = pos;
       this._fireMouseEvent( "mousedown", target, domEvent, pos );
     },
 
+    _getSessionType : function( domEvent ) {
+      var node = domEvent.target;
+      var result = "click";
+      if( this._isDraggableWidget( node ) ) {
+        result = "drag";
+      } else if( this._isScrollableWidget( node ) ) {
+        if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
+          result = "scroll"; // scrolling currently very buggy in android, deactivated
+        }
+      }
+      return result;
+    },
+
     _handleTouchMove : function( domEvent ) {
-      domEvent.preventDefault();
-      if( this._lastMouseDownPosition !== null ) {
-        var oldPos = this._lastMouseDownPosition;
-        var target = domEvent.target;
-        var touch = this._getTouch( domEvent );
+      if( this._touchSession !== null ) {
+                var touch = this._getTouch( domEvent );
         var pos = [ touch.clientX, touch.clientY ];
-        if ( this._isDraggableWidget( domEvent.target ) ) {
+        if( this._touchSession.type !== "scroll" ) {
+          event.preventDefault();
+        }
+        if ( this._touchSession.type === "drag" ) {
           domEvent.preventDefault();
+          var target = domEvent.target;
           this._fireMouseEvent( "mousemove", target, domEvent, pos );
         } else {
+          var oldPos = this._touchSession.initialPosition;
           if(    Math.abs( oldPos[ 0 ] - pos[ 0 ] ) >= 15
               || Math.abs( oldPos[ 1 ] - pos[ 1 ] ) >= 15 )
           {
@@ -227,6 +249,24 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       }
     },
 
+    _isScrollableWidget : function( node ) {
+      var result = false;
+      do {
+        var style = node.style ? node.style : {};
+        if(    style.overflow === "scroll" 
+            || style.overflowX === "scroll" 
+            || style.overflowY === "scroll" ) 
+        {
+          result = true;
+        }
+        node = node.parentNode;
+        if( node === document.body ) {
+          node = null;
+        }
+      } while( node && !result );
+      return result;
+    },
+    
     _isDraggableWidget : function ( target ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var widgetTarget = org.eclipse.rwt.EventHandlerUtil.getOriginalTargetObject( target );
@@ -257,16 +297,15 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       var touch = this._getTouch( domEvent );
       var pos = [ touch.clientX, touch.clientY ];
       var target = domEvent.target;
-      if( this._lastMouseDownTarget !== null ) {
+      if( this._touchSession !== null ) {
         this._fireMouseEvent( "mouseup", target, domEvent, pos );
       }
       // Note: Currently this check won't work as expected because webkit
       // always reports the target from touchstart (in event and touch).
       // It stays on the speculation that this might be fixed in webkit.
-      if( this._lastMouseDownTarget === target ) {
+      if( this._touchSession && this._touchSession.initialTarget === target ) {
         this._fireMouseEvent( "click", target, domEvent, pos );
-        this._lastMouseDownTarget = null;
-        this._lastMouseDownPosition = null;
+        this._touchSession = null;
         if( this._isDoubleClick( domEvent ) ) {
           this._lastMouseClickTarget = null;
           this._lastMouseClickTime = null;
@@ -322,11 +361,10 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     _cancelMouseSession : function( domEvent ) {
       var dummy = this._getDummyTarget();
       this._moveMouseTo( dummy, domEvent );
-      if( this._lastMouseDownTarget !== null ) {
+      if( this._touchSession !== null ) {
         this._fireMouseEvent( "mouseup", dummy, domEvent, [ 0, 0 ] );
       }
-      this._lastMouseDownTarget = null;
-      this._lastMouseDownPosition = null;
+      this._touchSession = null;
     },
 
     // The target used to release the virtual mouse without consequences

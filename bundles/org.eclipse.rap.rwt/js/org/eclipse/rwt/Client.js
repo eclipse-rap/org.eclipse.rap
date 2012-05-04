@@ -148,6 +148,10 @@ qx.Class.define( "org.eclipse.rwt.Client", {
       return ( this.getEngine() === "mshtml" ) && ( this.getVersion() >= 5.5 );
     },
 
+    supportsTouch : function() {
+      return this.isMobileSafari() || this.isAndroidBrowser();
+    },
+
     supportsSvg : function() {
       // NOTE: IE9 supports SVG, but not in quirksmode.
       var engine = org.eclipse.rwt.Client.getEngine();

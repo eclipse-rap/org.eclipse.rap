@@ -406,29 +406,33 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
 
     testBlockScrolling : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var composite = this._createComposite();
-      this._setScrollDimension( composite, 200, 200 );
-      composite.setHBarSelection( 10 );
-      composite.setVBarSelection( 20 );
-      var position = this._getScrollPosition( composite );
-      assertEquals( [ 10, 20 ], position );      
-      TestUtil.prepareTimerUse();
-      composite.setHasSelectionListener( true );
-      var child = new qx.ui.basic.Terminator();
-      child.setParent( composite._clientArea );
-      child.setLeft( 0 );
-      child.setTop( 0 );
-      TestUtil.flush();
-      child.focus();
-      composite._clientArea.setScrollLeft( 50 );
-      composite._clientArea.setScrollTop( 70 );
-      composite._onscroll( {} );
-      TestUtil.forceTimerOnce();
-      assertEquals( 0, TestUtil.getRequestsSend() );
-      var position = this._getScrollPosition( composite );
-      assertEquals( [ 10, 20 ], position );      
-      composite.destroy();      
+      if(    !org.eclipse.rwt.Client.isAndroidBrowser()
+          && !org.eclipse.rwt.Client.isMobileSafari() ) 
+      {
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var composite = this._createComposite();
+        this._setScrollDimension( composite, 200, 200 );
+        composite.setHBarSelection( 10 );
+        composite.setVBarSelection( 20 );
+        var position = this._getScrollPosition( composite );
+        assertEquals( [ 10, 20 ], position );      
+        TestUtil.prepareTimerUse();
+        composite.setHasSelectionListener( true );
+        var child = new qx.ui.basic.Terminator();
+        child.setParent( composite._clientArea );
+        child.setLeft( 0 );
+        child.setTop( 0 );
+        TestUtil.flush();
+        child.focus();
+        composite._clientArea.setScrollLeft( 50 );
+        composite._clientArea.setScrollTop( 70 );
+        composite._onscroll( {} );
+        TestUtil.forceTimerOnce();
+        assertEquals( 0, TestUtil.getRequestsSend() );
+        var position = this._getScrollPosition( composite );
+        assertEquals( [ 10, 20 ], position );      
+        composite.destroy();      
+      }
     },
 
     testNoScrollStyle : function() {
