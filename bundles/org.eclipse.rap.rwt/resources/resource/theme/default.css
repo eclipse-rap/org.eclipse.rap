@@ -102,6 +102,7 @@ Button {
   background-color: #ffffff;
   opacity: 1;
   text-shadow: none;
+  box-shadow: none;
 }
 
 Button[PUSH],
@@ -151,11 +152,12 @@ Button[TOGGLE]:default {
 
 Button[ARROW]:disabled,
 Button[PUSH]:disabled,
-Button[TOGGLE]:disabled {
+Button[TOGGLE]:disabled,
+Button[TOGGLE]:selected:disabled {
   cursor: default;
   color: #d2d2d2;
   background-image: none;
-  background-color: #fafafa;
+  background-color: transparent;
   border: 1px solid #d2d2d2;
 }
 
@@ -301,6 +303,11 @@ Combo[BORDER]:focused {
   box-shadow: 0 0 5px #4f7cb1;
 }
 
+Combo:disabled,
+Combo[BORDER]:disabled {
+  box-shadow: none;
+}
+
 Combo-Button {
   cursor: default;
   background-color: #efefef;
@@ -313,6 +320,11 @@ Combo-Button {
     to( #e4e4e4 )
   );
   width: 30px;
+}
+
+Combo-Button:disabled {
+  background-image: none;
+  background-color: transparent;
 }
 
 Combo-Button-Icon {
@@ -396,7 +408,7 @@ Group {
 }
 
 Group-Frame {
-  margin: 20px 10px 10px 10px;
+  margin: 20px 0 0 0;
   padding: 15px 8px 8px 8px;
   border: 1px solid #bdbdbd;
   border-radius: 2px;
@@ -483,7 +495,7 @@ List[BORDER] {
 }
 
 List-Item {
-  padding: 6px 10px 6px 10px;
+  padding: 5px 10px 5px 10px;
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: #ffffff;
   color: #4a4a4a;
@@ -632,7 +644,7 @@ ProgressBar {
   background-color: #ffffff;
   background-image: url( resource/widget/rap/progressbar/progressbar-background.png );
   border: 1px solid #bdbdbd;
-  border-radius: 2px;
+  border-radius: 40px;
 }
 
 ProgressBar-Indicator {
@@ -648,7 +660,7 @@ ProgressBar-Indicator {
 
 ProgressBar-Indicator:paused {
   background-image: gradient(
-    linear, left top, right top,
+    linear, left top, left bottom,
     from( #818181 ),
     to( #b5b5b5 )
   );
@@ -656,9 +668,9 @@ ProgressBar-Indicator:paused {
 
 ProgressBar-Indicator:error {
   background-image: gradient(
-    linear, left top, right top,
-    from( #e9614f ),
-    to( #ec7869 )
+    linear, left top, left bottom,
+    from( #bb1d1d ),
+    to( #fc0000 )
   );
 }
 
@@ -833,6 +845,11 @@ Spinner[BORDER]:focused {
   box-shadow: 0 0 5px #4f7cb1;
 }
 
+Spinner:disabled,
+Spinner[BORDER]:disabled {
+  box-shadow: none;
+}
+
 Spinner-Field {
   padding: 6px 10px 6px 10px;
 }
@@ -849,6 +866,11 @@ Spinner-UpButton {
   border-left: 1px solid #bdbdbd;
   border-radius: 0px 2px 0px 0px;
   cursor: default;
+}
+
+Spinner-UpButton:disabled {
+  background-image: none;
+  background-color: transparent;
 }
 
 Spinner-UpButton-Icon {
@@ -871,6 +893,11 @@ Spinner-DownButton {
   border-left: 1px solid #bdbdbd;
   border-radius: 0px 0px 2px 0px;
   cursor: default;
+}
+
+Spinner-DownButton:disabled {
+  background-image: none;
+  background-color: transparent;
 }
 
 Spinner-DownButton-Icon {
@@ -1050,7 +1077,7 @@ TableColumn-SortIndicator:down {
 
 Table-Cell {
   spacing: 3px;
-  padding: 6px 3px 6px 3px;
+  padding: 5px 3px 5px 3px;
 }
 
 Table-GridLine {
@@ -1124,6 +1151,13 @@ Text[BORDER]:focused,
 Text[MULTI][BORDER]:focused {
   border: 1px solid #4f7cb1;
   box-shadow: 0 0 5px #4f7cb1;
+}
+
+Text[BORDER]:disabled,
+Text[MULTI][BORDER]:disabled, 
+Text[BORDER]:read-only,
+Text[MULTI][BORDER]:read-only {
+  box-shadow: none;
 }
 
 Text-Message {
@@ -1326,7 +1360,7 @@ TreeColumn-SortIndicator:down {
 
 Tree-Cell {
   spacing: 3px;
-  padding: 6px 3px 6px 3px;
+  padding: 5px 3px 5px 3px;
 }
 
 Tree-GridLine {
@@ -1625,6 +1659,13 @@ DateTime-DropDownButton {
   width: 30px;
 }
 
+DateTime-DropDownButton:disabled,
+DateTime-UpButton:disabled,
+DateTime-DownButton:disabled {
+  background-image: none;
+  background-color: transparent;
+}
+
 DateTime-DropDownButton-Icon {
   background-image: url( resource/widget/rap/spinner/down.png );
 }
@@ -1699,11 +1740,15 @@ Sash[BORDER] {
 }
 
 Sash:hover {
-  background-color: #5882b5;
+  background-color: #e5e5e5;
 }
 
-Sash-Handle {
-  background-image: none;
+Sash-Handle:horizontal {
+  background-image: url( resource/widget/rap/sash/sash-handle-horizontal.png );
+}
+
+Sash-Handle:vertical {
+  background-image: url( resource/widget/rap/sash/sash-handle-vertical.png );
 }
 
 /* Slider default theme */
@@ -1858,6 +1903,11 @@ CCombo[BORDER]:focused {
   box-shadow: 0 0 5px #4f7cb1;
 }
 
+CCombo:disabled,
+CCombo[BORDER]:disabled {
+  box-shadow: none;
+}
+
 CCombo-Button {
   cursor: default;
   background-color: #efefef;
@@ -1870,6 +1920,11 @@ CCombo-Button {
   border-left: 1px solid #bdbdbd;
   border-radius: 0px 2px 2px 0px;
   width: 30px;
+}
+
+CCombo-Button:disabled {
+  background-image: none;
+  background-color: transparent;
 }
 
 CCombo-Button-Icon {

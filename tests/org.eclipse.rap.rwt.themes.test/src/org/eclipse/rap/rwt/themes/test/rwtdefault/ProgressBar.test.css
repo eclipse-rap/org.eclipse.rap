@@ -14,7 +14,7 @@ ProgressBar {
   background-color: #ffffff;
   background-image: url( resource/widget/rap/progressbar/progressbar-background.png );
   border: 1px solid #bdbdbd;
-  border-radius: 2px;
+  border-radius: 40px;
 }
 
 ProgressBar-Indicator {
@@ -30,7 +30,7 @@ ProgressBar-Indicator {
 
 ProgressBar-Indicator:paused {
    background-image: gradient(
-    linear, left top, right top,
+    linear, left top, left bottom,
     from( #818181 ),
     to( #b5b5b5 )
   );
@@ -38,8 +38,8 @@ ProgressBar-Indicator:paused {
 
 ProgressBar-Indicator:error {
   background-image: gradient(
-    linear, left top, right top,
-    from( #e9614f ),
-    to( #ec7869 )
+    linear, left top, left bottom,
+    from( #bb1d1d ),
+    to( #fc0000 )
   );
 }

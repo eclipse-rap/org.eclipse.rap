@@ -19,7 +19,7 @@ Group {
 }
 
 Group-Frame {
-  margin: 20px 10px 10px 10px;
+  margin: 20px 0 0 0;
   padding: 15px 8px 8px 8px;
   border: 1px solid #bdbdbd;
   border-radius: 2px;
