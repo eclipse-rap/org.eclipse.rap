@@ -19,6 +19,7 @@ Composite {
   border: none;
   border-radius: 0;
   box-shadow: none;
+  animation: none;
 }
 
 Composite[BORDER] {

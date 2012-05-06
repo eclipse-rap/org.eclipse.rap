@@ -34,6 +34,9 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
     this.addEventListener( "beforeAppear", this._blockFocus, this );
     this.addEventListener( "changeVisibility", this._blockUserEvents, this );
     this.addEventListener( "destroy", this._onDestroyAnim, this );
+    if( this instanceof org.eclipse.swt.widgets.Composite ) {
+      this.show();
+    }
   },
 
   destruct : function() {

@@ -55,6 +55,15 @@
     <property name="box-shadow" 
         description="The shadow behind the composite." />
 
+    <property name="animation">
+      <description>
+        Animation that is triggered on emergence and disappearance of a Composite. 
+        Supported animation types are "slideIn", "slideOut", "fadeIn", "fadeOut", 
+        "flyInTop", "flyInBottom", "flyInRight", "flyInLeft", "flyOutTop", "flyOutBottom", 
+        "flyOutRight, "flyOutLeft".
+      </description>
+    </property>
+
     <style name="BORDER"
         description="Style constant for bordered behavior." />
         

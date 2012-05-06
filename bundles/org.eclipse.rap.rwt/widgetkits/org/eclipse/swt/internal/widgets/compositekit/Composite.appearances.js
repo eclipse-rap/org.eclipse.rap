@@ -22,6 +22,7 @@ var appearances = {
       result.border = tv.getCssBorder( "Composite", "border" );
       result.opacity = tv.getCssFloat( "Composite", "opacity" );
       result.shadow = tv.getCssShadow( "Composite", "box-shadow" );
+      result.animation = tv.getCssAnimation( "Composite", "animation" );
       return result;
     }
   }

@@ -9,7 +9,10 @@
  ******************************************************************************/
  
 qx.Class.define( "org.eclipse.swt.widgets.Composite", {
+
   extend : qx.ui.layout.CanvasLayout,
+
+  include : org.eclipse.rwt.VisibilityAnimationMixin,
 
   construct : function() {
     this.base( arguments );
