@@ -17,6 +17,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
   
   members : {
 
+    TARGETPLATFORM : [ "win", "mac", "unix", "other" ], // touch devices dont suport DND (yet)
+    
     testCreateDragSourceByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
