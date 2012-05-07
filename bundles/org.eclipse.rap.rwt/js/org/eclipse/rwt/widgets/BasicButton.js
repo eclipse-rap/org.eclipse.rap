@@ -181,8 +181,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
 
     // Not using EventUtil since no event should be sent for radio
     _sendChanges : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() && this._hasSelectionListener )
-      {
+      if( !org.eclipse.swt.EventUtil.getSuspended() && this._hasSelectionListener ) {
         var req = org.eclipse.swt.Request.getInstance();
         if( this._sendEvent ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
