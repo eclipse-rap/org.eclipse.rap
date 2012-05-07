@@ -446,6 +446,23 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( shell, "defaultButton" ) );
   }
 
+  public void testResetDefaultButton_AfterFocusControlChange() {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Button button = new Button( shell, SWT.PUSH );
+    Text text = new Text( shell, SWT.NONE );
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( "w1.focusControl", WidgetUtil.getId( button ) );
+    Fixture.executeLifeCycleFromServerThread();
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( "w1.focusControl", WidgetUtil.getId( text ) );
+
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( shell, "defaultButton" ) );
+  }
+
   public void testRenderActiveControlIntiallyNull() throws IOException {
     ShellLCA lca = new ShellLCA();
 

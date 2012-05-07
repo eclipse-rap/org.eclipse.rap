@@ -850,10 +850,14 @@ public class Shell extends Decorations {
     }
   }
 
-  void updateDefaultButton( Control focusControl, boolean set ) {
+  void updateDefaultButton( final Control focusControl, final boolean set ) {
     if( focusControl instanceof Button ) {
-      Button defaultButton = set ? ( Button )focusControl : null;
-      setDefaultButton( defaultButton, false );
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          Button defaultButton = set ? ( Button )focusControl : null;
+          setDefaultButton( defaultButton, false );
+        }
+      } );
     }
   }
 
