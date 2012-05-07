@@ -38,6 +38,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     _touchListener : null,
     _gestureListener : null,
     _touchSession : null,  
+    _allowScroll : false,
 
     _allowedMouseEvents : {
       "INPUT" : {
@@ -60,6 +61,8 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
         this._bindListeners();
         this._registerListeners();
         this._registerFilter();
+        // scrolling is currently very buggy in android, deactivated:
+        this.setTouchScrolling( !org.eclipse.rwt.Client.isAndroidBrowser() );
       }
     },
 
@@ -80,6 +83,10 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     // Experimental API for custom-widget
     setGestureListener : function( func, context ) {
       this._gestureListener = [ func, context ];
+    },
+    
+    setTouchScrolling : function( value ) {
+      this._allowScroll = value;
     },
 
     _isZoomed : function() {
@@ -220,8 +227,8 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       if( this._isDraggableWidget( node ) ) {
         result = "drag";
       } else if( this._isScrollableWidget( node ) ) {
-        if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
-          result = "scroll"; // scrolling currently very buggy in android, deactivated
+        if( this._allowScroll ) {
+          result = "scroll";
         }
       }
       return result;
