@@ -85,6 +85,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
 
+    
+    testRenderItemWithMarkupEnabled_Bug377746 : function() {
+      var tree = this._createTree( false, "markupEnabled" );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      
+      item.setTexts( [ "<b>Test</b>" ] );
+      row.renderItem( item, tree._config, false, null );
+      item.setTexts( [ "" ] );
+      row.renderItem( item, tree._config, false, null );
+      item.setTexts( [ "<b>Test</b>" ] );
+      row.renderItem( item, tree._config, false, null );
+      
+      assertEquals( 2, row._getTargetNode().childNodes.length );
+      assertEquals( "<b>test</b>", row._getTargetNode().childNodes[ 1 ].innerHTML.toLowerCase() );
+      tree.destroy();
+      row.destroy();
+    },
+    
 
     testRenderEmptyItem : function() {
       var tree = this._createTree();

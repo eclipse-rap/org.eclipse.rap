@@ -393,7 +393,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       } else if( this._cellLabels[ cell ] ) {
         renderBounds = treeColumn;
         element = this._getTextElement( cell, config );
-        this._renderElementContent( element, null );
+        this._renderElementContent( element, null, -1, config.markupEnabled );
       }
       if( element !== null && renderBounds ) {
         var left = this._getItemTextLeft( item, cell, config );
