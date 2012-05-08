@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,8 @@ import javax.servlet.Servlet;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
-import org.eclipse.rwt.application.ApplicationConfiguration.OperationMode;
-import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.Application.OperationMode;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.engine.RWTServlet;
 import org.eclipse.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
@@ -27,12 +27,12 @@ import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 
 
-public class ApplicationConfigurationImpl_Test extends TestCase {
+public class ApplicationImpl_Test extends TestCase {
   
   private TestServletContext servletContext;
   private ApplicationContext applicationContext;
-  private ApplicationConfigurationImpl applicationConfiguration;
-  private ApplicationConfigurator applicationConfigurator;
+  private ApplicationImpl application;
+  private ApplicationConfiguration applicationConfiguration;
   
   public void testDefaultOperationMode() {
     applicationContext.activate();
@@ -43,14 +43,14 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
   
   public void testSetOperationModeWithNullArgument() {
     try {
-      applicationConfiguration.setOperationMode( null );
+      application.setOperationMode( null );
       fail();
     } catch( NullPointerException expected ) {
     }
   }
 
   public void testSetOperationModeToSWTCompatibility() {
-    applicationConfiguration.setOperationMode( OperationMode.SWT_COMPATIBILITY );
+    application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     applicationContext.activate();
     
     ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
@@ -58,7 +58,7 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
   }
 
   public void testSetOperationModeToJEECompatibility() {
-    applicationConfiguration.setOperationMode( OperationMode.JEE_COMPATIBILITY );
+    application.setOperationMode( OperationMode.JEE_COMPATIBILITY );
     applicationContext.activate();
     
     ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
@@ -69,7 +69,7 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
     servletContext.setVersion( 3, 0 );
     servletContext.addServlet( "rwtServlet", new RWTServlet() );
 
-    applicationConfiguration.setOperationMode( OperationMode.SESSION_FAILOVER );
+    application.setOperationMode( OperationMode.SESSION_FAILOVER );
     applicationContext.activate();
     
     ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
@@ -82,7 +82,7 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
     servletContext.addServlet( "fooServlet", mock( Servlet.class ) );
     
     try {
-      applicationConfiguration.setOperationMode( OperationMode.SESSION_FAILOVER );
+      application.setOperationMode( OperationMode.SESSION_FAILOVER );
       fail();
     } catch( IllegalStateException expected ) {
     }
@@ -93,30 +93,30 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
     servletContext.addServlet( "rwtServlet", new RWTServlet() );
     
     try {
-      applicationConfiguration.setOperationMode( OperationMode.SESSION_FAILOVER );
+      application.setOperationMode( OperationMode.SESSION_FAILOVER );
       fail();
     } catch( IllegalStateException expected ) {
     }
   }
   
   public void testGetContextViaAdapter() throws Exception {
-    ApplicationContext context = applicationConfiguration.getAdapter( ApplicationContext.class );
+    ApplicationContext context = application.getAdapter( ApplicationContext.class );
     
     assertSame( applicationContext, context );
   }
   
   public void testGetConfiguratorViaAdapter() throws Exception {
-    ApplicationConfigurator configurator 
-      = applicationConfiguration.getAdapter( ApplicationConfigurator.class );
+    ApplicationConfiguration configurator 
+      = application.getAdapter( ApplicationConfiguration.class );
     
-    assertSame( applicationConfigurator, configurator );
+    assertSame( applicationConfiguration, configurator );
   }
   
   protected void setUp() throws Exception {
-    applicationConfigurator = mock( ApplicationConfigurator.class );
+    applicationConfiguration = mock( ApplicationConfiguration.class );
     servletContext = new TestServletContext();
-    applicationContext = new ApplicationContext( applicationConfigurator, servletContext );
-    applicationConfiguration = new ApplicationConfigurationImpl( applicationContext, applicationConfigurator );
+    applicationContext = new ApplicationContext( applicationConfiguration, servletContext );
+    application = new ApplicationImpl( applicationContext, applicationConfiguration );
   }
 
   private void assertFilterRegistered( Class<RWTClusterSupport> filterClass ) {

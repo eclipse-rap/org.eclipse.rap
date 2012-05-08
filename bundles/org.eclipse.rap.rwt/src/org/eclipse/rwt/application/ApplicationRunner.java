@@ -27,32 +27,25 @@ import org.eclipse.rwt.internal.util.ParamCheck;
 
 /**
  * An <code>ApplicationRunner</code> is used to start an RWT application with
- * the given configuration in the given <code>ServletContext</code>. In order to
- * serve requests for the application, it must be created and started for the
- * <code>ServletContext</code> which receives the requests.
+ * the given <code>ApplicationConfiguration</code> in the given
+ * <code>ServletContext</code>.
  * <p>
- * To create an <code>ApplicationRunner</code>, the <code>ServletContext</code>
- * it should be bound to must be given along with an
- * <code>ApplicationConfigurator</code> with which clients can configure the
- * application before it is started.
+ * In most cases, application developers don't have to use this class directly.
+ * Instead of this, the class <code>RWTServletContextListener</code> can be
+ * registered as a listener in the deployment descriptor (web.xml). In this
+ * case, the <code>ApplicationConfiguration</code> defined in the init-parameter
+ * <code>org.eclipse.rap.applicationConfiguration</code> will be started by the
+ * framework.
  * </p>
  * <p>
- * Usually, an <code>ApplicationRunner</code> is constructed and started in the
- * <code>contextInitialized()</code> method of a
- * <code>ServletContextListener</code> and stopped in its
- * <code>contextDestroyed()</code> method. Alternatively, this task can be
- * delegated to the <code>RWTServletContextListener</code>. If this class is
- * specified as a listener in the deployment descriptor (web.xml), it starts an
- * ApplicationRunner when the servlet context is initialized and stops it when
- * the servlet context is destroyed. The <code>RWTServletContextListener</code>
- * looks for an <code>org.eclipse.rwt.Configurator</code> init-parameter. Its
- * value is assumed to be a class that implements
- * <code>ApplicationConfigurator</code> and is used to configure the
- * application.
+ * When a custom <code>ServletContextListener</code> is used, the
+ * <code>ApplicationRunner</code> is usually constructed and started in the
+ * <code>contextInitialized()</code> method and stopped in the
+ * <code>contextDestroyed()</code> method.
  * </p>
  *
  * @since 1.5
- * @see ApplicationConfigurator
+ * @see ApplicationConfiguration
  * @see org.eclipse.rwt.engine.RWTServletContextListener
  * @see javax.servlet.ServletContext
  * @see javax.servlet.ServletContextListener
@@ -65,19 +58,19 @@ public class ApplicationRunner {
   private final ApplicationContext applicationContext;
 
   /**
-   * Constructs a new instance of this class given a configurator and the
-   * servlet context it is bound to.
+   * Constructs a new instance of this class given an application configuration and
+   * the servlet context it is bound to.
    *
-   * @param configurator the the configurator to configure the application. Must
-   *          not be <code>null</code>.
+   * @param configuration the configuration for the application to start. Must not be
+   *          <code>null</code>.
    * @param servletContext the servlet context this application is bound to.
    *          Must not be <code>null</code>.
    */
-  public ApplicationRunner( ApplicationConfigurator configurator, ServletContext servletContext ) {
-    ParamCheck.notNull( configurator, "configurator" );
+  public ApplicationRunner( ApplicationConfiguration configuration, ServletContext servletContext ) {
+    ParamCheck.notNull( configuration, "configuration" );
     ParamCheck.notNull( servletContext, "servletContext" );
 
-    applicationContext = new ApplicationContext( configurator, servletContext );
+    applicationContext = new ApplicationContext( configuration, servletContext );
   }
 
   /**
@@ -105,12 +98,10 @@ public class ApplicationRunner {
   }
 
   /**
-   * Returns the servlet paths for all entrypoints that are registered with this
-   * application.
-   *
-   * @return an unmodifiable collection of the servlet paths, empty if no
-   *         entrypoints have been registered
+   * @deprecated This method is not part of the RAP API. It will be removed in
+   *             future versions.
    */
+  @Deprecated
   public Collection<String> getServletPaths() {
     Set<String> result = new HashSet<String>();
     Collection<String> servletPaths = applicationContext.getEntryPointManager().getServletPaths();

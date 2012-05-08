@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.eclipse.rap.rwt.testfixture.TestSession;
-import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.internal.application.ApplicationContext;
 import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
@@ -94,7 +94,7 @@ public class RWTServlet_Test extends TestCase {
 
   private static ApplicationContext createApplicationContext() {
     ServletContext servletContext = new TestServletContext();
-    ApplicationConfigurator configurator = mock( ApplicationConfigurator.class );
+    ApplicationConfiguration configurator = mock( ApplicationConfiguration.class );
     ApplicationContext result = new ApplicationContext( configurator, servletContext );
     result.activate();
     ApplicationContextUtil.set( result.getServletContext(), result );

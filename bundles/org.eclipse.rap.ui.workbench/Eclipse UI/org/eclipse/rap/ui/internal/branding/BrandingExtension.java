@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.rap.ui.branding.IExitConfirmation;
 import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.application.ApplicationConfiguration;
+import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.application.ApplicationContext;
 import org.eclipse.rwt.internal.branding.BrandingManager;
@@ -59,10 +59,10 @@ public final class BrandingExtension {
   private static final String ELEM_SERVICE_SELECTOR = "httpServiceFilter"; //$NON-NLS-1$
   private static final String ATT_CLASS = "class"; //$NON-NLS-1$
 
-  private final ApplicationConfiguration configuration;
+  private final Application configuration;
   private final ServiceReference<HttpService> httpServiceReference;
 
-  public BrandingExtension( ApplicationConfiguration configuration,
+  public BrandingExtension( Application configuration,
                             ServiceReference<HttpService> httpServiceReference )
   {
     this.configuration = configuration;

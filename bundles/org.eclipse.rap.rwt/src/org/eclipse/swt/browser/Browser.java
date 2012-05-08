@@ -243,7 +243,7 @@ public class Browser extends Composite {
    *
    * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
    *
-   * @see org.eclipse.rwt.application.ApplicationConfiguration.OperationMode
+   * @see org.eclipse.rwt.application.Application.OperationMode
    *
    * @since 1.1
    */
@@ -323,7 +323,7 @@ public class Browser extends Composite {
    * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
    *
    * @see ProgressListener#completed(ProgressEvent)
-   * @see org.eclipse.rwt.application.ApplicationConfiguration.OperationMode
+   * @see org.eclipse.rwt.application.Application.OperationMode
    *
    * @since 1.4
    */

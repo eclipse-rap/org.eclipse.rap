@@ -15,7 +15,7 @@ import java.util.*;
 import org.eclipse.rap.examples.IExampleContribution;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.examples.pages.*;
-import org.eclipse.rwt.application.ApplicationConfiguration;
+import org.eclipse.rwt.application.Application;
 
 
 class Contributions {
@@ -68,7 +68,7 @@ class Contributions {
         }
       }
 
-      public void configure( ApplicationConfiguration configuration ) {
+      public void configure( Application application ) {
       }
     };
     contributions.add( contribution );

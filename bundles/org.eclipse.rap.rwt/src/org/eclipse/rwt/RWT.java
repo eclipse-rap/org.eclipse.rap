@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.rwt.application.ApplicationConfiguration;
+import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rwt.internal.lifecycle.LifeCycle;
@@ -47,6 +47,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
+
 
 /**
  * This class provides access to aspects of RWT which are not
@@ -381,7 +382,7 @@ public final class RWT {
    * custom theme has been specified. This ID can be used to register theme
    * contributions to the default theme.
    *
-   * @see ApplicationConfiguration#addStyleSheet(String, String)
+   * @see Application#addStyleSheet(String, String)
    * @since 1.5
    */
   public static final String DEFAULT_THEME_ID = "org.eclipse.rap.rwt.theme.Default";

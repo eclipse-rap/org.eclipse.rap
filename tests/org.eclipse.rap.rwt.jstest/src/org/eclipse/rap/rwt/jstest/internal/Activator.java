@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.jstest.internal;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.jstest.TestContribution;
-import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -24,7 +24,7 @@ public class Activator implements BundleActivator {
   private static Activator instance;
   private HttpServiceTracker httpTracker;
   private ContributionServiceTracker contributionTracker;
-  private ServiceRegistration<ApplicationConfigurator> rapAppConfigService;
+  private ServiceRegistration<ApplicationConfiguration> rapAppConfigService;
 
   public void start( BundleContext context ) throws Exception {
     registerRapApplication( context );
@@ -63,8 +63,8 @@ public class Activator implements BundleActivator {
   }
 
   private void registerRapApplication( BundleContext context ) {
-    ApplicationConfigurator configurator = new RapTestApplicationConfigurator();
-    rapAppConfigService = context.registerService( ApplicationConfigurator.class,
+    ApplicationConfiguration configurator = new RapTestApplicationConfigurator();
+    rapAppConfigService = context.registerService( ApplicationConfiguration.class,
                                                    configurator,
                                                    null );
   }

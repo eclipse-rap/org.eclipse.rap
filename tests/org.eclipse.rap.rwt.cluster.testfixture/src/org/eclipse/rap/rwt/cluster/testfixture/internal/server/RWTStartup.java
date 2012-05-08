@@ -15,9 +15,9 @@ import javax.servlet.ServletContextListener;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rwt.application.ApplicationRunner;
+import org.eclipse.rwt.application.Application;
+import org.eclipse.rwt.application.Application.OperationMode;
 import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.application.ApplicationConfiguration.OperationMode;
-import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 
@@ -38,7 +38,7 @@ public class RWTStartup {
     }
 
     public void contextInitialized( ServletContextEvent event ) {
-      ApplicationConfigurator configurator = new TestApplicationConfigurator( entryPointClass );
+      ApplicationConfiguration configurator = new TestApplicationConfigurator( entryPointClass );
       applicationRunner = new ApplicationRunner( configurator, event.getServletContext() );
       applicationRunner.start();
     }
@@ -48,14 +48,14 @@ public class RWTStartup {
     }
   }
 
-  private static class TestApplicationConfigurator implements ApplicationConfigurator {
+  private static class TestApplicationConfigurator implements ApplicationConfiguration {
     private final Class<? extends IEntryPoint> entryPointClass;
 
     private TestApplicationConfigurator( Class<? extends IEntryPoint> entryPointClass ) {
       this.entryPointClass = entryPointClass;
     }
 
-    public void configure( ApplicationConfiguration configuration ) {
+    public void configure( Application configuration ) {
       configuration.setOperationMode( OperationMode.SESSION_FAILOVER );
       configuration.addEntryPoint( IServletEngine.SERVLET_PATH, entryPointClass, null );
     }

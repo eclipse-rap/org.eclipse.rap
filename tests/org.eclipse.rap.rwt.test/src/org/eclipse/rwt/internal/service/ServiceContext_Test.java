@@ -24,7 +24,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rap.rwt.testfixture.TestSession;
-import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.internal.application.ApplicationContext;
 import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.lifecycle.UICallBack;
@@ -38,10 +38,10 @@ public class ServiceContext_Test extends TestCase {
 
   @Override
   protected void setUp() {
-    ApplicationConfigurator applicationConfigurator = mock( ApplicationConfigurator.class );
+    ApplicationConfiguration applicationConfiguration = mock( ApplicationConfiguration.class );
     ServletContext servletContext = mock( ServletContext.class );
     when( servletContext.getRealPath( anyString() ) ).thenReturn( "" );
-    applicationContext = new ApplicationContext( applicationConfigurator, servletContext );
+    applicationContext = new ApplicationContext( applicationConfiguration, servletContext );
     Fixture.setSkipResourceRegistration( true );
     sessionStore = new SessionStoreImpl( new TestSession() );
   }

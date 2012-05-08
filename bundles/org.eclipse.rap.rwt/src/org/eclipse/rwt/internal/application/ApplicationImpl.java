@@ -18,8 +18,8 @@ import java.util.Map;
 
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.AdapterFactory;
+import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.theme.Theme;
@@ -38,10 +38,10 @@ import org.eclipse.swt.widgets.Widget;
 
 
 @SuppressWarnings("deprecation")
-public class ApplicationConfigurationImpl implements ApplicationConfiguration, Adaptable {
+public class ApplicationImpl implements Application, Adaptable {
 
   private final ApplicationContext applicationContext;
-  private final ApplicationConfigurator configurator;
+  private final ApplicationConfiguration configuration;
 
   static class ResourceLoaderImpl implements ResourceLoader {
 
@@ -56,11 +56,11 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration, A
     }
   }
 
-  public ApplicationConfigurationImpl( ApplicationContext applicationContext,
-                                ApplicationConfigurator configurator )
+  public ApplicationImpl( ApplicationContext applicationContext,
+                          ApplicationConfiguration configuration )
   {
     this.applicationContext = applicationContext;
-    this.configurator = configurator;
+    this.configuration = configuration;
   }
 
   public void setOperationMode( OperationMode operationMode ) {
@@ -192,7 +192,7 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration, A
   }
 
   private ClassLoader getClassLoader() {
-    return configurator.getClass().getClassLoader();
+    return configuration.getClass().getClassLoader();
   }
 
   private StyleSheet readStyleSheet( String styleSheetLocation, ResourceLoader loader ) {
@@ -213,8 +213,8 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration, A
     T result = null;
     if( adapter == ApplicationContext.class ) {
       result = ( T )applicationContext;
-    } else if( adapter == ApplicationConfigurator.class ) {
-      result = ( T )configurator;
+    } else if( adapter == ApplicationConfiguration.class ) {
+      result = ( T )configuration;
     }
     return result;
   }

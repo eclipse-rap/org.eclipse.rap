@@ -33,9 +33,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
+import org.eclipse.rwt.application.Application;
+import org.eclipse.rwt.application.Application.OperationMode;
 import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.application.ApplicationConfiguration.OperationMode;
-import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.engine.RWTServletContextListener;
 import org.eclipse.rwt.internal.application.ApplicationContextHelper;
 import org.eclipse.rwt.internal.application.ApplicationContextUtil;
@@ -98,9 +98,9 @@ public final class Fixture {
   private static ServletContext servletContext;
   private static RWTServletContextListener rwtServletContextListener;
 
-  public static class FixtureApplicationConfigurator implements ApplicationConfigurator {
-    public void configure( ApplicationConfiguration configuration ) {
-      configuration.setOperationMode( OperationMode.SWT_COMPATIBILITY );
+  public static class FixtureApplicationConfigurator implements ApplicationConfiguration {
+    public void configure( Application application ) {
+      application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     }
   }
 
@@ -513,7 +513,7 @@ public final class Fixture {
   }
 
   private static void registerConfigurer() {
-    setInitParameter( ApplicationConfigurator.CONFIGURATOR_PARAM,
+    setInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM,
                       FixtureApplicationConfigurator.class.getName() );
   }
 

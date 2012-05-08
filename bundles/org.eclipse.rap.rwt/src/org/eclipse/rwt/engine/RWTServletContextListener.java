@@ -17,8 +17,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.eclipse.rwt.application.ApplicationRunner;
+import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
@@ -26,7 +26,7 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
 /**
  * A ServletContextListener that creates and starts an RWT application on
  * initialization and stops it on shutdown. The application to start is read
- * from the init parameter <code>org.eclipse.rwt.Configurator</code>.
+ * from the init parameter <code>org.eclipse.rap.applicationConfiguration</code>.
  *
  * @since 1.5
  * @noextend This class is not intended to be subclassed by clients.
@@ -43,8 +43,8 @@ public class RWTServletContextListener implements ServletContextListener {
 
   public void contextInitialized( ServletContextEvent event ) {
     ServletContext servletContext = event.getServletContext();
-    ApplicationConfigurator configurator = readConfigurator( servletContext );
-    applicationRunner = new ApplicationRunner( configurator, servletContext );
+    ApplicationConfiguration configuration = readConfiguration( servletContext );
+    applicationRunner = new ApplicationRunner( configuration, servletContext );
     applicationRunner.start();
   }
 
@@ -53,8 +53,8 @@ public class RWTServletContextListener implements ServletContextListener {
     applicationRunner = null;
   }
 
-  private ApplicationConfigurator readConfigurator( ServletContext servletContext ) {
-    ApplicationConfigurator result;
+  private ApplicationConfiguration readConfiguration( ServletContext servletContext ) {
+    ApplicationConfiguration result;
     if( hasConfiguratorParam( servletContext ) ) {
       result = readApplicationConfigurator( servletContext );
     } else {
@@ -64,20 +64,20 @@ public class RWTServletContextListener implements ServletContextListener {
   }
 
   private boolean hasConfiguratorParam( ServletContext servletContext ) {
-    return null != servletContext.getInitParameter( ApplicationConfigurator.CONFIGURATOR_PARAM );
+    return null != servletContext.getInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM );
   }
 
-  private ApplicationConfigurator readApplicationConfigurator( ServletContext servletContext ) {
-    String name = servletContext.getInitParameter( ApplicationConfigurator.CONFIGURATOR_PARAM );
+  private ApplicationConfiguration readApplicationConfigurator( ServletContext servletContext ) {
+    String name = servletContext.getInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM );
     return newConfigurator( name );
   }
 
-  private ApplicationConfigurator newConfigurator( String className ) {
+  private ApplicationConfiguration newConfigurator( String className ) {
     ClassLoader loader = getClass().getClassLoader();
-    return ( ApplicationConfigurator )ClassUtil.newInstance( loader, className );
+    return ( ApplicationConfiguration )ClassUtil.newInstance( loader, className );
   }
 
-  private ApplicationConfigurator readEntryPointRunnerConfigurator( ServletContext context ) {
+  private ApplicationConfiguration readEntryPointRunnerConfigurator( ServletContext context ) {
     try {
       return doReadEntryPointRunnerConfigurator( context );
     } catch( ClassNotFoundException cnfe ) {
@@ -86,7 +86,7 @@ public class RWTServletContextListener implements ServletContextListener {
   }
 
   @SuppressWarnings("unchecked")
-  private ApplicationConfigurator doReadEntryPointRunnerConfigurator( ServletContext context )
+  private ApplicationConfiguration doReadEntryPointRunnerConfigurator( ServletContext context )
     throws ClassNotFoundException
   {
     String className = context.getInitParameter( ENTRY_POINTS_PARAM );
@@ -95,7 +95,7 @@ public class RWTServletContextListener implements ServletContextListener {
     return new EntryPointRunnerConfigurator( ( Class<? extends IEntryPoint> )entryPointClass );
   }
 
-  private static class EntryPointRunnerConfigurator implements ApplicationConfigurator {
+  private static class EntryPointRunnerConfigurator implements ApplicationConfiguration {
 
     private final Class<? extends IEntryPoint> entryPointClass;
 
@@ -103,8 +103,8 @@ public class RWTServletContextListener implements ServletContextListener {
       this.entryPointClass = entryPointClass;
     }
 
-    public void configure( ApplicationConfiguration configuration ) {
-      configuration.addEntryPoint( "/rap", entryPointClass, null );
+    public void configure( Application application ) {
+      application.addEntryPoint( "/rap", entryPointClass, null );
     }
   }
 

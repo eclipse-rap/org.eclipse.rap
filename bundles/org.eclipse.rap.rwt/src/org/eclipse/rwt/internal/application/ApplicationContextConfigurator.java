@@ -13,7 +13,7 @@ package org.eclipse.rwt.internal.application;
 
 import javax.servlet.ServletContext;
 
-import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.engine.RWTConfigurationImpl;
 import org.eclipse.rwt.internal.service.ApplicationStoreImpl;
@@ -26,13 +26,13 @@ import org.eclipse.rwt.service.RWTFileSettingStoreFactory;
 
 class ApplicationContextConfigurator {
 
-  private final ApplicationConfigurator configurator;
+  private final ApplicationConfiguration configuration;
   private final ServletContext servletContext;
 
-  ApplicationContextConfigurator( ApplicationConfigurator configurator,
+  ApplicationContextConfigurator( ApplicationConfiguration configuration,
                                   ServletContext servletContext )
   {
-    this.configurator = configurator;
+    this.configuration = configuration;
     this.servletContext = servletContext;
   }
 
@@ -47,7 +47,7 @@ class ApplicationContextConfigurator {
   }
 
   private void configureCustomSettings( ApplicationContext applicationContext ) {
-    configurator.configure( createContext( applicationContext ) );
+    configuration.configure( createContext( applicationContext ) );
   }
 
   private void configureInternalSettings( ApplicationContext applicationContext ) {
@@ -61,7 +61,7 @@ class ApplicationContextConfigurator {
     RWTConfiguration configurationInstance = applicationContext.getConfiguration();
     RWTConfigurationImpl configuration = ( RWTConfigurationImpl )configurationInstance;
     String location
-      = ( String )servletContext.getAttribute( ApplicationConfigurator.RESOURCE_ROOT_LOCATION );
+      = ( String )servletContext.getAttribute( ApplicationConfiguration.RESOURCE_ROOT_LOCATION );
     if( location != null ) {
       configuration.configure( location );
     } else {
@@ -107,7 +107,7 @@ class ApplicationContextConfigurator {
     }
   }
 
-  private ApplicationConfigurationImpl createContext( ApplicationContext applicationContext ) {
-    return new ApplicationConfigurationImpl( applicationContext, configurator );
+  private ApplicationImpl createContext( ApplicationContext applicationContext ) {
+    return new ApplicationImpl( applicationContext, configuration );
   }
 }

@@ -16,7 +16,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osgi.framework.*;
@@ -26,18 +26,18 @@ public class ApplicationConfiguratorTracker_Test extends TestCase {
 
   private BundleContext bundleContext;
   private ApplicationLauncherImpl applicationLauncher;
-  private ServiceReference< ApplicationConfigurator> configuratorReference;
-  private ApplicationConfigurator configurator;
+  private ServiceReference< ApplicationConfiguration> configurationReference;
+  private ApplicationConfiguration configurator;
   private ApplicationConfiguratorTracker tracker;
 
   public void testAddingService() {
-    tracker.addingService( configuratorReference );
+    tracker.addingService( configurationReference );
     
-    verify( applicationLauncher ).addConfigurator( configuratorReference );
+    verify( applicationLauncher ).addConfigurator( configurationReference );
   }
   
   public void testRemovedService() {
-    tracker.removedService( configuratorReference, configurator );
+    tracker.removedService( configurationReference, configurator );
     
     verify( applicationLauncher ).removeConfigurator( configurator );
   }
@@ -45,7 +45,7 @@ public class ApplicationConfiguratorTracker_Test extends TestCase {
   public void testOpen() {
     tracker.open();
     
-    verify( applicationLauncher ).addConfigurator( configuratorReference );
+    verify( applicationLauncher ).addConfigurator( configurationReference );
   }
   
   @SuppressWarnings( "unchecked" )
@@ -53,8 +53,8 @@ public class ApplicationConfiguratorTracker_Test extends TestCase {
     mockBundleContext();
     applicationLauncher = mock( ApplicationLauncherImpl.class );
     tracker = new ApplicationConfiguratorTracker( bundleContext, applicationLauncher );
-    configuratorReference = mock( ServiceReference.class );
-    configurator = mock( ApplicationConfigurator.class );
+    configurationReference = mock( ServiceReference.class );
+    configurator = mock( ApplicationConfiguration.class );
   }
 
   private void mockBundleContext() throws InvalidSyntaxException {
@@ -74,6 +74,6 @@ public class ApplicationConfiguratorTracker_Test extends TestCase {
 
   private void triggerServiceRegistration( InvocationOnMock invocation ) {
     ServiceListener listener = ( ServiceListener )invocation.getArguments()[ 0 ];
-    listener.serviceChanged( new ServiceEvent( ServiceEvent.REGISTERED, configuratorReference ) );
+    listener.serviceChanged( new ServiceEvent( ServiceEvent.REGISTERED, configurationReference ) );
   }
 }

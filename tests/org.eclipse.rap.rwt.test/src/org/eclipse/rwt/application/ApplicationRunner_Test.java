@@ -33,13 +33,13 @@ import org.eclipse.rwt.internal.lifecycle.TestEntryPoint;
 import org.mockito.ArgumentCaptor;
 
 
-public class ApplicationInstance_Test extends TestCase {
+public class ApplicationRunner_Test extends TestCase {
 
   private static final String SERVLET_PATH = "/foo";
   private static final String SERVLET_NAME = "bar";
 
   private ServletContext servletContext;
-  private ApplicationConfigurator configurator;
+  private ApplicationConfiguration configurator;
   private ApplicationRunner applicationRunner;
 
   @Override
@@ -47,7 +47,7 @@ public class ApplicationInstance_Test extends TestCase {
     servletContext = mock( ServletContext.class );
     when( servletContext.getRealPath( "/" ) )
       .thenReturn( Fixture.WEB_CONTEXT_RWT_RESOURCES_DIR.getPath() );
-    configurator = mock( ApplicationConfigurator.class );
+    configurator = mock( ApplicationConfiguration.class );
     applicationRunner = new ApplicationRunner( configurator, servletContext );
   }
 
@@ -113,7 +113,7 @@ public class ApplicationInstance_Test extends TestCase {
 
   public void testParamServletContextMustNotBeNull() {
     try {
-      new ApplicationRunner( mock( ApplicationConfigurator.class ), null );
+      new ApplicationRunner( mock( ApplicationConfiguration.class ), null );
       fail();
     } catch( NullPointerException expected ) {
     }
@@ -132,7 +132,7 @@ public class ApplicationInstance_Test extends TestCase {
   }
 
   private void checkContexthasBeenConfigured() {
-    verify( configurator ).configure( any( ApplicationConfiguration.class ) );
+    verify( configurator ).configure( any( Application.class ) );
   }
 
   private void checkApplicationContextHasBeenDeregistered() {
@@ -155,8 +155,8 @@ public class ApplicationInstance_Test extends TestCase {
   }
 
   private void startWithEntryPointConfiguration() {
-    configurator = new ApplicationConfigurator() {
-      public void configure( ApplicationConfiguration configuration ) {
+    configurator = new ApplicationConfiguration() {
+      public void configure( Application configuration ) {
         configuration.addEntryPoint( SERVLET_PATH, TestEntryPoint.class, null );
       }
     };
@@ -166,7 +166,7 @@ public class ApplicationInstance_Test extends TestCase {
 
   private void createConfiguratorWithProblem() {
     doThrow( new IllegalStateException() )
-      .when( configurator ).configure( any( ApplicationConfiguration.class ) );
+      .when( configurator ).configure( any( Application.class ) );
   }
 
   private void startWithProblem() {

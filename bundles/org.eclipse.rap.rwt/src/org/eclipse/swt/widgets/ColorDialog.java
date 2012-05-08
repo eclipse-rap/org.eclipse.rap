@@ -189,7 +189,7 @@ public class ColorDialog extends Dialog {
    *              </ul>
    * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
    *
-   * @see org.eclipse.rwt.application.ApplicationConfiguration.OperationMode
+   * @see org.eclipse.rwt.application.Application.OperationMode
    */
   public RGB open() {
     checkOperationMode();

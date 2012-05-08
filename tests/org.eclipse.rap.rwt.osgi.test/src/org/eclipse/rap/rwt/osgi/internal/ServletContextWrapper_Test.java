@@ -19,7 +19,7 @@ import javax.servlet.ServletContext;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
-import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 
 
 public class ServletContextWrapper_Test extends TestCase {
@@ -29,7 +29,7 @@ public class ServletContextWrapper_Test extends TestCase {
   private ServletContext context;
 
   public void getContextDirectory() {
-    Object found = wrapper.getAttribute( ApplicationConfigurator.RESOURCE_ROOT_LOCATION );
+    Object found = wrapper.getAttribute( ApplicationConfiguration.RESOURCE_ROOT_LOCATION );
     
     assertSame( CONTEXT_DIRECTORY, found );
   }

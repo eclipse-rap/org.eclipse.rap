@@ -19,7 +19,7 @@ import javax.servlet.*;
 import javax.servlet.ServletRegistration.Dynamic;
 import javax.servlet.descriptor.JspConfigDescriptor;
 
-import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 
 
 class ServletContextWrapper implements ServletContext {
@@ -29,7 +29,7 @@ class ServletContextWrapper implements ServletContext {
   ServletContextWrapper( ServletContext servletContext, String contextDirectory ) {
     this.servletContext = servletContext;
     this.attributes = new HashMap<String, Object>();
-    this.attributes.put( ApplicationConfigurator.RESOURCE_ROOT_LOCATION, contextDirectory );
+    this.attributes.put( ApplicationConfiguration.RESOURCE_ROOT_LOCATION, contextDirectory );
     
   }
 

@@ -10,24 +10,24 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.jstest.internal;
 
+import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rwt.service.IServiceHandler;
 
 
-public class RapTestApplicationConfigurator implements ApplicationConfigurator {
+public class RapTestApplicationConfigurator implements ApplicationConfiguration {
 
-  public void configure( ApplicationConfiguration configuration ) {
+  public void configure( Application application ) {
     IServiceHandler serviceHandler = new ClientResourcesServiceHandler();
-    configuration.addServiceHandler( ClientResourcesServiceHandler.ID, serviceHandler );
+    application.addServiceHandler( ClientResourcesServiceHandler.ID, serviceHandler );
     IEntryPointFactory factory = new IEntryPointFactory() {
       public IEntryPoint create() {
         return null;
       }
     };
-    configuration.addEntryPoint( "/test", factory, null );
+    application.addEntryPoint( "/test", factory, null );
   }
 
 }

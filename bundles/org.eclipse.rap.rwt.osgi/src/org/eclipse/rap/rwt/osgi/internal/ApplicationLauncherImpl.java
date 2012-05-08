@@ -15,7 +15,7 @@ import java.io.File;
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
 import org.eclipse.rap.rwt.osgi.ApplicationLauncher;
 import org.eclipse.rap.rwt.osgi.internal.ServiceContainer.ServiceHolder;
-import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
@@ -26,14 +26,14 @@ import org.osgi.service.log.LogService;
 public class ApplicationLauncherImpl implements ApplicationLauncher {
   
   private final Object lock;
-  private final ServiceContainer<ApplicationConfigurator> configurators;
+  private final ServiceContainer<ApplicationConfiguration> configurators;
   private final ServiceContainer<HttpService> httpServices;
   private final ApplicationReferencesContainer applicationReferences;
   private BundleContext bundleContext;
 
   public ApplicationLauncherImpl( BundleContext bundleContext ) {
     this.lock = new Object();
-    this.configurators = new ServiceContainer<ApplicationConfigurator>( bundleContext );
+    this.configurators = new ServiceContainer<ApplicationConfiguration>( bundleContext );
     this.httpServices = new ServiceContainer<HttpService>( bundleContext );
     this.applicationReferences = new ApplicationReferencesContainer();
     this.bundleContext = bundleContext;
@@ -55,8 +55,8 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     }
   }
 
-  public ApplicationConfigurator addConfigurator( ServiceReference<ApplicationConfigurator> ref ) {
-    ServiceHolder<ApplicationConfigurator> configuratorHolder;
+  public ApplicationConfiguration addConfigurator( ServiceReference<ApplicationConfiguration> ref ) {
+    ServiceHolder<ApplicationConfiguration> configuratorHolder;
     synchronized( lock ) {
       configuratorHolder = configurators.add( ref );
       launchWithConfigurator( configuratorHolder );
@@ -64,14 +64,14 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     return configuratorHolder.getService();
   }
 
-  public void removeConfigurator( ApplicationConfigurator configurator ) {
+  public void removeConfigurator( ApplicationConfiguration configurator ) {
     synchronized( lock ) {
       configurators.remove( configurator );
       stopApplicationReferences( configurator );
     }
   }
 
-  public ApplicationReference launch( ApplicationConfigurator configurator,
+  public ApplicationReference launch( ApplicationConfiguration configurator,
                                       HttpService httpService,
                                       HttpContext httpContext,
                                       String contextName,
@@ -86,7 +86,7 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     }
   }
 
-  private ApplicationReferenceImpl doLaunch( ApplicationConfigurator configurator,
+  private ApplicationReferenceImpl doLaunch( ApplicationConfiguration configurator,
                                              HttpService httpService,
                                              HttpContext httpContext,
                                              String contextName,
@@ -131,15 +131,15 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
   }
 
   private void launchAtHttpService( ServiceHolder<HttpService> httpServiceHolder ) {
-    ServiceHolder<ApplicationConfigurator>[] services = configurators.getServices();
-    for( ServiceHolder<ApplicationConfigurator> configuratorHolder : services ) {
+    ServiceHolder<ApplicationConfiguration>[] services = configurators.getServices();
+    for( ServiceHolder<ApplicationConfiguration> configuratorHolder : services ) {
       if( matches( httpServiceHolder, configuratorHolder ) ) {
         launch( configuratorHolder, httpServiceHolder );
       }
     }
   }
 
-  private void launchWithConfigurator( ServiceHolder<ApplicationConfigurator> configuratorHolder ) {
+  private void launchWithConfigurator( ServiceHolder<ApplicationConfiguration> configuratorHolder ) {
     ServiceHolder<HttpService>[] services = httpServices.getServices();
     for( ServiceHolder<HttpService> httpServiceHolder : services ) {
       if( matches( httpServiceHolder, configuratorHolder ) ) {
@@ -148,10 +148,10 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     }
   }
 
-  private void launch( ServiceHolder<ApplicationConfigurator> configuratorHolder,
+  private void launch( ServiceHolder<ApplicationConfiguration> configuratorHolder,
                       ServiceHolder<HttpService> httpServiceHolder )
   {
-    ApplicationConfigurator configurator = configuratorHolder.getService();
+    ApplicationConfiguration configurator = configuratorHolder.getService();
     HttpService httpService = httpServiceHolder.getService();
     String contextName = getContextName( configuratorHolder );
     String contextLocation = getLocation( contextName, configurator, httpService );
@@ -162,8 +162,8 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     }
   }
 
-  private String getContextName( ServiceHolder<ApplicationConfigurator> configuratorHolder ) {
-    ServiceReference<ApplicationConfigurator> reference = configuratorHolder.getReference();
+  private String getContextName( ServiceHolder<ApplicationConfiguration> configuratorHolder ) {
+    ServiceReference<ApplicationConfiguration> reference = configuratorHolder.getReference();
     return ( String )reference.getProperty( PROPERTY_CONTEXT_NAME );
   }
 
@@ -192,10 +192,10 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
   }
 
   private boolean matches( ServiceHolder<HttpService> httpServiceHolder,
-                           ServiceHolder<ApplicationConfigurator> configuratorHolder )
+                           ServiceHolder<ApplicationConfiguration> configuratorHolder )
   {
     ServiceReference<HttpService> httpServiceRef = httpServiceHolder.getReference();
-    ServiceReference<ApplicationConfigurator> configuratorRef = configuratorHolder.getReference();
+    ServiceReference<ApplicationConfiguration> configuratorRef = configuratorHolder.getReference();
     return new Matcher( httpServiceRef, configuratorRef ).matches();
   }
 
@@ -213,7 +213,7 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
   }
 
   String getLocation( String contextName,
-                      ApplicationConfigurator configurator,
+                      ApplicationConfiguration configurator,
                       HttpService service )
   {
     String pathToContext = getContextFileName( contextName, configurator, service );
@@ -222,7 +222,7 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
   }
 
   static String getContextFileName( String name,
-                                    ApplicationConfigurator configurator,
+                                    ApplicationConfiguration configurator,
                                     HttpService service )
   {
     StringBuilder result = new StringBuilder();

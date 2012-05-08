@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.http.registry.HttpContextExtensionService;
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
 import org.eclipse.rap.rwt.osgi.ApplicationLauncher;
-import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.*;
 import org.osgi.service.http.HttpContext;
@@ -69,10 +69,10 @@ public class HttpServiceTracker extends ServiceTracker<HttpService, HttpService>
                                                  HttpService service,
                                                  HttpContext context )
   {
-    ApplicationConfigurator configurator
+    ApplicationConfiguration configuration
       = new WorkbenchApplicationConfigurator( httpServiceReference );
     String contextDirectory = findContextPath().toString();
-    return applicationLauncher.launch( configurator, service, context, null, contextDirectory );
+    return applicationLauncher.launch( configuration, service, context, null, contextDirectory );
   }
 
   private static IPath findContextPath() {

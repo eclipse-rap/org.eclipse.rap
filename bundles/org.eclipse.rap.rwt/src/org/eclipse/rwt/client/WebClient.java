@@ -13,7 +13,7 @@ package org.eclipse.rwt.client;
 import java.util.Map;
 
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.application.ApplicationConfiguration;
+import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rwt.resources.IResource;
 
@@ -33,8 +33,8 @@ public class WebClient {
    * theme will be used.
    *
    * @see RWT#DEFAULT_THEME_ID
-   * @see ApplicationConfiguration#addEntryPoint(String, Class, Map)
-   * @see ApplicationConfiguration#addEntryPoint(String, IEntryPointFactory,
+   * @see Application#addEntryPoint(String, Class, Map)
+   * @see Application#addEntryPoint(String, IEntryPointFactory,
    *      Map)
    */
   public static final String THEME_ID = PREFIX + ".themeId";
@@ -52,8 +52,8 @@ public class WebClient {
    * developer to ensure the correctness of the resulting page.
    * </p>
    *
-   * @see ApplicationConfiguration#addEntryPoint(String, Class, Map)
-   * @see ApplicationConfiguration#addEntryPoint(String, IEntryPointFactory,
+   * @see Application#addEntryPoint(String, Class, Map)
+   * @see Application#addEntryPoint(String, IEntryPointFactory,
    *      Map)
    */
   public static final String HEAD_HTML = PREFIX + ".additionalHeaders";
@@ -69,8 +69,8 @@ public class WebClient {
    * developer to ensure the correctness of the resulting page.
    * </p>
    *
-   * @see ApplicationConfiguration#addEntryPoint(String, Class, Map)
-   * @see ApplicationConfiguration#addEntryPoint(String, IEntryPointFactory,
+   * @see Application#addEntryPoint(String, Class, Map)
+   * @see Application#addEntryPoint(String, IEntryPointFactory,
    *      Map)
    */
   public static final String BODY_HTML = PREFIX + ".bodyHtml";
@@ -79,8 +79,8 @@ public class WebClient {
    * Entrypoint property name for the title that will be displayed in the
    * browser window. The value must be the title string without any HTML markup.
    *
-   * @see ApplicationConfiguration#addEntryPoint(String, Class, Map)
-   * @see ApplicationConfiguration#addEntryPoint(String, IEntryPointFactory,
+   * @see Application#addEntryPoint(String, Class, Map)
+   * @see Application#addEntryPoint(String, IEntryPointFactory,
    *      Map)
    */
   public static final String PAGE_TITLE = PREFIX + ".pageTitle";
@@ -94,9 +94,9 @@ public class WebClient {
    * must be registered to be available.
    * </p>
    *
-   * @see ApplicationConfiguration#addResource(IResource)
-   * @see ApplicationConfiguration#addEntryPoint(String, Class, Map)
-   * @see ApplicationConfiguration#addEntryPoint(String, IEntryPointFactory,
+   * @see Application#addResource(IResource)
+   * @see Application#addEntryPoint(String, Class, Map)
+   * @see Application#addEntryPoint(String, IEntryPointFactory,
    *      Map)
    */
   public static final String FAVICON = PREFIX + ".favicon";

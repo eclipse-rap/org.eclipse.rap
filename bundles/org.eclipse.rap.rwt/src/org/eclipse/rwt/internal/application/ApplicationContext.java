@@ -15,7 +15,7 @@ import java.io.File;
 
 import javax.servlet.ServletContext;
 
-import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.engine.RWTConfiguration;
@@ -87,7 +87,7 @@ public class ApplicationContext {
   private final ApplicationContextConfigurator contextConfigurator;
   private boolean activated;
 
-  public ApplicationContext( ApplicationConfigurator configurator, ServletContext servletContext ) {
+  public ApplicationContext( ApplicationConfiguration configurator, ServletContext servletContext ) {
     applicationStore = new ApplicationStoreImpl();
     configuration = new RWTConfigurationImpl();
     resourceManager = new ResourceManagerImpl( configuration );

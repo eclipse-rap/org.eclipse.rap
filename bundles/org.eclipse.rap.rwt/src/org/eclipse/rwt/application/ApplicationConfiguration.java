@@ -7,178 +7,79 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
- *    EclipseSource - ongoing development
+ *    EclipseSource - ongoing developement
  ******************************************************************************/
 package org.eclipse.rwt.application;
 
-import java.util.Map;
-
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.client.WebClient;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.lifecycle.IEntryPointFactory;
-import org.eclipse.rwt.lifecycle.PhaseListener;
-import org.eclipse.rwt.resources.IResource;
-import org.eclipse.rwt.resources.ResourceLoader;
-import org.eclipse.rwt.service.IServiceHandler;
-import org.eclipse.rwt.service.ISettingStoreFactory;
-import org.eclipse.rwt.widgets.DialogUtil;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Widget;
-
 
 /**
- * This interface allows to configure various aspects of an RWT application
- * before it is started.
+ * An <code>ApplicationConfiguration</code> describes an RWT application, including
+ * the entrypoints, URL mappings, themes, etc. that constitute the application.
  * <p>
- * <strong>Note:</strong> This API is <em>provisional</em>. It is likely to
- * change before the final release.
+ * The <code>configure</code> method will be called by the framework in order
+ * to configure an application instance before it is started. An implementation
+ * must at least register an entrypoint that provides the user interface for the
+ * application. A simple implementation of this interface looks like this:
+ * </p>
+ * <pre>
+ * public class ExampleConfiguration implements ApplicationConfiguration {
+ *
+ *   public void configure( Application application ) {
+ *     configuration.addEntryPoint( &quot;/example&quot;, ExampleEntryPoint.class, null );
+ *   }
+ * }
+ * </pre>
+ * <p>
+ * The <code>configure</code> method is called only once during the lifetime of
+ * an application. The configuration of the application takes place before the
+ * system is activated. Therefore, manipulation of the configuration instance at
+ * a later point in time is unsupported.
+ * </p>
+ * <p>
+ * There can be more than one application instance at runtime, running on
+ * different network ports or in different contexts. In most cases, developers
+ * do not have to create an application instance explicitly. The
+ * <code>ApplicationConfiguration</code> can be registered with the
+ * the surrounding container instead. For example, in a servlet container, the
+ * application can be registered as <code>context-param</code> in the
+ * <code>web.xml</code> (see <code>CONFIGURATOR_PARAM</code>), in
+ * <code>OSGi</code> it can be registered as a service, and when using the
+ * workbench with RAP, the application is registered with an extension-point.
+ * </p>
+ * <p>
+ * Apart from this, an <code>{@link ApplicationRunner ApplicationRunner}</code>
+ * can be used to run an application with this configuration.
  * </p>
  *
+ * @see Application
  * @see ApplicationRunner
- * @see ApplicationConfigurator
- * @noimplement This interface is not intended to be implemented by clients.
  * @since 1.5
  */
 public interface ApplicationConfiguration {
 
   /**
-   * Instances of this class represent a mode of operation for a RAP
-   * application. The major difference between the operation modes is whether a
-   * separate UI thread is started for every session (SWT_COMPATIBILITY) or not
-   * (JEE_COMPATIBILITY).
+   * This constant contains the parameter name to register an
+   * ApplicationConfiguration in a servlet container environment when running RAP
+   * without OSGi. To do so, the fully class qualified name of the Application
+   * implementation has to be registered as a <code>context-param</code> in the
+   * <code>web.xml</code>. Example:
+   * <pre>
+   * &lt;context-param&gt;
+   *   &lt;param-name&gt;org.eclipse.rap.applicationConfiguration&lt;/param-name&gt;
+   *   &lt;param-value&gt;com.example.ExampleConfigurator&lt;/param-value&gt;
+   * &lt;/context-param&gt
+   * </pre>
    */
-  public static enum OperationMode {
-    /**
-     * In this mode, the request thread will be marked as UI thread in SWT.
-     * Information that is attached to the request thread, such as security or
-     * transaction contexts, can be directly accessed. This mode is compatible
-     * with the JEE specification.
-     * <p>
-     * As its only limitation, it does not support the SWT main loop (more
-     * specifically, the method {@link Display#sleep()} is not implemented). As
-     * a consequence, blocking dialogs aren't possible with this operation mode.
-     * Instead of blocking dialogs, the class {@link DialogUtil} allows to
-     * attach a callback to react on the closing of a dialog.
-     * </p>
-     * <p>
-     * Unless there is a need for blocking dialogs (e.g. when using the Eclipse
-     * workbench), this mode is recommended as it is more lightweight than
-     * <code>SWT_COMPATIBILITY</code> .
-     * </p>
-     */
-    JEE_COMPATIBILITY,
-    /**
-     * In this mode, a separate UI thread will be started for each user session.
-     * All UI requests are processed in this thread while the request thread is
-     * put on hold. After processing all events, the method
-     * {@link Display#sleep()} lets the request thread continue and puts the UI
-     * thread to sleep. This approach fully supports the SWT main loop and thus
-     * also allows for blocking dialogs.
-     * <p>
-     * Information that is attached to the request thread, such as security or
-     * transaction contexts, can only be accessed using the method
-     * {@link RWT#requestThreadExec(Runnable)}.
-     * </p>
-     */
-    SWT_COMPATIBILITY,
-    /**
-     * This mode behaves just like <code>JEE_COMAPTIBILTIY</code> but in
-     * addition it registers the required servlet filter to support clustering.
-     * This mode requires the servlet API 3.0.
-     */
-    SESSION_FAILOVER
-  }
+  public static final String CONFIGURATION_PARAM = "org.eclipse.rap.applicationConfiguration";
+  // TODO [fappel]: think about where to locate this documentation, since this is servlet
+  //                specific
+  public static final String RESOURCE_ROOT_LOCATION = "resource_root_location";
 
   /**
-   * The operation mode in which the application will be running. The default is
-   * <code>JEE_COMPATIBILITY</code>.
+   * Implementations must use this method to configure an application. The
+   * method is called by the framework once before the application is started.
    *
-   * @param operationMode the operation mode to be used, must not be
-   *          <code>null</code>
-   * @see OperationMode
+   * @param application the application to configure
    */
-  void setOperationMode( OperationMode operationMode );
-
-  /**
-   * Registers an entry point at the given servlet path. A servlet path must
-   * begin with slash ('/') and must not end with a slash ('/'). The root path
-   * (&quot;/&quot;) is currently not supported, as well as nested paths (e.g.
-   * &quot;/path/subpath&quot;). Properties can be specified to control
-   * client-specific aspects of the entrypoint such as theme, icons, etc. The
-   * acceptable keys and values depend on the client implementation. The class
-   * {@link WebClient} provides constants for the default RAP client.
-   *
-   * @param path a valid path to register the entry point at
-   * @param entryPointType the entry point class to be registered, must not be
-   *          <code>null</code>
-   * @param properties properties that control client-specific aspects of the
-   *          application, such as theme, icons, etc., may be <code>null</code>
-   */
-  void addEntryPoint( String path,
-                      Class<? extends IEntryPoint> entryPointType,
-                      Map<String, String> properties );
-
-  /**
-   * Registers an entry point factory at the given servlet path. A servlet path
-   * must begin with slash ('/') and must not end with slash ('/'). The root
-   * path (&quot;/&quot;) is currently not supported, as well as nested paths
-   * (e.g. &quot;/path/subpath&quot;). Properties can be specified to control
-   * client-specific aspects of the entrypoint such as theme, icons, etc. The
-   * acceptable keys and values depend on the client implementation. The class
-   * {@link WebClient} provides constants for the default RAP client.
-   *
-   * @param path a valid path to register the entry point at
-   * @param entryPointFactory the entry point factory to be registered, must not
-   *          be <code>null</code>
-   * @param properties properties that control client-specific aspects of the
-   *          application, such as theme, icons, etc., may be <code>null</code>
-   */
-  void addEntryPoint( String path,
-                      IEntryPointFactory entryPointFactory,
-                      Map<String, String> properties );
-
-  /**
-   * Adds a stylesheet that contains a theme or a theme contribution to the
-   * application. If a theme with the given theme id exists already, then the
-   * stylesheet is handled as a contribution to this theme, otherwise it is
-   * registered as a new theme with the given id. The stylesheet file will be
-   * loaded with the classloader of the configurator.
-   *
-   * @param themeId the id of the theme to register or to contribute to
-   * @param styleSheetLocation the location of the CSS file in the format
-   *          accepted by {@link ClassLoader#getResource(String)}
-   * @see RWT#DEFAULT_THEME_ID
-   */
-  void addStyleSheet( String themeId, String styleSheetLocation );
-
-  /**
-   * Adds a stylesheet that contains a theme or a theme contribution to the
-   * application. If a theme with the given theme id exists already, then the
-   * stylesheet is handled as a contribution to this theme, otherwise it is
-   * registered as a new theme with the given id. The stylesheet file will be
-   * loaded using the given resource loader.
-   *
-   * @param themeId the id of the theme to register or to contribute to
-   * @param styleSheetLocation the location of the CSS file in the format
-   *          accepted by the given resource loader
-   * @param resourceLoader the resource loader that is able to load the style
-   *          sheet from the given location
-   * @see RWT#DEFAULT_THEME_ID
-   */
-  void addStyleSheet( String themeId, String styleSheetLocation, ResourceLoader resourceLoader );
-
-  void addPhaseListener( PhaseListener phaseListener );
-
-  void setAttribute( String name, Object value );
-
-  void setSettingStoreFactory( ISettingStoreFactory settingStoreFactory );
-
-  void addThemableWidget( Class<? extends Widget> widget );
-
-  void addServiceHandler( String serviceHandlerId, IServiceHandler serviceHandler );
-
-  /////////////////////////////////////////////
-  // TODO [fappel]: replace with proper mechanism (Javascript)
-  void addResource( IResource resource );
+  void configure( Application application );
 }

@@ -10,14 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
-import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 
 class ApplicationConfiguratorTracker
-  extends ServiceTracker<ApplicationConfigurator, ApplicationConfigurator>
+  extends ServiceTracker<ApplicationConfiguration, ApplicationConfiguration>
 {
 
   private final ApplicationLauncherImpl applicationLauncher;
@@ -25,18 +25,18 @@ class ApplicationConfiguratorTracker
   ApplicationConfiguratorTracker( BundleContext context,
                                   ApplicationLauncherImpl applicationLauncher )
   {
-    super( context, ApplicationConfigurator.class.getName(), null );
+    super( context, ApplicationConfiguration.class.getName(), null );
     this.applicationLauncher = applicationLauncher;
   }
 
   @Override
-  public ApplicationConfigurator addingService( ServiceReference<ApplicationConfigurator> ref ) {
+  public ApplicationConfiguration addingService( ServiceReference<ApplicationConfiguration> ref ) {
     return applicationLauncher.addConfigurator( ref );
   }
 
   @Override
-  public void removedService( ServiceReference<ApplicationConfigurator> reference,
-                              ApplicationConfigurator service )
+  public void removedService( ServiceReference<ApplicationConfiguration> reference,
+                              ApplicationConfiguration service )
   {
     applicationLauncher.removeConfigurator( service );
   }

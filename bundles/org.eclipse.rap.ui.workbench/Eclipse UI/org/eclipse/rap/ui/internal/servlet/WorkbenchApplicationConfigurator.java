@@ -36,10 +36,10 @@ import org.eclipse.rap.ui.internal.application.EntryPointApplicationWrapper;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rwt.AdapterFactory;
+import org.eclipse.rwt.application.Application;
+import org.eclipse.rwt.application.Application.OperationMode;
 import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.application.ApplicationConfiguration.OperationMode;
-import org.eclipse.rwt.application.ApplicationConfigurator;
-import org.eclipse.rwt.internal.application.ApplicationConfigurationImpl;
+import org.eclipse.rwt.internal.application.ApplicationImpl;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.IEntryPointFactory;
@@ -57,7 +57,7 @@ import org.osgi.service.http.HttpService;
 
 
 @SuppressWarnings( "deprecation" )
-public final class WorkbenchApplicationConfigurator implements ApplicationConfigurator {
+public final class WorkbenchApplicationConfigurator implements ApplicationConfiguration {
 
   private static final String ID_ADAPTER_FACTORY = "org.eclipse.rap.ui.adapterfactory";
   private static final String ID_ENTRY_POINT = "org.eclipse.rap.ui.entrypoint";
@@ -84,22 +84,22 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     this.httpServiceReference = httpServiceReference;
   }
 
-  public void configure( ApplicationConfiguration configuration ) {
-	configuration.setOperationMode( OperationMode.SWT_COMPATIBILITY );
-    registerPhaseListener( configuration );
-    registerSettingStoreFactory( configuration );
-    registerWorkbenchEntryPoints( ( ApplicationConfigurationImpl )configuration );
-    registerApplicationEntryPoints( ( ApplicationConfigurationImpl )configuration );
-    registerThemeableWidgets( configuration );
-    registerThemes( configuration );
-    registerThemeContributions( configuration );
-    registerAdapterFactories( ( ApplicationConfigurationImpl )configuration );
-    registerResources( configuration );
-    registerServiceHandlers( configuration );
-    registerBrandings( configuration );
+  public void configure( Application application ) {
+	application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
+    registerPhaseListener( application );
+    registerSettingStoreFactory( application );
+    registerWorkbenchEntryPoints( ( ApplicationImpl )application );
+    registerApplicationEntryPoints( ( ApplicationImpl )application );
+    registerThemeableWidgets( application );
+    registerThemes( application );
+    registerThemeContributions( application );
+    registerAdapterFactories( ( ApplicationImpl )application );
+    registerResources( application );
+    registerServiceHandlers( application );
+    registerBrandings( application );
   }
 
-  private void registerPhaseListener( ApplicationConfiguration configuration ) {
+  private void registerPhaseListener( Application application ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_PHASE_LISTENER );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -107,14 +107,14 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
       try {
         Object instance = elements[ i ].createExecutableExtension( "class" );
         PhaseListener listener = ( PhaseListener )instance;
-        configuration.addPhaseListener( listener );
+        application.addPhaseListener( listener );
       } catch( final CoreException ce ) {
         WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );
       }
     }
   }
 
-  private void registerSettingStoreFactory( ApplicationConfiguration configuration ) {
+  private void registerSettingStoreFactory( Application application ) {
     // determine which factory to use via an environment setting / config.ini
     String settingStoreFactoryParam = "org.eclipse.rwt.settingStoreFactory";
     String factoryId = getOSGiProperty( settingStoreFactoryParam );
@@ -125,7 +125,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     if( result == null ) {
       result = new WorkbenchFileSettingStoreFactory(); // default
     }
-    configuration.setSettingStoreFactory( result );
+    application.setSettingStoreFactory( result );
   }
 
   private ISettingStoreFactory loadSettingStoreFactory( String factoryId ) {
@@ -162,7 +162,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   }
 
   @SuppressWarnings( "unchecked" )
-  private void registerAdapterFactories( ApplicationConfigurationImpl configuration ) {
+  private void registerAdapterFactories( ApplicationImpl application ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_ADAPTER_FACTORY );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -176,7 +176,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
           = (Class<? extends AdapterFactory>)bundle.loadClass( factoryName );
         Class<?> adaptableClass = bundle.loadClass( adaptableName );
         AdapterFactory adapterFactory = ClassUtil.newInstance( factoryClass ) ;
-        configuration.addAdapterFactory( adaptableClass, adapterFactory );
+        application.addAdapterFactory( adaptableClass, adapterFactory );
       } catch( Throwable thr ) {
         String text = "Could not register adapter factory ''{0}''  for the adapter type ''{1}''.";
         Object[] param = new Object[] { factoryName, adaptableName};
@@ -186,7 +186,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   }
 
   @SuppressWarnings( "unchecked" )
-  private void registerWorkbenchEntryPoints( ApplicationConfigurationImpl configuration ) {
+  private void registerWorkbenchEntryPoints( ApplicationImpl application ) {
     for( IConfigurationElement element : getEntryPointExtensions() ) {
       String contributorName = element.getContributor().getName();
       String className = element.getAttribute( "class" );
@@ -198,11 +198,11 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         Class<? extends IEntryPoint> entryPointClass
           = (Class<? extends IEntryPoint>)bundle.loadClass( className );
         if( parameter != null ) {
-          configuration.addEntryPointByParameter( parameter, entryPointClass );
+          application.addEntryPointByParameter( parameter, entryPointClass );
           EntryPointParameters.register( id, parameter );
         }
         if( path != null ) {
-          configuration.addEntryPoint( path, entryPointClass, null );
+          application.addEntryPoint( path, entryPointClass, null );
         }
       } catch( final Throwable thr ) {
         String text = "Could not register entry point ''{0}'' with id ''{1}''.";
@@ -213,7 +213,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   }
 
   @SuppressWarnings( "unchecked" )
-  private void registerApplicationEntryPoints( ApplicationConfigurationImpl configuration ) {
+  private void registerApplicationEntryPoints( ApplicationImpl application ) {
     for( IExtension extension : getApplicationExtensions() ) {
       IConfigurationElement configElement = extension.getConfigurationElements()[ 0 ];
       String contributorName = configElement.getContributor().getName();
@@ -230,7 +230,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
           Class<? extends IApplication> applicationClass
             = (Class<? extends IApplication>)bundle.loadClass( className );
           IEntryPointFactory factory = createApplicationEntryPointFactory( applicationClass );
-          configuration.addEntryPointByParameter( applicationParameter, factory );
+          application.addEntryPointByParameter( applicationParameter, factory );
           EntryPointParameters.register( applicationId, applicationParameter );
         }
       } catch( ClassNotFoundException exception ) {
@@ -254,7 +254,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   }
 
   @SuppressWarnings( "unchecked" )
-  private void registerThemeableWidgets( ApplicationConfiguration configuration ) {
+  private void registerThemeableWidgets( Application application ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( ID_THEMEABLE_WIDGETS );
     IConfigurationElement[] widgetExts = ep.getConfigurationElements();
@@ -265,7 +265,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         final Bundle bundle = Platform.getBundle( contributorName );
         Class<? extends Widget> widget
           = (Class<? extends Widget>)bundle.loadClass( widgetClass );
-        configuration.addThemableWidget( widget );
+        application.addThemableWidget( widget );
       } catch( final Throwable thr ) {
         String text = "Could not register themeable widget ''{0}''.";
         Object[] param = new Object[] { widgetClass };
@@ -274,7 +274,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     }
   }
 
-  private void registerThemes( ApplicationConfiguration configuration ) {
+  private void registerThemes( Application application ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( ID_THEMES );
     IConfigurationElement[] elements = ep.getConfigurationElements();
@@ -286,7 +286,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         try {
           Bundle bundle = Platform.getBundle( contributorName );
           ResourceLoader resourceLoader = createThemeResourceLoader( bundle );
-          configuration.addStyleSheet( themeId, themeFile, resourceLoader );
+          application.addStyleSheet( themeId, themeFile, resourceLoader );
         } catch( final Exception e ) {
           String text = "Could not register custom theme ''{0}'' from file ''{1}''.";
           Object[] param = new Object[]{ themeId, themeFile };
@@ -296,7 +296,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     }
   }
 
-  private void registerThemeContributions( ApplicationConfiguration configuration ) {
+  private void registerThemeContributions( Application application ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( ID_THEMES );
     IConfigurationElement[] elements = ep.getConfigurationElements();
@@ -308,7 +308,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         try {
           Bundle bundle = Platform.getBundle( contributorName );
           ResourceLoader loader = createThemeResourceLoader( bundle );
-          configuration.addStyleSheet( themeId, themeFile, loader );
+          application.addStyleSheet( themeId, themeFile, loader );
         } catch( final Exception e ) {
           String text = "Could not register contribution for theme ''{0}'' from file ''{1}''.";
           Object[] param = new Object[]{ themeId, themeFile };
@@ -336,13 +336,13 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     return result;
   }
 
-  private static void registerResources( ApplicationConfiguration configuration ) {
+  private static void registerResources( Application application ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_RESOURCES );
     IConfigurationElement[] elements = point.getConfigurationElements();
     DependentResource[] resources = loadResources( elements );
     resources = sortResources( resources );
-    registerResources( resources, configuration );
+    registerResources( resources, application );
   }
 
   private static DependentResource[] loadResources( IConfigurationElement[] elements ) {
@@ -406,17 +406,15 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     return result;
   }
 
-  private static void registerResources( DependentResource[] resources,
-                                         ApplicationConfiguration configuration )
-  {
+  private static void registerResources( DependentResource[] resources, Application application ) {
     for( int i = 0; i < resources.length; i++ ) {
       if( resources[ i ] != null ) {
-        configuration.addResource( resources[ i ].resource );
+        application.addResource( resources[ i ].resource );
       }
     }
   }
 
-  private void registerServiceHandlers( ApplicationConfiguration configuration ) {
+  private void registerServiceHandlers( Application application ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_SERVICE_HANDLER );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -426,7 +424,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         if( id != null ) {
           Object extObject = elements[ i ].createExecutableExtension( "class" );
           IServiceHandler handler = ( IServiceHandler )extObject;
-          configuration.addServiceHandler( id, handler );
+          application.addServiceHandler( id, handler );
         }
       } catch( final CoreException ce ) {
         WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );
@@ -434,9 +432,9 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     }
   }
 
-  private void registerBrandings( ApplicationConfiguration configuration ) {
+  private void registerBrandings( Application application ) {
     try {
-      new BrandingExtension( configuration, httpServiceReference ).read();
+      new BrandingExtension( application, httpServiceReference ).read();
     } catch( final IOException ioe ) {
       throw new RuntimeException( "Unable to read branding extension", ioe );
     }

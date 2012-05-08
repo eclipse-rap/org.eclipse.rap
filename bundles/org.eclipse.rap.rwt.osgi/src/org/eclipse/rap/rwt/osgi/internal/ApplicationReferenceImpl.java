@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServlet;
 
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
 import org.eclipse.rwt.application.ApplicationRunner;
-import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.engine.RWTServlet;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -31,7 +31,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
   static final String SERVLET_CONTEXT_FINDER_ALIAS = "/servlet_context_finder";
   static final String DEFAULT_ALIAS = "/rap";
 
-  private ApplicationConfigurator configurator;
+  private ApplicationConfiguration configuration;
   private HttpService httpService;
   private HttpContext httpContext;
   private String contextLocation;
@@ -42,14 +42,14 @@ class ApplicationReferenceImpl implements ApplicationReference {
   private ServiceRegistration<?> serviceRegistration;
   private volatile boolean alive;
 
-  ApplicationReferenceImpl( ApplicationConfigurator configurator,
+  ApplicationReferenceImpl( ApplicationConfiguration configuration,
                             HttpService httpService,
                             HttpContext httpContext,
                             String contextName,
                             String contextLocation,
                             ApplicationLauncherImpl applicationLauncher )
   {
-    this.configurator = configurator;
+    this.configuration = configuration;
     this.httpService = httpService;
     this.httpContext = createWrappedHttpContext( httpContext );
     this.contextLocation = contextLocation;
@@ -70,7 +70,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
   private void createApplication( HttpServlet contextProviderServlet ) {
     ServletContext servletContext = contextProviderServlet.getServletContext();
     servletContextWrapper = new ServletContextWrapper( servletContext, contextLocation );
-    applicationRunner = new ApplicationRunner( configurator, servletContextWrapper );
+    applicationRunner = new ApplicationRunner( configuration, servletContextWrapper );
   }
 
   private void startRWTApplication() {
@@ -133,7 +133,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
   }
 
   boolean belongsTo( Object service ) {
-    return configurator == service || httpService == service;
+    return configuration == service || httpService == service;
   }
 
   private void unregisterServletContextProviderServlet() {
@@ -199,7 +199,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
     applicationRunner = null;
     httpService = null;
     httpContext = null;
-    configurator = null;
+    configuration = null;
     contextName = null;
     contextLocation = null;
     applicationLauncher = null;

@@ -50,8 +50,8 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   private BundleContext bundleContext;
   private HttpService httpService;
   private ServiceReference<HttpService> httpServiceReference;
-  private ApplicationConfigurator configurator;
-  private ServiceReference<ApplicationConfigurator> configuratorReference;
+  private ApplicationConfiguration configuration;
+  private ServiceReference<ApplicationConfiguration> configuratorReference;
   private ApplicationLauncherImpl applicationLauncher;
   private ServiceRegistration serviceRegistration;
   private LogService log;
@@ -59,7 +59,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   public void testLaunch() {
     String path = Fixture.WEB_CONTEXT_DIR.getPath();
 
-    applicationLauncher.launch( configurator, httpService, null, null, path );
+    applicationLauncher.launch( configuration, httpService, null, null, path );
 
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
@@ -70,7 +70,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   public void testLaunchWithHttpContext() {
     HttpContext httpContext = mock( HttpContext.class );
     String path = Fixture.WEB_CONTEXT_DIR.getPath();
-    applicationLauncher.launch( configurator, httpService, httpContext, null, path );
+    applicationLauncher.launch( configuration, httpService, httpContext, null, path );
 
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
@@ -149,9 +149,9 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   public void testLaunchWithContextName() {
     mockBundleContext( CONTEXT_NAME );
     createApplicationLauncher();
-    String location = applicationLauncher.getLocation( CONTEXT_NAME, configurator, httpService );
+    String location = applicationLauncher.getLocation( CONTEXT_NAME, configuration, httpService );
 
-    applicationLauncher.launch( configurator, httpService, null, CONTEXT_NAME, location );
+    applicationLauncher.launch( configuration, httpService, null, CONTEXT_NAME, location );
 
     checkAliasHasBeenRegistered( "/" + CONTEXT_NAME + ApplicationReferenceImpl.DEFAULT_ALIAS );
   }
@@ -159,9 +159,9 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   public void testStopApplicationWithContextName() {
     mockBundleContext( CONTEXT_NAME );
     createApplicationLauncher();
-    String location = applicationLauncher.getLocation( CONTEXT_NAME, configurator, httpService );
+    String location = applicationLauncher.getLocation( CONTEXT_NAME, configuration, httpService );
     ApplicationReference applicationReference
-      = applicationLauncher.launch( configurator, httpService, null, CONTEXT_NAME, location );
+      = applicationLauncher.launch( configuration, httpService, null, CONTEXT_NAME, location );
 
     applicationReference.stopApplication();
 
@@ -186,9 +186,9 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   public void testAddConfigurator() {
     applicationLauncher.addHttpService( httpServiceReference );
 
-    ApplicationConfigurator added = applicationLauncher.addConfigurator( configuratorReference );
+    ApplicationConfiguration added = applicationLauncher.addConfigurator( configuratorReference );
 
-    assertSame( configurator, added );
+    assertSame( configuration, added );
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
   }
@@ -197,7 +197,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     applicationLauncher.addHttpService( httpServiceReference );
     applicationLauncher.addConfigurator( configuratorReference );
 
-    applicationLauncher.removeConfigurator( configurator );
+    applicationLauncher.removeConfigurator( configuration );
 
     checkDefaultAliasHasBeenUnregistered();
     checkWebContextResourcesHaveBeenDeleted();
@@ -356,7 +356,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
 
   private void checkDeactivatedStateOfApplicationLauncher() {
     assertFalse( applicationLauncher.isAlive() );
-    assertNull( applicationLauncher.launch( configurator, httpService, null, null, "/contextPath" ) );
+    assertNull( applicationLauncher.launch( configuration, httpService, null, null, "/contextPath" ) );
   }
 
   private HttpContext checkHttpContextHasBeenWrapped() {
@@ -395,7 +395,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   }
 
   private void configureHttpServiceFilter( String value ) {
-    Class<?> targetType = ApplicationConfigurator.class;
+    Class<?> targetType = ApplicationConfiguration.class;
     ServiceReference<?> serviceReference = httpServiceReference;
     ServiceReference<?> targetReference = configuratorReference;
     configureFilterScenario( value, targetType, serviceReference, targetReference );
@@ -421,7 +421,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   }
 
   private void mockConfigurator() {
-    configurator = mock( ApplicationConfigurator.class );
+    configuration = mock( ApplicationConfiguration.class );
     mockConfiguratorReference();
   }
 
@@ -432,16 +432,16 @@ public class ApplicationLauncherImpl_Test extends TestCase {
 
   private void mockSecondConfiguratorReference() {
     mockConfiguratorReference();
-    configurator = mock( ApplicationConfigurator.class );
-    when( bundleContext.getService( configuratorReference ) ).thenReturn( configurator );
+    configuration = mock( ApplicationConfiguration.class );
+    when( bundleContext.getService( configuratorReference ) ).thenReturn( configuration );
     when( bundleContext.getDataFile( any( String.class ) ) ).thenReturn( Fixture.WEB_CONTEXT_DIR );
     applicationLauncher.addConfigurator( configuratorReference );
   }
 
 
   private void createAliasConfigurator( final String servletPath1, final String servletPath2 ) {
-    configurator = new ApplicationConfigurator() {
-      public void configure( ApplicationConfiguration configuration ) {
+    configuration = new ApplicationConfiguration() {
+      public void configure( Application configuration ) {
         configuration.addEntryPoint( servletPath1, TestEntryPoint.class, null );
         configuration.addEntryPoint( servletPath2, TestEntryPoint.class, null );
       }
@@ -508,10 +508,10 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   @SuppressWarnings( "unchecked" )
   private void mockBundleContext( String contextName ) {
     bundleContext = mock( BundleContext.class );
-    String name = ApplicationLauncherImpl.getContextFileName( contextName, configurator, httpService );
+    String name = ApplicationLauncherImpl.getContextFileName( contextName, configuration, httpService );
     when( bundleContext.getDataFile( eq( name ) ) ).thenReturn( Fixture.WEB_CONTEXT_DIR );
     when( bundleContext.getService( httpServiceReference ) ).thenReturn( httpService );
-    when( bundleContext.getService( configuratorReference ) ).thenReturn( configurator );
+    when( bundleContext.getService( configuratorReference ) ).thenReturn( configuration );
     serviceRegistration = mock( ServiceRegistration.class );
     when( bundleContext.registerService( eq( ApplicationReference.class.getName() ),
                                          any( ApplicationReference.class ),
@@ -520,17 +520,17 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   }
 
   private ApplicationReference launchApplication() {
-    String location = applicationLauncher.getLocation( null, configurator, httpService );
+    String location = applicationLauncher.getLocation( null, configuration, httpService );
     return launchApplicationReference( location );
   }
 
   private ApplicationReference launchApplicationReference( String location ) {
-    return applicationLauncher.launch( configurator, httpService, null, null, location );
+    return applicationLauncher.launch( configuration, httpService, null, null, location );
   }
 
   private void prepareConfiguratorToThrowException() {
     doThrow( new IllegalStateException() )
-      .when( configurator ).configure( any( ApplicationConfiguration.class ) );
+      .when( configuration ).configure( any( Application.class ) );
   }
 
   private ApplicationReferenceImpl createMalignApplicationReference() {

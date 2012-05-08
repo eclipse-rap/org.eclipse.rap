@@ -39,7 +39,7 @@ public final class BrowserUtil {
    * @see Browser
    * @see BrowserCallback
    * @see org.eclipse.rwt.lifecycle.ILifeCycle
-   * @see org.eclipse.rwt.application.ApplicationConfiguration.OperationMode
+   * @see org.eclipse.rwt.application.Application.OperationMode
    */
   public static void evaluate( Browser browser, String script, BrowserCallback browserCallback ) {
     ParamCheck.notNull( browser, "browser" );

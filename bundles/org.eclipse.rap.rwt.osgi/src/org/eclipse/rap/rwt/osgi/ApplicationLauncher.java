@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi;
 
-import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 
@@ -26,7 +26,7 @@ public interface ApplicationLauncher {
 
   public static final String PROPERTY_CONTEXT_NAME = "contextName";
 
-  ApplicationReference launch( ApplicationConfigurator configurator,
+  ApplicationReference launch( ApplicationConfiguration configuration,
                                HttpService httpService,
                                HttpContext httpContext,
                                String contextName,

@@ -21,8 +21,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
+import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.application.ApplicationContext;
 import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
@@ -55,7 +55,7 @@ public class RWTServletContextListener_Test extends TestCase {
 
   public void testResourceManagerIsInitialized() {
     String className = TestConfigurator.class.getName();
-    servletContext.setInitParameter( ApplicationConfigurator.CONFIGURATOR_PARAM, className );
+    servletContext.setInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM, className );
 
     rwtServletContextListener.contextInitialized( contextInitializedEvent );
 
@@ -84,7 +84,7 @@ public class RWTServletContextListener_Test extends TestCase {
 
   public void testConfigurator() {
     String className = TestConfigurator.class.getName();
-    servletContext.setInitParameter( ApplicationConfigurator.CONFIGURATOR_PARAM, className );
+    servletContext.setInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM, className );
 
     rwtServletContextListener.contextInitialized( contextInitializedEvent );
 
@@ -158,8 +158,8 @@ public class RWTServletContextListener_Test extends TestCase {
     }
   }
 
-  private static class TestConfigurator implements ApplicationConfigurator {
-    public void configure( ApplicationConfiguration configuration ) {
+  private static class TestConfigurator implements ApplicationConfiguration {
+    public void configure( Application configuration ) {
       configuration.addEntryPoint( "/test", TestEntryPoint.class, null );
       configuration.addPhaseListener( mock( PhaseListener.class ) );
       configuration.addResource( new TestResource() );

@@ -15,26 +15,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.client.WebClient;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
-public class ExampleApplication implements ApplicationConfigurator {
+public class ExampleApplication implements ApplicationConfiguration {
 
-  public void configure( ApplicationConfiguration configuration ) {
+  public void configure( Application application ) {
     Map<String, String> properties = new HashMap<String, String>();
     properties.put( WebClient.PAGE_TITLE, "RAP Examples" );
     properties.put( WebClient.BODY_HTML, readTextFromResource( "resources/body.html", "UTF-8" ) );
     properties.put( WebClient.FAVICON, "icons/favicon.png" );
-    configuration.addEntryPoint( "/examples", MainUi.class, properties );
-    configuration.addStyleSheet( RWT.DEFAULT_THEME_ID, "theme/theme.css" );
-    configuration.addResource( createResource( "icons/favicon.png" ) );
-    configuration.addResource( createResource( "icons/loading.gif" ) );
-    Examples.getInstance().initContributions( configuration );
-
+    application.addEntryPoint( "/examples", MainUi.class, properties );
+    application.addStyleSheet( RWT.DEFAULT_THEME_ID, "theme/theme.css" );
+    application.addResource( createResource( "icons/favicon.png" ) );
+    application.addResource( createResource( "icons/loading.gif" ) );
+    Examples.getInstance().initContributions( application );
   }
 
   private static IResource createResource( final String resourceName ) {

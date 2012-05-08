@@ -24,8 +24,8 @@ import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper.TestTh
 import org.eclipse.rap.rwt.testfixture.internal.service.MemorySettingStore;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.AdapterFactory;
+import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.engine.RWTConfigurationImpl;
@@ -99,9 +99,9 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   public void testConfigureWithDefaultSettingStoreFactory() {
-    activateApplicationContext( new ApplicationConfigurator() {
-      public void configure( ApplicationConfiguration configuration ) {
-        configuration.addStyleSheet( THEME_ID, STYLE_SHEET );
+    activateApplicationContext( new ApplicationConfiguration() {
+      public void configure( Application application ) {
+        application.addStyleSheet( THEME_ID, STYLE_SHEET );
       }
     } );
 
@@ -125,16 +125,16 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     checkApplicationStoreHasBeenResetted();
   }
 
-  private void activateApplicationContext( ApplicationConfigurator configurator ) {
-    activateApplicationContext( configurator, null );
+  private void activateApplicationContext( ApplicationConfiguration configuration ) {
+    activateApplicationContext( configuration, null );
   }
 
-  private void activateApplicationContext( ApplicationConfigurator configurator,
+  private void activateApplicationContext( ApplicationConfiguration configuration,
                                            File contextDirectory )
   {
     ServletContext servletContext = Fixture.createServletContext();
     setContextDirectory( servletContext, contextDirectory );
-    applicationContext = new ApplicationContext( configurator, servletContext );
+    applicationContext = new ApplicationContext( configuration, servletContext );
     ApplicationContextUtil.set( Fixture.getServletContext(), applicationContext );
     createDisplay();
     applicationContext.activate();
@@ -142,7 +142,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
 
   private void setContextDirectory( ServletContext servletContext, File contextDirectory ) {
     if( contextDirectory != null ) {
-      servletContext.setAttribute( ApplicationConfigurator.RESOURCE_ROOT_LOCATION,
+      servletContext.setAttribute( ApplicationConfiguration.RESOURCE_ROOT_LOCATION,
                                    contextDirectory.toString() );
     }
   }
@@ -161,9 +161,9 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     Fixture.disposeOfServletContext();
   }
 
-  private ApplicationConfigurator createConfigurator() {
-    return new ApplicationConfigurator() {
-      public void configure( ApplicationConfiguration configuration ) {
+  private ApplicationConfiguration createConfigurator() {
+    return new ApplicationConfiguration() {
+      public void configure( Application configuration ) {
         configuration.addEntryPoint( "/entryPoint", TestEntryPoint.class, null );
         DefaultEntryPointFactory factory = new DefaultEntryPointFactory( TestEntryPoint.class );
         configuration.addEntryPoint( "/entryPointViaFactory", factory, null );
@@ -177,7 +177,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
         configuration.setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
 
         // Only supported for Workbench API backward compatibility
-        ( ( ApplicationConfigurationImpl )configuration )
+        ( ( ApplicationImpl )configuration )
           .addAdapterFactory( TestAdaptable.class, testAdapterFactory );
       }
     };
