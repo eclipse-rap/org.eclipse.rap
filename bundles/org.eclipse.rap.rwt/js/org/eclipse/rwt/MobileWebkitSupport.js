@@ -214,7 +214,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
        "initialTarget" : target,
        "initialPosition" : pos
       };
-      if( this._touchSession.type !== "scroll" ) {
+      if( this._touchSession.type !== "scroll" && this._touchSession.type !== "focus" ) {
         domEvent.preventDefault();
       }
       this._moveMouseTo( target, domEvent );
@@ -226,12 +226,17 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       var result = "click";
       if( this._isDraggableWidget( node ) ) {
         result = "drag";
-      } else if( this._isScrollableWidget( node ) ) {
-        if( this._allowScroll ) {
-          result = "scroll";
-        }
+      } else if( this._allowScroll && this._isScrollableWidget( node ) ) {
+        result = "scroll";
+      } else if( this._isFocusable( node ) ) {
+        result = "focus";
       }
       return result;
+    },
+    
+    _isFocusable : function( node ) {
+      var tagname = node.tagName;
+      return ( tagname === "INPUT" || tagname === "TEXTAREA" );
     },
 
     _handleTouchMove : function( domEvent ) {
@@ -300,7 +305,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     },
 
     _handleTouchEnd : function( domEvent ) {
-      domEvent.preventDefault(); // Prevent tap-zoom
+      domEvent.preventDefault();
       var touch = this._getTouch( domEvent );
       var pos = [ touch.clientX, touch.clientY ];
       var target = domEvent.target;

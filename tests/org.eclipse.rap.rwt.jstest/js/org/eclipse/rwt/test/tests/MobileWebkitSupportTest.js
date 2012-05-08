@@ -22,7 +22,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       org.eclipse.rwt.MobileWebkitSupport._getTouch = function( event ) {
         // touches is always null on faked TouchEvent, use fakedTouches instead
         var touches = event.touches || event.fakeTouches;
-        return touches.item( 0 );
+        var touch = touches.item( 0 );
+        if( touch === null ) {
+          touch = event.changedTouches.item( 0 );
+        }
+        return touch;
       };
     }
   },
@@ -244,26 +248,47 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       }
     },
     
-    testTextFocus : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var text = new org.eclipse.rwt.widgets.Text( false );
-      text.addToDocument();
-      TestUtil.flush();
-      assertFalse( text.isFocused() );
-      var node = text._inputElement;
-      this.touch( node, "touchstart" );
-      var over = false;
-      text.addEventListener( "mouseover", function(){
-        over = true;
-      } );
-      TestUtil.fakeMouseEventDOM( node, "mouseover", 1, 0, 0, 0, true );
-      if( !over ) {
-        // the ipad will only send a mousedown if mouseover is not processed
-        TestUtil.fakeMouseEventDOM( node, "mousedown", 1, 0, 0, 0, true );
+    testTextFocusIOS : function() {
+      if( org.eclipse.rwt.Client.isMobileSafari() ) {
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var text = new org.eclipse.rwt.widgets.Text( false );
+        text.addToDocument();
+        TestUtil.flush();
+        assertFalse( text.isFocused() );
+        var node = text._inputElement;
+        var over = false;
+        text.addEventListener( "mouseover", function(){
+          over = true;
+        } );
+        
+        this.touch( node, "touchstart" );
+        TestUtil.fakeMouseEventDOM( node, "mouseover", 1, 0, 0, 0, true ); // fakes "native" event
+        if( !over ) {
+          // the ipad will only send a mousedown if mouseover is not processed
+          TestUtil.fakeMouseEventDOM( node, "mousedown", 1, 0, 0, 0, true ); 
+        }      
+  
+        assertTrue( text.isFocused() );
       }
-      assertTrue( text.isFocused() );
     },
     
+    testTextFocusAndroid : function() {
+      if( org.eclipse.rwt.Client.isAndroidBrowser() ) {
+        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var text = new org.eclipse.rwt.widgets.Text( false );
+        text.addToDocument();
+        TestUtil.flush();
+        var node = text._inputElement;
+        var log = [];
+        
+        log.push( this.touch( node, "touchstart" ) );
+        log.push( this.touch( node, "touchend" ) );
+
+        assertEquals( [ true, false ], log );
+        assertTrue( text.isFocused() );
+      }
+    },
+
 
     /////////
     // Events
@@ -1001,8 +1026,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     
     // Some nodes "swallow" (non-fake) touch-events;
     _isValidTouchTarget : function( node ) {
-      var tag = node.tagName;
-      return tag != "INPUT" && tag != "TEXTAREA";
+      var result = true;
+      if( org.eclipse.rwt.Client.isMobileSafari() ) {
+        var tag = node.tagName;
+        result = ( tag != "INPUT" && tag != "TEXTAREA");
+      }
+      return result;
     },
 
     _isDraggable : function ( widget ) {
@@ -1033,6 +1062,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       if( this._isValidTouchTarget( node ) ) {
         node.dispatchEvent( event );
       }
+      return !event.prevented;
     },
     
     gesture : function( node, type ) {

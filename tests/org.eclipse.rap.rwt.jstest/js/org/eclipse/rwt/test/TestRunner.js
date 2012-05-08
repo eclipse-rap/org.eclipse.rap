@@ -146,6 +146,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
     _allFinished : function() {
       this.info( '', false );
       this.info( "Tests done.", false );
+      org.eclipse.rwt.MobileWebkitSupport._removeListeners();
     },
 
     _executeTestFunction : function() {
