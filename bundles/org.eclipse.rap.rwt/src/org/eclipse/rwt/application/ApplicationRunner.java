@@ -26,28 +26,24 @@ import org.eclipse.rwt.internal.util.ParamCheck;
 
 
 /**
- * An instance of an RWT web application at runtime.
- * <p>
- * An <code>ApplicationInstance</code> shares the same scope and life cycle as
- * the <code>ServletContext</code>. In order to serve requests for an RWT
- * application, it must be created and started for the
+ * An <code>ApplicationRunner</code> is used to start an RWT application with
+ * the given configuration in the given <code>ServletContext</code>. In order to
+ * serve requests for the application, it must be created and started for the
  * <code>ServletContext</code> which receives the requests.
- * </p>
  * <p>
- * To create an <code>ApplicationInstance</code>, the <code>ServletContext</code>
+ * To create an <code>ApplicationRunner</code>, the <code>ServletContext</code>
  * it should be bound to must be given along with an
  * <code>ApplicationConfigurator</code> with which clients can configure the
- * application before it is started. Usually, the
- * <code>ApplicationInstance</code> is constructed and started in the
- * <code>contextInitialized()</code> method of a
- * <code>ServletContextListener</code> and stopped in its
- * <code>contextDestroyed()</code> method.
+ * application before it is started.
  * </p>
  * <p>
- * Alternatively, this task can be delegated to the
- * <code>RWTServletContextListener</code>. If this class is specified as a
- * listener in the deployment descriptor (web.xml), it starts an
- * ApplicationInstance when the servlet context is initialized and stops it when
+ * Usually, an <code>ApplicationRunner</code> is constructed and started in the
+ * <code>contextInitialized()</code> method of a
+ * <code>ServletContextListener</code> and stopped in its
+ * <code>contextDestroyed()</code> method. Alternatively, this task can be
+ * delegated to the <code>RWTServletContextListener</code>. If this class is
+ * specified as a listener in the deployment descriptor (web.xml), it starts an
+ * ApplicationRunner when the servlet context is initialized and stops it when
  * the servlet context is destroyed. The <code>RWTServletContextListener</code>
  * looks for an <code>org.eclipse.rwt.Configurator</code> init-parameter. Its
  * value is assumed to be a class that implements
@@ -62,7 +58,7 @@ import org.eclipse.rwt.internal.util.ParamCheck;
  * @see javax.servlet.ServletContextListener
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class ApplicationInstance {
+public class ApplicationRunner {
 
   public final static String RESOURCES = ResourceManagerImpl.RESOURCES;
 
@@ -77,7 +73,7 @@ public class ApplicationInstance {
    * @param servletContext the servlet context this application is bound to.
    *          Must not be <code>null</code>.
    */
-  public ApplicationInstance( ApplicationConfigurator configurator, ServletContext servletContext ) {
+  public ApplicationRunner( ApplicationConfigurator configurator, ServletContext servletContext ) {
     ParamCheck.notNull( configurator, "configurator" );
     ParamCheck.notNull( servletContext, "servletContext" );
 
@@ -85,7 +81,7 @@ public class ApplicationInstance {
   }
 
   /**
-   * Starts this application.
+   * Starts the application.
    *
    * @throws IllegalStateException if this application was already started.
    */
@@ -95,7 +91,7 @@ public class ApplicationInstance {
   }
 
   /**
-   * Stops this application if it is running. Calling <code>stop()</code> on a non-running
+   * Stops the application if it is running. Calling <code>stop()</code> on a non-running
    * application does nothing.
    */
   public void stop() {

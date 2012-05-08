@@ -40,7 +40,7 @@ public class ApplicationInstance_Test extends TestCase {
 
   private ServletContext servletContext;
   private ApplicationConfigurator configurator;
-  private ApplicationInstance applicationInstance;
+  private ApplicationRunner applicationRunner;
 
   @Override
   protected void setUp() {
@@ -48,11 +48,11 @@ public class ApplicationInstance_Test extends TestCase {
     when( servletContext.getRealPath( "/" ) )
       .thenReturn( Fixture.WEB_CONTEXT_RWT_RESOURCES_DIR.getPath() );
     configurator = mock( ApplicationConfigurator.class );
-    applicationInstance = new ApplicationInstance( configurator, servletContext );
+    applicationRunner = new ApplicationRunner( configurator, servletContext );
   }
 
   public void testStart() {
-    applicationInstance.start();
+    applicationRunner.start();
 
     checkContexthasBeenConfigured();
     checkApplicationContextHasBeenRegistered();
@@ -67,9 +67,9 @@ public class ApplicationInstance_Test extends TestCase {
   }
 
   public void testStop() {
-    applicationInstance.start();
+    applicationRunner.start();
 
-    applicationInstance.stop();
+    applicationRunner.stop();
 
     checkApplicationContextHasBeenDeregistered();
   }
@@ -78,15 +78,15 @@ public class ApplicationInstance_Test extends TestCase {
     createConfiguratorWithProblem();
     startWithProblem();
 
-    applicationInstance.stop();
+    applicationRunner.stop();
 
     checkApplicationContextGetsDeregisteredAnyway();
   }
 
   public void testGetDefaultServletNames() {
-    applicationInstance.start();
+    applicationRunner.start();
 
-    Collection<String> servletPaths = applicationInstance.getServletPaths();
+    Collection<String> servletPaths = applicationRunner.getServletPaths();
 
     assertTrue( servletPaths.isEmpty() );
   }
@@ -95,7 +95,7 @@ public class ApplicationInstance_Test extends TestCase {
     startWithEntryPointConfiguration();
     fakeBranding();
 
-    Collection<String> servletPaths = applicationInstance.getServletPaths();
+    Collection<String> servletPaths = applicationRunner.getServletPaths();
 
     assertEquals( 2, servletPaths.size() );
     assertTrue( servletPaths.contains( SERVLET_PATH ) );
@@ -105,7 +105,7 @@ public class ApplicationInstance_Test extends TestCase {
   public void testGetServletNames_withEntryPoint() {
     startWithEntryPointConfiguration();
 
-    Collection<String> servletPaths = applicationInstance.getServletPaths();
+    Collection<String> servletPaths = applicationRunner.getServletPaths();
 
     assertEquals( 1, servletPaths.size() );
     assertTrue( servletPaths.contains( SERVLET_PATH ) );
@@ -113,7 +113,7 @@ public class ApplicationInstance_Test extends TestCase {
 
   public void testParamServletContextMustNotBeNull() {
     try {
-      new ApplicationInstance( mock( ApplicationConfigurator.class ), null );
+      new ApplicationRunner( mock( ApplicationConfigurator.class ), null );
       fail();
     } catch( NullPointerException expected ) {
     }
@@ -121,7 +121,7 @@ public class ApplicationInstance_Test extends TestCase {
 
   public void testParamConfiguratorMustNotBeNull() {
     try {
-      new ApplicationInstance( null, mock( ServletContext.class ) );
+      new ApplicationRunner( null, mock( ServletContext.class ) );
       fail();
     } catch( NullPointerException expected ) {
     }
@@ -160,8 +160,8 @@ public class ApplicationInstance_Test extends TestCase {
         configuration.addEntryPoint( SERVLET_PATH, TestEntryPoint.class, null );
       }
     };
-    applicationInstance = new ApplicationInstance( configurator, servletContext );
-    applicationInstance.start();
+    applicationRunner = new ApplicationRunner( configurator, servletContext );
+    applicationRunner.start();
   }
 
   private void createConfiguratorWithProblem() {
@@ -171,7 +171,7 @@ public class ApplicationInstance_Test extends TestCase {
 
   private void startWithProblem() {
     try {
-      applicationInstance.start();
+      applicationRunner.start();
       fail();
     } catch( IllegalStateException expected ) {
     }

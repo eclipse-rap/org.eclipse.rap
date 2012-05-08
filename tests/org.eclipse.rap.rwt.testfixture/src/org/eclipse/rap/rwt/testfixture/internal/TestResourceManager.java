@@ -15,7 +15,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-import org.eclipse.rwt.application.ApplicationInstance;
+import org.eclipse.rwt.application.ApplicationRunner;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.resources.IResourceManager;
@@ -110,7 +110,7 @@ public class TestResourceManager implements IResourceManager {
   private void createResourcesDirectory() {
     if( registeredResources.isEmpty() ) {
       File contextDirectory = RWTFactory.getConfiguration().getContextDirectory();
-      File file = new File( contextDirectory, ApplicationInstance.RESOURCES );
+      File file = new File( contextDirectory, ApplicationRunner.RESOURCES );
       if( !file.exists() ) {
         file.mkdirs();
       }

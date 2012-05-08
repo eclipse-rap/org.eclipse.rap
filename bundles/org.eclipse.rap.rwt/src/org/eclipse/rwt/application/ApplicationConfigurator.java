@@ -11,73 +11,65 @@
  ******************************************************************************/
 package org.eclipse.rwt.application;
 
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-
 
 /**
+ * An <code>ApplicationConfigurator</code> is used to provide the configuration
+ * of an RWT application to the RWT runtime system. The configuration describes
+ * the entrypoints, URLs, themes, etc. that constitute an application.
  * <p>
- * <strong>Note:</strong> This API is <em>provisional</em>. It is likely to
- * change before the final release.
- * </p>
- * <p>
- * An <code>ApplicationConfigurator</code> instance is used to provide an RWT
- * <code>{@link ApplicationConfiguration ApplicationConfiguration}</code> to the
- * RWT runtime system. The latter is represented by an
- * <code>{@link ApplicationInstance ApplicationInstance}</code>. Each
- * <code>ApplicationInstance</code> takes exactly one configurator.
- * <p>
- * The simplest implementation of an <code>ApplicationConfigurator</code> looks
- * like this:
+ * The <code> configure</code> method will be called by the framework in order
+ * to configure an application instance before it is started. An implementation
+ * must at least register an entrypoint that provides the user interface for the
+ * application. A simple implementation of this interface looks like this:
  * </p>
  * <pre>
  * public class ExampleApplicationConfigurator implements ApplicationConfigurator {
- *
  *   public void configure( ApplicationConfiguration configuration ) {
- *     configuration.addEntryPoint( &quot;example&quot;, ExampleEntryPoint.class, null );
+ *     configuration.addEntryPoint( &quot;/example&quot;, ExampleEntryPoint.class, null );
  *   }
  * }
  * </pre>
  * <p>
- * The
- * <code>{@link ApplicationConfigurator#configure(ApplicationConfiguration) configure}</code>
- * method serves as callback for the <code>ApplicationInstance</code>. The
- * application uses this method to retrieve the configuration at runtime. The
- * example above shows how to register an
- * <code>{@link IEntryPoint IEntryPoint}</code> that will be used by the
- * application at runtime to provide application specific UIs.
+ * The <code>configure</code> method is called only once during the lifetime of
+ * an application. The configuration of the application takes place before the
+ * system is activated. Therefore, manipulation of the configuration instance at
+ * a later point in time is unsupported.
  * </p>
  * <p>
- * In general RWT developers do not have to interact with the
- * <code>ApplicationInstance</code> directly. An
- * <code>ApplicationConfigurator</code> implementation generally gets picked up
- * by the declaration system of the surrounding container. In case of a servlet
- * container for example the configurator is registered as
- * <code>context-param</code> in the <code>web.xml</code>, with
- * <code>OSGi</code> you might register it as a service using DS and in the RAP
- * workbench you do not see it at all as configuration is supplied via
- * <code>extension-points</code>.
+ * There can be more than one application instance at runtime, running on
+ * different network ports or in different contexts. In most cases, developers
+ * do not have to create an application instance explicitly. The
+ * <code>ApplicationConfigurator</code> implementation can be registered with
+ * the the surrounding container instead. For example, in a servlet container,
+ * the application can be registered as <code>context-param</code> in the
+ * <code>web.xml</code> (see <code>CONFIGURATOR_PARAM</code>), in
+ * <code>OSGi</code> it can be registered as a service for the service interface
+ * <code>ApplicationConfiguration</code>, and when using the workbench with RAP,
+ * the application is registered with an extension-point.
  * </p>
  * <p>
- * Note that the configurator is called only once during application lifetime.
- * Configuration of the application takes place before the system gets
- * activated. Therefore manipulation of the configuration instance at a later
- * point in time is not an intended use case and will likely have no effect to
- * the system.
+ * Apart from this, an <code>{@link ApplicationRunner ApplicationRunner}</code> can be used
+ * to run an application with this configuration.
  * </p>
  *
- * @see ApplicationInstance
+ * @see ApplicationRunner
  * @see ApplicationConfiguration
  * @since 1.5
  */
 public interface ApplicationConfigurator {
 
-  // TODO [fappel]: think about where to locate this documentation, since this is servlet
-  //                specific
   /**
-   * Value for the <code>param-name</code> of an <code>context-param</code> declaration that
-   * declares an <code>ApplicationConfigurator</code> in a <code>web.xml</code>. The value of
-   * <code>param-value</code> in such an declaration has to be the fully qualified class name
-   * of the configuration implementation in question.
+   * This constant contains the parameter name to register an
+   * ApplicationConfigurator in a servlet container environment when running RAP
+   * without OSGi. To do so, the fully class qualified name of the Application
+   * implementation has to be registered as a <code>context-param</code> in the
+   * <code>web.xml</code>. Example:
+   * <pre>
+   * &lt;context-param&gt;
+   *   &lt;param-name&gt;org.eclipse.rwt.Configurator&lt;/param-name&gt;
+   *   &lt;param-value&gt;com.example.ExampleConfigurator&lt;/param-value&gt;
+   * &lt;/context-param&gt;
+   * </pre>
    */
   public static final String CONFIGURATOR_PARAM = "org.eclipse.rwt.Configurator";
   // TODO [fappel]: think about where to locate this documentation, since this is servlet
@@ -86,7 +78,7 @@ public interface ApplicationConfigurator {
 
   /**
    * Callback method that allows to configure the given application configuration. See the
-   * <code>{@link ApplicationConfigurator}</code> class documentation for more details.
+   * class documentation for more details.
    *
    * @param configuration Object that allows to apply various configuration settings to
    *                      the RWT runtime system

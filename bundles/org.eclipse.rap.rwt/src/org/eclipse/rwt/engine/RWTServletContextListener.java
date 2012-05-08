@@ -16,7 +16,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.eclipse.rwt.application.ApplicationInstance;
+import org.eclipse.rwt.application.ApplicationRunner;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.util.ClassUtil;
@@ -24,26 +24,33 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 
 /**
- * TODO JavaDoc
+ * A ServletContextListener that creates and starts an RWT application on
+ * initialization and stops it on shutdown. The application to start is read
+ * from the init parameter <code>org.eclipse.rwt.Configurator</code>.
+ *
  * @since 1.5
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class RWTServletContextListener implements ServletContextListener {
 
-  public static final String ENTRY_POINTS_PARAM = "org.eclipse.rwt.entryPoints";
+  /*
+   * This parameter has been used prior to RAP 1.5 to register entrypoints.
+   * It is considered obsolete but still supported in 1.5.
+   */
+  static final String ENTRY_POINTS_PARAM = "org.eclipse.rwt.entryPoints";
 
-  private ApplicationInstance applicationInstance;
+  private ApplicationRunner applicationRunner;
 
   public void contextInitialized( ServletContextEvent event ) {
     ServletContext servletContext = event.getServletContext();
     ApplicationConfigurator configurator = readConfigurator( servletContext );
-    applicationInstance = new ApplicationInstance( configurator, servletContext );
-    applicationInstance.start();
+    applicationRunner = new ApplicationRunner( configurator, servletContext );
+    applicationRunner.start();
   }
 
   public void contextDestroyed( ServletContextEvent event ) {
-    applicationInstance.stop();
-    applicationInstance = null;
+    applicationRunner.stop();
+    applicationRunner = null;
   }
 
   private ApplicationConfigurator readConfigurator( ServletContext servletContext ) {

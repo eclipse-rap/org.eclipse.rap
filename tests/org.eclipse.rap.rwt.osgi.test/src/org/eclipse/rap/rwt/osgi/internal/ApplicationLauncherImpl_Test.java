@@ -325,9 +325,9 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   }
 
   private String getResourcesDirectory( String alias ) {
-    String result = "/" + ApplicationInstance.RESOURCES;
+    String result = "/" + ApplicationRunner.RESOURCES;
     if( alias.lastIndexOf( '/' ) > 0 ) {
-      result = "/" + CONTEXT_NAME + "/" + ApplicationInstance.RESOURCES;
+      result = "/" + CONTEXT_NAME + "/" + ApplicationRunner.RESOURCES;
     }
     return result;
   }

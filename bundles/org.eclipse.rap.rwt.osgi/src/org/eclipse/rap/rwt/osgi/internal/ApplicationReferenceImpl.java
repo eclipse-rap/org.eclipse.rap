@@ -17,7 +17,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
-import org.eclipse.rwt.application.ApplicationInstance;
+import org.eclipse.rwt.application.ApplicationRunner;
 import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.engine.RWTServlet;
 import org.osgi.framework.BundleContext;
@@ -37,7 +37,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
   private String contextLocation;
   private String contextName;
   private ServletContext servletContextWrapper;
-  private ApplicationInstance applicationInstance;
+  private ApplicationRunner applicationRunner;
   private ApplicationLauncherImpl applicationLauncher;
   private ServiceRegistration<?> serviceRegistration;
   private volatile boolean alive;
@@ -70,18 +70,18 @@ class ApplicationReferenceImpl implements ApplicationReference {
   private void createApplication( HttpServlet contextProviderServlet ) {
     ServletContext servletContext = contextProviderServlet.getServletContext();
     servletContextWrapper = new ServletContextWrapper( servletContext, contextLocation );
-    applicationInstance = new ApplicationInstance( configurator, servletContextWrapper );
+    applicationRunner = new ApplicationRunner( configurator, servletContextWrapper );
   }
 
   private void startRWTApplication() {
-    applicationInstance.start();
+    applicationRunner.start();
     registerServlets();
     registerResourceDirectory();
     registerAsService();
   }
 
   private void registerServlets() {
-    Collection<String> aliases = applicationInstance.getServletPaths();
+    Collection<String> aliases = applicationRunner.getServletPaths();
     if( aliases.isEmpty() ) {
       registerServlet( DEFAULT_ALIAS, new RWTServlet() );
     }
@@ -119,11 +119,11 @@ class ApplicationReferenceImpl implements ApplicationReference {
     unregisterServlets();
     unregisterResourcesDirectory();
     serviceRegistration.unregister();
-    applicationInstance.stop();
+    applicationRunner.stop();
   }
 
   private void unregisterServlets() {
-    Collection<String> aliases = applicationInstance.getServletPaths();
+    Collection<String> aliases = applicationRunner.getServletPaths();
     if( aliases.isEmpty() ) {
       unregisterServlet( DEFAULT_ALIAS );
     }
@@ -184,7 +184,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
   }
 
   private void registerResourceDirectory() {
-    String alias = ApplicationInstance.RESOURCES;
+    String alias = ApplicationRunner.RESOURCES;
     String location = contextLocation + "/" + alias;
     try {
       httpService.registerResources( getContextSegment() + "/" + alias, location, httpContext );
@@ -196,7 +196,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
   }
 
   private void clearFields() {
-    applicationInstance = null;
+    applicationRunner = null;
     httpService = null;
     httpContext = null;
     configurator = null;
@@ -211,7 +211,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
   }
 
   private void unregisterResourcesDirectory() {
-    httpService.unregister( getContextSegment() + "/" + ApplicationInstance.RESOURCES );
+    httpService.unregister( getContextSegment() + "/" + ApplicationRunner.RESOURCES );
   }
 
   private void notifyAboutToStop() {
