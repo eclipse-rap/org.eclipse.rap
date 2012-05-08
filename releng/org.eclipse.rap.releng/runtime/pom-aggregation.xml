@@ -23,7 +23,7 @@
 
   <properties>
     <tycho-version>0.13.0</tycho-version>
-    <base-platform>4.2milestones/S-4.2M6-201203151300/</base-platform>
+    <base-platform>4.2milestones/S-4.2M7-201205031800/</base-platform>
   </properties>
 
   <prerequisites>
@@ -56,15 +56,6 @@
       <id>extra-dependencies-repository</id>
       <layout>p2</layout>
       <url>http://build.eclipse.org/rt/rap/base-platforms/extra-dependencies</url>
-    </repository>
-    <!--
-      TODO [rst]: Because of bug 366375 (icu.base.source bundle missing in 4.2 milestone repositories)
-                  we need to include the runtime base repository too.
-      -->
-    <repository>
-      <id>runtime-base-repository</id>
-      <layout>p2</layout>
-      <url>http://build.eclipse.org/rt/rap/base-platforms/1.5M4/missing-pieces</url>
     </repository>
   </repositories>
 
