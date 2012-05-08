@@ -94,8 +94,8 @@ public class RWTServlet_Test extends TestCase {
 
   private static ApplicationContext createApplicationContext() {
     ServletContext servletContext = new TestServletContext();
-    ApplicationConfiguration configurator = mock( ApplicationConfiguration.class );
-    ApplicationContext result = new ApplicationContext( configurator, servletContext );
+    ApplicationConfiguration configuration = mock( ApplicationConfiguration.class );
+    ApplicationContext result = new ApplicationContext( configuration, servletContext );
     result.activate();
     ApplicationContextUtil.set( result.getServletContext(), result );
     return result;

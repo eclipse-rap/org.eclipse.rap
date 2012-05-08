@@ -61,7 +61,7 @@ public class ApplicationContext {
   //                implementation with an optimized version for testing purpose. Think about
   //                a less intrusive solution.
   private ThemeManager themeManager;
-  private final RWTConfiguration configuration;
+  private final RWTConfiguration rwtConfiguration;
   private final ResourceManagerImpl resourceManager;
   private final BrandingManager brandingManager;
   private final PhaseListenerRegistry phaseListenerRegistry;
@@ -87,10 +87,12 @@ public class ApplicationContext {
   private final ApplicationContextConfigurator contextConfigurator;
   private boolean activated;
 
-  public ApplicationContext( ApplicationConfiguration configurator, ServletContext servletContext ) {
+  public ApplicationContext( ApplicationConfiguration applicationConfiguration,
+                             ServletContext servletContext )
+  {
     applicationStore = new ApplicationStoreImpl();
-    configuration = new RWTConfigurationImpl();
-    resourceManager = new ResourceManagerImpl( configuration );
+    rwtConfiguration = new RWTConfigurationImpl();
+    resourceManager = new ResourceManagerImpl( rwtConfiguration );
     phaseListenerRegistry = new PhaseListenerRegistry();
     entryPointManager = new EntryPointManager();
     lifeCycleFactory = new LifeCycleFactory( phaseListenerRegistry );
@@ -112,7 +114,8 @@ public class ApplicationContext {
     textSizeStorage = new TextSizeStorage();
     probeStore = new ProbeStore( textSizeStorage );
     this.servletContext = servletContext;
-    contextConfigurator = new ApplicationContextConfigurator( configurator, servletContext );
+    contextConfigurator = new ApplicationContextConfigurator( applicationConfiguration,
+                                                              servletContext );
   }
 
   public boolean isActivated() {
@@ -144,7 +147,7 @@ public class ApplicationContext {
   }
 
   public RWTConfiguration getConfiguration() {
-    return configuration;
+    return rwtConfiguration;
   }
 
   public IResourceManager getResourceManager() {
@@ -307,7 +310,7 @@ public class ApplicationContext {
     //                the latter really necessary since the only other factory
     //                in use is for testing purpose (unfortunately API).
     if( !skipResoureDeletion ) {
-      File resourcesDir = new File( configuration.getContextDirectory(),
+      File resourcesDir = new File( rwtConfiguration.getContextDirectory(),
                                     ResourceManagerImpl.RESOURCES );
       ApplicationContextUtil.delete( resourcesDir );
     }

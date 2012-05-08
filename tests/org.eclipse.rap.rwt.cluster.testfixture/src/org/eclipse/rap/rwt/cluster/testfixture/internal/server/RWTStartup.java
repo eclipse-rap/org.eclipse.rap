@@ -38,8 +38,8 @@ public class RWTStartup {
     }
 
     public void contextInitialized( ServletContextEvent event ) {
-      ApplicationConfiguration configurator = new TestApplicationConfigurator( entryPointClass );
-      applicationRunner = new ApplicationRunner( configurator, event.getServletContext() );
+      ApplicationConfiguration configuration = new TestApplicationConfigurator( entryPointClass );
+      applicationRunner = new ApplicationRunner( configuration, event.getServletContext() );
       applicationRunner.start();
     }
 

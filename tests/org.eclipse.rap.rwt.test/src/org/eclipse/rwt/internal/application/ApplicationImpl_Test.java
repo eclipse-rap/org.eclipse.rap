@@ -28,19 +28,19 @@ import org.eclipse.rwt.lifecycle.ILifeCycle;
 
 
 public class ApplicationImpl_Test extends TestCase {
-  
+
   private TestServletContext servletContext;
   private ApplicationContext applicationContext;
   private ApplicationImpl application;
   private ApplicationConfiguration applicationConfiguration;
-  
+
   public void testDefaultOperationMode() {
     applicationContext.activate();
-    
+
     ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
     assertSame( SimpleLifeCycle.class, lifeCycle.getClass() );
   }
-  
+
   public void testSetOperationModeWithNullArgument() {
     try {
       application.setOperationMode( null );
@@ -52,7 +52,7 @@ public class ApplicationImpl_Test extends TestCase {
   public void testSetOperationModeToSWTCompatibility() {
     application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     applicationContext.activate();
-    
+
     ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
     assertSame( RWTLifeCycle.class, lifeCycle.getClass() );
   }
@@ -60,18 +60,18 @@ public class ApplicationImpl_Test extends TestCase {
   public void testSetOperationModeToJEECompatibility() {
     application.setOperationMode( OperationMode.JEE_COMPATIBILITY );
     applicationContext.activate();
-    
+
     ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
     assertSame( SimpleLifeCycle.class, lifeCycle.getClass() );
   }
-  
+
   public void testSetOperationModeToSessionFailover() {
     servletContext.setVersion( 3, 0 );
     servletContext.addServlet( "rwtServlet", new RWTServlet() );
 
     application.setOperationMode( OperationMode.SESSION_FAILOVER );
     applicationContext.activate();
-    
+
     ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
     assertSame( SimpleLifeCycle.class, lifeCycle.getClass() );
     assertFilterRegistered( RWTClusterSupport.class );
@@ -80,38 +80,39 @@ public class ApplicationImpl_Test extends TestCase {
   public void testSetOperationModeToSessionFailoverWithMissingRWTServlet() {
     servletContext.setVersion( 3, 0 );
     servletContext.addServlet( "fooServlet", mock( Servlet.class ) );
-    
+
     try {
       application.setOperationMode( OperationMode.SESSION_FAILOVER );
       fail();
     } catch( IllegalStateException expected ) {
     }
   }
-  
+
   public void testSetOperationModeToSessionFailoverWithInsufficientServletVersion() {
     servletContext.setVersion( 2, 6 );
     servletContext.addServlet( "rwtServlet", new RWTServlet() );
-    
+
     try {
       application.setOperationMode( OperationMode.SESSION_FAILOVER );
       fail();
     } catch( IllegalStateException expected ) {
     }
   }
-  
+
   public void testGetContextViaAdapter() throws Exception {
     ApplicationContext context = application.getAdapter( ApplicationContext.class );
-    
+
     assertSame( applicationContext, context );
   }
-  
+
   public void testGetConfiguratorViaAdapter() throws Exception {
-    ApplicationConfiguration configurator 
+    ApplicationConfiguration configuration
       = application.getAdapter( ApplicationConfiguration.class );
-    
-    assertSame( applicationConfiguration, configurator );
+
+    assertSame( applicationConfiguration, configuration );
   }
-  
+
+  @Override
   protected void setUp() throws Exception {
     applicationConfiguration = mock( ApplicationConfiguration.class );
     servletContext = new TestServletContext();

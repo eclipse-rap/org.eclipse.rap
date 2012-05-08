@@ -39,7 +39,7 @@ public class ApplicationRunner_Test extends TestCase {
   private static final String SERVLET_NAME = "bar";
 
   private ServletContext servletContext;
-  private ApplicationConfiguration configurator;
+  private ApplicationConfiguration configuration;
   private ApplicationRunner applicationRunner;
 
   @Override
@@ -47,8 +47,8 @@ public class ApplicationRunner_Test extends TestCase {
     servletContext = mock( ServletContext.class );
     when( servletContext.getRealPath( "/" ) )
       .thenReturn( Fixture.WEB_CONTEXT_RWT_RESOURCES_DIR.getPath() );
-    configurator = mock( ApplicationConfiguration.class );
-    applicationRunner = new ApplicationRunner( configurator, servletContext );
+    configuration = mock( ApplicationConfiguration.class );
+    applicationRunner = new ApplicationRunner( configuration, servletContext );
   }
 
   public void testStart() {
@@ -132,7 +132,7 @@ public class ApplicationRunner_Test extends TestCase {
   }
 
   private void checkContexthasBeenConfigured() {
-    verify( configurator ).configure( any( Application.class ) );
+    verify( configuration ).configure( any( Application.class ) );
   }
 
   private void checkApplicationContextHasBeenDeregistered() {
@@ -155,18 +155,18 @@ public class ApplicationRunner_Test extends TestCase {
   }
 
   private void startWithEntryPointConfiguration() {
-    configurator = new ApplicationConfiguration() {
+    configuration = new ApplicationConfiguration() {
       public void configure( Application configuration ) {
         configuration.addEntryPoint( SERVLET_PATH, TestEntryPoint.class, null );
       }
     };
-    applicationRunner = new ApplicationRunner( configurator, servletContext );
+    applicationRunner = new ApplicationRunner( configuration, servletContext );
     applicationRunner.start();
   }
 
   private void createConfiguratorWithProblem() {
     doThrow( new IllegalStateException() )
-      .when( configurator ).configure( any( Application.class ) );
+      .when( configuration ).configure( any( Application.class ) );
   }
 
   private void startWithProblem() {

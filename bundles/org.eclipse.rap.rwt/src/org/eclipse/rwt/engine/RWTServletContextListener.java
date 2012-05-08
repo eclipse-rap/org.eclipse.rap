@@ -55,51 +55,51 @@ public class RWTServletContextListener implements ServletContextListener {
 
   private ApplicationConfiguration readConfiguration( ServletContext servletContext ) {
     ApplicationConfiguration result;
-    if( hasConfiguratorParam( servletContext ) ) {
-      result = readApplicationConfigurator( servletContext );
+    if( hasConfigurationParam( servletContext ) ) {
+      result = readApplicationConfiguration( servletContext );
     } else {
-      result = readEntryPointRunnerConfigurator( servletContext );
+      result = readEntryPointRunnerConfiguration( servletContext );
     }
     return result;
   }
 
-  private boolean hasConfiguratorParam( ServletContext servletContext ) {
+  private boolean hasConfigurationParam( ServletContext servletContext ) {
     return null != servletContext.getInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM );
   }
 
-  private ApplicationConfiguration readApplicationConfigurator( ServletContext servletContext ) {
+  private ApplicationConfiguration readApplicationConfiguration( ServletContext servletContext ) {
     String name = servletContext.getInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM );
-    return newConfigurator( name );
+    return createConfiguration( name );
   }
 
-  private ApplicationConfiguration newConfigurator( String className ) {
+  private ApplicationConfiguration createConfiguration( String className ) {
     ClassLoader loader = getClass().getClassLoader();
     return ( ApplicationConfiguration )ClassUtil.newInstance( loader, className );
   }
 
-  private ApplicationConfiguration readEntryPointRunnerConfigurator( ServletContext context ) {
+  private ApplicationConfiguration readEntryPointRunnerConfiguration( ServletContext context ) {
     try {
-      return doReadEntryPointRunnerConfigurator( context );
+      return doReadEntryPointRunnerConfiguration( context );
     } catch( ClassNotFoundException cnfe ) {
       throw new IllegalArgumentException( cnfe );
     }
   }
 
   @SuppressWarnings("unchecked")
-  private ApplicationConfiguration doReadEntryPointRunnerConfigurator( ServletContext context )
+  private ApplicationConfiguration doReadEntryPointRunnerConfiguration( ServletContext context )
     throws ClassNotFoundException
   {
     String className = context.getInitParameter( ENTRY_POINTS_PARAM );
     ClassLoader loader = getClass().getClassLoader();
     Class<?> entryPointClass = loader.loadClass( className );
-    return new EntryPointRunnerConfigurator( ( Class<? extends IEntryPoint> )entryPointClass );
+    return new EntryPointRunnerConfiguration( ( Class<? extends IEntryPoint> )entryPointClass );
   }
 
-  private static class EntryPointRunnerConfigurator implements ApplicationConfiguration {
+  private static class EntryPointRunnerConfiguration implements ApplicationConfiguration {
 
     private final Class<? extends IEntryPoint> entryPointClass;
 
-    private EntryPointRunnerConfigurator( Class<? extends IEntryPoint> entryPointClass ) {
+    private EntryPointRunnerConfiguration( Class<? extends IEntryPoint> entryPointClass ) {
       this.entryPointClass = entryPointClass;
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
@@ -19,7 +20,7 @@ public class Activator implements BundleActivator {
   private ApplicationLauncherImpl applicationLauncher;
   private ServiceRegistration<ApplicationLauncher> applicationLauncherRegistration;
   private HttpTracker httpTracker;
-  private ApplicationConfiguratorTracker configuratorTracker;
+  private ApplicationConfigurationTracker configurationTracker;
 
   public void start( BundleContext context ) {
     registerApplicationLauncher( context );
@@ -28,11 +29,11 @@ public class Activator implements BundleActivator {
   }
 
   public void stop( BundleContext context ) {
-    configuratorTracker.close();
+    configurationTracker.close();
     httpTracker.close();
     applicationLauncherRegistration.unregister();
     applicationLauncher.deactivate();
-    configuratorTracker = null;
+    configurationTracker = null;
     httpTracker = null;
     applicationLauncher = null;
   }
@@ -50,8 +51,8 @@ public class Activator implements BundleActivator {
   }
 
   private void openConfiguratorTracker( BundleContext context ) {
-    configuratorTracker = new ApplicationConfiguratorTracker( context, applicationLauncher );
-    configuratorTracker.open();
+    configurationTracker = new ApplicationConfigurationTracker( context, applicationLauncher );
+    configurationTracker.open();
   }
 
   private void openHttpServiceTracker( BundleContext context ) {

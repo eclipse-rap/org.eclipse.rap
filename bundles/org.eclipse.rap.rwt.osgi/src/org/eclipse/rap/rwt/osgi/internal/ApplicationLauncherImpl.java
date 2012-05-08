@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
@@ -24,18 +25,18 @@ import org.osgi.service.log.LogService;
 
 
 public class ApplicationLauncherImpl implements ApplicationLauncher {
-  
+
   private final Object lock;
-  private final ServiceContainer<ApplicationConfiguration> configurators;
+  private final ServiceContainer<ApplicationConfiguration> configurations;
   private final ServiceContainer<HttpService> httpServices;
   private final ApplicationReferencesContainer applicationReferences;
   private BundleContext bundleContext;
 
   public ApplicationLauncherImpl( BundleContext bundleContext ) {
-    this.lock = new Object();
-    this.configurators = new ServiceContainer<ApplicationConfiguration>( bundleContext );
-    this.httpServices = new ServiceContainer<HttpService>( bundleContext );
-    this.applicationReferences = new ApplicationReferencesContainer();
+    lock = new Object();
+    configurations = new ServiceContainer<ApplicationConfiguration>( bundleContext );
+    httpServices = new ServiceContainer<HttpService>( bundleContext );
+    applicationReferences = new ApplicationReferencesContainer();
     this.bundleContext = bundleContext;
   }
 
@@ -55,23 +56,24 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     }
   }
 
-  public ApplicationConfiguration addConfigurator( ServiceReference<ApplicationConfiguration> ref ) {
-    ServiceHolder<ApplicationConfiguration> configuratorHolder;
+  public ApplicationConfiguration addConfiguration( ServiceReference<ApplicationConfiguration> ref )
+  {
+    ServiceHolder<ApplicationConfiguration> configurationHolder;
     synchronized( lock ) {
-      configuratorHolder = configurators.add( ref );
-      launchWithConfigurator( configuratorHolder );
+      configurationHolder = configurations.add( ref );
+      launchWithConfigurator( configurationHolder );
     }
-    return configuratorHolder.getService();
+    return configurationHolder.getService();
   }
 
-  public void removeConfigurator( ApplicationConfiguration configurator ) {
+  public void removeConfiguration( ApplicationConfiguration configuration ) {
     synchronized( lock ) {
-      configurators.remove( configurator );
-      stopApplicationReferences( configurator );
+      configurations.remove( configuration );
+      stopApplicationReferences( configuration );
     }
   }
 
-  public ApplicationReference launch( ApplicationConfiguration configurator,
+  public ApplicationReference launch( ApplicationConfiguration configuration,
                                       HttpService httpService,
                                       HttpContext httpContext,
                                       String contextName,
@@ -80,19 +82,19 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     synchronized( lock ) {
       ApplicationReference result = null;
       if( isAlive() ) {
-        result = doLaunch( configurator, httpService, httpContext, contextName, contextDirectory );
+        result = doLaunch( configuration, httpService, httpContext, contextName, contextDirectory );
       }
       return result;
     }
   }
 
-  private ApplicationReferenceImpl doLaunch( ApplicationConfiguration configurator,
+  private ApplicationReferenceImpl doLaunch( ApplicationConfiguration configuration,
                                              HttpService httpService,
                                              HttpContext httpContext,
                                              String contextName,
                                              String contextDirectory )
   {
-    ApplicationReferenceImpl result = new ApplicationReferenceImpl( configurator,
+    ApplicationReferenceImpl result = new ApplicationReferenceImpl( configuration,
                                                                     httpService,
                                                                     httpContext,
                                                                     contextName,
@@ -101,7 +103,7 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     result.start();
     applicationReferences.add( result );
     httpServices.add( httpService );
-    configurators.add( configurator );
+    configurations.add( configuration );
     return result;
   }
 
@@ -109,7 +111,7 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
   public void deactivate() {
     synchronized( lock ) {
       stopAllApplicationReferences();
-      configurators.clear();
+      configurations.clear();
       applicationReferences.clear();
       httpServices.clear();
       bundleContext = null;
@@ -131,39 +133,40 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
   }
 
   private void launchAtHttpService( ServiceHolder<HttpService> httpServiceHolder ) {
-    ServiceHolder<ApplicationConfiguration>[] services = configurators.getServices();
-    for( ServiceHolder<ApplicationConfiguration> configuratorHolder : services ) {
-      if( matches( httpServiceHolder, configuratorHolder ) ) {
-        launch( configuratorHolder, httpServiceHolder );
+    ServiceHolder<ApplicationConfiguration>[] services = configurations.getServices();
+    for( ServiceHolder<ApplicationConfiguration> configurationHolder : services ) {
+      if( matches( httpServiceHolder, configurationHolder ) ) {
+        launch( configurationHolder, httpServiceHolder );
       }
     }
   }
 
-  private void launchWithConfigurator( ServiceHolder<ApplicationConfiguration> configuratorHolder ) {
+  private void launchWithConfigurator( ServiceHolder<ApplicationConfiguration> configurationHolder )
+  {
     ServiceHolder<HttpService>[] services = httpServices.getServices();
     for( ServiceHolder<HttpService> httpServiceHolder : services ) {
-      if( matches( httpServiceHolder, configuratorHolder ) ) {
-        launch( configuratorHolder, httpServiceHolder );
+      if( matches( httpServiceHolder, configurationHolder ) ) {
+        launch( configurationHolder, httpServiceHolder );
       }
     }
   }
 
-  private void launch( ServiceHolder<ApplicationConfiguration> configuratorHolder,
+  private void launch( ServiceHolder<ApplicationConfiguration> configurationHolder,
                       ServiceHolder<HttpService> httpServiceHolder )
   {
-    ApplicationConfiguration configurator = configuratorHolder.getService();
+    ApplicationConfiguration configuration = configurationHolder.getService();
     HttpService httpService = httpServiceHolder.getService();
-    String contextName = getContextName( configuratorHolder );
-    String contextLocation = getLocation( contextName, configurator, httpService );
+    String contextName = getContextName( configurationHolder );
+    String contextLocation = getLocation( contextName, configuration, httpService );
     try {
-      launch( configurator, httpService, null, contextName, contextLocation );
+      launch( configuration, httpService, null, contextName, contextLocation );
     } catch( RuntimeException rte ) {
       logProblem( "Unable to start RWT application.", rte );
     }
   }
 
-  private String getContextName( ServiceHolder<ApplicationConfiguration> configuratorHolder ) {
-    ServiceReference<ApplicationConfiguration> reference = configuratorHolder.getReference();
+  private String getContextName( ServiceHolder<ApplicationConfiguration> configurationHolder ) {
+    ServiceReference<ApplicationConfiguration> reference = configurationHolder.getReference();
     return ( String )reference.getProperty( PROPERTY_CONTEXT_NAME );
   }
 
@@ -192,11 +195,11 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
   }
 
   private boolean matches( ServiceHolder<HttpService> httpServiceHolder,
-                           ServiceHolder<ApplicationConfiguration> configuratorHolder )
+                           ServiceHolder<ApplicationConfiguration> configurationHolder )
   {
     ServiceReference<HttpService> httpServiceRef = httpServiceHolder.getReference();
-    ServiceReference<ApplicationConfiguration> configuratorRef = configuratorHolder.getReference();
-    return new Matcher( httpServiceRef, configuratorRef ).matches();
+    ServiceReference<ApplicationConfiguration> configurationRef = configurationHolder.getReference();
+    return new Matcher( httpServiceRef, configurationRef ).matches();
   }
 
   private void logProblem( String failureMessage, Throwable failure ) {
@@ -213,23 +216,23 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
   }
 
   String getLocation( String contextName,
-                      ApplicationConfiguration configurator,
+                      ApplicationConfiguration configuration,
                       HttpService service )
   {
-    String pathToContext = getContextFileName( contextName, configurator, service );
+    String pathToContext = getContextFileName( contextName, configuration, service );
     File dataFile = bundleContext.getDataFile( pathToContext );
     return dataFile.toString();
   }
 
   static String getContextFileName( String name,
-                                    ApplicationConfiguration configurator,
+                                    ApplicationConfiguration configuration,
                                     HttpService service )
   {
     StringBuilder result = new StringBuilder();
     result.append( "/" );
     result.append( name == null ? "rwtcontext" : name );
     result.append( "_" );
-    result.append( configurator.hashCode() );
+    result.append( configuration.hashCode() );
     result.append( "_" );
     result.append( service.hashCode() );
     return result.toString();

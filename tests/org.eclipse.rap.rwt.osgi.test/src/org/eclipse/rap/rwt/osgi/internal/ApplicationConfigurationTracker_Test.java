@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
@@ -22,37 +23,37 @@ import org.mockito.stubbing.Answer;
 import org.osgi.framework.*;
 
 
-public class ApplicationConfiguratorTracker_Test extends TestCase {
+public class ApplicationConfigurationTracker_Test extends TestCase {
 
   private BundleContext bundleContext;
   private ApplicationLauncherImpl applicationLauncher;
   private ServiceReference< ApplicationConfiguration> configurationReference;
   private ApplicationConfiguration configurator;
-  private ApplicationConfiguratorTracker tracker;
+  private ApplicationConfigurationTracker tracker;
 
   public void testAddingService() {
     tracker.addingService( configurationReference );
     
-    verify( applicationLauncher ).addConfigurator( configurationReference );
+    verify( applicationLauncher ).addConfiguration( configurationReference );
   }
   
   public void testRemovedService() {
     tracker.removedService( configurationReference, configurator );
     
-    verify( applicationLauncher ).removeConfigurator( configurator );
+    verify( applicationLauncher ).removeConfiguration( configurator );
   }
   
   public void testOpen() {
     tracker.open();
     
-    verify( applicationLauncher ).addConfigurator( configurationReference );
+    verify( applicationLauncher ).addConfiguration( configurationReference );
   }
   
   @SuppressWarnings( "unchecked" )
   protected void setUp() throws Exception {
     mockBundleContext();
     applicationLauncher = mock( ApplicationLauncherImpl.class );
-    tracker = new ApplicationConfiguratorTracker( bundleContext, applicationLauncher );
+    tracker = new ApplicationConfigurationTracker( bundleContext, applicationLauncher );
     configurationReference = mock( ServiceReference.class );
     configurator = mock( ApplicationConfiguration.class );
   }

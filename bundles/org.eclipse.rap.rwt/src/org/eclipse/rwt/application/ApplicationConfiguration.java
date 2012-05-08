@@ -42,7 +42,7 @@ package org.eclipse.rwt.application;
  * <code>ApplicationConfiguration</code> can be registered with the
  * the surrounding container instead. For example, in a servlet container, the
  * application can be registered as <code>context-param</code> in the
- * <code>web.xml</code> (see <code>CONFIGURATOR_PARAM</code>), in
+ * <code>web.xml</code> (see <code>CONFIGURATION_PARAM</code>), in
  * <code>OSGi</code> it can be registered as a service, and when using the
  * workbench with RAP, the application is registered with an extension-point.
  * </p>
@@ -66,7 +66,7 @@ public interface ApplicationConfiguration {
    * <pre>
    * &lt;context-param&gt;
    *   &lt;param-name&gt;org.eclipse.rap.applicationConfiguration&lt;/param-name&gt;
-   *   &lt;param-value&gt;com.example.ExampleConfigurator&lt;/param-value&gt;
+   *   &lt;param-value&gt;com.example.ExampleConfiguration&lt;/param-value&gt;
    * &lt;/context-param&gt
    * </pre>
    */

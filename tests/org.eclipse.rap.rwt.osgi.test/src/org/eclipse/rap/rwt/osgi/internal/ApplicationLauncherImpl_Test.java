@@ -186,7 +186,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   public void testAddConfigurator() {
     applicationLauncher.addHttpService( httpServiceReference );
 
-    ApplicationConfiguration added = applicationLauncher.addConfigurator( configuratorReference );
+    ApplicationConfiguration added = applicationLauncher.addConfiguration( configuratorReference );
 
     assertSame( configuration, added );
     checkDefaultAliasHasBeenRegistered();
@@ -195,16 +195,16 @@ public class ApplicationLauncherImpl_Test extends TestCase {
 
   public void testRemoveConfigurator() {
     applicationLauncher.addHttpService( httpServiceReference );
-    applicationLauncher.addConfigurator( configuratorReference );
+    applicationLauncher.addConfiguration( configuratorReference );
 
-    applicationLauncher.removeConfigurator( configuration );
+    applicationLauncher.removeConfiguration( configuration );
 
     checkDefaultAliasHasBeenUnregistered();
     checkWebContextResourcesHaveBeenDeleted();
   }
 
   public void testAddHttpService() {
-    applicationLauncher.addConfigurator( configuratorReference );
+    applicationLauncher.addConfiguration( configuratorReference );
 
     HttpService added = applicationLauncher.addHttpService( httpServiceReference );
 
@@ -383,7 +383,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   }
 
   private void registerServiceReferences() {
-    applicationLauncher.addConfigurator( configuratorReference );
+    applicationLauncher.addConfiguration( configuratorReference );
     applicationLauncher.addHttpService( httpServiceReference );
   }
 
@@ -435,7 +435,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     configuration = mock( ApplicationConfiguration.class );
     when( bundleContext.getService( configuratorReference ) ).thenReturn( configuration );
     when( bundleContext.getDataFile( any( String.class ) ) ).thenReturn( Fixture.WEB_CONTEXT_DIR );
-    applicationLauncher.addConfigurator( configuratorReference );
+    applicationLauncher.addConfiguration( configuratorReference );
   }
 
 
