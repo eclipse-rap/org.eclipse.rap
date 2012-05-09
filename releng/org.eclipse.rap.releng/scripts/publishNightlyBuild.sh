@@ -13,7 +13,7 @@
 # Usage: publishNightlyBuild.sh (tooling|runtime)
 
 TMP_DIR=/shared/rt/rap/tmp
-JOB_DIR=/shared/jobs
+JOB_DIR=/shared/rt/rap/last-stable
 NIGHTLY_DIR=/home/data/httpd/download.eclipse.org/rt/rap/nightly
 SCRIPTS_DIR=$(dirname $(readlink -nm $0))
 # Set bash's internal file separator to \n to avoid problems with filenames that contain spaces
@@ -53,12 +53,12 @@ echo "========================"
 
 echo "Build type: $buildType"
 
-latestStableBuild=`ls -1 $jobDir/lastStable/archive/*/*.zip`
-echo "Latest build: $latestStableBuild"
+latestStableBuild=`ls -1 $jobDir/*.zip`
 if [ -z "$latestStableBuild" ]; then
   echo >&2 "No latest stable build found, exiting"
   exit 0
 fi
+echo "Latest build: $latestStableBuild"
 
 zipFileName=`basename $latestStableBuild`
 
@@ -153,4 +153,3 @@ rm -rf $workingDir
 
 echo "done"
 echo
-

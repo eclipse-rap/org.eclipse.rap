@@ -12,7 +12,7 @@ if [ -z "$CVS_TAG" ]; then
   exit 1
 fi
 
-if [ "${BUILD_TYPE:0:1}" == "I" -o "${BUILD_TYPE:0:1}" == "M" -o "${BUILD_TYPE:0:1}" == "R" ]; then
+if [ "${BUILD_TYPE:0:1}" == "S" ]; then
   sign=true
 else
   sign=false
@@ -77,3 +77,13 @@ cp -f source/releng/org.eclipse.rap.releng/legal/notice.html .
 cp -f source/releng/org.eclipse.rap.releng/legal/epl-v10.html .
 zip "$zipFileName" notice.html epl-v10.html
 
+######################################################################
+# Copy build artifacts
+
+TARGET_DIR=/shared/rt/rap/last-stable/rap-tooling
+
+mkdir -p "$TARGET_DIR"
+rm -f "$TARGET_DIR"/*.zip
+test -e "$WORKSPACE/$zipFileName" && cp "$WORKSPACE/$zipFileName" "$TARGET_DIR"
+#test -e "$WORKSPACE/$repoZipFileName" && cp "$WORKSPACE/$repoZipFileName" "$TARGET_DIR"
+true

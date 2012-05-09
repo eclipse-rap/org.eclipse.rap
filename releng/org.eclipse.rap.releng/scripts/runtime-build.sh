@@ -7,7 +7,12 @@
 SCRIPTS_DIR=$(dirname $(readlink -nm $0))
 . $SCRIPTS_DIR/build-environment.sh
 
-if [ "${BUILD_TYPE:0:1}" == "I" -o "${BUILD_TYPE:0:1}" == "M" -o "${BUILD_TYPE:0:1}" == "R" ]; then
+if [ -z "$CVS_TAG" ]; then
+  echo CVS_TAG is not set
+  exit 1
+fi
+
+if [ "${BUILD_TYPE:0:1}" == "S" ]; then
   sign=true
 else
   sign=false
@@ -28,7 +33,11 @@ cvs -Q -d :local:/cvsroot/rt co -P -d source -r $CVS_TAG org.eclipse.rap || exit
 
 cd "$WORKSPACE/source/releng/org.eclipse.rap.releng/runtime"
 echo "Running maven on $PWD, sign=$sign"
-$MVN -e clean package -Dsign=$sign || exit 1
+$MVN -e clean package -Dsign=$sign
+exitcode=$?
+if [ "$exitcode" != "0" ]; then
+  echo "Maven exited with error code " + $exitcode
+fi
 
 if [ -d runtime-repository/target/fixedPacked ]; then
   mv runtime-repository/target/fixedPacked "$WORKSPACE/runtimeRepo"
@@ -68,3 +77,11 @@ cp -f source/releng/org.eclipse.rap.releng/legal/notice.html .
 cp -f source/releng/org.eclipse.rap.releng/legal/epl-v10.html .
 zip "$zipFileName" notice.html epl-v10.html
 
+######################################################################
+# Copy build artifacts
+
+TARGET_DIR=/shared/rt/rap/last-stable/rap-runtime
+
+mkdir -p "$TARGET_DIR"
+rm -f "$TARGET_DIR"/*.zip
+test -e "$WORKSPACE/$zipFileName" && cp "$WORKSPACE/$zipFileName" "$TARGET_DIR"

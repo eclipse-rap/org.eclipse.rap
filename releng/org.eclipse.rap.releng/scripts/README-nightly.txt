@@ -10,4 +10,3 @@ $ export RUNTIME_DIR=/shared/rt/rap/build-runtimes/eclipse-3.6.1
 $ /shared/rt/rap/scripts/1.5/publishNightlyBuild.sh
 
 [1] https://bugs.eclipse.org/bugs/show_bug.cgi?id=353581, comment 3.
-    
