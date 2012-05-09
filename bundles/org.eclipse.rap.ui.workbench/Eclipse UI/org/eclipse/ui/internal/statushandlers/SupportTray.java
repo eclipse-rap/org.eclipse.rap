@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.ui.internal.statushandlers;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IContributionItem;
@@ -189,7 +191,7 @@ public class SupportTray extends DialogTray implements
 //		gc.setForeground(border);
 //		gc.drawPolygon(shape);
 //		gc.dispose();
-		normal = new Image(display, "org/eclipse/ui/internal/statushandlers/close.gif");
+		normal = loadImage( display, "org/eclipse/ui/internal/statushandlers/close.gif" );
 		
 //		hover = new Image(display, data);
 //		hover.setBackground(transparent);
@@ -199,11 +201,30 @@ public class SupportTray extends DialogTray implements
 //		gc.setForeground(border);
 //		gc.drawPolygon(shape);
 //		gc.dispose();
-		hover = new Image(display, "org/eclipse/ui/internal/statushandlers/close_hover.gif");
+		hover = loadImage( display, "org/eclipse/ui/internal/statushandlers/close_hover.gif" );
 		
 		backgroundHot.dispose();
 	}
-	
+
+// RAP [if]
+	private static Image loadImage( Display display, String name ) {
+      Image result = null;
+	  InputStream stream = SupportTray.class.getClassLoader().getResourceAsStream( name );
+	  if( stream != null ) {
+	    try {
+	      result = new Image( display, stream );
+	    } finally {
+	      try {
+	        stream.close();
+	      } catch( IOException unexpected ) {
+	        throw new RuntimeException( "Failed to close image input stream", unexpected );
+	      }
+	    }
+	  }
+	  return result;
+	}
+// RAPEND
+
 	/**
 	 * Creates any actions needed by the tray.
 	 */
