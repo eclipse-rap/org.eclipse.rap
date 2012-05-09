@@ -59,10 +59,11 @@ public interface ApplicationConfiguration {
 
   /**
    * This constant contains the parameter name to register an
-   * ApplicationConfiguration in a servlet container environment when running RAP
-   * without OSGi. To do so, the fully class qualified name of the Application
+   * ApplicationConfiguration in a servlet container environment when running
+   * RAP without OSGi. To do so, the fully qualified class name of the
    * implementation has to be registered as a <code>context-param</code> in the
    * <code>web.xml</code>. Example:
+   *
    * <pre>
    * &lt;context-param&gt;
    *   &lt;param-name&gt;org.eclipse.rap.applicationConfiguration&lt;/param-name&gt;
