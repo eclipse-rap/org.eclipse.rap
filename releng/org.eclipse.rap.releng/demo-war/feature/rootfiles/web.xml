@@ -9,11 +9,7 @@
 
     <init-param>
       <param-name>commandline</param-name>
-      <!--
-        TODO: re-enable -registryMultiLanguage after switching to platform M6
-        See bug 371103
-       -->
-      <param-value>-console 10001<!-- -registryMultiLanguage -consoleLog --></param-value>
+      <param-value> -registryMultiLanguage -console 10001 <!-- -consoleLog --></param-value>
     </init-param>
 
     <init-param>
