@@ -72,18 +72,7 @@ fi
 ######################################################################
 # Include legal files in zip
 
-cd "$WORKSPACE/"
+cd "$WORKSPACE"
 cp -f source/releng/org.eclipse.rap.releng/legal/notice.html .
 cp -f source/releng/org.eclipse.rap.releng/legal/epl-v10.html .
 zip "$zipFileName" notice.html epl-v10.html
-
-######################################################################
-# Copy build artifacts
-
-TARGET_DIR=/shared/rt/rap/last-stable/rap-tooling
-
-mkdir -p "$TARGET_DIR"
-rm -f "$TARGET_DIR"/*.zip
-test -e "$WORKSPACE/$zipFileName" && cp "$WORKSPACE/$zipFileName" "$TARGET_DIR"
-#test -e "$WORKSPACE/$repoZipFileName" && cp "$WORKSPACE/$repoZipFileName" "$TARGET_DIR"
-true
