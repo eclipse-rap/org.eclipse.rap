@@ -21,6 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
 import java.util.Dictionary;
 
 import javax.servlet.*;
@@ -55,6 +56,23 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   private ApplicationLauncherImpl applicationLauncher;
   private ServiceRegistration serviceRegistration;
   private LogService log;
+
+  @Override
+  protected void setUp() {
+    Fixture.deleteWebContextDirectory();
+    Fixture.setSkipResourceDeletion( false );
+    Fixture.useTestResourceManager();
+    mockConfigurator();
+    mockHttpService();
+    mockBundleContext();
+    createApplicationLauncher();
+  }
+
+  @Override
+  protected void tearDown() {
+    Fixture.delete( Fixture.WEB_CONTEXT_DIR );
+    Fixture.resetSkipResourceDeletion();
+  }
 
   public void testLaunch() {
     String path = Fixture.WEB_CONTEXT_DIR.getPath();
@@ -266,21 +284,13 @@ public class ApplicationLauncherImpl_Test extends TestCase {
     checkDefaultAliasHasBeenRegistered();
   }
 
-  @Override
-  protected void setUp() {
-    Fixture.deleteWebContextDirectory();
-    Fixture.setSkipResourceDeletion( false );
-    Fixture.useTestResourceManager();
-    mockConfigurator();
-    mockHttpService();
-    mockBundleContext();
-    createApplicationLauncher();
-  }
+  public void testContextFileNameIsRelative() {
+    // See bug 378778
+    String name = ApplicationLauncherImpl.getContextFileName( "contextName",
+                                                              configuration,
+                                                              httpService );
 
-  @Override
-  protected void tearDown() {
-    Fixture.delete( Fixture.WEB_CONTEXT_DIR );
-    Fixture.resetSkipResourceDeletion();
+    assertFalse( new File( name ).isAbsolute() );
   }
 
   @SuppressWarnings( "unchecked" )

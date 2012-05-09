@@ -61,7 +61,7 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     ServiceHolder<ApplicationConfiguration> configurationHolder;
     synchronized( lock ) {
       configurationHolder = configurations.add( ref );
-      launchWithConfigurator( configurationHolder );
+      launchWithConfiguration( configurationHolder );
     }
     return configurationHolder.getService();
   }
@@ -141,7 +141,7 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     }
   }
 
-  private void launchWithConfigurator( ServiceHolder<ApplicationConfiguration> configurationHolder )
+  private void launchWithConfiguration( ServiceHolder<ApplicationConfiguration> configurationHolder )
   {
     ServiceHolder<HttpService>[] services = httpServices.getServices();
     for( ServiceHolder<HttpService> httpServiceHolder : services ) {
@@ -229,7 +229,6 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
                                     HttpService service )
   {
     StringBuilder result = new StringBuilder();
-    result.append( "/" );
     result.append( name == null ? "rwtcontext" : name );
     result.append( "_" );
     result.append( configuration.hashCode() );
