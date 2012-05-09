@@ -80,6 +80,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     = Browser.class.getName() + "#functionsToDestroy.";
 
 
+  @Override
   public void preserveValues( Widget widget ) {
     Browser browser = ( Browser )widget;
     ControlLCAUtil.preserveValues( browser );
@@ -94,6 +95,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     fireProgressEvent( browser );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Browser browser = ( Browser )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( browser );
@@ -102,6 +104,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     clientObject.set( "style", WidgetLCAUtil.getStyles( browser, ALLOWED_STYLES ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     Browser browser = ( Browser )widget;
     ControlLCAUtil.renderChanges( browser );
@@ -114,12 +117,14 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     renderListener( browser, PARAM_PROGRESS_LISTENER, ProgressEvent.hasListener( browser ), false );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   private static void fireProgressEvent( Browser browser ) {
-    if( WidgetLCAUtil.wasEventSent( browser, EVENT_PROGRESS_COMPLETED ) ) {
+    String fireProgressEvent = WidgetLCAUtil.readPropertyValue( browser, EVENT_PROGRESS_COMPLETED );
+    if( fireProgressEvent != null ) {
       ProgressEvent changedEvent = new ProgressEvent( browser, ProgressEvent.CHANGED );
       changedEvent.processEvent();
       ProgressEvent completedEvent = new ProgressEvent( browser, ProgressEvent.COMPLETED );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -750,7 +750,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         assertEquals( 1, TestUtil.getRequestsSend() );
         var msg = TestUtil.getMessage();
-        assertTrue( msg.indexOf( "org.eclipse.swt.events.progressCompleted=w6" ) != -1 );
+        assertTrue( msg.indexOf( "w6.org.eclipse.swt.events.progressCompleted=true" ) != -1 );
         browser.destroy();
       }
     ],

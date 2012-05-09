@@ -125,7 +125,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();
         var id = widgetManager.findIdByWidget( this );
-        req.addEvent( "org.eclipse.swt.events.progressCompleted", id );
+        req.addParameter( id + ".org.eclipse.swt.events.progressCompleted", "true" );
         req.send();
       }
     },
