@@ -51,7 +51,7 @@ public class RAPAllTestSuite {
     return createSortedSuite();
   }
 
-  private void initializeFixture() {
+  private static void initializeFixture() {
     Fixture.setUp();
     Fixture.tearDown();
   }
@@ -61,7 +61,7 @@ public class RAPAllTestSuite {
     return createSuite( testCases );
   }
 
-  private TestSuite createSuite( Class<? extends TestCase>[] testCases ) {
+  private static TestSuite createSuite( Class<? extends TestCase>[] testCases ) {
     TestSuite result = new TestSuite( "RWT Test Suite" );
     for( Class<? extends TestCase> testClass : testCases ) {
       result.addTestSuite( testClass );
@@ -92,10 +92,8 @@ public class RAPAllTestSuite {
     waitForScan();
   }
 
-  private boolean isInInclusionList( File file ) {
-    String[] exclusionList = new String[] {
-      ".test"
-    };
+  private static boolean isInInclusionList( File file ) {
+    String[] exclusionList = new String[] { ".test" };
     boolean result = false;
     for( int i = 0; !result && i < exclusionList.length; i++ ) {
       result = file.toString().contains( exclusionList[ i ] );
@@ -151,15 +149,18 @@ public class RAPAllTestSuite {
 
   private void scanJar( File file ) throws IOException {
     JarInputStream inputStream = new JarInputStream( new FileInputStream( file ), false );
-    JarEntry jarEntry = inputStream.getNextJarEntry();
-    while( jarEntry != null ) {
-      if( isClassEntry( jarEntry ) ) {
-        String className = toClassName( jarEntry );
-        addToSuite( className );
+    try {
+      JarEntry jarEntry = inputStream.getNextJarEntry();
+      while( jarEntry != null ) {
+        if( isClassEntry( jarEntry ) ) {
+          String className = toClassName( jarEntry );
+          addToSuite( className );
+        }
+        jarEntry = inputStream.getNextJarEntry();
       }
-      jarEntry = inputStream.getNextJarEntry();
+    } finally {
+      inputStream.close();
     }
-    inputStream.close();
   }
 
   private void scanDirectory( File file, String initialPackagePath, String rootDirectory ) {
