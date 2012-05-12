@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ public final class UntypedEventAdapter
              SelectionListener,
              FocusListener,
              TreeListener,
+             ExpandListener,
              ShellListener,
              MenuListener,
              ModifyListener,
@@ -36,7 +37,7 @@ public final class UntypedEventAdapter
              KeyListener,
              TraverseListener,
              ShowListener,
-             ActivateListener,
+             ActivateListener, 
              HelpListener,
              DragDetectListener,
              MenuDetectListener,
@@ -109,6 +110,18 @@ public final class UntypedEventAdapter
   }
 
   public void treeExpanded( TreeEvent typedEvent ) {
+    Event event = createEvent( SWT.Expand, typedEvent.getSource() );
+    copyFields( typedEvent, event );
+    dispatchEvent( event );
+  }
+
+  public void itemCollapsed( ExpandEvent typedEvent ) {
+    Event event = createEvent( SWT.Collapse, typedEvent.getSource() );
+    copyFields( typedEvent, event );
+    dispatchEvent( event );
+  }
+
+  public void itemExpanded( ExpandEvent typedEvent ) {
     Event event = createEvent( SWT.Expand, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
@@ -272,7 +285,11 @@ public final class UntypedEventAdapter
       break;
       case SWT.Expand:
       case SWT.Collapse:
-        TreeEvent.addListener( widget, ( TreeListener )this );
+        if( widget instanceof ExpandBar ) {
+          ExpandEvent.addListener( widget, ( ExpandListener )this );
+        } else {
+          TreeEvent.addListener( widget, ( TreeListener )this );
+        }
       break;
       case SWT.Activate:
       case SWT.Deactivate:
@@ -364,7 +381,11 @@ public final class UntypedEventAdapter
       break;
       case SWT.Expand:
       case SWT.Collapse:
-        TreeEvent.removeListener( widget, ( TreeListener )this );
+        if( widget instanceof ExpandBar ) {
+          ExpandEvent.removeListener( widget, ( ExpandListener )this );
+        } else {
+          TreeEvent.removeListener( widget, ( TreeListener )this );
+        }
       break;
       case SWT.Activate:
       case SWT.Deactivate:
@@ -488,7 +509,11 @@ public final class UntypedEventAdapter
         break;
       case SWT.Expand:
       case SWT.Collapse:
-        result = TreeEvent.hasListener( widget );
+        if( widget instanceof ExpandBar ) {
+          result = ExpandEvent.hasListener( widget );
+        } else {
+          result = TreeEvent.hasListener( widget );
+        }
         break;
       case SWT.Activate:
       case SWT.Deactivate:
@@ -566,10 +591,10 @@ public final class UntypedEventAdapter
       break;
       case SWT.Expand:
       case SWT.Collapse:
-        if( event.widget instanceof Tree ) {
-          typedEvent = new TreeEvent( event );
-        } else {
+        if( event.widget instanceof ExpandBar ) {
           typedEvent = new ExpandEvent( event );
+        } else {
+          typedEvent = new TreeEvent( event );
         }
       break;
       case SWT.Activate:
@@ -681,6 +706,18 @@ public final class UntypedEventAdapter
   }
 
   private static void copyFields( TreeEvent from, Event to ) {
+    copyFields( ( TypedEvent )from, to );
+    to.detail = from.detail;
+    to.doit = from.doit;
+    to.x = from.x;
+    to.y = from.y;
+    to.height = from.height;
+    to.width = from.width;
+    to.item = from.item;
+    to.text = from.text;
+  }
+
+  private static void copyFields( ExpandEvent from, Event to ) {
     copyFields( ( TypedEvent )from, to );
     to.detail = from.detail;
     to.doit = from.doit;

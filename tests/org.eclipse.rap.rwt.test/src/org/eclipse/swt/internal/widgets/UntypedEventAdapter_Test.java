@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.events.SetDataEvent;
@@ -35,10 +36,11 @@ public class UntypedEventAdapter_Test extends TestCase {
   private static final String EVENT_FIRED = "fired|";
   private static int eventType;
   private static String log;
-  
+
   private Display display;
   private Control widget;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     eventType = 0;
@@ -47,6 +49,7 @@ public class UntypedEventAdapter_Test extends TestCase {
     widget = new Shell( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -84,6 +87,12 @@ public class UntypedEventAdapter_Test extends TestCase {
     assertEquals( SWT.Expand, eventType );
     adapter.addListener( SWT.Collapse, listener );
     adapter.treeCollapsed( new TreeEvent( widget, null, 0 ) );
+    assertEquals( SWT.Collapse, eventType );
+    adapter.addListener( SWT.Expand, listener );
+    adapter.itemExpanded( new ExpandEvent( widget, null, 0 ) );
+    assertEquals( SWT.Expand, eventType );
+    adapter.addListener( SWT.Collapse, listener );
+    adapter.itemCollapsed( new ExpandEvent( widget, null, 0 ) );
     assertEquals( SWT.Collapse, eventType );
     adapter.addListener( SWT.Activate, listener );
     adapter.shellActivated( new ShellEvent( widget, 0 ) );
@@ -250,6 +259,46 @@ public class UntypedEventAdapter_Test extends TestCase {
     assertEquals( mouseEvent.stateMask, eventLog[ 0 ].stateMask );
   }
 
+  public void testAddNotifyRemoveTreeEvent() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final Event[] eventLog = { null };
+    Listener listener = new Listener() {
+      public void handleEvent( Event event ) {
+        eventLog[ 0 ] = event;
+      }
+    };
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    tree.addListener( SWT.Expand, listener );
+    assertTrue( TreeEvent.hasListener( tree ) );
+
+    tree.notifyListeners( SWT.Expand, null );
+    assertNotNull( eventLog[ 0 ] );
+
+    tree.removeListener( SWT.Expand, listener );
+    assertFalse( TreeEvent.hasListener( tree ) );
+  }
+
+  public void testAddNotifyRemoveExpandEvent() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final Event[] eventLog = { null };
+    Listener listener = new Listener() {
+      public void handleEvent( Event event ) {
+        eventLog[ 0 ] = event;
+      }
+    };
+    Shell shell = new Shell( display );
+    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
+    expandBar.addListener( SWT.Expand, listener );
+    assertTrue( ExpandEvent.hasListener( expandBar ) );
+
+    expandBar.notifyListeners( SWT.Expand, null );
+    assertNotNull( eventLog[ 0 ] );
+
+    expandBar.removeListener( SWT.Expand, listener );
+    assertFalse( ExpandEvent.hasListener( expandBar ) );
+  }
+
   public void testInvalidEventType() {
     final Event[] eventLog = { null };
     Listener listener = new Listener() {
@@ -262,13 +311,13 @@ public class UntypedEventAdapter_Test extends TestCase {
     assertNull( eventLog[ 0 ] );
     widget.removeListener( 505, listener );
   }
-  
+
   public void testIsSerializable() throws Exception {
     UntypedEventAdapter adapter = new UntypedEventAdapter();
     adapter.addListener( SWT.Move, new SerializableListener() );
-    
+
     UntypedEventAdapter deserializeAdapter = Fixture.serializeAndDeserialize( adapter );
-    
+
     Listener[] listeners = deserializeAdapter.getListeners( SWT.Move );
     assertEquals( 1, listeners.length );
     assertEquals( SerializableListener.class, listeners[ 0 ].getClass() );
