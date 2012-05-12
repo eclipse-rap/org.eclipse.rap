@@ -8,7 +8,7 @@
 * Contributors:
 *    EclipseSource - initial API and implementation
 *******************************************************************************/
-package org.eclipse.rwt.test;
+package org.eclipse.rap.test;
 
 import java.io.*;
 import java.net.*;
@@ -21,12 +21,12 @@ import junit.framework.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
-public class RWTAllTestSuite {
+public class RAPAllTestSuite {
   private static final String JAR_EXTENSION = ".jar";
   private static final String CLASS_EXTENSION = ".class";
 
   public static Test suite() {
-    return new RWTAllTestSuite().createSuite();
+    return new RAPAllTestSuite().createSuite();
   }
 
   private final URLClassLoader classLoader;
@@ -34,7 +34,7 @@ public class RWTAllTestSuite {
   private final List<Throwable> problems;
   private final List<Class<? extends TestCase>> tests;
 
-  RWTAllTestSuite() {
+  RAPAllTestSuite() {
     classLoader = ( URLClassLoader )getClass().getClassLoader();
     threads = new Vector<Thread>();
     problems = new Vector<Throwable>();
