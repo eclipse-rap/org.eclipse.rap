@@ -320,7 +320,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       widget.destroy();
       this.resetMobileWebkitSupport();
     },
-    
+
     testTouchStartCreatesMouseDown : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
@@ -334,6 +334,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var node = widget._getTargetNode();
       this.touch( node, "touchstart" );
       assertEquals( [ "mousedown" ], log );
+      widget.destroy();
+      this.resetMobileWebkitSupport();
+    },
+    
+    testTouchIgnoredWhileInReponse : function() { // See Bug 379140
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      TestUtil.flush();      
+      var log = [];
+      var logger = function( event ){ 
+        log.push( event.getType() ); 
+      };
+      widget.addEventListener( "mousedown", logger );
+      var node = widget._getTargetNode();
+      
+      org.eclipse.swt.EventUtil.setSuspended( true );
+      this.touch( node, "touchstart" );
+      org.eclipse.swt.EventUtil.setSuspended( false );
+      
+      assertEquals( [], log ); // should also call prevent default, but that cant be tested
       widget.destroy();
       this.resetMobileWebkitSupport();
     },

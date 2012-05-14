@@ -169,23 +169,27 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
 
     _onTouchEvent : function( domEvent ) {
       try {
-        var type = domEvent.type;
-        if( this._mouseEnabled ) {
-          switch( type ) {
-          case "touchstart":
-            this._handleTouchStart( domEvent );
-            break;
-          case "touchend":
-            this._handleTouchEnd( domEvent );
-            break;
-          case "touchmove":
-            this._handleTouchMove( domEvent );
-            break;
+        if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+          var type = domEvent.type;
+          if( this._mouseEnabled ) {
+            switch( type ) {
+            case "touchstart":
+              this._handleTouchStart( domEvent );
+              break;
+            case "touchend":
+              this._handleTouchEnd( domEvent );
+              break;
+            case "touchmove":
+              this._handleTouchMove( domEvent );
+              break;
+            }
+          } else {
+            if( this._touchListener !== null ) {
+              this._touchListener[ 0 ].call( this._touchListener[ 1 ], domEvent );
+            }
           }
         } else {
-          if( this._touchListener !== null ) {
-            this._touchListener[ 0 ].call( this._touchListener[ 1 ], domEvent );
-          }
+          domEvent.preventDefault();
         }
       } catch( ex ) {
         // problem: touch events emulate mouse events. When an error occurs in the emulation
