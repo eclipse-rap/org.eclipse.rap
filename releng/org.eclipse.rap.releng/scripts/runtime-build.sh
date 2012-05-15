@@ -32,8 +32,8 @@ else
   mv repository/target/repository "$WORKSPACE/runtimeRepo"
 fi
 
-VERSION=$(ls "$WORKSPACE"/runtimeRepo/features/org.eclipse.rap.runtime_1.5.0.*.jar | sed 's/.*_\([0-9.-]\+\)\..*\.jar/\1/')
-TIMESTAMP=$(ls "$WORKSPACE"/runtimeRepo/features/org.eclipse.rap.runtime_1.5.0.*.jar | sed 's/.*\.\([0-9-]\+\)\.jar/\1/')
+VERSION=$(ls "$WORKSPACE"/runtimeRepo/features/org.eclipse.rap.runtime_*.jar | sed 's/.*_\([0-9.-]\+\)\..*\.jar/\1/')
+TIMESTAMP=$(ls "$WORKSPACE"/runtimeRepo/features/org.eclipse.rap.runtime_*.jar | sed 's/.*\.\([0-9-]\+\)\.jar/\1/')
 echo "Version is $VERSION"
 echo "Timestamp is $TIMESTAMP"
 test -n "$VERSION" || exit 1
@@ -42,15 +42,15 @@ test -n "$TIMESTAMP" || exit 1
 ######################################################################
 # Build Aggregation Repository
 
-cd "$WORKSPACE/org.eclipse.rap/releng/org.eclipse.rap.releng"
-echo "Running maven with pom-aggregation.xml on $PWD, sign=$sign"
-$MVN -e -f pom-aggregation.xml clean package -DruntimeRepo="file://$WORKSPACE/runtimeRepo" || exit 1
+cd "$WORKSPACE/org.eclipse.rap/releng/org.eclipse.rap.target.releng"
+echo "Running maven on $PWD, sign=$sign"
+$MVN -e clean package -DruntimeRepo="file://$WORKSPACE/runtimeRepo" || exit 1
 
 # Example: rap-runtime-1.5.0-N-20110814-2110.zip
 zipFileName=rap-runtime-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
 compatZipFileName=rap-runtime-compatibility-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
 
-mv aggregation-repository/target/*.zip "$WORKSPACE/$zipFileName" || exit 1
+mv repository/target/*.zip "$WORKSPACE/$zipFileName" || exit 1
 
 if [ "$sign" == "true" -a -d compatibility-repository/target ]; then
   mv compatibility-repository/target/*.zip "$WORKSPACE/$compatZipFileName" || exit 1
