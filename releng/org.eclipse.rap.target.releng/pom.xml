@@ -32,12 +32,10 @@
 
   <modules>
     <module>../../features/org.eclipse.rap.runtime.requirements</module>
+    <module>../../features/org.eclipse.rap.runtime.sdk</module>
     <module>repository</module>
     <module>repository/runtime-feature</module>
-    <!-- 
-    <module>runtime-compatibility-repository</module>
-    <module>runtime-compatibility-repository/runtime.sdk-feature</module>
-     -->
+    <module>compatibility-repository</module>
   </modules>
 
   <repositories>

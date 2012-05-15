@@ -15,13 +15,13 @@
       name="org.eclipse.rap.category"
       label="Rich Ajax Platform (RAP)" />
 
-  <feature url="./runtime-feature"
+  <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.runtime"
       version="1.5.0.qualifier">
     <category name="org.eclipse.rap.category"/>
   </feature>
 
-  <feature url="../runtime.requirements-feature"
+  <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.runtime.requirements"
       version="1.5.0.qualifier">
     <category name="org.eclipse.rap.category"/>
