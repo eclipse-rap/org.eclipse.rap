@@ -996,7 +996,8 @@ qx.Class.define( "qx.ui.core.Widget", {
     /** Contains the tooltip object connected to the widget. */
     toolTip : {
       check : "qx.ui.popup.ToolTip",
-      nullable : true
+      nullable : true,
+      event: "changeToolTip"
     },
 
     /** Contains the context menu object connected to the widget. (Need real implementation) */
