@@ -17,7 +17,7 @@
   <name>RAP Runtime aggregation build</name>
 
   <groupId>org.eclipse.rap</groupId>
-  <artifactId>org.eclipse.rap.runtime-aggregation-parent</artifactId>
+  <artifactId>org.eclipse.rap.runtime.target-parent</artifactId>
   <version>1.5.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
@@ -31,16 +31,15 @@
   </prerequisites>
 
   <modules>
-    <module>runtime.requirements-feature</module>
-    <module>runtime-aggregation-repository</module>
-    <module>runtime-aggregation-repository/runtime-feature</module>
+    <module>../../features/org.eclipse.rap.runtime.requirements</module>
+    <module>repository</module>
+    <module>repository/runtime-feature</module>
     <!-- 
     <module>runtime-compatibility-repository</module>
     <module>runtime-compatibility-repository/runtime.sdk-feature</module>
      -->
   </modules>
 
-  <!-- repositories to get pre-built pieces from -->
   <repositories>
     <repository>
       <id>runtime</id>

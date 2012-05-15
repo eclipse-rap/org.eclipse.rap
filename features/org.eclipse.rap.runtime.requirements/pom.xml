@@ -16,9 +16,9 @@
 
   <parent>
     <groupId>org.eclipse.rap</groupId>
-    <artifactId>org.eclipse.rap.runtime-aggregation-parent</artifactId>
+    <artifactId>org.eclipse.rap.runtime.target-parent</artifactId>
     <version>1.5.0-SNAPSHOT</version>
-    <relativePath>../pom-aggregation.xml</relativePath>
+    <relativePath>../../releng/org.eclipse.rap.target.releng/pom.xml</relativePath>
   </parent>
 
   <artifactId>org.eclipse.rap.runtime.requirements</artifactId>
