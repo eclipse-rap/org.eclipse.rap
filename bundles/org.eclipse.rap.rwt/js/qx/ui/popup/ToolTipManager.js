@@ -178,29 +178,8 @@ qx.Class.define("qx.ui.popup.ToolTipManager",
     ---------------------------------------------------------------------------
     */
 
-    /**
-     * If a widget with a tooltip get focused, bind the tooltip
-     * to the target widget and set the {@link #currentToolTip} property.
-     *
-     * @type member
-     * @param e {qx.event.type.FocusEvent} focus event
-     * @return {void}
-     */
-    handleFocus : function(e)
-    {
-      var vTarget = e.getTarget();
-      var vToolTip = vTarget.getToolTip();
-
-      // Only set new tooltip if focus widget
-      // has one
-      if (vToolTip != null)
-      {
-        // Bind tooltip to widget
-        vToolTip.setBoundToWidget(vTarget);
-
-        // Set Property
-        this.setCurrentToolTip(vToolTip);
-      }
+    handleFocus : function( e ) {
+      // nothing to do
     },
 
 
