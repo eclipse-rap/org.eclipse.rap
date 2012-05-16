@@ -13,7 +13,12 @@ else
   sign=false
 fi
 
-cd "$WORKSPACE/org.eclipse.rap"
+
+######################################################################
+# Cleanup left-overs from previous run
+
+test -d "$WORKSPACE" || exit 1
+rm -rf "$WORKSPACE/runtimeRepo" "$WORKSPACE/*.zip"
 
 ######################################################################
 # Build RAP Runtime
