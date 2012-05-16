@@ -84,7 +84,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       tree.destroy();
       row.destroy();
     },
-
     
     testRenderItemWithMarkupEnabled_Bug377746 : function() {
       var tree = this._createTree( false, "markupEnabled" );
@@ -272,6 +271,169 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       assertEquals( 21, bounds.left );
       assertEquals( 15, bounds.height );
       assertEquals( 45, bounds.width );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testChangeItemLabelMetricsWithEmptyItemThenScroll : function() {
+      var tree = this._createTree( true );
+      var row = this._createRow( tree, true );
+      row.setHeight( 15 );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test" ] );
+      var emptyItem = this._createItem( tree );
+      tree.setItemMetrics( 0, 4, 66, 24, 10, 5, 41 );
+
+      row.renderItem( emptyItem, tree._config, false, null, false ); // render empty with metrics 1
+      row.renderItem( item, tree._config, false, null, true ); // scroll to content, create node
+      row.renderItem( emptyItem, tree._config, false, null, true ); // scroll back
+      tree.setItemMetrics( 0, 4, 66, 24, 10, 10, 45 ); // change metrics
+      row.renderItem( emptyItem, tree._config, false, null, false ); // re-render
+      row.renderItem( item, tree._config, false, null, true ); // scroll to content
+
+      var node = row._getTargetNode();
+      assertEquals( 1, node.childNodes.length );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bounds = TestUtil.getElementBounds( node.childNodes[ 0 ] );
+      assertEquals( 0, bounds.top );
+      assertEquals( 10, bounds.left );
+      assertEquals( 15, bounds.height );
+      assertEquals( 45, bounds.width );
+      tree.destroy();
+      row.destroy();
+    },
+    
+    testChangeItemLabelMetricsWithNullItemThenScroll : function() {
+      var tree = this._createTree( true );
+      var row = this._createRow( tree, true );
+      row.setHeight( 15 );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test" ] );
+      tree.setItemMetrics( 0, 4, 66, 24, 10, 5, 45 );
+      
+      row.renderItem( null, tree._config, false, null, false ); // render empty with metrics 1
+      row.renderItem( item, tree._config, false, null, true ); // scroll to content, create node
+      row.renderItem( null, tree._config, false, null, true ); // scroll back
+      tree.setItemMetrics( 0, 4, 66, 24, 10, 10, 41 ); // change metrics
+      row.renderItem( null, tree._config, false, null, false ); // re-render
+      row.renderItem( item, tree._config, false, null, true ); // scroll to content
+      
+      var node = row._getTargetNode();
+      assertEquals( 1, node.childNodes.length );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bounds = TestUtil.getElementBounds( node.childNodes[ 0 ] );
+      assertEquals( 0, bounds.top );
+      assertEquals( 10, bounds.left );
+      assertEquals( 15, bounds.height );
+      assertEquals( 41, bounds.width );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testChangeItemImageMetricsWithEmptyItemThenScroll : function() {
+      var tree = this._createTree( true );
+      var row = this._createRow( tree, true );
+      row.setHeight( 15 );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setImages( [ "url.jpg" ] );
+      var emptyItem = this._createItem( tree );
+      tree.setItemMetrics( 0, 4, 66, 24, 10, 5, 45 );
+      
+      row.renderItem( emptyItem, tree._config, false, null, false ); // render empty with metrics 1
+      row.renderItem( item, tree._config, false, null, true ); // scroll to content, create node
+      row.renderItem( emptyItem, tree._config, false, null, true ); // scroll back
+      tree.setItemMetrics( 0, 4, 66, 18, 20, 5, 45 ); // change metrics
+      row.renderItem( emptyItem, tree._config, false, null, false ); // re-render
+      row.renderItem( item, tree._config, false, null, true ); // scroll to content
+      
+      var node = row._getTargetNode();
+      assertEquals( 1, node.childNodes.length );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bounds = TestUtil.getElementBounds( node.childNodes[ 0 ] );
+      assertEquals( 18, bounds.left );
+      assertEquals( 20, bounds.width );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testChangeItemImageMetricsWithNullItemThenScroll : function() {
+      var tree = this._createTree( true );
+      var row = this._createRow( tree, true );
+      row.setHeight( 15 );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setImages( [ "url.jpg" ] );
+      tree.setItemMetrics( 0, 4, 66, 24, 10, 5, 45 );
+
+      row.renderItem( null, tree._config, false, null, false ); // render empty with metrics 1
+      row.renderItem( item, tree._config, false, null, true ); // scroll to content, create node
+      row.renderItem( null, tree._config, false, null, true ); // scroll back
+      tree.setItemMetrics( 0, 4, 66, 18, 20, 10, 45 ); // change metrics
+      row.renderItem( null, tree._config, false, null, false ); // re-render
+      row.renderItem( item, tree._config, false, null, true ); // scroll to content
+
+      var node = row._getTargetNode();
+      assertEquals( 1, node.childNodes.length );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bounds = TestUtil.getElementBounds( node.childNodes[ 0 ] );
+      assertEquals( 18, bounds.left );
+      assertEquals( 20, bounds.width );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testChangeItemCellMetricsWithEmptyItemThenScroll : function() {
+      var tree = this._createTree( true );
+      var row = this._createRow( tree, true );
+      row.setHeight( 15 );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setCellBackgrounds( [ "#ffffff" ] );
+      var emptyItem = this._createItem( tree );
+      tree.setItemMetrics( 0, 4, 66, 24, 10, 5, 45 );
+      
+      row.renderItem( emptyItem, tree._config, false, null, false ); // render empty with metrics 1
+      row.renderItem( item, tree._config, false, null, true ); // scroll to content, create node
+      row.renderItem( emptyItem, tree._config, false, null, true ); // scroll back
+      tree.setItemMetrics( 0, 10, 50, 24, 10, 5, 45 ); // change metrics
+      row.renderItem( emptyItem, tree._config, false, null, false ); // re-render
+      row.renderItem( item, tree._config, false, null, true ); // scroll to content
+      
+      var node = row._getTargetNode();
+      assertEquals( 1, node.childNodes.length );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bounds = TestUtil.getElementBounds( node.childNodes[ 0 ] );
+      assertEquals( 10, bounds.left );
+      assertEquals( 50, bounds.width );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testChangeItemCellMetricsWithNullItemThenScroll : function() {
+      var tree = this._createTree( true );
+      var row = this._createRow( tree, true );
+      row.setHeight( 15 );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setCellBackgrounds( [ "#ffffff" ] );
+      tree.setItemMetrics( 0, 4, 66, 24, 10, 5, 45 );
+      
+      row.renderItem( null, tree._config, false, null, false ); // render empty with metrics 1
+      row.renderItem( item, tree._config, false, null, true ); // scroll to content, create node
+      row.renderItem( null, tree._config, false, null, true ); // scroll back
+      tree.setItemMetrics( 0, 10, 50, 24, 10, 10, 45 ); // change metrics
+      row.renderItem( null, tree._config, false, null, false ); // re-render
+      row.renderItem( item, tree._config, false, null, true ); // scroll to content
+      
+      var node = row._getTargetNode();
+      assertEquals( 1, node.childNodes.length );
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bounds = TestUtil.getElementBounds( node.childNodes[ 0 ] );
+      assertEquals( 10, bounds.left );
+      assertEquals( 50, bounds.width );
       tree.destroy();
       row.destroy();
     },

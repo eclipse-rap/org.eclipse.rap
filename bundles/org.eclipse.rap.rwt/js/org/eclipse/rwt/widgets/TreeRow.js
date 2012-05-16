@@ -58,7 +58,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
 
     renderItem : function( item, config, selected, hoverElement, contentOnly ) {
       this._usedMiscNodes = 0;
-      if( item != null ) {
+      if( item !== null ) {
         var renderSelected = this._renderAsSelected( config, selected );
         var renderFullSelected = renderSelected && config.fullSelection;
         this._renderStates( item, config, renderFullSelected, hoverElement );
@@ -68,14 +68,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         }
         this._renderCheckBox( item, config, hoverElement, contentOnly );
         this._renderCells( item, config, renderSelected, hoverElement, contentOnly );
-        this.dispatchSimpleEvent( "itemRendered", item );
         this._hideRemainingElements();
       } else {
         this.setBackgroundColor( null );
         this.setBackgroundImage( null );
         this.setBackgroundGradient( null );
         this._clearContent( config );
+        if( !contentOnly && config ) {
+          this._renderAllBounds( config );
+        }
       }
+      this.dispatchSimpleEvent( "itemRendered", item );
     },
 
     getTargetIdentifier : function( event ) {
@@ -289,23 +292,23 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         this._renderStates( item, config, false, hoverElement );
       }
       for( var i = 0; i < columns; i++ ) {
-        var treeColumn = this._isTreeColumn( i, config );
+        var isTreeColumn = this._isTreeColumn( i, config );
         if( this._getItemWidth( item, i, config ) > 0 ) {
           this._renderCellBackground( item, i, config, contentOnly );
-          if( !config.fullSelection && treeColumn ) {
+          if( !config.fullSelection && isTreeColumn ) {
             if( selected ) {
               this._renderStates( item, config, true, hoverElement );
             }
-            var imageElement = this._renderCellImage( item, i, config, treeColumn, contentOnly );
-            var labelElement = this._renderCellLabel( item, i, config, treeColumn, contentOnly );
+            var imageElement = this._renderCellImage( item, i, config, isTreeColumn, contentOnly );
+            var labelElement = this._renderCellLabel( item, i, config, isTreeColumn, contentOnly );
             this._treeColumnElements = [ imageElement, labelElement ];
             if( selected ) {
               this._renderSelectionBackground( item, i, config );
               this._renderStates( item, config, false, hoverElement);
             }
           } else {
-            this._renderCellImage( item, i, config, treeColumn, contentOnly );
-            this._renderCellLabel( item, i, config, treeColumn, contentOnly );
+            this._renderCellImage( item, i, config, isTreeColumn, contentOnly );
+            this._renderCellLabel( item, i, config, isTreeColumn, contentOnly );
           }
         } else {
           this._removeCell( i );
@@ -337,71 +340,94 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
 
     _renderCellBackground : function( item, cell, config, contentOnly ) {
       var background = this._getCellBackgroundColor( item, cell, config );
-      if( background != "undefined" && background != this._styleMap.backgroundColor ) {
-        var renderBounds = !contentOnly || !this._cellBackgrounds[ cell ];
+      var renderBounds = false;
+      if( background !== "undefined" && background != this._styleMap.backgroundColor ) {
+        renderBounds = !contentOnly || !this._cellBackgrounds[ cell ];
         var element = this._getBackgroundElement( cell );
         element.style.backgroundColor = background;
-        if( renderBounds ) {
-          var left = this._getItemLeft( item, cell, config );
-          var width = this._getItemWidth( item, cell, config );
-          var height = this.getHeight();
-          if( this.hasState( "linesvisible" ) ) {
-            height -= 1;
-          }
-          this._setBounds( element, left, 0, width, height );
-        }
       } else if( this._cellBackgrounds[ cell ] ){
         this._cellBackgrounds[ cell ].style.backgroundColor = "transparent";
+        renderBounds = !contentOnly;
+      }
+      if( renderBounds ) {
+        this._renderCellBackgroundBounds( item, cell, config );
+      }
+    },
+    
+    _renderCellBackgroundBounds : function( item, cell, config ) {
+      var element = this._cellBackgrounds[ cell ];
+      if( element ) {
+        var left = this._getItemLeft( item, cell, config );
+        var width = this._getItemWidth( item, cell, config );
+        var height = this.getHeight();
+        if( this.hasState( "linesvisible" ) ) {
+          height -= 1;
+        }
+        this._setBounds( element, left, 0, width, height );
       }
     },
 
-    _renderCellImage : function( item, cell, config, treeColumn, contentOnly ) {
+    _renderCellImage : function( item, cell, config, isTreeColumn, contentOnly ) {
       var source = item.getImage( cell );
       var element = null;
       var renderBounds = false;
       if( source !== null ) {
-        renderBounds = treeColumn || !contentOnly || !this._cellImages[ cell ];
+        renderBounds = isTreeColumn || !contentOnly || !this._cellImages[ cell ];
         element = this._getCellImage( cell );
         this._setImage( element, source, renderBounds ? config.enabled : null );
       } else if( this._cellImages[ cell ] ) {
-        renderBounds = treeColumn;
+        renderBounds = isTreeColumn || !contentOnly;
         element = this._getCellImage( cell );
         this._setImage( element, null, null );
       }
-      if( element !== null && renderBounds ) {
+      if( renderBounds ) {
+        this._renderCellImageBounds( item, cell, config );
+      }
+      return element;
+    },
+    
+    _renderCellImageBounds : function( item, cell, config ) {
+      var element = this._cellImages[ cell ];
+      if( element ) {
         var left = this._getItemImageLeft( item, cell, config );
         var width = this._getItemImageWidth( item, cell, config );
         this._setBounds( element, left, 0, width, this.getHeight() );
       }
-      return element;
     },
 
-    _renderCellLabel : function( item, cell, config, treeColumn, contentOnly ) {
+    _renderCellLabel : function( item, cell, config, isTreeColumn, contentOnly ) {
       // NOTE [tb] : When scrolling in Firefox, it may happen that the text
       //             becomes temorarily invisible. This is a browser-bug
       //             that ONLY occurs when Firebug is installed.
       var element = null;
       var renderBounds = false;
       if( item.hasText( cell ) ) {
-        renderBounds = treeColumn || !contentOnly || !this._cellLabels[ cell ];
+        renderBounds = isTreeColumn || !contentOnly || !this._cellLabels[ cell ];
         element = this._getTextElement( cell, config );
         this._renderElementContent( element, item, cell, config.markupEnabled );
         if( renderBounds ) {
-          element.style.textAlign = treeColumn ? "left" : this._getAlignment( cell, config );
+          element.style.textAlign = isTreeColumn ? "left" : this._getAlignment( cell, config );
         }
         this._styleLabel( element, item, cell, config );
       } else if( this._cellLabels[ cell ] ) {
-        renderBounds = treeColumn;
+        renderBounds = isTreeColumn || !contentOnly;
         element = this._getTextElement( cell, config );
         this._renderElementContent( element, null, -1, config.markupEnabled );
       }
-      if( element !== null && renderBounds ) {
+      if( renderBounds ) {
+        this._renderCellLabelBounds( item, cell, config );
+      }
+      return element;
+    },
+    
+    _renderCellLabelBounds : function( item, cell, config ) {
+      var element = this._cellLabels[ cell ];
+      if( element ) {
         var left = this._getItemTextLeft( item, cell, config );
         var width = this._getItemTextWidth( item, cell, config );
         this._setBounds( element, left, 0, width, this.getHeight() );
         element.style.lineHeight = config.markupEnabled ? "" : element.style.height;
       }
-      return element;
     },
 
     _renderElementContent : Variant.select( "qx.client", {
@@ -671,6 +697,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       this._hideRemainingElements();
     },
 
+    _renderAllBounds : function( config ) {
+      var columns = this._getColumnCount( config );
+      for( var i = 0; i < columns; i++ ) {
+        // tree column bounds can not be rendered without item, is rendered always anyway
+        if( !this._isTreeColumn( i, config ) ) { 
+          this._renderCellLabelBounds( null, i, config );
+          this._renderCellImageBounds( null, i, config );
+        }
+        this._renderCellBackgroundBounds( null, i, config );
+      }
+    },
+
     _hideRemainingElements : function() {
       var node = this._getTargetNode();
       for( var i = this._usedMiscNodes; i < this._miscNodes.length; i++ ) {
@@ -787,7 +825,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
 
     _getIndentionOffset : function( level, config ) {
-      // NOTE [tb] : Shoud actually add the treeColumns own offset, assumes 0 now.
+      // NOTE [tb] : Shoud actually add the isTreeColumns own offset, assumes 0 now.
       return config.indentionWidth * level;
     },
 
