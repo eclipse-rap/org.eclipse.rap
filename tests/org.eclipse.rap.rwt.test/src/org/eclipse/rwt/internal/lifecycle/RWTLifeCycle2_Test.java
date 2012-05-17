@@ -30,6 +30,7 @@ import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.engine.RWTServlet;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
@@ -162,6 +163,24 @@ public class RWTLifeCycle2_Test extends TestCase {
     runRWTDelegate( request );
     assertEquals( 1, eventLog.size() );
     assertTrue( eventLog.get( 0 ) instanceof Event );
+  }
+
+  /*
+   * 353053: FakeContextUtil doesn't support getProperty on Request proxy
+   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=353053
+   */
+  public void testSessionRestartWithStringMeasurementInDisplayDispose() throws Exception {
+    TestRequest request;
+    Class<? extends IEntryPoint> entryPoint = StringMeasurementInDisplayDisposeEntryPoint.class;
+    RWTFactory.getEntryPointManager().registerByPath( "/test", entryPoint, null );
+    // send initial request - response creates ui
+    request = newPostRequest( true );
+    runRWTDelegate( request );
+
+    // send 'refresh' request - session is restarted
+    request = newPostRequest( true );
+    runRWTDelegate( request );
+    assertEquals( 0, eventLog.size() );
   }
 
   public void testEventProcessingOnSessionRestart() throws Exception {
@@ -437,6 +456,32 @@ public class RWTLifeCycle2_Test extends TestCase {
       } finally {
         createUIExited = true;
       }
+    }
+  }
+
+  public static final class StringMeasurementInDisplayDisposeEntryPoint implements IEntryPoint {
+    public int createUI() {
+      Display display = new Display();
+      display.addListener( SWT.Dispose, new Listener() {
+        public void handleEvent( Event event ) {
+          try {
+            Graphics.stringExtent( event.display.getSystemFont(), "foo" );
+          } catch( UnsupportedOperationException exception ) {
+            eventLog.add( exception );
+          }
+        }
+      } );
+      Shell shell = new Shell( display );
+      shell.setLayout( new FillLayout() );
+      shell.setSize( 100, 100 );
+      shell.layout();
+      shell.open();
+      while( !shell.isDisposed() ) {
+        if( !display.readAndDispatch() ) {
+          display.sleep();
+        }
+      }
+      return 0;
     }
   }
 

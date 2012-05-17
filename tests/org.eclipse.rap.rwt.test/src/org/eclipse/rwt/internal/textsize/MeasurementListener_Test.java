@@ -93,28 +93,28 @@ public class MeasurementListener_Test extends TestCase {
     assertNull( message.findCallOperation( DISPLAY_ID, METHOD_MEASURE_STRINGS ) );
   }
 
-  public void testAfterPhaseWithMeasuredProbes() {
+  public void testBeforePhaseWithMeasuredProbes() {
     fakeRequestWithProbeMeasurementResults();
 
-    listener.afterPhase( PhaseListenerHelper.createProcessActionEvent() );
+    listener.beforePhase( PhaseListenerHelper.createProcessActionEvent() );
 
     checkProbeResultHasBeenStored();
   }
 
-  public void testAfterPhaseWithMeasuredItems() {
+  public void testBeforePhaseWithMeasuredItems() {
     createShellWithResizeListener();
     fakeRequestWithItemMeasurementResults();
 
-    listener.afterPhase( PhaseListenerHelper.createProcessActionEvent() );
+    listener.beforePhase( PhaseListenerHelper.createProcessActionEvent() );
 
     checkTextMeasurementResultHasBeenStored();
     checkShellHasBeenResized();
   }
 
-  public void testAfterPhaseWithoutMeasuredItemsMustNotResizeShell() {
+  public void testBeforePhaseWithoutMeasuredItemsMustNotResizeShell() {
     createShellWithResizeListener();
 
-    listener.afterPhase( PhaseListenerHelper.createProcessActionEvent() );
+    listener.beforePhase( PhaseListenerHelper.createProcessActionEvent() );
 
     checkShellHasNotBeenResized();
   }
@@ -128,6 +128,7 @@ public class MeasurementListener_Test extends TestCase {
     checkProbeResultWasStored();
   }
 
+  @Override
   protected void setUp() throws Exception {
     listener = new MeasurementListener();
 
@@ -136,6 +137,7 @@ public class MeasurementListener_Test extends TestCase {
     initResizeCount();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -196,6 +198,7 @@ public class MeasurementListener_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Shell shell = new Shell( LifeCycleUtil.getSessionDisplay() );
     shell.addControlListener( new ControlAdapter() {
+      @Override
       public void controlResized( ControlEvent evt ) {
         resizeCount++;
       }

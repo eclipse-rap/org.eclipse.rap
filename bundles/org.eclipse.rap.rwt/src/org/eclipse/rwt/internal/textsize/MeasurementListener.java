@@ -15,43 +15,43 @@ import org.eclipse.rwt.lifecycle.*;
 
 
 public class MeasurementListener implements PhaseListener {
-  
+
   private TextSizeRecalculation textSizeRecalculation;
 
   public MeasurementListener() {
     textSizeRecalculation = new TextSizeRecalculation();
   }
-  
+
   //////////////////////////
   // interface PhaseListener
-  
+
   public void afterPhase( PhaseEvent event ) {
     if( PhaseListenerUtil.isRender( event ) ) {
       handleMeasurementRequests();
     }
-    if( PhaseListenerUtil.isProcessAction( event ) ) {
-      handleMeasurementResults();
-    }
   }
-  
+
   public void beforePhase( PhaseEvent event ) {
     if( PhaseListenerUtil.isPrepareUIRoot( event ) ) {
       handleStartupProbeMeasurementResults();
+    }
+    if( PhaseListenerUtil.isProcessAction( event ) ) {
+      handleMeasurementResults();
     }
   }
 
   public PhaseId getPhaseId() {
     return PhaseId.ANY;
   }
-  
-  
+
+
   //////////////////
   // helping methods
-  
+
   private void handleStartupProbeMeasurementResults() {
     getMeasurementOperator().handleStartupProbeMeasurementResults();
   }
-  
+
   private void handleMeasurementRequests() {
     getMeasurementOperator().handleMeasurementRequests();
   }
@@ -61,7 +61,7 @@ public class MeasurementListener implements PhaseListener {
       textSizeRecalculation.execute();
     }
   }
-  
+
   private MeasurementOperator getMeasurementOperator() {
     return MeasurementOperator.getInstance();
   }

@@ -84,9 +84,7 @@ class MeasurementOperator implements SerializableCompatibility {
   }
 
   void addItemToMeasure( MeasurementItem newItem ) {
-    if( !requestContainsMeasurementResult( newItem ) ) {
-      items.add( newItem );
-    }
+    items.add( newItem );
   }
 
   int getItemCount() {

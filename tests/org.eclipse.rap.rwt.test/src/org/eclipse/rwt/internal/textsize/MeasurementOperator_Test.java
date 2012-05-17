@@ -39,12 +39,14 @@ public class MeasurementOperator_Test extends TestCase {
   private Display display;
   private MeasurementOperator operator;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     operator = MeasurementOperator.getInstance();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -95,16 +97,6 @@ public class MeasurementOperator_Test extends TestCase {
     operator.handleMeasurementResults();
 
     assertEquals( 0, operator.getProbeCount() );
-    assertEquals( 0, operator.getItemCount() );
-  }
-
-  public void testIgnoreMeasurementResultsOfAlreadyMeasuredItem() {
-    requestProbingOfFont1();
-    fakeRequestParamWithMeasurementResultOfItem( MEASUREMENT_ITEM_1 );
-    requestMeasurementOfItem1();
-
-    operator.handleMeasurementRequests();
-
     assertEquals( 0, operator.getItemCount() );
   }
 
