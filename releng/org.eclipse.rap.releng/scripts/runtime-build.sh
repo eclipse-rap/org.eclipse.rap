@@ -18,7 +18,7 @@ fi
 # Cleanup left-overs from previous run
 
 test -d "$WORKSPACE" || exit 1
-rm -rf "$WORKSPACE/runtimeRepo" "$WORKSPACE/*.zip"
+rm -rf "$WORKSPACE"/runtimeRepo "$WORKSPACE"/*.zip
 
 ######################################################################
 # Build RAP Runtime
