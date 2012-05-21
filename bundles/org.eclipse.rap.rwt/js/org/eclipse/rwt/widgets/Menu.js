@@ -76,7 +76,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
     contextMenuHandler : function( event ) {
       var control = org.eclipse.swt.WidgetUtil.getControl( event.getTarget() );
       var contextMenu = control ? control.getContextMenu() : null;
-      if( contextMenu != null && !this._hasNativeMenu( event.getDomTarget() ) ) {
+      if( contextMenu != null ) {
         event.stopPropagation();
         event.preventDefault();
         var pageX = qx.event.type.MouseEvent.getPageX();

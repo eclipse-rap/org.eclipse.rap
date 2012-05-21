@@ -482,7 +482,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.disposeMenu();            
     },
 
-    testContextmenuOpenOnControl : function() {
+    testContextMenuOpenOnControl : function() {
       var menu1 = new org.eclipse.rwt.widgets.Menu();
       menu1.setHasMenuListener( true );
       var parent = this._createControl();
@@ -498,6 +498,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       menu1.destroy();            
       widget.destroy();
       parent.destroy();
+    },
+
+    testContextMenuOpenOnText : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var menu = new org.eclipse.rwt.widgets.Menu();
+      menu.setHasMenuListener( true );
+			var text = new org.eclipse.rwt.widgets.Text( false );
+		  text.addToDocument();
+		  text.setUserData( "isControl", true );
+      text.setContextMenu( menu );
+      this._addContextMenuListener( text );      
+      TestUtil.flush();
+	    var right = qx.event.type.MouseEvent.buttons.right;
+	    var node = text._inputElement;
+
+	    TestUtil.fakeMouseEventDOM( node, "mousedown", right );
+	    TestUtil.fakeMouseEventDOM( node, "mouseup", right );
+	    TestUtil.fakeMouseEventDOM( node, "click", right );
+	    TestUtil.fakeMouseEventDOM( node, "contextmenu", right );      
+
+      assertTrue( menu.isSeeable() );
+      menu.destroy();            
+      text.destroy();
     },
 
     testContextmenuNotOpenOnParentControl : function() {
