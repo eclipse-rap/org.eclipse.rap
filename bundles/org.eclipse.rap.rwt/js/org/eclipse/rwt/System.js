@@ -18,24 +18,28 @@ qx.Class.define( "org.eclipse.rwt.System", {
   extend : qx.core.Target,
 
   construct : function() {
-    this.base( arguments );
-    this._startupTime = new Date().getTime();
-    // Attach load/unload events
-    this._onloadWrapped = qx.lang.Function.bind( this._onload, this );
-    this._onbeforeunloadWrapped = qx.lang.Function.bind( this._onbeforeunload, this );
-    this._onunloadWrapped = qx.lang.Function.bind( this._onunload, this );
-    qx.html.EventRegistration.addEventListener( window, "load", this._onloadWrapped );
-    qx.html.EventRegistration.addEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
-    qx.html.EventRegistration.addEventListener( window, "unload", this._onunloadWrapped );
-    // Overwrite the default mapping for internal images. This is necessary
-    // if the application is deployed under a root different from "/".
-    qx.io.Alias.getInstance().add( "static", "./rwt-resources/resource/static" );
-    qx.io.Alias.getInstance().add( "widget", "./rwt-resources/resource/widget/rap" );
-    this._applyPatches();
-    org.eclipse.rwt.GraphicsUtil.init();
-    var eventHandler = org.eclipse.rwt.EventHandler;
-    eventHandler.setAllowContextMenu( org.eclipse.rwt.widgets.Menu.getAllowContextMenu );
-    eventHandler.setMenuManager( org.eclipse.rwt.MenuManager.getInstance() );
+    if( this.isSupported() ) {
+	    this.base( arguments );
+	    this._startupTime = new Date().getTime();
+	    // Attach load/unload events
+	    this._onloadWrapped = qx.lang.Function.bind( this._onload, this );
+	    this._onbeforeunloadWrapped = qx.lang.Function.bind( this._onbeforeunload, this );
+	    this._onunloadWrapped = qx.lang.Function.bind( this._onunload, this );
+	    qx.html.EventRegistration.addEventListener( window, "load", this._onloadWrapped );
+	    qx.html.EventRegistration.addEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
+	    qx.html.EventRegistration.addEventListener( window, "unload", this._onunloadWrapped );
+	    // Overwrite the default mapping for internal images. This is necessary
+	    // if the application is deployed under a root different from "/".
+	    qx.io.Alias.getInstance().add( "static", "./rwt-resources/resource/static" );
+	    qx.io.Alias.getInstance().add( "widget", "./rwt-resources/resource/widget/rap" );
+	    this._applyPatches();
+	    org.eclipse.rwt.GraphicsUtil.init();
+	    var eventHandler = org.eclipse.rwt.EventHandler;
+	    eventHandler.setAllowContextMenu( org.eclipse.rwt.widgets.Menu.getAllowContextMenu );
+	    eventHandler.setMenuManager( org.eclipse.rwt.MenuManager.getInstance() );
+    } else {
+      this._handleUnsupported();
+    }
   },
 
   events : {
@@ -61,6 +65,10 @@ qx.Class.define( "org.eclipse.rwt.System", {
       return this._uiReady;
     },
 
+    isSupported : function() {
+      return this._isBrowserSupported() && this._isModeSupported();
+    },
+
     _applyPatches : function() {
       if( !org.eclipse.rwt.Client.supportsCss3() ) {
         qx.Class.patch( qx.ui.core.Parent, org.eclipse.rwt.GraphicsMixin );
@@ -79,14 +87,10 @@ qx.Class.define( "org.eclipse.rwt.System", {
 
     _onload : function(e) {
       if( !this._onloadDone ) {
-        if( this._isSupported() ) {
-          this._onloadDone = true;
-          qx.ui.core.ClientDocument.getInstance();
-          org.eclipse.rwt.MobileWebkitSupport.init();
-          qx.client.Timer.once( this._preload, this, 0 );
-        } else {
-          this._handleUnsupportedBrowser();
-        }
+	    this._onloadDone = true;
+	    qx.ui.core.ClientDocument.getInstance();
+	    org.eclipse.rwt.MobileWebkitSupport.init();
+	    qx.client.Timer.once( this._preload, this, 0 );
       }
     },
 
@@ -131,8 +135,8 @@ qx.Class.define( "org.eclipse.rwt.System", {
       org.eclipse.rwt.EventHandler.cleanUp();
       qx.core.Object.dispose( true );
     },
-    
-    _isSupported : function() {
+
+    _isBrowserSupported  : function() {
       var result = true;
       var engine = org.eclipse.rwt.Client.getEngine();
       var version = org.eclipse.rwt.Client.getMajor();
@@ -141,11 +145,25 @@ qx.Class.define( "org.eclipse.rwt.System", {
       }
       return result;
     },
-    
-    _handleUnsupportedBrowser : function() {
+
+    _isModeSupported : function() {
+      var result = true;
+      var engine = org.eclipse.rwt.Client.getEngine();
+		  if( engine === "newmshtml" && document.documentMode < 9 ) {
+		    result = false;
+		  }
+		  return result;
+    }, 
+
+    _handleUnsupported : function() {
       document.write( "<big style='background-color:white;color:black;'>" );
-      document.write( "Unsupported Browser: You're using an " );
-      document.write( "outdated browser version that is not supported anymore." );
+      if( !this._isModeSupported() ) {
+	      document.write( "Unsupported Browser mode: Your Browser is only supported when " );
+	      document.write( "running in standard mode, but is running in quirksmode." );
+      } else {
+	      document.write( "Unsupported Browser: You're using an " );
+	      document.write( "outdated browser version that is not supported anymore." );
+      }
       document.write( "</big>" );
     }
     

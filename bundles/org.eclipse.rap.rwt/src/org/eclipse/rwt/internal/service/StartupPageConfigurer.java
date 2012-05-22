@@ -124,11 +124,10 @@ final class StartupPageConfigurer {
 
   private static String getAppScript() {
     StringBuilder code = new StringBuilder();
+    code.append( "if( org.eclipse.rwt.System.getInstance().isSupported() ) {" );
     code.append( "org.eclipse.rwt.protocol.Processor.processMessage( " );
     code.append( getStartupProtocolMessage( "w1" ) );
-    // TODO: The /*EOM*/ is needed for the native clients to determine where is the boot message in
-    // the initial start HTML page. Remove it when custom native clients boot process is implemented
-    code.append( " );/*EOM*/" );
+    code.append( ") };" );
     return code.toString();
   }
 

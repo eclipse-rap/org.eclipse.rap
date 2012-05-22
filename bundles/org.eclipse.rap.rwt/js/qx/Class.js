@@ -226,7 +226,7 @@ qx.Class.define("qx.Class",
           } );
         }
       } catch( ex ) {
-        alert( "Error loading class " + name + ": " + ex );
+        alert( "Error loading class " + name + ": " + ( ex.message ? ex.message : ex ) );
         this._stopLoading = true;
         throw ex;
       }
