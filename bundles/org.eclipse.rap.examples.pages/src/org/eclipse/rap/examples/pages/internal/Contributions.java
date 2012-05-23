@@ -15,7 +15,6 @@ import java.util.*;
 import org.eclipse.rap.examples.IExampleContribution;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.examples.pages.*;
-import org.eclipse.rwt.application.Application;
 
 
 class Contributions {
@@ -66,9 +65,6 @@ class Contributions {
         } catch( Exception exception ) {
           throw new RuntimeException( "Failed to instatiate class " + clazz.getName(), exception );
         }
-      }
-
-      public void configure( Application application ) {
       }
     };
     contributions.add( contribution );
