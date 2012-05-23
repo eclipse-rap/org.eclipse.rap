@@ -13,7 +13,6 @@ package org.eclipse.rap.examples.internal;
 import java.util.*;
 
 import org.eclipse.rap.examples.IExampleContribution;
-import org.eclipse.rwt.application.Application;
 
 
 public final class Examples {
@@ -42,12 +41,6 @@ public final class Examples {
       contribution = Examples.getFirstContribution( categories.get( 0 ) );
     }
     return contribution;
-  }
-
-  void initContributions( Application application ) {
-    // TODO generalize
-    IExampleContribution contribution = getContributionsTracker().getContribution( "validation" );
-    contribution.configure( application );
   }
 
   private static IExampleContribution getFirstContribution( ExampleCategory category ) {

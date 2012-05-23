@@ -33,7 +33,6 @@ public class ExampleApplication implements ApplicationConfiguration {
     application.addStyleSheet( RWT.DEFAULT_THEME_ID, "theme/theme.css" );
     application.addResource( createResource( "icons/favicon.png" ) );
     application.addResource( createResource( "icons/loading.gif" ) );
-    Examples.getInstance().initContributions( application );
   }
 
   private static IResource createResource( final String resourceName ) {

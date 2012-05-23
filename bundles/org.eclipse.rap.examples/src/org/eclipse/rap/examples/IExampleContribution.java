@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.examples;
 
-import org.eclipse.rwt.application.Application;
-
 
 public interface IExampleContribution {
 
@@ -21,5 +19,4 @@ public interface IExampleContribution {
 
   IExamplePage createPage();
 
-  void configure( Application application );
 }
