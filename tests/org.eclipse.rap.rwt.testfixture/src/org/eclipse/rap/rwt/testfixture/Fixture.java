@@ -76,7 +76,7 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class Fixture {
 
-  public final static File TEMP_DIR = new File( System.getProperty( "java.io.tmpdir" ) );
+  public final static File TEMP_DIR = createTempDir();
   public static final File WEB_CONTEXT_DIR = new File( TEMP_DIR, "testapp" );
   public static final File WEB_CONTEXT_RWT_RESOURCES_DIR
     = new File( WEB_CONTEXT_DIR, ResourceManagerImpl.RESOURCES );
@@ -590,6 +590,17 @@ public final class Fixture {
 
   private static boolean isPerformanceOptimizationsEnabled() {
     return Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS );
+  }
+
+  private static File createTempDir() {
+    File globalTmpDir = new File( System.getProperty( "java.io.tmpdir" ) );
+    String subDirName = "rap-test-" + Long.toHexString( System.currentTimeMillis() );
+    File tmpDir = new File( globalTmpDir, subDirName );
+    if( !tmpDir.mkdir() ) {
+      String message = "Failed to create temp directory: " + tmpDir.getAbsolutePath();
+      throw new IllegalStateException( message );
+    }
+    return tmpDir;
   }
 
   private Fixture() {
