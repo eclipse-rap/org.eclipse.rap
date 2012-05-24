@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.rwt.internal.theme;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.theme.QxAnimation.Animation;
 
 
@@ -269,11 +270,21 @@ public final class ThemePropertyAdapterRegistry {
     }
   }
 
-  // TODO [rst] Create instance in ApplicationContext
-  private static ThemePropertyAdapterRegistry instance = new ThemePropertyAdapterRegistry();
+  private static final Object LOCK = new Object();
+
+  private static final String ATTR_NAME
+    = ThemePropertyAdapterRegistry.class.getName() + "#instance";
 
   public static ThemePropertyAdapterRegistry getInstance() {
-    return instance;
+    ThemePropertyAdapterRegistry result;
+    synchronized( LOCK ) {
+      result = ( ThemePropertyAdapterRegistry )RWT.getApplicationStore().getAttribute( ATTR_NAME );
+      if( result == null ) {
+        result = new ThemePropertyAdapterRegistry();
+        RWT.getApplicationStore().setAttribute( ATTR_NAME, result );
+      }
+    }
+    return result;
   }
 
   private final Map<Class<? extends QxType>,ThemePropertyAdapter> map;
