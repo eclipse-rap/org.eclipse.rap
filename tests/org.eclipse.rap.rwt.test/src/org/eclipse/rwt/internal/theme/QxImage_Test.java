@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,16 @@ import org.eclipse.swt.widgets.Display;
 
 
 public class QxImage_Test extends TestCase {
+
+  @Override
+  protected void setUp() {
+    Fixture.setUp();
+  }
+
+  @Override
+  protected void tearDown() {
+    Fixture.tearDown();
+  }
 
   public void testIllegalArguments() {
     try {
@@ -189,16 +199,11 @@ public class QxImage_Test extends TestCase {
   }
 
   public void testCreateSWTImage() throws IOException {
-    Fixture.setUp();
-    try {
-      Display display = new Display();
-      QxImage image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
-      Image swtImage = QxImage.createSwtImage( image );
-      assertNotNull( swtImage );
-      assertSame( display, swtImage.getDevice() );
-    } finally {
-      Fixture.tearDown();
-    }
+    Display display = new Display();
+    QxImage image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    Image swtImage = QxImage.createSwtImage( image );
+    assertNotNull( swtImage );
+    assertSame( display, swtImage.getDevice() );
   }
 
   public void testGetResourcePath() {

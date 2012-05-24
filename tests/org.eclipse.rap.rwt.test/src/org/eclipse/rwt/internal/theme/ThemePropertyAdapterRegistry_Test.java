@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package org.eclipse.rwt.internal.theme;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.BoxDimensionsPropertyAdapter;
 import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.DimensionPropertyAdapter;
 import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.DirectPropertyAdapter;
@@ -20,6 +21,16 @@ import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemeProperty
 
 
 public class ThemePropertyAdapterRegistry_Test extends TestCase {
+
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testGetPropertyAdapter() {
     ThemePropertyAdapterRegistry registry = ThemePropertyAdapterRegistry.getInstance();
@@ -60,4 +71,22 @@ public class ThemePropertyAdapterRegistry_Test extends TestCase {
     assertNull( adapter.getSlot( QxBoolean.TRUE ) );
     assertNull( adapter.getValue( QxBoolean.TRUE ) );
   }
+
+  public void testSameInstance() {
+    ThemePropertyAdapterRegistry registryA = ThemePropertyAdapterRegistry.getInstance();
+    ThemePropertyAdapterRegistry registryB = ThemePropertyAdapterRegistry.getInstance();
+
+    assertSame( registryA, registryB );
+  }
+
+  public void testInstanceHasApplicationScope() {
+    ThemePropertyAdapterRegistry registryA = ThemePropertyAdapterRegistry.getInstance();
+    Fixture.tearDown();
+    Fixture.setUp();
+
+    ThemePropertyAdapterRegistry registryB = ThemePropertyAdapterRegistry.getInstance();
+
+    assertNotSame( registryA, registryB );
+  }
+
 }
