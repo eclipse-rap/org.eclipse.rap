@@ -18,6 +18,7 @@ Composite {
   background-image: none;
   border: none;
   box-shadow: none;
+  animation: none;
 }
 
 Composite[BORDER] {
