@@ -30,7 +30,7 @@ ToolBar[BORDER] {
 
 ToolItem,
 ToolItem[FLAT] {
-  color: #4a4a4a;
+  color: inherit;
   background-color: #ffffff;
   background-image: none;
   border: none;
