@@ -30,7 +30,7 @@ Group-Label {
   background-color: #f0f0f0;
   border: 1px solid #bdbdbd;
   border-radius: 10px;
-  color: #4a4a4a;
+  color: inherit;
   margin: 10px 10px 10px 20px;
   text-shadow: none;
 }

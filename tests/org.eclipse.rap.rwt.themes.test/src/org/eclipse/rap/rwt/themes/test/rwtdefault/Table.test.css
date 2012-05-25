@@ -25,7 +25,7 @@ Table[BORDER] {
 
 TableItem {
   background-color: transparent;
-  color: #4a4a4a;
+  color: inherit;
   text-decoration: none;
   text-shadow: none;
   background-image: none;
@@ -33,7 +33,7 @@ TableItem {
 
 TableItem:hover {
   background-color: transparent;
-  color: #4a4a4a;
+  color: inherit;
   text-decoration: none;
   text-shadow: none;
   background-image: none;
@@ -41,7 +41,7 @@ TableItem:hover {
 
 TableItem:selected {
   background-color: transparent;
-  color: #4a4a4a;
+  color: inherit;
   text-decoration: none;
   text-shadow: none;
   background-image: none;
@@ -49,7 +49,7 @@ TableItem:selected {
 
 TableItem:linesvisible:even {
   background-color: #f0f0f0;
-  color: #4a4a4a;
+  color: inherit;
 }
 
 Table-RowOverlay:hover {
@@ -132,7 +132,7 @@ TableColumn {
     from( #f9f9f9 ),
     to( #e4e4e4 )
   );
-  color: #4a4a4a;
+  color: inherit;
   border-bottom: 1px solid #bdbdbd;
   text-shadow: 0 1px 0 #ffffff;
 }

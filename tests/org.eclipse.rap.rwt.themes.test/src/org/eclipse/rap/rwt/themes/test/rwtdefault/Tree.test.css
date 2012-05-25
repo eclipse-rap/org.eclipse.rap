@@ -23,7 +23,7 @@ Tree[BORDER] {
 
 TreeItem {
   background-color: transparent;
-  color: #4a4a4a;
+  color: inherit;
   text-decoration: none;
   text-shadow: none;
   background-image: none;
@@ -31,7 +31,7 @@ TreeItem {
 
 TreeItem:hover {
   background-color: transparent;
-  color: #4a4a4a;
+  color: inherit;
   text-decoration: none;
   text-shadow: none;
   background-image: none;
@@ -39,7 +39,7 @@ TreeItem:hover {
 
 TreeItem:selected {
   background-color: transparent;
-  color: #4a4a4a;
+  color: inherit;
   text-decoration: none;
   text-shadow: none;
   background-image: none;
@@ -82,7 +82,7 @@ TreeColumn {
     from( #f9f9f9 ),
     to( #e4e4e4 )
   );
-  color: #4a4a4a;
+  color: inherit;
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border-bottom: 1px solid #bdbdbd;
   padding: 8px 10px 8px 6px;

@@ -420,7 +420,7 @@ Group-Label {
   background-color: #f0f0f0;
   border: 1px solid #bdbdbd;
   border-radius: 10px;
-  color: #4a4a4a;
+  color: inherit;
   margin: 10px 10px 10px 20px;
   text-shadow: none;
 }
@@ -969,7 +969,7 @@ TableColumn {
     from( #f9f9f9 ),
     to( #e4e4e4 )
   );
-  color: #4a4a4a;
+  color: inherit;
   border-bottom: 1px solid #bdbdbd;
   text-shadow: 0 1px 0 #ffffff;
 }
@@ -984,7 +984,7 @@ TableColumn:hover {
 
 TableItem {
   background-color: transparent;
-  color: #4a4a4a;
+  color: inherit;
   text-decoration: none;
   text-shadow: none;
   background-image: none;
@@ -993,7 +993,7 @@ TableItem {
 
 TableItem:linesvisible:even {
   background-color: #f0f0f0;
-  color: #4a4a4a;
+  color: inherit;
 }
 
 
@@ -1247,7 +1247,7 @@ Tree[BORDER] {
 
 TreeItem {
   background-color: transparent;
-  color: #4a4a4a;
+  color: inherit;
   text-decoration: none;
   text-shadow: none;
   background-image: none;
@@ -1255,7 +1255,7 @@ TreeItem {
 
 TreeItem:linesvisible:even {
   background-color: #f0f0f0;
-  color: #4a4a4a;
+  color: inherit;
   border: none;
 }
 
@@ -1327,7 +1327,7 @@ Tree-RowOverlay:linesvisible:even:selected:unfocused {
 
 TreeColumn {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  color: #4a4a4a;
+  color: inherit;
   background-color: #f0f0f0;
    background-image: gradient(
     linear, left top, left bottom,
