@@ -52,7 +52,7 @@
           <plugin>
             <groupId>org.eclipse.dash.maven</groupId>
             <artifactId>eclipse-signing-maven-plugin</artifactId>
-            <version>1.0.4</version>
+            <version>${signing-plugin-version}</version>
             <executions>
               <execution>
                 <id>pack</id>
@@ -68,7 +68,6 @@
                 <id>sign</id>
                 <configuration>
                   <inputFile>${project.build.directory}/packed/org.eclipse.rap.runtime-repository.zip</inputFile>
-                  <signerInputDirectory>/home/data/httpd/download-staging.priv/rt/rap</signerInputDirectory>
                 </configuration>
                 <phase>package</phase>
                 <goals>

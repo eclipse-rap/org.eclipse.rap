@@ -23,6 +23,7 @@
 
   <properties>
     <tycho-version>0.13.0</tycho-version>
+    <signing-plugin-version>1.0.5</signing-plugin-version>
     <surefire-version>2.9</surefire-version>
     <junit-version>3.8.2</junit-version>
     <mockito-version>1.8.4</mockito-version>
@@ -120,6 +121,15 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.dash.maven</groupId>
+        <artifactId>eclipse-signing-maven-plugin</artifactId>
+        <version>${signing-plugin-version}</version>
+        <configuration>
+          <signerInputDirectory>/home/data/httpd/download-staging.priv/rt/rap</signerInputDirectory>
+        </configuration>
       </plugin>
 
       <plugin>
