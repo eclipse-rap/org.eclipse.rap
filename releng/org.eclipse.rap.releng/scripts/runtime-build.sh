@@ -13,7 +13,6 @@ else
   sign=false
 fi
 
-
 ######################################################################
 # Cleanup left-overs from previous run
 
@@ -32,9 +31,9 @@ if [ "$exitcode" != "0" ]; then
 fi
 
 if [ -d repository/target/fixedPacked ]; then
-  mv repository/target/fixedPacked "$WORKSPACE/runtimeRepo"
+  mv repository/target/fixedPacked "$WORKSPACE/runtimeRepo" || exit 1
 else
-  mv repository/target/repository "$WORKSPACE/runtimeRepo"
+  mv repository/target/repository "$WORKSPACE/runtimeRepo" || exit 1
 fi
 
 VERSION=$(ls "$WORKSPACE"/runtimeRepo/features/org.eclipse.rap.runtime_*.jar | sed 's/.*_\([0-9.-]\+\)\..*\.jar/\1/')
@@ -55,7 +54,11 @@ $MVN -e clean package -DruntimeRepo="file://$WORKSPACE/runtimeRepo" || exit 1
 zipFileName=rap-runtime-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
 compatZipFileName=rap-runtime-compatibility-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
 
-mv repository/target/*.zip "$WORKSPACE/$zipFileName" || exit 1
+if [ -d repository/target/fixedSigned ]; then
+  mv repository/target/fixedSigned/*.zip "$WORKSPACE/$zipFileName" || exit 1
+else
+  mv repository/target/*.zip "$WORKSPACE/$zipFileName" || exit 1
+fi
 
 if [ "$sign" == "true" -a -d compatibility-repository/target ]; then
   mv compatibility-repository/target/*.zip "$WORKSPACE/$compatZipFileName" || exit 1
