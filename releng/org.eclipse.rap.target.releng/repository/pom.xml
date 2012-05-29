@@ -49,14 +49,12 @@
       </activation>
       <build>
         <plugins>
-          <!--
-            Create zip file with all features for signing
-          -->
+          <!-- Create zip file with all features for signing -->
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
-                <id>create-pack-properties</id>
+                <id>create-signing-zip</id>
                 <phase>package</phase>
                 <goals>
                   <goal>run</goal>
@@ -73,9 +71,7 @@
               </execution>
             </executions>
           </plugin>
-          <!--
-            Sign this zip file
-          -->
+          <!-- Sign this zip file -->
           <plugin>
             <groupId>org.eclipse.dash.maven</groupId>
             <artifactId>eclipse-signing-maven-plugin</artifactId>
@@ -94,14 +90,12 @@
               </execution>
             </executions>
           </plugin>
-          <!--
-            Create copy of the original zip and update it with the signed features
-          -->
+          <!-- Create a copy of the original zip and update it with the signed features -->
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
-                <id>create-pack-properties</id>
+                <id>create-final-zip</id>
                 <phase>package</phase>
                 <goals>
                   <goal>run</goal>
@@ -109,7 +103,7 @@
                 <configuration>
                   <tasks>
                     <copy
-                       src="${project.build.directory}/org.eclipse.rap.runtime-aggregation-repository.zip"
+                       file="${project.build.directory}/org.eclipse.rap.runtime-aggregation-repository.zip"
                        todir="${project.build.directory}/final/repository.zip"/>
                     <zip destfile="${project.build.directory}/final/repository.zip" update="true">
                       <zipfileset src="${project.build.directory}/signed/rap-features.zip">
@@ -121,9 +115,7 @@
               </execution>
             </executions>
           </plugin>
-          <!--
-            Fix checksums
-          -->
+          <!-- Fix checksums -->
           <plugin>
             <groupId>org.eclipse.dash.maven</groupId>
             <artifactId>eclipse-signing-maven-plugin</artifactId>
