@@ -57,6 +57,13 @@
     </repository>
   </repositories>
 
+  <pluginRepositories>
+    <pluginRepository>
+      <id>maven.eclipse.org</id>
+      <url>http://maven.eclipse.org/nexus/content/repositories/milestone-indigo</url>
+    </pluginRepository>
+  </pluginRepositories>
+
   <build>
     <plugins>
 
@@ -73,6 +80,15 @@
         <version>${tycho-version}</version>
         <configuration>
           <format>yyyyMMdd-HHmm</format>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.dash.maven</groupId>
+        <artifactId>eclipse-signing-maven-plugin</artifactId>
+        <version>${signing-plugin-version}</version>
+        <configuration>
+          <signerInputDirectory>/home/data/httpd/download-staging.priv/rt/rap</signerInputDirectory>
         </configuration>
       </plugin>
 
