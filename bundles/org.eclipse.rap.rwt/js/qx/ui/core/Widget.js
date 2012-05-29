@@ -4103,14 +4103,14 @@ qx.Class.define( "qx.ui.core.Widget", {
       members._renderRuntimeWidth = function(v) {
         this._style.pixelWidth = (v==null)?0:v;
         if( this._targetNodeEnabled ) {
-          var innerValue = ( v != null ) ? ( v - this._outerFrame[ 0 ] ) : v; 
+          var innerValue = ( v != null ) ? Math.max( 0, v - this._outerFrame[ 0 ] ) : v; 
           this._innerStyle.pixelWidth = innerValue == null ? 0 : innerValue;
         }
       };
       members._renderRuntimeHeight = function(v) {
         this._style.pixelHeight = (v==null)?0:v;
         if( this._targetNodeEnabled ) {
-          var innerValue = ( v != null ) ? ( v - this._outerFrame[ 1 ] ) : v;
+          var innerValue = ( v != null ) ? Math.max( 0, v - this._outerFrame[ 1 ] ) : v;
           this._innerStyle.pixelHeight = innerValue == null ? 0 : innerValue;
         }
       };

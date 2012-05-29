@@ -54,6 +54,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
     },
 
+    testRenderTooBigNormalBorderAfterComplexBorder : function() {
+      if( org.eclipse.rwt.Client.isMshtml() ) {
+        var widget = this._createWidget();
+        widget.setWidth( 6 );
+        widget.setBorder( this._getComplexBorder() );
+        TestUtil.flush();
+        widget.setBorder( new org.eclipse.rwt.Border( [ 5, 6, 7, 8 ], "solid", "black" ) );
+        TestUtil.flush();
+
+        var target = widget._getTargetNode();
+        var bounds = TestUtil.getElementBounds( target );
+
+        assertEquals( 0, bounds.left );
+        assertEquals( 0, bounds.top );
+        assertEquals( 0, bounds.width );
+        assertEquals( 0, bounds.bottom );
+
+        widget.destroy();
+      }
+    },
+
     testLayoutTargetNodeWithNoBorder : function() {
       var widget = this._createWidget();
       widget.prepareEnhancedBorder();
