@@ -23,6 +23,7 @@
 
   <properties>
     <tycho-version>0.13.0</tycho-version>
+    <signing-plugin-version>1.0.5</signing-plugin-version>
     <base-platform>4.2milestones/S-4.2RC1-201205182145/</base-platform>
   </properties>
 
