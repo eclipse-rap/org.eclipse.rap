@@ -14,10 +14,11 @@
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
 qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
+
   extend : qx.core.Object,
-  
+
   members : {
-        
+
     testRenderComplexBorder : function() {
       var widget = this._createWidget();
       var element = widget.getElement();
@@ -25,14 +26,34 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       widget.setBorder( this._getComplexBorder() );
       TestUtil.flush();
       var isGecko = org.eclipse.rwt.Client.isGecko();
-      if( isGecko ) {        
+      if( isGecko ) {
         assertIdentical( element, widget._getTargetNode() );
       } else {
         assertIdentical( element, widget._getTargetNode().parentNode );
       }
-      widget.destroy();        
+      widget.destroy();
     },
-    
+
+    testRenderNormalBorderAfterComplexBorder : function() {
+      if( org.eclipse.rwt.Client.isMshtml() ) {
+        var widget = this._createWidget();
+        widget.setBorder( this._getComplexBorder() );
+        TestUtil.flush();
+        widget.setBorder( new org.eclipse.rwt.Border( [ 5, 6, 7, 8 ], "solid", "black" ) );
+        TestUtil.flush();
+
+        var target = widget._getTargetNode();
+        var bounds = TestUtil.getElementBounds( target );
+
+        assertEquals( 0, bounds.left );
+        assertEquals( 0, bounds.top );
+        assertEquals( 0, bounds.right );
+        assertEquals( 0, bounds.bottom );
+
+        widget.destroy();
+      }
+    },
+
     testLayoutTargetNodeWithNoBorder : function() {
       var widget = this._createWidget();
       widget.prepareEnhancedBorder();
@@ -56,7 +77,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
       widget.destroy();
     },
-    
+
     testLayoutTargetNodeWithComplexBorder : function() {
       // NOTE: layouting with rounded border in GraphicsMixinTest
       var widget = this._createWidget();
@@ -82,7 +103,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
       widget.destroy();
     },
-    
+
     testInsertDomEvent : function() {
       var parent = new qx.ui.layout.CanvasLayout();
       parent.addToDocument();
@@ -155,7 +176,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       child2.destroy();
       child3.destroy();
     },
-    
+
     testInsertDomEventFastQueue : function() {
       var parent = new qx.ui.layout.CanvasLayout();
       parent.addToDocument();
@@ -206,7 +227,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       parent.destroy();
       child.destroy();
     },
-    
+
     testInsertDomEventOnPrepareEnhancedBorder : function() {
       var parent = new qx.ui.layout.CanvasLayout();
       parent.addToDocument();
@@ -225,7 +246,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       parent.destroy();
       child.destroy();
     },
-    
+
     testGetWidgetWidgetRenderAdapter : function() {
       var widget = new qx.ui.basic.Terminator();
       var adapter1 = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
@@ -234,7 +255,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       assertIdentical( adapter1, adapter2 );
       widget.destroy();
     },
-    
+
     testPreventMultipleWidgetRenderAdapter : function() {
       var widget = new qx.ui.basic.Terminator();
       var adapter1 = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
@@ -248,7 +269,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       assertNotNull( error );
       widget.destroy();
     },
-    
+
     testDisposeWidgetRenderAdapterWithWidget : function() {
       var widget = new qx.ui.basic.Terminator();
       var adapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
@@ -256,7 +277,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       TestUtil.flush();
       assertTrue( adapter.isDisposed() );
     },
-    
+
     testRenderVisibilityListener : function() {
       var widget = this._createWidget();
       var adapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
@@ -271,7 +292,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       assertEquals( "none", widget.getStyleProperty( "display" ) );
       widget.destroy();
     },
-    
+
     testAddMultipleRenderVisibilityListener : function() {
       var widget = this._createWidget();
       var adapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
@@ -353,7 +374,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         widget.destroy();
       }
     },
-    
+
     testRemoveBackgroundGradient : function() {
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
@@ -369,7 +390,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         widget.destroy();
       }
     },
-    
+
     testRemoveBackgroundGradientAndRestoreBakgroundColor : function() {
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
@@ -385,7 +406,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         widget.destroy();
       }
     },
-    
+
     testRemoveBackgroundGradientAndRestoreBakgroundImage : function() {
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
@@ -416,7 +437,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         widget.destroy();
       }
     },
-    
+
     testRenderComplexBackgroundGradient : function() {
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var gradient = [ 
@@ -435,7 +456,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         widget.destroy();
       }
     },
-    
+
     testRenderBoxShadow : function() {
 //      Syntax for shadow:
 //      [
@@ -466,7 +487,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         widget.destroy();
       }
     },
-    
+
     testRenderBoxShadowInset : function() {
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var shadow = [ true, 3, 5, 1, 0, "#090807", 0.4 ];
@@ -478,7 +499,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         widget.destroy();
       }
     },
-    
+
     testRemoveBoxShadow : function() {
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var shadow = [ false, 3, 5, 1, 0, "#090807", 0.4 ];
@@ -520,7 +541,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     testApplyObjectId_default : function() {
       var button = new org.eclipse.rwt.widgets.Button( "push" );
       button.addToDocument();
-      
+
       qx.ui.core.Widget._renderHtmlIds = false;
       button.applyObjectId( "w23" );
 
@@ -546,13 +567,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       button.addEventListener( "changeEnabled", function() {
         log++;
       } );
-      
+
       button.setEnabled( false );
-      
+
       assertTrue( log > 0 );
       button.destroy();
     },
-    
+
     testFiresChangeContextMenuEvent : function() {
       var button = new org.eclipse.rwt.widgets.Button( "push" );
       var menu = this._createMenuWithItems( 3 );
@@ -562,15 +583,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       button.addEventListener( "changeContextMenu", function() {
         log++;
       } );
-      
+
       button.setContextMenu( menu );
-      
+
       assertTrue( log > 0 );
       button.destroy();
       menu.destroy();
     },
 
-    
+
     testDisposeChildrenWithParent : function() {
       var widget = new qx.ui.basic.Terminator();
       var composite = new org.eclipse.swt.widgets.Composite();
@@ -579,10 +600,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       TestUtil.flush();
       var node = widget.getElement();
       var parentNode = widget.getElement().parentNode;
-      
+
       composite.destroy();
       TestUtil.flush();
-      
+
       assertTrue( composite.isDisposed() );
       assertTrue( widget.isDisposed() );
       assertTrue( node.parentNode !== parentNode );
@@ -594,7 +615,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
       widget.setToolTip( toolTip );
       TestUtil.flush();
-      
+
       TestUtil.hoverFromTo( document.body, widget.getElement() );
       TestUtil.forceInterval( toolTip._showTimer );
       TestUtil.flush();
@@ -602,9 +623,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       assertTrue( toolTip.isSeeable() );
       assertEquals( "gogo", toolTip.getAtom().getLabel() );
       toolTip.hide();
-      widget.destroy();        
+      widget.destroy();
     },
-    
+
     testDontShowToolTipOnTab : function() {
       var widget = this._createWidget();
       widget.setUserData( "toolTipText", "gogo" );
@@ -618,7 +639,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         // expected
       }
       TestUtil.flush();
-      
+
       assertFalse( toolTip.isSeeable() );
       toolTip.hide();
       widget.destroy();        
@@ -627,7 +648,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
     /////////
     // Helper
-    
+
     _createWidget : function() {
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
@@ -636,7 +657,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       TestUtil.flush();
       return widget;
     },
-    
+
     _createMenuWithItems : function( itemCount ) {
       var menu = new org.eclipse.rwt.widgets.Menu();
       for( var i = 0; i < itemCount; i++ ) {
@@ -649,11 +670,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       TestUtil.flush();
       return menu;
     },
-    
+
     _getComplexBorder : function() {
       return new org.eclipse.rwt.Border( 2, "complex", "green", "red" );
     },
-    
+
     _getCssGradient : function( element ) {
       var result = "";
       var background = element.style.background;
@@ -668,7 +689,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
       return result;
     },
-    
+
     _getCssShadow : function( element ) {
       var result = element.style.boxShadow;
       if( !result ) {
@@ -679,7 +700,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
       return result;
     }
-      
+
   }
 } );
 

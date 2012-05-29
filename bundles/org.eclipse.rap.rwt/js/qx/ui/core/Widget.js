@@ -30,8 +30,8 @@ qx.Class.define( "qx.ui.core.Widget", {
   construct : function() {
     this.base( arguments );
     this._layoutChanges = {};
+    this._outerFrame = [ 0, 0 ];
     this.initHideFocus();
-    this._usesComplexBorder = false;
   },
 
   events: {
@@ -3743,7 +3743,6 @@ qx.Class.define( "qx.ui.core.Widget", {
     _cachedBorderRight : 0,
     _cachedBorderBottom : 0,
     _cachedBorderLeft : 0,
-    _usesComplexBorder : false,
     _targetNodeEnabled : false,
 
     _applyBorder : function( value, old ) {
@@ -3811,12 +3810,22 @@ qx.Class.define( "qx.ui.core.Widget", {
       } else {
         org.eclipse.rwt.Border.resetWidget( this );
       }
-      // RAP: Fix for Bug 301709
-      this._usesComplexBorder = this._computeUsesComplexBorder();
+      // RAP: Fix for Bug 301709, 380878
+      this._outerFrame = this._computeOuterFrame();
     },
 
-    _computeUsesComplexBorder : function() {
-      return this.__borderObject && this.__borderObject.getStyle() === "complex";
+    _computeOuterFrame : function() {
+      var result = [ 0, 0 ];
+      if( this._innerStyle && this.__borderObject ) {
+        var widths = this.__borderObject.getWidths(); 
+        if( this.__borderObject.getStyle() === "complex" && widths[ 0 ] === 2 ) {
+          // NOTE: RAP only supports complex borders with identical widths.
+          result = [ 2, 2 ];
+        } else {
+          result = [ widths[ 1 ] + widths[ 3 ], widths[ 0 ] + widths[ 2 ] ]; 
+        }
+      }
+      return result;
     },
 
     prepareEnhancedBorder : function( newElement ) {
@@ -4094,14 +4103,14 @@ qx.Class.define( "qx.ui.core.Widget", {
       members._renderRuntimeWidth = function(v) {
         this._style.pixelWidth = (v==null)?0:v;
         if( this._targetNodeEnabled ) {
-          var innerValue = this._usesComplexBorder && v != null ? v - 2 : v; 
+          var innerValue = ( v != null ) ? ( v - this._outerFrame[ 0 ] ) : v; 
           this._innerStyle.pixelWidth = innerValue == null ? 0 : innerValue;
         }
       };
       members._renderRuntimeHeight = function(v) {
         this._style.pixelHeight = (v==null)?0:v;
         if( this._targetNodeEnabled ) {
-          var innerValue = this._usesComplexBorder && v != null ? v - 2 : v;
+          var innerValue = ( v != null ) ? ( v - this._outerFrame[ 1 ] ) : v;
           this._innerStyle.pixelHeight = innerValue == null ? 0 : innerValue;
         }
       };
@@ -4158,7 +4167,8 @@ qx.Class.define( "qx.ui.core.Widget", {
       "__states", 
       "_jobQueue",
       "_layoutChanges", 
-      "__borderObject" 
+      "__borderObject", 
+      "_outerFrame" 
     );
   }
 } );

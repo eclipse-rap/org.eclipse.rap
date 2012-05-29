@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
   },
 
   members : {
-    
+
     TARGETENGINE : org.eclipse.rwt.Client.supportsCss3() ? [ "none" ] : undefined,
 
     testSetGradient : function() {
@@ -155,19 +155,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       assertEquals( [ 1, 1, 1, 1 ], this.getFakePadding( widget ) );
       assertEquals( [ 1, 1, 1, 1 ], this.getBorderCache( widget ) );
       widget.setBorder( new org.eclipse.rwt.Border( 0, "rounded", "black", 0 ) );
-      TestUtil.flush();      
+      TestUtil.flush(); 
       assertEquals ( [ 0, 0, 0, 0 ], this.getFakePadding( widget ) );
       assertEquals ( [ 0, 0, 0, 0 ], this.getBorderCache( widget ) );
       widget.setBorder( new org.eclipse.rwt.Border( [ 4, 0, 3, 0 ], "rounded", "black", 0 ) );
-      TestUtil.flush();      
-      assertEquals ( [ 4, 0, 3, 0 ], this.getFakePadding( widget ) );      
-      assertEquals ( [ 4, 0, 3, 0 ], this.getBorderCache( widget ) );      
+      TestUtil.flush();
+      assertEquals ( [ 4, 0, 3, 0 ], this.getFakePadding( widget ) );
+      assertEquals ( [ 4, 0, 3, 0 ], this.getBorderCache( widget ) );
       widget.setBackgroundGradient( this.gradient );
       widget.setBorder( null );
       TestUtil.flush();
       // NOTE: since the layouting for targetNode is queued in the first flush, a second is needed
       TestUtil.flush(); 
-      assertEquals ( [ 0, 0, 0, 0 ], this.getBorderCache( widget ) );      
+      assertEquals ( [ 0, 0, 0, 0 ], this.getBorderCache( widget ) );
       assertEquals ( [ 0, 0, 0, 0 ], this.getFakePadding( widget ) );
       widget.destroy();
       TestUtil.flush();
@@ -178,13 +178,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var engine = org.eclipse.rwt.Client.getEngine();
       var widget = this._createWidget();
+      // TODO [tb] : this test is not completely valid as RAP does not support different widths for 
+      //             complex borders (the Border class does, but not ThemeStore and Widget)
       widget.setBorder( new org.eclipse.rwt.Border( [ 0, 1, 2, 3 ], "complex", "red", "blue" ) );
       TestUtil.flush();
       TestUtil.flush();
       widget.setBackgroundGradient( this.gradient );
       TestUtil.flush();
       if( engine === "mshtml" ) {
-        assertEquals ( [ 0, 2, 2, 0 ], this.getFakePadding( widget ) );      
+        assertEquals ( [ 0, 4, 2, 0 ], this.getFakePadding( widget ) );
       } else {
         assertEquals( "100%", widget._innerStyle.width );
         assertEquals( "100%", widget._innerStyle.height );
@@ -209,7 +211,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       assertEquals( expected2, this._getPath( shape ) );
       widget.destroy();
     },
-    
+
     testRoundedBorderWidth : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
@@ -810,7 +812,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
         }
       }
     } ),
-    
+
     testLayoutTargetNodeAfterBorderRemove : qx.core.Variant.select("qx.client", {
       "mshtml" : function() {
         if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {
