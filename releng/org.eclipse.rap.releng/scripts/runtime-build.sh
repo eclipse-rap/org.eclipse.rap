@@ -48,7 +48,7 @@ test -n "$TIMESTAMP" || exit 1
 
 cd "$WORKSPACE/org.eclipse.rap/releng/org.eclipse.rap.target.releng"
 echo "Running maven on $PWD, sign=$sign"
-$MVN -e clean package -DruntimeRepo="file://$WORKSPACE/runtimeRepo" || exit 1
+$MVN -e clean package -DruntimeRepo="file://$WORKSPACE/runtimeRepo" -Dsign=$sign || exit 1
 
 # Example: rap-runtime-1.5.0-N-20110814-2110.zip
 zipFileName=rap-runtime-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
