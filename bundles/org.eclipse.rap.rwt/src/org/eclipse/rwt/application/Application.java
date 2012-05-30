@@ -20,7 +20,9 @@ import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.ResourceLoader;
+import org.eclipse.rwt.service.IApplicationStore;
 import org.eclipse.rwt.service.IServiceHandler;
+import org.eclipse.rwt.service.ISettingStore;
 import org.eclipse.rwt.service.ISettingStoreFactory;
 import org.eclipse.rwt.widgets.DialogUtil;
 import org.eclipse.swt.widgets.Display;
@@ -169,15 +171,64 @@ public interface Application {
    */
   void addStyleSheet( String themeId, String styleSheetLocation, ResourceLoader resourceLoader );
 
+  /**
+   * Add a phase listener to the application to perform custom tasks during the
+   * processing of a request.
+   *
+   * @param phaseListener the phase listener to add
+   * @see PhaseListener
+   */
   void addPhaseListener( PhaseListener phaseListener );
 
+  /**
+   * Set an initial attribute in the application store.
+   *
+   * @param name the name of the attribute, must not be <code>null</code>
+   * @param value the attribute value
+   * @see IApplicationStore
+   */
   void setAttribute( String name, Object value );
 
+  /**
+   * Configure this application to use a custom setting store implementation.
+   *
+   * @param the setting store implementation to use
+   * @see ISettingStore
+   */
   void setSettingStoreFactory( ISettingStoreFactory settingStoreFactory );
 
+  /**
+   * Register a themeable widget for this application. A themeable widget is a
+   * custom widget that supports theming. To do so, the widget provides a couple
+   * of classes and files, such as a theme adapter, that will be found by a
+   * naming convention. It's sufficient to register the widget itself. For
+   * details on custom widgets, please refer to the documentation.
+   *
+   * @param widget the widget to register as themeable widget
+   */
   void addThemableWidget( Class<? extends Widget> widget );
 
+  /**
+   * Adds a service handler to the application. A service handler is used to
+   * handle requests with a certain parameter inside the application. You can
+   * think of it like a lightweight servlet that has access to the user's
+   * session. Please see the documentation of {@link IServiceHandler} for the
+   * URL to access this service handler.
+   *
+   * @param serviceHandlerId the id for this servlet handler, used in the
+   *          parameter
+   * @param serviceHandler the servlet handler to register
+   * @see IServiceHandler
+   */
   void addServiceHandler( String serviceHandlerId, IServiceHandler serviceHandler );
 
+  /**
+   * Add a resource to the application, e.g. a JavaScript file or an image. For
+   * every resource to add, an implementation of the IResource interface must be
+   * provided.
+   *
+   * @param resource the resource to add
+   * @see IResource
+   */
   void addResource( IResource resource );
 }

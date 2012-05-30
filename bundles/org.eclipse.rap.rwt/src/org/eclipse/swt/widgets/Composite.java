@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.ControlHolder;
 import org.eclipse.swt.internal.widgets.ICompositeAdapter;
 import org.eclipse.swt.internal.widgets.IControlHolderAdapter;
+
 
 /**
  * Instances of this class are controls which are capable
@@ -85,6 +86,7 @@ public class Composite extends Scrollable {
     compositeAdapter = new CompositeAdapter();
   }
 
+  @Override
   void initState() {
     if( ( style & ( SWT.H_SCROLL | SWT.V_SCROLL ) ) == 0 ) {
       state |= THEME_BACKGROUND;
@@ -117,6 +119,7 @@ public class Composite extends Scrollable {
     return controlHolder.getControls();
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -441,16 +444,24 @@ public class Composite extends Scrollable {
     if (changed != null) {
       for (int i=0; i<changed.length; i++) {
         Control control = changed [i];
-        if (control == null) error (SWT.ERROR_INVALID_ARGUMENT);
-        if (control.isDisposed ()) error (SWT.ERROR_INVALID_ARGUMENT);
+        if (control == null) {
+          error (SWT.ERROR_INVALID_ARGUMENT);
+        }
+        if (control.isDisposed ()) {
+          error (SWT.ERROR_INVALID_ARGUMENT);
+        }
         boolean ancestor = false;
         Composite composite = control.parent;
         while (composite != null) {
           ancestor = composite == this;
-          if (ancestor) break;
+          if (ancestor) {
+            break;
+          }
           composite = composite.parent;
         }
-        if (!ancestor) error (SWT.ERROR_INVALID_PARENT);
+        if (!ancestor) {
+          error (SWT.ERROR_INVALID_PARENT);
+        }
       }
       int updateCount = 0;
       Composite [] update = new Composite [16];
@@ -481,7 +492,9 @@ public class Composite extends Scrollable {
         update [i].updateLayout (false);
       }
     } else {
-      if (layout == null && (flags & SWT.ALL) == 0) return;
+      if (layout == null && (flags & SWT.ALL) == 0) {
+        return;
+      }
       markLayout ((flags & SWT.CHANGED) != 0, (flags & SWT.ALL) != 0);
       if ((flags & SWT.DEFER) != 0) {
         setLayoutDeferred (true);
@@ -491,6 +504,7 @@ public class Composite extends Scrollable {
     }
   }
 
+  @Override
   void markLayout( boolean changed, boolean all ) {
     if( layout != null ) {
       state |= LAYOUT_NEEDED;
@@ -510,6 +524,7 @@ public class Composite extends Scrollable {
     updateLayout( true, all );
   }
 
+  @Override
   void updateLayout( boolean resize, boolean all ) {
     Composite parent = findDeferredControl();
     if( parent != null ) {
@@ -536,6 +551,7 @@ public class Composite extends Scrollable {
     return layoutCount > 0 ? this : parent.findDeferredControl();
   }
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     Point size;
@@ -587,24 +603,29 @@ public class Composite extends Scrollable {
    */
   public void changed( Control[] changed ) {
     checkWidget();
-    if( changed == null )
+    if( changed == null ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     for( int i = 0; i < changed.length; i++ ) {
       Control control = changed[ i ];
-      if( control == null )
+      if( control == null ) {
         error( SWT.ERROR_INVALID_ARGUMENT );
-      if( control.isDisposed() )
+      }
+      if( control.isDisposed() ) {
         error( SWT.ERROR_INVALID_ARGUMENT );
+      }
       boolean ancestor = false;
       Composite composite = control.parent;
       while( composite != null ) {
         ancestor = composite == this;
-        if( ancestor )
+        if( ancestor ) {
           break;
+        }
         composite = composite.parent;
       }
-      if( !ancestor )
+      if( !ancestor ) {
         error( SWT.ERROR_INVALID_PARENT );
+      }
       }
     for( int i = 0; i < changed.length; i++ ) {
       Control child = changed[ i ];
@@ -669,6 +690,7 @@ public class Composite extends Scrollable {
     }
   }
 
+  @Override
   void updateBackgroundMode() {
     super.updateBackgroundMode();
     Control[] children = controlHolder.getControls();
@@ -680,6 +702,7 @@ public class Composite extends Scrollable {
   // ///////////////////
   // setFocus override
 
+  @Override
   public boolean setFocus() {
     checkWidget();
     Control[] children = getChildren();
@@ -800,6 +823,7 @@ public class Composite extends Scrollable {
     return tabList;
   }
 
+  @Override
   boolean isTabGroup() {
     return true;
   }
@@ -823,6 +847,7 @@ public class Composite extends Scrollable {
   /////////////////////////////////////////////////
   // Internal methods to maintain the child controls
 
+  @Override
   void releaseChildren() {
     super.releaseChildren();
     Control[] children = controlHolder.getControls();
@@ -840,6 +865,7 @@ public class Composite extends Scrollable {
   ////////////////
   // Resize helper
 
+  @Override
   void notifyResize( Point oldSize ) {
     // TODO [rh] revise this: the SWT code (method sendResize) first calls
     //      'super' (fires resize events) and *then* does the layouting
@@ -863,6 +889,7 @@ public class Composite extends Scrollable {
   ///////////////////
   // Skinning support
 
+  @Override
   void reskinChildren( int flags ) {
     super.reskinChildren( flags );
     Control[] children = controlHolder.getControls();
@@ -880,7 +907,7 @@ public class Composite extends Scrollable {
   private final class CompositeAdapter implements ICompositeAdapter, SerializableCompatibility {
 
     public void markLayoutNeeded() {
-      Composite.this.markLayout( false, false );
+      markLayout( false, false );
     }
 
   }
