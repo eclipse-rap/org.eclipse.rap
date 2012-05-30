@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -87,6 +87,7 @@ public class QxAnimation implements QxType {
       }
     }
 
+    @Override
     public boolean equals( Object object ) {
       boolean result = false;
       if( object == this ) {
@@ -131,6 +132,7 @@ public class QxAnimation implements QxType {
     return result.toString();
   }
 
+  @Override
   public String toString() {
     return "QxAnimation{ " + toDefaultString() + " }";
   }
@@ -152,6 +154,7 @@ public class QxAnimation implements QxType {
     return result.toString();
   }
 
+  @Override
   public int hashCode() {
     int result = 7;
     for( int i = 0; i < animations.length; i++ ) {
@@ -162,6 +165,7 @@ public class QxAnimation implements QxType {
     return result;
   }
 
+  @Override
   public boolean equals( Object object ) {
     boolean result = false;
     if( object == this ) {

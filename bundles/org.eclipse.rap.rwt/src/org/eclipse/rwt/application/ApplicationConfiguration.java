@@ -58,7 +58,7 @@ package org.eclipse.rwt.application;
 public interface ApplicationConfiguration {
 
   /**
-   * This constant contains the parameter name to register an
+   * This constant contains the context parameter name to register an
    * ApplicationConfiguration in a servlet container environment when running
    * RAP without OSGi. To do so, the fully qualified class name of the
    * implementation has to be registered as a <code>context-param</code> in the
@@ -72,8 +72,11 @@ public interface ApplicationConfiguration {
    * </pre>
    */
   public static final String CONFIGURATION_PARAM = "org.eclipse.rap.applicationConfiguration";
-  // TODO [fappel]: think about where to locate this documentation, since this is servlet
-  //                specific
+
+  /**
+   * This constant contains the context parameter name to configure the web
+   * application's context directory on disk.
+   */
   public static final String RESOURCE_ROOT_LOCATION = "resource_root_location";
 
   /**

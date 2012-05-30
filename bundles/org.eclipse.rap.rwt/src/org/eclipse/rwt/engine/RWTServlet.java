@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,40 @@ import org.eclipse.rwt.internal.service.*;
 
 
 /**
- * TODO JavDoc
+ * The RWT servlet. This servlet receives all requests to a RAP application.
+ * <p>
+ * Usually, you only have to register this servlet manually in a traditional web
+ * application, i.e. without OSGi.
+ * </p>
+ * <p>
+ * In a traditional web application (without OSGi), this servlet must be
+ * registered in the application's deployment descriptor like shown below. Note
+ * that the RWT servlet has to be registered for every entrypoint of the
+ * application.
+ * </p>
+ *
+ * <pre>
+ * &lt;context-param&gt;
+ *   &lt;param-name&gt;org.eclipse.rap.applicationConfiguration&lt;/param-name&gt;
+ *   &lt;param-value&gt;com.example.HelloWorldConfiguration&lt;/param-value&gt;
+ * &lt;/context-param&gt;
+ *
+ * &lt;listener&gt;
+ *   &lt;listener-class&gt;org.eclipse.rwt.engine.RWTServletContextListener&lt;/listener-class&gt;
+ * &lt;/listener&gt;
+ *
+ * &lt;servlet&gt;
+ *   &lt;servlet-name&gt;rwtServlet&lt;/servlet-name&gt;
+ *   &lt;servlet-class&gt;org.eclipse.rwt.engine.RWTServlet&lt;/servlet-class&gt;
+ * &lt;/servlet&gt;
+ *
+ * &lt;servlet-mapping&gt;
+ *   &lt;servlet-name&gt;rwtServlet&lt;/servlet-name&gt;
+ *   &lt;url-pattern&gt;/example&lt;/url-pattern&gt;
+ * &lt;/servlet-mapping&gt;
+ *
+ * <pre>
+ *
  * @since 1.5
  * @noextend This class is not intended to be subclassed by clients.
  */
