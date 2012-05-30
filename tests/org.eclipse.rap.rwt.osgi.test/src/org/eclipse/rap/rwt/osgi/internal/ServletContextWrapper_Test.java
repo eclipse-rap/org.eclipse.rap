@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing developemnt
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
@@ -30,10 +31,10 @@ public class ServletContextWrapper_Test extends TestCase {
 
   public void getContextDirectory() {
     Object found = wrapper.getAttribute( ApplicationConfiguration.RESOURCE_ROOT_LOCATION );
-    
+
     assertSame( CONTEXT_DIRECTORY, found );
   }
-  
+
   public void testGetContext() {
     String uripath = "uriPath";
     wrapper.getContext( uripath );
@@ -160,9 +161,9 @@ public class ServletContextWrapper_Test extends TestCase {
     String path = "/path";
     String containerRealPath = "containerContextPath" +  path;
     when( context.getRealPath( path ) ).thenReturn( containerRealPath );
-    
+
     String realPath = wrapper.getRealPath( path );
-    
+
     assertEquals( containerRealPath, realPath );
   }
 
@@ -261,6 +262,7 @@ public class ServletContextWrapper_Test extends TestCase {
     verify( context ).getServletContextName();
   }
 
+  @Override
   protected void setUp() {
     context = mock( ServletContext.class );
     wrapper = new ServletContextWrapper( context, CONTEXT_DIRECTORY );
