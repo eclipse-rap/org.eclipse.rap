@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
@@ -20,21 +21,29 @@ import org.osgi.service.http.HttpService;
 
 
 public class Matcher_Test extends TestCase {
-  
+
   private static final String KEY = "key";
   private static final String VALUE = "value";
   private static final String KEY_VALUE = "(" + KEY + "=" + VALUE + ")";
 
-  private ServiceReference< HttpService > httpServiceReference;
-  private ServiceReference< ApplicationConfiguration > configuratorReference;
+  private ServiceReference<HttpService> httpServiceReference;
+  private ServiceReference<ApplicationConfiguration> configuratorReference;
   private Matcher matcher;
+
+  @Override
+  @SuppressWarnings( "unchecked" )
+  protected void setUp() {
+    httpServiceReference = mock( ServiceReference.class );
+    configuratorReference = mock( ServiceReference.class );
+    matcher = new Matcher( httpServiceReference, configuratorReference );
+  }
 
   public void testMatchesWithoutFilters() {
     boolean matches = matcher.matches();
-    
+
     assertTrue( matches );
   }
-  
+
   public void testMatchesWithNonMatchingConfiguratorFilter() {
     createConfiguratorFilter();
 
@@ -45,21 +54,21 @@ public class Matcher_Test extends TestCase {
 
   public void testMatchesWithNonMatchingHttpServiceFilter() {
     createHttpServiceFilter();
-    
+
     boolean matches = matcher.matches();
-    
+
     assertFalse( matches );
   }
 
   public void testMatchesWithNonMatchingFilters() {
     createConfiguratorFilter();
     createHttpServiceFilter();
-    
+
     boolean matches = matcher.matches();
-    
+
     assertFalse( matches );
   }
-  
+
   public void testMatchesWithMatchingConfiguratorFilter() {
     createConfiguratorFilter();
     createConfiguratorProperties();
@@ -72,19 +81,19 @@ public class Matcher_Test extends TestCase {
   public void testMatchesWithMatchingHttpServiceFilter() {
     createHttpServiceFilter();
     createHttpServiceProperties();
-    
+
     boolean matches = matcher.matches();
-    
+
     assertTrue( matches );
   }
-  
+
   public void testMatchesWithMatchingConfigurationFilterAndNonMatchingHttpServiceFilter() {
     createConfiguratorFilter();
     createConfiguratorProperties();
     createHttpServiceFilter();
-    
+
     boolean matches = matcher.matches();
-    
+
     assertFalse( matches );
   }
 
@@ -92,9 +101,9 @@ public class Matcher_Test extends TestCase {
     createConfiguratorFilter();
     createHttpServiceFilter();
     createHttpServiceProperties();
-    
+
     boolean matches = matcher.matches();
-    
+
     assertFalse( matches );
   }
 
@@ -103,12 +112,12 @@ public class Matcher_Test extends TestCase {
     createConfiguratorProperties();
     createHttpServiceFilter();
     createHttpServiceProperties();
-    
+
     boolean matches = matcher.matches();
-    
+
     assertTrue( matches );
   }
-  
+
   public void testIllegalFilterSyntax() {
     String configuratorKey = Matcher.createTargetKey( ApplicationConfiguration.class );
     when( httpServiceReference.getProperty( configuratorKey ) ).thenReturn( "(((" );
@@ -119,44 +128,37 @@ public class Matcher_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
   public void testMatchesWithNullConfiguratorReference() {
     matcher = new Matcher( httpServiceReference, null );
-    
+
     boolean matches = matcher.matches();
-    
+
     assertFalse( matches );
   }
-  
+
   public void testMatchesWithNullHttpServiceReference() {
     matcher = new Matcher( null, configuratorReference );
-    
+
     boolean matches = matcher.matches();
-    
+
     assertFalse( matches );
   }
-  
-  @SuppressWarnings( "unchecked" )
-  protected void setUp() {
-    httpServiceReference = mock( ServiceReference.class );
-    configuratorReference = mock( ServiceReference.class );
-    matcher = new Matcher( httpServiceReference, configuratorReference );
-  }
-  
+
   private void createHttpServiceFilter() {
     String httpServiceKey = Matcher.createTargetKey( HttpService.class );
     when( configuratorReference.getProperty( httpServiceKey ) ).thenReturn( KEY_VALUE );
   }
-  
+
   private void createConfiguratorFilter() {
     String configuratorKey = Matcher.createTargetKey( ApplicationConfiguration.class );
     when( httpServiceReference.getProperty( configuratorKey ) ).thenReturn( KEY_VALUE );
   }
-  
+
   private void createConfiguratorProperties() {
     when( configuratorReference.getProperty( KEY ) ).thenReturn( VALUE );
   }
-  
+
   private void createHttpServiceProperties() {
     when( httpServiceReference.getProperty( KEY ) ).thenReturn( VALUE );
   }
