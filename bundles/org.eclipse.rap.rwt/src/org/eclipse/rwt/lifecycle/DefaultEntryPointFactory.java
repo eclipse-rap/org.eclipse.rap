@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.lifecycle;
 
+import java.lang.reflect.Modifier;
+
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.internal.util.ParamCheck;
 
@@ -29,15 +31,34 @@ public class DefaultEntryPointFactory implements IEntryPointFactory {
   /**
    * Creates a new entrypoint factory for the given class.
    *
-   * @param type the entrypoint class, must not be a non-static inner class
+   * @param type the entrypoint class, must not be an abstract class or a non-static inner class
    */
   public DefaultEntryPointFactory( Class<? extends IEntryPoint> type ) {
     ParamCheck.notNull( type, "type" );
 
+    checkType( type );
     this.type = type;
   }
 
   public IEntryPoint create() {
-    return ClassUtil.newInstance( type );
+    IEntryPoint instance;
+    try {
+      instance = ClassUtil.newInstance( type );
+    } catch( Exception exception ) {
+      String message = "Could not create entrypoint instance: " + type.getName();
+      throw new RuntimeException( message, exception );
+    }
+    return instance;
+  }
+
+  private void checkType( Class<? extends IEntryPoint> type ) {
+    if( type.isInterface() || Modifier.isAbstract( type.getModifiers() ) ) {
+      throw new IllegalArgumentException( "Abstract class or interface given as entrypoint: "
+                                          + type.getName() );
+    }
+    if( type.isMemberClass() && !Modifier.isStatic( type.getModifiers() ) ) {
+      throw new IllegalArgumentException( "Non-static inner class given as entrypoint: "
+                                          + type.getName() );
+    }
   }
 }
