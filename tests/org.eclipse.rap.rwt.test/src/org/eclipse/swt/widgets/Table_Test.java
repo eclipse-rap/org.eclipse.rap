@@ -318,6 +318,16 @@ public class Table_Test extends TestCase {
     assertEquals( 3, log[ 0 ] );
   }
 
+  public void testSetTopIndexAdjust() {
+    Table table = new Table( shell, SWT.NONE );
+    table.setSize( 100, 100 );
+    createTableItems( table, 10 );
+
+    table.setTopIndex( 8 );
+
+    assertEquals( 6, table.getTopIndex() );
+  }
+
   public void testDispose() {
     Table table = createTable( SWT.SINGLE, 1 );
     TableColumn column = table.getColumn( 0 );
