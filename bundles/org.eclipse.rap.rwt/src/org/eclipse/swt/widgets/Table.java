@@ -1526,6 +1526,7 @@ public class Table extends Composite {
     checkWidget();
     if( this.topIndex != topIndex && topIndex >= 0 && topIndex < itemCount ) {
       this.topIndex = topIndex;
+      adjustTopIndex();
       if( ( style & SWT.VIRTUAL ) != 0 ) {
         redraw();
       }
