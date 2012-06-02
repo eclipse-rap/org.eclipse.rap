@@ -256,8 +256,8 @@ public class Table_Test extends TestCase {
       new TableItem( table, SWT.NONE );
     }
     assertEquals( 0, table.getTopIndex() );
-    table.setTopIndex( 9 );
-    assertEquals( 9, table.getTopIndex() );
+    table.setTopIndex( 6 );
+    assertEquals( 6, table.getTopIndex() );
     for( int i = 3; i < 10; i++ ) {
       table.getItem( 3 ).dispose();
     }
@@ -1252,7 +1252,7 @@ public class Table_Test extends TestCase {
     assertEquals( 100, table.getTopIndex() );
 
     table.showItem( table.getItem( itemCount - 1 ) );
-    assertEquals( 200, table.getTopIndex() );
+    assertEquals( 199, table.getTopIndex() );
 
     table.showItem( table.getItem( 42 ) );
     assertEquals( 42, table.getTopIndex() );
