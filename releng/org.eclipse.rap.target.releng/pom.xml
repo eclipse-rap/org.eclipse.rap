@@ -52,7 +52,7 @@
     <repository>
       <id>extra-dependencies-repository</id>
       <layout>p2</layout>
-      <url>http://build.eclipse.org/rt/rap/base-platforms/extra-dependencies</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/1.5/extra-dependencies</url>
     </repository>
   </repositories>
 
