@@ -15,6 +15,9 @@
 
   <element name="Tree">
 
+    <property name="font"
+        description="Font for trees." />
+
     <property name="color"
         description="Text color for trees." />
 
