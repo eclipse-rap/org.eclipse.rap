@@ -18,7 +18,7 @@ var appearances = {
       return {
         backgroundColor : tv.getCssColor( "Tree", "background-color" ),
         textColor : tv.getCssColor( "Tree", "color" ),
-        font : tv.getCssFont( "*", "font" ),
+        font : tv.getCssFont( "Tree", "font" ),
         border : tv.getCssBorder( "Tree", "border" )
       };
     }

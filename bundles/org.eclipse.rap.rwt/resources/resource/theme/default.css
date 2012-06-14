@@ -1236,6 +1236,7 @@ ToolItem-Separator {
 /* Tree default theme */
 
 Tree {
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: #ffffff;
   border: none;
   color: #4a4a4a;

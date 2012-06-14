@@ -13,6 +13,7 @@
 /* Tree property defaults */
 
 Tree {
+  font: 14px Arial, sans-serif;
   background-color: #ffffff;
   border: none;
   color: #4a4a4a;
