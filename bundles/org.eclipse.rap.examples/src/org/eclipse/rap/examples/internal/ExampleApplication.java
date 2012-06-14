@@ -10,12 +10,16 @@
  ******************************************************************************/
 package org.eclipse.rap.examples.internal;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.application.Application;
+import org.eclipse.rwt.application.Application.OperationMode;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.client.WebClient;
 import org.eclipse.rwt.resources.IResource;
@@ -29,6 +33,7 @@ public class ExampleApplication implements ApplicationConfiguration {
     properties.put( WebClient.PAGE_TITLE, "RAP Examples" );
     properties.put( WebClient.BODY_HTML, readTextFromResource( "resources/body.html", "UTF-8" ) );
     properties.put( WebClient.FAVICON, "icons/favicon.png" );
+    application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     application.addEntryPoint( "/examples", MainUi.class, properties );
     application.addStyleSheet( RWT.DEFAULT_THEME_ID, "theme/theme.css" );
     application.addResource( createResource( "icons/favicon.png" ) );

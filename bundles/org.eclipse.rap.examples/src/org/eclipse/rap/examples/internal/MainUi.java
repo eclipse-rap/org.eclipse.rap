@@ -13,7 +13,9 @@ package org.eclipse.rap.examples.internal;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.rap.examples.*;
+import org.eclipse.rap.examples.ExampleUtil;
+import org.eclipse.rap.examples.IExampleContribution;
+import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rwt.events.BrowserHistoryListener;
@@ -25,11 +27,17 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.Version;
-
 
 
 @SuppressWarnings("restriction")
@@ -54,6 +62,12 @@ public class MainUi implements IEntryPoint {
     attachHistoryListener();
     shell.open();
     selectInitialContribution();
+    while( !shell.isDisposed() ) {
+      if( !display.readAndDispatch() ) {
+        display.sleep();
+      }
+    }
+    display.dispose();
     return 0;
   }
 
