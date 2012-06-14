@@ -10,7 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.examples.internal;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.rap.examples.IExampleContribution;
 

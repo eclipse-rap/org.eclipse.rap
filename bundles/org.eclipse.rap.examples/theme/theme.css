@@ -114,21 +114,21 @@ MenuItem.navigation:hover {
 
 Label.heading {
   font: 16px Helvetica, Verdana, sans-serif;
-  color: #31619C;  
+  color: #31619C; 
 }
 
 Label.pageHeadline {
   font: 20px Helvetica, Verdana, sans-serif;
-  color: #31619C;  
+  color: #31619C; 
 }
 
 Label.title {
-  font: 24px Helvetica, Verdana, sans-serif;  
+  font: 24px Helvetica, Verdana, sans-serif; 
   color: #fff;
 }
 
 Label.footerLabel {
-  font: 14px Helvetica, Verdana, sans-serif;  
+  font: 14px Helvetica, Verdana, sans-serif; 
 }
 
 Label.infobox {
@@ -141,7 +141,7 @@ Label.infobox-heading {
 }
 
 Label.markup {
-  font: 22px Helvetica, Verdana, sans-serif;  
+  font: 22px Helvetica, Verdana, sans-serif; 
 }
 
 Label.error {

@@ -10,10 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rap.examples.pages.internal;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.rap.examples.IExampleContribution;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 
 public class Activator implements BundleActivator {

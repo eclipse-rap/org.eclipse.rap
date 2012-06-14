@@ -10,11 +10,24 @@
  ******************************************************************************/
 package org.eclipse.rap.examples.pages.internal;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.rap.examples.IExampleContribution;
 import org.eclipse.rap.examples.IExamplePage;
-import org.eclipse.rap.examples.pages.*;
+import org.eclipse.rap.examples.pages.ButtonExamplePage;
+import org.eclipse.rap.examples.pages.CanvasExamplePage;
+import org.eclipse.rap.examples.pages.DialogExamplePage;
+import org.eclipse.rap.examples.pages.FillLayoutExample;
+import org.eclipse.rap.examples.pages.GridLayoutExample;
+import org.eclipse.rap.examples.pages.ListExample;
+import org.eclipse.rap.examples.pages.MarkupExample;
+import org.eclipse.rap.examples.pages.MarkupLabelExample;
+import org.eclipse.rap.examples.pages.RowLayoutExample;
+import org.eclipse.rap.examples.pages.TableViewerExample;
+import org.eclipse.rap.examples.pages.TextInputExamplePage;
+import org.eclipse.rap.examples.pages.TreeViewerExample;
 
 
 class Contributions {
