@@ -9,7 +9,7 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {  
+qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {  
   extend : qx.ui.layout.VerticalBoxLayout,
 
   construct : function() {
@@ -32,7 +32,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
     this._asyncTimer.addEventListener( "interval", this._onAsyncTimer, this );
     this._hoverItem = null;
     this._hoverElement = null;
-    this._config = org.eclipse.rwt.widgets.TreeRowContainer.createRenderConfig();
+    this._config = org.eclipse.rwt.widgets.GridRowContainer.createRenderConfig();
     this.addEventListener( "mouseover", this._onRowOver, this );
     this.addEventListener( "mouseout", this._onRowOver, this );
     this.addEventListener( "elementOver", this._onElementOver, this );
@@ -311,7 +311,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
       var height = this.getHeight();
       var rowsNeeded = Math.round( ( this.getHeight() / this._rowHeight ) + 0.5 );
       while( this._children.length < rowsNeeded ) {
-        var row = new org.eclipse.rwt.widgets.TreeRow( this.getParent() );
+        var row = new org.eclipse.rwt.widgets.GridRow( this.getParent() );
         row.setAppearance( this._getRowAppearance() ); 
         row.setZIndex( 0 );
         row.setWidth( this._rowWidth );
@@ -380,7 +380,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
     _onElementOver : function( event ) {
       var target = event.getTarget();
       var internal = target === event.getRelatedTarget();
-      if( target instanceof org.eclipse.rwt.widgets.TreeRow && internal && this._hoverItem ) {
+      if( target instanceof org.eclipse.rwt.widgets.GridRow && internal && this._hoverItem ) {
         var hoverElement = target.getTargetIdentifier( event );
         if( this._hoverElement !== hoverElement ) {
           this._hoverElement = hoverElement;
@@ -391,7 +391,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
 
     _onRowOver : function( event ) {
       var target = event.getOriginalTarget();
-      if( target instanceof org.eclipse.rwt.widgets.TreeRow ) {
+      if( target instanceof org.eclipse.rwt.widgets.GridRow ) {
         if( event.getType() === "mouseout" ) {
           this._hoverElement = null;
           this._setHoverItem( null );

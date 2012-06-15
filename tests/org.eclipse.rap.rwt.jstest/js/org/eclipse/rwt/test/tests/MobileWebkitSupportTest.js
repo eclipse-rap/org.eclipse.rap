@@ -598,12 +598,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testIsDraggableTreeScrollBarAndColumn : function() {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var widget = new org.eclipse.rwt.widgets.Tree( {
+      var widget = new org.eclipse.rwt.widgets.Grid( {
         appearance : "tree"
       } );
       widget.addToDocument();
       widgetManager.add( widget, "tree", true );
-      var column = new org.eclipse.swt.widgets.TableColumn( widget );
+      var column = new org.eclipse.rwt.widgets.GridColumn( widget );
       column.setLabel( "test" );
       column.setIcon( "http://blah.blah" );
       column.setParent( widget );

@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
+qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
 
   extend : qx.core.Target,
 
@@ -61,14 +61,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
         result = parentItem.getChild( index );
         result.markCached();
       } else {
-        result = new org.eclipse.rwt.widgets.TreeItem( parentItem, index, false );
+        result = new org.eclipse.rwt.widgets.GridItem( parentItem, index, false );
       }
       return result;
     },
 
     _getItem : function( treeOrItem ) {
       var result;
-      if( treeOrItem instanceof org.eclipse.rwt.widgets.Tree ) {
+      if( treeOrItem instanceof org.eclipse.rwt.widgets.Grid ) {
         result = treeOrItem.getRootItem(); 
       } else {
         result = treeOrItem;
@@ -292,7 +292,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       var result = this._children[ index ];
       if( !result ) {
        if( index >= 0 && index < this._children.length ) {
-          result = new org.eclipse.rwt.widgets.TreeItem( this, index, true );
+          result = new org.eclipse.rwt.widgets.GridItem( this, index, true );
         }
       }
       return result;

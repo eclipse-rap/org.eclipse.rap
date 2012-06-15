@@ -16,7 +16,7 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var shell;
 
   
-qx.Class.define( "org.eclipse.rwt.test.tests.TableColumnTest", {
+qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
 
   extend : qx.core.Object,
 
@@ -29,14 +29,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableColumnTest", {
       Processor.processOperation( {
         "target" : "w4",
         "action" : "create",
-        "type" : "rwt.widgets.TableColumn",
+        "type" : "rwt.widgets.GridColumn",
         "properties" : {
           "style" : [],
           "parent" : "w3"
         }
       } );
       var widget = ObjectManager.getObject( "w4" );
-      assertTrue( widget instanceof org.eclipse.swt.widgets.TableColumn );
+      assertTrue( widget instanceof org.eclipse.rwt.widgets.GridColumn );
       assertIdentical( tree._columnArea, widget.getParent() );
       assertEquals( "tree-column", widget.getAppearance() );
       widget.destroy();
@@ -217,7 +217,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableColumnTest", {
       org.eclipse.rwt.protocol.Processor.processOperation( {
         "target" : id,
         "action" : "create",
-        "type" : "rwt.widgets.Tree",
+        "type" : "rwt.widgets.Grid",
         "properties" : {
           "style" : styles,
           "parent" : parentId,
@@ -236,7 +236,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableColumnTest", {
       org.eclipse.rwt.protocol.Processor.processOperation( {
         "target" : id,
         "action" : "create",
-        "type" : "rwt.widgets.TableColumn",
+        "type" : "rwt.widgets.GridColumn",
         "properties" : {
           "style" : styles,
           "parent" : parentId

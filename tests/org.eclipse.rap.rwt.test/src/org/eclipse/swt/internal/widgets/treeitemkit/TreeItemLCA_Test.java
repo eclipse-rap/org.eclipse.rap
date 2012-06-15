@@ -285,7 +285,7 @@ public class TreeItemLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertEquals( "rwt.widgets.TreeItem", operation.getType() );
+    assertEquals( "rwt.widgets.GridItem", operation.getType() );
     assertEquals( Integer.valueOf( 1 ), operation.getProperty( "index" ) );
   }
 

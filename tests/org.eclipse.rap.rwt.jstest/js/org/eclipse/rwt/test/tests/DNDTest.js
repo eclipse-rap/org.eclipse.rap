@@ -1259,7 +1259,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertTrue( dndHandler.__dragCache.dragHandlerActive );
       // over treeRow
       TestUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton );
-      assertTrue( dndSupport._currentTargetWidget instanceof org.eclipse.rwt.widgets.TreeRow );
+      assertTrue( dndSupport._currentTargetWidget instanceof org.eclipse.rwt.widgets.GridRow );
       TestUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
       assertTrue( dndSupport._isDropTargetEventScheduled( "dragEnter" ) );
       dndSupport._cancelDropTargetEvent( "dragEnter" );
@@ -1267,7 +1267,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       // over clientArea
       // NOTE: IE may fire mousemove before mouseover, See Bug 345692
       TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton );
-      assertFalse( dndSupport._currentTargetWidget instanceof org.eclipse.rwt.widgets.TreeRow );
+      assertFalse( dndSupport._currentTargetWidget instanceof org.eclipse.rwt.widgets.GridRow );
       TestUtil.fakeMouseEventDOM( doc, "mouseover", leftButton );
       TestUtil.forceTimerOnce();
       assertEquals( 2, TestUtil.getRequestsSend() );
@@ -1371,7 +1371,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
         "appearance" : "tree",
         "selectionPadding" : [ 2, 2 ]
       };
-      var tree = new org.eclipse.rwt.widgets.Tree( argsMap );
+      var tree = new org.eclipse.rwt.widgets.Grid( argsMap );
       tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500 );      
       org.eclipse.swt.WidgetManager.getInstance().add( tree, "w2" );
       tree.setUserData( "isControl", true );
@@ -1411,7 +1411,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
         "appearance" : "tree",
         "selectionPadding" : [ 2, 2 ]
       };
-      var tree = new org.eclipse.rwt.widgets.Tree( argsMap );
+      var tree = new org.eclipse.rwt.widgets.Grid( argsMap );
       org.eclipse.swt.WidgetManager.getInstance().add( tree, "w2" );
       tree.setUserData( "isControl", true );
       tree.setSpace( 13, 364, 27, 30 );
@@ -1565,7 +1565,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
           };
         }
       } );       
-      var tree = new org.eclipse.rwt.widgets.Tree( argsMap );
+      var tree = new org.eclipse.rwt.widgets.Grid( argsMap );
       org.eclipse.swt.WidgetManager.getInstance().add( tree, "w2" );
       tree.setUserData( "isControl", true );
       tree.setSpace( 13, 364, 27, 30 );
@@ -1579,9 +1579,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     
     createTreeItem : function( itemNr, tree, parent ) {
       var nr = itemNr + 2;
-      var parentItem = org.eclipse.rwt.widgets.TreeItem._getItem( parent );
+      var parentItem = org.eclipse.rwt.widgets.GridItem._getItem( parent );
       parentItem.setItemCount( itemNr + 1 );
-      var item = new org.eclipse.rwt.widgets.TreeItem( parentItem, itemNr );
+      var item = new org.eclipse.rwt.widgets.GridItem( parentItem, itemNr );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.add( item, "w" + nr, false );
       item.setTexts( [ "text" + nr ] );
@@ -1591,7 +1591,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     
     createTable : function() {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var table = new org.eclipse.swt.widgets.Table( "w2", "|multi" );
+      var table = new org.eclipse.rwt.widgets.Grid( "w2", "|multi" );
       wm.add( table, "w2", true );
       table.addToDocument();
       table.setSpace( 13, 360, 27, 147 );
@@ -1601,29 +1601,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       table.updateRows();
       table.setItemCount( 4 );
       table.setScrollBarsVisibile( false, true );
-      var w = new org.eclipse.swt.widgets.TableColumn( table );
+      var w = new org.eclipse.rwt.widgets.GridColumn( table );
       wm.add( w, "w3", false );
       w.setLabel( "" );
       w.setWidth( 105 );
-      w = new org.eclipse.swt.widgets.TableColumn( table );
+      w = new org.eclipse.rwt.widgets.GridColumn( table );
       wm.add( w, "w4", false );
       w.setLabel( "" );
       w.setLeft( 105 );
       w.setWidth( 104 );
       w.setZIndex( 299 );
-      w = new org.eclipse.swt.widgets.TableItem( table, 0 );
+      w = new org.eclipse.rwt.widgets.GridItem( table, 0 );
       wm.add( w, "w5", false );
       w.setTexts( [ "Item name 1", "Item Value 1" ] );
       w.update();
-      w = new org.eclipse.swt.widgets.TableItem( table, 0 );
+      w = new org.eclipse.rwt.widgets.GridItem( table, 0 );
       wm.add( w, "w6", false );
       w.setTexts( [ "Item name 2", "Item Value 2" ] );
       w.update();
-      w = new org.eclipse.swt.widgets.TableItem( table, 0 );
+      w = new org.eclipse.rwt.widgets.GridItem( table, 0 );
       wm.add( w, "w7", false );
       w.setTexts( [ "Item name 3", "Item Value 3" ] );
       w.update();
-      w = new org.eclipse.swt.widgets.TableItem( table, 0 );
+      w = new org.eclipse.rwt.widgets.GridItem( table, 0 );
       wm.add( w, "w8", false );
       w.setTexts( [ "Item name 4", "Item Value 4" ] );
       w.update();

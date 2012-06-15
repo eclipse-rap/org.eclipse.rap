@@ -10,13 +10,13 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
+qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
 
   extend : qx.ui.layout.CanvasLayout,
 
   construct : function( argsMap ) {
     this.base( arguments );
-    this._rootItem = new org.eclipse.rwt.widgets.TreeItem();
+    this._rootItem = new org.eclipse.rwt.widgets.GridItem();
     // Style-Flags:
     this._isVirtual = false;
     this._hasMultiSelection = false;
@@ -40,8 +40,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._mergeEventsTimer = new qx.client.Timer( 50 );
     this._sendRequestTimer = null;
     // Subwidgets
-    this._rowContainer = org.eclipse.rwt.TreeUtil.createTreeRowContainer( argsMap );
-    this._columnArea = new org.eclipse.rwt.widgets.TableHeader( argsMap );
+    this._rowContainer = org.eclipse.rwt.GridUtil.createTreeRowContainer( argsMap );
+    this._columnArea = new org.eclipse.rwt.widgets.GridHeader( argsMap );
     this._horzScrollBar = new org.eclipse.rwt.widgets.ScrollBar( true );
     this._vertScrollBar = new org.eclipse.rwt.widgets.ScrollBar( false );
     this._hasScrollBarsSelectionListener = false;
@@ -412,7 +412,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _onMouseDown : function( event ) {
       this._delayedSelection = false;
       var target = event.getOriginalTarget();
-      if( target instanceof org.eclipse.rwt.widgets.TreeRow ) {
+      if( target instanceof org.eclipse.rwt.widgets.GridRow ) {
         this._onRowMouseDown( target, event );
       }
     },
@@ -1181,7 +1181,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       if( value ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
-        this._cellToolTip = new org.eclipse.swt.widgets.TableCellToolTip( id );
+        this._cellToolTip = new org.eclipse.rwt.widgets.GridCellToolTip( id );
         this._rowContainer.addEventListener( "mousemove", this._onClientAreaMouseMove, this );
         this._rowContainer.setToolTip( this._cellToolTip );
       } else {
@@ -1199,7 +1199,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         if( this._rowContainer.getHoverItem() ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           itemId = widgetManager.findIdByWidget( this._rowContainer.getHoverItem() );
-          columnIndex = org.eclipse.rwt.TreeUtil.getColumnByPageX( this, evt.getPageX() );
+          columnIndex = org.eclipse.rwt.GridUtil.getColumnByPageX( this, evt.getPageX() );
         }
         this._cellToolTip.setCell( itemId, columnIndex );
       }

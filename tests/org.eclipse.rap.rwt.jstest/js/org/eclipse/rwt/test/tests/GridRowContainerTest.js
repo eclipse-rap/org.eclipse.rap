@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
+qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
 
   extend : qx.core.Object,
   
@@ -19,7 +19,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
 
     testCreate : function() {
       var cont = this._createContainer();
-      assertTrue( cont instanceof org.eclipse.rwt.widgets.TreeRowContainer );
+      assertTrue( cont instanceof org.eclipse.rwt.widgets.GridRowContainer );
       cont.destroy();
     },
     
@@ -33,7 +33,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
 
     testAddTreeRowsOnTreeResize : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
+      var tree = new org.eclipse.rwt.widgets.Grid( { "appearance": "tree" } );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
       tree.setHeight( 551 );
@@ -43,7 +43,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
 
     testAddOneAdditionalRow : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
+      var tree = new org.eclipse.rwt.widgets.Grid( { "appearance": "tree" } );
       tree.setItemHeight( 50 );
       var clientArea = tree._rowContainer;
       tree.setHeight( 499 );
@@ -56,7 +56,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
 
     testAddTreeRowsOnRowResize : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
+      var tree = new org.eclipse.rwt.widgets.Grid( { "appearance": "tree" } );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
       tree.setItemHeight( 25 );
@@ -66,7 +66,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
 
     testRemoveTreeRowsOnTreeResize : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
+      var tree = new org.eclipse.rwt.widgets.Grid( { "appearance": "tree" } );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
       tree.setHeight( 401 );
@@ -76,7 +76,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
 
     testRemoveTreeRowsOnRowResize : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
+      var tree = new org.eclipse.rwt.widgets.Grid( { "appearance": "tree" } );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
       tree.setItemHeight( 100 );
@@ -102,10 +102,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
-      var root = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
+      var root = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
       root.setItemCount( 10 );
       for( var i = 0; i < 10; i++ ) {
-        var item = new org.eclipse.rwt.widgets.TreeItem( root, i );
+        var item = new org.eclipse.rwt.widgets.GridItem( root, i );
         item.setTexts( [ "item" + i ] );
       }
       root.setExpanded( true );
@@ -142,9 +142,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
         }
       } ); 
       tree.setItemCount( 1 );
-      var root = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
+      var root = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
       root.setItemCount( 1 );
-      var item = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
+      var item = new org.eclipse.rwt.widgets.GridItem( root, 0 );
       root.setExpanded( true );
       tree.selectItem( item );
       TestUtil.flush();
@@ -270,7 +270,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     _createDefaultTree : function( noflush ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       this._fakeAppearance(); 
-      var tree = new org.eclipse.rwt.widgets.Tree( { 
+      var tree = new org.eclipse.rwt.widgets.Grid( { 
         "appearance": "tree",
         "fullSelection": true,
         "selectionPadding" : [ 2, 4 ],
@@ -314,7 +314,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
     
     _createContainer : function() {
-      var result = new org.eclipse.rwt.widgets.TreeRowContainer();
+      var result = new org.eclipse.rwt.widgets.GridRowContainer();
       result.setBaseAppearance( "tree" );
       return result;
     }

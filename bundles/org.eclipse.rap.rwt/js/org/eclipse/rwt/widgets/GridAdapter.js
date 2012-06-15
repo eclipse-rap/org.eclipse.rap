@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Tree", {
+org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
 
   factory : function( properties ) {
     var styleMap = org.eclipse.rwt.protocol.AdapterUtil.createStyleMap( properties.style );
@@ -28,7 +28,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Tree", {
       splitContainer : properties.splitContainer,
       markupEnabled : properties.markupEnabled
     };  
-    var result = new org.eclipse.rwt.widgets.Tree( configMap );
+    var result = new org.eclipse.rwt.widgets.Grid( configMap );
     org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );
     org.eclipse.rwt.protocol.AdapterUtil.setParent( result, properties.parent );
@@ -67,7 +67,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Tree", {
       }
     },
     "fixedColumns" : function( widget, value ) {
-      org.eclipse.rwt.TreeUtil.setFixedColumns( widget, value );
+      org.eclipse.rwt.GridUtil.setFixedColumns( widget, value );
     },
     "focusItem" : function( widget, value ) {
       org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( item ) {

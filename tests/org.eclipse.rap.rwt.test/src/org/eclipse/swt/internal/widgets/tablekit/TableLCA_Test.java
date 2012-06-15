@@ -888,7 +888,7 @@ public class TableLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( table );
-    assertEquals( "rwt.widgets.Tree", operation.getType() );
+    assertEquals( "rwt.widgets.Grid", operation.getType() );
     assertEquals( "table", operation.getProperty( "appearance" ) );
     assertEquals( Integer.valueOf( 0 ), operation.getProperty( "indentionWidth" ) );
     assertEquals( Integer.valueOf( -1 ), operation.getProperty( "treeColumn" ) );

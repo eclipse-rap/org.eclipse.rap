@@ -344,7 +344,7 @@ public class TreeColumnLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( column );
-    assertEquals( "rwt.widgets.TableColumn", operation.getType() );
+    assertEquals( "rwt.widgets.GridColumn", operation.getType() );
   }
 
   public void testRenderCreateWithAligment() throws IOException {

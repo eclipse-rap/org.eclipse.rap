@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class TreeColumnLCA extends AbstractWidgetLCA {
 
-  private static final String TYPE = "rwt.widgets.TableColumn";
+  private static final String TYPE = "rwt.widgets.GridColumn";
 
   static final String PROP_INDEX = "index";
   static final String PROP_LEFT = "left";

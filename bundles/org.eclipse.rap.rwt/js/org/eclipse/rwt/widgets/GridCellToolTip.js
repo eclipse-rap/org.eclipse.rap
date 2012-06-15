@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.swt.widgets.TableCellToolTip", {
+qx.Class.define( "org.eclipse.rwt.widgets.GridCellToolTip", {
   extend : qx.ui.popup.ToolTip,
   include : org.eclipse.rwt.VisibilityAnimationMixin,
 

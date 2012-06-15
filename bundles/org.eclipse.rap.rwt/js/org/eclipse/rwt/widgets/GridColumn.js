@@ -14,7 +14,7 @@
  * This class provides the client-side counterpart for 
  * org.eclipse.swt.TableColumn.
  */
-qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
+qx.Class.define( "org.eclipse.rwt.widgets.GridColumn", {
   extend : qx.ui.basic.Atom,
 
   construct : function( parent ) {
@@ -137,7 +137,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
 
     _onMouseOver : function( evt ) {
       if( !this._inMove && !this._inResize ) {
-        this.addState( org.eclipse.swt.widgets.TableColumn.STATE_MOUSE_OVER );
+        this.addState( org.eclipse.rwt.widgets.GridColumn.STATE_MOUSE_OVER );
       }
     },
 
@@ -212,7 +212,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         this._inMove = false;
         this.setCapture( false );
         this._handleZIndex();
-        this.removeState( org.eclipse.swt.widgets.TableColumn.STATE_MOVING );
+        this.removeState( org.eclipse.rwt.widgets.GridColumn.STATE_MOVING );
         if(    this.getLeft() < this._initialLeft - 1 
             || this.getLeft() > this._initialLeft + 1 ) 
         {
@@ -239,10 +239,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         this._table._showResizeLine( position, this._fixed );
       } else if( this._inMove ) {
         this.setLeft( evt.getPageX() - this._offsetX );
-        this.addState( org.eclipse.swt.widgets.TableColumn.STATE_MOVING );
+        this.addState( org.eclipse.rwt.widgets.GridColumn.STATE_MOVING );
       } else {
         if( this._isResizeLocation( evt.getPageX() ) ) {
-          this.getTopLevelWidget().setGlobalCursor( org.eclipse.swt.widgets.TableColumn.RESIZE_CURSOR );
+          this.getTopLevelWidget().setGlobalCursor( org.eclipse.rwt.widgets.GridColumn.RESIZE_CURSOR );
         } else {
           this.getTopLevelWidget().setGlobalCursor( null );
         }
@@ -252,7 +252,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     },
 
     _onMouseOut : function( evt ) {
-      this.removeState( org.eclipse.swt.widgets.TableColumn.STATE_MOUSE_OVER );
+      this.removeState( org.eclipse.rwt.widgets.GridColumn.STATE_MOUSE_OVER );
       if( !this._inResize ) {
         this.getTopLevelWidget().setGlobalCursor( null );
         evt.stopPropagation();

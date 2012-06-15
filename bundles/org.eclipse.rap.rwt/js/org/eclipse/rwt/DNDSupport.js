@@ -294,7 +294,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     _getCurrentItemTarget : function() {
       var result = null;
       var target = this._getCurrentFeedbackTarget();
-      if( target instanceof org.eclipse.rwt.widgets.TreeRow ) {
+      if( target instanceof org.eclipse.rwt.widgets.GridRow ) {
         var tree = this._currentDropTarget;
         result = tree._rowContainer.findItemByRow( target );
       } else {
@@ -390,8 +390,8 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
      */
     _createFeedback : function( widget ) {
       if( this._dropFeedbackRenderer == null ) {
-        if( widget instanceof org.eclipse.rwt.widgets.Tree ) {
-          this._dropFeedbackRenderer = new org.eclipse.rwt.TreeDNDFeedback( widget );
+        if( widget instanceof org.eclipse.rwt.widgets.Grid ) {
+          this._dropFeedbackRenderer = new org.eclipse.rwt.GridDNDFeedback( widget );
         }
       }
     },
@@ -406,7 +406,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     _getCurrentFeedbackTarget : function() {
       var result = null;
       var widget = this._currentTargetWidget;
-      if( widget instanceof org.eclipse.rwt.widgets.TreeRow ) {
+      if( widget instanceof org.eclipse.rwt.widgets.GridRow ) {
         // _currentDropTarget could be another tree
         if( this._currentDropTarget && this._currentDropTarget.contains( widget ) ) {
           result = widget;
@@ -427,7 +427,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         this._dragFeedbackWidget.setPadding( 2 );
       }
       while( !success && item != control ) {
-        if( item instanceof org.eclipse.rwt.widgets.TreeRow ) {
+        if( item instanceof org.eclipse.rwt.widgets.GridRow ) {
           success = true;
           this._configureTreeRowFeedback( item );
         }

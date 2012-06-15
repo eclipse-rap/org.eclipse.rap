@@ -9,12 +9,12 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.TableColumn", {
+org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridColumn", {
 
   factory : function( properties ) {
     var result;
     org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( properties.parent, function( parent ) {
-      result = new org.eclipse.swt.widgets.TableColumn( parent );
+      result = new org.eclipse.rwt.widgets.GridColumn( parent );
     } );
     return result;
   },

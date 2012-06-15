@@ -12,7 +12,7 @@
 
 namespace( "org.eclipse.rwt" );
 
-org.eclipse.rwt.TreeUtil = {
+org.eclipse.rwt.GridUtil = {
     
   /////////////////
   // API for Server
@@ -31,16 +31,16 @@ org.eclipse.rwt.TreeUtil = {
   createTreeRowContainer : function( argsmap ) {
     var result;
     if( argsmap.splitContainer ) {
-      result = org.eclipse.rwt.TreeRowContainerWrapper.createInstance();
+      result = org.eclipse.rwt.GridRowContainerWrapper.createInstance();
     } else {
-      result = new org.eclipse.rwt.widgets.TreeRowContainer();
+      result = new org.eclipse.rwt.widgets.GridRowContainer();
     }
     return result;
   },
 
   getColumnByPageX : function( tree, pageX ) {
     var container = tree.getRowContainer();
-    var splitContainer = container instanceof org.eclipse.rwt.TreeRowContainerWrapper;
+    var splitContainer = container instanceof org.eclipse.rwt.GridRowContainerWrapper;
     if( splitContainer ) {
       container = tree.getRowContainer().getSubContainer( 0 );
     }

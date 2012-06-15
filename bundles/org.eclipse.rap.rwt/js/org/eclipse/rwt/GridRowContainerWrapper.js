@@ -12,12 +12,12 @@
  
 namespace( "org.eclipse.rwt" );
  
-org.eclipse.rwt.TreeRowContainerWrapper = function() {
+org.eclipse.rwt.GridRowContainerWrapper = function() {
   this._fixedColumns = 0;
   this._container = [];
-  this._container[ 0 ] = new org.eclipse.rwt.widgets.TreeRowContainer();
-  this._container[ 1 ] = new org.eclipse.rwt.widgets.TreeRowContainer();
-  this._config = org.eclipse.rwt.widgets.TreeRowContainer.createRenderConfig();
+  this._container[ 0 ] = new org.eclipse.rwt.widgets.GridRowContainer();
+  this._container[ 1 ] = new org.eclipse.rwt.widgets.GridRowContainer();
+  this._config = org.eclipse.rwt.widgets.GridRowContainer.createRenderConfig();
   this._width = 0;
   this._splitOffset = 0;
   this._rowWidth = 0;
@@ -25,7 +25,7 @@ org.eclipse.rwt.TreeRowContainerWrapper = function() {
   this.addEventListener( "mouseout", this._onRowOver, this );
 };
 
-org.eclipse.rwt.TreeRowContainerWrapper.createInstance = function() {
+org.eclipse.rwt.GridRowContainerWrapper.createInstance = function() {
   if( !this.prototype._protoInit ) {
     for( var i = 0; i < this._CONTAINER_DELEGATES.length; i++ ) {
       this._createContainerDelegater( this._CONTAINER_DELEGATES[ i ] );
@@ -35,23 +35,23 @@ org.eclipse.rwt.TreeRowContainerWrapper.createInstance = function() {
     }
     this.prototype._protoInit = true;
   }
-  return new org.eclipse.rwt.TreeRowContainerWrapper();
+  return new org.eclipse.rwt.GridRowContainerWrapper();
 };
 
-org.eclipse.rwt.TreeRowContainerWrapper._createContainerDelegater = function( funcName ) {
+org.eclipse.rwt.GridRowContainerWrapper._createContainerDelegater = function( funcName ) {
   this.prototype[ funcName ] = function() {
     this._container[ 0 ][ funcName ].apply( this._container[ 0 ], arguments );
     this._container[ 1 ][ funcName ].apply( this._container[ 1 ], arguments );
   };
 };
     
-org.eclipse.rwt.TreeRowContainerWrapper._createContainerGetterDelegater = function( funcName ) {
+org.eclipse.rwt.GridRowContainerWrapper._createContainerGetterDelegater = function( funcName ) {
   this.prototype[ funcName ] = function() {
     return this._container[ 0 ][ funcName ].apply( this._container[ 0 ], arguments );
   };
 };
     
-org.eclipse.rwt.TreeRowContainerWrapper._CONTAINER_DELEGATES = [
+org.eclipse.rwt.GridRowContainerWrapper._CONTAINER_DELEGATES = [
   "setParent", 
   "destroy", 
   "addEventListener", 
@@ -69,7 +69,7 @@ org.eclipse.rwt.TreeRowContainerWrapper._CONTAINER_DELEGATES = [
   "setBaseAppearance"
 ];
 
-org.eclipse.rwt.TreeRowContainerWrapper._CONTAINER_GETTER_DELEGATES = [ 
+org.eclipse.rwt.GridRowContainerWrapper._CONTAINER_GETTER_DELEGATES = [ 
   "getTop",
   "getHeight",
   "getHoverItem",
@@ -77,7 +77,7 @@ org.eclipse.rwt.TreeRowContainerWrapper._CONTAINER_GETTER_DELEGATES = [
   "getChildrenLength"
 ];
 
-org.eclipse.rwt.TreeRowContainerWrapper.prototype = {
+org.eclipse.rwt.GridRowContainerWrapper.prototype = {
 
   _protoInit : false,
 

@@ -10,7 +10,7 @@
  *     EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.widgets.TableHeader", {
+qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
 
   extend : qx.ui.layout.CanvasLayout,
   

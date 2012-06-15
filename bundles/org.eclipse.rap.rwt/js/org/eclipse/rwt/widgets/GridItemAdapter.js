@@ -9,12 +9,12 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.TreeItem", {
+org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridItem", {
 
   factory : function( properties ) {
     var result;
     org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( properties.parent, function( parent ) {
-      result = org.eclipse.rwt.widgets.TreeItem.createItem( parent, properties.index );
+      result = org.eclipse.rwt.widgets.GridItem.createItem( parent, properties.index );
     } );
     return result;
   },

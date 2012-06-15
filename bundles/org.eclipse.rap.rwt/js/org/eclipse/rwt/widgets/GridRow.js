@@ -19,7 +19,7 @@
 var HtmlUtil = org.eclipse.rwt.HtmlUtil;
 var Variant = qx.core.Variant;
 
-qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
+qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
 
   extend : qx.ui.basic.Terminator,
 

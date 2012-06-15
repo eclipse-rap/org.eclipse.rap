@@ -546,7 +546,7 @@ public class TreeLCA_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( 7, countCreateOperations( "rwt.widgets.TreeItem", message ) );
+    assertEquals( 7, countCreateOperations( "rwt.widgets.GridItem", message ) );
   }
 
   public void testVirtualReadSelection() {
@@ -670,7 +670,7 @@ public class TreeLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertEquals( "rwt.widgets.Tree", operation.getType() );
+    assertEquals( "rwt.widgets.Grid", operation.getType() );
     assertEquals( "tree", operation.getProperty( "appearance" ) );
     assertEquals( Integer.valueOf( 16 ), operation.getProperty( "indentionWidth" ) );
     JSONArray actual = ( JSONArray )operation.getProperty( "selectionPadding" );

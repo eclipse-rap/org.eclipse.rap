@@ -30,7 +30,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     void run() throws IOException;
   }
 
-  private static final String TYPE = "rwt.widgets.TreeItem";
+  private static final String TYPE = "rwt.widgets.GridItem";
 
   static final String PROP_TEXTS = "texts";
   static final String PROP_IMAGES = "images";
