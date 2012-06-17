@@ -25,6 +25,7 @@
     <module>../../../rap-ckeditor/org.eclipse.rap.demo.ckeditor</module>
     <module>../../../rap-gmap/com.eclipsesource.widgets.gmaps</module>
     <module>../../../rap-gmap/org.eclipse.rap.demo.gmaps</module>
+    <module>../../../rap-demo-additions/org.eclipse.rap.demo.enrondata</module>
     <module>feature</module>
     <module>product</module>
   </modules>
