@@ -83,6 +83,7 @@ public class ScrolledComposite extends Composite {
     super( parent, checkStyle( style ) );
     super.setLayout( new ScrolledCompositeLayout() );
     contentListener = new ControlAdapter() {
+      @Override
       public void controlResized( ControlEvent event ) {
         layout();
 //        layout( false );
@@ -105,24 +106,10 @@ public class ScrolledComposite extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
+  @Override
   public void setLayout( Layout layout ) {
     checkWidget();
     // ignore - ScrolledComposite manages its own layout
-  }
-
-  // TODO [rh] move client area calculation to Scrollable
-  public Rectangle getClientArea () {
-    checkWidget();
-    Rectangle result = super.getClientArea();
-    ScrollBar hBar = getHorizontalBar();
-    if( hBar != null && hBar.getVisible() ) {
-      result.height -= hBar.getSize().y;
-    }
-    ScrollBar vBar = getVerticalBar();
-    if( vBar != null && vBar.getVisible() ) {
-      result.width -= vBar.getSize().x;
-    }
-    return result;
   }
 
   /**
@@ -610,6 +597,7 @@ public class ScrolledComposite extends Composite {
   ///////////
   // Disposal
 
+  @Override
   public void dispose() {
     if( !isDisposed() ) {
       if( content != null && !content.isDisposed() ) {
