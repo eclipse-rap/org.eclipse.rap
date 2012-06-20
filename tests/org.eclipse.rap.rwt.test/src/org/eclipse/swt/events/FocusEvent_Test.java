@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,11 +25,12 @@ import org.eclipse.swt.widgets.*;
 
 
 public class FocusEvent_Test extends TestCase {
-  
+
   private Display display;
   private Shell shell;
   private List<FocusEvent> events;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -37,7 +38,8 @@ public class FocusEvent_Test extends TestCase {
     shell.open();
     events = new ArrayList<FocusEvent>();
   }
-  
+
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -45,6 +47,7 @@ public class FocusEvent_Test extends TestCase {
   public void testCopyFieldsFromUntypedEvent() {
     Button button = new Button( shell, SWT.PUSH );
     button.addFocusListener( new FocusAdapter() {
+      @Override
       public void focusGained( FocusEvent event ) {
         events.add( event );
       }
@@ -67,9 +70,11 @@ public class FocusEvent_Test extends TestCase {
     Control unfocusControl = new Button( shell, SWT.PUSH );
     unfocusControl.setFocus();
     unfocusControl.addFocusListener( new FocusAdapter() {
+      @Override
       public void focusLost( FocusEvent event ) {
         events.add( event );
       }
+      @Override
       public void focusGained( FocusEvent event ) {
         fail( "Unexpected event: focusGained" );
       }
@@ -86,19 +91,21 @@ public class FocusEvent_Test extends TestCase {
     assertEquals( FocusEvent.FOCUS_LOST, event.getID() );
     assertSame( unfocusControl, event.getSource() );
   }
-  
+
   public void testFocusGained() {
     Control control = new Button( shell, SWT.PUSH );
     control.addFocusListener( new FocusAdapter() {
+      @Override
       public void focusLost( FocusEvent event ) {
         fail( "Unexpected event: focusLost" );
       }
+      @Override
       public void focusGained( FocusEvent event ) {
         events.add( event );
       }
     } );
     String controlId = WidgetUtil.getId( control );
-    
+
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( DisplayUtil.getId( display ) + ".focusControl", controlId );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.focusGained", controlId );
@@ -107,5 +114,45 @@ public class FocusEvent_Test extends TestCase {
     FocusEvent event = events.get( 0 );
     assertEquals( FocusEvent.FOCUS_GAINED, event.getID() );
     assertSame( control, event.getSource() );
+  }
+
+  public void testFocusGainedLostOrder() {
+    Button button1 = new Button( shell, SWT.PUSH );
+    button1.addFocusListener( new FocusAdapter() {
+      @Override
+      public void focusLost( FocusEvent event ) {
+        events.add( event );
+      }
+      @Override
+      public void focusGained( FocusEvent event ) {
+        events.add( event );
+      }
+    } );
+    Button button2 = new Button( shell, SWT.PUSH );
+    button2.addFocusListener( new FocusAdapter() {
+      @Override
+      public void focusLost( FocusEvent event ) {
+        events.add( event );
+      }
+      @Override
+      public void focusGained( FocusEvent event ) {
+        events.add( event );
+      }
+    } );
+    button1.setFocus();
+    events.clear();
+    String button2Id = WidgetUtil.getId( button2 );
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( DisplayUtil.getId( display ) + ".focusControl", button2Id );
+    Fixture.readDataAndProcessAction( display );
+
+    assertEquals( 2, events.size() );
+    FocusEvent event = events.get( 0 );
+    assertEquals( FocusEvent.FOCUS_LOST, event.getID() );
+    assertSame( button1, event.widget );
+    event = events.get( 1 );
+    assertEquals( FocusEvent.FOCUS_GAINED, event.getID() );
+    assertSame( button2, event.widget );
   }
 }
