@@ -130,7 +130,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
       }
       this._updateRowCount();
     },
-    
+
     updateRowLines : function() {
       var border = this._config.linesVisible ? this._getHorizontalGridBorder() : null;
       this._rowBorder = border;
@@ -139,7 +139,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
         this._children[ i ].setState( "linesvisible", this._config.linesVisible );
       }
     },
-    
+
     _renderGridVertical : function() {
       var linesNeeded = this._config.linesVisible ? this._config.columnCount : 0;
       for( var i = 0; i < linesNeeded; i++ ) {
@@ -220,7 +220,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
     },
 
     _getRowAppearance : function() {
-      return this._baseAppearance + "-row";      
+      return this._baseAppearance + "-row";
     },
 
     setTopItem : function( item, index, render ) {
@@ -258,7 +258,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
         }
       }
     },
-    
+
     renderItem : function( item ) {
       if( this._isCreated && item != null ) {
         var row = this._findRowByItem( item );
@@ -279,7 +279,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
       var index = this._children.indexOf( targetRow );
       return index !== -1 ? this._items[ index ] : null;
     },
-    
+
     getHoverItem : function() {
       return this._hoverItem;
     },
@@ -305,7 +305,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
       if( this._postRender ) {
         this._postRender[ 0 ].call( this._postRender[ 1 ], renderTime );
       }
-    },    
+    },
 
     _updateRowCount : function() {
       var height = this.getHeight();
@@ -356,7 +356,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
         this._items[ i ] = null;
       }
     },
-    
+
     _renderRow : function( row, item, contentOnly ) {
        row.renderItem( item,
                        this._config,
@@ -421,7 +421,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
       }
       return result;
     },
-    
+
     _renderAsync : function( item ) {
       // async rendering needed in some cases where webkit (and possibly other browser) get confused 
       // when changing dom-elements in "mouseover" events 
@@ -430,7 +430,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
         this._asyncTimer.start();
       }
     },
-    
+
     _onAsyncTimer : function() {
       this._asyncTimer.stop();
       this.renderItemQueue( this._asyncQueue );
@@ -446,7 +446,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
 
     _applyHeight : function( value, oldValue ) {
       this.base( arguments, value, oldValue );
-      this._updateRowCount();      
+      this._updateRowCount();
     },
 
     _afterAppear : function() {

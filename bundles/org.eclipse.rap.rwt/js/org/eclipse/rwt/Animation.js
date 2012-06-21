@@ -109,24 +109,22 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     getExclusive : function() {
       return this._exclusive;
     },
-    
+
     // config can by any value, but "appear", "disappear" and "change" are
     // used by AnimationRenderer when autoStart is enabled. When using 
     // the widget-integration of AnimationRenderer, those should be used
     // in the appropriate scenarios. A config is valid between start and cancel,
     // then its set to null. Its given in the setup-function and all events.
     start : function( config ) {
-      var result = false;
       if ( !this.isStarted() ) {
         org.eclipse.rwt.Animation._addToQueue( this );
         this._inQueue = true;
-        this._config = config;   
+        this._config = config;
         this._init();
-        result = this.isStarted(); // animation can be cancelled in "init"
       }
-      return result;
+      return this.isStarted()
     },
-    
+
     restart : function() {
       var result = false;
       if( this.isStarted() ) {
@@ -141,12 +139,12 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
       if( this.isStarted() ) {
         this._inQueue = false;
         this._isRunning = false;
-        this.createDispatchDataEvent( "cancel", this._config );      
+        this.createDispatchDataEvent( "cancel", this._config );
         this._config = null;
         org.eclipse.rwt.Animation._removeFromLoop( this );
       }
     },
-    
+
     // Unlike "cancel", this properly finishs the animation in any case by
     // simply skipping over the remaining frames (If there are any).
     skip : function() {
@@ -222,7 +220,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
       var transitionValue = this._transitionFunction( position );
       for( var i = 0; i < this._numberRenderer; i++ ) {
         this._renderer[ i ]._render( transitionValue );
-      }      
+      }
     },
 
     _finish : function() {
@@ -231,12 +229,12 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
       this.cancel();
       for( var i = 0; i < this._numberRenderer; i++ ) {
         this._renderer[ i ]._finish( config );
-      }            
+      }
       this.createDispatchDataEvent( "finish", config );
     }
 
   },
-  
+
   statics : {
 
     ///////////////
@@ -303,22 +301,22 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
         org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
     },
-    
+
     ////////
     // Util
-    
+
     blockGlobalFlushs : function( value ) {
       qx.ui.core.Widget._inFlushGlobalQueues = value;
       if( !value ) {
         qx.ui.core.Widget._initAutoFlush( 0 );
       }
     },
-    
+
     //////////////
     // Transitions
-    
+
     transitions : {
-        
+
       linear : function( position ) {
         return position;
       },

@@ -19,7 +19,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridColumn", {
     return result;
   },
 
-  destructor : org.eclipse.rwt.protocol.AdapterUtil.getWidgetDestructor(),
+  destructor : function( column ) {
+    column.dispose();
+  },
 
   properties : [
     // Always set column index first
@@ -37,19 +39,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridColumn", {
   ],
 
   propertyHandler : {
-    "text" : function( widget, value ) {
-      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      var text = EncodingUtil.escapeText( value, false );
-      text = EncodingUtil.replaceNewLines( text, "<br/>" );
-      widget.setLabel( text );
-    },
-    "image" : function( widget, value ) {
-      if( value === null ) {
-        widget.setIcon( null );
-      } else {
-        widget.setIcon( value[ 0 ] );
-      }
-    },
     "toolTip" : org.eclipse.rwt.protocol.AdapterUtil.getControlPropertyHandler( "toolTip" )
   },
 

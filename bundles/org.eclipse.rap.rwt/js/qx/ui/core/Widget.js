@@ -2838,7 +2838,7 @@ qx.Class.define( "qx.ui.core.Widget", {
 
     /////////////////
     // STATE HANDLING
-    
+
     setCustomVariant : function( value ) {
       if( this._customVariant !== null ) {
         this.removeState( this._customVariant );
@@ -4077,7 +4077,7 @@ qx.Class.define( "qx.ui.core.Widget", {
         this.setHtmlAttribute( "id", id );
       }
     }
-    
+
   },
 
   ////////
@@ -4134,6 +4134,7 @@ qx.Class.define( "qx.ui.core.Widget", {
   // DESTRUCTOR
 
   destruct : function() {
+    this.dispatchSimpleEvent( "dispose", { target : this } );
     var elem = this.getElement();
     if (elem) {
       elem.qx_Widget = null;

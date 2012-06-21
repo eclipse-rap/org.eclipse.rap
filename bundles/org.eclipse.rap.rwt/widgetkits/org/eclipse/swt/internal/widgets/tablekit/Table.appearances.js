@@ -32,7 +32,7 @@ var appearances = {
       var result = {
         cursor : "default",
         spacing : 2,
-        opacity : states.moving ? 0.6 : 1.0
+        opacity : states.moving ? 0.85 : 1.0
       };
       result.padding = tv.getCssBoxDimensions( "TableColumn", "padding" );
       result.textColor = tv.getCssColor( "TableColumn", "color" );
@@ -50,7 +50,11 @@ var appearances = {
         gridColor = gridColor == "undefined" ? "transparent" : gridColor;
         borderColors[ 1 ] = gridColor;
         borderWidths[ 1 ] = 1;
-      }
+        if( states.moving ) {
+          borderColors[ 3 ] = gridColor;
+          borderWidths[ 3 ] = 1;
+        }
+      } 
       var borderBottom = tv.getCssBorder( "TableColumn", "border-bottom" );
       borderWidths[ 2 ] = borderBottom.getWidthBottom();
       borderStyles[ 2 ] = borderBottom.getStyleBottom();
@@ -75,7 +79,7 @@ var appearances = {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.source = tv.getCssImage( "TableColumn-SortIndicator", "background-image" );
+      result.backgroundImage = tv.getCssSizedImage( "TableColumn-SortIndicator", "background-image" );
       return result;
     }
   },

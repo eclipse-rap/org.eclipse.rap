@@ -44,13 +44,13 @@ org.eclipse.rwt.GridRowContainerWrapper._createContainerDelegater = function( fu
     this._container[ 1 ][ funcName ].apply( this._container[ 1 ], arguments );
   };
 };
-    
+
 org.eclipse.rwt.GridRowContainerWrapper._createContainerGetterDelegater = function( funcName ) {
   this.prototype[ funcName ] = function() {
     return this._container[ 0 ][ funcName ].apply( this._container[ 0 ], arguments );
   };
 };
-    
+
 org.eclipse.rwt.GridRowContainerWrapper._CONTAINER_DELEGATES = [
   "setParent", 
   "destroy", 
@@ -170,7 +170,7 @@ org.eclipse.rwt.GridRowContainerWrapper.prototype = {
     for( var i = 0; i < columnOrder.length; i++ ) {
       var column = columnOrder[ i ];
       if( i < this._fixedColumns ) {
-        configRight.itemWidth[ column ] = 0;            
+        configRight.itemWidth[ column ] = 0;
       } else {
         configLeft.itemWidth[ column ] = 0;
         configRight.itemLeft[ column ] -= rightColumnsOffset;

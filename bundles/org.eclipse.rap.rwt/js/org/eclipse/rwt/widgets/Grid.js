@@ -33,6 +33,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     this._delayedSelection = false;
     this._sortDirection = null;
     this._sortColumn = null;
+    this._hasFixedColumns = false;
     // Layout:
     this._headerHeight = 0;
     this._itemHeight = 16;
@@ -41,11 +42,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     this._sendRequestTimer = null;
     // Subwidgets
     this._rowContainer = org.eclipse.rwt.GridUtil.createTreeRowContainer( argsMap );
-    this._columnArea = new org.eclipse.rwt.widgets.GridHeader( argsMap );
+    this._columns = {};
     this._horzScrollBar = new org.eclipse.rwt.widgets.ScrollBar( true );
     this._vertScrollBar = new org.eclipse.rwt.widgets.ScrollBar( false );
     this._hasScrollBarsSelectionListener = false;
-    this.add( this._columnArea );
+    this._header = null;
     this.add( this._rowContainer );
     this.add( this._horzScrollBar );
     this.add( this._vertScrollBar );
@@ -56,7 +57,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     this.setOverflow( "hidden" );
     // Disable scrolling (see bugs 279460 and 364739)
     qx.ui.core.Widget.disableScrolling( this );
-    this._configureAreas();
     this._configureScrollBars();
     this._registerListeners();
     this._parseArgsMap( argsMap );
@@ -73,7 +73,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     this._mergeEventsTimer.dispose();
     this._mergeEventsTimer = null;
     this._rowContainer = null;
-    this._columnArea = null;
+    this._header = null;
     this._horzScrollBar = null;
     this._vertScrollBar = null;
     this._leadItem = null;
@@ -88,20 +88,21 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
 
   members : {
 
-    /////////////////////
-    // Contructor helpers
+    /////////////////////////////////
+    // Contructor & Subwidget helpers
 
-    _configureAreas : function() {
-      this._columnArea.addEventListener( "columnLayoutChanged", this._onColumnLayoutChanged, this );
-      this._columnArea.setTop( 0 );
-      this._columnArea.setLeft( 0 );
-      // NOTE: Need to use setDisplay here instead of setVisibility,
-      // otherwise the appear event would be fired when the widget
-      // is not yet ready to be scrolled 
-      this._columnArea.setDisplay( false );
-      // TODO [tb] : Find a cleaner solution to block drag-events
-      var dragBlocker = function( event ) { event.stopPropagation(); };
-      this._columnArea.addEventListener( "dragstart", dragBlocker );
+    _createHeader : function() {
+      this._header = new org.eclipse.rwt.widgets.GridHeader( {
+        "appearance" : this.getAppearance(),
+        "splitContainer" : this._hasFixedColumns
+      } );
+      this.add( this._header );
+      this._header.addEventListener( "showResizeLine", this._onShowResizeLine, this );
+      this._header.addEventListener( "hideResizeLine", this._onHideResizeLine, this );
+      this._header.setTop( 0 );
+      this._header.setLeft( 0 );
+      this._header.setScrollLeft( this._horzScrollBar.getValue() );
+      this._scheduleColumnUpdate();
     },
 
     _configureScrollBars : function() {
@@ -163,6 +164,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       if( map.markupEnabled ) {
         this._config.markupEnabled = true;
       }
+      this._hasFixedColumns = map.splitContainer;
       this._rowContainer.setBaseAppearance( map.appearance );
       this.setAppearance( map.appearance );
     },
@@ -185,7 +187,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     },
 
     setHeaderVisible : function( value ) {
-      this._columnArea.setDisplay( value );
+      if( value && this._header == null ) {
+        this._createHeader();
+      } else if( !value ) {
+        this._header.destroy();
+        this._header = null;
+      }
       this._layoutX();
       this._layoutY();
     },
@@ -355,11 +362,25 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     },
 
     getTableHeader : function() {
-      return this._columnArea;
+      return this._header;
     },
-    
+
     update : function() {
       this._scheduleUpdate();
+    },
+
+    addColumn : function( column ) {
+      //this.getTableHeader().addColumn( column );
+      this._columns[ column.toHashCode() ] = column;
+      column.addEventListener( "update", this._scheduleColumnUpdate, this );
+      this._scheduleColumnUpdate();
+    },
+
+    removeColumn : function( column ) {
+      //this.getTableHeader().removeColumn( column );
+      delete this._columns[ column.toHashCode() ];
+      column.removeEventListener( "update", this._scheduleColumnUpdate, this );
+      this._scheduleColumnUpdate();
     },
 
     ////////////////
@@ -378,6 +399,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       this._sendItemUpdate( item, event );
       this._renderItemUpdate( item, event );
       return false;
+    },
+
+    _scheduleColumnUpdate : function() {
+      qx.ui.core.Widget.addToGlobalWidgetQueue( this );
+      this._scheduleUpdate();
+    },
+
+    flushWidgetQueue : function() {
+      this._updateColumns();
     },
 
     _onVertScrollBarChangeValue : function() {
@@ -405,7 +435,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
 
     _onHorzScrollBarChangeValue : function() {
       this._rowContainer.setScrollLeft( this._horzScrollBar.getValue() );
-      this._columnArea.setScrollLeft( this._horzScrollBar.getValue() );
+      if( this._header ) {
+        this._header.setScrollLeft( this._horzScrollBar.getValue() );
+      }
       this._sendScrollLeftChange();
     },
 
@@ -440,13 +472,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
         }
       }
     },
-    
+
     _isSelectionClick : function( identifier ) {
       var result;
       if( this._config.fullSelection ) {
         result = identifier !== "checkBox";
       } else {
-        result = identifier === "treeColumn";        
+        result = identifier === "treeColumn";
       }
       return result;
     },
@@ -540,13 +572,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       }
     },
 
-    _onColumnLayoutChanged : function( event ) {
-      this._updateScrollWidth();
-      this._scheduleUpdate();
-    },
-
     // TODO [tb] : handle by event via TableHeader instead of direct call
-    _showResizeLine : function( x, fixed ) {
+    _onShowResizeLine : function( event ) {
+      var x = event.position;
       if( this._resizeLine === null ) {
         this._resizeLine = new qx.ui.basic.Terminator();
         this._resizeLine.setAppearance( "table-column-resizer" );
@@ -555,14 +583,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       }
       var top = this._rowContainer.getTop();
       this._resizeLine._renderRuntimeTop( top );
-      var left = x - 2 - ( !fixed ? this._horzScrollBar.getValue() : 0 );
+      var left = x - 2 - this._horzScrollBar.getValue();
       this._resizeLine._renderRuntimeLeft( left );
       var height = this._rowContainer.getHeight();
       this._resizeLine._renderRuntimeHeight( height );
       this._resizeLine.removeStyleProperty( "visibility" );
     },
 
-    _hideResizeLine : function() {
+    _onHideResizeLine : function() {
       this._resizeLine.setStyleProperty( "visibility", "hidden" );
     },
 
@@ -662,6 +690,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
 
     /////////////////
     // render content
+
+    _updateColumns : function() {
+      this._updateScrollWidth();
+      if( this._header != null ) {
+        this._header.renderColumns( this._columns );
+      }
+    },
 
     _renderItemUpdate : function( item, event ) {
       if( item.isDisplayable() ) {
@@ -764,7 +799,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
         this._horzScrollBar.setMaximum( width );
       }
       var headerOverlap = this._vertScrollBar.getVisibility() ? this._vertScrollBar.getWidth() : 0;
-      this._columnArea.setScrollWidth( width + headerOverlap );
+      if( this._header ) {
+        this._header.setScrollWidth( width + headerOverlap );
+      }
     },
 
     _scrollIntoView : function( index ) {
@@ -796,7 +833,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       }
     },
 
-    _sendItemCheckedChange : function( item ) {
+    _sendItemCheckedChange : function( item ) { // TODO [tb] : item events should be send by item
       if( !this._inServerResponse() ) {
         var req = org.eclipse.swt.Request.getInstance();
         var wm = org.eclipse.swt.WidgetManager.getInstance();
@@ -851,7 +888,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       }
     },
 
-    _sendItemEvent : function( item, type ) {
+    _sendItemEvent : function( item, type ) { // TODO [tb] : item events should be send by item
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var treeItemId = wm.findIdByWidget( item );
       var req = org.eclipse.swt.Request.getInstance();
@@ -1114,8 +1151,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
 
     _layoutX : function() {
       var width = this.getWidth() - this.getFrameWidth();
-      if( this._columnArea.getDisplay() ) {
-        this._columnArea.setWidth( width );
+      if( this._header && this._header.getDisplay() ) {
+        this._header.setWidth( width );
       }
       if( this._vertScrollBar.getVisibility() ) {
         width -= this._vertScrollBar.getWidth();
@@ -1129,10 +1166,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     _layoutY : function() {
       var height = this.getHeight() - this.getFrameHeight();
       var top = 0;
-      if( this._columnArea.getDisplay() ) {
+      if( this._header && this._header.getDisplay() ) {
         top = this._headerHeight;
         height -= this._headerHeight;
-        this._columnArea.setHeight( this._headerHeight );
+        this._header.setHeight( this._headerHeight );
       }
       if( this._horzScrollBar.getVisibility() ) {
         height -= this._horzScrollBar.getHeight();

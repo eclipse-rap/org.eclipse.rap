@@ -71,7 +71,7 @@ var appearances = {
       result.backgroundColor = tv.getCssColor( "TreeColumn", "background-color" );
       result.backgroundImage = tv.getCssImage( "TreeColumn", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "TreeColumn", "background-image" );
-      result.opacity = states.moving ? 0.6 : 1.0;
+      result.opacity = states.moving ? 0.85 : 1.0;
       result.padding = tv.getCssBoxDimensions( "TreeColumn", "padding" );
       var borderColors = [ null, null, null, null ];
       var borderWidths = [ 0, 0, 0, 0 ];
@@ -83,6 +83,10 @@ var appearances = {
         gridColor = gridColor == "undefined" ? "transparent" : gridColor;
         borderColors[ 1 ] = gridColor;
         borderWidths[ 1 ] = 1;
+        if( states.moving ) {
+          borderColors[ 3 ] = gridColor;
+          borderWidths[ 3 ] = 1;
+        }
       }
       var borderBottom = tv.getCssBorder( "TreeColumn", "border-bottom" );
       borderWidths[ 2 ] = borderBottom.getWidthBottom();
@@ -98,7 +102,7 @@ var appearances = {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.source = tv.getCssImage( "TreeColumn-SortIndicator", "background-image" );
+      result.backgroundImage = tv.getCssSizedImage( "TreeColumn-SortIndicator", "background-image" );
       return result;
     }
   }

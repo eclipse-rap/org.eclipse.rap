@@ -477,14 +477,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       delete event.related;
       delete event.msg;
     },
-    
+
     _onUpdate : function( event ) {
       if( event.msg !== "content" ) {
         this._visibleChildrenCount = null;
         this._indexCache = {};
       }
     },
-    
+
     /////////
     // Helper
 
@@ -511,7 +511,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
           }
         }
       }
-      this._visibleChildrenCount = result;      
+      this._visibleChildrenCount = result;
     },
     
     _getExpandedIndicies : function() {

@@ -424,17 +424,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
         var column = new org.eclipse.rwt.widgets.GridColumn( tree );
         column.setLeft( tree.getRenderConfig().itemLeft[ i ] );
         column.setWidth( tree.getRenderConfig().itemWidth[ i ] );
-        column.setZIndex( 1 );
         if( i < 2 ) {
           column.setFixed( true );
         }
       }
       tree.setLinesVisible( true );
       TestUtil.flush();
-      var border = tree._rowContainer.getSubContainer( 0 )._getHorizontalGridBorder();      
+      var border = tree._rowContainer.getSubContainer( 0 )._getHorizontalGridBorder();
       var row = tree._rowContainer.getSubContainer( 0 )._children[ 0 ];
       assertTrue( tree.hasState( "linesvisible" ) );
-      assertIdentical( border, row.getBorder() );      
+      assertIdentical( border, row.getBorder() );
       tree.destroy();
     },
 
@@ -540,7 +539,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       }
       return tree;
     },
-    
+
     _fillTree : function( tree, count, subItems, flatCount ) {
       tree.setItemCount( ( subItems && flatCount ) ? ( count / 2 ) : count );
       var i = 0;

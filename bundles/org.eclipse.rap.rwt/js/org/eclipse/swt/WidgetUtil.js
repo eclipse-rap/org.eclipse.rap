@@ -51,34 +51,36 @@ qx.Class.define( "org.eclipse.swt.WidgetUtil", {
      * org.eclipse.rwt.EventHandler will not receive the event. 
      */
     _fakeMouseEvent : function( originalTarget, type ) {
-      var domTarget = originalTarget._getTargetNode();
-      var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
-      var target = EventHandlerUtil.getTargetObject( null, originalTarget, true );
-      var domEvent = {
-        "type" : type,
-        "target" : domTarget,
-        "button" : 0,
-        "wheelData" : 0,
-        "detail" : 0,
-        "pageX" : 0,
-        "pageY" : 0,
-        "clientX" : 0,
-        "clientY" : 0,
-        "screenX" : 0,
-        "screenY" : 0,
-        "shiftKey" : false,
-        "ctrlKey" : false,
-        "altKey" : false,
-        "metaKey" : false,
-        "preventDefault" : function(){}
-      };
-      var event = new qx.event.type.MouseEvent( type, 
-                                                domEvent, 
-                                                domTarget, 
-                                                target,
-                                                originalTarget,
-                                                null );
-      target.dispatchEvent( event );
+      if( originalTarget.getEnabled() ) {
+        var domTarget = originalTarget._getTargetNode();
+        var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
+        var target = EventHandlerUtil.getTargetObject( null, originalTarget, true );
+        var domEvent = {
+          "type" : type,
+          "target" : domTarget,
+          "button" : 0,
+          "wheelData" : 0,
+          "detail" : 0,
+          "pageX" : 0,
+          "pageY" : 0,
+          "clientX" : 0,
+          "clientY" : 0,
+          "screenX" : 0,
+          "screenY" : 0,
+          "shiftKey" : false,
+          "ctrlKey" : false,
+          "altKey" : false,
+          "metaKey" : false,
+          "preventDefault" : function(){}
+        };
+        var event = new qx.event.type.MouseEvent( type, 
+                                                  domEvent, 
+                                                  domTarget, 
+                                                  target,
+                                                  originalTarget,
+                                                  null );
+        target.dispatchEvent( event );
+      }
     }
 
   }

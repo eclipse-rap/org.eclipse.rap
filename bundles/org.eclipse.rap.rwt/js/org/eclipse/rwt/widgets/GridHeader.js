@@ -13,38 +13,41 @@
 qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
 
   extend : qx.ui.layout.CanvasLayout,
-  
+
   construct : function( argsMap ) {
     this.base( arguments );
     this.setOverflow( "hidden" );
     this._fixedColumns = argsMap.splitContainer;
     this._scrollWidth = 0;
     this._scrollLeft = 0;
-    this._dummyColumn = new qx.ui.basic.Atom();
-    this._dummyColumn.setAppearance( argsMap.appearance + "-column" );
-    this._dummyColumn.setHeight( "100%" );
-    this._dummyColumn.setLabel( "&nbsp;" );
-    this._dummyColumn.addState( "dummy" );
-    this.add( this._dummyColumn );
+    this._baseAppearance = argsMap.appearance;
+    this._dummyColumn = this._createDummyColumn();
+    this._currentDragColumn = null;
+    this._feedbackLabel = null;
+    this._labelToColumnMap = {};
+    this._columnToLabelMap = {};
+    // TODO [tb] : Find a cleaner solution to block drag-events
+    var dragBlocker = function( event ) { event.stopPropagation(); };
+    this.addEventListener( "dragstart", dragBlocker );
   },
-  
+
   destruct : function() {
     this._dummyColumn = null;
   },
-  
+
   events: {
-    "columnLayoutChanged" : "qx.event.type.Event",
-    "scrollLeftChanged" : "qx.event.type.Event"
-  },  
+    "columnLayoutChanged" : "qx.event.type.Event"
+  },
 
   members : {
 
     setScrollLeft : function( value ) {
       this._scrollLeft = value;
-      if( this._fixedColumns ) {
+      if( this._fixedColumns && !qx.ui.core.Widget._inFlushGlobalQueues ) {
         for( var i = 0; i < this._children.length; i++ ) {
-          if( this._children[ i ].isFixed && this._children[ i ].isFixed() ) {
-            this._children[ i ].addToQueue( "left" );
+          var column = this._getColumnByLabel( this._children[ i ] );
+          if( column && column.isFixed() ) {
+            this._renderLabelLeft( this._children[ i ], column );
           }
         }
         if( !org.eclipse.swt.EventUtil.getSuspended() ) {
@@ -56,11 +59,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
         this.base( arguments, value );
       }
     },
-    
-    getScrollLeft : function() {
-      return this._scrollLeft;
-    },
-    
+
     setScrollWidth : function( value ) {
       this._scrollWidth = value;
       if( this.getVisibility() ) {
@@ -68,28 +67,41 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
       }
     },
 
-    add : function( column ) {
-      this.base( arguments, column );
-      if( column !== this._dummyColumn ) {
-        column.addEventListener( "changeWidth", this._fireUpdateEvent, this );
-        column.addEventListener( "changeLeft", this._renderDummyColumn, this );
-      }
+    _onColumnDispose : function( event ) {
+      this._getLabelByColumn( event.target ).destroy();
     },
-    
-    remove : function( column ) {
-      this.base( arguments, column );
-      if( column !== this._dummyColumn ) {
-        column.removeEventListener( "changeWidth", this._fireUpdateEvent, this );
-        column.removeEventListener( "changeLeft", this._renderDummyColumn, this );
-        this._fireUpdateEvent();
+
+    renderColumns : function( columns ) {
+      for( var key in columns ) {
+        var column = columns[ key ];
+        var label = this._getLabelByColumn( column );
+        this._renderLabel( label, column );
       }
+      this._renderDummyColumn();
     },
-    
-    _afterAppear : function() {
-      this.base( arguments );
+
+    _renderLabel : function( label, column ) {
+      this._renderLabelLeft( label, column );
+      label.setWidth( column.getWidth() );
+      label.setToolTip( column.getToolTip() );
+      label.setCustomVariant( column.getCustomVariant() );
+      label.setText( column.getText() );
+      label.setImage( column.getImage() );
+      label.setSortIndicator( column.getSortDirection() );
+      label.applyObjectId( column.getObjectId() );
+      label.setZIndex( column.isFixed() ? 1e7 : 1 );
+      label.setHorizontalChildrenAlign( column.getAlignment() );
+    },
+
+    _renderLabelLeft : function( label, column ) {
+      var offset = column.isFixed() ? this._scrollLeft : 0;
+      label.setLeft( column.getLeft() + offset );
+    },
+
+    _onDummyRendered : function() {
       this.setScrollLeft( this._scrollLeft );
     },
-    
+
     _fireUpdateEvent : function( event ) {
       this.createDispatchEvent( "columnLayoutChanged" );
     },
@@ -97,23 +109,131 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
     _renderDummyColumn : function() {
       var dummyLeft = this._getDummyColumnLeft();
       var totalWidth = Math.max( this._scrollWidth, this.getWidth() );
-      var dummyWidth = Math.max( 0, totalWidth - dummyLeft );      
+      var dummyWidth = Math.max( 0, totalWidth - dummyLeft );
       this._dummyColumn.setLeft( dummyLeft );
       this._dummyColumn.setWidth( dummyWidth );
     },
-    
+
     _getDummyColumnLeft : function() {
-      var columns = this.getChildren();
+      var columns = this._labelToColumnMap;
       var result = 0;
-      for( var i = 0; i < columns.length; i++ ) {
-        if( columns[ i ] !== this._dummyColumn ) {
-          var left = columns[ i ].getLeft() + columns[ i ].getWidth();
-          result = Math.max( result, left );
-        }
+      for( var key in columns ) {
+        var left = columns[ key ].getLeft() + columns[ key ].getWidth();
+        result = Math.max( result, left );
       }
       return result;
+    },
+
+    _onLabelSelected : function( event ) {
+      var column = this._getColumnByLabel( event.target );
+      column.handleSelectionEvent();
+    },
+
+    _onLabelMoveStart : function( event ) {
+      var column = this._getColumnByLabel( event.target );
+      return column.getMoveable();
+    },
+
+    _onLabelMoveEnd : function( event ) {
+      var column = this._getColumnByLabel( event.target );
+      column.setLeft( event.position );
+    },
+
+    _onShowDragFeedback : function( event ) {
+      var column = this._getColumnByLabel( event.target );
+      var widget = this._getDragFeedback( column );
+      widget.setLeft( event.position );
+    },
+
+    _onHideDragFeedback : function( event ) {
+      var label = event.target;
+      var column = this._getColumnByLabel( label );
+      var widget = this._getDragFeedback( column );
+      var left = label.getLeft();
+      if( event.snap ) {
+        org.eclipse.rwt.AnimationUntil.snapTo( widget, 250, left, label.getTop(), true );
+      } else {
+        widget.setDisplay( false );
+      }
+      this._currentDragColumn = null;
+    },
+
+    _onLabelResizeStart : function( event ) {
+      var column = this._getColumnByLabel( event.target );
+      return column.getResizeable();
+    },
+
+    _onLabelResizeEnd : function( event ) {
+      var column = this._getColumnByLabel( event.target );
+      column.setWidth( event.width );
+    },
+
+    _getColumnByLabel : function( label ) {
+      return this._labelToColumnMap[ label.toHashCode() ];
+    },
+
+    _getLabelByColumn : function( column ) {
+      var result = this._columnToLabelMap[ column.toHashCode() ];
+      if( result == null ) {
+        result = this._createLabel( column );
+      }
+      return result;
+    },
+
+    _getDragFeedback : function( column ) {
+      if( this._feedbackLabel === null ) {
+        this._feedbackLabel = this._createFeedbackColumn();
+      }
+      if( this._currentDragColumn !== column ) {
+        this._feedbackLabel.setWidth( column.getWidth() );
+        this._feedbackLabel.setCustomVariant( column.getCustomVariant() );
+        this._feedbackLabel.setText( column.getText() );
+        this._feedbackLabel.setImage( column.getImage() );
+        this._feedbackLabel.setSortIndicator( column.getSortDirection() );
+        this._feedbackLabel.setHorizontalChildrenAlign( column.getAlignment() );
+        this._feedbackLabel.setDisplay( true );
+        this._feedbackLabel.dispatchSimpleEvent( "cancelAnimations" );
+        this._currentDragColumn = column;
+      }
+      return this._feedbackLabel;
+    },
+
+    _createLabel : function( column ) {
+      var label = new org.eclipse.rwt.widgets.GridColumnLabel( this._baseAppearance );
+      this.add( label );
+      this._labelToColumnMap[ label.toHashCode() ] = column;
+      this._columnToLabelMap[ column.toHashCode() ] = label;
+      label.addEventListener( "selected", this._onLabelSelected, this );
+      label.addEventListener( "moveStart", this._onLabelMoveStart, this );
+      label.addEventListener( "showDragFeedback", this._onShowDragFeedback, this );
+      label.addEventListener( "hideDragFeedback", this._onHideDragFeedback, this );
+      label.addEventListener( "moveEnd", this._onLabelMoveEnd, this );
+      label.addEventListener( "resizeStart", this._onLabelResizeStart, this );
+      label.addEventListener( "resizeEnd", this._onLabelResizeEnd, this );
+      column.addEventListener( "dispose", this._onColumnDispose, this );
+      return label;
+    },
+
+    _createDummyColumn : function() {
+      var dummyColumn = new org.eclipse.rwt.widgets.GridColumnLabel( this._baseAppearance );
+      dummyColumn.addState( "dummy" );
+      dummyColumn.addEventListener( "flush", this._onDummyRendered, this );
+      dummyColumn.addEventListener( "appear", this._onDummyRendered, this );
+      dummyColumn.setEnabled( false );
+      this.add( dummyColumn );
+      return dummyColumn;
+    },
+
+    _createFeedbackColumn : function() {
+      var feedback = new org.eclipse.rwt.widgets.GridColumnLabel( this._baseAppearance );
+      feedback.addState( "moving" );
+      feedback.setEnabled( false );
+      feedback.setZIndex( 1e8 );
+      feedback.addState( "mouseover" ); // to make the label more visible, not ideal
+      this.add( feedback );
+      return feedback;
     }
-    
+
   }
 
 } );

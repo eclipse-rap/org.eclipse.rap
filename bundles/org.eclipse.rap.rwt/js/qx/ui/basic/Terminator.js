@@ -119,7 +119,7 @@ qx.Class.define("qx.ui.basic.Terminator",
       if (changes.initial || changes.load || changes.width || changes.height) {
         this._postApply();
       }
-      this.createDispatchDataEvent( "flush", changes );
+      this.createDispatchDataEvent( "flush", changes ); // TODO [tb] : use simple event
     },
 
     /**

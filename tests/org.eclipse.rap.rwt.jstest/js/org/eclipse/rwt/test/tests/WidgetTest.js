@@ -576,11 +576,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
       qx.ui.core.Widget._renderHtmlIds = true;
       button.applyObjectId( "w23" );
+      qx.ui.core.Widget._renderHtmlIds = false;
 
       assertEquals( "w23", button.getHtmlAttribute( "id" ) );
       button.destroy();
     },
-    
+
     testFiresChangeEnabledEvent : function() {
       var button = new org.eclipse.rwt.widgets.Button( "push" );
       button.addToDocument();

@@ -51,10 +51,10 @@ org.eclipse.rwt.GridUtil = {
     }
     return result;
   },
-  
+
   ////////////
   // Internals
-  
+
   _getColumnByPageX : function( container, pageX ) {
     var config = container.getRenderConfig();
     var columnCount = config.columnCount;

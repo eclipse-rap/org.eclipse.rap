@@ -22,7 +22,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       assertTrue( cont instanceof org.eclipse.rwt.widgets.GridRowContainer );
       cont.destroy();
     },
-    
+
     testCreateTreeRowsWithAppearance : function() {
       var cont = this._createContainer();
       cont.setBaseAppearance( "table" );
@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       assertEquals( 6, clientArea.getChildren().length );
       tree.destroy();
     },
-    
+
     testTreeRowBounds : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -120,7 +120,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       assertEquals( "", node.firstChild.innerHTML );
       tree.destroy();
     },
-    
+
     testRenderEmptyRowsBackground : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -265,7 +265,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
 
     /////////
     // Helper
-    
+
     // TODO [tb] : refactor to create TreeRowContainer
     _createDefaultTree : function( noflush ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -291,7 +291,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       }
       return tree;
     },
-    
+
     _fakeAppearance : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var empty = {
@@ -310,9 +310,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
         }
       }; 
       TestUtil.fakeAppearance( "tree-indent", empty );
-      TestUtil.fakeAppearance( "tree-row", empty );            
+      TestUtil.fakeAppearance( "tree-row", empty );
     },
-    
+
     _createContainer : function() {
       var result = new org.eclipse.rwt.widgets.GridRowContainer();
       result.setBaseAppearance( "tree" );
@@ -320,5 +320,5 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     }
 
   }
-  
+
 } );

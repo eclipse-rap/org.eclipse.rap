@@ -12,10 +12,10 @@
 namespace( "org.eclipse.rwt.test.fixture" );
 
 org.eclipse.rwt.test.fixture.TestUtil = {
-    
+
   //////
   // DOM
-  
+
   getElementBounds : function( node ) {
     var style = node.style;
     var ps;
@@ -881,9 +881,16 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     return result;
   },
 
+  skipAnimations : function() {
+    var queue = org.eclipse.rwt.Animation._queue;
+    while( queue.length > 0 ) {
+      queue[ 0 ].skip();
+    }
+  },
+
   ///////////////////
   // Protocol ralated
-  
+
   createShellByProtocol : function( id ) {
     org.eclipse.rwt.protocol.Processor.processOperation( {
       "target" : id,
@@ -907,12 +914,14 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   protocolSet : function( id, properties ) {
+     org.eclipse.swt.EventUtil.setSuspended( true );
     var processor = org.eclipse.rwt.protocol.Processor;
     processor.processOperation( {
       "target" : id,
       "action" : "set",
       "properties" : properties
     } );
+     org.eclipse.swt.EventUtil.setSuspended( false );
   }
 
 };
