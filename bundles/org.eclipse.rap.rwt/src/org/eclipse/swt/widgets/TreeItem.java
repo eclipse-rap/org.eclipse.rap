@@ -11,6 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
@@ -342,6 +346,9 @@ public class TreeItem extends Item {
     checkWidget();
     if( this.expanded != expanded && ( !expanded || itemCount > 0 ) ) {
       this.expanded = expanded;
+      if( !expanded ) {
+        updateSelection();
+      }
       markCached();
       parent.updateScrollBars();
       parent.updateAllItems();
@@ -1583,6 +1590,34 @@ public class TreeItem extends Item {
         items[ i ].removeData( index );
       }
     }
+  }
+
+  private void updateSelection() {
+    TreeItem[] selection = parent.getSelection();
+    List<TreeItem> selectedItems = new ArrayList<TreeItem>( Arrays.asList( selection ) );
+    if( deselectChildren( selectedItems ) ) {
+      if( ( parent.getStyle() & SWT.SINGLE ) != 0 ) {
+        selectedItems.add( this );
+      }
+      parent.setSelection( selectedItems.toArray( new TreeItem[ 0 ] ) );
+    }
+  }
+
+  boolean deselectChildren( List<TreeItem> selectedItems ) {
+    boolean result = false;
+    for( int i = 0; i < itemCount; i++ ) {
+      TreeItem item = items[ i ];
+      if( item != null ) {
+        if( selectedItems.contains( item ) ) {
+          selectedItems.remove( item );
+          result = true;
+        }
+        if( item.deselectChildren( selectedItems ) ) {
+          result = true;
+        }
+      }
+    }
+    return result;
   }
 
   ////////////////

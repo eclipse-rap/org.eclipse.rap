@@ -2037,6 +2037,33 @@ public class TreeItem_Test extends TestCase {
     assertEquals( "item0#SetData", log.get( 3 ) );
   }
 
+  public void testSelectionOnItemCollapse_Single() {
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    TreeItem rootItem = new TreeItem( tree, SWT.NONE );
+    TreeItem subItem = new TreeItem( rootItem, SWT.NONE );
+    rootItem.setExpanded( true );
+    tree.setSelection( new TreeItem[] { subItem } );
+
+    rootItem.setExpanded( false );
+
+    assertEquals( 1, tree.getSelectionCount() );
+    assertSame( rootItem, tree.getSelection()[ 0 ] );
+  }
+
+  public void testSelectionOnItemCollapse_Multi() {
+    Tree tree = new Tree( shell, SWT.MULTI );
+    TreeItem rootItem = new TreeItem( tree, SWT.NONE );
+    TreeItem subItem = new TreeItem( rootItem, SWT.NONE );
+    TreeItem anotherRootItem = new TreeItem( tree, SWT.NONE );
+    rootItem.setExpanded( true );
+    tree.setSelection( new TreeItem[] { subItem, anotherRootItem } );
+
+    rootItem.setExpanded( false );
+
+    assertEquals( 1, tree.getSelectionCount() );
+    assertSame( anotherRootItem, tree.getSelection()[ 0 ] );
+  }
+
   //////////////////
   // Helping methods
 
