@@ -80,13 +80,9 @@ abstract class DropDownNavigation extends Composite {
     toolItem.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
-        if( event.detail == SWT.ARROW ) {
-          openMenu( toolBar.toDisplay( event.x, event.y ) );
-        } else {
-          openFirstContribution();
-        }
+        int yOffset = ( event.detail == SWT.ARROW ) ? 0 : toolBar.getSize().y;
+        openMenu( toolBar.toDisplay( event.x, event.y + yOffset ) );
       }
-
     } );
   }
 
@@ -94,17 +90,6 @@ abstract class DropDownNavigation extends Composite {
     pullDownMenu.setLocation( point );
     pullDownMenu.setVisible( true );
   }
-
-  private void openFirstContribution() {
-    for( String id : category.getContributionIds() ) {
-      IExampleContribution contribution = Examples.getInstance().getContribution( id );
-      if( contribution != null ) {
-        contributionSelected( contribution );
-        break;
-      }
-    }
-  }
-
   protected abstract void contributionSelected( IExampleContribution contribution );
 
 }
