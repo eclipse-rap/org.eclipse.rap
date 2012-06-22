@@ -359,6 +359,31 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.destroy();
     },
 
+    testKeepOverStateWhileDragging : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setItemMetrics( 0, 0, 200, 0, 0, 0, 0 );
+      tree.setHeaderVisible( true );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      this._createColumnByProtocol( "w5", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20, "moveable" : true } );
+      TestUtil.protocolSet( "w5", { "left" : 23, "width" : 177 } ); // makes header scrollable
+      TestUtil.flush();
+      var button = qx.event.type.MouseEvent.buttons.left;
+      TestUtil.initRequestLog();
+      var label = this._getColumnLabel( tree, column )
+
+      TestUtil.fakeMouseEventDOM( label.getElement(), "mousedown", button, 13, 3 );
+      TestUtil.flush();
+      TestUtil.fakeMouseEventDOM( label.getElement(), "mousemove", button, 20, 3 );
+      TestUtil.flush();
+      TestUtil.fakeMouseEventDOM( label.getElement(), "mouseout", button, 20, 3 );
+      TestUtil.flush();
+
+      assertTrue( label.hasState( "mouseover" ) );
+      column.dispose();
+      tree.destroy();
+    },
+
     testDragFeedbackProperties : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       tree.setItemMetrics( 0, 0, 200, 0, 0, 0, 0 );

@@ -173,7 +173,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumnLabel", {
     },
 
     _onMouseOut : function( evt ) {
-      this.removeState( "mouseover" );
+      if( !this._inMove ) {
+        this.removeState( "mouseover" );
+      }
       if( !this._inResize ) {
         this.getTopLevelWidget().setGlobalCursor( null );
         evt.stopPropagation();
