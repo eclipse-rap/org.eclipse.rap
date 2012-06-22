@@ -240,7 +240,7 @@ public class TreeLCA_Test extends TestCase {
     item1.setText( "item" );
     item1.setImage( image );
     ItemMetrics[] metrics = TreeLCA.getItemMetrics( tree );
-    assertEquals( 57, metrics[ 0 ].textWidth );
+    assertEquals( 63, metrics[ 0 ].textWidth );
   }
 
   public void testPreserveValues() {
@@ -825,7 +825,7 @@ public class TreeLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     JSONArray actual = ( JSONArray )message.findSetProperty( tree, "itemMetrics" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,50,0,0,3,30]", ( JSONArray )actual.get( 0 ) ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,50,0,0,3,36]", ( JSONArray )actual.get( 0 ) ) );
   }
 
   public void testRenderItemMetricsUnchanged() throws IOException {

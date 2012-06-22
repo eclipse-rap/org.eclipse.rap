@@ -1805,7 +1805,9 @@ public class Tree extends Composite {
   }
 
   int getTextWidth( int index ) {
-    int result = getCellWidth( index ) - getTextOffset( index ) - getCellPadding().width;
+    Rectangle padding = getCellPadding();
+    int rightPadding = padding.width - padding.x;
+    int result = getCellWidth( index ) - getTextOffset( index ) - rightPadding;
     if( isTreeColumn( index ) ) {
       result -= ( TEXT_MARGIN.width - TEXT_MARGIN.x );
     }
