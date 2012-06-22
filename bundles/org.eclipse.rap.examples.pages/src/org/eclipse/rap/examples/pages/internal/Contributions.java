@@ -45,7 +45,7 @@ class Contributions {
 
   private void collectContributions() {
     addContribution( "button", "Buttons", ButtonExamplePage.class );
-    addContribution( "rich-label", "Rich Labels", MarkupLabelExample.class );
+    addContribution( "rich-label", "Markup Support", MarkupLabelExample.class );
     addContribution( "input", "Input Widgets", TextInputExamplePage.class );
     addContribution( "dialog", "Dialogs", DialogExamplePage.class );
     addContribution( "drag-and-drop", "Drag & Drop", ListExample.class );

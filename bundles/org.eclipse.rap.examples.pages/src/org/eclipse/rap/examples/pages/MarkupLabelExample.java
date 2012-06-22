@@ -60,7 +60,7 @@ public class MarkupLabelExample implements IExamplePage {
 
   private void createRightArea( Composite parent ) {
     Infobox infobox = new Infobox( parent );
-    infobox.addParagraph( "Since RAP 1.5 the Label widget supports markup. Use common html elements to tag portions of a label's text and change it's appearance with inline css." );
+    infobox.addParagraph( "Since RAP 1.5 the Label, Table and Tree support markup. Use common html elements to tag portions of a label's text and change it's appearance with inline css." );
     infobox.addHeading( "Supported tags are:" );
     infobox.addParagraph( "html, br, b, strong, i, em, sub, sup, big, small, del, ins, code, samp, kbd, var, cite, dfn, q, abbr, span, img, a." );
   }
