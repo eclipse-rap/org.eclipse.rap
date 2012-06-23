@@ -29,6 +29,7 @@ public class FocusEvent_Test extends TestCase {
   private Display display;
   private Shell shell;
   private List<FocusEvent> events;
+  private FocusAdapter listener;
 
   @Override
   protected void setUp() throws Exception {
@@ -37,6 +38,16 @@ public class FocusEvent_Test extends TestCase {
     shell = new Shell( display );
     shell.open();
     events = new ArrayList<FocusEvent>();
+    listener = new FocusAdapter() {
+      @Override
+      public void focusLost( FocusEvent event ) {
+        events.add( event );
+      }
+      @Override
+      public void focusGained( FocusEvent event ) {
+        events.add( event );
+      }
+    };
   }
 
   @Override
@@ -46,17 +57,14 @@ public class FocusEvent_Test extends TestCase {
 
   public void testCopyFieldsFromUntypedEvent() {
     Button button = new Button( shell, SWT.PUSH );
-    button.addFocusListener( new FocusAdapter() {
-      @Override
-      public void focusGained( FocusEvent event ) {
-        events.add( event );
-      }
-    } );
+    button.addFocusListener( listener );
     Object data = new Object();
     Event event = new Event();
     event.data = data;
+
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     button.notifyListeners( SWT.FocusIn, event );
+
     assertEquals( 1, events.size() );
     FocusEvent focusEvent = events.get( 0 );
     assertSame( button, focusEvent.getSource() );
@@ -69,16 +77,7 @@ public class FocusEvent_Test extends TestCase {
   public void testFocusLost() {
     Control unfocusControl = new Button( shell, SWT.PUSH );
     unfocusControl.setFocus();
-    unfocusControl.addFocusListener( new FocusAdapter() {
-      @Override
-      public void focusLost( FocusEvent event ) {
-        events.add( event );
-      }
-      @Override
-      public void focusGained( FocusEvent event ) {
-        fail( "Unexpected event: focusGained" );
-      }
-    } );
+    unfocusControl.addFocusListener( listener );
     Control focusControl = new Button( shell, SWT.PUSH );
     String focusControlId = WidgetUtil.getId( focusControl );
 
@@ -86,6 +85,7 @@ public class FocusEvent_Test extends TestCase {
     Fixture.fakeRequestParam( DisplayUtil.getId( display ) + ".focusControl", focusControlId );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.focusLost", focusControlId );
     Fixture.readDataAndProcessAction( display );
+
     assertEquals( 1, events.size() );
     FocusEvent event = events.get( 0 );
     assertEquals( FocusEvent.FOCUS_LOST, event.getID() );
@@ -94,22 +94,14 @@ public class FocusEvent_Test extends TestCase {
 
   public void testFocusGained() {
     Control control = new Button( shell, SWT.PUSH );
-    control.addFocusListener( new FocusAdapter() {
-      @Override
-      public void focusLost( FocusEvent event ) {
-        fail( "Unexpected event: focusLost" );
-      }
-      @Override
-      public void focusGained( FocusEvent event ) {
-        events.add( event );
-      }
-    } );
+    control.addFocusListener( listener );
     String controlId = WidgetUtil.getId( control );
 
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( DisplayUtil.getId( display ) + ".focusControl", controlId );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.focusGained", controlId );
     Fixture.readDataAndProcessAction( display );
+
     assertEquals( 1, events.size() );
     FocusEvent event = events.get( 0 );
     assertEquals( FocusEvent.FOCUS_GAINED, event.getID() );
@@ -118,27 +110,9 @@ public class FocusEvent_Test extends TestCase {
 
   public void testFocusGainedLostOrder() {
     Button button1 = new Button( shell, SWT.PUSH );
-    button1.addFocusListener( new FocusAdapter() {
-      @Override
-      public void focusLost( FocusEvent event ) {
-        events.add( event );
-      }
-      @Override
-      public void focusGained( FocusEvent event ) {
-        events.add( event );
-      }
-    } );
+    button1.addFocusListener( listener );
     Button button2 = new Button( shell, SWT.PUSH );
-    button2.addFocusListener( new FocusAdapter() {
-      @Override
-      public void focusLost( FocusEvent event ) {
-        events.add( event );
-      }
-      @Override
-      public void focusGained( FocusEvent event ) {
-        events.add( event );
-      }
-    } );
+    button2.addFocusListener( listener );
     button1.setFocus();
     events.clear();
     String button2Id = WidgetUtil.getId( button2 );
@@ -148,11 +122,11 @@ public class FocusEvent_Test extends TestCase {
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 2, events.size() );
-    FocusEvent event = events.get( 0 );
-    assertEquals( FocusEvent.FOCUS_LOST, event.getID() );
-    assertSame( button1, event.widget );
-    event = events.get( 1 );
-    assertEquals( FocusEvent.FOCUS_GAINED, event.getID() );
-    assertSame( button2, event.widget );
+    FocusEvent event1 = events.get( 0 );
+    assertEquals( FocusEvent.FOCUS_LOST, event1.getID() );
+    assertSame( button1, event1.widget );
+    FocusEvent event2 = events.get( 1 );
+    assertEquals( FocusEvent.FOCUS_GAINED, event2.getID() );
+    assertSame( button2, event2.widget );
   }
 }
