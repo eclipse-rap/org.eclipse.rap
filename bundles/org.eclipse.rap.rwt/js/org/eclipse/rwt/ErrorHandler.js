@@ -14,6 +14,9 @@
 qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
 
   statics : {
+  
+    _overlay : null,
+    _box : null,
 
     processJavaScriptErrorInResponse : function( script, error, currentRequest ) {
       var content = "<p>Could not process server response:</p><pre>";
@@ -59,7 +62,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       this._createErrorPageArea().innerHTML = content;
     },
 
-    showErrorBox : function( content ) {
+    showErrorBox : function( content, freeze ) {
       var location = String( window.location );
       var index = location.indexOf( "#" );
       if( index != -1 ) {
@@ -68,13 +71,22 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       var hrefAttr = "href=\"" + location + "\"";
       var html = content.replace( /\{HREF_URL\}/, hrefAttr );
       html = org.eclipse.rwt.protocol.EncodingUtil.replaceNewLines( html, "<br/>" );
-      this._freezeApplication();
-      this._createOverlay();
-      var element = this._createErrorBoxArea( 400, 100 );
-      element.innerHTML = html;
-      var hyperlink = element.getElementsByTagName( "a" )[ 0 ];
+      if( freeze ) {
+        this._freezeApplication();
+      }
+      this._overlay = this._createOverlay();
+      this._box = this._createErrorBoxArea( 400, 100 );
+      this._box.innerHTML = html;
+      var hyperlink = this._box.getElementsByTagName( "a" )[ 0 ];
       hyperlink.style.outline = "none";
       hyperlink.focus();
+    },
+
+    hideErrorBox : function() {
+      if( this._box ) {
+        this._box.parentElement.removeChild( this._box );
+        this._overlay.parentElement.removeChild( this._overlay );
+      }
     },
 
     _gatherErrorInfo : function( error, script, currentRequest ) {

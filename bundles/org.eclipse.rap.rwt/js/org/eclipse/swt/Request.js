@@ -31,6 +31,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
     // Flag that is set to true if send() was called but the delay timeout
     // has not yet timed out
     this._inDelayedSend = false;
+    this._retryHandler = null;
     // As the CallBackRequests get blocked at the server to wait for
     // background activity I choose a large timeout...
     var requestQueue = qx.io.remote.RequestQueue.getInstance();
@@ -220,11 +221,9 @@ qx.Class.define( "org.eclipse.swt.Request", {
       // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=253756
       var exchange = evt.getTarget();
       this._currentRequest = exchange.getRequest();
-      var giveUp = true;
       if( this._isConnectionError( evt.getStatusCode() ) ) {
-        giveUp = !this._handleConnectionError( evt );
-      }
-      if( giveUp ) {
+        this._handleConnectionError( evt );
+      } else {
         this._hideWaitHint();
         var request = exchange.getImplementation().getRequest();
         var text = request.responseText;
@@ -236,7 +235,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         if( text && text.length > 0 ) {
           if( this._isJsonResponse( request ) ) {
             var messageObject = JSON.parse( text );
-            org.eclipse.rwt.ErrorHandler.showErrorBox( messageObject.meta.message );
+            org.eclipse.rwt.ErrorHandler.showErrorBox( messageObject.meta.message, true );
           } else {
             org.eclipse.rwt.ErrorHandler.showErrorPage( text );
           }
@@ -281,10 +280,12 @@ qx.Class.define( "org.eclipse.swt.Request", {
 
     _handleConnectionError : function( evt ) {
       var msg
-        = "The server seems to be temporarily unavailable.\n"
-        + "Would you like to retry?";
-      var result = confirm( msg );
-      if( result ) {
+        = "<p>The server seems to be temporarily unavailable</p>"
+        + "<p><a href=\"javascript:org.eclipse.swt.Request.getInstance()._retry();\">Retry</a></p>";
+      var result = false;
+      qx.ui.core.ClientDocument.getInstance().setGlobalCursor( null );
+      org.eclipse.rwt.ErrorHandler.showErrorBox( msg, false );
+      this._retryHandler = function() {
         var request = this._createRequest();
         var failedRequest = this._currentRequest;
         request.setAsynchronous( failedRequest.getAsynchronous() );
@@ -301,8 +302,17 @@ qx.Class.define( "org.eclipse.swt.Request", {
         }
         request.setData( failedRequest.getData() );
         this._restartRequest( request );
+      };
+    },
+    
+    _retry : function() {
+      try {
+        org.eclipse.rwt.ErrorHandler.hideErrorBox();
+        this._showWaitHint();
+        this._retryHandler();
+      } catch( ex ) {
+        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
-      return result;
     },
 
     _restartRequest : function( request ) {
