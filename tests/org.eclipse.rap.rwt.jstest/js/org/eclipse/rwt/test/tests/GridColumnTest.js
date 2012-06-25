@@ -325,7 +325,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
 
       var message = TestUtil.getMessage();
-      assertTrue( message.indexOf( "w4.left=20" ) !== -1 );
+      assertTrue( message.indexOf( "w4.left=10" ) !== -1 );
       column.dispose();
       tree.destroy();
     },

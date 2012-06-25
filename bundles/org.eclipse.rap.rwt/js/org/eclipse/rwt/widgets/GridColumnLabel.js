@@ -153,7 +153,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumnLabel", {
           // Fix for bugzilla 306842
           this.dispatchSimpleEvent( "moveEnd", { 
             "target" : this, 
-            "position" : evt.getPageX() 
+            "position" : evt.getPageX() - this._offsetX
           } );
         } else {
           this._hideDragFeedback( false );
