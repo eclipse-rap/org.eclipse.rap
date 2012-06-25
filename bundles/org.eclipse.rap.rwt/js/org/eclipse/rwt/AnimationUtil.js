@@ -17,36 +17,16 @@ var Animation = org.eclipse.rwt.Animation;
 org.eclipse.rwt.AnimationUntil = {
 
   snapTo : function( widget, time, left, top, hide ) {
-    var stop;
-    var animation = new Animation();
-    animation.setDuration( time );
-    animation.setTransition( "easeOut" );
-    var converter = AnimationRenderer.converterByRenderType;
-    var rendererX = new AnimationRenderer( animation );
-    var rendererY = new AnimationRenderer( animation );
-    rendererX.setRenderFunction( widget._renderRuntimeLeft, widget );
-    rendererY.setRenderFunction( widget._renderRuntimeTop, widget );
-    rendererX.setConverter( converter[ "left" ] );
-    rendererY.setConverter( converter[ "top" ] );
+    var animation = this._createAnimation( widget, time, "easeOut" );
+    var rendererX = this._createRenderer( animation, widget, "left" );
+    var rendererY = this._createRenderer( animation, widget, "top" );
     var startLeft = parseInt( widget.getLeft(), 10 );
     var startTop = parseInt( widget.getTop(), 10 );
     rendererX.setStartValue( isNaN( startLeft ) ? 0 : startLeft );
     rendererY.setStartValue( isNaN( startTop ) ? 0 : startTop );
     rendererX.setEndValue( left );
     rendererY.setEndValue( top );
-    var cleanUp = function() {
-      animation.dispose();
-      widget.removeEventListener( "dispose", stop );
-      widget.removeEventListener( "cancelAnimations", stop );
-    };
-    stop =  function() {
-      animation.cancel();
-      cleanUp();
-    };
-    widget.addEventListener( "dispose", stop );
-    widget.addEventListener( "cancelAnimations", stop );
     animation.addEventListener( "finish", function() {
-      cleanUp();
       widget.setLeft( left );
       widget.setTop( top );
       if( hide ) {
@@ -54,6 +34,34 @@ org.eclipse.rwt.AnimationUntil = {
       }
     } );
     animation.start();
+  },
+
+  _createAnimation : function( widget, time, transition ) {
+    var result = new Animation();
+    result.setDuration( time );
+    result.setTransition( transition );
+    var abort = function() {
+      result.cancel();
+      result.dispose();
+    };
+    widget.addEventListener( "cancelAnimations", abort );
+    widget.addEventListener( "dispose", abort );
+    result.addEventListener( "cancel", function() {
+      widget.removeEventListener( "dispose", abort );
+      widget.removeEventListener( "cancelAnimations", abort );
+      // animation may still need to dispatch "finish", dispose later
+      qx.client.Timer.once( result.dispose, result, 0 );
+    } );
+    return result;
+  },
+
+  _createRenderer : function( animation, widget, property ) {
+    var converter = AnimationRenderer.converterByRenderType;
+    var adapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
+    var result = new AnimationRenderer( animation );
+    result.setRenderFunction( adapter.getOriginalRenderer( property ), widget );
+    result.setConverter( converter[ property ] );
+    return result;
   }
 
 };
