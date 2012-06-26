@@ -47,6 +47,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
     "fixedColumns",
     "headerHeight",
     "headerVisible",
+    "footerHeight",
+    "footerVisible",
     "linesVisible",
     "topItemIndex",
     "scrollLeft",

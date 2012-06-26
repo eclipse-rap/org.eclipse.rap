@@ -199,7 +199,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
     },
 
     _updatePageIncrement : function() {
-      this._setPageIncrement( this._getSliderSize() - this._increment );      
+      this._setPageIncrement( this._getSliderSize() - this._increment );
     },
 
     _stopEvent : function( event ) {

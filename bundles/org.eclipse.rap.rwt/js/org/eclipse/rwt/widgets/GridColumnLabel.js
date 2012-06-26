@@ -23,6 +23,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumnLabel", {
     this._offsetX = 0;
     this._initialLeft = 0;
     this.setAppearance( baseAppearance + "-column" );
+    this._resizeCursor = null;
     this.setHorizontalChildrenAlign( "left" ); 
     this.setOverflow( "hidden" );
     this.setWidth( 0 );
@@ -53,6 +54,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumnLabel", {
         this.setCellContent( 0, value[ 0 ] );
         this.setCellDimension( 0, value[ 1 ], value[ 2 ] );
       }
+    },
+
+    setResizeCursor : function( value ) {
+      this._resizeCursor = value;
     },
 
     setSortIndicator : function( value ) {
@@ -119,7 +124,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumnLabel", {
         this._feedbackVisible = true;
       } else {
         if( this._isResizeLocation( evt.getPageX() ) ) {
-          this.getTopLevelWidget().setGlobalCursor( "ew-resize" );
+          this.getTopLevelWidget().setGlobalCursor( this._resizeCursor );
         } else {
           this.getTopLevelWidget().setGlobalCursor( null );
         }

@@ -95,11 +95,101 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.destroy();
     },
 
+    testRenderFooterText : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setFooterVisible( true );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "footerText" : "foo<>\" bar" } );
+
+      TestUtil.flush();
+      var label = this._getColumnLabel( tree, column, true );
+      assertEquals( "foo&lt;&gt;&quot; bar", label.getCellContent( 1 ).toString() );
+      column.dispose();
+      tree.destroy();
+    },
+
     testSetImageByProtocol : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       TestUtil.protocolSet( "w4", { "image" : [ "image.png", 10, 20 ] } );
       assertEquals( [ "image.png", 10, 20 ], column.getImage() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSetFontByProtocol : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "font" : [ [ "Arial" ], 12, true, false ] } );
+
+      var font = column.getFont();
+      assertEquals( [ "Arial" ], font.getFamily()  );
+      assertEquals( 12, font.getSize()  );
+      assertEquals( true, font.getBold()  );
+      assertEquals( false, font.getItalic()  );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testResetFontByProtocol : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "font" : [ [ "Arial" ], 12, true, false ] } );
+      TestUtil.protocolSet( "w4", { "font" : null } );
+
+      assertNull( column.getFont() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSetFooterTextByProtocol : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "footerText" : "foo<>\" bar" } );
+
+      assertEquals( "foo<>\" bar", column.getFooterText().toString() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSetFooterImageByProtocol : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "footerImage" : [ "image.png", 10, 20 ] } );
+
+      assertEquals( [ "image.png", 10, 20 ], column.getFooterImage() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSetFooterFontByProtocol : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "footerFont" : [ [ "Arial" ], 12, true, false ] } );
+
+      var font = column.getFooterFont();
+      assertEquals( [ "Arial" ], font.getFamily()  );
+      assertEquals( 12, font.getSize()  );
+      assertEquals( true, font.getBold()  );
+      assertEquals( false, font.getItalic()  );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testResetFooterFontByProtocol : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "footerFont" : [ [ "Arial" ], 12, true, false ] } );
+      TestUtil.protocolSet( "w4", { "footerFont" : null } );
+
+      assertNull( column.getFooterFont() );
       column.dispose();
       tree.destroy();
     },
@@ -112,6 +202,57 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var label = this._getColumnLabel( tree, column );
       assertEquals( "image.png", label.getCellContent( 0 ) );
       assertEquals( [ 10, 20 ], label.getCellDimension( 0 ) );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testRenderFooterImage : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setFooterVisible( true );
+      tree.setFooterHeight( 20 );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "footerImage" : [ "image.png", 10, 20 ] } );
+
+      TestUtil.flush();
+      var label = this._getColumnLabel( tree, column, true );
+      assertEquals( "image.png", label.getCellContent( 0 ) );
+      assertEquals( [ 10, 20 ], label.getCellDimension( 0 ) );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testRenderFont : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "font" : [ [ "Arial" ], 12, true, false ] } );
+
+      TestUtil.flush();
+      var label = this._getColumnLabel( tree, column );
+      var font = label.getFont();
+      assertEquals( [ "Arial" ], font.getFamily()  );
+      assertEquals( 12, font.getSize()  );
+      assertEquals( true, font.getBold()  );
+      assertEquals( false, font.getItalic()  );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testRenderFooterFont : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setFooterVisible( true );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "footerFont" : [ [ "Arial" ], 12, true, false ] } );
+
+      TestUtil.flush();
+      var label = this._getColumnLabel( tree, column, true );
+      var font = label.getFont();
+      assertEquals( [ "Arial" ], font.getFamily()  );
+      assertEquals( 12, font.getSize()  );
+      assertEquals( true, font.getBold()  );
+      assertEquals( false, font.getItalic()  );
       column.dispose();
       tree.destroy();
     },
@@ -233,6 +374,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.destroy();
     },
 
+    testRenderFooterLabelState : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setFooterVisible( true );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "footerText" : "foo<>\" bar" } );
+
+      TestUtil.flush();
+      var label = this._getColumnLabel( tree, column, true );
+      assertTrue( label.hasState( "footer" ) );
+      column.dispose();
+      tree.destroy();
+    },
+
     testShowResizeLine : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
@@ -248,6 +403,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var line = tree._resizeLine;
       assertEquals( "", line.getStyleProperty( "visibility" ) );
       assertEquals( 21, parseInt( line._style.left, 10 ) );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testScrollLeft : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setItemMetrics( 0, 0, 23, 0, 0, 0, 0 );
+      tree.setItemMetrics( 1, 23, 200, 0, 0, 0, 0 );
+      tree.setHeaderVisible( true );
+      tree.setFooterVisible( true );
+      tree.setColumnCount( 2 );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      this._createColumnByProtocol( "w5", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20 } );
+      TestUtil.protocolSet( "w5", { "left" : 23, "width" : 177 } ); // makes header scrollable
+
+      tree.setScrollLeft( 10 );
+
+      TestUtil.flush();
+      assertEquals( 10, tree.getTableHeader().getScrollLeft() );
+      assertEquals( 10, tree.getFooter().getScrollLeft() );
       column.dispose();
       tree.destroy();
     },
@@ -751,8 +927,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       shell = null;
     },
 
-    _getColumnLabel : function( grid, column ) {
-      return grid.getTableHeader()._getLabelByColumn( column );
+    _getColumnLabel : function( grid, column, footer ) {
+      var header = footer ? grid.getFooter() : grid.getTableHeader();
+      return header._getLabelByColumn( column );
     },
 
     _getColumnDragFeedback : function( grid ) {

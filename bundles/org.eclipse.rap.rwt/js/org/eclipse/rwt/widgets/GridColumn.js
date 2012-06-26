@@ -26,9 +26,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumn", {
     this._width = 0;
     this._toolTip = null;
     this._customVariant = null;
-    this._text = "";
     this._objectId;
+    this._text = "";
+    this._font = null;
     this._image = null;
+    this._footerText = "";
+    this._footerFont = null;
+    this._footerImage = null;
     this._sortDirection = null;
     this._grid.addColumn( this );
   },
@@ -99,6 +103,44 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumn", {
 
     getImage : function( ) {
       return this._image;
+    },
+
+    setFont : function( value ) {
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      this._font = value ? wm._createFont.apply( wm, value ) : null;
+      this._update();
+    },
+
+    getFont : function() {
+      return this._font;
+    },
+
+    setFooterText : function( value ) {
+      this._footerText = value;
+      this._update();
+    },
+
+    getFooterText : function( value ) {
+      return this._footerText;
+    },
+
+    setFooterImage : function( value ) {
+      this._footerImage = value;
+      this._update();
+    },
+
+    getFooterImage : function( ) {
+      return this._footerImage;
+    },
+
+    setFooterFont : function( value ) {
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      this._footerFont = value ? wm._createFont.apply( wm, value ) : null;
+      this._update();
+    },
+
+    getFooterFont : function() {
+      return this._footerFont;
     },
 
     setIndex : function( value ) {

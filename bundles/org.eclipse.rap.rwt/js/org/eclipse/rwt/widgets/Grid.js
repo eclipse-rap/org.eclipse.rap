@@ -36,6 +36,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     this._hasFixedColumns = false;
     // Layout:
     this._headerHeight = 0;
+    this._footerHeight = 0;
     this._itemHeight = 16;
     // Timer & Border
     this._mergeEventsTimer = new qx.client.Timer( 50 );
@@ -47,6 +48,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     this._vertScrollBar = new org.eclipse.rwt.widgets.ScrollBar( false );
     this._hasScrollBarsSelectionListener = false;
     this._header = null;
+    this._footer = null;
     this.add( this._rowContainer );
     this.add( this._horzScrollBar );
     this.add( this._vertScrollBar );
@@ -74,6 +76,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     this._mergeEventsTimer = null;
     this._rowContainer = null;
     this._header = null;
+    this._footer = null;
     this._horzScrollBar = null;
     this._vertScrollBar = null;
     this._leadItem = null;
@@ -102,6 +105,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       this._header.setTop( 0 );
       this._header.setLeft( 0 );
       this._header.setScrollLeft( this._horzScrollBar.getValue() );
+      this._scheduleColumnUpdate();
+    },
+
+    _createFooter : function() {
+      this._footer = new org.eclipse.rwt.widgets.GridHeader( {
+        "appearance" : this.getAppearance(),
+        "splitContainer" : this._hasFixedColumns,
+        "footer" : true
+      } );
+      this.add( this._footer );
+      this._footer.setLeft( 0 );
+      this._footer.setScrollLeft( this._horzScrollBar.getValue() );
       this._scheduleColumnUpdate();
     },
 
@@ -197,8 +212,27 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       this._layoutY();
     },
 
+    setFooterVisible : function( value ) {
+      if( value && this._footer == null ) {
+        this._createFooter();
+      } else if( !value ) {
+        this._footer.destroy();
+        this._footer = null;
+      }
+      this._scheduleUpdate( "scrollHeight" );
+      this._layoutX();
+      this._layoutY();
+    },
+
     setHeaderHeight : function( value ) {
       this._headerHeight = value;
+      this._layoutX();
+      this._layoutY();
+    },
+
+    setFooterHeight : function( value ) {
+      this._footerHeight = value;
+      this._scheduleUpdate( "scrollHeight" );
       this._layoutX();
       this._layoutY();
     },
@@ -365,6 +399,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       return this._header;
     },
 
+    getFooter : function() {
+      return this._footer;
+    },
+
     update : function() {
       this._scheduleUpdate();
     },
@@ -437,6 +475,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       this._rowContainer.setScrollLeft( this._horzScrollBar.getValue() );
       if( this._header ) {
         this._header.setScrollLeft( this._horzScrollBar.getValue() );
+      }
+      if( this._footer ) {
+        this._footer.setScrollLeft( this._horzScrollBar.getValue() );
       }
       this._sendScrollLeftChange();
     },
@@ -696,6 +737,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       if( this._header != null ) {
         this._header.renderColumns( this._columns );
       }
+      if( this._footer != null ) {
+        this._footer.renderColumns( this._columns );
+      }
     },
 
     _renderItemUpdate : function( item, event ) {
@@ -773,7 +817,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
 
     _updateScrollHeight : function() {
       var itemCount = this.getRootItem().getVisibleChildrenCount();
-      var height = itemCount * this._itemHeight;
+      var height = itemCount * this._itemHeight + ( this._footer ? this._footerHeight : 0 );
       // recalculating topItem can be expensive, therefore this simple check:
       if( this._vertScrollBar.getMaximum() != height ) {
         // Without the check, it may cause an error in FF when unloading doc
@@ -801,6 +845,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       var headerOverlap = this._vertScrollBar.getVisibility() ? this._vertScrollBar.getWidth() : 0;
       if( this._header ) {
         this._header.setScrollWidth( width + headerOverlap );
+      }
+      if( this._footer ) {
+        this._footer.setScrollWidth( width );
       }
     },
 
@@ -1158,30 +1205,81 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
         width -= this._vertScrollBar.getWidth();
         this._vertScrollBar.setLeft( width );
       }
+      if( this._footer ) {
+        this._footer.setWidth( width );
+      }
       this._horzScrollBar.setWidth( width );
       this._rowContainer.setWidth( width );
       this._updateScrollWidth();
     },
 
     _layoutY : function() {
-      var height = this.getHeight() - this.getFrameHeight();
       var top = 0;
-      if( this._header && this._header.getDisplay() ) {
-        top = this._headerHeight;
-        height -= this._headerHeight;
+      top += this._header ? this._headerHeight : 0;
+      var height = this.getHeight() - this.getFrameHeight();
+      height -= this._header ? this._headerHeight : 0;
+      height -= this._footer ? this._footerHeight : 0;
+      height -= this._horzScrollBar.getVisibility() ? this._horzScrollBar.getHeight() : 0;
+      height = Math.max( 0, height );
+      if( this._header ) {
         this._header.setHeight( this._headerHeight );
       }
-      if( this._horzScrollBar.getVisibility() ) {
-        height -= this._horzScrollBar.getHeight();
-        this._horzScrollBar.setTop( top + height );
+      if( this._footer ) {
+        this._footer.setHeight( this._footerHeight );
+        this._footer.setTop( top + height );
       }
-      height = Math.max( 0, height );
-      this._vertScrollBar.setHeight( height );
+      if( this._horzScrollBar.getVisibility() ) {
+        this._horzScrollBar.setTop( top + height + ( this._footer ? this._footerHeight : 0  ) );
+      }
+      this._vertScrollBar.setHeight( height + ( this._footer ? this._footerHeight : 0  ) );
       this._vertScrollBar.setTop( top );
       this._rowContainer.setTop( top );
       this._rowContainer.setHeight( height );
       this._scheduleUpdate();
     },
+
+
+//    _layoutX : function() {
+//      var width = this.getWidth() - this.getFrameWidth();
+//      if( this._header && this._header.getDisplay() ) {
+//        this._header.setWidth( width );
+//      }
+//      if( this._footer && this._footer.getDisplay() ) {
+//        this._footer.setWidth( width );
+//      }
+//      if( this._vertScrollBar.getVisibility() ) {
+//        width -= this._vertScrollBar.getWidth();
+//        this._vertScrollBar.setLeft( width );
+//      }
+//      this._horzScrollBar.setWidth( width );
+//      this._rowContainer.setWidth( width );
+//      this._updateScrollWidth();
+//    },
+//
+//    _layoutY : function() {
+//      var top = 0;
+//      top += this._header ? this._headerHeight : 0;
+//      var height = this.getHeight() - this.getFrameHeight();
+//      height -= this._header ? this._headerHeight : 0;
+//      height -= this._footer ? this._footerHeight : 0;
+//      height -= this._horzScrollBar.getVisibility() ? this._horzScrollBar.getHeight() : 0;
+//      height = Math.max( 0, height );
+//      if( this._header ) {
+//        this._header.setHeight( this._headerHeight );
+//      }
+//      if( this._footer ) {
+//        this._footer.setHeight( this._footerHeight );
+//        this._footer.setTop( top + height );
+//      }
+//      if( this._horzScrollBar.getVisibility() ) {
+//        this._horzScrollBar.setTop( top + height + ( this._footer ? this._footerHeight : 0  ) );
+//      }
+//      this._vertScrollBar.setHeight( height );
+//      this._vertScrollBar.setTop( top );
+//      this._rowContainer.setTop( top );
+//      this._rowContainer.setHeight( height );
+//      this._scheduleUpdate();
+//    },
 
     _getItemWidth : function() {
       var result = 0;

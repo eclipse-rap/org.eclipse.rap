@@ -20,6 +20,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
     this._fixedColumns = argsMap.splitContainer;
     this._scrollWidth = 0;
     this._scrollLeft = 0;
+    this._footer = argsMap.footer ? true : false;
     this._baseAppearance = argsMap.appearance;
     this._dummyColumn = this._createDummyColumn();
     this._currentDragColumn = null;
@@ -83,12 +84,27 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
     _renderLabel : function( label, column ) {
       this._renderLabelLeft( label, column );
       label.setWidth( column.getWidth() );
-      label.setToolTip( column.getToolTip() );
+      if( this._footer ) {
+        label.setText( column.getFooterText() );
+        label.setImage( column.getFooterImage() );
+        if( column.getFooterFont() !== null ) {
+          label.setFont( column.getFooterFont() );
+        } else {
+          label.resetFont()
+        }
+      } else {
+        if( column.getFont() !== null ) {
+          label.setFont( column.getFont() );
+        } else {
+          label.resetFont()
+        }
+        label.setText( column.getText() );
+        label.setImage( column.getImage() );
+        label.setToolTip( column.getToolTip() );
+        label.setSortIndicator( column.getSortDirection() );
+        label.applyObjectId( column.getObjectId() );
+      }
       label.setCustomVariant( column.getCustomVariant() );
-      label.setText( column.getText() );
-      label.setImage( column.getImage() );
-      label.setSortIndicator( column.getSortDirection() );
-      label.applyObjectId( column.getObjectId() );
       label.setZIndex( column.isFixed() ? 1e7 : 1 );
       label.setHorizontalChildrenAlign( column.getAlignment() );
     },
@@ -131,7 +147,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
 
     _onLabelMoveStart : function( event ) {
       var column = this._getColumnByLabel( event.target );
-      return column.getMoveable();
+      return !this._footer && column.getMoveable();
     },
 
     _onLabelMoveEnd : function( event ) {
@@ -160,7 +176,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
 
     _onLabelResizeStart : function( event ) {
       var column = this._getColumnByLabel( event.target );
-      return column.getResizeable();
+      return !this._footer && column.getResizeable();
     },
 
     _onLabelResizeEnd : function( event ) {
@@ -200,6 +216,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
 
     _createLabel : function( column ) {
       var label = new org.eclipse.rwt.widgets.GridColumnLabel( this._baseAppearance );
+      if( this._footer ) {
+        label.addState( "footer" );
+      } else if( column.getResizeable() ) {
+        label.setResizeCursor( "ew-resize" );
+      }
       this.add( label );
       this._labelToColumnMap[ label.toHashCode() ] = column;
       this._columnToLabelMap[ column.toHashCode() ] = label;
@@ -216,6 +237,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
 
     _createDummyColumn : function() {
       var dummyColumn = new org.eclipse.rwt.widgets.GridColumnLabel( this._baseAppearance );
+      if( this._footer ) {
+        dummyColumn.addState( "footer" );
+      }
       dummyColumn.addState( "dummy" );
       dummyColumn.addEventListener( "flush", this._onDummyRendered, this );
       dummyColumn.addEventListener( "appear", this._onDummyRendered, this );

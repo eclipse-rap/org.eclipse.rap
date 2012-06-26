@@ -68,15 +68,22 @@ var appearances = {
       result.spacing = 2;
       result.textColor = tv.getCssColor( "TreeColumn", "color" );
       result.font = tv.getCssFont( "TreeColumn", "font" );
-      result.backgroundColor = tv.getCssColor( "TreeColumn", "background-color" );
-      result.backgroundImage = tv.getCssImage( "TreeColumn", "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "TreeColumn", "background-image" );
+      if( states.footer ) {
+        //result.backgroundColor = "#efefef"; // this would make it "merged" with scrollbars
+        result.backgroundColor = "#dddddd";
+        result.backgroundImage = null;
+        result.backgroundGradient = null;
+      } else {
+        result.backgroundColor = tv.getCssColor( "TreeColumn", "background-color" );
+        result.backgroundImage = tv.getCssImage( "TreeColumn", "background-image" );
+        result.backgroundGradient = tv.getCssGradient( "TreeColumn", "background-image" );
+      }
       result.opacity = states.moving ? 0.85 : 1.0;
       result.padding = tv.getCssBoxDimensions( "TreeColumn", "padding" );
       var borderColors = [ null, null, null, null ];
       var borderWidths = [ 0, 0, 0, 0 ];
       var borderStyles = [ "solid", "solid", "solid", "solid" ];
-      if( !states.dummy ) {
+      if( !states.dummy && !states.footer ) {
         var verticalState = { "vertical" : true };
         var tvGrid = new org.eclipse.swt.theme.ThemeValues( verticalState );
         var gridColor = tvGrid.getCssColor( "Tree-GridLine", "color" );
@@ -89,9 +96,15 @@ var appearances = {
         }
       }
       var borderBottom = tv.getCssBorder( "TreeColumn", "border-bottom" );
-      borderWidths[ 2 ] = borderBottom.getWidthBottom();
-      borderStyles[ 2 ] = borderBottom.getStyleBottom();
-      borderColors[ 2 ] = borderBottom.getColorBottom();
+      if( states.footer ) {
+        borderWidths[ 0 ] = borderBottom.getWidthBottom();
+        borderStyles[ 0 ] = "solid";
+        borderColors[ 0 ] = "#000000";
+      } else {
+        borderWidths[ 2 ] = borderBottom.getWidthBottom();
+        borderStyles[ 2 ] = borderBottom.getStyleBottom();
+        borderColors[ 2 ] = borderBottom.getColorBottom();
+      }
       result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
       result.textShadow = tv.getCssShadow( "TreeColumn", "text-shadow" );
       return result;
