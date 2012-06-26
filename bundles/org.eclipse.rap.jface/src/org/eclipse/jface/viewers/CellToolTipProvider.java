@@ -1,16 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.jface.viewers;
 
 import java.io.Serializable;
 
+import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
@@ -39,6 +41,21 @@ final class CellToolTipProvider implements ICellToolTipProvider, Serializable {
     }
   }
 
+  public void getToolTipText( final Item item, final int columnIndex ) {
+    SafeRunnable.run( new SafeRunnable() {
+      public void run() {
+        Object element = item.getData();
+        ViewerColumn column = viewer.getViewerColumn( columnIndex );
+        CellLabelProvider labelProvider = column.getLabelProvider();
+        if( labelProvider != null ) {
+          String text = labelProvider.getToolTipText( element );
+          ICellToolTipAdapter adapter = getAdapter( viewer );
+          adapter.setCellToolTipText( text );
+        }
+      }
+    } );
+  }
+
   private static ICellToolTipAdapter getAdapter( ColumnViewer viewer ) {
     ICellToolTipAdapter result = null;
     if( viewer instanceof TableViewer ) {
@@ -49,17 +66,6 @@ final class CellToolTipProvider implements ICellToolTipProvider, Serializable {
       result = ( ICellToolTipAdapter )tree.getAdapter( ITreeAdapter.class );
     }
     return result;
-  }
-
-  public void getToolTipText( Item item, int columnIndex ) {
-    Object element =  item.getData();
-    ViewerColumn column = viewer.getViewerColumn( columnIndex );
-    CellLabelProvider labelProvider = column.getLabelProvider();
-    if( labelProvider != null ) {
-      String text = labelProvider.getToolTipText( element );
-      ICellToolTipAdapter adapter = getAdapter( viewer );
-      adapter.setCellToolTipText( text );
-    }
   }
 
 }
