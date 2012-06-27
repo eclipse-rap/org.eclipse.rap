@@ -104,7 +104,7 @@ var appearances = {
         borderWidths[ 2 ] = borderBottom.getWidthBottom();
         borderStyles[ 2 ] = borderBottom.getStyleBottom();
         borderColors[ 2 ] = borderBottom.getColorBottom();
-      }
+      } 
       result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
       result.textShadow = tv.getCssShadow( "TreeColumn", "text-shadow" );
       return result;
@@ -116,6 +116,19 @@ var appearances = {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.backgroundImage = tv.getCssSizedImage( "TreeColumn-SortIndicator", "background-image" );
+      return result;
+    }
+  },
+
+  "tree-column-chevron" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      var source = "widget/arrows/chevron-";
+      source += states.expanded ? "left" : "right";
+      source += states.mouseover ? "-hover" : "";
+      source += ".png";
+      result.backgroundImage = [ source, 10, 7 ];
       return result;
     }
   }

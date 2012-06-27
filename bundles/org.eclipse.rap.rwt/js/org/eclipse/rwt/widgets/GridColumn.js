@@ -14,14 +14,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumn", {
 
   extend : qx.core.Target,
 
-  construct : function( grid ) {
+  construct : function( grid, isGroup ) {
     this.base( arguments );
     this._grid = grid;
+    this._isGroup = isGroup ? true : false;
     this._index = 0;
-    this._resizable = true;
+    this._resizable = isGroup ? false : true;
     this._moveable = false;
     this._alignment = "left";
+    this._group = null;
     this._left = 0;
+    this._height = 0;
+    this._visibility = true;
+    this._expanded = true;
     this._hasSelectionListener = false;
     this._width = 0;
     this._toolTip = null;
@@ -39,6 +44,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumn", {
 
   destruct : function() {
     this._grid.removeColumn( this );
+    this.dispatchSimpleEvent( "dispose", { target : this } );
   },
 
   members : {
@@ -52,6 +58,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumn", {
       }
     },
 
+    getLeft : function() {
+      return this._left;
+    },
+
     setWidth : function( value ) {
       if( org.eclipse.swt.EventUtil.getSuspended() ) {
         this._width = value;
@@ -61,12 +71,43 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumn", {
       }
     },
 
-    getLeft : function() {
-      return this._left;
-    },
-
     getWidth : function() {
       return this._width;
+    },
+
+    setHeight : function( value ) {
+      this._height = value;
+      this._update();
+    },
+
+    getHeight : function() {
+      return this._height;
+    },
+
+    setVisibility : function( value ) {
+      this._visibility = value;
+      this._update();
+    },
+
+    getVisibility : function() {
+      return this._visibility;
+    },
+
+    setExpanded : function( value ) {
+      this._expanded = value;
+      this._update();
+    },
+
+    isExpanded : function() {
+      return this._expanded;
+    },
+
+    setGroup : function( value ) {
+      this._group = value;
+    },
+
+    getGroup : function() {
+      return this._group;
     },
 
     setToolTip : function( value ) {
@@ -181,13 +222,22 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumn", {
       this._hasSelectionListener = value;
     },
 
-    handleSelectionEvent : function() {
-      if( this._hasSelectionListener && !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var id = org.eclipse.rwt.protocol.ObjectManager.getId( this );
-        var req = org.eclipse.swt.Request.getInstance();
-        req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
-        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-        req.send();
+    handleSelectionEvent : function( event ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+        var isTreeEvent = this._isGroup && event.chevron;
+        if( this._hasSelectionListener || isTreeEvent ) {
+          var id = org.eclipse.rwt.protocol.ObjectManager.getId( this );
+          var req = org.eclipse.swt.Request.getInstance();
+          if( isTreeEvent ) {
+            var eventStr = "org.eclipse.swt.events.";
+            eventStr += this._expanded ? "treeCollapsed" : "treeExpanded";
+            req.addEvent( eventStr, id );
+          } else {
+            req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+          }
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
+          req.send();
+        }
       }
     },
 
@@ -217,6 +267,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumn", {
 
     isFixed : function() {
       return this._fixed;
+    },
+
+    isGroup : function() {
+      return this._isGroup;
     },
 
     _update : function() {

@@ -20,15 +20,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumnLabel", {
     this._wasResizeOrMoveEvent = false;
     this._feedbackVisible = false;
     this._inMove = false;
+    this._hoverEffect = false;
     this._offsetX = 0;
     this._initialLeft = 0;
+    this._chevron = null;
     this.setAppearance( baseAppearance + "-column" );
     this._resizeCursor = null;
     this.setHorizontalChildrenAlign( "left" ); 
     this.setOverflow( "hidden" );
-    this.setWidth( 0 );
-    this.setLeft( 0 );
-    this.setHeight( "100%" );
+    this.addEventListener( "elementOver", this._onElementOver, this );
+    this.addEventListener( "elementOut", this._onElementOut, this );
     this.addEventListener( "mouseover", this._onMouseOver, this );
     this.addEventListener( "mousemove", this._onMouseMove, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
@@ -38,6 +39,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumnLabel", {
   },
 
   members : {
+
+    setLeft : function( value ) {
+      this.base( arguments, value );
+      this._hideDragFeedback( true );
+    },
 
     setText : function( value ) {
       var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
@@ -54,6 +60,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumnLabel", {
         this.setCellContent( 0, value[ 0 ] );
         this.setCellDimension( 0, value[ 1 ], value[ 2 ] );
       }
+    },
+
+    setHoverEffect : function( value ) {
+      this._hoverEffect = value;
     },
 
     setResizeCursor : function( value ) {
@@ -75,13 +85,57 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumnLabel", {
       }
     },
 
-    setLeft : function( value ) {
-      this.base( arguments, value );
-      this._hideDragFeedback( true );
+    setChevron : function( value ) {
+      this._chevron = value;
+      this._updateChevronImage( false );
     },
 
+    _onElementOver : function( event ) {
+      if( this._chevron && event.getDomTarget() === this.getCellNode( 2 ) ) {
+        this._updateChevronImage( true );
+      }
+    },
+
+    _onElementOut : function( event ) {
+      if( this._chevron && event.getDomTarget() === this.getCellNode( 2 ) ) {
+        this._updateChevronImage( false );
+      }
+    },
+
+    _updateChevronImage : function( hover ) {
+      if( this._chevron ) {
+        this.setFlexibleCell( 1 );
+        var manager = qx.theme.manager.Appearance.getInstance();
+        var states = {};
+        states[ this._chevron ] = true;
+        if( hover ) {
+          states[ "mouseover" ] = true;
+        }
+        var styleMap = manager.styleFrom( this.getAppearance() + "-chevron", states );
+        var image = styleMap.backgroundImage;
+        this.setCellContent( 2, image[ 0 ] );
+        this.setCellDimension( 2, image[ 1 ], image[ 2 ] );
+      } else {
+        this.setCellContent( 2, null );
+        this.setCellDimension( 2, 0, 0 );
+      }
+    },
+
+     // TODO [tb] : right alignment should be done in MCW
+     _limitCellWidth : function( cell, preferredCellWidth ) {
+      var inner = this.getInnerWidth();
+      var contentWidth = this._getContentWidth( "skipFlexible" );
+      var maxCellWidth = Math.max( 0, inner - contentWidth );
+      return maxCellWidth;
+    },
+
+    cellIsDisplayable : function( cell ) {
+      var result = this.base( arguments, cell );
+      return result || cell == 2;
+    },
+ 
     _onMouseOver : function( evt ) {
-      if( !this._inMove && !this._inResize ) {
+      if( this._hoverEffect && !this._inMove && !this._inResize ) {
         this.addState( "mouseover" );
       }
     },
@@ -172,7 +226,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumnLabel", {
     _onClick : function( evt ) {
        // Don't send selection event when the onClick was caused by resizing
       if( !this._wasResizeOrMoveEvent ) {
-        this.dispatchSimpleEvent( "selected", { "target" : this } );
+        var data = { "target" : this };
+        if( this._chevron ) {
+          data.chevron = evt.getDomTarget() === this.getCellNode( 2 );
+        }
+        this.dispatchSimpleEvent( "selected", data );
       }
       this._wasResizeOrMoveEvent = false;
     },

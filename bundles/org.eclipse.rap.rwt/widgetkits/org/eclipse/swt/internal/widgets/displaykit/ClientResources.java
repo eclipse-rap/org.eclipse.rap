@@ -214,6 +214,7 @@ public final class ClientResources {
     "org/eclipse/rwt/widgets/GridColumn.js",
     "org/eclipse/rwt/widgets/GridColumnLabel.js",
     "org/eclipse/rwt/widgets/GridColumnAdapter.js",
+    "org/eclipse/rwt/widgets/GridColumnGroupAdapter.js",
     "org/eclipse/swt/browser/Browser.js",
     "org/eclipse/swt/browser/BrowserAdapter.js",
     "org/eclipse/rwt/widgets/ExternalBrowser.js",
@@ -302,6 +303,10 @@ public final class ClientResources {
   private static final String[] WIDGET_IMAGES = new String[] {
     "resource/static/image/blank.gif",
     "resource/static/image/dotted_white.gif",
+    "resource/widget/rap/arrows/chevron-left.png",
+    "resource/widget/rap/arrows/chevron-right.png",
+    "resource/widget/rap/arrows/chevron-left-hover.png",
+    "resource/widget/rap/arrows/chevron-right-hover.png",
     "resource/widget/rap/ctabfolder/maximize.gif",
     "resource/widget/rap/ctabfolder/minimize.gif",
     "resource/widget/rap/ctabfolder/restore.gif",

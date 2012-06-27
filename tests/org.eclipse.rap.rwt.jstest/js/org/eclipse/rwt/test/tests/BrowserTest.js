@@ -77,9 +77,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           }
         } );
         TestUtil.delayTest( 7000 );
-      },
-      function() {
         var browser = org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" );
+        TestUtil.store( browser );
+      },
+      function( browser ) {
         assertEquals( this.URL1, browser.getSource() );
         assertTrue( "slow connection?", browser._isLoaded );
         browser.destroy();
@@ -156,9 +157,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           }
         } );
         TestUtil.delayTest( 1000 );
+        var browser = org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" );
+        TestUtil.store( browser );
       },
       function( browser ) {
-        var browser = org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" );
         assertTrue( "slow connection?", browser._isLoaded );
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();

@@ -9,12 +9,12 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridColumn", {
+org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridColumnGroup", {
 
   factory : function( properties ) {
     var result;
     org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( properties.parent, function( parent ) {
-      result = new org.eclipse.rwt.widgets.GridColumn( parent );
+      result = new org.eclipse.rwt.widgets.GridColumn( parent, true );
     } );
     return result;
   },
@@ -24,34 +24,18 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridColumn", {
   },
 
   properties : [
-    // Always set column index first
-    "index",
     "left",
     "width",
+    "height",
     "text",
     "image",
     "font",
-    "footerText",
-    "footerImage",
-    "footerFont",
-    "toolTip",
-    "resizable",
-    "moveable",
-    "alignment",
-    "fixed",
-    "group",
-    "customVariant",
-    "visibility"
+    "expanded",
+    "visibility",
+    "customVariant"
   ],
 
-  propertyHandler : {
-    "toolTip" : org.eclipse.rwt.protocol.AdapterUtil.getControlPropertyHandler( "toolTip" ),
-    "group" : function( widget, value ) {
-      org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( group ) {
-        widget.setGroup( group );
-      } );
-    }
-  },
+  propertyHandler : {},
 
   listeners : [
     "selection"

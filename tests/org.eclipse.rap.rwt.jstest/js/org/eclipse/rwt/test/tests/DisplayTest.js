@@ -12,7 +12,7 @@
 qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
 
   extend : qx.core.Object,
-  
+
   members : {
 
     testCallProbeByProtocol : function() {
@@ -25,7 +25,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       processor.processOperation( {
         "target" : "w1",
         "action" : "call",
-        "method" : "probe",       
+        "method" : "probe",
         "properties" : {
           "fonts" : [
              [ -785380229, text, fontName, 11, false, false ],

@@ -78,7 +78,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
     testSetTextByProtocol : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
+
       TestUtil.protocolSet( "w4", { "text" : "foo<>\" bar" } );
+
       assertEquals( "foo<>\" bar", column.getText().toString() );
       column.dispose();
       tree.destroy();
@@ -87,8 +89,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
     testRenderText : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
+
       TestUtil.protocolSet( "w4", { "text" : "foo<>\" bar" } );
       TestUtil.flush();
+
       var label = this._getColumnLabel( tree, column );
       assertEquals( "foo&lt;&gt;&quot; bar", label.getCellContent( 1 ).toString() );
       column.dispose();
@@ -506,6 +510,46 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.destroy();
     },
 
+    testMoveableHoverEffect : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setItemMetrics( 0, 0, 200, 0, 0, 0, 0 );
+      tree.setHeaderVisible( true );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      this._createColumnByProtocol( "w5", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20, "moveable" : true } );
+      TestUtil.flush();
+      var button = qx.event.type.MouseEvent.buttons.left;
+      TestUtil.initRequestLog();
+      var label = this._getColumnLabel( tree, column )
+
+      TestUtil.fakeMouseEventDOM( label.getElement(), "mouseover", button, 13, 3 );
+      TestUtil.flush();
+
+      assertTrue( label.hasState( "mouseover" ) );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testNonMoveableHoverEffect : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setItemMetrics( 0, 0, 200, 0, 0, 0, 0 );
+      tree.setHeaderVisible( true );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      this._createColumnByProtocol( "w5", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20 } );
+      TestUtil.flush();
+      var button = qx.event.type.MouseEvent.buttons.left;
+      TestUtil.initRequestLog();
+      var label = this._getColumnLabel( tree, column )
+
+      TestUtil.fakeMouseEventDOM( label.getElement(), "mouseover", button, 13, 3 );
+      TestUtil.flush();
+
+      assertFalse( label.hasState( "mouseover" ) );
+      column.dispose();
+      tree.destroy();
+    },
+
     testShowDragFeedback : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       tree.setItemMetrics( 0, 0, 200, 0, 0, 0, 0 );
@@ -881,6 +925,376 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.destroy();
     },
 
+    testCreateColumnGroupByProtocol : function() {
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var Processor = org.eclipse.rwt.protocol.Processor;
+
+      Processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.GridColumnGroup",
+        "properties" : {
+          "style" : [],
+          "parent" : "w3"
+        }
+      } );
+      TestUtil.flush();
+
+      var column = ObjectManager.getObject( "w4" );
+      assertTrue( column instanceof org.eclipse.rwt.widgets.GridColumn );
+      assertTrue( column.isGroup() );
+      var label = this._getColumnLabel( tree, column )
+      assertIdentical( tree._header, label.getParent() );
+      assertEquals( "tree-column", label.getAppearance() );
+      assertTrue( label.hasState( "group" ) );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSetGroupHeightByProtocol : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "height" : 23 } );
+
+      assertEquals( 23, column.getHeight() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSetGroupInitialVisibility : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+
+      assertTrue( column.getVisibility() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSetGroupVisibilityByProtocol : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "visibility" : false } );
+
+      assertFalse( column.getVisibility() );
+      column.dispose();
+      tree.destroy();
+    },
+
+
+    testSetGroupInitialExpanded : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+
+      assertTrue( column.isExpanded() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSetGroupExpandedByProtocol : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "expanded" : false } );
+
+      assertFalse( column.isExpanded() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testRenderColumnBounds : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "left" : 10, "width": 40 } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      assertEquals( "100%", label.getHeight() );
+      assertEquals( 0, label.getTop() );
+      assertEquals( 10, label.getLeft() );
+      assertEquals( 40, label.getWidth() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testRenderGroupBounds : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "left" : 10, "width": 40, "height" : 23 } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      assertEquals( 23, label.getHeight() );
+      assertEquals( 0, label.getTop() );
+      assertEquals( 10, label.getLeft() );
+      assertEquals( 40, label.getWidth() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testRenderGroupVisibilityTrue : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "left" : 10, "width": 40, "height" : 23 } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      assertTrue( label.isSeeable() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testRenderGroupVisibilityFalse : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+      TestUtil.flush();
+
+      TestUtil.protocolSet( "w4", { "left" : 10, "width": 40, "height" : 23, "visibility" : false } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      assertFalse( label.isSeeable() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testRenderGroupVisibilityInitialFalse : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [], true );
+
+      TestUtil.protocolSet( "w4", { "left" : 10, "width": 40, "height" : 23, "visibility" : false } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      assertNull( label );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testDisposeGroup : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 10, "width": 40, "height" : 23 } );
+      TestUtil.flush();
+      var label = this._getColumnLabel( tree, column );
+
+      column.dispose();
+      TestUtil.flush();
+
+      assertTrue( label.isDisposed() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSetGroup : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      var column = this._createColumnByProtocol( "w4", "w3", [], true );
+
+      TestUtil.protocolSet( "w4", { "group" : "w5" } );
+      var group = this._createColumnGroupByProtocol( "w5", "w3", [], true );
+      TestUtil.flush();
+
+      assertIdentical( group, column.getGroup() );
+      column.dispose();
+      group.dispose();
+      tree.destroy();
+    },
+
+    testRenderColumnBoundsWithGroup : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      var group = this._createColumnGroupByProtocol( "w5", "w3", [], true );
+
+      TestUtil.protocolSet( "w4", { "group" : "w5", "left" : 22, "width": 20 } );
+      TestUtil.protocolSet( "w5", { "height" : 22, "left" : 10, "width": 40 } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      assertEquals( 28, label.getHeight() );
+      assertEquals( 22, label.getTop() );
+      assertEquals( 22, label.getLeft() );
+      assertEquals( 20, label.getWidth() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testRenderGroupChevron : function() {
+      this._fakeChevronAppearance();
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "left" : 10, "width": 40, "height" : 23 } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      assertEquals( "chev-left.gif", label.getCellContent( 2 ) );
+      assertEquals( [ 10, 7 ], label.getCellDimension( 2 ) );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testRenderGroupChevronHoverLabel : function() {
+      this._fakeChevronAppearance();
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 10, "width": 40, "height" : 23 } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      TestUtil.hoverFromTo( document.body, label.getElement() );
+      TestUtil.flush();
+
+      assertEquals( "chev-left.gif", label.getCellContent( 2 ) );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testRenderGroupChevronHoverCell : function() {
+      this._fakeChevronAppearance();
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 10, "width": 40, "height" : 23 } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      TestUtil.hoverFromTo( document.body, label.getCellNode( 2  ) );
+      TestUtil.flush();
+
+      assertEquals( "chev-left-hover.gif", label.getCellContent( 2 ) );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testRenderGroupChevronUnHoverCell : function() {
+      this._fakeChevronAppearance();
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 10, "width": 40, "height" : 23 } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      TestUtil.hoverFromTo( document.body, label.getCellNode( 2  ) );
+      TestUtil.flush();
+      TestUtil.hoverFromTo( label.getCellNode( 2  ), label.getCellNode( 1 ) );
+      TestUtil.flush();
+
+      assertEquals( "chev-left.gif", label.getCellContent( 2 ) );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testRenderGroupChevronAlignRight : function() {
+      this._fakeChevronAppearance();
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "left" : 10, "width": 50, "height" : 23, "text" : "x" } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      assertEquals( 21, label.getCellDimension( 1 )[ 0 ] );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testRenderGroupChevronAlignRightWithNoText : function() {
+      this._fakeChevronAppearance();
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { 
+         "left" : 10,
+         "width": 100,
+         "height" : 23
+       } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      assertEquals( 71, label.getCellDimension( 1 )[ 0 ] );
+      assertNotNull( label.getCellNode( 1 ) );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testRenderGroupChevronOverlap : function() {
+      this._fakeChevronAppearance();
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { 
+        "left" : 10, 
+        "width": 45, 
+        "height" : 23, 
+        "text" : "foo0o0o0ooooooo"
+      } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      assertEquals( 16, label.getCellDimension( 1 )[ 0 ] );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSendGroupCollapsed : function() {
+      this._fakeChevronAppearance();
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      TestUtil.initRequestLog();
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 10, "width": 40, "height" : 23 } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      TestUtil.clickDOM( label.getCellNode( 2  ) );
+      TestUtil.flush();
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.treeCollapsed=w4" ) !== -1 );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSendGroupExpanded : function() {
+      this._fakeChevronAppearance();
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      TestUtil.initRequestLog();
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 10, "width": 40, "height" : 23, "expanded" : false } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      TestUtil.clickDOM( label.getCellNode( 2  ) );
+      TestUtil.flush();
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.treeExpanded=w4" ) !== -1 );
+      column.dispose();
+      tree.destroy();
+    },
+
     //////////////////
     // Helping methods
 
@@ -918,6 +1332,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
     },
 
+    _createColumnGroupByProtocol : function( id, parentId, styles, noFlush ) {
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : id,
+        "action" : "create",
+        "type" : "rwt.widgets.GridColumnGroup",
+        "properties" : {
+          "style" : styles,
+          "parent" : parentId
+        }
+      } );
+      if( !noFlush ) {
+        TestUtil.flush();
+      }
+      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+    },
+
     setUp : function() {
       shell = TestUtil.createShellByProtocol( "w2" );
     },
@@ -938,6 +1368,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
 
     _getDummyLabel : function( grid ) {
       return grid.getTableHeader()._dummyColumn;
+    },
+
+    _fakeChevronAppearance : function() {
+      TestUtil.fakeAppearance( "tree-column-chevron", {
+        style : function( states ) {
+          var source = "chev-";
+          source += states.expanded ? "left" : "right";
+          source += states.mouseover ? "-hover" : "";
+          source += ".gif";
+          var result = {
+            "backgroundImage" : [ source, 10, 7 ]
+          };
+          return result;
+        }
+      } );
     }
 
   }

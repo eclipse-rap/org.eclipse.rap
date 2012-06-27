@@ -2481,9 +2481,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var column = new org.eclipse.rwt.widgets.GridColumn( tree );
       tree.setHeaderVisible( true );
       TestUtil.flush();
+      var labels = tree._header.getChildren().length;
       column.dispose();
       TestUtil.flush();
-      assertEquals( 2, tree._header.getChildren().length );
+      assertEquals( labels - 1, tree._header.getChildren().length );
       tree.destroy();
     },
 

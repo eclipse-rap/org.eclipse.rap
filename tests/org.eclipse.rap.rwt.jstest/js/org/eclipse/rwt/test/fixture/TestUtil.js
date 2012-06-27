@@ -914,14 +914,20 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   protocolSet : function( id, properties ) {
-     org.eclipse.swt.EventUtil.setSuspended( true );
+    org.eclipse.swt.EventUtil.setSuspended( true );
     var processor = org.eclipse.rwt.protocol.Processor;
     processor.processOperation( {
       "target" : id,
       "action" : "set",
       "properties" : properties
     } );
-     org.eclipse.swt.EventUtil.setSuspended( false );
+    org.eclipse.swt.EventUtil.setSuspended( false );
+  },
+
+  resetObjectManager : function() {
+    var w1 = org.eclipse.rwt.protocol.ObjectManager._map[ "w1" ];
+    org.eclipse.rwt.protocol.ObjectManager._map = { "w1" : w1 };
+    org.eclipse.rwt.protocol.ObjectManager._callbacks = {};
   }
 
 };

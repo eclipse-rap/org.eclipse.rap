@@ -79,11 +79,11 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     },
 
     getCssImage : function( element, key ) {
-      return this._store.getImage( element, this._states, key );      
+      return this._store.getImage( element, this._states, key );
     },
 
     getCssSizedImage : function( element, key ) {
-      return this._store.getSizedImage( element, this._states, key );      
+      return this._store.getSizedImage( element, this._states, key );
     },
 
     getCssGradient : function( element, key ) {

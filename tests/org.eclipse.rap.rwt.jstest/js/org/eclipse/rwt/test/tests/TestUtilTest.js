@@ -734,6 +734,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       shell.destroy();
     },
 
+    testResetObjectManager : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.createShellByProtocol( "w2" );
+
+      assertTrue( null != org.eclipse.rwt.protocol.ObjectManager.getObject( "w1" ) )
+      TestUtil.resetObjectManager();
+
+      assertTrue( null == org.eclipse.rwt.protocol.ObjectManager.getObject( "w2" ) )
+      assertTrue( null != org.eclipse.rwt.protocol.ObjectManager.getObject( "w1" ) )
+    },
+
     testProtocolListen : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
