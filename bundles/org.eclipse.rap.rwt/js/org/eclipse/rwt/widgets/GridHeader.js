@@ -87,6 +87,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
       this._renderLabelLeft( label, column );
       label.setWidth( column.getWidth() );
       label.setHoverEffect( column.getMoveable() );
+      label.setVisibility( column.getVisibility() );
       if( this._footer ) {
         label.setText( column.getFooterText() );
         label.setImage( column.getFooterImage() );
@@ -103,22 +104,31 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
         }
         label.setText( column.getText() );
         label.setImage( column.getImage() );
-        label.setVisibility( column.getVisibility() );
         label.setToolTip( column.getToolTip() );
         label.setSortIndicator( column.getSortDirection() );
         label.applyObjectId( column.getObjectId() );
         if( column.isGroup() ) {
-          label.setHeight( column.getHeight() );
           label.setChevron( column.isExpanded() ? "expanded" : "collapsed" );
-        } else if( column.getGroup() != null ) {
-          var groupHeight = column.getGroup().getHeight();
-          label.setTop( groupHeight )
-          label.setHeight( this.getHeight() - groupHeight );
         }
+        this._renderLabelY( label, column );
       }
       label.setCustomVariant( column.getCustomVariant() );
       label.setZIndex( column.isFixed() ? 1e7 : 1 );
       label.setHorizontalChildrenAlign( column.getAlignment() );
+    },
+
+    _renderLabelY : function( label, column ) {
+      if( column.isGroup() ) {
+        label.setTop( 0 );
+        label.setHeight( column.getHeight() );
+      } else if( column.getGroup() != null ) {
+        var groupHeight = column.getGroup().getHeight();
+        label.setTop( groupHeight )
+        label.setHeight( this.getHeight() - groupHeight );
+      } else {
+        label.setTop( 0 );
+        label.setHeight( "100%" );
+      }
     },
 
     _renderLabelLeft : function( label, column ) {
@@ -146,8 +156,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
       var columns = this._labelToColumnMap;
       var result = 0;
       for( var key in columns ) {
-        var left = columns[ key ].getLeft() + columns[ key ].getWidth();
-        result = Math.max( result, left );
+        if( columns[ key ].getVisibility() ) {
+          var left = columns[ key ].getLeft() + columns[ key ].getWidth();
+          result = Math.max( result, left );
+        }
       }
       return result;
     },
@@ -217,6 +229,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
         this._feedbackLabel = this._createFeedbackColumn();
       }
       if( this._currentDragColumn !== column ) {
+        this._renderLabelY( this._feedbackLabel, column );
         this._feedbackLabel.setWidth( column.getWidth() );
         this._feedbackLabel.setCustomVariant( column.getCustomVariant() );
         this._feedbackLabel.setText( column.getText() );
