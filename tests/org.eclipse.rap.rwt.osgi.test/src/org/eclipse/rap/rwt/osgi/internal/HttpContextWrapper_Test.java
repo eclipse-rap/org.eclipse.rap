@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
@@ -14,7 +15,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,58 +27,65 @@ import org.osgi.service.http.HttpContext;
 
 
 public class HttpContextWrapper_Test extends TestCase {
-  private static final File DIRECTORY = new File( Fixture.TEMP_DIR, "testGetSourceDirectory" );
-  
+
   private HttpContext httpContext;
   private HttpContextWrapper contextWrapper;
-  private String directoryName;
-  private String doesNotExistName;
-  private String existsName;
+  private File directory;
 
-
-  public void testGetResource() throws Exception {
-    initializeResourceNames();
-    
-    URL directory = contextWrapper.getResource( directoryName );
-    URL doesNotExist = contextWrapper.getResource( doesNotExistName );
-    URL exists = contextWrapper.getResource( existsName );
-    
-    assertNull( directory );
-    assertNull( doesNotExist );
-    assertNotNull( exists );
-  }
-  
-  public void testGetMimeType() {
-    String name = "mimeType";
-    contextWrapper.getMimeType( name );
-    
-    verify( httpContext ).getMimeType( name );
-  }
-  
-  public void testHandleSecurity() throws Exception {
-    HttpServletResponse response = mock( HttpServletResponse.class );
-    HttpServletRequest request = mock( HttpServletRequest.class );
-    
-    contextWrapper.handleSecurity( request, response );
-    
-    verify( httpContext ).handleSecurity( request, response );
-  }
-  
+  @Override
   protected void setUp() {
     httpContext = mock( HttpContext.class );
     contextWrapper = new HttpContextWrapper( httpContext );
-    DIRECTORY.mkdirs();
+
+    directory = new File( Fixture.TEMP_DIR, "directory" );
+    directory.mkdirs();
   }
-  
+
+  @Override
   protected void tearDown() {
-    Fixture.delete( DIRECTORY );
+    Fixture.delete( directory );
   }
-  
-  private void initializeResourceNames() throws IOException {
-    directoryName = DIRECTORY.getPath();
-    doesNotExistName = new File( DIRECTORY, "doesNotExist.txt" ).getPath();
-    File fileExists = new File( DIRECTORY, "exits.txt" );
-    fileExists.createNewFile();
-    existsName = fileExists.getPath();
+
+  public void testGetResource() throws Exception {
+    File file = new File( directory, "test.txt" );
+    file.createNewFile();
+    String fileName = file.getPath();
+
+    URL result = contextWrapper.getResource( fileName );
+
+    assertEquals( file, new File( result.toURI() ) );
   }
+
+  public void testGetResource_failsWithNonExistingFile() {
+    String fileName = new File( directory, "test.txt" ).getPath();
+
+    URL result = contextWrapper.getResource( fileName );
+
+    assertNull( result );
+  }
+
+  public void testGetResource_failsWithDirectory() {
+    String directoryName = directory.getPath();
+
+    URL result = contextWrapper.getResource( directoryName );
+
+    assertNull( result );
+  }
+
+  public void testGetMimeType() {
+    String name = "mimeType";
+    contextWrapper.getMimeType( name );
+
+    verify( httpContext ).getMimeType( name );
+  }
+
+  public void testHandleSecurity() throws Exception {
+    HttpServletResponse response = mock( HttpServletResponse.class );
+    HttpServletRequest request = mock( HttpServletRequest.class );
+
+    contextWrapper.handleSecurity( request, response );
+
+    verify( httpContext ).handleSecurity( request, response );
+  }
+
 }
