@@ -41,7 +41,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridColumn", {
     "fixed",
     "group",
     "customVariant",
-    "visibility"
+    "visibility",
+    "check"
   ],
 
   propertyHandler : {

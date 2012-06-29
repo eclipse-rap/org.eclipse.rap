@@ -229,6 +229,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumnLabel", {
         var data = { "target" : this };
         if( this._chevron ) {
           data.chevron = evt.getDomTarget() === this.getCellNode( 2 );
+          if( data.chevron ) {
+            this.setChevron( "loading" );
+          }
         }
         this.dispatchSimpleEvent( "selected", data );
       }

@@ -256,7 +256,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
                                imageLeft,
                                imageWidth,
                                textLeft,
-                               textWidth )
+                               textWidth,
+                               checkLeft,
+                               checkWidth )
     {
       this._config.itemLeft[ columnIndex ] = left;
       this._config.itemWidth[ columnIndex ] = width;
@@ -264,6 +266,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       this._config.itemImageWidth[ columnIndex ] = imageWidth;
       this._config.itemTextLeft[ columnIndex ] = textLeft;
       this._config.itemTextWidth[ columnIndex ] = textWidth;
+      if( !isNaN( checkLeft ) ) {
+        this._config.itemCellCheckLeft[ columnIndex ] = checkLeft;
+        this._config.itemCellCheckWidth[ columnIndex ] = checkWidth;
+      }
       this._scheduleUpdate();
       this._updateScrollWidth();
     },
@@ -278,7 +284,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       if( !this._inServerResponse() ) {
         qx.ui.core.Widget.flushGlobalQueues();
       }
-
     },
 
     setScrollLeft: function( value ) {
@@ -336,6 +341,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
 
     setAlignment : function( column, value ) {
       this._config.alignment[ column ] = value;
+      this._scheduleUpdate();
+    },
+
+    setCellCheck : function( column, value ) {
+      this._config.itemCellCheck[ column ] = value;
       this._scheduleUpdate();
     },
 
@@ -500,14 +510,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       var item = this._rowContainer.findItemByRow( row );
       if( item != null ) {
         var identifier = row.getTargetIdentifier( event );
-        if( identifier === "expandIcon" && item.hasChildren() ) {
+        if( identifier[ 0 ] === "expandIcon" && item.hasChildren() ) {
           var expanded = !item.isExpanded();
           if( !expanded ) {
             this._deselectVisibleChildren( item );
           }
           item.setExpanded( expanded );
-        } else if( identifier === "checkBox" ) {
-          this._toggleCheckSelection( item );
+        } else if( identifier[ 0 ] === "checkBox" || identifier[ 0 ] === "cellCheckBox" ) {
+          this._toggleCheckSelection( item, identifier[ 1 ] );
         } else if( this._isSelectionClick( identifier ) ) {
           this._onSelectionClick( event, item );
         }
@@ -517,9 +527,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     _isSelectionClick : function( identifier ) {
       var result;
       if( this._config.fullSelection ) {
-        result = identifier !== "checkBox";
+        result = identifier[ 0 ] !== "checkBox";
       } else {
-        result = identifier === "treeColumn";
+        result = identifier[ 0 ] === "treeColumn";
       }
       return result;
     },
@@ -890,6 +900,22 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       }
     },
 
+    _sendCellCheckedChange : function( item, cell ) { // TODO [tb] : item events should be send by item
+      if( !this._inServerResponse() ) {
+        var req = org.eclipse.swt.Request.getInstance();
+        var wm = org.eclipse.swt.WidgetManager.getInstance();
+        var itemId = wm.findIdByWidget( item );
+        var arr = item.getCellChecked();
+        var sendArr = [];
+        for( var i = 0; i < this._config.columnCount; i++ ) {
+          sendArr[ i ] = arr[ i ] === true;
+        }
+        var checkString = "[" + sendArr.join( "," ) + "]";
+        req.addParameter( itemId + ".cellChecked", checkString );
+        this._sendSelectionEvent( item, false, "check", cell );
+      }
+    },
+
     _sendItemFocusChange : function() {
       if( !this._inServerResponse() ) {
         var req = org.eclipse.swt.Request.getInstance();
@@ -943,7 +969,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       req.send();
     },
 
-    _sendSelectionEvent : function( item, defaultSelected, detail ) {
+    _sendSelectionEvent : function( item, defaultSelected, detail, index ) {
       if( this._hasSelectionListener ) {
         var req = org.eclipse.swt.Request.getInstance();
         var wm = org.eclipse.swt.WidgetManager.getInstance();
@@ -956,6 +982,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
         req.addParameter( eventName + ".item", itemId );
         if( detail != null ) {
           req.addParameter( eventName + ".detail", detail );
+        }
+        if( !isNaN( index ) ) {
+          req.addParameter( eventName + ".index", index );
         }
         req.send();
       }
@@ -1110,10 +1139,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       }
     },
 
-    _toggleCheckSelection : function( item ) {
+    _toggleCheckSelection : function( item, cell ) {
       if( item.isCached() ) {
-        item.setChecked( !item.isChecked() );
-        this._sendItemCheckedChange( item );
+        if( isNaN( cell ) ) {
+          item.setChecked( !item.isChecked() );
+          this._sendItemCheckedChange( item );
+        } else {
+          item.toggleCellChecked( cell );
+          this._sendCellCheckedChange( item, cell );
+        }
       }
     },
 

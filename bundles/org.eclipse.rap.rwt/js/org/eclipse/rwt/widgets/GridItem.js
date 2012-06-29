@@ -36,6 +36,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
     this._cellBackgrounds = [];
     this._checked = false;
     this._grayed = false;
+    this._cellChecked = [];
+    this._cellGrayed = [];
     this._variant = null;
     if( this._parent != null ) {
       this._level = this._parent.getLevel() + 1; 
@@ -202,20 +204,47 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       this._checked = value;
       this._update( "content" );
     },
-    
+
     isChecked : function() {
       return this._checked;
     },
-    
+
     setGrayed : function( value ) {
       this._grayed = value;
       this._update( "content" );
     },
-    
+
     isGrayed : function() {
       return this._grayed;
     },
-    
+
+    setCellChecked : function( value ) {
+      this._cellChecked = value;
+      this._update( "content" );
+    },
+
+    toggleCellChecked : function( cell ) {
+      this._cellChecked[ cell ] = !this._cellChecked[ cell ];
+      this._update( "content" );
+    },
+
+    getCellChecked : function() {
+      return this._cellChecked;
+    },
+
+    isCellChecked : function( column ) {
+      return this._cellChecked[ column ];
+    },
+
+    setCellGrayed : function( value ) {
+      this._cellGrayed = value;
+      this._update( "content" );
+    },
+
+    isCellGrayed : function( column ) {
+      return this._cellGrayed[ column ];
+    },
+
     setVariant : function( variant ) {
       this._variant = variant;
     },

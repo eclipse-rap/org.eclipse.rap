@@ -36,6 +36,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridItem", {
     "expanded",
     "checked",
     "grayed",
+    "cellChecked",
+    "cellGrayed",
     "customVariant"
   ],
 

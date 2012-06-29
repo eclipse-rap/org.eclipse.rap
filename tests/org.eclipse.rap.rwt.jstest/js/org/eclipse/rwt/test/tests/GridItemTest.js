@@ -318,6 +318,54 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       tree.destroy();
     },
 
+    testSetCellCheckedByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [ "CHECK" ] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.GridItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "cellChecked" : [ true, true, false ]
+        }
+      } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
+      assertTrue( item.isCellChecked( 0 ) );
+      assertTrue( item.isCellChecked( 1 ) );
+      assertFalse( item.isCellChecked( 2 ) );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testSetCellGrayedByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [ "CHECK" ] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.GridItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "cellGrayed" : [ true, true, false ]
+        }
+      } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
+      assertTrue( item.isCellGrayed( 0 ) );
+      assertTrue( item.isCellGrayed( 1 ) );
+      assertFalse( item.isCellGrayed( 2 ) );
+      shell.destroy();
+      tree.destroy();
+    },
+
     testSetGrayedByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );

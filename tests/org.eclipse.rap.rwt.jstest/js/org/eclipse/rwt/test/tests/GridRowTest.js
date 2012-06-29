@@ -1572,7 +1572,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       item.setTexts( [ "Test" ] );
       row.renderItem( item, tree._config, false, null );
       row.addEventListener( "mousedown", function( event ) {
-        log.push( row.getTargetIdentifier( event ) === "expandIcon" );
+        log.push( row.getTargetIdentifier( event )[ 0 ] === "expandIcon" );
       } );
       TestUtil.clickDOM( row._getTargetNode().childNodes[ 0 ] );
       TestUtil.clickDOM( row._getTargetNode().childNodes[ 1 ] );
@@ -1598,6 +1598,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       TestUtil.flush();
       assertTrue( row.isDisposed() );
       assertNull( row.getElement() );
+      assertNull( row._cellImages );
+      assertNull( row._cellCheckImages );
+      assertNull( row._cellLabels );
+      assertNull( row._cellBackgrounds );
       assertTrue( element.parentNode !== document.body );
       TestUtil.hasNoObjects( row, true );
       tree.destroy();
@@ -1616,6 +1620,239 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row._getTargetNode().childNodes[ 1 ];
       var url = TestUtil.getCssBackgroundImage( node );
       assertTrue( url.indexOf( "mycheckbox.gif" ) != -1 );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testRenderCellCheckBox : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( false );
+      tree.setColumnCount( 3 );
+      tree.setItemMetrics( 0, 0, 20, 10, 0, 10, 10, 2, 8 );
+      tree.setItemMetrics( 1, 20, 20, 30, 0, 30, 10, 22, 8 );
+      tree.setItemMetrics( 2, 40, 20, 50, 0, 50, 10, 42, 8 );
+      tree.setCellCheck( 0, true );
+      tree.setCellCheck( 2, true );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      this._setCheckBox( "mycheckbox.gif" );
+
+      row.renderItem( item, tree._config, false, null );
+
+      assertEquals( 3, row._getTargetNode().childNodes.length );
+      var node1 = row._getTargetNode().childNodes[ 1 ];
+      var node2 = row._getTargetNode().childNodes[ 2 ];
+      var url1 = TestUtil.getCssBackgroundImage( node1 );
+      var url2 = TestUtil.getCssBackgroundImage( node2 );
+      assertTrue( url1.indexOf( "mycheckbox.gif" ) != -1 );
+      assertTrue( url2.indexOf( "mycheckbox.gif" ) != -1 );
+      tree.destroy();
+      row.destroy();
+    },
+
+
+    testRenderCellCheckBoxChecked : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( false );
+      tree.setColumnCount( 1 );
+      tree.setItemMetrics( 0, 0, 20, 10, 0, 10, 10, 2, 8 );
+      tree.setCellCheck( 0, true );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setCellChecked( [ true ] );
+      this._setCheckBox( "mycheckbox.gif" );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row._getTargetNode().childNodes[ 1 ];
+      var url = TestUtil.getCssBackgroundImage( node );
+      assertTrue( url.indexOf( "checked-mycheckbox.gif" ) != -1 );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testRenderCellCheckBoxGrayed : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( false );
+      tree.setColumnCount( 1 );
+      tree.setItemMetrics( 0, 0, 20, 10, 0, 10, 10, 2, 8 );
+      tree.setCellCheck( 0, true );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setCellGrayed( [ true ] );
+      this._setCheckBox( "mycheckbox.gif" );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row._getTargetNode().childNodes[ 1 ];
+      var url = TestUtil.getCssBackgroundImage( node );
+      assertTrue( url.indexOf( "grayed-mycheckbox.gif" ) != -1 );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testRenderCellCheckBoxHoveredItem : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( false );
+      tree.setColumnCount( 1 );
+      tree.setItemMetrics( 0, 0, 20, 10, 0, 10, 10, 2, 8 );
+      tree.setCellCheck( 0, true );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setCellChecked( [ true ] );
+      this._setCheckBox( "mycheckbox.gif" );
+
+      row.renderItem( item, tree._config, false, null );
+      TestUtil.hoverFromTo( document.body, row._getTargetNode() );
+      row.renderItem( item, tree._config, false, [ "other" ] );
+
+      var node = row._getTargetNode().childNodes[ 1 ];
+      var url = TestUtil.getCssBackgroundImage( node );
+      assertTrue( url.indexOf( "mycheckbox.gif" ) != -1 );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testRenderCellCheckBoxHoveredBox : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( false );
+      tree.setColumnCount( 1 );
+      tree.setItemMetrics( 0, 0, 20, 10, 0, 10, 10, 2, 8 );
+      tree.setCellCheck( 0, true );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setCellChecked( [ true ] );
+      this._setCheckBox( "mycheckbox.gif" );
+
+      row.renderItem( item, tree._config, false, null );
+      TestUtil.hoverFromTo( document.body, row._getTargetNode() );
+      row.renderItem( item, tree._config, false, [ "cellCheckBox", 0 ] );
+
+      var node = row._getTargetNode().childNodes[ 1 ];
+      var url = TestUtil.getCssBackgroundImage( node );
+      assertTrue( url.indexOf( "over.gif" ) != -1 );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testCellCheckBoxIdentifier : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( false );
+      tree.setColumnCount( 1 );
+      tree.setItemMetrics( 0, 0, 20, 10, 0, 10, 10, 2, 8 );
+      tree.setCellCheck( 0, true );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setCellChecked( [ true ] );
+      this._setCheckBox( "mycheckbox.gif" );
+      var log = []
+
+      row.renderItem( item, tree._config, false, null );
+      row.addEventListener( "mousedown", function( event ) {
+        log.push( row.getTargetIdentifier( event ) );
+      } );
+      TestUtil.clickDOM( row._getTargetNode().childNodes[ 0 ] );
+      TestUtil.clickDOM( row._getTargetNode().childNodes[ 1 ] );
+
+      assertEquals( [ "cellCheckBox", 0 ], log[ 1 ] );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testRenderCellCheckBoxBounds : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( false );
+      tree.setColumnCount( 3 );
+      tree.setItemMetrics( 0, 0, 30, 20, 0, 20, 10, 2, 8 );
+      tree.setItemMetrics( 1, 30, 10, 30, 0, 30, 10, -1, -1 );
+      tree.setItemMetrics( 2, 40, 20, 50, 0, 50, 10, 42, 8 );
+      tree.setCellCheck( 0, true );
+      tree.setCellCheck( 2, true );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      this._setCheckBox( "mycheckbox.gif" );
+
+      row.renderItem( item, tree._config, false, null );
+
+      assertEquals( 3, row._getTargetNode().childNodes.length );
+      var node1 = row._getTargetNode().childNodes[ 1 ];
+      var node2 = row._getTargetNode().childNodes[ 2 ];
+      var bounds1 = TestUtil.getElementBounds( node1 );
+      var bounds2 = TestUtil.getElementBounds( node2 );
+      assertEquals( 18, bounds1.left );
+      assertEquals( 8, bounds1.width );
+      assertEquals( 42, bounds2.left );
+      assertEquals( 8, bounds2.width );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testRenderCellCheckBoxCutOff : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( false );
+      tree.setColumnCount( 3 );
+      tree.setItemMetrics( 0, 0, 20, 10, 0, 10, 10, 2, 8 );
+      tree.setCellCheck( 0, true );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      this._setCheckBox( "mycheckbox.gif" );
+
+      row.renderItem( item, tree._config, false, null );
+
+      assertEquals( 2, row._getTargetNode().childNodes.length );
+      var node = row._getTargetNode().childNodes[ 1 ];
+      var bounds = TestUtil.getElementBounds( node );
+      assertEquals( 18, bounds.left );
+      assertEquals( 2, bounds.width );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testRenderCellCheckBoxClear : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( false );
+      tree.setColumnCount( 3 );
+      tree.setItemMetrics( 0, 0, 20, 10, 0, 10, 10, 2, 8 );
+      tree.setCellCheck( 0, true );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      this._setCheckBox( "mycheckbox.gif" );
+
+      row.renderItem( item, tree._config, false, null );
+      var node = row._getTargetNode().childNodes[ 1 ];
+      row.renderItem( null, tree._config, false, null );
+      var url = TestUtil.getCssBackgroundImage( node );
+      assertEquals( "", url );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testRenderCellCheckBoxHidden : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( false );
+      tree.setColumnCount( 3 );
+      tree.setItemMetrics( 0, 0, 20, 10, 0, 10, 10, 2, 8 );
+      tree.setCellCheck( 0, true );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      this._setCheckBox( "mycheckbox.gif" );
+
+      row.renderItem( item, tree._config, false, null );
+      var node = row._getTargetNode().childNodes[ 1 ];
+      tree.setItemMetrics( 0, 0, 0, 10, 0, 10, 10, 2, 8 );
+      row.renderItem( item, tree._config, false, null );
+
+      assertTrue( row._getTargetNode() != node.parentNode );
       tree.destroy();
       row.destroy();
     },
@@ -1666,7 +1903,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       item.setTexts( [ "Test" ] );
       row.renderItem( item, tree._config, false, null );
       row.addEventListener( "mousedown", function( event ) {
-        log.push( row.getTargetIdentifier( event ) === "checkBox" );
+        log.push( row.getTargetIdentifier( event )[ 0 ] === "checkBox" );
       } );
       TestUtil.clickDOM( row._getTargetNode().childNodes[ 0 ] );
       TestUtil.clickDOM( row._getTargetNode().childNodes[ 1 ] );
@@ -2243,7 +2480,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row.renderItem( item, tree._config, false, null );
       var log = [];
       row.addEventListener( "mousedown", function( event ) {
-        log.push( row.getTargetIdentifier( event ) === "treeColumn" );
+        log.push( row.getTargetIdentifier( event )[ 0 ] === "treeColumn" );
       } );
       var nodes = row._getTargetNode().childNodes;
       TestUtil.clickDOM( nodes[ 0 ] ); // expandimage
@@ -2273,7 +2510,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row.renderItem( item, tree._config, false, null );
       var log = [];
       row.addEventListener( "mousedown", function( event ) {
-        log.push( row.getTargetIdentifier( event ) !== "checkBox" );
+        log.push( row.getTargetIdentifier( event )[ 0 ] !== "checkBox" );
       } );
       var nodes = row._getTargetNode().childNodes;
       TestUtil.clickDOM( nodes[ 0 ] ); // expandimage
@@ -2670,8 +2907,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.fakeAppearance( appearance,  {
         style : function( states ) {
+          var pre = states.checked ? "checked-" : "";
+          pre += states.grayed ? "grayed-" : "";
           return {
-            "backgroundImage" : states.over ? "over.gif" : value
+            "backgroundImage" : pre + ( states.over ? "over.gif" : value )
           };
         }
       } );

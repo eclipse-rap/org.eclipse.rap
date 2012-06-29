@@ -75,7 +75,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
         "itemImageLeft" : [],   
         "itemImageWidth" : [],   
         "itemTextLeft" : [],   
-        "itemTextWidth" : []
+        "itemTextWidth" : [],
+        "itemCellCheck" : [],
+        "itemCellCheckLeft" : [],
+        "itemCellCheckWidth" : []
       };
       return result;
     }
@@ -287,7 +290,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
     // NOTE: Used only by TreeUtil.js
     setHoverItem : function( item ) {
       if( item ) {
-        this._hoverElement = "other";
+        this._hoverElement = [ "other" ];
       }
       this._setHoverItem( item );
     },
@@ -382,7 +385,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
       var internal = target === event.getRelatedTarget();
       if( target instanceof org.eclipse.rwt.widgets.GridRow && internal && this._hoverItem ) {
         var hoverElement = target.getTargetIdentifier( event );
-        if( this._hoverElement !== hoverElement ) {
+        if( this._hoverElement[ 0 ] !== hoverElement[ 0 ] ) {
           this._hoverElement = hoverElement;
           this._setHoverItem( this._hoverItem );
         }

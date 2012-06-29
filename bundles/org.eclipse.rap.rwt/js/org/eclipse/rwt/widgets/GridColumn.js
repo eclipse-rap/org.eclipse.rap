@@ -39,6 +39,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumn", {
     this._footerFont = null;
     this._footerImage = null;
     this._sortDirection = null;
+    this._check = false;
     this._grid.addColumn( this );
   },
 
@@ -216,6 +217,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumn", {
 
     getMoveable : function() {
       return this._moveable;
+    },
+
+    setCheck : function( value ) {
+      this._grid.setCellCheck( this._index, value );
+      this._check = value;
+    },
+
+    getCheck : function() {
+      return this._check;
     },
 
     setHasSelectionListener : function( value ) {

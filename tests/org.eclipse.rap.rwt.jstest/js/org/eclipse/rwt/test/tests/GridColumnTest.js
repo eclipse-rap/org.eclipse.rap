@@ -153,6 +153,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.destroy();
     },
 
+    testInitialCheckProperty : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      TestUtil.protocolSet( "w4", { "index" : 1 } );
+
+      assertFalse( column.getCheck() );
+      assertTrue( tree.getRenderConfig().itemCellCheck[ 1 ] != true );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSetCheckByProtocol : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "check" : true, "index" : 1 } );
+
+      assertTrue( column.getCheck() );
+      assertTrue( tree.getRenderConfig().itemCellCheck[ 1 ] );
+      column.dispose();
+      tree.destroy();
+    },
+
     testResetFontByProtocol : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
@@ -1325,6 +1349,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.treeExpanded=w4" ) !== -1 );
+      assertEquals( "loading", label._chevron );
       column.dispose();
       tree.destroy();
     },

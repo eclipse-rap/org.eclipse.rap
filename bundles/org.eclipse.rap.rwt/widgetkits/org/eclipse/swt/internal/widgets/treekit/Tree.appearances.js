@@ -124,11 +124,15 @@ var appearances = {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      var source = "widget/arrows/chevron-";
-      source += states.expanded ? "left" : "right";
-      source += states.mouseover ? "-hover" : "";
-      source += ".png";
-      result.backgroundImage = [ source, 10, 7 ];
+      if( states.loading ) {
+        result.backgroundImage = [ "widget/tree/loading.gif", 16, 16 ];
+      } else {
+        var source = "widget/arrows/chevron-";
+        source += states.expanded ? "left" : "right";
+        source += states.mouseover ? "-hover" : "";
+        source += ".png";
+        result.backgroundImage = [ source, 10, 7 ];
+      }
       return result;
     }
   }

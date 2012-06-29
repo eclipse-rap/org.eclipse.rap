@@ -34,6 +34,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
     this._treeColumnElements = [];
     this._cellLabels = [];
     this._cellImages = [];
+    this._cellCheckImages = [];
     this._cellBackgrounds = [];
     this._miscNodes = [];
     this._usedMiscNodes = 0;
@@ -46,6 +47,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
     this._treeColumnElements = null;
     this._cellLabels = null;
     this._cellImages = null;
+    this._cellCheckImages = null;
     this._cellBackgrounds = null;
     this._miscNodes = null;
   },
@@ -56,18 +58,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
 
   members : {
 
-    renderItem : function( item, config, selected, hoverElement, contentOnly ) {
+    renderItem : function( item, config, selected, hoverTarget, contentOnly ) {
       this._usedMiscNodes = 0;
       if( item !== null ) {
         var renderSelected = this._renderAsSelected( config, selected );
         var renderFullSelected = renderSelected && config.fullSelection;
-        this._renderStates( item, config, renderFullSelected, hoverElement );
+        this._renderStates( item, config, renderFullSelected, hoverTarget );
         this._renderBackground( item, config, renderSelected );
         if( config.treeColumn !== -1 ) {
-          this._renderIndention( item, config, hoverElement );
+          this._renderIndention( item, config, hoverTarget );
         }
-        this._renderCheckBox( item, config, hoverElement, contentOnly );
-        this._renderCells( item, config, renderSelected, hoverElement, contentOnly );
+        this._renderCheckBox( item, config, hoverTarget, contentOnly );
+        this._renderCells( item, config, renderSelected, hoverTarget, contentOnly );
         this._hideRemainingElements();
       } else {
         this.setBackgroundColor( null );
@@ -83,15 +85,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
 
     getTargetIdentifier : function( event ) {
       var node = event.getDomTarget();
-      var result = "other";
+      var result = [ "other" ];
       if( this._expandElement !== null && this._expandElement === node ) {
-        result = "expandIcon";
+        result = [ "expandIcon" ];
       } else if( this._checkBoxElement !== null && this._checkBoxElement === node ) {
-        result = "checkBox";
+        result = [ "checkBox" ];
+      } else if( this._cellCheckImages.indexOf( node ) !== -1 ) {
+        var cell = this._cellCheckImages.indexOf( node );
+        result = [ "cellCheckBox", cell ];
       } else {
-        while( node !== this.getElement() && result === "other" ) {
+        while( node !== this.getElement() && result[ 0 ] === "other" ) { // Can be removed?
           if( this._treeColumnElements.indexOf( node ) != -1 ) {
-            result = "treeColumn";
+            result = [ "treeColumn" ]; // TODO [tb] : now should be [ "label", 0 ] / [ "image", 0 ]
           }
           node = node.parentNode;
         }
@@ -106,13 +111,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
     ////////////
     // internals
 
-    _renderStates : function( item, config, selected, hoverElement ) {
+    _renderStates : function( item, config, selected, hoverTarget ) {
       this.setState( "checked", item.isChecked() );
       this.setState( "grayed", item.isGrayed() );
       this.setState( "parent_unfocused", this._renderAsUnfocused( config ) );
       this.setState( "selected", selected );
       this._renderVariant( item.getVariant() );
-      this._renderOverState( hoverElement );
+      this._renderOverState( hoverTarget );
       this._styleMap = this._getStyleMap();
     },
 
@@ -128,8 +133,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
       }
     },
 
-    _renderOverState : function( hoverElement ) {
-      this.setState( "over", hoverElement !== null );
+    _renderOverState : function( hoverTarget ) {
+      this.setState( "over", hoverTarget !== null );
     },
 
     setState : function( state, value ) {
@@ -182,9 +187,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
                    || this._styleMap.overlayBackgroundGradient !== null;
       return result;
     },
-    
-    _renderIndention : function( item, config, hoverElement ) {
-      var expandSymbol = this._getExpandSymbol( item, config, hoverElement );
+
+    _renderIndention : function( item, config, hoverTarget ) {
+      var expandSymbol = this._getExpandSymbol( item, config, hoverTarget );
       if( expandSymbol != null ) {
         var element =  this._addIndentSymbol( item.getLevel(), config, expandSymbol );
         this._expandElement = element;
@@ -203,7 +208,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
       }
     },
 
-    _getExpandSymbol : function( item, config, hoverElement ) {
+    _getExpandSymbol : function( item, config, hoverTarget ) {
       var states = this._getParentStates( config );
       if( item.getLevel() === 0 && !item.hasPreviousSibling() ) {
         states.first = true;
@@ -218,7 +223,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
           states.collapsed = true;
         }
       }
-      if( hoverElement === "expandIcon" ) {
+      if( hoverTarget && hoverTarget[ 0 ] === "expandIcon" ) {
         states.over = true;
       }
       return this._getImageFromAppearance( "indent", states );
@@ -262,12 +267,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
       return result;
     },
 
-    _renderCheckBox : function( item, config, hoverElement, contentOnly ) {
+    _renderCheckBox : function( item, config, hoverTarget, contentOnly ) {
       if( config.hasCheckBoxes ) {
         var states = this.__states;
-        this.setState( "over", hoverElement !== null && hoverElement === "checkBox" );
+        this.setState( "over", hoverTarget && hoverTarget[ 0 ] === "checkBox" );
         var image = this._getImageFromAppearance( "check-box", states );
-        this._renderOverState( hoverElement );
+        this._renderOverState( hoverTarget );
         if( this._checkBoxElement === null ) {
           this._checkBoxElement = this._createElement( 3 );
           this._checkBoxElement.style.backgroundRepeat = "no-repeat";
@@ -283,13 +288,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
       }
     },
 
-    _renderCells : function( item, config, selected, hoverElement, contentOnly ) {
+    _renderCells : function( item, config, selected, hoverTarget, contentOnly ) {
       var columns = this._getColumnCount( config );
       if( this._cellsRendered > columns ) {
         this._removeCells( columns, this._cellsRendered );
       }
       if( !config.fullSelection && selected ) {
-        this._renderStates( item, config, false, hoverElement );
+        this._renderStates( item, config, false, hoverTarget );
       }
       for( var i = 0; i < columns; i++ ) {
         var isTreeColumn = this._isTreeColumn( i, config );
@@ -297,16 +302,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
           this._renderCellBackground( item, i, config, contentOnly );
           if( !config.fullSelection && isTreeColumn ) {
             if( selected ) {
-              this._renderStates( item, config, true, hoverElement );
+              this._renderStates( item, config, true, hoverTarget );
             }
+            this._renderCellCheckBox( item, i, config, isTreeColumn, contentOnly, hoverTarget );
             var imageElement = this._renderCellImage( item, i, config, isTreeColumn, contentOnly );
             var labelElement = this._renderCellLabel( item, i, config, isTreeColumn, contentOnly );
             this._treeColumnElements = [ imageElement, labelElement ];
             if( selected ) {
               this._renderSelectionBackground( item, i, config );
-              this._renderStates( item, config, false, hoverElement);
+              this._renderStates( item, config, false, hoverTarget);
             }
           } else {
+            this._renderCellCheckBox( item, i, config, isTreeColumn, contentOnly, hoverTarget );
             this._renderCellImage( item, i, config, isTreeColumn, contentOnly );
             this._renderCellLabel( item, i, config, isTreeColumn, contentOnly );
           }
@@ -353,7 +360,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
         this._renderCellBackgroundBounds( item, cell, config );
       }
     },
-    
+
     _renderCellBackgroundBounds : function( item, cell, config ) {
       var element = this._cellBackgrounds[ cell ];
       if( element ) {
@@ -364,6 +371,35 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
           height -= 1;
         }
         this._setBounds( element, left, 0, width, height );
+      }
+    },
+
+    _renderCellCheckBox : function( item, cell, config, isTreeColumn, contentOnly, hoverTarget ) {
+      var element = null;
+      var renderBounds = false;
+      if( config.itemCellCheck[ cell ] ) {
+        this.setState( "checked", item.isCellChecked( cell ) );
+        this.setState( "grayed", item.isCellGrayed( cell ) );
+        this.setState( "over",    hoverTarget 
+                               && hoverTarget[ 0 ] === "cellCheckBox" 
+                               && hoverTarget[ 1 ] === cell );
+        var source = this._getImageFromAppearance( "check-box", this.__states );
+        renderBounds = isTreeColumn || !contentOnly || !this._cellCheckImages[ cell ];
+        element = this._getCellCheckImage( cell );
+        this._setImage( element, source, config.enabled );
+      }
+      if( renderBounds ) {
+        this._renderCellCheckBounds( item, cell, config );
+      }
+      return element;
+    },
+
+    _renderCellCheckBounds : function( item, cell, config ) {
+      var element = this._cellCheckImages[ cell ];
+      if( element ) {
+        var left = this._getCellCheckLeft( item, cell, config );
+        var width = this._getCellCheckWidth( item, cell, config );
+        this._setBounds( element, left, 0, width, this.getHeight() );
       }
     },
 
@@ -385,7 +421,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
       }
       return element;
     },
-    
+
     _renderCellImageBounds : function( item, cell, config ) {
       var element = this._cellImages[ cell ];
       if( element ) {
@@ -626,6 +662,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
       return result;
     },
 
+    _getCellCheckImage : function( cell ) {
+      var result = this._cellCheckImages[ cell ];
+      if( !result ) {
+        result = this._createElement( 3 );
+        result.style.backgroundRepeat = "no-repeat";
+        result.style.backgroundPosition = "center";
+        this._cellCheckImages[ cell ] = result;
+      }
+      return result;
+    },
+
     _getMiscImage : function() {
       var result = this._getMiscElement( 3 );
       result.innerHTML = "";
@@ -681,6 +728,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
           this._cellBackgrounds[ i ].style.backgroundColor = "transparent";
         }
       }
+      for( var i = 0; i < this._cellCheckImages.length; i++ ) {
+        if( this._cellCheckImages[ i ] ) {
+          this._cellCheckImages[ i ].style.backgroundImage = "";
+        }
+      }
       for( var i = 0; i < this._cellImages.length; i++ ) {
         if( this._cellImages[ i ] ) {
           this._cellImages[ i ].style.backgroundImage = "";
@@ -725,6 +777,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
     _removeCell : function( cell ) {
       this._removeNode( this._cellBackgrounds, cell );
       this._removeNode( this._cellImages, cell );
+      this._removeNode( this._cellCheckImages, cell );
       this._removeNode( this._cellLabels, cell );
     },
 
@@ -784,6 +837,23 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
       var result = config.itemImageWidth[ columnIndex ];
       if( this._isTreeColumn( columnIndex, config ) ) {
         var offset = this._getItemImageLeft( item, columnIndex, config );
+        result = this._correctWidth( result, offset, columnIndex, config );
+      }
+      return result;
+    },
+
+    _getCellCheckLeft : function( item, columnIndex, config ) {
+      var result = config.itemCellCheckLeft[ columnIndex ];
+      if( this._isTreeColumn( columnIndex, config ) ) {
+        result = this._correctOffset( result, item, config );
+      }
+      return result;
+    },
+
+    _getCellCheckWidth : function( item, columnIndex, config ) {
+      var result = config.itemCellCheckWidth[ columnIndex ];
+      if( this._isTreeColumn( columnIndex, config ) ) {
+        var offset = this._getCellCheckLeft( item, columnIndex, config );
         result = this._correctWidth( result, offset, columnIndex, config );
       }
       return result;

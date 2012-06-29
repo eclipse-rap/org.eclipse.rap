@@ -1113,10 +1113,115 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var expected2 = "org.eclipse.swt.events.widgetSelected=w1";
       var expected3 = "org.eclipse.swt.events.widgetSelected.item=w2";
       var expected4 = "org.eclipse.swt.events.widgetSelected.detail=check";
-      assertTrue( request.indexOf( expected1 ) != -1 );      
-      assertTrue( request.indexOf( expected2 ) != -1 );      
-      assertTrue( request.indexOf( expected3 ) != -1 );      
-      assertTrue( request.indexOf( expected4 ) != -1 );      
+      assertTrue( request.indexOf( expected1 ) != -1 );
+      assertTrue( request.indexOf( expected2 ) != -1 );
+      assertTrue( request.indexOf( expected3 ) != -1 );
+      assertTrue( request.indexOf( expected4 ) != -1 );
+      tree.destroy();
+    },
+
+    testClickOnCellCheckBoxDoesNotSelect : function() {
+      var tree = this._createDefaultTree( false, false );
+      tree.setCellCheck( 0, true );
+      this._fakeCheckBoxAppearance();
+      tree.setItemCount( 1 );
+      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      wm.add( tree, "w11", true );
+      wm.add( item, "w2", false );
+      TestUtil.flush();
+      var checkNode = tree.getRowContainer().getChildren()[ 0 ]._getTargetNode().childNodes[ 0 ];
+
+      TestUtil.clickDOM( checkNode );
+
+      assertFalse( tree.isItemSelected( item ) );
+      tree.destroy();
+    },
+
+    testClickOnCellCheckBoxToggles : function() {
+      var tree = this._createDefaultTree( false, false );
+      tree.setCellCheck( 0, true );
+      this._fakeCheckBoxAppearance();
+      tree.setItemCount( 1 );
+      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      wm.add( tree, "w11", true );
+      wm.add( item, "w2", false );
+      TestUtil.flush();
+      var checkNode = tree.getRowContainer().getChildren()[ 0 ]._getTargetNode().childNodes[ 0 ];
+
+      TestUtil.clickDOM( checkNode );
+
+      assertTrue( item.isCellChecked( 0 ) );
+      tree.destroy();
+    },
+
+    testClickOnCellCheckBoxSendChange : function() {
+      var tree = this._createDefaultTree( false, false );
+      tree.setCellCheck( 0, true );
+      TestUtil.initRequestLog();
+      this._fakeCheckBoxAppearance();
+      tree.setItemCount( 1 );
+      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      wm.add( tree, "w11", true );
+      wm.add( item, "w2", false );
+      TestUtil.flush();
+      var checkNode = tree.getRowContainer().getChildren()[ 0 ]._getTargetNode().childNodes[ 0 ];
+
+      TestUtil.clickDOM( checkNode );
+
+      org.eclipse.swt.Request.getInstance().send();
+      var request = TestUtil.getMessage();
+      var expected = "w2.cellChecked=%5Btrue%5D";
+      assertTrue( request.indexOf( expected ) != -1 );
+      tree.destroy();
+    },
+
+    testClickOnCellCheckBoxSendEvent : function() {
+      var tree = this._createDefaultTree( false, false );
+      tree.setCellCheck( 0, true );
+      TestUtil.initRequestLog();
+      this._fakeCheckBoxAppearance();
+      tree.setItemCount( 1 );
+      tree.setHasSelectionListener( true );
+      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      wm.add( tree, "w11", true );
+      wm.add( item, "w2", false );
+      TestUtil.flush();
+      var checkNode = tree.getRowContainer().getChildren()[ 0 ]._getTargetNode().childNodes[ 0 ];
+
+      TestUtil.clickDOM( checkNode );
+
+      var request = TestUtil.getMessage();
+      var expected1 = "widgetSelected.detail=check";
+      var expected2 = "widgetSelected.index=0";
+      assertTrue( request.indexOf( expected1 ) != -1 );
+      assertTrue( request.indexOf( expected2 ) != -1 );
+      tree.destroy();
+    },
+
+    testClickOnCellCheckBoxSendChangeMoreColumns : function() {
+      var tree = this._createDefaultTree( false, false );
+      tree.setCellCheck( 0, true );
+      TestUtil.initRequestLog();
+      this._fakeCheckBoxAppearance();
+      tree.setItemCount( 1 );
+      tree.setColumnCount( 4 );
+      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      wm.add( tree, "w11", true );
+      wm.add( item, "w2", false );
+      TestUtil.flush();
+      var checkNode = tree.getRowContainer().getChildren()[ 0 ]._getTargetNode().childNodes[ 0 ];
+
+      TestUtil.clickDOM( checkNode );
+
+      org.eclipse.swt.Request.getInstance().send();
+      var request = TestUtil.getMessage();
+      var expected = "w2.cellChecked=%5Btrue%2Cfalse%2Cfalse%2Cfalse%5D";
+      assertTrue( request.indexOf( expected ) != -1 );
       tree.destroy();
     },
 
@@ -1899,7 +2004,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var rowNode = tree._rowContainer._children[ 0 ]._getTargetNode();
       TestUtil.hoverFromTo( document.body, rowNode );
       TestUtil.hoverFromTo( rowNode, rowNode.firstChild );
-      assertEquals( "other", tree._rowContainer._hoverElement );
+      assertEquals( "other", tree._rowContainer._hoverElement[ 0 ] );
       tree.destroy();
     },
 
@@ -3862,10 +3967,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setTop( 0 );
       tree.setWidth( 500 );
       tree.setHeight( 500 );
-      tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500 );
+      tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500, 0, 10 );
       tree.setColumnCount( 1 );
-      tree.setItemMetrics( 1, 0, 500, 0, 0, 0, 500 );
-      tree.setItemMetrics( 2, 0, 500, 0, 0, 0, 500 );
+      tree.setItemMetrics( 1, 0, 500, 0, 0, 0, 500, 0, 10 );
+      tree.setItemMetrics( 2, 0, 500, 0, 0, 0, 500, 0, 10 );
       tree.addToDocument();
       if( !noflush ) {
         TestUtil.flush();
