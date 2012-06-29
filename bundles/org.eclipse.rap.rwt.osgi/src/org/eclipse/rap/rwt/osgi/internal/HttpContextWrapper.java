@@ -39,7 +39,7 @@ class HttpContextWrapper implements HttpContext {
       // 268759: ResourceManager handles non-existing resources incorrectly
       File file = new File( name );
       if( file.exists() && !file.isDirectory() ) {
-        result = new URL( "file", "", name );
+        result = file.toURI().toURL();
       }
     } catch( MalformedURLException shouldNotHappen ) {
       throw new RuntimeException( shouldNotHappen );
