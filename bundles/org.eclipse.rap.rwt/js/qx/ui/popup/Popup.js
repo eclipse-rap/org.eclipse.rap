@@ -219,7 +219,7 @@ qx.Class.define("qx.ui.popup.Popup",
       qx.ui.popup.PopupManager.getInstance().add(this);
       qx.ui.popup.PopupManager.getInstance().update(this);
 
-      this._showTimeStamp = (new Date).valueOf();
+      this._showTimeStamp = (new Date()).valueOf();
       this.bringToFront();
     },
 
@@ -237,7 +237,7 @@ qx.Class.define("qx.ui.popup.Popup",
 
       qx.ui.popup.PopupManager.getInstance().remove(this);
 
-      this._hideTimeStamp = (new Date).valueOf();
+      this._hideTimeStamp = (new Date()).valueOf();
     },
 
 

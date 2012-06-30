@@ -128,14 +128,21 @@ qx.Class.define("qx.event.type.DomEvent",
      * @type member
      * @return {var} TODOC
      */
-    _computeModifiers : function()
-    {
+    _computeModifiers : function() {
       var mask = 0;
       var evt = this.getDomEvent();
-      if (evt.shiftKey) mask |= qx.event.type.DomEvent.SHIFT_MASK;
-      if (evt.ctrlKey) mask |= qx.event.type.DomEvent.CTRL_MASK;
-      if (evt.altKey) mask |= qx.event.type.DomEvent.ALT_MASK;
-      if (evt.metaKey) mask |= qx.event.type.DomEvent.META_MASK;
+      if( evt.shiftKey ) {
+        mask |= qx.event.type.DomEvent.SHIFT_MASK;
+      }
+      if( evt.ctrlKey ) {
+        mask |= qx.event.type.DomEvent.CTRL_MASK;
+      }
+      if( evt.altKey ) {
+        mask |= qx.event.type.DomEvent.ALT_MASK;
+      }
+      if( evt.metaKey ) {
+        mask |= qx.event.type.DomEvent.META_MASK;
+      }
       return mask;
     },
 

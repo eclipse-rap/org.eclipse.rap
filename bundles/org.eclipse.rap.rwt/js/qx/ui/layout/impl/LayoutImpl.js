@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -454,22 +454,26 @@ qx.Class.define("qx.ui.layout.impl.LayoutImpl",
      * @return {void}
      * @signature function(vChild, vJobs)
      */
-    layoutChild_sizeLimitX : qx.core.Variant.select("qx.client",
-    {
+    layoutChild_sizeLimitX : qx.core.Variant.select( "qx.client", {
       "mshtml" : qx.lang.Function.returnTrue,
-
-      "default" : function(vChild, vJobs)
-      {
-        if (vJobs.minWidth) {
-          vChild._computedMinWidthTypeNull ? vChild._resetRuntimeMinWidth() : vChild._renderRuntimeMinWidth(vChild.getMinWidthValue());
-        } else if (vJobs.initial && !vChild._computedMinWidthTypeNull) {
-          vChild._renderRuntimeMinWidth(vChild.getMinWidthValue());
+      "default" : function( vChild, vJobs ) {
+        if( vJobs.minWidth ) {
+          if( vChild._computedMinWidthTypeNull ) {
+            vChild._resetRuntimeMinWidth();
+          } else {
+            vChild._renderRuntimeMinWidth( vChild.getMinWidthValue() );
+          }
+        } else if( vJobs.initial && !vChild._computedMinWidthTypeNull ) {
+          vChild._renderRuntimeMinWidth( vChild.getMinWidthValue() );
         }
-
-        if (vJobs.maxWidth) {
-          vChild._computedMaxWidthTypeNull ? vChild._resetRuntimeMaxWidth() : vChild._renderRuntimeMaxWidth(vChild.getMaxWidthValue());
-        } else if (vJobs.initial && !vChild._computedMaxWidthTypeNull) {
-          vChild._renderRuntimeMaxWidth(vChild.getMaxWidthValue());
+        if( vJobs.maxWidth ) {
+          if( vChild._computedMaxWidthTypeNull ) {
+            vChild._resetRuntimeMaxWidth();
+          } else {
+            vChild._renderRuntimeMaxWidth( vChild.getMaxWidthValue() );
+          }
+        } else if( vJobs.initial && !vChild._computedMaxWidthTypeNull ) {
+          vChild._renderRuntimeMaxWidth( vChild.getMaxWidthValue() );
         }
       }
     }),
@@ -486,25 +490,30 @@ qx.Class.define("qx.ui.layout.impl.LayoutImpl",
      * @return {void}
      * @signature function(vChild, vJobs)
      */
-    layoutChild_sizeLimitY :  qx.core.Variant.select("qx.client",
-    {
+    layoutChild_sizeLimitY :  qx.core.Variant.select( "qx.client", {
       "mshtml" : qx.lang.Function.returnTrue,
 
-      "default" : function(vChild, vJobs)
-      {
-        if (vJobs.minHeight) {
-          vChild._computedMinHeightTypeNull ? vChild._resetRuntimeMinHeight() : vChild._renderRuntimeMinHeight(vChild.getMinHeightValue());
-        } else if (vJobs.initial && !vChild._computedMinHeightTypeNull) {
-          vChild._renderRuntimeMinHeight(vChild.getMinHeightValue());
+      "default" : function( vChild, vJobs ) {
+        if( vJobs.minHeight ) {
+          if( vChild._computedMinHeightTypeNull ) {
+            vChild._resetRuntimeMinHeight();
+          } else {
+            vChild._renderRuntimeMinHeight( vChild.getMinHeightValue() );
+          }
+        } else if( vJobs.initial && !vChild._computedMinHeightTypeNull ) {
+          vChild._renderRuntimeMinHeight( vChild.getMinHeightValue() );
         }
-
-        if (vJobs.maxHeight) {
-          vChild._computedMaxHeightTypeNull ? vChild._resetRuntimeMaxHeight() : vChild._renderRuntimeMaxHeight(vChild.getMaxHeightValue());
-        } else if (vJobs.initial && !vChild._computedMaxHeightTypeNull) {
-          vChild._renderRuntimeMaxHeight(vChild.getMaxHeightValue());
+        if( vJobs.maxHeight ) {
+          if( vChild._computedMaxHeightTypeNull ) {
+            vChild._resetRuntimeMaxHeight();
+          } else {
+            vChild._renderRuntimeMaxHeight( vChild.getMaxHeightValue() );
+          }
+        } else if( vJobs.initial && !vChild._computedMaxHeightTypeNull ) {
+          vChild._renderRuntimeMaxHeight( vChild.getMaxHeightValue() );
         }
       }
-    }),
+    } ),
 
 
     /**
@@ -515,18 +524,22 @@ qx.Class.define("qx.ui.layout.impl.LayoutImpl",
      * @param vJobs {Set} layout changes to perform
      * @return {void}
      */
-    layoutChild_marginX : function(vChild, vJobs)
-    {
-      if (vJobs.marginLeft || vJobs.initial)
-      {
+    layoutChild_marginX : function( vChild, vJobs ) {
+      if( vJobs.marginLeft || vJobs.initial ) {
         var vValueLeft = vChild.getMarginLeft();
-        vValueLeft != null ? vChild._renderRuntimeMarginLeft(vValueLeft) : vChild._resetRuntimeMarginLeft();
+        if( vValueLeft != null ) {
+          vChild._renderRuntimeMarginLeft( vValueLeft );
+        } else {
+          vChild._resetRuntimeMarginLeft();
+        }
       }
-
-      if (vJobs.marginRight || vJobs.initial)
-      {
+      if( vJobs.marginRight || vJobs.initial ) {
         var vValueRight = vChild.getMarginRight();
-        vValueRight != null ? vChild._renderRuntimeMarginRight(vValueRight) : vChild._resetRuntimeMarginRight();
+        if( vValueRight != null ) {
+          vChild._renderRuntimeMarginRight( vValueRight );
+        } else {
+          vChild._resetRuntimeMarginRight();
+        }
       }
     },
 
@@ -539,18 +552,22 @@ qx.Class.define("qx.ui.layout.impl.LayoutImpl",
      * @param vJobs {Set} layout changes to perform
      * @return {void}
      */
-    layoutChild_marginY : function(vChild, vJobs)
-    {
-      if (vJobs.marginTop || vJobs.initial)
-      {
+    layoutChild_marginY : function( vChild, vJobs ) {
+      if( vJobs.marginTop || vJobs.initial ) {
         var vValueTop = vChild.getMarginTop();
-        vValueTop != null ? vChild._renderRuntimeMarginTop(vValueTop) : vChild._resetRuntimeMarginTop();
+        if( vValueTop != null ) {
+          vChild._renderRuntimeMarginTop( vValueTop );
+        } else {
+          vChild._resetRuntimeMarginTop();
+        }
       }
-
-      if (vJobs.marginBottom || vJobs.initial)
-      {
+      if( vJobs.marginBottom || vJobs.initial ) {
         var vValueBottom = vChild.getMarginBottom();
-        vValueBottom != null ? vChild._renderRuntimeMarginBottom(vValueBottom) : vChild._resetRuntimeMarginBottom();
+        if( vValueBottom != null ) {
+          vChild._renderRuntimeMarginBottom( vValueBottom );
+        } else {
+          vChild._resetRuntimeMarginBottom();
+        }
       }
     },
 

@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -42,7 +42,7 @@ qx.Class.define("qx.event.handler.DragAndDropHandler",
     for (var i=0, l=vActions.length; i<l; i++)
     {
       vAction = vActions[i];
-      vCursor = this.__cursors[vAction] = new qx.ui.basic.Image;
+      vCursor = this.__cursors[vAction] = new qx.ui.basic.Image();
       vCursor.setAppearance("cursor-dnd-" + vAction);
       vCursor.setZIndex(1e8);
     }

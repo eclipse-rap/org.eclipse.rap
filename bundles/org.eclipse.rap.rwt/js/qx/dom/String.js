@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -100,46 +100,33 @@ qx.Class.define("qx.dom.String",
      * @param entitiesToCharCode {Map} charcode to entity map
      * @return {var} TODOC
      */
-    unescapeEntities : function(str, entitiesToCharCode)
-    {
-      return str.replace(/&[#\w]+;/gi, function(entity)
-      {
+    unescapeEntities : function( str, entitiesToCharCode ) {
+      return str.replace( /&[#\w]+;/gi, function( entity ) {
         var chr = entity;
-        var entity = entity.substring(1, entity.length - 1);
-        var code = entitiesToCharCode[entity];
-
-        if (code) {
-          chr = String.fromCharCode(code);
-        }
-        else
-        {
-          if (entity.charAt(0) == '#')
-          {
-            if (entity.charAt(1).toUpperCase() == 'X')
-            {
-              code = entity.substring(2);
-
+        var entity = entity.substring( 1, entity.length - 1 );
+        var code = entitiesToCharCode[ entity ];
+        if( code ) {
+          chr = String.fromCharCode( code );
+        } else {
+          if( entity.charAt( 0 ) === '#' ) {
+            if( entity.charAt(1).toUpperCase() === 'X' ) {
+              code = entity.substring( 2 );
               // match hex number
-              if (code.match(/^[0-9A-Fa-f]+$/gi)) {
-                chr = String.fromCharCode(parseInt("0x" + code));
+              if( code.match( /^[0-9A-Fa-f]+$/gi ) ) {
+                chr = String.fromCharCode( parseInt( code, 16 ) );
               }
-            }
-            else
-            {
-              code = entity.substring(1);
-
+            } else {
+              code = entity.substring( 1 );
               // match integer
-              if (code.match(/^\d+$/gi)) {
-                chr = String.fromCharCode(parseInt(code));
+              if( code.match( /^\d+$/gi ) ) {
+                chr = String.fromCharCode( parseInt( code, 10 ) );
               }
             }
           }
         }
-
         return chr;
-      });
+      } );
     },
-
 
     /**
      * Remove HTML/XML tags from a string

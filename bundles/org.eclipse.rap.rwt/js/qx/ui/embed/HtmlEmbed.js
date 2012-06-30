@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -121,8 +121,12 @@ qx.Class.define("qx.ui.embed.HtmlEmbed",
     ---------------------------------------------------------------------------
     */
 
-    _applyTextAlign : function(value, old) {
-      value === null ? this.removeStyleProperty("textAlign") : this.setStyleProperty("textAlign", value);
+    _applyTextAlign : function( value, old ) {
+      if( value === null ) {
+        this.removeStyleProperty( "textAlign" );
+      } else {
+        this.setStyleProperty( "textAlign", value );
+      }
     },
 
 
@@ -144,8 +148,12 @@ qx.Class.define("qx.ui.embed.HtmlEmbed",
      * @type member
      * @param value {qx.ui.core.Font}
      */
-    _styleFont : function(value) {
-      value ? value.render(this) : qx.ui.core.Font.reset(this);
+    _styleFont : function( value ) {
+      if( value ) {
+        value.render( this );
+      } else {
+        qx.ui.core.Font.reset( this );
+      }
     },
 
 
@@ -165,8 +173,12 @@ qx.Class.define("qx.ui.embed.HtmlEmbed",
      * @type member
      * @param value {var} any acceptable CSS color property
      */
-    _styleTextColor : function(value) {
-      value ? this.setStyleProperty("color", value) : this.removeStyleProperty("color");
+    _styleTextColor : function( value ) {
+      if( value ) {
+        this.setStyleProperty( "color", value );
+      } else {
+        this.removeStyleProperty( "color" );
+      }
     },
 
 

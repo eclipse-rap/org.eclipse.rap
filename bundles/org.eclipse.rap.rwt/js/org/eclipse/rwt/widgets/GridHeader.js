@@ -94,13 +94,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
         if( column.getFooterFont() !== null ) {
           label.setFont( column.getFooterFont() );
         } else {
-          label.resetFont()
+          label.resetFont();
         }
       } else {
         if( column.getFont() !== null ) {
           label.setFont( column.getFont() );
         } else {
-          label.resetFont()
+          label.resetFont();
         }
         label.setText( column.getText() );
         label.setImage( column.getImage() );
@@ -123,7 +123,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
         label.setHeight( column.getHeight() );
       } else if( column.getGroup() != null ) {
         var groupHeight = column.getGroup().getHeight();
-        label.setTop( groupHeight )
+        label.setTop( groupHeight );
         label.setHeight( this.getHeight() - groupHeight );
       } else {
         label.setTop( 0 );

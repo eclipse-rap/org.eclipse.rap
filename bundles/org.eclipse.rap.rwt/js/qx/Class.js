@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -51,22 +51,21 @@
  * }
  * </pre>
  */
-qx.Class.define("qx.Class",
-{
-  statics :
-  {
+qx.Class.define( "qx.Class", {
+
+  statics : {
 
     _normalizeConfig : function( config ) {
-      if (!config) {
+      if( !config ) {
         var config = {};
       }
-      if (config.include && !(config.include instanceof Array)) {
-        config.include = [config.include];
+      if( config.include && !( config.include instanceof Array ) ) {
+        config.include = [ config.include ];
       }
-      if (config.implement && !(config.implement instanceof Array)) {
-        config.implement = [config.implement];
+      if( config.implement && !( config.implement instanceof Array ) ) {
+        config.implement = [ config.implement ];
       }
-      if (!config.hasOwnProperty("extend") && !config.type) {
+      if( !config.hasOwnProperty( "extend" ) && !config.type ) {
         config.type = "static";
       }
       return config;
@@ -144,7 +143,7 @@ qx.Class.define("qx.Class",
      * @return {void}
      * @throws TODOC
      */
-    define : function(name, config) {
+    define : function( name, config ) {
       if( this._stopLoading ) {
         throw new Error( "Stop loading " + name );
       }
@@ -161,19 +160,19 @@ qx.Class.define("qx.Class",
           clazz = this.__wrapConstructor(config.construct, name, config.type);
           if( config.statics ) {
             var key;
-            for(var i=0, a=qx.lang.Object.getKeys(config.statics), l=a.length; i<l; i++) {
-              key = a[i];
-              clazz[key] = config.statics[key];
+            for( var i = 0, a = qx.lang.Object.getKeys( config.statics ), l = a.length; i < l; i++ ) {
+              key = a[ i ];
+              clazz[ key ] = config.statics[ key ];
             }
           }
         }
-        var basename = this.createNamespace(name, clazz, false);
+        var basename = this.createNamespace( name, clazz, false );
         clazz.name = clazz.classname = name;
         clazz.basename = basename;
         this.__registry[ name ] = clazz;
 
         // Attach toString
-        if (!clazz.hasOwnProperty("toString")) {
+        if( !clazz.hasOwnProperty( "toString" ) ) {
           clazz.toString = this.genericToString;
         }
 
@@ -181,7 +180,7 @@ qx.Class.define("qx.Class",
           var superproto = config.extend.prototype;
           var helper = this.__createEmptyFunction();
           helper.prototype = superproto;
-          var proto = new helper;
+          var proto = new helper();
           clazz.prototype = proto;
           proto.name = proto.classname = name;
           proto.basename = basename;
@@ -207,7 +206,7 @@ qx.Class.define("qx.Class",
                 that.__addMixin(clazz, config.include[i], false);
               }
             }
-          }
+          };
         }
         if( config.variants ) {
           for (var key in config.variants) {
@@ -663,27 +662,14 @@ qx.Class.define("qx.Class",
      * @internal
      * @return {var} TODOC
      */
-    getInstance : function()
-    {
-      if (!this.$$instance)
-      {
+    getInstance : function() {
+      if( !this.$$instance ) {
         this.$$allowconstruct = true;
-        this.$$instance = new this;
+        this.$$instance = new this();
         delete this.$$allowconstruct;
       }
-
       return this.$$instance;
     },
-
-
-
-
-
-    /*
-    ---------------------------------------------------------------------------
-       PRIVATE/INTERNAL BASICS
-    ---------------------------------------------------------------------------
-    */
 
     /**
      * This method will be attached to all classes to return
@@ -923,7 +909,7 @@ qx.Class.define("qx.Class",
 
         // register event name
         if (config.event !== undefined) {
-          var event = {}
+          var event = {};
           event[config.event] = "qx.event.type.ChangeEvent";
           this.__addEvents(clazz, event, patch);
         }
@@ -1057,40 +1043,29 @@ qx.Class.define("qx.Class",
      *     this is needed to allow base calls in patched mixin members.
      * @return {void}
      */
-    __addMembers : function(clazz, members, patch, base, wrap)
-    {
+    __addMembers : function( clazz, members, patch, base, wrap ) {
       var proto = clazz.prototype;
       var key, member;
-
-      for (var i=0, a=qx.lang.Object.getKeys(members), l=a.length; i<l; i++)
-      {
-        key = a[i];
-        member = members[key];
-
-
+      for( var i = 0, a = qx.lang.Object.getKeys( members ), l = a.length; i < l; i++ ) {
+        key = a[ i ];
+        member = members[ key ];
         // Added helper stuff to functions
         // Hint: Could not use typeof function because RegExp objects are functions, too
-        if (base !== false && member instanceof Function)
-        {
-          if (wrap == true)
-          {
+        if( base !== false && member instanceof Function ) {
+          if( wrap === true ) {
             // wrap "patched" mixin member
-            member = this.__mixinMemberWrapper(member, proto[key]);
-          }
-          else
-          {
+            member = this.__mixinMemberWrapper( member, proto[ key ] );
+          } else {
             // Configure extend (named base here)
             // Hint: proto[key] is not yet overwritten here
-            if (proto[key]) {
-              member.base = proto[key];
+            if( proto[ key ] ) {
+              member.base = proto[ key ];
             }
             member.self = clazz;
           }
-
         }
-
         // Attach member
-        proto[key] = member;
+        proto[ key ] = member;
       }
     },
 
@@ -1103,21 +1078,16 @@ qx.Class.define("qx.Class",
      * @param base {Function} The overwritten method
      * @return {Function} the wrapped mixin member
      */
-    __mixinMemberWrapper : function(member, base)
-    {
-      if (base)
-      {
-        return function()
-        {
+    __mixinMemberWrapper : function( member, base ) {
+      if( base ) {
+        return function() {
           var oldBase = member.base;
           member.base = base;
           var retval = member.apply(this, arguments);
           member.base = oldBase;
           return retval;
-        }
-      }
-      else
-      {
+        };
+      } else {
         return member;
       }
     },
@@ -1187,12 +1157,10 @@ qx.Class.define("qx.Class",
      * @type static
      * @return {Function} The default constructor.
      */
-    __createDefaultConstructor : function()
-    {
+    __createDefaultConstructor : function() {
       function defaultConstructor() {
-        arguments.callee.base.apply(this, arguments);
-      };
-
+        arguments.callee.base.apply( this, arguments );
+      }
       return defaultConstructor;
     },
 
@@ -1242,7 +1210,9 @@ qx.Class.define("qx.Class",
         init( clazz );
 
         // Attach local properties
-        if(!clazz.$$propertiesAttached)qx.core.Property.attach(clazz);
+        if( !clazz.$$propertiesAttached ) {
+          qx.core.Property.attach( clazz );
+        }
 
         // Execute default constructor
         var retval=clazz.$$original.apply(this,arguments);
@@ -1253,15 +1223,16 @@ qx.Class.define("qx.Class",
         if(mixins[i].$$constructor){mixins[i].$$constructor.apply(this,arguments);}}}
 
         // Mark instance as initialized
-        if(this.classname===', name, '.classname)this.$$initialized=true;
+        if( this.classname === ', name, ' . classname ) {
+          this.$$initialized = true;
+        }
 
         // Return optional return value
         return retval;
-
-      }
+      };
 
       // Add singleton getInstance()
-      if (type === "singleton") {
+      if( type === "singleton" ) {
         wrapper.getInstance = this.getInstance;
       }
 

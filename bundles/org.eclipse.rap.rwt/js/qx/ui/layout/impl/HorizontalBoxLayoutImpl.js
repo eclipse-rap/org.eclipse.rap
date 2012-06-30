@@ -189,7 +189,7 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
         // Rounding diff
         vAllocationDiff = Math.round(vAllocationDiff);
 
-        if (vAllocationDiff == 0)
+        if (vAllocationDiff === 0)
         {
           // *************************************************************
           // 5a. If the diff is equal zero we must not do anything more
@@ -255,7 +255,7 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
           //    so that the requirements through min/max limits
           //    are satisfied.
           // *************************************************************
-          while (vAllocationDiff != 0 && vFlexibleChildrenLength > 0)
+          while (vAllocationDiff !== 0 && vFlexibleChildrenLength > 0)
           {
             vFlexibleChildrenLength = vFlexibleChildren.length;
             vMinAllocationLoops = Infinity;
@@ -290,7 +290,7 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
               }
               else
               {
-                if (vAllocationDiff == 0)
+                if (vAllocationDiff === 0)
                 {
                   vCurrentChild._computedWidthFlexValue = Math.round(vCurrentChild._computedWidthFlexValue);
                   vUsedWidth += vCurrentChild._computedWidthFlexValue;

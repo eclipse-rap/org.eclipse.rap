@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -133,7 +133,7 @@ qx.Class.define("qx.io.remote.RequestQueue",
       this._debug();
 
       // Check queues and stop timer if not needed anymore
-      if (this._active.length == 0 && this._queue.length == 0) {
+      if (this._active.length === 0 && this._queue.length === 0) {
         this._timer.stop();
       }
 
@@ -143,7 +143,7 @@ qx.Class.define("qx.io.remote.RequestQueue",
       }
 
       // Checking active queue fill
-      if (this._active.length >= this.getMaxConcurrentRequests() || this._queue.length == 0) {
+      if (this._active.length >= this.getMaxConcurrentRequests() || this._queue.length === 0) {
         return;
       }
 
@@ -305,7 +305,7 @@ qx.Class.define("qx.io.remote.RequestQueue",
     {
       var vActive = this._active;
 
-      if (vActive.length == 0)
+      if (vActive.length === 0)
       {
         this._timer.stop();
         return;
@@ -336,7 +336,7 @@ qx.Class.define("qx.io.remote.RequestQueue",
             vTimeout = vDefaultTimeout;
           }
 
-          vTime = (new Date).valueOf() - vTransport._start;
+          vTime = (new Date()).valueOf() - vTransport._start;
 
           if (vTime > vTimeout)
           {

@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -89,14 +89,11 @@ qx.Class.define("qx.ui.groupbox.GroupBox",
      * @type member
      * @return {void}
      */
-    _createLegendObject : function()
-    {
-      this._legendObject = new qx.ui.basic.Atom;
-      this._legendObject.setAppearance("group-box-legend");
-
-      this.add(this._legendObject);
+    _createLegendObject : function() {
+      this._legendObject = new qx.ui.basic.Atom();
+      this._legendObject.setAppearance( "group-box-legend" );
+      this.add( this._legendObject );
     },
-
 
     /**
      * Creates the frame sub widget
@@ -104,12 +101,10 @@ qx.Class.define("qx.ui.groupbox.GroupBox",
      * @type member
      * @return {void}
      */
-    _createFrameObject : function()
-    {
-      this._frameObject = new qx.ui.layout.CanvasLayout;
-      this._frameObject.setAppearance("group-box-frame");
-
-      this.add(this._frameObject);
+    _createFrameObject : function() {
+      this._frameObject = new qx.ui.layout.CanvasLayout();
+      this._frameObject.setAppearance( "group-box-frame" );
+      this.add( this._frameObject );
     },
 
 

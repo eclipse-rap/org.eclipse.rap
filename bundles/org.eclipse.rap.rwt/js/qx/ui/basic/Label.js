@@ -225,8 +225,12 @@ qx.Class.define("qx.ui.basic.Label",
     ---------------------------------------------------------------------------
     */
 
-    _applyTextAlign : function(value, old) {
-      value === null ? this.removeStyleProperty("textAlign") : this.setStyleProperty("textAlign", value);
+    _applyTextAlign : function( value, old ) {
+      if( value === null ) {
+        this.removeStyleProperty( "textAlign" );
+      } else {
+        this.setStyleProperty( "textAlign", value );
+      }
     },
 
 
@@ -249,10 +253,13 @@ qx.Class.define("qx.ui.basic.Label",
      * @type member
      * @param font {qx.ui.core.Font} new font.
      */
-    _styleFont : function(font)
-    {
+    _styleFont : function( font ) {
       this._invalidatePreferredInnerDimensions();
-      font ? font.render(this) : qx.ui.core.Font.reset(this);
+      if( font ) {
+        font.render( this );
+      } else {
+        qx.ui.core.Font.reset( this );
+      }
     },
 
 
@@ -274,8 +281,12 @@ qx.Class.define("qx.ui.basic.Label",
      * @type member
      * @param value {String} any acceptable CSS color
      */
-    _styleTextColor : function(value) {
-      value ? this.setStyleProperty("color", value) : this.removeStyleProperty("color");
+    _styleTextColor : function( value ) {
+      if( value ) {
+        this.setStyleProperty( "color", value );
+      } else {
+        this.removeStyleProperty( "color" );
+      }
     },
 
 
@@ -287,8 +298,12 @@ qx.Class.define("qx.ui.basic.Label",
     ---------------------------------------------------------------------------
     */
 
-    _applyWrap : function(value, old) {
-      value == null ? this.removeStyleProperty("whiteSpace") : this.setStyleProperty("whiteSpace", value ? "normal" : "nowrap");
+    _applyWrap : function( value, old ) {
+      if( value == null ) {
+        this.removeStyleProperty( "whiteSpace" );
+      } else {
+        this.setStyleProperty( "whiteSpace", value ? "normal" : "nowrap" );
+      }
     },
 
 

@@ -45,9 +45,8 @@ qx.Class.define("qx.html.Scroll",
      * @param el {Element} html-element
      * @return {void}
      */
-    enableScrolling : function(el)
-    {;
-      qx.html.EventRegistration.removeEventListener(el, "scroll", this._onscroll);
+    enableScrolling : function( el ) {
+      qx.html.EventRegistration.removeEventListener( el, "scroll", this._onscroll );
     },
 
 

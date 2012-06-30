@@ -7,8 +7,8 @@
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   1&1 Internet AG and others - original API and implementation
- *   EclipseSource - adaptation for the Eclipse Rich Ajax Platform
+ *    1&1 Internet AG and others - original API and implementation
+ *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
 /**
@@ -24,7 +24,7 @@ qx.Mixin.define("qx.ui.resizer.MResizable",
 
   construct : function(child)
   {
-    this._frame = new qx.ui.basic.Terminator;
+    this._frame = new qx.ui.basic.Terminator();
     this._frame.setAppearance("resizer-frame");
     this.addEventListener("mousedown", this._onmousedown);
     this.addEventListener("mouseup", this._onmouseup);

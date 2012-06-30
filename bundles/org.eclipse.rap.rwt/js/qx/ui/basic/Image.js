@@ -437,7 +437,7 @@ qx.Class.define("qx.ui.basic.Image",
         this._image = document.createElement("img");
       },
       "default" : function() {
-        this._image = new Image;
+        this._image = new Image();
       }
     } ),
 

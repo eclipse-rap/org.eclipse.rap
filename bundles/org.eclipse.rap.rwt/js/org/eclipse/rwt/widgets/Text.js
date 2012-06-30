@@ -379,7 +379,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
                         - this._cachedBorderRight
                         - styleMap.paddingLeft
                         - styleMap.paddingRight ) + "px";
-        var messageHeight = parseInt( style.height );
+        var messageHeight = parseInt( style.height, 10 );
         style.top = Math.round( this.getInnerHeight() / 2 - messageHeight / 2 ) + "px";
       }
     },

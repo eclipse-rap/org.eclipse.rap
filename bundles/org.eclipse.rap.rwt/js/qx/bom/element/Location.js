@@ -10,7 +10,7 @@
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  *
- *   This class contains code based on the following work:
+ * This class contains code based on the following work:
  *
  *   * jQuery Dimension Plugin
  *       http://jquery.com/
@@ -320,7 +320,7 @@ qx.Class.define("qx.bom.element.Location",
         return {
           left : Math.ceil( left ),
           top : Math.ceil( top )
-        }
+        };
       },
 
       "gecko" : function(elem)
@@ -382,7 +382,7 @@ qx.Class.define("qx.bom.element.Location",
         return {
           left : Math.ceil( left ),
           top : Math.ceil( top )
-        }
+        };
       },
 
       // At the moment only correctly supported by Opera
@@ -409,7 +409,7 @@ qx.Class.define("qx.bom.element.Location",
         return {
           left : Math.ceil( left ),
           top : Math.ceil( top )
-        }
+        };
       }
     }),
 

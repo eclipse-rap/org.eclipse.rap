@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -231,10 +231,10 @@ qx.Class.define("qx.ui.popup.ToolTip",
         var doc = qx.ui.core.ClientDocument.getInstance();
         var docWidth = doc.getClientWidth();
         var docHeight = doc.getClientHeight();
-        var restrictToPageLeft   = parseInt(this.getRestrictToPageLeft());
-        var restrictToPageRight  = parseInt(this.getRestrictToPageRight());
-        var restrictToPageTop    = parseInt(this.getRestrictToPageTop());
-        var restrictToPageBottom = parseInt(this.getRestrictToPageBottom());
+        var restrictToPageLeft = parseInt( this.getRestrictToPageLeft(), 10 );
+        var restrictToPageRight = parseInt( this.getRestrictToPageRight(), 10 );
+        var restrictToPageTop = parseInt( this.getRestrictToPageTop(), 10 );
+        var restrictToPageBottom = parseInt( this.getRestrictToPageBottom(), 10 );
         var left   = (this._wantedLeft == null) ? this.getLeft() : this._wantedLeft;
         var top    = this.getTop();
         var width  = this.getBoxWidth();

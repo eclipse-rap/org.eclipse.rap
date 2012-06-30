@@ -1,8 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *    EclipseSource - initial API and implementation
@@ -160,7 +161,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
     },
 
     scheduleMenuLayout : function() {
-      if( this._menuLayoutScheduled != true ) {
+      if( this._menuLayoutScheduled !== true ) {
         this._menuLayoutScheduled = true;
         var children = this._layout.getChildren();
         var length = children.length;
@@ -194,9 +195,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
         }
         this._maxCellWidths[ cell ] = max;
       }
-      if(    cell == 0
-          && this._maxCellWidths[ 0 ] == 0
-          && this.getMaxCellWidth( 1 ) == 0 ) {
+      if( cell === 0 && this._maxCellWidths[ 0 ] == 0 && this.getMaxCellWidth( 1 ) == 0 ) {
         this._maxCellWidths[ cell ] = 13;
       }
       return this._maxCellWidths[ cell ];
@@ -557,7 +556,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
           req.addEvent( "org.eclipse.swt.events.menuShown", id );
           req.send();
         } else {
-          var display = this._layout.getChildren().length != 0;
+          var display = this._layout.getChildren().length !== 0;
           //no items and no listener to add some:
           this.setDisplay( display );
           if( display ) {

@@ -323,7 +323,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
           this._spinner.setMin( 1 );
           this._spinner.setMax( this._getDaysInMonth() );
           var tmpValue = this._removeLeadingZero( this._dayTextField.getText() );
-          this._spinner.setValue( parseInt( tmpValue ), 10 );
+          this._spinner.setValue( parseInt( tmpValue, 10 ) );
         } else if( textField === this._monthTextField ) {
           this._spinner.setMin( 1 );
           this._spinner.setMax( 12 );

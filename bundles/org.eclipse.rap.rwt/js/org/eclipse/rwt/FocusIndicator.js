@@ -130,22 +130,16 @@ qx.Class.define( "org.eclipse.rwt.FocusIndicator", {
       var bounds = [];
       if( theme[ "padding" ] != null ) {
         var padding = theme[ "padding" ];
-        bounds[ 0 ] = parseInt( focusElement.style.left ) - padding[ 3 ];
-        bounds[ 1 ] = parseInt( focusElement.style.top ) - padding[ 0 ];
-        bounds[ 2 ] =   parseInt( focusElement.style.width )
-                      + padding[ 1 ]
-                      + padding[ 3 ];
-        bounds[ 3 ] =   parseInt( focusElement.style.height )
-                      + padding[ 2 ]
-                      + padding[ 0 ];
+        bounds[ 0 ] = parseInt( focusElement.style.left, 10 ) - padding[ 3 ];
+        bounds[ 1 ] = parseInt( focusElement.style.top, 10 ) - padding[ 0 ];
+        bounds[ 2 ] = parseInt( focusElement.style.width, 10 ) + padding[ 1 ] + padding[ 3 ];
+        bounds[ 3 ] = parseInt( focusElement.style.height, 10 ) + padding[ 2 ] + padding[ 0 ];
       } else {
         var margin = theme[ "margin" ];
         // Fix for bug 312544
         widget._invalidateBoxWidth();
         widget._invalidateBoxHeight();
-        var parentWidth =   widget.getBoxWidth()
-                          - widget._cachedBorderLeft
-                          - widget._cachedBorderRight;
+        var parentWidth = widget.getBoxWidth() - widget._cachedBorderLeft - widget._cachedBorderRight;
         var parentHeight =   widget.getBoxHeight()
                            - widget._cachedBorderTop
                            - widget._cachedBorderBottom;

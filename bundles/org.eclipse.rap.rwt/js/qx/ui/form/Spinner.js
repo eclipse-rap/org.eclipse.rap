@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -84,7 +84,7 @@ qx.Class.define("qx.ui.form.Spinner",
     // ************************************************************************
     //   TEXTFIELD
     // ************************************************************************
-    this._textfield = new org.eclipse.rwt.widgets.BasicText;
+    this._textfield = new org.eclipse.rwt.widgets.BasicText();
     this._textfield.setBorder(null);
     this._textfield.setWidth("1*");
     this._textfield.setAllowStretchY(true);
@@ -96,14 +96,14 @@ qx.Class.define("qx.ui.form.Spinner",
     // ************************************************************************
     //   BUTTON LAYOUT
     // ************************************************************************
-    this._buttonlayout = new qx.ui.layout.VerticalBoxLayout;
+    this._buttonlayout = new qx.ui.layout.VerticalBoxLayout();
     this._buttonlayout.setWidth("auto");
     this.add(this._buttonlayout);
 
     // ************************************************************************
     //   UP-BUTTON
     // ************************************************************************
-    this._upbutton = new qx.ui.form.Button;
+    this._upbutton = new qx.ui.form.Button();
     this._upbutton.setAppearance("spinner-button-up");
     this._upbutton.setTabIndex(null);
     this._upbutton.setHeight("1*");
@@ -112,7 +112,7 @@ qx.Class.define("qx.ui.form.Spinner",
     // ************************************************************************
     //   DOWN-BUTTON
     // ************************************************************************
-    this._downbutton = new qx.ui.form.Button;
+    this._downbutton = new qx.ui.form.Button();
     this._downbutton.setAppearance("spinner-button-down");
     this._downbutton.setTabIndex(null);
     this._downbutton.setHeight("1*");
@@ -654,7 +654,7 @@ qx.Class.define("qx.ui.form.Spinner",
       {
         var value = this.getManager().getValue() +
                                    (this.getWheelIncrementAmount() *
-                                    e.getWheelDelta())
+                                    e.getWheelDelta());
         value = this.getManager().limit(value);
         this.getManager().setValue(value);
       }
@@ -968,8 +968,9 @@ qx.Class.define("qx.ui.form.Spinner",
             }
           }
         }
-        if (acceptEdit)
+        if( acceptEdit ) {
           return;
+        }
 
         var formattedValue;
 

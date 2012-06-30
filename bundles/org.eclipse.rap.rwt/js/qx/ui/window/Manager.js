@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -179,30 +179,24 @@ qx.Class.define("qx.ui.window.Manager",
      * @param vWindow {qx.ui.window.Window} window instance
      * @return {void}
      */
-    remove : function(vWindow)
-    {
-      this.base(arguments, vWindow)
-      if (this.getActiveWindow() == vWindow)
-      {
+    remove : function( vWindow ) {
+      this.base( arguments, vWindow );
+      if( this.getActiveWindow() == vWindow ) {
         var a = [];
-
-        for (var i in this._objects) {
-          a.push(this._objects[i]);
+        for( var i in this._objects ) {
+          a.push( this._objects[ i ] );
         }
-
         var l = a.length;
-
-        if (l == 0) {
-          this.setActiveWindow(null);
-        } else if (l == 1) {
-          this.setActiveWindow(a[0]);
-        }
-        else if (l > 1)
-        {
-          a.sort(this.compareWindows);
-          this.setActiveWindow(a[l - 1]);
+        if( l === 0 ) {
+          this.setActiveWindow( null );
+        } else if ( l === 1 ) {
+          this.setActiveWindow( a[ 0 ] );
+        } else if ( l > 1 ) {
+          a.sort( this.compareWindows );
+          this.setActiveWindow( a[ l - 1 ] );
         }
       }
     }
+
   }
 });

@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -15,47 +15,25 @@
  * A wrapper for CSS font styles. Fond objects can be aplpied to widgets
  * or DOM elements.
  */
-qx.Class.define("qx.ui.core.Font",
-{
+qx.Class.define( "qx.ui.core.Font", {
+
   extend : qx.core.Object,
-
-
-
-
-  /*
-  *****************************************************************************
-     CONSTRUCTOR
-  *****************************************************************************
-  */
 
   /**
    * @param size {String} The font size (Unit: pixel)
    * @param family {String[]} A sorted list of font families
    */
-  construct : function(size, family)
-  {
-    this.base(arguments);
-
-    if (size !== undefined) {
-      this.setSize(size);
+  construct : function( size, family ) {
+    this.base( arguments );
+    if( size !== undefined ) {
+      this.setSize( size );
     }
-
-    if (family !== undefined) {
-      this.setFamily(family);
+    if( family !== undefined ) {
+      this.setFamily( family );
     }
   },
 
-
-
-
-  /*
-  *****************************************************************************
-     STATICS
-  *****************************************************************************
-  */
-
-  statics :
-  {
+  statics : {
     /**
      * Converts a typical CSS font definition string to an font object
      *
@@ -63,49 +41,37 @@ qx.Class.define("qx.ui.core.Font",
      * @param str {String} the CSS string
      * @return {qx.ui.core.Font} the created instance
      */
-    fromString : function(str)
-    {
-      var font = new qx.ui.core.Font;
-      var parts = str.split(/\s+/);
+    fromString : function( str ) {
+      var font = new qx.ui.core.Font();
+      var parts = str.split( /\s+/ );
       var name = [];
-      var part;
-
-      for (var i=0; i<parts.length; i++)
-      {
-        switch(part = parts[i])
-        {
+      for( var i = 0; i < parts.length; i++ ) {
+        var part = parts[ i ];
+        switch( part ) {
           case "bold":
-            font.setBold(true);
+            font.setBold( true );
             break;
-
           case "italic":
-            font.setItalic(true);
+            font.setItalic( true );
             break;
-
           case "underline":
-            font.setDecoration("underline");
+            font.setDecoration( "underline" );
             break;
-
           default:
-            var temp = parseInt(part);
-
-            if (temp == part || qx.lang.String.contains(part, "px")) {
+            var temp = parseInt( part, 10 );
+            if( temp == part || qx.lang.String.contains( part, "px" ) ) {
               font.setSize(temp);
             } else {
               name.push(part);
             }
-
             break;
         }
       }
-
-      if (name.length > 0) {
-        font.setFamily(name);
+      if( name.length > 0 ) {
+        font.setFamily( name );
       }
-
       return font;
     },
-
 
     /**
      * Converts a map property definition into a border object.
@@ -114,21 +80,18 @@ qx.Class.define("qx.ui.core.Font",
      * @param config {Map} map of property values
      * @return {qx.ui.core.Font} the created instance
      */
-    fromConfig : function(config)
-    {
-      var font = new qx.ui.core.Font;
-      font.set(config);
+    fromConfig : function( config ) {
+      var font = new qx.ui.core.Font();
+      font.set( config );
       return font;
     },
-
 
     /**
      * Removes all fond styles from this widget
      *
      * @param widget {qx.ui.core.Widget} widget to reset
      */
-    reset : function(widget)
-    {
+    reset : function( widget ) {
       widget.removeStyleProperty("fontFamily");
       widget.removeStyleProperty("fontSize");
       widget.removeStyleProperty("fontWeight");
@@ -136,23 +99,19 @@ qx.Class.define("qx.ui.core.Font",
       widget.removeStyleProperty("textDecoration");
     },
 
-
     /**
      * Removes all fond styles from this DOM element
      *
      * @param element {Element} DOM element to reset
      */
-    resetElement : function(element)
-    {
+    resetElement : function( element ) {
       var style = element.style;
-
       style.fontFamily = "";
       style.fontSize = "";
       style.fontWeight = "";
       style.fontStyle = "";
       style.textDecoration = "";
     },
-
 
     /**
      * Reset a style map by setting the font attributes to empty.
@@ -161,8 +120,7 @@ qx.Class.define("qx.ui.core.Font",
      * @type static
      * @return {void}
      */
-    resetStyle : function(style)
-    {
+    resetStyle : function( style ) {
       style.fontFamily = "";
       style.fontSize = "";
       style.fontWeight = "";
@@ -171,70 +129,45 @@ qx.Class.define("qx.ui.core.Font",
     }
   },
 
-
-
-
-  /*
-  *****************************************************************************
-     PROPERTIES
-  *****************************************************************************
-  */
-
-  properties :
-  {
+  properties : {
 
     /** The font size (Unit: pixel) */
-    size :
-    {
+    size : {
       check : "Integer",
       nullable : true,
       apply : "_applySize"
     },
 
     /** A sorted list of font families */
-    family :
-    {
+    family : {
       check : "Array",
       nullable : true,
       apply : "_applyFamily"
     },
 
     /** Whether the font is bold */
-    bold :
-    {
+    bold : {
       check : "Boolean",
       nullable : true,
       apply : "_applyBold"
     },
 
     /** Whether the font is italic */
-    italic :
-    {
+    italic : {
       check : "Boolean",
       nullable : true,
       apply : "_applyItalic"
     },
 
     /** The text decoration for this font */
-    decoration :
-    {
+    decoration : {
       check : [ "underline", "line-through", "overline" ],
       nullable : true,
       apply : "_applyDecoration"
     }
   },
 
-
-
-
-  /*
-  *****************************************************************************
-     MEMBERS
-  *****************************************************************************
-  */
-
-  members :
-  {
+  members : {
     __size : null,
     __family : null,
     __bold : null,
@@ -245,51 +178,47 @@ qx.Class.define("qx.ui.core.Font",
       this.__size = value === null ? null : value + "px";
     },
 
-    _applyFamily : function(value, old)
-    {
+    _applyFamily : function( value, old ) {
       var family = "";
-      for (var i=0, l=value.length; i<l; i++) {
-        if (value[i].indexOf(" ") > 0) {
-          family += '"' + value[i] + '"';
+      for( var i = 0, l = value.length; i < l; i++ ) {
+        if( value[ i ].indexOf( " " ) > 0 ) {
+          family += '"' + value[ i ] + '"';
         } else {
           // in FireFox 2 and WebKit fonts like 'serif' or 'sans-serif' must
           // not be quoted!
-          family += value[i];
+          family += value[ i ];
         }
-        if (i != l-1) {
+        if( i != l-1 ) {
           family += ",";
         }
       }
       this.__family = family;
     },
 
-    _applyBold : function(value, old) {
+    _applyBold : function( value, old ) {
       this.__bold = value === null ? null : value ? "bold" : "normal";
     },
 
-    _applyItalic : function(value, old) {
+    _applyItalic : function( value, old ) {
       this.__italic = value === null ? null : value ? "italic" : "normal";
     },
 
-    _applyDecoration : function(value, old) {
+    _applyDecoration : function( value, old ) {
       this.__decoration = value === null ? null : value;
     },
-
 
     /**
      * Apply the font to the given widget.
      *
      * @param widget {qx.ui.core.Widget} The widget to apply the font to
      */
-    render : function(widget)
-    {
-      widget.setStyleProperty("fontFamily", this.__family);
-      widget.setStyleProperty("fontSize", this.__size);
-      widget.setStyleProperty("fontWeight", this.__bold);
-      widget.setStyleProperty("fontStyle", this.__italic);
-      widget.setStyleProperty("textDecoration", this.__decoration);
+    render : function( widget ) {
+      widget.setStyleProperty( "fontFamily", this.__family );
+      widget.setStyleProperty( "fontSize", this.__size );
+      widget.setStyleProperty( "fontWeight", this.__bold );
+      widget.setStyleProperty( "fontStyle", this.__italic );
+      widget.setStyleProperty( "textDecoration", this.__decoration );
     },
-
 
     /**
      * Generate a style map with the current font attributes.
@@ -298,8 +227,7 @@ qx.Class.define("qx.ui.core.Font",
      * @type member
      * @return {void}
      */
-    renderStyle : function(style)
-    {
+    renderStyle : function( style ) {
       style.fontFamily = this.__family || "";
       style.fontSize = this.__size || "";
       style.fontWeight = this.__bold || "";
@@ -307,14 +235,12 @@ qx.Class.define("qx.ui.core.Font",
       style.textDecoration = this.__decoration || "";
     },
 
-
     /**
      * Apply the font styles to the given DOM element.
      *
      * @param element {Element} The DOM element to apply the font to
      */
-    renderElement : function(element)
-    {
+    renderElement : function( element ) {
       var style = element.style;
       style.fontFamily = this.__family || "";
       style.fontSize = this.__size || "";
@@ -344,4 +270,4 @@ qx.Class.define("qx.ui.core.Font",
              ( this.__family ? this.__family.replace(/\"/g, "'") : "" );
     }
   }
-});
+} );

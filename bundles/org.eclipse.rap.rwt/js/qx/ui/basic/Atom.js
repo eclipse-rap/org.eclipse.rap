@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -334,29 +334,33 @@ qx.Class.define("qx.ui.basic.Atom",
      *
      * @type member
      */
-    _updateIcon : function()
-    {
+    _updateIcon : function() {
       var icon = this.getIcon();
-
       // NOTE: We have to check whether the properties "icon" and "disabledIcon"
       //       exist, because some child classes remove them.
-      if (this._iconObject && this.getIcon && this.getDisabledIcon)
-      {
+      if( this._iconObject && this.getIcon && this.getDisabledIcon ) {
         var disabledIcon = this.getDisabledIcon();
-
-        if (disabledIcon)
-        {
-          if (this.getEnabled()) {
-            icon ? this._iconObject.setSource(icon) : this._iconObject.resetSource();
+        if( disabledIcon ) {
+          if( this.getEnabled() ) {
+            if( icon ) {
+              this._iconObject.setSource( icon );
+            } else {
+              this._iconObject.resetSource();
+            }
           } else {
-            disabledIcon ? this._iconObject.setSource(disabledIcon) : this._iconObject.resetSource();
+            if( disabledIcon ) {
+              this._iconObject.setSource( disabledIcon );
+            } else {
+              this._iconObject.resetSource();
+            }
           }
-
-          this._iconObject.setEnabled(true);
-        }
-        else
-        {
-          icon ? this._iconObject.setSource(icon) : this._iconObject.resetSource();
+          this._iconObject.setEnabled( true );
+        } else {
+          if( icon ) {
+            this._iconObject.setSource( icon );
+          } else {
+            this._iconObject.resetSource();
+          }
           this._iconObject.resetEnabled();
         }
       }
@@ -439,12 +443,14 @@ qx.Class.define("qx.ui.basic.Atom",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyLabel : function(value, old)
-    {
-      if (this._labelObject) {
-        value ? this._labelObject.setText(value) : this._labelObject.resetText();
+    _applyLabel : function( value, old ) {
+      if( this._labelObject ) {
+        if( value ) {
+          this._labelObject.setText( value );
+        } else {
+          this._labelObject.resetText();
+        }
       }
-
       this._handleLabel();
     },
 
@@ -523,24 +529,24 @@ qx.Class.define("qx.ui.basic.Atom",
      * @type member
      * @return {void}
      */
-    _handleLabel : function()
-    {
-      switch(this.getShow())
-      {
+    _handleLabel : function() {
+      switch( this.getShow() ) {
         case "label":
         case "both":
         case "inherit":
           this._labelIsVisible = !!this.getLabel();
           break;
-
         default:
           this._labelIsVisible = false;
       }
-
-      if (this._labelIsVisible) {
-        this._labelObject ? this._labelObject.setDisplay(true) : this._createLabel();
-      } else if (this._labelObject) {
-        this._labelObject.setDisplay(false);
+      if( this._labelIsVisible ) {
+        if( this._labelObject ) {
+          this._labelObject.setDisplay( true );
+        } else {
+          this._createLabel();
+        }
+      } else if( this._labelObject ) {
+        this._labelObject.setDisplay( false );
       }
     },
 
@@ -551,24 +557,24 @@ qx.Class.define("qx.ui.basic.Atom",
      * @type member
      * @return {void}
      */
-    _handleIcon : function()
-    {
-      switch(this.getShow())
-      {
+    _handleIcon : function() {
+      switch( this.getShow() ) {
         case "icon":
         case "both":
         case "inherit":
           this._iconIsVisible = !!this.getIcon();
           break;
-
         default:
           this._iconIsVisible = false;
       }
-
-      if (this._iconIsVisible) {
-        this._iconObject ? this._iconObject.setDisplay(true) : this._createIcon();
-      } else if (this._iconObject) {
-        this._iconObject.setDisplay(false);
+      if( this._iconIsVisible ) {
+        if( this._iconObject ) {
+          this._iconObject.setDisplay( true );
+        } else {
+          this._createIcon();
+        }
+      } else if( this._iconObject ) {
+        this._iconObject.setDisplay( false );
       }
     }
   },

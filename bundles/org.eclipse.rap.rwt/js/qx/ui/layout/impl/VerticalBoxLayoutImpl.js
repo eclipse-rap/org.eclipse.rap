@@ -190,7 +190,7 @@ qx.Class.define("qx.ui.layout.impl.VerticalBoxLayoutImpl",
         // Rounding diff
         vAllocationDiff = Math.round(vAllocationDiff);
 
-        if (vAllocationDiff == 0)
+        if( vAllocationDiff === 0 )
         {
           // *************************************************************
           // 5a. If the diff is equal zero we must not do anything more
@@ -256,8 +256,7 @@ qx.Class.define("qx.ui.layout.impl.VerticalBoxLayoutImpl",
           //    so that the requirements through min/max limits
           //    are satisfied.
           // *************************************************************
-          while (vAllocationDiff != 0 && vFlexibleChildrenLength > 0)
-          {
+          while( vAllocationDiff !== 0 && vFlexibleChildrenLength > 0 ) {
             vFlexibleChildrenLength = vFlexibleChildren.length;
             vMinAllocationLoops = Infinity;
             vFactorSum = 0;
@@ -291,7 +290,7 @@ qx.Class.define("qx.ui.layout.impl.VerticalBoxLayoutImpl",
               }
               else
               {
-                if (vAllocationDiff == 0)
+                if (vAllocationDiff === 0)
                 {
                   vCurrentChild._computedHeightFlexValue = Math.round(vCurrentChild._computedHeightFlexValue);
                   vUsedHeight += vCurrentChild._computedHeightFlexValue;
@@ -521,12 +520,14 @@ qx.Class.define("qx.ui.layout.impl.VerticalBoxLayoutImpl",
      * @param vIndex {var} TODOC
      * @return {void}
      */
-    updateChildrenOnRemoveChild : function(vChild, vIndex)
-    {
-      var w = this.getWidget(), ch = w.getVisibleChildren(), chl = ch.length, chc, i = -1;
-
+    updateChildrenOnRemoveChild : function( vChild, vIndex ) {
+      var w = this.getWidget();
+      var ch = w.getVisibleChildren();
+      var chl = ch.length;
+      var chc;
+      var i = -1;
       // Fix index to be at the first flex child
-      if (this.getEnableFlexSupport())
+      if( this.getEnableFlexSupport() )
       {
         for (var i=0; i<chl; i++)
         {

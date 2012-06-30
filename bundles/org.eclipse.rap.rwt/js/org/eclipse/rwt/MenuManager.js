@@ -63,7 +63,9 @@ qx.Class.define( "org.eclipse.rwt.MenuManager", {
             }
           }
         }
-        if( hide ) menu.hide();
+        if( hide ) {
+          menu.hide();
+        }
       }
     },
 

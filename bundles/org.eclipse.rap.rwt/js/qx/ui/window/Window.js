@@ -54,14 +54,14 @@ qx.Class.define("qx.ui.window.Window",
     // ************************************************************************
     //   LAYOUT
     // ************************************************************************
-    var l = this._layout = new qx.ui.layout.VerticalBoxLayout;
+    var l = this._layout = new qx.ui.layout.VerticalBoxLayout();
     l.setEdge(0);
     this.add(l);
 
     // ************************************************************************
     //   CAPTIONBAR
     // ************************************************************************
-    var cb = this._captionBar = new qx.ui.layout.HorizontalBoxLayout;
+    var cb = this._captionBar = new qx.ui.layout.HorizontalBoxLayout();
     cb.setAppearance("window-captionbar");
     cb.setHeight("auto");
     cb.setOverflow("hidden");
@@ -70,7 +70,7 @@ qx.Class.define("qx.ui.window.Window",
     // ************************************************************************
     //   CAPTIONICON
     // ************************************************************************
-    var ci = this._captionIcon = new qx.ui.basic.Image;
+    var ci = this._captionIcon = new qx.ui.basic.Image();
     ci.setAppearance("window-captionbar-icon");
     cb.add(ci);
 
@@ -85,13 +85,13 @@ qx.Class.define("qx.ui.window.Window",
     // ************************************************************************
     //   CAPTIONFLEX
     // ************************************************************************
-    var cf = this._captionFlex = new qx.ui.basic.HorizontalSpacer;
+    var cf = this._captionFlex = new qx.ui.basic.HorizontalSpacer();
     cb.add(cf);
 
     // ************************************************************************
     //   CAPTIONBUTTONS: MINIMIZE
     // ************************************************************************
-    var bm = this._minimizeButton = new qx.ui.form.Button;
+    var bm = this._minimizeButton = new qx.ui.form.Button();
 
     bm.setAppearance("window-captionbar-minimize-button");
     bm.setTabIndex(null);
@@ -104,7 +104,7 @@ qx.Class.define("qx.ui.window.Window",
     // ************************************************************************
     //   CAPTIONBUTTONS: RESTORE
     // ************************************************************************
-    var br = this._restoreButton = new qx.ui.form.Button;
+    var br = this._restoreButton = new qx.ui.form.Button();
 
     br.setAppearance("window-captionbar-restore-button");
     br.setTabIndex(null);
@@ -117,7 +117,7 @@ qx.Class.define("qx.ui.window.Window",
     // ************************************************************************
     //   CAPTIONBUTTONS: MAXIMIZE
     // ************************************************************************
-    var bx = this._maximizeButton = new qx.ui.form.Button;
+    var bx = this._maximizeButton = new qx.ui.form.Button();
 
     bx.setAppearance("window-captionbar-maximize-button");
     bx.setTabIndex(null);
@@ -130,7 +130,7 @@ qx.Class.define("qx.ui.window.Window",
     // ************************************************************************
     //   CAPTIONBUTTONS: CLOSE
     // ************************************************************************
-    var bc = this._closeButton = new qx.ui.form.Button;
+    var bc = this._closeButton = new qx.ui.form.Button();
 
     bc.setAppearance("window-captionbar-close-button");
     bc.setTabIndex(null);
@@ -143,7 +143,7 @@ qx.Class.define("qx.ui.window.Window",
     // ************************************************************************
     //   PANE
     // ************************************************************************
-    var p = this._pane = new qx.ui.layout.CanvasLayout;
+    var p = this._pane = new qx.ui.layout.CanvasLayout();
     p.setHeight("1*");
     p.setOverflow("hidden");
     l.add(p);
@@ -151,7 +151,7 @@ qx.Class.define("qx.ui.window.Window",
     // ************************************************************************
     //   STATUSBAR
     // ************************************************************************
-    var sb = this._statusBar = new qx.ui.layout.HorizontalBoxLayout;
+    var sb = this._statusBar = new qx.ui.layout.HorizontalBoxLayout();
     sb.setAppearance("window-statusbar");
     sb.setHeight("auto");
 
@@ -226,7 +226,7 @@ qx.Class.define("qx.ui.window.Window",
     getDefaultWindowManager : function()
     {
       if (!qx.ui.window.Window._defaultWindowManager) {
-        qx.ui.window.Window._defaultWindowManager = new qx.ui.window.Manager;
+        qx.ui.window.Window._defaultWindowManager = new qx.ui.window.Manager();
       }
 
       return qx.ui.window.Window._defaultWindowManager;
@@ -744,13 +744,15 @@ qx.Class.define("qx.ui.window.Window",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyModal : function(value, old)
-    {
+    _applyModal : function( value, old ) {
       // Inform blocker
-      if (this._initialLayoutDone && this.getVisibility() && this.getDisplay())
-      {
+      if( this._initialLayoutDone && this.getVisibility() && this.getDisplay() ) {
         var vTop = this.getTopLevelWidget();
-        value ? vTop.block(this) : vTop.release(this);
+        if( value ) {
+          vTop.block( this );
+        } else {
+          vTop.release( this );
+        }
       }
     },
 
@@ -949,7 +951,11 @@ qx.Class.define("qx.ui.window.Window",
      * @type member
      */
     _minimizeButtonManager : function() {
-      this.getAllowMinimize() === false ? this._minimizeButton.setEnabled(false) : this._minimizeButton.resetEnabled();
+      if( this.getAllowMinimize() === false ) {
+        this._minimizeButton.setEnabled( false );
+      } else {
+        this._minimizeButton.resetEnabled();
+      }
     },
 
 
@@ -959,7 +965,11 @@ qx.Class.define("qx.ui.window.Window",
      * @type member
      */
     _closeButtonManager : function() {
-      this.getAllowClose() === false ? this._closeButton.setEnabled(false) : this._closeButton.resetEnabled();
+      if( this.getAllowClose() === false ) {
+        this._closeButton.setEnabled( false );
+      } else {
+        this._closeButton.resetEnabled();
+      }
     },
 
 
@@ -969,16 +979,21 @@ qx.Class.define("qx.ui.window.Window",
      *
      * @type member
      */
-    _maximizeButtonManager : function()
-    {
+    _maximizeButtonManager : function() {
       var b = this.getAllowMaximize() && this.getResizable() && this._computedMaxWidthTypeNull && this._computedMaxHeightTypeNull;
-
-      if (this._maximizeButton) {
-        b === false ? this._maximizeButton.setEnabled(false) : this._maximizeButton.resetEnabled();
+      if( this._maximizeButton ) {
+        if( b === false ) {
+          this._maximizeButton.setEnabled( false );
+        } else {
+          this._maximizeButton.resetEnabled();
+        }
       }
-
-      if (this._restoreButton) {
-        b === false ? this._restoreButton.setEnabled(false) : this._restoreButton.resetEnabled();
+      if( this._restoreButton ) {
+        if( b === false ) {
+          this._restoreButton.setEnabled( false );
+        } else {
+          this._restoreButton.resetEnabled();
+        }
       }
     },
 

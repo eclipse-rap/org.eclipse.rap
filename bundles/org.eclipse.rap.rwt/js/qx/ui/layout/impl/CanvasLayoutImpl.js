@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -262,10 +262,13 @@ qx.Class.define("qx.ui.layout.impl.CanvasLayoutImpl",
         }
       },
 
-      "default" : function(vChild, vJobs)
-      {
-        if (vJobs.initial || vJobs.width) {
-          vChild._computedWidthTypeNull ? vChild._resetRuntimeWidth() : vChild._renderRuntimeWidth(vChild.getWidthValue());
+      "default" : function( vChild, vJobs ) {
+        if( vJobs.initial || vJobs.width ) {
+          if( vChild._computedWidthTypeNull ) {
+            vChild._resetRuntimeWidth();
+          } else  {
+            vChild._renderRuntimeWidth( vChild.getWidthValue() );
+          }
         }
       }
     }),
@@ -294,10 +297,13 @@ qx.Class.define("qx.ui.layout.impl.CanvasLayoutImpl",
         }
       },
 
-      "default" : function(vChild, vJobs)
-      {
-        if (vJobs.initial || vJobs.height) {
-          vChild._computedHeightTypeNull ? vChild._resetRuntimeHeight() : vChild._renderRuntimeHeight(vChild.getHeightValue());
+      "default" : function( vChild, vJobs ) {
+        if( vJobs.initial || vJobs.height ) {
+          if( vChild._computedHeightTypeNull ) {
+            vChild._resetRuntimeHeight();
+          } else  {
+            vChild._renderRuntimeHeight( vChild.getHeightValue() );
+          }
         }
       }
     }),
@@ -311,16 +317,29 @@ qx.Class.define("qx.ui.layout.impl.CanvasLayoutImpl",
      * @param vJobs {var} TODOC
      * @return {void}
      */
-    layoutChild_locationX : function(vChild, vJobs)
-    {
+    layoutChild_locationX : function( vChild, vJobs ) {
       var vWidget = this.getWidget();
-
-      if (vJobs.initial || vJobs.left || vJobs.parentPaddingLeft) {
-        vChild._computedLeftTypeNull ? vChild._computedRightTypeNull && vWidget.getPaddingLeft() > 0 ? vChild._renderRuntimeLeft(vWidget.getPaddingLeft()) : vChild._resetRuntimeLeft() : vChild._renderRuntimeLeft(vChild.getLeftValue() + vWidget.getPaddingLeft());
+      if( vJobs.initial || vJobs.left || vJobs.parentPaddingLeft ) {
+        if( vChild._computedLeftTypeNull ) {
+          if( vChild._computedRightTypeNull && vWidget.getPaddingLeft() > 0 ) {
+            vChild._renderRuntimeLeft( vWidget.getPaddingLeft() );
+          } else {
+            vChild._resetRuntimeLeft();
+          }
+        } else {
+          vChild._renderRuntimeLeft( vChild.getLeftValue() + vWidget.getPaddingLeft() );
+        }
       }
-
-      if (vJobs.initial || vJobs.right || vJobs.parentPaddingRight) {
-        vChild._computedRightTypeNull ? vChild._computedLeftTypeNull && vWidget.getPaddingRight() > 0 ? vChild._renderRuntimeRight(vWidget.getPaddingRight()) : vChild._resetRuntimeRight() : vChild._renderRuntimeRight(vChild.getRightValue() + vWidget.getPaddingRight());
+      if( vJobs.initial || vJobs.right || vJobs.parentPaddingRight ) {
+        if( vChild._computedRightTypeNull ) {
+          if( vChild._computedLeftTypeNull && vWidget.getPaddingRight() > 0 ) {
+            vChild._renderRuntimeRight( vWidget.getPaddingRight() );
+          } else {
+            vChild._resetRuntimeRight();
+          }
+        } else {
+          vChild._renderRuntimeRight( vChild.getRightValue() + vWidget.getPaddingRight() );
+        }
       }
     },
 
@@ -333,17 +352,31 @@ qx.Class.define("qx.ui.layout.impl.CanvasLayoutImpl",
      * @param vJobs {var} TODOC
      * @return {void}
      */
-    layoutChild_locationY : function(vChild, vJobs)
-    {
+    layoutChild_locationY : function( vChild, vJobs ) {
       var vWidget = this.getWidget();
-
-      if (vJobs.initial || vJobs.top || vJobs.parentPaddingTop) {
-        vChild._computedTopTypeNull ? vChild._computedBottomTypeNull && vWidget.getPaddingTop() > 0 ? vChild._renderRuntimeTop(vWidget.getPaddingTop()) : vChild._resetRuntimeTop() : vChild._renderRuntimeTop(vChild.getTopValue() + vWidget.getPaddingTop());
+      if( vJobs.initial || vJobs.top || vJobs.parentPaddingTop ) {
+        if( vChild._computedTopTypeNull ) {
+          if( vChild._computedBottomTypeNull && vWidget.getPaddingTop() > 0 ) {
+            vChild._renderRuntimeTop( vWidget.getPaddingTop() );
+          } else {
+            vChild._resetRuntimeTop();
+          }
+        } else {
+          vChild._renderRuntimeTop( vChild.getTopValue() + vWidget.getPaddingTop() );
+        }
       }
-
-      if (vJobs.initial || vJobs.bottom || vJobs.parentPaddingBottom) {
-        vChild._computedBottomTypeNull ? vChild._computedTopTypeNull && vWidget.getPaddingBottom() > 0 ? vChild._renderRuntimeBottom(vWidget.getPaddingBottom()) : vChild._resetRuntimeBottom() : vChild._renderRuntimeBottom(vChild.getBottomValue() + vWidget.getPaddingBottom());
+      if( vJobs.initial || vJobs.bottom || vJobs.parentPaddingBottom ) {
+        if( vChild._computedBottomTypeNull ) {
+          if( vChild._computedTopTypeNull && vWidget.getPaddingBottom() > 0 ) {
+            vChild._renderRuntimeBottom( vWidget.getPaddingBottom() );
+          } else {
+            vChild._resetRuntimeBottom();
+          }
+        } else {
+          vChild._renderRuntimeBottom( vChild.getBottomValue() + vWidget.getPaddingBottom() );
+        }
       }
     }
+
   }
-});
+} );

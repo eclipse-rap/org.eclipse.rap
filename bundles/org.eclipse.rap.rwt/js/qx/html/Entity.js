@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -14,20 +14,12 @@
 /**
  * A Collection of utility functions to escape and unescape strings.
  */
-qx.Class.define("qx.html.Entity",
-{
-  /*
-  *****************************************************************************
-     STATICS
-  *****************************************************************************
-  */
+qx.Class.define( "qx.html.Entity", {
 
-  statics :
-  {
+  statics : {
 
     /** Mapping of HTML entity names to the corresponding char code */
-    TO_CHARCODE :
-    {
+    TO_CHARCODE : {
       "quot"     : 34, // " - double-quote
       "amp"      : 38, // &
       "lt"       : 60, // <
@@ -338,17 +330,9 @@ qx.Class.define("qx.html.Entity",
     }
   },
 
-
-
-  /*
-  *****************************************************************************
-     DEFER
-  *****************************************************************************
-  */
-
-  defer : function(statics, members, properties)
-  {
+  defer : function( statics, members, properties ) {
     /** Mapping of char codes to HTML entity names */
-    statics.FROM_CHARCODE = qx.lang.Object.invert(statics.TO_CHARCODE)
+    statics.FROM_CHARCODE = qx.lang.Object.invert( statics.TO_CHARCODE );
   }
-});
+
+} );

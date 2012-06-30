@@ -316,7 +316,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
     },
 
     selectAll : function() {
-      if( this.getManager().getMultiSelection() == true ) {
+      if( this.getManager().getMultiSelection() === true ) {
         this.getManager().selectAll();
       }
     },
@@ -369,7 +369,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
         // TODO [rh] find out why sometimes index == -1, cannot be reproduced
         //      in standalone qooxdoo application
         if( index >= 0 ) {
-          if( selectionIndices != "" ) {
+          if( selectionIndices !== "" ) {
             selectionIndices += ",";
           }
           selectionIndices += String( index );

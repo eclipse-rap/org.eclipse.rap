@@ -427,7 +427,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
           // this is done to reduce flickering in IE:
           displayLength += this._separatorWidth;
         }
-        if( displayPosition == 0 ) {
+        if( displayPosition === 0 ) {
           displayPosition += this._gfxBorderWidth / 2;
           displayLength += this._gfxBorderWidth / 2;
         } else {
@@ -459,7 +459,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     _renderSeparator : function( position, length ) {
       var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
       var full = length + position == this._getIndicatorFullLength();
-      if( length == 0 ) {
+      if( length === 0 ) {
         GraphicsUtil.setDisplay( this._separatorEndShape, false );
         if( this._isIndeterminate() ) {
           GraphicsUtil.setDisplay( this._separatorStartShape, false );
@@ -467,7 +467,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
       } else {
         GraphicsUtil.setDisplay( this._separatorEndShape, !full );
         if( this._isIndeterminate() ) {
-          GraphicsUtil.setDisplay( this._separatorStartShape, position != 0 );
+          GraphicsUtil.setDisplay( this._separatorStartShape, position !== 0 );
         }
         var displayPosition = position + this._gfxBorderWidth - this._separatorWidth;
         var displayLength = length + 2 * this._separatorWidth;
@@ -480,7 +480,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
           if( !full ) {
             GraphicsUtil.setRectBounds( shape, left, top, width, height );
           }
-          if( position != 0 ) {
+          if( position !== 0 ) {
             top = this.getInnerHeight() - displayPosition - this._separatorWidth;
             shape = this._separatorStartShape;
             GraphicsUtil.setRectBounds( shape, left, top, width, height );
@@ -494,7 +494,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
           if( !full ) {
             GraphicsUtil.setRectBounds( shape, left, top, width, height );
           }
-          if( position != 0 ) {
+          if( position !== 0 ) {
             left = displayPosition;
             shape = this._separatorStartShape;
             GraphicsUtil.setRectBounds( shape, left, top, width, height );
@@ -592,7 +592,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
         var endPosition = position + length;
         var fullLength = this._getIndicatorFullLength();
         if( this._isVertical() ) {
-          if( position == 0 ) {
+          if( position === 0 ) {
             result[ 2 ] = radii[ 2 ];
             result[ 3 ] = radii[ 3 ];
           }
@@ -601,7 +601,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
             result[ 1 ] = radii[ 1 ];
           }
         } else {
-          if( position == 0 ) {
+          if( position === 0 ) {
             result[ 0 ] = radii[ 0 ];
             result[ 3 ] = radii[ 3 ];
           }

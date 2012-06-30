@@ -138,8 +138,8 @@ qx.Class.define( "org.eclipse.rwt.GridDNDFeedback", {
       var node = row.getElement();
       var treeNode = this._tree._getTargetNode();
       while( node != treeNode ) {
-        location.x += parseInt( node.style.left || 0 );
-        location.y += parseInt( node.style.top || 0 );
+        location.x += parseInt( node.style.left || 0, 10 );
+        location.y += parseInt( node.style.top || 0, 10 );
         node = node.parentNode;
       }
       return location;

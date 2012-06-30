@@ -33,7 +33,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
 
   destruct : function() {
     if( this._eventTimer != null ) {
-      this._eventTimer.dispose()
+      this._eventTimer.dispose();
       this._eventTimer = null;
     }
   },

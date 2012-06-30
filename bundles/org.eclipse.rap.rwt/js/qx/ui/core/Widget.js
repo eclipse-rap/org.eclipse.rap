@@ -1705,7 +1705,7 @@ qx.Class.define( "qx.ui.core.Widget", {
             vParent.addToJobQueue( "removeChild" );
             var parentNode = org.eclipse.rwt.Client.isMshtml() ? this.getElement().parentElement : this.getElement().parentNode;
             if( parentNode ){
-              parentNode.removeChild( this.getElement() )
+              parentNode.removeChild( this.getElement() );
               this._afterRemoveDom();
             }
           }
@@ -2465,7 +2465,11 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     addToQueue : function(p) {
-      this._initialLayoutDone ? this.addToJobQueue(p) : this.addToLayoutChanges(p);
+      if( this._initialLayoutDone ) {
+        this.addToJobQueue( p );
+      } else {
+        this.addToLayoutChanges( p );
+      }
     },
 
     addToQueueRuntime : function(p) {
@@ -2565,7 +2569,8 @@ qx.Class.define( "qx.ui.core.Widget", {
       var wasPercent = this[s2];
       var wasAuto = this[s3];
       var wasFlex = this[s4];
-      switch(this[s] = this._evalUnitsPixelPercentAutoFlex(value)) {
+      this[ s ] = this._evalUnitsPixelPercentAutoFlex( value );
+      switch( this[ s ] ) {
         case qx.ui.core.Widget.TYPE_PIXEL:
           this[s1] = true;
           this[s2] = this[s3] = this[s4] = this[s5] = false;
@@ -2651,7 +2656,8 @@ qx.Class.define( "qx.ui.core.Widget", {
       var s4 = r.typeNull;
       var wasPercent = this[s2];
       var wasAuto = this[s3];
-      switch(this[s] = this._evalUnitsPixelPercentAuto(value)) {
+      this[ s ] = this._evalUnitsPixelPercentAuto( value );
+      switch( this[ s ] ) {
         case qx.ui.core.Widget.TYPE_PIXEL:
           this[s1] = true;
           this[s2] = this[s3] = this[s4] = false;
@@ -2718,7 +2724,8 @@ qx.Class.define( "qx.ui.core.Widget", {
       var s2 = r.typePercent;
       var s3 = r.typeNull;
       var wasPercent = this[s2];
-      switch(this[s] = this._evalUnitsPixelPercent(value)) {
+      this[ s ] = this._evalUnitsPixelPercent( value );
+      switch( this[ s ] ) {
         case qx.ui.core.Widget.TYPE_PIXEL:
           this[s1] = true;
           this[s2] = this[s3] = false;
@@ -2892,7 +2899,11 @@ qx.Class.define( "qx.ui.core.Widget", {
       var value;
       for( var prop in data ) {
         value = data[prop];
-        value === "undefined" ? this[unstyler[prop]]() : this[styler[prop]](value);
+        if( value === "undefined" ) {
+          this[ unstyler[ prop ] ]();
+        } else {
+          this[ styler[ prop ] ]( value );
+        }
       }
     },
 
@@ -3123,7 +3134,6 @@ qx.Class.define( "qx.ui.core.Widget", {
       visibility : true,
       outline : true,
       boxShadow : true,
-      filter : true,
       opacity : true,
       MozOpacity : true
     },
@@ -3526,12 +3536,20 @@ qx.Class.define( "qx.ui.core.Widget", {
       aliasMgr.connect(this._styleBackgroundImage, this, value);
     },
 
-    _styleBackgroundImage : function(value) {
-      value ? this.setStyleProperty("backgroundImage", "url(" + value + ")") : this.removeStyleProperty("backgroundImage");
+    _styleBackgroundImage : function( value ) {
+      if( value ) {
+        this.setStyleProperty( "backgroundImage", "url(" + value + ")");
+      } else {
+        this.removeStyleProperty( "backgroundImage" );
+      }
     },
 
-    _applyBackgroundRepeat : function(value, old) {
-      value ? this.setStyleProperty("backgroundRepeat", value) : this.removeStyleProperty("backgroundRepeat");
+    _applyBackgroundRepeat : function( value, old ) {
+      if( value ) {
+        this.setStyleProperty( "backgroundRepeat", value );
+      } else {
+        this.removeStyleProperty( "backgroundRepeat" );
+      }
     },
 
     ///////////////////
@@ -3764,7 +3782,7 @@ qx.Class.define( "qx.ui.core.Widget", {
         };
       }
       return result;
-    } )(),
+    }() ),
 
     _queueBorder : function( value ) {
       this.addToQueue( "border" );

@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -14,14 +14,14 @@
 /**
  * Create namespace
  */
-qx =
-{
+qx = {
+
   /**
    * Bootstrap qx.Class to create myself later
    * This is needed for the API browser etc. to let them detect me
    */
-  Class :
-  {
+  Class : {
+
     /**
      * Create namespace.
      * Replaced after bootstrapping phase by {@link qx.Class#createNamespace}.
@@ -31,28 +31,25 @@ qx =
      * @param object {var} TODOC
      * @return {var} TODOC
      */
-    createNamespace : function(name, object)
-    {
-      var splits = name.split(".");
+    createNamespace : function( name, object ) {
+      var splits = name.split( "." );
       var parent = window;
-      var part = splits[0];
+      var part = splits[ 0 ];
 
-      for (var i=0, len=splits.length-1; i<len; i++, part=splits[i])
-      {
-        if (!parent[part]) {
-          parent = parent[part] = {};
+      for( var i = 0, len = splits.length - 1; i < len; i++, part = splits[ i ] ) {
+        if( !parent[ part ] ) {
+          parent = parent[ part ] = {};
         } else {
-          parent = parent[part];
+          parent = parent[ part ];
         }
       }
 
       // store object
-      parent[part] = object;
+      parent[ part ] = object;
 
       // return last part name (e.g. classname)
       return part;
     },
-
 
     /**
      * Define class.
@@ -63,24 +60,22 @@ qx =
      * @param config {var} TODOC
      * @return {void}
      */
-    define : function(name, config)
-    {
-      if (!config) {
+    define : function (name, config ) {
+      if( !config ) {
         var config = { statics : {} };
       }
 
-      this.createNamespace(name, config.statics);
+      this.createNamespace( name, config.statics );
 
-      if (config.defer) {
-        config.defer(config.statics);
+      if( config.defer ) {
+        config.defer( config.statics );
       }
 
       // Store class reference in global class registry
-      qx.core.Bootstrap.__registry[name] = config.statics;
+      qx.core.Bootstrap.__registry[ name ] = config.statics;
     }
   }
 };
-
 
 /**
  * Internal class that is responsible for bootstrapping the qooxdoo
@@ -89,12 +84,12 @@ qx =
  * Automatically loads JavaScript language fixes, core logging possibilities
  * and language addons for arrays, strings, etc.
  */
-qx.Class.define("qx.core.Bootstrap",
-{
-  statics :
-  {
+qx.Class.define( "qx.core.Bootstrap", {
+
+  statics : {
+
     /** Timestamp of qooxdoo based application startup */
-    LOADSTART : new Date,
+    LOADSTART : new Date(),
 
     /**
      * Returns the current timestamp

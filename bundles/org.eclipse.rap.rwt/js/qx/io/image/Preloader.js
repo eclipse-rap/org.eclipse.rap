@@ -58,7 +58,7 @@ qx.Class.define("qx.io.image.Preloader",
     // Create Image-Node
     // Does not work with document.createElement("img") in Webkit. Interesting.
     // Compare this to the bug in qx.ui.basic.Image.
-    this._element = new Image;
+    this._element = new Image();
 
     // Define handler if image events occurs
     this._element.onload = qx.lang.Function.bind(this.__onload, this);

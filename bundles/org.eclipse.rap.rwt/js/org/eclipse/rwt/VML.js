@@ -299,8 +299,12 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     getFillType : function( shape ) {
       var on = shape.fill.on;
       var result = !on ? null : shape.fill.type;
-      if( result == "solid" ) result = "color";
-      if( result == "tile" ) result = "pattern";
+      if( result == "solid" ) {
+        result = "color";
+      }
+      if( result == "tile" ) {
+        result = "pattern";
+      }
       return result;
     },
 

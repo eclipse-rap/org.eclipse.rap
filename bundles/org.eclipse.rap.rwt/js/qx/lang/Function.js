@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -94,31 +94,24 @@ qx.Class.define("qx.lang.Function",
      * @param varargs {arguments} multiple arguments which should be static arguments for the given function
      * @return {Function} the bound function
      */
-    bind: function(fcn, self, varargs)
-    {
+    bind: function( fcn, self, varargs ) {
       // Create wrapper method
-      if (arguments.length > 2)
-      {
+      if( arguments.length > 2 ) {
         // Static arguments
-        var args = Array.prototype.slice.call(arguments, 2);
-
-        var wrap = function()
-        {
+        var args = Array.prototype.slice.call( arguments, 2 );
+        var wrap = function() {
           fcn.context = self;
           var ret = fcn.apply(self, args.concat(qx.lang.Array.fromArguments(arguments)));
           fcn.context = null;
           return ret;
-        }
-      }
-      else
-      {
-        var wrap = function()
-        {
+        };
+      } else {
+        var wrap = function() {
           fcn.context = self;
           var ret = fcn.apply(self, arguments);
           fcn.context = null;
           return ret;
-        }
+        };
       }
 
       // Correcting self
@@ -137,16 +130,14 @@ qx.Class.define("qx.lang.Function",
      * @param self {Object} object, which shuold act as the 'this' variable inside the bound function
      * @return {Function} the bound function
      */
-    bindEvent: function(fcn, self)
-    {
+    bindEvent: function( fcn, self ) {
       // Create wrapper method
-      var wrap = function(event)
-      {
+      var wrap = function( event ) {
         fcn.context = self;
-        var ret = fcn.call(self, event||window.event);
+        var ret = fcn.call( self, event || window.event );
         fcn.context = null;
         return ret;
-      }
+      };
 
       // Correcting self
       wrap.self = fcn.self ? fcn.self.constructor : self;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -301,12 +301,10 @@ qx.Class.define("qx.util.ColorUtil",
      * @type static
      * @return {Array} an array with red, green, blue
      */
-    __rgbStringToRgb : function()
-    {
-      var red = parseInt(RegExp.$1);
-      var green = parseInt(RegExp.$2);
-      var blue = parseInt(RegExp.$3);
-
+    __rgbStringToRgb : function() {
+      var red = parseInt( RegExp.$1, 10 );
+      var green = parseInt( RegExp.$2, 10 );
+      var blue = parseInt( RegExp.$3, 10 );
       return [red, green, blue];
     },
 

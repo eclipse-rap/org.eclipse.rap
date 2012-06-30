@@ -276,21 +276,16 @@ qx.Class.define("qx.ui.core.ClientDocument",
      * @type member
      * @return {ClientDocumentBlocker} the blocker widget.
      */
-    _getBlocker : function()
-    {
-      if (!this._blocker)
-      {
+    _getBlocker : function() {
+      if( !this._blocker ) {
         // Create blocker instance
-        this._blocker = new qx.ui.core.ClientDocumentBlocker;
-
+        this._blocker = new qx.ui.core.ClientDocumentBlocker();
         // Add blocker events
-        this._blocker.addEventListener("mousedown", this.blockHelper, this);
-        this._blocker.addEventListener("mouseup", this.blockHelper, this);
-
+        this._blocker.addEventListener( "mousedown", this.blockHelper, this );
+        this._blocker.addEventListener( "mouseup", this.blockHelper, this );
         // Add blocker to client document
-        this.add(this._blocker);
+        this.add( this._blocker );
       }
-
       return this._blocker;
     },
 
@@ -351,29 +346,24 @@ qx.Class.define("qx.ui.core.ClientDocument",
      * @param vActiveChild {var} TODOC
      * @return {void}
      */
-    release : function(vActiveChild)
-    {
-      if (vActiveChild)
-      {
-        if (qx.Class.isDefined("qx.client.NativeWindow") && vActiveChild instanceof qx.client.NativeWindow) {
+    release : function( vActiveChild ) {
+      if( vActiveChild ) {
+        if(    qx.Class.isDefined( "qx.client.NativeWindow" )
+            && vActiveChild instanceof qx.client.NativeWindow )
+        {
           this._modalNativeWindow = null;
         } else {
-          qx.lang.Array.remove(this._modalWidgets, vActiveChild);
+          qx.lang.Array.remove( this._modalWidgets, vActiveChild );
         }
       }
-
       var l = this._modalWidgets.length;
-
-      if (l == 0) {
+      if( l === 0 ) {
         this._getBlocker().hide();
-      }
-      else
-      {
-        var oldActiveChild = this._modalWidgets[l - 1];
-
+      } else {
+        var oldActiveChild = this._modalWidgets[ l - 1 ];
         var o = oldActiveChild.getZIndex();
-        this._getBlocker().setZIndex(o);
-        oldActiveChild.setZIndex(o + 1);
+        this._getBlocker().setZIndex( o );
+        oldActiveChild.setZIndex( o + 1 );
       }
     },
 

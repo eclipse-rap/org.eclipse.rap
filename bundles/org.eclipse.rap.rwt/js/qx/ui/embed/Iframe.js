@@ -332,7 +332,7 @@ qx.Class.define("qx.ui.embed.Iframe",
           return doc.location.href;
         }
       }
-      catch(ex) {};
+      catch(ex) {}
 
       return null;
     },
@@ -703,7 +703,7 @@ qx.Class.define("qx.ui.embed.Iframe",
         this._iframeNode.style.minWidth = value + "px";
         this._iframeNode.style.maxWidth = value + "px";
       };
-      var org = members._renderRuntimeHeight
+      var org = members._renderRuntimeHeight;
       members._renderRuntimeHeight = function( value ) {
         originalRenderHeight.call( this, value );
         this._iframeNode.style.minHeight = value + "px";

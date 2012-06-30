@@ -483,11 +483,13 @@ qx.Class.define("qx.ui.selection.SelectionManager",
      * @param vIsSelected {var} TODOC
      * @return {void}
      */
-    renderItemSelectionState : function(vItem, vIsSelected)
-    {
-      vIsSelected ? vItem.addState("selected") : vItem.removeState("selected");
-
-      if (vItem.handleStateChange) {
+    renderItemSelectionState : function( vItem, vIsSelected ) {
+      if( vIsSelected ) {
+        vItem.addState( "selected" );
+      } else {
+        vItem.removeState( "selected" );
+      }
+      if( vItem.handleStateChange ) {
         vItem.handleStateChange();
       }
     },
@@ -501,11 +503,13 @@ qx.Class.define("qx.ui.selection.SelectionManager",
      * @param vIsAnchor {var} TODOC
      * @return {void}
      */
-    renderItemAnchorState : function(vItem, vIsAnchor)
-    {
-      vIsAnchor ? vItem.addState("anchor") : vItem.removeState("anchor");
-
-      if (vItem.handleStateChange != null) {
+    renderItemAnchorState : function( vItem, vIsAnchor ) {
+      if( vIsAnchor ) {
+        vItem.addState( "anchor" );
+      } else {
+        vItem.removeState( "anchor" );
+      }
+      if( vItem.handleStateChange != null ) {
         vItem.handleStateChange();
       }
     },
@@ -519,11 +523,13 @@ qx.Class.define("qx.ui.selection.SelectionManager",
      * @param vIsLead {var} TODOC
      * @return {void}
      */
-    renderItemLeadState : function(vItem, vIsLead)
-    {
-      vIsLead ? vItem.addState("lead") : vItem.removeState("lead");
-
-      if (vItem.handleStateChange != null) {
+    renderItemLeadState : function( vItem, vIsLead ) {
+      if( vIsLead ) {
+        vItem.addState( "lead" );
+      } else {
+        vItem.removeState( "lead" );
+      }
+      if( vItem.handleStateChange != null ) {
         vItem.handleStateChange();
       }
     },
@@ -579,7 +585,11 @@ qx.Class.define("qx.ui.selection.SelectionManager",
           this.renderItemSelectionState(vItem, vSelected);
 
           // Add item to selection hash / delete it from there
-          vSelected ? this._selectedItems.add(vItem) : this._selectedItems.remove(vItem);
+          if( vSelected ) {
+            this._selectedItems.add( vItem );
+          } else {
+            this._selectedItems.remove( vItem );
+          }
 
           // Dispatch change Event
           this._dispatchChange();
@@ -836,7 +846,9 @@ qx.Class.define("qx.ui.selection.SelectionManager",
       this.setFireChange(oldFireChange);
 
       // Dispatch change Event
-      if (oldFireChange && this._hasChanged(oldVal)) this._dispatchChange();
+      if( oldFireChange && this._hasChanged( oldVal ) ) {
+        this._dispatchChange();
+      }
     },
 
 
@@ -1170,9 +1182,11 @@ qx.Class.define("qx.ui.selection.SelectionManager",
       // ********************************************************************
       //   Do we need to update the anchor?
       // ********************************************************************
-      if (!currentAnchorItem || selectedCount == 0 || (vCtrlKey && !vShiftKey && this.getMultiSelection() && !this.getDragSelection()))
+      if(   !currentAnchorItem
+          || selectedCount === 0
+          || ( vCtrlKey && !vShiftKey && this.getMultiSelection() && !this.getDragSelection() ) )
       {
-        this.setAnchorItem(oItem);
+        this.setAnchorItem( oItem );
         currentAnchorItem = oItem;
       }
 

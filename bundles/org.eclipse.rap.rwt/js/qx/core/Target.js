@@ -204,30 +204,25 @@ qx.Class.define("qx.core.Target",
      * @param dispose {Boolean} whether the event object should be disposed after all event handlers run.
      * @return {Boolean} whether the event default was prevented or not. Returns true, when the event was NOT prevented.
      */
-    dispatchEvent : function(evt, dispose)
-    {
+    dispatchEvent : function( evt, dispose ) {
       // Ignore event if eventTarget is disposed
-      if (this.getDisposed()) {
+      if( this.getDisposed() ) {
         return;
       }
-
-      if (evt.getTarget() == null) {
+      if( evt.getTarget() == null ) {
         evt.setTarget(this);
       }
-
-      if (evt.getCurrentTarget() == null) {
+      if( evt.getCurrentTarget() == null ) {
         evt.setCurrentTarget(this);
       }
-
       // Dispatch Event
-      this._dispatchEvent(evt, dispose);
-
+      this._dispatchEvent( evt, dispose );
       // Read default prevented
       var defaultPrevented = evt.getDefaultPrevented();
-
       // enable dispose for event?
-      dispose && evt.dispose();
-
+      if( dispose ) {
+        evt.dispose();
+      }
       return !defaultPrevented;
     },
 
