@@ -2,3 +2,4 @@ eclipse.preferences.version=1
 globals=org\: true, qx\: true, qxsettings\: true, qxvariants\: true, namespace\: false, \r\nassertTrue\: true, assertFalse\: true, assertNull\: true, assertNotNull\: true, assertEquals\: true, assertIdentical\: true, \r\nassertContains\: true, assertContainsNot\: true, assertLarger\: true, assertSmaller\: true, fail\: true
 included=js//*.js
 options=bitwise\: true, curly\: true, immed\: true, newcap\: true, eqnull\: true, shadow\: true, funcscope\: true, undef\: true, browser\: true, laxbreak\: true, evil\:true, onecase\:true, sub\:true
+projectSpecificOptions=true
