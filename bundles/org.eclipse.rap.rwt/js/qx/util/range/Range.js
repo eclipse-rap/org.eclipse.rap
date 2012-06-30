@@ -23,7 +23,7 @@ qx.Class.define( "qx.util.range.Range", {
   },
 
   properties : {
- 
+
     /** current value of the Range object */
     value : {
       check : "!isNaN(value)&&value>=this.getMin()&&value<=this.getMax()",

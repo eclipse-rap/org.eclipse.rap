@@ -71,7 +71,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
       nullable : true,
       themeable : true
     },
-    
+
     // TODO [tb] : non-ideal solution to provide theming support for image
     icon : {
       apply : "_applyIcon",
@@ -86,12 +86,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
       apply : "_applyAnimation",
       themeable : true
     }
-    
+
   },
 
   members : {
     _CELLORDER : [ "image", "image", "label" ],
-    
+
     _applyIcon : function( newValue, oldValue ) {
       this.setImage.apply( this, newValue );
     },
@@ -100,23 +100,23 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
       this._image = [ value, width, height ];
       this._updateButtonImage();
     },
-            
+
     setHotImage : function( value, width, height ) {
       this._hotImage = [ value, width, height ];
       this._updateButtonImage();
     },
-    
+
     _updateButtonImage : function() {
-      var image = 
-          ( this._hotImage[ 0 ] != null && this.hasState( "over" ) ) 
-        ? this._hotImage 
+      var image =
+          ( this._hotImage[ 0 ] != null && this.hasState( "over" ) )
+        ? this._hotImage
         : this._image;
       var current = this.getCellContent( 1 );
       if( current != image[ 0 ] ) {
         this.setCellContent( 1, image[ 0 ] );
         this.setCellDimension( 1, image[ 1 ], image[ 2 ] );
       }
-    },        
+    },
 
     setText : function( value ) {
       this.setCellContent( 2, value );
@@ -125,9 +125,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
     _applySelectionIndicator : function( value, old ) {
       var url = value ? value[ 0 ] : null;
       var width = value ? value[ 1 ] : 0;
-      var height = value ? value[ 2 ] : 0;      
+      var height = value ? value[ 2 ] : 0;
       this.setCellContent( 0, url );
-      this.setCellDimension( 0, width, height ); 
+      this.setCellDimension( 0, width, height );
     },
 
     setHasSelectionListener : function( value ) {
@@ -160,7 +160,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
       }
       this._sendChanges();
     },
-    
+
     setSelection : function( value ) {
       if( this._selected != value || this._selected ) {
         this._selected = value;
@@ -225,7 +225,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
         this.addState( "pressed" );
       }
     },
-    
+
     _onMouseUp : function( event ) {
       this.setCapture( false );
       var hasPressed = this.hasState( "pressed" );
@@ -285,7 +285,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
           event.stopPropagation();
       }
     },
-    
+
     ////////////
     // Animation
 
@@ -293,39 +293,39 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
       if( newValue[ "hoverIn" ] || newValue[ "hoverOut" ] ) {
         if( this._animation == null ) {
           this._animation = new org.eclipse.rwt.Animation();
-          this._animation.addEventListener( "init", 
+          this._animation.addEventListener( "init",
                                             this._initAnimation,
-                                            this );          
+                                            this );
         }
-        this.addEventListener( "stateOverChanged", 
+        this.addEventListener( "stateOverChanged",
                                this._animation.activateRendererOnce,
                                this._animation );
-        this.addEventListener( "changeBackgroundGradient", 
+        this.addEventListener( "changeBackgroundGradient",
                                this._configureRenderer,
                                this );
         this._configureRenderer();
       } else if( this._animation != null ) {
-        this.removeEventListener( "stateOverChanged", 
+        this.removeEventListener( "stateOverChanged",
                                   this._animation.activateRendererOnce,
                                   this._animation );
-        this.removeEventListener( "changeBackgroundGradient", 
+        this.removeEventListener( "changeBackgroundGradient",
                                   this._configureRenderer,
                                   this );
       }
     },
-    
+
     _configureRenderer : function( event ) {
       if( !event || event.getValue() == null || event.getOldValue() == null ) {
         this._animation.skip();
         var renderer = this._animation.getDefaultRenderer( false );
-        var renderType =   this.getBackgroundGradient() != null 
+        var renderType =   this.getBackgroundGradient() != null
                          ? "backgroundGradient"
                          : "backgroundColor";
-        var animationType = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE; 
+        var animationType = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
         renderer.animate( this, renderType, animationType );
       }
     },
-    
+
     _initAnimation : function( event ) {
       if( this.hasState( "pressed" ) ) {
         this._animation.cancel();
@@ -340,14 +340,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
         }
       }
     },
-    
+
     _renderAppearance : function() {
       this.base( arguments );
-      // TODO [tb] : Find a more elegant and generic way to do this. 
+      // TODO [tb] : Find a more elegant and generic way to do this.
       if( this._animation != null && !this._animation.isStarted() ) {
         this._animation.getDefaultRenderer().cancelActivateOnce();
       }
-    }    
-    
+    }
+
   }
 } );

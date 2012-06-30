@@ -27,7 +27,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
       indentionWidth : properties.indentionWidth,
       splitContainer : properties.splitContainer,
       markupEnabled : properties.markupEnabled
-    };  
+    };
     var result = new org.eclipse.rwt.widgets.Grid( configMap );
     org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );

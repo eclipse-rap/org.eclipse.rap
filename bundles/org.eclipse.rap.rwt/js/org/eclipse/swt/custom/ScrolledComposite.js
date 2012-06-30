@@ -9,7 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
- 
+
 qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
   extend : org.eclipse.swt.widgets.Scrollable,
 
@@ -29,9 +29,9 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     this.addEventListener( "changeParent", this._onChangeParent, this );
     this.setAppearance( "scrolledcomposite" );
   },
-  
+
   members : {
-    
+
     /////////
     // Public
 
@@ -59,18 +59,18 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
         this._content.addEventListener( "changeHeight", this._onContentResize, this );
       }
     },
-    
+
     ///////////////
     // Eventhandler
-    
+
     _onContentRemove : function() {
-      this.setContent( null ); 
+      this.setContent( null );
     },
-    
+
     _onContentResize : function() {
-      if(    this._content !== null 
-          && typeof this._content.getWidth() === "number"  
-          && typeof this._content.getHeight() === "number" ) 
+      if(    this._content !== null
+          && typeof this._content.getWidth() === "number"
+          && typeof this._content.getHeight() === "number" )
       {
         var maxWidth = this._content.getWidth();
         var maxHeight = this._content.getHeight();
@@ -78,7 +78,7 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
         this._vertScrollBar.setMaximum( maxHeight );
       }
     },
-    
+
     _onChangeParent : function( evt ) {
       if( this._focusRoot != null ) {
         this._focusRoot.removeEventListener( "changeFocusedChild",
@@ -92,15 +92,15 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
                                           this );
       }
     },
-    
+
     _onMouseWheel : function( evt ) {
       this.setBlockScrolling( false );
     },
-    
+
     _onTouch : function( evt ) {
       this.setBlockScrolling( false );
     },
-    
+
     _onKeyPress : function( evt ) {
       switch( evt.getKeyIdentifier() ) {
         case "Left":
@@ -116,14 +116,14 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
         break;
       }
     },
-    
+
     _onUserScroll : function() {
       if( !this._requestTimerRunning ) {
         this._requestTimerRunning = true;
         qx.client.Timer.once( this._sendChanges, this, 500 );
       }
     },
-    
+
     _onChangeFocusedChild : function( evt ) {
       var focusedChild = evt.getValue();
       this.setBlockScrolling( !this._showFocusedControl && focusedChild !== this );

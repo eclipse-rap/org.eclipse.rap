@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,12 +28,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
   statics : {
 
     SEND_DELAY : 50,
-    
+
     _isNoModifierPressed : function( evt ) {
-      return    !evt.isCtrlPressed() 
-             && !evt.isShiftPressed() 
-             && !evt.isAltPressed() 
-             && !evt.isMetaPressed();      
+      return    !evt.isCtrlPressed()
+             && !evt.isShiftPressed()
+             && !evt.isAltPressed()
+             && !evt.isMetaPressed();
     }
 
   },
@@ -70,14 +70,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     setThumb : function( value ) {
       this._setThumb( value );
     },
-    
+
     setHasSelectionListener : function( value ) {
       this._hasSelectionListener = value;
     },
-    
+
     //////////////
     // Overwritten
-    
+
     _setSelection : function( value ) {
       this.base( arguments, value );
       this._scheduleSendChanges();
@@ -85,7 +85,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
 
     ////////////
     // Internals
-    
+
     _onContextMenu : function( evt ) {
       var menu = this.getContextMenu();
       if( menu != null ) {
@@ -95,7 +95,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
         evt.stopPropagation();
       }
     },
-    
+
     _onKeyPress : function( evt ) {
       var keyIdentifier = evt.getKeyIdentifier();
       var sel;
@@ -108,7 +108,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
             break;
           case "Down":
             if( this._horizontal ) {
-              sel = this._selection - this._increment;  
+              sel = this._selection - this._increment;
             } else {
               sel = this._selection + this._increment;
             }
@@ -120,15 +120,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
             evt.preventDefault();
             evt.stopPropagation();
             break;
-          case "Up": 
+          case "Up":
             if( this._horizontal ) {
               sel = this._selection + this._increment;
             } else {
-              sel = this._selection - this._increment;    
+              sel = this._selection - this._increment;
             }
             evt.preventDefault();
             evt.stopPropagation();
-            break; 
+            break;
           case "Home":
             sel = this._minimum;
             evt.preventDefault();
@@ -152,7 +152,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
             if( this._horizontal ) {
               sel = this._selection + this._pageIncrement;
             } else {
-              sel = this._selection - this._pageIncrement;   
+              sel = this._selection - this._pageIncrement;
             }
             evt.preventDefault();
             evt.stopPropagation();
@@ -161,7 +161,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
         if( sel != undefined ) {
           if( sel < this._minimum ) {
             sel = this._minimum;
-          } 
+          }
           if( sel > this._maximum ) {
             sel = this._maximum;
           }
@@ -176,7 +176,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
         }
       }
     },
-    
+
     _onMouseWheel : function( evt ) {
       if( this.getFocused() ) {
         this.base( arguments, evt );
@@ -197,9 +197,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
           qx.client.Timer.once( this._sendChanges,
                                 this,
                                 org.eclipse.swt.widgets.Slider.SEND_DELAY );
-          
+
         }
-      }      
+      }
     },
 
     _sendChanges : function() {
@@ -214,7 +214,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
       }
       this._requestScheduled = false;
     }
-        
+
   }
 
 } );

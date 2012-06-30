@@ -304,7 +304,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         this._restartRequest( request );
       };
     },
-    
+
     _retry : function() {
       try {
         org.eclipse.rwt.ErrorHandler.hideErrorBox();

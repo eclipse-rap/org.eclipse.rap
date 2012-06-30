@@ -158,7 +158,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
         this._separator4.removeState( state );
       }
     },
-    
+
     _rwt_onChangeFont : function( evt ) {
       var value = evt.getValue();
       this._hoursTextField.setFont( value );
@@ -336,7 +336,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
         }
       }
     },
-    
+
     _onMouseWheel : function( evt ) {
       if( this.getFocused() ) {
         evt.preventDefault();

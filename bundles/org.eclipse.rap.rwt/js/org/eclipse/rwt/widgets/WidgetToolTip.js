@@ -6,32 +6,32 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
- 
+
 qx.Class.define( "org.eclipse.rwt.widgets.WidgetToolTip", {
   type : "singleton",
   extend : qx.ui.popup.ToolTip,
   include : org.eclipse.rwt.VisibilityAnimationMixin,
-  
+
   construct : function() {
     this.base( arguments );
     this._atom._createLabel();
     this._atom.getLabelObject().setMode( "html" );
   },
-  
+
   members : {
-    
+
     _applyBoundToWidget : function( value, old ) {
       this.base( arguments, value, old );
       this.updateText( value );
       var manager = qx.ui.popup.ToolTipManager.getInstance();
-      manager.setCurrentToolTip( null );      
+      manager.setCurrentToolTip( null );
     },
-    
+
     updateText : function( widget ) {
       this._atom.setLabel( widget.getUserData( "toolTipText" ) );
     }
-    
+
   }
 } );

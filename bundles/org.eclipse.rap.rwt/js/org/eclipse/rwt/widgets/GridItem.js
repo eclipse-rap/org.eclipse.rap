@@ -16,8 +16,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
 
   construct : function( parent, index, placeholder ) {
     // Dispose is only needed to remove items from the tree and widget manager.
-    // Since it holds no references to the dom, it suffices to dispose tree. 
-    this._autoDispose = false; 
+    // Since it holds no references to the dom, it suffices to dispose tree.
+    this._autoDispose = false;
     this.base( arguments );
     this._parent = parent;
     this._level = -1;
@@ -40,7 +40,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
     this._cellGrayed = [];
     this._variant = null;
     if( this._parent != null ) {
-      this._level = this._parent.getLevel() + 1; 
+      this._level = this._parent.getLevel() + 1;
       this._parent._add( this, index );
     }
     this._expanded = this.isRootItem();
@@ -71,7 +71,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
     _getItem : function( treeOrItem ) {
       var result;
       if( treeOrItem instanceof org.eclipse.rwt.widgets.Grid ) {
-        result = treeOrItem.getRootItem(); 
+        result = treeOrItem.getRootItem();
       } else {
         result = treeOrItem;
       }
@@ -81,14 +81,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
   },
 
   events: {
-    "update" : "qx.event.type.Event" 
-  },  
+    "update" : "qx.event.type.Event"
+  },
 
   members : {
 
     setItemCount : function( value ) {
       var msg = this._children.length > value ? "remove" : "add";
-      this._children.length = value; 
+      this._children.length = value;
       this._update( msg );
     },
 
@@ -122,7 +122,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       this._escaped = false;
       this._update( "content" );
     },
-    
+
     getText : function( column, doEscape ) {
       var result = this._texts[ column ];
       if( ( typeof result ) === "string" ) {
@@ -136,7 +136,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       }
       return result;
     },
-    
+
     hasText : function( column ) {
       return !!this._texts[ column ];
     },
@@ -252,7 +252,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
     getVariant : function() {
       return this._variant;
     },
-    
+
     //////////////////////////
     // relationship management
 
@@ -275,7 +275,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
         if( value ) {
           this._parent._addToExpandedItems( this );
         } else {
-          this._parent._removeFromExpandedItems( this );          
+          this._parent._removeFromExpandedItems( this );
         }
       }
     },
@@ -297,7 +297,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
     hasChildren : function() {
       return this._children.length > 0;
     },
-    
+
     getChildrenLength : function() {
       return this._children.length;
     },
@@ -316,7 +316,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       }
       return this._visibleChildrenCount;
     },
-    
+
     getChild : function( index ) {
       var result = this._children[ index ];
       if( !result ) {
@@ -325,12 +325,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
         }
       }
       return result;
-    },    
+    },
 
     getLastChild : function() {
-      return this.getChild( this._children.length - 1 ); 
+      return this.getChild( this._children.length - 1 );
     },
-    
+
     indexOf : function( item ) {
       var hash = item.toHashCode();
       if( this._indexCache[ hash ] === undefined ) {
@@ -338,7 +338,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       }
       return this._indexCache[ hash ];
     },
-    
+
     /**
      * Returns true if the given item is one of the parents of this item (recursive).
      */
@@ -384,7 +384,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       }
       return result;
     },
-    
+
     /**
      * Gets the index relative to the root-item, counting all visible items inbetween.
      */
@@ -423,9 +423,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       this._parent._indexCache[ item.toHashCode() ] = index;
       return item;
     },
-    
+
     /**
-     * Returns the next visible item, which my be the first child, 
+     * Returns the next visible item, which my be the first child,
      * the next sibling or the next sibling of the parent.
      */
     getNextItem : function( skipChildren ) {
@@ -439,9 +439,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       }
       return result;
     },
-    
+
     /**
-     * Returns the previous visible item, which my be the previous sibling, 
+     * Returns the previous visible item, which my be the previous sibling,
      * the previous siblings last child, or the parent.
      */
     getPreviousItem : function() {
@@ -450,13 +450,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
         result = this.getPreviousSibling();
         while( result.hasChildren() && result.isExpanded() ) {
           result = result.getLastChild();
-        }        
+        }
       } else if( this.getLevel() > 0 ) {
         result = this._parent;
       }
       return result;
     },
-    
+
     /////////////////////////
     // API for other TreeItem
 
@@ -479,7 +479,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       this._children.push( undefined );
       this._update( "remove", item );
     },
-    
+
     _addToExpandedItems : function( item ) {
       this._expandedItems[ item.toHashCode() ] = item;
     },
@@ -487,7 +487,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
     _removeFromExpandedItems : function( item ) {
       delete this._expandedItems[ item.toHashCode() ];
     },
-    
+
     //////////////////////////////
     // support for event-bubbling:
 
@@ -542,16 +542,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       }
       this._visibleChildrenCount = result;
     },
-    
+
     _getExpandedIndicies : function() {
       var result = [];
       for( var key in this._expandedItems ) {
-        result.push( this.indexOf( this._expandedItems[ key ] ) ); 
+        result.push( this.indexOf( this._expandedItems[ key ] ) );
       }
       // TODO [tb] : result could be cached
       return result.sort( function( a, b ){ return a - b; } );
     },
-    
+
     toString : function() {
       return "TreeItem " + this._texts.join();
     }

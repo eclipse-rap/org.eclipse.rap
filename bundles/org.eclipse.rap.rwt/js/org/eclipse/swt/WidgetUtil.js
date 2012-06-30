@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 /**
@@ -44,11 +44,11 @@ qx.Class.define( "org.eclipse.swt.WidgetUtil", {
       }
       return result;
     },
-    
+
     /**
      * Can be used simulate mouseEvents on the qooxdoo event-layer.
-     * Manager and handler that are usually notified by 
-     * org.eclipse.rwt.EventHandler will not receive the event. 
+     * Manager and handler that are usually notified by
+     * org.eclipse.rwt.EventHandler will not receive the event.
      */
     _fakeMouseEvent : function( originalTarget, type ) {
       if( originalTarget.getEnabled() ) {
@@ -73,9 +73,9 @@ qx.Class.define( "org.eclipse.swt.WidgetUtil", {
           "metaKey" : false,
           "preventDefault" : function(){}
         };
-        var event = new qx.event.type.MouseEvent( type, 
-                                                  domEvent, 
-                                                  domTarget, 
+        var event = new qx.event.type.MouseEvent( type,
+                                                  domEvent,
+                                                  domTarget,
                                                   target,
                                                   originalTarget,
                                                   null );

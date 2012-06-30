@@ -100,5 +100,5 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.MenuItem", {
   },
 
   methods : []
-  
+
 } );

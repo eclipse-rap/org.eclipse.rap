@@ -23,9 +23,9 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     this.setAppearance( "browser" );
     this.addEventListener( "create", this._onCreate, this );
   },
-  
+
   properties : {
-  
+
     asynchronousResult : {
       check : "Boolean",
       init : false
@@ -35,28 +35,28 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
       check : "Boolean",
       init : false
     },
-    
+
     executedFunctionResult : {
       nullable : true,
       init : null
     },
-    
+
     executedFunctionError : {
       check : "String",
       nullable : true,
       init : null
     }
-    
+
   },
-  
+
   statics : {
-    
+
     getDomain : function( url ) {
       var domain = null;
       if( url !== null ) {
         var lowerCaseUrl = url.toLowerCase();
-        // Accepted limitation: In case of other protocls this detection fails. 
-        if(    lowerCaseUrl.indexOf( "http://" ) === 0 
+        // Accepted limitation: In case of other protocls this detection fails.
+        if(    lowerCaseUrl.indexOf( "http://" ) === 0
             || lowerCaseUrl.indexOf( "https://" ) === 0
             || lowerCaseUrl.indexOf( "ftp://" ) === 0
             || lowerCaseUrl.indexOf( "ftps://" ) === 0
@@ -64,23 +64,23 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
           var domain = lowerCaseUrl.slice( lowerCaseUrl.indexOf( "://" ) + 3 );
           var pathStart = domain.indexOf( "/" );
           if( pathStart !== -1 ) {
-            domain = domain.slice( 0, pathStart );            
+            domain = domain.slice( 0, pathStart );
           }
         }
       }
       return domain;
     }
-    
+
   },
-  
+
   members : {
-    
+
     syncSource : function() {
       if( this.isCreated() ) {
         this._syncSource();
       }
     },
-    
+
     // overwritten
     _applySource : function( value, oldValue ) {
       // server syncs manually
@@ -129,7 +129,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
         req.send();
       }
     },
-    
+
     setHasProgressListener : function( value ) {
       this._hasProgressListener = value;
     },
@@ -163,13 +163,13 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
       var localDomain = statics.getDomain( document.URL );
       var srcDomain = statics.getDomain( src );
       var isSameDomain = localDomain === srcDomain;
-      var isRelative = srcDomain === null; 
+      var isRelative = srcDomain === null;
       return isRelative || isSameDomain;
     },
-    
+
     _isContentAccessible : function() {
       var accessible;
-      try{ 
+      try{
         this.getContentDocument().body.URL;
         accessible = true;
       } catch( ex ) {
@@ -177,33 +177,33 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
       }
       return accessible && this._isLoaded;
     },
-    
+
     _checkIframeAccess : function( functionName ) {
       if( !this._isContentAccessible() ) {
         var isSameDomain = this._srcInLocalDomain();
         if( !isSameDomain ) {
-          this._throwSecurityException( false );            
+          this._throwSecurityException( false );
         }
         if( this._isLoaded && isSameDomain ) {
           // not accessible when it appears it should be
           // => user navigated to external site.
-          this._throwSecurityException( true );            
+          this._throwSecurityException( true );
         }
       }
     },
-    
+
     _throwSecurityException : function( domainUnkown ) {
       var statics = org.eclipse.swt.browser.Browser;
       var localDomain = statics.getDomain( document.URL );
       var srcDomain = domainUnkown ? null : statics.getDomain( this.getSource() );
-      var msg = "SecurityRestriction:\nBrowser-Widget can not access "; 
-      msg +=   srcDomain !== null 
-             ? "\"" + srcDomain + "\"" 
-             : "unkown domain"; 
+      var msg = "SecurityRestriction:\nBrowser-Widget can not access ";
+      msg +=   srcDomain !== null
+             ? "\"" + srcDomain + "\""
+             : "unkown domain";
       msg += " from \"" + localDomain + "\".";
-      throw new Error( msg );      
+      throw new Error( msg );
     },
-        
+
     _eval : function( script ) {
       var win = this.getContentWindow();
       if( !win.eval && win.execScript ) {
@@ -212,7 +212,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
       }
       return win.eval( script );
     },
-    
+
     _parseEvalResult : function( value ) {
       var result = null;
       var win = this.getContentWindow();
@@ -245,7 +245,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
         }
       }
     },
-    
+
     _attachBrowserFunctions : function() {
       // NOTE: In case the user navigates to a page outside the domain,
       // this function will not be triggered due to the lack of a loading event.
@@ -255,7 +255,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
         this.createFunction( name );
       }
     },
-    
+
     _createFunctionImpl : function( name ) {
       var win = this.getContentWindow();
       var req = org.eclipse.swt.Request.getInstance();
@@ -367,12 +367,12 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
       }
       return result;
     },
-    
+
     destroy : function() {
       this.base( arguments );
       // Needed for IE dipose fix in Iframe.js because _applySource is overwritten in Browser.js
       this.syncSource();
     }
-    
+
   }
 } );

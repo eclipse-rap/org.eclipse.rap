@@ -9,9 +9,9 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
- 
+
 qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
-  
+
   statics : {
 
     _measureNode : null,
@@ -26,8 +26,8 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
         this._addRequestParam( id, param );
       }
     },
-    
-    measureStringItems : function( items ) {      
+
+    measureStringItems : function( items ) {
       for( var i = 0; i < items.length; i++ ) {
         var item = items[ i ];
         var isMarkup = item[ 7 ];
@@ -50,7 +50,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
       var width = item[ 6 ] > 0 ? item[ 6 ] : null;
       return this.computeTextDimensions( text, fontProps, width );
     },
-    
+
     computeTextDimensions : function( text, fontProps, wrapWidth ) {
       var element = this._getMeasureNode();
       var style = element.style;
@@ -92,13 +92,13 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
       "newmshtml" : function( element ) {
         var computed = window.getComputedStyle( element, null );
         var result = [
-          Math.ceil( parseFloat( computed.width ) ), 
-          Math.ceil( parseFloat( computed.height ) ) 
+          Math.ceil( parseFloat( computed.width ) ),
+          Math.ceil( parseFloat( computed.height ) )
         ];
         return this._addOffset( result );
       }
     } ),
-    
+
     _addOffset : function( bounds ) {
       var x = bounds[ 0 ] > 0 ? bounds[ 0 ] + this._offset : 0;
       var y = bounds[ 1 ] > 0 ? bounds[ 1 ] + this._offset : 0;

@@ -12,7 +12,7 @@
 org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.TabItem", {
 
   factory : function( properties ) {
-    return org.eclipse.swt.TabUtil.createTabItem( properties.id, 
+    return org.eclipse.swt.TabUtil.createTabItem( properties.id,
                                                   properties.parent,
                                                   properties.index );
   },

@@ -33,7 +33,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Button", {
     } );
     return result;
   },
-  
+
   destructor : org.eclipse.rwt.protocol.AdapterUtil.getControlDestructor(),
 
   properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
@@ -60,10 +60,10 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Button", {
         widget.setImage.apply( widget, value );
       }
     }
-  } ),     
+  } ),
 
   listeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [
-    "selection"   
+    "selection"
   ] ),
 
   listenerHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),

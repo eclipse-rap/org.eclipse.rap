@@ -380,8 +380,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
       if( config.itemCellCheck[ cell ] ) {
         this.setState( "checked", item.isCellChecked( cell ) );
         this.setState( "grayed", item.isCellGrayed( cell ) );
-        this.setState( "over",    hoverTarget 
-                               && hoverTarget[ 0 ] === "cellCheckBox" 
+        this.setState( "over",    hoverTarget
+                               && hoverTarget[ 0 ] === "cellCheckBox"
                                && hoverTarget[ 1 ] === cell );
         var source = this._getImageFromAppearance( "check-box", this.__states );
         renderBounds = isTreeColumn || !contentOnly || !this._cellCheckImages[ cell ];
@@ -455,7 +455,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
       }
       return element;
     },
-    
+
     _renderCellLabelBounds : function( item, cell, config ) {
       var element = this._cellLabels[ cell ];
       if( element ) {
@@ -501,8 +501,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
 
     _getCellBackgroundColor : function( item, cell, config ) {
       var result;
-      if(    config.enabled === false 
-          || this._styleMap.overlayBackground !== "undefined" 
+      if(    config.enabled === false
+          || this._styleMap.overlayBackground !== "undefined"
       ) {
         result = "undefined";
       } else {
@@ -645,7 +645,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
         result.style.whiteSpace = "nowrap";
         if( org.eclipse.rwt.Client.isNewMshtml() ) {
           result.style.backgroundColor = "rgba(0, 0, 0, 0)";
-        }        
+        }
         this._cellLabels[ cell ] = result;
       }
       return result;
@@ -753,7 +753,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
       var columns = this._getColumnCount( config );
       for( var i = 0; i < columns; i++ ) {
         // tree column bounds can not be rendered without item, is rendered always anyway
-        if( !this._isTreeColumn( i, config ) ) { 
+        if( !this._isTreeColumn( i, config ) ) {
           this._renderCellLabelBounds( null, i, config );
           this._renderCellImageBounds( null, i, config );
         }

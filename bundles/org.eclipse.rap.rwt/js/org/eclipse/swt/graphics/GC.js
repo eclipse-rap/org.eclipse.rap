@@ -53,8 +53,8 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
 
     init : qx.core.Variant.select( "qx.client", {
       "mshtml" : function( width, height, font, background, foreground ) {
-        // TODO [tb]: Should the control be detached from the DOM 
-        // (e.g. by Widget.prepareEnhancedBorder), this might lead to glitches 
+        // TODO [tb]: Should the control be detached from the DOM
+        // (e.g. by Widget.prepareEnhancedBorder), this might lead to glitches
         // in IE/VML. The flush prevents this in some cases:
         qx.ui.core.Widget.flushGlobalQueues();
         this._initTextCanvas( width, height );
@@ -78,13 +78,13 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
      * Only a subset is supported on all browser, espcially IE is limited.
      * Each operation is an array starting with the name of the function to call, followed
      * by its parameters. Properties are treated the same way, i.e. [ "propertyName", "value" ].
-     * Other differences from official HTML5-Canvas API: 
+     * Other differences from official HTML5-Canvas API:
      *  - Colors are to be given as array ( [ red, green blue ] )
      *  - "addColorStop" will automatically applied to the last created gradient.
      *  - To assign the last created linear gradient as a style, use "linearGradient" as the value.
      *  - strokeText behaves like fillText and fillText draws a rectangular background
      *  - ellipse is not a W3C standard, only WHATWG, but we need it for SWT arc to work.
-     */    
+     */
     draw : function( operations ) {
       for( var i = 0; i < operations.length; i++ ) {
         try {
@@ -96,13 +96,13 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
             case "lineWidth":
             case "lineCap":
             case "lineJoin":
-            case "font": 
+            case "font":
               this._setProperty( operations[ i ] );
             break;
-            case "createLinearGradient": 
-            case "addColorStop": 
-            case "fillText": 
-            case "strokeText": 
+            case "createLinearGradient":
+            case "addColorStop":
+            case "fillText":
+            case "strokeText":
             case "ellipse":
             case "drawImage":
               this[ "_" + op ]( operations[ i ] );
@@ -112,12 +112,12 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
             break;
           }
         } catch( ex ) {
-          var opArrStr = "[ " + operations[ i ].join( ", " ) + " ]"; 
+          var opArrStr = "[ " + operations[ i ].join( ", " ) + " ]";
           throw new Error( "Drawing operation failed: " + opArrStr + " :" + ex.message );
         }
       }
     },
-    
+
     ////////////
     // Internals
 
@@ -184,7 +184,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     _ellipse : qx.core.Variant.select( "qx.client", {
       "mshtml" : function( operation ) {
         this._context[ operation[ 0 ] ].apply( this._context, operation.slice( 1 ) );
-      }, 
+      },
       "default" : function( operation ) {
         var cx = operation[ 1 ];
         var cy = operation[ 2 ];
@@ -204,7 +204,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
         }
       }
     } ),
-    
+
     _setProperty : function( operation ) {
       var property = operation[ 0 ];
       var value = operation[ 1 ];
@@ -259,7 +259,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       var image = new Image();
       image.src = args[ 0 ];
       args[ 0 ] = image;
-      // On (native) canvas, only loaded images can be drawn: 
+      // On (native) canvas, only loaded images can be drawn:
       if( image.complete || org.eclipse.rwt.Client.isMshtml() ) {
         this._context.drawImage.apply( this._context, args );
       } else {
@@ -279,11 +279,11 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       var func = this._context.createLinearGradient;
       this._linearGradient = func.apply( this._context, operation.slice( 1 ) );
     },
-    
+
     _addColorStop : function( operation ) {
-      this._linearGradient.addColorStop( 
+      this._linearGradient.addColorStop(
         operation[ 1 ],
-        qx.util.ColorUtil.rgbToRgbString( operation[ 2 ] ) 
+        qx.util.ColorUtil.rgbToRgbString( operation[ 2 ] )
       );
     },
 

@@ -9,7 +9,7 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {  
+qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
   extend : qx.ui.layout.VerticalBoxLayout,
 
   construct : function() {
@@ -48,7 +48,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
     this._asyncTimer.dispose();
     this._asyncTimer = null;
   },
-  
+
   statics : {
 
     createRenderConfig : function() {
@@ -61,20 +61,20 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
         "fullSelection" : false,
         "hideSelection" : false,
         "alwaysHideSelection" : false,
-        "variant" : null, 
-        "selectionPadding" : null, 
-        "indentionWidth" : 16,   
+        "variant" : null,
+        "selectionPadding" : null,
+        "indentionWidth" : 16,
         "hasCheckBoxes" : false,
-        "checkBoxLeft" : null, 
-        "checkBoxWidth" : null, 
-        "columnCount" : 0,    
-        "treeColumn" : 0,    
-        "alignment" : [],   
-        "itemLeft" : [],   
-        "itemWidth" : [],   
-        "itemImageLeft" : [],   
-        "itemImageWidth" : [],   
-        "itemTextLeft" : [],   
+        "checkBoxLeft" : null,
+        "checkBoxWidth" : null,
+        "columnCount" : 0,
+        "treeColumn" : 0,
+        "alignment" : [],
+        "itemLeft" : [],
+        "itemWidth" : [],
+        "itemImageLeft" : [],
+        "itemImageWidth" : [],
+        "itemTextLeft" : [],
         "itemTextWidth" : [],
         "itemCellCheck" : [],
         "itemCellCheckLeft" : [],
@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
     }
 
   },
-  
+
   members : {
 
     /////////////
@@ -92,8 +92,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
 
     /**
      * Returns a map with values for treeRow configuration. (see _createRenderConfig).
-     * Will not be changed by TreeRow or TreeRowContainer. When doing changes renderAll must 
-     * be called for them take effect. 
+     * Will not be changed by TreeRow or TreeRowContainer. When doing changes renderAll must
+     * be called for them take effect.
      */
     getRenderConfig : function() {
       return this._config;
@@ -107,7 +107,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
     },
 
     /**
-     * Calls this function with an item as the parameter. Expects a boolean as return value. 
+     * Calls this function with an item as the parameter. Expects a boolean as return value.
      */
     setSelectionProvider : function( func, context ) {
       this._selectionProvider = [ func, context ];
@@ -146,7 +146,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
     _renderGridVertical : function() {
       var linesNeeded = this._config.linesVisible ? this._config.columnCount : 0;
       for( var i = 0; i < linesNeeded; i++ ) {
-        this._renderVerticalGridline( i );          
+        this._renderVerticalGridline( i );
       }
       for( var i = linesNeeded; i < this._vertGridLines.length; i++ ) {
         this._removeGridLine( i );
@@ -201,7 +201,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
     },
 
     _getHorizontalGridBorder : function() {
-      if( this._horzGridBorder === null ) { 
+      if( this._horzGridBorder === null ) {
         this._horzGridBorder = this._getGridBorder( { "horizontal" : true } );
       }
       return this._horzGridBorder;
@@ -209,7 +209,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
 
     _getGridBorder : function( state ) {
       var tvGrid = new org.eclipse.swt.theme.ThemeValues( state );
-      var cssElement = qx.lang.String.toFirstUp( this._baseAppearance ) + "-GridLine"; 
+      var cssElement = qx.lang.String.toFirstUp( this._baseAppearance ) + "-GridLine";
       var gridColor = tvGrid.getCssColor( cssElement, "color" );
       tvGrid.dispose();
       var borderWidths = [ 0, 0, 0, 0 ];
@@ -315,7 +315,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
       var rowsNeeded = Math.round( ( this.getHeight() / this._rowHeight ) + 0.5 );
       while( this._children.length < rowsNeeded ) {
         var row = new org.eclipse.rwt.widgets.GridRow( this.getParent() );
-        row.setAppearance( this._getRowAppearance() ); 
+        row.setAppearance( this._getRowAppearance() );
         row.setZIndex( 0 );
         row.setWidth( this._rowWidth );
         row.setHeight( this._rowHeight );
@@ -426,8 +426,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
     },
 
     _renderAsync : function( item ) {
-      // async rendering needed in some cases where webkit (and possibly other browser) get confused 
-      // when changing dom-elements in "mouseover" events 
+      // async rendering needed in some cases where webkit (and possibly other browser) get confused
+      // when changing dom-elements in "mouseover" events
       if( item !== null ) {
         this._asyncQueue[ item.toHashCode() ] = item;
         this._asyncTimer.start();

@@ -48,21 +48,21 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
   },
 
   events: {
-    "init" : "qx.event.type.DataEvent", 
+    "init" : "qx.event.type.DataEvent",
     "finish" : "qx.event.type.DataEvent",
     "cancel" : "qx.event.type.DataEvent"
-  },  
+  },
 
   members : {
-    
+
     /////////////
     // Public API
-    
+
     // Time in milliseconds
     setDuration : function( value ) {
       this._duration = value;
     },
-    
+
     getDuration : function( value ) {
       return this._duration;
     },
@@ -75,11 +75,11 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
       this.setDuration( properties[ 0 ] );
       this.setTransition( properties[ 1 ] );
     },
-       
+
     getRenderer : function( number ) {
       return this._renderer[ number ];
     },
-    
+
     getDefaultRenderer : function( active ) {
       if( this._defaultRenderer == null || this._defaultRenderer.isDisposed() ) {
         this._defaultRenderer = new org.eclipse.rwt.AnimationRenderer( this );
@@ -93,15 +93,15 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     getRendererLength : function() {
       return this._renderer.length;
     },
-    
+
     getRendererIndex : function( renderer ) {
       return this._renderer.indexOf( renderer );
     },
-    
+
     getConfig : function() {
       return this._config;
     },
-    
+
     setExclusive : function( value ) {
       this._exclusive = value;
     },
@@ -111,7 +111,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     },
 
     // config can by any value, but "appear", "disappear" and "change" are
-    // used by AnimationRenderer when autoStart is enabled. When using 
+    // used by AnimationRenderer when autoStart is enabled. When using
     // the widget-integration of AnimationRenderer, those should be used
     // in the appropriate scenarios. A config is valid between start and cancel,
     // then its set to null. Its given in the setup-function and all events.
@@ -205,7 +205,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
       if ( time >= this._finishOn ) {
         this._finish();
       } else {
-        var position = ( time - this._startOn ) / this._totalTime;  
+        var position = ( time - this._startOn ) / this._totalTime;
         this._render( position );
       }
     },
@@ -238,7 +238,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
   statics : {
 
     ///////////////
-    // Global Queue 
+    // Global Queue
 
     FPS : 60,
     _queue : [],
@@ -260,7 +260,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
       if( animation === this._exclusive ) {
         this._exclusive = null;
       } else {
-        qx.lang.Array.remove( this._queue, animation );  
+        qx.lang.Array.remove( this._queue, animation );
       }
       if( this._exclusive === null && this._queue.length === 0 ) {
         this._stopLoop();

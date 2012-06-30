@@ -26,7 +26,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumnLabel", {
     this._chevron = null;
     this.setAppearance( baseAppearance + "-column" );
     this._resizeCursor = null;
-    this.setHorizontalChildrenAlign( "left" ); 
+    this.setHorizontalChildrenAlign( "left" );
     this.setOverflow( "hidden" );
     this.addEventListener( "elementOver", this._onElementOver, this );
     this.addEventListener( "elementOut", this._onElementOut, this );
@@ -133,7 +133,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumnLabel", {
       var result = this.base( arguments, cell );
       return result || cell == 2;
     },
- 
+
     _onMouseOver : function( evt ) {
       if( this._hoverEffect && !this._inMove && !this._inResize ) {
         this.addState( "mouseover" );
@@ -194,9 +194,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumnLabel", {
         this.getTopLevelWidget().setGlobalCursor( null );
         this.setCapture( false );
         var newWidth = this._getResizeWidth( evt.getPageX() );
-        this.dispatchSimpleEvent( "resizeEnd", { 
+        this.dispatchSimpleEvent( "resizeEnd", {
           "target" : this,
-          "width" : newWidth 
+          "width" : newWidth
         } );
         this._inResize = false;
         this._wasResizeOrMoveEvent = true;
@@ -210,8 +210,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumnLabel", {
         if( Math.abs( evt.getPageX() - this._initialLeft ) > 1 ) {
           this._wasResizeOrMoveEvent = true;
           // Fix for bugzilla 306842
-          this.dispatchSimpleEvent( "moveEnd", { 
-            "target" : this, 
+          this.dispatchSimpleEvent( "moveEnd", {
+            "target" : this,
             "position" : evt.getPageX() - this._offsetX
           } );
         } else {
@@ -259,7 +259,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumnLabel", {
 
     _hideDragFeedback : function( snap ) {
       if( this._feedbackVisible ) {
-        this.dispatchSimpleEvent( "hideDragFeedback", { 
+        this.dispatchSimpleEvent( "hideDragFeedback", {
           "target" : this,
           "snap" : snap
         } );

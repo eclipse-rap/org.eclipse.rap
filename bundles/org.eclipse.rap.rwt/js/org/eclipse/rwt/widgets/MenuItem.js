@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
@@ -25,19 +25,19 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     this.set( {
       width : "auto",
       horizontalChildrenAlign : "left",
-      verticalChildrenAlign : "middle"      
+      verticalChildrenAlign : "middle"
     } );
-    this.addEventListener( "mouseup", this.execute );    
+    this.addEventListener( "mouseup", this.execute );
     this.addEventListener( "changeFont", this._onFontChange );
     this.addState( menuItemType );
     switch( menuItemType ){
-     case "bar" : 
+     case "bar" :
       this._isSelectable = false;
       this._isDeselectable = false;
       this._sendEvent = false;
       this.addState( "onMenuBar" );
      break;
-     case "push" : 
+     case "push" :
       this._isSelectable = false;
       this._isDeselectable = false;
       this._sendEvent = true;
@@ -45,7 +45,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
      case "check":
       this._isSelectable = true;
       this._isDeselectable = true;
-      this._sendEvent = true;     
+      this._sendEvent = true;
      break;
      case "cascade":
       this._isSelectable = false;
@@ -60,18 +60,18 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
      break;
      default:
        throw( "Unkown menuItem type " + menuItemType );
-     break; 
+     break;
     }
     this._preferredCellWidths = [ 0, 0, 0, 13 ];
     if( this._isSelectable ) {
-      this.setCellContent( 0, "" ); 
+      this.setCellContent( 0, "" );
     }
   },
 
   destruct : function() {
-    this._disposeFields( "_parentMenu", "_subMenu" );     
+    this._disposeFields( "_parentMenu", "_subMenu" );
   },
-  
+
   properties : {
 
     selectionIndicator : {
@@ -79,7 +79,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
       nullable : true,
       themeable : true
     },
-    
+
     arrow : {
       apply : "_applyArrow",
       nullable : true,
@@ -89,29 +89,29 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     appearance : {
       refine : true,
       init : "menu-item"
-    },    
-    
+    },
+
     tabIndex : {
       refine : true,
       init : 1
     }
 
   },
-  
+
   events : {
     "subMenuChanged" : "qx.event.type.Event"
   },
 
   members : {
-        
+
     setParentMenu : function( menu ) {
       this._parentMenu = menu;
     },
-    
+
     getParentMenu : function() {
       return this._parentMenu;
     },
-    
+
     setSubMenuOpen : function( bool ) {
       this._subMenuOpen = bool;
     },
@@ -119,27 +119,27 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     setMenu : function( menu ) {
       this._subMenu = menu;
       this.dispatchSimpleEvent( "subMenuChanged" );
-    },    
+    },
 
     getMenu : function() {
       return this._subMenu;
     },
-    
+
     _applySelectionIndicator : function( value, old ) {
       //never remove cell-node
       var url = value ? value[ 0 ] : null;
       var width = value ? value[ 1 ] : 0;
       var height = value ? value[ 2 ] : 0;
       if( url == null ) {
-        var content = this._isSelectable ? "" : null;          
+        var content = this._isSelectable ? "" : null;
         this.setCellContent( 0, content );
       } else {
         this.setCellContent( 0, url );
-      }       
+      }
       this.setCellHeight( 0, height );
-      this._setPreferredCellWidth( 0, width );       
+      this._setPreferredCellWidth( 0, width );
     },
-    
+
     _setPreferredCellWidth : function( cell, width ) {
       this._preferredCellWidths[ cell ] = width;
       if( this._parentMenu instanceof org.eclipse.rwt.widgets.Menu ) {
@@ -147,35 +147,35 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
       }
       this._scheduleLayoutX();
     },
-        
-    _afterScheduleLayoutX : function() {      
+
+    _afterScheduleLayoutX : function() {
       if( this._parentMenu instanceof org.eclipse.rwt.widgets.Menu ) {
         this._parentMenu.scheduleMenuLayout();
       }
-    },    
-    
+    },
+
     getPreferredCellWidth : function( cell ) {
       return this._preferredCellWidths[ cell ];
     },
 
     setImage : function( value, width, height ) {
-      this.setCellContent( 1, value );     
+      this.setCellContent( 1, value );
       this.setCellHeight( 1, height );
-      this._setPreferredCellWidth( 1, width ); 
+      this._setPreferredCellWidth( 1, width );
     },
-    
+
     setText : function( value ) {
       this.setCellContent( 2, value );
       this.setCellDimension( 2, null, null ); // force to recompute the width
       this._setPreferredCellWidth( 2, this.getCellWidth( 2 ) );
     },
-    
-    _onFontChange : function() {  
-      this.setCellDimension( 2, null, null ); 
-      this._setPreferredCellWidth( 2, this.getCellWidth( 2 ) );      
+
+    _onFontChange : function() {
+      this.setCellDimension( 2, null, null );
+      this._setPreferredCellWidth( 2, this.getCellWidth( 2 ) );
     },
 
-    _applyArrow : function( value, old ) { 
+    _applyArrow : function( value, old ) {
       var url = value ? value[ 0 ] : null;
       var width = value ? value[ 1 ] : 13;
       var height = value ? value[ 2 ] : 0;
@@ -183,7 +183,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
       this.setCellHeight( 3, height );
       this._setPreferredCellWidth( 3, width );
     },
-    
+
     _beforeComputeInnerWidth : function() {
       if( this._parentMenu instanceof org.eclipse.rwt.widgets.Menu ) {
         for( var i = 0; i < 4; i++ ) {
@@ -191,19 +191,19 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
         }
       }
     },
-    
+
     _beforeAppear : function() {
       this.base( arguments );
       if( this._parentMenu instanceof org.eclipse.rwt.widgets.Menu ) {
         this._parentMenu.invalidateAllMaxCellWidths();
         this._parentMenu.scheduleMenuLayout();
       }
-    },            
+    },
 
     setHasSelectionListener : function( value ) {
       this._hasSelectionListener = value;
     },
-    
+
     setSubMenu : function( value ) {
       this._subMenu = value;
       this.createDispatchEvent( "subMenuChanged" );
@@ -219,7 +219,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     getNoRadioGroup : function() {
       return this._noRadioGroup;
     },
-    
+
     // TODO [tb] "execute", "setSelection", "_sendChanges" and possibly more
     // could be shared between Button, MenuItem and (future) ToolItem.
     // Then, also the corrosponding LCA-methods could be shared
@@ -230,7 +230,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
       }
       this._sendChanges();
     },
-        
+
     setSelection : function( value ) {
       if( this._selected != value || this._selected ) {
         this._selected = value;
@@ -248,23 +248,23 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
         }
       }
     },
-    
+
     // Not using EventUtil since no event should be sent (for radio at least)
     _sendChanges : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() && this._hasSelectionListener ) {
         var req = org.eclipse.swt.Request.getInstance();
-        if( this._sendEvent ) {        
+        if( this._sendEvent ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( this );
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
           org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         }
-        req.send();       
+        req.send();
       }
     },
- 
-    _onmouseup : function( event ) {      
-      this.execute(); 
+
+    _onmouseup : function( event ) {
+      this.execute();
     }
   }
 

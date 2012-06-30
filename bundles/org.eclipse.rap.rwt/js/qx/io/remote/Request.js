@@ -1,13 +1,13 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        Derrell Lipman,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       Derrell Lipman,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -15,8 +15,8 @@
 /**
  * This class is used to send HTTP requests to the server.
  */
-qx.Class.define("qx.io.remote.Request",
-{
+qx.Class.define("qx.io.remote.Request", {
+
   extend : qx.core.Target,
 
 
@@ -59,7 +59,7 @@ qx.Class.define("qx.io.remote.Request",
     }
 
     this.setProhibitCaching(true);
-    
+
     // Get the next sequence number for this request
     this._seqNum = ++qx.io.remote.Request._seqNum;
   },

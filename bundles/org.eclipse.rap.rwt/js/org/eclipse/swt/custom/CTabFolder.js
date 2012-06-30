@@ -73,13 +73,13 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
 
   statics : {
     BUTTON_SIZE : 18,
-    
+
     MIN_TOOLTIP : "Minimize",
     MAX_TOOLTIP : "Maximize",
     RESTORE_TOOLTIP : "Restore",
     CHEVRON_TOOLTIP : "Show List",
     CLOSE_TOOLTIP : "Close",
-    
+
     setToolTipTexts : function( min, max, restore, chevron, close ) {
       org.eclipse.swt.custom.CTabFolder.MIN_TOOLTIP = min;
       org.eclipse.swt.custom.CTabFolder.MAX_TOOLTIP = max;
@@ -126,12 +126,12 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       }
       this._updateLayout();
     },
-    
+
     /* returns one of: "top", "bottom" */
     getTabPosition : function() {
       return this._tabPosition;
     },
-    
+
     setTabHeight : function( tabHeight ) {
       this._tabHeight = tabHeight;
       var buttonTop = this._getButtonTop();
@@ -200,7 +200,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
         item.updateBackgroundGradient();
       } );
     },
-    
+
     setUnselectedCloseVisible : function( value ) {
       this._unselectedCloseVisible = value;
       this._mapItems( function( item ) {
@@ -224,11 +224,11 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     getSelectionBackground : function() {
       return this._selectionBackground;
     },
-    
+
     getSelectionBackgroundImage : function() {
       return this._selectionBackgroundImage;
     },
-    
+
     getSelectionBackgroundGradient : function() {
       return this._selectionBackgroundGradient;
     },
@@ -347,8 +347,8 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
 
     hideMaxButton : function() {
       if( this._maxButton != null ) {
-        this._maxButton.removeEventListener( "mousedown", 
-                                             this._onMinMaxExecute, 
+        this._maxButton.removeEventListener( "mousedown",
+                                             this._onMinMaxExecute,
                                              this );
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         wm.setToolTip( this._maxButton, null );
@@ -383,8 +383,8 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
 
     hideMinButton : function( left ) {
       if( this._minButton != null ) {
-        this._minButton.removeEventListener( "mousedown", 
-                                             this._onMinMaxExecute, 
+        this._minButton.removeEventListener( "mousedown",
+                                             this._onMinMaxExecute,
                                              this );
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         wm.setToolTip( this._minButton, null );
@@ -428,7 +428,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       this._frame.setLeft( borderWidth );
       this._frame.setWidth( width );
       this._frame.setHeight( this.getHeight() - borderWidth - sepBorderWidth - tabHeight );
-      
+
       if( this._tabPosition == "top" ) {
         this._separator.setTop( tabHeight );
         this._frame.setTop( tabHeight + 1 );
@@ -495,7 +495,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
           break;
       }
     },
-    
+
     _onContextMenu : function( evt ) {
       var menu = this.getContextMenu();
       if( menu != null ) {

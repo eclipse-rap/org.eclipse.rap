@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -37,7 +37,7 @@ qx.Class.define("qx.ui.basic.Label",
    * @param mnemonic {String} The mnemonic of the label (see property {@link #mnemonic}).
    * @param mode {String} The mode of the label (see property {@link #mode}).
    */
-// TODO [rh] unused: replacement for below (no qx code calls 3-args ctor)   
+// TODO [rh] unused: replacement for below (no qx code calls 3-args ctor)
   construct : function(text)
 //  construct : function(text, mnemonic, mode)
   {
@@ -133,7 +133,7 @@ qx.Class.define("qx.ui.basic.Label",
       apply : "_applyText",
       init : "",
       dispose : true,
-// TODO [rh] unused      
+// TODO [rh] unused
 //      event : "changeText",
       check : "Label"
     },
@@ -172,7 +172,7 @@ qx.Class.define("qx.ui.basic.Label",
     {
       check : "Boolean",
       init : true
-// TODO [rh] unused: removed as the corresponding impl was also removed    
+// TODO [rh] unused: removed as the corresponding impl was also removed
 //      apply : "_applyText"
     },
 
@@ -191,13 +191,13 @@ qx.Class.define("qx.ui.basic.Label",
     {
       check : [ "html", "text", "auto" ],
       init : "auto"
-// TODO [rh] unused: replace with empty get/setMode functions      
+// TODO [rh] unused: replace with empty get/setMode functions
 //      apply : "_applyText"
     } // , TODO [rh] unused: removed trailing comma, see below
 
 
     /** A single character which will be underlined inside the text. */
-// TODO [rh] unused    
+// TODO [rh] unused
 //    mnemonic :
 //    {
 //      check : "String",
@@ -311,7 +311,7 @@ qx.Class.define("qx.ui.basic.Label",
     _applyText : function(value, old) {
 //      qx.locale.Manager.getInstance().connect(this._syncText, this, this.getText());
       // DONT USE 'value' as this func is misued by other properties than text
-      this._syncText( this.getText() ); 
+      this._syncText( this.getText() );
     },
 
 
@@ -343,12 +343,12 @@ qx.Class.define("qx.ui.basic.Label",
           break;
       }
       */
-      
+
           this._content = text;
-          
+
       if (this._isCreated) {
         this._renderContent();
-      } 
+      }
     },
 
 
@@ -360,7 +360,7 @@ qx.Class.define("qx.ui.basic.Label",
      * @param old {var} Previous value
      */
 // TODO [rh] unused
-/*     
+/*
     _applyMnemonic : function(value, old)
     {
       this._mnemonicTest = value ? new RegExp("^(((<([^>]|" + value + ")+>)|(&([^;]|" + value + ")+;)|[^&" + value + "])*)(" + value + ")", "i") : null;
@@ -431,7 +431,7 @@ qx.Class.define("qx.ui.basic.Label",
      * @param inner {Integer} inner width of the label
      * @return {String} html Fragment of the label with overflow symbol
      */
-// TODO [rh] unused as not called anymore from replaced _postApply     
+// TODO [rh] unused as not called anymore from replaced _postApply
 //    __patchTextOverflow : function(html, inner) {
 //      return (
 //        "<div style='float:left;width:" + (inner-14) +
@@ -485,7 +485,7 @@ qx.Class.define("qx.ui.basic.Label",
           html += " (" + this.getMnemonic() + ")";
         }
       }
-      
+
       var style = element.style;
 
       if (this.getTextOverflow() && !this.getWrap())

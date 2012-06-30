@@ -27,13 +27,13 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
     this.miterLimit = 10;
     this.globalAlpha = 1;
   },
-  
+
   destruct : function() {
     this._canvas = null;
   },
-  
-  // Implements the Canvas "2d"-context API, with some limitations:  
-  // Missing: strokeRect, fillRect, clip, arcTo, createRadialGradient, 
+
+  // Implements the Canvas "2d"-context API, with some limitations:
+  // Missing: strokeRect, fillRect, clip, arcTo, createRadialGradient,
   // scale, rotate, translate, transform, setTransform
   // Differing API: arc
   // Limited implementation: clearRect, createLinearGradient, drawImage,
@@ -51,41 +51,41 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
       this._copyState( context, this );
     },
 
-    beginPath : function() {    
+    beginPath : function() {
       this._currentPath = [];
     },
 
     closePath : function() {
       this._currentPath.push( { "type" : "close" } );
     },
-    
+
     // Limitation: Arguments are ignored, the entire canvas is cleared.
     clearRect : function( x, y, width, height ) {
       org.eclipse.rwt.VML.clearCanvas( this._canvas );
     },
-    
+
     stroke : function( fill ) {
       var shape = org.eclipse.rwt.VML.createShapeFromContext( this, fill );
       org.eclipse.rwt.VML.addToCanvas( this._canvas, shape );
-    },      
+    },
 
     fill : function() {
       this.stroke( true );
     },
 
     moveTo : function( x, y ) {
-      this._currentPath.push( { 
-        "type" : "moveTo", 
-        "x" : x, 
-        "y" : y 
+      this._currentPath.push( {
+        "type" : "moveTo",
+        "x" : x,
+        "y" : y
       } );
     },
 
     lineTo : function( x, y ) {
-      this._currentPath.push( { 
-        "type" : 'lineTo', 
-        "x" : x, 
-        "y" : y 
+      this._currentPath.push( {
+        "type" : 'lineTo',
+        "x" : x,
+        "y" : y
       } );
     },
 
@@ -121,7 +121,7 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
     },
 
     ellipse : function( x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiCW ) {
-      if( this._currentPath.length === 0 ) {  
+      if( this._currentPath.length === 0 ) {
         var startX = x + Math.cos( startAngle ) * radiusX;
         var startY = y + Math.sin( startAngle ) * radiusY;
         this.moveTo( startX, startY );
@@ -137,7 +137,7 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
         "endAngle" : endAngle
       } );
     },
-    
+
 
     drawImage : function() {
       var shape = org.eclipse.rwt.VML.createShape( "image" );
@@ -146,12 +146,12 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
       if( arguments.length == 3 ) {
         var destX = arguments[ 1 ];
         var destY = arguments[ 2 ];
-        org.eclipse.rwt.VML.setImageData( shape, 
-                                          image.src, 
-                                          destX, 
+        org.eclipse.rwt.VML.setImageData( shape,
+                                          image.src,
+                                          destX,
                                           destY,
-                                          image.width, 
-                                          image.height ); 
+                                          image.width,
+                                          image.height );
       } else {
         var srcX = arguments[ 1 ];
         var srcY = arguments[ 2 ];
@@ -162,25 +162,25 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
         var destWidth = arguments[ 7 ];
         var destHeight = arguments[ 8 ];
         var crop = [
-          srcY / image.height, 
+          srcY / image.height,
           ( image.width - srcX - srcWidth ) / image.width,
           ( image.height - srcY - srcHeight ) / image.height,
           srcX / image.width
-        ]; 
-        org.eclipse.rwt.VML.setImageData( shape, 
-                                          image.src, 
-                                          destX, 
+        ];
+        org.eclipse.rwt.VML.setImageData( shape,
+                                          image.src,
+                                          destX,
                                           destY,
-                                          destWidth, 
+                                          destWidth,
                                           destHeight,
-                                          crop ); 
+                                          crop );
       }
       org.eclipse.rwt.VML.addToCanvas( this._canvas, shape );
     },
-    
-    // Limitations: The gradient is drawn wither vertically or horizontally. 
-    // Calls to "addColorStop" must be in the order of the offsets and can not 
-    // overwrite previous colorsStops. 
+
+    // Limitations: The gradient is drawn wither vertically or horizontally.
+    // Calls to "addColorStop" must be in the order of the offsets and can not
+    // overwrite previous colorsStops.
     createLinearGradient : function( x1, y1, x2, y2 ) {
       var gradient = [];
       gradient.addColorStop = this._addColorStopFunction;
@@ -205,11 +205,11 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
       target.strokeStyle = source.strokeStyle;
       target.globalAlpha = source.globalAlpha;
     },
-    
+
     _addColorStopFunction : function( offset, color ) {
       this.push( [ offset, color ] );
     }
-  
+
   }
 
 } );

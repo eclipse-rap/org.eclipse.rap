@@ -171,12 +171,12 @@ qx.Class.define("qx.Class",
         clazz.name = clazz.classname = name;
         clazz.basename = basename;
         this.__registry[ name ] = clazz;
-  
+
         // Attach toString
         if (!clazz.hasOwnProperty("toString")) {
           clazz.toString = this.genericToString;
         }
-  
+
         if( config.extend ) {
           var superproto = config.extend.prototype;
           var helper = this.__createEmptyFunction();
@@ -1206,7 +1206,7 @@ qx.Class.define("qx.Class",
     __createEmptyFunction : function() {
       return function() {};
     },
-    
+
     __initializeClass : function( clazz ) {
       if( clazz.$$initializer ) {
         var inits = [];
@@ -1218,7 +1218,7 @@ qx.Class.define("qx.Class",
         while( inits.length > 0 ) {
           target = inits.pop();
           target.$$initializer();
-          delete target.$$initializer; 
+          delete target.$$initializer;
         }
       }
     },
@@ -1240,21 +1240,21 @@ qx.Class.define("qx.Class",
         // We can access the class/statics using arguments.callee
         var clazz=arguments.callee.constructor;
         init( clazz );
-  
+
         // Attach local properties
         if(!clazz.$$propertiesAttached)qx.core.Property.attach(clazz);
-  
+
         // Execute default constructor
         var retval=clazz.$$original.apply(this,arguments);
-  
+
         // Initialize local mixins
         if(clazz.$$includes){var mixins=clazz.$$flatIncludes;
         for(var i=0,l=mixins.length;i<l;i++){
         if(mixins[i].$$constructor){mixins[i].$$constructor.apply(this,arguments);}}}
-  
+
         // Mark instance as initialized
         if(this.classname===', name, '.classname)this.$$initialized=true;
-  
+
         // Return optional return value
         return retval;
 

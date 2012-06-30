@@ -10,7 +10,7 @@
  ******************************************************************************/
 
 qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
-  
+
   destruct : function() {
     this._gfxProperties = null;
     this._gfxData = null;
@@ -82,13 +82,13 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         this.base( arguments, value, oldValue );
       }
     } ),
-    
+
 
     _applyOpacity : function( value, oldValue ) {
       this.base( arguments, value, oldValue );
       this._checkAntiAlias( value );
    },
-    
+
     _checkAntiAlias : qx.core.Variant.select( "qx.client", {
       "default" : qx.lang.Function.returnTrue,
       "mshtml" : function( opacity ) {
@@ -98,7 +98,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         }
       }
     } ),
-    
+
     //overwritten
     _styleBackgroundColor : function( value ) {
       if( this._gfxBackgroundEnabled ) {
@@ -411,7 +411,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       // TODO [tb] : can be removed?
       this._prepareBackgroundShape();
     },
-    
+
     _prepareForCanvas : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
         this.prepareEnhancedBorder();

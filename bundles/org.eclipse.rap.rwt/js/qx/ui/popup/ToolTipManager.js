@@ -93,7 +93,7 @@ qx.Class.define("qx.ui.popup.ToolTipManager",
       EVENT INTERFACE: MOUSE
     ---------------------------------------------------------------------------
     */
-    
+
     handleMouseEvent : function( event ) {
       var type = event.getType();
       if( type === "mouseover" ) {

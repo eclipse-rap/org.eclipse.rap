@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,22 +20,22 @@ qx.Class.define( "org.eclipse.rwt.widgets.ExternalBrowser", {
     // maps id's (aka window names) to window instances
     // key = id, value = window object
     _map : {},
-    
+
     open : function( id, url, features ) {
       var escapedId = this._escapeId( id );
       var win = window.open( url, escapedId, features, true );
       if( win != null ) {
         win.focus();
-        this._map[ escapedId ] = win; 
+        this._map[ escapedId ] = win;
       }
     },
-    
+
     close : function( id ) {
       var escapedId = this._escapeId( id );
       var win = this._map[ escapedId ];
       if( win != null ) {
         win.close();
-      } 
+      }
       delete this._map[ escapedId ];
     },
 

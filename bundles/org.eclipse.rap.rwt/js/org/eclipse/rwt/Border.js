@@ -13,21 +13,21 @@
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.Border", {
-  
+
   extend : qx.core.Object,
 
   /**
-   * All arguments can be either a single value, or an array of four values in the order of 
-   * [ top, right, bottom, left ]. The contructor does not recognize an array of four identical 
-   * values colors as one single value. 
-   * 
-   * @param width Integer. Multiple values can be given for rounded border but only the 
+   * All arguments can be either a single value, or an array of four values in the order of
+   * [ top, right, bottom, left ]. The contructor does not recognize an array of four identical
+   * values colors as one single value.
+   *
+   * @param width Integer. Multiple values can be given for rounded border but only the
    *        biggest and zero may be used. Null is allowed.
    * @param style String, either a browser-recognized border-style, or "complex" or "rounded".
-   *        The last two are not accepted as an array, only as a single string. 
-   * @param color String in any browser-recognized color-format. For rounded border only one 
-   *        color may be given.  
-   * @param colorsOrRadii String/number either innerColors(s) for "complex" or radius/radii 
+   *        The last two are not accepted as an array, only as a single string.
+   * @param color String in any browser-recognized color-format. For rounded border only one
+   *        color may be given.
+   * @param colorsOrRadii String/number either innerColors(s) for "complex" or radius/radii
    *        for "rounded" border. Throws exception if its undefined for those or defiend for others.
    */
   construct : function( width, style, color, colorsOrRadii ) {
@@ -51,39 +51,39 @@ qx.Class.define( "org.eclipse.rwt.Border", {
       if( colorsOrRadii === undefined || this.getColor() === null ) {
         throw new Error( "Invalid arguments for border style rounded" );
       }
-      this._setRadii( colorsOrRadii );        
+      this._setRadii( colorsOrRadii );
     } else if( colorsOrRadii !== undefined ) {
       throw new Error( "colorsOrRadii set for style " + this.getStyle() );
-    }  
+    }
   },
-  
+
   statics : {
     _EDGEWIDTH : [ "borderTopWidth", "borderRightWidth", "borderBottomWidth", "borderLeftWidth" ],
     _EDGECOLOR : [ "borderTopColor", "borderRightColor", "borderBottomColor", "borderLeftColor" ],
     _EDGESTYLE : [ "borderTopStyle", "borderRightStyle", "borderBottomStyle", "borderLeftStyle" ],
     _EDGEMOZCOLORS : [
-      "MozBorderTopColors", 
-      "MozBorderRightColors", 
-      "MozBorderBottomColors", 
-      "MozBorderLeftColors" 
+      "MozBorderTopColors",
+      "MozBorderRightColors",
+      "MozBorderBottomColors",
+      "MozBorderLeftColors"
     ],
     _BORDERRADII : qx.core.Variant.select( "qx.client", {
       "webkit" : [
-        "-webkit-border-top-left-radius", 
-        "-webkit-border-top-right-radius", 
-        "-webkit-border-bottom-right-radius", 
-        "-webkit-border-bottom-left-radius" 
+        "-webkit-border-top-left-radius",
+        "-webkit-border-top-right-radius",
+        "-webkit-border-bottom-right-radius",
+        "-webkit-border-bottom-left-radius"
       ],
-      "gecko|newmshtml" : [ 
-        "borderTopLeftRadius", 
-        "borderTopRightRadius", 
-        "borderBottomRightRadius", 
+      "gecko|newmshtml" : [
+        "borderTopLeftRadius",
+        "borderTopRightRadius",
+        "borderBottomRightRadius",
         "borderBottomLeftRadius"
       ],
       "default" : []
-    } ), 
-    
-    
+    } ),
+
+
     resetWidget : function( widget ) {
       widget._style.border = "";
       if( widget._innerStyle ) {
@@ -110,7 +110,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
         for( var i = 0; i < 4; i++ ) {
           style[ statics._EDGEMOZCOLORS[ i ] ] = "";
         }
-      }, 
+      },
       "default" : function( widget ) {
         var statics = org.eclipse.rwt.Border;
         var inner = widget._innerStyle;
@@ -134,36 +134,36 @@ qx.Class.define( "org.eclipse.rwt.Border", {
       }
       this._colors = this._normalizeValue( value );
     },
-    
+
     _setWidth : function( value ) {
       this._widths = this._normalizeValue( value );
     },
-    
+
     _setStyle : function( value ) {
       if( typeof value === "string" ) {
         this._singleStyle = value;
         if( value === "complex" || value === "rounded" ) {
-          this._styles = this._normalizeValue( "solid" );          
+          this._styles = this._normalizeValue( "solid" );
         } else {
-          this._styles = this._normalizeValue( value );          
+          this._styles = this._normalizeValue( value );
         }
       } else {
         this._styles = this._normalizeValue( value );
       }
-    }, 
+    },
 
     _setInnerColor : function( value ) {
       this._innerColors = this._normalizeValue( value );
     },
-    
+
     _setRadii : function( value ) {
       this._radii = this._normalizeValue( value );
     },
-    
+
     getRadii : function() {
       return this._radii.concat();
     },
-    
+
     getColor : function() {
       return this._singleColor;
     },
@@ -171,7 +171,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
     getColors : function() {
       return this._colors.concat();
     },
-    
+
     getColorTop : function() {
       return this._colors[ 0 ];
     },
@@ -211,7 +211,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
     getStyle : function() {
       return this._singleStyle;
     },
-    
+
     getStyles : function() {
       return this._styles.concat();
     },
@@ -266,9 +266,9 @@ qx.Class.define( "org.eclipse.rwt.Border", {
       if( this.getStyle() === "complex" ) {
         this._renderComplexBorder( widget );
       } else if( this.getStyle() === "rounded" ) {
-        this._renderRoundedBorder( widget );        
+        this._renderRoundedBorder( widget );
       } else {
-        this._renderSimpleBorder( widget );        
+        this._renderSimpleBorder( widget );
       }
     },
 
@@ -276,13 +276,13 @@ qx.Class.define( "org.eclipse.rwt.Border", {
       if( this.getStyle() === "complex" || this.getStyle() === "rounded" ) {
         throw new Error( "Rendering complex or rounded border on elements currently unsupported" );
       }
-      this._renderSimpleBorderStyle( element.style );        
+      this._renderSimpleBorderStyle( element.style );
     },
 
     _renderSimpleBorder : function( widget ) {
       org.eclipse.rwt.Border._resetComplexBorder( widget );
       org.eclipse.rwt.Border._resetRadii( widget );
-      this._renderSimpleBorderStyle( widget._style );              
+      this._renderSimpleBorderStyle( widget._style );
     },
 
     _renderSimpleBorderStyle : function( style ) {

@@ -12,22 +12,22 @@
 namespace( "org.eclipse.rwt.protocol" );
 
 org.eclipse.rwt.protocol.AdapterUtil = {
-  
+
   _controlDestructor : function( widget ) {
     var shell = org.eclipse.rwt.protocol.AdapterUtil.getShell( widget );
     if( shell ) {
       // remove from shells list of widgets listening for activate events (if present)
-      shell.removeActivateListenerWidget( widget );          
+      shell.removeActivateListenerWidget( widget );
     }
     org.eclipse.rwt.protocol.AdapterUtil._widgetDestructor( widget );
   },
-  
+
   _widgetDestructor : function( widget ) {
     widget.setToolTip( null );
     widget.setUserData( "toolTipText", null );
     widget.destroy();
   },
-  
+
   _controlProperties : [
     "children",
     "tabIndex",
@@ -45,7 +45,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     "activeKeys",
     "cancelKeys"
   ],
-  
+
   _controlPropertyHandler : {
     "children" : function( widget, value ) {
       if( value !== null ) {
@@ -117,7 +117,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
         var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
         widget.setToolTip( toolTip );
         // make sure "boundToWidget" is initialized:
-        if( toolTip.getParent() != null ) {  
+        if( toolTip.getParent() != null ) {
           if( toolTip.getBoundToWidget() == widget ) {
             toolTip.updateText( widget );
           }
@@ -231,13 +231,13 @@ org.eclipse.rwt.protocol.AdapterUtil = {
         if( value ) {
           shell.addActivateListenerWidget( widget );
         } else {
-          shell.removeActivateListenerWidget( widget );          
+          shell.removeActivateListenerWidget( widget );
         }
       }
     }
   },
-  
-  _specialHandler : { 
+
+  _specialHandler : {
     "backgroundGradient" : function( widget, value ) {
       var gradient = null;
       if( value ) {
@@ -264,32 +264,32 @@ org.eclipse.rwt.protocol.AdapterUtil = {
       }
     }
   },
-  
+
   ////////////////////////////////
   // lists and handler for adapter
 
   getWidgetDestructor : function() {
     return this._widgetDestructor;
   },
-  
+
   getControlDestructor : function() {
     return this._controlDestructor;
   },
-  
+
   extendControlProperties : function( list ) {
     return list.concat( this._controlProperties );
   },
-  
+
   extendControlPropertyHandler : function( handler ) {
     return qx.lang.Object.mergeWith( handler, this._controlPropertyHandler, false );
   },
-  
+
   extendControlListeners : function( list ) {
     return list.concat( this._controlListeners );
   },
 
   extendControlListenerHandler : function( handler ) {
-    return qx.lang.Object.mergeWith( handler, this._controlListenerHandler, false );    
+    return qx.lang.Object.mergeWith( handler, this._controlListenerHandler, false );
   },
 
   getBackgroundGradientHandler : function() {
@@ -299,7 +299,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
   getRoundedBorderHandler : function() {
     return this._specialHandler.roundedBorder;
   },
-  
+
   getControlPropertyHandler : function( property ) {
     return this._controlPropertyHandler[ property ];
   },
@@ -326,7 +326,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     }
     return result;
   },
-  
+
   setParent : function( widget, parentId ) {
     var impl = this._setParentImplementation;
     this.callWithTarget( parentId, function( parent ) {
@@ -339,7 +339,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     //      when using add sizes and clipping are treated differently
     // parent.add( widget );
     if( parent instanceof org.eclipse.swt.custom.ScrolledComposite ) {
-      // [if] do nothing, parent is set in ScrolledComposite#setContent which is called from the 
+      // [if] do nothing, parent is set in ScrolledComposite#setContent which is called from the
       // server-side - see bug 349161
       widget.setUserData( "scrolledComposite", parent ); // Needed by "bounds" handler
     } else if ( parent instanceof qx.ui.pageview.tabview.TabView ) {

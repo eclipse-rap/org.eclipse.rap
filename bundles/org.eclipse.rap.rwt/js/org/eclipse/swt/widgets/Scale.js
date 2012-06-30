@@ -11,7 +11,7 @@
  ******************************************************************************/
 
 /**
- * This class provides the client-side counterpart for 
+ * This class provides the client-side counterpart for
  * org.eclipse.swt.widgets.Scale.
  */
 qx.Class.define( "org.eclipse.swt.widgets.Scale", {
@@ -21,19 +21,19 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     this.base( arguments );
     this.setAppearance( "scale" );
     this._horizontal = isHorizontal;
-    
+
     // Has selection listener
     this._hasSelectionListener = false;
-    
+
     // Flag indicates that the next request can be sent
     this._readyToSendChanges = true;
-    
+
     // Default values
     this._selection = 0;
     this._minimum = 0;
     this._maximum = 100;
     this._increment = 1;
-    this._pageIncrement = 10;    
+    this._pageIncrement = 10;
     this._pxStep = 1.34;
 
     // Base line
@@ -41,8 +41,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     if( this._horizontal ) {
       this._line.addState( org.eclipse.swt.widgets.Scale.STATE_HORIZONTAL );
     }
-    this._line.setAppearance( "scale-line" ); 
-    this._line.setResizeToInner( true ); 
+    this._line.setAppearance( "scale-line" );
+    this._line.setResizeToInner( true );
     this._line.addEventListener( "mousedown", this._onLineMouseDown, this );
     this.add( this._line );
 
@@ -57,21 +57,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     this._thumb.addEventListener( "mouseup", this._onThumbMouseUp, this );
     // Fix IE Styling issues
     org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._thumb );
-    this.add( this._thumb );    
+    this.add( this._thumb );
     // Thumb offset
     this._thumbOffset = 0;
 
     // Add events listeners
     if( this._horizontal ) {
       this.addEventListener( "changeWidth", this._onChangeWidth, this );
-    } else {  
+    } else {
       this.addEventListener( "changeHeight", this._onChangeHeight, this );
     }
     this.addEventListener( "contextmenu", this._onContextMenu, this );
     this.addEventListener( "keypress", this._onKeyPress, this );
     this.addEventListener( "mousewheel", this._onMouseWheel, this );
   },
-  
+
   destruct : function() {
     this._line.removeEventListener( "mousedown", this._onLineMouseDown, this );
     this._thumb.removeEventListener( "mousedown", this._onThumbMouseDown, this );
@@ -88,7 +88,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     this._disposeObjects( "_line", "_thumb" );
     this._thumb = null;
   },
-  
+
   events : {
     "selectionChanged" : "qx.event.type.Event",
     "minimumChanged" : "qx.event.type.Event",
@@ -101,30 +101,30 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     SCALE_LINE_OFFSET : 9,
     THUMB_OFFSET : 9,
     HALF_THUMB : 5,
-    
+
     _isNoModifierPressed : function( evt ) {
-      return    !evt.isCtrlPressed() 
-             && !evt.isShiftPressed() 
-             && !evt.isAltPressed() 
-             && !evt.isMetaPressed();      
+      return    !evt.isCtrlPressed()
+             && !evt.isShiftPressed()
+             && !evt.isAltPressed()
+             && !evt.isMetaPressed();
     }
   },
-  
+
   members : {
     _onChangeWidth : function( evt ) {
       this._line.setWidth( this.getWidth() - 2 * org.eclipse.swt.widgets.Scale.PADDING );
       this._updateStep();
       this._updateThumbPosition();
     },
-    
+
     _onChangeHeight : function( evt ) {
       this._line.setHeight( this.getHeight() - 2 * org.eclipse.swt.widgets.Scale.PADDING );
       this._updateStep();
       this._updateThumbPosition();
     },
-    
+
     _onContextMenu : function( evt ) {
-      var menu = this.getContextMenu();      
+      var menu = this.getContextMenu();
       if( menu != null ) {
         menu.setLocation( evt.getPageX(), evt.getPageY() );
         menu.setOpener( this );
@@ -132,7 +132,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
         evt.stopPropagation();
       }
     },
-    
+
     _onKeyPress : function( evt ) {
       var keyIdentifier = evt.getKeyIdentifier();
       var sel;
@@ -145,7 +145,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
             break;
           case "Down":
             if( this._horizontal ) {
-              sel = this._selection - this._increment;  
+              sel = this._selection - this._increment;
             } else {
               sel = this._selection + this._increment;
             }
@@ -157,15 +157,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
             evt.preventDefault();
             evt.stopPropagation();
             break;
-          case "Up": 
+          case "Up":
             if( this._horizontal ) {
               sel = this._selection + this._increment;
             } else {
-              sel = this._selection - this._increment;    
+              sel = this._selection - this._increment;
             }
             evt.preventDefault();
             evt.stopPropagation();
-            break; 
+            break;
           case "Home":
             sel = this._minimum;
             evt.preventDefault();
@@ -189,7 +189,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
             if( this._horizontal ) {
               sel = this._selection + this._pageIncrement;
             } else {
-              sel = this._selection - this._pageIncrement;   
+              sel = this._selection - this._pageIncrement;
             }
             evt.preventDefault();
             evt.stopPropagation();
@@ -201,7 +201,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
         }
       }
     },
-    
+
     _onMouseWheel : function( evt ) {
       if( this.getFocused() ) {
         evt.preventDefault();
@@ -211,7 +211,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
         this._scheduleSendChanges();
       }
     },
-    
+
     _onLineMouseDown : function( evt ) {
       var pxSel;
       var mousePos;
@@ -225,35 +225,35 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
           mousePos = evt.getPageY() - qx.bom.element.Location.getTop( this.getElement() );
         }
         if( mousePos > pxSel ) {
-          sel = this._selection + this._pageIncrement;         
+          sel = this._selection + this._pageIncrement;
         } else {
-          sel = this._selection - this._pageIncrement;        
+          sel = this._selection - this._pageIncrement;
         }
         this.setSelection( sel );
         this._scheduleSendChanges();
       }
     },
-    
+
     _onThumbMouseDown : function( evt ) {
       var mousePos;
       if( evt.isLeftButtonPressed() ) {
-        if( this._horizontal ) {        
+        if( this._horizontal ) {
           mousePos = evt.getPageX() - qx.bom.element.Location.getLeft( this.getElement() );
           this._thumbOffset = mousePos - this._thumb.getLeft();
-        } else {        
+        } else {
           mousePos = evt.getPageY() - qx.bom.element.Location.getTop( this.getElement() );
-          this._thumbOffset = mousePos - this._thumb.getTop();  
+          this._thumbOffset = mousePos - this._thumb.getTop();
         }
         this._thumb.setCapture(true);
       }
     },
-    
+
     _onThumbMouseMove : function( evt ) {
       var mousePos;
       if( this._thumb.getCapture() ) {
-        if( this._horizontal ) {        
+        if( this._horizontal ) {
           mousePos = evt.getPageX() - qx.bom.element.Location.getLeft( this.getElement() );
-        } else {        
+        } else {
           mousePos = evt.getPageY() - qx.bom.element.Location.getTop( this.getElement() );
         }
         var sel = this._getSelectionFromThumbPosition( mousePos - this._thumbOffset );
@@ -263,11 +263,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
         }
       }
     },
-    
+
     _onThumbMouseUp : function( evt ) {
       this._thumb.setCapture( false );
     },
-    
+
     _updateStep : function() {
       var padding =   org.eclipse.swt.widgets.Scale.PADDING
                     + org.eclipse.swt.widgets.Scale.HALF_THUMB;
@@ -277,7 +277,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
         this._pxStep = ( this.getHeight() - 2 * padding ) / ( this._maximum - this._minimum );
       }
     },
-    
+
     _updateThumbPosition : function() {
       var pos =   org.eclipse.swt.widgets.Scale.PADDING
                 + this._pxStep * ( this._selection - this._minimum );
@@ -287,7 +287,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
         this._thumb.setTop( pos );
       }
     },
-    
+
     _getSelectionFromThumbPosition : function( position ) {
       var sel = ( position - org.eclipse.swt.widgets.Scale.PADDING ) / this._pxStep + this._minimum;
       return this._normalizeSelection( Math.round( sel ) );
@@ -297,7 +297,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
       var result = value;
       if( value < this._minimum ) {
         result = this._minimum;
-      } 
+      }
       if( value > this._maximum ) {
         result = this._maximum;
       }
@@ -310,12 +310,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
         qx.client.Timer.once( this._sendChanges, this, 500 );
       }
     },
-    
+
     _sendChanges : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {        
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();
-        var id = widgetManager.findIdByWidget( this );        
+        var id = widgetManager.findIdByWidget( this );
         req.addParameter( id + ".selection", this._selection );
         if( this._hasSelectionListener ) {
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
@@ -325,45 +325,45 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
         this._readyToSendChanges = true;
       }
     },
-    
+
     setHasSelectionListener : function( value ) {
       this._hasSelectionListener = value;
     },
-    
+
     setSelection : function( value ) {
       this._selection = this._normalizeSelection( value );
       this._updateThumbPosition();
       this.dispatchSimpleEvent( "selectionChanged" );
     },
-    
+
     setMinimum : function( value ) {
       this._minimum = value;
       this._updateStep();
       this._updateThumbPosition();
       this.dispatchSimpleEvent( "minimumChanged" );
     },
-    
+
     setMaximum : function( value ) {
       this._maximum = value;
       this._updateStep();
       this._updateThumbPosition();
       this.dispatchSimpleEvent( "maximumChanged" );
     },
-    
+
     setIncrement : function( value ) {
       this._increment = value;
     },
-    
+
     setPageIncrement : function( value ) {
       this._pageIncrement = value;
     },
-    
+
     // overwritten:
     _visualizeFocus : function() {
       this.base( arguments );
       this._thumb.addState( "focused" );
     },
-    
+
     // overwritten:
     _visualizeBlur : function() {
       this.base( arguments );

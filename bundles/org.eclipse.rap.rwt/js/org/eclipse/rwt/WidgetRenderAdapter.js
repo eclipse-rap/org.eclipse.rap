@@ -37,11 +37,11 @@ qx.Class.define( "org.eclipse.rwt.WidgetRenderAdapter", {
     "left" : "qx.event.type.DataEvent",
     "opacity" : "qx.event.type.DataEvent",
     "backgroundColor" : "qx.event.type.DataEvent",
-    "backgroundGradient" : "qx.event.type.DataEvent"      
+    "backgroundGradient" : "qx.event.type.DataEvent"
   },
 
   members : {
-    
+
     addRenderListener : function( type, listener, context ) {
       var rendererName = this._renderFunctionNames[ type ];
       if( !this.hasEventListeners( type ) ) {
@@ -55,27 +55,27 @@ qx.Class.define( "org.eclipse.rwt.WidgetRenderAdapter", {
       }
       this.addEventListener( type, listener, context );
     },
-    
+
     removeRenderListener : function( type, listener, context ) {
       this.removeEventListener( type, listener, context );
-      if( !this.hasEventListeners( type ) ) {      
+      if( !this.hasEventListeners( type ) ) {
         var rendererName = this._renderFunctionNames[ type ];
         delete this._widget[ rendererName ];
       }
     },
-    
+
     forceRender : function( type, value ) {
       this.getOriginalRenderer( type ).call( this._widget, value );
     },
-    
+
     getOriginalRenderer : function( type ) {
       var rendererName = this._renderFunctionNames[ type ];
       var proto = this._widget.constructor.prototype;
       return proto[ rendererName ];
     },
 
-    // TODO [tb]: AnimationRenderer#getValueFromWidget would also fit here 
-    
+    // TODO [tb]: AnimationRenderer#getValueFromWidget would also fit here
+
     _renderFunctionNames :  {
       "visibility" : "_applyVisibility",
       "height" : "_renderRuntimeHeight",
@@ -83,7 +83,7 @@ qx.Class.define( "org.eclipse.rwt.WidgetRenderAdapter", {
       "left" : "_renderRuntimeLeft",
       "opacity" : "_applyOpacity",
       "backgroundColor" : "_styleBackgroundColor",
-      "backgroundGradient" : "_applyBackgroundGradient"      
+      "backgroundGradient" : "_applyBackgroundGradient"
     }
 
   }

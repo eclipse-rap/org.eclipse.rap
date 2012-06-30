@@ -39,24 +39,24 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
   },
 
   statics : {
-    
+
     MERGE_THRESHOLD : 4
 
   },
-  
+
   events: {
     "changeValue" : "qx.event.type.Event"
   },
 
   members : {
-    
+
     _configureAppearance : function() {
       this.setAppearance( "scrollbar" );
       this._thumb.setAppearance( "scrollbar-thumb" );
       this._minButton.setAppearance( "scrollbar-min-button" );
       this._maxButton.setAppearance( "scrollbar-max-button" );
     },
-    
+
     //////
     // API
 
@@ -64,7 +64,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
       this._idealValue = value;
       this._setSelection( value * this._selectionFactor );
     },
-    
+
     getValue : function( value ) {
       return Math.round( this._selection / this._selectionFactor );
     },
@@ -76,11 +76,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
       }
       this._updateThumbLength();
     },
-    
+
     getMaximum : function() {
       return this._maximum;
     },
-    
+
     setIncrement : function( value ) {
       this._setIncrement( value );
       this._updatePageIncrement();
@@ -100,7 +100,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
       return this._mergeEvents;
     },
 
-    autoEnableMerge : function( renderTime ) { 
+    autoEnableMerge : function( renderTime ) {
       // TODO [tb] : also automatically disable again
       if( !this._mergeEvents && renderTime > 0 ) {
         this._renderSamples++;
@@ -129,7 +129,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
         this._setSelection( this._idealValue );
       }
     },
-    
+
     _updateThumbSize : function() {
       this.base( arguments );
       var size = this._getThumbSize();
@@ -141,7 +141,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
       if( this._horizontal ) {
         var iconWidth = this._thumb.getCellWidth( 1 );
         var iconVisible = size >= ( iconWidth + 6 );
-        this._thumb.setCellVisible( 1, iconVisible );        
+        this._thumb.setCellVisible( 1, iconVisible );
       } else {
         var iconHeight = this._thumb.getCellHeight( 1 );
         var iconVisible = size >= ( iconHeight + 6 );
@@ -166,7 +166,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
           }
         }
       }
-    },    
+    },
 
     _setSelection : function( value ) {
       if( value !== this._idealValue ) {
@@ -174,25 +174,25 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
       }
       this.base( arguments, value );
     },
-    
+
     _selectionChanged : function() {
       this.base( arguments );
       if( this._getMergeCurrentEvent() ) {
-        // TODO [tb] : firing an event here could enable a widget to show at least some feedback 
+        // TODO [tb] : firing an event here could enable a widget to show at least some feedback
         this._eventTimer.stop();
         this._eventTimer.start();
       } else {
         this._dispatchValueChanged();
       }
     },
-    
+
     ////////////
     // Internals
-    
+
     _getMinThumbSize : function() {
       var themeValues = new org.eclipse.swt.theme.ThemeValues( this.__states );
       return themeValues.getCssDimension( "ScrollBar-Thumb", "min-height" );
-    },    
+    },
 
     _updateThumbLength : function() {
       this._setThumb( this._getSliderSize() );
@@ -219,7 +219,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
       }
       return result;
     },
-    
+
     _dispatchValueChanged : function() {
       if( this._mergeEvents ) {
         this._eventTimer.stop();
@@ -227,12 +227,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
       this._lastDispatchedValue = this._selection;
       this.createDispatchEvent( "changeValue" );
     },
-    
+
     _updateStepsize : function() {
       var oldValue = this._selection;
       this.base( arguments );
       if( oldValue !== this._selection ) {
-        this._dispatchValueChanged();      
+        this._dispatchValueChanged();
       }
     }
 

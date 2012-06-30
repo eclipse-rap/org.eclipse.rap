@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
       var tabItem = new qx.ui.pageview.tabview.Button();
       tabItem.setTabIndex( null );
       tabItem.setLabel( "(empty)" );
-      tabItem.getLabelObject().setMode( "html" ); 
+      tabItem.getLabelObject().setMode( "html" );
       tabItem.setLabel( "" );
       tabItem.setEnableElementFocus( false );
       tabItem.addEventListener( "changeFocused", org.eclipse.swt.TabUtil._onTabItemChangeFocus );
@@ -31,7 +31,7 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
       widgetManager.add( tabViewPage, id + "pg" );
       return tabItem;
     },
-    
+
     releaseTabItem : function( tabItem ) {
       var tabFolder = tabItem.getParent().getParent();
       tabItem.removeEventListener( "changeFocused", org.eclipse.swt.TabUtil._onTabItemChangeFocus );

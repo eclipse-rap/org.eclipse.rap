@@ -30,7 +30,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MenuBar", {
     }
 
   },
-  
+
   events : {
     "changeOpenItem" : "qx.event.type.Event"
   },

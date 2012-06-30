@@ -74,7 +74,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
   statics : {
     STATE_OVER : "over",
     STATE_SELECTED : "selected",
-    
+
     IMG_CLOSE : "widget/ctabfolder/close.gif",
     IMG_CLOSE_HOVER : "widget/ctabfolder/close_hover.gif"
   },
@@ -128,7 +128,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     isSelected : function() {
       return this._selected;
     },
-    
+
     setShowClose : function( value ) {
       this._showClose = value;
       this.updateCloseButton();

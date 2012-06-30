@@ -138,7 +138,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
         }
       }
     },
-    
+
     isActive : function() {
       return this._active;
     },
@@ -568,7 +568,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
       "backgroundColor" : "color",
       "backgroundGradient" : "gradient"
     },
-    
+
     converter : {
 
       // Converter working without startValue/EndValue

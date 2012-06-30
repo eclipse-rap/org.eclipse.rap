@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -67,7 +67,7 @@ qx.Class.define("qx.io.image.Preloader",
     // Set Source
     this._source = imageUrl;
     this._element.src = imageUrl;
-    
+
     this._checkPng();
 
     qx.io.image.PreloaderManager.getInstance().add(this);
@@ -145,12 +145,12 @@ qx.Class.define("qx.io.image.Preloader",
     isErroneous : function() {
       return this._isErroneous;
     },
-    
+
     _checkPng : qx.core.Variant.select( "qx.client", {
       "default": qx.lang.Function.returnTrue,
       "mshtml" : function() {
         this._isPng = /\.png$/i.test(this._element.nameProp);
-      } 
+      }
     } ),
 
     // only used in mshtml: true when the image format is in png

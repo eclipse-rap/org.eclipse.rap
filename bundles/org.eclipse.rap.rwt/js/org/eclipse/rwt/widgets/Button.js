@@ -33,18 +33,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.Button", {
     }
     this.initTabIndex();
     this.addEventListener( "focus", this._onFocus );
-    this.addEventListener( "blur", this._onBlur );    
+    this.addEventListener( "blur", this._onBlur );
   },
-  
+
   properties : {
 
     tabIndex : {
       refine : true,
       init : 1
     }
-        
+
   },
-  
+
   members : {
 
     setAlignment : function( value ) {
@@ -69,21 +69,21 @@ qx.Class.define( "org.eclipse.rwt.widgets.Button", {
          this._showFocusIndicator();
       }
     },
-    
+
     _showFocusIndicator : function() {
       var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
       var node = this.getCellNode( 2 ) != null ? this.getCellNode( 2 ) : this.getCellNode( 1 );
-      focusIndicator.show( this, "Button-FocusIndicator", node );      
+      focusIndicator.show( this, "Button-FocusIndicator", node );
     },
-    
+
     _onFocus : function( event ) {
       this._showFocusIndicator();
     },
-    
+
     _onBlur : function( event ) {
       var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
       focusIndicator.hide( this );
     }
-    
+
   }
 } );

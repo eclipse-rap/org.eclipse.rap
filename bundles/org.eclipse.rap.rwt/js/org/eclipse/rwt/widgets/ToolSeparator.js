@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
-
 
 qx.Class.define( "org.eclipse.rwt.widgets.ToolSeparator", {
   extend : qx.ui.layout.CanvasLayout,
@@ -30,14 +30,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolSeparator", {
   },
 
   properties : {
-    
+
     appearance : {
       refine : true,
       init : "toolbar-separator"
     }
-    
+
   },
-  
+
   members : {
 
     _applyWidth : function( newValue, oldValue ) {
@@ -46,26 +46,26 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolSeparator", {
         var lineWidth = this._line.getWidth();
         var center = newValue * 0.5;
         var lineLeft = Math.floor( center - ( lineWidth * 0.5 ) );
-        this._line.setLeft( lineLeft ); 
+        this._line.setLeft( lineLeft );
       }
     },
-    
+
     _applyHeight : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
       if( this._line && this._vertical ) {
         var lineHeight = this._line.getHeight();
         var center = newValue * 0.5;
         var lineTop = Math.floor( center - ( lineHeight * 0.5 ) );
-        this._line.setTop( lineTop ); 
+        this._line.setTop( lineTop );
       }
     },
-    
+
     setLineVisible : function( value ) {
       if( this._line ) {
         this._line.setVisibility( value );
       }
     }
-    
+
   }
-  
+
 } );

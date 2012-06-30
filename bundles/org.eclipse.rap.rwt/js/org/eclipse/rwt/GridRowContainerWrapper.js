@@ -9,9 +9,9 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
- 
+
 namespace( "org.eclipse.rwt" );
- 
+
 org.eclipse.rwt.GridRowContainerWrapper = function() {
   this._fixedColumns = 0;
   this._container = [];
@@ -52,9 +52,9 @@ org.eclipse.rwt.GridRowContainerWrapper._createContainerGetterDelegater = functi
 };
 
 org.eclipse.rwt.GridRowContainerWrapper._CONTAINER_DELEGATES = [
-  "setParent", 
-  "destroy", 
-  "addEventListener", 
+  "setParent",
+  "destroy",
+  "addEventListener",
   "removeEventListener",
   "setSelectionProvider",
   "setHeight",
@@ -69,7 +69,7 @@ org.eclipse.rwt.GridRowContainerWrapper._CONTAINER_DELEGATES = [
   "setBaseAppearance"
 ];
 
-org.eclipse.rwt.GridRowContainerWrapper._CONTAINER_GETTER_DELEGATES = [ 
+org.eclipse.rwt.GridRowContainerWrapper._CONTAINER_GETTER_DELEGATES = [
   "getTop",
   "getHeight",
   "getHoverItem",
@@ -83,20 +83,20 @@ org.eclipse.rwt.GridRowContainerWrapper.prototype = {
 
   ///////////////////
   // Wrapper-only API
-  
+
   getSubContainer : function( pos ) {
     return this._container[ pos ] || null;
   },
-  
+
   setFixedColumns : function( value ) {
     this._fixedColumns = value;
     this._updateConfig();
   },
-  
+
   getFixedColumns : function() {
     return this._fixedColumns;
   },
-  
+
   /////////////////////////////////////////////
   // New Implementation of TreeRowContainer API
 
@@ -125,7 +125,7 @@ org.eclipse.rwt.GridRowContainerWrapper.prototype = {
   setScrollLeft : function( value ) {
     this._container[ 1 ].setScrollLeft( value );
   },
-  
+
   findItemByRow : function( row ) {
     var result = this._container[ 0 ].findItemByRow( row );
     if( result == null ) {

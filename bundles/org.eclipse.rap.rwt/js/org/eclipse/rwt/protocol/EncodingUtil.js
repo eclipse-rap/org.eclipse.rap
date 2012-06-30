@@ -33,8 +33,8 @@ org.eclipse.rwt.protocol.EncodingUtil = {
   },
 
   /**
-   * Replaces all occurrences of the characters <,>,&," with their corresponding HTML entities. 
-   * When the parameter mnemonic is set to true, this method handles ampersand characters in the 
+   * Replaces all occurrences of the characters <,>,&," with their corresponding HTML entities.
+   * When the parameter mnemonic is set to true, this method handles ampersand characters in the
    * text as mnemonics in the same manner as SWT does.
    * Note: In contrast to SWT, the characters following an ampersand are currently not underlined.
    *
@@ -92,7 +92,7 @@ org.eclipse.rwt.protocol.EncodingUtil = {
    *
    * @param input the string to process
    * @return a copy of the input string with white spaces replaced
-   */  
+   */
   replaceWhiteSpaces : function( text ) {
     var result = text.replace( this._outerWhitespaceRegExp, this._outerWhitespaceResolver );
     result = result.replace( this._whitespaceRegExp, this._whitespaceResolver );
@@ -112,8 +112,8 @@ org.eclipse.rwt.protocol.EncodingUtil = {
 
   /////////
   // Helper
-  
-  _getEscapeResolverMnemonics : function() { 
+
+  _getEscapeResolverMnemonics : function() {
     if( this._escapeResolverMnemonics ===  null ) {
       this._getEscapeResolver(); // implicitly create default resolver
       var EncodingUtil = this;

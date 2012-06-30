@@ -33,7 +33,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
   },
 
   members : {
-    
+
     //////
     // API
 
@@ -44,10 +44,10 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
     setCancelKeys : function( value ) {
       this._cancelKeys = value;
     },
-    
+
     ////////////
     // Internals
-    
+
     _onKeyDomEvent : function( eventType, keyCode, charCode, domEvent ) {
       if( eventType === "keydown" ) {
         this._currentKeyCode = keyCode;
@@ -69,7 +69,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
       }
       return !domEvent._noProcess;
     },
-    
+
     /////////////
     // send event
 
@@ -78,7 +78,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
       if( this._isRelevant( keyCode, eventType, domEvent ) ) {
         if( this._hasTraverseListener( control ) && this._isTraverseKey( keyCode ) ) {
           result = true;
-        } 
+        }
         if( !result && this._hasKeyListener( control ) ) {
           var activeKeys = control.getUserData( "activeKeys" );
           if( activeKeys ) {
@@ -93,7 +93,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
       }
       return result;
     },
-    
+
     _isRelevant : function( keyCode, eventType, domEvent ) {
       var result;
       if( eventType === "keypress" ) {
@@ -144,9 +144,9 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
         this._sendRequestAsync();
       }
     },
-    
+
     _sendRequestAsync : function() {
-      window.setTimeout( function() { 
+      window.setTimeout( function() {
         org.eclipse.swt.Request.getInstance()._sendImmediate( true );
       }, 0 );
     },
@@ -177,13 +177,13 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
       }
       req.addParameter( "org.eclipse.swt.events.keyDown.modifier", modifier );
     },
-    
+
     ///////////////
     // cancel event
 
     _shouldCancel : function( keyCode, charCode, domEvent, control ) {
       var result = this._isActive( this._cancelKeys, domEvent, keyCode, charCode );
-      if( !result ) { 
+      if( !result ) {
         var cancelKeys = control ? control.getUserData( "cancelKeys" ) : null;
         if( cancelKeys ) {
           result = this._isActive( cancelKeys, domEvent, keyCode, charCode );
@@ -218,7 +218,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
       }
       return result;
     },
-    
+
     _getKeyBindingIdentifier : function( domEvent, eventType, keyCode, charCode ) {
       var result = [];
       if( eventType === "keydown" && !isNaN( keyCode ) && keyCode > 0 ) {
@@ -237,7 +237,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
       }
       return result.join( "+" );
     },
-    
+
     _getCharCode : function( keyCode, charCode, domEvent ) {
       var result = charCode;
       if( result === 0 && this._isAlphaNumeric( keyCode ) ) {
@@ -249,15 +249,15 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
       }
       return result;
     },
-    
+
     _isModifier : function( keyCode ) {
       return keyCode >= 16 && keyCode <= 20 && keyCode !== 19;
     },
-    
+
     _isAlphaNumeric : function( keyCode ) {
       return ( keyCode >= 65 && keyCode <= 90 ) || this._isNumeric( keyCode );
     },
-    
+
     _isNumeric : function( keyCode ) {
       return keyCode >= 48 && keyCode <= 57;
     },

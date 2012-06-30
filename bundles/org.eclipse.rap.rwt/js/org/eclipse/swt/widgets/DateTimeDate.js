@@ -670,7 +670,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         }
       }
     },
-    
+
     _onInterval : function() {
       this._requestTimer.stop();
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
@@ -789,7 +789,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         this._toggleCalendarVisibility();
       }
     },
-    
+
     _onMouseDown : function( evt ) {
       var target = evt.getTarget();
       if( target.getUserData( "calendar-day" ) ) {
@@ -798,8 +798,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         evt.stopPropagation();
       } else if( this._dropped && target !== this._dropDownButton ) {
         this._toggleCalendarVisibility();
-      }  
-    },  
+      }
+    },
 
     _onMouseClick : function( evt ) {
       if( evt.isLeftButtonPressed() ) {

@@ -1,6 +1,6 @@
 /*******************************************************************************
- *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
@@ -77,13 +77,13 @@ qx.Class.define( "qx.io.Alias", {
       }
       return value;
     },
-    
+
     /**
      * Rewrites an relative URL to an absolute one to prevent the "mixed content"
-     * warning under HTTPS in IE. 
-     * 
+     * warning under HTTPS in IE.
+     *
      * @param value {String} Url of resource to rewrite for HTTPS
-     * @return {String} rewritten absolute URL 
+     * @return {String} rewritten absolute URL
      */
     __rewriteUrl : function( value ) {
       // To avoid a "mixed content" warning in IE when the application is
@@ -100,7 +100,7 @@ qx.Class.define( "qx.io.Alias", {
       if( value.match( /^\/\// ) != null ) {
         urlPrefix = window.location.protocol;
       }
-      // Prefix an relative URL beginning with "/" with the protocol and the 
+      // Prefix an relative URL beginning with "/" with the protocol and the
       // host e.g. "https://yourdomain.com"
       else if( value.match( /^\// ) ) {
         urlPrefix = window.location.protocol + "//" + window.location.host;

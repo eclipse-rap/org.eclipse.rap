@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
- 
+
 qx.Class.define( "org.eclipse.swt.widgets.CoolBar", {
   extend : qx.ui.layout.CanvasLayout,
 
@@ -18,7 +18,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolBar", {
   },
 
   members : {
-    
+
     setLocked : function( value ) {
       this._locked = value;
       var children = this.getChildren();
@@ -29,11 +29,11 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolBar", {
         }
       }
     },
-    
+
     getLocked : function() {
       return this._locked;
     }
-    
+
   }
 
 } );

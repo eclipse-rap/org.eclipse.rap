@@ -27,7 +27,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
     this.addEventListener( "dblclick", this._onDblClick, this );
     this.addEventListener( "appear", this._onAppear, this );
   },
-  
+
   destruct : function() {
     var req = org.eclipse.swt.Request.getInstance();
     req.removeEventListener( "send", this._onSendRequest, this );
@@ -45,8 +45,8 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
     setTopIndex : function( value ) {
       this._topIndex = value;
       this._applyTopIndex( value );
-    },    
-        
+    },
+
     _applyTopIndex : function( newIndex ) {
       var items = this.getManager().getItems();
       if( items.length > 0 && items[ 0 ].isCreated() ) {
@@ -56,7 +56,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
         }
       }
     },
-    
+
     _getTopIndex : function() {
       var topIndex = 0;
       var scrollTop = this._clientArea.getScrollTop();
@@ -71,7 +71,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
     },
 
     _onAppear : function( evt ) {
-      // [ad] Fix for Bug 277678 
+      // [ad] Fix for Bug 277678
       // when #showSelection() is called for invisible widget
       this._applyTopIndex( this._topIndex );
     },
@@ -104,7 +104,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
       }
       this._updateSelectedItemState();
     },
-    
+
     _onSendRequest : function( evt ) {
       var topIndex = this._isCreated ? this._getTopIndex() : 0;
       if( this._topIndex != topIndex ) {
@@ -128,7 +128,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
         }
       }
     },
-    
+
     _onFocusIn : function( evt ) {
       this._updateSelectedItemState();
     },
@@ -138,7 +138,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
     },
 
     _updateSelectedItemState : function() {
-      var selectedItems = this.getManager().getSelectedItems();      
+      var selectedItems = this.getManager().getSelectedItems();
       for( var i = 0; i < selectedItems.length; i++ ) {
         if( this.getFocused() ) {
           selectedItems[ i ].removeState( "parent_unfocused" );
@@ -147,6 +147,6 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
         }
       }
     }
-    
+
   }
 } );

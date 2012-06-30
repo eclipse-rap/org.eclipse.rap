@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -239,7 +239,7 @@ qx.Class.define("qx.core.Target",
       if( listeners ) {
         var typeListeners = listeners[ type ];
         if( typeListeners ) {
-          var func; 
+          var func;
           var obj;
           for( var hashCode in typeListeners ) {
             // Shortcuts for handler and object

@@ -37,7 +37,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     _fullscreen : window.navigator.standalone,
     _touchListener : null,
     _gestureListener : null,
-    _touchSession : null,  
+    _touchSession : null,
     _allowScroll : false,
 
     _allowedMouseEvents : {
@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     setGestureListener : function( func, context ) {
       this._gestureListener = [ func, context ];
     },
-    
+
     setTouchScrolling : function( value ) {
       this._allowScroll = value;
     },
@@ -133,7 +133,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       target.ongestureend = this.__onGestureEvent;
       target.onorientationchange = this.__onOrientationEvent;
     },
-    
+
     _removeListeners : function() {
       var target = document.body;
       target.ontouchstart = null;
@@ -193,9 +193,9 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
         }
       } catch( ex ) {
         // problem: touch events emulate mouse events. When an error occurs in the emulation
-        // layer, it would be ignored. However, if the ErrorHandler is called here, it will be 
+        // layer, it would be ignored. However, if the ErrorHandler is called here, it will be
         // called twice if the error occurs within the mouse event handling. Therefore only
-        // alert is used for now: 
+        // alert is used for now:
         alert( "Error in touch event handling:" + ex );
       }
     },
@@ -237,7 +237,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       }
       return result;
     },
-    
+
     _isFocusable : function( node ) {
       var tagname = node.tagName;
       return ( tagname === "INPUT" || tagname === "TEXTAREA" );
@@ -269,9 +269,9 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       var result = false;
       do {
         var style = node.style ? node.style : {};
-        if(    style.overflow === "scroll" 
-            || style.overflowX === "scroll" 
-            || style.overflowY === "scroll" ) 
+        if(    style.overflow === "scroll"
+            || style.overflowX === "scroll"
+            || style.overflowY === "scroll" )
         {
           result = true;
         }
@@ -282,7 +282,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       } while( node && !result );
       return result;
     },
-    
+
     _isDraggableWidget : function ( target ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var widgetTarget = org.eclipse.rwt.EventHandlerUtil.getOriginalTargetObject( target );

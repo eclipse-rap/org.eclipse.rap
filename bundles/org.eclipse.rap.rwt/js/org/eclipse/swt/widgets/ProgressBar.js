@@ -9,10 +9,10 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
- 
+
 qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
   extend : qx.ui.layout.CanvasLayout,
-  
+
   construct : function() {
     this.base( arguments );
     this.setOverflow( "hidden" );
@@ -23,7 +23,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     // TODO [tb] : Create a superclass for vector-based widgets (canvas?)
     this._canvas = null;
     this._backgroundShape = null;
-    this._indicatorShape = null;    
+    this._indicatorShape = null;
     this._borderShape = null;
     this._useBorderShape = false;
     this._gfxBorderWidth = 0;
@@ -36,7 +36,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     this._maximum = 100;
     this._selection = 0;
   },
-  
+
   destruct : function() {
     if( this._timer != null ) {
       this._timer.stop();
@@ -45,7 +45,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     this._timer = null;
     this._canvas = null;
     this._backgroundShape = null;
-    this._indicatorShape = null;    
+    this._indicatorShape = null;
     this._borderShape = null;
     this._separatorStartShape = null;
     this._separatorEndShape = null;
@@ -69,7 +69,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
       apply : "_applyIndicatorFill",
       themeable : true
     },
-    
+
     // TODO [tb] : wrong offset in IE when vertical (or undetermined)
     indicatorImage : {
       nullable : true,
@@ -77,28 +77,28 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
       apply : "_applyIndicatorFill",
       themeable : true
     },
-    
+
     indicatorGradient : {
       nullable : true,
       init : null,
       apply : "_applyIndicatorFill",
       themeable : true
     },
-    
+
     indicatorOpacity : {
       nullable : true,
       init : 1,
       apply : "_applyIndicatorFill",
       themeable : true
     },
-    
+
     backgroundImageSized : {
       nullable : true,
       init : null,
       apply : "_applyBackgroundImageSized",
       themeable : true
     },
-    
+
     separatorBorder : {
       nullable : true,
       init : null,
@@ -117,12 +117,12 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
       this._minimum = minimum;
       this.dispatchSimpleEvent( "minimumChanged" );
     },
-    
+
     setMaximum : function( maximum ) {
       this._maximum = maximum;
       this.dispatchSimpleEvent( "maximumChanged" );
     },
-    
+
     setSelection : function( selection ) {
       this._selection = selection;
       this.addToQueue( "indicatorSelection" );
@@ -171,7 +171,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
 
     ////////////////
     // apply-methods
-    
+
     // OVERWRITTEN, called indirectly by _applyBorder in qx.ui.core.Widget
     _queueBorder : function( value ) {
       this.addToQueue( "indicatorBorder" );
@@ -231,7 +231,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     _onInterval : function() {
       if( this.isSeeable() ) {
         this._renderIndicatorSelection();
-      }      
+      }
     },
 
     ///////
@@ -256,7 +256,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
         this._renderDimension();
         this._renderIndicatorSelection();
       } else if( changes.indicatorSelection || changes.separatorBorder ) {
-        this._renderIndicatorSelection();        
+        this._renderIndicatorSelection();
       }
     },
 
@@ -300,7 +300,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
           GraphicsUtil.removeFromCanvas( this._canvas, this._borderShape );
           this._useBorderShape = true;
           this._gfxBorderWidth = 0;
-        }        
+        }
       }
     },
 
@@ -313,7 +313,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
             if( this._separatorStartShape == null ) {
               this._separatorStartShape = GraphicsUtil.createShape( "rect" );
             }
-            GraphicsUtil.addToCanvas( this._canvas, this._separatorStartShape );            
+            GraphicsUtil.addToCanvas( this._canvas, this._separatorStartShape );
           }
           if( this._separatorEndShape == null ) {
             this._separatorEndShape = GraphicsUtil.createShape( "rect" );
@@ -321,7 +321,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
           GraphicsUtil.addToCanvas( this._canvas, this._separatorEndShape );
           this._useSeparator = true;
         }
-        this._separatorWidth = this._getMaxBorderWidth( border );        
+        this._separatorWidth = this._getMaxBorderWidth( border );
         // use one color for all edges:
         var color = border.getColorTop();
         GraphicsUtil.setFillColor( this._separatorEndShape, color );
@@ -334,32 +334,32 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
         if( this._isIndeterminate() ) {
           GraphicsUtil.removeFromCanvas( this._canvas, this._separatorStartShape );
         }
-        this._separatorWidth = 0;   
+        this._separatorWidth = 0;
       }
     },
 
-    // indicator and separator do not support different border-widths 
+    // indicator and separator do not support different border-widths
     _getMaxBorderWidth : function( border ) {
       var maxWidth = 0;
-      maxWidth = Math.max( maxWidth, border.getWidthTop() ); 
-      maxWidth = Math.max( maxWidth, border.getWidthLeft() ); 
-      maxWidth = Math.max( maxWidth, border.getWidthRight() ); 
-      maxWidth = Math.max( maxWidth, border.getWidthBottom() ); 
+      maxWidth = Math.max( maxWidth, border.getWidthTop() );
+      maxWidth = Math.max( maxWidth, border.getWidthLeft() );
+      maxWidth = Math.max( maxWidth, border.getWidthRight() );
+      maxWidth = Math.max( maxWidth, border.getWidthBottom() );
       return maxWidth;
     },
-    
+
     _styleIndicatorFill : function() {
       var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
-      if(    this.getIndicatorImage() != null 
+      if(    this.getIndicatorImage() != null
           && this.getIndicatorImage()[ 0 ] != null )
       {
         var image = this.getIndicatorImage();
-        GraphicsUtil.setFillPattern( this._indicatorShape, 
-                                image[ 0 ], 
-                                image[ 1 ], 
+        GraphicsUtil.setFillPattern( this._indicatorShape,
+                                image[ 0 ],
+                                image[ 1 ],
                                 image[ 2 ] );
       } else if( this.getIndicatorGradient() != null ) {
-        GraphicsUtil.setFillGradient( this._indicatorShape, 
+        GraphicsUtil.setFillGradient( this._indicatorShape,
                                  this.getIndicatorGradient() );
       } else {
         GraphicsUtil.setFillColor( this._indicatorShape, this.getIndicatorColor() );
@@ -369,46 +369,46 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
 
     _styleBackgroundFill : function() {
       var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
-      if(    this.getBackgroundImageSized() != null 
+      if(    this.getBackgroundImageSized() != null
           && this.getBackgroundImageSized()[ 0 ] != null )
       {
         var image = this.getBackgroundImageSized();
-        GraphicsUtil.setFillPattern( this._backgroundShape, 
-                                image[ 0 ], 
-                                image[ 1 ], 
+        GraphicsUtil.setFillPattern( this._backgroundShape,
+                                image[ 0 ],
+                                image[ 1 ],
                                 image[ 2 ] );
       } else if( this.getBackgroundGradient() != null ) {
-        GraphicsUtil.setFillGradient( this._backgroundShape, 
+        GraphicsUtil.setFillGradient( this._backgroundShape,
                                  this.getBackgroundGradient() );
       } else {
-        GraphicsUtil.setFillColor( this._backgroundShape, 
+        GraphicsUtil.setFillColor( this._backgroundShape,
                               this.getBackgroundColor() );
       }
     },
-    
+
     ////////////////
     // render layout
 
     _renderDimension : function() {
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;      
+      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
       var radii = [ 0, 0, 0, 0 ];
       var width = this.getInnerWidth();
-      var height = this.getInnerHeight();      
+      var height = this.getInnerHeight();
       if( this._useBorderShape ) {
-        radii = this.getBorder().getRadii();        
-        GraphicsUtil.setRoundRectLayout( this._borderShape, 
-                                    this._gfxBorderWidth / 2, 
+        radii = this.getBorder().getRadii();
+        GraphicsUtil.setRoundRectLayout( this._borderShape,
                                     this._gfxBorderWidth / 2,
-                                    width - this._gfxBorderWidth, 
-                                    height - this._gfxBorderWidth, 
-                                    radii );    
+                                    this._gfxBorderWidth / 2,
+                                    width - this._gfxBorderWidth,
+                                    height - this._gfxBorderWidth,
+                                    radii );
       }
-      GraphicsUtil.setRoundRectLayout( this._backgroundShape, 
-                                  this._gfxBorderWidth / 2, 
+      GraphicsUtil.setRoundRectLayout( this._backgroundShape,
                                   this._gfxBorderWidth / 2,
-                                  width - this._gfxBorderWidth, 
-                                  height - this._gfxBorderWidth, 
-                                  radii );    
+                                  this._gfxBorderWidth / 2,
+                                  width - this._gfxBorderWidth,
+                                  height - this._gfxBorderWidth,
+                                  radii );
     },
 
     _renderIndicatorSelection : function() {
@@ -421,8 +421,8 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
         // adjust position and length to hide edges under the border
         var displayPosition = position;
         var displayLength = length;
-        if( position + length == this._getIndicatorFullLength() ) {          
-          displayLength += this._gfxBorderWidth / 2;          
+        if( position + length == this._getIndicatorFullLength() ) {
+          displayLength += this._gfxBorderWidth / 2;
         } else {
           // this is done to reduce flickering in IE:
           displayLength += this._separatorWidth;
@@ -435,19 +435,19 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
         }
         // compute bounds
         var vertical = this._isVertical();
-        var width =   vertical 
-                    ? this.getInnerWidth() - this._gfxBorderWidth 
+        var width =   vertical
+                    ? this.getInnerWidth() - this._gfxBorderWidth
                     : displayLength;
-        var height =   vertical 
-                     ? displayLength 
+        var height =   vertical
+                     ? displayLength
                      : this.getInnerHeight() - this._gfxBorderWidth;
-        var top =   vertical 
-                  ? this.getInnerHeight() - ( displayPosition + displayLength ) 
+        var top =   vertical
+                  ? this.getInnerHeight() - ( displayPosition + displayLength )
                   : this._gfxBorderWidth / 2;
         var left = vertical ? this._gfxBorderWidth / 2 : displayPosition;
         var shape = this._indicatorShape;
-        GraphicsUtil.setDisplay( this._indicatorShape, true );        
-        GraphicsUtil.setRoundRectLayout( shape, left, top, width, height, radii );    
+        GraphicsUtil.setDisplay( this._indicatorShape, true );
+        GraphicsUtil.setRoundRectLayout( shape, left, top, width, height, radii );
       } else {
         GraphicsUtil.setDisplay( this._indicatorShape, false );
       }
@@ -457,7 +457,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     },
 
     _renderSeparator : function( position, length ) {
-      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;              
+      var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
       var full = length + position == this._getIndicatorFullLength();
       if( length == 0 ) {
         GraphicsUtil.setDisplay( this._separatorEndShape, false );
@@ -469,7 +469,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
         if( this._isIndeterminate() ) {
           GraphicsUtil.setDisplay( this._separatorStartShape, position != 0 );
         }
-        var displayPosition = position + this._gfxBorderWidth - this._separatorWidth; 
+        var displayPosition = position + this._gfxBorderWidth - this._separatorWidth;
         var displayLength = length + 2 * this._separatorWidth;
         if( this._isVertical() ) {
           var left = this._gfxBorderWidth;
@@ -484,21 +484,21 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
             top = this.getInnerHeight() - displayPosition - this._separatorWidth;
             shape = this._separatorStartShape;
             GraphicsUtil.setRectBounds( shape, left, top, width, height );
-          } 
+          }
         } else {
           var left = displayPosition + displayLength - this._separatorWidth;
           var top = this._gfxBorderWidth;
           var width = this._separatorWidth;
           var height = this.getInnerHeight() - 2 * this._gfxBorderWidth;
           var shape = this._separatorEndShape;
-          if( !full ) { 
+          if( !full ) {
             GraphicsUtil.setRectBounds( shape, left, top, width, height );
           }
           if( position != 0 ) {
             left = displayPosition;
             shape = this._separatorStartShape;
             GraphicsUtil.setRectBounds( shape, left, top, width, height );
-          } 
+          }
         }
       }
     },
@@ -510,23 +510,23 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
       var result = this._getIndicatorVirtualLength();
       var fullLength = this._getIndicatorFullLength();
       if( this._isIndeterminate() ) {
-        // shorten the length to fit in the bar 
+        // shorten the length to fit in the bar
         if( virtualPosition < 0 ) {
           result += virtualPosition;
-        } 
+        }
         if( ( virtualPosition + result ) > fullLength ) {
           result = fullLength - virtualPosition;
         }
       } else if( this._useBorderShape ) {
-        // round length so it falls into a save area, position is assumed 0 
+        // round length so it falls into a save area, position is assumed 0
         var minLength = this._getIndicatorMinSafeLength();
         var maxLength = this._getIndicatorMaxSafeLength();
         if( result < minLength ) {
           if( result > 0 ) {
-            result = minLength;          
-          } else {            
+            result = minLength;
+          } else {
             result = 0;
-          }         
+          }
         }
         if( result > maxLength && result < fullLength ) {
           result = maxLength;
@@ -547,7 +547,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
       }
       return result;
     },
-        
+
     _getIndicatorVirtualPosition : function() {
       var result = 0;
       if( this._isIndeterminate() ) {
@@ -557,23 +557,23 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     },
 
     _computeNextSaveIndicatorPosition : function() {
-      var length = org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE;      
+      var length = org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE;
       var fullLength = this._getIndicatorFullLength();
       var position = this._indicatorVirtualPosition + 2;
-      if( this._useBorderShape ) { 
+      if( this._useBorderShape ) {
         var minWidth = this._getIndicatorMinSafeLength();
-        var maxWidth = this._getIndicatorMaxSafeLength();      
+        var maxWidth = this._getIndicatorMaxSafeLength();
         var endPosition = position + length;
         if( endPosition > 0 && endPosition < minWidth ) {
           position = minWidth - length;
-        }      
+        }
         if( position > 0 && position < minWidth ) {
           position = minWidth;
         }
         endPosition = position + length;
         if( endPosition > maxWidth && endPosition < fullLength ) {
           position = fullLength - length;
-        }      
+        }
         if( position > maxWidth ) {
           position = -length;
         }
@@ -581,9 +581,9 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
           position = -length;
       }
       this._indicatorVirtualPosition = position;
-      return position;      
+      return position;
     },
-    
+
     _getIndicatorRadii : function( position, length ) {
       // works under the assumption that positon and length are "radii-save"
       var result = [ 0, 0, 0, 0 ];
@@ -607,7 +607,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
           }
           if( endPosition == fullLength ) {
             result[ 1 ] = radii[ 1 ];
-            result[ 2 ] = radii[ 2 ];          
+            result[ 2 ] = radii[ 2 ];
           }
         }
       }
@@ -615,11 +615,11 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     },
 
     _getIndicatorFullLength : function() {
-      return   this._isVertical() 
+      return   this._isVertical()
              ? this.getInnerHeight() - 2 * this._gfxBorderWidth
              : this.getInnerWidth() - 2 * this._gfxBorderWidth;
     },
-    
+
     // minimal indicator-length for the left/lower rounded corners to work
     _getIndicatorMinSafeLength : function() {
       var radii = this.getBorder().getRadii();
@@ -630,12 +630,12 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
       result -= Math.floor( this._gfxBorderWidth / 2 );
       return result;
     },
-    
+
     // maximum indicator-length for the right/upper corners to be rectangular
     _getIndicatorMaxSafeLength : function() {
       var radii = this.getBorder().getRadii();
       var fullLength = this._getIndicatorFullLength();
-      var result =   this._isVertical() 
+      var result =   this._isVertical()
                    ? fullLength - Math.max( radii[ 0 ], radii[ 1 ] )
                    : fullLength - Math.max( radii[ 1 ], radii[ 2 ] );
       result -= this._separatorWidth;

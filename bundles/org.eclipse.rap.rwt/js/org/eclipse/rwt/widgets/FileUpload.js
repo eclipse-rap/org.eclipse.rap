@@ -22,22 +22,22 @@ qx.Class.define( "org.eclipse.rwt.widgets.FileUpload", {
     this._inputElement = null;
     this._iframe = null;
     this._cursor = "";
-    this.__onValueChange = qx.lang.Function.bind( this._onValueChange, this );    
+    this.__onValueChange = qx.lang.Function.bind( this._onValueChange, this );
     this.setEnableElementFocus( false );
     this._createIframeWidget();
   },
-  
+
   destruct : function() {
     this._formElement = null;
-    this._inputElement = null;    
+    this._inputElement = null;
   },
-  
+
   members : {
 
     submit : function( url ) {
       if( typeof url !== "string" ) {
         throw new Error( "No url given!" );
-      } 
+      }
       if( this._getFileName() === "" ) {
         throw new Error( "No file selected!" );
       }
@@ -76,7 +76,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.FileUpload", {
       this._formElement.setAttribute( "target", this._getFrameName() );
       this._formElement.setAttribute( "method", "POST" );
       if( org.eclipse.rwt.Client.isMshtml() ) {
-        this._formElement.setAttribute( "encoding", "multipart/form-data" );        
+        this._formElement.setAttribute( "encoding", "multipart/form-data" );
       } else {
         this._formElement.setAttribute( "enctype", "multipart/form-data" );
       }
@@ -135,7 +135,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.FileUpload", {
     _layoutInputElement : function() {
       if( this.getEnabled() && this.isSeeable() && !org.eclipse.rwt.Client.isMobileSafari() ) {
         //Assumed maximal padding between input button and input outer dimensions:
-        var padding = 10; 
+        var padding = 10;
         this._layoutInputElementHorizontal( padding );
         this._layoutInputElementVertical( padding );
       }
@@ -148,9 +148,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.FileUpload", {
       // widgetWidth + padding * 2 = 0.6 * inputWidth
       // inputWidth = ( widthWidth + padding * 2 ) / 0.6
       var widgetWidth = this.getBoxWidth();
-      var inputTargetWidth =   ( widgetWidth + padding * 2 ) 
+      var inputTargetWidth =   ( widgetWidth + padding * 2 )
                              / ( inputButtonPercentage );
-      var fontSize = inputTargetWidth / 10; 
+      var fontSize = inputTargetWidth / 10;
       this._inputElement.style.fontSize = fontSize;
       var iterations = 0;
       while( this._inputElement.offsetWidth <= inputTargetWidth ) {
@@ -201,10 +201,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.FileUpload", {
 
     ////////////////
     // Mouse-control
-    
+
     // NOTE : In contrast to other widgets, the border does not trigger the
     //        expected function, adapt state-behavior accordingly:
-    
+
     _onMouseOver : function( event ) {
       if( event.getDomTarget() === this._inputElement ) {
         this.base( arguments, event );
@@ -224,7 +224,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.FileUpload", {
       if( org.eclipse.rwt.Client.getBrowser() === "chrome") {
         // Chrome looses keyboard control on mouse-focus, see _ontabfocus.
         this._onBlur();
-      }      
+      }
     },
 
     _onMouseUp : function( event ) {
@@ -244,7 +244,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.FileUpload", {
       this._inputElement.focus();
     },
 
-    // NOTE : key-handling interferes with native keyboard control. This 
+    // NOTE : key-handling interferes with native keyboard control. This
     //        disables the "pressed" state, but is still the lesser evil.
     _onKeyDown : qx.lang.Function.returnTrue,
     _onKeyUp : qx.lang.Function.returnTrue,
@@ -262,10 +262,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.FileUpload", {
       var isChrome = org.eclipse.rwt.Client.getBrowser() === "chrome";
       if( !isChrome || allow ) {
         var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
-        var node =   this.getCellNode( 2 ) != null 
+        var node =   this.getCellNode( 2 ) != null
                    ? this.getCellNode( 2 )
                    : this.getCellNode( 1 );
-        focusIndicator.show( this, "FileUpload-FocusIndicator", node ); 
+        focusIndicator.show( this, "FileUpload-FocusIndicator", node );
       }
     },
 

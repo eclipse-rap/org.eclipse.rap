@@ -61,7 +61,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
   },
 
   properties : {
-    
+
     allowStretchX : { refine : true, init : true },
     allowStretchY : { refine : true, init : false },
     appearance : { refine : true, init : "text-field" },
@@ -106,7 +106,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     _inputTag : "input",
     _inputType : "text",
     _inputElement : null,
-    
+
     /////////
     // API
 
@@ -115,7 +115,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       this._selectionLength = selection[ 1 ] - selection[ 0 ];
       this._renderSelection();
     },
-    
+
     getSelection : function() {
       return [ this._selectionStart, this._selectionStart + this._selectionLength ];
     },
@@ -139,19 +139,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     getInputElement : function() {
       return this._inputElement || null;
     },
-    
+
     /////////////////////
     // selection handling
 
     _renderSelection : function() {
-      // setting selection here might de-select all other selections, so only render if focused 
-      if( this.isCreated() && this.getFocused() ) { 
+      // setting selection here might de-select all other selections, so only render if focused
+      if( this.isCreated() && this.getFocused() ) {
         this._setSelectionStart( this._selectionStart );
         this._setSelectionLength( this._selectionLength );
         this._selectionNeedsUpdate = false;
       }
     },
-    
+
     _detectSelectionChange : function() {
       if( this._isCreated ) {
         var start = this._getSelectionStart();
@@ -329,7 +329,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       // to be sure we get the element selected
       this._inputElement.select();
       // RAP [if] focus() leads to error in IE if the _inputElement is disabled or not visible.
-      // 277444: JavaScript error in IE when using setSelection on a ComboViewer with setEnabled 
+      // 277444: JavaScript error in IE when using setSelection on a ComboViewer with setEnabled
       // is false
       // https://bugs.eclipse.org/bugs/show_bug.cgi?id=277444
       // 280420: [Combo] JavaScript error in IE when using setSelection on an invisible Combo
@@ -396,7 +396,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
         // Mozilla replaces it. But this make it possible for the user
         // to overwrite the margin, which is not possible in IE.
         // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=73817
-        // NOTE [tb] : Non-IE browser also shift text 1px to the right, correcting with margin: 
+        // NOTE [tb] : Non-IE browser also shift text 1px to the right, correcting with margin:
         this._inputElement.style.margin = "1px 0 1px -1px";
         this._inputElement.addEventListener( "input", this.__oninput, false );
         this._applyBrowserFixesOnCreate();
@@ -472,7 +472,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       this._renderValue();
       this._detectSelectionChange();
     },
-    
+
     _renderValue : function() {
       this._inValueProperty = true;
       var value = this.getValue();
@@ -551,7 +551,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       this.__textShadow = value;
       if( this._inputElement ) {
         this._renderTextShadow();
-      }   
+      }
     },
 
     _renderTextShadow : function() {
@@ -603,7 +603,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
         }
       }
     },
-    
+
     _getInputElementHeight : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
         var result = qx.html.Dimension.getBoxHeight( this._inputElement );
@@ -616,7 +616,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
         return qx.html.Dimension.getBoxHeight( this._inputElement );
       }
     } ),
-    
+
     ////////////////
     // event handler
 
@@ -704,14 +704,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
       this._detectSelectionChange();
       this._typed = null;
     },
-    
+
     /////////////////
     // browser quirks
 
     _applyBrowserFixes : qx.core.Variant.select( "qx.client", {
       "default" : function() {},
       "newmshtml" : function() {
-        // See Bug 372193 - Text widget: Modify Event not fired for Backspace key in IE 
+        // See Bug 372193 - Text widget: Modify Event not fired for Backspace key in IE
         this._checkTimer = new qx.client.Timer( 0 );
         this._checkTimer.addEventListener( "interval", this._checkValueChanged, this );
         // For delete, backspace, CTRL+X, etc:
@@ -723,7 +723,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
         this.addEventListener( "blur", this._checkValueChanged, this );
       }
     } ),
-    
+
     _checkValueChanged : function() {
       this._checkTimer.stop();
       var newValue = this.getComputedValue();
@@ -741,7 +741,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
         }
       }
     } ),
-      
+
     _ieFirstInputFix : function() {
       if( !this.isDisposed() ) {
         this._inValueProperty = true;

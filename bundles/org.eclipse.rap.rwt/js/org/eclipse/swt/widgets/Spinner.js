@@ -231,7 +231,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
       if( separator != "." ) {
         var dot = qx.lang.String.escapeRegexpChars( "." );
         result = result.replace( new RegExp( dot ), separator );
-      }  
+      }
       return result;
     },
 
@@ -294,7 +294,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
       if( inputElement ) {
         if( inputElement.value === "" && !acceptEmpty ) {
           this.resetValue();
-        } else {          
+        } else {
           var strValue = inputElement.value;
           var parseValue = strValue;
           var separator = this.getDecimalSeparator();
@@ -302,7 +302,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
             separator = qx.lang.String.escapeRegexpChars( separator );
             parseValue = strValue.replace( new RegExp( separator ), "." );
           }
-          var value = parseFloat( parseValue );          
+          var value = parseFloat( parseValue );
           var limitedValue = this._limit( value );
           var oldValue = this.getManager().getValue();
           var fixedValue = limitedValue;

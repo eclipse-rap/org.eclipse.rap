@@ -9,11 +9,11 @@
  *    Rüdiger Herrmann - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
- 
+
 qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
   extend : qx.ui.popup.Popup,
   include : org.eclipse.rwt.VisibilityAnimationMixin,
-  
+
   construct : function( style ) {
     this.base( arguments );
     this._style = style;
@@ -36,7 +36,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
     this._message = null;
     this._createControls();
   },
-  
+
   destruct : function() {
     this.removeEventListener( "mousedown", this._onMouseDown, this );
     this._contentArea.dispose();
@@ -46,7 +46,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
     this._message.dispose();
     this._messageFont = null;
   },
-  
+
   members : {
 
     setText : function( text ) {
@@ -62,20 +62,20 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
         this._update();
       }
     },
-  
+
     setLocation : function( x, y ) {
       this.setLeft( x );
       this.setTop( y );
     },
-    
+
     setHideAfterTimeout : function( value ) {
       this._hideAfterTimeout = value;
     },
-    
+
     setHasSelectionListener : function( value ) {
       this._hasSelectionListener = value;
     },
-    
+
     setVisible : function( visible ) {
       this.setVisibility( visible );
       if( visible ) {
@@ -86,7 +86,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
         }
       }
     },
-    
+
     addState : function( state ) {
       this.base( arguments, state );
       this._image.addState( state );
@@ -119,7 +119,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
       this._message.setWrap( true );
       this._message.setParent( this._textArea );
     },
-    
+
     _update : function() {
       var message = this._message.getText();
       var textSize = this._getTextSize( this._text.getText(), -1 );
@@ -133,15 +133,15 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
       this._message.setWidth( messageSize.x );
       this._message.setHeight( messageSize.y );
     },
-    
+
     _matchesWidthToHeightRatio : function( size ) {
       return size.x / size.y <= 6;
     },
-    
+
     _max : function( a, b ) {
       return a > b ? a : b;
     },
-    
+
     _getTextSize : function( text, width ) {
       var data = [];
       data[ 0 ] = "";
@@ -163,27 +163,27 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
       if( this._hasSelectionListener ) {
         var id = this._getWidgetId();
         var req = org.eclipse.swt.Request.getInstance();
-        req.addEvent( "org.eclipse.swt.events.widgetSelected", id ); 
+        req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
         req.send();
       }
     },
-    
+
     _hide : function() {
       this.setVisible( false );
       qx.ui.core.Widget.flushGlobalQueues();
       var req = org.eclipse.swt.Request.getInstance();
       req.addParameter( this._getWidgetId() + ".visible", false );
     },
-    
+
     _getWidgetId : function() {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       return widgetManager.findIdByWidget( this );
     },
-    
+
     _getMessageFont : function() {
       var tv = new org.eclipse.swt.theme.ThemeValues( {} );
       return tv.getCssFont( "ToolTip-Message", "font" );
     }
-    
+
   }
 } );

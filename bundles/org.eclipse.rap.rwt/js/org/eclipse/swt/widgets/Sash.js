@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.widgets.Sash", {
@@ -23,14 +23,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
     this.addEventListener( "mouseout", this._onMouseOut, this );
     this._slider = new qx.ui.layout.CanvasLayout();
     this._slider.setAppearance( "sash-slider" );
-    this._slider.setVisibility( false );    
+    this._slider.setVisibility( false );
     // Fix IE Styling issues
     org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._slider );
     this.add( this._slider );
     this._sliderHandle = new qx.ui.layout.CanvasLayout();
     this._sliderHandle.setStyleProperty( "backgroundPosition", "center center" );
     this._sliderHandle.setAppearance( "sash-handle" );
-    this._sliderHandle.setVisibility( false ); 
+    this._sliderHandle.setVisibility( false );
     // Fix IE Styling issues
     org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._sliderHandle );
     this.add( this._sliderHandle );
@@ -70,7 +70,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
   },
 
   members : {
-    
+
     _onChangeSize : function( evt ) {
       this._handle.setWidth( this.getWidth() );
       this._handle.setHeight( this.getHeight() );
@@ -223,9 +223,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
         this._sliderHandle.removeState( "vertical" );
       }
     },
-    
+
     _sendWidgetSelected : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {        
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         // TODO [rst] Clarify what the getOffsetLeft() does
         var leftOffset = this._slider.getLeft() + this._frameOffset;
         var topOffset = this._slider.getTop() + this._frameOffset;
@@ -245,11 +245,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
         req.send();
       }
     },
-    
+
     _onMouseOver : function( evt ) {
       this.addState( "over" );
     },
-    
+
     _onMouseOut : function( evt ) {
       this.removeState( "over" );
     }

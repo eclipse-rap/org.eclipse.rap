@@ -74,7 +74,7 @@ org.eclipse.rwt.UICallBack.prototype = {
       this._retryInterval = 0;
     }
     // Transport is normally disposed of in RequestQueue but UICallBackReuests
-    // bypass the queue 
+    // bypass the queue
     var transport = event.getTarget();
     var request = transport.getRequest();
     transport.dispose();

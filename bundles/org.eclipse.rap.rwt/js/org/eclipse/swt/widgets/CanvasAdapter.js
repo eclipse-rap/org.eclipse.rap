@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Canvas", {
     org.eclipse.rwt.protocol.AdapterUtil.setParent( result, properties.parent );
     return result;
   },
-  
+
   destructor : org.eclipse.rwt.protocol.AdapterUtil.getControlDestructor(),
 
   properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
@@ -29,7 +29,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Canvas", {
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
     "backgroundGradient" : org.eclipse.rwt.protocol.AdapterUtil.getBackgroundGradientHandler(),
     "roundedBorder" : org.eclipse.rwt.protocol.AdapterUtil.getRoundedBorderHandler()
-  } ),     
+  } ),
 
   listeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [] ),
 

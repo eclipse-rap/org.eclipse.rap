@@ -46,7 +46,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
     }
 
   },
-  
+
   events : {
     "dropDownClicked" : "qx.event.type.Event"
   },

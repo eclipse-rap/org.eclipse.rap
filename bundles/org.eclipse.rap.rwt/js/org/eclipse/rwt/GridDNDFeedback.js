@@ -19,8 +19,8 @@ qx.Class.define( "org.eclipse.rwt.GridDNDFeedback", {
     this._feedback = null;
     this._currentRow = null;
     this._insertIndicator = null;
-    this._expandTimer = null;      
-    this._scrollTimer = null;      
+    this._expandTimer = null;
+    this._scrollTimer = null;
   },
 
   destruct : function() {
@@ -104,7 +104,7 @@ qx.Class.define( "org.eclipse.rwt.GridDNDFeedback", {
 
     _renderFeedbackAfter : function( row, value ) {
       if( value ) {
-        // draw insert-indicator below row (1px heigher)  
+        // draw insert-indicator below row (1px heigher)
         var location = this._getRowLocation( row );
         var height = row.getHeightValue();
         location.y = location.y + ( height - 1 );
@@ -124,13 +124,13 @@ qx.Class.define( "org.eclipse.rwt.GridDNDFeedback", {
         }
       }
     },
-    
+
     _renderFeedbackScroll : function( row, value ) {
       if( value ) {
         this._startScrollTimer();
       } else {
         this._stopScrollTimer();
-      }      
+      }
     },
 
     _getRowLocation : function( row ) {
@@ -144,7 +144,7 @@ qx.Class.define( "org.eclipse.rwt.GridDNDFeedback", {
       }
       return location;
     },
-    
+
     /////////
     // Helper
 
@@ -171,12 +171,12 @@ qx.Class.define( "org.eclipse.rwt.GridDNDFeedback", {
       var treeNode = this._tree._getTargetNode();
       treeNode.removeChild( this._insertIndicator );
     },
-    
+
     _startExpandTimer : function() {
       if( this._expandTimer == null ) {
         this._expandTimer = new qx.client.Timer( 750 );
-        this._expandTimer.addEventListener( "interval", 
-                                            this._onExpandTimer, 
+        this._expandTimer.addEventListener( "interval",
+                                            this._onExpandTimer,
                                             this );
       }
       this._expandTimer.setEnabled( true );
@@ -239,10 +239,10 @@ qx.Class.define( "org.eclipse.rwt.GridDNDFeedback", {
         }
       }
     },
-    
+
     _targetUpdateCheck : function( oldRow, newRow ) {
       if( !this.isDisposed() ) {
-        // TODO [tb] : this is not a good way to check for scrolling, as the tree can theoretically 
+        // TODO [tb] : this is not a good way to check for scrolling, as the tree can theoretically
         //             scroll without changing the row order.
         if( newRow != this._currentRow && oldRow == this._currentRow ) {
           var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
@@ -250,7 +250,7 @@ qx.Class.define( "org.eclipse.rwt.GridDNDFeedback", {
         }
       }
     }
-    
+
   }
 
 } );

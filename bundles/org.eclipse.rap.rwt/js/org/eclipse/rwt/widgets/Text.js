@@ -12,7 +12,7 @@
 qx.Class.define( "org.eclipse.rwt.widgets.Text", {
 
   extend : org.eclipse.rwt.widgets.BasicText,
-  
+
   construct : function( isTextarea ) {
     this.base( arguments );
     if( isTextarea ) {
@@ -30,7 +30,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     this._message = null;
     this._messageElement = null;
   },
-  
+
   destruct : function() {
     this._messageElement = null;
     this.__oninput = null;
@@ -47,21 +47,21 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
   },
 
   members : {
-    
+
     //////
     // API
-    
+
     setMessage : function( value ) {
       if( this._inputTag !== "textarea" ) {
         this._message = value;
         this._updateMessage();
       }
     },
-    
+
     getMessage : function() {
       return this._message;
     },
-    
+
     setPasswordMode : function( value ) {
       var type = value ? "password" : "text";
       if( this._inputTag != "textarea" && this._inputType != type ) {
@@ -71,7 +71,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
             this._reCreateInputField();
           } else {
             this._inputElement.type = this._inputType;
-          }        
+          }
         }
       }
     },
@@ -108,7 +108,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     hasVerifyListener : function() {
       return this._hasVerifyListener;
     },
-    
+
     ////////////////
     // event handler
 
@@ -135,7 +135,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
 
     ///////////////
     // send changes
-    
+
     _handleSelectionChange : function( start, length ) {
       this.base( arguments, start, length );
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
@@ -143,7 +143,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
         org.eclipse.swt.WidgetUtil.setPropertyParam( this, "selectionLength", length );
       }
     },
-    
+
     _handleModification : function() {
       if( !this._requestScheduled ) {
         this._requestScheduled = true;
@@ -189,7 +189,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
 
     ///////////////////
     // textarea support
-    
+
     _applyElement : function( value, oldValue ) {
       this.base( arguments, value, oldValue );
       if( this._inputTag == "textarea" ) {
@@ -247,7 +247,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
         var value = this._inputElement.value;
         if( value.length > this.getMaxLength() ) {
           var oldValue = this.getValue();
-          // NOTE [tb] : When pasting strings, this might not always 
+          // NOTE [tb] : When pasting strings, this might not always
           //             behave like SWT. There is no reliable fix for that.
           var position = this._getSelectionStart();
           if( oldValue.length == ( value.length - 1 ) ) {
@@ -257,7 +257,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
             this._setSelectionLength( 0 );
           } else if( value.length >= oldValue.length && value != oldValue) {
             // The user pasted a string, shorten:
-            this._inputElement.value = value.slice( 0, this.getMaxLength() );            
+            this._inputElement.value = value.slice( 0, this.getMaxLength() );
             this._setSelectionStart( Math.min( position, this.getMaxLength() ) );
             this._setSelectionLength( 0 );
           }
@@ -265,15 +265,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
             fireEvents = false;
           }
         }
-      } 
+      }
       if( fireEvents ) {
         this._oninputDom( event );
       }
     },
-    
+
     ///////////////////
     // password support
-    
+
     _reCreateInputField : function() {
       var selectionStart = this._getSelectionStart();
       var selectionLength = this._getSelectionLength();
@@ -288,15 +288,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       this._setSelectionStart( selectionStart );
       this._setSelectionLength( selectionLength );
     },
-    
+
     //////////////////
     // message support
-    
+
     _postApply : function() {
       this.base( arguments );
       this._layoutMessage();
     },
-    
+
     _applyValue : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
       this._updateMessageVisibility();
@@ -309,10 +309,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       this.base( arguments, newValue, oldValue );
       this._updateMessageVisibility();
       if( newValue && ( this.getValue() === "" || this.getValue() == null ) ) {
-        this._forceFocus(); 
+        this._forceFocus();
       }
     },
-    
+
     _forceFocus : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
         qx.client.Timer.once( function() {
@@ -333,12 +333,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
         // nothing to do
       }
     } ),
-    
+
     _applyCursor : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
       this._renderMessageCursor();
     },
-    
+
     // Overwritten
     _preventEnter : function( event ) {
       if( this._inputTag !== "textarea" ) {
@@ -354,11 +354,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
           style.position = "absolute";
           style.outline = "none";
           var styleMap = this._getMessageStyle();
-          styleMap.font.renderStyle( style );          
+          styleMap.font.renderStyle( style );
           style.color = styleMap.textColor || "";
           style.left = styleMap.paddingLeft + "px";
           style.height = Math.round( styleMap.font.getSize() * this._LINE_HEIGT_FACTOR ) + "px";
-          org.eclipse.rwt.HtmlUtil.setTextShadow( this._messageElement, styleMap.textShadow ); 
+          org.eclipse.rwt.HtmlUtil.setTextShadow( this._messageElement, styleMap.textShadow );
           this._getTargetNode().insertBefore( this._messageElement, this._inputElement );
         }
         if( this._messageElement ) {
@@ -369,15 +369,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
         this._updateMessageVisibility();
       }
     },
-    
+
     _layoutMessage : function() {
       if( this._messageElement ) {
         var styleMap = this._getMessageStyle();
         var style = this._messageElement.style;
-        style.width = (   this.getBoxWidth() 
-                        - this._cachedBorderLeft 
-                        - this._cachedBorderRight 
-                        - styleMap.paddingLeft 
+        style.width = (   this.getBoxWidth()
+                        - this._cachedBorderLeft
+                        - this._cachedBorderRight
+                        - styleMap.paddingLeft
                         - styleMap.paddingRight ) + "px";
         var messageHeight = parseInt( style.height );
         style.top = Math.round( this.getInnerHeight() / 2 - messageHeight / 2 ) + "px";
@@ -388,14 +388,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       var manager = qx.theme.manager.Appearance.getInstance();
       return manager.styleFrom( "text-field-message", {} );
     },
-    
+
     _updateMessageVisibility : function() {
       if( this._messageElement ) {
-        var visible = ( this.getValue() == null || this.getValue() === "" ) && !this.getFocused(); 
+        var visible = ( this.getValue() == null || this.getValue() === "" ) && !this.getFocused();
         this._messageElement.style.display = visible ? "" : "none";
       }
     },
-    
+
     _renderMessageCursor : function() {
       if( this._messageElement ) {
         var cursor = this._inputElement.style.cursor;

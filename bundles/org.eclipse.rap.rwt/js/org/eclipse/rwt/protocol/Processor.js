@@ -10,7 +10,7 @@
  ******************************************************************************/
 
 namespace( "org.eclipse.rwt.protocol" );
- 
+
 org.eclipse.rwt.protocol.Processor = {
 
   processMessage : function( messageObject ) {
@@ -37,16 +37,16 @@ org.eclipse.rwt.protocol.Processor = {
         break;
         case "set":
           this._processSet( operation[ 1 ], operation[ 2 ] );
-        break; 
+        break;
         case "listen":
           this._processListen( operation[ 1 ], operation[ 2 ] );
-        break; 
+        break;
         case "call":
           this._processCall( operation[ 1 ], operation[ 2 ], operation[ 3 ] );
-        break; 
+        break;
         case "destroy":
           this._processDestroy( operation[ 1 ] );
-        break; 
+        break;
       }
     } catch( ex ) {
       this._processError( ex, operation );
@@ -60,16 +60,16 @@ org.eclipse.rwt.protocol.Processor = {
       break;
       case "set":
         this._processSet( operation.target, operation.properties );
-      break; 
+      break;
       case "destroy":
         this._processDestroy( operation.target );
-      break; 
+      break;
       case "call":
         this._processCall( operation.target, operation.method, operation.properties );
-      break; 
+      break;
       case "listen":
         this._processListen( operation.target, operation.properties );
-      break; 
+      break;
     }
   },
 
@@ -97,7 +97,7 @@ org.eclipse.rwt.protocol.Processor = {
     var objectEntry = org.eclipse.rwt.protocol.ObjectManager.getEntry( targetId );
     this._processSetImpl( objectEntry.object, objectEntry.adapter, properties );
   },
-  
+
   _processSetImpl : function( targetObject, adapter, properties ) {
     if( properties && adapter.properties  instanceof Array ) {
       for( var i = 0; i < adapter.properties.length; i++ ) {
@@ -138,7 +138,7 @@ org.eclipse.rwt.protocol.Processor = {
         if( properties[ type ] === true ) {
           this._addListener( adapter, targetObject, type );
         } if( properties[ type ] === false ) {
-          this._removeListener( adapter, targetObject, type );            
+          this._removeListener( adapter, targetObject, type );
         }
       }
     }
@@ -148,7 +148,7 @@ org.eclipse.rwt.protocol.Processor = {
   // Internals
 
   _processError : function( error, operation ) {
-    var errorstr; 
+    var errorstr;
     if( error ) {
       errorstr = error.message ? error.message : error.toString();
     } else {
@@ -164,7 +164,7 @@ org.eclipse.rwt.protocol.Processor = {
     msg += "Properties: \n" + this._getPropertiesString( operation );
     throw new Error( msg );
   },
-  
+
   _getPropertiesString : function( operation ) {
     var result = "";
     var properties;
@@ -189,7 +189,7 @@ org.eclipse.rwt.protocol.Processor = {
 
   _addTarget : function( target, targetId, adapter ) {
     if( target instanceof qx.ui.core.Widget ) {
-      // TODO [tb] : remove WidgetManager and then this if 
+      // TODO [tb] : remove WidgetManager and then this if
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       widgetManager.add( target, targetId, false, adapter ); // uses ObjectManager internally
     } else {

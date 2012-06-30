@@ -34,7 +34,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Label", {
     "bottomMargin",
     "backgroundGradient"
   ] ),
-  
+
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
     "backgroundGradient" : org.eclipse.rwt.protocol.AdapterUtil.getBackgroundGradientHandler()
   } ),

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
+
 /**
  * The parameter orientation must be one of "vertical" or "horizontal".
  * Note that updateHandleBounds must be called after each size manipulation.
@@ -77,7 +78,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
         this._handle.setHeight( this.getHeight() );
       }
     },
-    
+
     _applyParent : function( value, oldValue ) {
       this.base( arguments, value, oldValue );
       if( value != null ) {
@@ -95,7 +96,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
       if( this._control != null ) {
         this._bufferedControlZIndex = this._control.getZIndex();
         this._control.setZIndex( 1e7 );
-      }  
+      }
       // In some cases the coolItem appeare transparent when dragged around
       // To fix this, walk along the parent hierarchy and use the first explicitly
       // set background color.
@@ -105,7 +106,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
     _applyLeft : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
       if( this._control != null ) {
-        var left = newValue + org.eclipse.swt.widgets.CoolItem.CONTROL_OFFSET; 
+        var left = newValue + org.eclipse.swt.widgets.CoolItem.CONTROL_OFFSET;
         this._control.setLeft( left );
       }
     },
@@ -127,7 +128,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
     _onHandleMouseUp : function( evt ) {
       this._handle.setCapture( false );
       this.setZIndex( this._bufferedZIndex );
-      if( this._control != null ) {      
+      if( this._control != null ) {
         this._control.setZIndex( this._bufferedControlZIndex );
       }
       this.resetBackgroundColor();

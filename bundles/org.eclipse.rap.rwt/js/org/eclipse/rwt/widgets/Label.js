@@ -29,7 +29,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Label", {
   members : {
 
     _CELLORDER : [ "image", "label" ],
-    
+
     setAlignment : function( value ) {
       this.setHorizontalChildrenAlign( value );
     },
@@ -55,7 +55,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Label", {
       }
       this.setCellContent( 1, text );
     },
-    
+
     setTopMargin : function( value ) {
       this.setPaddingTop( value );
     },
@@ -83,6 +83,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Label", {
         this.removeState( "over" );
       }
     }
-    
+
   }
 } );

@@ -659,8 +659,8 @@ qx.Class.define("qx.ui.window.Window",
      * @return {void}
      */
     _sendTo : function()
-    {  
-      var zIndexCompare = function(a, b) { 
+    {
+      var zIndexCompare = function(a, b) {
         return a.getZIndex() - b.getZIndex();
       };
       var vAll = qx.lang.Object.getValues(this.getWindowManager().getAll()).sort(zIndexCompare);
@@ -715,7 +715,7 @@ qx.Class.define("qx.ui.window.Window",
 
       }
     },
-    
+
     _setActiveState : function( value ) {
       if( !this.getWindowManager().blockActiveState ) {
         if( value ) {

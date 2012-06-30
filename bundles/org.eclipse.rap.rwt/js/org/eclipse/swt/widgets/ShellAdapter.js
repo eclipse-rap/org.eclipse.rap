@@ -19,7 +19,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
     result.setUserData( "isControl", true );
     adapterUtil.callWithTarget( properties.parentShell, function( parentShell ) {
       if( parentShell ) {
-        result.setParentShell( parentShell );    
+        result.setParentShell( parentShell );
       }
       result.initialize();
     } );
@@ -29,11 +29,11 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
   destructor : org.eclipse.rwt.protocol.AdapterUtil.getControlDestructor(),
 
   properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
-    "showMinimize", 
-    "allowMinimize", 
-    "showMaximize", 
-    "allowMaximize", 
-    "showClose", 
+    "showMinimize",
+    "allowMinimize",
+    "showMaximize",
+    "allowMaximize",
+    "showClose",
     "allowClose",
     "resizable",
     "image",

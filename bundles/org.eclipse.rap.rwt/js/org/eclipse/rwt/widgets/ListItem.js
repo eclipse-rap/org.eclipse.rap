@@ -54,7 +54,7 @@ qx.Class.define("org.eclipse.rwt.widgets.ListItem", {
     getLabel : function( value ) {
       return this.getCellContent( 0 );
     },
-    
+
     matchesString : function( value ) {
       var content;
       var el = this.getCellNode( 0 );
@@ -67,6 +67,6 @@ qx.Class.define("org.eclipse.rwt.widgets.ListItem", {
       content = ( typeof content === "string" ) ? content.toLowerCase() : "";
       return input !== "" && content.indexOf( input ) === 0;
     }
-  
+
   }
 } );

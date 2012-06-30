@@ -47,7 +47,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Browser", {
     "destroyFunctions",
     "createFunctions"
   ],
-  
+
   methodHandler : {
     "evaluate" : function( widget, properties ) {
       widget.execute( properties.script );

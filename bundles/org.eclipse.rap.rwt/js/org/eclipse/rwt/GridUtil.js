@@ -13,10 +13,10 @@
 namespace( "org.eclipse.rwt" );
 
 org.eclipse.rwt.GridUtil = {
-    
+
   /////////////////
   // API for Server
-  
+
   setFixedColumns : function( tree, value ) {
     var container = tree.getRowContainer();
     if( container.setFixedColumns ) {
@@ -24,7 +24,7 @@ org.eclipse.rwt.GridUtil = {
       tree.update();
     }
   },
-  
+
   ///////////////
   // API for Tree
 
@@ -69,5 +69,5 @@ org.eclipse.rwt.GridUtil = {
     }
     return columnIndex;
   }
-  
+
 };

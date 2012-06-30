@@ -145,7 +145,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
       this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
       this._rowContainer.setSelectionProvider( this.isItemSelected, this );
-      this._rowContainer.setPostRenderFunction( this._vertScrollBar.autoEnableMerge, 
+      this._rowContainer.setPostRenderFunction( this._vertScrollBar.autoEnableMerge,
                                                 this._vertScrollBar );
     },
 
@@ -780,7 +780,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     },
 
     /**
-     * This will schedule the entire content of the tree (visible rows and gridlines) 
+     * This will schedule the entire content of the tree (visible rows and gridlines)
      * to be re-rendered. Additional tasks my be executed depending on "task" parameter.
      * Is only used within a server-response or when expanding/collapsing. Not used
      * when user is scrolling.
@@ -999,8 +999,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
         var offset = event.getPageX();
         var timeDiff = org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME;
         var offsetDiff = 8;
-        if (    stamp.getTime() - this._selectionTimestamp.getTime() < timeDiff 
-             && Math.abs( this._selectionOffsetX - offset ) < offsetDiff ) 
+        if (    stamp.getTime() - this._selectionTimestamp.getTime() < timeDiff
+             && Math.abs( this._selectionOffsetX - offset ) < offsetDiff )
         {
           result = true;
         }
@@ -1173,7 +1173,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     },
 
     _checkDisposedItems : function() {
-      // NOTE : FocusItem might already been fixed by the server. But since this is not 
+      // NOTE : FocusItem might already been fixed by the server. But since this is not
       //        always the case (depending on the server-side widget), we also do it here.
       if( this._focusItem && this._focusItem.isDisposed() ) {
         this._focusItem = null;

@@ -193,13 +193,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
   },
 
   members : {
-    
+
     destroy : function() {
       this.doClose();
       this.getWindowManager().remove( this );
       this.base( arguments );
     },
-    
+
     _onCreate : function( evt ) {
       qx.html.EventRegistration.addEventListener( this.getElement(),
                                                   "mousedown",
@@ -621,6 +621,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         this._captionBar.setDisplay( this.hasState( "rwt_TITLE" ) );
       }
     }
-    
+
   }
 } );

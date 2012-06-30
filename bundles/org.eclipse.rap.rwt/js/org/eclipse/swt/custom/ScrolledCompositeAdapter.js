@@ -42,7 +42,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.ScrolledComposite", {
     },
     "content" : function( widget, value ) {
       org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( content ) {
-        widget.setContent( content );        
+        widget.setContent( content );
       } );
     },
     "scrollBarsVisible" : function( widget, value ) {

@@ -14,7 +14,7 @@
 qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
 
   statics : {
-  
+
     _overlay : null,
     _box : null,
 
@@ -100,7 +100,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
           for( var key in error ) { // NOTE : does not work in webkit (no iteration)
             info.push( key + ": " + error[ key ] );
           }
-          if( error.stack ) { // ensures stack is printed in webkit, might be printed twice in gecko  
+          if( error.stack ) { // ensures stack is printed in webkit, might be printed twice in gecko
             info.push( "Stack: " + error.stack );
           }
        }

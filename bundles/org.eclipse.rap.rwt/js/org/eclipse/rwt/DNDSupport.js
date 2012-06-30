@@ -18,14 +18,14 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     this.base( arguments );
     this._dragSources = {};
     this._dropTargets = {};
-    this._dropTargetEventQueue = {};    
+    this._dropTargetEventQueue = {};
     this._requestScheduled = false;
     this._currentDragSource = null;
     this._currentDropTarget = null;
     this._currentTargetWidget = null;
     this._currentMousePosition = { x : 0, y : 0 };
     this._actionOverwrite = null;
-    this._dataTypeOverwrite = null;    
+    this._dataTypeOverwrite = null;
     this._dropFeedbackRenderer = null;
     this._dropFeedbackFlags = 0;
     this._dragFeedbackWidget = null;
@@ -33,20 +33,20 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
   },
 
   members : {
-    
+
     /////////////
     // dragSource
-    
+
     registerDragSource : function( widget, operations ) {
-      widget.addEventListener( "dragstart", this._dragStartHandler, this ); 
+      widget.addEventListener( "dragstart", this._dragStartHandler, this );
       widget.addEventListener( "dragend", this._dragEndHandler, this );
       var hash = widget.toHashCode();
-      this._dragSources[ hash ] = { 
-        "dataTypes" : [], 
+      this._dragSources[ hash ] = {
+        "dataTypes" : [],
         "actions" : this._operationsToActions( operations )
-      }; 
+      };
     },
-    
+
     setDragSourceTransferTypes : function( widget, transferTypes ) {
       var hash = widget.toHashCode();
       this._dragSources[ hash ][ "dataTypes" ] = transferTypes;
@@ -58,15 +58,15 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       var hash = widget.toHashCode();
       delete this._dragSources[ hash ];
     },
-    
+
     isDragSource : function( widget ) {
       var hash = widget.toHashCode();
-      return typeof this._dragSources[ hash ] != "undefined";       
+      return typeof this._dragSources[ hash ] != "undefined";
     },
 
     isDropTarget : function( widget ) {
       var hash = widget.toHashCode();
-      return typeof this._dropTargets[ hash ] != "undefined";       
+      return typeof this._dropTargets[ hash ] != "undefined";
     },
 
     _dragStartHandler : function( event ) {
@@ -96,7 +96,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
           var feedbackWidget = this._getFeedbackWidget( control, sourceWidget );
           // Note: Unlike SWT, the feedbackWidget can not be rendered behind
           // the cursor, i.e. with a negative offset, as the widget would
-          // get all the mouse-events instead of a potential drop-target. 
+          // get all the mouse-events instead of a potential drop-target.
           dndHandler.setFeedbackWidget( feedbackWidget, 10, 20 );
           event.startDrag();
           event.stopPropagation();
@@ -137,22 +137,22 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       req.addParameter( eventName + ".time", time );
       req.send();
     },
-    
+
     /////////////
     // dropTarget
-    
+
     registerDropTarget : function( widget, operations ) {
       widget.addEventListener( "dragover", this._dragOverHandler, this );
       widget.addEventListener( "dragmove", this._dragMoveHandler, this );
       widget.addEventListener( "dragout", this._dragOutHandler, this );
       widget.addEventListener( "dragdrop", this._dragDropHandler, this );
       var hash = widget.toHashCode();
-      this._dropTargets[ hash ] = { 
-        "actions" : this._operationsToActions( operations ) 
+      this._dropTargets[ hash ] = {
+        "actions" : this._operationsToActions( operations )
       };
       widget.setSupportsDropMethod( qx.lang.Function.returnTrue );
     },
-    
+
     setDropTargetTransferTypes : function( widget, transferTypes ) {
       widget.setDropDataTypes( transferTypes );
     },
@@ -164,7 +164,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       widget.removeEventListener( "dragout", this._dragOutHandler, this );
       widget.removeEventListener( "dragdrop", this._dragDropHandler, this );
       var hash = widget.toHashCode();
-      delete this._dropTargets[ hash ]; 
+      delete this._dropTargets[ hash ];
       widget.setSupportsDropMethod( null );
     },
 
@@ -188,7 +188,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       this._setAction( action, mouseEvent );
       this._sendDropTargetEvent( target, "dragOver", mouseEvent, action );
       event.stopPropagation();
-    },    
+    },
 
     _dragOutHandler : function( event ) {
       var target = event.getCurrentTarget();
@@ -210,7 +210,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       }
       event.stopPropagation();
     },
-         
+
     _dragDropHandler : function( event ) {
       var target = event.getCurrentTarget();
       var mouseEvent = event.getMouseEvent();
@@ -218,7 +218,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       this._sendDropTargetEvent( target, "dropAccept", mouseEvent, action );
       event.stopPropagation();
     },
-    
+
     _sendDropTargetEvent : function( widget, type, qxDomEvent, action ) {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( widget );
@@ -233,9 +233,9 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         x = this._currentMousePosition.x;
         y = this._currentMousePosition.y;
       }
-      var source = wm.findIdByWidget( this._currentDragSource ); 
+      var source = wm.findIdByWidget( this._currentDragSource );
       var time = org.eclipse.swt.EventUtil.eventTimestamp();
-      var operation = action == "alias" ? "link" : action; 
+      var operation = action == "alias" ? "link" : action;
       var eventName = "org.eclipse.swt.dnd." + type;
       var event = {};
       event[ "id" ] = id;
@@ -258,15 +258,15 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         qx.client.Timer.once( req.send, req, 200 );
       }
     },
-    
+
     _isDropTargetEventScheduled : function( type ) {
       return typeof this._dropTargetEventQueue[ type ] != "undefined";
     },
-    
+
     _cancelDropTargetEvent : function( type ) {
       delete this._dropTargetEventQueue[ type ];
     },
-    
+
     _setPropertyRetroactively : function( dropTarget, property, value ) {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       for( var type in this._dropTargetEventQueue ) {
@@ -275,9 +275,9 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
           var eventName = event[ "eventName" ];
           event[ "param" ][ eventName + "." + property ] = value;
         }
-      } 
+      }
     },
-    
+
     _attachDropTargetEvents : function() {
       var req = org.eclipse.swt.Request.getInstance();
       var events = this._dropTargetEventQueue;
@@ -286,7 +286,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         req.addEvent( event.eventName, event.id );
         for( var key in event.param ) {
           req.addParameter( key, event.param[ key ] );
-        }        
+        }
       }
       this._dropTargetEventQueue = {};
     },
@@ -321,7 +321,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         }
       }
     },
-    
+
     _operationsToActions : function( operations ) {
       var result = {};
       for( var i = 0; i < operations.length; i++ ) {
@@ -330,7 +330,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       }
       return result;
     },
-    
+
     _toAction : function( operation ) {
       var result;
       switch( operation ) {
@@ -349,14 +349,14 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       }
       return result;
     },
-    
+
     _computeCurrentAction : function( domEvent, target ) {
       var result;
       if( this._actionOverwrite != null ) {
         result = this._actionOverwrite;
       } else {
         result = "move";
-        var shift = domEvent.isShiftPressed(); 
+        var shift = domEvent.isShiftPressed();
         var ctrl = domEvent.isCtrlPressed();
         var alt = domEvent.isAltPressed();
         if( ctrl && !shift && !alt ) {
@@ -369,12 +369,12 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         var dropTargetHash = target.toHashCode();
         var dropActions = this._dropTargets[ dropTargetHash ].actions;
         var dragSourceHash = this._currentDragSource.toHashCode();
-        var dragActions = this._dragSources[ dragSourceHash ].actions;      
+        var dragActions = this._dragSources[ dragSourceHash ].actions;
         if( !dragActions[ result ] || !dropActions[ result ] ) {
           result = "none";
         }
-      }      
-      return result;      
+      }
+      return result;
     },
 
     ///////////
@@ -402,7 +402,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         this._dropFeedbackRenderer.renderFeedback( target );
       }
     },
-    
+
     _getCurrentFeedbackTarget : function() {
       var result = null;
       var widget = this._currentTargetWidget;
@@ -449,7 +449,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
           widget.setCellContent( 0, image );
           var imageWidth = config.itemImageWidth[ config.treeColumn ];
           widget.setCellDimension( 0, imageWidth, row.getHeight() );
-        } 
+        }
         var backgroundColor = item.getCellBackground( config.treeColumn );
         var textColor = item.getCellForeground( config.treeColumn );
         widget.setBackgroundColor( backgroundColor );
@@ -458,7 +458,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         widget.setFont( config.font );
       }
     },
-    
+
     _resetFeedbackWidget : function() {
       if( this._dragFeedbackWidget != null ) {
         this._dragFeedbackWidget.setParent( null );
@@ -500,10 +500,10 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
 
     _onKeyEvent : function( event ) {
       if( event.getType() == "keyup" && event.getKeyIdentifier() == "Alt" ) {
-        // NOTE: This combination causes problems with future dom events, 
+        // NOTE: This combination causes problems with future dom events,
         // so instead we cancel the operation.
-        this._sendDragSourceEvent( this._currentDragSource, 
-                                   "dragFinished", 
+        this._sendDragSourceEvent( this._currentDragSource,
+                                   "dragFinished",
                                    event );
         this.cancel();
       } else if( this._currentDropTarget != null ) {
@@ -533,7 +533,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       this._currentDragSource = null;
       this._dataTypeOverwrite = null;
       this._currentMousePosition.x = 0;
-      this._currentMousePosition.y = 0;      
+      this._currentMousePosition.y = 0;
       var doc = qx.ui.core.ClientDocument.getInstance();
       doc.removeEventListener( "mouseover", this._onMouseOver, this );
       doc.removeEventListener( "keydown", this._onKeyEvent, this );
@@ -541,8 +541,8 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     },
 
     //////////////////
-    // server response 
-    
+    // server response
+
     cancel : function() {
       if( this._currentDragSource != null ) {
         var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
@@ -561,12 +561,12 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       }
       this._setPropertyRetroactively( widget, "operation", operation );
     },
-    
+
     /*
      * feedback is an array of strings with possible values
      * "select", "before", "after", "expand" and "scroll", while
      * flags is the "feedback"-field of SWTs dropTargetEvent,
-     * representing the same information as an integer. 
+     * representing the same information as an integer.
      */
     setFeedback : function( widget, feedback, flags ) {
       if( widget == this._currentDropTarget ) {
@@ -587,15 +587,15 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         this._dropFeedbackFlags = flags;
       }
     },
-    
+
     setDataType : function( widget, type ) {
       if( widget == this._currentDropTarget ) {
         this._dataTypeOverwrite = type;
       }
       this._setPropertyRetroactively( widget, "dataType", type );
     }
-  
+
   }
-    
+
 } );
 

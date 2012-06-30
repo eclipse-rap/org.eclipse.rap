@@ -128,13 +128,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     if( this._list && !qx.core.Object.inGlobalDispose() ) {
       this._list.setParent( null );
     }
-    this._disposeObjects( "_field", 
-                          "_button", 
-                          "_list", 
-                          "_manager", 
+    this._disposeObjects( "_field",
+                          "_button",
+                          "_list",
+                          "_manager",
                           "_selected" );
   },
-  
+
   events : {
     "itemsChanged" : "qx.event.type.Event",
     "selectionChanged" : "qx.event.type.Event"
@@ -175,7 +175,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         }
         this.getTopLevelWidget().add( this._list );
     },
-    
+
     _onFocusIn : function( evt ) {
       if(    this._field.isCreated()
           && !org.eclipse.swt.EventUtil.getSuspended() )
@@ -218,14 +218,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._list.resetBackgroundColor();
       }
     },
-    
+
     _onChangeVisibility : function( evt ) {
       var value = evt.getValue();
       if( !value && this._dropped ) {
         this._toggleListVisibility();
       }
     },
-    
+
     _applyCursor : function( value, old ) {
       this.base( arguments, value, old );
       if( value ) {
@@ -238,7 +238,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._list.resetCursor();
       }
     },
-    
+
     // Focus handling methods
     _visualizeFocus : function() {
       if( this._field.isCreated() ) {
@@ -251,14 +251,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       }
       this.addState( "focused" );
     },
-    
+
     // Override of the _ontabfocus method from qx.ui.core.Widget
     _ontabfocus : function() {
       if( this._field.isCreated() ) {
         this._field.selectAll();
       }
     },
-    
+
     _visualizeBlur : function() {
       if( this._field.isCreated() ) {
         // setting selection lenght to 0 needed for IE to deselect text
@@ -271,7 +271,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       }
       this.removeState( "focused" );
     },
-    
+
     // On "blur" or "windowblur" event: closes the list, if it is seeable
     _onBlur : function( evt ) {
       if( this._dropped ) {
@@ -307,7 +307,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._list.setItemDimensions( listWidth, this._itemHeight );
       }
     },
-    
+
     _toggleListVisibility : function() {
       if( this._list.getItemsCount() ) {
         // Temporary make the text field ReadOnly, when the list is dropped.
@@ -331,9 +331,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._updateListVisibleRequestParam();
       }
     },
-    
+
     _updateListScrollBar : function() {
-      if( this._dropped ) {        
+      if( this._dropped ) {
         var itemsHeight = this._list.getItemsCount() * this._itemHeight;
         var visible = this._getListMaxHeight() < itemsHeight;
         this._list.setScrollBarsVisible( false, visible );
@@ -398,14 +398,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       this._sendWidgetSelected();
       this.dispatchSimpleEvent( "selectionChanged" );
     },
-    
+
     // [if] avoid warning message - see bug 300038
     _scrollItemIntoView : function( item, topLeft ) {
       if( item.isCreated() && item.isDisplayable() ) {
         item.scrollIntoView( topLeft );
       }
     },
-    
+
     _formatText : function( value ) {
       var result = value;
       result = result.replace( /<[^>]+?>/g, "" );
@@ -415,7 +415,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
 
     ////////////////////////////////
     // Mouse events handling methods
-    
+
     _reDispatch : function( event ) {
       var originalTarget = event.getTarget();
       var originalTargetParent = originalTarget.getParent();
@@ -427,7 +427,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         event.stopPropagation();
       }
     },
-    
+
     _onMouseDown : function( evt ) {
       if( evt.isLeftButtonPressed() ) {
         if( evt.getTarget() == this._field ) {
@@ -446,9 +446,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         if( this._button.hasState( "over" ) ) {
           this._button.removeState( "over" );
         }
-        // Redirecting the action, according to the click target 
+        // Redirecting the action, according to the click target
         var target = evt.getTarget();
-        // Click is on a list item 
+        // Click is on a list item
         if(    target instanceof org.eclipse.rwt.widgets.ListItem
             && target === this._list.getListItemTarget( target ) )
         {
@@ -459,21 +459,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         // Click is on the combo's button or outside the dropped combo
         } else if(    target == this._button
                    || (    this._dropped
-                        && target != this 
-                        && target != this._field 
-                        && !this._list.contains( target ) ) ) 
+                        && target != this
+                        && target != this._field
+                        && !this._list.contains( target ) ) )
         {
           this._toggleListVisibility();
         }
       }
     },
-    
+
     _onMouseUp : function( evt ) {
       if( !this._dropped ) {
         this.setCapture( false );
       }
       if(    evt.getTarget() == this._field
-          && !org.eclipse.swt.EventUtil.getSuspended() ) 
+          && !org.eclipse.swt.EventUtil.getSuspended() )
       {
         this._handleSelectionChange();
       } else if( this._dropped ) {
@@ -483,7 +483,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
 
     _onMouseWheel : function( evt ) {
       if( this._dropped ) {
-        if( !this._list.isRelevantEvent( evt ) ) {      
+        if( !this._list.isRelevantEvent( evt ) ) {
           evt.preventDefault();
           evt.stopPropagation();
         }
@@ -506,7 +506,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         }
       }
     },
-    
+
     _onMouseOver : function( evt ) {
       var target = evt.getTarget();
       if( target instanceof org.eclipse.rwt.widgets.ListItem ) {
@@ -515,25 +515,25 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._button.addState( "over" );
       }
     },
-    
+
     _onMouseOut : function( evt ) {
       if( evt.getTarget() == this._button ) {
         this._button.removeState( "over" );
       }
     },
-    
+
     _setupCaptureRestore : function() {
       var thumb = this._list._vertScrollBar._thumb;
       thumb.addEventListener( "mouseup", this._captureRestore, this );
     },
-    
+
     _captureRestore : function( event ) {
       this.setCapture( true );
     },
 
     ////////////////////////////////////
     // Keyboard events handling methods
-    
+
     _onKeyDown : function( evt ) {
       switch( evt.getKeyIdentifier() ) {
         case "Enter":
@@ -553,7 +553,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         case "Escape":
           if( this._dropped ) {
             this._toggleListVisibility();
-          } 
+          }
           this.setFocused( true );
           evt.stopPropagation();
           break;
@@ -562,7 +562,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           if( evt.isAltPressed() ) {
             this._toggleListVisibility();
           }
-        // intentionally no break here 
+        // intentionally no break here
         case "PageUp":
         case "PageDown":
           if( this._selected ) {
@@ -652,10 +652,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         }
       }
     },
-    
+
     ///////////////////////////////////////////////
     // Actions, connected with server communication
-    
+
     _onTextBlur : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() && this._isModified ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
@@ -698,7 +698,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         }
       }
     },
-    
+
     _sendWidgetDefaultSelected : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
@@ -711,7 +711,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         }
       }
     },
-    
+
     _updateListVisibleRequestParam : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
@@ -720,8 +720,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         req.addParameter( id + ".listVisible", this._list.getDisplay() );
       }
     },
-    
-    // Checks for a text field selection change and updates 
+
+    // Checks for a text field selection change and updates
     // the request parameter if necessary.
     _handleSelectionChange : function() {
       var sel = this._field.getComputedSelection();
@@ -785,7 +785,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       this._field.setReadOnly( !value );
       this._field.setCursor( value ? null : "default" );
     },
-    
+
     setListVisible : function( value ) {
       if( this._list.getDisplay() != value ) {
         this._dropped = !value;
@@ -796,7 +796,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     setText : function( value ) {
       this._field.setValue( value );
     },
-    
+
     setTextSelection : function( start, length ) {
       if( this._field.isCreated() ) {
         this._selectionStart = start;
@@ -804,7 +804,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._field.setSelection( start, start + length );
       }
     },
-    
+
     setTextLimit : function( value ) {
       this._field.setMaxLength( value );
     },

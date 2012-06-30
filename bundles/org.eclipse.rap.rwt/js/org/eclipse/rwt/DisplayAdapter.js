@@ -36,7 +36,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.Display", {
     "cancelEvent",
     "beep"
   ],
-  
+
   propertyHandler : {
     "activeKeys" : function( object, value ) {
       var map = qx.lang.Object.fromArray( value );

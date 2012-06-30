@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (c) 2009, 2012 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.widgets.Menu", {  
+qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
   extend : qx.ui.popup.Popup,
   include : org.eclipse.rwt.VisibilityAnimationMixin,
 
@@ -36,29 +36,29 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
       bottom : 0,
       left : 0,
       anonymous : true
-    } );    
+    } );
     this.add( this._layout );
     this.addEventListener( "mousedown", this._unhoverSubMenu );
     this.addEventListener( "mouseout", this._onMouseOut );
     this.addEventListener( "mouseover", this._onMouseOver );
-    this.addEventListener( "keypress", this._onKeyPress );    
+    this.addEventListener( "keypress", this._onKeyPress );
     this._openTimer = new qx.client.Timer( 250 );
     this._openTimer.addEventListener( "interval", this._onopentimer, this );
     this._closeTimer = new qx.client.Timer( 250 );
     this._closeTimer.addEventListener( "interval", this._onclosetimer, this );
-    this.addToDocument();    
+    this.addToDocument();
   },
 
   destruct : function() {
     this._disposeObjects( "_openTimer", "_closeTimer", "_preItem", "_animation" );
-    this._disposeFields( "_lastActive", 
-                         "_lastFocus", 
-                         "_layout", 
-                         "_opener", 
-                         "_hoverItem", 
+    this._disposeFields( "_lastActive",
+                         "_lastFocus",
+                         "_layout",
+                         "_opener",
+                         "_hoverItem",
                          "_openItem" );
   },
-  
+
   statics : {
 
     menuDetectedByKey : function( evt ) {
@@ -109,7 +109,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
     }
 
   },
-  
+
   properties :  {
 
     appearance : {
@@ -118,7 +118,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
     }
 
   },
-  
+
   events : {
     "changeHoverItem" : "qx.event.type.Event"
   },
@@ -127,15 +127,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
 
     /////////
     // Opener
-    
+
     setOpener : function( value ) {
-      this._opener = value;  
+      this._opener = value;
     },
-    
+
     getOpener : function( value ) {
-      return this._opener;  
-    },    
-    
+      return this._opener;
+    },
+
     // Overwritten:
     getFocusRoot : function() {
       var root = null;
@@ -146,19 +146,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
       }
       return root;
     },
-    
+
     /////////
     // Layout
-    
+
     addMenuItemAt : function( menuItem, index ) {
       // seperator does not have this function:
       if( menuItem.setParentMenu ) {
         // it is essential that this happens before the menuItem is added
-        menuItem.setParentMenu( this ); 
+        menuItem.setParentMenu( this );
       }
       this._layout.addAt( menuItem, index );
     },
-            
+
     scheduleMenuLayout : function() {
       if( this._menuLayoutScheduled != true ) {
         this._menuLayoutScheduled = true;
@@ -171,17 +171,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
         this.addToQueue( "menuLayout" );
       }
     },
-    
+
     _layoutPost : function( changes ) {
       this.base( arguments, changes );
       if( changes.menuLayout ) {
         this._menuLayoutScheduled = false;
-        if( this.isSeeable() ) {        
+        if( this.isSeeable() ) {
           this._afterAppear(); // recomputes the location
         }
       }
     },
-       
+
     getMaxCellWidth : function( cell ) {
       if( this._maxCellWidths[ cell ] == null ) {
         var max = 0;
@@ -194,64 +194,64 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
         }
         this._maxCellWidths[ cell ] = max;
       }
-      if(    cell == 0 
+      if(    cell == 0
           && this._maxCellWidths[ 0 ] == 0
           && this.getMaxCellWidth( 1 ) == 0 ) {
         this._maxCellWidths[ cell ] = 13;
-      }      
+      }
       return this._maxCellWidths[ cell ];
     },
-    
+
     invalidateMaxCellWidth : function( cell ) {
-      this._maxCellWidths[ cell ] = null;      
+      this._maxCellWidths[ cell ] = null;
     },
-    
+
     invalidateAllMaxCellWidths : function() {
       for( var i = 0; i < 4; i++ ) {
         this._maxCellWidths[ i ] = null;
-      }      
+      }
     },
-    
+
     // needed for the menu-manager:
     isSubElement : function( vElement, vButtonsOnly ) {
       var ret = false;
-      if (    ( vElement.getParent() === this._layout ) 
+      if (    ( vElement.getParent() === this._layout )
            || ( ( !vButtonsOnly ) && ( vElement === this ) ) ) {
         ret = true;
       }
       if( !ret ) {
-        var a = this._layout.getChildren(), l=a.length; 
+        var a = this._layout.getChildren(), l=a.length;
         for ( var i = 0; i < l; i++ ) {
-          if (    this.hasSubmenu( a[ i ] )  
-               && a[ i ].getMenu().isSubElement( vElement, vButtonsOnly ) ) 
+          if (    this.hasSubmenu( a[ i ] )
+               && a[ i ].getMenu().isSubElement( vElement, vButtonsOnly ) )
           {
             ret = true;
           }
         }
       }
       return ret;
-    },    
-        
+    },
+
     ////////
     // Hover
-    
+
     setHoverItem : function( value, fromKeyEvent ) {
       var newHover = value ? value : this._openItem;
       if( this._hoverItem && this._hoverItem != newHover ) {
         this._hoverItem.removeState( "over" );
-      }      
-      if( newHover ) {        
+      }
+      if( newHover ) {
         newHover.addState( "over" );
-      }        
+      }
       this._hoverItem = newHover;
-      if( !fromKeyEvent ) {       
+      if( !fromKeyEvent ) {
         // handle open timer
         this._openTimer.setEnabled( false );
         if( this.hasSubmenu( newHover ) && ( this._openItem != newHover ) ) {
           this._openTimer.setEnabled( true );
-        } 
+        }
         // handle close tiemr
-        if( this._openItem ) { 
+        if( this._openItem ) {
           if( this._openItem == newHover || newHover == null ) {
             this._closeTimer.setEnabled( false );
           } else if( newHover != null ) {
@@ -261,44 +261,44 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
       }
       this.dispatchSimpleEvent( "changeHoverItem" );
     },
-    
+
     getHoverItem : function( value ) {
       return this._hoverItem;
     },
-    
+
     hoverFirstItem : function() {
       if( this._isDisplayable && !this._itemsHiddenFlag ) {
-        this.setHoverItem( null, true );        
-        this._hoverNextItem();        
+        this.setHoverItem( null, true );
+        this._hoverNextItem();
         this.removeState( "hoverFristItem" );
       } else {
         this.addState( "hoverFristItem" );
       }
     },
-        
+
     _hoverNextItem : function() {
       // About _hoverNext/Previous:
       // the index used for the array of visible children can have
-      // "-1" as a valid value (as returned by indexOf), meaning a position 
-      // between the last and the first item. This is value is needed when no 
-      // item is hovered or the index-position is wrapping around. 
+      // "-1" as a valid value (as returned by indexOf), meaning a position
+      // between the last and the first item. This is value is needed when no
+      // item is hovered or the index-position is wrapping around.
       var current;
       var next = null;
       var children = this._layout.getVisibleChildren();
       var index = children.indexOf( this._hoverItem );
       var startIndex = index;
-      do {        
+      do {
         index++;
         if( index > children.length ) {
           index = -1;
         }
         current = index >= 0 ? children[ index ] : null;
-        if(   current 
-           && current.isEnabled() 
+        if(   current
+           && current.isEnabled()
            && current.classname == "org.eclipse.rwt.widgets.MenuItem" )
         {
           next = current;
-        }          
+        }
       } while( !next && ( index != startIndex ) );
       this.setHoverItem( next, true );
     },
@@ -309,25 +309,25 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
       var children = this._layout.getVisibleChildren();
       var index = children.indexOf( this._hoverItem );
       var startIndex = index;
-      do {        
+      do {
         index--;
         if( index < -1 ) {
           index = children.length;
         }
         current = index >= 0 ? children[ index ] : null;
-        if(   current 
-           && current.isEnabled() 
+        if(   current
+           && current.isEnabled()
            && current.classname == "org.eclipse.rwt.widgets.MenuItem" )
         {
           prev = current;
-        }          
+        }
       } while( !prev && ( index != startIndex ) );
       this.setHoverItem( prev, true );
     },
 
     //////////////////
     // Pop-Up handling
-      
+
     // overwritten:
     _makeActive : function() {
       this._lastActive = this.getFocusRoot().getActiveChild();
@@ -341,8 +341,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
       vRoot.setActiveChild( this._lastActive );
       vRoot.setFocusedChild( this._lastFocus );
     },
-    
-    
+
+
     _beforeAppear : function() {
       // original qooxdoo code: (1 line)
       qx.ui.layout.CanvasLayout.prototype._beforeAppear.call( this );
@@ -351,9 +351,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
       this._makeActive();
       this._menuShown();
     },
-    
+
     _beforeDisappear : function() {
-      // original qooxdoo code: (1 line) 
+      // original qooxdoo code: (1 line)
       qx.ui.layout.CanvasLayout.prototype._beforeDisappear.call( this );
       org.eclipse.rwt.MenuManager.getInstance().remove( this );
       if( this.getFocusRoot() ) {
@@ -362,26 +362,26 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
       }
       this.setOpenItem( null );
       this.setHoverItem( null );
-      if( this._opener instanceof org.eclipse.rwt.widgets.MenuItem ) {   
+      if( this._opener instanceof org.eclipse.rwt.widgets.MenuItem ) {
         var parentMenu = this._opener.getParentMenu();
         if( parentMenu instanceof org.eclipse.rwt.widgets.MenuBar ) {
           this._opener.removeState( "pressed" );
           if( parentMenu.getOpenItem() == this._opener ) {
             parentMenu.setOpenItem( null );
-          }        
+          }
         }
-      }   
+      }
       this._menuHidden();
     },
 
-    
+
     //////////
-    // Submenu 
-            
+    // Submenu
+
     hasSubmenu : function( item ) {
       return item && item.getMenu && item.getMenu();
     },
-            
+
    _onopentimer : function( event ) {
       this._openTimer.stop();
       this.setOpenItem( this._hoverItem );
@@ -393,7 +393,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
       this._closeTimer.stop();
       this.setOpenItem( null );
     },
-    
+
     setOpenItem : function( item ) {
       if( this._openItem && this._openItem.getMenu() ) {
         this._openItem.setSubMenuOpen( false );
@@ -405,32 +405,32 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
       // in theory an item could have lost it's assigned menu (by eval-code)
       // since the timer has been started/the item opend, so check for it
       if( item && item.getMenu() ) {
-        var subMenu = item.getMenu(); 
+        var subMenu = item.getMenu();
         item.setSubMenuOpen( true );
         subMenu.setOpener( item );
         var itemNode = item.getElement();
         var thisNode = this.getElement();
         // the position is relative to the document, therefore we need helper
-        subMenu.setTop( qx.bom.element.Location.getTop( itemNode ) - 2 );                         
-        subMenu.setLeft(   qx.bom.element.Location.getLeft( thisNode ) 
-                         + qx.html.Dimension.getBoxWidth( thisNode ) 
+        subMenu.setTop( qx.bom.element.Location.getTop( itemNode ) - 2 );
+        subMenu.setLeft(   qx.bom.element.Location.getLeft( thisNode )
+                         + qx.html.Dimension.getBoxWidth( thisNode )
                          - 3 );
-        subMenu.show();        
+        subMenu.show();
       }
     },
-    
+
     /////////////////
     // Event-handling
-    
+
     _onMouseOut : function( event ) {
       var target = event.getTarget();
       var related = event.getRelatedTarget();
       if ( target == this || ( related != this && !this.contains( related ) ) )
       {
         this.setHoverItem( null );
-      }        
+      }
     },
-    
+
    _onMouseOver : function( event ) {
      var target = event.getTarget();
      if( target != this ) {
@@ -438,7 +438,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
      }
      this._unhoverSubMenu();
    },
-   
+
    _unhoverSubMenu : function() {
      if( this._openItem ) {
        var subMenu = this._openItem.getMenu();
@@ -446,7 +446,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
        subMenu.setHoverItem( null );
      }
    },
-   
+
     _onKeyPress : function( event ) {
       switch( event.getKeyIdentifier() ) {
         case "Up":
@@ -463,41 +463,41 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
         break;
         case "Enter":
           this._handleKeyEnter( event );
-        break;        
+        break;
       }
     },
-     
+
     _handleKeyUp : function( event ) {
       if( this._openItem ) {
        this._openItem.getMenu()._hoverPreviousItem();
       } else {
         this._hoverPreviousItem();
-      }        
+      }
       event.preventDefault();
       event.stopPropagation();
     },
-    
+
     _handleKeyDown : function( event ) {
       if( this._openItem ) {
        this._openItem.getMenu()._hoverNextItem();
       } else {
         this._hoverNextItem();
-      }        
+      }
       event.preventDefault();
       event.stopPropagation();
     },
-    
+
     _handleKeyLeft : function( event ) {
       var parentMenu = this._opener ? this._opener.getParentMenu() : null;
       if( parentMenu instanceof org.eclipse.rwt.widgets.Menu ) {
-        var hover = this._opener; 
+        var hover = this._opener;
         parentMenu.setOpenItem( null );
         parentMenu.setHoverItem( hover, true );
         event.preventDefault();
         event.stopPropagation();
       }
     },
-    
+
     _handleKeyRight : function( event ) {
       if( this.hasSubmenu( this._hoverItem ) ) {
         this._onopentimer();
@@ -507,7 +507,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
         event.stopPropagation();
       }
     },
-    
+
     _handleKeyEnter : function( event ) {
       if( this.hasSubmenu( this._hoverItem ) ) {
         this._onopentimer();
@@ -516,22 +516,22 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
       } else if( this._hoverItem ){
         this._hoverItem.execute();
         org.eclipse.rwt.MenuManager.getInstance().update();
-      }      
+      }
       event.preventDefault();
       event.stopPropagation();
     },
-       
+
    ////////////////
-   // Client-Server 
-    
+   // Client-Server
+
     setHasMenuListener : function( value ) {
       this._hasListener = value;
     },
-            
+
    _menuShown : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         if( this._hasListener ) {
-          // create preliminary item              
+          // create preliminary item
           if( this._preItem == null ) {
             this._preItem = new org.eclipse.rwt.widgets.MenuItem( "push" );
             this._preItem.setText( "..." );
@@ -582,15 +582,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
     },
 
     unhideItems : function( reveal ) {
-      if( reveal ) { 
+      if( reveal ) {
         var items = this._layout.getChildren();
         for( var i = 0; i < items.length; i++ ) {
           items[ i ].setDisplay( true );
-        }        
+        }
         if( this._preItem ) {
           this._preItem.setDisplay( false );
         }
-        this._itemsHiddenFlag = false;      
+        this._itemsHiddenFlag = false;
         if( this._hoverFirstItemFlag ) {
           this.hoverFirstItem();
         }
@@ -599,7 +599,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
       }
       this._hoverFirstItemFlag = false;
     },
-    
+
     // Called to open a popup menu from server side
     showMenu : function( menu, x, y ) {
       if( menu != null ) {

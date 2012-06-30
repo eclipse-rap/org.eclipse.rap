@@ -12,16 +12,16 @@
 qx.Class.define( "org.eclipse.rwt.VML", {
 
   statics : {
-    
+
     init : function() {
       document.namespaces.add( "v", "urn:schemas-microsoft-com:vml");
       document.namespaces.add( "o", "urn:schemas-microsoft-com:office:office");
       var sheet = document.createStyleSheet();
       sheet.cssText = "v\\:* { behavior:url(#default#VML);display:inline-block; } "+
                       "o\\:* { behavior: url(#default#VML);}";
-      this._vmlEnabled = true;      
+      this._vmlEnabled = true;
     },
-    
+
     createCanvas : function() {
       var result = {};
       result.type = "vmlCanvas";
@@ -37,7 +37,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       result.children = {};
       return result;
     },
-    
+
     clearCanvas : function( canvas ) {
       for( var hash in canvas.children ) {
         canvas.node.removeChild( canvas.children[ hash ].node );
@@ -48,14 +48,14 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     getCanvasNode : function( canvas ) {
       return canvas.node;
     },
-    
+
     handleAppear : function( canvas ) {
       var children = canvas.children;
       for( var hash in children ) {
        this._handleAppearShape( children[ hash ] );
       }
     },
-    
+
     createShape : function( type ) {
       var result = null;
       switch( type ) {
@@ -70,13 +70,13 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         case "image":
           result = this._createImage();
         break;
-        default: 
+        default:
           throw "VML does not support shape " + type;
       }
       result.restoreData = { "fill" : {} };
       result.node.stroked = false;
-      // TODO [tb] : test if stroke-node conflicts with stroke-properties on 
-      // the element-node when moved in dom. 
+      // TODO [tb] : test if stroke-node conflicts with stroke-properties on
+      // the element-node when moved in dom.
       var fill = this._createNode( "fill" );
       fill.method = "sigma";
       result.node.appendChild( fill );
@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       this.setFillColor( result, null );
       return result;
     },
-    
+
     addToCanvas : function( canvas, shape, beforeShape ) {
       var hash = qx.core.Object.toHashCode( shape );
       canvas.children[ hash ] = shape;
@@ -95,7 +95,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         canvas.node.appendChild( shape.node );
       }
     },
-    
+
     enableOverflow : function( canvas ) {
       // nothing to do
     },
@@ -105,7 +105,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       delete canvas.children[ hash ];
       canvas.node.removeChild( shape.node );
     },
-    
+
     setDisplay : function( shape, value ) {
       shape.node.style.display = value ? "" : "none";
     },
@@ -116,7 +116,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     },
 
     setRectBounds : function( shape, x, y, width, height ) {
-      var node = shape.node;      
+      var node = shape.node;
       node.style.width = this._convertNumeric( width, false );
       node.style.height = this._convertNumeric( height, false );
       node.style.left = this._convertNumeric( x, true );
@@ -124,7 +124,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     },
 
     /**
-     * "crop" is an optional array [ top, right, bottom, left ]. The values have 
+     * "crop" is an optional array [ top, right, bottom, left ]. The values have
      * to be between 0 and 1, representing percentage of the image-dimension.
      */
     setImageData : function( shape, src, x, y, width, height, crop ) {
@@ -135,7 +135,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         node.cropRight = crop[ 1 ];
         node.cropBottom =  crop[ 2 ];
         node.cropLeft = crop[ 3 ];
-      } 
+      }
       node.style.width = width;
       node.style.height = height;
       node.style.left = x;
@@ -148,7 +148,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       var radiusLeftTop = Math.min( radii[ 0 ], maxRadius );
       var radiusTopRight = Math.min( radii[ 1 ], maxRadius );
       var radiusRightBottom = Math.min( radii[ 2 ], maxRadius );
-      var radiusBottomLeft = Math.min( radii[ 3 ], maxRadius );      
+      var radiusBottomLeft = Math.min( radii[ 3 ], maxRadius );
       radiusLeftTop = this._convertNumeric( radiusLeftTop, false );
       radiusTopRight = this._convertNumeric( radiusTopRight, false );
       radiusRightBottom = this._convertNumeric( radiusRightBottom, false );
@@ -187,9 +187,9 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         path.push( "L", rectLeft, rectTop + rectHeight );
       }
       path.push( "X E" );
-      shape.node.path = path.join( " " );      
+      shape.node.path = path.join( " " );
     },
-    
+
     applyDrawingContext : function( shape, context, fill ) {
       var opacity = context.globalAlpha;
       if( opacity != 1 ) {
@@ -213,13 +213,13 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       }
       shape.node.path = this._convertPath( context._currentPath );
     },
-    
+
     createShapeFromContext : function( context, fill ) {
       var shape = this.createShape( "custom" );
       this.applyDrawingContext( shape, context, fill );
       return shape;
     },
-    
+
     setFillColor : function( shape, color ) {
       var fill = shape.fill;
       fill.type = "solid";
@@ -232,7 +232,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         delete shape.restoreData.fill.color;
       }
     },
-    
+
     getFillColor : function( shape ) {
       var result = null;
       if( this.getFillType( shape ) == "color" ) {
@@ -265,10 +265,10 @@ qx.Class.define( "org.eclipse.rwt.VML", {
           nextColor = qx.util.ColorUtil.stringToRgb( color );
           var nextOffset = gradient[ colorPos ][ 0 ];
           transitionColors += ", ";
-          transitionColors += this._transitionColors( lastColor, 
-                                                      nextColor, 
-                                                      lastOffset, 
-                                                      nextOffset, 
+          transitionColors += this._transitionColors( lastColor,
+                                                      nextColor,
+                                                      lastOffset,
+                                                      nextOffset,
                                                       3 );
           transitionColors += ", " + ( nextOffset * 100 ) + "% " + color;
           lastColor = nextColor;
@@ -295,7 +295,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         this._setFillEnabled( shape, false );
       }
     },
-    
+
     getFillType : function( shape ) {
       var on = shape.fill.on;
       var result = !on ? null : shape.fill.type;
@@ -311,7 +311,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     // However this ONLY happens if the element that the opacity is applied to,
     // does NOT have a background of its own!
     // If antialiasing is turned off, the effect is gone, but without
-    // antaliasing the element looks just as ugly as with the glitch.    
+    // antaliasing the element looks just as ugly as with the glitch.
     setStroke : function( shape, color, width ) {
       if( width > 0 ) {
         shape.node.stroked = true;
@@ -319,14 +319,14 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         shape.node.strokeweight = width + "px";
         shape.restoreData.strokecolor = color;
         shape.restoreData.strokeweight = width + "px";
-        // TODO [tb] : joinstyle 
+        // TODO [tb] : joinstyle
       } else {
         shape.node.stroked = false;
         delete shape.restoreData.strokecolor;
         delete shape.restoreData.strokeweight;
       }
     },
-    
+
     getStrokeWidth : function( shape ) {
       // IE returns strokeweight either as number (then its pt)
       // or as string with a "px" or "pt" postfix
@@ -334,22 +334,22 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       if( shape.node.stroked ) {
         result = shape.node.strokeweight;
         var isPt = typeof result == "number" || result.search( "pt" ) != -1;
-        result = parseFloat( result );                     
+        result = parseFloat( result );
         result = isPt ? result / 0.75 : result;
       }
-      return result; 
+      return result;
     },
-    
+
     getStrokeColor : function( shape ) {
       return shape.node.strokecolor.value;
     },
-    
+
     setOpacity : function( shape, opacity ) {
       shape.opacity = opacity;
       this._renderFilter( shape );
       this._setAntiAlias( shape, opacity < 1 );
     },
-    
+
     getOpacity : function( shape ) {
       var result = 1;
       if( typeof shape.opacity === "number" && shape.opacity < 1 ) {
@@ -357,14 +357,14 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       }
       return result;
     },
-    
+
     setBlur : function( shape, radius ) {
-      // NOTE: IE shifts the shape to the bottom-right, 
+      // NOTE: IE shifts the shape to the bottom-right,
       // compensated ONLY in setRoundRectLayout
       shape.blurRadius = radius;
       this._renderFilter( shape );
     },
-    
+
     getBlur : function( shape, radius ) {
       var result = 0;
       if( typeof shape.blurRadius === "number" && shape.blurRadius > 0 ) {
@@ -372,7 +372,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       }
       return result;
     },
-    
+
     _renderFilter : function( shape ) {
       var filterStr = [];
       var opacity = this.getOpacity( shape );
@@ -383,7 +383,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         filterStr.push( ")" );
       }
       if( blurRadius > 0 ) {
-        filterStr.push( "progid:DXImageTransform.Microsoft.Blur(pixelradius=" ); 
+        filterStr.push( "progid:DXImageTransform.Microsoft.Blur(pixelradius=" );
         filterStr.push( this._getBlurOffsets( blurRadius )[ 0 ] );
         filterStr.push( ")" );
       }
@@ -393,18 +393,18 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         org.eclipse.rwt.HtmlUtil.removeCssFilter( shape.node );
       }
     },
-    
+
     /////////
     // helper
 
     _VMLFACTOR : 10,
-    _VMLDEGREE : -65535, 
+    _VMLDEGREE : -65535,
     _VMLRAD : -65535 * ( 180 / Math.PI ),
-        
+
     _createNode : function( type ) {
       return document.createElement( "v:" + type );
     },
-    
+
     _createRect : function() {
       var result = {};
       result.type = "vmlRect";
@@ -416,18 +416,18 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       node.style.left = 0;
       node.style.antialias = false;
       result.node = node;
-      return result;      
+      return result;
     },
-    
+
     _createImage : function() {
       var result = {};
       result.type = "vmlImage";
       var node = this._createNode( "image" );
       node.style.position = "absolute";
       result.node = node;
-      return result;      
+      return result;
     },
-    
+
     _createCustomShape : function() {
       var result = {};
       var node = this._createNode( "shape" );
@@ -440,7 +440,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       node.style.top = 0;
       node.style.left = 0;
       result.node = node;
-      return result;      
+      return result;
     },
 
     _setFillEnabled : function( shape, value ) {
@@ -453,7 +453,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         var stroke = this._createNode( "stroke" );
         shape.node.appendChild( stroke );
         shape.stroke = stroke;
-      }      
+      }
     },
 
     _setStrokeStyle : function( shape, joinStyle, miterLimit, endCap ) {
@@ -480,7 +480,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       }
       return str.join(" ,");
     },
-    
+
     _copyData : function( source, target ) {
       if( !source || !target ) {
         throw "VML._copyData: source or target missing.";
@@ -488,7 +488,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       for( var key in source ) {
         var value = source[ key ];
         if( typeof value === "object" ) {
-          try {  
+          try {
             this._copyData( value, target[ key ] );
           } catch( ex ) {
             throw new Error( "Could not copy " + key + ": " + ex );
@@ -507,18 +507,18 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       var part = parseInt( color1 ) + ( ( color2 - color1 ) * pos );
       return Math.round( part );
     },
-    
+
     _convertNumeric : function( value, fixOffset ) {
       var result;
       if( typeof value == "number" ) {
         result = ( fixOffset ? value - 0.5 : value ) * this._VMLFACTOR;
-        result = Math.round( result );        
+        result = Math.round( result );
       } else {
         result = value;
-      }      
+      }
       return  result;
     },
-    
+
     _convertPath : function( path ) {
       var string = [];
       for( var i = 0; i < path.length; i++ ) {
@@ -570,11 +570,11 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       }
       return string.join( " " );
     },
-    
+
     _setAntiAlias : function( shape, value ) {
       shape.node.style.antialias = value;
     },
-    
+
     _getBlurOffsets : function( blurradius ) {
       // returns [ blurradius, location-offset, dimension-offset ]
       var result;
@@ -586,14 +586,14 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       }
       return result;
     },
-    
+
     _BLUROFFSETS : [
       // NOTE: these values are chosen to resemble the blur-effect on css3-shadows
       // as closely as possible, but in doubt going for the stronger effect.
       [ 0, 0, 0 ],
       [ 2, 2, 1 ],
-      [ 3, 3, 1 ], 
-      [ 4, 4, 1 ] 
+      [ 3, 3, 1 ],
+      [ 4, 4, 1 ]
     ]
   }
 

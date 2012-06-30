@@ -20,14 +20,14 @@
 qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
 
   statics : {
-    
+
     BROWSER_PREFIX : qx.core.Variant.select( "qx.client", {
       "gecko" : "-moz-",
       "webkit" : "-webkit-",
       "default" : ""
     } ),
-    
-    // TODO [tb] : Without IE6-support the browser-switch and opacity parameter can be removed  
+
+    // TODO [tb] : Without IE6-support the browser-switch and opacity parameter can be removed
     setBackgroundImage : ( function() {
       var result;
       // For IE6 without transparency we need to use CssFilter for PNG opacity to work:
@@ -82,7 +82,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
         }
       }
     } ),
-    
+
     setBackgroundGradient : qx.core.Variant.select( "qx.client", {
       "webkit" : function( target, gradientObject ) {
         // NOTE: Webkit will also support the new syntax, but support for the old syntax
@@ -93,10 +93,10 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
           if( gradientObject.horizontal === true ) {
             args.push( "right top" );
           }  else {
-            args.push( "left bottom" );            
+            args.push( "left bottom" );
           }
           for( var i = 0; i < gradientObject.length; i++ ) {
-            var position = gradientObject[ i ][ 0 ]; 
+            var position = gradientObject[ i ][ 0 ];
             var color = gradientObject[ i ][ 1 ];
             args.push( "color-stop(" + position + "," + color + ")" );
           }
@@ -110,7 +110,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
         if( gradientObject ) {
           var args = [ gradientObject.horizontal === true ? "0deg" : "-90deg" ];
           for( var i = 0; i < gradientObject.length; i++ ) {
-            var position = ( gradientObject[ i ][ 0 ] * 100 ) + "%"; 
+            var position = ( gradientObject[ i ][ 0 ] * 100 ) + "%";
             var color = gradientObject[ i ][ 1 ];
             args.push( color + " " + position );
           }
@@ -121,16 +121,16 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
         }
       }
     } ),
-    
+
     setBoxShadow: function( target, shadowObject ) {
       var property;
       if( org.eclipse.rwt.Client.isWebkit() ) {
         property = this.BROWSER_PREFIX + "box-shadow";
       } else {
-        property = "boxShadow";          
+        property = "boxShadow";
       }
       if( shadowObject ) {
-        // NOTE: older webkit dont accept spread, therefor only use parameters 1-3  
+        // NOTE: older webkit dont accept spread, therefor only use parameters 1-3
         var string = shadowObject[ 0 ] ? "inset " : "";
         string += shadowObject.slice( 1, 4 ).join( "px " ) + "px";
         var rgba = qx.util.ColorUtil.stringToRgb( shadowObject[ 5 ] );
@@ -173,9 +173,9 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
 
     setStyleProperty : function( target, property, value ) {
       if( target instanceof qx.ui.core.Widget ) {
-        target.setStyleProperty( property, value );          
+        target.setStyleProperty( property, value );
       } else {
-        target.style[ property ] = value;          
+        target.style[ property ] = value;
       }
     },
 
@@ -186,7 +186,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
         target.style[ property ] = "";
       }
     },
-    
+
     removeCssFilter : function( target ) {
       var element = null;
       if( target instanceof qx.ui.core.Widget ) {
@@ -204,7 +204,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
         element.style.cssText = cssText;
       }
     },
-    
+
     //////////
     // Private
 
@@ -225,10 +225,10 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
         this.removeCssFilter( target );
       }
     },
-   
+
     /////////
     // Helper
-    
+
     _passEventsThrough : function( target, value ) {
       // TODO [tb] : This is a very limited implementation that allowes
       // to click "through" the elmement, but won't handle hover and cursor.
@@ -244,54 +244,54 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
         // TODO
       }
     },
-    
+
     _passEventThroughHandler : function() {
       var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
       var domEvent = EventHandlerUtil.getDomEvent( arguments );
       var domTarget = EventHandlerUtil.getDomTarget( domEvent );
       var type = domEvent.type;
       domTarget.style.display = "none";
-      var newTarget 
+      var newTarget
         = document.elementFromPoint( domEvent.clientX, domEvent.clientY );
       domEvent.cancelBubble = true;
       EventHandlerUtil.stopDomEvent( domEvent );
       if(    newTarget
-          && type !== "mousemove" 
-          && type !== "mouseover" 
-          && type !== "mouseout" )  
+          && type !== "mousemove"
+          && type !== "mouseover"
+          && type !== "mouseout" )
       {
         if( type === "mousedown" ) {
           org.eclipse.rwt.HtmlUtil._refireEvent( newTarget, "mouseover", domEvent );
-        } 
+        }
         org.eclipse.rwt.HtmlUtil._refireEvent( newTarget, type, domEvent );
         if( type === "mouseup" ) {
-          org.eclipse.rwt.HtmlUtil._refireEvent( newTarget, "mouseout", domEvent );          
+          org.eclipse.rwt.HtmlUtil._refireEvent( newTarget, "mouseout", domEvent );
         }
       }
       domTarget.style.display = "";
     },
-    
+
     _refireEvent : qx.core.Variant.select("qx.client", {
-      "mshtml" : function( target, type, originalEvent ) { 
+      "mshtml" : function( target, type, originalEvent ) {
         var newEvent = document.createEventObject( originalEvent );
         target.fireEvent( "on" + type , newEvent );
-      }, 
+      },
       "default" : function( target, type, originalEvent ) {
         var newEvent = document.createEvent( "MouseEvents" );
-        newEvent.initMouseEvent( type, 
+        newEvent.initMouseEvent( type,
                                  true,  /* can bubble */
                                  true, /*cancelable */
-                                 originalEvent.view, 
-                                 originalEvent.detail, 
-                                 originalEvent.screenX, 
-                                 originalEvent.screenY, 
-                                 originalEvent.clientX, 
-                                 originalEvent.clientY, 
-                                 originalEvent.ctrlKey, 
-                                 originalEvent.altKey, 
-                                 originalEvent.shiftKey, 
-                                 originalEvent.metaKey, 
-                                 originalEvent.button, 
+                                 originalEvent.view,
+                                 originalEvent.detail,
+                                 originalEvent.screenX,
+                                 originalEvent.screenY,
+                                 originalEvent.clientX,
+                                 originalEvent.clientY,
+                                 originalEvent.ctrlKey,
+                                 originalEvent.altKey,
+                                 originalEvent.shiftKey,
+                                 originalEvent.metaKey,
+                                 originalEvent.button,
                                  originalEvent.relatedTarget);
         target.dispatchEvent( newEvent );
       }
