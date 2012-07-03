@@ -9,6 +9,8 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+/*global qxsettings:true, qxvariants:true*/
+
 if( typeof qxsettings === "undefined" ) {
   qxsettings = {};
   qxvariants = {};

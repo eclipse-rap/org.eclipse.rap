@@ -1,5 +1,5 @@
 eclipse.preferences.version=1
-globals=org\: true, qx\: true, qxsettings\: true, qxvariants\: true, namespace\: false
+globals=org\: false, qx\: false, namespace\: false
 included=js//*.js
 options=curly\: true, immed\: true, newcap\: true, eqnull\: true, shadow\: true, funcscope\: true, undef\: true, browser\: true, laxbreak\: true, evil\:true, onecase\:true, sub\:true
 projectSpecificOptions=true

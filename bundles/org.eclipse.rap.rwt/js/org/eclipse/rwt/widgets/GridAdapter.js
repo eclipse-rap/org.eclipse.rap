@@ -78,10 +78,11 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
     },
     "selection" : function( widget, value ) {
       widget.deselectAll();
+      var applySelection = function( item ) {
+        widget.selectItem( item );
+      };
       for( var i = 0; i < value.length; i++ ) {
-        org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value[ i ], function( item ) {
-          widget.selectItem( item );
-        } );
+        org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value[ i ], applySelection );
       }
     },
     "sortColumn" : function( widget, value ) {

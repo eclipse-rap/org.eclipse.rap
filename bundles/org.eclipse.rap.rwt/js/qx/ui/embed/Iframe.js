@@ -668,6 +668,7 @@ qx.Class.define("qx.ui.embed.Iframe",
     },
 
     destroy : function() {
+      // best known method to remove iframe content from memory is to set this url:
       var src = "javascript:false;";
       if( org.eclipse.rwt.Client.isMshtml() && this._iframeNode && this.getSource() !== src ) {
         this.setStyleProperty( "visibility", "hidden" );

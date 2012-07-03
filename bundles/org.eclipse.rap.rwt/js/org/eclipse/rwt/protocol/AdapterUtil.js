@@ -50,11 +50,12 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     "children" : function( widget, value ) {
       if( value !== null ) {
         var childrenCount = value.length;
+        var applyZIndex = function( child ) {
+          var index = value.indexOf( org.eclipse.rwt.protocol.ObjectManager.getId( child ) );
+          child.setZIndex( childrenCount - index );
+        };
         for( var i = 0; i < childrenCount; i++ ) {
-          org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value[ i ], function( child ) {
-            var index = value.indexOf( org.eclipse.rwt.protocol.ObjectManager.getId( child ) );
-            child.setZIndex( childrenCount - index );
-          } );
+          org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value[ i ], applyZIndex );
         }
       }
     },
@@ -109,7 +110,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
       widget.setHeight( bounds[ 3 ] );
     },
     "toolTip" : function( widget, value ) {
-      if( value != null && value != "" ) {
+      if( value != null && value !== "" ) {
         var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
         var text = EncodingUtil.escapeText( value, false );
         text = EncodingUtil.replaceNewLines( text, "<br/>" );
@@ -193,7 +194,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
       }
     },
     "mouse" : function( widget, value ) {
-      var context = undefined;
+      var context;
       var mouseDown = org.eclipse.swt.EventUtil.mouseDown;
       var mouseUp = org.eclipse.swt.EventUtil.mouseUp;
       if( value ) {
@@ -205,7 +206,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
       }
     },
     "menuDetect" : function( widget, value ) {
-      var context = undefined;
+      var context;
       var detectByKey = org.eclipse.swt.EventUtil.menuDetectedByKey;
       var detectByMouse = org.eclipse.swt.EventUtil.menuDetectedByMouse;
       if( value ) {
@@ -217,7 +218,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
       }
     },
     "help" : function( widget, value ) {
-      var context = undefined;
+      var context;
       var helpRequested = org.eclipse.swt.EventUtil.helpRequested;
       if( value ) {
         widget.addEventListener( "keydown", helpRequested, context );

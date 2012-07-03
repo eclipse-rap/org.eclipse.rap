@@ -31,36 +31,33 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     this.addEventListener( "changeFont", this._onFontChange );
     this.addState( menuItemType );
     switch( menuItemType ){
-     case "bar" :
-      this._isSelectable = false;
-      this._isDeselectable = false;
-      this._sendEvent = false;
-      this.addState( "onMenuBar" );
-     break;
-     case "push" :
-      this._isSelectable = false;
-      this._isDeselectable = false;
-      this._sendEvent = true;
-     break;
-     case "check":
-      this._isSelectable = true;
-      this._isDeselectable = true;
-      this._sendEvent = true;
-     break;
-     case "cascade":
-      this._isSelectable = false;
-      this._isDeselectable = false;
-      this._sendEvent = false;
-     break;
-     case "radio":
-      this._isSelectable = true;
-      this._sendEvent = false;
-      this.setNoRadioGroup( false );
-      org.eclipse.rwt.RadioButtonUtil.registerExecute( this );
-     break;
-     default:
-       throw( "Unkown menuItem type " + menuItemType );
-     break;
+      case "bar" :
+       this._isSelectable = false;
+       this._isDeselectable = false;
+       this._sendEvent = false;
+       this.addState( "onMenuBar" );
+      break;
+      case "push" :
+       this._isSelectable = false;
+       this._isDeselectable = false;
+       this._sendEvent = true;
+      break;
+      case "check":
+       this._isSelectable = true;
+       this._isDeselectable = true;
+       this._sendEvent = true;
+      break;
+      case "cascade":
+       this._isSelectable = false;
+       this._isDeselectable = false;
+       this._sendEvent = false;
+      break;
+      case "radio":
+       this._isSelectable = true;
+       this._sendEvent = false;
+       this.setNoRadioGroup( false );
+       org.eclipse.rwt.RadioButtonUtil.registerExecute( this );
+      break;
     }
     this._preferredCellWidths = [ 0, 0, 0, 13 ];
     if( this._isSelectable ) {

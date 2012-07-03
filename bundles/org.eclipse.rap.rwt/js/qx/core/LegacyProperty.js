@@ -230,7 +230,7 @@ qx.Class.define("qx.core.LegacyProperty",
       config.method = qx.lang.String.toFirstUp(config.name);
       config.implMethod = config.impl ? qx.lang.String.toFirstUp(config.impl) : config.method;
 
-      if (config.defaultValue == undefined) {
+      if (config.defaultValue === undefined) {
         config.defaultValue = null;
       }
 
@@ -475,8 +475,7 @@ qx.Class.define("qx.core.LegacyProperty",
             }
             catch(ex)
             {
-              var valueStr = new String(newValue).substring(0, 50);
-              throw new Error( "Setting property \"" + config.name + "\" to \"" + valueStr + "\" failed with exception " + ex );
+              throw new Error( "Setting property \"" + config.name + "\" to \"" + newValue + "\" failed with exception " + ex );
             }
           }
 

@@ -556,7 +556,8 @@ qx.Class.define("qx.io.remote.Exchange",
 
           try
           {
-            vTransport = new vTransportImpl();
+            var Transport = vTransportImpl;
+            vTransport = new Transport();
             this.setImplementation(vTransport);
 
             vTransport.setUseBasicHttpAuth(vRequest.getUseBasicHttpAuth());

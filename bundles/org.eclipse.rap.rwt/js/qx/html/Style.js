@@ -56,7 +56,7 @@ qx.Class.define("qx.html.Style",
             {
               var v1 = el.runtimeStyle[prop];
 
-              if (v1 != null && typeof v1 != "undefined" && v1 != "") {
+              if (v1 != null && typeof v1 != "undefined" && v1 !== "") {
                 return v1;
               }
 
@@ -128,7 +128,7 @@ qx.Class.define("qx.html.Style",
      * @return {Integer} the (CSS) style property converted to an integer value
      */
     getStyleSize : function(vElement, propertyName) {
-      return parseInt(qx.html.Style.getStyleProperty(vElement, propertyName)) || 0;
+      return parseInt( qx.html.Style.getStyleProperty( vElement, propertyName ), 10 ) || 0;
     },
 
 

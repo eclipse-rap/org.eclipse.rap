@@ -95,14 +95,14 @@ qx.Class.define( "qx.Theme", {
       }
 
       // Create pseudo class
-      var clazz = function() {};
+      var PseudoClass = function() {};
 
       // Process extend config
       if( config.extend ) {
-        clazz.prototype = new config.extend.$$clazz;
+        PseudoClass.prototype = new config.extend.$$clazz();
       }
 
-      var target = clazz.prototype;
+      var target = PseudoClass.prototype;
       var source = config[ type ];
 
       // Copy entries to prototype
@@ -117,10 +117,10 @@ qx.Class.define( "qx.Theme", {
       }
 
       // store pseudo class
-      theme.$$clazz = clazz;
+      theme.$$clazz = PseudoClass;
 
       // and create instance under the old key
-      theme[type] = new clazz;
+      theme[type] = new PseudoClass();
     },
 
     /** {Map} Internal theme registry */

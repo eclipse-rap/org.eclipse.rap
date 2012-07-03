@@ -11,9 +11,8 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-/**
- * Create namespace
- */
+/*global qx:true, namespace:true*/
+
 qx = {
 
   /**

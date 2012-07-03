@@ -508,6 +508,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     },
 
     _transitionColorPart : function( color1, color2, pos ) {
+      // TODO [tb] : color1 should always be a number, parseInt not needed?
       var part = parseInt( color1 ) + ( ( color2 - color1 ) * pos );
       return Math.round( part );
     },

@@ -11,6 +11,8 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
+/*global ActiveXObject:false*/
+
 qx.Class.define("qx.net.HttpRequest",
 {
   /*

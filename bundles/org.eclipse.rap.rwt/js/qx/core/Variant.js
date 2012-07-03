@@ -29,6 +29,9 @@
  * debugging code from the build version. It is very similar to conditional
  * compilation in C/C++.
  */
+
+/*global qxvariants:false*/
+
 qx.Class.define("qx.core.Variant",
 {
   statics :

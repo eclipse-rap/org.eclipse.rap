@@ -287,7 +287,6 @@ qx.Class.define("qx.io.remote.XmlHttpTransport",
         else
         {
           throw new Error( "Failed to send data: " + ex );
-          this.failed();
         }
 
         return;
@@ -437,15 +436,9 @@ qx.Class.define("qx.io.remote.XmlHttpTransport",
      * @param vLabel {var} TODOC
      * @return {var} TODOC
      */
-    getResponseHeader : function(vLabel)
-    {
-      var vResponseHeader = null;
-
-      try {
-        this.getRequest().getResponseHeader(vLabel) || null;
-      } catch(ex) {}
-
-      return vResponseHeader;
+    getResponseHeader : function( vLabel ) {
+      // TODO [tb] : original implementation never worked, can be removed?
+      return null;
     },
 
 

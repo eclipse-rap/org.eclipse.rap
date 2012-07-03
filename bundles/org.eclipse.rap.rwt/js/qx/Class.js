@@ -51,6 +51,9 @@
  * }
  * </pre>
  */
+
+/*global alert:false */
+
 qx.Class.define( "qx.Class", {
 
   statics : {
@@ -178,9 +181,9 @@ qx.Class.define( "qx.Class", {
 
         if( config.extend ) {
           var superproto = config.extend.prototype;
-          var helper = this.__createEmptyFunction();
-          helper.prototype = superproto;
-          var proto = new helper();
+          var Helper = this.__createEmptyFunction();
+          Helper.prototype = superproto;
+          var proto = new Helper();
           clazz.prototype = proto;
           proto.name = proto.classname = name;
           proto.basename = basename;
@@ -225,6 +228,8 @@ qx.Class.define( "qx.Class", {
           } );
         }
       } catch( ex ) {
+        // Use alert here since ErrorHandler.js might not be parsed yet. In case of a class loader
+        // error, this is the only way to be sure the user sees the message.
         alert( "Error loading class " + name + ": " + ( ex.message ? ex.message : ex ) );
         this._stopLoading = true;
         throw ex;
@@ -665,7 +670,8 @@ qx.Class.define( "qx.Class", {
     getInstance : function() {
       if( !this.$$instance ) {
         this.$$allowconstruct = true;
-        this.$$instance = new this();
+        var Constructor = this;
+        this.$$instance = new Constructor();
         delete this.$$allowconstruct;
       }
       return this.$$instance;
@@ -1007,10 +1013,9 @@ qx.Class.define( "qx.Class", {
           }
         }
 
-        if (config.transform != null)
-        {
-          if (!(typeof config.transform == "string")) {
-            throw new Error('Invalid transform definition of property "' + name + '" in class "' + clazz.classname + '"! Needs to be a String.');
+        if( config.transform != null ) {
+          if( typeof config.transform !== "string" ) {
+            throw new Error( 'Invalid transform definition of property "' + name + '" in class "' + clazz.classname + '"! Needs to be a String.' );
           }
         }
 
