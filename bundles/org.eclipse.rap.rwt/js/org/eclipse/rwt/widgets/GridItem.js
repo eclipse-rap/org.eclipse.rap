@@ -21,6 +21,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
     this.base( arguments );
     this._parent = parent;
     this._level = -1;
+    this._height = null;
     this._children = [];
     this._indexCache = {};
     this._visibleChildrenCount = 0;
@@ -46,6 +47,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
     this._expanded = this.isRootItem();
     this.addEventListener( "update", this._onUpdate, this );
     this._escaped = false;
+    if( this.isRootItem() ) {
+      this._rootItem = this;
+      this._height = 16;
+    } else {
+      this._rootItem = parent.getRootItem();
+    }
   },
 
   destruct : function() {
@@ -253,11 +260,32 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       return this._variant;
     },
 
+    setDefaultHeight : function( value ) {
+      if( !this.isRootItem() ) {
+        throw new Error( "Can only set default item height on root item" );
+      }
+      this._height = value;
+    },
+
+    getDefaultHeight : function() {
+      var result;
+      if( this.isRootItem() ) {
+        result = this._height;
+      } else {
+        result = this.getRootItem().getDefaultHeight();
+      }
+      return result;
+    },
+
     //////////////////////////
     // relationship management
 
     isRootItem : function() {
       return this._level < 0;
+    },
+
+    getRootItem : function() {
+      return this._rootItem;
     },
 
     getLevel : function() {
@@ -310,6 +338,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       return this._children[ index ].isCached();
     },
 
+    getOffsetHeight : function() {
+      return ( this.getVisibleChildrenCount() + 1 ) * this.getDefaultHeight();
+    },
+
+    getOwnHeight : function() {
+      return this.getDefaultHeight();
+    },
+
     getVisibleChildrenCount : function() { // TODO [tb] : rather "itemCount"
       if( this._visibleChildrenCount == null ) {
         this._computeVisibleChildrenCount();
@@ -350,37 +386,63 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       return result;
     },
 
-    /**
-     * Finds the item at the given index, counting all visible children.
-     */
-    findItemByFlatIndex : function( index ) {
-      // TODO [tb] : could be optimized by creating helper "flatIndexOf" using cached values for
-      //             expanded items. This helper could also be used by "getFlatIndex"
-      var expanded = this._getExpandedIndicies();
-      var localIndex = index;
+    // TODO [tb] : cache results
+    findItemByOffset : function( targetOffset ) {
+      var itemHeight = this.getDefaultHeight();
+      var waypoints = this._getDifferingHeightItems();
+      var currentOffset = 0;
+      var currentIndex = 0;
       var result = null;
-      var success = false;
-      while( !success && localIndex >= 0) {
-        var expandedIndex = expanded.shift();
-        if( expandedIndex === undefined || expandedIndex >= localIndex ) {
-          result = this.getChild( localIndex );
-          if( result ) {
-            this._indexCache[ result.toHashCode() ] = localIndex;
-          }
-          success = true;
-        } else {
-          var childrenCount = this.getChild( expandedIndex ).getVisibleChildrenCount();
-          var offset = localIndex - expandedIndex; // Items between current item and target item
-          if( offset <= childrenCount ) {
-            result = this.getChild( expandedIndex ).findItemByFlatIndex( offset - 1 );
-            success = true;
-            if( result == null ) {
-              throw new Error( "getItemByFlatIndex failed" );
-            }
+      var finished = false; 
+      if( targetOffset < 0 || this.getChildrenLength() == 0 ) {
+        finished = true;
+      }
+      while( !finished ) {
+        var currentItem = this.getChild( currentIndex );
+        var currentItemHeight = currentItem.getOffsetHeight();
+        var nextIndex = waypoints.shift();
+        var nextOffset = currentOffset + currentItemHeight + ( nextIndex - currentIndex - 1 ) * itemHeight;
+        if( targetOffset < currentOffset + currentItemHeight ) { 
+          // case: target in current item
+          if( targetOffset < currentOffset + currentItem.getOwnHeight() ) {
+            result = currentItem;
           } else {
-            localIndex -= childrenCount;
+            var localOffset = targetOffset - currentOffset - currentItem.getOwnHeight();
+            result = currentItem.findItemByOffset( localOffset );
           }
+          finished = true;
+        } else if( nextIndex === undefined || nextOffset > targetOffset ) {
+          // case: target after current item, before next signpost (or no more signposts)
+          var offsetDiff = targetOffset - currentOffset - currentItemHeight;
+          var targetIndex = currentIndex + 1 + Math.floor( offsetDiff / itemHeight );
+          result = this.getChild( targetIndex );
+          finished = true;
+        } else {
+         // case: target in or after next signpost
+          currentIndex = nextIndex;
+          currentOffset = nextOffset;
         }
+      }
+      return result;
+    },
+
+    getOffset : function() {
+      var result = 0;
+      if( !this._parent.isRootItem() ) {
+        result += this._parent.getOffset() + this.getDefaultHeight();
+      }
+      result += this._parent._getChildOffset( this );
+      return result;
+    },
+
+    _getChildOffset : function( item ) {
+      var localIndex = this.indexOf( item );
+      var result = localIndex * this.getDefaultHeight();
+      var expanded = this._getExpandedIndicies();
+      while( expanded.length > 0 && localIndex > expanded[ 0 ] ) {
+        var expandedIndex = expanded.shift();
+        result -= this.getDefaultHeight();
+        result += this._children[ expandedIndex ].getOffsetHeight();
       }
       return result;
     },
@@ -541,6 +603,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
         }
       }
       this._visibleChildrenCount = result;
+    },
+
+    _getDifferingHeightItems : function() {
+      return this._expandedItems;
+    },
+
+    _getDifferingHeightItems : function() {
+      return this._getExpandedIndicies();
     },
 
     _getExpandedIndicies : function() {
