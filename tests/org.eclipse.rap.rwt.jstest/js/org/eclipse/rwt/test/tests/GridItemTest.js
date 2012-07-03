@@ -913,176 +913,102 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       assertEquals( "", item.getText( 0 ) );
       item.dispose();
     },
-
-    testSetDefaultHeight : function() {
-      var root = this._createRoot();
-
-      root.setDefaultHeight( 23 );
-
-      assertEquals( 23, root.getChild( 0 ).getDefaultHeight() );
-      root.dispose();
-    },
-
-    testSetDefaultHeightOnNonRootItem : function() {
-      var root = this._createRoot();
-
-      try {
-        root.getChild( 0 ).setDefaultHeight( 23 );
-        fail();
-      } catch( ex ) {
-        // expected
-      }
-
-      root.dispose();
-    },
-
+    
     testFindItemByFlatIndexFirstItem : function() {
       var root = this._createRoot();
-
-      var item = root.findItemByOffset( 0 );
-
+      var item = root.findItemByFlatIndex( 0 );
       assertIdentical( item, root.getChild( 0 ) );
       root.dispose();
     },
 
     testFindItemByFlatIndexLastItem: function() {
       var root = this._createRoot();
-
-      var item = root.findItemByOffset( 14340 );
-
+      var item = root.findItemByFlatIndex( 1434 );
       assertIdentical( item, root.getChild( 19 ) );
       root.dispose();
     },
 
-    testFindItemByOffsetOutOfBounds: function() {
+    testFindItemByFlatIndexOutOfBounds: function() {
       var root = this._createRoot();
-
-      assertIdentical( undefined, root.findItemByOffset( 14350 ) );
-
+      assertIdentical( undefined, root.findItemByFlatIndex( 1435 ) );
       root.dispose();
     },
 
-    testFindItemByOffset : function() {
+    testFindItemByFlatIndex : function() {
       var root = this._createRoot();
-
-      var item = root.findItemByOffset( 10200 );
-
+      var item = root.findItemByFlatIndex( 1020 );
       assertEquals( "x", item.getText( 0 ) );
       assertFalse( root.isChildCreated( 7 ) );
       root.dispose();
     },
 
-    testFindItemByOffsetRoundFloor : function() {
-      var root = this._createRoot();
-
-      var item = root.findItemByOffset( 10209 );
-
-      assertEquals( "x", item.getText( 0 ) );
-      assertFalse( root.isChildCreated( 7 ) );
-      root.dispose();
-    },
-
-    testFindItemByOffsetChangedDefaultHeight : function() {
-      var root = this._createRoot();
-      var itemOrg = root.findItemByOffset( 10200 );
-
-      root.setDefaultHeight( 20 );
-
-      var itemNew = root.findItemByOffset( 20400 );
-      assertIdentical( itemOrg, itemNew );
-      root.dispose();
-    },
-
-    testFindItemByOffsetNegative : function() {
+    testFindItemByFlatIndexNegative : function() {
       var root = new org.eclipse.rwt.widgets.GridItem();
-
-      assertNull( root.findItemByOffset( -1 ) );
+      assertNull( root.findItemByFlatIndex( -1 ) );
       root.dispose();
     },
 
-    testFindItemByOffsetNoItems : function() {
+    testFindItemByFlatIndexNoItems : function() {
       var root = new org.eclipse.rwt.widgets.GridItem();
-
-      assertNull( root.findItemByOffset( 0 ) );
+      assertIdentical( undefined, root.findItemByFlatIndex( 0 ) );
       root.dispose();
     },
 
-    testFindItemByOffsetFirstItemOfLayer : function() {
+    testFindItemByFlatIndexFirstItemOfLayer : function() {
       var root = this._createRoot();
-
-      var item = root.findItemByOffset( 10310 );
-
+      var item = root.findItemByFlatIndex( 1031 );
       assertEquals( "y", item.getText( 0 ) );
       root.dispose();
     },
 
     testFindItemByFlatIndexLastItemOfLayer : function() {
       var root = this._createRoot();
-
-      var item = root.findItemByOffset( 10060 );
-
+      var item = root.findItemByFlatIndex( 1006 );
       assertEquals( "z", item.getText( 0 ) );
       root.dispose();
     },
 
-    testFindItemByOffsetCollapse : function() {
+    testFindItemByFlatIndexCollapse : function() {
       var root = this._createRoot();
-      assertEquals( "x", root.findItemByOffset( 10200 ).getText( 0 ) );
-
+      assertEquals( "x", root.findItemByFlatIndex( 1020 ).getText( 0 ) );
       root.getChild( 6 ).setExpanded( false );
-
-      assertEquals( "x", root.findItemByOffset( 200 ).getText( 0 ) );
+      assertEquals( "x", root.findItemByFlatIndex( 20 ).getText( 0 ) );
       root.dispose();
     },
 
-    testFindItemByOffsetRemoveChild : function() {
+    testFindItemByFlatIndexRemoveChild : function() {
       var root = this._createRoot();
-      assertEquals( "x", root.findItemByOffset( 10200 ).getText( 0 ) );
-
+      assertEquals( "x", root.findItemByFlatIndex( 1020 ).getText( 0 ) );
       root.getChild( 6 ).dispose();
-
-      assertEquals( "x", root.findItemByOffset( 190 ).getText( 0 ) );
+      assertEquals( "x", root.findItemByFlatIndex( 19 ).getText( 0 ) );
       root.dispose();
     },
 
-    testFindItemByOffsetCollapseAdd : function() {
+    testFindItemByFlatIndexCollapseAdd : function() {
       var root = this._createRoot();
-      assertEquals( "x", root.findItemByOffset( 10200 ).getText( 0 ) );
-
+      assertEquals( "x", root.findItemByFlatIndex( 1020 ).getText( 0 ) );
       root.getChild( 6 ).setItemCount( 1010 );
-
-      assertEquals( "x", root.findItemByOffset( 10300 ).getText( 0 ) );
+      assertEquals( "x", root.findItemByFlatIndex( 1030 ).getText( 0 ) );
       root.dispose();
     },
 
-    testFindItemByOffsetCollapseRemove : function() {
+    testFindItemByFlatIndexCollapseRemove : function() {
       var root = this._createRoot();
-      assertEquals( "x", root.findItemByOffset( 10200 ).getText( 0 ) );
-
+      assertEquals( "x", root.findItemByFlatIndex( 1020 ).getText( 0 ) );
       root.getChild( 6 ).setItemCount( 900 );
-
-      assertEquals( "x", root.findItemByOffset( 9200 ).getText( 0 ) );
+      assertEquals( "x", root.findItemByFlatIndex( 920 ).getText( 0 ) );
       root.dispose();
     },
 
-    testGetOffset : function() {
+
+    testGetFlatIndex : function() {
       var root = this._createRoot();
-      assertEquals( 0, root.findItemByOffset( 0 ).getOffset() );
-      assertEquals( 60, root.findItemByOffset( 60 ).getOffset() );
-      assertEquals( 70, root.findItemByOffset( 70 ).getOffset() );
-      assertEquals( 10200, root.findItemByOffset( 10200 ).getOffset() );
-      assertEquals( 14340, root.findItemByOffset( 14340 ).getOffset() );
+      assertEquals( 0, root.findItemByFlatIndex( 0 ).getFlatIndex() );
+      assertEquals( 6, root.findItemByFlatIndex( 6 ).getFlatIndex() );
+      assertEquals( 7, root.findItemByFlatIndex( 7 ).getFlatIndex() );
+      assertEquals( 1020, root.findItemByFlatIndex( 1020 ).getFlatIndex() );
+      assertEquals( 1434, root.findItemByFlatIndex( 1434 ).getFlatIndex() );
       assertFalse( root.isChildCreated( 7 ) );
-      root.dispose();
-    },
-
-    testGetOffsetWithChangeItemHeight : function() {
-      var root = this._createRoot();
-      assertEquals( 14340, root.findItemByOffset( 14340 ).getOffset() );
-
-      root.setDefaultHeight( 20 );
-
-      assertEquals( 14340, root.findItemByOffset( 14340 ).getOffset() );
       root.dispose();
     },
 
@@ -1120,11 +1046,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
     },
 
-    // 20 + 1000 + 10 + 5 + 400 = 1435 items
     _createRoot : function() {
       var result = new org.eclipse.rwt.widgets.GridItem();
-      result.setItemCount( 20 ); 
-      result.setDefaultHeight( 10 );
+      result.setItemCount( 20 );
       result.getChild( 5 ).setItemCount( 1000 );
       result.getChild( 6 ).setItemCount( 1000 );
       result.getChild( 6 ).setExpanded( true );
@@ -1139,7 +1063,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       result.getChild( 15 ).getChild( 0 ).setTexts( [ "y" ] ); 
       return result;
     }
+    
+    
 
  }
-
+  
 } );

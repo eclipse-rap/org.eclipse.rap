@@ -241,7 +241,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       this._itemHeight = height;
       this._vertScrollBar.setIncrement( height );
       this._rowContainer.setRowHeight( height );
-      this._rootItem.setDefaultHeight( height );
       this._scheduleUpdate( "scrollHeight" );
     },
 
@@ -682,7 +681,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       var oldIndex = this._focusItem.getFlatIndex();
       var offset = this._rowContainer.getChildrenLength() - 2;
       var newIndex = Math.max( 0, oldIndex - offset );
-      var item = this._rootItem.findItemByOffset( newIndex * this._itemHeight );
+      var item = this._rootItem.findItemByFlatIndex( newIndex );
       var itemIndex = item.getFlatIndex();
       this._handleKeyboardSelect( event, item, itemIndex );
     },
@@ -692,7 +691,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       var offset = this._rowContainer.getChildrenLength() - 2;
       var max = this.getRootItem().getVisibleChildrenCount() - 1;
       var newIndex = Math.min( max, oldIndex + offset );
-      var item = this._rootItem.findItemByOffset( newIndex * this._itemHeight );
+      var item = this._rootItem.findItemByFlatIndex( newIndex );
       var itemIndex = item.getFlatIndex();
       this._handleKeyboardSelect( event, item, itemIndex );
     },
@@ -843,7 +842,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
      * assumes that no other parameter than topItem have changed and may optimize accordingly.
      */
     _updateTopItem : function( render ) {
-      var topItem = this._rootItem.findItemByOffset( this._topItemIndex * this._itemHeight );
+      var topItem = this._rootItem.findItemByFlatIndex( this._topItemIndex );
       this._rowContainer.setTopItem( topItem, this._topItemIndex, render );
     },
 
