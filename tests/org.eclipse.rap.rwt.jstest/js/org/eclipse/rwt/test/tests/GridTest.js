@@ -385,9 +385,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = new org.eclipse.rwt.widgets.Grid( { "appearance": "tree" } );
       assertEquals( 16, tree._rowContainer._rowHeight );
       assertEquals( 16, tree._vertScrollBar._increment );
+      assertEquals( 16, tree.getRootItem().getDefaultHeight() );
       tree.setItemHeight( 23 );
       assertEquals( 23, tree._rowContainer._rowHeight );
       assertEquals( 23, tree._vertScrollBar._increment );
+      assertEquals( 23, tree.getRootItem().getDefaultHeight() );
       tree.destroy();
     },
 
@@ -956,7 +958,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fillTree( tree, 100, true, true );
       TestUtil.flush();
       org.eclipse.swt.EventUtil.setSuspended( true );
-      tree._vertScrollBar.setValue( 1020 );
+      tree._vertScrollBar.setValue( 1020 ); // 1020 / 20 = 51
       org.eclipse.swt.EventUtil.setSuspended( false );
       TestUtil.flush();
       var itemNode = tree._rowContainer._getTargetNode().firstChild;

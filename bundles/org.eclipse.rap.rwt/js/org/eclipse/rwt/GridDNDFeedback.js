@@ -222,11 +222,10 @@ qx.Class.define( "org.eclipse.rwt.GridDNDFeedback", {
     _onScrollTimer : function( event ) {
       this._stopScrollTimer();
       var offset = this._getScrollDirection( this._currentRow );
-      if( offset != 0 ) {
+      if( offset !== 0 ) {
         var item = this._tree._rowContainer.findItemByRow( this._currentRow );
         var index = item.getFlatIndex();
-        var newIndex = index + offset;
-        var newItem = this._tree._rootItem.findItemByFlatIndex( newIndex );
+        var newItem = offset > 0 ? item.getNextItem() : item.getPreviousItem();
         if( newItem != null ) {
           var newTopIndex = this._tree._topItemIndex + offset;
           this._tree.setTopItemIndex( newTopIndex );
