@@ -17,6 +17,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridHeader", {
   construct : function( argsMap ) {
     this.base( arguments );
     this.setOverflow( "hidden" );
+    this.setZIndex( 2000 );
     this._fixedColumns = argsMap.splitContainer;
     this._scrollWidth = 0;
     this._scrollLeft = 0;

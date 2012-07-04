@@ -2228,6 +2228,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( 0, parseInt( headerNode.style.top ) );
       assertEquals( 30, parseInt( headerNode.style.height ) );
       assertEquals( 600, parseInt( headerNode.style.width ) );
+      assertEquals( 2000, parseInt( headerNode.style.zIndex ) );
       tree.destroy();
     },
 
