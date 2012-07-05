@@ -132,18 +132,8 @@ public class ControlEditor implements SerializableCompatibility {
         scroll( e );
       }
     };
-    ScrollBar hBar = null;
-    ScrollBar vBar = null;
-    // TODO: [if] Remove instance check when ScrollBars are moved to Scrollable
-    if( parent instanceof Table ) {
-      Table table = ( Table )parent;
-      hBar = table.getHorizontalBar();
-      vBar = table.getVerticalBar();
-    } else if( parent instanceof Tree ) {
-      Tree tree = ( Tree )parent;
-      hBar = tree.getHorizontalBar();
-      vBar = tree.getVerticalBar();
-    }
+    ScrollBar hBar = parent.getHorizontalBar();
+    ScrollBar vBar = parent.getVerticalBar();
     if( hBar != null ) {
       hBar.addListener( SWT.Selection, scrollbarListener );
     }
