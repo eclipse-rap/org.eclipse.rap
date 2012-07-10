@@ -546,6 +546,7 @@ public class Tree extends Composite {
   private void setTopItemIndex( int index ) {
     if( index != topItemIndex ) {
       topItemIndex = index;
+      adjustTopItemIndex();
       updateAllItems();
     }
   }
@@ -2072,8 +2073,9 @@ public class Tree extends Composite {
 
   private void adjustTopItemIndex() {
     int visibleRowCount = getVisibleRowCount( false );
-    if( topItemIndex > visibleItemsCount - visibleRowCount - 1 ) {
-      topItemIndex = Math.max( 0, visibleItemsCount - visibleRowCount - 1 );
+    int correction = visibleRowCount == 0 ? 1 : 0;
+    if( topItemIndex > visibleItemsCount - visibleRowCount - correction ) {
+      topItemIndex = Math.max( 0, visibleItemsCount - visibleRowCount - correction );
     }
   }
 
