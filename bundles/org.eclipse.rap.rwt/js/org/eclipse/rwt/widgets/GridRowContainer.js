@@ -154,7 +154,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
     },
 
     _renderVerticalGridline : function( column ) {
-      var clientWidth = this.getWidth();
       var width = this._config.itemWidth[ column ];
       var left = this._config.itemLeft[ column ] + width - 1;
       if( width > 0 ) {
@@ -242,6 +241,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
           var newFirstRow = forwards ? delta : numberOfShiftingRows;
           this._switchRows( newFirstRow );
           this._updateRows( updateFromRow, delta, true );
+          this._renderBounds( true );
         }
       } else {
         this._topItemIndex = index;
@@ -304,9 +304,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
       }
       var start = ( new Date() ).getTime();
       this._updateRows( 0, this._children.length, contentOnly );
-      var renderTime = ( new Date() ).getTime() - start;
+      this._renderBounds();
       if( this._postRender ) {
-        this._postRender[ 0 ].call( this._postRender[ 1 ], renderTime );
+        var postRender = this._postRender;
+        window.setTimeout( function() {
+          var renderTime = ( new Date() ).getTime() - start;
+          if( !postRender[ 1 ].isDisposed() ) {
+            postRender[ 0 ].call( postRender[ 1 ], renderTime );
+          }
+        }, 0 );
       }
     },
 
@@ -374,10 +380,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRowContainer", {
       this._children = rowTemp.concat( this._children.slice( 0, newFirstRow ) );
       this._items = itemsTemp.concat( this._items.slice( 0, newFirstRow ) );
       this._invalidateVisibleChildren();
-      var changes = { "locationY" : true };
-      for( var i = 0; i < this._children.length; i++ ) {
-        this.getLayoutImpl().layoutChild( this._children[ i ], changes );
+    },
+
+    _renderBounds : function( renderLocation ) {
+      if( renderLocation ) {
+        for( var i = 0; i < this._children.length; i++ ) {
+          this._children[ i ].addToLayoutChanges( "locationY" );
+        }
       }
+      //this.getLayoutImpl().layoutChild( this._children[ i ], changes );
+      this._flushChildrenQueue();
     },
 
     _onElementOver : function( event ) {

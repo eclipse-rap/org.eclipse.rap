@@ -38,7 +38,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridItem", {
     "grayed",
     "cellChecked",
     "cellGrayed",
-    "customVariant"
+    "customVariant",
+    "height"
   ],
 
   propertyHandler : {

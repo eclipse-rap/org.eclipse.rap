@@ -108,9 +108,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
         var avg = this._renderSum / this._renderSamples;
         var result = false;
         if( this._renderSamples > 2 ) {
-          result = avg > 200;
+          result = avg > 600;
         } else {
-          result = renderTime > 1000;
+          result = renderTime > 1500;
        }
         if( result ) {
           this.setMergeEvents( true );

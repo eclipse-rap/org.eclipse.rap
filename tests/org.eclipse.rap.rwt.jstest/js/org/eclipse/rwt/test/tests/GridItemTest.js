@@ -9,14 +9,17 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+
 qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
 
   extend : qx.core.Object,
-  
+
   members : {
 
     testCreateTreeItemByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -40,7 +43,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testDestroyTreeItemByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -67,7 +69,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetItemCountByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -89,7 +90,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetTextsByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -113,7 +113,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetImagesByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -137,7 +136,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetBackgroundByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -159,7 +157,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetForegroundByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -181,7 +178,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetFontByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -203,7 +199,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetCellBackgroundsByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -227,7 +222,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetCellForegroundsByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -251,7 +245,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetCellFontsByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -275,7 +268,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetExpandedByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -297,7 +289,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetCheckedByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [ "CHECK" ] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -319,7 +310,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetCellCheckedByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [ "CHECK" ] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -343,7 +333,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetCellGrayedByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [ "CHECK" ] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -367,7 +356,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetGrayedByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [ "CHECK" ] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -389,7 +377,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetCustomVariantByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -406,6 +393,55 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( "variant_blue", item.getVariant() );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testSetHeightByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setItemHeight( 10 );
+      var processor = org.eclipse.rwt.protocol.Processor;
+
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.GridItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "height" : 33
+        }
+      } );
+
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
+      assertEquals( 33, item.getOwnHeight() );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testResetSetHeightByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setItemHeight( 10 );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.GridItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "height" : 33
+        }
+      } );
+
+      TestUtil.protocolSet( "w4", { "height" : null } );
+
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = ObjectManager.getObject( "w4" );
+      assertEquals( 10, item.getOwnHeight() );
       shell.destroy();
       tree.destroy();
     },
@@ -936,7 +972,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       root.dispose();
     },
 
-    testFindItemByFlatIndexFirstItem : function() {
+    testFindItemByOffsetFirstItem : function() {
       var root = this._createRoot();
 
       var item = root.findItemByOffset( 0 );
@@ -945,7 +981,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       root.dispose();
     },
 
-    testFindItemByFlatIndexLastItem: function() {
+    testFindItemByOffsetLastItem: function() {
       var root = this._createRoot();
 
       var item = root.findItemByOffset( 14340 );
@@ -1102,13 +1138,154 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       root.dispose();
     },
 
-    testGetOffsetWithChangeItemHeight : function() {
+    testGetOffsetWithCustomHeight : function() {
+      var root = this._createRoot();
+
+      root.getChild( 0 ).setHeight( 50 );
+
+      assertEquals( 50, root.getChild( 1 ).getOffset() );
+      root.dispose();
+    },
+
+    testGetOffsetWithChangeDefaultItemHeight : function() {
       var root = this._createRoot();
       assertEquals( 14340, root.findItemByOffset( 14340 ).getOffset() );
 
       root.setDefaultHeight( 20 );
 
       assertEquals( 14340, root.findItemByOffset( 14340 ).getOffset() );
+      root.dispose();
+    },
+
+    testGetOffsetWithCustomHeightItemRemoved : function() {
+      var root = this._createRoot();
+
+      root.getChild( 0 ).setHeight( 50 );
+      root.getChild( 0 ).dispose();
+
+      assertEquals( 10, root.getChild( 1 ).getOffset() );
+      assertEquals( 50, root.getChild( 5 ).getOffset() );
+      root.dispose();
+    },
+
+    testGetOffsetWithCustomHeightItemReset : function() {
+      var root = this._createRoot();
+
+      root.getChild( 0 ).setHeight( 50 );
+      root.getChild( 0 ).setHeight( null );
+
+      assertEquals( 10, root.getChild( 1 ).getOffset() );
+      assertEquals( 50, root.getChild( 5 ).getOffset() );
+      root.dispose();
+    },
+
+    testGetOffsetWithCustomHeightInPreviousSibling : function() {
+      var root = this._createRoot();
+      root.getChild( 0 ).setItemCount( 1 );
+      root.getChild( 0 ).setExpanded( true );
+      var subItem = root.getChild( 0 ).getChild( 0 );
+
+      subItem.setHeight( 50 );
+
+      assertEquals( 60, root.getChild( 1 ).getOffset() );
+      root.dispose();
+    },
+
+    testGetOffsetWithParentCustomHeight : function() {
+      var root = this._createRoot();
+      root.getChild( 0 ).setItemCount( 1 );
+      root.getChild( 0 ).setExpanded( true );
+
+      root.getChild( 0 ).setHeight( 15 );
+
+      assertEquals( 15, root.getChild( 0 ).getChild( 0 ).getOffset() );
+      root.dispose();
+    },
+
+    testGetOffsetWithMultipleCustomHeightInPreviousSiblings : function() {
+      var root = this._createRoot();
+      root.getChild( 1 ).setItemCount( 3 );
+      root.getChild( 1 ).setExpanded( true );
+      var subItem1 = root.getChild( 1 ).getChild( 0 );
+      var subItem2 = root.getChild( 1 ).getChild( 1 );
+
+      root.getChild( 0 ).setHeight( 15 );
+      root.getChild( 1 ).setHeight( 25 );
+      subItem1.setHeight( 20 );
+      subItem2.setHeight( 40 );
+
+      assertEquals( 0, root.getChild( 0 ).getOffset() );
+      assertEquals( 15, root.getChild( 1 ).getOffset() );
+      assertEquals( 40, root.getChild( 1 ).getChild( 0 ).getOffset() );
+      assertEquals( 60, root.getChild( 1 ).getChild( 1 ).getOffset() );
+      assertEquals( 100, root.getChild( 1 ).getChild( 2 ).getOffset() );
+      assertEquals( 110, root.getChild( 2 ).getOffset() );
+      root.dispose();
+    },
+
+    testFindItemByOffsetWithCustomHeight : function() {
+      var root = this._createRoot();
+
+      root.getChild( 0 ).setHeight( 50 );
+
+      assertEquals( root.getChild( 0 ), root.findItemByOffset( 0 ) );
+      assertEquals( root.getChild( 0 ), root.findItemByOffset( 49 ) );
+      assertEquals( root.getChild( 1 ), root.findItemByOffset( 50 ) );
+      root.dispose();
+    },
+
+    testFindItemByOffsetWithCustomHeightInPreviousSibling : function() {
+      var root = this._createRoot();
+      root.getChild( 0 ).setItemCount( 1 );
+      root.getChild( 0 ).setExpanded( true );
+      var subItem = root.getChild( 0 ).getChild( 0 );
+
+      subItem.setHeight( 50 );
+
+      assertEquals( root.getChild( 0 ).getChild( 0 ), root.findItemByOffset( 59 ) );
+      assertEquals( root.getChild( 1 ), root.findItemByOffset( 60 ) );
+      assertEquals( root.getChild( 1 ), root.findItemByOffset( 69 ) );
+      assertEquals( root.getChild( 2 ), root.findItemByOffset( 70 ) );
+      root.dispose();
+    },
+
+    testFindItemByOffsetWithParentCustomHeight : function() {
+      var root = this._createRoot();
+      root.getChild( 0 ).setItemCount( 1 );
+      root.getChild( 0 ).setExpanded( true );
+
+      root.getChild( 0 ).setHeight( 15 );
+
+      assertEquals( root.getChild( 0 ), root.findItemByOffset( 14 ) );
+      assertEquals( root.getChild( 0 ).getChild( 0 ), root.findItemByOffset( 15 ) );
+      assertEquals( root.getChild( 0 ).getChild( 0 ), root.findItemByOffset( 24 ) );
+      assertEquals( root.getChild( 1 ), root.findItemByOffset( 25 ) );
+      root.dispose();
+    },
+
+    testFindItemByOffsetWithMultipleCustomHeightInPreviousSiblings : function() {
+      var root = this._createRoot();
+      root.getChild( 1 ).setItemCount( 3 );
+      root.getChild( 1 ).setExpanded( true );
+      var subItem1 = root.getChild( 1 ).getChild( 0 );
+      var subItem2 = root.getChild( 1 ).getChild( 1 );
+
+      root.getChild( 0 ).setHeight( 15 );
+      root.getChild( 1 ).setHeight( 25 );
+      subItem1.setHeight( 20 );
+      subItem2.setHeight( 40 );
+
+      assertEquals( root.getChild( 0 ), root.findItemByOffset( 14 ) );
+      assertEquals( root.getChild( 1 ), root.findItemByOffset( 15 ) );
+      assertEquals( root.getChild( 1 ), root.findItemByOffset( 39 ) );
+      assertEquals( root.getChild( 1 ).getChild( 0 ), root.findItemByOffset( 40 ) );
+      assertEquals( root.getChild( 1 ).getChild( 0 ), root.findItemByOffset( 59 ) );
+      assertEquals( root.getChild( 1 ).getChild( 1 ), root.findItemByOffset( 60 ) );
+      assertEquals( root.getChild( 1 ).getChild( 1 ), root.findItemByOffset( 99 ) );
+      assertEquals( root.getChild( 1 ).getChild( 2 ), root.findItemByOffset( 100 ) );
+      assertEquals( root.getChild( 1 ).getChild( 2 ), root.findItemByOffset( 109 ) );
+      assertEquals( root.getChild( 2 ), root.findItemByOffset( 110 ) );
+      assertEquals( root.getChild( 2 ), root.findItemByOffset( 119 ) );
       root.dispose();
     },
 
@@ -1169,3 +1346,5 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
  }
 
 } );
+
+}());

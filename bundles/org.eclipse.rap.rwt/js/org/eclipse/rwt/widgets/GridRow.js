@@ -58,11 +58,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
 
   members : {
 
-    renderItem : function( item, config, selected, hoverTarget, contentOnly ) {
+    renderItem : function( item, config, selected, hoverTarget, scrolling ) {
       this._usedMiscNodes = 0;
       if( item !== null ) {
         var renderSelected = this._renderAsSelected( config, selected );
         var renderFullSelected = renderSelected && config.fullSelection;
+        var heightChanged = this._renderHeight( item, config );
+        var contentOnly = scrolling && !heightChanged;
         this._renderStates( item, config, renderFullSelected, hoverTarget );
         this._renderBackground( item, config, renderSelected );
         if( config.treeColumn !== -1 ) {
@@ -76,7 +78,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
         this.setBackgroundImage( null );
         this.setBackgroundGradient( null );
         this._clearContent( config );
-        if( !contentOnly && config ) {
+        if( !scrolling && config ) {
           this._renderAllBounds( config );
         }
       }
@@ -110,6 +112,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridRow", {
 
     ////////////
     // internals
+
+    _renderHeight : function( item, config ) {
+      var result = false;
+      var itemHeight = item.getOwnHeight();
+      if( itemHeight !== this.getHeight() ) {
+        this.setHeight( item.getOwnHeight() );
+        result = true;
+      }
+      return result;
+    },
 
     _renderStates : function( item, config, selected, hoverTarget ) {
       this.setState( "checked", item.isChecked() );

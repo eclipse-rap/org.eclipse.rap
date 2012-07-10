@@ -24,6 +24,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     this._hasSelectionListener = false;
     this._leadItem = null;
     this._topItemIndex = 0;
+    this._topItem = null;
     this._selection = [];
     this._focusItem = null;
     this._renderQueue = {};
@@ -281,10 +282,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
 
     setTopItemIndex : function( index ) {
       this._updateScrollHeight();
-      this._vertScrollBar.setValue( index * this._itemHeight );
+      var offset = this._rootItem.findItemByFlatIndex( index ).getOffset();
+      this._vertScrollBar.setValue( offset );
       if( !this._inServerResponse() ) {
         qx.ui.core.Widget.flushGlobalQueues();
       }
+    },
+
+    getTopItemIndex : function() {
+      return this._topItemIndex;
     },
 
     setScrollLeft: function( value ) {
@@ -472,8 +478,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     _updateTopItemIndex : function() {
       this._mergeEventsTimer.stop();
       var scrollTop = this._vertScrollBar.getValue();
-      var oldIndex = this._topItemIndex;
-      this._topItemIndex = Math.ceil( scrollTop / this._itemHeight );
+      var beforeTopitem = this._rootItem.findItemByOffset( scrollTop - 1 );
+      if( beforeTopitem ) {
+        this._topItemIndex = beforeTopitem.getFlatIndex() + 1;
+        this._topItem = beforeTopitem.getNextItem();
+      } else {
+        this._topItemIndex = 0;
+        this._topItem = null;
+      }
       if( this._inServerResponse() ) {
         this._scheduleUpdate( "topItem" );
       } else {
@@ -679,20 +691,26 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     },
 
     _handleKeyPageUp : function( event ) {
-      var oldIndex = this._focusItem.getFlatIndex();
-      var offset = this._rowContainer.getChildrenLength() - 2;
-      var newIndex = Math.max( 0, oldIndex - offset );
-      var item = this._rootItem.findItemByOffset( newIndex * this._itemHeight );
+      var oldOffset = this._focusItem.getOffset();
+      var diff = this._rowContainer.getHeight();
+      var newOffset = Math.max( 0, oldOffset - diff );
+      var item = this._rootItem.findItemByOffset( newOffset );
+      if( newOffset !== 0 ) {
+        item = item.getNextItem();
+      }
       var itemIndex = item.getFlatIndex();
       this._handleKeyboardSelect( event, item, itemIndex );
     },
 
     _handleKeyPageDown : function( event ) {
-      var oldIndex = this._focusItem.getFlatIndex();
-      var offset = this._rowContainer.getChildrenLength() - 2;
-      var max = this.getRootItem().getVisibleChildrenCount() - 1;
-      var newIndex = Math.min( max, oldIndex + offset );
-      var item = this._rootItem.findItemByOffset( newIndex * this._itemHeight );
+      var oldOffset = this._focusItem.getOffset();
+      var diff = this._rowContainer.getHeight();
+      var max = this.getRootItem().getOffsetHeight() - 1;
+      var newOffset = Math.min( max, oldOffset + diff );
+      var item = this._rootItem.findItemByOffset( newOffset );
+      if( newOffset !== max ) {
+        item = item.getPreviousItem();
+      }
       var itemIndex = item.getFlatIndex();
       this._handleKeyboardSelect( event, item, itemIndex );
     },
@@ -704,7 +722,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
 
     _handleKeyEnd : function( event ) {
       var item = this.getRootItem().getLastChild();
-      var time = new Date();
       var itemIndex = this.getRootItem().getVisibleChildrenCount() - 1;
       this._handleKeyboardSelect( event, item, itemIndex );
     },
@@ -737,7 +754,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       } else {
         this._singleSelectItem( event, item );
       }
-      this._scrollIntoView( itemIndex );
+      this._scrollIntoView( itemIndex, item );
     },
 
     /////////////////
@@ -758,6 +775,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
         switch( event.msg ) {
           case "expanded":
           case "collapsed":
+          case "height":
+            this._topItem = null;
             this._scheduleUpdate( "scrollHeight" );
           break;
           case "add":
@@ -768,6 +787,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
             } else {
               this._scheduleItemUpdate( item );
             }
+            this._topItem = null;
           break;
           default:
             if( this._inServerResponse() ) {
@@ -827,8 +847,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     // scrolling
 
     _updateScrollHeight : function() {
-      var itemCount = this.getRootItem().getVisibleChildrenCount();
-      var height = itemCount * this._itemHeight + ( this._footer ? this._footerHeight : 0 );
+      var itemsOffsetHeight = this.getRootItem().getOffsetHeight();
+      var height = itemsOffsetHeight + ( this._footer ? this._footerHeight : 0 );
       // recalculating topItem can be expensive, therefore this simple check:
       if( this._vertScrollBar.getMaximum() != height ) {
         // Without the check, it may cause an error in FF when unloading doc
@@ -843,8 +863,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
      * assumes that no other parameter than topItem have changed and may optimize accordingly.
      */
     _updateTopItem : function( render ) {
-      var topItem = this._rootItem.findItemByOffset( this._topItemIndex * this._itemHeight );
-      this._rowContainer.setTopItem( topItem, this._topItemIndex, render );
+      this._rowContainer.setTopItem( this._getTopItem(), this._topItemIndex, render );
     },
 
     _updateScrollWidth : function() {
@@ -862,11 +881,20 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       }
     },
 
-    _scrollIntoView : function( index ) {
+    _scrollIntoView : function( index, item ) {
       if( index < this._topItemIndex ) {
         this.setTopItemIndex( index );
-      } else if( index > ( this._topItemIndex + this._rowContainer.getChildrenLength() - 2 ) ) {
-        this.setTopItemIndex( index - this._rowContainer.getChildrenLength() + 2 );
+      } else if( index > this._topItemIndex ) {
+        var topItem = this._getTopItem();
+        var topItemOffset = topItem.getOffset();
+        var itemOffset = item.getOffset();
+        var pageSize = this._rowContainer.getHeight() - item.getOwnHeight();
+        if( itemOffset > topItemOffset + pageSize ) {
+          var newTopOffset = itemOffset - pageSize - 1;
+          var newTopItem = this.getRootItem().findItemByOffset( newTopOffset );
+          var newTopIndex = newTopItem.getFlatIndex() + 1;
+          this.setTopItemIndex( newTopIndex );
+        }
       }
     },
 
@@ -1273,49 +1301,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       this._scheduleUpdate();
     },
 
-
-//    _layoutX : function() {
-//      var width = this.getWidth() - this.getFrameWidth();
-//      if( this._header && this._header.getDisplay() ) {
-//        this._header.setWidth( width );
-//      }
-//      if( this._footer && this._footer.getDisplay() ) {
-//        this._footer.setWidth( width );
-//      }
-//      if( this._vertScrollBar.getVisibility() ) {
-//        width -= this._vertScrollBar.getWidth();
-//        this._vertScrollBar.setLeft( width );
-//      }
-//      this._horzScrollBar.setWidth( width );
-//      this._rowContainer.setWidth( width );
-//      this._updateScrollWidth();
-//    },
-//
-//    _layoutY : function() {
-//      var top = 0;
-//      top += this._header ? this._headerHeight : 0;
-//      var height = this.getHeight() - this.getFrameHeight();
-//      height -= this._header ? this._headerHeight : 0;
-//      height -= this._footer ? this._footerHeight : 0;
-//      height -= this._horzScrollBar.getVisibility() ? this._horzScrollBar.getHeight() : 0;
-//      height = Math.max( 0, height );
-//      if( this._header ) {
-//        this._header.setHeight( this._headerHeight );
-//      }
-//      if( this._footer ) {
-//        this._footer.setHeight( this._footerHeight );
-//        this._footer.setTop( top + height );
-//      }
-//      if( this._horzScrollBar.getVisibility() ) {
-//        this._horzScrollBar.setTop( top + height + ( this._footer ? this._footerHeight : 0  ) );
-//      }
-//      this._vertScrollBar.setHeight( height );
-//      this._vertScrollBar.setTop( top );
-//      this._rowContainer.setTop( top );
-//      this._rowContainer.setHeight( height );
-//      this._scheduleUpdate();
-//    },
-
     _getItemWidth : function() {
       var result = 0;
       if( this._config.itemLeft.length > 0 ) {
@@ -1342,6 +1327,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
 
     _isDragSource : function() {
       return this.hasEventListeners( "dragstart" );
+    },
+
+    _getTopItem : function() {
+      if( this._topItem === null ) {
+        this._topItem = this._rootItem.findItemByFlatIndex( this._topItemIndex );
+      }
+      return this._topItem;
     },
 
     ////////////////////////

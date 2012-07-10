@@ -26,6 +26,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
     this._indexCache = {};
     this._visibleChildrenCount = 0;
     this._expandedItems = {};
+    this._customHeightItems = {};
     this._texts = placeholder ? [ "..." ] : [];
     this._images = [];
     this._cached = !placeholder;
@@ -267,6 +268,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       this._height = value;
     },
 
+    setHeight : function( value ) {
+      if( this.isRootItem() ) {
+        throw new Error( "Can not set item height on root item" );
+      }
+      this._height = value;
+      if( value !== null ) {
+        this._parent._addToCustomHeightItems( this );
+      } else {
+        this._removeFromCustomHeightItems( this );
+      }
+      this._update( "height" );
+    },
+
     getDefaultHeight : function() {
       var result;
       if( this.isRootItem() ) {
@@ -339,11 +353,25 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
     },
 
     getOffsetHeight : function() {
-      return ( this.getVisibleChildrenCount() + 1 ) * this.getDefaultHeight();
+      var result = this.getOwnHeight();
+      if( this.isExpanded() && this.hasChildren() ) {
+        var lastChild = this.getLastChild();
+        result += this._getChildOffset( lastChild );
+        result += lastChild.getOffsetHeight();
+      }
+      return result;
+    },
+
+    hasCustomHeight : function() {
+      return this._height !== null;
     },
 
     getOwnHeight : function() {
-      return this.getDefaultHeight();
+      var result = 0;
+      if( !this.isRootItem() ) {
+        result = this._height !== null ? this._height : this.getDefaultHeight();
+      }
+      return result;
     },
 
     getVisibleChildrenCount : function() { // TODO [tb] : rather "itemCount"
@@ -386,17 +414,22 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       return result;
     },
 
-    // TODO [tb] : cache results
+    /**
+     * Returns the item that at the given vertical offset in pixel. The offset starts below
+     * this item. The returned items occupies an area that includes the position defined by the
+     * given offset. Its exact offset may by different. Negative offset is now allowed.
+     */
     findItemByOffset : function( targetOffset ) {
+      // TODO [tb] : cache results
       var itemHeight = this.getDefaultHeight();
-      var waypoints = this._getDifferingHeightItems();
+      var waypoints = this._getDifferingHeightIndicies();
       if( waypoints[ 0 ] === 0 ) {
         waypoints.shift();
       }
       var currentOffset = 0;
       var currentIndex = 0;
       var result = null;
-      var finished = false; 
+      var finished = false;
       if( targetOffset < 0 || this.getChildrenLength() === 0 ) {
         finished = true;
       }
@@ -404,8 +437,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
         var currentItem = this.getChild( currentIndex );
         var currentItemHeight = currentItem.getOffsetHeight();
         var nextIndex = waypoints.shift();
-        var nextOffset = currentOffset + currentItemHeight + ( nextIndex - currentIndex - 1 ) * itemHeight;
-        if( targetOffset < currentOffset + currentItemHeight ) { 
+        var nextOffset =   currentOffset
+                         + currentItemHeight
+                         + ( nextIndex - currentIndex - 1 ) * itemHeight;
+        if( targetOffset < currentOffset + currentItemHeight ) {
           // case: target in current item
           if( targetOffset < currentOffset + currentItem.getOwnHeight() ) {
             result = currentItem;
@@ -429,23 +464,64 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       return result;
     },
 
+    /**
+     * Finds the item at the given index, counting all visible children.
+     */
+    findItemByFlatIndex : function( index ) {
+      var expanded = this._getExpandedIndicies();
+      var localIndex = index;
+      var result = null;
+      var success = false;
+      while( !success && localIndex >= 0) {
+        var expandedIndex = expanded.shift();
+        if( expandedIndex === undefined || expandedIndex >= localIndex ) {
+          result = this.getChild( localIndex );
+          if( result ) {
+            this._indexCache[ result.toHashCode() ] = localIndex;
+          }
+          success = true;
+        } else {
+          var childrenCount = this.getChild( expandedIndex ).getVisibleChildrenCount();
+          var offset = localIndex - expandedIndex; // Items between current item and target item
+          if( offset <= childrenCount ) {
+            result = this.getChild( expandedIndex ).findItemByFlatIndex( offset - 1 );
+            success = true;
+            if( result == null ) {
+              throw new Error( "getItemByFlatIndex failed" );
+            }
+          } else {
+            localIndex -= childrenCount;
+          }
+        }
+      }
+      return result;
+    },
+
+    /**
+     * Returns the offset of this items top to the top of the entire visible item tree in pixel.
+     * Root item is excluded, as it is not displayed.
+     */
     getOffset : function() {
       var result = 0;
       if( !this._parent.isRootItem() ) {
-        result += this._parent.getOffset() + this.getDefaultHeight();
+        result += this._parent.getOffset() + this._parent.getOwnHeight();
       }
       result += this._parent._getChildOffset( this );
       return result;
     },
 
+    /**
+     * Returns the offset of a child in pixel relative to this item (its parent),
+     * excluding the height of child and parent themselves (just the distance between)
+     */
     _getChildOffset : function( item ) {
       var localIndex = this.indexOf( item );
       var result = localIndex * this.getDefaultHeight();
-      var expanded = this._getExpandedIndicies();
-      while( expanded.length > 0 && localIndex > expanded[ 0 ] ) {
-        var expandedIndex = expanded.shift();
+      var indicies = this._getDifferingHeightIndicies();
+      while( indicies.length > 0 && localIndex > indicies[ 0 ] ) {
+        var index = indicies.shift();
         result -= this.getDefaultHeight();
-        result += this._children[ expandedIndex ].getOffsetHeight();
+        result += this._children[ index ].getOffsetHeight();
       }
       return result;
     },
@@ -539,6 +615,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       if( item.isExpanded() ) {
         delete this._expandedItems[ item.toHashCode() ];
       }
+      if( item.hasCustomHeight() ) {
+        delete this._customHeightItems[ item.toHashCode() ];
+      }
       var index = this._children.indexOf( item );
       this._children.splice( index, 1 );
       this._children.push( undefined );
@@ -551,6 +630,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
 
     _removeFromExpandedItems : function( item ) {
       delete this._expandedItems[ item.toHashCode() ];
+    },
+
+    _addToCustomHeightItems : function( item ) {
+      this._customHeightItems[ item.toHashCode() ] = item;
+    },
+
+    _removeFromCustomHeightItems : function( item ) {
+      delete this._customHeightItems[ item.toHashCode() ];
     },
 
     //////////////////////////////
@@ -608,12 +695,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridItem", {
       this._visibleChildrenCount = result;
     },
 
-    _getDifferingHeightItems : function() {
-      return this._expandedItems;
-    },
-
-    _getDifferingHeightItems : function() {
-      return this._getExpandedIndicies();
+    _getDifferingHeightIndicies : function() {
+      var result = [];
+      for( var key in this._expandedItems ) {
+        result.push( this.indexOf( this._expandedItems[ key ] ) );
+      }
+      for( var key in this._customHeightItems ) {
+        if( !this._expandedItems[ key ] ) { // prevent duplicates
+          result.push( this.indexOf( this._customHeightItems[ key ] ) );
+        }
+      }
+      // TODO [tb] : result could be cached
+      return result.sort( function( a, b ){ return a - b; } );
     },
 
     _getExpandedIndicies : function() {
