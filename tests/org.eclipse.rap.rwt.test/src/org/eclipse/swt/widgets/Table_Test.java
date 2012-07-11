@@ -33,6 +33,7 @@ public class Table_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private Table table;
 
   @Override
   protected void setUp() {
@@ -40,6 +41,7 @@ public class Table_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
+    table = new Table( shell, SWT.NONE );
   }
 
   @Override
@@ -48,8 +50,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testInitialValues() {
-    Table table = new Table( shell, SWT.NONE );
-
     assertEquals( false, table.getHeaderVisible() );
     assertEquals( false, table.getLinesVisible() );
     assertEquals( 0, table.getSelectionCount() );
@@ -61,7 +61,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testStyle() {
-    Table table = new Table( shell, SWT.NONE );
     assertTrue( ( table.getStyle() & SWT.H_SCROLL ) != 0 );
     assertTrue( ( table.getStyle() & SWT.V_SCROLL ) != 0 );
     assertTrue( ( table.getStyle() & SWT.SINGLE ) != 0 );
@@ -82,7 +81,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testTableCreation() {
-    Table table = new Table( shell, SWT.NONE );
     assertEquals( 0, table.getItemCount() );
     assertEquals( 0, table.getItems().length );
     TableItem item0 = new TableItem( table, SWT.NONE );
@@ -151,7 +149,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testTableItemTexts() {
-    Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     String text0 = "text0";
     String text1 = "text1";
@@ -226,59 +223,56 @@ public class Table_Test extends TestCase {
   }
 
   public void testTopIndex() {
-    Table table = new Table( shell, SWT.NONE );
-    new TableItem( table, SWT.NONE );
-    TableItem lastItem = new TableItem( table, SWT.NONE );
+    createTableItems( table, 5 );
 
-    // Set a value which is out of bounds
-    int previousTopIndex = table.getTopIndex();
-    table.setTopIndex( 10000 );
-    assertEquals( previousTopIndex, table.getTopIndex() );
-
-    // Set topIndex to the second item
     table.setTopIndex( 1 );
+
     assertEquals( 1, table.getTopIndex() );
+  }
 
-    // Remove last item (whose index equals topIndex) -> must adjust topIndex
-    table.setTopIndex( table.indexOf( lastItem ) );
-    lastItem.dispose();
+  public void testTopIndex_ValueOutOfBounds() {
+    createTableItems( table, 5 );
+    int previousTopIndex = table.getTopIndex();
+
+    table.setTopIndex( 10000 );
+
+    assertEquals( previousTopIndex, table.getTopIndex() );
+  }
+
+  public void testTopIndex_AdjustAfterItemDispose() {
+    TableItem[] items = createTableItems( table, 2 );
+
+    table.setTopIndex( 1 );
+
+    items[ 1 ].dispose();
+
     assertEquals( 0, table.getTopIndex() );
+  }
 
-    // Ensure that topIndex stays at least 0 even if all items are removed
+  public void testTopIndex_AfterRemoveAllItems() {
+    createTableItems( table, 3 );
+
     table.removeAll();
-    TableItem soleItem = new TableItem( table, SWT.NONE );
-    soleItem.dispose();
-    assertEquals( 0, table.getTopIndex() );
 
-    // Ensure that topIndex stays 0 if no vertical scrollbar needed.
-    table.setSize( 100, 100 );
-    for( int i = 0; i < 10; i++ ) {
-      new TableItem( table, SWT.NONE );
-    }
     assertEquals( 0, table.getTopIndex() );
-    table.setTopIndex( 6 );
-    assertEquals( 6, table.getTopIndex() );
-    for( int i = 3; i < 10; i++ ) {
-      table.getItem( 3 ).dispose();
-    }
-    assertEquals( 0, table.getTopIndex() );
+  }
 
-    // Ensure that topIndex is adjusted if it is bigger than item count
-    table.removeAll();
-    for( int i = 0; i < 20; i++ ) {
-      new TableItem( table, SWT.NONE );
-    }
+  public void testTopIndex_AdjustIfBigger() {
+    int visibleItems = 3;
+    table.setSize( 100, visibleItems * table.getItemHeight() );
+    createTableItems( table, 20 );
     table.setTopIndex( 14 );
+
     for( int i = 10; i < 20; i++ ) {
       table.getItem( 10 ).dispose();
     }
+
     int itemCount = table.getItemCount();
     int visibleItemCount = table.getVisibleItemCount( false );
     assertEquals( itemCount - visibleItemCount, table.getTopIndex() );
   }
 
-  public void testTopIndexOnResize() {
-    Table table = new Table( shell, SWT.NONE );
+  public void testTopIndex_OnResize() {
     createTableItems( table, 10 );
     int visibleItems = 3;
     table.setSize( 100, visibleItems * table.getItemHeight() );
@@ -289,8 +283,7 @@ public class Table_Test extends TestCase {
     assertEquals( 4, table.getTopIndex() );
   }
 
-  public void testTopIndexOnTemporaryResize() {
-    Table table = new Table( shell, SWT.NONE );
+  public void testTopIndex_OnTemporaryResize() {
     table.setSize( 100, 100 );
     createTableItems( table, 10 );
     table.setTopIndex( 5 );
@@ -301,9 +294,8 @@ public class Table_Test extends TestCase {
     assertEquals( 5, table.getTopIndex() );
   }
 
-  public void testTopIndexInResizeEvent() {
+  public void testTopIndex_InResizeEvent() {
     final int[] log = new int[ 1 ];
-    final Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 10 );
     int visibleItems = 3;
     table.setSize( 100, visibleItems * table.getItemHeight() );
@@ -320,15 +312,17 @@ public class Table_Test extends TestCase {
     assertEquals( 4, log[ 0 ] );
   }
 
-  public void testSetTopIndexAdjust() {
-    Table table = new Table( shell, SWT.NONE );
+  // see bug 384589: [CellEditor] Wrong row is edited when last row is visible
+  public void testTopIndex_AdjustOnSet() {
     createTableItems( table, 10 );
     int visibleItems = 3;
     table.setSize( 100, visibleItems * table.getItemHeight() );
 
     table.setTopIndex( 8 );
 
-    assertEquals( 7, table.getTopIndex() );
+    int itemCount = table.getItemCount();
+    int visibleItemCount = table.getVisibleItemCount( false );
+    assertEquals( itemCount - visibleItemCount, table.getTopIndex() );
   }
 
   public void testDispose() {
@@ -398,19 +392,16 @@ public class Table_Test extends TestCase {
   }
 
   public void testGetAdapterWithTableAdapter() {
-    Table table = new Table( shell, SWT.NONE );
     Object adapter = table.getAdapter( ITableAdapter.class );
     assertNotNull( adapter );
   }
 
   public void testGetAdapterWithCellToolTipAdapter() {
-    Table table = new Table( shell, SWT.NONE );
     Object adapter = table.getAdapter( ICellToolTipAdapter.class );
     assertNotNull( adapter );
   }
 
   public void testGetAdapterWithItemHolderAdapter() {
-    Table table = new Table( shell, SWT.NONE );
     Object adapter = table.getAdapter( IItemHolderAdapter.class );
     assertNotNull( adapter );
   }
@@ -467,7 +458,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testFocusIndex() {
-    Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem item0 = new TableItem( table, SWT.NONE );
     TableItem item1 = new TableItem( table, SWT.NONE );
@@ -577,7 +567,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testRemoveRange() {
-    Table table = new Table( shell, SWT.NONE );
     int number = 5;
     TableItem[] items = createTableItems( table, number );
 
@@ -589,7 +578,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testRemoveRangeWithInvalidRange() {
-    Table table = new Table( shell, SWT.NONE );
     try {
       table.remove( -1, 1 );
       fail( "No exception thrown for illegal index range" );
@@ -615,7 +603,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testRemove() {
-    Table table = new Table( shell, SWT.NONE );
     int number = 5;
     TableItem[] items = createTableItems( table, number );
     table.remove( 1 );
@@ -655,7 +642,6 @@ public class Table_Test extends TestCase {
   public void testRemoveWithSelectionListener() {
     // ensure that no selection event is fired if a selected item is removed
     final boolean eventFired[] = { false };
-    Table table = new Table( shell, SWT.NONE );
     for( int i = 0; i < 5; i++ ) {
       new TableItem( table, SWT.NONE );
     }
@@ -671,7 +657,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testRemoveArray() {
-    Table table = new Table( shell, SWT.NONE );
     int number = 15;
     TableItem[] items = createTableItems( table, number );
     try {
@@ -1193,7 +1178,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testClearRangeWithIllegalArgument() {
-    Table table = new Table( shell, SWT.NONE );
     try {
       table.clear( 1, 11 );
       fail( "Must throw exception when attempting to clear non-existing items" );
@@ -1202,7 +1186,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testClearIndices() throws IOException {
-    Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem[] items = new TableItem[ 10 ];
     Image image = createImage50x100();
@@ -1224,7 +1207,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testClearIndicesWithIllegalArgument() {
-    Table table = new Table( shell, SWT.NONE );
     try {
       table.clear( new int[] { 2, 4, 15 } );
       fail( "Must throw exception when attempting to clear non-existing items" );
@@ -1267,7 +1249,6 @@ public class Table_Test extends TestCase {
   public void testSetSelectionBeforeSetSize() {
     // Calling setSelection() before setSize() should not change top index
     // See bug 272714, https://bugs.eclipse.org/bugs/show_bug.cgi?id=272714
-    Table table = new Table( shell, SWT.NONE );
     for( int i = 0; i < 10; i++ ) {
       new TableItem( table, SWT.NONE );
     }
@@ -1291,7 +1272,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testSortColumnAndDirection() {
-    Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
 
     table.setSortColumn( column );
@@ -1302,7 +1282,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testDisposeCurrentSortColumn() {
-    Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
     table.setSortColumn( column );
     table.setSortDirection( SWT.UP );
@@ -1314,7 +1293,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testSetSortWolumnWithDisposedColumn() {
-    Table table = new Table( shell, SWT.NONE );
     TableColumn disposedColumn = new TableColumn( table, SWT.NONE );
     disposedColumn.dispose();
     try {
@@ -1325,7 +1303,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testSetSortDirection() {
-    Table table = new Table( shell, SWT.NONE );
     table.setSortDirection( SWT.NONE );
     assertEquals( SWT.NONE, table.getSortDirection() );
     table.setSortDirection( SWT.UP );
@@ -1339,8 +1316,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testGetColumnOrder() {
-    Table table = new Table( shell, SWT.NONE );
-
     // Test column order for table without columns
     assertEquals( 0, table.getColumnOrder().length );
 
@@ -1389,7 +1364,6 @@ public class Table_Test extends TestCase {
         log.append( column.getText() + " moved|" );
       }
     };
-    Table table = new Table( shell, SWT.NONE );
     TableColumn column0 = new TableColumn( table, SWT.NONE );
     column0.setText( "Col0" );
     column0.addControlListener( controlAdapter );
@@ -1419,8 +1393,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testDisposeOfOrderedColumn() {
-    Table table = new Table( shell, SWT.NONE );
-
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -1450,7 +1422,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testDisposeWithFontDisposeInDisposeListener() {
-    Table table = new Table( shell, SWT.NONE );
     new TableItem( table, SWT.NONE );
     new TableItem( table, SWT.NONE );
     final Font font = new Font( display, "font-name", 10, SWT.NORMAL );
@@ -1504,7 +1475,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testSetColumnOrderWithInvalidArguments() {
-    Table table = new Table( shell, SWT.NONE );
     // Passing null is not allowed
     try {
       table.setColumnOrder( null );
@@ -1537,8 +1507,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testSetItemCountNonVirtual() {
-    Table table = new Table( shell, SWT.NONE );
-
     // Setting itemCount to a higher value than getItemCount() creates the
     // missing items
     table.setItemCount( 2 );
@@ -1600,7 +1568,6 @@ public class Table_Test extends TestCase {
 
   // bug 303473
   public void testItemImageSizeAfterClear() throws IOException {
-    Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setImage( createImage50x100() );
     table.clearAll();
@@ -1608,7 +1575,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testItemImageSizeAfterRemovingAllItems() throws IOException {
-    Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setImage( createImage50x100() );
     item.dispose();
@@ -1645,8 +1611,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testItemImageSize() throws IOException {
-    Table table = new Table( shell, SWT.NONE );
-
     // Test initial itemImageSize
     assertEquals( new Point( 0, 0 ), table.getItemImageSize() );
 
@@ -1671,7 +1635,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testHasColumnImages() throws IOException {
-    Table table = new Table( shell, SWT.NONE );
     TableItem item0 = new TableItem( table, SWT.NONE );
 
     // Test without columns
@@ -1719,7 +1682,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testGetItem() {
-    Table table = new Table( shell, SWT.NONE );
     TableItem item;
     // Illegal argument
     try {
@@ -1768,7 +1730,6 @@ public class Table_Test extends TestCase {
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=283263
    */
   public void testGetItemBelowHeader() {
-    Table table = new Table( shell, SWT.NONE );
     table.setHeaderVisible( true );
     table.setSize( 100, 100 );
     new TableItem( table, SWT.NONE );
@@ -1797,7 +1758,6 @@ public class Table_Test extends TestCase {
 
   public void testComputeSizeNonVirtual() {
     // Test non virtual table
-    Table table = new Table( shell, SWT.NONE );
     Point expected = new Point( 22, 74 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
@@ -1926,7 +1886,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testGetItemHeight() throws IOException {
-    Table table = new Table( shell, SWT.NONE );
     TableItem item1 = new TableItem( table, SWT.NONE );
     item1.setText( "Item 1" );
     // default font size (11) + hardcoded minimal vertical padding (4)
@@ -1938,7 +1897,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testNeedsScrollBarWithoutColumn() {
-    Table table = new Table( shell, SWT.NONE );
     table.setSize( 200, 200 );
     assertFalse( table.needsHScrollBar() );
     assertFalse( table.needsVScrollBar() );
@@ -1958,7 +1916,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testNeedsScrollBarWithColumn() {
-    Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.LEFT );
     table.setSize( 200, 200 );
     column.setWidth( 10 );
@@ -1986,7 +1943,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testGetScrollBarWidth() {
-    Table table = new Table( shell, SWT.NONE );
     table.setSize( 10, 10 );
     TableColumn column = new TableColumn( table, SWT.LEFT );
     column.setWidth( 20 );
@@ -2000,7 +1956,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnColumnChange() {
-    Table table = new Table( shell, SWT.NONE );
     table.setSize( 20, 20 );
     assertFalse( table.hasHScrollBar() );
     TableColumn column = new TableColumn( table, SWT.LEFT );
@@ -2015,7 +1970,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnItemsChange() {
-    Table table = new Table( shell, SWT.NONE );
     table.setSize( 20, 20 );
     assertFalse( table.hasVScrollBar() );
     createTableItems( table, 20 );
@@ -2025,7 +1979,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnResize() {
-    Table table = new Table( shell, SWT.NONE );
     table.setSize( 20, 20 );
     TableColumn column = new TableColumn( table, SWT.LEFT );
     column.setWidth( 25 );
@@ -2035,7 +1988,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnItemWidthChange() throws IOException {
-    Table table = new Table( shell, SWT.NONE );
     table.setSize( 60, 60 );
     TableItem item = new TableItem( table, SWT.NONE );
     assertFalse( table.hasHScrollBar() );
@@ -2065,7 +2017,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnHeaderVisibleChange() {
-    Table table = new Table( shell, SWT.NONE );
     int itemCount = 5;
     createTableItems( table, itemCount );
     table.setSize( 100, itemCount * table.getItemHeight() + 4 );
@@ -2085,7 +2036,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarItemWidthChangeWithColumn() throws IOException {
-    Table table = new Table( shell, SWT.NONE );
     table.setSize( 20, 100 );
     TableColumn column = new TableColumn( table, SWT.LEFT );
     column.setWidth( 10 );
@@ -2098,7 +2048,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarWithInterDependencyHFirst() {
-    Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.LEFT );
     column.setWidth( 20 );
     new TableItem( table, SWT.NONE );
@@ -2113,7 +2062,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarWithInterDependencyVFirst() {
-    Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.LEFT );
     column.setWidth( 26 );
     table.setSize( 30, 30 );
@@ -2164,7 +2112,6 @@ public class Table_Test extends TestCase {
 
   public void testIndexOf() {
     shell.setSize( 100, 100 );
-    Table table = new Table( shell, SWT.NONE );
     TableItem item1 = new TableItem( table, SWT.NONE );
     assertEquals( 0, table.indexOf( item1 ) );
     TableItem item0 = new TableItem( table, SWT.NONE, 0 );
@@ -2204,7 +2151,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testShowColumn() {
-    Table table = new Table( shell, SWT.NONE );
     table.setSize( 325, 100 );
     for( int i = 0; i < 10; i++ ) {
       TableColumn column = new TableColumn( table, SWT.NONE );
@@ -2228,7 +2174,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testShowColumnWithReorderedColumns() {
-    Table table = new Table( shell, SWT.NONE );
     table.setSize( 325, 100 );
     for( int i = 0; i < 9; i++ ) {
       TableColumn column = new TableColumn( table, SWT.NONE );
@@ -2246,7 +2191,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testShowColumnWithNullArgument() {
-    Table table = new Table( shell, SWT.NONE );
     try {
       table.showColumn( null );
       fail( "Null argument not allowed" );
@@ -2255,7 +2199,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testShowColumnWithDisposedColumn() {
-    Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
     column.dispose();
     try {
@@ -2329,7 +2272,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testScrollBars_NONE() {
-    Table table = new Table( shell, SWT.NONE );
     assertNotNull( table.getHorizontalBar() );
     assertNotNull( table.getVerticalBar() );
   }
@@ -2345,7 +2287,6 @@ public class Table_Test extends TestCase {
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=288634
   public void testUpdateColumnImageCount() throws IOException {
     shell.setSize( 100, 100 );
-    Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( new String[] { "col 1", "col 2", "col 3" } );
     Image image = createImage50x100();
@@ -2381,7 +2322,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testRemoveArrayDuplicates() {
-    Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 5 );
     assertEquals( 5, table.getItemCount() );
     table.remove( new int[]{ 1, 1 } );
@@ -2438,14 +2378,12 @@ public class Table_Test extends TestCase {
   }
 
   public void testSetCustomItemHeight() {
-    Table table = new Table( shell, SWT.NONE );
     table.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( 123 ) );
     assertEquals( 123, table.getItemHeight() );
   }
 
   public void testGetCustomItemHeight() {
     Integer itemHeight = new Integer( 123 );
-    Table table = new Table( shell, SWT.NONE );
     table.setData( RWT.CUSTOM_ITEM_HEIGHT, itemHeight );
 
     Object returnedItemHeight = table.getData( RWT.CUSTOM_ITEM_HEIGHT );
@@ -2454,7 +2392,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testResetCustomItemHeight() {
-    Table table = new Table( shell, SWT.NONE );
     int calculatedItemHeight = table.getItemHeight();
     table.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( 123 ) );
     table.setData( RWT.CUSTOM_ITEM_HEIGHT, null );
@@ -2462,12 +2399,10 @@ public class Table_Test extends TestCase {
   }
 
   public void testDefaultCustomItemHeight() {
-    Table table = new Table( shell, SWT.NONE );
     assertEquals( 26, table.getItemHeight() );
   }
 
   public void testSetCustomItemHeightWithNegativeValue() {
-    Table table = new Table( shell, SWT.NONE );
     try {
       table.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( -1 ) );
       fail();
@@ -2476,7 +2411,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testSetCustomItemHeightWithNonIntegerValue() {
-    Table table = new Table( shell, SWT.NONE );
     try {
       table.setData( RWT.CUSTOM_ITEM_HEIGHT, new Object() );
       fail();
@@ -2485,7 +2419,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testMarkupTextWithoutMarkupEnabled() {
-    Table table = new Table( shell, SWT.NONE );
     table.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
     TableItem item = new TableItem( table, SWT.NONE );
 
@@ -2497,7 +2430,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testMarkupTextWithMarkupEnabled() {
-    Table table = new Table( shell, SWT.NONE );
     table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
     TableItem item = new TableItem( table, SWT.NONE );
 
@@ -2509,7 +2441,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
-    Table table = new Table( shell, SWT.NONE );
     table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
     table.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -2522,7 +2453,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testDisableMarkupIsIgnored() {
-    Table table = new Table( shell, SWT.NONE );
     table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
 
     table.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
