@@ -99,6 +99,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.destroy();
     },
 
+    testRenderWhileParentNotDisplayable : function() {
+      // See Bug 384792 - [Table] Header disappear when it's layouted in invisible TabFolder tab 
+      shell.setDisplay( false );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      TestUtil.protocolSet( "w4", { "text" : "foo" } );
+      TestUtil.flush();
+
+      shell.setDisplay( true );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      assertEquals( "foo", label.getCellContent( 1 ).toString() );
+      column.dispose();
+      tree.destroy();
+    },
+
     testRenderFooterText : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       tree.setFooterVisible( true );

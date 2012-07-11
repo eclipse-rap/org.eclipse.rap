@@ -997,7 +997,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fillTree( tree, 100 );
       TestUtil.flush();
       var maxScroll = tree._vertScrollBar.getMaximum() - tree._vertScrollBar.getHeight();
-      console.log( maxScroll );
 
       org.eclipse.swt.EventUtil.setSuspended( true );
       tree._vertScrollBar.setValue( maxScroll );

@@ -456,6 +456,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       return false;
     },
 
+    _beforeAppear : function() {
+      this.base( arguments );
+      this._scheduleColumnUpdate();
+    },
+
     _scheduleColumnUpdate : function() {
       qx.ui.core.Widget.addToGlobalWidgetQueue( this );
       this._scheduleUpdate();
