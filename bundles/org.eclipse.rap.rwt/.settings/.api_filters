@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<component id="org.eclipse.rap.rwt" version="2">
+    <resource path="src/org/eclipse/swt/widgets/TypedListener.java" type="org.eclipse.swt.widgets.TypedListener">
+        <filter comment="See bug 334028" id="643842064">
+            <message_arguments>
+                <message_argument value="SWTEventListener"/>
+                <message_argument value="TypedListener"/>
+                <message_argument value="getEventListener()"/>
+            </message_arguments>
+        </filter>
+        <filter comment="See bug 334028" id="643850349">
+            <message_arguments>
+                <message_argument value="SWTEventListener"/>
+                <message_argument value="TypedListener"/>
+                <message_argument value="TypedListener(SWTEventListener)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+</component>
