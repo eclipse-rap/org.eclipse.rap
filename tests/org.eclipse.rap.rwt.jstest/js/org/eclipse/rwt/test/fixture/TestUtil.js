@@ -25,11 +25,11 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       throw( "Could not get bounds: no parentNode!" );
     }
     var space = {};
-    space.width =   this._parseLength( ps.width ) 
-                  - this._parseLength( ps.borderLeftWidth || 0 ) 
-                  - this._parseLength( ps.borderRightWidth || 0 ); 
-    space.height =   this._parseLength( ps.height ) 
-                   - this._parseLength( ps.borderTopWidth || 0 ) 
+    space.width =   this._parseLength( ps.width )
+                  - this._parseLength( ps.borderLeftWidth || 0 )
+                  - this._parseLength( ps.borderRightWidth || 0 );
+    space.height =   this._parseLength( ps.height )
+                   - this._parseLength( ps.borderTopWidth || 0 )
                    - this._parseLength( ps.borderBottomWidth || 0 );
     var result = {};
     result.width = this._parseLength( style.width );
@@ -40,38 +40,38 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     } else {
       result.left = this._parseLength( style.left );
       result.right = space.width - ( result.left + result.width );
-    } 
+    }
     if( style.bottom && !style.top ) {
       result.bottom = this._parseLength( style.bottom );
       result.top = space.height - ( result.bottom + result.height );
     } else {
       result.top = this._parseLength( style.top );
       result.bottom = space.height - ( result.top + result.height );
-    } 
+    }
     return result;
   },
-  
+
   getElementLayout : function( node ) {
     var bounds = this.getElementBounds( node );
     return [ bounds.left, bounds.top, bounds.width, bounds.height ];
   },
-  
+
   _parseLength : function( value ) {
     var result = value ? parseInt( value, 10 ) : 0;
-    if(    result !== 0 
-        && typeof value == "string" 
-        && value.indexOf( "px" ) == -1 ) 
+    if(    result !== 0
+        && typeof value == "string"
+        && value.indexOf( "px" ) == -1 )
     {
       throw "getElementBounds only supports \"px\" but found " + value;
     }
     return result;
   },
-  
+
   getElementFont : function( element ) {
     var font = element.style.font;
     if( font === "" || typeof font !== "string" ) {
-      var fontData = [ 
-        element.style.fontSize, 
+      var fontData = [
+        element.style.fontSize,
         element.style.fontStyle,
         element.style.fontWeight,
         element.style.fontFamily
@@ -80,11 +80,11 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     }
     return font;
   },
-  
+
   hasElementOpacity : function( node ) {
     return node.style.cssText.search( /opacity/i  ) != -1;
   },
-  
+
   getCssBackgroundImage : function( node ) {
     var result = "";
     if( node.style.filter && node.style.filter.indexOf( "src='" ) != -1 ) {
@@ -92,12 +92,12 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       var startStr = filter.indexOf( "src='" ) + 5;
       var stopStr = filter.indexOf( "'", startStr );
       result = filter.slice( startStr, stopStr );
-    } else if(   node.style.backgroundImage 
-              && node.style.backgroundImage.indexOf( 'url(' ) != -1 ) 
+    } else if(   node.style.backgroundImage
+              && node.style.backgroundImage.indexOf( 'url(' ) != -1 )
     {
-      result = node.style.backgroundImage.slice( 4, -1 );           
+      result = node.style.backgroundImage.slice( 4, -1 );
    }
-    // Webkit re-writes the url in certain situations: 
+    // Webkit re-writes the url in certain situations:
     if( result.length > 0 && result == document.URL ) {
       result = "";
     }
@@ -107,8 +107,8 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     }
     return result;
   },
-      
-  getCssBackgroundColor : function( widget ) {      
+
+  getCssBackgroundColor : function( widget ) {
     var inner = widget._getTargetNode().style.backgroundColor;
     var outer = widget.getElement().style.backgroundColor;
     var result = ( ( inner || outer ) || null );
@@ -117,7 +117,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     }
     return result;
   },
-  
+
   hasCssBorder : function( node ) {
     var result = false;
     var edge = [ "Top", "Left", "Bottom", "Right" ];
@@ -126,22 +126,22 @@ org.eclipse.rwt.test.fixture.TestUtil = {
         var width = parseInt( node.style[ "border" + edge[ i ] + "Width" ], 10 );
         var color = node.style[ "border" + edge[ i ] + "Color" ];
         var style = node.style[ "border" + edge[ i ] + "Style" ];
-        var hasWidth = !isNaN( width ) && width > 0; 
+        var hasWidth = !isNaN( width ) && width > 0;
         var hasColor = color !== "transparent";
         var hasStyle = style !== "" && style !== "none";
-        result = hasWidth && hasColor && hasStyle; 
-      }        
-    } 
-    return result;     
+        result = hasWidth && hasColor && hasStyle;
+      }
+    }
+    return result;
   },
 
   getElementSelectable : function( node ) {
     return node.style.cssText.search( "user-select: none" ) == -1;
   },
-  
+
   /////////////////////////////
   // Event handling - DOM layer
-  
+
   _createFakeDomEvent : function( target, type, mod ) {
     var result = {
       "preventDefault" : function(){},
@@ -155,16 +155,16 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       "altKey" :  ( qx.event.type.DomEvent.ALT_MASK  & mod ) != 0,
       "shiftKey" : ( qx.event.type.DomEvent.SHIFT_MASK  & mod ) != 0
     };
-    return result;       
+    return result;
   },
-  
+
   clickDOM : function( node, left, top ) {
     var button = qx.event.type.MouseEvent.buttons.left;
     this.fakeMouseEventDOM( node, "mousedown", button, left, top );
     this.fakeMouseEventDOM( node, "mouseup", button, left, top );
     this.fakeMouseEventDOM( node, "click", button, left, top );
   },
-    
+
   shiftClickDOM : function( node ) {
     var left = qx.event.type.MouseEvent.buttons.left;
     var mod = qx.event.type.DomEvent.SHIFT_MASK;
@@ -172,7 +172,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     this.fakeMouseEventDOM( node, "mouseup", left, 0, 0, mod );
     this.fakeMouseEventDOM( node, "click", left, 0, 0, mod );
   },
-    
+
   ctrlClickDOM : function( node ) {
     var left = qx.event.type.MouseEvent.buttons.left;
     var mod = qx.event.type.DomEvent.CTRL_MASK;
@@ -180,7 +180,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     this.fakeMouseEventDOM( node, "mouseup", left, 0, 0, mod );
     this.fakeMouseEventDOM( node, "click", left, 0, 0, mod );
   },
-  
+
   hoverFromTo : function( fromNode, toNode ) {
     var outEvent = this._createFakeMouseEventDOM( fromNode, "mouseout", 0 );
     outEvent.relatedTarget = toNode;
@@ -189,7 +189,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     overEvent.relatedTarget = fromNode;
     this.fireFakeDomEvent( overEvent );
   },
-    
+
   fakeMouseEventDOM : function( target, type, button, left, top, mod, filter ) {
     if( typeof target === "undefined" ) {
       throw( "Error in fakeMouseEventDOM: target not defined! " );
@@ -202,7 +202,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   _createFakeMouseEventDOM : function( target, type, button, left, top, mod ) {
-    // TODO [tb] : refactor to not overwrite paramters? 
+    // TODO [tb] : refactor to not overwrite paramters?
     if( typeof left === "undefined" ) {
       left = 0;
     }
@@ -248,11 +248,11 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     if( this.isMobileWebkit() ) {
       domEvent.originalEvent = {};
     }
-    return domEvent; 
+    return domEvent;
   },
 
   fireFakeDomEvent : function( domEvent ) {
-    var type = domEvent.type; 
+    var type = domEvent.type;
     var handler = org.eclipse.rwt.EventHandler;
     switch( type ) {
       case "mousedown":
@@ -276,40 +276,40 @@ org.eclipse.rwt.test.fixture.TestUtil = {
         throw "fireFakeDomEvent: Unkown dom-event " + domEvent.type;
     }
   },
-  
+
   _identifierToKeycodeMap : {
-    "Shift" : 16, 
+    "Shift" : 16,
     "Control" : 17,
-    "Alt" : 18, 
+    "Alt" : 18,
     "CapsLock" : 20,
-    "Meta" : 224, 
-    "Left" : 37, 
-    "Up" : 38, 
+    "Meta" : 224,
+    "Left" : 37,
+    "Up" : 38,
     "Right" : 39,
-    "Down" : 40, 
-    "PageUp" : 33, 
-    "PageDown" : 34, 
-    "End" : 35, 
-    "Home" : 36, 
-    "Insert" : 45, 
-    "Delete" : 46, 
-    "F1" : 112, 
-    "F2" : 113, 
-    "F3" : 114, 
-    "F4" : 115, 
-    "F5" : 116, 
-    "F6" : 117, 
-    "F7" : 118, 
-    "F8" : 119, 
-    "F9" : 120, 
-    "F10" : 121, 
-    "F11" : 122, 
-    "F12" : 123, 
-    "NumLock" : 144, 
-    "PrintScreen" : 44, 
-    "Scroll" : 145, 
-    "Pause" : 19, 
-    "Win" : 91, 
+    "Down" : 40,
+    "PageUp" : 33,
+    "PageDown" : 34,
+    "End" : 35,
+    "Home" : 36,
+    "Insert" : 45,
+    "Delete" : 46,
+    "F1" : 112,
+    "F2" : 113,
+    "F3" : 114,
+    "F4" : 115,
+    "F5" : 116,
+    "F6" : 117,
+    "F7" : 118,
+    "F8" : 119,
+    "F9" : 120,
+    "F10" : 121,
+    "F11" : 122,
+    "F12" : 123,
+    "NumLock" : 144,
+    "PrintScreen" : 44,
+    "Scroll" : 145,
+    "Pause" : 19,
+    "Win" : 91,
     "Apps" : 93,
     "Enter" : qx.core.Variant.select("qx.client", {
       "default" : null,
@@ -317,12 +317,12 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     } ),
     "Escape" : 27
   },
-  
+
   _printableIdentifierToKeycodeMap : {
-    "Backspace" : 8, 
+    "Backspace" : 8,
     "Tab" : 9,
     "Escape" : 27,
-    "Space" : 32, 
+    "Space" : 32,
     "Enter" : qx.core.Variant.select("qx.client", {
       "default" : 13,
       "gecko" : null
@@ -333,20 +333,20 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     this.keyDown( target, key, mod );
     this.keyUp( target, key, mod );
   },
-  
+
   keyDown : function( target, key, mod ) {
     var event = this.fireFakeKeyDomEvent( target, "keydown", key, mod );
-    if( this._sendKeyPress( key, event ) ) { 
+    if( this._sendKeyPress( key, event ) ) {
       this.fireFakeKeyDomEvent( target, "keypress", key, mod );
     }
   },
-  
+
   keyHold : function( target, key, mod ) {
     var event = null;
     if( this._sendKeyDownOnHold( key ) ) {
       var event = this.fireFakeKeyDomEvent( target, "keydown", key, mod );
     }
-    if( this._sendKeyPress( key, event ) ) { 
+    if( this._sendKeyPress( key, event ) ) {
       this.fireFakeKeyDomEvent( target, "keypress", key, mod );
     }
   },
@@ -364,36 +364,36 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     }
   } ),
 
-  _sendKeyPress : qx.core.Variant.select("qx.client", { 
+  _sendKeyPress : qx.core.Variant.select("qx.client", {
     "gecko|opera" : function( key, keyDownEvent ) {
       return !this._isModifier( key );
     },
     "default" : function( key, keyDownEvent ) {
-      var wasStopped =   keyDownEvent 
-                       ? org.eclipse.rwt.EventHandlerUtil.wasStopped( keyDownEvent ) 
+      var wasStopped =   keyDownEvent
+                       ? org.eclipse.rwt.EventHandlerUtil.wasStopped( keyDownEvent )
                        : false;
-      return this._isPrintable( key ) && !wasStopped; 
-    } 
+      return this._isPrintable( key ) && !wasStopped;
+    }
   } ),
-  
+
   createFakeDomKeyEvent : function( target, type, stringOrKeyCode, mod ) {
     var domEvent = this._createFakeDomEvent( target, type, mod );
     domEvent.keyCode = this._getKeyCode( type, stringOrKeyCode );
     domEvent.charCode = this._getCharCode( type, stringOrKeyCode );
-    domEvent.isChar = stringOrKeyCode === "string"; // not always correct 
-    return domEvent;      
+    domEvent.isChar = stringOrKeyCode === "string"; // not always correct
+    return domEvent;
   },
 
   fireFakeKeyDomEvent : function( target, type, stringOrKeyCode, mod ) {
-    var domEvent = this.createFakeDomKeyEvent( target, 
-                                               type, 
-                                               stringOrKeyCode, 
+    var domEvent = this.createFakeDomKeyEvent( target,
+                                               type,
+                                               stringOrKeyCode,
                                                mod );
     this.fireFakeDomEvent( domEvent );
     return domEvent;
   },
 
-  _getKeyCode : qx.core.Variant.select("qx.client", { 
+  _getKeyCode : qx.core.Variant.select("qx.client", {
     "default" : function( type, stringOrKeyCode ) {
       var result;
       // NOTE [tb] : This is called for non-printable keypress only in opera
@@ -409,22 +409,22 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       if( type === "keypress" && this._isPrintable( stringOrKeyCode ) ) {
         result = this._isEscape( stringOrKeyCode ) ? 27 : 0;
       } else {
-        result = this._convertToKeyCode( stringOrKeyCode );          
+        result = this._convertToKeyCode( stringOrKeyCode );
       }
       return result;
     }
   } ),
 
-  _getCharCode : qx.core.Variant.select("qx.client", { 
+  _getCharCode : qx.core.Variant.select("qx.client", {
     "default" : function( type, stringOrKeyCode ) {
       return undefined;
     },
     "gecko|webkit" : function( type, stringOrKeyCode ) {
       // NOTE [tb] : this is never called with keypress for webkit
       var result;
-      if(    type === "keypress" 
-          && this._isPrintable( stringOrKeyCode ) 
-          && !this._isEscape( stringOrKeyCode ) 
+      if(    type === "keypress"
+          && this._isPrintable( stringOrKeyCode )
+          && !this._isEscape( stringOrKeyCode )
       ) {
         result = this._convertToCharCode( stringOrKeyCode );
       } else {
@@ -433,12 +433,12 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       return result;
     }
   } ),
-  
+
   _isPrintable : function( stringOrKeyCode ) {
     var util = org.eclipse.rwt.EventHandlerUtil;
     var keyCodeMap = util._keyCodeToIdentifierMap;
     var idMap = this._printableIdentifierToKeycodeMap;
-    var isChar =    typeof stringOrKeyCode === "string" 
+    var isChar =    typeof stringOrKeyCode === "string"
                  && stringOrKeyCode.length === 1;
     var isPrintableKeyCode =    typeof stringOrKeyCode === "number"
                              && keyCodeMap[ stringOrKeyCode ] === undefined;
@@ -448,23 +448,23 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     if( org.eclipse.rwt.Client.isWebkit() ) {
       if( stringOrKeyCode === 27 || stringOrKeyCode === "Escape" ) {
         result = false;
-      } 
+      }
     }
-    if(    ( stringOrKeyCode === 9 || stringOrKeyCode === "Tab" ) 
+    if(    ( stringOrKeyCode === 9 || stringOrKeyCode === "Tab" )
         || ( stringOrKeyCode === 8 || stringOrKeyCode === "Backspace") )
     {
       result = false;
     }
-    return result;               
+    return result;
   },
-  
+
   _isEscape : function( stringOrKeyCode ) {
     return stringOrKeyCode === 27 || stringOrKeyCode === "Escape";
   },
-  
+
   _isModifier : function( key ) {
     var keyCode = this._convertToKeyCode( key );
-    return keyCode >= 16 && keyCode <= 20 && keyCode !== 19;  
+    return keyCode >= 16 && keyCode <= 20 && keyCode !== 19;
   },
 
   _convertToKeyCode : function( stringOrKeyCode ) {
@@ -476,12 +476,12 @@ org.eclipse.rwt.test.fixture.TestUtil = {
         if( result == null ) {
           result = 0;
         }
-      } 
+      }
     } else if( typeof stringOrKeyCode === "string" ) {
       var charCode = stringOrKeyCode.toUpperCase().charCodeAt( 0 );
-      if(    ( charCode >= 65 && charCode <= 90 ) 
-          || ( charCode >= 97 && charCode <= 122 ) 
-          || ( charCode >= 48 && charCode <= 57 ) 
+      if(    ( charCode >= 65 && charCode <= 90 )
+          || ( charCode >= 97 && charCode <= 122 )
+          || ( charCode >= 48 && charCode <= 57 )
       ) {
         result = stringOrKeyCode.toUpperCase().charCodeAt( 0 ); // should match
       } else {
@@ -513,9 +513,9 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   // Event handling - Qooxdoo
 
   click : function( widget, left, top ) {
-    this.clickDOM( widget._getTargetNode(), left, top );      
+    this.clickDOM( widget._getTargetNode(), left, top );
   },
-  
+
   doubleClick : function( widget ) {
     var node = widget._getTargetNode();
     this.clickDOM( node );
@@ -523,17 +523,17 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     var left = qx.event.type.MouseEvent.buttons.left;
     this.fakeMouseEventDOM( node, "dblclick", left );
   },
-  
+
   shiftClick : function( widget ) {
     var node = widget._getTargetNode();
     this.shiftClickDOM( node );
   },
-  
+
   ctrlClick : function( widget ) {
     var node = widget._getTargetNode();
     this.ctrlClickDOM( node );
   },
-  
+
   rightClick : function( widget ) {
     var right = qx.event.type.MouseEvent.buttons.right;
     var node = widget._getTargetNode();
@@ -541,7 +541,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     this.fakeMouseEventDOM( node, "mousedown", right );
     this.fakeMouseEventDOM( node, "mouseup", right );
     this.fakeMouseEventDOM( node, "click", right );
-    this.fakeMouseEventDOM( node, "contextmenu", right );      
+    this.fakeMouseEventDOM( node, "contextmenu", right );
   },
 
   mouseOver : function( widget ) {
@@ -559,7 +559,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   mouseFromTo : function( from, to ) {
     this.mouseMove( from );
     this.mouseOut( from );
-    this.mouseOver( to );      
+    this.mouseOver( to );
     this.mouseMove( to );
   },
 
@@ -574,15 +574,15 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       throw( "Error in TestUtil.fakeMouseEvent: widget is not created" );
     }
     var target = widget._getTargetNode();
-    var type =   qx.core.Variant.isSet( "qx.client", "gecko" ) 
-               ? "DOMMouseScroll" 
+    var type =   qx.core.Variant.isSet( "qx.client", "gecko" )
+               ? "DOMMouseScroll"
                : "mousewheel";
-    var domEvent = 
+    var domEvent =
     this._createFakeMouseEventDOM( target, type, 0, 0, 0, 0 );
     this._addWheelDelta( domEvent, value );
     this.fireFakeDomEvent( domEvent );
   },
-  
+
   _addWheelDelta : qx.core.Variant.select( "qx.client", {
     "default" : function( event, value ) {
       event.wheelDelta = value * 120;
@@ -606,23 +606,23 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     if( checkActive !== true && !this.isActive( widget ) ) {
       widget.focus();
     }
-    this.pressOnce( target, key, mod );      
+    this.pressOnce( target, key, mod );
   },
 
   shiftPress : function( widget, key, checkActive ) {
     var mod = qx.event.type.DomEvent.SHIFT_MASK;
     this.press( widget, key, checkActive, mod );
-  },    
+  },
 
   ctrlPress : function( widget, key, checkActive ) {
     var mod = qx.event.type.DomEvent.CTRL_MASK;
     this.press( widget, key, checkActive, mod );
-  },    
+  },
 
   altPress : function( widget, key, checkActive ) {
     var mod = qx.event.type.DomEvent.ALT_MASK;
     this.press( widget, key, checkActive, mod );
-  },    
+  },
 
   _fakeKeyEvent : function( widget, type, key, checkActive, mod ) {
     if( !widget._isCreated ) {
@@ -636,19 +636,19 @@ org.eclipse.rwt.test.fixture.TestUtil = {
         "type" : type,
         "ctrlKey" : ( qx.event.type.DomEvent.CTRL_MASK & mod ) != 0,
         "altKey" :  ( qx.event.type.DomEvent.ALT_MASK  & mod ) != 0,
-        "shiftKey" : ( qx.event.type.DomEvent.SHIFT_MASK  & mod ) != 0,          
+        "shiftKey" : ( qx.event.type.DomEvent.SHIFT_MASK  & mod ) != 0,
         preventDefault : function(){}
       };
       var ev = new qx.event.type.KeyEvent(
-        type, 
-        domEv, 
-        widget._getTargetNode(), 
-        widget, 
-        widget, 
-        null, 
-        "", 
-        key 
-      );      
+        type,
+        domEv,
+        widget._getTargetNode(),
+        widget,
+        widget,
+        null,
+        "",
+        key
+      );
       widget.dispatchEvent( ev );
     } else {
       widget.warn( type + " not possible: " + widget.__dbKey + " not focused!" );
@@ -664,16 +664,16 @@ org.eclipse.rwt.test.fixture.TestUtil = {
 
   ////////////////
   // client-server
-  
+
   _requestLog : [],
   _response : null,
   _errorPage : null,
-  
+
   initRequestLog : function() {
     var server = org.eclipse.rwt.test.fixture.RAPServer.getInstance();
     org.eclipse.rwt.test.fixture.TestUtil.clearRequestLog();
     server.setRequestHandler( function( message ) {
-      TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil._requestLog.push( message );
       if( TestUtil._response !== null ) {
         TestUtil._response();
@@ -692,7 +692,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   clearRequestLog : function() {
-    org.eclipse.swt.Request.getInstance().send();        
+    org.eclipse.swt.Request.getInstance().send();
     this._requestLog = [];
   },
 
@@ -716,35 +716,35 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   clearErrorPage : function() {
     this._errorPage = null;
   },
-  
+
   getErrorPage : function() {
     return this._errorPage;
   },
-  
+
   ////////
   // Timer
-  
+
   /**
    * Kills the actual timer-functionality, as it could cause problems
    * with debugging, calls to "once" are only logged
-   */   
+   */
   prepareTimerUse : function() {
     qx.client.Timer.prototype._applyEnabled = function(){};
     qx.client.Timer._onceCallsLog = [];
     qx.client.Timer.once = function( func, obj, timeout ) {
       var source = arguments.callee.caller;
       this._onceCallsLog.push( [ func, obj, timeout, source ] );
-    }; 
+    };
   },
-  
+
   getTimerOnceLog : function() {
     return qx.client.Timer._onceCallsLog;
   },
-   
+
   clearTimerOnceLog : function() {
     qx.client.Timer._onceCallsLog = [];
-  }, 
-  
+  },
+
   forceTimerOnce : function() {
     // TODO [tb] : sort order by time
     var log = qx.client.Timer._onceCallsLog;
@@ -753,7 +753,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     }
     qx.client.Timer._onceCallsLog = [];
   },
-  
+
   forceInterval : function( timer ) {
     if( !timer.getEnabled() ) {
       throw( "Timer is not running!" );
@@ -761,11 +761,11 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     // this only works if the timer is enabled:
     timer._oninterval();
   },
-  
+
   //////////
   // Theming
-  
-  // assumes that the set appearance-theme does never change during tests     
+
+  // assumes that the set appearance-theme does never change during tests
   fakeAppearance : function( appearanceId, value ) {
     var manager = qx.theme.manager.Appearance.getInstance();
     var themeName = manager.getCurrentTheme().name;
@@ -780,7 +780,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     base[ appearanceId ] = value;
     this._clearAppearanceCache();
   },
-  
+
   restoreAppearance : function() {
     var manager = qx.theme.manager.Appearance.getInstance();
     var base = manager.getCurrentTheme().appearances;
@@ -789,20 +789,20 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       if( value === false ) {
         delete base[ appearanceId ];
       } else {
-        base[ appearanceId ] = value;          
+        base[ appearanceId ] = value;
       }
     }
     this._appearanceBackups = {};
     this._clearAppearanceCache();
   },
-  
+
   _appearanceBackups : {},
-  
+
   _clearAppearanceCache : function() {
     var manager = qx.theme.manager.Appearance.getInstance();
     manager.__cache[ manager.getCurrentTheme().name ] = {};
   },
-  
+
   ////////
   // Misc
 
@@ -811,27 +811,27 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   isFocused : function( widget ) {
-    return widget == org.eclipse.rwt.EventHandler.getFocusRoot().getFocusedChild(); 
+    return widget == org.eclipse.rwt.EventHandler.getFocusRoot().getFocusedChild();
   },
-  
+
   isActive: function( widget ) {
-    return widget == org.eclipse.rwt.EventHandler.getFocusRoot().getActiveChild(); 
+    return widget == org.eclipse.rwt.EventHandler.getFocusRoot().getActiveChild();
   },
-  
+
   flush : function() {
     qx.ui.core.Widget.flushGlobalQueues();
   },
-  
+
   getDocument : function() {
     return qx.ui.core.ClientDocument.getInstance();
   },
-  
+
   preventFlushs : function( value ) {
-    // this only works if the TestRunner-function"_disableAutoFlush" 
+    // this only works if the TestRunner-function"_disableAutoFlush"
     // has been called previously. (Happens in TestRunner.run)
     qx.ui.core.Widget.__allowFlushs = !value;
   },
-  
+
   emptyDragCache : function() {
     qx.event.handler.DragAndDropHandler.__dragCache = null;
   },
@@ -855,7 +855,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   delayTest : function( time ) {
     org.eclipse.rwt.test.TestRunner.getInstance().pause( time );
   },
-  
+
   /**
    * All given values will be passed on to the next test-functions as
    * arguments. This is true until either this function is called again
@@ -865,7 +865,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     var runner = org.eclipse.rwt.test.TestRunner.getInstance();
     runner.setArguments( arguments );
   },
-  
+
   /**
    * Ensures that the given object has no other objects as a fields
    */

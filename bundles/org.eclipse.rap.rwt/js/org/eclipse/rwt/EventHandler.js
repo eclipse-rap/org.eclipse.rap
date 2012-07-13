@@ -242,7 +242,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     // MOUSE EVENTS
 
     _onmouseevent : function( event ) {
-      try{
+      try {
         var process = true;
         if( typeof this._filter[ "mouseevent" ] !== "undefined" ) {
           var context = this._filter[ "mouseevent" ][ 1 ];

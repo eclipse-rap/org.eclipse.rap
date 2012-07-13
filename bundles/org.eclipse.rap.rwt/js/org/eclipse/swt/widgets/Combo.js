@@ -47,6 +47,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this._list = new org.eclipse.rwt.widgets.BasicList( false );
     this._list.setTabIndex( null );
     this._list.setDisplay( false );
+    this._blockMouseOver = false;
+    this._list.addEventListener( "userScroll", function() {
+      this._blockMouseOver = true;
+      qx.client.Timer.once( function() {
+        this._blockMouseOver = false;
+      }, this, 300 ); // the browser may fire a mouse event with some delay
+    }, this );
     // List Manager
     this._manager = this._list.getManager();
     this._manager.setMultiSelection( false );
@@ -86,6 +93,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this.addEventListener( "click", this._onMouseClick, this );
     this.addEventListener( "mousewheel", this._onMouseWheel, this );
     this.addEventListener( "mouseover", this._onMouseOver, this );
+    this.addEventListener( "mousemove", this._onMouseMove, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
     // Keyboard events
     this.addEventListener( "keydown", this._onKeyDown, this );
@@ -509,10 +517,19 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
 
     _onMouseOver : function( evt ) {
       var target = evt.getTarget();
-      if( target instanceof org.eclipse.rwt.widgets.ListItem ) {
+      if( target instanceof org.eclipse.rwt.widgets.ListItem && !this._blockMouseOver ) {
         this._setListSelection( target );
       } else if( target == this._button ) {
         this._button.addState( "over" );
+      }
+    },
+
+    _onMouseMove : function( evt ) {
+      var target = evt.getTarget();
+      if(    target instanceof org.eclipse.rwt.widgets.ListItem
+          && this._manager.getSelectedItem() !== evt.getTarget() )
+      {
+        this._onMouseOver( evt );
       }
     },
 
@@ -562,10 +579,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           if( evt.isAltPressed() ) {
             this._toggleListVisibility();
           }
-        // intentionally no break here
         case "PageUp":
         case "PageDown":
-          if( this._selected ) {
+          if( this._selected || this._manager.getSelectedItem() ) {
             this._list._onkeypress( evt );
             var selected = this._manager.getSelectedItem();
             this._setSelected( selected );
@@ -587,12 +603,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         case "PageUp":
         case "PageDown":
           evt.stopPropagation();
-          break;
+        break;
         case "Tab":
           if( this._dropped ) {
             this._toggleListVisibility();
           }
-          break;
+        break;
         case "Right":
           if( this._dropped ) {
             var toSelect =   this._selected
@@ -602,7 +618,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
               this._setSelected( toSelect );
             }
           }
-          break;
+        break;
         case "Left":
           if( this._dropped ) {
             var toSelect =   this._selected
@@ -612,7 +628,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
               this._setSelected( toSelect );
             }
           }
-          break;
+        break;
         case "Enter":
           evt.preventDefault();
         break;
@@ -658,8 +674,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
 
     _onTextBlur : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() && this._isModified ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
         req.send();
       }
@@ -676,8 +690,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     },
 
     _sendModifyText : function() {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( this );
       var req = org.eclipse.swt.Request.getInstance();
       req.send();
       this._isModified = false;

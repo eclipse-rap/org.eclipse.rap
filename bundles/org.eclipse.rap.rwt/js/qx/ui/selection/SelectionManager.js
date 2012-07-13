@@ -1450,7 +1450,6 @@ qx.Class.define("qx.ui.selection.SelectionManager",
       if (vKeyboardEvent.isAltPressed()) {
         return null;
       }
-
       // Handle event by key identifier
       switch(vKeyboardEvent.getKeyIdentifier())
       {
