@@ -20,6 +20,8 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.internal.provisional.action.IToolBarManager2;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.CoolBar;
@@ -84,6 +86,9 @@ public class CoolBarManager extends ContributionManager implements
         this();
         Assert.isNotNull(coolBar);
         this.coolBar = coolBar;
+// RAP [if] Text size determination resize listener - see bug 378752
+        addCoolBarResizeListener();
+// ENDRAP
         itemStyle = coolBar.getStyle();
     }
 
@@ -244,10 +249,27 @@ public class CoolBarManager extends ContributionManager implements
             coolBar = new CoolBar(parent, itemStyle);
             coolBar.setMenu(getContextMenuControl());
             coolBar.setLocked(false);
+// RAP [if] Text size determination resize listener - see bug 378752
+            addCoolBarResizeListener();
+// ENDRAP
             update(false);
         }
         return coolBar;
     }
+
+// RAP [if] Text size determination resize listener - see bug 378752
+    private void addCoolBarResizeListener() {
+      coolBar.addControlListener( new ControlAdapter() {
+        public void controlResized( ControlEvent event ) {
+          IContributionItem[] items = getItems();
+          for( int i = 0; i < items.length; i++ ) {
+            IContributionItem item = items[ i ];
+            item.update( SIZE );
+          }
+        }
+      } );
+    }
+// ENDRAP
 
     /**
      * Disposes of this cool bar manager and frees all allocated SWT resources.
