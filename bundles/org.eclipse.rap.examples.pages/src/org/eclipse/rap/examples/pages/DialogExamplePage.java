@@ -29,6 +29,7 @@ import org.eclipse.rwt.widgets.DialogUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
@@ -487,7 +488,12 @@ public class DialogExamplePage implements IExamplePage {
     final FontDialog dialog = new FontDialog( getShell(), SWT.SHELL_TRIM );
     DialogUtil.open( dialog, new DialogCallback() {
       public void dialogClosed( int returnCode ) {
-        showResult( "Result: " + dialog.getFontList()[ 0 ] + " / " + dialog.getRGB() );
+        FontData[] fontList = dialog.getFontList();
+        FontData fontData = null;
+        if( fontList != null ) {
+          fontData = fontList[ 0 ];
+        }
+        showResult( "Result: " + fontData + " / " + dialog.getRGB() );
       }
     } );
   }
