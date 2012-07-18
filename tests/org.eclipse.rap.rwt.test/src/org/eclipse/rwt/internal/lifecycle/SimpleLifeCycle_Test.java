@@ -228,7 +228,7 @@ public class SimpleLifeCycle_Test extends TestCase {
       lifeCycle.sleep();
       fail();
     } catch( UnsupportedOperationException expected ) {
-      assertTrue( expected.getMessage().length() > 0 );
+      assertTrue( expected.getMessage().contains( "Display#sleep()" ) );
     }
   }
 

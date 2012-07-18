@@ -153,7 +153,7 @@ public class SimpleLifeCycle extends LifeCycle {
 
   @Override
   public void sleep() {
-    String msg = "The JEE compatibility mode does not support Display#sleep().";
+    String msg = "Display#sleep() not supported in current operation mode.";
     throw new UnsupportedOperationException( msg );
   }
 
