@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Cluster Testfixture
 Bundle-SymbolicName: org.eclipse.rap.rwt.cluster.testfixture
-Bundle-Version: 1.5.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-Vendor: Eclipse.org - RAP
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: javax.servlet;version="[2.6.0,4.0.0)",
@@ -34,20 +34,20 @@ Import-Package: javax.servlet;version="[2.6.0,4.0.0)",
  org.eclipse.jetty.util.component;version="[8.0.0,9.0.0)",
  org.eclipse.jetty.util.log;version="[8.0.0,9.0.0)",
  org.eclipse.jetty.util.resource;version="[8.0.0,9.0.0)",
- org.eclipse.rwt.application,
- org.eclipse.rwt.engine,
- org.eclipse.rwt.internal.application,
- org.eclipse.rwt.internal.lifecycle,
- org.eclipse.rwt.internal.service,
- org.eclipse.rwt.internal.uicallback,
- org.eclipse.rwt.lifecycle,
- org.eclipse.rwt.service,
+ org.eclipse.rwt.application;version="[2.0.0,3.0.0)",
+ org.eclipse.rwt.engine;version="[2.0.0,3.0.0)",
+ org.eclipse.rwt.internal.application;version="[2.0.0,3.0.0)",
+ org.eclipse.rwt.internal.lifecycle;version="[2.0.0,3.0.0)",
+ org.eclipse.rwt.internal.service;version="[2.0.0,3.0.0)",
+ org.eclipse.rwt.internal.uicallback;version="[2.0.0,3.0.0)",
+ org.eclipse.rwt.lifecycle;version="[2.0.0,3.0.0)",
+ org.eclipse.rwt.service;version="[2.0.0,3.0.0)",
  org.eclipse.swt.dnd,
  org.eclipse.swt.widgets,
  org.h2;version="[1.1.0,2.0.0)",
  org.h2.tools;version="[1.1.0,2.0.0)"
-Export-Package: org.eclipse.rap.rwt.cluster.testfixture;version="1.5.0",
- org.eclipse.rap.rwt.cluster.testfixture.client;version="1.5.0",
- org.eclipse.rap.rwt.cluster.testfixture.internal.jetty;version="1.5.0";x-internal:=true,
- org.eclipse.rap.rwt.cluster.testfixture.internal.util;version="1.5.0";x-internal:=true,
- org.eclipse.rap.rwt.cluster.testfixture.server;version="1.5.0"
+Export-Package: org.eclipse.rap.rwt.cluster.testfixture;version="2.0.0",
+ org.eclipse.rap.rwt.cluster.testfixture.client;version="2.0.0",
+ org.eclipse.rap.rwt.cluster.testfixture.internal.jetty;version="2.0.0";x-internal:=true,
+ org.eclipse.rap.rwt.cluster.testfixture.internal.util;version="2.0.0";x-internal:=true,
+ org.eclipse.rap.rwt.cluster.testfixture.server;version="2.0.0"

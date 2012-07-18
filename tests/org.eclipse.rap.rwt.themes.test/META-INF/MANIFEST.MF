@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.rwt.themes.test
-Bundle-Version: 1.5.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.junit,
- org.eclipse.rap.design.example;bundle-version="1.5.0",
- org.eclipse.rap.rwt;bundle-version="1.5.0"
+ org.eclipse.rap.design.example;bundle-version="[1.5.100,2.0.0)",
+ org.eclipse.rap.rwt;bundle-version="[2.0.0,3.0.0)"
 Bundle-Vendor: %Bundle-Vendor
 Export-Package: org.eclipse.rap.rwt.themes.test;x-internal:=true,
  org.eclipse.rap.rwt.themes.test.business;x-internal:=true
-Import-Package: org.eclipse.rap.rwt.testfixture,
- org.eclipse.rap.rwt.testfixture.internal.engine
+Import-Package: org.eclipse.rap.rwt.testfixture;version="[2.0.0,3.0.0)",
+ org.eclipse.rap.rwt.testfixture.internal.engine;version="[2.0.0,3.0.0)"
