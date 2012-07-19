@@ -17,11 +17,11 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.widgets.BrowserCallback;
 import org.eclipse.rwt.widgets.BrowserUtil;

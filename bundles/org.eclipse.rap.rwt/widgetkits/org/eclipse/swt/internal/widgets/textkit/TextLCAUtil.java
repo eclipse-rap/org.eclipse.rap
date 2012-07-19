@@ -17,9 +17,9 @@ import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 
-import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.internal.util.NumberFormatUtil;
+import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;

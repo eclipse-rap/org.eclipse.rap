@@ -14,12 +14,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.resources.SystemProps;
+import org.eclipse.rap.rwt.internal.resources.TestUtil;
+import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.resources.SystemProps;
-import org.eclipse.rwt.internal.resources.TestUtil;
-import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.resources.IResourceManager;
 
 

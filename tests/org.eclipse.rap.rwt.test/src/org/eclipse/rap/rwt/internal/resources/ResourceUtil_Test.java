@@ -1,0 +1,131 @@
+/*******************************************************************************
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ ******************************************************************************/
+package org.eclipse.rap.rwt.internal.resources;
+
+import java.io.*;
+
+import junit.framework.TestCase;
+
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.resources.JSLibraryConcatenator;
+import org.eclipse.rap.rwt.internal.resources.ResourceUtil;
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.resources.IResourceManager;
+
+
+public class ResourceUtil_Test extends TestCase {
+
+  public void testCompress() {
+    StringBuilder javaScript = new StringBuilder(
+        "/********************************************************\n"
+      + "* Copyright (c) 2008 Innoopract Informationssysteme GmbH.\n"
+      + "********************************************************/\n"
+      + "\n"
+      + "qx.Class.define( \"org.eclipse.swt.widgets.Test\", {\n"
+      + "  extend : qx.ui.layout.CanvasLayout,\n"
+      + "\n"
+      + "  construct : function( style ) {\n"
+      + "    this.base( arguments );\n"
+      + "  },\n"
+      + "\n"
+      + "  members : {\n"
+      + "    // TODO: Fix me\n"
+      + "    setValue : function( value ) {\n"
+      + "      this._value = value;\n"
+      + "      this._url = \"http://www.eclipse.org\";\n"
+      + "      this._comment = \"/* This is a comment inside string*/\";\n"
+      + "    }\n"
+      + "  }\n"
+      + "} );"
+    );
+    String expected
+      = "qx.Class.define(\"org.eclipse.swt.widgets.Test\",{"
+      + "extend:qx.ui.layout.CanvasLayout,"
+      + "construct:function(a){"
+      + "arguments.callee.base.call(this)"
+      + "},"
+      + "members:{"
+      + "setValue:function(a){"
+      + "this._value=a;"
+      + "this._url=\"http://www.eclipse.org\";"
+      + "this._comment=\"/* This is a comment inside string*/\""
+      + "}}});";
+    try {
+      ResourceUtil.compress( javaScript );
+    } catch( IOException e ) {
+      fail( "Should not throw exception" );
+    }
+    assertEquals( expected, javaScript.toString() );
+  }
+
+  public void testConcatenationEmpty() {
+    IResourceManager resourceManager = RWTFactory.getResourceManager();
+    JSLibraryConcatenator jsConcatenator = new JSLibraryConcatenator( resourceManager );
+
+    jsConcatenator.startJSConcatenation();
+
+    byte[] result = jsConcatenator.readContent();
+    assertEquals( 0, result.length );
+  }
+
+  public void testConcatenation() throws IOException {
+    JSLibraryConcatenator jsConcatenator = RWTFactory.getJSLibraryConcatenator();
+
+    jsConcatenator.startJSConcatenation();
+    File file = File.createTempFile( "test", ".js" );
+    ResourceUtil.write( file, "foo".getBytes( "UTF-8" ) );
+    ResourceUtil.write( file, "bar".getBytes( "UTF-8" ) );
+
+    byte[] result = jsConcatenator.readContent();
+    assertEquals( "foo\nbar\n", new String( result ) );
+  }
+
+  public void testReadText() throws IOException {
+    String input = createTestString( 10000 );
+    InputStream inputStream = new ByteArrayInputStream( input.getBytes( "UTF-8" ) );
+
+    byte[] result = ResourceUtil.readText( inputStream, "UTF-8", false );
+
+    assertEquals( input, new String( result, "UTF-8" ) );
+  }
+
+  public void testWriteText() throws IOException {
+    String input = createTestString( 10000 );
+    byte[] content = input.getBytes( "UTF-8" );
+    File tempFile = File.createTempFile( "rap-", ".test" );
+    tempFile.deleteOnExit();
+
+    ResourceUtil.write( tempFile, content );
+
+    byte[] result = ResourceUtil.readText( new FileInputStream( tempFile ), "UTF-8", false );
+    assertEquals( input, new String( result, "UTF-8" ) );
+  }
+
+  private static String createTestString( int length ) {
+    StringBuilder buffer = new StringBuilder( length );
+    buffer.append( 'Ü' );
+    for( int i = 1; i < length; i++ ) {
+      buffer.append( ( char )( 32 + ( i % 32 ) ) );
+    }
+    return buffer.toString();
+  }
+
+  protected void setUp() throws Exception {
+    Fixture.createApplicationContext();
+    Fixture.createServiceContext();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfApplicationContext();
+  }
+}

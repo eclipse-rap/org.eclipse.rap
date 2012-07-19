@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.widgets;
 
-import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 

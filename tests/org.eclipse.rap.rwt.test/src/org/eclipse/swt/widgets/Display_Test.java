@@ -21,12 +21,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.custom.CTabFolder;

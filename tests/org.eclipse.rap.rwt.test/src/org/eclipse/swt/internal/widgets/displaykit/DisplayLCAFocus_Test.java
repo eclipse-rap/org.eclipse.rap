@@ -13,10 +13,10 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;

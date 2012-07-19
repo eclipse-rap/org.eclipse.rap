@@ -14,8 +14,8 @@ package org.eclipse.rwt.service;
 import java.io.*;
 import java.util.*;
 
-import org.eclipse.rwt.internal.service.ServletLog;
-import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.internal.service.ServletLog;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 /**
  * This {@link ISettingStore} implementation persists all settings on the

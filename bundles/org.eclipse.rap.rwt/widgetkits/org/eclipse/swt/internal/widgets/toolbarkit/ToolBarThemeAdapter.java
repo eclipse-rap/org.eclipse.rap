@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.toolbarkit;
 
-import org.eclipse.rwt.internal.theme.WidgetMatcher;
+import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;

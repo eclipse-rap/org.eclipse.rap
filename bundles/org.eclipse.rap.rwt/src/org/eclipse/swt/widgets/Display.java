@@ -19,14 +19,14 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.*;
+import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ServletLog;
+import org.eclipse.rap.rwt.internal.theme.*;
+import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.ServletLog;
-import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;

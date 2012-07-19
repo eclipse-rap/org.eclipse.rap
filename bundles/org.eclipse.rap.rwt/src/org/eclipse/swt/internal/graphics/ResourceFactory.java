@@ -12,8 +12,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import org.eclipse.rwt.internal.util.*;
-import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
+import org.eclipse.rap.rwt.internal.util.*;
+import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.swt.graphics.*;
 
 

@@ -10,10 +10,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tabfolderkit;
 
-import org.eclipse.rwt.internal.theme.QxBoxDimensions;
-import org.eclipse.rwt.internal.theme.QxType;
-import org.eclipse.rwt.internal.theme.SimpleSelector;
-import org.eclipse.rwt.internal.theme.ThemeUtil;
+import org.eclipse.rap.rwt.internal.theme.QxBoxDimensions;
+import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
+import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.TabFolder;

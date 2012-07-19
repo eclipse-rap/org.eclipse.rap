@@ -14,12 +14,12 @@ package org.eclipse.swt.internal.widgets;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
+import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
+import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
+import org.eclipse.rap.rwt.internal.protocol.ClientObjectAdapter;
+import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.internal.lifecycle.DisposedWidgets;
-import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
-import org.eclipse.rwt.internal.lifecycle.UITestUtil;
-import org.eclipse.rwt.internal.protocol.ClientObjectAdapter;
-import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Widget;

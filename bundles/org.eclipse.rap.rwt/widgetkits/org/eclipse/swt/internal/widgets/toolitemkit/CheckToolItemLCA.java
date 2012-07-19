@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.widgets.ToolItem;
 

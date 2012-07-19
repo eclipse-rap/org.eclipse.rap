@@ -15,8 +15,8 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;

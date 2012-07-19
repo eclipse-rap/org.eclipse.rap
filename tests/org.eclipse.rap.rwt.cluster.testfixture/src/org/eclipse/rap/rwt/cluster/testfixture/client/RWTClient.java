@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler;
+import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.swt.dnd.Transfer;
 

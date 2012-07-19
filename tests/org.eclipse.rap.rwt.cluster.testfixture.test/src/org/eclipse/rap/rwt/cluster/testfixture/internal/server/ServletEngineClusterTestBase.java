@@ -17,7 +17,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineCluster;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
 import org.eclipse.rap.rwt.cluster.testfixture.test.TestEntryPoint;
-import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
+import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
 
 
 @SuppressWarnings("restriction")

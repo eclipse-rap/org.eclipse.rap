@@ -10,9 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rwt.widgets;
 
+import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.rwt.internal.widgets.fileuploadkit.FileUploadThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;

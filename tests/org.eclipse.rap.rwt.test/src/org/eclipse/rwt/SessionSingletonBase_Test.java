@@ -14,11 +14,11 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.SingletonManager;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ServiceContext;
+import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.internal.SingletonManager;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.ServiceContext;
-import org.eclipse.rwt.internal.service.SessionStoreImpl;
 
 
 public class SessionSingletonBase_Test extends TestCase {

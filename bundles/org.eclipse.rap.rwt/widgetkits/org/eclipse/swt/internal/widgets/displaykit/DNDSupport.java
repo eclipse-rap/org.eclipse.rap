@@ -14,9 +14,9 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.util.NumberFormatUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.dnd.*;

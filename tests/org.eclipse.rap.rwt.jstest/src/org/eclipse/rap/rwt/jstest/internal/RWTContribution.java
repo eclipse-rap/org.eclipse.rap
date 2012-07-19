@@ -16,11 +16,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.theme.QxAppearanceWriter;
+import org.eclipse.rap.rwt.internal.theme.Theme;
+import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.jstest.TestContribution;
-import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.theme.QxAppearanceWriter;
-import org.eclipse.rwt.internal.theme.Theme;
-import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.internal.widgets.displaykit.ClientResourcesAdapter;
 
 

@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.widgets;
 
-import org.eclipse.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.internal.widgets.IDialogAdapter;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.internal.widgets.IDialogAdapter;
 import org.eclipse.swt.widgets.Dialog;
 
 

@@ -25,11 +25,11 @@ import javax.servlet.ServletContext;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.branding.BrandingManager;
+import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.internal.application.ApplicationContext;
-import org.eclipse.rwt.internal.branding.BrandingManager;
-import org.eclipse.rwt.internal.lifecycle.TestEntryPoint;
 import org.mockito.ArgumentCaptor;
 
 

@@ -16,10 +16,10 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.application.ApplicationRunner;
 import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 

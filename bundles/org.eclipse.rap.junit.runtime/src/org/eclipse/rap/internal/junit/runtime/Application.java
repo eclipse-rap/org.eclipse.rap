@@ -12,9 +12,9 @@
 package org.eclipse.rap.internal.junit.runtime;
 
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rwt.lifecycle.UICallBack;

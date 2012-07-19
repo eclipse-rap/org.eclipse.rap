@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;

@@ -12,7 +12,7 @@
 package org.eclipse.swt;
 
 
-import org.eclipse.rwt.internal.RWTMessages;
+import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.swt.graphics.Cursor;
 
 

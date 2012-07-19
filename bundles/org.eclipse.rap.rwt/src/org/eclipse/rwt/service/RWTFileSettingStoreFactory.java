@@ -15,9 +15,9 @@ import java.io.File;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.ServletLog;
-import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ServletLog;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
 /**

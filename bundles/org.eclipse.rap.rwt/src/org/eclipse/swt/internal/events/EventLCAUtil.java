@@ -12,7 +12,7 @@ package org.eclipse.swt.internal.events;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
 
 

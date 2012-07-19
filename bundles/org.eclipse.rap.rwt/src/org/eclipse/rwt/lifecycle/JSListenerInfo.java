@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.lifecycle;
 
-import org.eclipse.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 
 
 /**

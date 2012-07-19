@@ -13,7 +13,7 @@ package org.eclipse.rwt.service;
 
 import java.util.EventObject;
 
-import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
 /**

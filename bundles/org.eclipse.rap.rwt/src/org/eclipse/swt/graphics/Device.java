@@ -13,10 +13,10 @@ package org.eclipse.swt.graphics;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.rwt.internal.util.SerializableLock;
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.theme.*;
+import org.eclipse.rap.rwt.internal.util.SerializableLock;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.SerializableCompatibility;

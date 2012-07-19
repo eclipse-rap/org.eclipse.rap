@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;

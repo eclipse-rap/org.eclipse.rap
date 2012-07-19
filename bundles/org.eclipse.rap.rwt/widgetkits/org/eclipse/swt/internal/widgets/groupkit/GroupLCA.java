@@ -13,8 +13,8 @@ package org.eclipse.swt.internal.widgets.groupkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Widget;

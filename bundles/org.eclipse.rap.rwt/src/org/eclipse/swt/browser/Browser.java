@@ -13,9 +13,9 @@ package org.eclipse.swt.browser;
 
 import java.util.*;
 
+import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
-import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rwt.service.IServiceStore;

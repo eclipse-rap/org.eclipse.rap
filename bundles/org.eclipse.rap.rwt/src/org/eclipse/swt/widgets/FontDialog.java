@@ -13,8 +13,8 @@ package org.eclipse.swt.widgets;
 
 import java.util.*;
 
+import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.widgets.DialogCallback;
 import org.eclipse.rwt.widgets.DialogUtil;
 import org.eclipse.swt.SWT;

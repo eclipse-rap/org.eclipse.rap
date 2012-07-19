@@ -16,9 +16,9 @@ import java.util.LinkedList;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
-import org.eclipse.rwt.internal.uicallback.UICallBackManager;
 
 
 public class TimerExecScheduler_Test extends TestCase {

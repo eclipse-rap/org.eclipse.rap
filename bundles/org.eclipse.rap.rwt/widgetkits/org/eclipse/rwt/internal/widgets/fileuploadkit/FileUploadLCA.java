@@ -17,9 +17,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.internal.widgets.IFileUploadAdapter;
+import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.widgets.FileUpload;
 import org.eclipse.swt.events.SelectionEvent;

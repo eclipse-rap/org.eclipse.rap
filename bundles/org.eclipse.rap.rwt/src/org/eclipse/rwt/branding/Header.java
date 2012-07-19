@@ -13,7 +13,7 @@ package org.eclipse.rwt.branding;
 
 import java.util.Map;
 
-import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
 /**

@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
-import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rap.rwt.internal.theme.*;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;

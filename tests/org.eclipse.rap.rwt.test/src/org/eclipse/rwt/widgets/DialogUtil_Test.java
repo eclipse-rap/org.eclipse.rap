@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.internal.widgets.IDialogAdapter;
+import org.eclipse.rap.rwt.internal.widgets.IDialogAdapter;
 import org.eclipse.swt.widgets.Dialog;
 
 

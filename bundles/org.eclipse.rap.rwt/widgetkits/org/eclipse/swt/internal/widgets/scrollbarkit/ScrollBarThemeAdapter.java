@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.scrollbarkit;
 
-import org.eclipse.rwt.internal.theme.AbstractThemeAdapter;
-import org.eclipse.rwt.internal.theme.WidgetMatcher;
+import org.eclipse.rap.rwt.internal.theme.AbstractThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.ScrollBar;
 

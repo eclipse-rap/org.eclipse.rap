@@ -16,11 +16,12 @@ import java.lang.reflect.Field;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.util.NumberFormatUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
+import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.*;
@@ -29,7 +30,6 @@ import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.swt.widgets.*;
 
 

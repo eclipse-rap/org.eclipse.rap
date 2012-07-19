@@ -13,9 +13,9 @@ package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;

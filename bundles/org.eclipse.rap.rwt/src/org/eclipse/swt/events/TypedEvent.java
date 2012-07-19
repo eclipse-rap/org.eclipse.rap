@@ -14,9 +14,9 @@ package org.eclipse.swt.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rwt.internal.events.Event;
-import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
-import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.events.Event;
+import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
