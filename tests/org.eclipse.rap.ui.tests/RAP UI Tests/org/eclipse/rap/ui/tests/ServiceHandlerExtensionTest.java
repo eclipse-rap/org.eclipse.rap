@@ -20,16 +20,16 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.ui.tests.impl.ServiceHandler1;
 import org.eclipse.rap.ui.tests.impl.ServiceHandler2;
-import org.eclipse.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.service.IServiceHandler;
 
 public class ServiceHandlerExtensionTest extends TestCase {
-  
+
   public static String log = "";
-  
+
   public void testServiceHandler1Registration() throws IOException, ServletException {
     Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, "myHandler1" );
-    
+
     RWTFactory.getServiceManager().getHandler().service();
 
     assertEquals( log, ServiceHandler1.class.getName() );
@@ -37,7 +37,7 @@ public class ServiceHandlerExtensionTest extends TestCase {
 
   public void testServiceHandler2Registration() throws IOException, ServletException {
     Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, "myHandler2" );
-    
+
     RWTFactory.getServiceManager().getHandler().service();
 
     assertEquals( log, ServiceHandler2.class.getName() );
@@ -47,7 +47,7 @@ public class ServiceHandlerExtensionTest extends TestCase {
     Fixture.fakeNewRequest();
     log = "";
   }
-  
+
   protected void tearDown() {
     Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, null );
     log = "";

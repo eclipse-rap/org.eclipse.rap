@@ -14,11 +14,11 @@ package org.eclipse.rap.ui.tests;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.ui.tests.resources.*;
-import org.eclipse.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.resources.IResource;
 
 public class RWTConfigurationWrapper extends TestCase {
-  
+
   public void testRegisterResourcesWithDependencies() {
     IResource[] resources = RWTFactory.getResourceRegistry().get();
     int resource1Index = -1;
