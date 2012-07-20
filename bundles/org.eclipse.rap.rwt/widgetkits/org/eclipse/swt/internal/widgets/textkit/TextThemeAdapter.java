@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.textkit;
 
-import org.eclipse.rwt.internal.theme.WidgetMatcher;
-import org.eclipse.rwt.internal.theme.WidgetMatcher.Constraint;
+import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
+import org.eclipse.rap.rwt.internal.theme.WidgetMatcher.Constraint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Text;

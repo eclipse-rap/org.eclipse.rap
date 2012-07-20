@@ -11,7 +11,7 @@
 package org.eclipse.ui;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.internal.Workbench;

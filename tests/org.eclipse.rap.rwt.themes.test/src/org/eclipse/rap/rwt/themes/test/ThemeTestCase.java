@@ -15,15 +15,15 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
+import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
+import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
+import org.eclipse.rap.rwt.internal.theme.css.IStylePropertyMap;
+import org.eclipse.rap.rwt.internal.theme.css.SelectorExt;
+import org.eclipse.rap.rwt.internal.theme.css.StyleRule;
+import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.internal.theme.QxType;
-import org.eclipse.rwt.internal.theme.SimpleSelector;
-import org.eclipse.rwt.internal.theme.ThemeUtil;
-import org.eclipse.rwt.internal.theme.css.CssFileReader;
-import org.eclipse.rwt.internal.theme.css.IStylePropertyMap;
-import org.eclipse.rwt.internal.theme.css.SelectorExt;
-import org.eclipse.rwt.internal.theme.css.StyleRule;
-import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.resources.ResourceLoader;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SelectorList;

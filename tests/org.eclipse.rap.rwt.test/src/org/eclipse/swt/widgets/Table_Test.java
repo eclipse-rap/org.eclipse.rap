@@ -15,10 +15,10 @@ import java.util.LinkedList;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
@@ -2543,7 +2543,7 @@ public class Table_Test extends TestCase {
 
   private void markTemporaryResize() {
     IServiceStore serviceStore = ContextProvider.getServiceStore();
-    String key = "org.eclipse.rwt.internal.textsize.TextSizeRecalculation#temporaryResize";
+    String key = "org.eclipse.rap.rwt.internal.textsize.TextSizeRecalculation#temporaryResize";
     serviceStore.setAttribute( key, Boolean.TRUE );
   }
 

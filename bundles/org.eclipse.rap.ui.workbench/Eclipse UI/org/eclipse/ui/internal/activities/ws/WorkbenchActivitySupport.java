@@ -20,7 +20,7 @@ import org.eclipse.jface.action.IContributionManager;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.rwt.internal.branding.BrandingUtil;
+import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.ui.*;
 import org.eclipse.ui.activities.*;

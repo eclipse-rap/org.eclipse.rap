@@ -17,12 +17,12 @@ import javax.servlet.http.HttpSessionBindingListener;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.ui.internal.progress.JobCanceler;
 import org.eclipse.rap.ui.internal.progress.ProgressUtil;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.SessionSingletonBase;
-import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;

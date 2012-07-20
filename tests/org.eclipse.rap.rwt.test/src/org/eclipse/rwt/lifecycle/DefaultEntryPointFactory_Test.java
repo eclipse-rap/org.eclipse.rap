@@ -13,7 +13,7 @@ package org.eclipse.rwt.lifecycle;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.internal.lifecycle.TestEntryPoint;
+import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 
 
 public class DefaultEntryPointFactory_Test extends TestCase {

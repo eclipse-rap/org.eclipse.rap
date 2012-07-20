@@ -15,8 +15,8 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;

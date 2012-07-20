@@ -16,6 +16,8 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -23,8 +25,7 @@ import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rwt.internal.widgets.IFileUploadAdapter;
+import org.eclipse.rwt.internal.widgets.fileuploadkit.FileUploadLCA;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rwt.widgets.FileUpload;
@@ -50,6 +51,7 @@ public class FileUploadLCA_Test extends TestCase {
   private FileUpload fileUpload;
   private FileUploadLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -59,6 +61,7 @@ public class FileUploadLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -102,6 +105,7 @@ public class FileUploadLCA_Test extends TestCase {
   public void testFireSelectionEvent() {
     final List<SelectionEvent> eventLog = new ArrayList<SelectionEvent>();
     fileUpload.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         eventLog.add( event );
       }
@@ -167,6 +171,7 @@ public class FileUploadLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( fileUpload, "text" ) );
   }
+
   public void testRenderInitialImage() throws IOException {
     lca.renderChanges( fileUpload );
 

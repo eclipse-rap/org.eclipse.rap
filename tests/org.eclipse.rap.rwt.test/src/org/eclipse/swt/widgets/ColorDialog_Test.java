@@ -12,8 +12,8 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 

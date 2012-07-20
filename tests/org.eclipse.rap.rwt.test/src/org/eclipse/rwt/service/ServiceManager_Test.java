@@ -15,8 +15,8 @@ package org.eclipse.rwt.service;
 import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.service.ServiceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.internal.service.ServiceManager;
 
 
 public class ServiceManager_Test extends TestCase {

@@ -15,8 +15,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.widgets.IDialogAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.internal.widgets.IDialogAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.widgets.DialogCallback;
 import org.eclipse.swt.SWT;

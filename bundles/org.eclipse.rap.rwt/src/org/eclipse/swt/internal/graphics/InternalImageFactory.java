@@ -19,9 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.CRC32;
 
+import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
+import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.util.SharedInstanceBuffer;
-import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.ImageData;

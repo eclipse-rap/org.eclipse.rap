@@ -12,8 +12,8 @@ package org.eclipse.rap.ui.internal.preferences;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.*;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.*;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.service.prefs.Preferences;

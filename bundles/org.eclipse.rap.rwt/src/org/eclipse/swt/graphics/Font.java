@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.swt.*;
 
 

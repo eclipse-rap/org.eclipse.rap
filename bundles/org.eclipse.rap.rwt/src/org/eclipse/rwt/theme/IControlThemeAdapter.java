@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.theme;
 
-import org.eclipse.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Control;
 

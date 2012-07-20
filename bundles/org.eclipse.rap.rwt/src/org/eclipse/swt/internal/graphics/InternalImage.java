@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;

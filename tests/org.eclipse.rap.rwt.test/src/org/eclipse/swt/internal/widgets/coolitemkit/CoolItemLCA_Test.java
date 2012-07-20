@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.coolitemkit;
 
-import static org.eclipse.rwt.internal.resources.TestUtil.assertArrayEquals;
+import static org.eclipse.rap.rwt.internal.resources.TestUtil.assertArrayEquals;
 
 import java.io.IOException;
 

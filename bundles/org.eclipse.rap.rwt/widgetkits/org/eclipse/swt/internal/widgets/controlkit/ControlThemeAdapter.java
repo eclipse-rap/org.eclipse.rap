@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.controlkit;
 
-import org.eclipse.rwt.internal.theme.AbstractThemeAdapter;
-import org.eclipse.rwt.internal.theme.WidgetMatcher;
+import org.eclipse.rap.rwt.internal.theme.AbstractThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;

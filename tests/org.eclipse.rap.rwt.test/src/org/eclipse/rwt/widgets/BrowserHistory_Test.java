@@ -13,6 +13,7 @@ package org.eclipse.rwt.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -20,7 +21,6 @@ import org.eclipse.rwt.IBrowserHistory;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rwt.events.BrowserHistoryListener;
-import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.widgets.Display;

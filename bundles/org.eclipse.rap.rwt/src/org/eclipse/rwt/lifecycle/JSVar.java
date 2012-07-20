@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.lifecycle;
 
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.IServiceStore;
 
 

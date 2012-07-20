@@ -13,8 +13,8 @@ package org.eclipse.rwt.lifecycle;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
-import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.IServiceStore;
 
 

@@ -13,8 +13,8 @@ package org.eclipse.rap.demo.controls;
 
 import javax.servlet.http.HttpSession;
 
+import org.eclipse.rap.rwt.internal.widgets.JSExecutor;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.widgets.JSExecutor;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;

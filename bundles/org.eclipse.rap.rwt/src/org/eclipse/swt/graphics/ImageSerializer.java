@@ -12,9 +12,9 @@ package org.eclipse.swt.graphics;
 
 import java.io.*;
 
-import org.eclipse.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rwt.internal.engine.*;
-import org.eclipse.rwt.internal.resources.ResourceUtil;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
+import org.eclipse.rap.rwt.internal.engine.*;
+import org.eclipse.rap.rwt.internal.resources.ResourceUtil;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;

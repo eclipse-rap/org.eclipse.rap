@@ -18,11 +18,11 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
+import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
+import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.internal.application.ApplicationContext;
-import org.eclipse.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
-import org.eclipse.rwt.internal.util.ParamCheck;
 
 
 /**

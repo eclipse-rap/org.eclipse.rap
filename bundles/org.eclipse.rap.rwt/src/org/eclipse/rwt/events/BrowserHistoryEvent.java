@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.events;
 
+import org.eclipse.rap.rwt.internal.events.Event;
 import org.eclipse.rwt.*;
-import org.eclipse.rwt.internal.events.Event;
 
 
 /**

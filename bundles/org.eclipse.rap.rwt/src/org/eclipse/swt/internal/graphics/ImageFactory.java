@@ -13,12 +13,12 @@ package org.eclipse.swt.internal.graphics;
 
 import java.io.InputStream;
 
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.util.ClassUtil;
+import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
+import org.eclipse.rap.rwt.internal.util.StreamUtil;
+import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.util.ClassUtil;
-import org.eclipse.rwt.internal.util.SharedInstanceBuffer;
-import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
-import org.eclipse.rwt.internal.util.StreamUtil;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 

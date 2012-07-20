@@ -73,7 +73,7 @@ qx.Class.define("org.eclipse.rwt.test.Asserts", {
     fail : function() {
       org.eclipse.rwt.test.TestRunner.getInstance()._handleException( new Error( "fail()" ) );
     },
-    
+
     assertTrue : function() {
       var args = org.eclipse.rwt.test.Asserts._getArguments( arguments, false );
       var failed = ( args.actual !== true );
@@ -85,7 +85,7 @@ qx.Class.define("org.eclipse.rwt.test.Asserts", {
        args.message
       );
     },
-    
+
     assertFalse : function() {
       var args = org.eclipse.rwt.test.Asserts._getArguments( arguments, false );
       var failed = ( args.actual !== false );
@@ -94,10 +94,10 @@ qx.Class.define("org.eclipse.rwt.test.Asserts", {
        false,
        args.actual,
        failed,
-       args.message 
+       args.message
       );
     },
-    
+
     assertNull : function() {
       var args = org.eclipse.rwt.test.Asserts._getArguments( arguments, false );
       var failed = ( args.actual !== null );
@@ -106,7 +106,7 @@ qx.Class.define("org.eclipse.rwt.test.Asserts", {
        null,
        args.actual,
        failed,
-       args.message 
+       args.message
       );
     },
 
@@ -118,20 +118,20 @@ qx.Class.define("org.eclipse.rwt.test.Asserts", {
        undefined,
        args.actual,
        failed,
-       args.message 
+       args.message
       );
     },
-    
-    assertEquals : function() {      
+
+    assertEquals : function() {
       var args = org.eclipse.rwt.test.Asserts._getArguments( arguments, true );
       var failed = false;
-      var expectedIsObject 
+      var expectedIsObject
         = typeof args.expected == "object" && args.expected != null;
-      var actualIsObject 
+      var actualIsObject
         = typeof args.actual == "object" && args.actual != null;
       if( actualIsObject || expectedIsObject ) {
         if( actualIsObject && expectedIsObject ) {
-          var diffs = org.eclipse.rwt.test.Asserts._getObjectsDiff( 
+          var diffs = org.eclipse.rwt.test.Asserts._getObjectsDiff(
             args.expected,
             args.actual
           );
@@ -144,74 +144,74 @@ qx.Class.define("org.eclipse.rwt.test.Asserts", {
       }
       org.eclipse.rwt.test.TestRunner.getInstance().processAssert(
        "assertEquals",
-       args.expected, 
+       args.expected,
        args.actual,
        failed,
        args.message
       );
     },
-    
+
     assertIdentical : function() {
       var args = org.eclipse.rwt.test.Asserts._getArguments( arguments, true );
       var failed = ( args.actual !== args.expected );
       org.eclipse.rwt.test.TestRunner.getInstance().processAssert(
        "assertIdentical",
-       args.expected, 
+       args.expected,
        args.actual,
        failed,
        args.message
       );
     },
-    
+
     assertContains : function() {
       var args = org.eclipse.rwt.test.Asserts._getArguments( arguments, true );
-      var failed = !(    args.actual.indexOf 
+      var failed = !(    args.actual.indexOf
                       && args.actual.indexOf( args.expected ) != -1 );
       org.eclipse.rwt.test.TestRunner.getInstance().processAssert(
        "assertContains",
-       args.expected, 
+       args.expected,
        args.actual,
        failed,
        args.message
       );
     },
-    
+
     assertContainsNot : function() {
       var args = org.eclipse.rwt.test.Asserts._getArguments( arguments, true );
-      var failed = (    args.actual.indexOf 
+      var failed = (    args.actual.indexOf
                      && args.actual.indexOf( args.expected ) != -1 );
       org.eclipse.rwt.test.TestRunner.getInstance().processAssert(
        "assertContainsNot",
-       args.expected, 
+       args.expected,
        args.actual,
        failed,
        args.message
       );
     },
-    
+
     assertLarger : function() {
       var args = org.eclipse.rwt.test.Asserts._getArguments( arguments, true );
       var failed = ( args.actual <= args.expected );
       org.eclipse.rwt.test.TestRunner.getInstance().processAssert(
        "assertLarger",
-       args.expected, 
+       args.expected,
        args.actual,
        failed,
        args.message
       );
     },
-    
+
     assertSmaller: function() {
       var args = org.eclipse.rwt.test.Asserts._getArguments( arguments, true );
       var failed = ( args.actual >= args.expected );
       org.eclipse.rwt.test.TestRunner.getInstance().processAssert(
        "assertSmaller",
-       args.expected, 
+       args.expected,
        args.actual,
        failed,
        args.message
       );
     }
-    
+
   }
 });

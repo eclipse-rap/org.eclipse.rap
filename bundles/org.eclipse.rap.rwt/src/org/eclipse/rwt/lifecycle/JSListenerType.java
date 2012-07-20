@@ -13,7 +13,7 @@ package org.eclipse.rwt.lifecycle;
 
 import java.util.*;
 
-import org.eclipse.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 
 
 /**

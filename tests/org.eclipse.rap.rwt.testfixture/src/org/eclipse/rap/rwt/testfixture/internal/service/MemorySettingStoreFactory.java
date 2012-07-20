@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture.internal.service;
 
-import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.*;
 
 

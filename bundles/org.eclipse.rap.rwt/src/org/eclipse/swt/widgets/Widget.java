@@ -11,13 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.events.EventAdapter;
+import org.eclipse.rap.rwt.internal.events.IEventAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
+import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
+import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.events.EventAdapter;
-import org.eclipse.rwt.internal.events.IEventAdapter;
-import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory;
-import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
-import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
