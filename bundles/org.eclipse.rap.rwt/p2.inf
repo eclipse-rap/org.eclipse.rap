@@ -1,3 +1,4 @@
+# Prevent installation if other IU is already installed with a negative requirement.
 requires.0.name = org.eclipse.swt
 requires.0.namespace = org.eclipse.equinox.p2.iu
 requires.0.min = 0
