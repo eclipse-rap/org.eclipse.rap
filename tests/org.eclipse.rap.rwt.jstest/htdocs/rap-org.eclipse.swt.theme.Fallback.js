@@ -1,8 +1,7 @@
-/* 
-  NOTE : delete this file after fixing 
-  Bug 378225 - [ipad] JavaScript tests not working when using jetty/ClientResourcesServiceHandler  
+/*
+  NOTE : delete this file after fixing
+  Bug 378225 - [ipad] JavaScript tests not working when using jetty/ClientResourcesServiceHandler
 */
-
 ( function( ts ) {
 ts.defineValues( {
 "colors": {
@@ -25,7 +24,8 @@ ts.defineValues( {
 "3fe4f000": "#0080c0",
 "3ff48b00": "#808080",
 "3fefb044": "#5882b5",
-"40009eb8": "#dedede"
+"40009eb8": "#dedede",
+"3fe41900": "#000000"
 },
 "images": {
 "994dccc6": [ 32, 32 ],
@@ -106,6 +106,12 @@ ts.defineValues( {
 "size": 14,
 "bold": true,
 "italic": false
+},
+"e7de1195": {
+"family": [ "Segoe UI", "Corbel", "Calibri", "Tahoma", "Lucida Sans Unicode", "sans-serif" ],
+"size": 11,
+"bold": false,
+"italic": false
 }
 },
 "borders": {
@@ -136,6 +142,11 @@ ts.defineValues( {
 },
 "5fbe2ff": {
 "width": 1,
+"style": "inset",
+"color": null
+},
+"5fbe325": {
+"width": 2,
 "style": "inset",
 "color": null
 }
@@ -469,6 +480,7 @@ ts.setThemeCssValues( "org.eclipse.swt.theme.Fallback", {
 "padding": [ [ [], "bf374b8e" ] ]
 },
 "Tree": {
+"font": [ [ [], "3a7cfc11" ] ],
 "color": [ [ [ ":disabled" ], "3ffeb15c" ], [ [], "3fed9ae8" ] ],
 "background-color": [ [ [], "4004dc1c" ] ],
 "border": [ [ [ "[BORDER" ], "dee0ab31" ], [ [], "36a" ] ]
@@ -755,6 +767,12 @@ ts.setThemeCssValues( "org.eclipse.swt.theme.Fallback", {
 "background-image": [ [ [], "2d244d58" ] ],
 "cursor": [ [ [], "5c13d641" ] ]
 },
+"FormText": {
+"color": [ [ [], "3fe41900" ] ],
+"background-color": [ [ [], "4004dc1c" ] ],
+"font": [ [ [], "e7de1195" ] ],
+"border": [ [ [ "[BORDER" ], "5fbe325" ], [ [], "36a" ] ]
+},
 "ScrollBar-UpButton-Icon": {
 "background-image": [ [ [], "a505df1b" ] ]
 },
@@ -792,7 +810,8 @@ ts.setThemeCssValues( "org.eclipse.swt.theme.Fallback", {
 "background-image": [ [ [], "a505df1b" ] ],
 "padding": [ [ [], "2144df1c" ] ],
 "opacity": [ [ [], "1.0" ] ],
-"box-shadow": [ [ [], "306900d" ] ]
+"box-shadow": [ [ [], "306900d" ] ],
+"animation": [ [ [], "7" ] ]
 },
 "MenuItem-RadioIcon": {
 "background-image": [ [ [], "d218be7e" ] ]

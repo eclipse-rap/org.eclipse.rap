@@ -1,6 +1,6 @@
-/* 
-  NOTE : delete this file after fixing 
-  Bug 378225 - [ipad] JavaScript tests not working when using jetty/ClientResourcesServiceHandler  
+/*
+  NOTE : delete this file after fixing
+  Bug 378225 - [ipad] JavaScript tests not working when using jetty/ClientResourcesServiceHandler
 */
 
 qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
@@ -113,7 +113,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   },
 
   // this applies to a qooxdoo qx.ui.basic.Atom that represents an RWT Label
-  
+
 
   "htmlcontainer" : {
     include : "label"
@@ -121,7 +121,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "popup" : {
   },
-  
+
   "iframe" : {
     style : function( states ) {
       return { };
@@ -649,7 +649,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
       return result;
     }
   },
-  
+
   "separator" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
@@ -1356,97 +1356,130 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   }
 ,
 
-  "tree" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        backgroundColor : tv.getCssColor( "Tree", "background-color" ),
-        textColor : tv.getCssColor( "Tree", "color" ),
-        font : tv.getCssFont( "*", "font" ),
-        border : tv.getCssBorder( "Tree", "border" )
-      };
-    }
-  },
+"tree" : {
+  style : function( states ) {
+    var tv = new org.eclipse.swt.theme.ThemeValues( states );
+    return {
+      backgroundColor : tv.getCssColor( "Tree", "background-color" ),
+      textColor : tv.getCssColor( "Tree", "color" ),
+      font : tv.getCssFont( "Tree", "font" ),
+      border : tv.getCssBorder( "Tree", "border" )
+    };
+  }
+},
 
-  "tree-row" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = {};
-      result.itemBackground = tv.getCssColor( "TreeItem", "background-color" );
-      result.itemBackgroundImage = tv.getCssImage( "TreeItem", "background-image" );
-      result.itemBackgroundGradient = tv.getCssGradient( "TreeItem", "background-image" );
-      result.itemForeground = tv.getCssColor( "TreeItem", "color" );
-      result.overlayBackground = tv.getCssColor( "Tree-RowOverlay", "background-color" );
-      result.overlayBackgroundImage = tv.getCssImage( "Tree-RowOverlay", "background-image" );
-      result.overlayBackgroundGradient = tv.getCssGradient( "Tree-RowOverlay", "background-image" );
-      result.overlayForeground = tv.getCssColor( "Tree-RowOverlay", "color" );
-      result.textDecoration = tv.getCssIdentifier( "TreeItem", "text-decoration" );
-      result.textShadow = tv.getCssShadow( "TreeItem", "text-shadow" );
-      return result;
-    }
-  },
+"tree-row" : {
+  style : function( states ) {
+    var tv = new org.eclipse.swt.theme.ThemeValues( states );
+    var result = {};
+    result.itemBackground = tv.getCssColor( "TreeItem", "background-color" );
+    result.itemBackgroundImage = tv.getCssImage( "TreeItem", "background-image" );
+    result.itemBackgroundGradient = tv.getCssGradient( "TreeItem", "background-image" );
+    result.itemForeground = tv.getCssColor( "TreeItem", "color" );
+    result.overlayBackground = tv.getCssColor( "Tree-RowOverlay", "background-color" );
+    result.overlayBackgroundImage = tv.getCssImage( "Tree-RowOverlay", "background-image" );
+    result.overlayBackgroundGradient = tv.getCssGradient( "Tree-RowOverlay", "background-image" );
+    result.overlayForeground = tv.getCssColor( "Tree-RowOverlay", "color" );
+    result.textDecoration = tv.getCssIdentifier( "TreeItem", "text-decoration" );
+    result.textShadow = tv.getCssShadow( "TreeItem", "text-shadow" );
+    return result;
+  }
+},
 
-  "tree-row-check-box" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        backgroundImage : tv.getCssImage( "Tree-Checkbox", "background-image" )
-      };
-    }
-  },
+"tree-row-check-box" : {
+  style : function( states ) {
+    var tv = new org.eclipse.swt.theme.ThemeValues( states );
+    return {
+      backgroundImage : tv.getCssImage( "Tree-Checkbox", "background-image" )
+    };
+  }
+},
 
-  "tree-row-indent" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        backgroundImage : tv.getCssImage( "Tree-Indent", "background-image" )
-      };
-    }
-  },
+"tree-row-indent" : {
+  style : function( states ) {
+    var tv = new org.eclipse.swt.theme.ThemeValues( states );
+    return {
+      backgroundImage : tv.getCssImage( "Tree-Indent", "background-image" )
+    };
+  }
+},
 
-  "tree-column" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = {};
-      result.cursor = "default";
-      result.spacing = 2;
-      result.textColor = tv.getCssColor( "TreeColumn", "color" );
-      result.font = tv.getCssFont( "TreeColumn", "font" );
+"tree-column" : {
+  style : function( states ) {
+    var tv = new org.eclipse.swt.theme.ThemeValues( states );
+    var result = {};
+    result.cursor = "default";
+    result.spacing = 2;
+    result.textColor = tv.getCssColor( "TreeColumn", "color" );
+    result.font = tv.getCssFont( "TreeColumn", "font" );
+    if( states.footer ) {
+      //result.backgroundColor = "#efefef"; // this would make it "merged" with scrollbars
+      result.backgroundColor = "#dddddd";
+      result.backgroundImage = null;
+      result.backgroundGradient = null;
+    } else {
       result.backgroundColor = tv.getCssColor( "TreeColumn", "background-color" );
       result.backgroundImage = tv.getCssImage( "TreeColumn", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "TreeColumn", "background-image" );
-      result.opacity = states.moving ? 0.6 : 1.0;
-      result.padding = tv.getCssBoxDimensions( "TreeColumn", "padding" );
-      var borderColors = [ null, null, null, null ];
-      var borderWidths = [ 0, 0, 0, 0 ];
-      var borderStyles = [ "solid", "solid", "solid", "solid" ];
-      if( !states.dummy ) {
-        var verticalState = { "vertical" : true };
-        var tvGrid = new org.eclipse.swt.theme.ThemeValues( verticalState );
-        var gridColor = tvGrid.getCssColor( "Tree-GridLine", "color" );
-        gridColor = gridColor == "undefined" ? "transparent" : gridColor;
-        borderColors[ 1 ] = gridColor;
-        borderWidths[ 1 ] = 1;
+    }
+    result.opacity = states.moving ? 0.85 : 1.0;
+    result.padding = tv.getCssBoxDimensions( "TreeColumn", "padding" );
+    var borderColors = [ null, null, null, null ];
+    var borderWidths = [ 0, 0, 0, 0 ];
+    var borderStyles = [ "solid", "solid", "solid", "solid" ];
+    if( !states.dummy && !states.footer ) {
+      var verticalState = { "vertical" : true };
+      var tvGrid = new org.eclipse.swt.theme.ThemeValues( verticalState );
+      var gridColor = tvGrid.getCssColor( "Tree-GridLine", "color" );
+      gridColor = gridColor == "undefined" ? "transparent" : gridColor;
+      borderColors[ 1 ] = gridColor;
+      borderWidths[ 1 ] = 1;
+      if( states.moving ) {
+        borderColors[ 3 ] = gridColor;
+        borderWidths[ 3 ] = 1;
       }
-      var borderBottom = tv.getCssBorder( "TreeColumn", "border-bottom" );
+    }
+    var borderBottom = tv.getCssBorder( "TreeColumn", "border-bottom" );
+    if( states.footer ) {
+      borderWidths[ 0 ] = borderBottom.getWidthBottom();
+      borderStyles[ 0 ] = "solid";
+      borderColors[ 0 ] = "#000000";
+    } else {
       borderWidths[ 2 ] = borderBottom.getWidthBottom();
       borderStyles[ 2 ] = borderBottom.getStyleBottom();
       borderColors[ 2 ] = borderBottom.getColorBottom();
-      result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
-      result.textShadow = tv.getCssShadow( "TreeColumn", "text-shadow" );
-      return result;
     }
-  },
-
-  "tree-column-sort-indicator" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = {};
-      result.source = tv.getCssImage( "TreeColumn-SortIndicator", "background-image" );
-      return result;
-    }
+    result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
+    result.textShadow = tv.getCssShadow( "TreeColumn", "text-shadow" );
+    return result;
   }
-,
+},
+
+"tree-column-sort-indicator" : {
+  style : function( states ) {
+    var tv = new org.eclipse.swt.theme.ThemeValues( states );
+    var result = {};
+    result.backgroundImage = tv.getCssSizedImage( "TreeColumn-SortIndicator", "background-image" );
+    return result;
+  }
+},
+
+"tree-column-chevron" : {
+  style : function( states ) {
+    var tv = new org.eclipse.swt.theme.ThemeValues( states );
+    var result = {};
+    if( states.loading ) {
+      result.backgroundImage = [ "widget/tree/loading.gif", 16, 16 ];
+    } else {
+      var source = "widget/arrows/chevron-";
+      source += states.expanded ? "left" : "right";
+      source += states.mouseover ? "-hover" : "";
+      source += ".png";
+      result.backgroundImage = [ source, 10, 7 ];
+    }
+    return result;
+  }
+},
 
   "scale" : {
     style : function( states ) {
@@ -1648,7 +1681,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
       return result;
     }
   },
-  
+
   //------------------------------------------------------------------------
   // Calendar
 
@@ -2263,7 +2296,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
  "file-upload" : {
     include : "atom",
- 
+
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
@@ -2282,6 +2315,6 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
       return result;
     }
   }
-  
+
   }
 } );

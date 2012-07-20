@@ -111,9 +111,10 @@ qx.Class.define( "org.eclipse.rwt.test.Presenter", {
 
     log : function( text, indent, link ) {
       var span = document.createElement( "span" );
-      var msg = document.createTextNode( text );
+      //var msg = document.createTextNode( text );
       var br = document.createElement( "br" );
-      span.appendChild( msg );
+      //span.appendChild( msg );
+      span.innerHTML = org.eclipse.rwt.protocol.EncodingUtil.replaceNewLines( text, "</br>" );
       if( link ) {
         span.style.cursor = "pointer";
         span.link = link;

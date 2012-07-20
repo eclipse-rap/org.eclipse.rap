@@ -177,7 +177,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       parent.addToDocument();
       TestUtil.flush();
       // Note: parent must be seeable for the lazy queue to be used in Widget.js
-      assertTrue( parent.isSeeable() ); 
+      assertTrue( parent.isSeeable() );
       // Note: we need at least 3 siblings for the documentFragment to be used
       var child1 = new qx.ui.basic.Terminator();
       var child2 = new qx.ui.basic.Terminator();
@@ -381,7 +381,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       assertEquals( "", widget.getStyleProperty( "display" ) );
       widget.destroy();
     },
-    
+
     testRenderSimpleBackgroundGradient : function() {
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
@@ -461,16 +461,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
     testRenderComplexBackgroundGradient : function() {
       if( org.eclipse.rwt.Client.supportsCss3() ) {
-        var gradient = [ 
-          [ 0, "rgb(255, 0, 255)" ], 
+        var gradient = [
+          [ 0, "rgb(255, 0, 255)" ],
           [ 0.33, "rgb(255, 128, 255)" ],
-          [ 1, "rgb(0, 255, 0)" ] 
+          [ 1, "rgb(0, 255, 0)" ]
         ];
         var widget = this._createWidget();
         widget.setBackgroundGradient( gradient );
         TestUtil.flush();
         var result = this._getCssGradient( widget.getElement() );
-        var expected1 =   "gradient(-90deg, rgb(255, 0, 255) 0%, " 
+        var expected1 =   "gradient(-90deg, rgb(255, 0, 255) 0%, "
                         + "rgb(255, 128, 255) 33%, rgb(0, 255, 0) 100%)";
         var expected2 = "gradient(linear, 0% 0%, 0% 100%, from(rgb(255, 0, 255)), color-stop(0.33, rgb(255, 128, 255)), to(rgb(0, 255, 0)))";
         assertTrue( result === expected1 || result === expected2 );
@@ -632,20 +632,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testShowToolTipOnHover : function() {
-      var widget = this._createWidget();
-      widget.setUserData( "toolTipText", "gogo" );
-      var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
-      widget.setToolTip( toolTip );
-      TestUtil.flush();
+      if(! org.eclipse.rwt.Client.supportsTouch() ) { // Test in MobileWebkitSupport.js
+        var widget = this._createWidget();
+        widget.setUserData( "toolTipText", "gogo" );
+        var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
+        widget.setToolTip( toolTip );
+        TestUtil.flush();
 
-      TestUtil.hoverFromTo( document.body, widget.getElement() );
-      TestUtil.forceInterval( toolTip._showTimer );
-      TestUtil.flush();
+        TestUtil.hoverFromTo( document.body, widget.getElement() );
+        TestUtil.forceInterval( toolTip._showTimer );
+        TestUtil.flush();
 
-      assertTrue( toolTip.isSeeable() );
-      assertEquals( "gogo", toolTip.getAtom().getLabel() );
-      toolTip.hide();
-      widget.destroy();
+        assertTrue( toolTip.isSeeable() );
+        assertEquals( "gogo", toolTip.getAtom().getLabel() );
+        toolTip.hide();
+        widget.destroy();
+      }
     },
 
     testDontShowToolTipOnTab : function() {
@@ -664,7 +666,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
       assertFalse( toolTip.isSeeable() );
       toolTip.hide();
-      widget.destroy();        
+      widget.destroy();
     },
 
 
@@ -674,7 +676,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     _createWidget : function() {
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
-      widget.setWidth( 100 );        
+      widget.setWidth( 100 );
       widget.setHeight( 100 );
       TestUtil.flush();
       return widget;
@@ -706,7 +708,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         if( end != -1 ) {
           result = background.slice( start, end + 1 );
         } else {
-          result = background.slice( start );          
+          result = background.slice( start );
         }
       }
       return result;

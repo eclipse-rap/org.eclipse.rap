@@ -176,7 +176,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
         }
       }
     },
-    
+
     _executeTest : function( fun ) {
       if( this._currentInstance.setUp instanceof Function ) {
         // TODO [tb] : execute setUp/tearDown not between multipart tests
@@ -212,12 +212,15 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
         if( e.msg ) {
           this.info( e.msg, false );
         } else if( e.message ) {
-          this.info( e.message, false );          
+          this.info( e.message, false );
         } else {
           this.info( e, false );
         }
+        if( e.stack ) {
+          this.info( e.stack, false );
+        }
       } catch( ex ) {
-        this.info( e, false );        
+        this.info( e, false );
       }
       this.info( this._asserts + " asserts succeeded.", false );
       this._createFailLog( e, this._currentInstance );
@@ -389,7 +392,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
               }
             }
           }
-        }        
+        }
       }
       return testFunctions;
     },
@@ -461,7 +464,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
       }
       return result;
     },
-    
+
     _getTestInstanceFilterStr : function( testInstance ) {
       var testClassName = testInstance.classname.split( "." ).pop();
       var param = this._getFilterParam();

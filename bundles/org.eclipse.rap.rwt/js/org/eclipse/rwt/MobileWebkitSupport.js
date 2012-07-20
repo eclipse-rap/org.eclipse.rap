@@ -38,7 +38,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     _touchListener : null,
     _gestureListener : null,
     _touchSession : null,
-    _allowScroll : false,
+    _allowNativeScroll : false,
 
     _allowedMouseEvents : {
       "INPUT" : {
@@ -86,7 +86,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     },
 
     setTouchScrolling : function( value ) {
-      this._allowScroll = value;
+      this._allowNativeScroll = value;
     },
 
     _isZoomed : function() {
@@ -197,6 +197,12 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
         // called twice if the error occurs within the mouse event handling. Therefore only
         // alert is used for now:
         alert( "Error in touch event handling:" + ex );
+        if( typeof console === "object" ) {
+          console.log( ex );
+          if( ex.stack ) {
+            console.log( ex.stack );
+          }
+        }
       }
     },
 
@@ -212,50 +218,40 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     _handleTouchStart : function( domEvent ) {
       var touch = this._getTouch( domEvent );
       var target = domEvent.target;
+      var widgetTarget = org.eclipse.rwt.EventHandlerUtil.getOriginalTargetObject( target );
       var pos = [ touch.clientX, touch.clientY ];
       this._touchSession = {
-       "type" : this._getSessionType( domEvent ),
+       "type" : this._getSessionType( widgetTarget ),
        "initialTarget" : target,
        "initialPosition" : pos
       };
-      if( this._touchSession.type !== "scroll" && this._touchSession.type !== "focus" ) {
+      if( !this._touchSession.type.scroll && !this._touchSession.type.focus ) {
         domEvent.preventDefault();
       }
       this._moveMouseTo( target, domEvent );
       this._fireMouseEvent( "mousedown", target, domEvent, pos );
-    },
-
-    _getSessionType : function( domEvent ) {
-      var node = domEvent.target;
-      var result = "click";
-      if( this._isDraggableWidget( node ) ) {
-        result = "drag";
-      } else if( this._allowScroll && this._isScrollableWidget( node ) ) {
-        result = "scroll";
-      } else if( this._isFocusable( node ) ) {
-        result = "focus";
+      if( this._touchSession.type.virtualScroll ) {
+        this._initVirtualScroll( widgetTarget );
       }
-      return result;
-    },
-
-    _isFocusable : function( node ) {
-      var tagname = node.tagName;
-      return ( tagname === "INPUT" || tagname === "TEXTAREA" );
     },
 
     _handleTouchMove : function( domEvent ) {
       if( this._touchSession !== null ) {
                 var touch = this._getTouch( domEvent );
         var pos = [ touch.clientX, touch.clientY ];
-        if( this._touchSession.type !== "scroll" ) {
+        if( !this._touchSession.type.scroll ) {
           event.preventDefault();
         }
-        if ( this._touchSession.type === "drag" ) {
+        if( this._touchSession.type.virtualScroll ) {
+          this._handleVirtualScroll( pos );
+        }
+        if ( this._touchSession.type.drag ) {
           domEvent.preventDefault();
           var target = domEvent.target;
           this._fireMouseEvent( "mousemove", target, domEvent, pos );
         } else {
           var oldPos = this._touchSession.initialPosition;
+       // TODO [tb] : offset too big for good use with touch-scrolling
           if(    Math.abs( oldPos[ 0 ] - pos[ 0 ] ) >= 15
               || Math.abs( oldPos[ 1 ] - pos[ 1 ] ) >= 15 )
           {
@@ -265,27 +261,116 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       }
     },
 
-    _isScrollableWidget : function( node ) {
-      var result = false;
-      do {
-        var style = node.style ? node.style : {};
-        if(    style.overflow === "scroll"
-            || style.overflowX === "scroll"
-            || style.overflowY === "scroll" )
-        {
-          result = true;
+    _handleTouchEnd : function( domEvent ) {
+      domEvent.preventDefault();
+      var touch = this._getTouch( domEvent );
+      var pos = [ touch.clientX, touch.clientY ];
+      var target = domEvent.target;
+      if( this._touchSession !== null ) {
+        if( this._touchSession.type.click ) {
+          this._fireMouseEvent( "mouseup", target, domEvent, pos );
         }
-        node = node.parentNode;
-        if( node === document.body ) {
-          node = null;
+        if( this._touchSession.type.virtualScroll ) {
+          this._finishVirtualScroll();
         }
-      } while( node && !result );
+        if( this._touchSession.type.click && this._touchSession.initialTarget === target ) {
+          this._fireMouseEvent( "click", target, domEvent, pos );
+          this._touchSession = null;
+          if( this._isDoubleClick( domEvent ) ) {
+            this._lastMouseClickTarget = null;
+            this._lastMouseClickTime = null;
+            this._fireMouseEvent( "dblclick", target, domEvent, pos );
+          } else {
+            this._lastMouseClickTarget = target;
+            this._lastMouseClickTime = ( new Date() ).getTime();
+          }
+        }
+      }
+    },
+
+    _getSessionType : function( widgetTarget ) {
+      var result = {};
+      result.click = true;
+      if( this._isDraggableWidget( widgetTarget ) ) {
+        result.drag = true;
+      } else if( this._allowNativeScroll && this._isScrollableWidget( widgetTarget ) ) {
+        result.scroll = true;
+      } else if( this._isGridRow( widgetTarget ) ) {
+        result.virtualScroll = true;
+      } else if( this._isFocusable( widgetTarget ) ) {
+        result.focus = true;
+      }
       return result;
     },
 
-    _isDraggableWidget : function ( target ) {
+    ////////////////////
+    // virtual scrolling
+
+    _initVirtualScroll : function( widget ) {
+      var scrollable;
+      if( widget instanceof org.eclipse.rwt.widgets.GridRow ) {
+        scrollable = widget.getParent().getParent();
+      } else {
+        scrollable = this._findScrollable( widget );
+      }
+      var scrollBarV = scrollable._vertScrollBar;
+      var scrollBarH = scrollable._horzScrollBar;
+      this._touchSession.scrollBarV = scrollBarV;
+      this._touchSession.initScrollY = scrollBarV.getValue();
+      this._touchSession.maxScrollY = scrollBarV.getMaximum();
+      this._touchSession.scrollBarH = scrollBarH;
+      this._touchSession.initScrollX = scrollBarH.getValue();
+      this._touchSession.maxScrollX = scrollBarH.getMaximum();
+    },
+
+    _handleVirtualScroll : function( pos ) {
+      var oldPos = this._touchSession.initialPosition;
+      var offsetX = oldPos[ 0 ] - pos[ 0 ];
+      var offsetY = oldPos[ 1 ] - pos[ 1 ];
+      var newX = this._touchSession.initScrollX + offsetX;
+      var newY = this._touchSession.initScrollY + offsetY;
+      this._touchSession.scrollBarH.setValue( newX );
+      this._touchSession.scrollBarV.setValue( newY );
+    },
+
+    _finishVirtualScroll : function() {
+      // set ideal value to actual value (prevents scroll on resize when on max position)
+      var barV = this._touchSession.scrollBarV;
+      barV.setValue( barV.getValue() );
+    },
+
+    /////////
+    // Helper
+
+    _isFocusable : function( widgetTarget ) {
+      return widgetTarget instanceof org.eclipse.rwt.widgets.BasicText;
+    },
+
+    _isScrollableWidget : function( widget ) {
+      return this._findScrollable( widget ) !== null;
+    },
+
+    _isGridRow : function( widgetTarget ) {
+      return widgetTarget instanceof org.eclipse.rwt.widgets.GridRow;
+    },
+
+    _findScrollable : function( widget ) {
+      var result = null;
+      var currentWidget = widget;
+      do {
+        if( currentWidget instanceof org.eclipse.swt.widgets.Scrollable ) {
+          result = currentWidget;
+        } else if( currentWidget instanceof qx.ui.core.ClientDocument ) {
+          currentWidget = null;
+        } else {
+          currentWidget = currentWidget.getParent();
+        }
+      } while( currentWidget && !result );
+      return result;
+    },
+
+    _isDraggableWidget : function ( widgetTarget ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var widgetTarget = org.eclipse.rwt.EventHandlerUtil.getOriginalTargetObject( target );
       // We find the nearest control because matching based on widgetTarget can produce too
       // generalized cases.
       var widget = widgetManager.findControl( widgetTarget );
@@ -299,38 +384,13 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
           draggable = true;
         } else {
           for( var i = 0; i < appearances.length && !draggable; i++ ) {
-            if( widgetTarget.getAppearance() == appearances[ i ] ) {
+            if( widgetTarget.getAppearance() === appearances[ i ] ) {
               draggable = true;
             }
           }
         }
       }
       return draggable;
-    },
-
-    _handleTouchEnd : function( domEvent ) {
-      domEvent.preventDefault();
-      var touch = this._getTouch( domEvent );
-      var pos = [ touch.clientX, touch.clientY ];
-      var target = domEvent.target;
-      if( this._touchSession !== null ) {
-        this._fireMouseEvent( "mouseup", target, domEvent, pos );
-      }
-      // Note: Currently this check won't work as expected because webkit
-      // always reports the target from touchstart (in event and touch).
-      // It stays on the speculation that this might be fixed in webkit.
-      if( this._touchSession && this._touchSession.initialTarget === target ) {
-        this._fireMouseEvent( "click", target, domEvent, pos );
-        this._touchSession = null;
-        if( this._isDoubleClick( domEvent ) ) {
-          this._lastMouseClickTarget = null;
-          this._lastMouseClickTime = null;
-          this._fireMouseEvent( "dblclick", target, domEvent, pos );
-        } else {
-          this._lastMouseClickTarget = target;
-          this._lastMouseClickTime = ( new Date() ).getTime();
-        }
-      }
     },
 
     _isDoubleClick : function( domEvent ) {
@@ -379,8 +439,8 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       this._moveMouseTo( dummy, domEvent );
       if( this._touchSession !== null ) {
         this._fireMouseEvent( "mouseup", dummy, domEvent, [ 0, 0 ] );
+        delete this._touchSession.type.click;
       }
-      this._touchSession = null;
     },
 
     // The target used to release the virtual mouse without consequences
