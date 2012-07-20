@@ -55,9 +55,7 @@ org.eclipse.rwt.UICallBack.prototype = {
     var request = new qx.io.remote.Request( url, "GET", "application/javascript" );
     request.addEventListener( "completed", this._handleFinished, this );
     request.addEventListener( "failed", this._handleFailed, this );
-    request.setParameter(
-      "custom_service_handler",
-      "org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler" );
+    request.setParameter( "custom_service_handler", "org.eclipse.rap.uicallback" );
     org.eclipse.swt.Request.getInstance()._sendStandalone( request );
   },
 

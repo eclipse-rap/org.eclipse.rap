@@ -30,8 +30,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
   private final static String PROP_ACTIVE = "active";
   private final static String METHOD_SEND_UI_REQUEST = "sendUIRequest";
 
-  public final static String HANDLER_ID
-    = "org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler";
+  public final static String HANDLER_ID = "org.eclipse.rap.uicallback";
 
   private static final String ATTR_NEEDS_UICALLBACK
     = UICallBackServiceHandler.class.getName() + ".needsUICallback";
