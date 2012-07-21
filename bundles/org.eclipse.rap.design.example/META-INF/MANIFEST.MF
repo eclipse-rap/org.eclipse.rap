@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.rap.design.example;singleton:=true
 Bundle-Version: 1.5.100.qualifier
 Bundle-Vendor: %Bundle-Vendor
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.eclipse.rap.ui;bundle-version="[1.5.100,2.0.0)"
+Require-Bundle: org.eclipse.rap.ui;bundle-version="[2.0.0,3.0.0)"
 Bundle-Localization: plugin
 Export-Package: org.eclipse.rap.internal.design.example;version="1.5.100";x-internal:=true,
  org.eclipse.rap.internal.design.example.builder;version="1.5.100";x-internal:=true,

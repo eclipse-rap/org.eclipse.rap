@@ -22,7 +22,6 @@
   </parent>
 
   <artifactId>org.eclipse.rap.jface</artifactId>
-  <version>1.5.100-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 
 </project>
