@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.eclipse.rwt.apache.batik.css.parser;
+package org.eclipse.rap.rwt.apache.batik.css.parser;
 
 import org.w3c.css.sac.LexicalUnit;
 

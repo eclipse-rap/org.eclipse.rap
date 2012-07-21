@@ -16,7 +16,7 @@
 
 */
 
-package org.eclipse.rwt.apache.batik.css.parser;
+package org.eclipse.rap.rwt.apache.batik.css.parser;
 
 /**
  * A collection of utility functions for a CSS scanner.

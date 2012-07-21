@@ -16,11 +16,11 @@ import java.util.Locale;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.apache.batik.css.parser.Parser;
 import org.eclipse.rap.rwt.internal.theme.*;
 import org.eclipse.rap.rwt.internal.theme.QxAnimation.Animation;
 import org.eclipse.rap.rwt.internal.theme.css.PropertyResolver;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.apache.batik.css.parser.Parser;
 import org.w3c.css.sac.*;
 
 import static org.eclipse.rap.rwt.internal.theme.ThemeTestUtil.*;

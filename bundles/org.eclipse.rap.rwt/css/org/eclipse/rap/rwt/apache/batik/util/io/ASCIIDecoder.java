@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2002  The Apache Software Foundation 
+   Copyright 2002-2003  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,39 +15,25 @@
    limitations under the License.
 
  */
-package org.eclipse.rwt.apache.batik.util.io;
+package org.eclipse.rap.rwt.apache.batik.util.io;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * This class reads a string.
+ * This class represents an object which decodes ASCII characters from
+ * a stream of bytes.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: StringDecoder.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
+ * @version $Id: ASCIIDecoder.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
  */
-public class StringDecoder implements CharDecoder {
-
+public class ASCIIDecoder extends AbstractCharDecoder {
+    
     /**
-     * The string which contains the decoded characters.
+     * Creates a new ASCIIDecoder.
      */
-    protected String string;
-
-    /**
-     * The number of chars in the string.
-     */
-    protected int length;
-
-    /**
-     * The next char index.
-     */
-    protected int next;
-
-    /**
-     * Creates a new StringDecoder.
-     */
-    public StringDecoder(String s) {
-        string = s;
-        length = s.length();
+    public ASCIIDecoder(InputStream is) {
+        super(is);
     }
 
     /**
@@ -55,16 +41,16 @@ public class StringDecoder implements CharDecoder {
      * @return a character or END_OF_STREAM.
      */
     public int readChar() throws IOException {
-        if (next == length) {
+        if (position == count) {
+            fillBuffer();
+        }
+        if (count == -1) {
             return END_OF_STREAM;
         }
-        return string.charAt(next++);
-    }
-
-    /**
-     * Disposes the associated resources.
-     */
-    public void dispose() throws IOException {
-        string = null;
+        int result = buffer[position++];
+        if (result < 0) {
+            charError("ASCII");
+        }
+        return result;
     }
 }

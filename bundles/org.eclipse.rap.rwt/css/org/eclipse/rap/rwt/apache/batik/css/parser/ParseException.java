@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.eclipse.rwt.apache.batik.css.parser;
+package org.eclipse.rap.rwt.apache.batik.css.parser;
 
 /**
  * This class encapsulates a general parse error or warning.

@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.eclipse.rwt.apache.batik.util.io;
+package org.eclipse.rap.rwt.apache.batik.util.io;
 
 import java.io.IOException;
 import java.io.InputStream;

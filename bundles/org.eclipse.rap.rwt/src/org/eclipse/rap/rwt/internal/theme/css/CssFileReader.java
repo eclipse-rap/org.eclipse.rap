@@ -17,10 +17,10 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.rap.rwt.apache.batik.css.parser.ParseException;
 import org.eclipse.rap.rwt.internal.theme.ThemeManagerException;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
-import org.eclipse.rwt.apache.batik.css.parser.ParseException;
 import org.w3c.css.sac.*;
 
 
@@ -32,7 +32,7 @@ public class CssFileReader {
 
   CssFileReader() {
     try {
-      parser = new org.eclipse.rwt.apache.batik.css.parser.Parser();
+      parser = new org.eclipse.rap.rwt.apache.batik.css.parser.Parser();
     } catch( Exception e ) {
       throw new RuntimeException( "Failed to instantiate CSS parser", e );
     }

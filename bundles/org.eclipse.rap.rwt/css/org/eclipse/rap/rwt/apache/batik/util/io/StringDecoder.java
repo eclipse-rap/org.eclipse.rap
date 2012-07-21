@@ -15,32 +15,56 @@
    limitations under the License.
 
  */
-package org.eclipse.rwt.apache.batik.util.io;
+package org.eclipse.rap.rwt.apache.batik.util.io;
 
 import java.io.IOException;
 
 /**
- * This interface represents an object which decodes characters from a
- * stream of bytes.
+ * This class reads a string.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: CharDecoder.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
+ * @version $Id: StringDecoder.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
  */
-public interface CharDecoder {
-    
+public class StringDecoder implements CharDecoder {
+
     /**
-     * This constant represents the end of stream character.
+     * The string which contains the decoded characters.
      */
-    int END_OF_STREAM = -1;
+    protected String string;
+
+    /**
+     * The number of chars in the string.
+     */
+    protected int length;
+
+    /**
+     * The next char index.
+     */
+    protected int next;
+
+    /**
+     * Creates a new StringDecoder.
+     */
+    public StringDecoder(String s) {
+        string = s;
+        length = s.length();
+    }
 
     /**
      * Reads the next character.
      * @return a character or END_OF_STREAM.
      */
-    int readChar() throws IOException;
+    public int readChar() throws IOException {
+        if (next == length) {
+            return END_OF_STREAM;
+        }
+        return string.charAt(next++);
+    }
 
     /**
      * Disposes the associated resources.
      */
-    void dispose() throws IOException;
+    public void dispose() throws IOException {
+        string = null;
+    }
 }

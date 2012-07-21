@@ -15,13 +15,13 @@
    limitations under the License.
 
  */
-package org.eclipse.rwt.apache.batik.css.parser;
+package org.eclipse.rap.rwt.apache.batik.css.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
-import org.eclipse.rwt.apache.batik.util.io.*;
+import org.eclipse.rap.rwt.apache.batik.util.io.*;
 
 /**
  * This class represents a CSS scanner - an object which decodes CSS lexical
