@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 
 /**
  * Instances of this class provide measurement information about fonts <!-- including

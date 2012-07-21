@@ -16,7 +16,7 @@ import java.util.*;
 
 import org.eclipse.core.runtime.ListenerList;
 
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 // RAP [if] accessibility not supported

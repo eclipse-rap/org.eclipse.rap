@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.internal.theme;
 import static org.eclipse.rap.rwt.internal.theme.ThemeTestUtil.RESOURCE_LOADER;
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.theme.IThemeCssElement;
 import org.eclipse.rap.rwt.internal.theme.Theme;
@@ -22,9 +23,8 @@ import org.eclipse.rap.rwt.internal.theme.ThemeCssValuesMap;
 import org.eclipse.rap.rwt.internal.theme.ThemeableWidget;
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
+import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.widgets.Button;
 
 

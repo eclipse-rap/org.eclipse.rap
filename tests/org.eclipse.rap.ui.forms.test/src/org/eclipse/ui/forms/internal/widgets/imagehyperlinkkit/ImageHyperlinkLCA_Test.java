@@ -14,9 +14,9 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;

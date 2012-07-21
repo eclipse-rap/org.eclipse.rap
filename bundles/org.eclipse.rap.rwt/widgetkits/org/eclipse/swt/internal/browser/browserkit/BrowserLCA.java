@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.browser.browserkit;
 
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -22,22 +22,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rwt.lifecycle.PhaseEvent;
-import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.rwt.lifecycle.PhaseListener;
-import org.eclipse.rwt.lifecycle.ProcessActionRunner;
-import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.PhaseListener;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
 import org.eclipse.swt.browser.ProgressEvent;

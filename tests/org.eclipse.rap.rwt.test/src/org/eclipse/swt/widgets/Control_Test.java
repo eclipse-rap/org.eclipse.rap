@@ -18,11 +18,11 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.rwt.theme.IControlThemeAdapter;
+import org.eclipse.rap.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;

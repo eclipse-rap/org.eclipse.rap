@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 
 
 public final class UITestUtil {

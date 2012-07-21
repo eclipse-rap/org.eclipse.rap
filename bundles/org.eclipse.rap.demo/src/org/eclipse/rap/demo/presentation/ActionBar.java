@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;

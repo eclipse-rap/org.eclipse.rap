@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.IServiceHandler;
 
 
 class ServiceHandlerRegistry {

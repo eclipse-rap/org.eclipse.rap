@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Text;
 
 

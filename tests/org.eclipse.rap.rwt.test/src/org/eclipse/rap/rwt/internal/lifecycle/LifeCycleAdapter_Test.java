@@ -18,9 +18,9 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterException;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
+import org.eclipse.rap.rwt.lifecycle.IWidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
-import org.eclipse.rwt.lifecycle.IWidgetLifeCycleAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
 

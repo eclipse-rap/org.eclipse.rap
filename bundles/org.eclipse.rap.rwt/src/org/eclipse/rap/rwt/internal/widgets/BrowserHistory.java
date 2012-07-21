@@ -17,19 +17,19 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.*;
+import org.eclipse.rap.rwt.events.BrowserHistoryEvent;
+import org.eclipse.rap.rwt.events.BrowserHistoryListener;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.events.*;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.*;
-import org.eclipse.rwt.events.BrowserHistoryEvent;
-import org.eclipse.rwt.events.BrowserHistoryListener;
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.rwt.service.SessionStoreEvent;
-import org.eclipse.rwt.service.SessionStoreListener;
+import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.SessionStoreEvent;
+import org.eclipse.rap.rwt.service.SessionStoreListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 

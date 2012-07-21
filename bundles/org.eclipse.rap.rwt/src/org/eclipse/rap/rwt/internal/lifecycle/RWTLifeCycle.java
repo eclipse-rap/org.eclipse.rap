@@ -19,11 +19,11 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.rwt.lifecycle.PhaseListener;
-import org.eclipse.rwt.service.IServiceStore;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.PhaseListener;
+import org.eclipse.rap.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 
 

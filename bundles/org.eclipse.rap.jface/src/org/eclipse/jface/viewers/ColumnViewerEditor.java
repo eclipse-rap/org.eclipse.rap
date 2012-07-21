@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.internal.util.SerializableListenerList;
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;

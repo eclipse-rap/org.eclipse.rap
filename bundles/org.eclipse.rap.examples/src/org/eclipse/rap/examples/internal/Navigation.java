@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExampleContribution;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;

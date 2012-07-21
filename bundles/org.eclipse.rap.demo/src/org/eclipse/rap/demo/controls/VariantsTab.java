@@ -12,8 +12,8 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;

@@ -11,14 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
 
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;

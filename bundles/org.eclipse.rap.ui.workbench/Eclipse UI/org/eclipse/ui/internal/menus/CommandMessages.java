@@ -11,7 +11,7 @@
 
 package org.eclipse.ui.internal.menus;
 
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 
 //import org.eclipse.osgi.util.NLS;
 

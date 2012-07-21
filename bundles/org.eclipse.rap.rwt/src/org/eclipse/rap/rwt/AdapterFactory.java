@@ -1,0 +1,55 @@
+/*******************************************************************************
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ ******************************************************************************/
+package org.eclipse.rap.rwt;
+
+
+/**
+ * <p>An AdapterFactory creates the requested adapters associated with
+ * a given object, if available. Adapters are used to add dynamically
+ * interfaces to a class (behavioral extension).</p>
+ *
+ * <p>AdapterFactories are registered with a global adapter manager.</p>
+ *
+ * @deprecated This class was made API accidientially and will be removed in future releases.
+ *   The <code>AdapterFactory</code> is tailored to the needs of RWT and not meant for general
+ *   use. Furthermore providing an implementation of the adapter pattern is outside the scope
+ *   of RWT.
+ *   If clients need to work with the adapter pattern, they should resort to general purpose
+ *   implementations (e.g. the <code>IAdapterFactory</code> from org.eclipse.core.runtime)
+ * @since 2.0
+ * @see org.eclipse.rap.rwt.Adaptable
+ */
+@Deprecated
+public interface AdapterFactory {
+
+  /**
+   * <p>returns an implementation of the given class associated with the
+   * given object. Returns <code>null</code> if no such implementation can
+   * be found.</p>
+   *
+   * @param adaptable the <code>Adaptable</code> instance used as lookup key
+   * @param adapter the type of adapter to look up
+   * @return a object castable to the given adapter type or <code>null</code>
+   *          if there is no adapter of the given type availabe
+   */
+  Object getAdapter( Object adaptable, Class adapter );
+
+  /**
+   * <p>returns an array of adapter types handled by this factory.</p>
+   *
+   * <p>This method is generally used to discover which adapter types are
+   * supported, in advance of actually calling <code>getAdapter</code>.</p>
+   *
+   * @return a list of supported adapter types
+   */
+  Class[] getAdapterList();
+}

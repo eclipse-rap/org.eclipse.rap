@@ -12,8 +12,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import org.eclipse.rwt.service.IServiceHandler;
-import org.eclipse.rwt.service.IServiceManager;
+import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.IServiceManager;
 
 
 public class ServiceManager implements IServiceManager {

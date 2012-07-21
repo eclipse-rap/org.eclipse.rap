@@ -13,7 +13,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
-import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.Compatibility;

@@ -31,7 +31,7 @@ import org.eclipse.jface.viewers.DecorationContext;
 import org.eclipse.jface.viewers.IDecorationContext;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
-import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;

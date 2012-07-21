@@ -46,7 +46,7 @@ import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.contexts.IContextIds;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.util.Util;
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.widgets.Display;
 
 /**

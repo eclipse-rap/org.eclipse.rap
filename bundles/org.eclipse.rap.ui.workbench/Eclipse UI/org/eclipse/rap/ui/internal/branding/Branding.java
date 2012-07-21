@@ -20,11 +20,11 @@ import java.util.Map;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.branding.AbstractBranding;
+import org.eclipse.rap.rwt.branding.Header;
 import org.eclipse.rap.ui.branding.IExitConfirmation;
 import org.eclipse.rap.ui.internal.servlet.EntryPointParameters;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.branding.Header;
 import org.osgi.framework.Bundle;
 
 

@@ -16,13 +16,13 @@ import static org.mockito.Mockito.mock;
 import java.io.IOException;
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
 

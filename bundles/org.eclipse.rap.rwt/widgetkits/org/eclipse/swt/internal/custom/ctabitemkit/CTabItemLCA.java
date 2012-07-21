@@ -11,14 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabitemkit;
 
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;

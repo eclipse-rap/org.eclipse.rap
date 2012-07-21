@@ -15,11 +15,11 @@ import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.SerializableCompatibility;

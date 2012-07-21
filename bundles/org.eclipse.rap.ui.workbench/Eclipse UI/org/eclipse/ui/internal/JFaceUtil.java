@@ -25,9 +25,9 @@ import org.eclipse.jface.util.ISafeRunnableRunner;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.util.StatusHandler;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.service.SessionStoreEvent;
-import org.eclipse.rwt.service.SessionStoreListener;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.service.SessionStoreEvent;
+import org.eclipse.rap.rwt.service.SessionStoreListener;
 import org.eclipse.ui.statushandlers.StatusAdapter;
 import org.eclipse.ui.statushandlers.StatusManager;
 

@@ -23,9 +23,9 @@ import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistrationException;
 import org.eclipse.rap.rwt.internal.resources.SystemProps;
 import org.eclipse.rap.rwt.internal.util.HTTP;
+import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
 @SuppressWarnings("deprecation")

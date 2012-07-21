@@ -13,7 +13,7 @@ package org.eclipse.rap.ui.internal;
 import java.util.Locale;
 
 import org.eclipse.osgi.service.localization.LocaleProvider;
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 
 
 public final class SessionLocaleProvider implements LocaleProvider {

@@ -16,6 +16,10 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.Adaptable;
+import org.eclipse.rap.rwt.AdapterFactory;
+import org.eclipse.rap.rwt.application.Application;
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.service.ServiceManager;
 import org.eclipse.rap.rwt.internal.theme.Theme;
@@ -23,17 +27,13 @@ import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.AdapterFactory;
-import org.eclipse.rwt.application.Application;
-import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.lifecycle.IEntryPointFactory;
-import org.eclipse.rwt.lifecycle.PhaseListener;
-import org.eclipse.rwt.resources.IResource;
-import org.eclipse.rwt.resources.ResourceLoader;
-import org.eclipse.rwt.service.IServiceHandler;
-import org.eclipse.rwt.service.ISettingStoreFactory;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
+import org.eclipse.rap.rwt.lifecycle.PhaseListener;
+import org.eclipse.rap.rwt.resources.IResource;
+import org.eclipse.rap.rwt.resources.ResourceLoader;
+import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ISettingStoreFactory;
 import org.eclipse.swt.widgets.Widget;
 
 

@@ -12,7 +12,7 @@ package org.eclipse.ui.internal.browser;
 
 import java.net.URL;
 
-import org.eclipse.rwt.widgets.ExternalBrowser;
+import org.eclipse.rap.rwt.widgets.ExternalBrowser;
 import org.eclipse.ui.browser.AbstractWebBrowser;
 
 // RAP [bm]: Own implementation of default web browser

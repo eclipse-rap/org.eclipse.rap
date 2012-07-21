@@ -17,16 +17,16 @@ import javax.servlet.Servlet;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.application.Application.OperationMode;
+import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationImpl;
 import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
-import org.eclipse.rwt.application.Application.OperationMode;
-import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.engine.RWTServlet;
-import org.eclipse.rwt.lifecycle.ILifeCycle;
 
 
 public class ApplicationImpl_Test extends TestCase {

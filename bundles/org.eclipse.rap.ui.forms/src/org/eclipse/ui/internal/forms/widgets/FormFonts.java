@@ -12,7 +12,7 @@ package org.eclipse.ui.internal.forms.widgets;
 
 import java.util.HashMap;
 
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 
 import org.eclipse.jface.resource.DeviceResourceException;
 import org.eclipse.jface.resource.FontDescriptor;

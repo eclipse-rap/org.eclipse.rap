@@ -19,10 +19,10 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.Layout;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
-import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.ui.internal.util.PrefUtil;
 
 /**

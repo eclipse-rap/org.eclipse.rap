@@ -13,7 +13,7 @@ package org.eclipse.swt.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;

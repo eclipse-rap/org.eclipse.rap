@@ -14,9 +14,9 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 
 

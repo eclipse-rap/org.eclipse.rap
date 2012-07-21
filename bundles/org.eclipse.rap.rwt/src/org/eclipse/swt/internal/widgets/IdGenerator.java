@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 

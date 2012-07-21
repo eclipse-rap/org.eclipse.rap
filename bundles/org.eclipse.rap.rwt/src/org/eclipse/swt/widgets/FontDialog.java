@@ -13,10 +13,10 @@ package org.eclipse.swt.widgets;
 
 import java.util.*;
 
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.RWTMessages;
-import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.widgets.DialogCallback;
-import org.eclipse.rwt.widgets.DialogUtil;
+import org.eclipse.rap.rwt.widgets.DialogCallback;
+import org.eclipse.rap.rwt.widgets.DialogUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
@@ -173,7 +173,7 @@ public class FontDialog extends Dialog {
    *              </ul>
    * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
    *
-   * @see org.eclipse.rwt.application.Application.OperationMode
+   * @see org.eclipse.rap.rwt.application.Application.OperationMode
    */
   public FontData open() {
     checkOperationMode();

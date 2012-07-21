@@ -15,9 +15,9 @@ package org.eclipse.rap.rwt.internal.resources;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.resources.ResourceManagerProvider;
+import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.IResourceManagerFactory;
 import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
-import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.rwt.resources.IResourceManagerFactory;
 
 
 @SuppressWarnings("deprecation")

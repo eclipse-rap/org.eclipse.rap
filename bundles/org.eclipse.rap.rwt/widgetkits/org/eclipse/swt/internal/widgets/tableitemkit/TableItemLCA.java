@@ -11,14 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tableitemkit;
 
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;

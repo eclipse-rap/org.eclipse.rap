@@ -12,7 +12,7 @@
 package org.eclipse.rap.rwt.internal.textsize;
 
 
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.*;
 
 
 public class MeasurementListener implements PhaseListener {

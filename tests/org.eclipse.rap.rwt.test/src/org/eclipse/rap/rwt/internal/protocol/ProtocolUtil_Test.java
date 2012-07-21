@@ -12,9 +12,9 @@ package org.eclipse.rap.rwt.internal.protocol;
 
 import java.util.Arrays;
 
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;

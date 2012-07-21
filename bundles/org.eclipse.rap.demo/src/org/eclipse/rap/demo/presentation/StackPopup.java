@@ -12,7 +12,7 @@
 package org.eclipse.rap.demo.presentation;
 
 import org.eclipse.jface.dialogs.PopupDialog;
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.FontData;

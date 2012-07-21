@@ -13,15 +13,15 @@ package org.eclipse.rap.rwt.internal.application;
 
 import javax.servlet.ServletContext;
 
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rap.rwt.internal.engine.RWTConfigurationImpl;
 import org.eclipse.rap.rwt.internal.service.ApplicationStoreImpl;
 import org.eclipse.rap.rwt.internal.service.ServiceManager;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
-import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.service.IApplicationStore;
-import org.eclipse.rwt.service.RWTFileSettingStoreFactory;
+import org.eclipse.rap.rwt.service.IApplicationStore;
+import org.eclipse.rap.rwt.service.RWTFileSettingStoreFactory;
 
 
 class ApplicationContextConfigurator {

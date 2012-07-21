@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
-import org.eclipse.rwt.widgets.BrowserCallback;
+import org.eclipse.rap.rwt.widgets.BrowserCallback;
 import org.eclipse.swt.browser.BrowserFunction;
 
 public interface IBrowserAdapter {

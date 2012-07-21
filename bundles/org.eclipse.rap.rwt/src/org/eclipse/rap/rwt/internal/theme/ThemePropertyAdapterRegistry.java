@@ -13,8 +13,8 @@ package org.eclipse.rap.rwt.internal.theme;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.QxAnimation.Animation;
-import org.eclipse.rwt.RWT;
 
 
 public final class ThemePropertyAdapterRegistry {

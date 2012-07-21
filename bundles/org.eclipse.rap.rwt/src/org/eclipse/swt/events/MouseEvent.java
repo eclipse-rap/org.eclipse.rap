@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rwt.Adaptable;
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Event;
@@ -108,12 +108,12 @@ public class MouseEvent extends TypedEvent {
    */
   public MouseEvent( Event event ) {
     super( event );
-    this.x = event.x;
-    this.y = event.y;
-    this.button = event.button;
-    this.stateMask = event.stateMask;
-    // TODO [rst] Pull up when bug 332976 is fixed 
-    this.time = event.time;
+    x = event.x;
+    y = event.y;
+    button = event.button;
+    stateMask = event.stateMask;
+    // TODO [rst] Pull up when bug 332976 is fixed
+    time = event.time;
   }
 
   /**
@@ -130,6 +130,7 @@ public class MouseEvent extends TypedEvent {
     super( source, id );
   }
 
+  @Override
   protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case MOUSE_UP:
@@ -146,10 +147,12 @@ public class MouseEvent extends TypedEvent {
     }
   }
 
+  @Override
   protected Class getListenerType() {
     return LISTENER;
   }
 
+  @Override
   protected boolean allowProcessing() {
     return EventUtil.isAccessible( widget );
   }
@@ -160,6 +163,7 @@ public class MouseEvent extends TypedEvent {
    *
    * @return a string representation of the event
    */
+  @Override
   public String toString() {
     String string = super.toString();
     return string.substring( 0, string.length() - 1 ) // remove trailing '}'
@@ -176,18 +180,38 @@ public class MouseEvent extends TypedEvent {
            + "}";
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void addListener( Adaptable adaptable, MouseListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void removeListener( Adaptable adaptable, MouseListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }

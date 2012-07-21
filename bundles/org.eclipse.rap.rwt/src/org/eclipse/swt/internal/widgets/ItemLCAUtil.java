@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import org.eclipse.swt.widgets.Item;
 

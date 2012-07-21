@@ -13,8 +13,8 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import java.text.MessageFormat;
 
-import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
-import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.widgets.Display;
 
 

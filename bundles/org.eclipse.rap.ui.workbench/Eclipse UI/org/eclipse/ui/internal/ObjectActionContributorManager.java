@@ -21,7 +21,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 

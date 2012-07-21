@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.lifecycle.PhaseListener;
+import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 
 
 public class PhaseListenerRegistry {

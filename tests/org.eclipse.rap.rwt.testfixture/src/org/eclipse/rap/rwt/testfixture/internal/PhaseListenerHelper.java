@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture.internal;
 
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.*;
 
 
 public class PhaseListenerHelper {

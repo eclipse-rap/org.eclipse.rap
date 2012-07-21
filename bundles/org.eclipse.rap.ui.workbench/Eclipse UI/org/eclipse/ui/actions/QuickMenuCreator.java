@@ -19,7 +19,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
 //import org.eclipse.swt.custom.StyledText;
 //import org.eclipse.swt.graphics.GC;
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;

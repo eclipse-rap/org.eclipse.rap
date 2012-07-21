@@ -18,9 +18,9 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
 import org.eclipse.rap.rwt.testfixture.*;
-import org.eclipse.rwt.RWT;
 
 
 public class ServletLog_Test extends TestCase {

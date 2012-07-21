@@ -16,7 +16,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.ISessionStore;
 
 
 /**

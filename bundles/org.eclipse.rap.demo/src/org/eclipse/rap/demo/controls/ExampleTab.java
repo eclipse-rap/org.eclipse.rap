@@ -16,8 +16,8 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
 
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.SelectionAdapter;

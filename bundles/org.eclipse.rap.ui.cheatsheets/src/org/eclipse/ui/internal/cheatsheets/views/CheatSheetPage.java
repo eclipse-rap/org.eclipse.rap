@@ -13,7 +13,7 @@ package org.eclipse.ui.internal.cheatsheets.views;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;

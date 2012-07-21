@@ -14,8 +14,8 @@ package org.eclipse.rap.rwt.internal;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
-import org.eclipse.rwt.RWT;
 
 public final class RWTMessages {
 

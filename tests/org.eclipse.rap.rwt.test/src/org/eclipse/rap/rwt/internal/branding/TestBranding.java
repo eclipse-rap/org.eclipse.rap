@@ -12,9 +12,9 @@ package org.eclipse.rap.rwt.internal.branding;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.branding.Header;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.branding.AbstractBranding;
+import org.eclipse.rap.rwt.branding.Header;
 
 public class TestBranding extends AbstractBranding {
 

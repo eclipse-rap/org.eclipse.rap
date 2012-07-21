@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.widgets.Widget;
 
 

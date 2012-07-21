@@ -12,8 +12,8 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.service.IServiceStore;
 
 
 public final class CurrentPhase {

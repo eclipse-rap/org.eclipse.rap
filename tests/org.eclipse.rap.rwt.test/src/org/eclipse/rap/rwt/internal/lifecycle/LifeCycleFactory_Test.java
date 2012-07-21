@@ -18,9 +18,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseListenerRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
+import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.lifecycle.ILifeCycle;
-import org.eclipse.rwt.lifecycle.PhaseListener;
 
 
 public class LifeCycleFactory_Test extends TestCase {

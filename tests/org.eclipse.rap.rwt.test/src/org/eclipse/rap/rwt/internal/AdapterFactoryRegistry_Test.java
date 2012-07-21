@@ -12,9 +12,9 @@ package org.eclipse.rap.rwt.internal;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.Adaptable;
+import org.eclipse.rap.rwt.AdapterFactory;
 import org.eclipse.rap.rwt.internal.AdapterFactoryRegistry;
-import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.AdapterFactory;
 
 
 @SuppressWarnings("deprecation")

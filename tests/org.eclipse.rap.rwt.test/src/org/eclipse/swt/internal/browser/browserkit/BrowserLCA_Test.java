@@ -18,13 +18,13 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.rwt.widgets.BrowserCallback;
-import org.eclipse.rwt.widgets.BrowserUtil;
+import org.eclipse.rap.rwt.widgets.BrowserCallback;
+import org.eclipse.rap.rwt.widgets.BrowserUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.*;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;

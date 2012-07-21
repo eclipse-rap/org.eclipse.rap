@@ -13,7 +13,7 @@ package org.eclipse.swt.dnd;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 
 /**
  * The class <code>URLTransfer</code> provides a platform specific mechanism for

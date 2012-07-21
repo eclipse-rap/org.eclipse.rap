@@ -14,9 +14,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.service.FileSettingStore;
+import org.eclipse.rap.rwt.service.FileSettingStore;
 
 // TODO [fappel]: think about how we can provide this as API (subset rule
 //                of RAP/RCP)

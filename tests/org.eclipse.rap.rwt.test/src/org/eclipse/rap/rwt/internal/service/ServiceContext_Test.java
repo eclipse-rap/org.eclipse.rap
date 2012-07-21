@@ -20,17 +20,17 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rap.rwt.testfixture.TestSession;
-import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 
 

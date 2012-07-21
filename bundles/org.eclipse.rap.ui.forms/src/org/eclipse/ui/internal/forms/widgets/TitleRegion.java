@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.forms.widgets;
 
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;

@@ -13,10 +13,10 @@ package org.eclipse.rap.rwt.internal.protocol;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.service.IServiceStore;
 
 
 /**

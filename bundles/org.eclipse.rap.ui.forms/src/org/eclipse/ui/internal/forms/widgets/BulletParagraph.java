@@ -12,7 +12,7 @@ package org.eclipse.ui.internal.forms.widgets;
 
 import java.util.Hashtable;
 
-import org.eclipse.rwt.Adaptable;
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.ui.forms.internal.widgets.IBulletParagraphAdapter;
 
 // RAP [if] unnecessary

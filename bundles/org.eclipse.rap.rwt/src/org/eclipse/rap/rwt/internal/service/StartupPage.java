@@ -17,10 +17,10 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rap.rwt.internal.theme.*;
 import org.eclipse.rap.rwt.internal.util.*;
-import org.eclipse.rwt.RWT;
 
 
 /**

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.intro;
 
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 
 
 /**

@@ -12,7 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.rwt.theme.IControlThemeAdapter;
+import org.eclipse.rap.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.accessibility.Accessible;

@@ -14,13 +14,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.branding.AbstractBranding;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.lifecycle.IEntryPointFactory;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 
 
 public class EntryPointUtil {

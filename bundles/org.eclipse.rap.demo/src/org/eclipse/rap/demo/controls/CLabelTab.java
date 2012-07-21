@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.CTabFolder;

@@ -16,7 +16,7 @@ import java.util.Set;
 
 import org.eclipse.rap.rwt.internal.service.ServletLog;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.*;
 
 
 class PhaseListenerManager {

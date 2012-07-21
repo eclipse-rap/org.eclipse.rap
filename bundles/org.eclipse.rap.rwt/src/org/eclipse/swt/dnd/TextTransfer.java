@@ -12,7 +12,7 @@ package org.eclipse.swt.dnd;
 
 import java.io.UnsupportedEncodingException;
 
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 
 /**
  * The class <code>TextTransfer</code> provides a platform specific mechanism

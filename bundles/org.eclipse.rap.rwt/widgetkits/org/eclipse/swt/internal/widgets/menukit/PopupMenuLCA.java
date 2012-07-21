@@ -17,7 +17,7 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IMenuAdapter;
 import org.eclipse.swt.widgets.Menu;

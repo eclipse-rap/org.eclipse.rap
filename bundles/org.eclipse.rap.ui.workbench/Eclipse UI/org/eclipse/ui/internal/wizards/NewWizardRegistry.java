@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.wizards;
 
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 

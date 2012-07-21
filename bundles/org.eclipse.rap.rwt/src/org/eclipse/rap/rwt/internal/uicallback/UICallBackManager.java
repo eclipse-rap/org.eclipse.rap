@@ -17,10 +17,10 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
-import org.eclipse.rwt.SessionSingletonBase;
-import org.eclipse.rwt.service.*;
+import org.eclipse.rap.rwt.service.*;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 

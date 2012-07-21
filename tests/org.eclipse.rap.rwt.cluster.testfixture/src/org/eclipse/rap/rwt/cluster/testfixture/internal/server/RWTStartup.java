@@ -13,12 +13,12 @@ package org.eclipse.rap.rwt.cluster.testfixture.internal.server;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.eclipse.rap.rwt.application.Application;
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.application.ApplicationRunner;
+import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rwt.application.ApplicationRunner;
-import org.eclipse.rwt.application.Application;
-import org.eclipse.rwt.application.Application.OperationMode;
-import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 
 
 public class RWTStartup {

@@ -19,8 +19,8 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.internal.theme.ThemeManagerException;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.rwt.apache.batik.css.parser.ParseException;
-import org.eclipse.rwt.resources.ResourceLoader;
 import org.w3c.css.sac.*;
 
 

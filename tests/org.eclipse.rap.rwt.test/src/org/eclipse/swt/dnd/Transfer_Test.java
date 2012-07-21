@@ -13,8 +13,8 @@ package org.eclipse.swt.dnd;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;

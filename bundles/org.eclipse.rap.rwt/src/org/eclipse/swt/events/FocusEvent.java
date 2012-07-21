@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rwt.Adaptable;
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Control;
@@ -61,6 +61,7 @@ public final class FocusEvent extends TypedEvent {
     super( source, id );
   }
 
+  @Override
   protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case FOCUS_GAINED:
@@ -74,26 +75,48 @@ public final class FocusEvent extends TypedEvent {
     }
   }
 
+  @Override
   protected Class getListenerType() {
     return LISTENER;
   }
 
+  @Override
   protected boolean allowProcessing() {
     return EventUtil.isAccessible( widget );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void addListener( Adaptable adaptable, FocusListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void removeListener( Adaptable adaptable, FocusListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }

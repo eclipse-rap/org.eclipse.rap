@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.textsize;
 
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.Display;

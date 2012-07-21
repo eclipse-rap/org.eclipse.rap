@@ -14,13 +14,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.resources.SystemProps;
 import org.eclipse.rap.rwt.internal.resources.TestUtil;
 import org.eclipse.rap.rwt.internal.theme.Theme;
+import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.resources.IResourceManager;
 
 
 public class ClientResources_Test extends TestCase {

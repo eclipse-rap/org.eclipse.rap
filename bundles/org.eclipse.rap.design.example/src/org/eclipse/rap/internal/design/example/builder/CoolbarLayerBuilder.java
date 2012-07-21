@@ -12,8 +12,8 @@ package org.eclipse.rap.internal.design.example.builder;
 
 import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.internal.design.example.managers.CoolBarManager;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;

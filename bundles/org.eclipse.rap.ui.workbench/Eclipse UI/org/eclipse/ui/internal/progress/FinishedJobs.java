@@ -15,7 +15,7 @@ import java.util.*;
 import org.eclipse.core.commands.common.EventManager;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.progress.IProgressConstants;
 

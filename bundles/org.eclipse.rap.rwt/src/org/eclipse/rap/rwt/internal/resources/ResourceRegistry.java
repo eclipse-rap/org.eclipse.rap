@@ -15,7 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.resources.IResource;
+import org.eclipse.rap.rwt.resources.IResource;
 
 
 public class ResourceRegistry {

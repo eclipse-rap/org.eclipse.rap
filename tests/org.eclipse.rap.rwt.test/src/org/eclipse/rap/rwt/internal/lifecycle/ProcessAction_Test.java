@@ -13,8 +13,8 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessAction;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.widgets.Display;

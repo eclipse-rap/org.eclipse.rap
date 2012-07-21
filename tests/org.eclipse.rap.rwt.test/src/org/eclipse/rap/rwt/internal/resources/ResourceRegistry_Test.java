@@ -13,8 +13,8 @@ package org.eclipse.rap.rwt.internal.resources;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
-import org.eclipse.rwt.resources.IResource;
-import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
+import org.eclipse.rap.rwt.resources.IResource;
+import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
 
 
 public class ResourceRegistry_Test extends TestCase {

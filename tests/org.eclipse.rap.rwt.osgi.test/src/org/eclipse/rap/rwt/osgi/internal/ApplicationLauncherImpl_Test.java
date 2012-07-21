@@ -29,10 +29,10 @@ import javax.servlet.http.HttpServlet;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.application.*;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.application.*;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osgi.framework.*;

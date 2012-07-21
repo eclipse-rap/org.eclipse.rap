@@ -16,14 +16,14 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseListenerManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener.PhaseEventInfo;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Display;
 
 

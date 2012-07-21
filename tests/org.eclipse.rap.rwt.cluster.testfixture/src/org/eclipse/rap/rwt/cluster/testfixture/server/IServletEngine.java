@@ -12,7 +12,7 @@ package org.eclipse.rap.rwt.cluster.testfixture.server;
 
 import javax.servlet.http.HttpSession;
 
-import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 
 
 public interface IServletEngine {

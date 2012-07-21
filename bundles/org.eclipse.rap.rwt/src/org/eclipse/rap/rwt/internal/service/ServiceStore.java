@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.service.IServiceStore;
 
 
 public final class ServiceStore implements IServiceStore {

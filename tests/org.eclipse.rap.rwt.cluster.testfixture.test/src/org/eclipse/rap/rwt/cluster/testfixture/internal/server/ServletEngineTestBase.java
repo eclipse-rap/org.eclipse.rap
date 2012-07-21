@@ -27,7 +27,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
 import org.eclipse.rap.rwt.cluster.testfixture.test.TestEntryPoint;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 
 
 public abstract class ServletEngineTestBase extends TestCase {

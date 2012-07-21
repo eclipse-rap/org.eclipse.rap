@@ -20,10 +20,10 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rap.rwt.lifecycle.DefaultEntryPointFactory;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.lifecycle.DefaultEntryPointFactory;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 
 
 public class EntryPointManager_Test extends TestCase {

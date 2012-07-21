@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.swt.widgets.Display;
 
 

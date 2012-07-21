@@ -14,13 +14,13 @@ package org.eclipse.swt.internal.widgets.tabitemkit;
 import java.io.IOException;
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;

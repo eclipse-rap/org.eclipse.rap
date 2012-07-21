@@ -18,8 +18,8 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.testfixture.*;
-import org.eclipse.rwt.service.ISessionStore;
 
 
 public class ContextProvider_Test extends TestCase {

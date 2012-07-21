@@ -23,6 +23,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.branding.AbstractBranding;
+import org.eclipse.rap.rwt.branding.Header;
+import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
@@ -36,11 +40,7 @@ import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.branding.Header;
-import org.eclipse.rwt.client.WebClient;
-import org.eclipse.rwt.resources.IResource;
+import org.eclipse.rap.rwt.resources.IResource;
 
 
 final class StartupPageConfigurer {

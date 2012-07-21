@@ -12,7 +12,7 @@
 package org.eclipse.rap.rwt.internal.theme.css;
 
 import org.eclipse.rap.rwt.internal.theme.*;
-import org.eclipse.rwt.resources.ResourceLoader;
+import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.w3c.css.sac.*;
 
 

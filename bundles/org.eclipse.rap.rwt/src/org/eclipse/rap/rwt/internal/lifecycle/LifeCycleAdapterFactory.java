@@ -16,8 +16,8 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.util.ClassInstantiationException;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
-import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
-import org.eclipse.rwt.lifecycle.IWidgetLifeCycleAdapter;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
+import org.eclipse.rap.rwt.lifecycle.IWidgetLifeCycleAdapter;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;

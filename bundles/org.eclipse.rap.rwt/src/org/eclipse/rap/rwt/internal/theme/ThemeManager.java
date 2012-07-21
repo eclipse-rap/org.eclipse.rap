@@ -27,7 +27,7 @@ import java.util.Map;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.resources.ResourceLoader;
+import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -81,7 +81,7 @@ public class ThemeManager {
     org.eclipse.swt.browser.Browser.class,
     org.eclipse.swt.custom.ScrolledComposite.class,
     org.eclipse.swt.widgets.ScrollBar.class,
-    org.eclipse.rwt.widgets.FileUpload.class
+    org.eclipse.rap.rwt.widgets.FileUpload.class
   };
 
   private final Map<String, Theme> themes;

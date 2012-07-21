@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.internal.textsize;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementItem;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementOperator;
@@ -23,7 +24,6 @@ import org.eclipse.rap.rwt.internal.textsize.TextSizeEstimation;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeStorageUtil;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Display;

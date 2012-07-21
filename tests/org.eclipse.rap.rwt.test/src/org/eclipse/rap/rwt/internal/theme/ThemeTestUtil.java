@@ -19,9 +19,9 @@ import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
+import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
-import org.eclipse.rwt.resources.ResourceLoader;
 import org.w3c.css.sac.CSSException;
 
 

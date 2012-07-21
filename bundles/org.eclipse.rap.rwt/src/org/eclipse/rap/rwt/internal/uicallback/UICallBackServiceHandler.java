@@ -19,8 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.HTTP;
-import org.eclipse.rwt.service.IServiceHandler;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ISessionStore;
 
 
 public class UICallBackServiceHandler implements IServiceHandler {

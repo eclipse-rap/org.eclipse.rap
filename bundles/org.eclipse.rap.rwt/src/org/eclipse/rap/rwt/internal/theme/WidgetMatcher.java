@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Widget;
 
 

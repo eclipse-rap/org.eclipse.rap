@@ -14,7 +14,7 @@ package org.eclipse.rap.rwt.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.AdapterFactory;
+import org.eclipse.rap.rwt.AdapterFactory;
 
 
 @SuppressWarnings("deprecation")

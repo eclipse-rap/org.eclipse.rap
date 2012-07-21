@@ -12,7 +12,7 @@ package org.eclipse.rap.rwt.testfixture;
 
 import java.util.*;
 
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Widget;
 import org.json.*;
 

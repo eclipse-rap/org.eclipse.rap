@@ -15,8 +15,8 @@ package org.eclipse.rap.rwt.internal.events;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.events.IEventAdapter;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.internal.SWTEventListener;

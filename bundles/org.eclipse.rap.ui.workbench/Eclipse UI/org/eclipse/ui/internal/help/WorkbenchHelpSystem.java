@@ -30,7 +30,7 @@ import org.eclipse.help.IHelpResource;
 import org.eclipse.help.IToc;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.LegacyActionTools;
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;

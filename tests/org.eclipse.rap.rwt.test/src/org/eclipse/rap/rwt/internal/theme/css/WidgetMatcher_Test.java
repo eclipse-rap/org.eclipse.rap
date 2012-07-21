@@ -16,8 +16,8 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.internal.theme.*;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher.Constraint;
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
 

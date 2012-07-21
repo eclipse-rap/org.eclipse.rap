@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 
 

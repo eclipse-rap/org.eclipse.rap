@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.test.TestEntryPoint;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 
 
 public class DelegatingServletEngine_Test extends TestCase {

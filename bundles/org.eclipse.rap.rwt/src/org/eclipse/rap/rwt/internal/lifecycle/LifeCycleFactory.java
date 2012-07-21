@@ -13,8 +13,8 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
-import org.eclipse.rwt.lifecycle.ILifeCycle;
-import org.eclipse.rwt.lifecycle.PhaseListener;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
+import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 
 
 public class LifeCycleFactory {

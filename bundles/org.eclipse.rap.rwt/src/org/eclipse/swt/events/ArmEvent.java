@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rwt.Adaptable;
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Event;
@@ -56,6 +56,7 @@ public final class ArmEvent extends TypedEvent {
     super( source, WIDGET_ARMED );
   }
 
+  @Override
   protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case WIDGET_ARMED:
@@ -66,26 +67,48 @@ public final class ArmEvent extends TypedEvent {
     }
   }
 
+  @Override
   protected Class getListenerType() {
     return LISTENER;
   }
 
+  @Override
   protected boolean allowProcessing() {
     return EventUtil.isAccessible( widget );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void addListener( Adaptable adaptable, ArmListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void removeListener( Adaptable adaptable, ArmListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }

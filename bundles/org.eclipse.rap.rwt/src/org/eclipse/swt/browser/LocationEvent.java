@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.browser;
 
-import org.eclipse.rwt.Adaptable;
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
 
 
@@ -86,18 +86,38 @@ public class LocationEvent extends TypedEvent {
     return true;
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void addListener( Adaptable adaptable, LocationListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void removeListener( Adaptable adaptable, LocationListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }

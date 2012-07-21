@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.widgets;
 
-import org.eclipse.rwt.widgets.DialogCallback;
+import org.eclipse.rap.rwt.widgets.DialogCallback;
 
 
 public interface IDialogAdapter {

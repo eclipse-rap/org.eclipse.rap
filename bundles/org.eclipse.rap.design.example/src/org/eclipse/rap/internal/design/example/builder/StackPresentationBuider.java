@@ -15,9 +15,9 @@ import java.util.Map;
 
 import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.internal.design.example.stacks.ViewStackPresentation;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;

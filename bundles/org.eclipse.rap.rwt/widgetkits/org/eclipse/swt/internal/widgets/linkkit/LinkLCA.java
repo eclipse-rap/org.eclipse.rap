@@ -12,9 +12,9 @@
 
 package org.eclipse.swt.internal.widgets.linkkit;
 
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,10 +27,10 @@ import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.events.EventLCAUtil;

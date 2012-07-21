@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.cluster.test.entrypoints;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;

@@ -11,7 +11,7 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 
 

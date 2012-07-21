@@ -18,6 +18,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.branding.TestBranding;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
@@ -30,7 +31,6 @@ import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
-import org.eclipse.rwt.client.WebClient;
 
 
 public class StartupPageConfigurer_Test extends TestCase {

@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.ISessionStore;
 
 
 public class RWTClusterSupport implements Filter {

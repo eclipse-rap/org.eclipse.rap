@@ -23,10 +23,10 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.SessionStoreEvent;
+import org.eclipse.rap.rwt.service.SessionStoreListener;
 import org.eclipse.rap.rwt.testfixture.*;
-import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.rwt.service.SessionStoreEvent;
-import org.eclipse.rwt.service.SessionStoreListener;
 
 
 public class SessionStoreImpl_Test extends TestCase {

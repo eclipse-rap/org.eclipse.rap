@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 

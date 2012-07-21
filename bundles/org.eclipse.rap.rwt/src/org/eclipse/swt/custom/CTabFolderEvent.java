@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
-import org.eclipse.rwt.Adaptable;
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Widget;
@@ -121,18 +121,38 @@ public class CTabFolderEvent extends TypedEvent {
     return EventUtil.isAccessible( widget );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void addListener( Adaptable adaptable, CTabFolder2Listener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void removeListener( Adaptable adaptable, CTabFolder2Listener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }

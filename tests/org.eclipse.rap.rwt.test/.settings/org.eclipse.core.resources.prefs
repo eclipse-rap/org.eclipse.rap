@@ -1,7 +1,7 @@
 eclipse.preferences.version=1
 encoding//src/org/eclipse/rap/rwt/internal/resources/iso-resource.js=ISO-8859-1
 encoding//src/org/eclipse/rap/rwt/internal/resources/utf-8-resource.js=UTF-8
-encoding//src/org/eclipse/rwt/messages_utf8.properties=UTF-8
-encoding//src/org/eclipse/rwt/messages_utf8_de.properties=UTF-8
-encoding//src/org/eclipse/rwt/messages_utf8_it.properties=UTF-8
+encoding//src/org/eclipse/rap/rwt/messages_utf8.properties=UTF-8
+encoding//src/org/eclipse/rap/rwt/messages_utf8_de.properties=UTF-8
+encoding//src/org/eclipse/rap/rwt/messages_utf8_it.properties=UTF-8
 encoding/<project>=UTF-8

@@ -18,9 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.lifecycle.DefaultEntryPointFactory;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.lifecycle.IEntryPointFactory;
+import org.eclipse.rap.rwt.lifecycle.DefaultEntryPointFactory;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 
 
 public class EntryPointManager {

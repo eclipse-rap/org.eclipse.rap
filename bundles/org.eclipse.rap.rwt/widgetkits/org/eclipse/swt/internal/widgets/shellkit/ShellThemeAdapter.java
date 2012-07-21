@@ -11,9 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.shellkit;
 
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.*;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher.Constraint;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;

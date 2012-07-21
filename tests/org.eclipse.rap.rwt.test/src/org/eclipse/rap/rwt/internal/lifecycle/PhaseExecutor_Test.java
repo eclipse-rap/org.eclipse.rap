@@ -19,10 +19,10 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.internal.lifecycle.IPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseExecutor;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseListenerManager;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener.PhaseEventInfo;
-import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Display;
 
 

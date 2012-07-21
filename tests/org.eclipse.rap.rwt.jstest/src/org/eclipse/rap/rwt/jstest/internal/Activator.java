@@ -12,8 +12,8 @@ package org.eclipse.rap.rwt.jstest.internal;
 
 import java.util.Map;
 
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.jstest.TestContribution;
-import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

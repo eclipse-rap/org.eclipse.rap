@@ -17,7 +17,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osgi.framework.*;

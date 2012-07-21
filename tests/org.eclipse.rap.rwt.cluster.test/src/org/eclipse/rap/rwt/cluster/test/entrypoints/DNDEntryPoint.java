@@ -12,10 +12,10 @@ package org.eclipse.rap.rwt.cluster.test.entrypoints;
 
 import java.io.Serializable;
 
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;

@@ -18,10 +18,10 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rap.rwt.service.SessionStoreEvent;
+import org.eclipse.rap.rwt.service.SessionStoreListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
-import org.eclipse.rwt.service.SessionStoreEvent;
-import org.eclipse.rwt.service.SessionStoreListener;
 
 
 public class SessionStoreImplSerialization_Test extends TestCase {

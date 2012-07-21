@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.service.IApplicationStore;
+import org.eclipse.rap.rwt.service.IApplicationStore;
 
 public class ApplicationStoreImpl implements IApplicationStore {
   private final Map<String,Object> attributes;

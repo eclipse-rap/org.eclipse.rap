@@ -11,7 +11,7 @@
 package org.eclipse.ui.internal;
 
 import org.eclipse.jface.window.Window;
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 
 /**
  * This handler will pass along to the workbench advisor exceptions

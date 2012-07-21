@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.keys;
 
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 
 //import org.eclipse.osgi.util.NLS;
 

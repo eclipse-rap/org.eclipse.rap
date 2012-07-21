@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
-import org.eclipse.rwt.resources.ResourceLoader;
+import org.eclipse.rap.rwt.resources.ResourceLoader;
 
 
 public class QxCursor implements QxType, ThemeResource {

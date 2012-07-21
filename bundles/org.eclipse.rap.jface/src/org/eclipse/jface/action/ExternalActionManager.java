@@ -44,7 +44,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.util.Util;
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.swt.widgets.Event;
 
 /**

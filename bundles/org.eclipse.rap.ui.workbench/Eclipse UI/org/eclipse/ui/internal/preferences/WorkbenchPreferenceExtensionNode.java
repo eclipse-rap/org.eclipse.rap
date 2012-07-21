@@ -18,7 +18,7 @@ import java.util.*;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.internal.registry.KeywordRegistry;

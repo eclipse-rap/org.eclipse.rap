@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.EncodingUtil;
-import org.eclipse.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontUtil;

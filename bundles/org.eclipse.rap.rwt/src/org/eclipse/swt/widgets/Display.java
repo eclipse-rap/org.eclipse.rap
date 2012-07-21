@@ -19,6 +19,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
@@ -26,9 +27,8 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
 import org.eclipse.rap.rwt.internal.theme.*;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
-import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
@@ -1184,7 +1184,7 @@ public class Display extends Device implements Adaptable {
    * perform UI-updates. Note that this method may be called from any thread.
    *
    * <p>Note that this only works as expected if the
-   * <code>{@link org.eclipse.rwt.lifecycle.UICallBack UICallBack}</code>
+   * <code>{@link org.eclipse.rap.rwt.lifecycle.UICallBack UICallBack}</code>
    * mechanism is activated.</p>
    *
    * @exception SWTException <ul>

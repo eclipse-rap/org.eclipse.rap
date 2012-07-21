@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.dnd;
 
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 
 /**
  * The class <code>RTFTransfer</code> provides a platform specific mechanism for

@@ -14,7 +14,7 @@ package org.eclipse.ui.forms.internal.widgets.imagehyperlinkkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.internal.widgets.hyperlinkkit.HyperlinkLCA;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;

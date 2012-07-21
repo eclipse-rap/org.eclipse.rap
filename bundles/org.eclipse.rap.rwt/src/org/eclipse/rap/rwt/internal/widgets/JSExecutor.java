@@ -13,13 +13,13 @@ package org.eclipse.rap.rwt.internal.widgets;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.SessionSingletonBase;
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.widgets.Display;
 
 

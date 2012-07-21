@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;

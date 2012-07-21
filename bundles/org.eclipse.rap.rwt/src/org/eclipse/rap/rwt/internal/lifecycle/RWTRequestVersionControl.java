@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 // TODO [rh] find a handier name

@@ -27,7 +27,7 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IVetoableValue;
 import org.eclipse.core.databinding.observable.value.ValueChangingEvent;
 import org.eclipse.jface.internal.databinding.swt.SWTDelayedObservableValueDecorator;
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;

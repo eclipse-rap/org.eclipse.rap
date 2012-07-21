@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawArc;

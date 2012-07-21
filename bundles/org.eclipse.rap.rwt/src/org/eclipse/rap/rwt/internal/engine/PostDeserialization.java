@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.engine;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.ISessionStore;
 
 
 public class PostDeserialization {

@@ -16,6 +16,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
@@ -26,14 +27,13 @@ import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.SessionStoreEvent;
+import org.eclipse.rap.rwt.service.SessionStoreListener;
 import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener.PhaseEventInfo;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.rwt.service.SessionStoreEvent;
-import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.swt.widgets.Display;
 
 

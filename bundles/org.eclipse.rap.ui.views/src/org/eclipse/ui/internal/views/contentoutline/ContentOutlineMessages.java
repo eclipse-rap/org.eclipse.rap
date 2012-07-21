@@ -11,7 +11,7 @@
 
 package org.eclipse.ui.internal.views.contentoutline;
 
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 
 /**
  * ContentOutlineMessages is the message class for the messages used in the content outline.

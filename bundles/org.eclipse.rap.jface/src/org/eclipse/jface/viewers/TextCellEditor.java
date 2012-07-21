@@ -15,7 +15,7 @@ package org.eclipse.jface.viewers;
 import java.text.MessageFormat;	// Not using ICU to support standalone JFace scenario
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;

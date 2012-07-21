@@ -14,8 +14,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.engine.PostDeserialization;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.testfixture.TestSession;
-import org.eclipse.rwt.service.ISessionStore;
 
 
 public class PostDeserialization_Test extends TestCase {

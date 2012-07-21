@@ -19,7 +19,7 @@ import javax.servlet.ServletContext;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.ISessionStore;
 
 
 public class ApplicationContextUtil {

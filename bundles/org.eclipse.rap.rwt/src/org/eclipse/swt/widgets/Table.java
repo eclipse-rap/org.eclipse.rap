@@ -11,11 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;

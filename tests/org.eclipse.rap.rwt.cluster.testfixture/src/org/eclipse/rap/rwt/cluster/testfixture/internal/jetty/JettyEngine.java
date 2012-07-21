@@ -22,8 +22,8 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.server.RWTStartup;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rwt.engine.RWTServlet;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.engine.RWTServlet;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 
 
 public class JettyEngine implements IServletEngine {

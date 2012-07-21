@@ -25,9 +25,9 @@ import org.eclipse.rap.rwt.internal.theme.QxAppearanceWriter;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.util.HTTP;
-import org.eclipse.rwt.resources.IResource;
-import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
+import org.eclipse.rap.rwt.resources.IResource;
+import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
 
 
 public final class ClientResources {

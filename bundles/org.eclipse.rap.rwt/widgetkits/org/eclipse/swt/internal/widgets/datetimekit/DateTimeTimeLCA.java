@@ -11,13 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
 
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
 import org.eclipse.swt.internal.widgets.datetimekit.DateTimeLCAUtil.SubWidgetBounds;

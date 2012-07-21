@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.testfixture.internal;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.*;
 
 public class LoggingPhaseListener implements PhaseListener {
   private static final long serialVersionUID = 1L;

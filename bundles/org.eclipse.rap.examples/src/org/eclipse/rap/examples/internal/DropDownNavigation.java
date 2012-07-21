@@ -11,7 +11,7 @@
 package org.eclipse.rap.examples.internal;
 
 import org.eclipse.rap.examples.IExampleContribution;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;

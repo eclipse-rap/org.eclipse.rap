@@ -20,7 +20,7 @@ import javax.servlet.*;
 import javax.servlet.ServletRegistration.Dynamic;
 import javax.servlet.descriptor.JspConfigDescriptor;
 
-import org.eclipse.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 
 
 class ServletContextWrapper implements ServletContext {

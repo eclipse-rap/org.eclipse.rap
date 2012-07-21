@@ -10,7 +10,7 @@
 package org.eclipse.ui.internal.wizards.preferences;
 
 //import org.eclipse.osgi.util.NLS;
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 
 
 /**

@@ -13,6 +13,8 @@ package org.eclipse.rap.rwt.internal.textsize;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementItem;
@@ -22,11 +24,9 @@ import org.eclipse.rap.rwt.internal.textsize.ProbeResult;
 import org.eclipse.rap.rwt.internal.textsize.ProbeResultStore;
 import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rap.rwt.testfixture.internal.PhaseListenerHelper;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;

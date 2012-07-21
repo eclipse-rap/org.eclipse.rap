@@ -15,12 +15,12 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.branding.Header;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.branding.BrandingManager;
 import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rap.rwt.internal.util.URLHelper;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.branding.Header;
 
 
 public class BrandingUtil_Test extends TestCase {

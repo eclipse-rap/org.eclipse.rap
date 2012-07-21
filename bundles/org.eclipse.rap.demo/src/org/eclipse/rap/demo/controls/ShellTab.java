@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;

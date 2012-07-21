@@ -20,9 +20,9 @@ import javax.servlet.FilterRegistration.Dynamic;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 
+import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
-import org.eclipse.rwt.engine.RWTServlet;
 
 /*
  * This class requires the servlet 3.0 API to be on the class path.

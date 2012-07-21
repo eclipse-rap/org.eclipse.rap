@@ -28,8 +28,8 @@ import org.eclipse.swt.internal.graphics.ColorUtil;
  *
  * @see RGB
  * @see Device#getSystemColor
- * @see org.eclipse.rwt.graphics.Graphics#getColor(int, int, int)
- * @see org.eclipse.rwt.graphics.Graphics#getColor(RGB)
+ * @see org.eclipse.rap.rwt.graphics.Graphics#getColor(int, int, int)
+ * @see org.eclipse.rap.rwt.graphics.Graphics#getColor(RGB)
  *
  * @since 1.0
  */
@@ -75,8 +75,8 @@ public class Color extends Resource {
    * </ul>
    *
    * @see #dispose
-   * @see org.eclipse.rwt.graphics.Graphics#getColor(int, int, int)
-   * @see org.eclipse.rwt.graphics.Graphics#getColor(RGB)
+   * @see org.eclipse.rap.rwt.graphics.Graphics#getColor(int, int, int)
+   * @see org.eclipse.rap.rwt.graphics.Graphics#getColor(RGB)
    * @since 1.3
    */
   public Color( Device device, RGB rgb ) {
@@ -116,8 +116,8 @@ public class Color extends Resource {
    * </ul>
    *
    * @see #dispose
-   * @see org.eclipse.rwt.graphics.Graphics#getColor(int, int, int)
-   * @see org.eclipse.rwt.graphics.Graphics#getColor(RGB)
+   * @see org.eclipse.rap.rwt.graphics.Graphics#getColor(int, int, int)
+   * @see org.eclipse.rap.rwt.graphics.Graphics#getColor(RGB)
    * @since 1.3
    */
   public Color( Device device, int red, int green, int blue ) {

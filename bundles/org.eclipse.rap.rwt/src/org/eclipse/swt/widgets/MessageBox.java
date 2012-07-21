@@ -13,7 +13,7 @@ package org.eclipse.swt.widgets;
 
 import java.util.StringTokenizer;
 
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -146,7 +146,7 @@ public class MessageBox extends Dialog {
    * </ul>
    * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
    *
-   * @see org.eclipse.rwt.application.Application.OperationMode
+   * @see org.eclipse.rap.rwt.application.Application.OperationMode
    */
   public int open() {
     checkOperationMode();

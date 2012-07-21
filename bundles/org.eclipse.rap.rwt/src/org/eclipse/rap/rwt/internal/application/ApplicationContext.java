@@ -15,6 +15,7 @@ import java.io.File;
 
 import javax.servlet.ServletContext;
 
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.AdapterManager;
 import org.eclipse.rap.rwt.internal.branding.BrandingManager;
 import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
@@ -34,9 +35,8 @@ import org.eclipse.rap.rwt.internal.service.StartupPage;
 import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
-import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.rwt.service.IApplicationStore;
+import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.service.IApplicationStore;
 import org.eclipse.swt.internal.graphics.FontDataFactory;
 import org.eclipse.swt.internal.graphics.ImageDataFactory;
 import org.eclipse.swt.internal.graphics.ImageFactory;

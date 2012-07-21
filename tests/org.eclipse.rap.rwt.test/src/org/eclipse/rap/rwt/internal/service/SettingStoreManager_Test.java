@@ -20,9 +20,9 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.SettingStoreManager;
+import org.eclipse.rap.rwt.service.ISettingStore;
+import org.eclipse.rap.rwt.service.ISettingStoreFactory;
 import org.eclipse.rap.rwt.testfixture.*;
-import org.eclipse.rwt.service.ISettingStore;
-import org.eclipse.rwt.service.ISettingStoreFactory;
 
 
 public class SettingStoreManager_Test extends TestCase {

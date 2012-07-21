@@ -19,6 +19,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rap.rwt.branding.AbstractBranding;
 import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
@@ -31,9 +32,8 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.theme.JsonValue;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
-import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.service.IServiceHandler;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ISessionStore;
 
 
 public class LifeCycleServiceHandler implements IServiceHandler {

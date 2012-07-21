@@ -1,20 +1,22 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation, EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ *    IBM Corporation - initial API and implementation
+ *    EclipseSource - ongoing development
  *******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rwt.Adaptable;
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
+
 
 /**
  * Instances of this class are sent as a result of visible areas of controls
@@ -71,12 +73,12 @@ public final class PaintEvent extends TypedEvent {
    */
   public PaintEvent( Event event ) {
     super( event );
-    this.gc = event.gc;
-    this.x = event.x;
-    this.y = event.y;
-    this.width = event.width;
-    this.height = event.height;
-    this.count = event.count;
+    gc = event.gc;
+    x = event.x;
+    y = event.y;
+    width = event.width;
+    height = event.height;
+    count = event.count;
   }
 
   /**
@@ -90,12 +92,13 @@ public final class PaintEvent extends TypedEvent {
   public PaintEvent( Widget widget, GC gc, Rectangle bounds ) {
     super( widget, PAINT_CONTROL );
     this.gc = gc;
-    this.x = bounds.x;
-    this.y = bounds.y;
-    this.width = bounds.width;
-    this.height = bounds.height;
+    x = bounds.x;
+    y = bounds.y;
+    width = bounds.width;
+    height = bounds.height;
   }
 
+  @Override
   protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case PAINT_CONTROL:
@@ -106,26 +109,48 @@ public final class PaintEvent extends TypedEvent {
     }
   }
 
+  @Override
   protected Class getListenerType() {
     return LISTENER;
   }
 
+  @Override
   protected boolean allowProcessing() {
     return true;
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void addListener( Adaptable adaptable, PaintListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void removeListener( Adaptable adaptable, PaintListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
@@ -136,6 +161,7 @@ public final class PaintEvent extends TypedEvent {
    *
    * @return a string representation of the event
    */
+  @Override
   public String toString() {
     String string = super.toString();
     return   string.substring( 0, string.length() - 1 ) // remove trailing '}'

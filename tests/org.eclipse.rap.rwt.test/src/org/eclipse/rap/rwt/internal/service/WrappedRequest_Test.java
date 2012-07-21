@@ -20,9 +20,9 @@ import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.service.WrappedRequest;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.Display;
 
 

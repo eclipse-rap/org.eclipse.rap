@@ -1,25 +1,27 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation, EclipseSource, and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ *    IBM Corporation - initial API and implementation
+ *    EclipseSource - ongoing development
  *******************************************************************************/
 package org.eclipse.swt.dnd;
 
-import org.eclipse.rwt.Adaptable;
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Widget;
 
+
 /**
  * The DragSourceEvent contains the event information passed in the methods of
  * the DragSourceListener.
- * 
+ *
  * @see DragSourceListener
  * @since 1.3
  */
@@ -35,7 +37,7 @@ public class DragSourceEvent extends TypedEvent {
 
   /**
    * The operation that was performed.
-   * 
+   *
    * @see DND#DROP_NONE
    * @see DND#DROP_MOVE
    * @see DND#DROP_COPY
@@ -72,25 +74,25 @@ public class DragSourceEvent extends TypedEvent {
    * </p>
    */
   public boolean doit;
-  
+
   /**
    * In dragStart, the x coordinate (relative to the control) of the position
    * the mouse went down to start the drag.
    */
   public int x;
-  
+
   /**
    * In dragStart, the y coordinate (relative to the control) of the position
    * the mouse went down to start the drag.
    */
   public int y;
-  
+
   /**
    * The type of data requested. Data provided in the data field must be of the
    * same type.
    */
   public TransferData dataType;
-  
+
   /**
    * The drag source image to be displayed during the drag.
    * <p>
@@ -101,33 +103,34 @@ public class DragSourceEvent extends TypedEvent {
    * </p>
    */
   public Image image;
-  
+
   /**
    * In dragStart, the x offset (relative to the image) where the drag source
    * image will be displayed.
    */
   public int offsetX;
-  
+
   /**
    * In dragStart, the y offset (relative to the image) where the drag source
    * image will be displayed.
    */
   public int offsetY;
-  
+
   /**
    * the time that the event occurred.
-   * 
+   *
    * NOTE: This field is an unsigned integer and should
    * be AND'ed with 0xFFFFFFFFL so that it can be treated
    * as a signed long.
-   */ 
+   */
   // TODO [rh] in SWT, the field 'time' is declared in TypedEvent
   public int time;
-  
+
   public DragSourceEvent( Widget widget, int id ) {
     super( widget, id );
   }
 
+  @Override
   public String toString() {
     String string = super.toString();
     return string.substring( 0, string.length() - 1 ) // remove trailing '}'
@@ -139,7 +142,8 @@ public class DragSourceEvent extends TypedEvent {
            + doit
            + "}";
   }
-  
+
+  @Override
   protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case DRAG_START:
@@ -156,26 +160,48 @@ public class DragSourceEvent extends TypedEvent {
     }
   }
 
+  @Override
   protected boolean allowProcessing() {
     return EventUtil.isAccessible( widget );
   }
 
+  @Override
   protected Class getListenerType() {
     return LISTENER;
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void addListener( Adaptable adaptable, DragSourceListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void removeListener( Adaptable adaptable, DragSourceListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }

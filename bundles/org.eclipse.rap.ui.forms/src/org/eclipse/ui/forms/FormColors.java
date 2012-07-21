@@ -13,7 +13,7 @@ package org.eclipse.ui.forms;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;

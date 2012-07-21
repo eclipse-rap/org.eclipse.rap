@@ -11,8 +11,8 @@
 
 package org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit;
 
-import org.eclipse.rwt.resources.IResource;
-import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
+import org.eclipse.rap.rwt.resources.IResource;
+import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
 
 
 

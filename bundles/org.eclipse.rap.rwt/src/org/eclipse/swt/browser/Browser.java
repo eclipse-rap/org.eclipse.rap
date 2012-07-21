@@ -13,13 +13,13 @@ package org.eclipse.swt.browser;
 
 import java.util.*;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.lifecycle.ProcessActionRunner;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rwt.service.IServiceStore;
-import org.eclipse.rwt.widgets.BrowserCallback;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.widgets.BrowserCallback;
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -243,7 +243,7 @@ public class Browser extends Composite {
    *
    * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
    *
-   * @see org.eclipse.rwt.application.Application.OperationMode
+   * @see org.eclipse.rap.rwt.application.Application.OperationMode
    *
    * @since 1.1
    */
@@ -323,7 +323,7 @@ public class Browser extends Composite {
    * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
    *
    * @see ProgressListener#completed(ProgressEvent)
-   * @see org.eclipse.rwt.application.Application.OperationMode
+   * @see org.eclipse.rap.rwt.application.Application.OperationMode
    *
    * @since 1.4
    */

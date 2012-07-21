@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi;
 
-import org.eclipse.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 
@@ -53,7 +53,8 @@ public interface ApplicationLauncher {
    * @param contextName the context name of the application, defines the first URL path segment to
    *          the application
    * @param contextDirectory the name of a directory to store static web resources
-   * @return a reference to tha application started
+   * @return a reference to the application started
+   * @since 2.0
    */
   ApplicationReference launch( ApplicationConfiguration configuration,
                                HttpService httpService,

@@ -13,7 +13,7 @@ package org.eclipse.rap.demo.controls;
 
 import java.util.*;
 
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Shell;
 

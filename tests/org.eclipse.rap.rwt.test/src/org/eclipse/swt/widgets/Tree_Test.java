@@ -18,12 +18,12 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;

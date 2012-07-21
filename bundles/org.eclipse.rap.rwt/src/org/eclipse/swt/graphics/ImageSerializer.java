@@ -15,8 +15,8 @@ import java.io.*;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.engine.*;
 import org.eclipse.rap.rwt.internal.resources.ResourceUtil;
-import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
 

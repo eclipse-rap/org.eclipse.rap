@@ -21,7 +21,7 @@ import java.io.ObjectOutputStream;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.SWTException;
@@ -48,9 +48,9 @@ import org.eclipse.swt.widgets.Display;
  * and/or unnecessary memory consumption.
  * </p>
  *
- * @see org.eclipse.rwt.graphics.Graphics#getImage(String)
- * @see org.eclipse.rwt.graphics.Graphics#getImage(String, ClassLoader)
- * @see org.eclipse.rwt.graphics.Graphics#getImage(String, java.io.InputStream)
+ * @see org.eclipse.rap.rwt.graphics.Graphics#getImage(String)
+ * @see org.eclipse.rap.rwt.graphics.Graphics#getImage(String, ClassLoader)
+ * @see org.eclipse.rap.rwt.graphics.Graphics#getImage(String, java.io.InputStream)
  */
 public final class Image extends Resource {
 
@@ -126,9 +126,9 @@ public final class Image extends Resource {
    * @exception SWTError <ul>
    *    <li>ERROR_NO_HANDLES if a handle could not be obtained for image creation</li>
    * </ul>
-   * @see org.eclipse.rwt.graphics.Graphics#getImage(String)
-   * @see org.eclipse.rwt.graphics.Graphics#getImage(String, ClassLoader)
-   * @see org.eclipse.rwt.graphics.Graphics#getImage(String, java.io.InputStream)
+   * @see org.eclipse.rap.rwt.graphics.Graphics#getImage(String)
+   * @see org.eclipse.rap.rwt.graphics.Graphics#getImage(String, ClassLoader)
+   * @see org.eclipse.rap.rwt.graphics.Graphics#getImage(String, java.io.InputStream)
    * @since 1.3
    */
   public Image( Device device, InputStream stream ) {
@@ -170,9 +170,9 @@ public final class Image extends Resource {
    * @exception SWTError <ul>
    *    <li>ERROR_NO_HANDLES if a handle could not be obtained for image creation</li>
    * </ul>
-   * @see org.eclipse.rwt.graphics.Graphics#getImage(String)
-   * @see org.eclipse.rwt.graphics.Graphics#getImage(String, ClassLoader)
-   * @see org.eclipse.rwt.graphics.Graphics#getImage(String, java.io.InputStream)
+   * @see org.eclipse.rap.rwt.graphics.Graphics#getImage(String)
+   * @see org.eclipse.rap.rwt.graphics.Graphics#getImage(String, ClassLoader)
+   * @see org.eclipse.rap.rwt.graphics.Graphics#getImage(String, java.io.InputStream)
    * @since 1.3
    */
   public Image( Device device, String fileName ) {

@@ -11,9 +11,9 @@
 package org.eclipse.rap.internal.design.example.business.layoutsets;
 
 import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 

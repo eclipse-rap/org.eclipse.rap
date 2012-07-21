@@ -11,7 +11,7 @@
 
 package org.eclipse.ui.internal.views.properties;
 
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 
 /**
  * PropertiesMessages is the message class for the messages used in the properties view.

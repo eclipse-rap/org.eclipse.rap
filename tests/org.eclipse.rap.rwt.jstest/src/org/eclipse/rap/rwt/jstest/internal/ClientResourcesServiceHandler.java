@@ -24,9 +24,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.jstest.TestContribution;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.IServiceHandler;
 
 
 public class ClientResourcesServiceHandler implements IServiceHandler {

@@ -14,7 +14,7 @@ import java.util.*;
 
 import org.eclipse.rap.rwt.internal.util.*;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 

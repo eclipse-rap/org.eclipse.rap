@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jface.util.SafeRunnable;
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 

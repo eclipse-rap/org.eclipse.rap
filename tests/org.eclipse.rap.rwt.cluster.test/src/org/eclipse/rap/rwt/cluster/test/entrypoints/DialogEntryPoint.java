@@ -10,11 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.test.entrypoints;
 
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.rwt.widgets.DialogCallback;
-import org.eclipse.rwt.widgets.DialogUtil;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.widgets.DialogCallback;
+import org.eclipse.rap.rwt.widgets.DialogUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Display;

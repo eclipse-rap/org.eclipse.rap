@@ -17,7 +17,7 @@ import java.net.URLConnection;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.util.HTTP;
-import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.IResourceManager;
 
 
 public final class ResourceUtil {

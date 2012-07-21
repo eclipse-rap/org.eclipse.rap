@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rwt.Adaptable;
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.EventUtil;
@@ -125,15 +125,15 @@ public class SelectionEvent extends TypedEvent {
    */
   public SelectionEvent( Event e ) {
     super( e );
-    this.item = e.item;
-    this.x = e.x;
-    this.y = e.y;
-    this.width = e.width;
-    this.height = e.height;
-    this.detail = e.detail;
-    this.stateMask = e.stateMask;
-    this.text = e.text;
-    this.doit = e.doit;
+    item = e.item;
+    x = e.x;
+    y = e.y;
+    width = e.width;
+    height = e.height;
+    detail = e.detail;
+    stateMask = e.stateMask;
+    text = e.text;
+    doit = e.doit;
   }
 
   /**
@@ -174,10 +174,10 @@ public class SelectionEvent extends TypedEvent {
   {
     super( widget, id );
     this.widget = widget;
-    this.x = bounds.x;
-    this.y = bounds.y;
-    this.width = bounds.width;
-    this.height = bounds.height;
+    x = bounds.x;
+    y = bounds.y;
+    width = bounds.width;
+    height = bounds.height;
     this.stateMask = stateMask;
     this.text = text;
     this.doit = doit;
@@ -185,6 +185,7 @@ public class SelectionEvent extends TypedEvent {
     this.detail = detail;
   }
 
+  @Override
   protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case WIDGET_SELECTED:
@@ -198,30 +199,53 @@ public class SelectionEvent extends TypedEvent {
     }
   }
 
+  @Override
   protected Class getListenerType() {
     return LISTENER;
   }
 
+  @Override
   protected boolean allowProcessing() {
     return EventUtil.isAccessible( widget );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void addListener( Adaptable adaptable, SelectionListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void removeListener( Adaptable adaptable, SelectionListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 
+  @Override
   public String toString() {
     String string = super.toString ();
     return   string.substring( 0, string.length() - 1 ) // remove trailing '}'

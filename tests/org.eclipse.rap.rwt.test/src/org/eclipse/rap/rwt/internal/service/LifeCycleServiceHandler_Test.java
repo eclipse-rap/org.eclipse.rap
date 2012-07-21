@@ -34,14 +34,14 @@ import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.StartupPage;
 import org.eclipse.rap.rwt.internal.util.HTTP;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
+import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.lifecycle.ILifeCycle;
-import org.eclipse.rwt.service.IServiceHandler;
-import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 

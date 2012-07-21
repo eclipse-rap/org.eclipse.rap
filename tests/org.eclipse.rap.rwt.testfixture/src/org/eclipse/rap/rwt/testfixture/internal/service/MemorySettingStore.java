@@ -13,9 +13,9 @@ package org.eclipse.rap.rwt.testfixture.internal.service;
 
 import java.util.*;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.service.*;
+import org.eclipse.rap.rwt.service.*;
 
 /**
  * This {@link ISettingStore} implementation "persists" all settings

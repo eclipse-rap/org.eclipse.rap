@@ -15,7 +15,7 @@ import java.util.Iterator;
 
 import org.eclipse.help.HelpSystem;
 import org.eclipse.help.IContext;
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;

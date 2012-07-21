@@ -15,8 +15,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.jface.viewers.*;
-import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;

@@ -19,9 +19,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.IPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.PrepareUIRoot;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.widgets.Display;
 
 

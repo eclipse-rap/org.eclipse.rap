@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.resources;
 
 /**
  * <p>Thrown when the registration of a resource fails.</p>
- * @see org.eclipse.rwt.resources.IResourceManager
+ * @see org.eclipse.rap.rwt.resources.IResourceManager
  */
 public class ResourceRegistrationException extends RuntimeException {
 

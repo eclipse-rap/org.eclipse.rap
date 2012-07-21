@@ -18,8 +18,8 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.resources.JSLibraryConcatenator;
 import org.eclipse.rap.rwt.internal.resources.ResourceUtil;
+import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.resources.IResourceManager;
 
 
 public class ResourceUtil_Test extends TestCase {

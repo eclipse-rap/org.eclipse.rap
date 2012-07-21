@@ -15,7 +15,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 

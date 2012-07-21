@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.internal.provisional.action.ToolBarManager2;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;

@@ -11,7 +11,7 @@
 package org.eclipse.swt.internal.dnd;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Control;
 

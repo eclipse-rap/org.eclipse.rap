@@ -14,9 +14,9 @@ package org.eclipse.rap.rwt.internal.branding;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.branding.AbstractBranding;
 import org.eclipse.rap.rwt.internal.branding.BrandingManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.branding.AbstractBranding;
 
 
 public class BrandingManager_Test extends TestCase {

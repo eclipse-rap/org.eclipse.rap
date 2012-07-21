@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.events;
 import java.util.EventListener;
 import java.util.EventObject;
 
-import org.eclipse.rwt.Adaptable;
+import org.eclipse.rap.rwt.Adaptable;
 
 
 public abstract class Event extends EventObject {

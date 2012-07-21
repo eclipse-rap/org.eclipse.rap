@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2009, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.dnd;
 
-import org.eclipse.rwt.Adaptable;
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Widget;
@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Widget;
 /**
  * The DropTargetEvent contains the event information passed in the methods of
  * the DropTargetListener.
- * 
+ *
  * @since 1.3
  */
 public class DropTargetEvent extends TypedEvent {
@@ -32,7 +32,7 @@ public class DropTargetEvent extends TypedEvent {
   public static final int DROP_ACCEPT = DND.DropAccept;
   public static final int DROP = DND.Drop;
   public static final int DRAG_OPERATION_CHANGED = DND.DragOperationChanged;
-  
+
   private static final Class LISTENER = DropTargetListener.class;
 
   /**
@@ -44,23 +44,23 @@ public class DropTargetEvent extends TypedEvent {
    * The y-cordinate of the cursor relative to the <code>Display</code>
    */
   public int y;
-  
+
   /**
    * The operation being performed.
-   * 
+   *
    * @see DND#DROP_NONE
    * @see DND#DROP_MOVE
    * @see DND#DROP_COPY
    * @see DND#DROP_LINK
    * @see DND#DROP_DEFAULT
    */
-  
+
   public int detail;
   /**
    * A bitwise OR'ing of the operations that the DragSource can support (e.g.
    * DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK). The detail value must be a
    * member of this list or DND.DROP_NONE.
-   * 
+   *
    * @see DND#DROP_NONE
    * @see DND#DROP_MOVE
    * @see DND#DROP_COPY
@@ -68,7 +68,7 @@ public class DropTargetEvent extends TypedEvent {
    * @see DND#DROP_DEFAULT
    */
   public int operations;
-  
+
   /**
    * A bitwise OR'ing of the drag under effect feedback to be displayed to the
    * user (e.g. DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL |
@@ -83,7 +83,7 @@ public class DropTargetEvent extends TypedEvent {
    * <p>
    * The default value is DND.FEEDBACK_SELECT.
    * </p>
-   * 
+   *
    * @see DND#FEEDBACK_NONE
    * @see DND#FEEDBACK_SELECT
    * @see DND#FEEDBACK_INSERT_BEFORE
@@ -112,18 +112,19 @@ public class DropTargetEvent extends TypedEvent {
 
   /**
    * the time that the event occurred.
-   * 
+   *
    * NOTE: This field is an unsigned integer and should
    * be AND'ed with 0xFFFFFFFFL so that it can be treated
    * as a signed long.
-   */ 
+   */
   // TODO [rh] in SWT, the field 'time' is declared in TypedEvent
   public int time;
-  
+
   public DropTargetEvent( Widget widget, int id ) {
     super( widget, id );
   }
 
+  @Override
   public String toString() {
     String string = super.toString();
     StringBuilder sb = new StringBuilder();
@@ -154,6 +155,7 @@ public class DropTargetEvent extends TypedEvent {
     return sb.toString();
   }
 
+  @Override
   protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case DRAG_ENTER:
@@ -179,26 +181,48 @@ public class DropTargetEvent extends TypedEvent {
     }
   }
 
+  @Override
   protected boolean allowProcessing() {
     return EventUtil.isAccessible( widget );
   }
 
+  @Override
   protected Class getListenerType() {
     return LISTENER;
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void addListener( Adaptable adaptable, DropTargetListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static void removeListener( Adaptable adaptable, DropTargetListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }

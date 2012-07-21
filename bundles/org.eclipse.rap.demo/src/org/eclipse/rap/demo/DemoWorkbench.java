@@ -12,7 +12,7 @@
 package org.eclipse.rap.demo;
 
 import org.eclipse.rap.demo.presentation.DemoPresentationWorkbenchAdvisor;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;

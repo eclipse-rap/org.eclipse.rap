@@ -10,11 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.jstest.internal;
 
-import org.eclipse.rwt.application.Application;
-import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.lifecycle.IEntryPointFactory;
-import org.eclipse.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.application.Application;
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
+import org.eclipse.rap.rwt.service.IServiceHandler;
 
 
 public class RapTestApplicationConfigurator implements ApplicationConfiguration {

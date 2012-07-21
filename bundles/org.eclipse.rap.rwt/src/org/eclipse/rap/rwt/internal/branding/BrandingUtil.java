@@ -17,14 +17,14 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.branding.AbstractBranding;
+import org.eclipse.rap.rwt.branding.Header;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.util.URLHelper;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.branding.Header;
-import org.eclipse.rwt.service.IApplicationStore;
+import org.eclipse.rap.rwt.service.IApplicationStore;
 
 
 public final class BrandingUtil {

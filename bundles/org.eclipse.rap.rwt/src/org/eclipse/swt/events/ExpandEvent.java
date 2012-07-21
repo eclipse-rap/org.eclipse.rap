@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rwt.Adaptable;
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.*;
@@ -62,6 +62,7 @@ public class ExpandEvent extends SelectionEvent {
     super( widget, item, id );
   }
 
+  @Override
   protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case EXPAND:
@@ -75,32 +76,53 @@ public class ExpandEvent extends SelectionEvent {
     }
   }
 
+  @Override
   protected Class getListenerType() {
     return LISTENER;
   }
 
+  @Override
   protected boolean allowProcessing() {
     return EventUtil.isAccessible( widget );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
-  public static void addListener( Adaptable adaptable, ExpandListener listener )
-  {
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
+  public static void addListener( Adaptable adaptable, ExpandListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( Adaptable adaptable, ExpandListener listener )
-  {
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
+  public static void removeListener( Adaptable adaptable, ExpandListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
+  /**
+   * @since 2.0
+   * @deprecated not part of the API, do not use in application code
+   */
+  @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 
+  @Override
   public String toString() {
     String string = super.toString();
     return string.substring( 0, string.length() - 1 ) // remove trailing '}'

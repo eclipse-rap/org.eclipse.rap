@@ -13,10 +13,10 @@ package org.eclipse.rap.rwt.osgi.internal;
 
 import java.io.File;
 
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
 import org.eclipse.rap.rwt.osgi.ApplicationLauncher;
 import org.eclipse.rap.rwt.osgi.internal.ServiceContainer.ServiceHolder;
-import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;

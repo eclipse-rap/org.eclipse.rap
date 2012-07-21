@@ -16,8 +16,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseListenerRegistry;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.lifecycle.*;
 
 
 public class PhaseListenerRegistry_Test extends TestCase {

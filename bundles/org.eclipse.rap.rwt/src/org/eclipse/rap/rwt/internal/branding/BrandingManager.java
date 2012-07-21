@@ -15,9 +15,9 @@ import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.rap.rwt.branding.AbstractBranding;
+import org.eclipse.rap.rwt.branding.Header;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.branding.Header;
 
 
 public class BrandingManager {

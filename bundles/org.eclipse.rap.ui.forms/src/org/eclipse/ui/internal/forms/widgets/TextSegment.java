@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.eclipse.rwt.Adaptable;
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.ui.forms.internal.widgets.ITextSegmentAdapter;
 
 import org.eclipse.swt.SWT;

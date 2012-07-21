@@ -11,10 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import org.eclipse.rap.rwt.service.FileSettingStore_Test;
+import org.eclipse.rap.rwt.service.ISettingStoreFactory;
 import org.eclipse.rap.rwt.testfixture.internal.service.MemorySettingStore;
 import org.eclipse.rap.rwt.testfixture.internal.service.MemorySettingStoreFactory;
-import org.eclipse.rwt.service.FileSettingStore_Test;
-import org.eclipse.rwt.service.ISettingStoreFactory;
 
 
 /**

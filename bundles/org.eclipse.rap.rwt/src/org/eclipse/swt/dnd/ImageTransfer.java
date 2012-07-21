@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.dnd;
 
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.ImageData;
 

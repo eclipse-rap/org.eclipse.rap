@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.jface.util.Geometry;
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;

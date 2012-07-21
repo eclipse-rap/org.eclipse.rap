@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.events;
 
-import org.eclipse.rwt.Adaptable;
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.widgets.Control;

@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
 
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 

@@ -12,7 +12,7 @@ package org.eclipse.rap.rwt.internal.service;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 
 
 public final class ServletLog {

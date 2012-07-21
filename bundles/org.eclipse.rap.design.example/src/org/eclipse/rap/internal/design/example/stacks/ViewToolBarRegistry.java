@@ -13,7 +13,7 @@ package org.eclipse.rap.internal.design.example.stacks;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.swt.widgets.Control;
 
 /**

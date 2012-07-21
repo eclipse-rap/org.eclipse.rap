@@ -16,10 +16,10 @@ import java.util.Collection;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.application.ApplicationRunner;
+import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
-import org.eclipse.rwt.application.ApplicationRunner;
-import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.engine.RWTServlet;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.http.HttpContext;

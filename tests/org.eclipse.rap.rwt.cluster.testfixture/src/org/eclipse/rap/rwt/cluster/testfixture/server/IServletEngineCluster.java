@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.server;
 
-import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 
 
 public interface IServletEngineCluster {

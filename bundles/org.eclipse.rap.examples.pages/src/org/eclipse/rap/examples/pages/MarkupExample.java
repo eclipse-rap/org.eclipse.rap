@@ -15,8 +15,8 @@ import java.io.InputStream;
 
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;

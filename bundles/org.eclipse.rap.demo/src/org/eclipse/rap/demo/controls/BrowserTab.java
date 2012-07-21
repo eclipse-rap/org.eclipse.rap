@@ -13,7 +13,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.rwt.widgets.*;
+import org.eclipse.rap.rwt.widgets.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.*;
 import org.eclipse.swt.custom.CTabFolder;

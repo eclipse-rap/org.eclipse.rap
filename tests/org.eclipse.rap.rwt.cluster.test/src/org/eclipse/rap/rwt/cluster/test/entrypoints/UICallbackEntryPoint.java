@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.test.entrypoints;
 
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 
 

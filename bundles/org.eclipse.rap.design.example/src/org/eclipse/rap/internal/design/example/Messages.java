@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.internal.design.example;
 
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 
 public class Messages {
 

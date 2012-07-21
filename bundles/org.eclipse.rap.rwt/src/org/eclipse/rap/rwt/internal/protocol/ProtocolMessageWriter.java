@@ -27,8 +27,8 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.JsonArray;
 import org.eclipse.rap.rwt.internal.theme.JsonObject;
 import org.eclipse.rap.rwt.internal.theme.JsonValue;
-import org.eclipse.rwt.lifecycle.JSWriter;
-import org.eclipse.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.lifecycle.JSWriter;
+import org.eclipse.rap.rwt.service.IServiceStore;
 
 
 @SuppressWarnings("deprecation")

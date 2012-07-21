@@ -15,7 +15,7 @@ import javax.servlet.http.*;
 
 import org.eclipse.rap.rwt.internal.service.*;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
 

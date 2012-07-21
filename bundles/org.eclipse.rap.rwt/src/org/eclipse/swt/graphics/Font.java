@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.*;
 
 
@@ -27,8 +27,8 @@ import org.eclipse.swt.*;
  * 
  * @see FontData
  * @see Graphics
- * @see org.eclipse.rwt.graphics.Graphics#getFont(FontData)
- * @see org.eclipse.rwt.graphics.Graphics#getFont(String, int, int)
+ * @see org.eclipse.rap.rwt.graphics.Graphics#getFont(FontData)
+ * @see org.eclipse.rap.rwt.graphics.Graphics#getFont(String, int, int)
  * @since 1.0
  */
 public final class Font extends Resource {

@@ -19,8 +19,8 @@ import javax.servlet.http.*;
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.service.IServiceStore;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.service.ISessionStore;
 
 
 /**

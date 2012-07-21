@@ -16,10 +16,10 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.zip.CRC32;
 
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.resources.ResourceLoader;
+import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.swt.graphics.*;
 
 

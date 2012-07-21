@@ -12,10 +12,10 @@ package org.eclipse.swt.internal.widgets.canvaskit;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;

@@ -14,7 +14,7 @@ package org.eclipse.swt.internal.graphics;
 import java.io.InputStream;
 
 import org.eclipse.rap.rwt.internal.util.StreamUtil;
-import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.swt.graphics.ImageData;
 
 

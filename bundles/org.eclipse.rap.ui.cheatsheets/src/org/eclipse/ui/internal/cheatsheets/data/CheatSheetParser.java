@@ -31,7 +31,7 @@ import org.eclipse.help.internal.dynamic.FilterHandler;
 import org.eclipse.help.internal.dynamic.IncludeHandler;
 import org.eclipse.help.internal.dynamic.ProcessorHandler;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.ui.cheatsheets.AbstractItemExtensionElement;
 import org.eclipse.ui.internal.cheatsheets.CheatSheetEvaluationContext;
 import org.eclipse.ui.internal.cheatsheets.CheatSheetPlugin;

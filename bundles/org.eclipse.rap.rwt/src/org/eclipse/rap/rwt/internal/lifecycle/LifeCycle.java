@@ -13,8 +13,8 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.lifecycle.ILifeCycle;
-import org.eclipse.rwt.lifecycle.PhaseListener;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
+import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 
 
 public abstract class LifeCycle implements ILifeCycle {

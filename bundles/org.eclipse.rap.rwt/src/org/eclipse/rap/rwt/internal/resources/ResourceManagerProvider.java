@@ -12,8 +12,8 @@
 package org.eclipse.rap.rwt.internal.resources;
 
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.rwt.resources.IResourceManagerFactory;
+import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.IResourceManagerFactory;
 
 
 @SuppressWarnings("deprecation")

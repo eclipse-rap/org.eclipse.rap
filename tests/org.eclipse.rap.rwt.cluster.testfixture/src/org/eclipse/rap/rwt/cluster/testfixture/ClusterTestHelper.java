@@ -18,7 +18,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 
 

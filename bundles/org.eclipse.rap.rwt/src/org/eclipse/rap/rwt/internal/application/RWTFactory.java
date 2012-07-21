@@ -20,8 +20,8 @@ import org.eclipse.rap.rwt.internal.service.*;
 import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
-import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.rwt.service.IApplicationStore;
+import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.service.IApplicationStore;
 import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.internal.widgets.DisplaysHolder;
 

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.progress;
 
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 
 // RAP [fappel]: NLS needs to be session/request aware
 //public class ProgressMessages extends NLS{

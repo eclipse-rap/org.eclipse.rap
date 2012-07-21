@@ -14,7 +14,7 @@ package org.eclipse.ui.forms.widgets;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 //import org.eclipse.swt.events.FocusEvent;
 //import org.eclipse.swt.events.FocusListener;

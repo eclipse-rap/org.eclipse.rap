@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.lifecycle.IEntryPointFactory;
+import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 
 
 class EntryPointRegistration {

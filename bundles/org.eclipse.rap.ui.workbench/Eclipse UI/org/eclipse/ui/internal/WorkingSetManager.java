@@ -18,9 +18,9 @@ import java.io.StringWriter;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.service.ISettingStore;
-import org.eclipse.rwt.service.SettingStoreException;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.service.ISettingStore;
+import org.eclipse.rap.rwt.service.SettingStoreException;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;

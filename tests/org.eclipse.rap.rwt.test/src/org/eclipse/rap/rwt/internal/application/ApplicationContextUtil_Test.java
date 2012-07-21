@@ -20,10 +20,10 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
-import org.eclipse.rwt.service.ISessionStore;
 
 
 public class ApplicationContextUtil_Test extends TestCase {

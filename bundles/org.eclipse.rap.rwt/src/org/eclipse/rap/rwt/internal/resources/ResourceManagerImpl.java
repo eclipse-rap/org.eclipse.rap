@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.IResourceManager;
 
 
 /**

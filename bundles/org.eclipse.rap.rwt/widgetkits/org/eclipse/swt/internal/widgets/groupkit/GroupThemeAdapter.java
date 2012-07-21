@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.groupkit;
 
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;

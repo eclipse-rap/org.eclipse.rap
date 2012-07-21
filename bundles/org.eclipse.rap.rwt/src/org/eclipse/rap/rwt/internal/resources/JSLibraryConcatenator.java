@@ -15,8 +15,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.eclipse.rap.rwt.internal.util.HTTP;
-import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
+import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
 
 
 public class JSLibraryConcatenator {

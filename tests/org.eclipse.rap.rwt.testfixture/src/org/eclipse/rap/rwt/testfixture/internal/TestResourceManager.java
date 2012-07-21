@@ -15,10 +15,10 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
+import org.eclipse.rap.rwt.application.ApplicationRunner;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
-import org.eclipse.rwt.application.ApplicationRunner;
-import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.IResourceManager;
 
 
 public class TestResourceManager implements IResourceManager {

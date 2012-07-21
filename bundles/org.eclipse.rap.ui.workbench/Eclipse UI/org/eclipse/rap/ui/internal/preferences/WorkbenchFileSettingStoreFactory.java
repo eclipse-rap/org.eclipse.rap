@@ -15,9 +15,9 @@ import java.io.File;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.service.*;
+import org.eclipse.rap.rwt.service.*;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 

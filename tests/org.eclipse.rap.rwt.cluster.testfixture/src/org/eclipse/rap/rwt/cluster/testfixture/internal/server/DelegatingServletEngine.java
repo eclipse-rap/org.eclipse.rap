@@ -14,7 +14,7 @@ package org.eclipse.rap.rwt.cluster.testfixture.internal.server;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 
 
 public class DelegatingServletEngine implements IServletEngine {

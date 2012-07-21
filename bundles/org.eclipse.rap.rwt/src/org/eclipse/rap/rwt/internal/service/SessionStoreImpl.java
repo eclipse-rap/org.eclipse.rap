@@ -21,7 +21,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.FakeContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
-import org.eclipse.rwt.service.*;
+import org.eclipse.rap.rwt.service.*;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 public final class SessionStoreImpl
