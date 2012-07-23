@@ -392,13 +392,13 @@ public class Text_Test extends TestCase {
   public void testComputeSize_SearchWithOneIcon() {
     text = new Text( shell, SWT.SEARCH | SWT.ICON_SEARCH );
     text.setText( "This is a long long text!" );
-    assertEquals( new Point( 207, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 210, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   public void testComputeSize_SearchWithTwoIcon() {
     text = new Text( shell, SWT.SEARCH | SWT.ICON_SEARCH | SWT.ICON_CANCEL );
     text.setText( "This is a long long text!" );
-    assertEquals( new Point( 223, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 229, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   public void testComputeTrim() {

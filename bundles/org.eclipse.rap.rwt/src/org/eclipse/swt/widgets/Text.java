@@ -849,8 +849,8 @@ public class Text extends Scrollable {
       if( extent.y != 0 ) {
         height = extent.y;
       }
-      Point searchIconSize = getSearchIconSize();
-      Point cancelIconSize = getCancelIconSize();
+      Point searchIconSize = getSearchIconOuterSize();
+      Point cancelIconSize = getCancelIconOuterSize();
       width += searchIconSize.x + cancelIconSize.x;
       height = Math.max( height, searchIconSize.y );
       height = Math.max( height, cancelIconSize.y );
@@ -1113,18 +1113,20 @@ public class Text extends Scrollable {
   ///////////////////////
   // Other helping method
 
-  private Point getSearchIconSize() {
+  private Point getSearchIconOuterSize() {
     Point result = new Point( 0, 0 );
     if( ( style & SWT.SEARCH ) != 0 && ( style & SWT.ICON_SEARCH ) != 0 ) {
       result = getThemeAdapter().getSearchIconImageSize( this );
+      result.x += getThemeAdapter().getSearchIconSpacing( this );
     }
     return result;
   }
 
-  private Point getCancelIconSize() {
+  private Point getCancelIconOuterSize() {
     Point result = new Point( 0, 0 );
     if( ( style & SWT.SEARCH ) != 0 && ( style & SWT.ICON_CANCEL ) != 0 ) {
       result = getThemeAdapter().getCancelIconImageSize( this );
+      result.x += getThemeAdapter().getCancelIconSpacing( this );
     }
     return result;
   }

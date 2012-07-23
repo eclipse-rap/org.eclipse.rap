@@ -23,8 +23,10 @@ Text[BORDER] {
 
 Text-Search-Icon, Text-Search-Icon:hover {
   background-image: url( theme/resources/text/find.png );
+  spacing: 3px;
 }
 
 Text-Cancel-Icon, Text-Cancel-Icon:hover {
   background-image: url( theme/resources/text/clear.gif );
+  spacing: 3px;
 }

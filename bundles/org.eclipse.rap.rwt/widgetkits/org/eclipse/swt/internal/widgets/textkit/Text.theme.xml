@@ -90,8 +90,8 @@
       <property name="background-image"
         description="The image for the search icon." />
 
-      <state name="hover"
-        description="Applies while the user hovers over the search icon." />
+      <property name="spacing"
+        description="Defines the spacing between search icon and text field." />
 
     </element>
 
@@ -103,8 +103,8 @@
       <property name="background-image"
         description="The image for the cancel icon." />
 
-      <state name="hover"
-        description="Applies while the user hovers over the cancel icon." />
+      <property name="spacing"
+        description="Defines the spacing between cancel icon and text field." />
 
     </element>
 

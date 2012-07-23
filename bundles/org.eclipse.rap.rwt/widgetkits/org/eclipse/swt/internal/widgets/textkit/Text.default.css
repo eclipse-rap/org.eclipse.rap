@@ -43,8 +43,10 @@ Text-Message {
 
 Text-Search-Icon {
   background-image: url( resource/widget/rap/text/find.png );
+  spacing: 3px;
 }
 
 Text-Cancel-Icon {
   background-image: url( resource/widget/rap/text/clear.gif );
+  spacing: 3px;
 }

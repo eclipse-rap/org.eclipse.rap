@@ -41,8 +41,16 @@ public final class TextThemeAdapter extends ControlThemeAdapter {
     return getCssImageDimension( "Text-Search-Icon", "background-image", control );
   }
 
+  public int getSearchIconSpacing( Control control ) {
+    return Math.max( 0, getCssDimension( "Text-Search-Icon", "spacing", control ) );
+  }
+
   public Point getCancelIconImageSize( Control control ) {
     return getCssImageDimension( "Text-Cancel-Icon", "background-image", control );
+  }
+
+  public int getCancelIconSpacing( Control control ) {
+    return Math.max( 0, getCssDimension( "Text-Cancel-Icon", "spacing", control ) );
   }
 
 }

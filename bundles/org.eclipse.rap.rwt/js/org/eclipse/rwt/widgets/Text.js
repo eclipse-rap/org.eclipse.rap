@@ -353,10 +353,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
         style.top = Math.round( this.getInnerHeight() / 2 - iconHeight / 2 ) + "px";
         if( this._getIconPosition( iconId ) === "right" ) {
           var styleMap = this._getMessageStyle();
+          var iconWidth = parseInt( style.width, 10 );
           style.left = (   this.getBoxWidth()
                          - this._cachedBorderRight
                          - styleMap.paddingRight
-                         - this._getIconOuterWidth( iconId ) ) + "px";
+                         - iconWidth ) + "px";
         }
       }
     },
@@ -377,8 +378,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       var result = 0;
       var image = this._getIconImage( iconId );
       if( this._hasIcon( iconId ) && image != null ) {
-        var margin = this._getIconMargin( iconId );
-        result = margin[ 3 ] + image[ 1 ] + margin[ 1 ];
+        result = image[ 1 ] + this._getIconSpacing( iconId );
       }
       return result;
     },
@@ -395,8 +395,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       return iconId === "search" ? "left" : "right";
     },
 
-    _getIconMargin : function( iconId ) {
-      return [ 0, 0, 0, 0 ];
+    _getIconSpacing : function( iconId ) {
+      return 3;
     },
 
     ///////////////////
@@ -534,7 +534,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
         this._messageElement.style.cursor = cursor;
       }
     }
-
 
   }
 
