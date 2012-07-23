@@ -1,7 +1,7 @@
 package org.eclipse.rap.ui.tests.impl;
 
 import org.eclipse.rap.ui.tests.ServiceHandlerExtensionTest;
-import org.eclipse.rwt.service.IServiceHandler;
+import org.eclipse.rap.rwt.service.IServiceHandler;
 
 
 public class ServiceHandler1 implements IServiceHandler {

@@ -14,7 +14,7 @@ import java.util.Map;
 import org.eclipse.rap.junit.RAPTestCase;
 import org.eclipse.rap.ui.interactiondesign.layout.model.Layout;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;

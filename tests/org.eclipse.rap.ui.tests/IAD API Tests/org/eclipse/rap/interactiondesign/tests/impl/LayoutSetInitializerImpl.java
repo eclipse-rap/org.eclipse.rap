@@ -11,7 +11,7 @@ package org.eclipse.rap.interactiondesign.tests.impl;
 
 import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
 
