@@ -147,7 +147,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     this.style = style;
-    this.display = parent.display;
+    display = parent.display;
     reskinWidget();
   }
 
@@ -158,6 +158,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * within the packages provided by RWT. It should never be accessed
    * from application code.
    * </p>
+   * @noreference This method is not intended to be referenced by clients.
    */
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
@@ -691,7 +692,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
 
   void reskinWidget() {
     if( ( state & SKIN_NEEDED ) != SKIN_NEEDED ) {
-      this.state |= SKIN_NEEDED;
+      state |= SKIN_NEEDED;
       display.addSkinnableWidget( this );
     }
   }
@@ -950,8 +951,10 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     //style &= ~SWT.MIRRORED;
     if ((style & (SWT.LEFT_TO_RIGHT /*| SWT.RIGHT_TO_LEFT*/)) == 0) {
       if (parent != null) {
-        if ((parent.style & SWT.LEFT_TO_RIGHT) != 0) style |= SWT.LEFT_TO_RIGHT;
-        /*if ((parent.style & SWT.RIGHT_TO_LEFT) != 0) style |= SWT.RIGHT_TO_LEFT;*/
+        if ((parent.style & SWT.LEFT_TO_RIGHT) != 0) {
+          style |= SWT.LEFT_TO_RIGHT;
+          /*if ((parent.style & SWT.RIGHT_TO_LEFT) != 0) style |= SWT.RIGHT_TO_LEFT;*/
+        }
       }
     }
     style = checkBits (style, SWT.LEFT_TO_RIGHT, 0 /*SWT.RIGHT_TO_LEFT*/, 0, 0, 0, 0);
