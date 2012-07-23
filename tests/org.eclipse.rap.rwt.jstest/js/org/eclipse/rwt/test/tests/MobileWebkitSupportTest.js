@@ -1009,6 +1009,89 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       grid.destroy();
     },
 
+    testScrollGridInScrolledComposite : function() {
+      var grid = this._createGridByProtocol( true );
+      var preventLog = [];
+      var logger = function( event ) {
+        preventLog.push( event.getDomEvent().originalEvent.prevented );
+      };
+      grid.addEventListener( "mousedown", logger );
+      grid.addEventListener( "mouseup", logger );
+      grid.addEventListener( "mouseout", logger );
+      grid.setScrollBarsVisible( false, true );
+      grid.setItemCount( 50 );
+      grid.setItemHeight( 20 );
+      for( var i = 0; i < 50; i++ ) {
+        new org.eclipse.rwt.widgets.GridItem( grid.getRootItem(), i );
+      }
+      TestUtil.flush();
+      var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+
+      this.touchAt( node, "touchstart", 0, 500 );
+      this.touchAt( node, "touchmove", 0, 450 );
+      this.touchAt( node, "touchend", 0, 450 );
+
+      assertEquals( 3, grid._topItemIndex );
+      assertEquals( [ false, true ], preventLog );
+      grid.destroy();
+    },
+
+    testDontScrollMinPosGridInScrolledComposite : function() {
+      var grid = this._createGridByProtocol( true );
+      var preventLog = [];
+      var logger = function( event ) {
+        preventLog.push( event.getDomEvent().originalEvent.prevented );
+      };
+      grid.addEventListener( "mousedown", logger );
+      grid.addEventListener( "mouseup", logger );
+      grid.addEventListener( "mouseout", logger );
+      grid.setScrollBarsVisible( false, true );
+      grid.setItemCount( 50 );
+      grid.setItemHeight( 20 );
+      for( var i = 0; i < 50; i++ ) {
+        new org.eclipse.rwt.widgets.GridItem( grid.getRootItem(), i );
+      }
+      TestUtil.flush();
+      var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+
+      this.touchAt( node, "touchstart", 0, 500 );
+      this.touchAt( node, "touchmove", 0, 501 );
+      this.touchAt( node, "touchmove", 0, 550 );
+      this.touchAt( node, "touchend", 0, 550 );
+
+      assertEquals( 0, grid._topItemIndex );
+      assertEquals( [ false, false ], preventLog );
+      grid.destroy();
+    },
+
+    testDontScrollMaxPosGridInScrolledComposite : function() {
+      var grid = this._createGridByProtocol( true );
+      var preventLog = [];
+      var logger = function( event ) {
+        preventLog.push( event.getDomEvent().originalEvent.prevented );
+      };
+      grid.addEventListener( "mousedown", logger );
+      grid.addEventListener( "mouseup", logger );
+      grid.addEventListener( "mouseout", logger );
+      grid.setScrollBarsVisible( false, true );
+      grid.setItemCount( 50 );
+      grid.setItemHeight( 20 );
+      for( var i = 0; i < 50; i++ ) {
+        new org.eclipse.rwt.widgets.GridItem( grid.getRootItem(), i );
+      }
+      TestUtil.flush();
+      grid.setTopItemIndex( 25 );
+      var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+
+      this.touchAt( node, "touchstart", 0, 500 );
+      this.touchAt( node, "touchmove", 0, 499 );
+      this.touchAt( node, "touchmove", 0, 450 );
+      this.touchAt( node, "touchend", 0, 450 );
+
+      assertEquals( 25, grid._topItemIndex );
+      assertEquals( [ false, false ], preventLog );
+      grid.destroy();
+    },
 
     /////////
     // Helper
@@ -1206,15 +1289,31 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       mobile._fullscreen = window.navigator.standalone;
     },
 
-    _createGridByProtocol : function() {
+    _createGridByProtocol : function( inScrolledComposite ) {
       TestUtil.createShellByProtocol( "w2" );
+      var parentId = "w2";
+      if( inScrolledComposite ) {
+        parentId = "w5";
+        Processor.processOperation( {
+          "target" : "w5",
+          "action" : "create",
+          "type" : "rwt.widgets.ScrolledComposite",
+          "properties" : {
+            "style" : [],
+            "parent" : "w2",
+            "content" : "w3",
+            "scrollBarsVisible" : [ true, true ],
+            "bounds" : [ 0, 0, 100, 100 ]
+          }
+        } );
+      }
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Grid",
         "properties" : {
           "style" : [],
-          "parent" : "w2",
+          "parent" : parentId,
           "appearance" : "tree",
           "selectionPadding" : [ 2, 4 ],
           "indentionWidth" : 16,

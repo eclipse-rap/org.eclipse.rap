@@ -225,7 +225,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
        "initialTarget" : target,
        "initialPosition" : pos
       };
-      if( !this._touchSession.type.scroll && !this._touchSession.type.focus ) {
+      if( !this._touchSession.type.scroll && !this._touchSession.type.virtualScroll && !this._touchSession.type.focus ) {
         domEvent.preventDefault();
       }
       this._moveMouseTo( target, domEvent );
@@ -251,7 +251,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
           this._fireMouseEvent( "mousemove", target, domEvent, pos );
         } else {
           var oldPos = this._touchSession.initialPosition;
-       // TODO [tb] : offset too big for good use with touch-scrolling
+          // TODO [tb] : offset too big for good use with touch-scrolling
           if(    Math.abs( oldPos[ 0 ] - pos[ 0 ] ) >= 15
               || Math.abs( oldPos[ 1 ] - pos[ 1 ] ) >= 15 )
           {
@@ -293,10 +293,10 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       result.click = true;
       if( this._isDraggableWidget( widgetTarget ) ) {
         result.drag = true;
-      } else if( this._allowNativeScroll && this._isScrollableWidget( widgetTarget ) ) {
-        result.scroll = true;
       } else if( this._isGridRow( widgetTarget ) ) {
         result.virtualScroll = true;
+      } else if( this._allowNativeScroll && this._isScrollableWidget( widgetTarget ) ) {
+        result.scroll = true;
       } else if( this._isFocusable( widgetTarget ) ) {
         result.focus = true;
       }
@@ -329,6 +329,10 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       var offsetY = oldPos[ 1 ] - pos[ 1 ];
       var newX = this._touchSession.initScrollX + offsetX;
       var newY = this._touchSession.initScrollY + offsetY;
+      if( newY < 0 || newY > ( this._touchSession.scrollBarV.getMaximum() - this._touchSession.scrollBarV._thumbLength ) ) {
+        delete this._touchSession.type.virtualScroll;
+        this._touchSession.type.scroll = true;
+      }
       this._touchSession.scrollBarH.setValue( newX );
       this._touchSession.scrollBarV.setValue( newY );
     },
