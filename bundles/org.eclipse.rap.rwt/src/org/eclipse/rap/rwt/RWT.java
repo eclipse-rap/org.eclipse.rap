@@ -47,6 +47,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Widget;
 
 
 /**
@@ -386,6 +387,22 @@ public final class RWT {
    * @since 1.5
    */
   public static final String DEFAULT_THEME_ID = "org.eclipse.rap.rwt.theme.Default";
+
+  /**
+   * Used to mark a widget as belonging to a custom variant in order to apply a
+   * different theming to it. A custom variant can be applied using theming.
+   * <code>Widget.setData</code>.
+   *
+   * <pre>
+   * widget.setData( RWT.CUSTOM_VARIANT, &quot;mySpecialButton&quot; )
+   * </pre>
+   *
+   * For more information on custom variants, see the RAP help on theming.
+   *
+   * @see Widget#setData(String,Object)
+   * @since 2.0
+   */
+  public static final String CUSTOM_VARIANT = "org.eclipse.rap.rwt.customVariant";
 
   /**
    * Returns the instance of the life cycle which is currently processed.

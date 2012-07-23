@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.internal.design.example.Messages;
 import org.eclipse.rap.internal.design.example.builder.StackPresentationBuider;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.ui.interactiondesign.ConfigurableStack;
 import org.eclipse.rap.ui.interactiondesign.ConfigurationAction;
 import org.eclipse.rap.ui.interactiondesign.IConfigurationChangeListener;
@@ -86,25 +86,25 @@ public class ViewStackPresentation extends ConfigurableStack {
   private Composite confArea;
   private Button confButton;
   private Label confCorner;
-  private Map<IPresentablePart, Composite> partButtonMap;
-  private List<IPresentablePart> partList;
-  private List<Composite> buttonList;
+  private final Map<IPresentablePart, Composite> partButtonMap;
+  private final List<IPresentablePart> partList;
+  private final List<Composite> buttonList;
   private Composite toolbarBg;
   private int activeState;
   private int state;
   protected boolean deactivated;
   private Button viewMenuButton;
-  private Map<IPresentablePart, IPropertyListener> dirtyListenerMap;
+  private final Map<IPresentablePart, IPropertyListener> dirtyListenerMap;
   private Button overflowButton;
-  private List<Control> overflowButtons;
-  private Map<Composite, IPresentablePart> buttonPartMap;
+  private final List<Control> overflowButtons;
+  private final Map<Composite, IPresentablePart> buttonPartMap;
   private IPresentablePart oldPart;
-  private boolean allActionsVisible;
+  private final boolean allActionsVisible;
   private Label standaloneViewTitle;
 
   private class DirtyListener implements IPropertyListener {
 
-    private IPresentablePart part;
+    private final IPresentablePart part;
 
     public DirtyListener( IPresentablePart part ) {
       this.part = part;
@@ -181,6 +181,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     buttonPartMap = new HashMap<Composite, IPresentablePart>();
   }
 
+  @Override
   public void init() {
     ConfigurationAction action = getConfigAction();
     if( action != null ) {
@@ -222,14 +223,15 @@ public class ViewStackPresentation extends ConfigurableStack {
   }
 
   private Control createStyledControl() {
-    getParent().setData( WidgetUtil.CUSTOM_VARIANT, "compGray" ); //$NON-NLS-1$
+    getParent().setData( RWT.CUSTOM_VARIANT, "compGray" ); //$NON-NLS-1$
     final Composite parent = new Composite( getParent(), SWT.NONE );
     parent.addControlListener( new ControlAdapter() {
+      @Override
       public void controlResized( ControlEvent e ) {
         setBounds( parent.getBounds() );
       }
     } );
-    parent.setData( WidgetUtil.CUSTOM_VARIANT, "compGray" ); //$NON-NLS-1$
+    parent.setData( RWT.CUSTOM_VARIANT, "compGray" ); //$NON-NLS-1$
     String setID = ILayoutSetConstants.SET_ID_STACKPRESENTATION;
     stackBuilder = new StackPresentationBuider( parent, setID );
     stackBuilder.build();
@@ -240,6 +242,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     return getType().equals( PresentationFactory.KEY_STANDALONE_VIEW );
   }
 
+  @Override
   public void addPart( IPresentablePart newPart, Object cookie ) {
     checkTabBg();
     if( !isStandalone() ) {
@@ -248,7 +251,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       Control partControl = newPart.getControl();
       if( partControl != null ) {
         partControl.getParent().setBackgroundMode( SWT.INHERIT_NONE );
-        partControl.setData( WidgetUtil.CUSTOM_VARIANT, "partBorder" ); //$NON-NLS-1$
+        partControl.setData( RWT.CUSTOM_VARIANT, "partBorder" ); //$NON-NLS-1$
       }
       tabBg.layout( true );
     } else {
@@ -266,7 +269,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       getTabBar().setVisible( true );
       tabBg.setVisible( true );
       standaloneViewTitle = new Label( tabBg, SWT.NONE );
-      standaloneViewTitle.setData( WidgetUtil.CUSTOM_VARIANT, "standaloneView" ); //$NON-NLS-1$
+      standaloneViewTitle.setData( RWT.CUSTOM_VARIANT, "standaloneView" ); //$NON-NLS-1$
       standaloneViewTitle.setText( newPart.getName() );
       hideFrameLabel( StackPresentationBuider.TOP_BORDER );
     } else {
@@ -299,7 +302,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       if( viewMenu != null ) {
         if( viewMenuButton == null ) {
           viewMenuButton = new Button( toolbarBg, SWT.PUSH );
-          viewMenuButton.setData( WidgetUtil.CUSTOM_VARIANT, "clearButton" ); //$NON-NLS-1$
+          viewMenuButton.setData( RWT.CUSTOM_VARIANT, "clearButton" ); //$NON-NLS-1$
           Image icon = stackBuilder.getImage( ILayoutSetConstants.STACK_VIEW_MENU_ICON );
           viewMenuButton.setImage( icon );
           FormData fdViewMenuButton = new FormData();
@@ -307,6 +310,7 @@ public class ViewStackPresentation extends ConfigurableStack {
           fdViewMenuButton.right = new FormAttachment( 100, -4 );
           fdViewMenuButton.top = new FormAttachment( 0, 8 );
           viewMenuButton.addSelectionListener( new SelectionAdapter() {
+            @Override
             public void widgetSelected( SelectionEvent e ) {
               Display display = viewMenuButton.getDisplay();
               int height = viewMenuButton.getSize().y;
@@ -380,11 +384,11 @@ public class ViewStackPresentation extends ConfigurableStack {
 
   private void createPartButton( final IPresentablePart part ) {
     Composite buttonArea = new Composite( tabBg, SWT.NONE );
-    buttonArea.setData( WidgetUtil.CUSTOM_VARIANT, "inactiveButton" ); //$NON-NLS-1$
+    buttonArea.setData( RWT.CUSTOM_VARIANT, "inactiveButton" ); //$NON-NLS-1$
     buttonArea.setLayout( new FormLayout() );
 
     final Button partButton = new Button( buttonArea, SWT.PUSH );
-    partButton.setData( WidgetUtil.CUSTOM_VARIANT, VARIANT_PART_INACTIVE );
+    partButton.setData( RWT.CUSTOM_VARIANT, VARIANT_PART_INACTIVE );
     partButton.setText( part.getName() );
     partButton.setToolTipText( part.getTitleToolTip() );
     final IPropertyListener nameListener = new IPropertyListener() {
@@ -410,6 +414,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     fdPartButton.top = new FormAttachment( 0, 4 );
     fdPartButton.bottom = new FormAttachment( 100 );
     partButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         if( !currentPart.equals( part ) ) {
           selectPart( part );
@@ -429,7 +434,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       }
     } );
     Composite corner = new Composite( buttonArea, SWT.NONE );
-    corner.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" ); //$NON-NLS-1$
+    corner.setData( RWT.CUSTOM_VARIANT, "compTrans" ); //$NON-NLS-1$
     corner.setLayout( new FormLayout() );
     String separatorActive = ILayoutSetConstants.STACK_TAB_INACTIVE_SEPARATOR_ACTIVE;
     Image cornerImage = stackBuilder.getImage( separatorActive );
@@ -511,7 +516,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     Object object = partButtonMap.get( part );
     if( object instanceof Composite ) {
       Composite buttonArea = ( Composite ) object;
-      buttonArea.setData( WidgetUtil.CUSTOM_VARIANT, "tabInactive" ); //$NON-NLS-1$
+      buttonArea.setData( RWT.CUSTOM_VARIANT, "tabInactive" ); //$NON-NLS-1$
       checkHideSeparator( buttonArea );
       Color bg = stackBuilder.getColor( ILayoutSetConstants.STACK_BUTTON_INACTIVE );
       buttonArea.setBackground( bg );
@@ -522,7 +527,7 @@ public class ViewStackPresentation extends ConfigurableStack {
         if( child instanceof Button ) {
           // Partbutton
           Button partButton = ( Button ) child;
-          partButton.setData( WidgetUtil.CUSTOM_VARIANT, VARIANT_PART_ACTIVE );
+          partButton.setData( RWT.CUSTOM_VARIANT, VARIANT_PART_ACTIVE );
           FormData fdButton = ( FormData ) partButton.getLayoutData();
           FormData pos = stackBuilder.getPosition( ILayoutSetConstants.STACK_BUTTON_TOP );
           fdButton.top = pos.top;
@@ -540,8 +545,9 @@ public class ViewStackPresentation extends ConfigurableStack {
           if( part.isCloseable() ) {
             Button close = new Button( buttonArea, SWT.PUSH );
             close.setData( BUTTON_ID, ID_CLOSE );
-            close.setData( WidgetUtil.CUSTOM_VARIANT, "viewCloseInactive" ); //$NON-NLS-1$
+            close.setData( RWT.CUSTOM_VARIANT, "viewCloseInactive" ); //$NON-NLS-1$
             close.addSelectionListener( new SelectionAdapter() {
+              @Override
               public void widgetSelected( SelectionEvent e ) {
                 IStackPresentationSite site = getSite();
                 if( site.isCloseable( part ) ) {
@@ -587,7 +593,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     Object object = partButtonMap.get( part );
     if( object instanceof Composite ) {
       Composite buttonArea = ( Composite ) object;
-      buttonArea.setData( WidgetUtil.CUSTOM_VARIANT, "inactiveButton" ); //$NON-NLS-1$
+      buttonArea.setData( RWT.CUSTOM_VARIANT, "inactiveButton" ); //$NON-NLS-1$
       buttonArea.setBackground( null );
       Control[] children = buttonArea.getChildren();
       for( int i = 0; i < children.length; i++ ) {
@@ -601,7 +607,7 @@ public class ViewStackPresentation extends ConfigurableStack {
             button.dispose();
           } else {
             // Part button
-            button.setData( WidgetUtil.CUSTOM_VARIANT, VARIANT_PART_INACTIVE );
+            button.setData( RWT.CUSTOM_VARIANT, VARIANT_PART_INACTIVE );
             FormData fdButton = ( FormData ) button.getLayoutData();
             fdButton.top = new FormAttachment( 0, 0 );
           }
@@ -630,7 +636,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     Composite tabBar = getTabBar();
     if( tabBg == null && tabBar != null ) {
       tabBg = new Composite( tabBar, SWT.NONE );
-      tabBg.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" ); //$NON-NLS-1$
+      tabBg.setData( RWT.CUSTOM_VARIANT, "compTrans" ); //$NON-NLS-1$
       FormData fdTabBg = new FormData();
       tabBg.setLayoutData( fdTabBg );
       fdTabBg.left = new FormAttachment( 0 );
@@ -655,6 +661,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       tabBg.setLayout( layout );
       // calculate overflow
       presentationControl.addControlListener( new ControlAdapter() {
+        @Override
         public void controlResized( ControlEvent e ) {
           manageOverflow();
         }
@@ -681,10 +688,12 @@ public class ViewStackPresentation extends ConfigurableStack {
 
   private void addPartActivationListnerToControl( Control control ) {
     control.addMouseListener( new MouseAdapter() {
+      @Override
       public void mouseUp( MouseEvent e ) {
         activatePartWithTabbar();
       }
 
+      @Override
       public void mouseDoubleClick( MouseEvent e ) {
         handleToggleZoom( currentPart );
       }
@@ -746,9 +755,10 @@ public class ViewStackPresentation extends ConfigurableStack {
       if( activeState == AS_ACTIVE_FOCUS ) {
         variant = "tabOverflowActive"; //$NON-NLS-1$
       }
-      overflowButton.setData( WidgetUtil.CUSTOM_VARIANT, variant );
+      overflowButton.setData( RWT.CUSTOM_VARIANT, variant );
       overflowButton.moveAbove( tabBg );
       overflowButton.addSelectionListener( new SelectionAdapter() {
+        @Override
         public void widgetSelected( SelectionEvent e ) {
           performOverflow();
         }
@@ -771,6 +781,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       if( part != null ) {
         item.setText( part.getName() );
         item.addSelectionListener( new SelectionAdapter() {
+          @Override
           public void widgetSelected( SelectionEvent e ) {
             activatePart( part );
             showPartButton( part );
@@ -906,7 +917,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       Control[] children = buttonArea.getChildren();
       for( int i = 0; i < children.length && !result; i++ ) {
         if( children[ i ] instanceof Button ) {
-          Object data = children[ i ].getData( WidgetUtil.CUSTOM_VARIANT );
+          Object data = children[ i ].getData( RWT.CUSTOM_VARIANT );
           if( data.equals( VARIANT_PART_INACTIVE_ACTIVE ) || data.equals( VARIANT_PART_ACTIVE ) ) {
             result = true;
           }
@@ -956,13 +967,14 @@ public class ViewStackPresentation extends ConfigurableStack {
       confButton = new Button( confArea, SWT.PUSH );
       Image confImage = stackBuilder.getImage( ILayoutSetConstants.STACK_CONF_INACTIVE );
       confButton.setImage( confImage );
-      confButton.setData( WidgetUtil.CUSTOM_VARIANT, "clearButton" ); //$NON-NLS-1$
+      confButton.setData( RWT.CUSTOM_VARIANT, "clearButton" ); //$NON-NLS-1$
       FormData fdConfButton = stackBuilder.getPosition( ILayoutSetConstants.STACK_CONF_POSITION );
       confButton.setLayoutData( fdConfButton );
       FormData fdConfPos = stackBuilder.getPosition( ILayoutSetConstants.STACK_CONF_POS );
       fdConfButton.right = fdConfPos.right;
       addPartActivationListnerToControl( confButton );
       confButton.addSelectionListener( new SelectionAdapter(){
+        @Override
         public void widgetSelected( SelectionEvent e ) {
           configAction.run();
         }
@@ -973,16 +985,19 @@ public class ViewStackPresentation extends ConfigurableStack {
     }
   }
 
+  @Override
   public void dispose() {
     ViewToolBarRegistry registry = ViewToolBarRegistry.getInstance();
     registry.removeViewPartPresentation( this );
     presentationControl.dispose();
   }
 
+  @Override
   public Control getControl() {
     return presentationControl;
   }
 
+  @Override
   public Control[] getTabList( IPresentablePart part ) {
     ArrayList<Control> list = new ArrayList<Control>();
     if( getControl() != null ) {
@@ -997,6 +1012,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     return list.toArray( new Control[ list.size() ] );
   }
 
+  @Override
   public void removePart( IPresentablePart oldPart ) {
     Object object = partButtonMap.get( oldPart );
     buttonPartMap.remove( object );
@@ -1019,6 +1035,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     }
   }
 
+  @Override
   public void selectPart( IPresentablePart toSelect ) {
     if( toSelect != null ) {
       toSelect.setVisible( true );
@@ -1038,10 +1055,12 @@ public class ViewStackPresentation extends ConfigurableStack {
     setBounds( presentationControl.getBounds() );
   }
 
+  @Override
   public StackDropResult dragOver( Control currentControl, Point location ) {
     return null;
   }
 
+  @Override
   public void setActive( int newState ) {
     activeState = newState;
     Image confBg = null;
@@ -1092,7 +1111,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       confArea.layout( true );
     }
     if( overflowButton != null ) {
-      overflowButton.setData( WidgetUtil.CUSTOM_VARIANT, tabOverflow );
+      overflowButton.setData( RWT.CUSTOM_VARIANT, tabOverflow );
     }
     setBounds( presentationControl.getBounds() );
   }
@@ -1186,7 +1205,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     Object object = partButtonMap.get( currentPart );
     if( object != null && object instanceof Composite ) {
       Composite buttonArea = ( Composite ) object;
-      buttonArea.setData( WidgetUtil.CUSTOM_VARIANT, tab );
+      buttonArea.setData( RWT.CUSTOM_VARIANT, tab );
       buttonArea.setBackground( buttonAreaBg );
       Control[] children = buttonArea.getChildren();
       for( int i = 0; i < children.length; i++ ) {
@@ -1194,15 +1213,16 @@ public class ViewStackPresentation extends ConfigurableStack {
         if( child instanceof Button ) {
           Button button = ( Button ) child;
           if( button.getData( BUTTON_ID ) != null ) {
-            button.setData( WidgetUtil.CUSTOM_VARIANT, close );
+            button.setData( RWT.CUSTOM_VARIANT, close );
           } else {
-            button.setData( WidgetUtil.CUSTOM_VARIANT, font );
+            button.setData( RWT.CUSTOM_VARIANT, font );
           }
         }
       }
     }
   }
 
+  @Override
   public void setBounds( Rectangle bounds ) {
     presentationControl.setBounds( bounds );
     Composite tabBar = getTabBar();
@@ -1244,10 +1264,12 @@ public class ViewStackPresentation extends ConfigurableStack {
     return result;
   }
 
+  @Override
   public void setState( int state ) {
     this.state = state;
   }
 
+  @Override
   public void setVisible( boolean isVisible ) {
     if( currentPart != null && getPartPane( currentPart ) != null ) {
       currentPart.setVisible( isVisible );
@@ -1258,12 +1280,15 @@ public class ViewStackPresentation extends ConfigurableStack {
     }
   }
 
+  @Override
   public void showPaneMenu() {
   }
 
+  @Override
   public void showSystemMenu() {
   }
 
+  @Override
   public int computePreferredSize(
     final boolean width,
     final int availableParallel,

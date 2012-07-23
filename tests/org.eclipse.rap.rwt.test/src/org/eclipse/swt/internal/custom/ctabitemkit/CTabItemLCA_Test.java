@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,9 @@ package org.eclipse.swt.internal.custom.ctabitemkit;
 import java.io.IOException;
 import java.util.Arrays;
 
+import junit.framework.TestCase;
+
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -32,8 +35,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import junit.framework.TestCase;
-
 
 @SuppressWarnings("deprecation")
 public class CTabItemLCA_Test extends TestCase {
@@ -43,6 +44,7 @@ public class CTabItemLCA_Test extends TestCase {
   private CTabFolder folder;
   private CTabItemLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -53,6 +55,7 @@ public class CTabItemLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -158,7 +161,7 @@ public class CTabItemLCA_Test extends TestCase {
   public void testRenderCustomVariant() throws IOException {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
-    item.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    item.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -170,7 +173,7 @@ public class CTabItemLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
-    item.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    item.setData( RWT.CUSTOM_VARIANT, "blue" );
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 

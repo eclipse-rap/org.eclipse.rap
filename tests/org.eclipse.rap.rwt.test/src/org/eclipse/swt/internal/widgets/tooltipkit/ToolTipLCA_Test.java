@@ -16,6 +16,7 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
@@ -26,10 +27,14 @@ import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolTip;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -41,6 +46,7 @@ public class ToolTipLCA_Test extends TestCase {
   private ToolTip toolTip;
   private ToolTipLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -51,6 +57,7 @@ public class ToolTipLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -72,6 +79,7 @@ public class ToolTipLCA_Test extends TestCase {
   public void testSelectionEvent() {
     final SelectionEvent[] eventLog = { null };
     toolTip.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         eventLog[ 0 ] = event;
       }
@@ -176,7 +184,7 @@ public class ToolTipLCA_Test extends TestCase {
   }
 
   public void testRenderCustomVariant() throws IOException {
-    toolTip.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    toolTip.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( toolTip );
 
     Message message = Fixture.getProtocolMessage();
@@ -186,7 +194,7 @@ public class ToolTipLCA_Test extends TestCase {
   public void testRenderCustomVariantUnchanged() throws IOException {
     Fixture.markInitialized( toolTip );
 
-    toolTip.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    toolTip.setData( RWT.CUSTOM_VARIANT, "blue" );
     Fixture.preserveWidgets();
     lca.renderChanges( toolTip );
 

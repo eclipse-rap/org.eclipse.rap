@@ -14,7 +14,6 @@ import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.examples.Infobox;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -68,7 +67,7 @@ public class MarkupLabelExample implements IExamplePage {
   private Label createMarkupLabel( Composite parent ) {
     Label label = new Label( parent, SWT.WRAP );
     label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
-    label.setData(  WidgetUtil.CUSTOM_VARIANT, "markup" );
+    label.setData( RWT.CUSTOM_VARIANT, "markup" );
     label.setText( DEFAULT_TEXT );
     label.setLayoutData( ExampleUtil.createFillData() );
     return label;
@@ -80,7 +79,7 @@ public class MarkupLabelExample implements IExamplePage {
     GridData layoutData = ExampleUtil.createHorzFillData();
     layoutData.horizontalSpan = 2;
     label.setLayoutData( layoutData );
-    label.setData( WidgetUtil.CUSTOM_VARIANT, "error" );
+    label.setData( RWT.CUSTOM_VARIANT, "error" );
     return label;
   }
 
@@ -108,10 +107,10 @@ public class MarkupLabelExample implements IExamplePage {
       public void widgetSelected( SelectionEvent event ) {
         try {
           markupLabel.setText( multilineText.getText() );
-          multilineText.setData( WidgetUtil.CUSTOM_VARIANT, null );
+          multilineText.setData( RWT.CUSTOM_VARIANT, null );
           errorLabel.setVisible( false );
         } catch( IllegalArgumentException exception ) {
-          multilineText.setData( WidgetUtil.CUSTOM_VARIANT, "error" );
+          multilineText.setData( RWT.CUSTOM_VARIANT, "error" );
           errorLabel.setVisible( true );
         }
       }
@@ -127,7 +126,7 @@ public class MarkupLabelExample implements IExamplePage {
       public void widgetSelected( SelectionEvent event ) {
         markupLabel.setText( DEFAULT_TEXT );
         multilineText.setText( DEFAULT_TEXT );
-        multilineText.setData( WidgetUtil.CUSTOM_VARIANT, null );
+        multilineText.setData( RWT.CUSTOM_VARIANT, null );
         errorLabel.setVisible( false );
       }
     } );

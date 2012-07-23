@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
@@ -26,13 +27,20 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 @SuppressWarnings("deprecation")
 public class ToolItemLCA_Test extends TestCase {
@@ -42,6 +50,7 @@ public class ToolItemLCA_Test extends TestCase {
   private ToolBar toolbar;
   private ToolItemLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -51,6 +60,7 @@ public class ToolItemLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -59,6 +69,7 @@ public class ToolItemLCA_Test extends TestCase {
     final boolean[] wasEventFired = { false };
     final ToolItem item = new ToolItem( toolbar, SWT.CHECK );
     item.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         wasEventFired[ 0 ] = true;
         assertEquals( null, event.item );
@@ -285,7 +296,7 @@ public class ToolItemLCA_Test extends TestCase {
   public void testRenderCustomVariant() throws IOException {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
-    toolitem.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    toolitem.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();
@@ -297,7 +308,7 @@ public class ToolItemLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( toolitem );
 
-    toolitem.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    toolitem.setData( RWT.CUSTOM_VARIANT, "blue" );
     Fixture.preserveWidgets();
     lca.renderChanges( toolitem );
 

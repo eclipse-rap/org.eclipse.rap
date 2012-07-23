@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.lifecycle;
 
 import java.text.MessageFormat;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
@@ -28,14 +29,11 @@ import org.eclipse.swt.widgets.Widget;
 public final class WidgetUtil {
 
   /**
-   * Used to mark a widget as belonging to a custom variant using
-   * <code>Widget.setData</code>. For more information on custom widget
-   * variants, see the RAP help on theming.
-   *
-   * @see Widget#setData(String,Object)
+   * @deprecated Use {@link RWT#CUSTOM_VARIANT} instead
    * @since 1.1
    */
-  public static final String CUSTOM_VARIANT = "org.eclipse.rwt.themeVariant";
+  @Deprecated
+  public static final String CUSTOM_VARIANT = RWT.CUSTOM_VARIANT;
 
   /**
    * <p><strong>Note:</strong> This constant is provisional and subject to
@@ -69,7 +67,7 @@ public final class WidgetUtil {
    *
    * @since 1.1
    */
-  public static final String CUSTOM_WIDGET_ID = "org.eclipse.rwt.UITests#customId";
+  public static final String CUSTOM_WIDGET_ID = "org.eclipse.rap.rwt.customWidgetId";
 
   /**
    * <p><strong>Note:</strong> This constant is provisional and subject to
@@ -80,14 +78,14 @@ public final class WidgetUtil {
    * the client, the HTML id attribute is set.
    *
    * <p>In conjunction with <code>CUSTOM_WIDGET_ID</code>, each widget can
-   * be assigned a custom, more human-readable, identifier that is independant
+   * be assigned a custom, more human-readable, identifier that is independent
    * if the order in which widgets are created.</p>
    *
    * @see #CUSTOM_WIDGET_ID
    *
    * @since 1.1
    */
-  public static final String ENABLE_UI_TESTS = "org.eclipse.rwt.enableUITests";
+  public static final String ENABLE_UI_TESTS = "org.eclipse.rap.rwt.enableUITests";
 
   private WidgetUtil() {
     // prevent instantiation
@@ -132,7 +130,7 @@ public final class WidgetUtil {
   public static String getVariant( Widget widget ) {
     String result = null;
     WidgetAdapter widgetAdapter = ( WidgetAdapter )getAdapter( widget );
-    Object data = widget.getData( WidgetUtil.CUSTOM_VARIANT );
+    Object data = widget.getData( RWT.CUSTOM_VARIANT );
     if( data instanceof String ) {
       result = ( String )data;
       if( !result.equals( widgetAdapter.getCachedVariant() ) ) {

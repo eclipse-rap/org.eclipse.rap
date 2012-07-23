@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.internal.provisional.action.ToolBarManager2;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
@@ -33,7 +33,7 @@ public class ViewToolBarManager extends ToolBarManager2 {
     ToolBar toolBar = getControl();
     if( !toolBarExist() && parent != null ) {
       toolBar = super.createControl( parent );
-      toolBar.setData( WidgetUtil.CUSTOM_VARIANT, STYLING_VARIANT );
+      toolBar.setData( RWT.CUSTOM_VARIANT, STYLING_VARIANT );
     }
     return toolBar;
   }
@@ -130,7 +130,7 @@ public class ViewToolBarManager extends ToolBarManager2 {
             for( int i = 0; i < newItems; i++ ) {
               ToolItem item = toolBar.getItem( destIx++ );
               item.setData( src );
-              item.setData( WidgetUtil.CUSTOM_VARIANT, STYLING_VARIANT );
+              item.setData( RWT.CUSTOM_VARIANT, STYLING_VARIANT );
             }
           }
           // remove any old tool items not accounted for

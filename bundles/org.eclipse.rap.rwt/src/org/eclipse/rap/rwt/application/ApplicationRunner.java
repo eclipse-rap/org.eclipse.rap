@@ -100,6 +100,7 @@ public class ApplicationRunner {
   /**
    * @deprecated This method is not part of the RAP API. It will be removed in
    *             future versions.
+   *             @noreference This method is not intended to be referenced by clients.
    */
   @Deprecated
   public Collection<String> getServletPaths() {

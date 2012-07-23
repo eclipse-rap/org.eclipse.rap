@@ -11,7 +11,7 @@
 package org.eclipse.rap.examples.internal;
 
 import org.eclipse.rap.examples.IExampleContribution;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -46,7 +46,7 @@ abstract class DropDownNavigation extends Composite {
 
   private Menu createMenu( Composite parent ) {
     Menu menu = new Menu( parent.getShell(), SWT.POP_UP );
-    menu.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
+    menu.setData( RWT.CUSTOM_VARIANT, "navigation" );
     return menu;
   }
 
@@ -62,7 +62,7 @@ abstract class DropDownNavigation extends Composite {
   private void createMenuItem( final IExampleContribution contribution ) {
     MenuItem item = new MenuItem( pullDownMenu, SWT.PUSH | SWT.LEFT );
     item.setText( contribution.getTitle().replace( "&", "&&" ) );
-    item.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
+    item.setData( RWT.CUSTOM_VARIANT, "navigation" );
     item.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
@@ -73,9 +73,9 @@ abstract class DropDownNavigation extends Composite {
 
   private void createDropDownToolItem() {
     final ToolBar toolBar = new ToolBar( this, SWT.HORIZONTAL );
-    toolBar.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
+    toolBar.setData( RWT.CUSTOM_VARIANT, "navigation" );
     ToolItem toolItem = new ToolItem( toolBar, SWT.DROP_DOWN );
-    toolItem.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
+    toolItem.setData( RWT.CUSTOM_VARIANT, "navigation" );
     toolItem.setText( category.getName().replace( "&", "&&" ) );
     toolItem.addSelectionListener( new SelectionAdapter() {
       @Override

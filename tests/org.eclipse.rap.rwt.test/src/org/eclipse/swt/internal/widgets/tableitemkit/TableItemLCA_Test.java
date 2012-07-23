@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
@@ -50,6 +51,7 @@ public class TableItemLCA_Test extends TestCase {
   private Table table;
   private TableItemLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -59,6 +61,7 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -194,6 +197,7 @@ public class TableItemLCA_Test extends TestCase {
     table.setSelection( 2 );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         table.remove( 1, 2 );
         executed[ 0 ] = true;
@@ -698,7 +702,7 @@ public class TableItemLCA_Test extends TestCase {
   public void testRenderCustomVariant() throws IOException {
     TableItem item = new TableItem( table, SWT.NONE );
 
-    item.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    item.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -710,7 +714,7 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
-    item.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    item.setData( RWT.CUSTOM_VARIANT, "blue" );
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 

@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menukit;
 
@@ -16,6 +16,7 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -32,8 +33,12 @@ import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.json.JSONObject;
+
 
 public class MenuLCA_Test extends TestCase {
 
@@ -41,6 +46,7 @@ public class MenuLCA_Test extends TestCase {
   private Shell shell;
   private MenuLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -49,6 +55,7 @@ public class MenuLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -262,7 +269,7 @@ public class MenuLCA_Test extends TestCase {
   public void testRenderCustomVariant() throws IOException {
     Menu menu = new Menu( shell, SWT.BAR );
 
-    menu.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    menu.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( menu );
 
     Message message = Fixture.getProtocolMessage();
@@ -274,7 +281,7 @@ public class MenuLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( menu );
 
-    menu.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    menu.setData( RWT.CUSTOM_VARIANT, "blue" );
     Fixture.preserveWidgets();
     lca.renderChanges( menu );
 

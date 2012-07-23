@@ -17,8 +17,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -71,7 +70,7 @@ public class ShellThemeAdapter_Test extends TestCase {
     ShellThemeAdapter shellThemeAdapter = getShellThemeAdapter( shell );
 
     setCustomTheme( "Shell-Titlebar.special { height: 50px }" );
-    shell.setData( WidgetUtil.CUSTOM_VARIANT, "special" );
+    shell.setData( RWT.CUSTOM_VARIANT, "special" );
 
     assertEquals( 50, shellThemeAdapter.getTitleBarHeight( shell ) );
   }
@@ -81,7 +80,7 @@ public class ShellThemeAdapter_Test extends TestCase {
     ShellThemeAdapter shellThemeAdapter = getShellThemeAdapter( shell );
 
     setCustomTheme( "Shell-Titlebar.special { margin: 1px 2px 3px 4px }" );
-    shell.setData( WidgetUtil.CUSTOM_VARIANT, "special" );
+    shell.setData( RWT.CUSTOM_VARIANT, "special" );
 
     assertEquals( new Rectangle( 4, 1, 6, 4 ), shellThemeAdapter.getTitleBarMargin( shell ) );
   }

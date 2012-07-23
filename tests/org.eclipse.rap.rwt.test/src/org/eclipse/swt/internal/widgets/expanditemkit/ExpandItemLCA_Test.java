@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -28,10 +29,14 @@ import org.eclipse.swt.events.ExpandEvent;
 import org.eclipse.swt.events.ExpandListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.ExpandBar;
+import org.eclipse.swt.widgets.ExpandItem;
+import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 @SuppressWarnings("deprecation")
 public class ExpandItemLCA_Test extends TestCase {
@@ -42,6 +47,7 @@ public class ExpandItemLCA_Test extends TestCase {
   private ExpandItem expandItem;
   private ExpandItemLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -52,6 +58,7 @@ public class ExpandItemLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -142,7 +149,7 @@ public class ExpandItemLCA_Test extends TestCase {
   }
 
   public void testRenderCustomVariant() throws IOException {
-    expandItem.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    expandItem.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( expandItem );
 
     Message message = Fixture.getProtocolMessage();
@@ -153,7 +160,7 @@ public class ExpandItemLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( expandItem );
 
-    expandItem.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    expandItem.setData( RWT.CUSTOM_VARIANT, "blue" );
     Fixture.preserveWidgets();
     lca.renderChanges( expandItem );
 

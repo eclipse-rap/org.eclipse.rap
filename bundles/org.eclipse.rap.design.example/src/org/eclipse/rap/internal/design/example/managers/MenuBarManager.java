@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 EclipseSource and others.
+ * Copyright (c) 2008, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.SubContributionItem;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -35,16 +35,18 @@ public class MenuBarManager extends MenuManager {
 
   private static final String MENU_BAR_VARIANT = "menuBar"; //$NON-NLS-1$
   private Composite menuParent;
-  private List toolItemList = new ArrayList();
+  private final List toolItemList = new ArrayList();
   private ToolBar toolbar;
 
+  @Override
   public void fill( final Composite parent ) {
-    menuParent = parent;    
+    menuParent = parent;
     toolbar = new ToolBar( parent, SWT.WRAP );
-    toolbar.setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );
+    toolbar.setData( RWT.CUSTOM_VARIANT, MENU_BAR_VARIANT );
     update( false, false );
   }
-  
+
+  @Override
   protected void update( final boolean force, final boolean recursive ) {
     super.update( force, recursive );
     if( menuParent != null && ( force || isDirty() ) ) {
@@ -54,9 +56,9 @@ public class MenuBarManager extends MenuManager {
         for( int i = 0; i < items.length; i++ ) {
           IContributionItem item = items[ i ];
           if( item.isVisible() ) {
-            makeEntry( item );         
+            makeEntry( item );
           }
-        }      
+        }
       }
       menuParent.layout( true, true );
     }
@@ -72,11 +74,11 @@ public class MenuBarManager extends MenuManager {
           if( !menu.isDisposed() ) {
             menu.dispose();
           }
-        }      
+        }
         item.dispose();
       }
     }
-  } 
+  }
 
   private void makeEntry( final IContributionItem item ) {
     IContributionItem tempItem = null;
@@ -85,17 +87,17 @@ public class MenuBarManager extends MenuManager {
       tempItem = subItem.getInnerItem();
     } else if( item instanceof MenuManager ) {
       tempItem = item;
-    }    
+    }
     if( tempItem != null && tempItem instanceof MenuManager ) {
       final MenuManager manager = ( MenuManager ) tempItem;
       int style = extractStyle( manager );
       final ToolItem toolItem = new ToolItem( toolbar, style );
       toolItem.setText( manager.getMenuText() );
-      toolItem.setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );
-      createMenu( manager, toolItem );      
+      toolItem.setData( RWT.CUSTOM_VARIANT, MENU_BAR_VARIANT );
+      createMenu( manager, toolItem );
       // needed to clear all controls in case of an update
       toolItemList.add( toolItem );
-    } 
+    }
   }
 
   private int extractStyle( final MenuManager manager ) {
@@ -110,8 +112,9 @@ public class MenuBarManager extends MenuManager {
   {
     final Menu menu = new Menu( menuParent );
     toolItem.setData( menu );
-    menu.setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );      
+    menu.setData( RWT.CUSTOM_VARIANT, MENU_BAR_VARIANT );
     toolItem.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         // cleanup the menu
         MenuItem[] menuItems = menu.getItems();
@@ -120,16 +123,16 @@ public class MenuBarManager extends MenuManager {
         }
         hookMenuToToolItem( manager, menu );
         // set the menu position
-        Display display = toolItem.getDisplay();       
+        Display display = toolItem.getDisplay();
         Rectangle bounds = toolItem.getBounds();
         int leftIndent = bounds.x;
         int topIndent = bounds.y + bounds.height;
         Point indent = new Point( leftIndent, topIndent );
-        Point menuLocation 
+        Point menuLocation
           = display.map( toolbar, toolbar.getShell(), indent );
         menu.setLocation( menuLocation );
         // style the menuitems and show the menu
-        menu.setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );
+        menu.setData( RWT.CUSTOM_VARIANT, MENU_BAR_VARIANT );
         styleMenuItems( menu );
         menu.setVisible( true );
       }
@@ -146,7 +149,7 @@ public class MenuBarManager extends MenuManager {
           }
         }
       };
-      
+
     } );
   }
 
@@ -154,16 +157,16 @@ public class MenuBarManager extends MenuManager {
     MenuItem[] items = menu.getItems();
     if( items != null && items.length > 0 ) {
       for( int i = 0; i < items.length; i++ ) {
-        items[ i ].setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );
+        items[ i ].setData( RWT.CUSTOM_VARIANT, MENU_BAR_VARIANT );
         Menu subMenu = items[ i ].getMenu();
         if( subMenu != null ) {
-          subMenu.setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );
+          subMenu.setData( RWT.CUSTOM_VARIANT, MENU_BAR_VARIANT );
           styleMenuItems( subMenu );
         }
       }
     }
   }
-  
+
   public ToolBar getMenuToolBar() {
     return toolbar;
   }
