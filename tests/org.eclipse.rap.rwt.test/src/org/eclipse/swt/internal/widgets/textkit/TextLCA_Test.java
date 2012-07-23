@@ -15,18 +15,19 @@ package org.eclipse.swt.internal.widgets.textkit;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -40,6 +41,8 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -54,6 +57,7 @@ public class TextLCA_Test extends TestCase {
   private Display display;
   private Shell shell;
   private TextLCA lca;
+  private Text text;
 
   @Override
   protected void setUp() throws Exception {
@@ -63,6 +67,7 @@ public class TextLCA_Test extends TestCase {
     lca = new TextLCA();
     display = new Display();
     shell = new Shell( display );
+    text = new Text( shell, SWT.NONE );
   }
 
   @Override
@@ -71,7 +76,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testControlListeners() throws IOException {
-    Text text = new Text( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( text );
     ControlLCATestUtil.testFocusListener( text );
     ControlLCATestUtil.testMouseListener( text );
@@ -97,7 +101,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testReadData() {
-    Text text = new Text( shell, SWT.NONE );
     String textId = WidgetUtil.getId( text );
     // read changed text
     Fixture.fakeRequestParam( textId + ".text", "abc" );
@@ -113,7 +116,6 @@ public class TextLCA_Test extends TestCase {
 
   public void testModifyEvent() {
     final StringBuilder log = new StringBuilder();
-    final Text text = new Text( shell, SWT.NONE );
     text.addModifyListener( new ModifyListener() {
 
       public void modifyText( ModifyEvent event ) {
@@ -132,7 +134,6 @@ public class TextLCA_Test extends TestCase {
 
   public void testVerifyEvent() {
     final StringBuilder log = new StringBuilder();
-    final Text text = new Text( shell, SWT.NONE );
     text.addVerifyListener( new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
         assertEquals( text, event.getSource() );
@@ -154,7 +155,6 @@ public class TextLCA_Test extends TestCase {
     // ensure that selection is unchanged in case a verify-listener is
     // registered that does not change the text
     final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
-    Text text = new Text( shell, SWT.NONE );
     shell.open();
     String textId = WidgetUtil.getId( text );
     text.addVerifyListener( new VerifyListener() {
@@ -188,7 +188,6 @@ public class TextLCA_Test extends TestCase {
     // ensure that selection is unchanged in case a verify-listener changes
     // the incoming text within the limits of the selection
     final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
-    Text text = new Text( shell, SWT.NONE );
     shell.open();
     String textId = WidgetUtil.getId( text );
     text.setText( "" );
@@ -215,7 +214,6 @@ public class TextLCA_Test extends TestCase {
     // ensure that selection is adjusted in case a verify-listener changes
     // the incoming text in a way that would result in an invalid selection
     final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
-    Text text = new Text( shell, SWT.NONE );
     shell.open();
     String textId = WidgetUtil.getId( text );
     text.setText( "" );
@@ -239,7 +237,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testPreserveText() {
-    Text text = new Text( shell, SWT.SINGLE );
     shell.open();
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -261,7 +258,6 @@ public class TextLCA_Test extends TestCase {
   public void testVerifyAndModifyEvent() {
     final List<TypedEvent> log = new ArrayList<TypedEvent>();
     // set up widgets to be tested
-    final Text text = new Text( shell, SWT.NONE );
     shell.open();
     String textId = WidgetUtil.getId( text );
     // ensure that modify *and* verify event is fired
@@ -374,8 +370,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderCreate() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
-
     lca.renderInitialization( text );
 
     Message message = Fixture.getProtocolMessage();
@@ -443,8 +437,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
-
     lca.renderInitialization( text );
 
     Message message = Fixture.getProtocolMessage();
@@ -453,8 +445,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderInitialMessage() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
-
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
@@ -462,8 +452,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderMessage() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
-
     text.setMessage( "test" );
     lca.renderChanges( text );
 
@@ -472,7 +460,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderMessageUnchanged() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
 
@@ -503,8 +490,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderInitialEchoChar() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
-
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
@@ -512,8 +497,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderEchoChar() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
-
     text.setEchoChar( '*' );
     lca.renderChanges( text );
 
@@ -522,7 +505,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderEchoCharUnchanged() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
 
@@ -535,8 +517,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderInitialEditable() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
-
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
@@ -544,8 +524,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderEditable() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
-
     text.setEditable( false );
     lca.renderChanges( text );
 
@@ -554,7 +532,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderEditableUnchanged() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
 
@@ -567,7 +544,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelection() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
     text.setText( "foo bar" );
 
     lca.renderChanges( text );
@@ -577,7 +553,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderSelection() throws IOException, JSONException {
-    Text text = new Text( shell, SWT.SINGLE );
     text.setText( "foo bar" );
 
     text.setSelection( 1, 3 );
@@ -590,7 +565,6 @@ public class TextLCA_Test extends TestCase {
 
   public void testRenderSelectionAfterTextChange() throws IOException, JSONException {
     // See bug 376957
-    Text text = new Text( shell, SWT.SINGLE );
     text.setText( "foo bar" );
     text.selectAll();
     Fixture.markInitialized( display );
@@ -607,7 +581,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionUnchanged() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
     text.setText( "foo bar" );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
@@ -621,8 +594,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderInitialTextLimit() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
-
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
@@ -630,8 +601,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimit() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
-
     text.setTextLimit( 10 );
     lca.renderChanges( text );
 
@@ -640,7 +609,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimitUnchanged() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
 
@@ -653,7 +621,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimitReset() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
 
@@ -667,7 +634,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimitResetWithNegative() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
 
@@ -681,7 +647,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderAddSelectionListener() throws Exception {
-    Text text = new Text( shell, SWT.SINGLE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
@@ -694,7 +659,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    Text text = new Text( shell, SWT.SINGLE );
     SelectionListener listener = new SelectionAdapter() { };
     text.addSelectionListener( listener );
     Fixture.markInitialized( display );
@@ -709,7 +673,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
-    Text text = new Text( shell, SWT.SINGLE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
@@ -723,7 +686,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderAddModifyListener() throws Exception {
-    Text text = new Text( shell, SWT.SINGLE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
@@ -739,7 +701,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveModifyListener() throws Exception {
-    Text text = new Text( shell, SWT.SINGLE );
     ModifyListener listener = new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
       }
@@ -757,7 +718,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderModifyListenerUnchanged() throws Exception {
-    Text text = new Text( shell, SWT.SINGLE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
@@ -774,7 +734,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderAddVerifyListener() throws Exception {
-    Text text = new Text( shell, SWT.SINGLE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
@@ -790,7 +749,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveVerifyListener() throws Exception {
-    Text text = new Text( shell, SWT.SINGLE );
     VerifyListener listener = new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
       }
@@ -808,7 +766,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderVerifyListenerUnchanged() throws Exception {
-    Text text = new Text( shell, SWT.SINGLE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
@@ -825,8 +782,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderInitialText() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
-
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
@@ -834,8 +789,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderText() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
-
     text.setText( "test" );
     lca.renderChanges( text );
 
@@ -844,7 +797,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testRenderTextUnchanged() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
 
@@ -854,6 +806,61 @@ public class TextLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "text" ) );
+  }
+
+  public void testProcessDefaultSelectionEvent() {
+    List<Event> events = new LinkedList<Event>();
+    text.addListener( SWT.DefaultSelection, new LoggingListener( events ) );
+    String textId = WidgetUtil.getId( text );
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, textId );
+    Fixture.readDataAndProcessAction( display );
+
+    assertEquals( 1, events.size() );
+    Event event = events.get( 0 );
+    assertEquals( SWT.DefaultSelection, event.type );
+    assertEquals( text, event.widget );
+    assertNull( event.item );
+    assertEquals( SWT.NONE, event.detail );
+  }
+
+  public void testProcessDefaultSelectionEvent_WithSearchDetail() {
+    List<Event> events = new LinkedList<Event>();
+    text = new Text( shell, SWT.SEARCH | SWT.ICON_SEARCH | SWT.ICON_CANCEL );
+    text.addListener( SWT.DefaultSelection, new LoggingListener( events ) );
+    String textId = WidgetUtil.getId( text );
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, textId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_DETAIL, "search" );
+    Fixture.readDataAndProcessAction( display );
+
+    assertEquals( 1, events.size() );
+    Event event = events.get( 0 );
+    assertEquals( SWT.DefaultSelection, event.type );
+    assertEquals( text, event.widget );
+    assertNull( event.item );
+    assertEquals( SWT.ICON_SEARCH, event.detail );
+  }
+
+  public void testProcessDefaultSelectionEvent_WithCancelDetail() {
+    List<Event> events = new LinkedList<Event>();
+    text = new Text( shell, SWT.SEARCH | SWT.ICON_SEARCH | SWT.ICON_CANCEL );
+    text.addListener( SWT.DefaultSelection, new LoggingListener( events ) );
+    String textId = WidgetUtil.getId( text );
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, textId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_DETAIL, "cancel" );
+    Fixture.readDataAndProcessAction( display );
+
+    assertEquals( 1, events.size() );
+    Event event = events.get( 0 );
+    assertEquals( SWT.DefaultSelection, event.type );
+    assertEquals( text, event.widget );
+    assertNull( event.item );
+    assertEquals( SWT.ICON_CANCEL, event.detail );
   }
 
   private static Object getPreserved( Text text, String property ) {
@@ -866,5 +873,18 @@ public class TextLCA_Test extends TestCase {
       public void modifyText( ModifyEvent event ) {
       }
     };
+  }
+
+  //////////////////
+  // Helping classes
+
+  private static class LoggingListener implements Listener {
+    private final List<Event> events;
+    private LoggingListener( List<Event> events ) {
+      this.events = events;
+    }
+    public void handleEvent( Event event ) {
+      events.add( event );
+    }
   }
 }

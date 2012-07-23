@@ -40,3 +40,11 @@ Text-Message {
   color: #4a4a4a;
   text-shadow: none;
 }
+
+Text-Search-Icon {
+  background-image: url( resource/widget/rap/text/find.png );
+}
+
+Text-Cancel-Icon {
+  background-image: url( resource/widget/rap/text/clear.gif );
+}

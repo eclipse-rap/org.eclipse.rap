@@ -15,9 +15,9 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
@@ -28,19 +28,23 @@ public class Text_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private Text text;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
+    text = new Text( shell, SWT.NONE );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
 
   public void testInitialValuesForSingleText() {
-    Text text = new Text( shell, SWT.NONE );
     assertEquals( "", text.getText() );
     assertEquals( "", text.getMessage() );
     assertEquals( Text.LIMIT, text.getTextLimit() );
@@ -50,7 +54,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testTextLimit() {
-    Text text = new Text( shell, SWT.NONE );
     text.setTextLimit( -1 );
     assertEquals( -1, text.getTextLimit() );
     text.setTextLimit( -20 );
@@ -83,8 +86,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testSelection() {
-    Text text = new Text( shell, SWT.NONE );
-
     // test select all
     text.setText( "abc" );
     text.selectAll();
@@ -129,9 +130,7 @@ public class Text_Test extends TestCase {
   }
 
   public void testModifyEvent() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuilder log = new StringBuilder();
-    final Text text = new Text( shell, SWT.NONE );
     text.addModifyListener( new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
         log.append( "modifyEvent|" );
@@ -149,9 +148,7 @@ public class Text_Test extends TestCase {
 
   public void testVerifyEvent() {
     VerifyListener verifyListener;
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<TypedEvent> log = new ArrayList<TypedEvent>();
-    final Text text = new Text( shell, SWT.NONE );
     text.addModifyListener( new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
         log.add( event );
@@ -318,7 +315,6 @@ public class Text_Test extends TestCase {
 	}
 
   public void testInsertWithModifyListener() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<ModifyEvent> log = new ArrayList<ModifyEvent>();
     Text text = new Text( shell, SWT.SINGLE );
     text.setBounds( 0, 0, 100, 20 );
@@ -344,22 +340,30 @@ public class Text_Test extends TestCase {
     assertEquals( 0, log.size() );
   }
 
-  public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Text text = new Text( shell, SWT.NONE );
-    Point expected = new Point( 85, 26 );
-    assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+  public void testComputeSize_Empty() {
+    assertEquals( new Point( 85, 26 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+  }
+
+  public void testComputeSize_WithText() {
     text.setText( "This is a long long text!" );
-    expected = new Point( 189, 28 );
-    assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 189, 28 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+  }
 
+  public void testComputeSize_WithMessage() {
     text.setMessage( "This is a message that is longer than the text!" );
-    expected = new Point( 337, 28 );
-    assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 337, 28 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+  }
 
+  public void testComputeSize_WithTextAndMessage() {
+    text.setText( "This is a long long text!" );
+    text.setMessage( "This is a message that is longer than the text!" );
+    assertEquals( new Point( 337, 28 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+  }
+
+  public void testComputeSize_Multi() {
     text = new Text( shell, SWT.MULTI );
     text.setText( "This is a long long text!\nThis is the second row." );
-    expected = new Point( 189, 47 );
+    Point expected = new Point( 189, 47 );
     assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     text = new Text( shell, SWT.MULTI | SWT.WRAP );
@@ -372,13 +376,32 @@ public class Text_Test extends TestCase {
     assertEquals( 1, text.getBorderWidth() );
     expected = new Point( 73, 154 );
     assertEquals( expected, text.computeSize( 50, SWT.DEFAULT ) );
+  }
 
-    expected = new Point( 123, 114 );
-    assertEquals( expected, text.computeSize( 100, 100 ) );
+  public void testComputeSize_MultiWithHint() {
+    text = new Text( shell, SWT.MULTI | SWT.WRAP | SWT.BORDER );
+    assertEquals(  new Point( 123, 114 ), text.computeSize( 100, 100 ) );
+  }
+
+  public void testComputeSize_SearchWithoutIcons() {
+    text = new Text( shell, SWT.SEARCH );
+    text.setText( "This is a long long text!" );
+    assertEquals( new Point( 191, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+  }
+
+  public void testComputeSize_SearchWithOneIcon() {
+    text = new Text( shell, SWT.SEARCH | SWT.ICON_SEARCH );
+    text.setText( "This is a long long text!" );
+    assertEquals( new Point( 207, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+  }
+
+  public void testComputeSize_SearchWithTwoIcon() {
+    text = new Text( shell, SWT.SEARCH | SWT.ICON_SEARCH | SWT.ICON_CANCEL );
+    text.setText( "This is a long long text!" );
+    assertEquals( new Point( 223, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   public void testComputeTrim() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Text text = new Text( shell, SWT.SINGLE );
     Rectangle expected = new Rectangle( -10, -5, 20, 10 );
     assertEquals( expected, text.computeTrim( 0, 0, 0, 0 ) );
@@ -416,7 +439,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testGetText() {
-    Text text = new Text( shell, SWT.NONE );
     text.setText( "Test Text" );
     assertEquals( "Test", text.getText( 0, 3 ) );
     assertEquals( "", text.getText( 5, 4 ) );
@@ -465,7 +487,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testSetTextChars() {
-    Text text = new Text( shell, SWT.NONE );
     char[] expected = new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' };
     text.setTextChars( expected );
     char[] result = text.getTextChars();
@@ -477,7 +498,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testSetTextChars_NullValue() {
-    Text text = new Text( shell, SWT.NONE );
     try {
       text.setTextChars( null );
       fail( "No exception thrown for chars == null" );
@@ -486,7 +506,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testSetTextChars_EmptyArray() {
-    Text text = new Text( shell, SWT.NONE );
     char[] expected = new char[ 0 ];
     text.setTextChars( expected );
     char[] result = text.getTextChars();
@@ -495,7 +514,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testGetTextChars_FromText() {
-    Text text = new Text( shell, SWT.NONE );
     String string = "new string";
     text.setText( string );
     char[]result = text.getTextChars();
@@ -505,7 +523,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testIsSerializable() throws Exception {
-    Text text = new Text( shell, SWT.NONE );
     text.setText( "foo" );
 
     Text deserializedText = Fixture.serializeAndDeserialize( text );
@@ -514,7 +531,6 @@ public class Text_Test extends TestCase {
   }
 
   public void testSelectionAfterInsertText() {
-    Text text = new Text( shell, SWT.NONE );
     text.setText( "foobar" );
     text.setSelection( 3 );
 

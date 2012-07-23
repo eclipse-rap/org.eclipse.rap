@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,16 @@ package org.eclipse.swt.internal.widgets.textkit;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher.Constraint;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 
 
 public final class TextThemeAdapter extends ControlThemeAdapter {
 
+  @Override
   protected void configureMatcher( WidgetMatcher matcher ) {
     super.configureMatcher( matcher );
     matcher.addStyle( "SINGLE", SWT.SINGLE );
@@ -33,4 +36,13 @@ public final class TextThemeAdapter extends ControlThemeAdapter {
       }
     });
   }
+
+  public Point getSearchIconImageSize( Control control ) {
+    return getCssImageDimension( "Text-Search-Icon", "background-image", control );
+  }
+
+  public Point getCancelIconImageSize( Control control ) {
+    return getCssImageDimension( "Text-Cancel-Icon", "background-image", control );
+  }
+
 }

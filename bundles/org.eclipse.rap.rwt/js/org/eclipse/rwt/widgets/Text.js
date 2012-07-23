@@ -29,6 +29,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     this._requestScheduled = false;
     this._message = null;
     this._messageElement = null;
+    this._searchIconElement = null;
+    this._cancelIconElement = null;
   },
 
   destruct : function() {
@@ -42,6 +44,22 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       check : "Boolean",
       init : true,
       apply : "_applyWrap"
+    },
+
+    searchIcon : {
+      check : "Array",
+      nullable : true,
+      init : null,
+      apply : "_applySearchIcon",
+      themeable : true
+    },
+
+    cancelIcon : {
+      check : "Array",
+      nullable : true,
+      init : null,
+      apply : "_applyCancelIcon",
+      themeable : true
     }
 
   },
@@ -197,6 +215,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       }
       // Fix for bug 306354
       this._inputElement.style.paddingRight = "1px";
+      this._inputElement.style.position = "absolute";
+      this._updateAllIcons();
       this._updateMessage();
     },
 
@@ -271,6 +291,114 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       }
     },
 
+    ////////////////
+    // icons support
+
+    // overrided
+    _syncFieldWidth : function() {
+      this._inputElement.style.width = (   this.getInnerWidth() 
+                                         - this._getIconOuterWidth( "search" )
+                                         - this._getIconOuterWidth( "cancel" ) ) + "px";
+    },
+
+    _syncFieldLeft : function() {
+      var styleMap = this._getMessageStyle();
+      this._inputElement.style.left = (   this._getIconOuterWidth( "search" )
+                                        + styleMap.paddingLeft ) + "px";
+    },
+
+    _applySearchIcon : function( value, oldValue ) {
+      this._updateAllIcons();
+    },
+
+    _applyCancelIcon : function( value, oldValue ) {
+      this._updateAllIcons();
+    },
+
+    _updateAllIcons : function() {
+      if( this._isCreated ) {
+        this._updateIcon( "search" );
+        this._updateIcon( "cancel" );
+      }
+    },
+
+    _updateIcon : function( iconId ) {
+      var element = this._getIconElement( iconId );
+      if( this._hasIcon( iconId ) && element == null ) {
+        element = document.createElement( "div" );
+        element.style.position = "absolute";
+        this._getTargetNode().insertBefore( element, this._inputElement );
+        this._setIconElement( iconId, element );
+      }
+      if( element ) {
+        var image = this._getIconImage( iconId );
+        element.style.backgroundImage = image ? "URL(" + image[ 0 ] + ")" : "none";
+      }
+      this._layoutIcon( iconId );
+    },
+
+    _layoutAllIcons : function() {
+      this._layoutIcon( "search" );
+      this._layoutIcon( "cancel" );
+    },
+
+    _layoutIcon : function( iconId ) {
+      var element = this._getIconElement( iconId );
+      if( element ) {
+        var style = element.style;
+        var image = this._getIconImage( iconId );
+        style.width = image ? image[ 1 ] + "px" : 0;
+        style.height = image ? image[ 2 ] + "px" : 0;
+        var iconHeight = parseInt( style.height, 10 );
+        style.top = Math.round( this.getInnerHeight() / 2 - iconHeight / 2 ) + "px";
+        if( this._getIconPosition( iconId ) === "right" ) {
+          var styleMap = this._getMessageStyle();
+          style.left = (   this.getBoxWidth()
+                         - this._cachedBorderRight
+                         - styleMap.paddingRight
+                         - this._getIconOuterWidth( iconId ) ) + "px";
+        }
+      }
+    },
+
+    _getIconElement : function( iconId ) {
+      return iconId === "search" ? this._searchIconElement : this._cancelIconElement;
+    },
+
+    _setIconElement : function( iconId, element ) {
+      if( iconId === "search" ) {
+        this._searchIconElement = element;
+      } else { 
+        this._cancelIconElement = element;
+      }
+    },
+
+    _getIconOuterWidth : function( iconId ) {
+      var result = 0;
+      var image = this._getIconImage( iconId );
+      if( this._hasIcon( iconId ) && image != null ) {
+        var margin = this._getIconMargin( iconId );
+        result = margin[ 3 ] + image[ 1 ] + margin[ 1 ];
+      }
+      return result;
+    },
+
+    _hasIcon : function( iconId ) {
+      return this.hasState( iconId === "search" ? "rwt_ICON_SEARCH" : "rwt_ICON_CANCEL" );
+    },
+
+    _getIconImage : function( iconId ) {
+      return iconId === "search" ? this.getSearchIcon() : this.getCancelIcon();
+    },
+
+    _getIconPosition : function( iconId ) {
+      return iconId === "search" ? "left" : "right";
+    },
+
+    _getIconMargin : function( iconId ) {
+      return [ 0, 0, 0, 0 ];
+    },
+
     ///////////////////
     // password support
 
@@ -294,6 +422,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
 
     _postApply : function() {
       this.base( arguments );
+      this._syncFieldLeft();
+      this._layoutAllIcons();
       this._layoutMessage();
     },
 
@@ -374,13 +504,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       if( this._messageElement ) {
         var styleMap = this._getMessageStyle();
         var style = this._messageElement.style;
-        style.width = (   this.getBoxWidth()
-                        - this._cachedBorderLeft
-                        - this._cachedBorderRight
-                        - styleMap.paddingLeft
-                        - styleMap.paddingRight ) + "px";
+        style.width = (   this.getInnerWidth() 
+                        - this._getIconOuterWidth( "search" )
+                        - this._getIconOuterWidth( "cancel" ) ) + "px";
         var messageHeight = parseInt( style.height, 10 );
         style.top = Math.round( this.getInnerHeight() / 2 - messageHeight / 2 ) + "px";
+        style.left = ( this._getIconOuterWidth( "search" ) + styleMap.paddingLeft ) + "px";
       }
     },
 

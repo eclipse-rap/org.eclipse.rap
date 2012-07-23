@@ -28,6 +28,8 @@ var appearances = {
       result.paddingLeft = cssPadding[ 3 ];
       result.textShadow = tv.getCssShadow( "Text", "text-shadow" );
       result.shadow = tv.getCssShadow( "Text", "box-shadow" );
+      result.searchIcon = tv.getCssSizedImage( "Text-Search-Icon", "background-image" );
+      result.cancelIcon = tv.getCssSizedImage( "Text-Cancel-Icon", "background-image" );
       return result;
     }
   },
