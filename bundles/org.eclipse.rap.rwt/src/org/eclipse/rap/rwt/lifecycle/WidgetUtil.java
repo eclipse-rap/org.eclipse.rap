@@ -35,7 +35,7 @@ public final class WidgetUtil {
    * @see Widget#setData(String,Object)
    * @since 1.1
    */
-  public static final String CUSTOM_VARIANT = "org.eclipse.rwt.themeVariant";
+  public static final String CUSTOM_VARIANT = "org.eclipse.rap.rwt.customVariant";
 
   /**
    * <p><strong>Note:</strong> This constant is provisional and subject to
@@ -69,7 +69,7 @@ public final class WidgetUtil {
    *
    * @since 1.1
    */
-  public static final String CUSTOM_WIDGET_ID = "org.eclipse.rwt.UITests#customId";
+  public static final String CUSTOM_WIDGET_ID = "org.eclipse.rap.rwt.customWidgetId";
 
   /**
    * <p><strong>Note:</strong> This constant is provisional and subject to
@@ -87,7 +87,7 @@ public final class WidgetUtil {
    *
    * @since 1.1
    */
-  public static final String ENABLE_UI_TESTS = "org.eclipse.rwt.enableUITests";
+  public static final String ENABLE_UI_TESTS = "org.eclipse.rap.rwt.enableUITests";
 
   private WidgetUtil() {
     // prevent instantiation
