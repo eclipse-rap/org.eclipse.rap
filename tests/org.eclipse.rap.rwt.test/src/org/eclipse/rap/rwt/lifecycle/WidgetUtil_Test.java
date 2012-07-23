@@ -1,22 +1,26 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+
 
 public class WidgetUtil_Test extends TestCase {
 
@@ -39,19 +43,19 @@ public class WidgetUtil_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     String valid = "Foo_Bar_23_42";
-    shell.setData( WidgetUtil.CUSTOM_VARIANT, valid );
+    shell.setData( RWT.CUSTOM_VARIANT, valid );
     assertEquals( valid, WidgetUtil.getVariant( shell ) );
     String withDash = "Foo-Bar-23-42";
-    shell.setData( WidgetUtil.CUSTOM_VARIANT, withDash );
+    shell.setData( RWT.CUSTOM_VARIANT, withDash );
     assertEquals( withDash, WidgetUtil.getVariant( shell ) );
     String withLeadingDash = "-Foo-Bar-23-42";
-    shell.setData( WidgetUtil.CUSTOM_VARIANT, withLeadingDash );
+    shell.setData( RWT.CUSTOM_VARIANT, withLeadingDash );
     assertEquals( withLeadingDash, WidgetUtil.getVariant( shell ) );
     String withNonAscii = "Foo-üäöæ-23-42";
-    shell.setData( WidgetUtil.CUSTOM_VARIANT, withNonAscii );
+    shell.setData( RWT.CUSTOM_VARIANT, withNonAscii );
     assertEquals( withNonAscii, WidgetUtil.getVariant( shell ) );
     String withSpaces = "Foo Bar 23 42 ";
-    shell.setData( WidgetUtil.CUSTOM_VARIANT, withSpaces );
+    shell.setData( RWT.CUSTOM_VARIANT, withSpaces );
     try {
       WidgetUtil.getVariant( shell );
       fail( "IAE expected" );
@@ -59,7 +63,7 @@ public class WidgetUtil_Test extends TestCase {
       // expected
     }
     String withColon = "Foo:Bar";
-    shell.setData( WidgetUtil.CUSTOM_VARIANT, withColon );
+    shell.setData( RWT.CUSTOM_VARIANT, withColon );
     try {
       WidgetUtil.getVariant( shell );
       fail( "IAE expected" );
@@ -67,7 +71,7 @@ public class WidgetUtil_Test extends TestCase {
       // expected
     }
     String withLeadingNumber = "1-Foo-Bar";
-    shell.setData( WidgetUtil.CUSTOM_VARIANT, withLeadingNumber );
+    shell.setData( RWT.CUSTOM_VARIANT, withLeadingNumber );
     try {
       WidgetUtil.getVariant( shell );
       fail( "IAE expected" );
@@ -76,10 +80,12 @@ public class WidgetUtil_Test extends TestCase {
     }
   }
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }

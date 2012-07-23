@@ -16,13 +16,11 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.swt.SWT;
@@ -358,7 +356,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( "", ProtocolTestUtil.getMessageScript() );
 
     Fixture.fakeResponseWriter();
-    label.setData( WidgetUtil.CUSTOM_VARIANT, "my_variant" );
+    label.setData( RWT.CUSTOM_VARIANT, "my_variant" );
     WidgetLCAUtil.writeCustomVariant( label );
     String expected = "w.addState( \"variant_my_variant\" );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
@@ -373,14 +371,14 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( "", ProtocolTestUtil.getMessageScript() );
 
     Fixture.fakeResponseWriter();
-    control.setData( WidgetUtil.CUSTOM_VARIANT, "my_variant" );
+    control.setData( RWT.CUSTOM_VARIANT, "my_variant" );
     WidgetLCAUtil.writeCustomVariant( control );
     String expected = "w.addState( \"variant_my_variant\" );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
 
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveCustomVariant( control );
-    control.setData( WidgetUtil.CUSTOM_VARIANT, "new_variant" );
+    control.setData( RWT.CUSTOM_VARIANT, "new_variant" );
     WidgetLCAUtil.writeCustomVariant( control );
     expected
       =   "w.removeState( \"variant_my_variant\" );w.addState( "
@@ -390,7 +388,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveCustomVariant( control );
     Fixture.markInitialized( control );
-    control.setData( WidgetUtil.CUSTOM_VARIANT, null );
+    control.setData( RWT.CUSTOM_VARIANT, null );
     WidgetLCAUtil.writeCustomVariant( control );
     expected = "w.removeState( \"variant_new_variant\" );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
@@ -801,7 +799,7 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testRenderCustomVariant() {
-    widget.setData( WidgetUtil.CUSTOM_VARIANT, "my_variant" );
+    widget.setData( RWT.CUSTOM_VARIANT, "my_variant" );
     WidgetLCAUtil.renderCustomVariant( widget );
 
     Message message = Fixture.getProtocolMessage();
@@ -811,7 +809,7 @@ public class WidgetLCAUtil_Test extends TestCase {
   public void testRenderCustomVariantUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
-    widget.setData( WidgetUtil.CUSTOM_VARIANT, "my_variant" );
+    widget.setData( RWT.CUSTOM_VARIANT, "my_variant" );
 
     Fixture.preserveWidgets();
     WidgetLCAUtil.renderCustomVariant( widget );

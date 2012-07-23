@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExampleContribution;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -29,7 +29,7 @@ public abstract class Navigation {
   public Navigation( Composite parent ) {
     composite = new Composite( parent, SWT.NONE );
     composite.setLayout( ExampleUtil.createGridLayoutWithoutMargin( 9, false ) );
-    composite.setData(  WidgetUtil.CUSTOM_VARIANT, "navigation" );
+    composite.setData( RWT.CUSTOM_VARIANT, "navigation" );
     createNavigationControls( composite );
   }
 
@@ -69,9 +69,9 @@ public abstract class Navigation {
     boolean belongsToDropDownNav = contributionBelongsToDropDownNav( contribution, navEntry );
     ToolItem item = ( (ToolBar) navEntry.getChildren()[ 0 ] ).getItem( 0 );
     if( belongsToDropDownNav ) {
-      item.setData( WidgetUtil.CUSTOM_VARIANT, "selected" );
+      item.setData( RWT.CUSTOM_VARIANT, "selected" );
     } else {
-      item.setData( WidgetUtil.CUSTOM_VARIANT, "navigation" );
+      item.setData( RWT.CUSTOM_VARIANT, "navigation" );
     }
   }
 

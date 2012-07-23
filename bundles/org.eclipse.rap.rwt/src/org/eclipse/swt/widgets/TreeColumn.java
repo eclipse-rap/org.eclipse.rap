@@ -11,9 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ControlEvent;
@@ -567,7 +567,7 @@ public class TreeColumn extends Item {
   @Override
   public void setData( String key, Object value ) {
     super.setData( key, value );
-    if( WidgetUtil.CUSTOM_VARIANT.equals( key ) ) {
+    if( RWT.CUSTOM_VARIANT.equals( key ) ) {
       parent.layoutCache.invalidateAll();
     }
   }
@@ -603,7 +603,7 @@ public class TreeColumn extends Item {
   private final class ColumnAdapter implements IColumnAdapter, SerializableCompatibility {
 
     public boolean isPacked() {
-      return TreeColumn.this.packed;
+      return packed;
     }
 
   }

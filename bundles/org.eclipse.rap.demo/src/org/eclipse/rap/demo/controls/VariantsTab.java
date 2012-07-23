@@ -1,19 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -26,8 +25,7 @@ import org.eclipse.swt.widgets.*;
 
 public class VariantsTab extends ExampleTab {
 
-  private static final String BUTTON_IMAGE_PATH
-    = "resources/button-image.gif";
+  private static final String BUTTON_IMAGE_PATH = "resources/button-image.gif";
 
   private static final String[] VARIANTS_SPECIAL = new String[] {
     "none",
@@ -53,6 +51,7 @@ public class VariantsTab extends ExampleTab {
     buttonImage = Graphics.getImage( BUTTON_IMAGE_PATH, classLoader );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "FLAT", SWT.FLAT );
@@ -65,6 +64,7 @@ public class VariantsTab extends ExampleTab {
     variantsCombo = createVariantsCombo( text );
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 1, false ) );
     Label label = new Label( parent, SWT.NONE );
@@ -75,34 +75,34 @@ public class VariantsTab extends ExampleTab {
     myButton = new Button( parent, style | SWT.PUSH );
     myButton.setText( "Push Button" );
     myButton.setImage( buttonImage );
-    myButton.setData( WidgetUtil.CUSTOM_VARIANT, getVariant() );
+    myButton.setData( RWT.CUSTOM_VARIANT, getVariant() );
     registerControl( myButton );
 
     // myCombo
     myCombo = new Combo( parent, style );
     myCombo.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
-    myCombo.setData( WidgetUtil.CUSTOM_VARIANT, getVariant() );
+    myCombo.setData( RWT.CUSTOM_VARIANT, getVariant() );
     registerControl( myCombo );
 
     // myLabel
     myLabel = new Label( parent, style );
     myLabel.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
     myLabel.setText( "Customized Label" );
-    myLabel.setData( WidgetUtil.CUSTOM_VARIANT, getVariant() );
+    myLabel.setData( RWT.CUSTOM_VARIANT, getVariant() );
     registerControl( myLabel );
 
     // myLink
     myLink = new Link( parent, style );
     myLink.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
     myLink.setText( "Customized <a>Link</a>" );
-    myLink.setData( WidgetUtil.CUSTOM_VARIANT, getVariant() );
+    myLink.setData( RWT.CUSTOM_VARIANT, getVariant() );
     registerControl( myLink );
 
     // myText
     myText = new Text( parent, style );
     myText.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
     myText.setText( "Customized Text" );
-    myText.setData( WidgetUtil.CUSTOM_VARIANT, getVariant() );
+    myText.setData( RWT.CUSTOM_VARIANT, getVariant() );
     registerControl( myText );
 
     // myList
@@ -111,7 +111,7 @@ public class VariantsTab extends ExampleTab {
     myList.add( "List Item 1" );
     myList.add( "List Item 2" );
     myList.add( "List Item 3" );
-    myList.setData( WidgetUtil.CUSTOM_VARIANT, getVariant() );
+    myList.setData( RWT.CUSTOM_VARIANT, getVariant() );
     registerControl( myList );
 
     // myTree
@@ -125,7 +125,7 @@ public class VariantsTab extends ExampleTab {
         subitem.setText( "Subnode_" + ( i + 1 ) );
       }
     }
-    myTree.setData( WidgetUtil.CUSTOM_VARIANT, getVariant() );
+    myTree.setData( RWT.CUSTOM_VARIANT, getVariant() );
     registerControl( myTree );
 
     // myShell
@@ -133,12 +133,13 @@ public class VariantsTab extends ExampleTab {
     myShellButton.setText( "Open customized Shell" );
     myShellButton.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Shell myShell = new Shell( parent.getShell(),
                              SWT.CLOSE | SWT.APPLICATION_MODAL );
         myShell.setText( "My Shell" );
         myShell.setSize( 200, 150 );
-        myShell.setData( WidgetUtil.CUSTOM_VARIANT, getVariant() );
+        myShell.setData( RWT.CUSTOM_VARIANT, getVariant() );
         myShell.open();
       }
     } );
@@ -152,9 +153,11 @@ public class VariantsTab extends ExampleTab {
     combo.setItems( VARIANTS_SPECIAL );
     combo.select( 0 );
     combo.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         setCustomVariant( getVariant() );
       }
+      @Override
       public void widgetDefaultSelected( final SelectionEvent evt ) {
         setCustomVariant( getVariant() );
       }
@@ -163,13 +166,13 @@ public class VariantsTab extends ExampleTab {
   }
 
   private void setCustomVariant( final String variant ) {
-    myButton.setData( WidgetUtil.CUSTOM_VARIANT, variant );
-    myCombo.setData( WidgetUtil.CUSTOM_VARIANT, variant );
-    myLabel.setData( WidgetUtil.CUSTOM_VARIANT, variant );
-    myLink.setData( WidgetUtil.CUSTOM_VARIANT, variant );
-    myText.setData( WidgetUtil.CUSTOM_VARIANT, variant );
-    myList.setData( WidgetUtil.CUSTOM_VARIANT, variant );
-    myTree.setData( WidgetUtil.CUSTOM_VARIANT, variant );
+    myButton.setData( RWT.CUSTOM_VARIANT, variant );
+    myCombo.setData( RWT.CUSTOM_VARIANT, variant );
+    myLabel.setData( RWT.CUSTOM_VARIANT, variant );
+    myLink.setData( RWT.CUSTOM_VARIANT, variant );
+    myText.setData( RWT.CUSTOM_VARIANT, variant );
+    myList.setData( RWT.CUSTOM_VARIANT, variant );
+    myTree.setData( RWT.CUSTOM_VARIANT, variant );
   }
 
   private String getVariant() {

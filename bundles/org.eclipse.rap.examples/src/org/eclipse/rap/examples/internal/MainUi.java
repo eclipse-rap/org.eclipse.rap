@@ -21,7 +21,6 @@ import org.eclipse.rap.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rap.rwt.events.BrowserHistoryListener;
 import org.eclipse.rap.rwt.internal.widgets.JSExecutor;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.MouseAdapter;
@@ -92,7 +91,7 @@ public class MainUi implements IEntryPoint {
   private Shell createMainShell( Display display ) {
     Shell shell = new Shell( display, SWT.NO_TRIM );
     shell.setMaximized( true );
-    shell.setData( WidgetUtil.CUSTOM_VARIANT, "mainshell" );
+    shell.setData( RWT.CUSTOM_VARIANT, "mainshell" );
     return shell;
   }
 
@@ -116,7 +115,7 @@ public class MainUi implements IEntryPoint {
 
   private Composite createHeader( Composite parent ) {
     Composite comp = new Composite( parent, SWT.NONE );
-    comp.setData( WidgetUtil.CUSTOM_VARIANT, "header" );
+    comp.setData( RWT.CUSTOM_VARIANT, "header" );
     comp.setBackgroundMode( SWT.INHERIT_DEFAULT );
     comp.setLayout( new FormLayout() );
     Composite headerCenterArea = createHeaderCenterArea( comp );
@@ -162,12 +161,12 @@ public class MainUi implements IEntryPoint {
     Label title = new Label( headerComp, SWT.NONE );
     title.setText( "Demo" );
     title.setLayoutData( createTitleFormData() );
-    title.setData(  WidgetUtil.CUSTOM_VARIANT, "title" );
+    title.setData( RWT.CUSTOM_VARIANT, "title" );
   }
 
   private void createContentBody( Composite parent, Composite header ) {
     Composite composite = new Composite( parent, SWT.NONE );
-    composite.setData(  WidgetUtil.CUSTOM_VARIANT, "mainContentArea" );
+    composite.setData( RWT.CUSTOM_VARIANT, "mainContentArea" );
     composite.setLayout( new FormLayout() );
     composite.setLayoutData( createContentBodyFormData( header ) );
     navigation = createNavigation( composite );
@@ -179,7 +178,7 @@ public class MainUi implements IEntryPoint {
     Composite centerArea = new Composite( parent, SWT.NONE );
     centerArea.setLayout( new FillLayout() );
     centerArea.setLayoutData( createCenterAreaFormData( footer ) );
-    centerArea.setData(  WidgetUtil.CUSTOM_VARIANT, "centerArea" );
+    centerArea.setData( RWT.CUSTOM_VARIANT, "centerArea" );
     return centerArea;
   }
 
@@ -195,10 +194,10 @@ public class MainUi implements IEntryPoint {
   private Composite createFooter( Composite contentComposite ) {
     Composite footer = new Composite( contentComposite, SWT.NONE );
     footer.setLayout( new FormLayout() );
-    footer.setData(  WidgetUtil.CUSTOM_VARIANT, "footer" );
+    footer.setData( RWT.CUSTOM_VARIANT, "footer" );
     footer.setLayoutData( createFooterFormData() );
     Label label = new Label( footer, SWT.NONE );
-    label.setData(  WidgetUtil.CUSTOM_VARIANT, "footerLabel" );
+    label.setData( RWT.CUSTOM_VARIANT, "footerLabel" );
     label.setText( "RAP version: " + getRapVersion() );
     label.setLayoutData( createFooterLabelFormData( footer ) );
     return footer;
@@ -233,7 +232,7 @@ public class MainUi implements IEntryPoint {
     navBar = new Composite( parent, SWT.NONE );
     navBar.setLayout( new FormLayout() );
     navBar.setLayoutData( createNavBarFormData() );
-    navBar.setData(  WidgetUtil.CUSTOM_VARIANT, "nav-bar" );
+    navBar.setData( RWT.CUSTOM_VARIANT, "nav-bar" );
     Navigation navigation = new Navigation( navBar ) {
       @Override
       protected void selectContribution( IExampleContribution contribution ) {
@@ -242,7 +241,7 @@ public class MainUi implements IEntryPoint {
     };
     Control navigationControl = navigation.getControl();
     navigationControl.setLayoutData( createNavigationFormData() );
-    navigationControl.setData(  WidgetUtil.CUSTOM_VARIANT, "navigation" );
+    navigationControl.setData( RWT.CUSTOM_VARIANT, "navigation" );
     return navigation;
   }
 

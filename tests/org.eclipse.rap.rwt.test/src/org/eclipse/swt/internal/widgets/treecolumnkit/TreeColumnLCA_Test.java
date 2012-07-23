@@ -40,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 @SuppressWarnings("deprecation")
 public class TreeColumnLCA_Test extends TestCase {
 
@@ -447,7 +448,7 @@ public class TreeColumnLCA_Test extends TestCase {
   public void testRenderCustomVariant() throws IOException {
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
 
-    column.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    column.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
@@ -459,7 +460,7 @@ public class TreeColumnLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
 
-    column.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    column.setData( RWT.CUSTOM_VARIANT, "blue" );
     Fixture.preserveWidgets();
     lca.renderChanges( column );
 

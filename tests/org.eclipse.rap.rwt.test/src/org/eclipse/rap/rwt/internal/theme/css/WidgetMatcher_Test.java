@@ -1,25 +1,29 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme.css;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.theme.*;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.theme.QxBorder;
+import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher.Constraint;
-import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class WidgetMatcher_Test extends TestCase {
@@ -51,13 +55,12 @@ public class WidgetMatcher_Test extends TestCase {
     ConditionalValue value3 = new ConditionalValue(
       new String[] { ".special" },
       QxBorder.create( 1, "solid", "green" ) );
-    ConditionalValue[] values
-      = new ConditionalValue[] { value1, value2, value3 };
+    ConditionalValue[] values = new ConditionalValue[] { value1, value2, value3 };
 
     // Test matcher with example widgets
     Display display = new Display();
     Shell shell = new Shell( display );
-    
+
     // A button that matches none of the rules
     Widget button1 = new Button( shell, SWT.TOGGLE );
     QxType result = matcher.select( values, button1 );
@@ -74,26 +77,28 @@ public class WidgetMatcher_Test extends TestCase {
     assertEquals( value1.value, result );
 
     // now matches all three rules, still 1 takes precedence
-    button2.setData( WidgetUtil.CUSTOM_VARIANT, "special" );
+    button2.setData( RWT.CUSTOM_VARIANT, "special" );
     result = matcher.select( values, button2 );
     assertEquals( value1.value, result );
 
     // A button that only matches rule 3
     Button button3 = new Button( shell, SWT.TOGGLE );
-    button3.setData( WidgetUtil.CUSTOM_VARIANT, "special" );
+    button3.setData( RWT.CUSTOM_VARIANT, "special" );
     result = matcher.select( values, button3 );
     assertEquals( value3.value, result );
 
     // After this change it does not match anymore
-    button3.setData( WidgetUtil.CUSTOM_VARIANT, "other" );
+    button3.setData( RWT.CUSTOM_VARIANT, "other" );
     result = matcher.select( values, button3 );
     assertNull( result );
   }
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }

@@ -15,30 +15,33 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 
 
 public class ControlThemeAdapter_Test extends TestCase {
 
-	private Shell shell;
+  private Shell shell;
 
-	protected void setUp() throws Exception {
-	  Fixture.setUp();
-	  Fixture.fakeNewRequest();
-	  Display display = new Display();
-	  shell = new Shell( display );
-	}
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakeNewRequest();
+    Display display = new Display();
+    shell = new Shell( display );
+  }
 
-	protected void tearDown() throws Exception {
-	  Fixture.tearDown();
-	}
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testValues() {
     Label label = new Label( shell, SWT.BORDER );
@@ -66,9 +69,9 @@ public class ControlThemeAdapter_Test extends TestCase {
     Composite subclassedComposite = new Composite( shell, SWT.BORDER ) {
       // empty subclass
     };
-    subclassedComposite.setData( WidgetUtil.CUSTOM_VARIANT, "special" );
+    subclassedComposite.setData( RWT.CUSTOM_VARIANT, "special" );
 
     assertEquals( 23, subclassedComposite.getBorderWidth() );
-	}
+  }
 
 }

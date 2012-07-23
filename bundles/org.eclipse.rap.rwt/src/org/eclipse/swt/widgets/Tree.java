@@ -19,7 +19,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ControlEvent;
@@ -1629,7 +1628,7 @@ public class Tree extends Composite {
 
   @Override
   public void setData( String key, Object value ) {
-    if( WidgetUtil.CUSTOM_VARIANT.equals( key ) ) {
+    if( RWT.CUSTOM_VARIANT.equals( key ) ) {
       layoutCache.invalidateAll();
     } else if( RWT.CUSTOM_ITEM_HEIGHT.equals( key ) ) {
       setCustomItemHeight( value );
@@ -2363,15 +2362,15 @@ public class Tree extends Composite {
     private ICellToolTipProvider provider;
 
     public void checkData() {
-      Tree.this.updateAllItems();
+      updateAllItems();
     }
 
     public void setScrollLeft( int left ) {
-      Tree.this.scrollLeft = left;
+      scrollLeft = left;
     }
 
     public int getScrollLeft() {
-      return Tree.this.scrollLeft;
+      return scrollLeft;
     }
 
     public boolean isCached( TreeItem item ) {

@@ -21,7 +21,7 @@ import org.eclipse.rap.internal.design.example.Messages;
 import org.eclipse.rap.internal.design.example.builder.DummyBuilder;
 import org.eclipse.rap.internal.design.example.managers.ItemData;
 import org.eclipse.rap.internal.design.example.managers.ViewToolBarManager;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.ui.interactiondesign.ConfigurableStack;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.swt.SWT;
@@ -44,6 +44,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.presentations.IStackPresentationSite;
 
+
 /**
  * This popup dialog is used for configure presentation properties. Its opened
  * in the <code>{@link ExampleConfigAction#run()}</code> method.
@@ -51,11 +52,11 @@ import org.eclipse.ui.presentations.IStackPresentationSite;
 public class ConfigurationDialog extends PopupDialog {
 
   private static final int OFFSET = 3;
-  private IStackPresentationSite site;
-  private ConfigAction action;
-  private HashMap actionButtonMap = new HashMap();
-  private List actionList = new ArrayList();
-  private ElementBuilder builder;
+  private final IStackPresentationSite site;
+  private final ConfigAction action;
+  private final HashMap actionButtonMap = new HashMap();
+  private final List actionList = new ArrayList();
+  private final ElementBuilder builder;
   private Button viewMenuBox;
   private boolean viewMenuVisChanged;
   private Label lastImageLabel;
@@ -183,7 +184,7 @@ public class ConfigurationDialog extends PopupDialog {
       viewMenuVisChanged = viewMenuBox.getSelection();
       FormData fdViewMenuBox = new FormData();
       viewMenuBox.setLayoutData( fdViewMenuBox );
-      viewMenuBox.setData( WidgetUtil.CUSTOM_VARIANT, "configMenuButton" ); //$NON-NLS-1$
+      viewMenuBox.setData( RWT.CUSTOM_VARIANT, "configMenuButton" ); //$NON-NLS-1$
       if( lastImageLabel != null ) {
         fdViewMenuBox.top = new FormAttachment( lastImageLabel, OFFSET );
         fdViewMenuBox.left = new FormAttachment( lastImageLabel, OFFSET + 5 );
@@ -250,7 +251,7 @@ public class ConfigurationDialog extends PopupDialog {
           fdCheck.left = new FormAttachment( imageLabel, OFFSET + 5 );
           fdCheck.top = fdImageLabel.top;
           check.setSelection( selected );
-          check.setData( WidgetUtil.CUSTOM_VARIANT, "configMenuButton" ); //$NON-NLS-1$
+          check.setData( RWT.CUSTOM_VARIANT, "configMenuButton" ); //$NON-NLS-1$
           actionButtonMap.put( itemId, check );
           actionList.add( itemId );
           lastImageLabel = imageLabel;
@@ -263,7 +264,7 @@ public class ConfigurationDialog extends PopupDialog {
   public int open() {
     int result = super.open();
     Shell shell = getShell();
-    shell.setData( WidgetUtil.CUSTOM_VARIANT, "confDialog" ); //$NON-NLS-1$
+    shell.setData( RWT.CUSTOM_VARIANT, "confDialog" ); //$NON-NLS-1$
     shell.setBackgroundMode( SWT.INHERIT_NONE );
     shell.setText( Messages.get().ConfigurationDialog_ConfigurationFor
                    + site.getSelectedPart().getName() );

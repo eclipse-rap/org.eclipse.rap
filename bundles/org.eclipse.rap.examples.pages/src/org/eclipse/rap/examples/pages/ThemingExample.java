@@ -12,7 +12,7 @@ package org.eclipse.rap.examples.pages;
 
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -55,7 +55,7 @@ public class ThemingExample implements IExamplePage {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( text );
     button.setToolTipText( "Animated ToolTip" );
-    button.setData( WidgetUtil.CUSTOM_VARIANT, variant );
+    button.setData( RWT.CUSTOM_VARIANT, variant );
     GridData layoutData = new GridData( SWT.FILL, SWT.TOP, true, true );
     layoutData.heightHint = 50;
     button.setLayoutData( layoutData );
@@ -67,18 +67,18 @@ public class ThemingExample implements IExamplePage {
     group.setLayoutData( ExampleUtil.createFillData() );
     GridData layoutData = new GridData( SWT.FILL, SWT.TOP, true, false );
     ToolBar bar = new ToolBar( group, SWT.BORDER );
-    bar.setData( WidgetUtil.CUSTOM_VARIANT, "themingDemo" );
+    bar.setData( RWT.CUSTOM_VARIANT, "themingDemo" );
     bar.setLayoutData( layoutData );
     ToolItem item = new ToolItem( bar, SWT.DROP_DOWN );
-    item.setData( WidgetUtil.CUSTOM_VARIANT, "themingDemo" );
+    item.setData( RWT.CUSTOM_VARIANT, "themingDemo" );
     item.setText( "Simple" );
     addMenu( item, "simple" );
     item = new ToolItem( bar, SWT.DROP_DOWN );
-    item.setData( WidgetUtil.CUSTOM_VARIANT, "themingDemo" );
+    item.setData( RWT.CUSTOM_VARIANT, "themingDemo" );
     item.setText( "Pretty" );
     addMenu( item, "pretty" );
     item = new ToolItem( bar, SWT.DROP_DOWN );
-    item.setData( WidgetUtil.CUSTOM_VARIANT, "themingDemo" );
+    item.setData( RWT.CUSTOM_VARIANT, "themingDemo" );
     item.setText( "Fancy" );
     addMenu( item, "fancy" );
     bar.pack();
@@ -88,11 +88,11 @@ public class ThemingExample implements IExamplePage {
     final ToolBar toolBar = toolItem.getParent();
     final Shell shell = toolBar.getShell();
     final Menu menu = new Menu( shell, SWT.POP_UP );
-    menu.setData( WidgetUtil.CUSTOM_VARIANT, variant );
+    menu.setData( RWT.CUSTOM_VARIANT, variant );
     for( int i = 0; i < 8; i++ ) {
       MenuItem item = new MenuItem( menu, SWT.PUSH );
       item.setText ( "Example-Item " + ( i + 1) );
-      item.setData( WidgetUtil.CUSTOM_VARIANT, variant );
+      item.setData( RWT.CUSTOM_VARIANT, variant );
     }
     toolItem.addSelectionListener( new SelectionAdapter() {
       @Override

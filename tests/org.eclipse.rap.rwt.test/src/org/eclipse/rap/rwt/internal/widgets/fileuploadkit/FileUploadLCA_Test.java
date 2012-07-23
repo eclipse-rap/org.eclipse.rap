@@ -16,10 +16,10 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
-import org.eclipse.rap.rwt.internal.widgets.fileuploadkit.FileUploadLCA;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -37,7 +37,8 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -248,7 +249,7 @@ public class FileUploadLCA_Test extends TestCase {
   }
 
   public void testRenderCustomVariant() throws IOException {
-    fileUpload.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    fileUpload.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( fileUpload );
 
     Message message = Fixture.getProtocolMessage();
@@ -259,7 +260,7 @@ public class FileUploadLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( fileUpload );
 
-    fileUpload.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    fileUpload.setData( RWT.CUSTOM_VARIANT, "blue" );
     Fixture.preserveWidgets();
     lca.renderChanges( fileUpload );
 

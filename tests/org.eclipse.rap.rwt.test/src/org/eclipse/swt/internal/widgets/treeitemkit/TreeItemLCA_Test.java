@@ -16,6 +16,7 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
@@ -28,13 +29,22 @@ import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.swt.widgets.Widget;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 @SuppressWarnings("deprecation")
 public class TreeItemLCA_Test extends TestCase {
@@ -799,7 +809,7 @@ public class TreeItemLCA_Test extends TestCase {
   public void testRenderCustomVariant() throws IOException {
     TreeItem item = new TreeItem( tree, SWT.NONE );
 
-    item.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    item.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -811,7 +821,7 @@ public class TreeItemLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
-    item.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    item.setData( RWT.CUSTOM_VARIANT, "blue" );
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 

@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2010 IBM Corporation and others.
+ * Copyright (c) 2005, 2012 IBM Corporation, EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
- *     Hannes Erven <hannes@erven.at> - Bug 293841 - [FieldAssist] NumLock keyDown event should not close the proposal popup [with patch]
+ *    IBM Corporation - initial API and implementation
+ *    Hannes Erven <hannes@erven.at> - Bug 293841 - [FieldAssist] NumLock keyDown event should not close the proposal popup [with patch]
+ *    EclipseSource - adaptation to RAP
  *******************************************************************************/
 package org.eclipse.jface.fieldassist;
 
@@ -17,10 +18,14 @@ import java.util.Arrays;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ListenerList;
-
+import org.eclipse.jface.bindings.keys.KeyStroke;
+import org.eclipse.jface.dialogs.PopupDialog;
+import org.eclipse.jface.preference.JFacePreferences;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.util.Util;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -45,12 +50,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-import org.eclipse.jface.bindings.keys.KeyStroke;
-import org.eclipse.jface.dialogs.PopupDialog;
-import org.eclipse.jface.preference.JFacePreferences;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.util.Util;
-import org.eclipse.jface.viewers.ILabelProvider;
 
 /**
  * ContentProposalAdapter can be used to attach content proposal behavior to a
@@ -109,9 +108,10 @@ public class ContentProposalAdapter implements Serializable {
 	class ContentProposalPopup extends PopupDialog {
 
 // RAP [if] Make ContentProposalPopup shell themeable
-	    protected void configureShell( Shell shell ) {
+	    @Override
+      protected void configureShell( Shell shell ) {
 	      super.configureShell( shell );
-	      shell.setData( WidgetUtil.CUSTOM_VARIANT, "jface_contentProposalPopup" ); //$NON-NLS-1$
+	      shell.setData( RWT.CUSTOM_VARIANT, "jface_contentProposalPopup" ); //$NON-NLS-1$
 	    }
 // ENDRAP
 
@@ -475,9 +475,10 @@ public class ContentProposalAdapter implements Serializable {
 		private class InfoPopupDialog extends PopupDialog {
 
 // RAP [if] Make InfoPopupDialog shell themeable
-	        protected void configureShell( Shell shell ) {
+	        @Override
+          protected void configureShell( Shell shell ) {
 	          super.configureShell( shell );
-	          shell.setData( WidgetUtil.CUSTOM_VARIANT, "jface_infoPopupDialog" ); //$NON-NLS-1$
+	          shell.setData( RWT.CUSTOM_VARIANT, "jface_infoPopupDialog" ); //$NON-NLS-1$
 	        }
 // ENDRAP
 
@@ -502,7 +503,8 @@ public class ContentProposalAdapter implements Serializable {
 			/*
 			 * Create a text control for showing the info about a proposal.
 			 */
-			protected Control createDialogArea(Composite parent) {
+			@Override
+      protected Control createDialogArea(Composite parent) {
 				text = new Text(parent, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP
 						| SWT.NO_FOCUS);
 
@@ -516,7 +518,8 @@ public class ContentProposalAdapter implements Serializable {
 
 				// since SWT.NO_FOCUS is only a hint...
 				text.addFocusListener(new FocusAdapter() {
-					public void focusGained(FocusEvent event) {
+					@Override
+          public void focusGained(FocusEvent event) {
 						ContentProposalPopup.this.close();
 					}
 				});
@@ -526,7 +529,8 @@ public class ContentProposalAdapter implements Serializable {
 			/*
 			 * Adjust the bounds so that we appear adjacent to our parent shell
 			 */
-			protected void adjustBounds() {
+			@Override
+      protected void adjustBounds() {
 				Rectangle parentBounds = getParentShell().getBounds();
 				Rectangle proposedBounds;
 				// Try placing the info popup to the right
@@ -573,7 +577,8 @@ public class ContentProposalAdapter implements Serializable {
 			 * (non-Javadoc)
 			 * @see org.eclipse.jface.dialogs.PopupDialog#getForeground()
 			 */
-			protected Color getForeground() {
+			@Override
+      protected Color getForeground() {
 				return control.getDisplay().
 						getSystemColor(SWT.COLOR_INFO_FOREGROUND);
 			}
@@ -582,7 +587,8 @@ public class ContentProposalAdapter implements Serializable {
 			 * (non-Javadoc)
 			 * @see org.eclipse.jface.dialogs.PopupDialog#getBackground()
 			 */
-			protected Color getBackground() {
+			@Override
+      protected Color getBackground() {
 				return control.getDisplay().
 						getSystemColor(SWT.COLOR_INFO_BACKGROUND);
 			}
@@ -594,7 +600,7 @@ public class ContentProposalAdapter implements Serializable {
 				if (newContents == null) {
 					newContents = EMPTY;
 				}
-				this.contents = newContents;
+				contents = newContents;
 				if (text != null && !text.isDisposed()) {
 					text.setText(contents);
 				}
@@ -675,7 +681,8 @@ public class ContentProposalAdapter implements Serializable {
 		 * (non-Javadoc)
 		 * @see org.eclipse.jface.dialogs.PopupDialog#getForeground()
 		 */
-		protected Color getForeground() {
+		@Override
+    protected Color getForeground() {
 			return JFaceResources.getColorRegistry().get(
 					JFacePreferences.CONTENT_ASSIST_FOREGROUND_COLOR);
 		}
@@ -684,7 +691,8 @@ public class ContentProposalAdapter implements Serializable {
 		 * (non-Javadoc)
 		 * @see org.eclipse.jface.dialogs.PopupDialog#getBackground()
 		 */
-		protected Color getBackground() {
+		@Override
+    protected Color getBackground() {
 			return JFaceResources.getColorRegistry().get(
 					JFacePreferences.CONTENT_ASSIST_BACKGROUND_COLOR);
 		}
@@ -697,7 +705,8 @@ public class ContentProposalAdapter implements Serializable {
 		 * @param parent The parent composite to contain the dialog area; must
 		 * not be <code>null</code>.
 		 */
-		protected final Control createDialogArea(final Composite parent) {
+		@Override
+    protected final Control createDialogArea(final Composite parent) {
 			// Use virtual where appropriate (see flag definition).
 			if (USE_VIRTUAL) {
 				proposalTable = new Table(parent, SWT.H_SCROLL | SWT.V_SCROLL
@@ -744,7 +753,8 @@ public class ContentProposalAdapter implements Serializable {
 		 *
 		 * @see org.eclipse.jface.dialogs.PopupDialog.adjustBounds()
 		 */
-		protected void adjustBounds() {
+		@Override
+    protected void adjustBounds() {
 			// Get our control's location in display coordinates.
 			Point location = control.getDisplay().map(control.getParent(), null, control.getLocation());
 			int initialX = location.x + POPUP_OFFSET;
@@ -777,10 +787,11 @@ public class ContentProposalAdapter implements Serializable {
 
 			// If there has been an adjustment causing the popup to overlap
 			// with the control, then put the popup above the control.
-			if (constrainedBounds.y < initialY)
-				getShell().setBounds(initialX, location.y - popupSize.y, popupSize.x, popupSize.y);
-			else
-				getShell().setBounds(initialX, initialY, popupSize.x, popupSize.y);
+			if (constrainedBounds.y < initialY) {
+        getShell().setBounds(initialX, location.y - popupSize.y, popupSize.x, popupSize.y);
+      } else {
+        getShell().setBounds(initialX, initialY, popupSize.x, popupSize.y);
+      }
 
 			// Now set up a listener to monitor any changes in size.
 			getShell().addListener(SWT.Resize, new Listener() {
@@ -819,7 +830,7 @@ public class ContentProposalAdapter implements Serializable {
 			if (newProposals == null || newProposals.length == 0) {
 				newProposals = getEmptyProposalArray();
 			}
-			this.proposals = newProposals;
+			proposals = newProposals;
 
 			// If there is a table
 			if (isValid()) {
@@ -954,7 +965,8 @@ public class ContentProposalAdapter implements Serializable {
 		 *
 		 * @see org.eclipse.jface.window.Window#open()
 		 */
-		public int open() {
+		@Override
+    public int open() {
 			int value = super.open();
 			if (popupCloser == null) {
 				popupCloser = new PopupCloserListener();
@@ -977,7 +989,8 @@ public class ContentProposalAdapter implements Serializable {
 		 * @return <code>true</code> if the window is (or was already) closed,
 		 *         and <code>false</code> if it is still open
 		 */
-		public boolean close() {
+		@Override
+    public boolean close() {
 			popupCloser.removeListeners();
 			if (infoPopup != null) {
 				infoPopup.close();
@@ -1077,8 +1090,9 @@ public class ContentProposalAdapter implements Serializable {
 		 */
 		private void recomputeProposals(String filterText) {
 			IContentProposal[] allProposals = getProposals();
-			if (allProposals == null)
-				 allProposals = getEmptyProposalArray();
+			if (allProposals == null) {
+        allProposals = getEmptyProposalArray();
+      }
 			// If the non-filtered proposal list is empty, we should
 			// close the popup.
 			// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=147377
@@ -1190,7 +1204,8 @@ public class ContentProposalAdapter implements Serializable {
 	 *             {@link IContentProposalProvider}, such as that performed by
 	 *             {@link SimpleContentProposalProvider}
 	 */
-	public static final int FILTER_CUMULATIVE = 3;
+	@Deprecated
+  public static final int FILTER_CUMULATIVE = 3;
 
 	/*
 	 * Set to <code>true</code> to use a Table with SWT.VIRTUAL. This is a
@@ -1241,13 +1256,13 @@ public class ContentProposalAdapter implements Serializable {
 	/*
 	 * The control for which content proposals are provided.
 	 */
-	private Control control;
+	private final Control control;
 
 	/*
 	 * The adapter used to extract the String contents from an arbitrary
 	 * control.
 	 */
-	private IControlContentAdapter controlContentAdapter;
+	private final IControlContentAdapter controlContentAdapter;
 
 	/*
 	 * The popup used to show proposals.
@@ -1257,7 +1272,7 @@ public class ContentProposalAdapter implements Serializable {
 	/*
 	 * The keystroke that signifies content proposals should be shown.
 	 */
-	private KeyStroke triggerKeyStroke;
+	private final KeyStroke triggerKeyStroke;
 
 	/*
 	 * The String containing characters that auto-activate the popup.
@@ -1292,12 +1307,12 @@ public class ContentProposalAdapter implements Serializable {
 	/*
 	 * The list of IContentProposalListener listeners.
 	 */
-	private ListenerList proposalListeners = new ListenerList();
+	private final ListenerList proposalListeners = new ListenerList();
 
 	/*
 	 * The list of IContentProposalListener2 listeners.
 	 */
-	private ListenerList proposalListeners2 = new ListenerList();
+	private final ListenerList proposalListeners2 = new ListenerList();
 
 	/*
 	 * Flag that indicates whether the adapter is enabled. In some cases,
@@ -1384,14 +1399,14 @@ public class ContentProposalAdapter implements Serializable {
 
 		// The rest of these may be null
 		this.proposalProvider = proposalProvider;
-		this.triggerKeyStroke = keyStroke;
+		triggerKeyStroke = keyStroke;
 // RAP [if] Use CANCEL_KEYS instead of doit = false
 		if( keyStroke != null ) {
 		  updateCancelKeys( true, new String[] { keyStroke.toString() } );
 		}
 // ENDRAP
 		if (autoActivationCharacters != null) {
-			this.autoActivateString = new String(autoActivationCharacters);
+			autoActivateString = new String(autoActivationCharacters);
 		}
 		addControlListener(control);
 	}
@@ -1497,9 +1512,9 @@ public class ContentProposalAdapter implements Serializable {
 	 */
 	public void setAutoActivationCharacters(char[] autoActivationCharacters) {
 		if (autoActivationCharacters == null) {
-			this.autoActivateString = null;
+			autoActivateString = null;
 		} else {
-			this.autoActivateString = new String(autoActivationCharacters);
+			autoActivateString = new String(autoActivationCharacters);
 		}
 	}
 
@@ -1802,8 +1817,9 @@ public class ContentProposalAdapter implements Serializable {
 						// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=192633
 						// If the popup is open and this is a valid character, we
 						// want to watch for the modified text.
-						if (propagateKeys && e.character != 0)
-							watchModify = true;
+						if (propagateKeys && e.character != 0) {
+              watchModify = true;
+            }
 
 						return;
 					}
@@ -1902,8 +1918,9 @@ public class ContentProposalAdapter implements Serializable {
 									// modify event does not involve one of them.  See
 									// if any of the autoactivation characters are left
 									// in the content and close the popup if none remain.
-									if (!shouldPopupRemainOpen())
-										closeProposalPopup();
+									if (!shouldPopupRemainOpen()) {
+                    closeProposalPopup();
+                  }
 								}
 							}
 						}
@@ -2259,12 +2276,14 @@ public class ContentProposalAdapter implements Serializable {
 	 */
 	private boolean shouldPopupRemainOpen() {
 		// If we always autoactivate or never autoactivate, it should remain open
-		if (autoActivateString == null || autoActivateString.length() == 0)
-			return true;
+		if (autoActivateString == null || autoActivateString.length() == 0) {
+      return true;
+    }
 		String content = getControlContentAdapter().getControlContents(getControl());
 		for (int i=0; i<autoActivateString.length(); i++) {
-			if (content.indexOf(autoActivateString.charAt(i)) >= 0)
-				return true;
+			if (content.indexOf(autoActivateString.charAt(i)) >= 0) {
+        return true;
+      }
 		}
 		return false;
 	}
@@ -2286,8 +2305,9 @@ public class ContentProposalAdapter implements Serializable {
 	 * @since 1.3
 	 */
 	public void setProposalPopupFocus() {
-		if (isValid() && popup != null)
-			popup.getShell().setFocus();
+		if (isValid() && popup != null) {
+      popup.getShell().setFocus();
+    }
 	}
 
 	/**
@@ -2299,8 +2319,9 @@ public class ContentProposalAdapter implements Serializable {
 	 * @since 1.3
 	 */
 	public boolean isProposalPopupOpen() {
-		if (isValid() && popup != null)
-			return true;
+		if (isValid() && popup != null) {
+      return true;
+    }
 		return false;
 	}
 

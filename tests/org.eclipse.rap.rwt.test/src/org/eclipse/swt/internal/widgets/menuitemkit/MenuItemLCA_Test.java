@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
@@ -18,6 +17,7 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
@@ -31,12 +31,25 @@ import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ArmEvent;
+import org.eclipse.swt.events.ArmListener;
+import org.eclipse.swt.events.HelpEvent;
+import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 import org.json.JSONArray;
 import org.json.JSONException;
+
 
 @SuppressWarnings("deprecation")
 public class MenuItemLCA_Test extends TestCase {
@@ -47,6 +60,7 @@ public class MenuItemLCA_Test extends TestCase {
   private Menu menu;
   private MenuItemLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -57,6 +71,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -85,6 +100,7 @@ public class MenuItemLCA_Test extends TestCase {
     shell.setMenu( menu );
     final MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
     menuItem.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         wasEventFired[ 0 ] = true;
         assertEquals( null, event.item );
@@ -110,6 +126,7 @@ public class MenuItemLCA_Test extends TestCase {
     Menu menu = new Menu( menuBar );
     final MenuItem menuItem = new MenuItem( menu, SWT.CHECK );
     menuItem.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         wasEventFired[ 0 ] = true;
         assertEquals( null, event.item );
@@ -142,6 +159,7 @@ public class MenuItemLCA_Test extends TestCase {
     final MenuItem radioItem3 = new MenuItem( menu, SWT.RADIO );
     new MenuItem( menu, SWT.CHECK );
     SelectionAdapter listener = new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         log.add( event );
       }
@@ -182,6 +200,7 @@ public class MenuItemLCA_Test extends TestCase {
     final MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
     radioItem2.setText( "2" );
     SelectionAdapter listener = new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         log.add( event );
       }
@@ -481,7 +500,7 @@ public class MenuItemLCA_Test extends TestCase {
   public void testRenderCustomVariant() throws IOException {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
 
-    item.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    item.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -493,7 +512,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
-    item.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    item.setData( RWT.CUSTOM_VARIANT, "blue" );
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 

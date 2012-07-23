@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.examples;
 
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Label;
 
 public class Infobox extends Composite {
 
-  private Composite contentComp;
+  private final Composite contentComp;
 
   public Infobox( Composite parent ) {
     super( parent, SWT.NONE );
@@ -30,7 +30,7 @@ public class Infobox extends Composite {
 
   private Composite createInfoboxContentComposite() {
     Composite contentComp = new Composite( this, SWT.NONE );
-    contentComp.setData( WidgetUtil.CUSTOM_VARIANT, "infobox" );
+    contentComp.setData( RWT.CUSTOM_VARIANT, "infobox" );
     GridLayout layout = ExampleUtil.createGridLayoutWithoutMargin( 1, false );
     layout.marginHeight = 35;
     layout.marginWidth = 35;
@@ -43,14 +43,14 @@ public class Infobox extends Composite {
   public void addHeading( String text ) {
     Label label = new Label( contentComp, SWT.NONE );
     label.setText( text.replace( "&", "&&" ) );
-    label.setData( WidgetUtil.CUSTOM_VARIANT, "infobox-heading" );
+    label.setData( RWT.CUSTOM_VARIANT, "infobox-heading" );
   }
 
   public void addParagraph( String text ) {
     Label label = new Label( contentComp, SWT.WRAP );
     label.setText( text );
     label.setLayoutData( ExampleUtil.createFillData() );
-    label.setData( WidgetUtil.CUSTOM_VARIANT, "infobox" );
+    label.setData( RWT.CUSTOM_VARIANT, "infobox" );
   }
 
 }

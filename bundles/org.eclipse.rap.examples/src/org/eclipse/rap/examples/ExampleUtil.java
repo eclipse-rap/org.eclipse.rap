@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.examples;
 
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -37,7 +37,7 @@ public final class ExampleUtil {
   public static void createHeading( Composite parent, String text, int horizontalSpan ) {
     Label label = new Label( parent, SWT.NONE );
     label.setText( text );
-    label.setData(  WidgetUtil.CUSTOM_VARIANT, "heading" );
+    label.setData( RWT.CUSTOM_VARIANT, "heading" );
     GridData labelLayoutData = new GridData();
     labelLayoutData.horizontalSpan = horizontalSpan;
     label.setLayoutData( labelLayoutData );
@@ -126,7 +126,7 @@ public final class ExampleUtil {
   private static Label createHeadlineLabel( Composite parent, String text ) {
     Label label = new Label( parent, SWT.NONE );
     label.setText( text.replace( "&", "&&" ) );
-    label.setData(  WidgetUtil.CUSTOM_VARIANT, "pageHeadline" );
+    label.setData( RWT.CUSTOM_VARIANT, "pageHeadline" );
     return label;
   }
 

@@ -9,10 +9,10 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
 
 import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
@@ -24,15 +24,22 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 @SuppressWarnings("deprecation")
 public class TableColumnLCA_Test extends TestCase {
@@ -42,6 +49,7 @@ public class TableColumnLCA_Test extends TestCase {
   private Table table;
   private TableColumnLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -51,6 +59,7 @@ public class TableColumnLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -467,7 +476,7 @@ public class TableColumnLCA_Test extends TestCase {
   public void testRenderCustomVariant() throws IOException {
     TableColumn column = new TableColumn( table, SWT.NONE );
 
-    column.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    column.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
@@ -479,7 +488,7 @@ public class TableColumnLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
 
-    column.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    column.setData( RWT.CUSTOM_VARIANT, "blue" );
     Fixture.preserveWidgets();
     lca.renderChanges( column );
 
