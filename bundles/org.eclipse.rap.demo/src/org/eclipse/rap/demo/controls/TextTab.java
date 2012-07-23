@@ -49,6 +49,11 @@ public class TextTab extends ExampleTab {
       @Override
       public void widgetDefaultSelected( SelectionEvent event ) {
         String msg = "You pressed the Enter key.";
+        if( event.detail == SWT.ICON_SEARCH ) {
+          msg = "You clicked the search icon.";
+        } else if( event.detail == SWT.ICON_CANCEL ) {
+          msg = "You clicked the cancel icon.";
+        }
         MessageDialog.openInformation( getShell(), "Information", msg );
       }
     };

@@ -35,6 +35,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
 
   destruct : function() {
     this._messageElement = null;
+    this._searchIconElement = null;
+    this._cancelIconElement = null;
     this.__oninput = null;
   },
 
@@ -135,6 +137,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       }
     },
 
+    _onMouseDownUp : function( event ) {
+      this.base( arguments, event );
+      if( event.getType() === "mousedown" ) {
+        var target = event.getDomTarget();
+        if( target === this._searchIconElement ) {
+          this._sendWidgetDefaultSelected( "search" );
+        } else if( target === this._cancelIconElement ) {
+          this._sendWidgetDefaultSelected( "cancel" );
+        }
+      }
+    },
+
     ///////////////
     // send changes
 
@@ -180,11 +194,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     /*
      * Sends a widget default selected event to the server.
      */
-    _sendWidgetDefaultSelected : function() {
+    _sendWidgetDefaultSelected : function( detail ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
       var req = org.eclipse.swt.Request.getInstance();
       req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+      if( detail ) {
+        req.addEvent( "org.eclipse.swt.events.widgetSelected.detail", detail );
+      }
       org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
       req.send();
     },
@@ -199,7 +216,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       }
       // Fix for bug 306354
       this._inputElement.style.paddingRight = "1px";
-      this._inputElement.style.position = "absolute";
       this._updateAllIcons();
       this._updateMessage();
     },
@@ -287,8 +303,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
 
     _syncFieldLeft : function() {
       var styleMap = this._getMessageStyle();
-      this._inputElement.style.left = (   this._getIconOuterWidth( "search" )
-                                        + styleMap.paddingLeft ) + "px";
+      this._inputElement.style.marginLeft = this._getIconOuterWidth( "search" ) + "px";
     },
 
     _updateAllIcons : function() {
@@ -309,6 +324,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       if( element ) {
         var image = this._getIconImage( iconId );
         element.style.backgroundImage = image ? "URL(" + image[ 0 ] + ")" : "none";
+        element.style.cursor = "pointer";
       }
       this._layoutIcon( iconId );
     },
