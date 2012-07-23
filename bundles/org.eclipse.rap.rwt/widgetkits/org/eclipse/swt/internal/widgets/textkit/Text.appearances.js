@@ -28,9 +28,18 @@ var appearances = {
       result.paddingLeft = cssPadding[ 3 ];
       result.textShadow = tv.getCssShadow( "Text", "text-shadow" );
       result.shadow = tv.getCssShadow( "Text", "box-shadow" );
-      result.searchIcon = tv.getCssSizedImage( "Text-Search-Icon", "background-image" );
-      result.cancelIcon = tv.getCssSizedImage( "Text-Cancel-Icon", "background-image" );
       return result;
+    }
+  },
+
+  "text-field-icon" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var selector = states.search ? "Text-Search-Icon" : "Text-Cancel-Icon";
+      return {
+        icon : tv.getCssSizedImage( selector, "background-image" ),
+        spacing : tv.getCssDimension( selector, "spacing" )
+      };
     }
   },
 

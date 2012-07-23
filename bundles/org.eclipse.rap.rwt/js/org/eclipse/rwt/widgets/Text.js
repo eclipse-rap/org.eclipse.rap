@@ -44,22 +44,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       check : "Boolean",
       init : true,
       apply : "_applyWrap"
-    },
-
-    searchIcon : {
-      check : "Array",
-      nullable : true,
-      init : null,
-      apply : "_applySearchIcon",
-      themeable : true
-    },
-
-    cancelIcon : {
-      check : "Array",
-      nullable : true,
-      init : null,
-      apply : "_applyCancelIcon",
-      themeable : true
     }
 
   },
@@ -307,14 +291,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
                                         + styleMap.paddingLeft ) + "px";
     },
 
-    _applySearchIcon : function( value, oldValue ) {
-      this._updateAllIcons();
-    },
-
-    _applyCancelIcon : function( value, oldValue ) {
-      this._updateAllIcons();
-    },
-
     _updateAllIcons : function() {
       if( this._isCreated ) {
         this._updateIcon( "search" );
@@ -388,7 +364,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     },
 
     _getIconImage : function( iconId ) {
-      return iconId === "search" ? this.getSearchIcon() : this.getCancelIcon();
+      return this._hasIcon( iconId ) ? this._getIconStyle( iconId ).icon : null;
     },
 
     _getIconPosition : function( iconId ) {
@@ -396,7 +372,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     },
 
     _getIconSpacing : function( iconId ) {
-      return 3;
+      return this._hasIcon( iconId ) ? this._getIconStyle( iconId ).spacing : 0;
+    },
+
+    _getIconStyle : function( iconId ) {
+      var manager = qx.theme.manager.Appearance.getInstance();
+      return manager.styleFrom( "text-field-icon", iconId === "search" ? { search : true } : {} );
     },
 
     ///////////////////
