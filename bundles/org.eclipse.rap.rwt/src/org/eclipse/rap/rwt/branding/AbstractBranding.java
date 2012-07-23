@@ -32,21 +32,6 @@ import java.io.IOException;
  * immutable. All getter methods should return the same values whenever
  * they are called.</p>
  *
- * <p>Brandings can be registered via a <code>&lt;context-param&gt;</code>s
- * in the <code>web.xml</code>. Specify <code>org.eclipse.rwt.brandings</code>
- * in the param-name element and a comma-separated list of fully qualified
- * class names that extend this class in the param-value element.</p>
- *
- * <p>The following is an example snippet that registers two brandings.
- * <pre>
- * ...
- *   &lt;context-param&gt;
- *     &lt;param-name&gt;org.eclipse.rwt.brandings&lt;/param-name&gt;
- *     &lt;param-value&gt;org.demo.MyBranding1,org.demo.MyBranding2&lt;/param-value&gt;
- *   &lt;/context-param&gt;
- * ...
- * </pre>
- *
  * @since 2.0
  */
 public abstract class AbstractBranding {
