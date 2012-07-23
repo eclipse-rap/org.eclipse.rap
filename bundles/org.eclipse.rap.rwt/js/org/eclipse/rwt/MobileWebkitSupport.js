@@ -225,7 +225,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
        "initialTarget" : target,
        "initialPosition" : pos
       };
-      if( !this._touchSession.type.scroll && !this._touchSession.type.virtualScroll && !this._touchSession.type.focus ) {
+      if( !this._touchSession.type.scroll && !this._touchSession.type.outerScroll && !this._touchSession.type.focus ) {
         domEvent.preventDefault();
       }
       this._moveMouseTo( target, domEvent );
@@ -295,6 +295,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
         result.drag = true;
       } else if( this._isGridRow( widgetTarget ) ) {
         result.virtualScroll = true;
+        result.outerScroll = this._allowNativeScroll && this._isScrollableWidget( widgetTarget );
       } else if( this._allowNativeScroll && this._isScrollableWidget( widgetTarget ) ) {
         result.scroll = true;
       } else if( this._isFocusable( widgetTarget ) ) {
@@ -329,7 +330,8 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       var offsetY = oldPos[ 1 ] - pos[ 1 ];
       var newX = this._touchSession.initScrollX + offsetX;
       var newY = this._touchSession.initScrollY + offsetY;
-      if( newY < 0 || newY > ( this._touchSession.scrollBarV.getMaximum() - this._touchSession.scrollBarV._thumbLength ) ) {
+      var nudged = newY < 0 || newY > ( this._touchSession.scrollBarV.getMaximum() - this._touchSession.scrollBarV._thumbLength );
+      if( this._touchSession.type.outerScroll && nudged ) {
         delete this._touchSession.type.virtualScroll;
         this._touchSession.type.scroll = true;
       }

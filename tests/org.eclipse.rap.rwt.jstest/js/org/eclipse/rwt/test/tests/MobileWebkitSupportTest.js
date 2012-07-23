@@ -984,6 +984,33 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       grid.destroy();
     },
 
+
+    testScrollGridVerticalLimitAndBack : function() {
+      org.eclipse.swt.EventUtil.setSuspended( true );
+      var grid = this._createGridByProtocol();
+      grid.setScrollBarsVisible( false, true );
+      grid.setItemCount( 50 );
+      grid.setItemHeight( 20 );
+      for( var i = 0; i < 50; i++ ) {
+        new org.eclipse.rwt.widgets.GridItem( grid.getRootItem(), i );
+      }
+      TestUtil.flush();
+      grid.setTopItemIndex( 20 );
+      TestUtil.flush();
+      org.eclipse.swt.EventUtil.setSuspended( false );
+      var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+
+      this.touchAt( node, "touchstart", 0, 500 );
+      this.touchAt( node, "touchmove", 0, 150 );
+      this.touchAt( node, "touchmove", 0, 500 );
+      this.touchAt( node, "touchmove", 0, 600 );
+      this.touchAt( node, "touchend", 0, 600 );
+
+      assertEquals( 15, grid._topItemIndex );
+      assertEquals( 300, grid._vertScrollBar._idealValue );
+      grid.destroy();
+    },
+
     testScrollGridHorizontal : function() {
       org.eclipse.swt.EventUtil.setSuspended( true );
       var grid = this._createGridByProtocol();
