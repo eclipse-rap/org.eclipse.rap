@@ -12,12 +12,14 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
+import org.eclipse.swt.internal.widgets.textkit.TextThemeAdapter;
 
 
 /**
@@ -139,6 +141,7 @@ public class Text extends Scrollable {
     }
   }
 
+  @Override
   void initState() {
     if( ( style & SWT.READ_ONLY ) != 0 ) {
       if( ( style & ( SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL ) ) == 0 ) {
@@ -147,6 +150,7 @@ public class Text extends Scrollable {
     }
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -819,6 +823,7 @@ public class Text extends Scrollable {
   ////////////////////
   // Widget dimensions
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int height = 0, width = 0;
@@ -832,8 +837,9 @@ public class Text extends Scrollable {
       // Single-line text field should have same size as Combo, Spinner, etc.
       if( ( getStyle() & SWT.SINGLE ) != 0 ) {
         extent = Graphics.stringExtent( getFont(), text );
-        int messageWidth = Graphics.stringExtent( getFont(), message ).x;
-        extent.x = Math.max( extent.x, messageWidth );
+        Point messageExtent = Graphics.stringExtent( getFont(), message );
+        extent.x = Math.max( extent.x, messageExtent.x );
+        extent.y = Math.max( extent.y, messageExtent.y );
       } else {
         extent = Graphics.textExtent( getFont(), text, wrapWidth );
       }
@@ -843,6 +849,11 @@ public class Text extends Scrollable {
       if( extent.y != 0 ) {
         height = extent.y;
       }
+      Point searchIconSize = getSearchIconSize();
+      Point cancelIconSize = getCancelIconSize();
+      width += searchIconSize.x + cancelIconSize.x;
+      height = Math.max( height, searchIconSize.y );
+      height = Math.max( height, cancelIconSize.y );
     }
     if( width == 0 ) {
       width = DEFAULT_WIDTH;
@@ -868,9 +879,10 @@ public class Text extends Scrollable {
     return new Point( trim.width, trim.height );
   }
 
+  @Override
   public Rectangle computeTrim( int x, int y, int width, int height ) {
     Rectangle result = super.computeTrim( x, y, width, height );
-    if( ( style & SWT.H_SCROLL ) != 0 ) {
+    if( ( style & SWT.MULTI ) != 0 && ( style & SWT.H_SCROLL ) != 0 ) {
       result.width++;
     }
     return result;
@@ -1026,6 +1038,7 @@ public class Text extends Scrollable {
     VerifyEvent.removeListener( this, verifyListener );
   }
 
+  @Override
   boolean isTabGroup() {
     return true;
   }
@@ -1095,5 +1108,28 @@ public class Text extends Scrollable {
       return result | SWT.MULTI;
     }
     return result | SWT.SINGLE;
+  }
+
+  ///////////////////////
+  // Other helping method
+
+  private Point getSearchIconSize() {
+    Point result = new Point( 0, 0 );
+    if( ( style & SWT.SEARCH ) != 0 && ( style & SWT.ICON_SEARCH ) != 0 ) {
+      result = getThemeAdapter().getSearchIconImageSize( this );
+    }
+    return result;
+  }
+
+  private Point getCancelIconSize() {
+    Point result = new Point( 0, 0 );
+    if( ( style & SWT.SEARCH ) != 0 && ( style & SWT.ICON_CANCEL ) != 0 ) {
+      result = getThemeAdapter().getCancelIconImageSize( this );
+    }
+    return result;
+  }
+
+  private TextThemeAdapter getThemeAdapter() {
+    return ( TextThemeAdapter )getAdapter( IThemeAdapter.class );
   }
 }

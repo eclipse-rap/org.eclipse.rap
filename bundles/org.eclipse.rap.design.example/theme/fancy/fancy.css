@@ -1058,6 +1058,14 @@ Text-Message {
   text-shadow: none;
 }
 
+Text-Search-Icon {
+  background-image: url( theme/resources/text/find.png );
+}
+
+Text-Cancel-Icon {
+  background-image: url( theme/resources/text/clear.gif );
+}
+
 /* ToolBar default theme */
 
 ToolBar {

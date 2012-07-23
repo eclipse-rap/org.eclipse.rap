@@ -38,6 +38,9 @@ public class TextTab extends ExampleTab {
   private final VerifyListener numberOnlyVerifyListener;
   private final ModifyListener modifyListener;
   private final KeyListener keyListener;
+  private Button searchStyleButton;
+  private Button iconSearchStyleButton;
+  private Button iconCancelStyleButton;
 
   public TextTab( CTabFolder topFolder ) {
     super( topFolder, "Text" );
@@ -85,7 +88,10 @@ public class TextTab extends ExampleTab {
     createStyleButton( "SINGLE", SWT.SINGLE );
     createStyleButton( "MULTI", SWT.MULTI );
     createStyleButton( "PASSWORD", SWT.PASSWORD );
-    createStyleButton( "SEARCH", SWT.SEARCH );
+    searchStyleButton = createStyleButton( "SEARCH", SWT.SEARCH );
+    iconSearchStyleButton = createStyleButton( "ICON_SEARCH", SWT.ICON_SEARCH );
+    iconCancelStyleButton = createStyleButton( "ICON_CANCEL", SWT.ICON_CANCEL );
+    updateSearchStyleButtons();
     createStyleButton( "READ_ONLY", SWT.READ_ONLY );
     createStyleButton( "LEFT", SWT.LEFT );
     createStyleButton( "CENTER", SWT.CENTER );
@@ -213,11 +219,12 @@ public class TextTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createKeyListenerButton() {
     btnKeyListener = createPropertyButton( "KeyListener" );
     btnKeyListener.addSelectionListener( new SelectionAdapter() {
-      
+
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         updateKeyListener();
       }
@@ -460,7 +467,7 @@ public class TextTab extends ExampleTab {
       }
     }
   }
-  
+
   private void updateKeyListener() {
     if( btnKeyListener != null ) {
       if( btnKeyListener.getSelection() ) {
@@ -480,6 +487,22 @@ public class TextTab extends ExampleTab {
   private void updateEchoChar() {
     if( btnEchoChar != null ) {
       text.setEchoChar( btnEchoChar.getSelection() ? '*' : 0);
+    }
+  }
+
+  @Override
+  protected void createNew() {
+    updateSearchStyleButtons();
+    super.createNew();
+  }
+
+  private void updateSearchStyleButtons() {
+    boolean isSearch = searchStyleButton.getSelection();
+    iconSearchStyleButton.setEnabled( isSearch );
+    iconCancelStyleButton.setEnabled( isSearch );
+    if( !isSearch ) {
+      iconSearchStyleButton.setSelection( false );
+      iconCancelStyleButton.setSelection( false );
     }
   }
 }
