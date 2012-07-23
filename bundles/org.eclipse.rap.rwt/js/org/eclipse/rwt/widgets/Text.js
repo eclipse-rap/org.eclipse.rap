@@ -318,13 +318,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       if( this._hasIcon( iconId ) && element == null ) {
         element = document.createElement( "div" );
         element.style.position = "absolute";
+        element.style.cursor = "pointer";
+        if( org.eclipse.rwt.Client.isMshtml() ) {
+          element.style.fontSize = 0;
+          element.style.lineHeight = 0;
+        }
         this._getTargetNode().insertBefore( element, this._inputElement );
         this._setIconElement( iconId, element );
       }
       if( element ) {
         var image = this._getIconImage( iconId );
         element.style.backgroundImage = image ? "URL(" + image[ 0 ] + ")" : "none";
-        element.style.cursor = "pointer";
       }
       this._layoutIcon( iconId );
     },
