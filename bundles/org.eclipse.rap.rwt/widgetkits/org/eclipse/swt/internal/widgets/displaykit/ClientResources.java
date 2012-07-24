@@ -17,10 +17,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.resources.ContentBuffer;
 import org.eclipse.rap.rwt.internal.resources.JSFile;
-import org.eclipse.rap.rwt.internal.resources.SystemProps;
 import org.eclipse.rap.rwt.internal.theme.QxAppearanceWriter;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
@@ -348,7 +348,7 @@ public final class ClientResources {
     ContentBuffer contentBuffer = new ContentBuffer();
     String appearanceCode = getQxAppearanceThemeCode();
     String json2Code = readResourceContent( JSON_JS );
-    if( SystemProps.isDevelopmentMode() ) {
+    if( RWTProperties.isDevelopmentMode() ) {
       for( int i = 0; i < JAVASCRIPT_FILES.length; i++ ) {
         append( contentBuffer, JAVASCRIPT_FILES[ i ] );
       }

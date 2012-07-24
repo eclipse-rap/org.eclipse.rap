@@ -9,10 +9,10 @@
  *   Innoopract Informationssysteme GmbH - initial API and implementation
  *   EclipseSource - ongoing implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.resources;
+package org.eclipse.rap.rwt.internal;
 
 
-public final class SystemProps {
+public final class RWTProperties {
 
   public static final String USE_VERSIONED_JAVA_SCRIPT = "org.eclipse.rap.useVersionedJavaScript";
   public static final String USE_COMPRESSED_JAVA_SCRIPT = "org.eclipse.rap.useCompressedJavaScript";
@@ -25,7 +25,7 @@ public final class SystemProps {
    */
   public static final String ENABLE_UI_TESTS = "org.eclipse.rap.rwt.enableUITests";
 
-  private SystemProps() {
+  private RWTProperties() {
     // prevent instantiation
   }
 

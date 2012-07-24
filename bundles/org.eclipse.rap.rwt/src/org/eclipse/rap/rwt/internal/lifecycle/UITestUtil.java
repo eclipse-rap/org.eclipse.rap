@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import org.eclipse.rap.rwt.internal.resources.SystemProps;
+import org.eclipse.rap.rwt.internal.RWTProperties;
 
 
 public final class UITestUtil {
@@ -19,7 +19,7 @@ public final class UITestUtil {
   static boolean enabled;
 
   static {
-    String property = System.getProperty( SystemProps.ENABLE_UI_TESTS );
+    String property = System.getProperty( RWTProperties.ENABLE_UI_TESTS );
     enabled = Boolean.valueOf( property ).booleanValue();
   }
 

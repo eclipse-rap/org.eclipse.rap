@@ -14,7 +14,7 @@ package org.eclipse.rap.rwt.lifecycle;
 import java.text.MessageFormat;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.resources.SystemProps;
+import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
@@ -79,12 +79,12 @@ public final class WidgetUtil {
   /**
    * @see #CUSTOM_WIDGET_ID
    * @deprecated The system property has been moved to the internal class
-   *             {@link SystemProps}. Please look up the name in the
+   *             {@link RWTProperties}. Please look up the name in the
    *             documentation of {@link #CUSTOM_WIDGET_ID}.
    * @since 1.1
    */
   @Deprecated
-  public static final String ENABLE_UI_TESTS = SystemProps.ENABLE_UI_TESTS;
+  public static final String ENABLE_UI_TESTS = RWTProperties.ENABLE_UI_TESTS;
 
   private WidgetUtil() {
     // prevent instantiation

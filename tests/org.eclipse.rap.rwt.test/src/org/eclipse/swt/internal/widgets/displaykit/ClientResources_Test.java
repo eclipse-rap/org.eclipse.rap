@@ -15,8 +15,8 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.resources.SystemProps;
 import org.eclipse.rap.rwt.internal.resources.TestUtil;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.resources.IResourceManager;
@@ -49,8 +49,8 @@ public class ClientResources_Test extends TestCase {
   }
 
   public void testRegisterResourcesDebug() {
-    System.setProperty( SystemProps.CLIENT_LIBRARY_VARIANT,
-                        SystemProps.DEBUG_CLIENT_LIBRARY_VARIANT );
+    System.setProperty( RWTProperties.CLIENT_LIBRARY_VARIANT,
+                        RWTProperties.DEBUG_CLIENT_LIBRARY_VARIANT );
     clientResources.registerResources();
 
     assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
@@ -71,8 +71,8 @@ public class ClientResources_Test extends TestCase {
   }
 
   public void testRegisteredContentDebug() throws IOException {
-    System.setProperty( SystemProps.CLIENT_LIBRARY_VARIANT,
-                        SystemProps.DEBUG_CLIENT_LIBRARY_VARIANT );
+    System.setProperty( RWTProperties.CLIENT_LIBRARY_VARIANT,
+                        RWTProperties.DEBUG_CLIENT_LIBRARY_VARIANT );
     clientResources.registerResources();
     String clientJs = getRegisteredContent( "rap-client.js", "UTF-8" );
 
