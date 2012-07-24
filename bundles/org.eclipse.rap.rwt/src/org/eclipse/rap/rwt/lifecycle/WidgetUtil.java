@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.lifecycle;
 import java.text.MessageFormat;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.resources.SystemProps;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
@@ -36,56 +37,54 @@ public final class WidgetUtil {
   public static final String CUSTOM_VARIANT = RWT.CUSTOM_VARIANT;
 
   /**
-   * <p><strong>Note:</strong> This constant is provisional and subject to
-   * change without further notice.</p>
-   *
-   * By default, the widget-id returned by {@link IWidgetAdapter#getId()} is
-   * an automatically generated value that is session-wide unique.
-   * A custom id can be assigned by using the <code>Widget#setData(String,
-   * Object)</code> method and using this constant for the <code>key</code>
-   * argument and a string that denotes the new id as the <code>data</code>
-   * argument. In addition the system property denoted by
-   * <code>ENABLE_UI_TESTS</code> must be set to <code>true</code>.
-   *
-   * <p>The <code>id</code> must only contain characters that are valid according
-   * to the <a href="http://www.w3.org/TR/html401/types.html#type-cdata">W3C
-   * recommendation for id and name attributes</a>.</p>
-   *
-   * <p>It is the clients' responsibility to choose a unique id. Assigning an
-   * id that is used by another widget will lead to indeterministic behavior.
+   * <p>
+   * <strong>Note:</strong> This constant is provisional and subject to change
+   * without further notice.
+   * </p>
+   * <p>
+   * This constant can be used to apply a custom widget id to a widget. By
+   * default, the framework applies a unique widget id to every widget. This id
+   * is used to identify the widget in the client/server protocol. For UI tests,
+   * it can be helpful to replace these generated ids with custom ids in order
+   * to make the ids more human-readable and more stable against changes in the
+   * UI. The following snippet applies a custom widget id to a widget:
    * </p>
    *
-   * <p>The following code would assign the id 'myId' to the widget:
    * <pre>
-   *   Widget widget = new ...
-   *   widget.setData( WidgetUtil.CUSTOM_WIDGET_ID, "myId" );
-   * </pre></p>
+   * widget.setData( WidgetUtil.CUSTOM_WIDGET_ID, &quot;myCustomId&quot; )
+   * </pre>
+   * <p>
+   * The support for custom widget ids must be explicitly enabled by setting the
+   * system property <code>org.eclipse.rap.rwt.enableUITests</code> to
+   * <code>true</code>. If activated, the default web client will also set the
+   * HTML id attribute for every widget that are rendered to the client to the
+   * widget id.
+   * </p>
+   * <p>
+   * A custom widget id must be unique within the user session. It is the
+   * clients' responsibility to choose a unique id. Assigning an id that is used
+   * by another widget will lead to indeterministic behavior.
+   * <p>
+   * </p>
+   * A custom widget id must only contain characters that are valid according to
+   * the <a href="http://www.w3.org/TR/html401/types.html#type-cdata">W3C
+   * recommendation for id and name attributes</a>. </p>
    *
    * @see Widget#setData(String,Object)
    * @see #getId(Widget)
-   * @see #ENABLE_UI_TESTS
-   *
    * @since 1.1
    */
   public static final String CUSTOM_WIDGET_ID = "org.eclipse.rap.rwt.customWidgetId";
 
   /**
-   * <p><strong>Note:</strong> This constant is provisional and subject to
-   * change without further notice.</p>
-   *
-   * If a system property with this name is set to <code>true</code>, the
-   * UI testing support is activated. For all widgets that are rendered to
-   * the client, the HTML id attribute is set.
-   *
-   * <p>In conjunction with <code>CUSTOM_WIDGET_ID</code>, each widget can
-   * be assigned a custom, more human-readable, identifier that is independent
-   * if the order in which widgets are created.</p>
-   *
    * @see #CUSTOM_WIDGET_ID
-   *
+   * @deprecated The system property has been moved to the internal class
+   *             {@link SystemProps}. Please look up the name in the
+   *             documentation of {@link #CUSTOM_WIDGET_ID}.
    * @since 1.1
    */
-  public static final String ENABLE_UI_TESTS = "org.eclipse.rap.rwt.enableUITests";
+  @Deprecated
+  public static final String ENABLE_UI_TESTS = SystemProps.ENABLE_UI_TESTS;
 
   private WidgetUtil() {
     // prevent instantiation

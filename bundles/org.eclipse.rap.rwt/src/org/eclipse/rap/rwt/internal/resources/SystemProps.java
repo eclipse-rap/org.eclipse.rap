@@ -19,6 +19,11 @@ public final class SystemProps {
   public static final String CLIENT_LIBRARY_VARIANT = "org.eclipse.rwt.clientLibraryVariant";
   public static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
   public static final String ENABLE_THEME_WARNINGS = "org.eclipse.rap.enableThemeWarnings";
+  /*
+   * Used in conjunction with <code>WidgetUtil#CUSTOM_WIDGET_ID</code>,
+   * to activate support for custom widget ids.</p>
+   */
+  public static final String ENABLE_UI_TESTS = "org.eclipse.rap.rwt.enableUITests";
 
   private SystemProps() {
     // prevent instantiation
