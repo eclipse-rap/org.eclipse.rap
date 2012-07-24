@@ -390,11 +390,10 @@ public final class RWT {
 
   /**
    * Used to mark a widget as belonging to a custom variant in order to apply a
-   * different theming to it. A custom variant can be applied using theming.
-   * <code>Widget.setData</code>.
+   * different theming to it. A custom variant can be applied to any widget like this:
    *
    * <pre>
-   * widget.setData( RWT.CUSTOM_VARIANT, &quot;mySpecialButton&quot; )
+   * button.setData( RWT.CUSTOM_VARIANT, "mybutton" );
    * </pre>
    *
    * For more information on custom variants, see the RAP help on theming.
