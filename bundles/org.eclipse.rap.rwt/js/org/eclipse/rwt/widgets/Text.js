@@ -296,13 +296,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
 
     // overrided
     _syncFieldWidth : function() {
-      this._inputElement.style.width = (   this.getInnerWidth() 
+      this._inputElement.style.width = (   this.getInnerWidth()
                                          - this._getIconOuterWidth( "search" )
                                          - this._getIconOuterWidth( "cancel" ) ) + "px";
     },
 
     _syncFieldLeft : function() {
-      var styleMap = this._getMessageStyle();
       this._inputElement.style.marginLeft = this._getIconOuterWidth( "search" ) + "px";
     },
 
@@ -365,7 +364,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     _setIconElement : function( iconId, element ) {
       if( iconId === "search" ) {
         this._searchIconElement = element;
-      } else { 
+      } else {
         this._cancelIconElement = element;
       }
     },
@@ -505,7 +504,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       if( this._messageElement ) {
         var styleMap = this._getMessageStyle();
         var style = this._messageElement.style;
-        style.width = (   this.getInnerWidth() 
+        style.width = (   this.getBoxWidth()
+                        - this._cachedBorderLeft
+                        - this._cachedBorderRight
+                        - styleMap.paddingLeft
+                        - styleMap.paddingRight
                         - this._getIconOuterWidth( "search" )
                         - this._getIconOuterWidth( "cancel" ) ) + "px";
         var messageHeight = parseInt( style.height, 10 );

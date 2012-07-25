@@ -10,7 +10,7 @@
  ******************************************************************************/
 
 (function(){
-  
+
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Processor = org.eclipse.rwt.protocol.Processor;
 var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
@@ -97,6 +97,50 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertTrue( text.hasState( "rwt_PASSWORD" ) );
       assertEquals( "text-field", text.getAppearance() );
       assertEquals( "password", text._inputType );
+    },
+
+    testCreateSearchTextByProtocol : function() {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SEARCH" ],
+          "parent" : "w2"
+        }
+      } );
+
+      TestUtil.flush();
+
+      text = ObjectManager.getObject( "w3" );
+      assertTrue( text.hasState( "rwt_SEARCH" ) );
+      assertEquals( "text-field", text.getAppearance() );
+      assertNull( text._searchIconElement );
+      assertNull( text._cancelIconElement );
+    },
+
+    testCreateSearchTextWithIconsByProtocol : function() {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SEARCH", "ICON_SEARCH", "ICON_CANCEL" ],
+          "parent" : "w2"
+        }
+      } );
+
+      TestUtil.flush();
+
+      text = ObjectManager.getObject( "w3" );
+      assertTrue( text.hasState( "rwt_SEARCH" ) );
+      assertEquals( "text-field", text.getAppearance() );
+      assertNotNull( text._getIconElement( "search" ) );
+      assertTrue( text._hasIcon( "search") );
+      assertEquals( 19, text._getIconOuterWidth( "search" ) );
+      assertNotNull( text._getIconElement( "cancel" ) );
+      assertTrue( text._hasIcon( "cancel") );
+      assertEquals( 19, text._getIconOuterWidth( "cancel" ) );
     },
 
     testSetMessageByProtocol : function() {
@@ -391,7 +435,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setValue( "asdfjkloe" );
       text.setSelection( [ 2, 5 ] );
       text.blur();
-      
+
       text.focus();
       text._ontabfocus();
       TestUtil.keyUp( text, "Tab" );
@@ -408,7 +452,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( [ 2, 5 ], text.getSelection() );
       TestUtil.flush();
       text.focus();
-      
+
       if( !Client.isGecko() ) {
         // Fails in gecko about half of the time for no known reason, but works in actuality
         assertEquals( [ 2, 5 ], text.getComputedSelection() );
@@ -461,9 +505,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setPasswordMode( true );
       TestUtil.flush();
       assertEquals( "password", text._inputType );
-      assertEquals( "password", text._inputElement.type );      
+      assertEquals( "password", text._inputElement.type );
     },
-    
+
     testValueSetPaswordMode : function() {
       createText( true );
       text.setPasswordMode( true );
@@ -492,7 +536,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.flush();
       assertEquals( [ 2, 5 ], text.getComputedSelection() );
     },
-    
+
     testCssSetPasswordMode : function() {
       createText();
       var oldCss = text._inputElement.style.cssText;
@@ -504,7 +548,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     testCreateTextArea : function() {
       createText( true, true );
       text.setPasswordMode( true ); // should be ignored
-      text.setWrap( false ); 
+      text.setWrap( false );
       TestUtil.flush();
       assertNull( text._inputType );
       assertEquals( "textarea", text._inputTag );
@@ -526,7 +570,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     testTextAreaMaxLength : qx.core.Variant.select( "qx.client", {
       "mshtml|webkit" : function() {
         // NOTE: This test would fail in IE because it has a bug that sometimes
-        // prevents a textFields value from being overwritten and read in the 
+        // prevents a textFields value from being overwritten and read in the
         // same call. In webkit it seems to fail randomly aswell.
       },
       "default" : function() {
@@ -563,7 +607,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       }
     } ),
 
-    // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=330857 
+    // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=330857
     // NOTE [tb] : This test seems to fail at random in IE9?
     testGetSelectionWithLineBreakAtTheEnd : function() {
       createText( true, true );
@@ -589,9 +633,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.keyDown( text._getTargetNode(), "Home" );
       TestUtil.keyDown( text._getTargetNode(), "x" );
       assertEquals( 0, counter );
-      shell.destroy();      
+      shell.destroy();
     },
-    
+
     testFiresChangeReadOnlyEvent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = new org.eclipse.rwt.widgets.Text( false );
@@ -601,9 +645,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.addEventListener( "changeReadOnly", function(){
         log++;
       } );
-      
+
       text.setReadOnly( true );
-            
+
       assertTrue( log > 0 );
       text.destroy();
     },
@@ -615,7 +659,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         TestUtil.flush();
         assertEquals( " ", text._inputElement.value );
         TestUtil.forceTimerOnce();
-        assertEquals( "", text._inputElement.value );          
+        assertEquals( "", text._inputElement.value );
         }
     } ),
 
@@ -660,9 +704,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     testLiveUpdate : function() {
       createText();
       createChangeLogger();
-      
+
       typeCharacter( "A" );
-      
+
       assertEquals( [ "A" ], log );
     },
 
@@ -673,8 +717,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.fakeMouseEvent( text, "mousedown" );
       setSelection( [ 3, 3 ] );
       TestUtil.fakeMouseEvent( text, "mouseup" );
-      Request.getInstance().send();   
-      
+      Request.getInstance().send();
+
       assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=3" ) !== -1 );
       assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
     },
@@ -684,13 +728,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 //    testSendSelectionChangeOnMouseMoveOut : function() {
 //      createText();
 //      text.setValue( "foobar" );
-//      
+//
 //      TestUtil.fakeMouseEvent( text, "mousedown" );
 //      setSelection( [ 3, 3 ] );
 //      TestUtil.fakeMouseEvent( text, "mouseout" );
 //      TestUtil.fakeMouseEvent( shell, "mouseup" );
-//      Request.getInstance().send();   
-//      
+//      Request.getInstance().send();
+//
 //      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=3" ) !== -1 );
 //      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
 //    },
@@ -698,12 +742,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     testSendSelectionChangeOnKeyPress : function() {
       createText();
       text.setValue( "foobar" );
-      
+
       TestUtil.keyDown( text, "Right" );
       setSelection( [ 3, 3 ] );
       TestUtil.keyDown( text, "Enter" );
-      Request.getInstance().send();   
-      
+      Request.getInstance().send();
+
       assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=3" ) !== -1 );
       assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
     },
@@ -711,12 +755,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     testSendSelectionChangeOnTwoKeyPress : function() {
       createText();
       text.setValue( "foobar" );
-      
+
       TestUtil.keyDown( text, "Right" );
       setSelection( [ 3, 3 ] );
       TestUtil.keyDown( text, "Enter" ); // can send a request without releasing Right
-      Request.getInstance().send();   
-      
+      Request.getInstance().send();
+
       assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=3" ) !== -1 );
       assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
     },
@@ -725,10 +769,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       createText();
       text.setValue( "foobar" );
       setSelection( [ 3, 3 ] );
-      
+
       text.setValue( "f" );
-      Request.getInstance().send();   
-      
+      Request.getInstance().send();
+
       assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=1" ) !== -1 );
       assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
     },
@@ -737,8 +781,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       createText();
 
       text.setValue( "foobar" );
-      Request.getInstance().send();   
-      
+      Request.getInstance().send();
+
       assertTrue( TestUtil.getMessage().indexOf( "w3.text=foobar" ) !== -1 );
     },
 
@@ -748,7 +792,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       text.setValue( "foobar" );
       TestUtil.forceTimerOnce();
-      
+
       assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.modifyText=w3" ) !== -1 );
     },
 
@@ -758,7 +802,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       text.setValue( "foobar" );
       TestUtil.forceTimerOnce();
-      
+
       assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.modifyText=w3" ) !== -1 );
     },
 
@@ -768,8 +812,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setValue( "foobar" );
       TestUtil.forceTimerOnce();
 
-      assertEquals( 0, TestUtil.getRequestsSend() );      
-      Request.getInstance().send();   
+      assertEquals( 0, TestUtil.getRequestsSend() );
+      Request.getInstance().send();
       assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.modifyText" ) === -1 );
     },
 
@@ -781,7 +825,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setValue( "barfoo" );
       TestUtil.forceTimerOnce();
 
-      assertEquals( 1, TestUtil.getRequestsSend() );      
+      assertEquals( 1, TestUtil.getRequestsSend() );
       assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.modifyText=w3" ) !== -1 );
       assertTrue( TestUtil.getMessage().indexOf( "w3.text=barfoo" ) !== -1 );
     },
@@ -885,7 +929,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           result.paddingLeft = 3;
           result.textShadow = [ false, 0, 3, 0, 0, "red", 0 ];
           return result;
-        }      
+        }
       } );
       TestUtil.flush();
 
@@ -915,7 +959,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           result.paddingLeft = 3;
           result.textShadow = [ false, 0, 3, 0, 0, "red", 0 ];
           return result;
-        }      
+        }
       } );
       TestUtil.flush();
 
@@ -997,9 +1041,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.addEventListener( "input", function( event ) {
         insert = event.getData();
       }, this );
-      
+
       typeCharacter( "A" );
-      
+
       assertEquals( "A", insert );
     },
 
@@ -1009,9 +1053,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.addEventListener( "input", function( event ) {
         event.preventDefault();
       }, this );
-      
+
       typeCharacter( "A" );
-      
+
       assertEquals( "c", text.getValue() );
       assertEquals( "cA", text.getComputedValue() );
     },
@@ -1020,7 +1064,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       createText();
       text.setValue( "123456789" );
       text.setSelection( [ 9, 9 ] );
-      
+
       text.addEventListener( "input", function( event ) {
         text.setValue( "987654321" );
         text.setSelection( [ 2, 5 ] );
@@ -1028,7 +1072,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       } );
       typeCharacter( "0" );
       TestUtil.forceTimerOnce();
-      
+
       assertEquals( "987654321", text.getValue() );
       assertEquals( "987654321", text.getComputedValue() );
       assertEquals( [ 2, 5 ], text.getSelection() );
@@ -1044,12 +1088,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         text.addEventListener( "input", function( event ) {
           log.push( event );
         }, this );
-        
+
         TestUtil.keyDown( text, "Delete" );
         text.getInputElement().value = "fooba";
         TestUtil.keyUp( text, "Delete" );
         TestUtil.forceInterval( text._checkTimer );
-        
+
         assertEquals( "fooba", text.getValue() );
         assertEquals( "fooba", text.getComputedValue() );
         assertEquals( 1, log.length );
@@ -1065,10 +1109,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         text.addEventListener( "input", function( event ) {
           log.push( event );
         }, this );
-        
+
         text.getInputElement().value = "fooba";
         text.blur();
-        
+
         assertEquals( "fooba", text.getValue() );
         assertEquals( "fooba", text.getComputedValue() );
         assertEquals( 1, log.length );
@@ -1079,25 +1123,89 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       "default" : function() {},
       "webkit" : function() {
         createText();
-        
+
         var event = TestUtil.createFakeDomKeyEvent( text._inputElement, "keypress", "Enter" );
         TestUtil.fireFakeDomEvent( event );
 
         assertTrue( org.eclipse.rwt.EventHandlerUtil.wasStopped( event ) );
       }
     } ),
-    
+
     testTextAreaNotPreventEnter : qx.core.Variant.select( "qx.client", {
       "default" : function() {},
       "webkit" : function() {
         createText( false, true );
-        
+
         var event = TestUtil.createFakeDomKeyEvent( text._inputElement, "keypress", "Enter" );
         TestUtil.fireFakeDomEvent( event );
-        
+
         assertFalse( org.eclipse.rwt.EventHandlerUtil.wasStopped( event ) );
       }
     } ),
+
+    testFieldLayoutWithSearchIcons : function() {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SEARCH", "ICON_SEARCH", "ICON_CANCEL" ],
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 100, 20 ]
+        }
+      } );
+
+      TestUtil.flush();
+
+      text = ObjectManager.getObject( "w3" );
+      assertEquals( "19px", text._inputElement.style.marginLeft );
+      assertEquals( "42px", text._inputElement.style.width );
+    },
+
+    testMessageLayoutWithSearchIcons : function() {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SEARCH", "ICON_SEARCH", "ICON_CANCEL" ],
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 100, 20 ],
+          "message" : "foo"
+        }
+      } );
+
+      TestUtil.flush();
+
+      text = ObjectManager.getObject( "w3" );
+      assertEquals( "29px", text._messageElement.style.left );
+      assertEquals( "42px", text._messageElement.style.width );
+    },
+
+    testSearchIconsLayout : function() {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SEARCH", "ICON_SEARCH", "ICON_CANCEL" ],
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 100, 20 ]
+        }
+      } );
+
+      TestUtil.flush();
+
+      text = ObjectManager.getObject( "w3" );
+      assertEquals( "2px", text._searchIconElement.style.top );
+      assertEquals( "", text._searchIconElement.style.left );
+      assertEquals( "16px", text._searchIconElement.style.width );
+      assertEquals( "16px", text._searchIconElement.style.height );
+      assertEquals( "2px", text._cancelIconElement.style.top );
+      assertEquals( "74px", text._cancelIconElement.style.left );
+      assertEquals( "16px", text._cancelIconElement.style.width );
+      assertEquals( "16px", text._cancelIconElement.style.height );
+    },
 
     /////////
     // Helper
@@ -1118,7 +1226,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     }
 
   }
-  
+
 } );
 
 var createText = function( noflush, arg ) {
