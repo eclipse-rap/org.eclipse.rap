@@ -363,19 +363,19 @@ public class Text_Test extends TestCase {
   public void testComputeSize_Multi() {
     text = new Text( shell, SWT.MULTI );
     text.setText( "This is a long long text!\nThis is the second row." );
-    Point expected = new Point( 189, 47 );
-    assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 189, 47 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+  }
 
+  public void testComputeSize_MultiWithWrap() {
     text = new Text( shell, SWT.MULTI | SWT.WRAP );
     text.setText( "This is a long long text!\nThis is the second row." );
-    expected = new Point( 71, 152 );
-    assertEquals( expected, text.computeSize( 50, SWT.DEFAULT ) );
+    assertEquals( new Point( 71, 152 ), text.computeSize( 50, SWT.DEFAULT ) );
+  }
 
+  public void testComputeSize_MultiWithWrapAndBorder() {
     text = new Text( shell, SWT.MULTI | SWT.WRAP | SWT.BORDER );
     text.setText( "This is a long long text!\nThis is the second row." );
-    assertEquals( 1, text.getBorderWidth() );
-    expected = new Point( 73, 154 );
-    assertEquals( expected, text.computeSize( 50, SWT.DEFAULT ) );
+    assertEquals( new Point( 73, 154 ), text.computeSize( 50, SWT.DEFAULT ) );
   }
 
   public void testComputeSize_MultiWithHint() {
