@@ -1207,6 +1207,48 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( "16px", text._cancelIconElement.style.height );
     },
 
+    testSendDefaultSelectionEventOnSearchIconClick : function() {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SEARCH", "ICON_SEARCH", "ICON_CANCEL" ],
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 100, 20 ]
+        }
+      } );
+
+      TestUtil.flush();
+      text = ObjectManager.getObject( "w3" );
+      TestUtil.clickDOM( text._searchIconElement, 5, 5 );
+
+      var message = TestUtil.getMessage();
+      assertTrue( message.indexOf( "org.eclipse.swt.events.widgetDefaultSelected=w3" ) !== -1 );
+      assertTrue( message.indexOf( "org.eclipse.swt.events.widgetSelected.detail=search" ) !== -1 );
+    },
+
+    testSendDefaultSelectionEventOnCancelIconClick : function() {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SEARCH", "ICON_SEARCH", "ICON_CANCEL" ],
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 100, 20 ]
+        }
+      } );
+
+      TestUtil.flush();
+      text = ObjectManager.getObject( "w3" );
+      TestUtil.clickDOM( text._cancelIconElement, 5, 5 );
+
+      var message = TestUtil.getMessage();
+      assertTrue( message.indexOf( "org.eclipse.swt.events.widgetDefaultSelected=w3" ) !== -1 );
+      assertTrue( message.indexOf( "org.eclipse.swt.events.widgetSelected.detail=cancel" ) !== -1 );
+    },
+
     /////////
     // Helper
 
