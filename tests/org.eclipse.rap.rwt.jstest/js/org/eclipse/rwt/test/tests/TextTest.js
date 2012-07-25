@@ -1197,14 +1197,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.flush();
 
       text = ObjectManager.getObject( "w3" );
-      assertEquals( "2px", text._searchIconElement.style.top );
-      assertEquals( "", text._searchIconElement.style.left );
-      assertEquals( "16px", text._searchIconElement.style.width );
-      assertEquals( "16px", text._searchIconElement.style.height );
-      assertEquals( "2px", text._cancelIconElement.style.top );
-      assertEquals( "74px", text._cancelIconElement.style.left );
-      assertEquals( "16px", text._cancelIconElement.style.width );
-      assertEquals( "16px", text._cancelIconElement.style.height );
+      var style = text._searchIconElement.style;
+      assertEquals( "2px", style.top );
+      assertEquals( "", style.left );
+      assertEquals( "16px", style.width );
+      assertEquals( "16px", style.height );
+      style = text._cancelIconElement.style;
+      assertEquals( "2px", style.top );
+      assertEquals( "74px", style.left );
+      assertEquals( "16px", style.width );
+      assertEquals( "16px", style.height );
     },
 
     testSendDefaultSelectionEventOnSearchIconClick : function() {
