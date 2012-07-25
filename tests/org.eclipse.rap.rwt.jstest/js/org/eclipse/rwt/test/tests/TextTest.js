@@ -1251,6 +1251,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertTrue( message.indexOf( "org.eclipse.swt.events.widgetSelected.detail=cancel" ) !== -1 );
     },
 
+    testClearTextOnCancelIconClick : function() {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SEARCH", "ICON_SEARCH", "ICON_CANCEL" ],
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 100, 20 ],
+          "text" : "foo"
+        }
+      } );
+
+      TestUtil.flush();
+      text = ObjectManager.getObject( "w3" );
+      TestUtil.clickDOM( text._cancelIconElement, 5, 5 );
+
+      var message = TestUtil.getMessage();
+      assertEquals( "", text.getValue() );
+    },
+
     /////////
     // Helper
 

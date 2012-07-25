@@ -144,6 +144,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
         if( target === this._searchIconElement ) {
           this._sendWidgetDefaultSelected( "search" );
         } else if( target === this._cancelIconElement ) {
+          this.setValue( "" );
           this._sendWidgetDefaultSelected( "cancel" );
         }
       }
