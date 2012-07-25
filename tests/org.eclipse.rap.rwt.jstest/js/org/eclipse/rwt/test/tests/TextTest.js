@@ -1223,6 +1223,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       TestUtil.flush();
       text = ObjectManager.getObject( "w3" );
+      text.setHasSelectionListener( true );
       TestUtil.clickDOM( text._searchIconElement, 5, 5 );
 
       var message = TestUtil.getMessage();
@@ -1244,6 +1245,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       TestUtil.flush();
       text = ObjectManager.getObject( "w3" );
+      text.setHasSelectionListener( true );
       TestUtil.clickDOM( text._cancelIconElement, 5, 5 );
 
       var message = TestUtil.getMessage();

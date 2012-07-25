@@ -141,11 +141,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       this.base( arguments, event );
       if( event.getType() === "mousedown" ) {
         var target = event.getDomTarget();
+        var detail = null;
         if( target === this._searchIconElement ) {
-          this._sendWidgetDefaultSelected( "search" );
+          detail = "search";
         } else if( target === this._cancelIconElement ) {
           this.setValue( "" );
-          this._sendWidgetDefaultSelected( "cancel" );
+          detail = "cancel";
+        }
+        if( this.hasSelectionListener() && detail != null ) {
+          this._sendWidgetDefaultSelected( detail );
         }
       }
     },
