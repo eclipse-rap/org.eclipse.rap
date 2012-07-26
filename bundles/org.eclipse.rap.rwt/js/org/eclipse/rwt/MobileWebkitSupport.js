@@ -237,10 +237,10 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
 
     _handleTouchMove : function( domEvent ) {
       if( this._touchSession !== null ) {
-                var touch = this._getTouch( domEvent );
+        var touch = this._getTouch( domEvent );
         var pos = [ touch.clientX, touch.clientY ];
         if( !this._touchSession.type.scroll ) {
-          event.preventDefault();
+          domEvent.preventDefault();
         }
         if( this._touchSession.type.virtualScroll ) {
           this._handleVirtualScroll( pos );
