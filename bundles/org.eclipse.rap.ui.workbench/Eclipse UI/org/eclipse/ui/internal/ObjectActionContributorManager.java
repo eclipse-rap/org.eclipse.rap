@@ -21,7 +21,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 
@@ -114,9 +114,7 @@ public class ObjectActionContributorManager extends ObjectContributorManager {
 //            sharedInstance = new ObjectActionContributorManager();
 //        }
 //        return sharedInstance;
-      Class type = ObjectActionContributorManager.class;
-      Object instance = SessionSingletonBase.getInstance( type );
-      return ( ObjectActionContributorManager )instance;
+      return SingletonUtil.getSessionInstance( ObjectActionContributorManager.class );
     }
 
     /**

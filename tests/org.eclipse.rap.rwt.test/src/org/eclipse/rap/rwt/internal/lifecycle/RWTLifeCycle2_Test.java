@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
@@ -583,7 +583,7 @@ public class RWTLifeCycle2_Test extends TestCase {
         currentPhase = CurrentPhase.get();
         try {
           // Access a session singleton to ensure that we have a valid context
-          SessionSingletonBase.getInstance( this.getClass() );
+          SingletonUtil.getSessionInstance( this.getClass() );
         } catch( Throwable thr ) {
           eventLog.add( thr );
         }

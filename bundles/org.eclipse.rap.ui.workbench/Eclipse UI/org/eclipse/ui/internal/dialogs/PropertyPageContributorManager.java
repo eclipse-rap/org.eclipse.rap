@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
 import org.eclipse.jface.preference.PreferenceNode;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.ui.internal.ObjectContributorManager;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.internal.registry.PropertyPagesRegistryReader;
@@ -167,9 +167,7 @@ public class PropertyPageContributorManager extends ObjectContributorManager {
 //            sharedInstance = new PropertyPageContributorManager();
 //        }
 //        return sharedInstance;
-      Class type = PropertyPageContributorManager.class;
-      Object instance = SessionSingletonBase.getInstance( type );
-      return ( PropertyPageContributorManager )instance;
+      return SingletonUtil.getSessionInstance( PropertyPageContributorManager.class );
 	}
 
 	/**

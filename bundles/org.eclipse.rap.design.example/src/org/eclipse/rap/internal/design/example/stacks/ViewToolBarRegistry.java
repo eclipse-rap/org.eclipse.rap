@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@ package org.eclipse.rap.internal.design.example.stacks;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.widgets.Control;
 
 /**
@@ -22,30 +22,24 @@ import org.eclipse.swt.widgets.Control;
  * change the others should be notified.
  */
 public class ViewToolBarRegistry {
-  
+
   private List presentationList = new ArrayList();
-  
+
   private ViewToolBarRegistry() {
-    
   }
-  
+
   public static ViewToolBarRegistry getInstance() {
-    Object instance 
-      = SessionSingletonBase.getInstance( ViewToolBarRegistry.class );
-    return ( ViewToolBarRegistry )instance;
+    return SingletonUtil.getSessionInstance( ViewToolBarRegistry.class );
   }
-  
-  public void addViewPartPresentation( 
-    final ViewStackPresentation presentation ) 
-  {
+
+  public void addViewPartPresentation( ViewStackPresentation presentation ) {
     presentationList.add( presentation );
   }
-  
-  public void removeViewPartPresentation( 
-    final ViewStackPresentation presentation ) {
+
+  public void removeViewPartPresentation( ViewStackPresentation presentation ) {
     presentationList.remove( presentation );
   }
-  
+
   public void fireToolBarChanged() {
     for( int i = 0; i < presentationList.size(); i++ ) {
       if( presentationList.get( i ) != null ) {
@@ -55,15 +49,14 @@ public class ViewToolBarRegistry {
       }
     }
   }
-  
-  public void moveAllToolbarsBellow( final Control control ) {
+
+  public void moveAllToolbarsBellow( Control control ) {
     for( int i = 0; i < presentationList.size(); i++ ) {
       if( presentationList.get( i ) != null ) {
-        ViewStackPresentation presentation 
-          = ( ViewStackPresentation ) presentationList.get( i );
+        ViewStackPresentation presentation = ( ViewStackPresentation ) presentationList.get( i );
         presentation.hideAllToolBars( control );
       }
     }
   }
-  
+
 }

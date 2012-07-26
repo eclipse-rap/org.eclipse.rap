@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.dnd;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 
 /**
  * The class <code>FileTransfer</code> provides a platform specific mechanism
@@ -47,8 +47,7 @@ public class FileTransfer extends ByteArrayTransfer {
    * @return the singleton instance of the FileTransfer class
    */
   public static FileTransfer getInstance() {
-    Object instance = SessionSingletonBase.getInstance( FileTransfer.class );
-    return ( FileTransfer )instance;
+    return SingletonUtil.getSessionInstance( FileTransfer.class );
   }
 
   /**

@@ -17,7 +17,7 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
 import org.eclipse.rap.rwt.service.*;
@@ -32,7 +32,7 @@ public final class UICallBackManager implements SerializableCompatibility {
     = UICallBackManager.class.getName() + "#forceUICallBack";
 
   public static UICallBackManager getInstance() {
-    return SessionSingletonBase.getInstance( UICallBackManager.class );
+    return SingletonUtil.getSessionInstance( UICallBackManager.class );
   }
 
   private final CallBackActivationTracker callBackActivationTracker;

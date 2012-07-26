@@ -15,7 +15,7 @@ import java.util.*;
 import org.eclipse.core.commands.common.EventManager;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.progress.IProgressConstants;
 
@@ -66,8 +66,7 @@ public class FinishedJobs extends EventManager {
 //	    EMPTY_INFOS = new JobTreeElement[0];
 //	  }
 //	  return theInstance;
-	   Object result = SessionSingletonBase.getInstance( FinishedJobs.class );
-	   return ( FinishedJobs )result;
+	   return SingletonUtil.getSessionInstance( FinishedJobs.class );
 	}
 
 	private FinishedJobs() {

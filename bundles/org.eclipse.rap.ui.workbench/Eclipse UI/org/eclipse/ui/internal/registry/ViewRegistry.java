@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.dynamichelpers.ExtensionTracker;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionChangeHandler;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.ui.IPluginContribution;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
@@ -44,7 +44,7 @@ import org.eclipse.ui.views.IViewRegistry;
  */
 // RAP [bm]: session scoped registry
 //public class ViewRegistry implements IViewRegistry, IExtensionChangeHandler {
-public class ViewRegistry extends SessionSingletonBase implements IViewRegistry, IExtensionChangeHandler {
+public class ViewRegistry implements IViewRegistry, IExtensionChangeHandler {
 // RAPEND: [bm] 
 
 	
@@ -459,15 +459,15 @@ public class ViewRegistry extends SessionSingletonBase implements IViewRegistry,
     		}			
         }
 	}
-    
-    // RAP [bm]: 
+
+    // RAP [bm]:
     /**
      * Returns a session scoped instance of the ViewRegistry
-     * @return
+     * @return the session singleton instance
      */
     public static ViewRegistry getInstance() {
-	     return ( ViewRegistry )getInstance( ViewRegistry.class );
+	     return SingletonUtil.getSessionInstance( ViewRegistry.class );
 	}
-    // RAPEND: [bm] 
+    // RAPEND: [bm]
 
 }

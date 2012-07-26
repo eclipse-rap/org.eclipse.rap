@@ -13,12 +13,12 @@ package org.eclipse.rap.demo.controls;
 
 import java.util.*;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Shell;
 
 
-final class DefaultButtonManager extends SessionSingletonBase {
+final class DefaultButtonManager {
 
   static final class ChangeEvent extends EventObject {
 
@@ -34,7 +34,7 @@ final class DefaultButtonManager extends SessionSingletonBase {
   }
 
   static DefaultButtonManager getInstance() {
-    return getInstance( DefaultButtonManager.class );
+    return SingletonUtil.getSessionInstance( DefaultButtonManager.class );
   }
 
   private final Set<ChangeListener> changeListeners = new HashSet<ChangeListener>();

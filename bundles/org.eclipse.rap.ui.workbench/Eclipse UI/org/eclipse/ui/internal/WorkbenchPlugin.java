@@ -32,7 +32,7 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.service.localization.LocaleProvider;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.ui.internal.SessionLocaleProvider;
 import org.eclipse.rap.ui.internal.progress.JobManagerAdapter;
@@ -115,9 +115,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 
   // TODO [bm]: turn into real session scoped manager
 	// RAP [rs]:
-	private final static class DecoratorManagerStore extends
-			SessionSingletonBase
-	{
+	private final static class DecoratorManagerStore {
 		private final DecoratorManager decoratorManager;
 
 		private DecoratorManagerStore() {
@@ -125,8 +123,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 		}
 
 		public static DecoratorManagerStore getInstance() {
-			Class clazz = DecoratorManagerStore.class;
-			return (DecoratorManagerStore) getInstance(clazz);
+			return SingletonUtil.getSessionInstance( DecoratorManagerStore.class );
 		}
 
 		public DecoratorManager getDecoratorManager() {
@@ -136,14 +133,13 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 	// RAPEND]
 	
 // RAP [rh] session-singleton-wrapper for getThemeRegistry
-	private final static class ThemeRegistryStore extends SessionSingletonBase {
+	private final static class ThemeRegistryStore {
 	  private final ThemeRegistry themeRegistry;
-	  
+
 	  static ThemeRegistryStore getInstance() {
-      Class clazz = ThemeRegistryStore.class;
-      return ( ThemeRegistryStore )getInstance( clazz );
+        return SingletonUtil.getSessionInstance( ThemeRegistryStore.class );
 	  }
-	  
+
 	  public ThemeRegistryStore() {
 	    // RAP [rh] ThemeRegistry initialization code, copied from getThemeRegistry()
       themeRegistry = new ThemeRegistry();
@@ -157,14 +153,13 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 	}
 
 // RAP [rh] session-singleton-wrapper for getWorkingSetManager()	
-  private final static class WorkingSetManagerStore extends SessionSingletonBase {
+  private final static class WorkingSetManagerStore {
     private WorkingSetManager workingSetManager;
-    
+
     static WorkingSetManagerStore getInstance() {
-      Class clazz = WorkingSetManagerStore.class;
-      return ( WorkingSetManagerStore )getInstance( clazz );
+      return SingletonUtil.getSessionInstance( WorkingSetManagerStore.class );
     }
-    
+
     public IWorkingSetManager getWorkingSetManager( BundleContext context ) {
 // RAP [rh] WorkingSetManager initialization code, copied from getWorkingSetManager()
       if( workingSetManager == null ) {
@@ -176,34 +171,32 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
   }
 	
 //RAP [rh] session-singleton-wrapper for getWorkingSetRegistry()  
-  private final static class WorkingSetRegistryStore extends SessionSingletonBase {
+  private final static class WorkingSetRegistryStore {
     private WorkingSetRegistry workingSetRegistry;
-    
+
     static WorkingSetRegistryStore getInstance() {
-      Class clazz = WorkingSetRegistryStore.class;
-      return ( WorkingSetRegistryStore )getInstance( clazz );
+      return SingletonUtil.getSessionInstance( WorkingSetRegistryStore.class );
     }
-    
+
     public WorkingSetRegistryStore() {
 // RAP [rh] WorkingSetRegistry initialization code, copied from getWorkingSetRegistry()
       workingSetRegistry = new WorkingSetRegistry();
       workingSetRegistry.load();
     }
-    
+
     public WorkingSetRegistry getWorkingSetRegistry() {
       return workingSetRegistry;
     }
   }
   
 // RAP [rh] session-singleton-wrapper for PreferenceManager
-  private final static class PreferenceManagerStore extends SessionSingletonBase {
+  private final static class PreferenceManagerStore {
     private final WorkbenchPreferenceManager preferenceManager;
-    
+
     static PreferenceManagerStore getInstance() {
-      Class clazz = PreferenceManagerStore.class;
-      return ( PreferenceManagerStore )getInstance( clazz );
+      return SingletonUtil.getSessionInstance( PreferenceManagerStore.class );
     }
-    
+
     public PreferenceManagerStore() {
 // RAP [rh] PreferenceManager initialization code, copied from getPreferenceManager()
       preferenceManager = new WorkbenchPreferenceManager( PREFERENCE_PAGE_CATEGORY_SEPARATOR );
@@ -748,7 +741,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 //        if (perspRegistry == null) {
 //            perspRegistry = new PerspectiveRegistry();
     	final PerspectiveRegistry perspRegistry
-          = ( PerspectiveRegistry )SessionSingletonBase.getInstance( PerspectiveRegistry.class );
+          = SingletonUtil.getSessionInstance( PerspectiveRegistry.class );
     	ISessionStore sessionStore = RWT.getSessionStore();
     	Boolean initialized
           = ( Boolean )sessionStore.getAttribute( PERSP_REGISTRY_INITIALIZED );
@@ -812,7 +805,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 //            introRegistry = new IntroRegistry();
 //        }
 //        return introRegistry;
-    	return (IIntroRegistry) SessionSingletonBase.getInstance(IntroRegistry.class);
+    	return SingletonUtil.getSessionInstance( IntroRegistry.class );
     }
     
     /**

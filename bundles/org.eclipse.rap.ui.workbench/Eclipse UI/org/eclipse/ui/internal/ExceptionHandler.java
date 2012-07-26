@@ -11,7 +11,7 @@
 package org.eclipse.ui.internal;
 
 import org.eclipse.jface.window.Window;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 
 /**
  * This handler will pass along to the workbench advisor exceptions
@@ -32,7 +32,7 @@ public final class ExceptionHandler implements Window.IExceptionHandler {
     public static ExceptionHandler getInstance() {
 // RAP [if] Session scoped ExceptionHandler
 //        return instance;
-        return ( ExceptionHandler )SessionSingletonBase.getInstance( ExceptionHandler.class );
+        return SingletonUtil.getSessionInstance( ExceptionHandler.class );
     }
 
     private int exceptionCount = 0; // To avoid recursive errors

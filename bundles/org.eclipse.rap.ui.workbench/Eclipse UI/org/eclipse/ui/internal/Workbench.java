@@ -76,7 +76,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.window.WindowManager;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.service.ISettingStore;
@@ -650,7 +650,7 @@ public final class Workbench extends EventManager implements IWorkbench {
     public static final Workbench getInstance() {
         // RAP [bm]: use SSB
 //      return instance;
-        return ( Workbench ) SessionSingletonBase.getInstance( Workbench.class );
+        return SingletonUtil.getSessionInstance( Workbench.class );
         // RAPEND: [bm]
     }
 

@@ -20,7 +20,7 @@ import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
@@ -59,7 +59,7 @@ public class WorkbenchThemeManager extends EventManager implements IThemeManager
 //	}
 	public static WorkbenchThemeManager getInstance() {
 		WorkbenchThemeManager result
-          = ( WorkbenchThemeManager ) SessionSingletonBase.getInstance( WorkbenchThemeManager.class );
+		  = SingletonUtil.getSessionInstance( WorkbenchThemeManager.class );
 		synchronized( result ) {
 			if( !result.initialized ) {
 				result.initialized = true;

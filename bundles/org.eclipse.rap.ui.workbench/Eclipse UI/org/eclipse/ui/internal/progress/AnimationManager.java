@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSessionBindingListener;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.ui.internal.progress.IJobMarker;
@@ -34,7 +34,7 @@ import org.eclipse.ui.progress.WorkbenchJob;
  * update.
  */
 //RAP [fappel]: AnimationManager needs to be session aware
-public class AnimationManager extends SessionSingletonBase {
+public class AnimationManager {
 //    private static AnimationManager singleton;
 
     boolean animated = false;
@@ -53,8 +53,7 @@ public class AnimationManager extends SessionSingletonBase {
 //          singleton = new AnimationManager();
 //      }
 //      return singleton;
-      AnimationManager instance
-        = ( AnimationManager )getInstance( AnimationManager.class );
+      AnimationManager instance = SingletonUtil.getSessionInstance( AnimationManager.class );
       if( instance.display == null ) {
         instance.display = Display.getCurrent();
       }

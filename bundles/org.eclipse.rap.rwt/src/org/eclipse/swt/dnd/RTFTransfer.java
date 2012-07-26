@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.dnd;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 
 /**
  * The class <code>RTFTransfer</code> provides a platform specific mechanism for
@@ -40,8 +40,7 @@ public class RTFTransfer extends ByteArrayTransfer {
    * @return the singleton instance of the RTFTransfer class
    */
   public static RTFTransfer getInstance() {
-    Object instance = SessionSingletonBase.getInstance( RTFTransfer.class );
-    return ( RTFTransfer )instance;
+    return SingletonUtil.getSessionInstance( RTFTransfer.class );
   }
 
   /**

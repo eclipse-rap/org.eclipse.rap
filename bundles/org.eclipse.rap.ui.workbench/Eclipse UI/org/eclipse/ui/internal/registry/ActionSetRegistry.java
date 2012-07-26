@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.dynamichelpers.ExtensionTracker;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionChangeHandler;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.internal.WorkbenchPlugin;
@@ -80,10 +80,10 @@ public class ActionSetRegistry implements IExtensionChangeHandler {
 	// RAP [if]: 
     /**
      * Returns a session scoped ActionSetRegistry
-     * @return
+     * @return the session singleton instance
      */
     public static ActionSetRegistry getInstance() {
-        return ( ActionSetRegistry )SessionSingletonBase.getInstance( ActionSetRegistry.class );  
+        return SingletonUtil.getSessionInstance( ActionSetRegistry.class );
     }
     // RAPEND: [if]
 

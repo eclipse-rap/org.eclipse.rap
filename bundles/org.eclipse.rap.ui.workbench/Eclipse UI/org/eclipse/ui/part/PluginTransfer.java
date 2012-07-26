@@ -16,7 +16,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
@@ -70,10 +70,9 @@ public class PluginTransfer extends ByteArrayTransfer {
      * @return the singleton instance
      */
     public static PluginTransfer getInstance() {
-// RAP [rh] PluginTransfer has session scope      
+// RAP [rh] PluginTransfer has session scope
 //      return instance;
-      Object instance = SessionSingletonBase.getInstance( PluginTransfer.class );
-      return ( PluginTransfer )instance;
+      return SingletonUtil.getSessionInstance( PluginTransfer.class );
     }
 
     /* (non-Javadoc)

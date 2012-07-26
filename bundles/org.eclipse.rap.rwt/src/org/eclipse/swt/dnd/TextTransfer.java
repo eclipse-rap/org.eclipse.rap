@@ -12,7 +12,7 @@ package org.eclipse.swt.dnd;
 
 import java.io.UnsupportedEncodingException;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 
 /**
  * The class <code>TextTransfer</code> provides a platform specific mechanism
@@ -49,8 +49,7 @@ public class TextTransfer extends ByteArrayTransfer {
    * @return the singleton instance of the TextTransfer class
    */
   public static TextTransfer getInstance() {
-    Object instance = SessionSingletonBase.getInstance( TextTransfer.class );
-    return ( TextTransfer )instance;
+    return SingletonUtil.getSessionInstance( TextTransfer.class );
   }
 
   /**

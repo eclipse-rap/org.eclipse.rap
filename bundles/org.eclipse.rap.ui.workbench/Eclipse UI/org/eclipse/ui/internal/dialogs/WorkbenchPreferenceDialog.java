@@ -15,7 +15,7 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.preference.PreferenceManager;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -37,13 +37,11 @@ public class WorkbenchPreferenceDialog extends FilteredPreferenceDialog {
 	 */
 // RAP [fappel]: we need one instance per session 
 //	private static WorkbenchPreferenceDialog instance = null;
-  public static class WorkbenchPreferenceDialogProvider
-    extends SessionSingletonBase
-  {
+  public static class WorkbenchPreferenceDialogProvider {
     WorkbenchPreferenceDialog dialog;
-  
+
     public static WorkbenchPreferenceDialogProvider getInstance() {
-      return ( WorkbenchPreferenceDialogProvider )getInstance( WorkbenchPreferenceDialogProvider.class );
+      return SingletonUtil.getSessionInstance( WorkbenchPreferenceDialogProvider.class );
     }
   }
 

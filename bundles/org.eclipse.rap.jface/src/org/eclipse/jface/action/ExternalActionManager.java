@@ -44,7 +44,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.util.Util;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.widgets.Event;
 
 /**
@@ -730,9 +730,7 @@ public final class ExternalActionManager {
 //		}
 //
 //		return instance;
-	  Object result
-	    = SessionSingletonBase.getInstance( ExternalActionManager.class );
-      return ( ExternalActionManager )result;
+	  return SingletonUtil.getSessionInstance( ExternalActionManager.class );
 	}
 
 	/**

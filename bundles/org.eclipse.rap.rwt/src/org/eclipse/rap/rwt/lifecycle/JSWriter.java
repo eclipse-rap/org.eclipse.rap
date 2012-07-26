@@ -16,7 +16,7 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -1026,7 +1026,7 @@ public final class JSWriter {
   }
 
   private static void ensureJSExecutor() {
-    SessionSingletonBase.getInstance( JSExecutor.class );
+    SingletonUtil.getSessionInstance( JSExecutor.class );
   }
 
 }

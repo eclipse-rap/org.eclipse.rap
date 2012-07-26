@@ -18,9 +18,8 @@ import javax.servlet.http.HttpSessionBindingListener;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.ui.internal.progress.JobCanceler;
@@ -40,7 +39,7 @@ import org.eclipse.ui.progress.WorkbenchJob;
 public class ProgressViewUpdater implements IJobProgressManagerListener {
   
   // RAP [fappel]: This class will be instanciated using the 
-  //               SessionSingletonBase#getInstance(class) method to have a
+  //               SessionSingletonUtil#getInstance(class) method to have a
   //               replacement for the class variable holding the singleton in
   //               RCP.
   public final static class ProgressViewUpdaterHolder {
@@ -185,9 +184,7 @@ public class ProgressViewUpdater implements IJobProgressManagerListener {
     }
 
     private static ProgressViewUpdaterHolder getSingletonHolder() {
-      Object instance
-        = SessionSingletonBase.getInstance( ProgressViewUpdaterHolder.class );
-      return ( ProgressViewUpdaterHolder )instance;
+      return SingletonUtil.getSessionInstance( ProgressViewUpdaterHolder.class );
     }
 
     /**

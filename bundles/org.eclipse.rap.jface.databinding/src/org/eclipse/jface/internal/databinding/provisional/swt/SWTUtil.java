@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jface.util.SafeRunnable;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
@@ -33,9 +33,9 @@ public class SWTUtil {
 	// private static Map mapDisplayOntoWorkQueue = new HashMap();
 	private Map mapDisplayOntoWorkQueue = new HashMap();
 
-	// RAP [rh]: use SessionSingletonBase to be session aware
+	// RAP [rh]: use SessionSingletonUtil to be session aware
 	private static SWTUtil getInstance() {
-		return (SWTUtil) SessionSingletonBase.getInstance(SWTUtil.class);
+		return SingletonUtil.getSessionInstance( SWTUtil.class );
 	}
 
 	private SWTUtil() {

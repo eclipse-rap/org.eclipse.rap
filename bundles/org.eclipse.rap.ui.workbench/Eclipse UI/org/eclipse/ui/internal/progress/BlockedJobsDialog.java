@@ -15,7 +15,7 @@ import org.eclipse.jface.dialogs.IconAndMessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -37,12 +37,11 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	 */
 // RAP [fappel]: BlockedJobsDialog needs to be session aware
 //  protected static BlockedJobsDialog singleton;
-  public static class BlockedJobsDialogProvider extends SessionSingletonBase {
+  public static class BlockedJobsDialogProvider {
     public BlockedJobsDialog blockedJobsDialog;
 
     protected static BlockedJobsDialogProvider getInstance() {
-      Class clazz = BlockedJobsDialogProvider.class;
-      return ( BlockedJobsDialogProvider )getInstance( clazz );
+      return SingletonUtil.getSessionInstance( BlockedJobsDialogProvider.class );
     }
   }
   private static BlockedJobsDialog getSingleton() {

@@ -35,7 +35,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -416,10 +416,7 @@ public class TreeViewerExample implements IExamplePage {
     }
 
     public static TreeObjectTransfer getInstance() {
-      Object instance = SessionSingletonBase.getInstance(
-        TreeObjectTransfer.class
-      );
-      return ( TreeObjectTransfer )instance;
+      return SingletonUtil.getSessionInstance( TreeObjectTransfer.class );
     }
 
     @Override

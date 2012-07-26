@@ -30,7 +30,7 @@ import org.eclipse.help.IHelpResource;
 import org.eclipse.help.IToc;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.LegacyActionTools;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
@@ -395,7 +395,7 @@ public final class WorkbenchHelpSystem implements IWorkbenchHelpSystem {
 //		}
 //
 //		return instance;
-		return (WorkbenchHelpSystem) SessionSingletonBase.getInstance(WorkbenchHelpSystem.class);
+		return SingletonUtil.getSessionInstance( WorkbenchHelpSystem.class );
 		// RAPEND: [bm]
 	}
 

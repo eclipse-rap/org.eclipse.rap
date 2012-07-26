@@ -47,7 +47,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.SafeRunnable;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorRegistry;
@@ -168,15 +168,15 @@ public class EditorRegistry extends EventManager implements IEditorRegistry, IEx
 		relatedRegistry = new RelatedRegistry();
     }
 
-    // RAP [bm]: 
+    // RAP [bm]:
     /**
      * Returns a session scoped EditorRegistry
-     * @return
+     * @return the session singleton instance
      */
     public static EditorRegistry getInstance() {
-        return ( EditorRegistry )SessionSingletonBase.getInstance( EditorRegistry.class );  
+        return SingletonUtil.getSessionInstance( EditorRegistry.class );
     }
-    // RAPEND: [bm] 
+    // RAPEND: [bm]
 
     /**
      * Add an editor for the given extensions with the specified (possibly null)

@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 
@@ -27,7 +27,7 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 public final class IdGenerator implements SerializableCompatibility {
 
   public static IdGenerator getInstance() {
-    return SessionSingletonBase.getInstance( IdGenerator.class );
+    return SingletonUtil.getSessionInstance( IdGenerator.class );
   }
 
   private int lastId = 1;

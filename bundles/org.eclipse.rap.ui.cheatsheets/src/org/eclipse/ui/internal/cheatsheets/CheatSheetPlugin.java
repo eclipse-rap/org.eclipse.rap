@@ -33,7 +33,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.XMLMemento;
@@ -114,7 +114,7 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 	}
 
 	public ImageRegistry getImageRegistry() {
-	  return ( ImageRegistry )SessionSingletonBase.getInstance( CheatSheetImageRegistry.class );
+	  return ( ImageRegistry )SingletonUtil.getSessionInstance( CheatSheetImageRegistry.class );
 	}
 
 	/**

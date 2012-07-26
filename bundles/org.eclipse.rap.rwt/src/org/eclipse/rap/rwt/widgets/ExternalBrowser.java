@@ -17,7 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
@@ -128,7 +128,7 @@ public final class ExternalBrowser {
   // Helping methods
 
   private static void ensureInstance() {
-    SessionSingletonBase.getInstance( ExternalBrowser.class );
+    SingletonUtil.getSessionInstance( ExternalBrowser.class );
   }
 
   private static void renderOpen( String id, String url, int style ) {

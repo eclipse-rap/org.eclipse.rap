@@ -49,7 +49,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.ui.internal.progress.ProgressUtil;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -95,10 +95,9 @@ public class ProgressManager extends ProgressProvider implements
 // RAP [fappel]: ProgressManager needs to be session aware	
 //	private static ProgressManager singleton;
     Display display;
-    public static class ProgressManagerProvider extends SessionSingletonBase {
+    public static class ProgressManagerProvider {
       public static ProgressManager getInstance() {
-    	ProgressManager instance 
-    	  = ( ProgressManager )getInstance( ProgressManager.class );
+    	ProgressManager instance = SingletonUtil.getSessionInstance( ProgressManager.class );
     	if( instance.display == null ) {
     	  Dialog.setBlockedHandler(new WorkbenchDialogBlockedHandler());
     	  instance.display = Display.getCurrent();

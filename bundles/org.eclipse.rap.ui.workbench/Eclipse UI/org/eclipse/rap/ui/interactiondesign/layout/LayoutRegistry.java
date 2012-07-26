@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.Layout;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
@@ -65,17 +65,16 @@ public class LayoutRegistry {
     activeLayoutId = DEFAULT_LAYOUT_ID;
     builders = new ArrayList();
   }   
-  
+
   /**
    * Returns the singleton instance of the <code>LayoutRegistry</code> object.
    * 
    * @return the singleton instance.
    */
   public static LayoutRegistry getInstance() {
-    Object result = SessionSingletonBase.getInstance( LayoutRegistry.class );
-    return ( LayoutRegistry )result;
-  }  
-  
+    return SingletonUtil.getSessionInstance( LayoutRegistry.class );
+  }
+
   /**
    * Saves the new <code>Layout</code> id in a 
    * <code>ScopedPreferenceStore</code>.

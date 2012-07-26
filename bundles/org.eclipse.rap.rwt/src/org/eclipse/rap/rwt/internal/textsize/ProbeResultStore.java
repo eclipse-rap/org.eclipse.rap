@@ -14,7 +14,7 @@ package org.eclipse.rap.rwt.internal.textsize;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.SerializableCompatibility;
@@ -25,7 +25,7 @@ final class ProbeResultStore implements SerializableCompatibility  {
   private final Map<FontData,ProbeResult> probeResults;
 
   static ProbeResultStore getInstance() {
-    return SessionSingletonBase.getInstance( ProbeResultStore.class );
+    return SingletonUtil.getSessionInstance( ProbeResultStore.class );
   }
 
   ProbeResultStore() {

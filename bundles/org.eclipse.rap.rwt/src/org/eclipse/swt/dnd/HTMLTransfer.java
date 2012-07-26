@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.dnd;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 
 /**
  * The class <code>HTMLTransfer</code> provides a platform specific mechanism
@@ -39,8 +39,7 @@ public class HTMLTransfer extends ByteArrayTransfer {
    * @return the singleton instance of the HTMLTransfer class
    */
   public static HTMLTransfer getInstance() {
-    Object instance = SessionSingletonBase.getInstance( HTMLTransfer.class );
-    return ( HTMLTransfer )instance;
+    return SingletonUtil.getSessionInstance( HTMLTransfer.class );
   }
 
   /**

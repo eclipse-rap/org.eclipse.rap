@@ -20,7 +20,7 @@ import java.util.Map;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.DefaultHandler;
@@ -36,7 +36,7 @@ public class MarkupValidator {
   private final SAXParser saxParser;
 
   public static MarkupValidator getInstance() {
-    return SessionSingletonBase.getInstance( MarkupValidator.class );
+    return SingletonUtil.getSessionInstance( MarkupValidator.class );
   }
 
   public MarkupValidator() {

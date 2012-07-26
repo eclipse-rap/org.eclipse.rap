@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
@@ -22,26 +21,26 @@ import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
-public class SessionSingletonBase_Test extends TestCase {
+public class SingletonUtil_Test extends TestCase {
 
   public void testGetInstanceWithNullArgument() {
     try {
-      SessionSingletonBase.getInstance( null );
+      SingletonUtil.getSessionInstance( null );
       fail();
     } catch( NullPointerException expected ) {
     }
   }
 
   public void testGetInstance() {
-    Object instance = SessionSingletonBase.getInstance( TestSingleton.class );
+    Object instance = SingletonUtil.getSessionInstance( TestSingleton.class );
 
     assertNotNull( instance );
     assertSame( TestSingleton.class, instance.getClass() );
   }
 
   public void testGetInstanceWithSameType() {
-    Object instance1 = SessionSingletonBase.getInstance( TestSingleton.class );
-    Object instance2 = SessionSingletonBase.getInstance( TestSingleton.class );
+    Object instance1 = SingletonUtil.getSessionInstance( TestSingleton.class );
+    Object instance2 = SingletonUtil.getSessionInstance( TestSingleton.class );
 
     assertSame( instance1, instance2 );
   }
@@ -52,7 +51,7 @@ public class SessionSingletonBase_Test extends TestCase {
     Runnable runnable = new Runnable() {
       public void run() {
         ContextProvider.setContext( serviceContext );
-        instance[ 0 ] = SessionSingletonBase.getInstance( TestSingleton.class );
+        instance[ 0 ] = SingletonUtil.getSessionInstance( TestSingleton.class );
       }
     };
 
@@ -64,7 +63,7 @@ public class SessionSingletonBase_Test extends TestCase {
   public void testGetInstanceFromBackgroundThreadWithoutContext() {
     ContextProvider.disposeContext();
     try {
-      SessionSingletonBase.getInstance( TestSingleton.class );
+      SingletonUtil.getSessionInstance( TestSingleton.class );
       fail();
     } catch( IllegalStateException expected ) {
     }

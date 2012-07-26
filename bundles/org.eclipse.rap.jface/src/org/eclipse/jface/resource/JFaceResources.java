@@ -21,7 +21,7 @@ import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -58,15 +58,12 @@ public class JFaceResources {
 	 * the associated display.
 	 */
 //	private static final Map registries = new HashMap();
-  private final static class Registries
-    extends SessionSingletonBase
-  {
+  private final static class Registries {
 	private final Map registries = new HashMap();
     private Registries() {
     }
     public static Registries getInstance() {
-      Class clazz = Registries.class;
-      return ( Registries )getInstance( clazz );
+      return SingletonUtil.getSessionInstance( Registries.class );
     }
     public Map  getMap() {
       return registries;
@@ -90,15 +87,14 @@ public class JFaceResources {
 	 * explicitly set.
 	 */
 //	private static ColorRegistry colorRegistry;
-  private final static class ColorRegistryStore extends SessionSingletonBase {
+  private final static class ColorRegistryStore {
     private final ColorRegistry colorRegistry;
     private ColorRegistryStore() {
       colorRegistry = new ColorRegistry();
       initializeDefaultColors();
     }
     public static ColorRegistryStore getInstance() {
-      Class clazz = ColorRegistryStore.class;
-      return ( ColorRegistryStore )getInstance( clazz );
+      return SingletonUtil.getSessionInstance( ColorRegistryStore.class );
     }
     public ColorRegistry getColorRegistry() {
       return colorRegistry;
@@ -135,13 +131,12 @@ public class JFaceResources {
 	 * explicitly set.
 	 */
 //	private static FontRegistry fontRegistry = null;
-  private final static class FontRegistryStore extends SessionSingletonBase {
+  private final static class FontRegistryStore {
     private FontRegistry fontRegistry;
     private FontRegistryStore() {
     }
     public static FontRegistryStore getInstance() {
-      Class clazz = FontRegistryStore.class;
-      return ( FontRegistryStore )getInstance( clazz );
+      return SingletonUtil.getSessionInstance( FontRegistryStore.class );
     }
     public FontRegistry getFontRegistry() {
       if( fontRegistry == null ) {
@@ -167,15 +162,14 @@ public class JFaceResources {
 	 * The JFace image registry; <code>null</code> until lazily initialized.
 	 */
 //	private static ImageRegistry imageRegistry = null;
-  private final static class ImageRegistryStore extends SessionSingletonBase {
+  private final static class ImageRegistryStore {
     private final ImageRegistry imageRegistry;
     private ImageRegistryStore() {
       imageRegistry = new ImageRegistry();
       initializeDefaultImages();
     }
     public static ImageRegistryStore getInstance() {
-      Class clazz = ImageRegistryStore.class;
-      return ( ImageRegistryStore )getInstance( clazz );
+      return SingletonUtil.getSessionInstance( ImageRegistryStore.class );
     }
     public ImageRegistry getImageRegistry() {
       return imageRegistry;

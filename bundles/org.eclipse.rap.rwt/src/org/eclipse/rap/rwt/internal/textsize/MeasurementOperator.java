@@ -15,7 +15,7 @@ import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
@@ -37,7 +37,7 @@ class MeasurementOperator implements SerializableCompatibility {
   private boolean isStartupProbeMeasurementPerformed;
 
   static MeasurementOperator getInstance() {
-    return SessionSingletonBase.getInstance( MeasurementOperator.class );
+    return SingletonUtil.getSessionInstance( MeasurementOperator.class );
   }
 
   MeasurementOperator() {

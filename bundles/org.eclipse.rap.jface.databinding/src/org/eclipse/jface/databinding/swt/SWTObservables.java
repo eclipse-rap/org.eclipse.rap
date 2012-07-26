@@ -27,7 +27,7 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IVetoableValue;
 import org.eclipse.core.databinding.observable.value.ValueChangingEvent;
 import org.eclipse.jface.internal.databinding.swt.SWTDelayedObservableValueDecorator;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -44,9 +44,9 @@ public class SWTObservables {
 //	private static java.util.List realms = new ArrayList();
 	private java.util.List realms = new ArrayList();
 
-	// RAP [rh] use SessionSingletonBase to keep realms session specific
+	// RAP [rh] use SessionSingletonUtil to keep realms session specific
 	private static SWTObservables getInstance() {
-	  return ( SWTObservables )SessionSingletonBase.getInstance( SWTObservables.class );
+	  return SingletonUtil.getSessionInstance( SWTObservables.class );
 	}
 
 

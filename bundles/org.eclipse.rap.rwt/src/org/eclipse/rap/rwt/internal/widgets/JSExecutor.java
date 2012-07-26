@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -47,7 +47,7 @@ public final class JSExecutor {
   }
 
   private static void ensureInstance() {
-    SessionSingletonBase.getInstance( JSExecutor.class );
+    SingletonUtil.getSessionInstance( JSExecutor.class );
   }
 
   private static JSExecutorPhaseListener getJSExecutor() {

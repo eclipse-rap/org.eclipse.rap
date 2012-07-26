@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.dynamichelpers.ExtensionTracker;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionChangeHandler;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;
@@ -39,10 +39,9 @@ public class WorkbenchBrowserSupport extends AbstractWorkbenchBrowserSupport {
 // RAP [rh] replaced application-scoped instance field with session-singleton
 //	private static WorkbenchBrowserSupport instance;
 	
-	private static final class InstanceHolder extends SessionSingletonBase {
+	private static final class InstanceHolder {
 	  public static WorkbenchBrowserSupport getInstance() {
-	    Class clazz = WorkbenchBrowserSupport.class;
-      return ( WorkbenchBrowserSupport )getInstance( clazz );
+        return SingletonUtil.getSessionInstance( WorkbenchBrowserSupport.class );
 	  }
 	}
 // RAP [rh] end RAP specific	

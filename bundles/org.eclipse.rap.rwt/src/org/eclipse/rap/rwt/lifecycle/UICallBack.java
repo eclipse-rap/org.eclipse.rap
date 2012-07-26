@@ -40,7 +40,7 @@ public final class UICallBack {
    * @param runnable The runnable that contains the critical code that
    *                 needs to have access to a request context.
    *
-   * @see org.eclipse.rap.rwt.SessionSingletonBase
+   * @see org.eclipse.rap.rwt.SingletonUtil
    * @see org.eclipse.rap.rwt.internal.service.ContextProvider
    */
   public static void runNonUIThreadWithFakeContext( Display display, Runnable runnable ) {

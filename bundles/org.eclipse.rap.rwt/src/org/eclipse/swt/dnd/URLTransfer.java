@@ -13,7 +13,7 @@ package org.eclipse.swt.dnd;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 
 /**
  * The class <code>URLTransfer</code> provides a platform specific mechanism for
@@ -44,8 +44,7 @@ public class URLTransfer extends ByteArrayTransfer {
    * @return the singleton instance of the URLTransfer class
    */
   public static URLTransfer getInstance() {
-    Object instance = SessionSingletonBase.getInstance( URLTransfer.class );
-    return ( URLTransfer )instance;
+    return SingletonUtil.getSessionInstance( URLTransfer.class );
   }
 
   /**

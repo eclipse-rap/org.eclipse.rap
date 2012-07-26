@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.dnd;
 
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.ImageData;
 
@@ -43,8 +43,7 @@ public class ImageTransfer extends ByteArrayTransfer {
    * @return the singleton instance of the ImageTransfer class
    */
   public static ImageTransfer getInstance() {
-    Object instance = SessionSingletonBase.getInstance( ImageTransfer.class );
-    return ( ImageTransfer )instance;
+    return SingletonUtil.getSessionInstance( ImageTransfer.class );
   }
 
   /**

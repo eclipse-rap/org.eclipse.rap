@@ -33,7 +33,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.rap.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.commands.IElementUpdater;
@@ -200,8 +200,7 @@ public final class HandlerProxy extends AbstractHandlerWithState implements
 
 // RAP [fappel]: change this due to memory problems
 //		CEToProxyMap.put(configurationElement, this);
-		Map ceToProxyMap
-		  = ( Map )SessionSingletonBase.getInstance( CEToProxyMap.class );
+		Map ceToProxyMap = SingletonUtil.getSessionInstance( CEToProxyMap.class );
 		ceToProxyMap.put(configurationElement, this);
 	}
 
@@ -210,8 +209,7 @@ public final class HandlerProxy extends AbstractHandlerWithState implements
 // RAP [fappel]: change this due to memory problems
 //		    HandlerProxy proxy = (HandlerProxy) CEToProxyMap
 //		            .get(replacements[i]);
-		    Map ceToProxyMap
-		      = ( Map )SessionSingletonBase.getInstance( CEToProxyMap.class );
+		    Map ceToProxyMap = SingletonUtil.getSessionInstance( CEToProxyMap.class );
 			HandlerProxy proxy = (HandlerProxy) ceToProxyMap
 					.get(replacements[i]);
 			if (proxy != null)
