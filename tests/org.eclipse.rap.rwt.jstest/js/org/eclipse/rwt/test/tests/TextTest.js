@@ -689,7 +689,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       text.setFont( new Font( 10 ) );
 
-      assertEquals( 12, parseInt( text.getInputElement().style.lineHeight ) );
+      assertEquals( 12, parseInt( text.getInputElement().style.lineHeight, 10 ) );
     },
 
     testSetFontBeforeCreateLineHeight : function() {
@@ -698,7 +698,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setFont( new Font( 10 ) );
       TestUtil.flush();
 
-      assertEquals( 12, parseInt( text.getInputElement().style.lineHeight ) );
+      assertEquals( 12, parseInt( text.getInputElement().style.lineHeight, 10 ) );
     },
 
     testLiveUpdate : function() {

@@ -11,16 +11,16 @@
 
 qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
   extend : qx.core.Object,
-  
+
   members : {
 
     testDisplayOverlayBackground : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       // first check that the default theme for overlay has no background set
       var tv = new org.eclipse.swt.theme.ThemeValues( {} );
-      var backgroundColor = tv.getCssColor( "Shell-DisplayOverlay", 
+      var backgroundColor = tv.getCssColor( "Shell-DisplayOverlay",
                                             "background-color" );
-      var backgroundImage = tv.getCssImage( "Shell-DisplayOverlay", 
+      var backgroundImage = tv.getCssImage( "Shell-DisplayOverlay",
                                             "background-image" );
       assertNull( backgroundImage );
 // [if] This is not testable with the new default theme as we currently can't
@@ -29,14 +29,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       // create shell like the LCA would do:
       var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       shell.addState( "rwt_APPLICATION_MODAL" );
-      shell.initialize(); 
+      shell.initialize();
       shell.open();
       shell.setActive( true );
       shell.setSpace( 50, 300, 50, 200 );
       shell.setVisibility( true );
       TestUtil.flush();
       // Check for overlay background-image to be "blank.gif", as IE needs
-      // this to capture mouse events. 
+      // this to capture mouse events.
       var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
       assertTrue( overlay.isSeeable() );
 // [if] This is not testable with the new default theme as we currently can't
@@ -48,7 +48,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.destroy();
       TestUtil.flush();
     },
-    
+
     testDisplayOverlayCopyStates : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
@@ -60,7 +60,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.setSpace( 50, 300, 50, 200 );
       shell.setVisibility( true );
       TestUtil.flush();
-      // Check for overlay to have the same states as the shell 
+      // Check for overlay to have the same states as the shell
       var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
       assertTrue( overlay.isSeeable() );
       assertTrue( overlay.hasState( "rwt_APPLICATION_MODAL" ) );
@@ -69,7 +69,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       overlay.hide(); // not done by doClose because this is the only shell
       TestUtil.flush();
       shell.destroy();
-      TestUtil.flush();      
+      TestUtil.flush();
     },
 
     testDisplayOverlayAddStates : function() {
@@ -82,7 +82,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.setSpace( 50, 300, 50, 200 );
       shell.setVisibility( true );
       TestUtil.flush();
-      // Check for overlay to have the same states as the shell 
+      // Check for overlay to have the same states as the shell
       var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
       assertTrue( overlay.isSeeable() );
       assertTrue( overlay.hasState( "rwt_APPLICATION_MODAL" ) );
@@ -94,9 +94,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       overlay.hide(); // not done by doClose because this is the only shell
       TestUtil.flush();
       shell.destroy();
-      TestUtil.flush();      
+      TestUtil.flush();
     },
-    
+
     testDisplayOverlayMultipleShells : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
@@ -145,11 +145,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       assertEquals( 2, visibilityChanges ); // to prevent unwanted animations
       TestUtil.flush();
       shell.destroy();
-      TestUtil.flush();            
+      TestUtil.flush();
     },
 
     testCustomVariant : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       var variant = "variant_myCustomVariant";
       shell.addState( variant );
@@ -179,7 +178,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       button.destroy();
       shell.destroy();
     },
-    
+
     testFiresParentShellChangedEvent : function() {
       var shell = this._createDefaultShell( {} );
       var parentShell = this._createDefaultShell( {} );
@@ -187,17 +186,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.addEventListener( "parentShellChanged", function() {
         log++;
       } );
-      
+
       shell.setParentShell( parentShell );
-      
+
       assertTrue( log > 0 );
       shell.destroy();
       parentShell.destroy();
     },
-    
+
     _createDefaultShell : function( styles, noFlush ) {
       var shell = new org.eclipse.swt.widgets.Shell( styles );
-      shell.initialize(); 
+      shell.initialize();
       shell.open();
       shell.setActive( true );
       shell.setSpace( 50, 300, 50, 200 );
@@ -209,5 +208,5 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       return shell;
     }
   }
-  
+
 } );

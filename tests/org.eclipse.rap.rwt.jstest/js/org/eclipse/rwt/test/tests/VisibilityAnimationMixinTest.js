@@ -9,7 +9,7 @@
  ******************************************************************************/
 
 (function(){
-  
+
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Animation =  org.eclipse.rwt.Animation;
 var Processor = org.eclipse.rwt.protocol.Processor;
@@ -19,12 +19,12 @@ var shell;
 
 qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
   extend : qx.core.Object,
-  
+
   members : {
-    
+
     testShellFlyInTopConfigure : function() {
       shell.setAnimation( { "flyInTop" : [ 400, "linear" ] } );
-  
+
       var animation = this.getAppearAnimation( shell );
       assertEquals( 400, animation.getDuration() );
       assertEquals( org.eclipse.rwt.Client.isMshtml(), animation.getExclusive() );
@@ -36,7 +36,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
 
       shell.show();
       TestUtil.flush();
-  
+
       var animation = this.getAppearAnimation( shell );
       assertTrue( animation.isStarted() );
       assertTrue( shell.isSeeable() );
@@ -51,7 +51,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
 
       shell.show();
       TestUtil.flush();
-  
+
       var animation = this.getAppearAnimation( shell );
       assertTrue( animation.isStarted() );
       assertTrue( shell.isSeeable() );
@@ -66,7 +66,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
 
       shell.show();
       TestUtil.flush();
-  
+
       var animation = this.getAppearAnimation( shell );
       assertTrue( animation.isStarted() );
       assertTrue( shell.isSeeable() );
@@ -82,7 +82,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
 
       shell.show();
       TestUtil.flush();
-  
+
       var animation = this.getAppearAnimation( shell );
       assertTrue( animation.isStarted() );
       assertTrue( shell.isSeeable() );
@@ -100,7 +100,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
       var animation = this.getAppearAnimation( shell );
       assertFalse( animation.isStarted() );
       TestUtil.flush();
-  
+
       assertTrue( animation.isStarted() );
     },
 
@@ -111,7 +111,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
       shell.show();
       TestUtil.flush();
       Animation._mainLoop();
-  
+
       var animation = this.getAppearAnimation( shell );
       assertTrue( animation.isRunning() );
     },
@@ -125,72 +125,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
       Animation._mainLoop();
       var animation = this.getAppearAnimation( shell );
       animation._loop( ( new Date().getTime() ) + 401 );
-      
+
       assertFalse( animation.isRunning() );
       assertEquals( 40, animation.getDefaultRenderer().getLastValue() );
       assertEquals( 40, TestUtil.getElementBounds( shell.getElement() ).top );
     },
 
-    testShellFlyInRightStartDelayFocus : function() {
-      shell.setAnimation( { "flyInRight" : [ 400, "linear" ] } );
-      shell.hide();
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Button",
-        "properties" : {
-          "style" : [ "PUSH" ],
-          "parent" : "w2"
-        }
-      } );
-      Processor.processOperation( {
-        "target" : "w1",
-        "action" : "set",
-        "properties" : {
-          "focusControl" : [ "w3" ]
-        }
-      } );
-      var widget = ObjectManager.getObject( "w3" );
-
-      shell.show();
-      TestUtil.flush();
-      Animation._mainLoop();
-      assertEquals( 0, document.body.scrollLeft );
-      var animation = this.getAppearAnimation( shell );
-      animation._loop( ( new Date().getTime() ) + 401 );
-  
-      assertEquals( 0, document.body.scrollLeft );
-      assertFalse( animation.isRunning() );
-      assertTrue( widget.getFocused() );
-      var left = qx.html.Window.getInnerWidth( window );
-      assertEquals( 60, animation.getDefaultRenderer().getLastValue() );
-      assertEquals( 60, TestUtil.getElementBounds( shell.getElement() ).left );
-    },
-
-    testShellFlyInTopStart : function() {
-      shell.setAnimation( { "flyInTop" : [ 400, "linear" ] } );
-      shell.hide();
-      
-      shell.show();
-      TestUtil.flush();
-      
-      var animation = this.getAppearAnimation( shell );
-      assertTrue( animation.isStarted() );
-      assertTrue( shell.isSeeable() );
-      assertEquals( -50, animation.getDefaultRenderer().getStartValue() );
-      assertEquals( 40, animation.getDefaultRenderer().getEndValue() );
-      assertEquals( -50, TestUtil.getElementBounds( shell.getElement() ).top );
-    },    
-
     testShellFlyOutTopConfigureNoAppearAnimation : function() {
       shell.setAnimation( { "flyOutTop" : [ 400, "linear" ] } );
-  
+
       assertNull( this.getAppearAnimation( shell ) );
     },
 
     testShellFlyOutTopConfigure : function() {
       shell.setAnimation( { "flyOutTop" : [ 400, "linear" ] } );
-  
+
       var animation = this.getDisappearAnimation( shell );
       assertEquals( 400, animation.getDuration() );
       assertEquals( org.eclipse.rwt.Client.isMshtml(), animation.getExclusive() );
@@ -203,7 +152,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
 
       shell.hide();
       TestUtil.flush();
-  
+
       var animation = this.getDisappearAnimation( shell );
       assertTrue( animation.isStarted() );
       assertTrue( shell.isSeeable() );
@@ -218,17 +167,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
 //      shell.setAnimation( { "flyOutTop" : [ 400, "linear" ] } );
 //      shell.show();
 //      shell.addEventListener( "click", function( event ) {
-//        log.push( event ); 
+//        log.push( event );
 //      } );
 //      TestUtil.flush();
-//      
+//
 //      shell.hide();
 //      TestUtil.click( shell );
 //      TestUtil.flush();
-//      
+//
 //      assertEquals( 0, log.length );
 //    },
-//    
+//
     testShellFlyOutTopRun : function() {
       shell.setAnimation( { "flyOutTop" : [ 400, "linear" ] } );
       shell.show();
@@ -237,7 +186,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
       shell.hide();
       TestUtil.flush();
       Animation._mainLoop();
-  
+
       var animation = this.getDisappearAnimation( shell );
       assertTrue( animation.isRunning() );
     },
@@ -262,31 +211,31 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
       shell.setAnimation( { "flyOutTop" : [ 400, "linear" ] } );
       shell.show();
       TestUtil.flush();
-      
+
       shell.destroy();
       TestUtil.flush();
       Animation._mainLoop();
       TestUtil.flush();
-      
+
       assertTrue( shell.isSeeable() );
       assertFalse( shell.isDisposed() );
       var animation = this.getDisappearAnimation( shell );
       assertTrue( animation.isRunning() );
     },
-    
+
     testShellFlyOutTopDestroyFinish : function() {
       shell.setAnimation( { "flyOutTop" : [ 400, "linear" ] } );
       var animation = this.getDisappearAnimation( shell );
       shell.show();
       TestUtil.flush();
-      
+
       shell.destroy();
       TestUtil.flush();
       Animation._mainLoop();
       TestUtil.flush();
       animation._loop( ( new Date().getTime() ) + 401 );
       TestUtil.flush();
-      
+
       assertFalse( animation.isRunning() );
       assertTrue( shell.isDisposed() );
     },
@@ -297,13 +246,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
       shell.setAnimation( { "flyOutTop" : [ 400, "linear" ] } );
       shell.show();
       TestUtil.flush();
-      
+
       shell.destroy();
       widget.destroy();
       TestUtil.flush();
       Animation._mainLoop();
       TestUtil.flush();
-      
+
       assertTrue( widget.isSeeable() );
       assertFalse( widget.isDisposed() );
     },
@@ -316,17 +265,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
       shell.setAnimation( { "flyOutTop" : [ 400, "linear" ] } );
       shell.show();
       TestUtil.flush();
-      
+
       shell.destroy();
       widget.destroy();
       TestUtil.flush();
       Animation._mainLoop();
       TestUtil.flush();
-      
+
       assertTrue( widget.isSeeable() );
       assertFalse( widget.isDisposed() );
     },
-    
+
     testShellFlyOutTopDestroyFinishIndirectSubwidgetsGetDestroyed : function() {
       var parent = new org.eclipse.swt.widgets.Composite();
       parent.setParent( shell );
@@ -336,7 +285,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
       var animation = this.getDisappearAnimation( shell );
       shell.show();
       TestUtil.flush();
-      
+
       shell.destroy();
       widget.destroy();
       TestUtil.flush();
@@ -344,7 +293,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
       TestUtil.flush();
       animation._loop( ( new Date().getTime() ) + 401 );
       TestUtil.flush();
-      
+
       assertTrue( widget.isDisposed() );
     },
 
@@ -362,7 +311,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
           "parent" : "w3"
         }
       } );
-      var widget = ObjectManager.getObject( "w4" );
       shell.show();
       TestUtil.flush();
       shell.setActive( true );
@@ -384,7 +332,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
       } );
       TestUtil.flush();
       Animation._mainLoop();
-      
+
       assertTrue( shell.hasState( "active" ) );
       var animation = this.getDisappearAnimation( shell );
       animation._loop( ( new Date().getTime() ) + 401 );
@@ -393,7 +341,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
 
     /////////
     // helper
-    
+
     setUp : function() {
       shell = TestUtil.createShellByProtocol( "w2" );
       shell.setTop( 40 );
@@ -401,14 +349,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
       shell.setLeft( 60 );
       shell.setWidth( 70 );
     },
-    
+
     tearDown : function() {
       if( !shell.isDisposed() ) {
         shell.destroy();
       }
       shell = null;
     },
-    
+
     getAppearAnimation : function( widget ) {
       return widget._appearAnimation;
     },
@@ -416,7 +364,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
     getDisappearAnimation : function( widget ) {
       return widget._disappearAnimation;
     }
-    
+
   }
 
 } );
