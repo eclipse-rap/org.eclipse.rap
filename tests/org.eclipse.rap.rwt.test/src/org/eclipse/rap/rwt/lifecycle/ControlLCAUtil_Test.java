@@ -22,10 +22,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
-import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rap.rwt.lifecycle.JSWriter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -43,17 +40,13 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.shellkit.ShellLCA;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -90,131 +83,6 @@ public class ControlLCAUtil_Test extends TestCase {
   protected void tearDown() throws Exception {
     display.dispose();
     Fixture.tearDown();
-  }
-
-  public void testWriteBounds() throws Exception {
-    // Ensure that bounds for an uninitialized widget are rendered
-    Composite composite = new Composite( shell , SWT.NONE );
-    Fixture.markInitialized( display );
-    Fixture.preserveWidgets();
-    Fixture.fakeResponseWriter();
-    ControlLCAUtil.writeBounds( composite );
-
-    String expected = "w.setSpace( 0, 0, 0, 0 );";
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
-
-    // Ensure that unchanged bounds are not rendered
-    Fixture.fakeResponseWriter();
-    Fixture.markInitialized( composite );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    ControlLCAUtil.writeBounds( composite );
-
-    assertEquals( 0, Fixture.getProtocolMessage().getOperationCount() );
-
-    // Ensure that bounds-changes on an already initialized widgets are rendered
-    Fixture.fakeResponseWriter();
-    composite.setBounds( new Rectangle( 1, 2, 3, 4 ) );
-    ControlLCAUtil.writeBounds( composite );
-
-    expected = "w.setSpace( 1, 3, 2, 4 );";
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
-  }
-
-  public void testWriteToolTip() throws IOException {
-    // on a not yet initialized control: no tool tip -> no markup
-    Fixture.fakeResponseWriter();
-    ControlLCAUtil.writeToolTip( shell );
-    assertEquals( "", ProtocolTestUtil.getMessageScript() );
-    shell.setToolTipText( "" );
-    ControlLCAUtil.writeToolTip( shell );
-    assertEquals( "", ProtocolTestUtil.getMessageScript() );
-    // on a not yet initialized control: non-empty tool tip must be rendered
-    Fixture.fakeResponseWriter();
-    shell.setToolTipText( "abc" );
-    ControlLCAUtil.writeToolTip( shell );
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( "abc" ) );
-    // on an initialized control: change tooltip from non-empty to empty
-    Fixture.fakeResponseWriter();
-    Fixture.markInitialized( shell );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    shell.setToolTipText( null );
-    ControlLCAUtil.writeToolTip( shell );
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( "setToolTip" ) );
-    // on an initialized control: change tooltip from non-empty to empty
-    Fixture.fakeResponseWriter();
-    Fixture.markInitialized( shell );
-    shell.setToolTipText( "abc" );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    shell.setToolTipText( "newTooltip" );
-    ControlLCAUtil.writeToolTip( shell );
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( "setToolTip" ) );
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( "newTooltip" ) );
-    // on an initialized control: change non-empty tooltip text
-    Fixture.fakeResponseWriter();
-    Fixture.markInitialized( shell );
-    shell.setToolTipText( "newToolTip" );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    shell.setToolTipText( "anotherTooltip" );
-    // test actual markup - the next two lines fake situation that there is
-    // already a widget reference (w)
-    JSWriter writer = JSWriter.getWriterFor( shell );
-    writer.newWidget( "Window" );
-    ControlLCAUtil.writeToolTip( shell );
-    String expected = "wm.setToolTip( w, \"anotherTooltip\" );";
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
-  }
-
-  public void testWriteActivateListener() throws IOException {
-    ActivateAdapter listener = new ActivateAdapter() {
-    };
-    Composite composite = new Composite( shell, SWT.NONE );
-    Label label = new Label( composite, SWT.NONE );
-
-    // A non-initialized widget with no listener attached must not render
-    // JavaScript code for adding activateListeners
-    Fixture.fakeResponseWriter();
-    ControlLCAUtil.writeActivateListener( label );
-    assertEquals( false, WidgetUtil.getAdapter( label ).isInitialized() );
-    assertEquals( "", ProtocolTestUtil.getMessageScript() );
-
-    // A non-initialized widget with a listener attached must render JavaScript
-    // code for adding activateListeners
-    ActivateEvent.addListener( label, listener );
-    Fixture.fakeResponseWriter();
-    ControlLCAUtil.writeActivateListener( label );
-    assertEquals( false, WidgetUtil.getAdapter( label ).isInitialized() );
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( "addActivateListenerWidget" ) );
-
-    // An initialized widget with unchanged activateListeners must not render
-    // JavaScript code for adding activateListeners
-    Fixture.fakeResponseWriter();
-    Fixture.markInitialized( label );
-    ControlLCAUtil.preserveValues( label );
-    ControlLCAUtil.writeActivateListener( label );
-    assertEquals( "", ProtocolTestUtil.getMessageScript() );
-
-    // Removing an ActivateListener from an initialized widget must render
-    // JavaScript code for removing activateListeners
-    Fixture.fakeResponseWriter();
-    Fixture.markInitialized( label );
-    ControlLCAUtil.preserveValues( label );
-    ActivateEvent.removeListener( label, listener );
-    ControlLCAUtil.writeActivateListener( label );
-    assertFalse( ProtocolTestUtil.getMessageScript().contains( "addActivateListenerWidget" ) );
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( "removeActivateListenerWidget" ) );
-
-    // When the shell is disposed of, no removeActivateListener must be rendered
-    // Important when disposing of a shell with ShellListener#shellClosed
-    ControlLCAUtil.preserveValues( label );
-    ActivateEvent.addListener( label, listener );
-    shell.dispose();
-    ControlLCAUtil.writeActivateListener( label );
-    Fixture.fakeResponseWriter();
-    assertFalse( ProtocolTestUtil.getMessageScript().contains( "removeActivateListenerWidget" ) );
   }
 
   public void testProcessSelection() {
@@ -264,84 +132,6 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, null );
     ControlLCAUtil.processSelection( button, null, true );
     assertEquals( "", log.toString() );
-  }
-
-  public void testMaxZOrder() {
-    for( int i = 0; i < ControlLCAUtil.MAX_STATIC_ZORDER; i++ ) {
-      new Button( shell, SWT.PUSH );
-    }
-    Control control = new Button( shell, SWT.PUSH );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
-    ControlLCAUtil.preserveValues( control );
-    assertEquals( new Integer( 1 ), adapter.getPreserved( Props.Z_INDEX ) );
-  }
-
-  public void testWriteCursor() throws Exception {
-    final Control control = new Button( shell, SWT.PUSH );
-    AbstractWidgetLCA controlLCA = WidgetUtil.getLCA( control );
-    Cursor cursor = display.getSystemCursor( SWT.CURSOR_HAND );
-    Fixture.markInitialized( control );
-    Fixture.preserveWidgets();
-    control.setCursor( cursor );
-    ControlLCAUtil.writeCursor( control );
-    String expected = "w.setCursor( \"pointer\" );";
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
-
-    Fixture.fakeResponseWriter();
-    controlLCA.preserveValues( control );
-    ControlLCAUtil.writeCursor( control );
-    assertEquals( "", ProtocolTestUtil.getMessageScript() );
-
-    Fixture.fakeResponseWriter();
-    control.setCursor( null );
-    ControlLCAUtil.writeCursor( control );
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( "w.resetCursor();" ) );
-  }
-
-  public void testWriteKeyEvents() throws IOException {
-    final List<Event> eventLog = new ArrayList<Event>();
-    shell.open();
-    Fixture.fakeResponseWriter();
-
-    ControlLCAUtil.writeKeyListener( shell );
-
-    assertEquals( "", ProtocolTestUtil.getMessageScript() );
-
-    shell.addListener( SWT.KeyDown, new Listener() {
-      public void handleEvent( Event event ) {
-        eventLog.add( event );
-      }
-    } );
-    Fixture.fakeResponseWriter();
-    ControlLCAUtil.writeKeyListener( shell );
-
-    String shellId = WidgetUtil.getId( shell );
-    String expected = "var w = wm.findWidgetById( \"" + shellId + "\" );"
-                      + "w.setUserData( \"keyListener\", true );";
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
-  }
-
-  public void testWriteTraverseEvents() throws IOException {
-    final List<Event> eventLog = new ArrayList<Event>();
-    shell.open();
-    Fixture.fakeResponseWriter();
-    ControlLCAUtil.writeTraverseListener( shell );
-
-    assertEquals( "", ProtocolTestUtil.getMessageScript() );
-
-    shell.addListener( SWT.Traverse, new Listener() {
-      public void handleEvent( Event event ) {
-        eventLog.add( event );
-      }
-    } );
-    Fixture.fakeResponseWriter();
-    ControlLCAUtil.writeTraverseListener( shell );
-
-    String shellId = WidgetUtil.getId( shell );
-    String expected
-      = "var w = wm.findWidgetById( \"" + shellId + "\" );"
-      + "w.setUserData( \"traverseListener\", true );";
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
   public void testProcessKeyEvents() {
@@ -572,31 +362,6 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( SWT.ALT, keyCode );
   }
 
-  public void testWriteBackgroundImage() throws IOException {
-    Control control = new Button( shell, SWT.PUSH );
-    ControlLCAUtil.preserveBackgroundImage( control );
-    Fixture.markInitialized( control );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
-    control.setBackgroundImage( image );
-    ControlLCAUtil.writeBackgroundImage( control );
-    String imageLocation = ImageFactory.getImagePath( image );
-
-    String controlId = WidgetUtil.getId( control );
-    String expected = "var w = wm.findWidgetById( \"" + controlId + "\" );"
-                      + "w.setUserData( \"backgroundImageSize\", [58,12 ] );"
-                      + "w.setBackgroundImage( \"" + imageLocation + "\" );";
-    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
-
-    Fixture.fakeResponseWriter();
-    ControlLCAUtil.preserveBackgroundImage( control );
-    control.setBackgroundImage( null );
-    ControlLCAUtil.writeBackgroundImage( control );
-
-    String expected2 = "w.setUserData( \"backgroundImageSize\", null );"
-                       + "w.resetBackgroundImage();";
-    assertEquals( expected2, ProtocolTestUtil.getMessageScript() );
-  }
-
   public void testProcessHelpEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final List<HelpEvent> log = new ArrayList<HelpEvent>();
@@ -613,41 +378,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertSame( display, event.display );
   }
 
-  public void testWriteMouseListener() throws IOException {
-    Composite control = new Composite( shell, SWT.NONE );
-    Fixture.fakeResponseWriter();
-    ControlLCAUtil.preserveValues( control );
-    Fixture.markInitialized( control );
-    Fixture.markInitialized( display );
-
-    control.addMouseListener( new MouseAdapter() {} );
-    ControlLCAUtil.writeChanges( control );
-
-    String controlId = WidgetUtil.getId( control );
-    String expected = "wm.setHasListener( wm.findWidgetById( \""
-                      + controlId
-                      + "\" ), \"mouse\", true );";
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
-  }
-
-  public void testWriteFocusListener_FocusableControl() throws IOException {
-    Button control = new Button( shell, SWT.PUSH );
-    Fixture.fakeResponseWriter();
-    ControlLCAUtil.preserveValues( control );
-    Fixture.markInitialized( control );
-    Fixture.markInitialized( display );
-
-    control.addFocusListener( new FocusAdapter() {} );
-    ControlLCAUtil.writeChanges( control );
-
-    String controlId = WidgetUtil.getId( control );
-    String expected = "wm.setHasListener( wm.findWidgetById( \""
-                      + controlId
-                      + "\" ), \"focus\", true );";
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
-  }
-
-  public void testWriteFocusListener_NotFocusableControl() throws IOException {
+  public void testRenderFocusListener_NotFocusableControl() {
     Label control = new Label( shell, SWT.NONE );
     Fixture.fakeResponseWriter();
     ControlLCAUtil.preserveValues( control );
@@ -655,29 +386,9 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.markInitialized( display );
 
     control.addFocusListener( new FocusAdapter() {} );
-    ControlLCAUtil.writeChanges( control );
+    ControlLCAUtil.renderChanges( control );
 
     assertEquals( 0, Fixture.getProtocolMessage().getOperationCount() );
-  }
-
-  public void testWriteMenuDetectListener() throws IOException {
-    Composite control = new Composite( shell, SWT.NONE );
-    Fixture.fakeResponseWriter();
-    ControlLCAUtil.preserveValues( control );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-
-    control.addMenuDetectListener( new MenuDetectListener() {
-      public void menuDetected( MenuDetectEvent e ) {
-      }
-    } );
-    ControlLCAUtil.writeChanges( control );
-
-    String controlId = WidgetUtil.getId( control );
-    String expected = "wm.setHasListener( wm.findWidgetById( \""
-                      + controlId
-                      + "\" ), \"menuDetect\", true );";
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
   //////////////////////////////////////////////

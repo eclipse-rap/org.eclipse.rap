@@ -16,7 +16,6 @@ package org.eclipse.swt.internal.widgets;
 public final class Props {
 
   public static final String BOUNDS = "bounds";
-  public static final String Z_INDEX = "zindex";
   public static final String MENU = "menu";
   public static final String VISIBLE = "visible";
   public static final String ENABLED = "enabled";

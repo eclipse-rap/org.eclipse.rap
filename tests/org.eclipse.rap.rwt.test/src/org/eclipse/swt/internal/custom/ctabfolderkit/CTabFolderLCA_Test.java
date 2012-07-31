@@ -48,6 +48,7 @@ public class CTabFolderLCA_Test extends TestCase {
   private Shell shell;
   private CTabFolderLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -56,6 +57,7 @@ public class CTabFolderLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -93,11 +95,6 @@ public class CTabFolderLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( folder );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    Fixture.clearPreserved();
-    // z-index
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
-    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
     Fixture.clearPreserved();
     // menu
     Fixture.preserveWidgets();
@@ -145,11 +142,6 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( controlForeground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
     Fixture.clearPreserved();
-    // tab_index
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
-    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    Fixture.clearPreserved();
     // tooltiptext
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( folder );
@@ -193,6 +185,7 @@ public class CTabFolderLCA_Test extends TestCase {
   public void testSelectionEvent() {
     final StringBuilder log = new StringBuilder();
     SelectionListener listener = new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         log.append( "widgetSelected|" );
       }
@@ -226,12 +219,14 @@ public class CTabFolderLCA_Test extends TestCase {
     final ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
     final StringBuilder log = new StringBuilder();
     CTabFolder2Listener listener = new CTabFolder2Adapter() {
+      @Override
       public void showList( CTabFolderEvent event ) {
         assertEquals( true, event.doit );
         log.append( "showList|" );
       }
     };
     CTabFolder2Listener vetoListener = new CTabFolder2Adapter() {
+      @Override
       public void showList( CTabFolderEvent event ) {
         Rectangle chevronRect = folderAdapter.getChevronRect();
         Rectangle eventRet
@@ -937,17 +932,20 @@ public class CTabFolderLCA_Test extends TestCase {
       super( parent, style );
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result;
       if( adapter == ILifeCycleAdapter.class ) {
         result = new AbstractWidgetLCA() {
+          @Override
           public void preserveValues( Widget widget ) {
             Control control = ( Control )widget;
             IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
             Boolean visible = Boolean.valueOf( control.isVisible() );
             adapter.preserve( "visible", visible );
           }
+          @Override
           public void renderChanges( Widget widget ) throws IOException {
             markup.setLength( 0 );
             Control control = ( Control )widget;
@@ -956,8 +954,10 @@ public class CTabFolderLCA_Test extends TestCase {
               markup.append( "visible=" + visible );
             }
           }
+          @Override
           public void renderDispose( Widget widget ) throws IOException {
           }
+          @Override
           public void renderInitialization( Widget widget )
             throws IOException
           {

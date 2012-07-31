@@ -57,6 +57,7 @@ public class ComboLCA_Test extends TestCase {
   private Shell shell;
   private ComboLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -65,6 +66,7 @@ public class ComboLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -142,10 +144,6 @@ public class ComboLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( combo );
     assertEquals( "some text", combo.getToolTipText() );
     Fixture.clearPreserved();
-    //tab_index
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( combo );
-    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
   }
 
   public void testEditablePreserveValues() {
@@ -179,6 +177,7 @@ public class ComboLCA_Test extends TestCase {
     // read changed selection and ensure that SelectionListener gets called
     final StringBuilder log = new StringBuilder();
     combo.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         assertSame( combo, event.getSource() );
         assertEquals( 0, event.detail );
@@ -345,6 +344,7 @@ public class ComboLCA_Test extends TestCase {
     combo.select( 0 );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         combo.removeAll();
         combo.add( "replacement for item 1" );

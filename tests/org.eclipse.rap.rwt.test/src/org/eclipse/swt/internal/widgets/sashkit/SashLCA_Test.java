@@ -37,6 +37,7 @@ public class SashLCA_Test extends TestCase {
   private Shell shell;
   private SashLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -45,6 +46,7 @@ public class SashLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -106,11 +108,6 @@ public class SashLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( sash );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
-    //z-index
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sash );
-    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    Fixture.clearPreserved();
     //foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     sash.setBackground( background );
@@ -123,11 +120,6 @@ public class SashLCA_Test extends TestCase {
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    //tab_index
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sash );
-    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
     Fixture.clearPreserved();
     //tooltiptext
     Fixture.preserveWidgets();
@@ -145,6 +137,7 @@ public class SashLCA_Test extends TestCase {
     final Sash sash = new Sash( shell, SWT.NONE );
     final StringBuilder log = new StringBuilder();
     SelectionListener selectionListener = new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         assertEquals( sash, event.getSource() );
         assertEquals( null, event.item );

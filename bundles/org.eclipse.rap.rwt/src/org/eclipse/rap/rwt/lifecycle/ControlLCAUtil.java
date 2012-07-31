@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +27,6 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.events.EventLCAUtil;
-import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
@@ -42,15 +40,6 @@ import org.eclipse.swt.widgets.*;
  */
 public class ControlLCAUtil {
 
-  private static final String JS_FUNC_ADD_ACTIVATE_LISTENER_WIDGET
-    = "addActivateListenerWidget";
-  private static final String JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET
-    = "removeActivateListenerWidget";
-  private static final String JS_FUNC_SET_HAS_LISTENER = "setHasListener";
-  private static final String JS_EVENT_TYPE_FOCUS = "focus";
-  private static final String JS_EVENT_TYPE_MOUSE = "mouse";
-  private static final String JS_EVENT_TYPE_MENU_DETECT = "menuDetect";
-
   // Property names to preserve widget property values
   private static final String PROP_ACTIVATE_LISTENER = "activate";
   private static final String PROP_FOCUS_LISTENER = "focus";
@@ -63,9 +52,6 @@ public class ControlLCAUtil {
   private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
   private static final String PROP_CHILDREN = "children";
 
-  private static final String USER_DATA_KEY_LISTENER = "keyListener";
-  private static final String USER_DATA_TRAVERSE_LISTENER = "traverseListener";
-  private static final String USER_DATA_BACKGROUND_IMAGE_SIZE = "backgroundImageSize";
   static final int MAX_STATIC_ZORDER = 300;
 
   private static final String CURSOR_UPARROW = "widget/cursors/up_arrow.cur";
@@ -219,15 +205,11 @@ public class ControlLCAUtil {
    * </ul>
    *
    * @param control the control whose parameters to preserve
-   * @see #writeChanges(Control)
+   * @see #renderChanges(Control)
    */
   public static void preserveValues( Control control ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     WidgetLCAUtil.preserveBounds( control, control.getBounds() );
-    // TODO [rh] revise this (see also writeZIndex)
-    if( !( control instanceof Shell ) ) {
-      adapter.preserve( Props.Z_INDEX, new Integer( getZIndex( control ) ) );
-    }
     adapter.preserve( PROP_CHILDREN, getChildren( control ) );
     adapter.preserve( PROP_TAB_INDEX, new Integer( getTabIndex( control ) ) );
     WidgetLCAUtil.preserveToolTipText( control, control.getToolTipText() );
@@ -271,7 +253,7 @@ public class ControlLCAUtil {
    * Preserves the value of the specified widget's background image.
    *
    * @param control the control whose background image property to preserve
-   * @see #writeBackgroundImage(Control)
+   * @see #renderBackgroundImage(Control)
    */
   public static void preserveBackgroundImage( Control control ) {
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
@@ -906,445 +888,6 @@ public class ControlLCAUtil {
       }
     }
     return result;
-  }
-
-  /////////////////////
-  // Deprecated methods
-
-  /**
-   * Determines for all of the following properties of the specified control
-   * whether the property has changed during the processing of the current
-   * request and if so, writes JavaScript code to the response that updates the
-   * corresponding client-side property.
-   * <ul>
-   * <li>bounds</li>
-   * <li>z-index (except for Shells)</li>
-   * <li>tab index</li>
-   * <li>tool tip text</li>
-   * <li>menu</li>
-   * <li>visible</li>
-   * <li>enabled</li>
-   * <li>foreground</li>
-   * <li>background</li>
-   * <li>background image</li>
-   * <li>font</li>
-   * <li>cursor</li>
-   * <!--li>whether ControlListeners are registered</li-->
-   * <li>whether ActivateListeners are registered</li>
-   * <li>whether MouseListeners are registered</li>
-   * <li>whether FocusListeners are registered</li>
-   * <li>whether KeyListeners are registered</li>
-   * <li>whether TraverseListeners are registered</li>
-   * <li>whether HelpListeners are registered</li>
-   * </ul>
-   *
-   * @param control the control whose properties to set
-   * @throws IOException
-   * @see #preserveValues(Control)
-   * @deprecated Use {@link #renderChanges(Control)}
-   */
-  @Deprecated
-  public static void writeChanges( Control control ) throws IOException {
-    writeBounds( control );
-    writeZIndex( control );
-    writeTabIndex( control );
-    writeToolTip( control );
-    writeMenu( control );
-    writeVisible( control );
-    writeEnabled( control );
-    writeForeground( control );
-    writeBackground( control );
-    writeBackgroundImage( control );
-    writeFont( control );
-    writeCursor( control );
-//    TODO [rst] missing: writeControlListener( control );
-    writeActivateListener( control );
-    writeFocusListener( control );
-    writeMouseListener( control );
-    writeKeyListener( control );
-    writeTraverseListener( control );
-    writeMenuDetectListener( control );
-    WidgetLCAUtil.writeHelpListener( control );
-  }
-
-  /**
-   * Determines whether the bounds of the given control have changed during the
-   * processing of the current request and if so, writes JavaScript code to the
-   * response that updates the client-side bounds.
-   *
-   * @param control the control whose bounds to write
-   * @throws IOException
-   * @deprecated Use {@link #renderBounds(Control)} instead
-   */
-  @Deprecated
-  public static void writeBounds( Control control ) throws IOException {
-    Composite parent = control.getParent();
-    WidgetLCAUtil.writeBounds( control, parent, control.getBounds() );
-  }
-
-  /**
-   * Determines whether the z-index of the given control has changed during the
-   * processing of the current request and if so, writes JavaScript code to the
-   * response that updates the client-side z-index.
-   *
-   * @param control the control whose z-index to write
-   * @throws IOException
-   * @deprecated This method should not be used anymore as zIndex is not rendered directly anymore.
-   */
-  @Deprecated
-  public static void writeZIndex( Control control ) throws IOException {
-    // TODO [rst] remove surrounding if statement as soon as z-order on shells
-    //      is completely implemented
-    if( !( control instanceof Shell ) ) {
-      JSWriter writer = JSWriter.getWriterFor( control );
-      Integer newValue = new Integer( getZIndex( control ) );
-      writer.set( Props.Z_INDEX, JSConst.QX_FIELD_Z_INDEX, newValue, null );
-    }
-  }
-
-  /**
-   * Determines whether the tool tip of the given control has changed during the
-   * processing of the current request and if so, writes JavaScript code to the
-   * response that updates the client-side tool tip.
-   *
-   * @param control the control whose tool tip to write
-   * @throws IOException
-   * @deprecated Use {@link #renderToolTip(Control)} instead
-   */
-  @Deprecated
-  public static void writeToolTip( Control control ) throws IOException {
-    WidgetLCAUtil.writeToolTip( control, control.getToolTipText() );
-  }
-
-  /**
-   * Determines whether the property <code>menu</code> of the given control
-   * has changed during the processing of the current request and if so, writes
-   * JavaScript code to the response that updates the client-side menu
-   * property.
-   *
-   * @param control the control whose menu property to write
-   * @throws IOException
-   * @deprecated Use {@link #renderMenu(Control)} instead
-   */
-  @Deprecated
-  public static void writeMenu( Control control ) throws IOException {
-    // [if] Write the shell context menu in Shell#writePopupMenu(),
-    // otherwise the shell.setContextMenu is called before the actual creation
-    // of the client menu widget. See bug 223879.
-    if( !( control instanceof Shell ) ) {
-      WidgetLCAUtil.writeMenu( control, control.getMenu() );
-    }
-  }
-
-  /**
-   * Determines whether the visibility of the given control has changed during
-   * the processing of the current request and if so, writes JavaScript code to
-   * the response that updates the client-side visibility.
-   *
-   * @param control the control whose visibility to write
-   * @throws IOException
-   * @deprecated Use {@link #renderVisible(Control)} instead
-   */
-  // TODO [rh] there seems to be a qooxdoo problem when trying to change the
-  //      visibility of a newly created widget (no flushGlobalQueues was called)
-  //      MSG: Modification of property "visibility" failed with exception:
-  //           Error - Element must be created previously!
-  @Deprecated
-  public static void writeVisible( Control control ) throws IOException {
-    // we only need getVisible here (not isVisible), as qooxdoo also hides/shows
-    // contained controls
-    Boolean newValue = Boolean.valueOf( getVisible( control ) );
-    Boolean defValue = Boolean.TRUE;
-    JSWriter writer = JSWriter.getWriterFor( control );
-    writer.set( Props.VISIBLE, JSConst.QX_FIELD_VISIBLE, newValue, defValue );
-  }
-
-  /**
-   * Determines whether the property <code>enabled</code> of the given control
-   * has changed during the processing of the current request and if so, writes
-   * JavaScript code to the response that updates the client-side enabled
-   * property.
-   *
-   * @param control the control whose enabled property to write
-   * @throws IOException
-   * @deprecated Use {@link #renderEnabled(Control)} instead
-   */
-  @Deprecated
-  public static void writeEnabled( Control control ) throws IOException {
-    // Using isEnabled() would result in unnecessarily updating child widgets of
-    // enabled/disabled controls.
-    WidgetLCAUtil.writeEnabled( control, control.getEnabled() );
-  }
-
-  /**
-   * Determines whether the property <code>foreground</code> of the given
-   * control has changed during the processing of the current request and if so,
-   * writes JavaScript code to the response that updates the client-side
-   * foreground property.
-   *
-   * @param control the control whose foreground property to write
-   * @throws IOException
-   * @deprecated Use {@link #renderForeground(Control)} instead
-   */
-  @Deprecated
-  public static void writeForeground( Control control ) throws IOException {
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    WidgetLCAUtil.writeForeground( control, controlAdapter.getUserForeground() );
-  }
-
-  /**
-   * Determines whether the property <code>background</code> of the given
-   * control has changed during the processing of the current request and if so,
-   * writes JavaScript code to the response that updates the client-side
-   * background property.
-   *
-   * @param control the control whose background property to write
-   * @throws IOException
-   * @deprecated Use {@link #renderBackground(Control)} instead
-   */
-  @Deprecated
-  public static void writeBackground( Control control ) throws IOException {
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    WidgetLCAUtil.writeBackground( control,
-                                   controlAdapter.getUserBackground(),
-                                   controlAdapter.getBackgroundTransparency() );
-  }
-
-  /**
-   * Determines whether the background image of the given control has changed
-   * during the processing of the current request and if so, writes JavaScript
-   * code to the response that updates the client-side background image
-   * property.
-   *
-   * @param control the control whose background image property to write
-   * @throws IOException
-   * @deprecated Use {@link #renderBackgroundImage(Control)} instead
-   */
-  @Deprecated
-  public static void writeBackgroundImage( Control control ) throws IOException {
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    Image image = controlAdapter.getUserBackgroundImage();
-    if( WidgetLCAUtil.hasChanged( control, PROP_BACKGROUND_IMAGE, image, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( control );
-      if( image != null ) {
-        String imagePath = ImageFactory.getImagePath( image );
-        Rectangle bounds = image.getBounds();
-        Object[] args = new Object[] {
-          USER_DATA_BACKGROUND_IMAGE_SIZE,
-          new Integer[]{
-            new Integer( bounds.width ),
-            new Integer( bounds.height )
-          }
-        };
-        writer.call( "setUserData", args );
-        writer.set( "backgroundImage", imagePath );
-      } else {
-        Object[] args = new Object[]{ USER_DATA_BACKGROUND_IMAGE_SIZE, null };
-        writer.call( "setUserData", args );
-        writer.reset( "backgroundImage" );
-      }
-    }
-  }
-
-  /**
-   * Determines whether the property <code>font</code> of the given control
-   * has changed during the processing of the current request and if so, writes
-   * JavaScript code to the response that updates the client-side font property.
-   *
-   * @param control the control whose font property to write
-   * @throws IOException
-   * @deprecated Use {@link #renderFont(Control)} instead
-   */
-  @Deprecated
-  public static void writeFont( Control control ) throws IOException {
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    Font newValue = controlAdapter.getUserFont();
-    WidgetLCAUtil.writeFont( control, newValue );
-  }
-
-  /**
-   * @deprecated Use {@link #renderListenActivate(Control)} instead
-   */
-  @Deprecated
-  public static void writeActivateListener( Control control ) throws IOException {
-    if( !control.isDisposed() ) {
-      Boolean newValue = Boolean.valueOf( ActivateEvent.hasListener( control ) );
-      Boolean defValue = Boolean.FALSE;
-      String prop = WidgetLCAUtil.LISTENER_PREFIX + PROP_ACTIVATE_LISTENER;
-      Shell shell = control.getShell();
-      if( !shell.isDisposed() && WidgetLCAUtil.hasChanged( control, prop, newValue, defValue ) ) {
-        String function =   newValue.booleanValue()
-                          ? JS_FUNC_ADD_ACTIVATE_LISTENER_WIDGET
-                          : JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET;
-        JSWriter writer = JSWriter.getWriterFor( control );
-        writer.call( shell, function, new Object[]{ control } );
-      }
-    }
-  }
-
-  /**
-   * Adds or removes client-side menu detect listeners for the the given
-   * <code>control</code> as necessary.
-   *
-   * @param control
-   * @since 1.3
-   * @deprecated Use {@link #renderListenMenuDetect(Control)} instead
-   */
-  @Deprecated
-  public static void writeMenuDetectListener( Control control ) throws IOException {
-    String prop = WidgetLCAUtil.LISTENER_PREFIX + PROP_MENU_DETECT_LISTENER;
-    Boolean hasLsnr = Boolean.valueOf( MenuDetectEvent.hasListener( control ) );
-    if( WidgetLCAUtil.hasChanged( control, prop, hasLsnr, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( control );
-      Object[] args = new Object[] { control, JS_EVENT_TYPE_MENU_DETECT, hasLsnr };
-      writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
-    }
-  }
-
-  /**
-   * Checks the given control for common SWT style flags (e.g.
-   * <code>SWT.BORDER</code>) and if present, writes code to pass the according
-   * states to the client.
-   *
-   * @param control
-   * @throws IOException
-   * @deprecated Use {@link WidgetLCAUtil#getStyles(Widget, String[])} to obtain
-   *             the list of styles instead and set the result to the property
-   *             <code>style</code>
-   */
-  @Deprecated
-  public static void writeStyleFlags( Control control ) throws IOException {
-    WidgetLCAUtil.writeStyleFlag( control, SWT.BORDER, "BORDER" );
-  }
-
-  @Deprecated
-  private static void writeTabIndex( Control control ) throws IOException {
-    if( control instanceof Shell ) {
-      resetTabIndices( ( Shell )control );
-      // tabIndex must be a positive value
-      computeTabIndices( ( Shell )control, 1 );
-    }
-    int tabIndex = getTabIndex( control );
-    Integer newValue = new Integer( tabIndex );
-    JSWriter writer = JSWriter.getWriterFor( control );
-    // there is no reliable default value for all controls
-    writer.set( PROP_TAB_INDEX, JSConst.QX_FIELD_TAB_INDEX, newValue );
-  }
-
-  @Deprecated
-  static void writeCursor( Control control ) throws IOException {
-    Cursor newValue = control.getCursor();
-    if( WidgetLCAUtil.hasChanged( control, PROP_CURSOR, newValue, null ) ) {
-      String qxCursor = getQxCursor( newValue );
-      JSWriter writer = JSWriter.getWriterFor( control );
-      if( qxCursor == null ) {
-        writer.reset( JSConst.QX_FIELD_CURSOR );
-      } else {
-        writer.set( JSConst.QX_FIELD_CURSOR, qxCursor );
-      }
-    }
-  }
-
-  @Deprecated
-  static void resetActivateListener( Control control ) throws IOException {
-    // TODO [tb] : no longer neeed for widgets that are disposed via protocol
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    Shell shell = controlAdapter.getShell();
-    if( !shell.isDisposed() && ActivateEvent.hasListener( control ) ) {
-      JSWriter writer = JSWriter.getWriterFor( control );
-      writer.call( shell, JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET, new Object[] { control } );
-    }
-  }
-
-  @Deprecated
-  private static void writeFocusListener( Control control ) throws IOException {
-    if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
-      String prop = WidgetLCAUtil.LISTENER_PREFIX + PROP_FOCUS_LISTENER;
-      Boolean hasListener = Boolean.valueOf( FocusEvent.hasListener( control ) );
-      if( WidgetLCAUtil.hasChanged( control, prop, hasListener, Boolean.FALSE ) ) {
-        JSWriter writer = JSWriter.getWriterFor( control );
-        Object[] args = new Object[] { control, JS_EVENT_TYPE_FOCUS, hasListener };
-        writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
-      }
-    }
-  }
-
-  @Deprecated
-  private static void writeMouseListener( Control control ) throws IOException {
-    String prop = WidgetLCAUtil.LISTENER_PREFIX + PROP_MOUSE_LISTENER;
-    Boolean hasListener = Boolean.valueOf( MouseEvent.hasListener( control ) );
-    if( WidgetLCAUtil.hasChanged( control, prop, hasListener, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( control );
-      Object[] args = new Object[] { control, JS_EVENT_TYPE_MOUSE, hasListener };
-      writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
-    }
-  }
-
-  @Deprecated
-  static void writeKeyListener( Control control ) throws IOException {
-    String prop = WidgetLCAUtil.LISTENER_PREFIX + PROP_KEY_LISTENER;
-    Boolean hasListener = Boolean.valueOf( KeyEvent.hasListener( control ) );
-    Boolean defValue = Boolean.FALSE;
-    if( WidgetLCAUtil.hasChanged( control, prop, hasListener, defValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( control );
-      if( hasListener.booleanValue() ) {
-        Object[] args = new Object[] { USER_DATA_KEY_LISTENER, hasListener };
-        writer.call( "setUserData", args );
-      } else {
-        Object[] args = new Object[] { USER_DATA_KEY_LISTENER, null };
-        writer.call( "setUserData", args );
-      }
-    }
-  }
-
-  @Deprecated
-  static void writeTraverseListener( Control control ) throws IOException {
-    String prop = WidgetLCAUtil.LISTENER_PREFIX + PROP_TRAVERSE_LISTENER;
-    Boolean hasListener = Boolean.valueOf( TraverseEvent.hasListener( control ) );
-    Boolean defValue = Boolean.FALSE;
-    if( WidgetLCAUtil.hasChanged( control, prop, hasListener, defValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( control );
-      if( hasListener.booleanValue() ) {
-        Object[] args = new Object[] { USER_DATA_TRAVERSE_LISTENER, hasListener };
-        writer.call( "setUserData", args );
-      } else {
-        Object[] args = new Object[] { USER_DATA_TRAVERSE_LISTENER, null };
-        writer.call( "setUserData", args );
-      }
-    }
-  }
-
-  /**
-   * Preserves whether the given <code>widget</code> has one or more
-   * <code>MenuDetect</code>s attached.
-   *
-   * @param control the widget to preserve
-   * @since 1.3
-   * @deprecated Use {@link WidgetLCAUtil#preserveListener(Widget, String, boolean)} instead
-   */
-  @Deprecated
-  public static void preserveMenuDetectListener( Control control ) {
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_MENU_DETECT_LISTENER,
-                                    MenuDetectEvent.hasListener( control ) );
-  }
-
-  /**
-   * Determines the z-index to render for a given control.
-   * @param control the control whose z-index is requested
-   * @return the z-index
-   * @deprecated This method should not be used anymore.
-   */
-  // TODO [rst] also document the meaning of the returned number
-  @Deprecated
-  public static int getZIndex( Control control ) {
-    int max = MAX_STATIC_ZORDER;
-    Composite parent = control.getParent();
-    if( parent != null ) {
-      max = Math.max( ControlHolder.size( parent ), max );
-    }
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    return max - controlAdapter.getZIndex();
   }
 
 }

@@ -302,11 +302,6 @@ public class TreeLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
-    // z-index
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    Fixture.clearPreserved();
     // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     tree.setBackground( background );
@@ -319,11 +314,6 @@ public class TreeLCA_Test extends TestCase {
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    // tab_index
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
     Fixture.clearPreserved();
     // tooltiptext
     Fixture.preserveWidgets();

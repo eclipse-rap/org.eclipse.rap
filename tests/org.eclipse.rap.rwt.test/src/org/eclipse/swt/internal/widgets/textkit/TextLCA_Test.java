@@ -353,10 +353,6 @@ public class TextLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     assertEquals( Boolean.FALSE, getPreserved( text, Props.VISIBLE ) );
     Fixture.clearPreserved();
-    // z-index
-    Fixture.preserveWidgets();
-    assertTrue( getPreserved( text, Props.Z_INDEX ) != null );
-    Fixture.clearPreserved();
   }
 
   public void testWriteModifyListenerWhenReadOnly() throws IOException {

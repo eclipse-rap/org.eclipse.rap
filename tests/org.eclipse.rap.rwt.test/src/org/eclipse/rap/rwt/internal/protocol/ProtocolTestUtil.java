@@ -10,9 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.json.*;
 
 
@@ -33,22 +30,6 @@ public class ProtocolTestUtil {
       }
     } else {
       result = false;
-    }
-    return result;
-  }
-
-  /**
-   * Temporary helper method to migrate old JSWriter-based tests to protocol.
-   * Replace Fixture.getAllMarkup with this method.
-   */
-  public static String getMessageScript() {
-    String result = "";
-    Message message = Fixture.getProtocolMessage();
-    if( message.getOperationCount() > 0 ) {
-      CallOperation operation = message.findCallOperation( "jsex", "execute" );
-      if( operation != null ) {
-        result = ( String )operation.getProperty( "content" );
-      }
     }
     return result;
   }

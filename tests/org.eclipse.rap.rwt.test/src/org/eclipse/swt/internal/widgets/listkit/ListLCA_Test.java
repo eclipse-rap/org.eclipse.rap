@@ -125,11 +125,6 @@ public class ListLCA_Test extends TestCase {
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
     Fixture.clearPreserved();
-    // tab_index
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( list );
-    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    Fixture.clearPreserved();
     // tooltiptext
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( list );

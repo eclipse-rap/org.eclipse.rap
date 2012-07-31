@@ -117,11 +117,6 @@ public class LabelLCA_Test extends TestCase {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( label );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
-    // z-index
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( label );
-    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    Fixture.clearPreserved();
     //menu
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
@@ -167,11 +162,6 @@ public class LabelLCA_Test extends TestCase {
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    //tab_index
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( label );
-    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
     Fixture.clearPreserved();
     //tooltiptext
     Fixture.preserveWidgets();

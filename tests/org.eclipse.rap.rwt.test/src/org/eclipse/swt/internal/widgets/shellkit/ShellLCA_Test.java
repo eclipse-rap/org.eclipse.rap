@@ -517,8 +517,9 @@ public class ShellLCA_Test extends TestCase {
 
   public void testRenderInitialBounds() throws Exception {
     Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
     Fixture.preserveWidgets();
-    ControlLCAUtil.writeBounds( shell );
+    ControlLCAUtil.renderBounds( shell );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( shell, "bounds" ) );

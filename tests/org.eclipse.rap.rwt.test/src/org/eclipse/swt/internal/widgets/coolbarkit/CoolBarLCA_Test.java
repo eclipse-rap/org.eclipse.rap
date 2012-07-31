@@ -49,6 +49,7 @@ public final class CoolBarLCA_Test extends TestCase {
   private CoolBar bar;
   private CoolBarLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -58,6 +59,7 @@ public final class CoolBarLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -125,11 +127,6 @@ public final class CoolBarLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( bar );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
-    // z-index
-    lca.preserveValues( bar );
-    adapter = WidgetUtil.getAdapter( bar );
-    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    Fixture.clearPreserved();
     // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     bar.setBackground( background );
@@ -142,11 +139,6 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    // tab_index
-    lca.preserveValues( bar );
-    adapter = WidgetUtil.getAdapter( bar );
-    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
     Fixture.clearPreserved();
     // tooltiptext
     lca.preserveValues( bar );

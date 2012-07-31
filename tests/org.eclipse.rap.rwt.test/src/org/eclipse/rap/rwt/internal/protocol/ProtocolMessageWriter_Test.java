@@ -211,7 +211,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     String script = "var c = 4; c++;";
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "content", script );
-    
+
     writer.appendCall( "jsex", "execute", properties );
 
     CallOperation operation = ( CallOperation )getMessage().getOperation( 0 );
@@ -408,20 +408,6 @@ public class ProtocolMessageWriter_Test extends TestCase {
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
     assertEquals( 2, ( ( JSONArray )operation.getProperty( "key" ) ).length() );
     assertEquals( "Hello", ( ( JSONArray )operation.getProperty( "key" ) ).get( 1 ) );
-  }
-
-  public void testAppendsToExistingExecuteOperation() {
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( "content", "var x = foo();" );
-    writer.appendCall( "jsex", "execute", properties );
-    properties = new HashMap<String, Object>();
-    properties.put( "content", "x.foo();" );
-    writer.appendCall( "jsex", "execute", properties );
-
-    Message message = getMessage();
-    assertEquals( 1, message.getOperationCount() );
-    CallOperation operation = ( CallOperation )message.getOperation( 0 );
-    assertEquals( "var x = foo();x.foo();", operation.getProperty( "content" ) );
   }
 
   private Message getMessage() {

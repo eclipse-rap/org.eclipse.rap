@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.widgets;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.internal.widgets.JSExecutor;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -74,7 +73,7 @@ public class JSExecutor_Test extends TestCase {
     Fixture.fakeResponseWriter();
     Fixture.executeLifeCycleFromServerThread();
 
-    assertFalse( ProtocolTestUtil.getMessageScript().contains( EXECUTE_1 ) );
+    assertFalse( getMessageScript().contains( EXECUTE_1 ) );
   }
 
   public void testExecuteJSWithDifferentDisplay() {
@@ -83,7 +82,7 @@ public class JSExecutor_Test extends TestCase {
     simulateDifferentDisplay();
     Fixture.executeLifeCycleFromServerThread();
 
-    assertFalse( ProtocolTestUtil.getMessageScript().contains( EXECUTE_1 ) );
+    assertFalse( getMessageScript().contains( EXECUTE_1 ) );
   }
 
   private int indexOfCreateOperation( Message message ) {
@@ -121,5 +120,17 @@ public class JSExecutor_Test extends TestCase {
   private static void simulateDifferentDisplay() {
     Display.getCurrent().dispose();
     new Display();
+  }
+
+  private static String getMessageScript() {
+    String result = "";
+    Message message = Fixture.getProtocolMessage();
+    if( message.getOperationCount() > 0 ) {
+      CallOperation operation = message.findCallOperation( "jsex", "execute" );
+      if( operation != null ) {
+        result = ( String )operation.getProperty( "content" );
+      }
+    }
+    return result;
   }
 }

@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -32,10 +31,12 @@ import org.eclipse.swt.widgets.*;
 
 public class ControlLCA_Test extends TestCase {
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -51,11 +52,6 @@ public class ControlLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    Fixture.clearPreserved();
-    //z-index
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( control );
-    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
     Fixture.clearPreserved();
     //visible
     Fixture.preserveWidgets();
@@ -91,11 +87,6 @@ public class ControlLCA_Test extends TestCase {
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
     Fixture.clearPreserved();
-    //tab_index
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( control );
-    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    Fixture.clearPreserved();
     //tooltiptext
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( control );
@@ -105,55 +96,6 @@ public class ControlLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( control );
     assertEquals( "some text", control.getToolTipText() );
-  }
-
-  public void testWriteVisibility() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    Button button = new Button( shell, SWT.PUSH );
-    button.setSize( 10, 10 );
-    shell.open();
-    Fixture.fakeResponseWriter();
-    ControlLCAUtil.preserveValues( button );
-    Fixture.markInitialized( button );
-    Fixture.markInitialized( display );
-
-    // Initial JavaScript code must not contain setVisibility()
-    ControlLCAUtil.writeChanges( button );
-    assertFalse( ProtocolTestUtil.getMessageScript().contains( "setVisibility" ) );
-
-    // Unchanged visible attribute must not be rendered
-    Fixture.fakeResponseWriter();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( button );
-    Fixture.preserveWidgets();
-    ControlLCAUtil.writeChanges( button );
-    assertFalse( ProtocolTestUtil.getMessageScript().contains( "setVisibility" ) );
-
-    // Changed visible attribute must not be rendered
-    Fixture.fakeResponseWriter();
-    Fixture.preserveWidgets();
-    button.setVisible( false );
-    ControlLCAUtil.writeChanges( button );
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( "setVisibility" ) );
-  }
-
-  public void testWriteBounds() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    Control control = new Button( shell, SWT.PUSH );
-    Composite parent = control.getParent();
-
-    // call writeBounds once to elimniate the uninteresting JavaScript prolog
-    Fixture.fakeResponseWriter();
-    WidgetLCAUtil.writeBounds( control, parent, control.getBounds() );
-
-    // Test without clip
-    Fixture.fakeResponseWriter();
-    control.setBounds( 1, 2, 100, 200 );
-    WidgetLCAUtil.writeBounds( control, parent, control.getBounds() );
-    String expected = "w.setSpace( 1, 100, 2, 200 );";
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
   public void testMenuDetectListener() {
@@ -186,28 +128,34 @@ public class ControlLCA_Test extends TestCase {
     Shell shell = new Shell( display );
     Control control = new Composite( shell, SWT.NONE ) {
       private static final long serialVersionUID = 1L;
+      @Override
       @SuppressWarnings("unchecked")
       public <T> T getAdapter( Class<T> adapter ) {
         Object result;
         if( adapter == ILifeCycleAdapter.class ) {
           result = new AbstractWidgetLCA() {
+            @Override
             public void preserveValues( Widget widget ) {
             }
+            @Override
             public void renderChanges( Widget widget )
               throws IOException
             {
             }
+            @Override
             public void renderDispose( Widget widget )
               throws IOException
             {
               log.append( "renderDispose" );
             }
+            @Override
             public void renderInitialization( Widget widget )
               throws IOException
             {
             }
             public void readData( Widget widget ) {
             }
+            @Override
             public void doRedrawFake( Control control ) {
               log.append( "FAILED: doRedrawFake was called" );
             }

@@ -89,11 +89,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( sc );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
-    // z-index
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    Fixture.clearPreserved();
     // menu
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
@@ -139,11 +134,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    // tab_index
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
     Fixture.clearPreserved();
     // tooltiptext
     Fixture.preserveWidgets();

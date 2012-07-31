@@ -20,30 +20,14 @@ import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.CREATE_TYP
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.META;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.OPERATIONS;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.JsonArray;
 import org.eclipse.rap.rwt.internal.theme.JsonObject;
 import org.eclipse.rap.rwt.internal.theme.JsonValue;
-import org.eclipse.rap.rwt.lifecycle.JSWriter;
-import org.eclipse.rap.rwt.service.IServiceStore;
 
 
-@SuppressWarnings("deprecation")
 public class ProtocolMessageWriter {
- 
-  // TODO [rst] Copy of JSWriter constant, remove when JSWriter is gone
-  private static final String HAS_WIDGET_MANAGER = JSWriter.class.getName() + "#hasWidgetManager";
-  // TODO [rst] Copy of JSWriter constant, remove when JSWriter is gone
-  private static final String CURRENT_WIDGET_REF = JSWriter.class.getName() + "#currentWidgetRef";
-  // TODO [if] Remove when JSWriter is gone
-  private static final String JSEXECUTOR_ID = "jsex";
-  // TODO [if] Moved from ProtocolConstants, remove when JSWriter is gone
-  private static final String ACTION_EXECUTE_SCRIPT = "execute";
-  // TODO [if] Moved from ProtocolConstants, remove when JSWriter is gone
-  private static final String EXECUTE_SCRIPT_CONTENT = "content";
 
   private final JsonObject meta;
   private final JsonArray operations;
@@ -104,14 +88,9 @@ public class ProtocolMessageWriter {
   }
 
   public void appendCall( String target, String methodName, Map<String, Object> properties ) {
-    // TODO [if] Needed to append JavaScript in JSWriter, remove when JSWriter is gone
-    if( JSEXECUTOR_ID.equals( target ) && ACTION_EXECUTE_SCRIPT.equals( methodName ) ) {
-      appendExecuteScript( target, ( String )properties.get( EXECUTE_SCRIPT_CONTENT ) );
-    } else {
-      prepareOperation( target, ACTION_CALL );
-      pendingOperation.appendDetail( CALL_METHOD_NAME, JsonValue.valueOf( methodName ) );
-      pendingOperation.appendProperties( properties );
-    }
+    prepareOperation( target, ACTION_CALL );
+    pendingOperation.appendDetail( CALL_METHOD_NAME, JsonValue.valueOf( methodName ) );
+    pendingOperation.appendProperties( properties );
   }
 
   public void appendDestroy( String target ) {
@@ -123,15 +102,7 @@ public class ProtocolMessageWriter {
     if( !canAppendToCurrentOperation( target, type ) ) {
       appendPendingOperation();
       pendingOperation = new Operation( target, type );
-      invalidateJsWriterState();
     }
-  }
-
-  // TODO [rst] Needed to invalidate JavaScript context of JSWriter, remove when JSWriter is gone
-  private static void invalidateJsWriterState() {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
-    serviceStore.removeAttribute( HAS_WIDGET_MANAGER );
-    serviceStore.removeAttribute( CURRENT_WIDGET_REF );
   }
 
   public String createMessage() {
@@ -161,8 +132,6 @@ public class ProtocolMessageWriter {
       String pendingAction = pendingOperation.getAction();
       if( ACTION_LISTEN.equals( action ) ) {
         result = pendingAction.equals( ACTION_LISTEN );
-      } else if( ACTION_EXECUTE_SCRIPT.equals( action ) ) {
-        result = pendingAction.equals( ACTION_EXECUTE_SCRIPT );
       } else if( ACTION_SET.equals( action ) ) {
         result = pendingAction.equals( ACTION_CREATE ) || pendingAction.equals( ACTION_SET );
       }
@@ -172,31 +141,8 @@ public class ProtocolMessageWriter {
 
   private void appendPendingOperation() {
     if( pendingOperation != null ) {
-      replaceExecuteScriptOperation();
       operations.append( pendingOperation.toJson() );
     }
   }
-  
-  // TODO [if] Needed to append JavaScript in JSWriter, remove when JSWriter is gone
-  private void appendExecuteScript( String target, String code ) {
-    prepareOperation( target, ACTION_EXECUTE_SCRIPT );
-    String pendingScript = ( String )pendingOperation.getDetail( EXECUTE_SCRIPT_CONTENT );
-    if( pendingScript != null ) {
-      pendingOperation.replaceDetail( EXECUTE_SCRIPT_CONTENT, pendingScript + code );
-    } else {
-      pendingOperation.appendDetail( EXECUTE_SCRIPT_CONTENT, code );
-    }
-  }
-  
-  // TODO [if] Needed to append JavaScript in JSWriter, remove when JSWriter is gone
-  private void replaceExecuteScriptOperation() {
-    if( pendingOperation.getAction().equals( ACTION_EXECUTE_SCRIPT ) ) {
-      String code = ( String )pendingOperation.getDetail( EXECUTE_SCRIPT_CONTENT );
-      pendingOperation = new Operation( JSEXECUTOR_ID, ACTION_CALL );
-      pendingOperation.appendDetail( CALL_METHOD_NAME, JsonValue.valueOf( ACTION_EXECUTE_SCRIPT ) );
-      Map<String, Object> properties = new HashMap<String, Object>();
-      properties.put( EXECUTE_SCRIPT_CONTENT, code );
-      pendingOperation.appendProperties( properties );
-    }
-  }
+
 }
