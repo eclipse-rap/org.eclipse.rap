@@ -92,7 +92,10 @@ public final class BindingService implements IBindingService {
 		final Display display = workbench.getDisplay();
 		final Listener listener = keyboard.getKeyDownFilter();
 		display.addFilter(SWT.KeyDown, listener);
-		display.addFilter(SWT.Traverse, listener);
+// RAP [if] Listening for both SWT.KeyDown and SWT.Traverse events execute the command twice
+// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=381092
+//		display.addFilter(SWT.Traverse, listener);
+// ENDRAP
 
 		// Initialize the key formatter.
 		KeyFormatterFactory.setDefault(SWTKeySupport
