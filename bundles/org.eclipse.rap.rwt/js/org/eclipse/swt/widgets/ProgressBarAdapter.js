@@ -32,7 +32,11 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.ProgressBar", {
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
     // Overrides original backgroundImage handler
     "backgroundImage" : function( widget, value ) {
-      widget.setBackgroundImageSized( value );
+      if( value === null ) {
+        widget.resetBackgroundImageSized();
+      } else {
+        widget.setBackgroundImageSized( value );
+      }
     }
   } ),
 

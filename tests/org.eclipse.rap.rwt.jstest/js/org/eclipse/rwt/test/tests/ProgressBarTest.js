@@ -12,7 +12,7 @@
 qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
 
   extend : qx.core.Object,
-  
+
   construct : function() {
     this.base( arguments );
     this._gfxBorder = new org.eclipse.rwt.Border( 2, "rounded", "black", [ 7, 7, 7, 7 ] );
@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     this._cssBorder = new org.eclipse.rwt.Border( 2, "outset", null );
     this._gradient = [ [ 0, "red" ], [ 1, "yellow" ] ];
   },
-  
+
   members : {
 
     testCreateProgressBarByProtocol : function() {
@@ -209,6 +209,38 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       widget.destroy();
     },
 
+    testResetBackgroundImageByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.fakeAppearance( "progressbar",  {
+        style : function( states ) {
+          return {
+            "backgroundImageSized" : [ "fromTheme.png", 10, 20 ]
+          };
+        }
+      } );
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.ProgressBar",
+        "properties" : {
+          "style" : [ "HORIZONTAL" ],
+          "parent" : "w2",
+          "backgroundImage" : [ "image.png", 10, 20 ]
+        }
+      } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = ObjectManager.getObject( "w3" );
+      var backgroundImage = widget.getBackgroundImageSized();
+      assertEquals( "image.png", backgroundImage[ 0 ] );
+      TestUtil.protocolSet( "w3", { "backgroundImage" : null } );
+      backgroundImage = widget.getBackgroundImageSized();
+      assertEquals( "fromTheme.png", backgroundImage[ 0 ] );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testCreateSimpleBar : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var bar = new org.eclipse.swt.widgets.ProgressBar();
@@ -230,12 +262,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertEquals( 0, bar._gfxBorderWidth );
       assertEquals( 100, bar._getIndicatorLength() );
       assertEquals( [ 0, 0, 0, 0 ], bar._getIndicatorRadii( 0, 100 ) );
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;       
-      assertFalse( TestUtil.hasCssBorder( bar.getElement() ) ) ;       
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      assertFalse( TestUtil.hasCssBorder( bar.getElement() ) ) ;
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },
-        
+
     testComplexBorder : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var bar = new org.eclipse.swt.widgets.ProgressBar();
@@ -257,11 +289,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertEquals( 98, bar._getIndicatorLength() );
       assertEquals( [ 0, 0, 0, 0 ], bar._getIndicatorRadii( 0, 100 ) );
       var edge = bar.getElement().style.borderLeftStyle;
-      assertFalse( edge == "" || edge == "none"  );
+      assertFalse( edge === "" || edge === "none"  );
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },
-       
+
     testRoundedBorder : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var bar = new org.eclipse.swt.widgets.ProgressBar();
@@ -281,22 +313,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertEquals( 2, bar._gfxBorderWidth );
       assertEquals( 98, bar._getIndicatorLength() );
       assertEquals( [ 7, 0, 0, 7 ], bar._getIndicatorRadii( 0, 98 ) );
-      var edge = bar.getElement().style.borderLeftStyle;  
-      assertTrue( edge == "" || edge == "none"  );            
+      var edge = bar.getElement().style.borderLeftStyle;
+      assertTrue( edge === "" || edge === "none"  );
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },
 
     testOnCanvasAppearOnEnhancedBorder : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var shell = new org.eclipse.swt.widgets.Shell( { "style" : [] } );
       shell.setShadow( null );
       shell.addToDocument();
       shell.setBackgroundColor( null );
       shell.setBorder( null );
       shell.open();
-      var log = [];      
+      var log = [];
       var bar = new org.eclipse.swt.widgets.ProgressBar();
       bar._onCanvasAppear = function(){ log.push( "bar" ); };
       bar.setDimension( 200, 30 );
@@ -329,7 +360,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },
-    
+
     testRoundedBorderIndicatorZero : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var bar = new org.eclipse.swt.widgets.ProgressBar();
@@ -373,7 +404,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },
-    
+
     testDifferentRadii : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var bar = new org.eclipse.swt.widgets.ProgressBar();
@@ -388,7 +419,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },
-    
+
     testDifferentRadiiIndicatorMinLength : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var bar = new org.eclipse.swt.widgets.ProgressBar();
@@ -403,7 +434,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },
-    
+
     testDifferentRadiiIndicatorZero : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var bar = new org.eclipse.swt.widgets.ProgressBar();
@@ -446,8 +477,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertTrue( gfxUtil.getDisplay( bar._indicatorShape ) );
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
-    },    
-    
+    },
+
     testCreateSimpleBarVertical : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var bar = new org.eclipse.swt.widgets.ProgressBar();
@@ -463,8 +494,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertTrue( gfxUtil.getDisplay( bar._indicatorShape ) );
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
-    },    
-    
+    },
+
     testRoundedBorderVertical : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var bar = new org.eclipse.swt.widgets.ProgressBar();
@@ -480,8 +511,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertTrue( gfxUtil.getDisplay( bar._indicatorShape ) );
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
-    },    
-    
+    },
+
     testDifferentRadiiIndicatorVerticalZero : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var bar = new org.eclipse.swt.widgets.ProgressBar();
@@ -494,9 +525,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertEquals( 0, bar._getIndicatorLength() );
       assertFalse( gfxUtil.getDisplay( bar._indicatorShape ) );
       bar.destroy();
-      qx.ui.core.Widget.flushGlobalQueues();      
+      qx.ui.core.Widget.flushGlobalQueues();
     },
-    
+
     testDifferentRadiiIndicatorVerticalMinLength : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var bar = new org.eclipse.swt.widgets.ProgressBar();
@@ -510,10 +541,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertEquals( [ 0, 0, 6, 8 ], bar._getIndicatorRadii( 0, 7 ) );
       assertTrue( gfxUtil.getDisplay( bar._indicatorShape ) );
       bar.destroy();
-      qx.ui.core.Widget.flushGlobalQueues();      
-      
+      qx.ui.core.Widget.flushGlobalQueues();
+
     },
-    
+
     testDifferentRadiiIndicatorVerticalMaxLength : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var bar = new org.eclipse.swt.widgets.ProgressBar();
@@ -527,9 +558,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertEquals( [ 0, 0, 6, 8 ], bar._getIndicatorRadii( 0, 113 ) );
       assertTrue( gfxUtil.getDisplay( bar._indicatorShape ) );
       bar.destroy();
-      qx.ui.core.Widget.flushGlobalQueues();      
+      qx.ui.core.Widget.flushGlobalQueues();
     },
-    
+
     testDifferentRadiiIndicatorVerticalFull : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var bar = new org.eclipse.swt.widgets.ProgressBar();
@@ -544,9 +575,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertTrue( gfxUtil.getDisplay( bar._indicatorShape ) );
       assertEquals( [ 0, 4, 6, 8 ], bar._getIndicatorRadii( 0, 116 ) );
       bar.destroy();
-      qx.ui.core.Widget.flushGlobalQueues();      
+      qx.ui.core.Widget.flushGlobalQueues();
     },
-    
+
     testIndicatorFill : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var bar = new org.eclipse.swt.widgets.ProgressBar();
@@ -577,7 +608,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       bar.addToDocument();
       bar.setSelection( 50 );
       bar.setBackgroundColor( "green" );
-      bar.setBackgroundGradient( null ); 
+      bar.setBackgroundGradient( null );
       bar.setBackgroundImageSized( null );
       qx.ui.core.Widget.flushGlobalQueues();
       var shape = bar._backgroundShape;
@@ -595,7 +626,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     },
 
     testUndeterminedSimple : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.prepareTimerUse();
       var bar = new org.eclipse.swt.widgets.ProgressBar();
@@ -620,13 +650,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },
-    
+
     testUndeterminedRounded : function() {
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.prepareTimerUse();
       var bar = new org.eclipse.swt.widgets.ProgressBar();
-      bar.addState( "rwt_INDETERMINATE" );      
+      bar.addState( "rwt_INDETERMINATE" );
       assertFalse( bar._isVertical() );
       assertTrue( bar._isIndeterminate() );
       assertNotNull( bar._timer );
@@ -642,13 +671,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },
-    
+
     testUndeterminedWrap : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.prepareTimerUse();
       var bar = new org.eclipse.swt.widgets.ProgressBar();
-      bar.addState( "rwt_INDETERMINATE" );      
+      bar.addState( "rwt_INDETERMINATE" );
       bar.setDimension( 200, 30 );
       bar.addToDocument();
       bar.setBorder( null );
@@ -658,28 +687,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertEquals( 198, bar._indicatorVirtualPosition );
       assertEquals( 2, bar._getIndicatorLength( 198 ) );
       assertTrue( gfxUtil.getDisplay( bar._indicatorShape ) );
-      // step 2:      
+      // step 2:
       TestUtil.forceInterval( bar._timer );
       qx.ui.core.Widget.flushGlobalQueues();
       assertEquals( -40, bar._indicatorVirtualPosition );
       assertEquals( 0, bar._getIndicatorLength( -40 ) );
       assertFalse( gfxUtil.getDisplay( bar._indicatorShape ) );
-      // step 2:      
+      // step 2:
       TestUtil.forceInterval( bar._timer );
       qx.ui.core.Widget.flushGlobalQueues();
       assertEquals( -38, bar._indicatorVirtualPosition );
       assertEquals( 2, bar._getIndicatorLength( -38 ) );
-      assertTrue( gfxUtil.getDisplay( bar._indicatorShape ) );      
+      assertTrue( gfxUtil.getDisplay( bar._indicatorShape ) );
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },
-    
+
     testUndeterminedRoundedWrap : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.prepareTimerUse();
       var bar = new org.eclipse.swt.widgets.ProgressBar();
-      bar.addState( "rwt_INDETERMINATE" );      
+      bar.addState( "rwt_INDETERMINATE" );
       bar.setDimension( 200, 30 );
       bar.addToDocument();
       bar.setBorder( this._gfxBorder2 );
@@ -690,13 +719,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertEquals( 6, bar._getIndicatorLength( 190 ) );
       assertTrue( gfxUtil.getDisplay( bar._indicatorShape ) );
       assertEquals( [ 0, 4, 6, 0 ], bar._getIndicatorRadii( 190, 6 ) );
-      // step 2:      
+      // step 2:
       TestUtil.forceInterval( bar._timer );
       qx.ui.core.Widget.flushGlobalQueues();
       assertEquals( -40, bar._indicatorVirtualPosition );
       assertEquals( 0, bar._getIndicatorLength( -40 ) );
       assertFalse( gfxUtil.getDisplay( bar._indicatorShape ) );
-      // step 3:      
+      // step 3:
       TestUtil.forceInterval( bar._timer );
       qx.ui.core.Widget.flushGlobalQueues();
       assertEquals( -33, bar._indicatorVirtualPosition );
@@ -707,7 +736,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       qx.ui.core.Widget.flushGlobalQueues();
     },
 
-    
+
     testUndeterminedRoundedWrapVertical : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -727,13 +756,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertEquals( 4, bar._getIndicatorLength( 112 ) );
       assertTrue( gfxUtil.getDisplay( bar._indicatorShape ) );
       assertEquals( [ 0, 4, 0, 0 ], bar._getIndicatorRadii( 112, 4 ) );
-      // step 2:      
+      // step 2:
       TestUtil.forceInterval( bar._timer );
       qx.ui.core.Widget.flushGlobalQueues();
       assertEquals( -40, bar._indicatorVirtualPosition );
       assertEquals( 0, bar._getIndicatorLength( -40 ) );
       assertFalse( gfxUtil.getDisplay( bar._indicatorShape ) );
-      // step 3:      
+      // step 3:
       TestUtil.forceInterval( bar._timer );
       qx.ui.core.Widget.flushGlobalQueues();
       assertEquals( -33, bar._indicatorVirtualPosition );
@@ -743,13 +772,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },
-    
+
     testUndeterminedRoundedSkipStart : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.prepareTimerUse();
       var bar = new org.eclipse.swt.widgets.ProgressBar();
-      bar.addState( "rwt_INDETERMINATE" );      
+      bar.addState( "rwt_INDETERMINATE" );
       bar.setDimension( 200, 30 );
       bar.addToDocument();
       bar.setBorder( this._gfxBorder2 );
@@ -775,7 +804,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.prepareTimerUse();
       var bar = new org.eclipse.swt.widgets.ProgressBar();
-      bar.addState( "rwt_INDETERMINATE" );      
+      bar.addState( "rwt_INDETERMINATE" );
       bar.setDimension( 200, 30 );
       bar.addToDocument();
       bar.setBorder( this._gfxBorder2 );
@@ -795,7 +824,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },
-    
+
     testFiresSelectionChangedEvent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
@@ -815,14 +844,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       progressBar.addEventListener( "selectionChanged", function() {
         log++;
       } );
-      
+
       progressBar.setSelection( 33 );
 
       assertEquals( 1, log );
       shell.destroy();
       progressBar.destroy();
     },
-    
+
     testFiresMinimumChangedEvent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
@@ -842,7 +871,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       progressBar.addEventListener( "minimumChanged", function() {
         log++;
       } );
-      
+
       progressBar.setMinimum( 5 );
 
       assertEquals( 1, log );
@@ -869,7 +898,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       progressBar.addEventListener( "maximumChanged", function() {
         log++;
       } );
-      
+
       progressBar.setMaximum( 200 );
 
       assertEquals( 1, log );
@@ -877,6 +906,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       progressBar.destroy();
     }
 
-  } 
+  }
 
 } );
