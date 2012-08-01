@@ -140,6 +140,10 @@ qx.Class.define( "org.eclipse.rwt.Client", {
       return this.getPlatform() === "ios" && this.getBrowser() === "safari";
     },
 
+    isMobileChrome : function() {
+      return this.getPlatform() === "android" && this.getBrowser() === "chrome";
+    },
+
     isAndroidBrowser : function() {
       return this.getPlatform() === "android" && this.getBrowser() === "android";
     },
@@ -149,7 +153,7 @@ qx.Class.define( "org.eclipse.rwt.Client", {
     },
 
     supportsTouch : function() {
-      return this.isMobileSafari() || this.isAndroidBrowser();
+      return this.isMobileSafari() || this.isAndroidBrowser() || this.isMobileChrome();
     },
 
     supportsSvg : function() {

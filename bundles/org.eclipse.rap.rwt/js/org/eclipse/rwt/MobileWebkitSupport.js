@@ -225,7 +225,10 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
        "initialTarget" : target,
        "initialPosition" : pos
       };
-      if( !this._touchSession.type.scroll && !this._touchSession.type.outerScroll && !this._touchSession.type.focus ) {
+      if(    !this._touchSession.type.scroll
+          && !this._touchSession.type.outerScroll
+          && !this._touchSession.type.focus )
+      {
         domEvent.preventDefault();
       }
       this._moveMouseTo( target, domEvent );
@@ -330,7 +333,9 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       var offsetY = oldPos[ 1 ] - pos[ 1 ];
       var newX = this._touchSession.initScrollX + offsetX;
       var newY = this._touchSession.initScrollY + offsetY;
-      var nudged = newY < 0 || newY > ( this._touchSession.scrollBarV.getMaximum() - this._touchSession.scrollBarV._thumbLength );
+      var max =   this._touchSession.scrollBarV.getMaximum()
+                - this._touchSession.scrollBarV._thumbLength;
+      var nudged = newY < 0 || newY > max;
       if( this._touchSession.type.outerScroll && nudged ) {
         delete this._touchSession.type.virtualScroll;
         this._touchSession.type.scroll = true;
