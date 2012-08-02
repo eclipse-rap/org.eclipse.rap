@@ -20,6 +20,16 @@ var appearances = {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "Button", "font" );
+      var decoration = tv.getCssIdentifier( "Button", "text-decoration" );
+      if( decoration != null && decoration !== "none" ) {
+        var decoratedFont = new qx.ui.core.Font();
+        decoratedFont.setSize( result.font.getSize() );
+        decoratedFont.setFamily( result.font.getFamily() );
+        decoratedFont.setBold( result.font.getBold() );
+        decoratedFont.setItalic( result.font.getItalic() );
+        decoratedFont.setDecoration( decoration );
+        result.font = decoratedFont;
+      }
       result.textColor = tv.getCssColor( "Button", "color" );
       result.backgroundColor = tv.getCssColor( "Button", "background-color" );
       result.backgroundImage = tv.getCssImage( "Button", "background-image" );
@@ -52,21 +62,12 @@ var appearances = {
   // CheckBox
 
   "check-box" : {
+    include : "button",
+
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : tv.getCssBorder( "Button", "border" ),
-        font : tv.getCssFont( "Button", "font" ),
-        textColor : tv.getCssColor( "Button", "color" ),
-        backgroundColor : tv.getCssColor( "Button", "background-color" ),
-        backgroundImage : tv.getCssImage( "Button", "background-image" ),
-        backgroundGradient : tv.getCssGradient( "Button", "background-image" ),
-        spacing : tv.getCssDimension( "Button", "spacing" ),
-        padding : tv.getCssBoxDimensions( "Button", "padding" ),
-        selectionIndicator : tv.getCssSizedImage( "Button-CheckIcon", "background-image" ),
-        cursor : tv.getCssCursor( "Button", "cursor" ),
-        opacity : tv.getCssFloat( "Button", "opacity" ),
-        textShadow : tv.getCssShadow( "Button", "text-shadow" )
+        selectionIndicator : tv.getCssSizedImage( "Button-CheckIcon", "background-image" )
       };
     }
   },
@@ -76,21 +77,12 @@ var appearances = {
   // RadioButton
 
   "radio-button" : {
+    include : "button",
+
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : tv.getCssBorder( "Button", "border" ),
-        font : tv.getCssFont( "Button", "font" ),
-        textColor : tv.getCssColor( "Button", "color" ),
-        backgroundColor : tv.getCssColor( "Button", "background-color" ),
-        backgroundImage : tv.getCssImage( "Button", "background-image" ),
-        backgroundGradient : tv.getCssGradient( "Button", "background-image" ),
-        spacing : tv.getCssDimension( "Button", "spacing" ),
-        padding : tv.getCssBoxDimensions( "Button", "padding" ),
-        selectionIndicator : tv.getCssSizedImage( "Button-RadioIcon", "background-image" ),
-        cursor : tv.getCssCursor( "Button", "cursor" ),
-        opacity : tv.getCssFloat( "Button", "opacity" ),
-        textShadow : tv.getCssShadow( "Button", "text-shadow" )
+        selectionIndicator : tv.getCssSizedImage( "Button-RadioIcon", "background-image" )
       };
     }
   }

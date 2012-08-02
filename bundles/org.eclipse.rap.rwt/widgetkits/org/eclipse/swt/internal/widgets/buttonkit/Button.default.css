@@ -25,6 +25,7 @@ Button {
   background-color: #ffffff;
   opacity: 1;
   text-shadow: none;
+  text-decoration: none;
 }
 
 Button[PUSH],

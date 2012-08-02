@@ -95,6 +95,7 @@ Button {
   background-color: white;
   opacity: 1;
   text-shadow: none;
+  text-decoration: none;
 }
 
 Button[PUSH], Button[TOGGLE], Button[BORDER] {

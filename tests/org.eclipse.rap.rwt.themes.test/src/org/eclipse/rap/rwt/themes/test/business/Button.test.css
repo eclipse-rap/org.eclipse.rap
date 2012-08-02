@@ -30,6 +30,7 @@ Button[PUSH], Button[TOGGLE] {
   padding: 2px 5px 2px 5px;
   animation: hoverOut 500ms ease-out;
   opacity: 1;
+  text-decoration: none;
 }
 
 Button[ARROW] {
@@ -97,6 +98,7 @@ Button[TOGGLE]:hover {
     to( #cccccc )
   );
   opacity: 1;
+  text-decoration: none;
 }
 
 Button[ARROW]:pressed,
@@ -150,6 +152,7 @@ Button[RADIO] {
   padding: 4px 5px 4px 5px;
   animation: none;
   opacity: 1;
+  text-decoration: none;
 }
 
 Button[CHECK][BORDER],

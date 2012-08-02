@@ -30,6 +30,7 @@ Button[PUSH], Button[TOGGLE], Button[BORDER] {
   );
   animation: hoverIn 100ms ease-in, hoverOut 500ms ease-out;
   opacity: 1;
+  text-decoration: none;
 }
 
 Button[ARROW], Button[ARROW][BORDER] {
@@ -89,6 +90,7 @@ Button[ARROW]:hover, Button[PUSH]:hover, Button[TOGGLE]:hover {
     to( #cccccc )
   );
   opacity: 1;
+  text-decoration: none;
 }
 
 Button[ARROW]:pressed, Button[PUSH]:pressed, Button[TOGGLE]:pressed {
@@ -108,6 +110,7 @@ Button[RADIO],
 Button[RADIO][BORDER] {
   background-image: none;
   opacity: 1;
+  text-decoration: none;
 }
 
 Button-FocusIndicator[ARROW], Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {

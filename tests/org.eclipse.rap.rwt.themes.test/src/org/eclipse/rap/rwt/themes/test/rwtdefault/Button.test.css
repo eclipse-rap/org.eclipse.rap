@@ -13,11 +13,11 @@
 
 /* PUSH and TOGGLE */
 
-Button[PUSH], 
+Button[PUSH],
 Button[TOGGLE],
-Button[PUSH][BORDER], 
+Button[PUSH][BORDER],
 Button[TOGGLE][BORDER],
-Button[PUSH][FLAT], 
+Button[PUSH][FLAT],
 Button[TOGGLE][FLAT] {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
@@ -35,6 +35,7 @@ Button[TOGGLE][FLAT] {
   cursor: pointer;
   opacity: 1;
   text-shadow: 0 1px 0 #ffffff;
+  text-decoration: none;
 }
 
 Button[ARROW],
@@ -85,6 +86,7 @@ Button[TOGGLE][FLAT]:hover {
     from( #eaeaea ),
     to( #d5d5d5 )
   );
+  text-decoration: none;
 }
 
 Button[ARROW]:pressed,
@@ -137,6 +139,7 @@ Button[RADIO] {
   cursor: default;
   opacity: 1;
   text-shadow: none;
+  text-decoration: none;
 }
 
 Button[CHECK][BORDER], 
