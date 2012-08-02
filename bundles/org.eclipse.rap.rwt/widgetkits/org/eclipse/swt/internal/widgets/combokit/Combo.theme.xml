@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
  http://www.eclipse.org/legal/epl-v10.html
 
  Contributors:
-     Innoopract Informationssysteme GmbH - initial API and implementation
-     EclipseSource - ongoing development
+    Innoopract Informationssysteme GmbH - initial API and implementation
+    EclipseSource - ongoing development
  -->
 
 <theme>
@@ -107,7 +107,7 @@
           like "inset" or "outset" is used.
         </description>
       </property>
-      
+
       <property name="cursor"
         description="Combo button cursor." />
 
@@ -119,30 +119,33 @@
 
       <state name="hover"
           description="Applies while the user hovers over the combo button." />
-          
+
       <state name="disabled"
           description="Applies when the button is disabled." />
-          
+
       <state name="pressed"
           description="Applies while a button is pressed." />
 
     </element>
-    
+
     <element name="Combo-Button-Icon">
       <description>
         The drop-down button icon.
       </description>
-      
+
       <property name="background-image">
         <description>
           The icon for the Combo drop-down button.
         </description>
       </property>
-      
+
       <state name="hover"
           description="Applies while the user hovers over the combo button." />
-      
-    </element>  
+
+      <state name="disabled"
+          description="Applies when the button is disabled." />
+
+    </element>
 
     <element name="Combo-Field">
       <description>
@@ -178,26 +181,26 @@
       <property name="box-shadow" description="The shadow behind the combos list." />
 
     </element>
-    
+
     <element name="Combo-FocusIndicator" 
           description="The frame that is drawn when the combo is focused." >
 
       <property name="background-color"
           description="The fill-color of the frame." />
-  
+
       <property name="border">
         <description>
           The border of the frame. 
           3D-styles inset, outset, etc are not supported.
         </description>
-      </property>     
+      </property>
 
       <property name="margin">
         <description>
           The margin between the combos border and the frame.
         </description>
       </property>
-      
+
       <property name="opacity" 
           description="The opacity of the indicator. A value between 0 and 1." />
 

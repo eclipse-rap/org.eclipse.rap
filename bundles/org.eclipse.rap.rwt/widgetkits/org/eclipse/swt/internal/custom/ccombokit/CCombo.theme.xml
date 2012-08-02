@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2009, 2011 EclipseSource and others.
+ Copyright (c) 2009, 2012 EclipseSource and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -110,7 +110,7 @@
             like "inset" or "outset" is used.
           </description>
       </property>
-      
+
       <property name="cursor"
         description="CCombo button cursor." />
 
@@ -125,32 +125,35 @@
 
       <state name="hover"
           description="Applies while the user hovers over the CCombo button." />
-          
+
       <state name="disabled"
           description="Applies when the button is disabled." />
-          
+
       <state name="pressed"
           description="Applies while a button is pressed." />
 
     </element>
-    
+
     <element name="CCombo-Button-Icon">
       <description>
         The drop-down button icon.
       </description>
-      
+
       <property name="background-image">
         <description>
           The icon for the CCombo drop-down button.
         </description>
       </property>
-      
+
       <style name="FLAT"
           description="Applies when style FLAT is set on the parent." />
-      
+
       <state name="hover"
           description="Applies while the user hovers over the CCombo button." />
-      
+
+      <state name="disabled"
+          description="Applies when the button is disabled." />
+
     </element>
 
     <element name="CCombo-Field">
@@ -193,26 +196,26 @@
           description="Applies when style FLAT is set on the parent." />
 
     </element>
-    
+
     <element name="CCombo-FocusIndicator" 
           description="The frame that is drawn when the ccombo is focused." >
 
       <property name="background-color"
           description="The fill-color of the frame." />
-  
+
       <property name="border">
         <description>
           The border of the frame. 
           3D-styles inset, outset, etc are not supported.
         </description>
-      </property>     
+      </property>
 
       <property name="margin">
         <description>
           The margin between the ccombos border and the frame.
         </description>
       </property>
-      
+
       <property name="opacity" 
           description="The opacity of the indicator. A value between 0 and 1." />
 

@@ -70,11 +70,11 @@ CCombo-Button:disabled {
   background-color: transparent;
 }
 
-Combo-Button-Icon {
+Combo-Button-Icon, Combo-Button-Icon:disabled {
   background-image: url( resource/widget/rap/combo/down.png );
 }
 
-CCombo-Button-Icon {
+CCombo-Button-Icon, CCombo-Button-Icon:disabled {
   background-image: url( resource/widget/rap/ccombo/down.png );
 }
 
