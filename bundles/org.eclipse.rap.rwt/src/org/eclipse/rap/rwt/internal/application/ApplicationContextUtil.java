@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,19 +27,19 @@ public class ApplicationContextUtil {
     = new ThreadLocal<ApplicationContext>();
   private final static String ATTR_APPLICATION_CONTEXT
     = ApplicationContext.class.getName() + "#INSTANCE";
- 
+
   private static class TransientValue implements Serializable {
     private final transient Object value;
 
     TransientValue( Object value ) {
       this.value = value;
     }
-    
+
     Object getValue() {
       return value;
     }
   }
- 
+
   public static void set( ServletContext servletContext, ApplicationContext applicationContext ) {
     servletContext.setAttribute( ATTR_APPLICATION_CONTEXT, applicationContext );
   }
@@ -51,7 +51,7 @@ public class ApplicationContextUtil {
   public static void remove( ServletContext servletContext ) {
     servletContext.removeAttribute( ATTR_APPLICATION_CONTEXT );
   }
-  
+
   public static void set( ISessionStore sessionStore, ApplicationContext applicationContext ) {
     TransientValue transientValue = new TransientValue( applicationContext );
     sessionStore.setAttribute( ATTR_APPLICATION_CONTEXT, transientValue );
@@ -69,7 +69,7 @@ public class ApplicationContextUtil {
   public static void remove( ISessionStore sessionStore ) {
     sessionStore.removeAttribute( ATTR_APPLICATION_CONTEXT );
   }
-  
+
   public static ApplicationContext getInstance() {
     ApplicationContext result = CONTEXT_HOLDER.get();
     if( result == null  ) {
@@ -104,8 +104,7 @@ public class ApplicationContextUtil {
 
   private static void checkNestedCall() {
     if( CONTEXT_HOLDER.get() != null ) {
-      String msg = "Nested call of runWithInstance detected.";
-      throw new IllegalStateException( msg );
+      throw new IllegalStateException( "Nested call of runWithInstance detected." );
     }
   }
 
@@ -114,7 +113,7 @@ public class ApplicationContextUtil {
       throw new IllegalStateException( "No ApplicationContext registered." );
     }
   }
-  
+
   private static void doDelete( File toDelete ) {
     if( toDelete.isDirectory() ) {
       deleteChildren( toDelete );
@@ -132,8 +131,7 @@ public class ApplicationContextUtil {
   private static void deleteFile( File toDelete ) {
     boolean deleted = toDelete.delete();
     if( !deleted ) {
-      String msg = "Could not delete: " + toDelete.getPath();
-      throw new IllegalStateException( msg );
+      throw new IllegalStateException( "Could not delete: " + toDelete.getPath() );
     }
   }
 }
