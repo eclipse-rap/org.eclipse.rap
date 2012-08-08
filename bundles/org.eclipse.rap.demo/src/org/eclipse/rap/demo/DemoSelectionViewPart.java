@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing implementation
  ******************************************************************************/
 
 package org.eclipse.rap.demo;
@@ -25,16 +26,17 @@ public class DemoSelectionViewPart extends ViewPart {
 
   private List list;
 
+  @Override
   public void createPartControl( final Composite parent ) {
     parent.setLayout( new GridLayout( 1, false ) );
     Label label = new Label( parent, 0 );
     label.setText( "Selection Log" );
-    label.setLayoutData( new GridData( 80, 15 ) );
     list = new List( parent, SWT.FLAT | SWT.H_SCROLL | SWT.V_SCROLL );
     list.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
     createSelectionListener();
   }
 
+  @Override
   public void setFocus() {
     list.setFocus();
   }
