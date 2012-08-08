@@ -26,9 +26,9 @@ public class DemoFormViewPart extends ViewPart {
     Composite composite = new Composite( parent, SWT.NULL );
     composite.setLayout( new FillLayout() );
     FormToolkit toolkit = new FormToolkit( composite.getDisplay() );
-    Form form = toolkit.createForm( composite );
+    ScrolledForm form = toolkit.createScrolledForm( composite );
     form.getBody().setLayout( new TableWrapLayout() );
-    toolkit.decorateFormHeading( form );
+    toolkit.decorateFormHeading( form.getForm() );
     form.setText( "User Form" );
     int sectionStyle = Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE | Section.EXPANDED;
     Section section = toolkit.createSection( form.getBody(), sectionStyle );
