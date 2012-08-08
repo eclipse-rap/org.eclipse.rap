@@ -53,7 +53,7 @@
             name="View III"/> 
       <view
             category="two"
-            class="org.eclipse.rap.demo.DemoTreeViewPart"
+            class="org.eclipse.rap.demo.DemoFormViewPart"
             icon="icons/register.gif"
             id="org.eclipse.rap.demo.DemoTreeViewPartIV"
             name="View V"/> 
