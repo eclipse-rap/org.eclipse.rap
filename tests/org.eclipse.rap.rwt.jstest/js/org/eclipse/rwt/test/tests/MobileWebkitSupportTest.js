@@ -1068,6 +1068,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     testDontScrollMinPosGridInScrolledComposite : function() {
       if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
         var grid = this._createGridByProtocol( true );
+        var scrollable = ObjectManager.getObject( "w5" );
+        scrollable.setVBarSelection( 40 );
         var preventLog = [];
         var logger = function( event ) {
           preventLog.push( event.getDomEvent().originalEvent.prevented );
@@ -1091,6 +1093,38 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
         assertEquals( 0, grid._topItemIndex );
         assertEquals( [ false, false ], preventLog );
+        grid.destroy();
+      }
+    },
+
+    testDontScrollScrolledCompositeWithGridAfterDirectionChangeUp : function() {
+      if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
+        var grid = this._createGridByProtocol( true );
+        var preventLog = [];
+        var logger = function( event ) {
+          preventLog.push( event.getDomEvent().originalEvent.prevented );
+        };
+        grid.addEventListener( "mousedown", logger );
+        grid.addEventListener( "mouseup", logger );
+        grid.addEventListener( "mouseout", logger );
+        grid.setScrollBarsVisible( false, true );
+        grid.setItemCount( 50 );
+        grid.setItemHeight( 20 );
+        for( var i = 0; i < 50; i++ ) {
+          new org.eclipse.rwt.widgets.GridItem( grid.getRootItem(), i );
+        }
+        TestUtil.flush();
+        var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+
+        this.touchAt( node, "touchstart", 0, 500 );
+        this.touchAt( node, "touchmove", 0, 501 );
+        this.touchAt( node, "touchmove", 0, 550 );
+        this.touchAt( node, "touchmove", 0, 549 );
+        this.touchAt( node, "touchmove", 0, 480 );
+        this.touchAt( node, "touchend", 0, 480 );
+
+        assertEquals( 1, grid._topItemIndex );
+        assertEquals( [ false, true ], preventLog );
         grid.destroy();
       }
     },
@@ -1122,6 +1156,41 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
         assertEquals( 25, grid._topItemIndex );
         assertEquals( [ false, false ], preventLog );
+        grid.destroy();
+      }
+    },
+
+    testDontScrollScrolledCompositeWithGridAfterDirectionChangeDown : function() {
+      if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
+        var grid = this._createGridByProtocol( true );
+        var scrollable = ObjectManager.getObject( "w5" );
+        scrollable.setVBarSelection( 400 );
+        var preventLog = [];
+        var logger = function( event ) {
+          preventLog.push( event.getDomEvent().originalEvent.prevented );
+        };
+        grid.addEventListener( "mousedown", logger );
+        grid.addEventListener( "mouseup", logger );
+        grid.addEventListener( "mouseout", logger );
+        grid.setScrollBarsVisible( false, true );
+        grid.setItemCount( 50 );
+        grid.setItemHeight( 20 );
+        for( var i = 0; i < 50; i++ ) {
+          new org.eclipse.rwt.widgets.GridItem( grid.getRootItem(), i );
+        }
+        TestUtil.flush();
+        grid.setTopItemIndex( 25 );
+        var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+
+        this.touchAt( node, "touchstart", 0, 451 );
+        this.touchAt( node, "touchmove", 0, 450 );
+        this.touchAt( node, "touchmove", 0, 400 );
+        this.touchAt( node, "touchmove", 0, 401 );
+        this.touchAt( node, "touchmove", 0, 480 );
+        this.touchAt( node, "touchend", 0, 480 );
+
+        assertEquals( 24, grid._topItemIndex );
+        assertEquals( [ false, true ], preventLog );
         grid.destroy();
       }
     },
