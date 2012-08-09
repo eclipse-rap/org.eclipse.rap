@@ -542,6 +542,7 @@ public class TreeColumn extends Item {
       parent.updateScrollBars();
       ControlEvent event = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
       event.processEvent();
+      processNextColumnsMoveEvent();
       packed = false;
     }
   }
@@ -576,6 +577,23 @@ public class TreeColumn extends Item {
   void releaseParent() {
     super.releaseParent();
     parent.destroyColumn( this );
+  }
+
+  //////////////////
+  // Helping methods
+
+  private void processNextColumnsMoveEvent() {
+    int[] columnsOrder = parent.getColumnOrder();
+    boolean found = false;
+    for( int i = 0; i < columnsOrder.length; i++ ) {
+      TreeColumn column = parent.getColumn( columnsOrder[ i ] );
+      if( column == this ) {
+        found = true;
+      } else if( found ) {
+        ControlEvent event = new ControlEvent( column, ControlEvent.CONTROL_MOVED );
+        event.processEvent();
+      }
+    }
   }
 
   //////////////

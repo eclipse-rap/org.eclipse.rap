@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.util.List;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -19,7 +20,6 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 
 
@@ -27,19 +27,25 @@ public class TreeColumn_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private Tree tree;
+  private List<Event> eventLog;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
+    tree = new Tree( shell, SWT.NONE );
+    eventLog = new ArrayList<Event>();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
 
   public void testCreation() {
-    Tree tree = new Tree( shell, SWT.NONE );
     // Add one item
     TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
     assertEquals( 1, tree.getColumnCount() );
@@ -60,7 +66,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testParent() {
-    Tree tree = new Tree( shell, SWT.NONE );
     // Test creating column with valid parent
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     assertSame( tree, column.getParent() );
@@ -74,13 +79,11 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testDisplay() {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     assertSame( display, column.getDisplay() );
   }
 
   public void testStyle() {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     assertTrue( ( column.getStyle() & SWT.LEFT ) != 0 );
     column = new TreeColumn( tree, SWT.LEFT | SWT.RIGHT | SWT.CENTER );
@@ -90,7 +93,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testInitialValues() {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     assertEquals( 0, column.getWidth() );
     assertEquals( "", column.getText() );
@@ -102,9 +104,7 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testAlignment() {
-    Tree tree = new Tree( shell, SWT.NONE );
-    TreeColumn column;
-    column = new TreeColumn( tree, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
     assertEquals( SWT.LEFT, column.getAlignment() );
     column = new TreeColumn( tree, SWT.LEFT );
     assertEquals( SWT.LEFT, column.getAlignment() );
@@ -119,8 +119,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testWidth() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     // Initial value
     assertEquals( 0, column.getWidth() );
@@ -140,29 +138,19 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testPack() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final java.util.List<Widget> log = new ArrayList<Widget>();
-    ControlAdapter resizeListener = new ControlAdapter() {
-
-      public void controlResized( ControlEvent e ) {
-        log.add( e.widget );
-      }
-    };
-    Tree tree = new Tree( shell, SWT.NONE );
     tree.setHeaderVisible( true );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
-    column.addControlListener( resizeListener );
+    column.addListener( SWT.Resize, new LoggingListener() );
     // Ensure that controlResized is fired when pack changes the width
     column.setWidth( 12312 );
-    log.clear();
+    eventLog.clear();
     column.pack();
-    assertSame( log.get( 0 ), column );
+    assertSame( eventLog.get( 0 ).widget, column );
     // Ensure that controlResized is *not* fired when pack doesn't change the
     // width
-    log.clear();
+    eventLog.clear();
     column.pack();
-    assertEquals( 0, log.size() );
-    column.removeControlListener( resizeListener );
+    assertEquals( 0, eventLog.size() );
     // pack calculates a minimal width for an empty column
     column = new TreeColumn( tree, SWT.NONE );
     column.pack();
@@ -189,7 +177,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testPackRespectSubItems() {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( "Item 0" );
@@ -205,72 +192,40 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testPackWithVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final java.util.List<Widget> log = new ArrayList<Widget>();
-    Listener setDataListener = new Listener() {
-
-      public void handleEvent( Event event ) {
-        log.add( event.item );
-      }
-    };
-    ControlListener resizeListener = new ControlAdapter() {
-
-      public void controlResized( ControlEvent event ) {
-        log.add( event.widget );
-      }
-    };
-    Tree tree;
-    TreeColumn column;
     // Must not try to access items if there aren't any
-    log.clear();
     tree = new Tree( shell, SWT.VIRTUAL );
-    column = new TreeColumn( tree, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
     column.setWidth( 200 );
-    column.addControlListener( resizeListener );
+    column.addListener( SWT.Resize, new LoggingListener() );
     column.pack();
-    assertEquals( 1, log.size() ); // ensure that pack() did something
+    assertEquals( 1, eventLog.size() ); // ensure that pack() did something
     // Ensure that pack does not resolve virtual items
-    log.clear();
+    eventLog.clear();
     tree = new Tree( shell, SWT.VIRTUAL );
     column = new TreeColumn( tree, SWT.NONE );
     tree.setSize( 100, 50 );
     tree.setItemCount( 100 );
-    tree.addListener( SWT.SetData, setDataListener );
+    tree.addListener( SWT.SetData, new LoggingListener() );
     column.pack();
-    assertEquals( 0, log.size() );
+    assertEquals( 0, eventLog.size() );
   }
 
   public void testResizeEvent() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
-    Tree tree = new Tree( shell, SWT.NONE );
-    final TreeColumn column = new TreeColumn( tree, SWT.NONE );
-    column.addControlListener( new ControlListener() {
-
-      public void controlMoved( ControlEvent event ) {
-        fail( "unexpected event: controlMoved" );
-      }
-
-      public void controlResized( ControlEvent event ) {
-        log.add( event );
-      }
-    } );
-    ControlEvent event;
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+    column.addListener( SWT.Resize, new LoggingListener() );
     // Changing column width leads to resize event
-    log.clear();
     column.setWidth( column.getWidth() + 1 );
-    assertEquals( 1, log.size() );
-    event = log.get( 0 );
-    assertSame( column, event.getSource() );
+    assertEquals( 1, eventLog.size() );
+    Event event = eventLog.get( 0 );
+    assertSame( column, event.widget );
     // Setting the column width to the same value it already has as well leads
     // to resize event
-    log.clear();
+    eventLog.clear();
     column.setWidth( column.getWidth() );
-    assertEquals( 0, log.size() );
+    assertEquals( 0, eventLog.size() );
   }
 
   public void testDisposeLast() {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column0 = new TreeColumn( tree, SWT.NONE );
     TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -286,7 +241,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testSetResizable() {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn treeColumn = new TreeColumn( tree, SWT.NONE );
     assertTrue( ":a:", treeColumn.getResizable() == true );
     treeColumn.setResizable( false );
@@ -298,7 +252,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testSetToolTip() {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn treeColumn = new TreeColumn( tree, SWT.NONE );
     String tooltip = "foobar";
     assertEquals( null, treeColumn.getToolTipText() );
@@ -307,4 +260,27 @@ public class TreeColumn_Test extends TestCase {
     treeColumn.setToolTipText( "" );
     assertEquals( "", treeColumn.getToolTipText() );
   }
+
+  public void testFireMoveEventOnColumnResize() {
+    TreeColumn column0 = new TreeColumn( tree, SWT.NONE );
+    TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
+    column1.addListener( SWT.Move, new LoggingListener() );
+
+    column0.setWidth( 100 );
+
+    assertEquals( 1, eventLog.size() );
+    Event event = eventLog.get( 0 );
+    assertEquals( SWT.Move, event.type );
+    assertSame( column1, event.widget );
+  }
+
+  //////////////////
+  // Helping classes
+
+  private class LoggingListener implements Listener {
+    public void handleEvent( Event event ) {
+      eventLog.add( event );
+    }
+  }
+
 }
