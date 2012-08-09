@@ -9,6 +9,10 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+
 qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
   extend : qx.core.Object,
@@ -19,7 +23,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     URL1 : "http://www.eclipse.org/rap",
 
     testCreateBrowserByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -41,7 +44,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     },
 
     testSetHasProgressListenerByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
@@ -63,7 +65,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testSetUrlByProtocol :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var shell = TestUtil.createShellByProtocol( "w2" );
         var processor = org.eclipse.rwt.protocol.Processor;
         processor.processOperation( {
@@ -117,7 +118,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testExecute :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         TestUtil.delayTest( 600 );
         TestUtil.store( browser );
@@ -125,7 +125,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function( browser ) {
         //NOTE: Using "_isLoaded" instead of "isLoaded" because of IE.
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();
         var win = browser.getContentWindow();
         assertNotNull( win );
@@ -145,7 +144,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testEvaluateByProtocol :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var shell = TestUtil.createShellByProtocol( "w2" );
         org.eclipse.rwt.protocol.Processor.processOperation( {
           "target" : "w3",
@@ -162,7 +160,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();
         org.eclipse.rwt.protocol.Processor.processOperation( {
           "target" : "w3",
@@ -181,15 +178,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testCreateDestroyBrowserFunctionByProtocol :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var shell = TestUtil.createShellByProtocol( "w2" );
+        TestUtil.createShellByProtocol( "w2" );
         var browser = this._createBrowserByProtocol( "w3", "w2" );
         TestUtil.delayTest( 1000 );
         TestUtil.store( browser );
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();
         org.eclipse.rwt.protocol.Processor.processOperation( {
           "target" : "w3",
@@ -218,14 +213,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testExecuteFailed :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         TestUtil.delayTest( 1000 );
         TestUtil.store( browser );
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();
         browser.execute( "for(){}" );
         var msg = TestUtil.getMessage();
@@ -237,14 +230,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testEvaluateReturnsRegexp :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         TestUtil.delayTest( 1000 );
         TestUtil.store( browser );
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();
         browser.execute( "/regexp/;" );
         var msg = TestUtil.getMessage();
@@ -256,14 +247,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testEvaluateReturnsMap :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         TestUtil.delayTest( 1000 );
         TestUtil.store( browser );
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();
         browser.execute( "( function(){ return {};})();" );
         var msg = TestUtil.getMessage();
@@ -275,14 +264,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testEvaluateReturnsArray :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         TestUtil.delayTest( 1000 );
         TestUtil.store( browser );
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();
         browser.execute( "( function(){ return [ 1,2,3 ]; } )();" );
         var msg = TestUtil.getMessage();
@@ -294,14 +281,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testEvaluateReturnsFunction :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         TestUtil.delayTest( 1000 );
         TestUtil.store( browser );
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();
         browser.execute( "( function(){ return function(){}; } )();" );
         var msg = TestUtil.getMessage();
@@ -313,7 +298,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testExecuteSecurityException : [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         browser.setSource( "http://www.google.de/" );
         browser.syncSource();
@@ -334,7 +318,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testBrowserFunctionSecurityExceptionInResponse : [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         browser.setSource( "http://www.google.de/" );
         browser.syncSource();
@@ -356,14 +339,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testCreateDestroyBrowserFunction :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         TestUtil.delayTest( 1000 );
         TestUtil.store( browser );
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();
         browser.createFunction( "abc" );
         var win = browser.getContentWindow();
@@ -378,7 +359,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testCreateBrowserFunctionBeforeLoaded :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         browser.createFunction( "abc" );
         TestUtil.delayTest( 1000 );
@@ -386,7 +366,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();
         var win = browser.getContentWindow();
         assertTrue( typeof( win.abc ) === "function" );
@@ -397,7 +376,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testCreateBrowserFunctionThenNavigate :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         browser.setSource( "javascript:false;" );
         TestUtil.delayTest( 1000 );
@@ -411,7 +389,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();
         var win = browser.getContentWindow();
         assertTrue( typeof( win.abc ) === "function" );
@@ -422,14 +399,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testCreateDestroyBrowserFunctionThenNavigate :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         TestUtil.delayTest( 600 );
         TestUtil.store( browser );
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();
         browser.createFunction( "abc" );
         browser.destroyFunction( "abc" );
@@ -447,7 +422,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testCreateBrowserFunctionThenSetSourceToOtherDomain :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         TestUtil.delayTest( 1000 );
         TestUtil.store( browser );
@@ -461,7 +435,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         TestUtil.store( browser );
       },
       function( browser ) {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         assertTrue( "slow connection?", browser._isLoaded );
         assertNull( TestUtil.getErrorPage() );
         browser.destroy();
@@ -470,7 +443,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testCreateBrowserFunctionThenNavigateToOtherDomain :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         TestUtil.delayTest( 1000 );
         TestUtil.store( browser );
@@ -498,14 +470,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testNavigateToOtherDomainThenCreateBrowserFunction :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         TestUtil.delayTest( 1000 );
         TestUtil.store( browser );
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         browser.getIframeNode().onload = function() {
           browser.setUserData( "nativeLoaded", true );
         };
@@ -532,14 +502,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testBrowserFunctionFailed :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         TestUtil.delayTest( 1000 );
         TestUtil.store( browser );
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();
         browser.createFunction( "abc" );
         var win = browser.getContentWindow();
@@ -560,14 +528,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testBrowserFunctionSucceed  :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         TestUtil.delayTest( 1000 );
         TestUtil.store( browser );
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();
         browser.createFunction( "abc" );
         var win = browser.getContentWindow();
@@ -585,10 +551,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         browser.destroy();
       }
     ],
-    
+
     testBrowserFunctionFailedByProtocol :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var shell = TestUtil.createShellByProtocol( "w2" );
         var browser = this._createBrowserByProtocol( "w3", "w2" );
         TestUtil.delayTest( 1000 );
@@ -596,7 +561,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();
         org.eclipse.rwt.protocol.Processor.processOperation( {
           "target" : "w3",
@@ -624,7 +588,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testBrowserFunctionSucceedByProtocol  :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var shell = TestUtil.createShellByProtocol( "w2" );
         var browser = this._createBrowserByProtocol( "w3", "w2" );
         TestUtil.delayTest( 1000 );
@@ -632,7 +595,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.initRequestLog();
         org.eclipse.rwt.protocol.Processor.processOperation( {
           "target" : "w3",
@@ -661,7 +623,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testDispose :  [
       function() {
         // See Bug 327440 - Memory leak problem with Iframe in Internet Explorer
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         assertTrue( browser.isSeeable() );
         assertFalse( browser._isLoaded );
@@ -670,7 +631,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var el = browser._getTargetNode();
         var iframe = browser._iframeNode;
@@ -688,7 +648,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         TestUtil.store( browser, el, iframe );
       },
       function( browser, el, iframe ) {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var log = [];
         browser.addEventListener( "load", function( e ) {
           log.push( e );
@@ -704,14 +663,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testEnabled :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         TestUtil.delayTest( 1000 );
         TestUtil.store( browser );
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var blockerNode = browser.getBlockerNode();
         var blockerParent = browser._getBlockerParent();
         assertTrue( blockerNode.parentNode !== blockerParent );
@@ -738,7 +695,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testProgressEvent :  [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         browser.setHasProgressListener( true );
         TestUtil.initRequestLog();
@@ -749,7 +705,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         assertEquals( 1, TestUtil.getRequestsSend() );
         var msg = TestUtil.getMessage();
         assertTrue( msg.indexOf( "w6.org.eclipse.swt.events.progressCompleted=true" ) != -1 );
@@ -774,7 +729,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     },
 
     _createBrowser : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var browser = new org.eclipse.swt.browser.Browser();
       browser.addToDocument();
       browser.setSpace( 10, 576, 57, 529 );
@@ -789,3 +743,5 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
  }
 
 } );
+
+}());
