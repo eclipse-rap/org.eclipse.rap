@@ -301,9 +301,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
 
     // overrided
     _syncFieldWidth : function() {
-      this._inputElement.style.width = (   this.getInnerWidth()
-                                         - this._getIconOuterWidth( "search" )
-                                         - this._getIconOuterWidth( "cancel" ) ) + "px";
+      var width =   this.getInnerWidth()
+                  - this._getIconOuterWidth( "search" )
+                  - this._getIconOuterWidth( "cancel" );
+      this._inputElement.style.width = Math.max( 2, width ) + "px";
     },
 
     _syncFieldLeft : function() {

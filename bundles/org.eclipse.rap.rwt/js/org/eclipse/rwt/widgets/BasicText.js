@@ -421,7 +421,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
     },
 
     _syncFieldWidth : function() {
-      this._inputElement.style.width = this.getInnerWidth() + "px";
+      this._inputElement.style.width = Math.max( 2, this.getInnerWidth() ) + "px";
     },
 
     _syncFieldHeight : function() {

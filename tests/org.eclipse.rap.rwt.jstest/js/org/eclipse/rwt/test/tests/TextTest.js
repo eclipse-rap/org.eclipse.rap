@@ -420,6 +420,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( [ 0, 0 ], text.getComputedSelection() );
     },
 
+    testInputMinWidth : function() {
+      createText();
+
+      text.setWidth( 0 );
+      text.setHeight( 0 );
+
+      assertEquals( 2, parseInt( text.getInputElement().style.width, 10 ) );
+    },
+
+
     testSetSelection : function() {
       createText();
       text.setValue( "asdfjkloe" );
