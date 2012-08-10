@@ -35,10 +35,10 @@
       </view>
       <view
             category="one"
-            class="org.eclipse.rap.demo.DemoTreeViewPart"
+            class="org.eclipse.rap.demo.DemoChartViewPart"
             icon="icons/contact.gif"
-            id="org.eclipse.rap.demo.DemoTreeViewPartI"
-            name="View I"/> 
+            id="org.eclipse.rap.demo.DemoChartViewPart"
+            name="Chart"/> 
       <view
             category="one"
             class="org.eclipse.rap.demo.DemoTreeViewPart"
@@ -49,20 +49,20 @@
             category="one"
             class="org.eclipse.rap.demo.DemoTreeViewPart"
             icon="icons/login.gif"
-            id="org.eclipse.rap.demo.DemoTreeViewPartIII"
-            name="View III"/> 
+            id="org.eclipse.rap.demo.DemoTreeViewPart"
+            name="Tree"/> 
       <view
             category="two"
             class="org.eclipse.rap.demo.DemoFormViewPart"
             icon="icons/register.gif"
-            id="org.eclipse.rap.demo.DemoTreeViewPartIV"
-            name="View V"/> 
+            id="org.eclipse.rap.demo.DemoFormViewPart"
+            name="Form"/> 
       <view
             category="two"
             class="org.eclipse.rap.demo.DemoTableViewPart"
             icon="icons/search.gif"
             id="org.eclipse.rap.demo.DemoTableViewPart"
-            name="View IV"/> 
+            name="Table"/> 
       <view
             category="two"
             class="org.eclipse.rap.demo.DemoSelectionViewPart"
@@ -88,7 +88,7 @@
         point="org.eclipse.ui.viewActions">
      <viewContribution
            id="org.eclipse.rap.demo.viewContribution2"
-           targetID="org.eclipse.rap.demo.DemoTreeViewPartIII">
+           targetID="org.eclipse.rap.demo.DemoTreeViewPart">
         <action
               class="org.eclipse.rap.demo.DemoTreeViewActionDelegate"
               enablesFor="*"

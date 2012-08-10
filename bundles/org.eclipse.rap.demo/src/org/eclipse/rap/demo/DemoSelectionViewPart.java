@@ -27,7 +27,7 @@ public class DemoSelectionViewPart extends ViewPart {
   private List list;
 
   @Override
-  public void createPartControl( final Composite parent ) {
+  public void createPartControl( Composite parent ) {
     parent.setLayout( new GridLayout( 1, false ) );
     Label label = new Label( parent, 0 );
     label.setText( "Selection Log" );
@@ -46,9 +46,7 @@ public class DemoSelectionViewPart extends ViewPart {
     IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
     ISelectionService selectionService = window.getSelectionService();
     selectionService.addSelectionListener( new ISelectionListener() {
-      public void selectionChanged( final IWorkbenchPart part,
-                                    final ISelection selection )
-      {
+      public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
         String entry = part.getTitle() + " / ";
         IStructuredSelection sselection = ( IStructuredSelection )selection;
         Object firstElement = sselection.getFirstElement();
