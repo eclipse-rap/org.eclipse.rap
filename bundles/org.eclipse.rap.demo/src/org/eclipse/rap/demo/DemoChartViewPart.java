@@ -22,8 +22,11 @@ import org.eclipse.ui.part.ViewPart;
 
 public class DemoChartViewPart extends ViewPart {
 
+  private Bar[] bars;
+
   @Override
   public void createPartControl( Composite parent ) {
+    initBars();
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new FillLayout() );
     Canvas canvas = new Canvas( composite, SWT.NONE );
@@ -39,7 +42,24 @@ public class DemoChartViewPart extends ViewPart {
   public void setFocus() {
   }
 
-  private static void drawGrid( PaintEvent event ) {
+  private void initBars() {
+    bars = new Bar[ 6 ];
+    String[] titles = new String[] { "A", "B", "C", "D", "E", "F" };
+    int[] heights = new int[] { 34, 111, 21, 45, 87, 50 };
+    Color[] colors = new Color[] {
+      Graphics.getColor( 99, 150, 239 ),
+      Graphics.getColor( 239, 130, 123 ),
+      Graphics.getColor( 49, 203, 49 ),
+      Graphics.getColor( 255, 215, 0 ),
+      Graphics.getColor( 132, 113, 255 ),
+      Graphics.getColor( 140, 239, 140 )
+    };
+    for( int i = 0; i < bars.length; i++ ) {
+      bars[ i ] = new Bar( titles[ i ], heights[ i ], colors[ i ] );
+    }
+  }
+
+  private void drawGrid( PaintEvent event ) {
     Display display = event.display;
     GC gc = event.gc;
     gc.setFont( new Font( display, "Arial", 10, SWT.NONE ) );
@@ -56,39 +76,36 @@ public class DemoChartViewPart extends ViewPart {
     gc.drawPolygon( new int[] { 170, 160, 160, 157, 160, 163 } );
   }
 
-  private static void drawBars( PaintEvent event ) {
-    int[] barHeights = new int[] { 34, 111, 21, 45, 87, 50 };
-    Color[] barColors = new Color[] {
-      Graphics.getColor( 99, 150, 239 ),
-      Graphics.getColor( 239, 130, 123 ),
-      Graphics.getColor( 49, 203, 49 ),
-      Graphics.getColor( 255, 215, 0 ),
-      Graphics.getColor( 132, 113, 255 ),
-      Graphics.getColor( 140, 239, 140 )
-    };
-    String[] barTitles = new String[] { "A", "B", "C", "D", "E", "F" };
+  private void drawBars( PaintEvent event ) {
     for( int i = 0; i < 6; i++ ) {
-      drawSingleBar( event, barTitles[ i ], barColors[ i ], 30 + i * 20, barHeights[ i ] );
+      bars[ i ].redraw( event, 30 + i * 20 );
     }
   }
 
-  private static void drawSingleBar( PaintEvent event,
-                                     String title,
-                                     Color color,
-                                     int x,
-                                     int height )
-  {
-    Display display = event.display;
-    GC gc = event.gc;
-    gc.setBackground( color );
-    gc.fillRectangle( x, 160 - height, 15, height );
-    gc.setForeground( Graphics.getColor( 0, 0, 0 ) );
-    gc.setBackground( Graphics.getColor( 0, 0, 0 ) );
-    gc.drawRectangle( x, 160 - height, 15, height );
-    gc.fillRectangle( x + 13, 160 - height, 2, height );
-    gc.setFont( new Font( display, "Arial", 10, SWT.NONE ) );
-    gc.setForeground( Graphics.getColor( 0, 0, 0 ) );
-    gc.setBackground( Graphics.getColor( 255, 255, 255 ) );
-    gc.drawString( title, x + 5, 161 );
+  private class Bar {
+    private final String title;
+    private final int height;
+    private final Color color;
+
+    public Bar( String title, int height, Color color ) {
+      this.title = title;
+      this.height = height;
+      this.color = color;
+    }
+
+    public void redraw( PaintEvent event, int x ) {
+      Display display = event.display;
+      GC gc = event.gc;
+      gc.setBackground( color );
+      gc.fillRectangle( x, 160 - height, 15, height );
+      gc.setForeground( Graphics.getColor( 0, 0, 0 ) );
+      gc.setBackground( Graphics.getColor( 0, 0, 0 ) );
+      gc.drawRectangle( x, 160 - height, 15, height );
+      gc.fillRectangle( x + 13, 160 - height, 2, height );
+      gc.setFont( new Font( display, "Arial", 10, SWT.NONE ) );
+      gc.setForeground( Graphics.getColor( 0, 0, 0 ) );
+      gc.setBackground( Graphics.getColor( 255, 255, 255 ) );
+      gc.drawString( title, x + 5, 161 );
+    }
   }
 }
