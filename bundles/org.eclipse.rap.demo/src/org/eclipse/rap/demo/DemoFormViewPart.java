@@ -23,7 +23,7 @@ public class DemoFormViewPart extends ViewPart {
 
   @Override
   public void createPartControl( Composite parent ) {
-    Composite composite = new Composite( parent, SWT.NULL );
+    Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new FillLayout() );
     FormToolkit toolkit = new FormToolkit( composite.getDisplay() );
     ScrolledForm form = toolkit.createScrolledForm( composite );
