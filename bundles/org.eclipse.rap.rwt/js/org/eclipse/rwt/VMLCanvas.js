@@ -121,6 +121,7 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
     },
 
     ellipse : function( x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiCW ) {
+      // NOTE : according to WHATWG standard, but no support for rotation
       if( this._currentPath.length === 0 ) {
         var startX = x + Math.cos( startAngle ) * radiusX;
         var startY = y + Math.sin( startAngle ) * radiusY;
@@ -138,6 +139,9 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
       } );
     },
 
+    arc : function( x, y, radius, startAngle, endAngle, antiCW ) {
+      this.ellipse( x, y, radius, radius, 0, startAngle, endAngle, antiCW );
+    },
 
     drawImage : function() {
       var shape = org.eclipse.rwt.VML.createShape( "image" );

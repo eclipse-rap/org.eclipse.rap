@@ -21,11 +21,13 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     this._canvas = null;
     this._context = null;
     this._createCanvas();
+    this._canvas.rwtObject = this;
     this._textCanvas = document.createElement( "div" );
     this._textCanvas.style.position = "absolute";
     this._textCanvas.style.overflow = "hidden";
     this._textCanvas.style.left = "0px";
     this._textCanvas.style.top = "0px";
+    this._textCanvas.rwtObject = this;
     if( this._control.isCreated() ) {
       this._addCanvasToDOM();
     }
@@ -118,6 +120,10 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       }
     },
 
+    getNativeContext : function() {
+      return this._context;
+    },
+
     ////////////
     // Internals
 
@@ -157,7 +163,6 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     },
 
     _removeCanvasFromDOM : function() {
-      var controlElement = this._control._getTargetNode();
       this._canvas.parentNode.removeChild( this._canvas );
       this._textCanvas.parentNode.removeChild( this._textCanvas );
     },
@@ -190,7 +195,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
         var cy = operation[ 2 ];
         var rx = operation[ 3 ];
         var ry = operation[ 4 ];
-        var rotation = operation[ 5 ]; // not supported
+        //var rotation = operation[ 5 ]; // not supported
         var startAngle = operation[ 6 ];
         var endAngle = operation[ 7 ];
         var dir = operation[ 8 ];
