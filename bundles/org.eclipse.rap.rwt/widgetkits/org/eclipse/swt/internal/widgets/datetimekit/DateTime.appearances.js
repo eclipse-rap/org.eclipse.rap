@@ -22,6 +22,7 @@ var appearances = {
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
       result.backgroundGradient = tv.getCssGradient( "DateTime", "background-image" );
       result.textShadow = tv.getCssShadow( "DateTime", "text-shadow" );
+      result.shadow = tv.getCssShadow( "DateTime", "box-shadow" );
       return result;
     }
   },
@@ -36,6 +37,7 @@ var appearances = {
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
       result.backgroundGradient = tv.getCssGradient( "DateTime", "background-image" );
       result.textShadow = tv.getCssShadow( "DateTime", "text-shadow" );
+      result.shadow = tv.getCssShadow( "DateTime", "box-shadow" );
       return result;
     }
   },
@@ -155,7 +157,7 @@ var appearances = {
       return result;
     }
   },
-  
+
   //------------------------------------------------------------------------
   // Calendar
 

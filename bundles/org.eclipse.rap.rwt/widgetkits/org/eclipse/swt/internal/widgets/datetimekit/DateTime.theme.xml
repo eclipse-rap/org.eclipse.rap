@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -50,6 +50,9 @@
     <property name="text-shadow"
         description="Shadow for text." />
 
+    <property name="box-shadow" 
+        description="Inner or outer shadow around the bounds of a DateTime widget." />
+
     <state name="disabled"
         description="Applies to disbled DateTime controls." />
 
@@ -67,7 +70,7 @@
 
       <property name="background-color"
           description="Background color for DateTime fields" />
-          
+
       <property name="padding"
           description="Padding for DateTime Date/Time field part." />
 
@@ -135,7 +138,7 @@
 
       <property name="text-shadow"
         description="Shadow for text." />
-      
+
       <state name="disabled"
         description="Applies to disbled DateTime controls." />
 
@@ -150,10 +153,10 @@
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
-      
+
       <property name="cursor"
           description="Calendar previous month button cursor." />
-        
+
       <state name="disabled"
           description="Applies to disabled Calendar previous month button." />
 
@@ -171,10 +174,10 @@
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
-      
+
       <property name="cursor"
           description="Calendar next month button cursor." />
-        
+
       <state name="disabled"
           description="Applies to disabled Calendar next month button." />
 
@@ -192,10 +195,10 @@
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
-      
+
       <property name="cursor"
           description="Calendar previous year button cursor." />
-        
+
       <state name="disabled"
           description="Applies to disabled Calendar previous year button." />
 
@@ -213,10 +216,10 @@
           The size of the image should be 16 x 16 pixels.
         </description>
       </property>
-      
+
       <property name="cursor"
         description="Calendar next year button cursor." />
-        
+
       <state name="disabled"
           description="Applies to disabled Calendar next year button." />
 
@@ -258,7 +261,7 @@
           like "inset" or "outset" is used.
         </description>
       </property>
-      
+
       <property name="cursor"
         description="DateTime Date/Time up button cursor." />
 
@@ -273,24 +276,24 @@
 
       <state name="pressed"
           description="Applies while a button is pressed." />
-          
+
       <state name="disabled"
           description="Applies to disabled DateTime up button." />
 
     </element>
-    
+
     <element name="DateTime-UpButton-Icon"
         description="The DateTime up button icon">
 
       <property name="background-image"
           description="The icon for DateTime up button." />
-          
+
       <state name="hover"
           description="Applies while the user hovers over the button." />
 
       <state name="pressed"
           description="Applies while a button is pressed." />
-          
+
       <state name="disabled"
           description="Applies to disabled DateTime up button." />
 
@@ -329,7 +332,7 @@
           like "inset" or "outset" is used.
         </description>
       </property>
-      
+
       <property name="cursor"
         description="DateTime Date/Time down button cursor." />
 
@@ -344,24 +347,24 @@
 
       <state name="pressed"
           description="Applies while a button is pressed." />
-          
+
       <state name="disabled"
           description="Applies to disabled DateTime down button." />
 
     </element>
-    
+
     <element name="DateTime-DownButton-Icon"
         description="The DateTime down button icon">
 
       <property name="background-image"
           description="The icon for DateTime down button." />
-          
+
       <state name="hover"
           description="Applies while the user hovers over the button." />
 
       <state name="pressed"
           description="Applies while a button is pressed." />
-          
+
       <state name="disabled"
           description="Applies to disabled DateTime down button." />
 
@@ -403,7 +406,7 @@
           like "inset" or "outset" is used.
         </description>
       </property>
-      
+
       <property name="cursor"
         description="DateTime Date drop-down button cursor." />
 
@@ -418,29 +421,29 @@
 
       <state name="pressed"
           description="Applies while a button is pressed." />
-      
+
       <state name="disabled"
           description="Applies to disabled DateTime Date drop-down button." />
 
     </element>
-    
+
     <element name="DateTime-DropDownButton-Icon">
       <description>
         The drop-down button icon.
       </description>
-      
+
       <property name="background-image">
         <description>
           The icon for the DateTime drop-down button.
         </description>
       </property>
-      
+
       <state name="hover"
         description="Applies while the user hovers over the button." />
 
       <state name="pressed"
           description="Applies while a button is pressed." />
-      
+
     </element>
 
     <element name="DateTime-DropDownCalendar">
