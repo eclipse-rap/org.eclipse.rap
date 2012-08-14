@@ -615,8 +615,8 @@ Shell {
 Shell[TITLE], Shell[BORDER] {
   box-shadow: 5px 5px 3px rgba( 0, 0, 0, 0.5 );
   background-color: white;
-  border: 2px solid #005092;
-  border-radius: 5px 5px 0px 0px;
+  border: 2px solid #99c92c;
+  border-radius: 6px;
   padding: 5px;
 }
 
@@ -2340,34 +2340,11 @@ Shell-Titlebar:inactive {
                               from( #595959 ), to( #4b4b4b ) );
 }
 
-Shell {
-  color: #4a4a4a;
-}
-
-Shell[BORDER], Shell[TITLE] {
-  border: 2px solid #99c92c;
-  border-radius: 6px;
-  padding: 5px;
-}
-
-Shell[BORDER]:inactive, Shell[TITLE]:inactive {
-  background-color: white;
-  border: 2px solid #4b4b4b;
-}
-
 Shell-DisplayOverlay {
   animation: fadeIn 150ms linear, fadeOut 400ms ease-out;
   background-image: none;
   background-color: #FFFFFF;
   opacity: 0.5;
-}
-
-Shell[BORDER], Shell[TITLE] {
-  border: 2px solid #99c92c;
-}
-
-Shell[BORDER]:inactive, Shell[TITLE]:inactive {
-  background-color: white;
 }
 
 Shell-CloseButton {

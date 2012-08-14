@@ -32,6 +32,11 @@ Shell {
   box-shadow: none;
 }
 
+Shell:maximized, Shell:maximized:inactive {
+  border: none;
+  border-radius: 0px;
+}
+
 Shell-DisplayOverlay {
   animation: fadeIn 150ms linear, fadeOut 400ms ease-out;
   background-image: none;
