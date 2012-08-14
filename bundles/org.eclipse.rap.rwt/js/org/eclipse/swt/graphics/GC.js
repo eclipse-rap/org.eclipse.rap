@@ -62,6 +62,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
         this._initTextCanvas( width, height );
         this._context.clearRect( 0, 0, width, height );
         this._initFields( font, background, foreground );
+        this._control.dispatchSimpleEvent( "paint" ); // client-side painting on server-side redraw
       },
       "default" : function( width, height, font, background, foreground  ) {
         this._initTextCanvas( width, height );
@@ -71,13 +72,14 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
         this._canvas.style.height = height + "px";
         this._context.clearRect( 0, 0, width, height );
         this._initFields( font, background, foreground );
+        this._control.dispatchSimpleEvent( "paint" ); // client-side painting on server-side redraw
       }
     } ),
 
 
     /**
      * Executes drawing operations using the HTML5-Canvas 2D-Context syntax.
-     * Only a subset is supported on all browser, espcially IE is limited.
+     * Only a subset is supported on all browser, especially IE is limited.
      * Each operation is an array starting with the name of the function to call, followed
      * by its parameters. Properties are treated the same way, i.e. [ "propertyName", "value" ].
      * Other differences from official HTML5-Canvas API:
