@@ -24,7 +24,7 @@
   <properties>
     <tycho-version>0.15.0</tycho-version>
     <signing-plugin-version>1.0.5</signing-plugin-version>
-    <base-platform>4.2/R-4.2-201206081400/</base-platform>
+    <base-platform>4.3milestones/S-4.3M1-201208101300/</base-platform>
   </properties>
 
   <prerequisites>
