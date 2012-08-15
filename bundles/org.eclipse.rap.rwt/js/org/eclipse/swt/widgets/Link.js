@@ -105,7 +105,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     },
 
     addLink : function( text, index ) {
-      var style = this._getHyperlinkStyle( {} );
+      var style = this._getHyperlinkStyle( false );
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this ) + "#" + index;
       this._text += "<span tabIndex=\"1\" ";
@@ -136,7 +136,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     },
 
     _applyHyperlinksStyleProperties : function() {
-      var style = this._getHyperlinkStyle( {} );
+      var style = this._getHyperlinkStyle( false );
       var hyperlinks = this._getHyperlinkElements();
       for( var i = 0; i < hyperlinks.length; i++ ) {
         org.eclipse.rwt.HtmlUtil.setStyleProperty( hyperlinks[ i ], "color", style.textColor );
@@ -215,13 +215,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
 
     _onMouseOver : function( evt ) {
       var target = this._getEventTarget( evt );
-      var style = this._getHyperlinkStyle( { "over" : true } );
+      var style = this._getHyperlinkStyle( true );
       org.eclipse.rwt.HtmlUtil.setStyleProperty( target, "textDecoration", style.textDecoration );
     },
 
     _onMouseOut : function( evt ) {
       var target = this._getEventTarget( evt );
-      var style = this._getHyperlinkStyle( {} );
+      var style = this._getHyperlinkStyle( false );
       org.eclipse.rwt.HtmlUtil.setStyleProperty( target, "textDecoration", style.textDecoration );
     },
 
@@ -253,10 +253,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       return parseInt( index, 10 );
     },
 
-    _getHyperlinkStyle : function( hyperlinkStates ) {
-      var states = hyperlinkStates;
-      if( !this.isEnabled() ) {
-        states.disabled = true;
+    _getHyperlinkStyle : function( hover ) {
+      var states = this._getStates();
+      if( hover ) {
+        states[ "over" ] = true;
+      } else {
+        delete states[ "over" ];
       }
       var manager = qx.theme.manager.Appearance.getInstance();
       return manager.styleFrom( "link-hyperlink", states );
