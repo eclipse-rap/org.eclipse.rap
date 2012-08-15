@@ -36,7 +36,8 @@ public class RWTTestsContribution implements TestContribution {
   private static final String[] TEST_FILES = new String[] {
     "tests/ClientTest.js",
     "tests/TestUtilTest.js",
-    "tests/ProtocolTest.js",
+    "tests/ProtocolProcessorTest.js",
+    "tests/ProtocolWriterTest.js",
     "tests/AdapterUtilTest.js",
     "tests/EncodingUtilTest.js",
     "tests/DisplayTest.js",

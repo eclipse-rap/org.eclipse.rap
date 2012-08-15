@@ -9,10 +9,10 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
+qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolProcessorTest", {
 
   extend : qx.core.Object,
-  
+
   members : {
 
     testAdapterRegistry : function() {
@@ -135,7 +135,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       registry.add( "dummyType", {} );
       var properties = {};
       var error = null;
-      try { 
+      try {
         processor.processOperationArray( [ "create", "dummyId", "dummyType", properties ] );
       } catch ( ex ) {
         error = ex;
@@ -248,8 +248,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
         }
       } );
       processor.processOperationArray( [ "destroy", "dummyId" ] );
-      assertEquals( [ "destroy" ], target.getLog() );  
-      assertNull( target.getParent() );  
+      assertEquals( [ "destroy" ], target.getLog() );
+      assertNull( target.getParent() );
       assertTrue( this._getTargetById( "dummyId" ) == null );
       registry.remove( "dummyType" );
     },
@@ -324,7 +324,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       assertEquals( properties, args );
       registry.remove( "dummyType" );
     },
-    
+
     testProcessCallUnkownMethod : function() {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -339,7 +339,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       assertEquals( 0, targetObject.getLog().length );
       registry.remove( "dummyType" );
     },
-    
+
     testProcessCallNoKownMethod : function() {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -361,7 +361,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var properties = {
         add : [ "foo" ]
       };
-      processor.processOperationArray( [ "listen", "dummyId", properties ] ); 
+      processor.processOperationArray( [ "listen", "dummyId", properties ] );
       // succeeds by not crashing
       registry.remove( "dummyType" );
       targetObject.destroy();
@@ -375,8 +375,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var properties = {
         add : [ "mouse" ]
       };
-      processor.processOperationArray( [ "listen", "dummyId", properties ] ); 
-      // NOTE: hasEventListeners may return "undefined" instead of "false"      
+      processor.processOperationArray( [ "listen", "dummyId", properties ] );
+      // NOTE: hasEventListeners may return "undefined" instead of "false"
       assertTrue( !targetObject.hasEventListeners( "mousedown" ) );
       assertTrue( !targetObject.hasEventListeners( "mouseup" ) );
       registry.remove( "dummyType" );
@@ -393,11 +393,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var properties = {
         "foo" : true
       };
-      processor.processOperationArray( [ "listen", "dummyId", properties ] ); 
+      processor.processOperationArray( [ "listen", "dummyId", properties ] );
       properties = {
         "foo" : false
       };
-      processor.processOperationArray( [ "listen", "dummyId", properties ] ); 
+      processor.processOperationArray( [ "listen", "dummyId", properties ] );
       assertEquals(  [ "fooListener", true, "fooListener", false ], targetObject.getLog() );
       targetObject.destroy();
     },
@@ -417,12 +417,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var properties = {
         "bar" : true
       };
-      processor.processOperationArray( [ "listen", "dummyId", properties ] ); 
+      processor.processOperationArray( [ "listen", "dummyId", properties ] );
       assertTrue( targetObject.getMyData( "barListener" ) );
       properties = {
         "bar" : false
       };
-      processor.processOperationArray( [ "listen", "dummyId", properties ] ); 
+      processor.processOperationArray( [ "listen", "dummyId", properties ] );
       assertNull( targetObject.getMyData( "barListener" ) );
       targetObject.destroy();
     },
@@ -442,7 +442,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       };
       processor.processMessage( message );
       assertEquals( [ "height", 33, "width", 24 ], targetObject.getLog() );
-      registry.remove( "dummyType" );      
+      registry.remove( "dummyType" );
     },
 
     testSetError : function() {
@@ -466,15 +466,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       assertTrue( error instanceof Error );
       var message = error.message.toLowerCase();
       var expected1 = "operation \"set\" on target \"dummyid\" of type \"myclass\"";
-      var expected2 = "fail = 99"; 
-      var expected3 = "item: \"fail\""; 
+      var expected2 = "fail = 99";
+      var expected3 = "item: \"fail\"";
       var expected4 = "myerror";
       assertTrue( message.indexOf( expected1 ) !== - 1 );
       // TODO [tb] : implement enhanced information gathering
       assertTrue( message.indexOf( expected2 ) !== - 1 );
       //assertTrue( message.indexOf( expected3 ) !== - 1 );
       assertTrue( message.indexOf( expected4 ) !== - 1 );
-      registry.remove( "dummyType" );      
+      registry.remove( "dummyType" );
     },
 
     testProcessMetaSetRequestCounter : function() {
@@ -490,7 +490,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       assertEquals( 3, req.getRequestCounter() );
     },
 
-  // TODO : how to test adapters? 
+  // TODO : how to test adapters?
   // construct + (all setter once => no crash) + specific cases?
 
     /////////
@@ -550,7 +550,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
         },
         setToolTip : function() {
           // NOTE: Currently needed (as getDisposed) by WidgetManager
-          // should not be the case. 
+          // should not be the case.
         },
         setHasFooListener : function( value ) {
           log.push( "fooListener", value );
@@ -598,7 +598,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       result.setLeft( 10 );
       result.setTop( 10 );
       result.setWidth( 100 );
-      result.setHeight( 20 ); 
+      result.setHeight( 20 );
       TestUtil.flush();
       if( typeof targetId === "string" ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
@@ -608,5 +608,5 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
     }
 
   }
-  
+
 } );
