@@ -57,7 +57,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
       } );
       var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
-      var expected 
+      var expected
         = "text1 "
         + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"w3#0\">link1</span>"
         + " text2 "
@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
       } );
       var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
-      var expected 
+      var expected
         = "text<br/>text "
         + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"w3#0\">"
         + "link<br/>link"
@@ -111,7 +111,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
       } );
       var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
-      var expected 
+      var expected
         = "foo &amp;&amp; &lt;&gt; &quot; bar "
         + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"w3#0\">"
         + "foo &amp;&amp; &lt;&gt; &quot; bar"
@@ -143,5 +143,5 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
     }
 
   }
-  
+
 } );

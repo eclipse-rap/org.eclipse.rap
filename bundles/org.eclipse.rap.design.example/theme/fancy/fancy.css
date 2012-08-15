@@ -442,8 +442,9 @@ Link {
 }
 
 Link-Hyperlink {
-  color: #00589f;
+  color: #93c12b;
   text-shadow: none;
+  text-decoration: underline;
 }
 
 Link-Hyperlink:disabled {
@@ -2831,16 +2832,6 @@ DateTime-DropDownButton-Icon:hover {
 
 DateTime-Calendar-Day:selected:hover {
   background-color: #abe033;
-}
-
-/* Link */
-
-Link-Hyperlink {
-  color: #93c12b;
-}
-
-Link-Hyperlink:disabled {
-  color: #959595;
 }
 
 /* Progress Bar */

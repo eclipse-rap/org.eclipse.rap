@@ -477,10 +477,20 @@ Link[BORDER] {
 Link-Hyperlink {
   color: #416693;
   text-shadow: none;
+  text-decoration: none;
 }
 
 Link-Hyperlink:disabled {
   color: #959595;
+}
+
+Link-Hyperlink:hover {
+  text-decoration: underline;
+}
+
+Link-Hyperlink:hover:disabled {
+  color: #959595;
+  text-decoration: none;
 }
 
 /* List default theme */

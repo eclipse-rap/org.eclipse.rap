@@ -28,9 +28,20 @@ var appearances = {
 
   "link-text" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         textColor: "inherit"
+      };
+    }
+  },
+
+  "link-hyperlink" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+        textColor : tv.getCssColor( "Link-Hyperlink", "color" ),
+        textShadow : tv.getCssShadow( "Link-Hyperlink", "text-shadow" ),
+        textDecoration : tv.getCssIdentifier( "Link-Hyperlink", "text-decoration" ),
+        cursor : states.disabled ? "default" : "pointer"
       };
     }
   }

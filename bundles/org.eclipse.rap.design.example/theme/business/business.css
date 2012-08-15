@@ -459,6 +459,7 @@ Link {
 Link-Hyperlink {
   color: #00589f;
   text-shadow: none;
+  text-decoration: underline;
 }
 
 Link-Hyperlink:disabled {

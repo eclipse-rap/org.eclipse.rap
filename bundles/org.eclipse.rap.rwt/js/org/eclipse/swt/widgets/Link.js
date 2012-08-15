@@ -31,6 +31,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     this.setSelectable( false );
     this.setHideFocus( true );
     this.__onMouseDown = qx.lang.Function.bindEvent( this._onMouseDown, this );
+    this.__onMouseOver = qx.lang.Function.bindEvent( this._onMouseOver, this );
+    this.__onMouseOut = qx.lang.Function.bindEvent( this._onMouseOut, this );
     this.__onKeyDown = qx.lang.Function.bindEvent( this._onKeyDown, this );
     this.addEventListener( "appear", this._onAppear, this );
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
@@ -42,6 +44,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
   destruct : function() {
     this._removeEventListeners();
     delete this.__onMouseDown;
+    delete this.__onMouseOver;
+    delete this.__onMouseOut;
     delete this.__onKeyDown;
     this.removeEventListener( "appear", this._onAppear, this );
     this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
@@ -101,11 +105,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     },
 
     addLink : function( text, index ) {
+      var style = this._getHyperlinkStyle( {} );
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this ) + "#" + index;
       this._text += "<span tabIndex=\"1\" ";
       this._text += "style=\"";
-      this._text += "text-decoration:underline; ";
+      this._text += "text-decoration:" + style.textDecoration + "; ";
       this._text += "\" ";
       this._text += "id=\"" + id + "\"";
       this._text += ">";
@@ -131,19 +136,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     },
 
     _applyHyperlinksStyleProperties : function() {
-      var themeValues = new org.eclipse.swt.theme.ThemeValues( this._getStates() );
-      var linkColor = themeValues.getCssColor( "Link-Hyperlink", "color" );
-      var linkShadow = themeValues.getCssShadow( "Link-Hyperlink", "text-shadow" );
-      themeValues.dispose();
+      var style = this._getHyperlinkStyle( {} );
       var hyperlinks = this._getHyperlinkElements();
       for( var i = 0; i < hyperlinks.length; i++ ) {
-        org.eclipse.rwt.HtmlUtil.setStyleProperty( hyperlinks[ i ], "color", linkColor );
-        org.eclipse.rwt.HtmlUtil.setTextShadow( hyperlinks[ i ], linkShadow );
-        if( this.isEnabled() ) {
-          hyperlinks[ i ].style.cursor = "pointer";
-        } else {
-          hyperlinks[ i ].style.cursor = "default";
-        }
+        org.eclipse.rwt.HtmlUtil.setStyleProperty( hyperlinks[ i ], "color", style.textColor );
+        org.eclipse.rwt.HtmlUtil.setTextShadow( hyperlinks[ i ], style.textShadow );
+        org.eclipse.rwt.HtmlUtil.setStyleProperty( hyperlinks[ i ], "cursor", style.cursor );
       }
     },
 
@@ -166,6 +164,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
                                                       "mousedown",
                                                       this.__onMouseDown );
           qx.html.EventRegistration.addEventListener( hyperlinks[ i ],
+                                                      "mouseover",
+                                                      this.__onMouseOver );
+          qx.html.EventRegistration.addEventListener( hyperlinks[ i ],
+                                                      "mouseout",
+                                                      this.__onMouseOut );
+          qx.html.EventRegistration.addEventListener( hyperlinks[ i ],
                                                       "keydown",
                                                       this.__onKeyDown );
         }
@@ -181,6 +185,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
                                                          "mousedown",
                                                          this.__onMouseDown );
           qx.html.EventRegistration.removeEventListener( hyperlinks[ i ],
+                                                         "mouseover",
+                                                         this.__onMouseOver );
+          qx.html.EventRegistration.removeEventListener( hyperlinks[ i ],
+                                                         "mouseout",
+                                                         this.__onMouseOut );
+          qx.html.EventRegistration.removeEventListener( hyperlinks[ i ],
                                                          "keydown",
                                                          this.__onKeyDown );
         }
@@ -189,31 +199,44 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     },
 
     _onMouseDown : function( evt ) {
-      var target = this._getEventTarget( evt );
-      var index = this._getLinkIndex( target );
-      this._setFocusedLink( index );
-      var leftBtnPressed = this._isLeftMouseButtonPressed( evt );
-      if( this.isEnabled() && leftBtnPressed && this._readyToSendChanges ) {
-        // [if] Fix for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=252559
-        this._readyToSendChanges = false;
-        qx.client.Timer.once( function() {
-          this._sendChanges( index );
-        }, this, org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME );
+      if( this.isEnabled() && this._isLeftMouseButtonPressed( evt ) ) {
+        var target = this._getEventTarget( evt );
+        var index = this._getLinkIndex( target );
+        this._setFocusedLink( index );
+        if( this._readyToSendChanges ) {
+          // [if] Fix for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=252559
+          this._readyToSendChanges = false;
+          qx.client.Timer.once( function() {
+            this._sendChanges( index );
+          }, this, org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME );
+        }
       }
     },
 
+    _onMouseOver : function( evt ) {
+      var target = this._getEventTarget( evt );
+      var style = this._getHyperlinkStyle( { "over" : true } );
+      org.eclipse.rwt.HtmlUtil.setStyleProperty( target, "textDecoration", style.textDecoration );
+    },
+
+    _onMouseOut : function( evt ) {
+      var target = this._getEventTarget( evt );
+      var style = this._getHyperlinkStyle( {} );
+      org.eclipse.rwt.HtmlUtil.setStyleProperty( target, "textDecoration", style.textDecoration );
+    },
+
     _isLeftMouseButtonPressed : function( evt ) {
-      var leftBtnPressed;
+      var result = false;
       if( evt.which ) {
-        leftBtnPressed = ( evt.which === 1 );
+        result = ( evt.which === 1 );
       } else if( evt.button ) {
         if( org.eclipse.rwt.Client.isMshtml() ) {
-          leftBtnPressed = ( evt.button === 1 );
+          result = ( evt.button === 1 );
         } else {
-          leftBtnPressed = ( evt.button === 0 );
+          result = ( evt.button === 0 );
         }
       }
-      return leftBtnPressed;
+      return result;
     },
 
     _onKeyDown : function( evt ) {
@@ -228,6 +251,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       var id = element.id;
       var index = id.substr( id.lastIndexOf( "#" ) + 1 );
       return parseInt( index, 10 );
+    },
+
+    _getHyperlinkStyle : function( hyperlinkStates ) {
+      var states = hyperlinkStates;
+      if( !this.isEnabled() ) {
+        states.disabled = true;
+      }
+      var manager = qx.theme.manager.Appearance.getInstance();
+      return manager.styleFrom( "link-hyperlink", states );
     },
 
     _getEventTarget : function( evt ) {
