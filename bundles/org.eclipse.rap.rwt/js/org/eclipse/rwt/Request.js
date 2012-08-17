@@ -28,51 +28,8 @@ org.eclipse.rwt.Request = function( url, method, responseType ) {
   this._request = org.eclipse.rwt.Request.createXHR();
 };
 
-org.eclipse.rwt.Request.createXHR = qx.core.Variant.select( "qx.client", {
-  "default" : function() {
-    return new XMLHttpRequest();
-  },
-  "mshtml" : qx.lang.Object.select( window.XMLHttpRequest ? "native" : "activeX", {
-    "native" : function() {
-      return new XMLHttpRequest();
-    },
-    "activeX" : function() {
-      return new ActiveXObject( this._getMSXML() );
-    }
-  } )
-} );
-
-/**
- * According to information on the Microsoft XML Team's WebLog
- * it is recommended to check for availability of MSXML versions 6.0 and 3.0.
- * Other versions are included for completeness, 5.0 is excluded as it is
- * "off-by-default" in IE7 (which could trigger a goldbar).
- *
- * http://blogs.msdn.com/xmlteam/archive/2006/10/23/using-the-right-version-of-msxml-in-internet-explorer.aspx
- * http://msdn.microsoft.com/library/default.asp?url=/library/en-us/xmlsdk/html/aabe29a2-bad2-4cea-8387-314174252a74.asp
- *
- * MSXML 3 is preferred over MSXML 6 because the IE7 native XMLHttpRequest returns
- * a MSXML 3 document and so does not properly work with other types of xml documents.
- **/
-org.eclipse.rwt.Request._getMSXML = function() {
-  if( this.__server == null ) {
-    var servers = [
-     "MSXML2.XMLHTTP.3.0",
-     "MSXML2.XMLHTTP.6.0",
-     "MSXML2.XMLHTTP.4.0",
-     "MSXML2.XMLHTTP",    // v3.0
-     "Microsoft.XMLHTTP"  // v2.x
-    ];
-    for( var i = 0; i < servers.length && this.__server == null; i++ ) {
-      try {
-        new ActiveXObject( servers[ i ] );
-        this.__server = servers[ i ];
-      } catch( ex ) {
-        // try next one
-      }
-    }
-  }
-  return this.__server;
+org.eclipse.rwt.Request.createXHR = function() {
+  return new XMLHttpRequest();
 };
 
 org.eclipse.rwt.Request.prototype = {
