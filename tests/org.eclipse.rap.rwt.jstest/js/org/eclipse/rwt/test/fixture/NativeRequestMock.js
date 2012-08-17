@@ -53,6 +53,6 @@ org.eclipse.rwt.test.fixture.NativeRequestMock.prototype = {
 
 };
 
-qx.net.HttpRequest.create = function() {
+org.eclipse.rwt.Request.createXHR = function() {
   return new org.eclipse.rwt.test.fixture.NativeRequestMock();
 };

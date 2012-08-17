@@ -457,7 +457,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       widget.focus();
       TestUtil.press( widget, "x" );
       // NOTE [tb] : the identifier is always uppercase
-      var expected = [ "keydown", "X", "keypress", "X", "keyup", "X", ];
+      var expected = [ "keydown", "X", "keypress", "X", "keyup", "X" ];
       assertEquals( expected, log );
       widget.destroy();
     },
@@ -469,7 +469,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       var log = this._addKeyLogger( widget, true, true, false );
       widget.focus();
       TestUtil.press( widget, "Space" );
-      var expected = [ "keydown", "Space", "keypress", "Space", "keyup", "Space", ];
+      var expected = [ "keydown", "Space", "keypress", "Space", "keyup", "Space" ];
       assertEquals( expected, log );
       widget.destroy();
     },
@@ -499,8 +499,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       widget.focus();
       TestUtil.press( widget, "Left" );
       // NOTE [tb] : the identifier is currently always uppercase
-      var expected
-        = [ "keydown", "Left", "keypress", "Left", "keyup", "Left", ];
+      var expected = [ "keydown", "Left", "keypress", "Left", "keyup", "Left" ];
       assertEquals( expected, log );
       widget.destroy();
     },
@@ -668,10 +667,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
 
     testCleanUpKeyUtil : function() {
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
-      var prevented = false;
-      var preventDefault = function() {
-        prevented = true;
-      };
       var widget = this._createWidget();
       widget.setUserData( "isControl", true );
       widget.setUserData( "keyListener", true );
@@ -700,11 +695,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     testResetObjectManager : function() {
       TestUtil.createShellByProtocol( "w2" );
 
-      assertTrue( null != org.eclipse.rwt.protocol.ObjectManager.getObject( "w1" ) )
+      assertTrue( null != org.eclipse.rwt.protocol.ObjectManager.getObject( "w1" ) );
       TestUtil.resetObjectManager();
 
-      assertTrue( null == org.eclipse.rwt.protocol.ObjectManager.getObject( "w2" ) )
-      assertTrue( null != org.eclipse.rwt.protocol.ObjectManager.getObject( "w1" ) )
+      assertTrue( null == org.eclipse.rwt.protocol.ObjectManager.getObject( "w2" ) );
+      assertTrue( null != org.eclipse.rwt.protocol.ObjectManager.getObject( "w1" ) );
     },
 
     testProtocolListen : function() {
@@ -741,14 +736,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testCreateXMLHttpRequest : function() {
-      var request = qx.net.HttpRequest.create();
+      var request = org.eclipse.rwt.Request.createXHR();
 
       assertIdentical( request, TestUtil.getXMLHttpRequests()[ 0 ] );
     },
 
     testCreateMultipleXMLHttpRequest : function() {
-      var requestOne = qx.net.HttpRequest.create();
-      var requestTwo = qx.net.HttpRequest.create();
+      var requestOne = org.eclipse.rwt.Request.createXHR();
+      var requestTwo = org.eclipse.rwt.Request.createXHR();
 
       assertIdentical( requestOne, TestUtil.getXMLHttpRequests()[ 0 ] );
       assertIdentical( requestTwo, TestUtil.getXMLHttpRequests()[ 1 ] );
@@ -766,10 +761,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       return result;
     },
 
+    /*global glob: true */
     _addKeyLogger : function( widget, type, identifier, modifier ) {
       var log = [];
       var logger = function( event ) {
-        if( typeof glob === "undefined" ) glob = [];
+        if( typeof glob === "undefined" ) {
+          glob = [];
+        }
         glob.push( event );
         if( type ) {
           log.push( event.getType() );
@@ -780,7 +778,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
         if( modifier ) {
           log.push( event.getModifiers() );
         }
-      }
+      };
       widget.addEventListener( "keydown", logger );
       widget.addEventListener( "keypress", logger );
       widget.addEventListener( "keyup", logger );
