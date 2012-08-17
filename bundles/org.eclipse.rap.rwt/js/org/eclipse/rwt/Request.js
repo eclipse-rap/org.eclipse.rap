@@ -23,7 +23,7 @@ org.eclipse.rwt.Request = function( url, method, responseType ) {
   this._error = null;
   this._data = null;
   this._responseType = responseType;
-  this._request = qx.io.remote.XmlHttpTransport.createRequestObject();
+  this._request = qx.net.HttpRequest.create();
 };
 
 org.eclipse.rwt.Request.prototype = {
@@ -38,15 +38,23 @@ org.eclipse.rwt.Request.prototype = {
     },
 
     send : function() {
-      this._configRequest();
-      var nocache = "nocache=" + ( new Date() ).valueOf();
-      var url = this._url + ( this._url.indexOf( "?" ) >= 0 ? "&" : "?" ) + nocache;
+      var urlpar = "nocache=" + ( new Date() ).valueOf();
+      var post = this._method === "POST";
+      if( !post ) {
+        urlpar += "&" + this._data;
+      }
+      var url = this._url + ( this._url.indexOf( "?" ) >= 0 ? "&" : "?" ) + urlpar;
       this._request.open( this._method, url, this._async );
-      this._request.send( this._data );
+      this._configRequest();
+      this._request.send( post ? this._data : undefined );
     },
 
     setAsynchronous : function( value ) {
       this._async = value;
+    },
+
+    getAsynchronous : function() {
+      return this._async;
     },
 
     setHandleSuccess : function( handler ) {
@@ -59,6 +67,10 @@ org.eclipse.rwt.Request.prototype = {
 
     setData : function( value ) {
       this._data = value;
+    },
+
+    getData : function() {
+      return this._data;
     },
 
     _configRequest : function() {

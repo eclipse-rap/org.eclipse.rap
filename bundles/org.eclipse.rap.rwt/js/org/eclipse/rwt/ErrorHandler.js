@@ -174,7 +174,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       try {
         var display = org.eclipse.rwt.Display.getCurrent();
         display.setExitConfirmation( null );
-        qx.io.remote.RequestQueue.getInstance().setEnabled( false );
+        //qx.io.remote.RequestQueue.getInstance().setEnabled( false );
         org.eclipse.rwt.EventHandler.detachEvents();
         qx.core.Target.prototype.dispatchEvent = function() {};
         org.eclipse.rwt.Animation._stopLoop();

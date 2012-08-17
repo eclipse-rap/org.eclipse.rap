@@ -32,12 +32,6 @@ qx.Class.define( "org.eclipse.swt.Server", {
     // has not yet timed out
     this._inDelayedSend = false;
     this._retryHandler = null;
-    // As the CallBackRequests get blocked at the server to wait for
-    // background activity I choose a large timeout...
-    var requestQueue = qx.io.remote.RequestQueue.getInstance();
-    requestQueue.setDefaultTimeout( 60000 * 60 * 24 ); // 24h
-    // Initialize the request queue to allow only one request at a time
-    requestQueue.setMaxConcurrentRequests( 1 );
     // References the currently running request or null if no request is active
     this._currentRequest = null;
   },
@@ -157,12 +151,8 @@ qx.Class.define( "org.eclipse.swt.Server", {
         }
         // clear the parameter list
         this._parameters = {};
-        // queue request to be sent (async) or send and block (sync)
-        if( async ) {
-          request.send();
-        } else {
-          this._sendStandalone( request );
-        }
+        request.send();
+        this._currentRequest = request;
       }
     },
 
@@ -177,36 +167,14 @@ qx.Class.define( "org.eclipse.swt.Server", {
     },
 
     _createRequest : function() {
-      var result = new qx.io.remote.Request( this._url, "POST", "application/javascript" );
+      var result = new org.eclipse.rwt.Request( this._url, "POST", "application/javascript" );
       var that = this;
-      result.addEventListener( "sending", this._handleSending, this );
-      result.addEventListener( "completed", this._handleCompleted, this );
-      result.addEventListener( "failed", this._handleFailed, this );
+//      result.addEventListener( "sending", this._handleSending, this );
+//      result.addEventListener( "completed", this._handleCompleted, this );
+//      result.addEventListener( "failed", this._handleFailed, this );
       result.setHandleSuccess( function(){ that._handleSuccess.apply( that, arguments ); } );
       result.setHandleError( function(){ that._handleError.apply( that, arguments ); } );
       return result;
-    },
-
-    _sendStandalone : function( request ) {
-      // TODO [rh] WORKAROUND
-      //      we would need two requestQueues (one for 'normal' requests that
-      //      is limited to 1 concurrent request and one for the 'independant'
-      //      requests created here
-      //      Until qooxdoo supports multiple requestQueues we create and
-      //      send this kind of request without knownledge of the request queue
-      var vRequest = request;
-      var vTransport = new qx.io.remote.Exchange(vRequest);
-      // Establish event connection between qx.io.remote.Exchange instance and
-      // qx.io.remote.Request
-      vTransport.addEventListener( "sending", vRequest._onsending, vRequest );
-      vTransport.addEventListener( "receiving", vRequest._onreceiving, vRequest );
-      vTransport.addEventListener( "completed", vRequest._oncompleted, vRequest );
-      vTransport.addEventListener( "aborted", vRequest._onaborted, vRequest );
-      vTransport.addEventListener( "timeout", vRequest._ontimeout, vRequest );
-      vTransport.addEventListener( "failed", vRequest._onfailed, vRequest );
-      vTransport._start = ( new Date() ).valueOf();
-      vTransport.send();
-      // END WORKAROUND
     },
 
     ////////////////////////
@@ -303,7 +271,8 @@ qx.Class.define( "org.eclipse.swt.Server", {
 //                                failedParameters[ parameterName ] );
 //        }
         request.setData( failedRequest.getData() );
-        this._restartRequest( request );
+        request.send();
+        this._currentRequest = request;
       };
     },
 
@@ -314,19 +283,6 @@ qx.Class.define( "org.eclipse.swt.Server", {
         this._retryHandler();
       } catch( ex ) {
         org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
-      }
-    },
-
-    _restartRequest : function( request ) {
-      // TODO [rh] this is adapted from qx.io.remote.RequestQueue#add as there
-      //      is no official way to insert a new request as the first one in
-      //      RequestQueue
-      request.setState( "queued" );
-      var requestQueue = qx.io.remote.RequestQueue.getInstance();
-      qx.lang.Array.insertAt( requestQueue._queue, request, 0 );
-      requestQueue._check();
-      if( requestQueue.getEnabled() ) {
-        requestQueue._timer.start();
       }
     },
 

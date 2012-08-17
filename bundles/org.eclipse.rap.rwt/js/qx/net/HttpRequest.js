@@ -47,7 +47,7 @@ qx.Class.define("qx.net.HttpRequest",
 
          We always use activeX if the file served is locally = file protocol.
       */
-      "mshtml" : qx.lang.Object.select(location.protocol !== "file:" && window.XMLHttpRequest ? "native" : "activeX",
+      "mshtml" : qx.lang.Object.select( window.XMLHttpRequest ? "native" : "activeX",
       {
         "native" : function() {
           return new XMLHttpRequest();

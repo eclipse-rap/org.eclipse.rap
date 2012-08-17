@@ -52,36 +52,30 @@ org.eclipse.rwt.UICallBack.prototype = {
   _doSendUICallBackRequest : function() {
     this._requestTimer.stop();
     var url = org.eclipse.swt.Server.getInstance().getUrl();
-    var request = new qx.io.remote.Request( url, "GET", "application/javascript" );
-    request.addEventListener( "completed", this._handleFinished, this );
-    request.addEventListener( "failed", this._handleFailed, this );
-    request.setParameter( "custom_service_handler", "org.eclipse.rap.uicallback" );
-    org.eclipse.swt.Server.getInstance()._sendStandalone( request );
+    var that = this;
+    var request = new org.eclipse.rwt.Request( url, "GET", "application/javascript" );
+    request.setHandleSuccess( function(){ that._handleSuccess.apply( that, arguments ); } );
+    request.setHandleError( function(){ that._handleError.apply( that, arguments ); } );
+    request.setData( "custom_service_handler=org.eclipse.rap.uicallback" );
+    request.send();
   },
 
-  _handleFinished : function( event ) {
+  _handleSuccess : function( text, status, headers ) {
     this._running = false;
-    if( event.getType() === "completed" ) {
-      var text = event.getContent();
-      try {
-        var messageObject = JSON.parse( text );
-        org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
-      } catch( ex ) {
-        throw new Error( "Could not process UICallBack response: [" + text + "]: " + ex );
-      }
-      this._retryInterval = 0;
+    try {
+      var messageObject = JSON.parse( text );
+      org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
+    } catch( ex ) {
+      var escapedText = org.eclipse.rwt.protocol.EncodingUtil.escapeText( text, true );
+      var msg = "Could not process UICallBack response: [" + escapedText + "]: " + ex;
+      org.eclipse.rwt.ErrorHandler.showErrorBox( msg, true );
     }
-    // Transport is normally disposed of in RequestQueue but UICallBackReuests
-    // bypass the queue
-    var transport = event.getTarget();
-    var request = transport.getRequest();
-    transport.dispose();
-    request.dispose();
+    this._retryInterval = 0;
   },
 
-  _handleFailed : function( event ) {
+  _handleError : function( text, status, headers ) {
     this._running = false;
-    if( org.eclipse.swt.Server.getInstance()._isConnectionError( event.getStatusCode() ) ) {
+    if( org.eclipse.swt.Server.getInstance()._isConnectionError( status ) ) {
       qx.client.Timer.once( this.sendUICallBackRequest, this, this._retryInterval );
       this._increaseRetryInterval();
     }

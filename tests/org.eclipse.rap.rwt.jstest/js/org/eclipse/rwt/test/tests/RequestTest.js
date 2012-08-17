@@ -129,6 +129,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.RequestTest", {
       request.setAsynchronous( false );
       request.setData( "foo" );
 
+      assertFalse( request.getAsynchronous() );
+      assertEquals( "foo", request.getData() );
     },
 
     setUp : function() {
