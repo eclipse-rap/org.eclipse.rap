@@ -110,7 +110,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.FileUpload", {
       // TODO [tb] : implement setHasValueChangedListener?
       var fileName = this._formatFileName( this._getFileName() );
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
         req.addParameter( id + ".fileName", fileName );

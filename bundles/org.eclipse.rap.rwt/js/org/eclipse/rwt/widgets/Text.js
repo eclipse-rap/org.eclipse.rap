@@ -168,7 +168,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     _handleModification : function() {
       if( !this._requestScheduled ) {
         this._requestScheduled = true;
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         req.addEventListener( "send", this._onSend, this );
         if( this.hasModifyListener() || this.hasVerifyListener() ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
@@ -181,7 +181,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
 
     _delayedSend : function( event ) {
       if( this._requestScheduled ) {
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         req.send();
       }
     },
@@ -189,7 +189,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     _onSend : function( event ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.addParameter( id + ".text", this.getComputedValue() );
       this._detectSelectionChange();
       req.removeEventListener( "send", this._onSend, this );
@@ -202,7 +202,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     _sendWidgetDefaultSelected : function( detail ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
       if( detail ) {
         req.addEvent( "org.eclipse.swt.events.widgetSelected.detail", detail );

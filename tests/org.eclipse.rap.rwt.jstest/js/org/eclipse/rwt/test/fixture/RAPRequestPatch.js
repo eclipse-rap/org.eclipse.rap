@@ -10,16 +10,16 @@
  ******************************************************************************/
 
 qx.Mixin.define( "org.eclipse.rwt.test.fixture.RAPRequestPatch", {
-  
+
   "members": {
-    
+
     send : function() {
       if( !this._inDelayedSend ) {
         this._inDelayedSend = true;
         this._sendImmediate( true );
       }
-    },    
-    
+    },
+
     _sendStandalone : function(){
       var message = "_sendStandalone/enableUICallBack not (yet) supported!";
       this.error( message );
@@ -43,25 +43,27 @@ qx.Mixin.define( "org.eclipse.rwt.test.fixture.RAPRequestPatch", {
         this._copyParameters( request );
         this._runningRequestCount++;
         if( this._runningRequestCount === 1 ) {
-          // Removed: is distracting in debugging and useless unless tested 
+          // Removed: is distracting in debugging and useless unless tested
           //qx.client.Timer.once( this._showWaitHint, this, 500 );
         }
         this._parameters = {};
         request.send();
       }
-    },    
-    
+    },
+
     _createRequest : function() {
       var result = new org.eclipse.rwt.test.fixture.DummyRequest();
+      var that = this;
       result.addEventListener( "sending", this._handleSending, this );
       result.addEventListener( "completed", this._handleCompleted, this );
       result.addEventListener( "failed", this._handleFailed, this );
+      result.setHandleSuccess( function( data ){ that._handleSuccess( data ); } );
       return result;
     },
-    
+
     _writeErrorPage : function( content ) {
       throw( content );
     }
-        
+
   }
 } );

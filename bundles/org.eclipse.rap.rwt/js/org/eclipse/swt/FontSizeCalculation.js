@@ -35,7 +35,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
         var param = size[ 0 ] + "," + size[ 1 ];
         var id = item[ 0 ];
         this._addRequestParam( id, param );
-        org.eclipse.swt.Request.getInstance().send();
+        org.eclipse.swt.Server.getInstance().send();
       }
     },
 
@@ -127,7 +127,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
     },
 
     _addRequestParam : function ( name, value ) {
-      var request = org.eclipse.swt.Request.getInstance();
+      var request = org.eclipse.swt.Server.getInstance();
       request.addParameter( name, value );
     },
 

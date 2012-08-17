@@ -123,7 +123,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     _onChangeValue : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() && !this._isModified ) {
         this._isModified = true;
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         req.addEventListener( "send", this._onSend, this );
         if( this._hasSelectionListener ) {
           this._addModifyTextEvent();
@@ -166,14 +166,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     _addModifyTextEvent : function() {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.addEvent( "org.eclipse.swt.events.modifyText", id );
     },
 
     _sendWidgetSelected : function() {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
       org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
       req.send();
@@ -182,7 +182,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     _sendWidgetDefaultSelected : function() {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
       org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
       req.send();
@@ -192,14 +192,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
       this._isModified = false;
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.addParameter( id + ".selection", this.getManager().getValue() );
       req.removeEventListener( "send", this._onSend, this );
     },
 
     _sendModifyText : function( evt ) {
       if( this._isModified ) {
-        org.eclipse.swt.Request.getInstance().send();
+        org.eclipse.swt.Server.getInstance().send();
         this._isModified = false;
       }
     },

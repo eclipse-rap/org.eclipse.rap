@@ -45,6 +45,8 @@ qx.Class.define("qx.io.remote.Request", {
     this._requestHeaders = {};
     this._parameters = {};
     this._formFields = {};
+    this._success = null;
+    this._error = null;
 
     if (vUrl !== undefined) {
       this.setUrl(vUrl);
@@ -472,8 +474,13 @@ qx.Class.define("qx.io.remote.Request", {
       return this.getState() === "failed";
     },
 
+    setHandleSuccess : function( callback ) {
+      this._success = callback;
+    },
 
-
+    setHandleError : function( callback ) {
+      this._error = callback;
+    },
 
     /*
     ---------------------------------------------------------------------------
@@ -544,8 +551,12 @@ qx.Class.define("qx.io.remote.Request", {
       // Modify internal state
       this.setState("completed");
 
+
       // Bubbling up
       this.dispatchEvent(e);
+      if( this._success ) {
+        this._success( e.getContent(), e.getStatusCode(), e.getResponseHeaders() );
+      }
 
       // Automatically dispose after event completion
       this.dispose();
@@ -620,6 +631,10 @@ qx.Class.define("qx.io.remote.Request", {
 
       // Bubbling up
       this.dispatchEvent(e);
+      if( this._error ) {
+        var text = this.getTransport().getImplementation().getRequest().responseText;
+        this._error( text, e.getStatusCode(), e.getResponseHeaders() );
+      }
 
       // Automatically dispose after event completion
       this.dispose();
@@ -888,6 +903,7 @@ qx.Class.define("qx.io.remote.Request", {
 
   destruct : function()
   {
+    this.abort();
     this.setTransport(null);
     this._disposeFields("_requestHeaders", "_parameters", "_formFields");
   }

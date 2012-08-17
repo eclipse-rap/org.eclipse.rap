@@ -111,7 +111,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       // fix for Bug 301544: block new dragStarts until request is send
       this._blockDrag = true;
       if( !this._requestScheduled ) {
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         req.addEventListener( "send", this._onSend, this );
       }
       this._sendDragSourceEvent( target, "dragFinished", mouseEvent );
@@ -120,7 +120,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     },
 
     _sendDragSourceEvent : function( widget, type, qxDomEvent ) {
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( widget );
       var x = 0;
@@ -252,7 +252,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       event[ "param" ] = param;
       this._dropTargetEventQueue[ type ] = event;
       if( !this._requestScheduled ) {
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         req.addEventListener( "send", this._onSend, this );
         this._requestScheduled = true;
         qx.client.Timer.once( req.send, req, 200 );
@@ -279,7 +279,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     },
 
     _attachDropTargetEvents : function() {
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       var events = this._dropTargetEventQueue;
       for( var type in events ) {
         var event = events[ type ];
@@ -477,7 +477,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       this._attachDropTargetEvents();
       this._requestScheduled = false;
       this._blockDrag = false;
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.removeEventListener( "send", this._onSend, this );
     },
 

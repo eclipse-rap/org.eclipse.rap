@@ -204,7 +204,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
 
     _sendChanges : function() {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       var id = widgetManager.findIdByWidget( this );
       req.addParameter( id + ".selection", this._selection );
       if( this._hasSelectionListener ) {

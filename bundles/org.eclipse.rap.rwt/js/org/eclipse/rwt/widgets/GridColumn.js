@@ -237,7 +237,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumn", {
         var isTreeEvent = this._isGroup && event.chevron;
         if( this._hasSelectionListener || isTreeEvent ) {
           var id = org.eclipse.rwt.protocol.ObjectManager.getId( this );
-          var req = org.eclipse.swt.Request.getInstance();
+          var req = org.eclipse.swt.Server.getInstance();
           if( isTreeEvent ) {
             var eventStr = "org.eclipse.swt.events.";
             eventStr += this._expanded ? "treeCollapsed" : "treeExpanded";
@@ -291,7 +291,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumn", {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         req.addParameter( id + ".width", width );
         req.send();
       }
@@ -301,7 +301,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridColumn", {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         req.addParameter( id + ".left", left );
         req.send();
       }

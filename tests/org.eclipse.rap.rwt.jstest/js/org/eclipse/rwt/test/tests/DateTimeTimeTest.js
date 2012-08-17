@@ -168,7 +168,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
       TestUtil.clearRequestLog();
       dateTime._sendChanges();
       assertEquals( 0, TestUtil.getRequestsSend() );
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       assertEquals( 4, req._parameters[ "w3.hours" ] );
       assertEquals( 34, req._parameters[ "w3.minutes" ] );
       assertEquals( 55, req._parameters[ "w3.seconds" ] );

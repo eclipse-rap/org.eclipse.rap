@@ -38,7 +38,7 @@ org.eclipse.rwt.UICallBack.prototype = {
   },
 
   sendUIRequest : function() {
-    org.eclipse.swt.Request.getInstance()._sendImmediate( true );
+    org.eclipse.swt.Server.getInstance()._sendImmediate( true );
   },
 
   sendUICallBackRequest : function() {
@@ -51,12 +51,12 @@ org.eclipse.rwt.UICallBack.prototype = {
   // workaround for bug 353819 - send UICallBackRequest with a timer
   _doSendUICallBackRequest : function() {
     this._requestTimer.stop();
-    var url = org.eclipse.swt.Request.getInstance().getUrl();
+    var url = org.eclipse.swt.Server.getInstance().getUrl();
     var request = new qx.io.remote.Request( url, "GET", "application/javascript" );
     request.addEventListener( "completed", this._handleFinished, this );
     request.addEventListener( "failed", this._handleFailed, this );
     request.setParameter( "custom_service_handler", "org.eclipse.rap.uicallback" );
-    org.eclipse.swt.Request.getInstance()._sendStandalone( request );
+    org.eclipse.swt.Server.getInstance()._sendStandalone( request );
   },
 
   _handleFinished : function( event ) {
@@ -81,7 +81,7 @@ org.eclipse.rwt.UICallBack.prototype = {
 
   _handleFailed : function( event ) {
     this._running = false;
-    if( org.eclipse.swt.Request.getInstance()._isConnectionError( event.getStatusCode() ) ) {
+    if( org.eclipse.swt.Server.getInstance()._isConnectionError( event.getStatusCode() ) ) {
       qx.client.Timer.once( this.sendUICallBackRequest, this, this._retryInterval );
       this._increaseRetryInterval();
     }

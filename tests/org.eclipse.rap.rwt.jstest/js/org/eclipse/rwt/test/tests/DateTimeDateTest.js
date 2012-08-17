@@ -142,7 +142,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       TestUtil.clearRequestLog();
       dateTime._sendChanges();
       assertEquals( 0, TestUtil.getRequestsSend() );
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       assertEquals( 10, req._parameters[ "w3.day" ] );
       assertEquals( 10, req._parameters[ "w3.month" ] );
       assertEquals( 2010, req._parameters[ "w3.year" ] );

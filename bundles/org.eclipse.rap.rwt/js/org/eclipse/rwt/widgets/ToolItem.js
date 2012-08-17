@@ -91,7 +91,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
 
     _onDropDownClick : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() && this._hasSelectionListener ) {
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         if( this._sendEvent ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( this );

@@ -17,7 +17,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
     this._topIndex = 0;
     this._hasSelectionListener = false;
     // Listen to send event of request to report topIndex
-    var req = org.eclipse.swt.Request.getInstance();
+    var req = org.eclipse.swt.Server.getInstance();
     req.addEventListener( "send", this._onSendRequest, this );
     var selMgr = this.getManager();
     selMgr.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
@@ -29,7 +29,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
   },
 
   destruct : function() {
-    var req = org.eclipse.swt.Request.getInstance();
+    var req = org.eclipse.swt.Server.getInstance();
     req.removeEventListener( "send", this._onSendRequest, this );
     var selMgr = this.getManager();
     selMgr.removeEventListener( "changeLeadItem", this._onChangeLeadItem, this );
@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var id = wm.findIdByWidget( this );
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var focusIndex = this._clientArea.indexOf( this.getManager().getLeadItem() );
         req.addParameter( id + ".focusIndex", focusIndex );
       }
@@ -94,7 +94,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var id = wm.findIdByWidget( this );
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         req.addParameter( id + ".selection", this._getSelectionIndices() );
         if( this._hasSelectionListener ) {
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
@@ -110,7 +110,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
       if( this._topIndex != topIndex ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         req.addParameter( id + ".topIndex", topIndex );
         this._topIndex = topIndex;
       }
@@ -121,7 +121,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
         if( this._hasSelectionListener ) {
           var wm = org.eclipse.swt.WidgetManager.getInstance();
           var id = wm.findIdByWidget( this );
-          var req = org.eclipse.swt.Request.getInstance();
+          var req = org.eclipse.swt.Server.getInstance();
           req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
           org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();

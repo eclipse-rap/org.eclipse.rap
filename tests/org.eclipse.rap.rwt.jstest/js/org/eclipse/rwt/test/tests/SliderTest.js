@@ -410,7 +410,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       TestUtil.forceTimerOnce();
       assertFalse( slider._requestScheduled );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      org.eclipse.swt.Request.getInstance().send();
+      org.eclipse.swt.Server.getInstance().send();
       assertTrue( TestUtil.getMessage().indexOf( "w99.selection=5" ) != -1 );
       TestUtil.clearRequestLog();
       slider.setHasSelectionListener( true );

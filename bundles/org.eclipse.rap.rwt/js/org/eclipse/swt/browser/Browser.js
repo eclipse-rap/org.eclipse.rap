@@ -123,7 +123,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     _sendProgressEvent : function() {
       if( this._hasProgressListener ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
         req.addParameter( id + ".org.eclipse.swt.events.progressCompleted", "true" );
         req.send();
@@ -145,7 +145,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
       } catch( ex ) {
         success = false;
       }
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( this );
       req.addParameter( id + ".executeResult", success );
@@ -258,7 +258,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
 
     _createFunctionImpl : function( name ) {
       var win = this.getContentWindow();
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
       var that = this;

@@ -17,7 +17,7 @@ var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
 var Font = qx.ui.core.Font;
 var Border = org.eclipse.rwt.Border;
 var Client = org.eclipse.rwt.Client;
-var Request = org.eclipse.swt.Request;
+var Server = org.eclipse.swt.Server;
 
 var shell;
 var text;
@@ -727,7 +727,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.fakeMouseEvent( text, "mousedown" );
       setSelection( [ 3, 3 ] );
       TestUtil.fakeMouseEvent( text, "mouseup" );
-      Request.getInstance().send();
+      Server.getInstance().send();
 
       assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=3" ) !== -1 );
       assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
@@ -743,7 +743,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 //      setSelection( [ 3, 3 ] );
 //      TestUtil.fakeMouseEvent( text, "mouseout" );
 //      TestUtil.fakeMouseEvent( shell, "mouseup" );
-//      Request.getInstance().send();
+//      Server.getInstance().send();
 //
 //      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=3" ) !== -1 );
 //      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
@@ -756,7 +756,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.keyDown( text, "Right" );
       setSelection( [ 3, 3 ] );
       TestUtil.keyDown( text, "Enter" );
-      Request.getInstance().send();
+      Server.getInstance().send();
 
       assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=3" ) !== -1 );
       assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
@@ -769,7 +769,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.keyDown( text, "Right" );
       setSelection( [ 3, 3 ] );
       TestUtil.keyDown( text, "Enter" ); // can send a request without releasing Right
-      Request.getInstance().send();
+      Server.getInstance().send();
 
       assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=3" ) !== -1 );
       assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
@@ -781,7 +781,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       setSelection( [ 3, 3 ] );
 
       text.setValue( "f" );
-      Request.getInstance().send();
+      Server.getInstance().send();
 
       assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=1" ) !== -1 );
       assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
@@ -791,7 +791,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       createText();
 
       text.setValue( "foobar" );
-      Request.getInstance().send();
+      Server.getInstance().send();
 
       assertTrue( TestUtil.getMessage().indexOf( "w3.text=foobar" ) !== -1 );
     },
@@ -823,7 +823,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.forceTimerOnce();
 
       assertEquals( 0, TestUtil.getRequestsSend() );
-      Request.getInstance().send();
+      Server.getInstance().send();
       assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.modifyText" ) === -1 );
     },
 

@@ -443,7 +443,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
         if( !org.eclipse.swt.EventUtil.getSuspended() ) {
           var wm = org.eclipse.swt.WidgetManager.getInstance();
           var id = wm.findIdByWidget( this );
-          var req = org.eclipse.swt.Request.getInstance();
+          var req = org.eclipse.swt.Server.getInstance();
           req.addEvent( "org.eclipse.swt.events.ctabFolderShowList", id );
           req.send();
         }
@@ -473,7 +473,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
           }
         }
         var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( this );
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         req.addParameter( id + ".minimized", this._minMaxState == "min" );
         req.addParameter( id + ".maximized", this._minMaxState == "max" );
         if( this._hasFolderListener ) {
@@ -514,7 +514,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
           this.deselectAll();
           item.setSelected( true );
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-          var req = org.eclipse.swt.Request.getInstance();
+          var req = org.eclipse.swt.Server.getInstance();
           var id = widgetManager.findIdByWidget( this );
           var itemId = widgetManager.findIdByWidget( item );
           req.addParameter( id + ".selectedItemId", itemId );
@@ -529,7 +529,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         if( this._hasSelectionListener ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-          var req = org.eclipse.swt.Request.getInstance();
+          var req = org.eclipse.swt.Server.getInstance();
           var id = widgetManager.findIdByWidget( this );
           var itemId = widgetManager.findIdByWidget( item );
           // TODO [rst] remove this parameter as soon as server-side code is revised

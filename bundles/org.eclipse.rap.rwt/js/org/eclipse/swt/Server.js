@@ -12,7 +12,7 @@
 
 /*global confirm: false*/
 
-qx.Class.define( "org.eclipse.swt.Request", {
+qx.Class.define( "org.eclipse.swt.Server", {
   type : "singleton",
   extend : qx.core.Target,
 
@@ -135,8 +135,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
       // in case of conflict
       this._parameters[ "uiRoot" ] = this._uiRootId;
       if( this._requestCounter == -1 ) {
-        // TODO [fappel]: This is a workaround that prevents sending a request
-        // without a valid request id. Needed for background proccessing.
+        // NOTE: Delay sending the request until requestCounter is set
         this._inDelayedSend = false;
         this.send();
       } else {
@@ -179,9 +178,12 @@ qx.Class.define( "org.eclipse.swt.Request", {
 
     _createRequest : function() {
       var result = new qx.io.remote.Request( this._url, "POST", "application/javascript" );
+      var that = this;
       result.addEventListener( "sending", this._handleSending, this );
       result.addEventListener( "completed", this._handleCompleted, this );
       result.addEventListener( "failed", this._handleFailed, this );
+      result.setHandleSuccess( function(){ that._handleSuccess.apply( that, arguments ); } );
+      result.setHandleError( function(){ that._handleError.apply( that, arguments ); } );
       return result;
     },
 
@@ -216,42 +218,39 @@ qx.Class.define( "org.eclipse.swt.Request", {
     },
 
     _handleFailed : function( evt ) {
+      var exchange = evt.getTarget();
+      this._currentRequest = exchange.getRequest();
+    },
+
+    _handleError : function( text, statusCode, headers ) {
       // [vt] workaround for bug #253756: Copied code from _handleSending since
       // the sending phase is skipped on failure in IE
       // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=253756
-      var exchange = evt.getTarget();
-      this._currentRequest = exchange.getRequest();
-      if( this._isConnectionError( evt.getStatusCode() ) ) {
-        this._handleConnectionError( evt );
+      if( this._isConnectionError( statusCode ) ) {
+        this._handleConnectionError();
       } else {
         this._hideWaitHint();
-        var request = exchange.getImplementation().getRequest();
-        var text = request.responseText;
         // [if] typeof(..) == "unknown" is IE specific. Used to prevent error:
         // "The data  necessary to complete this operation is not yet available"
         if( typeof( text ) == "unknown" ) {
           text = undefined;
         }
         if( text && text.length > 0 ) {
-          if( this._isJsonResponse( request ) ) {
+          if( this._isJsonResponse( headers ) ) {
             var messageObject = JSON.parse( text );
             org.eclipse.rwt.ErrorHandler.showErrorBox( messageObject.meta.message, true );
           } else {
             org.eclipse.rwt.ErrorHandler.showErrorPage( text );
           }
         } else {
-          var statusCode = String( evt.getStatusCode() );
+          var statusCode = String( statusCode );
           text = "<p>Request failed.</p><pre>HTTP Status Code: " + statusCode + "</pre>";
           org.eclipse.rwt.ErrorHandler.showErrorPage( text );
         }
       }
-      // [if] Dispose only finished transport - see bug 301261, 317616
-      exchange.dispose();
     },
 
-    _handleCompleted : function( evt ) {
-      var exchange = evt.getTarget();
-      var text = exchange.getImplementation().getRequest().responseText;
+    _handleSuccess : function( text, statusCode, headers ) {
       var errorOccured = false;
       try {
         var messageObject = JSON.parse( text );
@@ -271,7 +270,11 @@ qx.Class.define( "org.eclipse.swt.Request", {
       }
       this._runningRequestCount--;
       this._hideWaitHint();
+    },
+
+    _handleCompleted : function( evt ) {
       // [if] Dispose only finished transport - see bug 301261, 317616
+      var exchange = evt.getTarget();
       exchange.dispose();
     },
 
@@ -281,8 +284,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
     _handleConnectionError : function( evt ) {
       var msg
         = "<p>The server seems to be temporarily unavailable</p>"
-        + "<p><a href=\"javascript:org.eclipse.swt.Request.getInstance()._retry();\">Retry</a></p>";
-      var result = false;
+        + "<p><a href=\"javascript:org.eclipse.swt.Server.getInstance()._retry();\">Retry</a></p>";
       qx.ui.core.ClientDocument.getInstance().setGlobalCursor( null );
       org.eclipse.rwt.ErrorHandler.showErrorBox( msg, false );
       this._retryHandler = function() {
@@ -291,15 +293,15 @@ qx.Class.define( "org.eclipse.swt.Request", {
         request.setAsynchronous( failedRequest.getAsynchronous() );
         // Reusing the same request object causes strange behaviour, therefore
         // create a new request and copy the relevant parts from the failed one
-        var failedHeaders = failedRequest.getRequestHeaders();
-        for( var headerName in failedHeaders ) {
-          request.setRequestHeader( headerName, failedHeaders[ headerName ] );
-        }
-        var failedParameters = failedRequest.getParameters();
-        for( var parameterName in failedParameters ) {
-          request.setParameter( parameterName,
-                                failedParameters[ parameterName ] );
-        }
+//        var failedHeaders = failedRequest.getRequestHeaders();
+//        for( var headerName in failedHeaders ) {
+//          request.setRequestHeader( headerName, failedHeaders[ headerName ] );
+//        }
+//        var failedParameters = failedRequest.getParameters();
+//        for( var parameterName in failedParameters ) {
+//          request.setParameter( parameterName,
+//                                failedParameters[ parameterName ] );
+//        }
         request.setData( failedRequest.getData() );
         this._restartRequest( request );
       };
@@ -356,8 +358,8 @@ qx.Class.define( "org.eclipse.swt.Request", {
       }
     } ),
 
-    _isJsonResponse : function( request ) {
-      var contentType = request.getResponseHeader( "Content-Type" );
+    _isJsonResponse : function( headers ) {
+      var contentType = headers[ "Content-Type" ];
       return contentType.indexOf( qx.util.Mime.JSON ) !== -1;
     },
 

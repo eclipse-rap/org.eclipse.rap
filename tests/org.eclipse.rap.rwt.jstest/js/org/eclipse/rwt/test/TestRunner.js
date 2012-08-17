@@ -248,6 +248,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
         org.eclipse.rwt.test.fixture.TestUtil.cleanUpKeyUtil();
         org.eclipse.rwt.test.fixture.TestUtil.clearErrorPage();
         org.eclipse.rwt.test.fixture.TestUtil.resetObjectManager();
+        org.eclipse.rwt.test.fixture.TestUtil.clearXMLHttpRequests();
         org.eclipse.rwt.EventHandler.setFocusRoot(
           qx.ui.core.ClientDocument.getInstance()
         );

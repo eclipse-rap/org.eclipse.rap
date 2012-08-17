@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.swt.WidgetUtil", {
     setPropertyParam : function( widget, propertyName, propertyValue ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( widget );
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.addParameter( id + "." + propertyName, propertyValue );
     },
 

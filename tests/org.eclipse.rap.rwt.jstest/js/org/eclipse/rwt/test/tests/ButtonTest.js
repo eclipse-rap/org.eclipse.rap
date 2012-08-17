@@ -425,7 +425,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertEquals( 0, this.TestUtil.getRequestsSend() );
       assertTrue( button.hasState( "selected" ) );
       assertTrue(
-        org.eclipse.swt.Request.getInstance()._parameters[ "w11.selection" ]
+        org.eclipse.swt.Server.getInstance()._parameters[ "w11.selection" ]
       );
       button.setHasSelectionListener( true );
       button.setSelection( false );
@@ -458,7 +458,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       this.TestUtil.click( button );
       assertEquals( 0, this.TestUtil.getRequestsSend() );      
       assertTrue(
-        org.eclipse.swt.Request.getInstance()._parameters[ "w11.selection" ]
+        org.eclipse.swt.Server.getInstance()._parameters[ "w11.selection" ]
       );
       button.setSelection( false );      
       button.setHasSelectionListener( true );

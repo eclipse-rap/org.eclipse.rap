@@ -188,7 +188,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     _createSendRequestTimer : function() {
       if( this._sendRequestTimer === null ) {
         var timer = new qx.client.Timer( 400 );
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         timer.addEventListener( "interval", req.send, req );
         req.addEventListener( "send", timer.stop, timer );
         this._sendRequestTimer = timer;
@@ -915,7 +915,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
 
     _sendSelectionChange : function( item ) {
       if( !this._inServerResponse() ) {
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var id = wm.findIdByWidget( this );
         var selection = this._getSelectionList();
@@ -926,7 +926,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
 
     _sendItemCheckedChange : function( item ) { // TODO [tb] : item events should be send by item
       if( !this._inServerResponse() ) {
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var itemId = wm.findIdByWidget( item );
         req.addParameter( itemId + ".checked", item.isChecked() );
@@ -936,7 +936,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
 
     _sendCellCheckedChange : function( item, cell ) { // TODO [tb] : item events should be send by item
       if( !this._inServerResponse() ) {
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var itemId = wm.findIdByWidget( item );
         var arr = item.getCellChecked();
@@ -952,14 +952,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
 
     _sendItemFocusChange : function() {
       if( !this._inServerResponse() ) {
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( this );
         req.addParameter( id + ".focusItem", this._getItemId( this._focusItem ) );
       }
     },
 
     _sendTopItemIndexChange : function() {
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( this );
       req.addParameter( id + ".topItemIndex", this._topItemIndex );
@@ -972,7 +972,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
       // TODO [tb] : There should be a check for _inServerResponse,
       // but currently this is needed to sync the value with the
       // server when the scrollbars are hidden by the server.
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( this );
       req.addParameter( id + ".scrollLeft", this._horzScrollBar.getValue() );
@@ -998,14 +998,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Grid", {
     _sendItemEvent : function( item, type ) { // TODO [tb] : item events should be send by item
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var treeItemId = wm.findIdByWidget( item );
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.addEvent( type, treeItemId );
       req.send();
     },
 
     _sendSelectionEvent : function( item, defaultSelected, detail, index ) {
       if( this._hasSelectionListener ) {
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var id = wm.findIdByWidget( this );
         var eventName = "org.eclipse.swt.events.widget";

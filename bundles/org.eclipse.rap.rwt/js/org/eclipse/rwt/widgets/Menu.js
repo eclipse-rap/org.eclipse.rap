@@ -552,7 +552,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
           // send event
           var wm = org.eclipse.swt.WidgetManager.getInstance();
           var id = wm.findIdByWidget( this );
-          var req = org.eclipse.swt.Request.getInstance();
+          var req = org.eclipse.swt.Server.getInstance();
           req.addEvent( "org.eclipse.swt.events.menuShown", id );
           req.send();
         } else {
@@ -573,7 +573,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
         if( this._hasListener ) {
           var wm = org.eclipse.swt.WidgetManager.getInstance();
           var id = wm.findIdByWidget( this );
-          var req = org.eclipse.swt.Request.getInstance();
+          var req = org.eclipse.swt.Server.getInstance();
           req.addEvent( "org.eclipse.swt.events.menuHidden", id );
           req.send();
         }

@@ -486,7 +486,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolProcessorTest", {
         "operations" : []
       };
       processor.processMessage( message );
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       assertEquals( 3, req.getRequestCounter() );
     },
 

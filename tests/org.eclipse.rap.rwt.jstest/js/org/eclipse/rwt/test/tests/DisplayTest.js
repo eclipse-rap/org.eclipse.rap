@@ -34,7 +34,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
         }
       } );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      var request = org.eclipse.swt.Request.getInstance();
+      var request = org.eclipse.swt.Server.getInstance();
       assertNotNull( request.getParameter( "-785380229" ) );
       assertNotNull( request.getParameter( "-785380485" ) );
     },

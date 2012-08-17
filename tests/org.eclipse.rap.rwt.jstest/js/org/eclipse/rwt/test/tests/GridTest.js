@@ -864,7 +864,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       org.eclipse.swt.EventUtil.setSuspended( false );
       assertEquals( 0, tree._horzScrollBar.getValue() );
       assertEquals( 0, tree._vertScrollBar.getValue() );
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       assertEquals( "0", req.getParameter( "wtest.scrollLeft" ) );
       wm.remove( tree );
       tree.destroy();
@@ -1229,7 +1229,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       TestUtil.clickDOM( checkNode );
 
-      org.eclipse.swt.Request.getInstance().send();
+      org.eclipse.swt.Server.getInstance().send();
       var request = TestUtil.getMessage();
       var expected = "w2.cellChecked=%5Btrue%5D";
       assertTrue( request.indexOf( expected ) != -1 );
@@ -1276,7 +1276,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       TestUtil.clickDOM( checkNode );
 
-      org.eclipse.swt.Request.getInstance().send();
+      org.eclipse.swt.Server.getInstance().send();
       var request = TestUtil.getMessage();
       var expected = "w2.cellChecked=%5Btrue%2Cfalse%2Cfalse%2Cfalse%5D";
       assertTrue( request.indexOf( expected ) != -1 );
@@ -1363,7 +1363,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testFocusItem : function() {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       var tree = this._createDefaultTree();
       TestUtil.initRequestLog();
       tree.setItemCount( 3 );
@@ -1382,7 +1382,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testChangeFocusItem : function() {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       var tree = this._createDefaultTree();
       tree.setItemCount( 3 );
       var item0 = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
@@ -1403,7 +1403,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testFocusUnresolvedItem : function() {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       var tree = this._createDefaultTree();
       TestUtil.initRequestLog();
       tree.setItemCount( 3 );
@@ -1749,7 +1749,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree._selectionTimestamp = null;
       TestUtil.ctrlClick( tree._rowContainer._children[ 1 ] );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      org.eclipse.swt.Request.getInstance().send();
+      org.eclipse.swt.Server.getInstance().send();
       var request = TestUtil.getMessage();
       var expected = "w11.selection=" + encodeURIComponent( "w2,w3" );
       assertTrue( request.indexOf( expected ) != -1 );
@@ -2223,7 +2223,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
       tree._vertScrollBar.setValue( 160 );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      org.eclipse.swt.Request.getInstance().send();
+      org.eclipse.swt.Server.getInstance().send();
       var request = TestUtil.getMessage();
       var expected = "w11.topItemIndex=8";
       assertTrue( request.indexOf( expected ) != -1 );
@@ -2779,7 +2779,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
       tree._horzScrollBar.setValue( 160 );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      org.eclipse.swt.Request.getInstance().send();
+      org.eclipse.swt.Server.getInstance().send();
       var request = TestUtil.getMessage();
       var expected = "w11.scrollLeft=160";
       assertTrue( request.indexOf( expected ) != -1 );
@@ -3154,7 +3154,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
       tree._horzScrollBar.setValue( 160 );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      org.eclipse.swt.Request.getInstance().send();
+      org.eclipse.swt.Server.getInstance().send();
       assertFalse( tree._sendRequestTimer.getEnabled() );
       assertEquals( 1, TestUtil.getRequestsSend() );
       tree.destroy();

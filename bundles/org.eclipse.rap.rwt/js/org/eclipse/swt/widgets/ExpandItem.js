@@ -106,7 +106,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
     _onClick : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
         if( this._expanded ) {
           req.addEvent( "org.eclipse.swt.events.expandItemCollapsed", id );

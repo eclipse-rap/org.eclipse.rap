@@ -363,7 +363,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
     _sendChanges : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
         req.addParameter( id + ".hours",
                           this._removeLeadingZero( this._hoursTextField.getText() ) );
@@ -381,7 +381,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
       this._requestTimer.stop();
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
       org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
       req.send();

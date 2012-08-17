@@ -660,7 +660,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     _sendChanges : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
         req.addParameter( id + ".day", this._removeLeadingZero( this._dayTextField.getText() ) );
         req.addParameter( id + ".month", this._monthInt - 1 );
@@ -675,7 +675,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       this._requestTimer.stop();
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
       org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
       req.send();

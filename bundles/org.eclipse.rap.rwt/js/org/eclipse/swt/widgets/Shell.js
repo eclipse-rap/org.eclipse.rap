@@ -50,7 +50,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.addEventListener( "changeWidth", this._onChangeSize );
     this.addEventListener( "changeHeight", this._onChangeSize );
     this.addEventListener( "keydown", this._onKeydown );
-    var req = org.eclipse.swt.Request.getInstance();
+    var req = org.eclipse.swt.Server.getInstance();
     req.addEventListener( "send", this._onSend, this );
     this.getCaptionBar().setWidth( "100%" );
     // [if] Listen for DOM event instead of qooxdoo event - see bug 294846.
@@ -82,7 +82,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( shell );
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         req.addEvent( "org.eclipse.swt.widgets.Shell_close", id );
       }
     },
@@ -177,7 +177,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.removeEventListener( "changeWidth", this._onChangeSize );
     this.removeEventListener( "changeHeight", this._onChangeSize );
     this.removeEventListener( "keydown", this._onKeydown );
-    var req = org.eclipse.swt.Request.getInstance();
+    var req = org.eclipse.swt.Server.getInstance();
     req.removeEventListener( "send", this._onSend, this );
     if( this.isCreated() ) {
       qx.html.EventRegistration.removeEventListener( this.getElement(),
@@ -325,7 +325,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         org.eclipse.swt.widgets.Shell._appendCloseRequestParam( this );
         if( this._hasShellListener ) {
-          org.eclipse.swt.Request.getInstance().send();
+          org.eclipse.swt.Server.getInstance().send();
         } else {
           this.doClose();
         }
@@ -385,7 +385,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         var widgetMgr = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetMgr.findIdByWidget( widget );
         var shellId = widgetMgr.findIdByWidget( this );
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         if( this._isRelevantActivateEvent( widget ) ) {
           this._activeControl = widget;
           req.removeParameter( shellId + ".activeControl" );
@@ -414,7 +414,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       if( !org.eclipse.swt.EventUtil.getSuspended() && this.getActive() ) {
         var widgetMgr = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetMgr.findIdByWidget( this );
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         req.addEvent( "org.eclipse.swt.events.shellActivated", id );
         req.send();
       }
@@ -434,14 +434,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       var value = evt.getValue();
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( evt.getTarget() );
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.addParameter( id + ".mode", value );
     },
 
     _onChangeSize : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var id = widgetManager.findIdByWidget( evt.getTarget() );
         var height = evt.getTarget().getHeightValue();
         var width = evt.getTarget().getWidthValue();
@@ -454,7 +454,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     _onChangeLocation : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var id = widgetManager.findIdByWidget( evt.getTarget() );
         var left = evt.getTarget().getLeft();
         var top = evt.getTarget().getTop();
@@ -490,7 +490,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
           this._focusControl = focusedChild;
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var focusedChildId = widgetManager.findIdByWidget( focusedChild );
-          var req = org.eclipse.swt.Request.getInstance();
+          var req = org.eclipse.swt.Server.getInstance();
           req.addParameter( req.getUIRootId() + ".focusControl", focusedChildId );
         }
       }

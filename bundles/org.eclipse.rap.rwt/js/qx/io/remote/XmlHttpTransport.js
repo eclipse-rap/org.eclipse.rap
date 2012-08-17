@@ -707,22 +707,6 @@ qx.Class.define("qx.io.remote.XmlHttpTransport",
 
   /*
   *****************************************************************************
-     DEFER
-  *****************************************************************************
-  */
-
-  defer : function(statics, members)
-  {
-    // basic registration to qx.io.remote.Exchange
-    // the real availability check (activeX stuff and so on) follows at the first real request
-    qx.io.remote.Exchange.registerType(qx.io.remote.XmlHttpTransport, "qx.io.remote.XmlHttpTransport");
-  },
-
-
-
-
-  /*
-  *****************************************************************************
      DESTRUCTOR
   *****************************************************************************
   */

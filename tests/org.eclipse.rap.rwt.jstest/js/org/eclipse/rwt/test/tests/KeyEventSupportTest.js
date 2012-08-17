@@ -396,7 +396,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     testBufferEvents : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.removeEventListener( "received", keyUtil._onRequestReceived, keyUtil );
       TestUtil.initRequestLog();
       var text = this._createTextWidget();
@@ -421,7 +421,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     testBufferedEventInfo : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.removeEventListener( "received", keyUtil._onRequestReceived, keyUtil );
       TestUtil.initRequestLog();
       var text = this._createTextWidget();

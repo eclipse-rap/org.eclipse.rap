@@ -23,7 +23,7 @@ org.eclipse.rwt.protocol.Processor = {
 
   processMeta : function( meta ) {
     if( meta.requestCounter !== undefined ) {
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.setRequestCounter( meta.requestCounter );
     }
   },

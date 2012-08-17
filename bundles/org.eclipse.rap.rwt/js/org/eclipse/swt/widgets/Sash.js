@@ -231,7 +231,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
         var topOffset = this._slider.getTop() + this._frameOffset;
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
         org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         req.addParameter( id + ".bounds.x", this.getLeft() + leftOffset );

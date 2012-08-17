@@ -13,7 +13,7 @@ namespace( "org.eclipse.rwt" );
 
 org.eclipse.rwt.Display = function() {
   this._document = qx.ui.core.ClientDocument.getInstance();
-  this._request = org.eclipse.swt.Request.getInstance();
+  this._request = org.eclipse.swt.Server.getInstance();
   this._exitConfirmation = null;
   if( org.eclipse.rwt.Display._current !== undefined ) {
     throw new Error( "Display can not be created twice" );
@@ -173,7 +173,7 @@ org.eclipse.rwt.Display.prototype = {
   },
 
   _appendInitialHistoryEvent : function() {
-    var req = org.eclipse.swt.Request.getInstance();
+    var req = org.eclipse.swt.Server.getInstance();
     var entryId = window.location.hash;
     if( entryId !== "" ) {
       req.addParameter( "org.eclipse.rwt.events.historyNavigated", "true" );

@@ -692,7 +692,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   clearRequestLog : function() {
-    org.eclipse.swt.Request.getInstance().send();
+    org.eclipse.swt.Server.getInstance().send();
     this._requestLog = [];
   },
 
@@ -928,6 +928,14 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     var w1 = org.eclipse.rwt.protocol.ObjectManager._map[ "w1" ];
     org.eclipse.rwt.protocol.ObjectManager._map = { "w1" : w1 };
     org.eclipse.rwt.protocol.ObjectManager._callbacks = {};
+  },
+
+  getXMLHttpRequests : function() {
+    return org.eclipse.rwt.test.fixture.NativeRequestMock.history;
+  },
+
+  clearXMLHttpRequests : function() {
+    org.eclipse.rwt.test.fixture.NativeRequestMock.history = [];
   }
 
 };

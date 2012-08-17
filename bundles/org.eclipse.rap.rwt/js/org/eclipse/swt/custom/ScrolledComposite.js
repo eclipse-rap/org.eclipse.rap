@@ -132,7 +132,7 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     _sendChanges : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() && this.isCreated() ) {
         var wm = org.eclipse.swt.WidgetManager.getInstance();
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var id = wm.findIdByWidget( this );
         var scrollX = this._clientArea.getScrollLeft();
         req.addParameter( id + ".horizontalBar.selection", scrollX );

@@ -51,7 +51,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.GridCellToolTip", {
 
     _requestCellToolTipText : function() {
       if( this._isValidCell() ) {
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         req.addEvent( "org.eclipse.swt.events.cellToolTipTextRequested", this._controlId );
         this._requestedCell = this._itemId + "," + this._columnIndex;
         req.addParameter( "org.eclipse.swt.events.cellToolTipTextRequested.cell",

@@ -9,10 +9,10 @@
  ******************************************************************************/
 
 org.eclipse.rwt.System.getInstance().addEventListener( "uiready", function() {
-  qx.Class.__initializeClass( org.eclipse.swt.Request );
-  qx.Class.patch( org.eclipse.swt.Request, org.eclipse.rwt.test.fixture.RAPRequestPatch );
+  qx.Class.__initializeClass( org.eclipse.swt.Server );
+  qx.Class.patch( org.eclipse.swt.Server, org.eclipse.rwt.test.fixture.RAPRequestPatch );
   org.eclipse.rwt.KeyEventSupport.getInstance()._sendRequestAsync = function() {
-    org.eclipse.swt.Request.getInstance()._sendImmediate( true );
+    org.eclipse.swt.Server.getInstance()._sendImmediate( true );
   };
   org.eclipse.rwt.protocol.Processor.processMessage( {
     "meta": {
@@ -20,7 +20,7 @@ org.eclipse.rwt.System.getInstance().addEventListener( "uiready", function() {
     },
     "operations": [ [ "create", "w1", "rwt.Display" ] ]
   } );
-  org.eclipse.swt.Request.getInstance().setRequestCounter( 0 );
+  org.eclipse.swt.Server.getInstance().setRequestCounter( 0 );
   org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();
   org.eclipse.rwt.test.Asserts.createShortcuts();
   org.eclipse.rwt.test.TestRunner.getInstance().run();

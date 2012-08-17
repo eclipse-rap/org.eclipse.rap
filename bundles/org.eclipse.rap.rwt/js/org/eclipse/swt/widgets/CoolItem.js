@@ -137,7 +137,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         req.addEvent( "org.eclipse.swt.events.widgetMoved", id );
         req.addParameter( id + ".bounds.x", this.getLeft() );
         req.addParameter( id + ".bounds.y", this.getTop() );

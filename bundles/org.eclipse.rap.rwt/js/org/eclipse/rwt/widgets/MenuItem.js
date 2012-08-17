@@ -239,7 +239,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
         if( !org.eclipse.swt.EventUtil.getSuspended() ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( this );
-          var req = org.eclipse.swt.Request.getInstance();
+          var req = org.eclipse.swt.Server.getInstance();
           req.addParameter( id + ".selection", this._selected );
           org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         }
@@ -249,7 +249,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     // Not using EventUtil since no event should be sent (for radio at least)
     _sendChanges : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() && this._hasSelectionListener ) {
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         if( this._sendEvent ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( this );

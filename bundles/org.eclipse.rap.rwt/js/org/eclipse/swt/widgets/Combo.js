@@ -660,7 +660,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._selected = null;
         this._resetListSelection();
         if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-          var req = org.eclipse.swt.Request.getInstance();
+          var req = org.eclipse.swt.Server.getInstance();
           req.addEventListener( "send", this._onSend, this );
           if( this._hasVerifyModifyListener() ) {
             qx.client.Timer.once( this._sendModifyText, this, 500 );
@@ -674,7 +674,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
 
     _onTextBlur : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() && this._isModified ) {
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         req.send();
       }
     },
@@ -682,7 +682,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     _onSend : function( evt ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.addParameter( id + ".text", this._field.getComputedValue() );
       req.removeEventListener( "send", this._onSend, this );
       this._isModified = false;
@@ -690,7 +690,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     },
 
     _sendModifyText : function() {
-      var req = org.eclipse.swt.Request.getInstance();
+      var req = org.eclipse.swt.Server.getInstance();
       req.send();
       this._isModified = false;
     },
@@ -698,7 +698,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     _sendWidgetSelected : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
         var list = this._list;
         var listItem = this._list.getSelectedItem();
@@ -714,7 +714,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     _sendWidgetDefaultSelected : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
         if( this._hasSelectionListener ) {
           req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
@@ -727,7 +727,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     _updateListVisibleRequestParam : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
         req.addParameter( id + ".listVisible", this._list.getDisplay() );
       }
@@ -755,7 +755,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       if( this._selectionStart != start || this._selectionLength != length ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
-        var req = org.eclipse.swt.Request.getInstance();
+        var req = org.eclipse.swt.Server.getInstance();
         this._selectionStart = start;
         req.addParameter( id + ".selectionStart", start );
         this._selectionLength = length;
