@@ -67,8 +67,8 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.DummyRequest", {
       this.responseText = response;
     },
 
-    setHandleSuccess : function( callback ) {
-      this._success = callback;
+    setSuccessHandler : function( handler, context ) {
+      this._success = function(){ handler.apply( context, arguments ); };
     },
 
     send : function() {
@@ -169,9 +169,14 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.DummyRequest", {
 
     _oncompleted : function( e ) {
       this.setState( "completed" );
-      this.dispatchEvent( e );
+      var event = {
+        "responseText" : this.responseText,
+        "status" : 200,
+        "responseHeaders" : {},
+        "target" : this
+      };
       if( this._success ) {
-        this._success( this.responseText );
+        this._success( event );
       }
       this.dispose();
     },

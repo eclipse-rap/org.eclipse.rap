@@ -168,12 +168,8 @@ qx.Class.define( "org.eclipse.swt.Server", {
 
     _createRequest : function() {
       var result = new org.eclipse.rwt.Request( this._url, "POST", "application/javascript" );
-      var that = this;
-//      result.addEventListener( "sending", this._handleSending, this );
-//      result.addEventListener( "completed", this._handleCompleted, this );
-//      result.addEventListener( "failed", this._handleFailed, this );
-      result.setHandleSuccess( function(){ that._handleSuccess.apply( that, arguments ); } );
-      result.setHandleError( function(){ that._handleError.apply( that, arguments ); } );
+      result.setSuccessHandler( this._handleSuccess, this );
+      result.setErrorHandler( this._handleError, this );
       return result;
     },
 
@@ -190,13 +186,11 @@ qx.Class.define( "org.eclipse.swt.Server", {
       this._currentRequest = exchange.getRequest();
     },
 
-    _handleError : function( text, statusCode, headers ) {
-      // [vt] workaround for bug #253756: Copied code from _handleSending since
-      // the sending phase is skipped on failure in IE
-      // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=253756
+    _handleError : function( event ) {
       if( this._isConnectionError( statusCode ) ) {
-        this._handleConnectionError();
+        this._handleConnectionError( event );
       } else {
+        var text = event.resonseText;
         this._hideWaitHint();
         // [if] typeof(..) == "unknown" is IE specific. Used to prevent error:
         // "The data  necessary to complete this operation is not yet available"
@@ -204,7 +198,7 @@ qx.Class.define( "org.eclipse.swt.Server", {
           text = undefined;
         }
         if( text && text.length > 0 ) {
-          if( this._isJsonResponse( headers ) ) {
+          if( this._isJsonResponse( event.responseHeaders ) ) {
             var messageObject = JSON.parse( text );
             org.eclipse.rwt.ErrorHandler.showErrorBox( messageObject.meta.message, true );
           } else {
@@ -218,19 +212,19 @@ qx.Class.define( "org.eclipse.swt.Server", {
       }
     },
 
-    _handleSuccess : function( text, statusCode, headers ) {
+    _handleSuccess : function( event ) {
       var errorOccured = false;
       try {
-        var messageObject = JSON.parse( text );
+        var messageObject = JSON.parse( event.responseText );
         org.eclipse.swt.EventUtil.setSuspended( true );
         org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
         qx.ui.core.Widget.flushGlobalQueues();
         org.eclipse.swt.EventUtil.setSuspended( false );
         org.eclipse.rwt.UICallBack.getInstance().sendUICallBackRequest();
       } catch( ex ) {
-        org.eclipse.rwt.ErrorHandler.processJavaScriptErrorInResponse( text,
+        org.eclipse.rwt.ErrorHandler.processJavaScriptErrorInResponse( event.responseText,
                                                                        ex,
-                                                                       this._currentRequest );
+                                                                       event.target );
         errorOccured = true;
       }
       if( !errorOccured ) {
@@ -249,7 +243,7 @@ qx.Class.define( "org.eclipse.swt.Server", {
     ///////////////////////////////
     // Handling connection problems
 
-    _handleConnectionError : function( evt ) {
+    _handleConnectionError : function( event ) {
       var msg
         = "<p>The server seems to be temporarily unavailable</p>"
         + "<p><a href=\"javascript:org.eclipse.swt.Server.getInstance()._retry();\">Retry</a></p>";
@@ -257,19 +251,8 @@ qx.Class.define( "org.eclipse.swt.Server", {
       org.eclipse.rwt.ErrorHandler.showErrorBox( msg, false );
       this._retryHandler = function() {
         var request = this._createRequest();
-        var failedRequest = this._currentRequest;
+        var failedRequest = event.target;
         request.setAsynchronous( failedRequest.getAsynchronous() );
-        // Reusing the same request object causes strange behaviour, therefore
-        // create a new request and copy the relevant parts from the failed one
-//        var failedHeaders = failedRequest.getRequestHeaders();
-//        for( var headerName in failedHeaders ) {
-//          request.setRequestHeader( headerName, failedHeaders[ headerName ] );
-//        }
-//        var failedParameters = failedRequest.getParameters();
-//        for( var parameterName in failedParameters ) {
-//          request.setParameter( parameterName,
-//                                failedParameters[ parameterName ] );
-//        }
         request.setData( failedRequest.getData() );
         request.send();
         this._currentRequest = request;

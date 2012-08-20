@@ -53,11 +53,7 @@ qx.Mixin.define( "org.eclipse.rwt.test.fixture.RAPRequestPatch", {
 
     _createRequest : function() {
       var result = new org.eclipse.rwt.test.fixture.DummyRequest();
-      var that = this;
-      result.addEventListener( "sending", this._handleSending, this );
-      result.addEventListener( "completed", this._handleCompleted, this );
-      result.addEventListener( "failed", this._handleFailed, this );
-      result.setHandleSuccess( function( data ){ that._handleSuccess( data ); } );
+      result.setSuccessHandler( this._handleSuccess, this );
       return result;
     },
 

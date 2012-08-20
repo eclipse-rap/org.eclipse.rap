@@ -67,7 +67,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.RequestTest", {
 
       assertEquals( 2 , log.length );
       assertEquals( "success" , log[ 0 ] );
-      assertEquals( 200 , log[ 1 ][ 1 ] );
+      assertEquals( 200 , log[ 1 ].status );
     },
 
     testSendData : function() {
@@ -83,7 +83,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.RequestTest", {
 
       recieve( getNative(), "foobar" );
 
-      assertEquals( "foobar", log[ 1 ][ 0 ] );
+      assertEquals( "foobar", log[ 1 ].responseText );
     },
 
     testDisposeWhileSending : function() {
@@ -100,6 +100,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.RequestTest", {
       recieve( getNative(), "" );
 
       assertTrue( TestUtil.hasNoObjects( request, true ) );
+      assertTrue( getNative().onreadystatechange == null );
     },
 
     testRequestError : function() {
@@ -112,8 +113,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.RequestTest", {
       getNative().onreadystatechange();
 
       assertEquals( "error", log[ 0 ] );
-      assertEquals( "foobar", log[ 1 ][ 0 ] );
-      assertEquals( 404, log[ 1 ][ 1 ] );
+      assertEquals( "foobar", log[ 1 ].responseText );
+      assertEquals( 404, log[ 1 ].status );
     },
 
     testResponseHeader : function() {
@@ -122,7 +123,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.RequestTest", {
 
       recieve( getNative(), "", "mykey: myvalue" );
 
-      assertEquals( { "mykey" : "myvalue" } , log[ 1 ][ 2 ] );
+      assertEquals( { "mykey" : "myvalue" } , log[ 1 ].responseHeaders );
     },
 
     testGetter : function() {
@@ -176,12 +177,12 @@ var findNativeCall = function( method, targetArgs ) {
 
 var createRequestLogger = function( request ) {
   var log = [];
-  request.setHandleSuccess( function() {
-    log.push( "success", arguments );
-  } );
-  request.setHandleError( function() {
-    log.push( "error", arguments );
-  } );
+  request.setSuccessHandler( function() {
+    this.push( "success", arguments[ 0 ] );
+  }, log );
+  request.setErrorHandler( function() {
+    this.push( "error", arguments[ 0 ] );
+  }, log );
   return log;
 };
 

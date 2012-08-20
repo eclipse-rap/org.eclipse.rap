@@ -52,30 +52,30 @@ org.eclipse.rwt.UICallBack.prototype = {
   _doSendUICallBackRequest : function() {
     this._requestTimer.stop();
     var url = org.eclipse.swt.Server.getInstance().getUrl();
-    var that = this;
     var request = new org.eclipse.rwt.Request( url, "GET", "application/javascript" );
-    request.setHandleSuccess( function(){ that._handleSuccess.apply( that, arguments ); } );
-    request.setHandleError( function(){ that._handleError.apply( that, arguments ); } );
+    request.setSuccessHandler( this._handleSuccess, this );
+    request.setErrorHandler( this._handleError, this );
     request.setData( "custom_service_handler=org.eclipse.rap.uicallback" );
     request.send();
   },
 
-  _handleSuccess : function( text, status, headers ) {
+  _handleSuccess : function( event ) {
     this._running = false;
+    var text = event.responseText;
     try {
       var messageObject = JSON.parse( text );
       org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
     } catch( ex ) {
       var escapedText = org.eclipse.rwt.protocol.EncodingUtil.escapeText( text, true );
       var msg = "Could not process UICallBack response: [" + escapedText + "]: " + ex;
-      org.eclipse.rwt.ErrorHandler.showErrorBox( msg, true );
+      org.eclipse.rwt.ErrorHandler.showErrorPage( msg );
     }
     this._retryInterval = 0;
   },
 
-  _handleError : function( text, status, headers ) {
+  _handleError : function( event ) {
     this._running = false;
-    if( org.eclipse.swt.Server.getInstance()._isConnectionError( status ) ) {
+    if( org.eclipse.swt.Server.getInstance()._isConnectionError( event.status ) ) {
       qx.client.Timer.once( this.sendUICallBackRequest, this, this._retryInterval );
       this._increaseRetryInterval();
     }

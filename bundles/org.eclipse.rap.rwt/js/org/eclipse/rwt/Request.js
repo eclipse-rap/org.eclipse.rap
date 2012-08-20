@@ -37,6 +37,7 @@ org.eclipse.rwt.Request.prototype = {
     dispose : function() {
       if( this._request != null ) {
         this._request.abort();
+        this._request.onreadystatechange = null;
         this._success = null;
         this._error = null;
         this._request = null;
@@ -63,12 +64,12 @@ org.eclipse.rwt.Request.prototype = {
       return this._async;
     },
 
-    setHandleSuccess : function( handler ) {
-      this._success = handler;
+    setSuccessHandler : function( handler, context ) {
+      this._success = function(){ handler.apply( context, arguments ); };
     },
 
-    setHandleError : function( handler ) {
-      this._error = handler;
+    setErrorHandler : function( handler, context ) {
+      this._error = function(){ handler.apply( context, arguments ); };
     },
 
     setData : function( value ) {
@@ -92,13 +93,19 @@ org.eclipse.rwt.Request.prototype = {
 
     _onReadyStateChange : function() {
       if( this._request.readyState === 4 ) {
+        var event = {
+          "responseText" : this._request.responseText,
+          "status" : this._request.status,
+          "responseHeaders" : this._getHeaders(),
+          "target" : this
+        };
         if( this._request.status === 200 ) {
           if( this._success ) {
-            this._success( this._request.responseText, this._request.status, this._getHeaders() );
+            this._success( event );
           }
         } else {
           if( this._error ) {
-            this._error( this._request.responseText, this._request.status, this._getHeaders() );
+            this._error( event );
           }
         }
         this.dispose();
