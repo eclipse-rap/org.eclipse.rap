@@ -37,7 +37,7 @@ org.eclipse.rwt.Display.prototype = {
     this._appendColorDepth();
     this._appendInitialHistoryEvent();
     this._attachListener();
-    this._request._sendImmediate( true );
+    this._request.sendImmediate( true );
   },
 
   probe : function( args ) {

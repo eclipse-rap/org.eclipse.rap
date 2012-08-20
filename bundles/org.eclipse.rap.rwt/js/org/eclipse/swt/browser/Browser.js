@@ -151,7 +151,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
       req.addParameter( id + ".executeResult", success );
       req.addParameter( id + ".evaluateResult", result );
       if( this.getExecutedFunctionPending() ) {
-        req.sendSyncronous();
+        req.sendImmediate( false );
       } else {
         req.send();
       }
@@ -264,29 +264,33 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
       var that = this;
       win[ name + "_impl" ] = function() {
         var result = {};
-        if( that.getExecutedFunctionPending() ) {
-          result.error = "Unable to execute browser function \""
-                       + name
-                       + "\". Another browser function is still pending.";
-        } else {
-          var args = that.objectToString( arguments );
-          req.addParameter( id + ".executeFunction", name );
-          req.addParameter( id + ".executeArguments", args );
-          that.setExecutedFunctionResult( null );
-          that.setExecutedFunctionError( null );
-          that.setExecutedFunctionPending( true );
-          that.setAsynchronousResult( false );
-          req.sendSyncronous();
+        try {
           if( that.getExecutedFunctionPending() ) {
-            that.setAsynchronousResult( true );
+            result.error = "Unable to execute browser function \""
+              + name
+              + "\". Another browser function is still pending.";
           } else {
-            var error = that.getExecutedFunctionError();
-            if( error != null ) {
-              result.error = error;
+            var args = that.objectToString( arguments );
+            req.addParameter( id + ".executeFunction", name );
+            req.addParameter( id + ".executeArguments", args );
+            that.setExecutedFunctionResult( null );
+            that.setExecutedFunctionError( null );
+            that.setExecutedFunctionPending( true );
+            that.setAsynchronousResult( false );
+            req.sendImmediate( false );
+            if( that.getExecutedFunctionPending() ) {
+              that.setAsynchronousResult( true );
             } else {
-              result.result = that.getExecutedFunctionResult();
+              var error = that.getExecutedFunctionError();
+              if( error != null ) {
+                result.error = error;
+              } else {
+                result.result = that.getExecutedFunctionResult();
+              }
             }
           }
+        } catch( ex ) {
+          org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
         }
         return result;
       };

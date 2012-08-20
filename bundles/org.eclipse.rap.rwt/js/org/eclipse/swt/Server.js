@@ -10,7 +10,16 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/*global confirm: false*/
+(function(){
+
+var Client = org.eclipse.rwt.Client;
+var Timer = qx.client.Timer;
+var Processor = org.eclipse.rwt.protocol.Processor;
+var ErrorHandler = org.eclipse.rwt.ErrorHandler;
+var EventUtil = org.eclipse.swt.EventUtil;
+var UICallBack = org.eclipse.rwt.UICallBack;
+var ClientDocument = qx.ui.core.ClientDocument;
+var Widget = qx.ui.core.Widget;
 
 qx.Class.define( "org.eclipse.swt.Server", {
   type : "singleton",
@@ -18,34 +27,31 @@ qx.Class.define( "org.eclipse.swt.Server", {
 
   construct : function() {
     this.base( arguments );
-    // the URL to which the requests are sent
     this._url = "";
-    // the map of parameters that will be posted with the next call to 'send()'
     this._parameters = {};
-    // instance variables that hold the essential request parameters
     this._uiRootId = "";
     this._requestCounter = null;
-    // Number of currently running or scheduled requests, used to determine when
-    // to show the wait hint (e.g. hour-glass cursor)
-    this._runningRequestCount = 0;
-    // Flag that is set to true if send() was called but the delay timeout
-    // has not yet timed out
-    this._inDelayedSend = false;
+    this._sendTimer = new Timer( 60 );
+    this._sendTimer.addEventListener( "interval", function() {
+      this.sendImmediate( true );
+     }, this );
+    this._waitHintTimer = new Timer( 500 );
+    this._waitHintTimer.addEventListener( "interval", this._showWaitHint, this );
     this._retryHandler = null;
-    // References the currently running request or null if no request is active
-    this._currentRequest = null;
   },
 
   destruct : function() {
-    this._currentRequest = null;
-  },
-
-  events : {
-    "send" : "qx.event.type.DataEvent",
-    "received" : "qx.event.type.DataEvent"
+    this._retryHandler = null;
+    this._sendTimer.dispose();
+    this._sendTimer = null;
+    this._waitHintTimer.dispose();
+    this._waitHintTimer = null;
   },
 
   members : {
+
+    //////
+    // API
 
     setUrl : function( url ) {
       this._url = url;
@@ -72,14 +78,14 @@ qx.Class.define( "org.eclipse.swt.Server", {
     },
 
     /**
-     * Adds a request parameter to this request with the given name and value
+     * Adds a request parameter to the next request with the given name and value
      */
     addParameter : function( name, value ) {
       this._parameters[ name ] = value;
     },
 
     /**
-     * Removes the parameter denoted by name from this request.
+     * Removes the parameter denoted by name from the next request
      */
     removeParameter : function( name ) {
       delete this._parameters[ name ];
@@ -106,62 +112,47 @@ qx.Class.define( "org.eclipse.swt.Server", {
     },
 
     /**
-     * Sends this request asynchronously. All parameters that were added since
-     * the last 'send()' will now be sent.
+     * Sends an asynchronous request within 60 milliseconds
      */
     send : function() {
-      if( !this._inDelayedSend ) {
-        this._inDelayedSend = true;
-        var func = function() {
-          this._sendImmediate( true );
-        };
-        qx.client.Timer.once( func, this, 60 );
-      }
+      this._sendTimer.start();
     },
 
-    sendSyncronous : function() {
-      this._sendImmediate( false );
-    },
-
-    _sendImmediate : function( async ) {
-      this._dispatchSendEvent();
-      // set mandatory parameters; do this after regular params to override them
-      // in case of conflict
-      this._parameters[ "uiRoot" ] = this._uiRootId;
-      if( this._requestCounter == -1 ) {
+    /**
+     * Sends an synchronous or asynchronous request immediately. All parameters that were added
+     * since the last request will be sent.
+     */
+    sendImmediate : function( async ) {
+      this._sendTimer.stop();
+      if( this._requestCounter === -1 ) {
         // NOTE: Delay sending the request until requestCounter is set
-        this._inDelayedSend = false;
+        // TOOD [tb] : This would not work with synchronous requests - bug?
         this.send();
       } else {
+        this.dispatchSimpleEvent( "send" );
+        this._parameters[ "uiRoot" ] = this._uiRootId;
         if( this._requestCounter != null ) {
           this._parameters[ "requestCounter" ] = this._requestCounter;
           this._requestCounter = -1;
         }
-        // create and configure request object
         var request = this._createRequest();
         request.setAsynchronous( async );
-        // copy the _parameters map which was filled during client interaction
-        // to the request
-        this._inDelayedSend = false;
-        this._copyParameters( request );
-        this._runningRequestCount++;
-        // notify user when request takes longer than 500 ms
-        if( this._runningRequestCount === 1 ) {
-          qx.client.Timer.once( this._showWaitHint, this, 500 );
-        }
-        // clear the parameter list
+        this._attachParameters( request );
+        this._waitHintTimer.start();
         this._parameters = {};
         request.send();
-        this._currentRequest = request;
       }
     },
 
-    _copyParameters : function( request ) {
+    ////////////
+    // Internals
+
+    _attachParameters : function( request ) {
       var data = [];
-      for( var parameterName in this._parameters ) {
-        data.push(   encodeURIComponent( parameterName )
-                   + "="
-                   + encodeURIComponent( this._parameters[ parameterName ] ) );
+      for( var key in this._parameters ) {
+        data.push(
+          encodeURIComponent( key ) + "=" + encodeURIComponent( this._parameters[ key ] )
+        );
       }
       request.setData( data.join( "&" ) );
     },
@@ -176,68 +167,39 @@ qx.Class.define( "org.eclipse.swt.Server", {
     ////////////////////////
     // Handle request events
 
-    _handleSending : function( evt ) {
-      var exchange = evt.getTarget();
-      this._currentRequest = exchange.getRequest();
-    },
-
-    _handleFailed : function( evt ) {
-      var exchange = evt.getTarget();
-      this._currentRequest = exchange.getRequest();
-    },
-
     _handleError : function( event ) {
-      if( this._isConnectionError( statusCode ) ) {
+      if( this._isConnectionError( event.status ) ) {
         this._handleConnectionError( event );
       } else {
-        var text = event.resonseText;
-        this._hideWaitHint();
-        // [if] typeof(..) == "unknown" is IE specific. Used to prevent error:
-        // "The data  necessary to complete this operation is not yet available"
-        if( typeof( text ) == "unknown" ) {
-          text = undefined;
-        }
+        var text = event.responseText;
         if( text && text.length > 0 ) {
-          if( this._isJsonResponse( event.responseHeaders ) ) {
+          if( this._isJsonResponse( event ) ) {
             var messageObject = JSON.parse( text );
-            org.eclipse.rwt.ErrorHandler.showErrorBox( messageObject.meta.message, true );
+            ErrorHandler.showErrorBox( messageObject.meta.message, true );
           } else {
-            org.eclipse.rwt.ErrorHandler.showErrorPage( text );
+            ErrorHandler.showErrorPage( text );
           }
         } else {
-          var statusCode = String( statusCode );
-          text = "<p>Request failed.</p><pre>HTTP Status Code: " + statusCode + "</pre>";
-          org.eclipse.rwt.ErrorHandler.showErrorPage( text );
+          var msg = "<p>Request failed.</p><pre>HTTP Status Code: " + event.status + "</pre>";
+          ErrorHandler.showErrorPage( msg );
         }
       }
-    },
-
-    _handleSuccess : function( event ) {
-      var errorOccured = false;
-      try {
-        var messageObject = JSON.parse( event.responseText );
-        org.eclipse.swt.EventUtil.setSuspended( true );
-        org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
-        qx.ui.core.Widget.flushGlobalQueues();
-        org.eclipse.swt.EventUtil.setSuspended( false );
-        org.eclipse.rwt.UICallBack.getInstance().sendUICallBackRequest();
-      } catch( ex ) {
-        org.eclipse.rwt.ErrorHandler.processJavaScriptErrorInResponse( event.responseText,
-                                                                       ex,
-                                                                       event.target );
-        errorOccured = true;
-      }
-      if( !errorOccured ) {
-        this._dispatchReceivedEvent();
-      }
-      this._runningRequestCount--;
       this._hideWaitHint();
     },
 
-    _handleCompleted : function( evt ) {
-      // [if] Dispose only finished transport - see bug 301261, 317616
-      var exchange = evt.getTarget();
-      exchange.dispose();
+    _handleSuccess : function( event ) {
+      try {
+        var messageObject = JSON.parse( event.responseText );
+        org.eclipse.swt.EventUtil.setSuspended( true );
+        Processor.processMessage( messageObject );
+        Widget.flushGlobalQueues();
+        EventUtil.setSuspended( false );
+        UICallBack.getInstance().sendUICallBackRequest();
+        this.dispatchSimpleEvent( "received" );
+      } catch( ex ) {
+        ErrorHandler.processJavaScriptErrorInResponse( event.responseText, ex, event.target );
+      }
+      this._hideWaitHint();
     },
 
     ///////////////////////////////
@@ -247,7 +209,7 @@ qx.Class.define( "org.eclipse.swt.Server", {
       var msg
         = "<p>The server seems to be temporarily unavailable</p>"
         + "<p><a href=\"javascript:org.eclipse.swt.Server.getInstance()._retry();\">Retry</a></p>";
-      qx.ui.core.ClientDocument.getInstance().setGlobalCursor( null );
+      ClientDocument.getInstance().setGlobalCursor( null );
       org.eclipse.rwt.ErrorHandler.showErrorBox( msg, false );
       this._retryHandler = function() {
         var request = this._createRequest();
@@ -255,7 +217,6 @@ qx.Class.define( "org.eclipse.swt.Server", {
         request.setAsynchronous( failedRequest.getAsynchronous() );
         request.setData( failedRequest.getData() );
         request.send();
-        this._currentRequest = request;
       };
     },
 
@@ -285,7 +246,7 @@ qx.Class.define( "org.eclipse.swt.Server", {
         var result;
         // Check if Gecko > 1.9 is running (used in FF 3)
         // Gecko/app integration overview: http://developer.mozilla.org/en/Gecko
-        if( org.eclipse.rwt.Client.getMajor() * 10 + org.eclipse.rwt.Client.getMinor() >= 19 ) {
+        if( Client.getMajor() * 10 + Client.getMinor() >= 19 ) {
           result = ( statusCode === 0 );
         } else {
           result = ( statusCode === -1 );
@@ -297,8 +258,8 @@ qx.Class.define( "org.eclipse.swt.Server", {
       }
     } ),
 
-    _isJsonResponse : function( headers ) {
-      var contentType = headers[ "Content-Type" ];
+    _isJsonResponse : function( event ) {
+      var contentType = event.responseHeaders[ "Content-Type" ];
       return contentType.indexOf( qx.util.Mime.JSON ) !== -1;
     },
 
@@ -306,31 +267,16 @@ qx.Class.define( "org.eclipse.swt.Server", {
     // Wait hint - UI feedback while request is running
 
     _showWaitHint : function() {
-      if( this._runningRequestCount > 0 ) {
-        var doc = qx.ui.core.ClientDocument.getInstance();
-        doc.setGlobalCursor( qx.constant.Style.CURSOR_PROGRESS );
-      }
+      this._waitHintTimer.stop();
+      ClientDocument.getInstance().setGlobalCursor( qx.constant.Style.CURSOR_PROGRESS );
     },
 
     _hideWaitHint : function() {
-      if( this._runningRequestCount === 0 ) {
-        var doc = qx.ui.core.ClientDocument.getInstance();
-        doc.setGlobalCursor( null );
-      }
-    },
-
-    _dispatchSendEvent : function() {
-      if( this.hasEventListeners( "send" ) ) {
-        var event = new qx.event.type.DataEvent( "send", this );
-        this.dispatchEvent( event, true );
-      }
-    },
-
-    _dispatchReceivedEvent : function() {
-      if( this.hasEventListeners( "received" ) ) {
-        var event = new qx.event.type.DataEvent( "received", this );
-        this.dispatchEvent( event, true );
-      }
+      this._waitHintTimer.stop();
+      ClientDocument.getInstance().setGlobalCursor( null );
     }
+
   }
-});
+} );
+
+}());

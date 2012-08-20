@@ -12,7 +12,7 @@ org.eclipse.rwt.System.getInstance().addEventListener( "uiready", function() {
   qx.Class.__initializeClass( org.eclipse.swt.Server );
   qx.Class.patch( org.eclipse.swt.Server, org.eclipse.rwt.test.fixture.RAPRequestPatch );
   org.eclipse.rwt.KeyEventSupport.getInstance()._sendRequestAsync = function() {
-    org.eclipse.swt.Server.getInstance()._sendImmediate( true );
+    org.eclipse.swt.Server.getInstance().sendImmediate( true );
   };
   org.eclipse.rwt.protocol.Processor.processMessage( {
     "meta": {

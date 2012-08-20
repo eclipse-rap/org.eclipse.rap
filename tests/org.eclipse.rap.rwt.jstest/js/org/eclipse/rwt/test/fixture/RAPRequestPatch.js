@@ -14,51 +14,16 @@ qx.Mixin.define( "org.eclipse.rwt.test.fixture.RAPRequestPatch", {
   "members": {
 
     send : function() {
-      if( !this._inDelayedSend ) {
-        this._inDelayedSend = true;
-        this._sendImmediate( true );
-      }
-    },
-
-    _sendStandalone : function(){
-      var message = "_sendStandalone/enableUICallBack not (yet) supported!";
-      this.error( message );
-      throw( message );
-    },
-
-    _sendImmediate : function( async ) {
-      this._dispatchSendEvent();
-      this._parameters[ "uiRoot" ] = this._uiRootId;
-      if( this._requestCounter == -1 ) {
-        this._inDelayedSend = false;
-        this.send();
-      } else {
-        if( this._requestCounter != null ) {
-          this._parameters[ "requestCounter" ] = this._requestCounter;
-          this._requestCounter = -1;
-        }
-        var request = this._createRequest();
-        request.setAsynchronous( async );
-        this._inDelayedSend = false;
-        this._copyParameters( request );
-        this._runningRequestCount++;
-        if( this._runningRequestCount === 1 ) {
-          // Removed: is distracting in debugging and useless unless tested
-          //qx.client.Timer.once( this._showWaitHint, this, 500 );
-        }
-        this._parameters = {};
-        request.send();
-      }
+      if( this._requestCounter === -1 ) {
+        throw new Error( "_requestCounter is -1" );
+     }
+      this.sendImmediate( true );
     },
 
     _createRequest : function() {
       var result = new org.eclipse.rwt.test.fixture.DummyRequest();
       result.setSuccessHandler( this._handleSuccess, this );
       return result;
-    },
-
-    _writeErrorPage : function( content ) {
-      throw( content );
     }
 
   }

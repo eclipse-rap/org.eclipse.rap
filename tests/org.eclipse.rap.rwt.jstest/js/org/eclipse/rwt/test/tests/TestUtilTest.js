@@ -23,7 +23,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       var req = org.eclipse.swt.Server.getInstance();
       req.send();
       var counter = req.getRequestCounter();
-      req.sendSyncronous();
+      req.sendImmediate( false );
       counter++;
       assertEquals( counter, req.getRequestCounter() );
       req.send();

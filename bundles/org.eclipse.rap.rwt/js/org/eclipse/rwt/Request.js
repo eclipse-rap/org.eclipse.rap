@@ -36,8 +36,8 @@ org.eclipse.rwt.Request.prototype = {
 
     dispose : function() {
       if( this._request != null ) {
-        this._request.abort();
         this._request.onreadystatechange = null;
+        this._request.abort();
         this._success = null;
         this._error = null;
         this._request = null;
@@ -54,6 +54,9 @@ org.eclipse.rwt.Request.prototype = {
       this._request.open( this._method, url, this._async );
       this._configRequest();
       this._request.send( post ? this._data : undefined );
+      if( !this._async ) {
+        this.dispose();
+      }
     },
 
     setAsynchronous : function( value ) {
@@ -93,8 +96,14 @@ org.eclipse.rwt.Request.prototype = {
 
     _onReadyStateChange : function() {
       if( this._request.readyState === 4 ) {
+        var text;
+        // [if] typeof(..) == "unknown" is IE specific. Used to prevent error:
+        // "The data necessary to complete this operation is not yet available"
+        if( typeof this._request.responseText !== "unknown" ) {
+          text = this._request.responseText;
+        }
         var event = {
-          "responseText" : this._request.responseText,
+          "responseText" : text,
           "status" : this._request.status,
           "responseHeaders" : this._getHeaders(),
           "target" : this
@@ -108,7 +117,9 @@ org.eclipse.rwt.Request.prototype = {
             this._error( event );
           }
         }
-        this.dispose();
+        if( this._async ) {
+          this.dispose();
+        }
       }
     },
 

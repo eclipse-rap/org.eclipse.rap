@@ -104,8 +104,8 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
         //        are not or can not be prevented/canceled. Key might not repeat in that case.
         //        Not to be used when charcode might be unkown (e.g. shift + char, special char)-
         var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
-        var result =    EventHandlerUtil.isNonPrintableKeyCode( keyCode )
-                     || EventHandlerUtil.isSpecialKeyCode( keyCode );
+        result =    EventHandlerUtil.isNonPrintableKeyCode( keyCode )
+                 || EventHandlerUtil.isSpecialKeyCode( keyCode );
         if( !result && ( domEvent.altKey || domEvent.ctrlKey ) ) {
           result = this._isAlphaNumeric( keyCode );
         }
@@ -129,7 +129,6 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
 
     _checkBufferedEvents : function() {
       while( this._bufferedEvents.length > 0 && !this._keyEventRequestRunning ) {
-        var size = this._bufferedEvents.length;
         var oldEvent = this._bufferedEvents.shift();
         this._sendKeyEvent.apply( this, oldEvent );
       }
@@ -147,7 +146,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
 
     _sendRequestAsync : function() {
       window.setTimeout( function() {
-        org.eclipse.swt.Server.getInstance()._sendImmediate( true );
+        org.eclipse.swt.Server.getInstance().sendImmediate( true );
       }, 0 );
     },
 

@@ -38,7 +38,7 @@ org.eclipse.rwt.UICallBack.prototype = {
   },
 
   sendUIRequest : function() {
-    org.eclipse.swt.Server.getInstance()._sendImmediate( true );
+    org.eclipse.swt.Server.getInstance().sendImmediate( true );
   },
 
   sendUICallBackRequest : function() {
