@@ -17,7 +17,7 @@
   <parent>
     <groupId>org.eclipse.rap</groupId>
     <artifactId>org.eclipse.rap.demo-parent</artifactId>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.5.1-SNAPSHOT</version>
     <relativePath>../../releng/org.eclipse.rap.releng/demo-war/</relativePath>
   </parent>
 

@@ -18,7 +18,7 @@
   <!-- This feature is only for compatibility with earlier versions of the RAP Tooling -->
   <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.runtime.sdk"
-      version="1.5.0.qualifier">
+      version="1.5.1.qualifier">
     <category name="org.eclipse.rap.category"/>
   </feature>
 
