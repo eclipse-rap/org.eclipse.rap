@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.rap.runtime.requirements"
-      label="Rich Ajax Platform (RAP) Basic Target Requirements"
+      id="org.eclipse.rap.equinox.target.feature"
+      label="Rich Ajax Platform (RAP) Basic Equinox Target Feature"
       version="2.0.0.qualifier"
       provider-name="Eclipse.org - RAP">
 
@@ -18,7 +18,7 @@
    </license>
 
    <url>
-      <update label="Rich Ajax Platform (RAP) 2.0 Runtime Repository" url="http://download.eclipse.org/rt/rap/2.0/runtime/"/>
+      <update label="Rich Ajax Platform (RAP) 2.0 Repository" url="http://download.eclipse.org/rt/rap/2.0/"/>
    </url>
 
    <plugin

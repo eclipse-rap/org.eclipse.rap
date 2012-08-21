@@ -16,7 +16,7 @@
       label="Rich Ajax Platform (RAP)" />
 
   <feature url="../runtime-feature"
-      id="org.eclipse.rap.runtime"
+      id="org.eclipse.rap.feature"
       version="2.0.0.qualifier">
     <category name="org.eclipse.rap.category"/>
   </feature>

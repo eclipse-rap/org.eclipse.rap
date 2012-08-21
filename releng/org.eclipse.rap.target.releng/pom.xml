@@ -32,7 +32,7 @@
   </prerequisites>
 
   <modules>
-    <module>../../features/org.eclipse.rap.runtime.requirements</module>
+    <module>../../features/org.eclipse.rap.equinox.target.feature</module>
     <module>../../features/org.eclipse.rap.runtime.sdk</module>
     <module>repository</module>
     <module>repository/runtime-feature</module>
