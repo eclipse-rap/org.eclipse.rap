@@ -62,7 +62,7 @@
                 <configuration>
                   <tasks>
                     <zip destfile="${project.build.directory}/rap-features.zip">
-                      <zipfileset src="${project.build.directory}/org.eclipse.rap.runtime-aggregation-repository.zip">
+                      <zipfileset src="${project.build.directory}/org.eclipse.rap.runtime-aggregation-repository-2.0.0-SNAPSHOT.zip">
                         <include name="features/*.jar" />
                       </zipfileset>
                     </zip>
@@ -103,7 +103,7 @@
                 <configuration>
                   <tasks>
                     <copy
-                       file="${project.build.directory}/org.eclipse.rap.runtime-aggregation-repository.zip"
+                       file="${project.build.directory}/org.eclipse.rap.runtime-aggregation-repository-2.0.0-SNAPSHOT.zip"
                        todir="${project.build.directory}/final/repository.zip"/>
                     <zip destfile="${project.build.directory}/final/repository.zip" update="true">
                       <zipfileset src="${project.build.directory}/signed/rap-features.zip">
