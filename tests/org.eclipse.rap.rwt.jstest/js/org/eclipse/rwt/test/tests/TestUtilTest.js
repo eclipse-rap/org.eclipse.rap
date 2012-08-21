@@ -607,7 +607,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       }
     ],
 
-    testDelayTest : [
+    // NOTE : This test randomly fails in old IE due to very bad timer accuaracy.
+    //        Possibly connected to test order. Test succeeds when choosing larger timespans,
+    //        but this would make it less meaningful on other browser.
+    testDelayTest : org.eclipse.rwt.Client.isMshtml() ? null : [
       // NOTE: accuarcy of timeout is about 16-32 ms
       function() {
         var store = {
@@ -736,12 +739,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testCreateXMLHttpRequest : function() {
+      TestUtil.clearXMLHttpRequests();
       var request = org.eclipse.rwt.Request.createXHR();
 
       assertIdentical( request, TestUtil.getXMLHttpRequests()[ 0 ] );
     },
 
     testCreateMultipleXMLHttpRequest : function() {
+      TestUtil.clearXMLHttpRequests();
       var requestOne = org.eclipse.rwt.Request.createXHR();
       var requestTwo = org.eclipse.rwt.Request.createXHR();
 

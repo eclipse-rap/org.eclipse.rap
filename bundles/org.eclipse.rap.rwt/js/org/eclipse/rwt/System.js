@@ -136,7 +136,7 @@ qx.Class.define( "org.eclipse.rwt.System", {
       qx.core.Object.dispose( true );
     },
 
-    _isBrowserSupported  : function() {
+    _isBrowserSupported : function() {
       var result = true;
       var engine = org.eclipse.rwt.Client.getEngine();
       var version = org.eclipse.rwt.Client.getMajor();

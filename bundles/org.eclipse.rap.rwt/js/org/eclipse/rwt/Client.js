@@ -189,9 +189,13 @@ qx.Class.define( "org.eclipse.rwt.Client", {
         if( this._engineVersionMajor >= 8 ) {
           result = ( screen.deviceXDPI / screen.logicalXDPI ) !== 1;
         } else {
-          var rect = document.body.getBoundingClientRect();
-          var zoom = ( rect.right - rect.left ) / document.body.offsetWidth;
-          result = zoom !== 1;
+          try {
+            var rect = document.body.getBoundingClientRect();
+            var zoom = ( rect.right - rect.left ) / document.body.offsetWidth;
+            result = zoom !== 1;
+          } catch( ex ) { // only happens in tests due to different bootstrap
+            result = false;
+          }
         }
       }
       return result;
