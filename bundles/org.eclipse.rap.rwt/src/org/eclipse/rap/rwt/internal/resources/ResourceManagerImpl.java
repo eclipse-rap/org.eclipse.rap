@@ -23,6 +23,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.resources.IResourceManager;
@@ -316,14 +317,14 @@ public class ResourceManagerImpl implements IResourceManager {
   private static boolean shouldVersion( RegisterOptions options ) {
     return    (    options == RegisterOptions.VERSION
                 || options == RegisterOptions.VERSION_AND_COMPRESS )
-           && SystemProps.useVersionedJavaScript();
+           && RWTProperties.useVersionedJavaScript();
   }
 
   private static boolean shouldCompress( RegisterOptions options ) {
     return    (    options == RegisterOptions.COMPRESS
                 || options == RegisterOptions.VERSION_AND_COMPRESS )
-           && SystemProps.useCompressedJavaScript()
-           && !SystemProps.isDevelopmentMode();
+           && RWTProperties.useCompressedJavaScript()
+           && !RWTProperties.isDevelopmentMode();
   }
 
   private File getDiskLocation( String name, Integer version ) {

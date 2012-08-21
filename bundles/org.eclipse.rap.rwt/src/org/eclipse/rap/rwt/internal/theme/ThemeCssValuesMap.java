@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.theme;
 
 import java.util.*;
 
-import org.eclipse.rap.rwt.internal.resources.SystemProps;
+import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 
@@ -82,7 +82,7 @@ public final class ThemeCssValuesMap {
   }
 
   private void reportMissingProperty( String elementName, String propertyName ) {
-    if( SystemProps.isDevelopmentMode() && SystemProps.enableThemeDebugOutput() ) {
+    if( RWTProperties.isDevelopmentMode() && RWTProperties.enableThemeDebugOutput() ) {
       StringBuilder stringBuilder = new StringBuilder();
       stringBuilder.append( "Missing value for element: '" );
       stringBuilder.append( elementName );

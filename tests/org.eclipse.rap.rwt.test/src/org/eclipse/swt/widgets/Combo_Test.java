@@ -52,16 +52,22 @@ public class Combo_Test extends TestCase {
     combo.add( "item1" );
     combo.add( "item2" );
     combo.add( "item3" );
-
-    // deselect the currently selected index/item
     combo.select( 1 );
+
     combo.deselect( 1 );
-    assertEquals( -1, combo.getSelectionIndex() );
 
-    // deselect works only if the argument matches the currently selected index
-    // (as far as I understand SWT doc/implementation...)
+    assertEquals( -1, combo.getSelectionIndex() );
+  }
+
+  public void testDeselectWithWrongIndex() {
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.add( "item1" );
+    combo.add( "item2" );
+    combo.add( "item3" );
     combo.select( 1 );
+
     combo.deselect( 0 );
+
     assertEquals( 1, combo.getSelectionIndex() );
   }
 

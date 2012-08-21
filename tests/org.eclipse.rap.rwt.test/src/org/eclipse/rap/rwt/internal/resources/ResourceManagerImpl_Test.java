@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,11 +17,11 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistrationException;
-import org.eclipse.rap.rwt.internal.resources.SystemProps;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
@@ -143,7 +143,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   public void testVersionedRegistrationWithNotExistingResource() {
-    System.setProperty( SystemProps.USE_VERSIONED_JAVA_SCRIPT, "true" );
+    System.setProperty( RWTProperties.USE_VERSIONED_JAVA_SCRIPT, "true" );
     IResourceManager manager = getResourceManager( );
     String doesNotExist = "doesNotExist";
 
@@ -156,7 +156,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   public void testVersionedRegistration() throws Exception {
-    System.setProperty( SystemProps.USE_VERSIONED_JAVA_SCRIPT, "true" );
+    System.setProperty( RWTProperties.USE_VERSIONED_JAVA_SCRIPT, "true" );
     ResourceManagerImpl manager = getResourceManager( );
     String resource = TEST_RESOURCE_1;
 
@@ -171,7 +171,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   public void testVersionedRegistrationIsIdempotent() {
-    System.setProperty( SystemProps.USE_VERSIONED_JAVA_SCRIPT, "true" );
+    System.setProperty( RWTProperties.USE_VERSIONED_JAVA_SCRIPT, "true" );
     IResourceManager manager = getResourceManager( );
     String resource = TEST_RESOURCE_1;
     manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
@@ -184,7 +184,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   public void testCompressedRegistration() throws Exception {
-    System.setProperty( SystemProps.USE_VERSIONED_JAVA_SCRIPT, "false" );
+    System.setProperty( RWTProperties.USE_VERSIONED_JAVA_SCRIPT, "false" );
     IResourceManager manager = getResourceManager( );
     String resource = TEST_RESOURCE_1;
 
@@ -199,7 +199,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   public void testCompressedRegistrationIsIdempotent() {
-    System.setProperty( SystemProps.USE_VERSIONED_JAVA_SCRIPT, "false" );
+    System.setProperty( RWTProperties.USE_VERSIONED_JAVA_SCRIPT, "false" );
     IResourceManager manager = getResourceManager( );
     String resource = TEST_RESOURCE_1;
     manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.COMPRESS );
@@ -212,8 +212,8 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   public void testNotCompressedInDevelopmentMode() throws Exception {
-    System.setProperty( SystemProps.CLIENT_LIBRARY_VARIANT,
-                        SystemProps.DEBUG_CLIENT_LIBRARY_VARIANT );
+    System.setProperty( RWTProperties.CLIENT_LIBRARY_VARIANT,
+                        RWTProperties.DEBUG_CLIENT_LIBRARY_VARIANT );
     IResourceManager manager = getResourceManager( );
     String resource = TEST_RESOURCE_1;
 
@@ -255,7 +255,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   public void testUnregisterVersionedResource() {
-    System.setProperty( SystemProps.USE_VERSIONED_JAVA_SCRIPT, "true" );
+    System.setProperty( RWTProperties.USE_VERSIONED_JAVA_SCRIPT, "true" );
     ResourceManagerImpl manager = getResourceManager( );
     String testResource = TEST_RESOURCE_1_VERSIONED;
     Integer version = manager.findVersion( testResource );
@@ -278,7 +278,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   public void testVersionedLocationRetrieval() {
-    System.setProperty( SystemProps.USE_VERSIONED_JAVA_SCRIPT, "true" );
+    System.setProperty( RWTProperties.USE_VERSIONED_JAVA_SCRIPT, "true" );
     IResourceManager manager = getResourceManager( );
     manager = getResourceManager( );
 

@@ -36,6 +36,7 @@ import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.engine.RWTServletContextListener;
+import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextHelper;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
@@ -47,7 +48,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
-import org.eclipse.rap.rwt.internal.resources.SystemProps;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
@@ -418,13 +418,13 @@ public final class Fixture {
   }
 
   public static void unsetSystemProperties() {
-    System.getProperties().remove( SystemProps.USE_VERSIONED_JAVA_SCRIPT );
-    System.getProperties().remove( SystemProps.CLIENT_LIBRARY_VARIANT );
+    System.getProperties().remove( RWTProperties.USE_VERSIONED_JAVA_SCRIPT );
+    System.getProperties().remove( RWTProperties.CLIENT_LIBRARY_VARIANT );
   }
 
   public static void setSystemProperties() {
     // disable js-versioning by default to make comparison easier
-    System.setProperty( SystemProps.USE_VERSIONED_JAVA_SCRIPT, "false" );
+    System.setProperty( RWTProperties.USE_VERSIONED_JAVA_SCRIPT, "false" );
   }
 
   public static void runInThread( final Runnable runnable ) throws Throwable {
