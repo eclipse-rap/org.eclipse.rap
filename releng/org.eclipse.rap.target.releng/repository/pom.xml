@@ -104,7 +104,7 @@
                   <tasks>
                     <copy
                        file="${project.build.directory}/org.eclipse.rap.runtime-aggregation-repository-2.0.0-SNAPSHOT.zip"
-                       todir="${project.build.directory}/final/repository.zip"/>
+                       tofile="${project.build.directory}/final/repository.zip"/>
                     <zip destfile="${project.build.directory}/final/repository.zip" update="true">
                       <zipfileset src="${project.build.directory}/signed/rap-features.zip">
                         <include name="features/*.jar" />
