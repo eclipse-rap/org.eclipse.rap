@@ -321,6 +321,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
 
     testOnCanvasAppearOnEnhancedBorder : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.fakeResponse( true );
       var shell = new org.eclipse.swt.widgets.Shell( { "style" : [] } );
       shell.setShadow( null );
       shell.addToDocument();
@@ -335,6 +336,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       bar.setSelection( 50 );
       bar.setParent( shell );
       TestUtil.flush();
+      TestUtil.fakeResponse( false );
       assertEquals( 1, log.length );
       if( !org.eclipse.rwt.Client.supportsCss3() ) {
         shell.setBackgroundColor( "green" );

@@ -19,6 +19,8 @@ org.eclipse.rwt.test.fixture.NativeRequestMock = function() {
 
 org.eclipse.rwt.test.fixture.NativeRequestMock.history = [];
 
+org.eclipse.rwt.test.fixture.NativeRequestMock.useFakeServer = true;
+
 org.eclipse.rwt.test.fixture.NativeRequestMock.prototype = {
 
   //////////
@@ -33,6 +35,9 @@ org.eclipse.rwt.test.fixture.NativeRequestMock.prototype = {
 
   send : function() {
     this._log.push( [ "send", arguments ] );
+    if( org.eclipse.rwt.test.fixture.NativeRequestMock.useFakeServer ) {
+      org.eclipse.rwt.test.fixture.FakeServer.getInstance().receive( this, arguments );
+    }
   },
 
   open : function() {

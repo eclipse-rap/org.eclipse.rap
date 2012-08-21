@@ -13,7 +13,6 @@
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Animation =  org.eclipse.rwt.Animation;
 var Processor = org.eclipse.rwt.protocol.Processor;
-var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
 
 var shell;
 
@@ -94,9 +93,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
 
     testShellFlyInTopStartOnCreate : function() {
       shell.setAnimation( { "flyInTop" : [ 400, "linear" ] } );
+      TestUtil.fakeResponse( true );
       shell.hide();
 
       shell.show();
+      TestUtil.fakeResponse( false );
       var animation = this.getAppearAnimation( shell );
       assertFalse( animation.isStarted() );
       TestUtil.flush();
@@ -344,10 +345,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
 
     setUp : function() {
       shell = TestUtil.createShellByProtocol( "w2" );
+      TestUtil.fakeResponse( true );
       shell.setTop( 40 );
       shell.setHeight( 50 );
       shell.setLeft( 60 );
       shell.setWidth( 70 );
+      TestUtil.fakeResponse( false );
     },
 
     tearDown : function() {

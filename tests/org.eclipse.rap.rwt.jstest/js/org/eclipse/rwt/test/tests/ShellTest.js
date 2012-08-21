@@ -18,8 +18,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       // first check that the default theme for overlay has no background set
       var tv = new org.eclipse.swt.theme.ThemeValues( {} );
-      var backgroundColor = tv.getCssColor( "Shell-DisplayOverlay",
-                                            "background-color" );
       var backgroundImage = tv.getCssImage( "Shell-DisplayOverlay",
                                             "background-image" );
       assertNull( backgroundImage );
@@ -27,6 +25,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
 // fake the ThemeStore. Reactivate when the ThemeStore fixture is available.
 //    assertEquals( "undefined", backgroundColor );
       // create shell like the LCA would do:
+      TestUtil.fakeResponse( true );
       var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       shell.addState( "rwt_APPLICATION_MODAL" );
       shell.initialize();
@@ -35,6 +34,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.setSpace( 50, 300, 50, 200 );
       shell.setVisibility( true );
       TestUtil.flush();
+      TestUtil.fakeResponse( false );
       // Check for overlay background-image to be "blank.gif", as IE needs
       // this to capture mouse events.
       var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
@@ -51,6 +51,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
 
     testDisplayOverlayCopyStates : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.fakeResponse( true );
       var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       shell.addState( "rwt_APPLICATION_MODAL" );
       shell.addState( "rwt_myTest" );
@@ -60,6 +61,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.setSpace( 50, 300, 50, 200 );
       shell.setVisibility( true );
       TestUtil.flush();
+      TestUtil.fakeResponse( false );
       // Check for overlay to have the same states as the shell
       var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
       assertTrue( overlay.isSeeable() );
@@ -74,6 +76,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
 
     testDisplayOverlayAddStates : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.fakeResponse( true );
       var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       shell.addState( "rwt_APPLICATION_MODAL" );
       shell.initialize();
@@ -82,6 +85,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.setSpace( 50, 300, 50, 200 );
       shell.setVisibility( true );
       TestUtil.flush();
+      TestUtil.fakeResponse( false );
       // Check for overlay to have the same states as the shell
       var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
       assertTrue( overlay.isSeeable() );
@@ -104,6 +108,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       overlay.addEventListener( "changeVisibility", function( event) {
         visibilityChanges++;
       } );
+      TestUtil.fakeResponse( true );
       var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       shell.addState( "rwt_APPLICATION_MODAL" );
       shell.initialize();
@@ -121,6 +126,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell2.setSpace( 100, 300, 50, 200 );
       shell2.setVisibility( true );
       TestUtil.flush();
+      TestUtil.fakeResponse( false );
       shell.addState( "rwt_myTest1" );
       shell2.addState( "rwt_myTest2b" );
       // check for Z-index and states for shell2
@@ -195,12 +201,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     },
 
     _createDefaultShell : function( styles, noFlush ) {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil.fakeResponse( true );
       var shell = new org.eclipse.swt.widgets.Shell( styles );
       shell.initialize();
       shell.open();
       shell.setActive( true );
       shell.setSpace( 50, 300, 50, 200 );
       shell.setVisibility( true );
+      TestUtil.fakeResponse( false );
       if( !noFlush ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.flush();

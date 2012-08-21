@@ -670,7 +670,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   _errorPage : null,
 
   initRequestLog : function() {
-    var server = org.eclipse.rwt.test.fixture.RAPServer.getInstance();
+    var server = org.eclipse.rwt.test.fixture.FakeServer.getInstance();
     org.eclipse.rwt.test.fixture.TestUtil.clearRequestLog();
     server.setRequestHandler( function( message ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -818,8 +818,18 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     return widget == org.eclipse.rwt.EventHandler.getFocusRoot().getActiveChild();
   },
 
-  flush : function() {
-    qx.ui.core.Widget.flushGlobalQueues();
+  flush : function( inResponse ) {
+    if( inResponse ) {
+      org.eclipse.swt.EventUtil.setSuspended( true );
+      qx.ui.core.Widget.flushGlobalQueues();
+      org.eclipse.swt.EventUtil.setSuspended( true );
+    } else {
+      qx.ui.core.Widget.flushGlobalQueues();
+    }
+  },
+
+ fakeResponse : function( value ) {
+    org.eclipse.swt.EventUtil.setSuspended( value );
   },
 
   getDocument : function() {
@@ -892,6 +902,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   // Protocol ralated
 
   createShellByProtocol : function( id ) {
+    org.eclipse.swt.EventUtil.setSuspended( true );
     org.eclipse.rwt.protocol.Processor.processOperation( {
       "target" : id,
       "action" : "create",
@@ -901,6 +912,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
         "visibility" : true
       }
     } );
+    org.eclipse.swt.EventUtil.setSuspended( false );
     return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
   },
 

@@ -23,9 +23,7 @@ public class RWTTestsContribution implements TestContribution {
   private static final String PATH_PREFIX = "/org/eclipse/rwt/test/";
 
   private static final String[] RESOURCE_FILES = new String[] {
-    "fixture/RAPRequestPatch.js",
-    "fixture/DummyRequest.js",
-    "fixture/RAPServer.js",
+    "fixture/FakeServer.js",
     "fixture/NativeRequestMock.js",
     "Presenter.js",
     "TestRunner.js",

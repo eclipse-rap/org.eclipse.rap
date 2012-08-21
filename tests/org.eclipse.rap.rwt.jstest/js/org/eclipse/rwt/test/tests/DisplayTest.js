@@ -47,7 +47,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       processor.processOperation( {
         "target" : "w1",
         "action" : "call",
-        "method" : "measureStrings",       
+        "method" : "measureStrings",
         "properties" : {
           "strings" : [
              [ -1114032847, "Check", fontName, 12, false, false, -1 ],
@@ -59,7 +59,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       var log = TestUtil.getRequestLog();
       assertTrue( log[ 0 ].indexOf( "-1114032847=" ) != -1 );
       assertTrue( log[ 1 ].indexOf( "1767849485=" ) != -1 );
-      var expected = "&nbsp;&nbsp;Push &amp;<br/> Button&nbsp;";
     },
 
     testSetFocusControlByProtocol : function() {

@@ -100,14 +100,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
     },
 
     testRenderWhileParentNotDisplayable : function() {
-      // See Bug 384792 - [Table] Header disappear when it's layouted in invisible TabFolder tab 
+      // See Bug 384792 - [Table] Header disappear when it's layouted in invisible TabFolder tab
       shell.setDisplay( false );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       TestUtil.protocolSet( "w4", { "text" : "foo" } );
       TestUtil.flush();
 
+      org.eclipse.swt.EventUtil.setSuspended( true );
       shell.setDisplay( true );
+      org.eclipse.swt.EventUtil.setSuspended( false );
       TestUtil.flush();
 
       var label = this._getColumnLabel( tree, column );
@@ -667,14 +669,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.setHeaderVisible( true );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       this._createColumnByProtocol( "w5", "w3", [] );
-      TestUtil.protocolSet( "w4", { 
-        "left" : 3, 
-        "width" : 20, 
+      TestUtil.protocolSet( "w4", {
+        "left" : 3,
+        "width" : 20,
         "moveable" : true,
         "text" : "foo",
         "image" : [ "bar.jpg", 10, 10 ],
         "sortDirection" : "up",
-        "customVariant" : "blue" 
+        "customVariant" : "blue"
       } );
       TestUtil.protocolSet( "w5", { "left" : 23, "width" : 177 } ); // makes header scrollable
       TestUtil.flush();
@@ -705,7 +707,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       this._createColumnByProtocol( "w5", "w3", [] );
       TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20, "moveable" : true } );
-      TestUtil.protocolSet( "w5", { "left" : 23, "width" : 177 } ); 
+      TestUtil.protocolSet( "w5", { "left" : 23, "width" : 177 } );
       TestUtil.flush();
       var button = qx.event.type.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
@@ -970,7 +972,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.fakeMouseEventDOM( label.getElement(), "mouseup", button, 20, 3 );
       TestUtil.flush();
       TestUtil.fakeMouseEventDOM( label.getElement(), "click", button, 20, 3 );
-      TestUtil.flush(); // NOTE: unrealistic. browser would very likely not fire click after moving 
+      TestUtil.flush(); // NOTE: unrealistic. browser would very likely not fire click after moving
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.widgetSelected=w4" ) === -1 );
@@ -1298,7 +1300,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.setHeaderHeight( 50 );
       var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
 
-      TestUtil.protocolSet( "w4", { 
+      TestUtil.protocolSet( "w4", {
          "left" : 10,
          "width": 100,
          "height" : 23
@@ -1318,10 +1320,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.setHeaderHeight( 50 );
       var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
 
-      TestUtil.protocolSet( "w4", { 
-        "left" : 10, 
-        "width": 45, 
-        "height" : 23, 
+      TestUtil.protocolSet( "w4", {
+        "left" : 10,
+        "width": 45,
+        "height" : 23,
         "text" : "foo0o0o0ooooooo"
       } );
       TestUtil.flush();
@@ -1481,7 +1483,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
           "parent" : parentId
         }
       } );
-      TestUtil.flush();
+      TestUtil.flush( true );
       return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
     },
 
@@ -1496,7 +1498,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
         }
       } );
       if( !noFlush ) {
-        TestUtil.flush();
+        TestUtil.flush( true );
       }
       return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
     },
