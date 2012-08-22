@@ -21,7 +21,7 @@
     <relativePath>../../releng/org.eclipse.rap.target.releng/pom.xml</relativePath>
   </parent>
 
-  <artifactId>org.eclipse.rap.runtime.requirements</artifactId>
+  <artifactId>org.eclipse.rap.equinox.target.feature</artifactId>
   <packaging>eclipse-feature</packaging>
 
 </project>

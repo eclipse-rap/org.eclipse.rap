@@ -62,7 +62,7 @@
     <module>../../tests/org.eclipse.rap.rwt.cluster.testfixture.test</module>
     -->
     <!-- Packaging projects -->
-    <module>../../features/org.eclipse.rap.runtime</module>
+    <module>../../features/org.eclipse.rap.feature</module>
     <module>repository</module>
   </modules>
 

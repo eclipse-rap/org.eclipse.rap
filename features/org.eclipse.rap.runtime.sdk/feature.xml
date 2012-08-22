@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
     id="org.eclipse.rap.runtime.sdk"
-    label="Rich Ajax Platform (RAP) Target (Compatibility feature for Tooling)"
+    label="Rich Ajax Platform (RAP) Target (Compatibility feature for RAP Tools)"
     version="2.0.0.qualifier"
     provider-name="Eclipse.org - RAP">
 
@@ -20,14 +20,14 @@
   <url>
     <update
         label="Rich Ajax Platform (RAP) 2.0 Runtime Repository"
-        url="http://download.eclipse.org/rt/rap/2.0/runtime/"/>
+        url="http://download.eclipse.org/rt/rap/2.0/"/>
   </url>
 
   <includes
-      id="org.eclipse.rap.runtime"
+      id="org.eclipse.rap.feature"
       version="0.0.0"/>
   <includes
-      id="org.eclipse.rap.runtime.requirements"
+      id="org.eclipse.rap.equinox.target.feature"
       version="0.0.0"/>
 
 </feature>
