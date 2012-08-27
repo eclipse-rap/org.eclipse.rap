@@ -215,7 +215,7 @@ qx.Class.define("qx.ui.layout.impl.CanvasLayoutImpl",
     */
 
     /**
-     * This is called from qx.ui.core.Widget and  it's task is to apply the layout
+     * This is called from rwt.widgets.base.Widget and  it's task is to apply the layout
      *  (excluding border and padding) to the child.
      *
      * @type member

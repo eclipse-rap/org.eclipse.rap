@@ -133,7 +133,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       assertTrue( TestUtil.hasCssBorder( node ) );
       shell.setBorder( this.gfxBorder );
       TestUtil.flush();
-      qx.ui.core.Widget.flushGlobalQueues();
+      rwt.widgets.base.Widget.flushGlobalQueues();
       assertFalse( TestUtil.hasCssBorder( node ) );
       shell.setBorder( this.cssBorder );
       TestUtil.flush();
@@ -278,7 +278,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
 
     testGfxRadiusInvisibleEdges : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var widget = new rwt.widgets.base.MultiCellWidget( [] );
       widget.addToDocument();
       widget.setLocation( 0, 0 );
       widget.setDimension( 100, 100 );
@@ -294,7 +294,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
 
     testGfxRadiusInvisibleBorder : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var widget = new rwt.widgets.base.MultiCellWidget( [] );
       widget.addToDocument();
       widget.setLocation( 0, 0 );
       widget.setDimension( 100, 100 );
@@ -309,20 +309,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     },
 
     testGfxBackgroundImage : function() {
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var widget = new rwt.widgets.base.MultiCellWidget( [] );
       widget.addToDocument();
       widget.setLocation( 0, 0 );
       widget.setDimension( 100, 100 );
       var gfxBorder = new org.eclipse.rwt.Border( 0, "rounded", "black", 5 );
       widget.setBorder( this.gfxBorder );
       widget.setBackgroundImage( "bla.jpg" );
-      qx.ui.core.Widget.flushGlobalQueues();
+      rwt.widgets.base.Widget.flushGlobalQueues();
       assertTrue( this.usesGfxBackground( widget ) );
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var shape = widget._gfxData.backgroundShape;
       assertTrue( gfxUtil.getFillType( shape ) == "pattern" );
       widget.destroy();
-      qx.ui.core.Widget.flushGlobalQueues();
+      rwt.widgets.base.Widget.flushGlobalQueues();
     },
 
     testGfxBackgroundColorToImage : function() {
@@ -344,8 +344,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
 
     testOnCanvasAppearOnWidgetInsert : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget1 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
-      var widget2 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var widget1 = new rwt.widgets.base.MultiCellWidget( [] );
+      var widget2 = new rwt.widgets.base.MultiCellWidget( [] );
       var log = [];
       widget1._onCanvasAppear = function(){ log.push( "widget1" ); };
       widget2._onCanvasAppear = function(){ log.push( "widget2" ); };
@@ -363,11 +363,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     testFalseAppearBug : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var log = [];
-      var parent = new qx.ui.layout.CanvasLayout();
+      var parent = new rwt.widgets.base.Parent();
       parent.addToDocument();
-      var between = new qx.ui.layout.CanvasLayout();
+      var between = new rwt.widgets.base.Parent();
       between.setParent( parent );
-      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      var button = new rwt.widgets.Button( "push" );
       button.setBorder( this.gfxBorder );
       button.setParent( between );
       button._onCanvasAppear = function(){ log.push( button._element.parentNode ); };
@@ -387,8 +387,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
 
     testOnCanvasAppearOnSetDisplay : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget1 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
-      var widget2 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var widget1 = new rwt.widgets.base.MultiCellWidget( [] );
+      var widget2 = new rwt.widgets.base.MultiCellWidget( [] );
       var log = [];
       widget1._onCanvasAppear = function(){ log.push( "widget1" ); };
       widget2._onCanvasAppear = function(){ log.push( "widget2" ); };
@@ -413,8 +413,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = this._createShell();
       TestUtil.fakeResponse( true );
-      var widget1 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
-      var widget2 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var widget1 = new rwt.widgets.base.MultiCellWidget( [] );
+      var widget2 = new rwt.widgets.base.MultiCellWidget( [] );
       var log = [];
       widget1._onCanvasAppear = function(){ log.push( "widget1" ); };
       widget2._onCanvasAppear = function(){ log.push( "widget2" ); };
@@ -497,7 +497,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       // Note: a gradient and background-image can note be set at the same
       // time via CSS, but when using CSS and Java-API.
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var widget = new rwt.widgets.base.MultiCellWidget( [] );
       var gfxBorder = new org.eclipse.rwt.Border( 1, "rounded", "black", 5 );
       widget.addToDocument();
       widget.setLocation( 0, 0 );
@@ -515,7 +515,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
 
     testChangeBackgroundImageWhileBackgoundGradientSet : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var widget = new rwt.widgets.base.MultiCellWidget( [] );
       widget.addToDocument();
       widget.setLocation( 0, 0 );
       widget.setDimension( 100, 100 );
@@ -837,7 +837,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     // See Bug 342311
     testPrepareShapeBug : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      var button = new rwt.widgets.Button( "push" );
       var gfxBorder = new org.eclipse.rwt.Border( 1, "rounded", "black", 3 )
       button.setText( "Hello World!" );
       button.addToDocument();
@@ -857,7 +857,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     _createShell : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.fakeResponse( true );
-      var result = new org.eclipse.swt.widgets.Shell( { "style" : [] } );
+      var result = new rwt.widgets.Shell( { "style" : [] } );
       result.addToDocument();
       result.setBackgroundColor( null );
       result.setBackgroundGradient( null );
@@ -871,7 +871,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
 
     _createWidget : function( noFlush ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var result = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var result = new rwt.widgets.base.MultiCellWidget( [] );
       result.addToDocument();
       result.setLocation( 0, 0 );
       result.setDimension( 100, 100 );

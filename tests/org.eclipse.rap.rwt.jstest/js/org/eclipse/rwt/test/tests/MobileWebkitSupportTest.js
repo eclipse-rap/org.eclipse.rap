@@ -13,8 +13,8 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var Processor = org.eclipse.rwt.protocol.Processor;
-var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+var Processor = rwt.protocol.MessageProcessor;
+var ObjectManager = rwt.protocol.ObjectManager;
 
 qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
@@ -233,7 +233,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     testIFrameDimensionBug : function() {
       if( org.eclipse.rwt.Client.isMobileSafari() ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var iframe = new qx.ui.embed.Iframe();
+        var iframe = new rwt.widgets.base.Iframe();
         iframe.addToDocument();
         iframe.setWidth( 300 );
         iframe.setHeight( 400 );
@@ -256,7 +256,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     testTextFocusIOS : function() {
       if( org.eclipse.rwt.Client.isMobileSafari() ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var text = new org.eclipse.rwt.widgets.Text( false );
+        var text = new rwt.widgets.Text( false );
         text.addToDocument();
         TestUtil.flush();
         assertFalse( text.isFocused() );
@@ -280,7 +280,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     testTextFocusAndroid : function() {
       if( org.eclipse.rwt.Client.isAndroidBrowser() ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var text = new org.eclipse.rwt.widgets.Text( false );
+        var text = new rwt.widgets.Text( false );
         text.addToDocument();
         TestUtil.flush();
         var node = text._inputElement;
@@ -299,7 +299,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testPreventNativeMouseEvents : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var counter = 0;
@@ -313,7 +313,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testAllowNativeMouseWheelEvents : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var counter = 0;
@@ -327,7 +327,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testTouchStartCreatesMouseDown : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -344,7 +344,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testTouchIgnoredWhileInReponse : function() { // See Bug 379140
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -365,7 +365,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testTouchEndCreatesMouseUp : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -385,8 +385,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testTouchToolTips : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
-      var widget = new qx.ui.basic.Terminator();
+      var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       widget.setToolTip( toolTip );
       widget.setUserData( "toolTipText", "foo" );
@@ -409,7 +409,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testMouseOver : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -431,7 +431,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     testMouseOut : function() {
       this.resetMobileWebkitSupport();
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -451,7 +451,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testCoordinatesMouseDownUp : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -470,7 +470,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testPreventTapZoom : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var prevented = false;
@@ -488,7 +488,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testClick : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -508,7 +508,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testNoClickOnDifferentTargets : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -527,7 +527,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testIsDraggableShell : function() {
-      var widget = new org.eclipse.swt.widgets.Shell( {} );
+      var widget = new rwt.widgets.Shell( {} );
       widget.addToDocument();
       widget.initialize();
       widget.open();
@@ -537,7 +537,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testIsDraggableSash : function() {
-      var widget = new org.eclipse.swt.widgets.Sash();
+      var widget = new rwt.widgets.Sash();
       widget.addToDocument();
       assertTrue( this._isDraggable( widget ) );
       widget.destroy();
@@ -545,7 +545,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testIsDraggableScale : function() {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var widget = new org.eclipse.swt.widgets.Scale( "horizontal" );
+      var widget = new rwt.widgets.Scale( "horizontal" );
       widget.addToDocument();
       widgetManager.add( widget, "scale", true );
       widgetManager.add( widget._thumb, "scale-thumb", false );
@@ -555,7 +555,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testIsDraggableSlider : function() {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var widget = new org.eclipse.swt.widgets.Slider( "horizontal" );
+      var widget = new rwt.widgets.Slider( "horizontal" );
       widget.addToDocument();
       widgetManager.add( widget, "slider", true );
       widgetManager.add( widget._thumb, "slider-thumb", false );
@@ -564,21 +564,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testIsDraggableScrollBar : function() {
-      var widget = new org.eclipse.rwt.widgets.ScrollBar( false );
+      var widget = new rwt.widgets.base.ScrollBar( false );
       widget.addToDocument();
       assertTrue( this._isDraggable( widget ) );
       widget.destroy();
     },
 
     testIsDraggableScrolledComposite : function() {
-      var widget = new org.eclipse.swt.custom.ScrolledComposite( false );
+      var widget = new rwt.widgets.ScrolledComposite( false );
       widget.addToDocument();
       assertTrue( this._isDraggable( widget._horzScrollBar._thumb ) );
       widget.destroy();
     },
 
     testIsDraggableComboScrollBar : function() {
-      var widget = new org.eclipse.rwt.widgets.BasicButton( "push" );
+      var widget = new rwt.widgets.base.BasicButton( "push" );
       widget.setAppearance( "scrollbar-thumb" );
       widget.addToDocument();
       assertTrue( this._isDraggable( widget ) );
@@ -586,7 +586,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testIsDraggableCoolItem : function() {
-      var widget = new qx.ui.layout.CanvasLayout();
+      var widget = new rwt.widgets.base.Parent();
       widget.setAppearance( "coolitem-handle" );
       widget.addToDocument();
       assertTrue( this._isDraggable( widget ) );
@@ -594,7 +594,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testIsDraggableList : function() {
-      var widget = new org.eclipse.swt.widgets.List( true );
+      var widget = new rwt.widgets.List( true );
       widget.addToDocument();
       assertTrue( this._isDraggable( widget._horzScrollBar._thumb ) );
       assertTrue( this._isDraggable( widget._vertScrollBar._thumb ) );
@@ -626,12 +626,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testIsNotDraggableWidget : function() {
       //test basic widgets without proper appearance that might allow a broader match
-      var widget = new org.eclipse.rwt.widgets.BasicButton( "push" );
+      var widget = new rwt.widgets.base.BasicButton( "push" );
       widget.addToDocument();
       assertFalse( this._isDraggable( widget ) );
       widget.destroy();
 
-      widget = new qx.ui.layout.CanvasLayout();
+      widget = new rwt.widgets.base.Parent();
       widget.addToDocument();
       assertFalse( this._isDraggable( widget ) );
       widget.destroy();
@@ -642,8 +642,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     testCancelOnGesture : function() {
       if( !org.eclipse.rwt.Client.isAndroidBrowser() && !org.eclipse.rwt.Client.isMobileChrome() ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var doc = qx.ui.core.ClientDocument.getInstance();
-        var widget = new qx.ui.basic.Terminator();
+        var doc = rwt.widgets.base.ClientDocument.getInstance();
+        var widget = new rwt.widgets.base.Terminator();
         widget.addToDocument();
         TestUtil.flush();
         var widgetLog = [];
@@ -681,8 +681,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testCancelOnSwipe : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var doc = qx.ui.core.ClientDocument.getInstance();
-      var widget = new qx.ui.basic.Terminator();
+      var doc = rwt.widgets.base.ClientDocument.getInstance();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var widgetLog = [];
@@ -728,7 +728,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testDoubleClick : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -760,7 +760,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testNoDoubeClickDifferentTarget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -784,7 +784,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testNoDoubleClickTooSlow : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -810,7 +810,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     testPreventDefaultAtFullscreen : function() {
       this.fakeFullscreen();
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -833,7 +833,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     testPreventDefaultOnSwipe : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -856,7 +856,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     testAllowSwipeOnScrollable : function() {
       if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var widget = new org.eclipse.swt.custom.ScrolledComposite();
+        var widget = new rwt.widgets.ScrolledComposite();
         widget.addToDocument();
         TestUtil.flush();
         var log = [];
@@ -880,8 +880,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     testAllowSwipeOnScrollableChild : function() {
       if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var parent = new org.eclipse.swt.custom.ScrolledComposite();
-        var widget = new qx.ui.basic.Terminator();
+        var parent = new rwt.widgets.ScrolledComposite();
+        var widget = new rwt.widgets.base.Terminator();
         parent.setContent( widget );
         parent.addToDocument();
         TestUtil.flush();
@@ -906,20 +906,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     testDoNotBlockScrolling : function() {
       if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var composite = new org.eclipse.swt.custom.ScrolledComposite();
+        var composite = new rwt.widgets.ScrolledComposite();
         composite.setLeft( 10 );
         composite.setTop( 10 );
         composite.setWidth( 100 );
         composite.setHeight( 100 );
         composite.addToDocument();
-        var area = new org.eclipse.swt.widgets.Composite();
+        var area = new rwt.widgets.Composite();
         area.setLeft( 0 );
         area.setTop( 0 );
         composite.setContent( area );
         area.setWidth( 200 );
         area.setHeight( 200 );
         TestUtil.prepareTimerUse();
-        var child = new qx.ui.basic.Terminator();
+        var child = new rwt.widgets.base.Terminator();
         child.setParent( area );
         child.setLeft( 0 );
         child.setTop( 0 );
@@ -947,7 +947,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       grid.setItemCount( 50 );
       grid.setItemHeight( 20 );
       for( var i = 0; i < 50; i++ ) {
-        new org.eclipse.rwt.widgets.GridItem( grid.getRootItem(), i );
+        new rwt.widgets.GridItem( grid.getRootItem(), i );
       }
       TestUtil.flush();
       var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
@@ -967,7 +967,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       grid.setItemCount( 50 );
       grid.setItemHeight( 20 );
       for( var i = 0; i < 50; i++ ) {
-        new org.eclipse.rwt.widgets.GridItem( grid.getRootItem(), i );
+        new rwt.widgets.GridItem( grid.getRootItem(), i );
       }
       TestUtil.flush();
       grid.setTopItemIndex( 20 );
@@ -992,7 +992,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       grid.setItemCount( 50 );
       grid.setItemHeight( 20 );
       for( var i = 0; i < 50; i++ ) {
-        new org.eclipse.rwt.widgets.GridItem( grid.getRootItem(), i );
+        new rwt.widgets.GridItem( grid.getRootItem(), i );
       }
       TestUtil.flush();
       grid.setTopItemIndex( 20 );
@@ -1018,7 +1018,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       grid.setItemCount( 50 );
       grid.setItemHeight( 20 );
       for( var i = 0; i < 50; i++ ) {
-        new org.eclipse.rwt.widgets.GridItem( grid.getRootItem(), i );
+        new rwt.widgets.GridItem( grid.getRootItem(), i );
       }
       TestUtil.flush();
       grid.setTopItemIndex( 20 );
@@ -1050,7 +1050,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         grid.setItemCount( 50 );
         grid.setItemHeight( 20 );
         for( var i = 0; i < 50; i++ ) {
-          new org.eclipse.rwt.widgets.GridItem( grid.getRootItem(), i );
+          new rwt.widgets.GridItem( grid.getRootItem(), i );
         }
         TestUtil.flush();
         var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
@@ -1081,7 +1081,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         grid.setItemCount( 50 );
         grid.setItemHeight( 20 );
         for( var i = 0; i < 50; i++ ) {
-          new org.eclipse.rwt.widgets.GridItem( grid.getRootItem(), i );
+          new rwt.widgets.GridItem( grid.getRootItem(), i );
         }
         TestUtil.flush();
         var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
@@ -1111,7 +1111,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         grid.setItemCount( 50 );
         grid.setItemHeight( 20 );
         for( var i = 0; i < 50; i++ ) {
-          new org.eclipse.rwt.widgets.GridItem( grid.getRootItem(), i );
+          new rwt.widgets.GridItem( grid.getRootItem(), i );
         }
         TestUtil.flush();
         var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
@@ -1143,7 +1143,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         grid.setItemCount( 50 );
         grid.setItemHeight( 20 );
         for( var i = 0; i < 50; i++ ) {
-          new org.eclipse.rwt.widgets.GridItem( grid.getRootItem(), i );
+          new rwt.widgets.GridItem( grid.getRootItem(), i );
         }
         TestUtil.flush();
         grid.setTopItemIndex( 25 );
@@ -1176,7 +1176,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         grid.setItemCount( 50 );
         grid.setItemHeight( 20 );
         for( var i = 0; i < 50; i++ ) {
-          new org.eclipse.rwt.widgets.GridItem( grid.getRootItem(), i );
+          new rwt.widgets.GridItem( grid.getRootItem(), i );
         }
         TestUtil.flush();
         grid.setTopItemIndex( 25 );

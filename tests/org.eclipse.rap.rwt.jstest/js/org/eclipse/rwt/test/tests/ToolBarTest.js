@@ -23,7 +23,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     testCreateTooBarByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -33,9 +33,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget instanceof org.eclipse.rwt.widgets.ToolBar );
+      assertTrue( widget instanceof rwt.widgets.ToolBar );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
       assertTrue( widget.hasState( "rwt_HORIZONTAL" ) );
@@ -47,7 +47,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     testCreateTooBarWithFlatByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -57,7 +57,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_HORIZONTAL" ) );
       assertTrue( widget.hasState( "rwt_FLAT" ) );
@@ -70,7 +70,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
-      assertTrue( widget instanceof org.eclipse.rwt.widgets.ToolItem );
+      assertTrue( widget instanceof rwt.widgets.ToolItem );
       assertIdentical( toolbar, widget.getParent() );
       assertTrue( widget.hasState( "push" ) );
       assertTrue( widget.hasState( "rwt_PUSH" ) );
@@ -86,7 +86,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget =  this._createToolItemByProtocol( "w4", "w3", [ "RADIO" ] );
-      assertTrue( widget instanceof org.eclipse.rwt.widgets.ToolItem );
+      assertTrue( widget instanceof rwt.widgets.ToolItem );
       assertIdentical( toolbar, widget.getParent() );
       assertTrue( widget.hasState( "radio" ) );
       assertTrue( widget.hasState( "rwt_RADIO" ) );
@@ -102,7 +102,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget =  this._createToolItemByProtocol( "w4", "w3", [ "CHECK" ] );
-      assertTrue( widget instanceof org.eclipse.rwt.widgets.ToolItem );
+      assertTrue( widget instanceof rwt.widgets.ToolItem );
       assertIdentical( toolbar, widget.getParent() );
       assertTrue( widget.hasState( "check" ) );
       assertTrue( widget.hasState( "rwt_CHECK" ) );
@@ -118,7 +118,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget =  this._createToolItemByProtocol( "w4", "w3", [ "DROP_DOWN" ] );
-      assertTrue( widget instanceof org.eclipse.rwt.widgets.ToolItem );
+      assertTrue( widget instanceof rwt.widgets.ToolItem );
       assertIdentical( toolbar, widget.getParent() );
       assertTrue( widget.hasState( "dropDown" ) );
       assertTrue( widget.hasState( "rwt_DROP_DOWN" ) );
@@ -134,7 +134,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [ "FLAT" ] );
       var widget =  this._createToolItemByProtocol( "w4", "w3", [ "SEPARATOR" ] );
-      assertTrue( widget instanceof org.eclipse.rwt.widgets.ToolSeparator );
+      assertTrue( widget instanceof rwt.widgets.ToolItemSeparator );
       assertIdentical( toolbar, widget.getParent() );
       assertTrue( widget._line.getVisibility() );
       assertTrue( widget.hasState( "rwt_SEPARATOR" ) );
@@ -150,7 +150,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [ "VERTICAL" ] );
       var widget =  this._createToolItemByProtocol( "w4", "w3", [ "SEPARATOR" ] );
-      assertTrue( widget instanceof org.eclipse.rwt.widgets.ToolSeparator );
+      assertTrue( widget instanceof rwt.widgets.ToolItemSeparator );
       assertIdentical( toolbar, widget.getParent() );
       assertTrue( widget.hasState( "rwt_SEPARATOR" ) );
       assertNull( widget._line );
@@ -183,13 +183,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : "w4",
         "action" : "destroy"
       } );
       TestUtil.flush();
       assertTrue( widget.isDisposed() );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       assertEquals( undefined, ObjectManager.getObject( "w4" ) );
       shell.destroy();
       toolbar.destroy();
@@ -335,7 +335,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testClickDropDown : function() {
-      var item = new org.eclipse.rwt.widgets.ToolItem( "dropDown" );
+      var item = new rwt.widgets.ToolItem( "dropDown" );
       this.item = item; 
       item.setLeft( 100 );
       item.setTop( 100 );
@@ -343,7 +343,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.setDropDownArrow( [ "bla.jpg", 13, 13 ] );
       this._currentItem = item;
       item.addToDocument();
-      qx.ui.core.Widget.flushGlobalQueues();
+      rwt.widgets.base.Widget.flushGlobalQueues();
       var lineStyle = item.getCellNode( 3 ).style;
       org.eclipse.swt.WidgetManager.getInstance().add( item, "w1" );
       this.TestUtil.clearRequestLog();
@@ -365,7 +365,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     
     testDropDownLayoutBug : function() {
       if( org.eclipse.rwt.Client.isMshtml() ) {
-        var item = new org.eclipse.rwt.widgets.ToolItem( "dropDown" );
+        var item = new rwt.widgets.ToolItem( "dropDown" );
         this.item = item; 
         item.setLeft( 100 );
         item.setTop( 100 );
@@ -375,11 +375,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
         item.setDropDownArrow( [ "bla.jpg", 13, 13 ] );
         this._currentItem = item;
         item.addToDocument();
-        qx.ui.core.Widget.flushGlobalQueues();
+        rwt.widgets.base.Widget.flushGlobalQueues();
         var down = item.getCellNode( 4 );
         assertEquals( "0px", down.style.lineHeight );
         this.TestUtil.hoverFromTo( document.body, item.getElement() );
-        qx.ui.core.Widget.flushGlobalQueues();
+        rwt.widgets.base.Widget.flushGlobalQueues();
         assertEquals( "0px", down.style.lineHeight );
         item.destroy();
         this.item = null;
@@ -387,7 +387,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testDropDownLineHeight : function() {
-      var item = new org.eclipse.rwt.widgets.ToolItem( "dropDown" );
+      var item = new rwt.widgets.ToolItem( "dropDown" );
       this.item = item; 
       item.setText( "hallo" );
       item.setDropDownArrow( [ "bla.jpg", 13, 13 ] );
@@ -395,7 +395,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.setPaddingBottom( 1 );     
       this._currentItem = item;
       item.addToDocument();
-      qx.ui.core.Widget.flushGlobalQueues();
+      rwt.widgets.base.Widget.flushGlobalQueues();
       var lineNode = item.getCellNode( 3 );
       var padding = item.getPaddingTop() + item.getPaddingBottom();
       var inner = item.getInnerHeight();
@@ -407,7 +407,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
     
     testDropDownLineBorder : function() {
-      var item = new org.eclipse.rwt.widgets.ToolItem( "dropDown" );
+      var item = new rwt.widgets.ToolItem( "dropDown" );
       var border = new org.eclipse.rwt.Border( 1, "outset", "black");  
       this.item = item; 
       item.setText( "hallo" );
@@ -415,7 +415,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.setDropDownArrow( [ "bla.jpg", 13, 13 ] );
       this._currentItem = item;
       item.addToDocument();
-      qx.ui.core.Widget.flushGlobalQueues();
+      rwt.widgets.base.Widget.flushGlobalQueues();
       var lineNode = item.getCellNode( 3 );
       assertContains( "outset", lineNode.style.cssText );
       item.destroy();
@@ -423,7 +423,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
     
     testHotImage : function() {
-      var item = new org.eclipse.rwt.widgets.ToolItem( "push" );
+      var item = new rwt.widgets.ToolItem( "push" );
       item.setText( "hallo" );
       item.setImage( "test1.jpg" );
       item.addToDocument();
@@ -552,7 +552,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.toolItem2.setSpace( 11, 10, 0, 20 );
       this.separator.setSpace( 21, 30, 0, 20 );
       this.toolItem3.setSpace( 51, 10, 0, 20 );
-      var text = new org.eclipse.rwt.widgets.Text( false );
+      var text = new rwt.widgets.Text( false );
       this.toolBar.addAt( text, 4 );
       text.setSpace( 21, 30, 0, 20 );
       this.TestUtil.flush();
@@ -570,7 +570,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
     
     testToolItemFiresDropDownClickedEvent : function() {
-      var item = new org.eclipse.rwt.widgets.ToolItem( "dropDown" );
+      var item = new rwt.widgets.ToolItem( "dropDown" );
       this.item = item; 
       item.setLeft( 100 );
       item.setTop( 100 );
@@ -578,7 +578,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.setDropDownArrow( [ "bla.jpg", 13, 13 ] );
       this._currentItem = item;
       item.addToDocument();
-      qx.ui.core.Widget.flushGlobalQueues();
+      rwt.widgets.base.Widget.flushGlobalQueues();
       var lineStyle = item.getCellNode( 3 ).style;
       org.eclipse.swt.WidgetManager.getInstance().add( item, "w1" );
       this.TestUtil.clearRequestLog();
@@ -601,11 +601,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     
     createDefaultToolBar : function() {
       var shell = this.TestUtil.createShellByProtocol( "w2" );
-      this.toolBar = new org.eclipse.rwt.widgets.ToolBar( false );
-      this.toolItem1 = new org.eclipse.rwt.widgets.ToolItem( "push", false );
-      this.toolItem2 = new org.eclipse.rwt.widgets.ToolItem( "push", false  );
-      this.toolItem3 = new org.eclipse.rwt.widgets.ToolItem( "push", false  );
-      this.separator = new org.eclipse.rwt.widgets.ToolSeparator( "push" );
+      this.toolBar = new rwt.widgets.ToolBar( false );
+      this.toolItem1 = new rwt.widgets.ToolItem( "push", false );
+      this.toolItem2 = new rwt.widgets.ToolItem( "push", false  );
+      this.toolItem3 = new rwt.widgets.ToolItem( "push", false  );
+      this.separator = new rwt.widgets.ToolItemSeparator( "push" );
       this.toolItem1.setText( 1 );
       this.toolItem2.setText( 2 );
       this.toolItem3.setText( 3 );
@@ -629,7 +629,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     _createToolBarByProtocol : function( id, parentId, style ) {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.ToolBar",
@@ -638,11 +638,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
           "parent" : parentId
         }
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectManager.getObject( id );
     },
 
     _createToolItemByProtocol : function( id, parentId, style ) {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.ToolItem",
@@ -652,11 +652,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
           "index" : 0
         }
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectManager.getObject( id );
     },
 
     _setPropertyByProtocol : function( id, properties ) {
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : id,
         "action" : "set",
@@ -665,7 +665,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     _setListenerByProtocol : function( id, listeners ) {
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : id,
         "action" : "listen",

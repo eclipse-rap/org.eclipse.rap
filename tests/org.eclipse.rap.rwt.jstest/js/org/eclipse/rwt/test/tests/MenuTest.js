@@ -15,10 +15,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
   construct : function() {
     this.base( arguments );
-    this._menuClass = org.eclipse.rwt.widgets.Menu;
-    this._menuItemClass = org.eclipse.rwt.widgets.MenuItem;
-    this._menuBarClass = org.eclipse.rwt.widgets.MenuBar;
-    this._menuBarItemClass = org.eclipse.rwt.widgets.MenuItem;
+    this._menuClass = rwt.widgets.Menu;
+    this._menuItemClass = rwt.widgets.MenuItem;
+    this._menuBarClass = rwt.widgets.MenuBar;
+    this._menuBarItemClass = rwt.widgets.MenuItem;
     this.TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
   },
 
@@ -31,7 +31,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     testCreateMenuBarByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -41,9 +41,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget instanceof org.eclipse.rwt.widgets.MenuBar );
+      assertTrue( widget instanceof rwt.widgets.MenuBar );
       assertIdentical( shell, widget.getParent() );
       assertNull( widget.getUserData( "isControl") );
       shell.destroy();
@@ -52,7 +52,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testCreatePopUpMenuByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -61,10 +61,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
           "style" : [ "POP_UP" ]
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget instanceof org.eclipse.rwt.widgets.Menu );
-      assertIdentical( qx.ui.core.ClientDocument.getInstance(), widget.getParent() );
+      assertTrue( widget instanceof rwt.widgets.Menu );
+      assertIdentical( rwt.widgets.base.ClientDocument.getInstance(), widget.getParent() );
       assertNull( widget.getUserData( "isControl") );
       widget.destroy();
     },
@@ -72,7 +72,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     testSetMenuBarBoundsByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -83,7 +83,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
           "bounds" : [ 1, 2, 3, 4 ]
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 1, widget.getLeft() );
       assertEquals( 2, widget.getTop() );
@@ -96,7 +96,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     testSetEnabledByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -107,7 +107,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
           "enabled" : false
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertFalse( widget.getEnabled() );
       shell.destroy();
@@ -117,7 +117,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     testSetCustomVariantByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -128,7 +128,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
           "customVariant" : "variant_blue"
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasState( "variant_blue" ) );
       shell.destroy();
@@ -138,7 +138,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     testCallShowMenuByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this._createPopUpMenuByProtocol( "w3" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "call",
@@ -160,7 +160,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget.setHasMenuListener( true );
       widget._menuShown();
       assertTrue( widget._itemsHiddenFlag );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "call",
@@ -177,7 +177,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var menu = this._createPopUpMenuByProtocol( "w3" );
       var widget = this._createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
-      assertTrue( widget instanceof org.eclipse.rwt.widgets.MenuItem );
+      assertTrue( widget instanceof rwt.widgets.MenuItem );
       assertIdentical( menu._layout, widget.getParent() );
       assertNull( widget.getUserData( "isControl") );
       menu.destroy();
@@ -188,7 +188,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var menu = this._createPopUpMenuByProtocol( "w3" );
       var widget = this._createMenuItemByProtocol( "w4", "w3", [ "SEPARATOR" ] );
-      assertTrue( widget instanceof qx.ui.menu.Separator );
+      assertTrue( widget instanceof rwt.widgets.MenuItemSeparator );
       assertIdentical( menu._layout, widget.getParent() );
       assertNull( widget.getUserData( "isControl") );
       menu.destroy();
@@ -484,13 +484,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testContextMenuOpenOnControl : function() {
       this.TestUtil.fakeResponse( true );
-      var menu1 = new org.eclipse.rwt.widgets.Menu();
+      var menu1 = new rwt.widgets.Menu();
       menu1.setHasMenuListener( true );
       var parent = this._createControl();
       parent.addToDocument();
       parent.setContextMenu( menu1 );
       this._addContextMenuListener( parent );
-      var widget = new qx.ui.basic.Atom( "bla" );
+      var widget = new rwt.widgets.base.Atom( "bla" );
       widget.setParent( parent );
       this.TestUtil.flush();
       assertFalse( menu1.isSeeable() );
@@ -505,9 +505,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     testContextMenuOpenOnText : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.fakeResponse( true );
-      var menu = new org.eclipse.rwt.widgets.Menu();
+      var menu = new rwt.widgets.Menu();
       menu.setHasMenuListener( true );
-      var text = new org.eclipse.rwt.widgets.Text( false );
+      var text = new rwt.widgets.Text( false );
       text.addToDocument();
       text.setUserData( "isControl", true );
       text.setContextMenu( menu );
@@ -528,7 +528,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     },
 
     testContextmenuNotOpenOnParentControl : function() {
-      var menu1 = new org.eclipse.rwt.widgets.Menu();
+      var menu1 = new rwt.widgets.Menu();
       menu1.setHasMenuListener( true );
       var parent = this._createControl();
       parent.addToDocument();
@@ -755,7 +755,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertEquals( 0, this.TestUtil.getRequestsSend() );
       assertTrue( this.menuItem.hasState( "selected" ) );
       assertTrue(
-        org.eclipse.swt.Server.getInstance()._parameters[ "w3.selection" ]
+        rwt.remote.Server.getInstance()._parameters[ "w3.selection" ]
       );
       this.TestUtil.clearRequestLog();
       this.menuItem.setHasSelectionListener( true );
@@ -782,7 +782,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.TestUtil.click( this.menuItem );
       assertEquals( 0, this.TestUtil.getRequestsSend() );
       assertTrue(
-        org.eclipse.swt.Server.getInstance()._parameters[ "w3.selection" ]
+        rwt.remote.Server.getInstance()._parameters[ "w3.selection" ]
       );
       this.menuItem.setSelection( false );
       this.menuItem.setHasSelectionListener( true );
@@ -871,7 +871,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       var item2 = new this._menuItemClass( "push" );
       item2.setText( "blabla!" );
       this.menu.addMenuItemAt( item2, 0 );
-      var dead1 = new qx.ui.menu.Separator();
+      var dead1 = new rwt.widgets.MenuItemSeparator();
       var dead2 = new this._menuItemClass( "push" );
       dead2.setText( "Disabled" );
       dead2.setEnabled( false );
@@ -963,7 +963,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testGetMenuBar : function() {
       this.createMenuBar( "push" );
-      var widget = new qx.ui.basic.Atom( "bla" );
+      var widget = new rwt.widgets.base.Atom( "bla" );
       widget.addToDocument();
       var manager = org.eclipse.rwt.MenuManager.getInstance();
       this.TestUtil.flush();
@@ -1230,7 +1230,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.menuItem = new this._menuItemClass( "push" );
       this.menuItem.setText( "bla" );
       this.menu.addMenuItemAt( this.menuItem, 0 );
-      var widget = new qx.ui.basic.Atom( "bla" );
+      var widget = new rwt.widgets.base.Atom( "bla" );
       var parent = this._createControl();
       parent.add( widget );
       parent.addToDocument();
@@ -1255,22 +1255,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testAddSeparatorInMenuBar : function() {
       this.menuBar = new this._menuBarClass();
-      var separator = new qx.ui.menu.Separator();
+      var separator = new rwt.widgets.MenuItemSeparator();
       this.menuBar.addMenuItemAt( separator, 0 );
     },
 
     testHasNativeMenu : function() {
-      var text = new org.eclipse.rwt.widgets.Text( false );
+      var text = new rwt.widgets.Text( false );
       text.addToDocument();
       this.TestUtil.flush();
       var element = text.getElement().getElementsByTagName( "input" )[ 0 ];
-      assertTrue( org.eclipse.rwt.widgets.Menu._hasNativeMenu( element ) );
+      assertTrue( rwt.widgets.Menu._hasNativeMenu( element ) );
       text.dispose();
-      text = new org.eclipse.rwt.widgets.Text( true );
+      text = new rwt.widgets.Text( true );
       text.addToDocument();
       this.TestUtil.flush();
       element = text.getElement().getElementsByTagName( "textarea" )[ 0 ];
-      assertTrue( org.eclipse.rwt.widgets.Menu._hasNativeMenu( element ) );
+      assertTrue( rwt.widgets.Menu._hasNativeMenu( element ) );
       text.dispose();
     },
 
@@ -1290,8 +1290,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testMenuBarFiresChangeOpenItemEvent : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var menuBar = new org.eclipse.rwt.widgets.MenuBar();
-      var menuItem = new org.eclipse.rwt.widgets.MenuItem( "push" );
+      var menuBar = new rwt.widgets.MenuBar();
+      var menuItem = new rwt.widgets.MenuItem( "push" );
       var menu = this._createMenuWithItems( "push", 3 );
       menuItem.setMenu( menu );
       menuBar.addToDocument();
@@ -1331,12 +1331,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     _createMenuWithItems : function( itemType, itemCount ) {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var menu = new org.eclipse.rwt.widgets.Menu();
+      var menu = new rwt.widgets.Menu();
       for( var i = 0; i < itemCount; i++ ) {
-        var menuItem = new org.eclipse.rwt.widgets.MenuItem( itemType );
+        var menuItem = new rwt.widgets.MenuItem( itemType );
         menu.addMenuItemAt( menuItem, i );
       }
-      var menuItem = new org.eclipse.rwt.widgets.MenuItem( itemType );
+      var menuItem = new rwt.widgets.MenuItem( itemType );
       menu.addMenuItemAt( menuItem, 0 );
       menu.addToDocument();
       menu.show();
@@ -1345,7 +1345,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     },
 
     _createMenuBarByProtocol : function( id, parentId ) {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.Menu",
@@ -1354,11 +1354,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
           "parent" : parentId
         }
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectManager.getObject( id );
     },
 
     _createPopUpMenuByProtocol : function( id ) {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.Menu",
@@ -1366,11 +1366,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
           "style" : [ "POP_UP" ]
         }
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectManager.getObject( id );
     },
 
     _createMenuItemByProtocol : function( id, parentId, style ) {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.MenuItem",
@@ -1380,7 +1380,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
           "index" : 0
         }
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectManager.getObject( id );
     },
 
     createSimpleMenu : function( type ) {
@@ -1428,7 +1428,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
         var masterLayout = null;
         for( var i = 0; i < children.length; i++ ) {
           var child = children[ i ];
-          if( child.classname == "org.eclipse.rwt.widgets.MenuItem" ) {
+          if( child.classname == "rwt.widgets.MenuItem" ) {
             var layout = this.getMenuItemLayout( child );
             if( masterLayout == null ) {
               masterLayout = layout;
@@ -1502,21 +1502,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     },
 
     _addContextMenuListener : function( widget ) {
-      var detectByKey = org.eclipse.rwt.widgets.Menu.menuDetectedByKey;
-      var detectByMouse = org.eclipse.rwt.widgets.Menu.menuDetectedByMouse;
+      var detectByKey = rwt.widgets.Menu.menuDetectedByKey;
+      var detectByMouse = rwt.widgets.Menu.menuDetectedByMouse;
       widget.addEventListener( "keydown", detectByKey );
       widget.addEventListener( "mouseup", detectByMouse );
     },
 
     _removeContextMenuListener : function( widget ) {
-      var detectByKey = org.eclipse.rwt.widgets.Menu.menuDetectedByKey;
-      var detectByMouse = org.eclipse.rwt.widgets.Menu.menuDetectedByMouse;
+      var detectByKey = rwt.widgets.Menu.menuDetectedByKey;
+      var detectByMouse = rwt.widgets.Menu.menuDetectedByMouse;
       widget.removeEventListener( "keydown", detectByKey );
       widget.removeEventListener( "mouseup", detectByMouse );
     },
 
     _createControl : function() {
-      var result = new org.eclipse.swt.widgets.Composite();
+      var result = new rwt.widgets.Composite();
       result.setUserData( "isControl", true );
       return result;
     }

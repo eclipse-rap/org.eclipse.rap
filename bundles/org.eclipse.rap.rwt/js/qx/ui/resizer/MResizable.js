@@ -24,7 +24,7 @@ qx.Mixin.define("qx.ui.resizer.MResizable",
 
   construct : function(child)
   {
-    this._frame = new qx.ui.basic.Terminator();
+    this._frame = new rwt.widgets.base.Terminator();
     this._frame.setAppearance("resizer-frame");
     this.addEventListener("mousedown", this._onmousedown);
     this.addEventListener("mouseup", this._onmouseup);
@@ -179,7 +179,7 @@ qx.Mixin.define("qx.ui.resizer.MResizable",
             if (f.getParent() != pa)
             {
               f.setParent(pa);
-              qx.ui.core.Widget.flushGlobalQueues();
+              rwt.widgets.base.Widget.flushGlobalQueues();
             }
 
             f._renderRuntimeLeft(elLoc.left - paLoc.left);

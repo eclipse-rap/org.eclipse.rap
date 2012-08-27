@@ -23,8 +23,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       var container = this._createSplitContainer();
       var sub1 = container.getSubContainer( 0 );
       var sub2 = container.getSubContainer( 1 );
-      assertTrue( sub1 instanceof org.eclipse.rwt.widgets.GridRowContainer );
-      assertTrue( sub2 instanceof org.eclipse.rwt.widgets.GridRowContainer );
+      assertTrue( sub1 instanceof rwt.widgets.base.GridRowContainer );
+      assertTrue( sub2 instanceof rwt.widgets.base.GridRowContainer );
       container.destroy();
     },
 
@@ -224,7 +224,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
 
     testCreateMinimalTreeWithFixedColumns : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = new org.eclipse.rwt.widgets.Grid( { 
+      var tree = new rwt.widgets.Grid( { 
         "appearance": "table",
         "splitContainer" : true
       } );
@@ -240,13 +240,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
 
     testIgnoreFixedColumnsWithoutSplitContainer : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = new org.eclipse.rwt.widgets.Grid( { 
+      var tree = new rwt.widgets.Grid( { 
         "appearance": "table"
       } );
       org.eclipse.rwt.GridUtil.setFixedColumns( tree, 3 );      
       tree.addToDocument();
       TestUtil.flush();
-      assertTrue( tree._rowContainer instanceof org.eclipse.rwt.widgets.GridRowContainer );
+      assertTrue( tree._rowContainer instanceof rwt.widgets.base.GridRowContainer );
       tree.destroy();
     },
 
@@ -276,7 +276,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       tree.setItemCount( 1 );
-      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       item.setTexts( [ "c0", "c1", "c2", "c3", "c4" ] );
       TestUtil.flush();
       var rowLeft = tree._rowContainer.getSubContainer( 0 ).getChildren()[ 0 ];
@@ -292,7 +292,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       tree.setItemCount( 1 );
-      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       TestUtil.flush();
       assertFalse( tree.isItemSelected( item ) );
       TestUtil.clickDOM( tree._rowContainer.getSubContainer( 0 )._children[ 0 ]._getTargetNode() ); 
@@ -305,7 +305,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       tree.setItemCount( 1 );
-      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       TestUtil.flush();
       assertFalse( tree.isItemSelected( item ) );
       TestUtil.clickDOM( tree._rowContainer.getSubContainer( 1 )._children[ 0 ]._getTargetNode() ); 
@@ -318,7 +318,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       tree.setItemCount( 1 );
-      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       TestUtil.flush();
       assertFalse( tree.isItemSelected( item ) );
       org.eclipse.swt.EventUtil.setSuspended( true );
@@ -333,7 +333,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       tree.setItemCount( 1 );
-      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       item.setTexts( [ "bla" ] );
       item.setImages( [ "bla.jpg" ] );
       TestUtil.flush();
@@ -362,7 +362,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       tree.setItemMetrics( 4, 35, 350, 0, 0, 0, 50 ); 
       tree.setItemMetrics( 5, 400, 100, 405, 10, 430, 50 );
       tree.setItemCount( 1 ); 
-      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       widgetManager.add( item, "w45", true );
       TestUtil.flush();
       TestUtil.prepareTimerUse();
@@ -397,7 +397,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       tree.setItemMetrics( 4, 35, 350, 0, 0, 0, 50 ); 
       tree.setItemMetrics( 5, 400, 100, 405, 10, 430, 50 );
       tree.setItemCount( 1 ); 
-      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       widgetManager.add( item, "w45", true );
       TestUtil.flush();
       TestUtil.prepareTimerUse();
@@ -421,7 +421,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       for( var i = 0; i < 5; i++ ) {
-        var column = new org.eclipse.rwt.widgets.GridColumn( tree );
+        var column = new rwt.widgets.GridColumn( tree );
         column.setLeft( tree.getRenderConfig().itemLeft[ i ] );
         column.setWidth( tree.getRenderConfig().itemWidth[ i ] );
         if( i < 2 ) {
@@ -518,7 +518,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       args[ "fullSelection" ] = true;
       args[ "selectionPadding" ] = [ 2, 4 ];
       args[ "indentionWidth" ] = 16;
-      var tree = new org.eclipse.rwt.widgets.Grid( args );
+      var tree = new rwt.widgets.Grid( args );
       org.eclipse.rwt.GridUtil.setFixedColumns( tree, 2 );
       tree.setTreeColumn( -1 );
       tree.setItemHeight( 20 );
@@ -545,12 +545,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       var i = 0;
       var itemNr = 0;
       while( i < count ) {
-        var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), itemNr );
+        var item = new rwt.widgets.GridItem( tree.getRootItem(), itemNr );
         itemNr++;
         item.setTexts( [ "Test" + i ] );
         if( subItems ) {
           item.setItemCount( 1 );
-          var subitem = new org.eclipse.rwt.widgets.GridItem( item, 0 );
+          var subitem = new rwt.widgets.GridItem( item, 0 );
           if( flatCount ) {
             item.setExpanded( true );
             i++

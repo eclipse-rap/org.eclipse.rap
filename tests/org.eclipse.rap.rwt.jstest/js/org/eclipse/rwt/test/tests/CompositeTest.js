@@ -16,7 +16,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
   members : {
 
     testCreateCompositeByProtocol : function() {
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w2",
         "action" : "create",
@@ -37,7 +37,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var shell = widgetManager.findWidgetById( "w2" );
       var composite = widgetManager.findWidgetById( "w3" );
-      assertTrue( composite instanceof org.eclipse.swt.widgets.Composite );
+      assertTrue( composite instanceof rwt.widgets.Composite );
       assertIdentical( shell, composite.getParent() );
       assertTrue( composite.getUserData( "isControl") );
       assertTrue( composite.hasState( "rwt_BORDER" ) );
@@ -46,7 +46,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
     testCompositeBackgroundInitial : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var composite = new org.eclipse.swt.widgets.Composite();
+        var composite = new rwt.widgets.Composite();
         composite.setBackgroundColor( null );
         composite.setBackgroundImage( null );
         composite.addToDocument();
@@ -62,7 +62,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
     testCompositeBackgroundFromColor : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var composite = new org.eclipse.swt.widgets.Composite();
+        var composite = new rwt.widgets.Composite();
         composite.setBackgroundColor( "green" );
         composite.setBackgroundImage( null );
         composite.addToDocument();
@@ -81,7 +81,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
     testCompositeBackgroundFromImage : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var composite = new org.eclipse.swt.widgets.Composite();
+        var composite = new rwt.widgets.Composite();
         composite.setBackgroundColor( null );
         composite.setBackgroundImage( "bla.jpg" );
         composite.addToDocument();

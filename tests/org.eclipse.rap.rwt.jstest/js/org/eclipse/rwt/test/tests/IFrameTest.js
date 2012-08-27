@@ -19,7 +19,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.IFrameTest", {
       var platform = org.eclipse.rwt.Client.getPlatform();
       if( platform !== "ios" ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var iframe = new qx.ui.embed.Iframe();
+        var iframe = new rwt.widgets.base.Iframe();
         iframe.addToDocument();
         iframe.setWidth( 300 );
         iframe.setHeight( 400 );

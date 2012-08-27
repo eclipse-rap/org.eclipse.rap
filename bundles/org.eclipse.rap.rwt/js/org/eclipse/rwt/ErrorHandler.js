@@ -70,7 +70,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       }
       var hrefAttr = "href=\"" + location + "\"";
       var html = content.replace( /\{HREF_URL\}/, hrefAttr );
-      html = org.eclipse.rwt.protocol.EncodingUtil.replaceNewLines( html, "<br/>" );
+      html = rwt.protocol.EncodingUtil.replaceNewLines( html, "<br/>" );
       if( freeze ) {
         this._freezeApplication();
       }
@@ -108,9 +108,9 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
         if( currentRequest ) {
           info.push( "Request: " + currentRequest.getData() );
         }
-        var inFlush = qx.ui.core.Widget._inFlushGlobalQueues;
+        var inFlush = rwt.widgets.base.Widget._inFlushGlobalQueues;
         if( inFlush ) {
-          info.push( "Phase: " + qx.ui.core.Widget._flushGlobalQueuesPhase );
+          info.push( "Phase: " + rwt.widgets.base.Widget._flushGlobalQueuesPhase );
         }
       } catch( ex ) {
         // ensure we get a info no matter what
@@ -151,7 +151,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       style.position = "absolute";
       style.width = width + "px";
       style.height = height + "px";
-      var doc = qx.ui.core.ClientDocument.getInstance();
+      var doc = rwt.widgets.base.ClientDocument.getInstance();
       var left = ( doc.getClientWidth() - width ) / 2;
       var top = ( doc.getClientHeight() - height ) / 2;
       style.left = ( left < 0 ? 0 : left ) + "px";
@@ -172,7 +172,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
 
     _freezeApplication : function() {
       try {
-        var display = org.eclipse.rwt.Display.getCurrent();
+        var display = rwt.widgets.Display.getCurrent();
         display.setExitConfirmation( null );
         //qx.io.remote.RequestQueue.getInstance().setEnabled( false );
         org.eclipse.rwt.EventHandler.detachEvents();
@@ -188,7 +188,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
     },
 
     _enableTextSelection : function() {
-      var doc = qx.ui.core.ClientDocument.getInstance();
+      var doc = rwt.widgets.base.ClientDocument.getInstance();
       doc.setSelectable( true );
       if( org.eclipse.rwt.Client.isGecko() ) {
         var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;

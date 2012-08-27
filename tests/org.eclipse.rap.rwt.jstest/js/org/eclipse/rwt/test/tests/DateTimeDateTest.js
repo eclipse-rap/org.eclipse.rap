@@ -49,18 +49,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
-      assertTrue( widget instanceof org.eclipse.swt.widgets.DateTimeDate );
+      assertTrue( widget instanceof rwt.widgets.DateTimeDate );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl" ) );
       assertEquals( "datetime-date", widget.getAppearance() );
       assertTrue( widget._medium );
       assertFalse( widget._short );
       assertFalse( widget._long );
-      assertEquals( 34, org.eclipse.swt.widgets.Calendar.CELL_WIDTH );
-      assertEquals( 19, org.eclipse.swt.widgets.Calendar.CELL_HEIGHT );
+      assertEquals( 34, rwt.widgets.base.Calendar.CELL_WIDTH );
+      assertEquals( 19, rwt.widgets.base.Calendar.CELL_HEIGHT );
       assertEquals( this.monthNames, widget._monthname );
       assertEquals( this.weekdayNames, widget._weekday );
-      assertEquals( this.weekdayShortNames, org.eclipse.swt.widgets.Calendar.WEEKDAY_NAMES );
+      assertEquals( this.weekdayShortNames, rwt.widgets.base.Calendar.WEEKDAY_NAMES );
       assertEquals( this.dateSeparator, widget._separator1.getText() );
       assertEquals( this.datePattern, widget._datePattern );
       shell.destroy();
@@ -127,7 +127,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
 
     testCreateDateTimeDate : function() {
       var dateTime = this._createDefaultDateTime();
-      assertTrue( dateTime instanceof org.eclipse.swt.widgets.DateTimeDate );
+      assertTrue( dateTime instanceof rwt.widgets.DateTimeDate );
       assertEquals( "datetime-date", dateTime.getAppearance() );
       dateTime.destroy();
     },
@@ -142,7 +142,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       TestUtil.clearRequestLog();
       dateTime._sendChanges();
       assertEquals( 0, TestUtil.getRequestsSend() );
-      var req = org.eclipse.swt.Server.getInstance();
+      var req = rwt.remote.Server.getInstance();
       assertEquals( 10, req._parameters[ "w3.day" ] );
       assertEquals( 10, req._parameters[ "w3.month" ] );
       assertEquals( 2010, req._parameters[ "w3.year" ] );
@@ -230,7 +230,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       if( dropdown ) {
         styles[ 2 ] = "DROP_DOWN";
       }
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.DateTime",
@@ -245,7 +245,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
           "datePattern" : this.datePattern
         }
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" );
+      return rwt.protocol.ObjectManager.getObject( "w3" );
     },
 
     _createDefaultDateTime : function( dropdown ) {
@@ -254,7 +254,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       if( dropdown ) {
         style +=  "|drop_down";
       }
-      var dateTime = new org.eclipse.swt.widgets.DateTimeDate( style,
+      var dateTime = new rwt.widgets.DateTimeDate( style,
                                                                this.monthNames,
                                                                this.weekdayNames,
                                                                this.weekdayShortNames,

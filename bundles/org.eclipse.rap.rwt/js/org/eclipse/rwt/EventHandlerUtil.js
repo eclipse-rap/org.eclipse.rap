@@ -29,7 +29,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       "gecko" : function() {
         // Fix for bug 295475:
         // Prevent url-dropping in FF as a whole (see bug 304651)
-        var doc = qx.ui.core.ClientDocument.getInstance();
+        var doc = rwt.widgets.base.ClientDocument.getInstance();
         doc.getElement().setAttribute( "ondrop", "event.preventDefault();" );
         var docElement = document.documentElement;
         // also see ErrorHandler.js#_enableTextSelection
@@ -148,15 +148,15 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       if( vNode == document.documentElement ) {
         vNode = document.body;
       }
-      // Walk up the tree and search for an qx.ui.core.Widget
+      // Walk up the tree and search for an rwt.widgets.base.Widget
       try {
-        while( vNode != null && vNode.qx_Widget == null )       {
+        while( vNode != null && vNode.rwtWidget == null )       {
           vNode = vNode.parentNode;
         }
       } catch( vDomEvent ) {
         vNode = null;
       }
-      return vNode ? vNode.qx_Widget : null;
+      return vNode ? vNode.rwtWidget : null;
     },
 
     getOriginalTargetObjectFromEvent : function( vDomEvent, vWindow ) {
@@ -170,7 +170,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
             || vNode == vDocument.documentElement
             || vNode == vDocument.body )
         {
-          return vDocument.body.qx_Widget;
+          return vDocument.body.rwtWidget;
         }
       }
       return this.getOriginalTargetObject( vNode );

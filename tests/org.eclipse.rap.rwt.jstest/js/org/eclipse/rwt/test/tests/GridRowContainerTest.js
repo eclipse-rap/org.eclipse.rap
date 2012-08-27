@@ -19,7 +19,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
 
     testCreate : function() {
       var cont = this._createContainer();
-      assertTrue( cont instanceof org.eclipse.rwt.widgets.GridRowContainer );
+      assertTrue( cont instanceof rwt.widgets.base.GridRowContainer );
       cont.destroy();
     },
 
@@ -33,7 +33,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     },
 
     testAddTreeRowsOnTreeResize : function() {
-      var tree = new org.eclipse.rwt.widgets.Grid( { "appearance": "tree" } );
+      var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
       tree.setHeight( 551 );
@@ -43,7 +43,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     },
 
     testAddOneAdditionalRow : function() {
-      var tree = new org.eclipse.rwt.widgets.Grid( { "appearance": "tree" } );
+      var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
       tree.setItemHeight( 50 );
       var clientArea = tree._rowContainer;
       tree.setHeight( 499 );
@@ -56,7 +56,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     },
 
     testAddTreeRowsOnRowResize : function() {
-      var tree = new org.eclipse.rwt.widgets.Grid( { "appearance": "tree" } );
+      var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
       tree.setItemHeight( 25 );
@@ -66,7 +66,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     },
 
     testRemoveTreeRowsOnTreeResize : function() {
-      var tree = new org.eclipse.rwt.widgets.Grid( { "appearance": "tree" } );
+      var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
       tree.setHeight( 401 );
@@ -76,7 +76,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     },
 
     testRemoveTreeRowsOnRowResize : function() {
-      var tree = new org.eclipse.rwt.widgets.Grid( { "appearance": "tree" } );
+      var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
       tree.setItemHeight( 100 );
@@ -102,10 +102,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
-      var root = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var root = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       root.setItemCount( 10 );
       for( var i = 0; i < 10; i++ ) {
-        var item = new org.eclipse.rwt.widgets.GridItem( root, i );
+        var item = new rwt.widgets.GridItem( root, i );
         item.setTexts( [ "item" + i ] );
       }
       root.setExpanded( true );
@@ -142,9 +142,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
         }
       } ); 
       tree.setItemCount( 1 );
-      var root = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var root = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       root.setItemCount( 1 );
-      var item = new org.eclipse.rwt.widgets.GridItem( root, 0 );
+      var item = new rwt.widgets.GridItem( root, 0 );
       root.setExpanded( true );
       tree.selectItem( item );
       TestUtil.flush();
@@ -270,7 +270,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     _createDefaultTree : function( noflush ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       this._fakeAppearance(); 
-      var tree = new org.eclipse.rwt.widgets.Grid( { 
+      var tree = new rwt.widgets.Grid( { 
         "appearance": "tree",
         "fullSelection": true,
         "selectionPadding" : [ 2, 4 ],
@@ -314,7 +314,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     },
 
     _createContainer : function() {
-      var result = new org.eclipse.rwt.widgets.GridRowContainer();
+      var result = new rwt.widgets.base.GridRowContainer();
       result.setBaseAppearance( "tree" );
       return result;
     }

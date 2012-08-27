@@ -69,7 +69,7 @@ qx.Class.define("qx.ui.selection.SelectionManager",
     /** This contains the currently assigned widget (qx.ui.form.List, ...) */
     boundedWidget :
     {
-      check : "qx.ui.core.Widget",
+      check : "rwt.widgets.base.Widget",
       nullable : true
     },
 
@@ -558,7 +558,7 @@ qx.Class.define("qx.ui.selection.SelectionManager",
     /**
      * Make a single item selected / not selected
      *
-     * #param vItem[qx.ui.core.Widget]: Item which should be selected / not selected
+     * #param vItem[rwt.widgets.base.Widget]: Item which should be selected / not selected
      * #param vSelected[Boolean]: Should this item be selected?
      *
      * @type member
@@ -877,8 +877,8 @@ qx.Class.define("qx.ui.selection.SelectionManager",
     /**
      * Select a range of items.
      *
-     * #param vItem1[qx.ui.core.Widget]: Start item
-     * #param vItem2[qx.ui.core.Widget]: Stop item
+     * #param vItem1[rwt.widgets.base.Widget]: Start item
+     * #param vItem2[rwt.widgets.base.Widget]: Stop item
      *
      * @type member
      * @param vItem1 {var} TODOC
@@ -910,8 +910,8 @@ qx.Class.define("qx.ui.selection.SelectionManager",
      * Sub method for selectItemRange. Handles the real work
      * to select a range of items.
      *
-     * #param vItem1[qx.ui.core.Widget]: Start item
-     * #param vItem2[qx.ui.core.Widget]: Stop item
+     * #param vItem1[rwt.widgets.base.Widget]: Start item
+     * #param vItem2[rwt.widgets.base.Widget]: Stop item
      * #param vDelect[Boolean]: Deselect currently selected items first?
      *
      * @type member
@@ -961,8 +961,8 @@ qx.Class.define("qx.ui.selection.SelectionManager",
     /**
      * Internal method for deselection of ranges.
      *
-     * #param vItem1[qx.ui.core.Widget]: Start item
-     * #param vItem2[qx.ui.core.Widget]: Stop item
+     * #param vItem1[rwt.widgets.base.Widget]: Start item
+     * #param vItem2[rwt.widgets.base.Widget]: Stop item
      *
      * @type member
      * @param vItem1 {var} TODOC
@@ -1673,7 +1673,7 @@ qx.Class.define("qx.ui.selection.SelectionManager",
     /**
      * Jump a "page" up.
      *
-     * #param vItem[qx.ui.core.Widget]: Relative to this widget
+     * #param vItem[rwt.widgets.base.Widget]: Relative to this widget
      *
      * @type member
      * @param vItem {var} TODOC
@@ -1735,7 +1735,7 @@ qx.Class.define("qx.ui.selection.SelectionManager",
     /**
      * Jump a "page" down.
      *
-     * #param vItem[qx.ui.core.Widget]: Relative to this widget
+     * #param vItem[rwt.widgets.base.Widget]: Relative to this widget
      *
      * @type member
      * @param vItem {var} TODOC

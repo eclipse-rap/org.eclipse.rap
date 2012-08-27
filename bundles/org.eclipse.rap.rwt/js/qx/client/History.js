@@ -378,7 +378,7 @@ qx.Class.define("qx.client.History",
 
     _historyNavigated : function( event ) {
       var entryId = event.getData();
-      var req = org.eclipse.swt.Server.getInstance();
+      var req = rwt.remote.Server.getInstance();
       req.addParameter( "org.eclipse.rwt.events.historyNavigated", "true" );
       req.addParameter( "org.eclipse.rwt.events.historyNavigated.entryId", entryId );
       req.send();

@@ -15,9 +15,9 @@ namespace( "org.eclipse.rwt" );
 org.eclipse.rwt.GridRowContainerWrapper = function() {
   this._fixedColumns = 0;
   this._container = [];
-  this._container[ 0 ] = new org.eclipse.rwt.widgets.GridRowContainer();
-  this._container[ 1 ] = new org.eclipse.rwt.widgets.GridRowContainer();
-  this._config = org.eclipse.rwt.widgets.GridRowContainer.createRenderConfig();
+  this._container[ 0 ] = new rwt.widgets.base.GridRowContainer();
+  this._container[ 1 ] = new rwt.widgets.base.GridRowContainer();
+  this._config = rwt.widgets.base.GridRowContainer.createRenderConfig();
   this._width = 0;
   this._splitOffset = 0;
   this._rowWidth = 0;

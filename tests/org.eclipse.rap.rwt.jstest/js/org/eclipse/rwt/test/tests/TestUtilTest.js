@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
   members : {
 
     testSendSynchronousRequestsBug : function() {
-      var req = org.eclipse.swt.Server.getInstance();
+      var req = rwt.remote.Server.getInstance();
       req.send();
       var counter = req.getRequestCounter();
       req.sendImmediate( false );
@@ -242,7 +242,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testFakeAppearance : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       TestUtil.fakeAppearance( "my-appearance", {
         style : function( states ) {
           return {
@@ -257,7 +257,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testOverwriteAppearance : function() {
-      var widget = new org.eclipse.rwt.widgets.Button( "push" );
+      var widget = new rwt.widgets.Button( "push" );
       assertEquals( "push-button", widget.getAppearance() );
       TestUtil.fakeAppearance( "push-button", {
         style : function( states ) {
@@ -280,7 +280,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
         }
       } );
       TestUtil.restoreAppearance();
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       try{
         widget.setAppearance( "my-appearance" );
         widget._renderAppearance();
@@ -291,7 +291,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testRestoreAppearance : function() {
-      var widget = new org.eclipse.rwt.widgets.Button( "push" );
+      var widget = new rwt.widgets.Button( "push" );
       assertEquals( "push-button", widget.getAppearance() );
       TestUtil.fakeAppearance( "push-button", {
         style : function( states ) {
@@ -308,7 +308,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testFakeWheel : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -322,7 +322,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testFakeMouseEventDomModifier : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -365,7 +365,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testDoubleClick : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -450,7 +450,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     } ),
 
     testPressPrintable : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = this._addKeyLogger( widget, true, true, false );
@@ -463,7 +463,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testPressPrintableSpecialChar : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = this._addKeyLogger( widget, true, true, false );
@@ -475,7 +475,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testPressPrintableSpecialCharNoKeyInput : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = this._addKeyLogger( widget, true, true, false );
@@ -492,7 +492,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testPressNonPrintable : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = this._addKeyLogger( widget, true, true, false );
@@ -505,7 +505,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testPressEnter : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = [];
@@ -525,7 +525,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testShiftPress : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = this._addKeyLogger( widget, false, false, true );
@@ -537,7 +537,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testCtrlPress : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = this._addKeyLogger( widget, false, false, true );
@@ -549,7 +549,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testAltPress : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       var log = this._addKeyLogger( widget, false, false, true );
@@ -561,8 +561,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testHoverFromTo : function() {
-      var widget1 = new qx.ui.basic.Terminator();
-      var widget2 = new qx.ui.basic.Terminator();
+      var widget1 = new rwt.widgets.base.Terminator();
+      var widget2 = new rwt.widgets.base.Terminator();
       widget1.addToDocument();
       widget2.addToDocument();
       TestUtil.flush();
@@ -653,10 +653,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       TestUtil.scheduleResponse( function(){
         x = 2;
       } );
-      org.eclipse.swt.Server.getInstance().send();
+      rwt.remote.Server.getInstance().send();
       assertEquals( 2, x );
       x = 1;
-      org.eclipse.swt.Server.getInstance().send();
+      rwt.remote.Server.getInstance().send();
       assertEquals( 1, x );
     },
 
@@ -691,18 +691,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
 
     testCreateShellByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      assertTrue( shell instanceof org.eclipse.swt.widgets.Shell );
+      assertTrue( shell instanceof rwt.widgets.Shell );
       shell.destroy();
     },
 
     testResetObjectManager : function() {
       TestUtil.createShellByProtocol( "w2" );
 
-      assertTrue( null != org.eclipse.rwt.protocol.ObjectManager.getObject( "w1" ) );
+      assertTrue( null != rwt.protocol.ObjectManager.getObject( "w1" ) );
       TestUtil.resetObjectManager();
 
-      assertTrue( null == org.eclipse.rwt.protocol.ObjectManager.getObject( "w2" ) );
-      assertTrue( null != org.eclipse.rwt.protocol.ObjectManager.getObject( "w1" ) );
+      assertTrue( null == rwt.protocol.ObjectManager.getObject( "w2" ) );
+      assertTrue( null != rwt.protocol.ObjectManager.getObject( "w1" ) );
     },
 
     testProtocolListen : function() {
@@ -740,15 +740,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
 
     testCreateXMLHttpRequest : function() {
       TestUtil.clearXMLHttpRequests();
-      var request = org.eclipse.rwt.Request.createXHR();
+      var request = rwt.remote.Request.createXHR();
 
       assertIdentical( request, TestUtil.getXMLHttpRequests()[ 0 ] );
     },
 
     testCreateMultipleXMLHttpRequest : function() {
       TestUtil.clearXMLHttpRequests();
-      var requestOne = org.eclipse.rwt.Request.createXHR();
-      var requestTwo = org.eclipse.rwt.Request.createXHR();
+      var requestOne = rwt.remote.Request.createXHR();
+      var requestTwo = rwt.remote.Request.createXHR();
 
       assertIdentical( requestOne, TestUtil.getXMLHttpRequests()[ 0 ] );
       assertIdentical( requestTwo, TestUtil.getXMLHttpRequests()[ 1 ] );
@@ -758,11 +758,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     // helper
 
     _createWidget : function() {
-      var result = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var result = new rwt.widgets.base.MultiCellWidget( [] );
       result.addToDocument();
       result.setLocation( 0, 0 );
       result.setDimension( 100, 100 );
-      qx.ui.core.Widget.flushGlobalQueues();
+      rwt.widgets.base.Widget.flushGlobalQueues();
       return result;
     },
 

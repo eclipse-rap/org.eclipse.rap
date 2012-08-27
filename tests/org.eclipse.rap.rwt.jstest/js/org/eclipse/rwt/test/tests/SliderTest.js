@@ -22,7 +22,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     testCreateSliderByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -32,9 +32,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget instanceof org.eclipse.swt.widgets.Slider );
+      assertTrue( widget instanceof rwt.widgets.Slider );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
       assertEquals( "slider", widget.getAppearance() );
@@ -46,7 +46,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     testCreateSliderHorizontalByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -56,9 +56,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget instanceof org.eclipse.swt.widgets.Slider );
+      assertTrue( widget instanceof rwt.widgets.Slider );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
       assertEquals( "slider", widget.getAppearance() );
@@ -70,7 +70,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     testSetMinimumByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -81,7 +81,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "minimum" : 50
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 50, widget._minimum );
       shell.destroy();
@@ -91,7 +91,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     testSetMaximumByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -102,7 +102,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "maximum" : 150
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 150, widget._maximum );
       shell.destroy();
@@ -112,7 +112,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     testSetSelectionByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -123,7 +123,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "selection" : 50
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 50, widget._selection );
       shell.destroy();
@@ -133,7 +133,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     testSetIncrementByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -144,7 +144,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "increment" : 5
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 5, widget._increment );
       shell.destroy();
@@ -154,7 +154,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     testSetPageIncrementByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -165,7 +165,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "pageIncrement" : 20
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 20, widget._pageIncrement );
       shell.destroy();
@@ -175,7 +175,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     testSetThumbByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -186,7 +186,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "thumb" : 20
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 20, widget._thumbLength );
       shell.destroy();
@@ -196,7 +196,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     testSetHasSelectionListenerByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -207,7 +207,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "selection" : true } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
@@ -410,7 +410,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       TestUtil.forceTimerOnce();
       assertFalse( slider._requestScheduled );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      org.eclipse.swt.Server.getInstance().send();
+      rwt.remote.Server.getInstance().send();
       assertTrue( TestUtil.getMessage().indexOf( "w99.selection=5" ) != -1 );
       TestUtil.clearRequestLog();
       slider.setHasSelectionListener( true );
@@ -859,7 +859,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     
     _createSlider : function( horizontal ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var result = new org.eclipse.swt.widgets.Slider( horizontal );
+      var result = new rwt.widgets.Slider( horizontal );
       result.addToDocument();
       result.setLeft( 10 );
       result.setTop( 10 );

@@ -35,7 +35,7 @@
  *           return a boolean value to indicate whether the values is valid.
  *       </li>
  *       <li>inline check code as a string e.g. <code>"value &gt; 0 && value &lt; 100"</code></li>
- *       <li>a class name e.g. <code>qx.ui.form.Button</code></li>
+ *       <li>a class name e.g. <code>rwt.widgets.base.Button</code></li>
  *       <li>a name of an interface the value must implement, e.g. <code>qx.application.IAplpication</code></li>
  *       <li>an array of all valid values</li>
  *       <li>one of the predefined checks: Boolean, String, Number, Integer, Float, Double,
@@ -247,7 +247,7 @@ qx.Class.define( "qx.core.Property", {
      *
      * @type static
      * @internal
-     * @param widget {qx.ui.core.Widget} the widget
+     * @param widget {rwt.widgets.base.Widget} the widget
      * @return {void}
      */
     refresh : function( widget ) {

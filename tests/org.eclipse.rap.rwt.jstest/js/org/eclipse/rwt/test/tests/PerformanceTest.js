@@ -80,8 +80,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.PerformanceTest", {
       };
       var startTime = ( new Date() ).getTime();
       for( var i = 0; i < iterations; i++ ) {
-        org.eclipse.rwt.protocol.Processor.processSet( "dummyId", details1 );
-        org.eclipse.rwt.protocol.Processor.processSet( "dummyId", details2 );
+        rwt.protocol.MessageProcessor.processSet( "dummyId", details1 );
+        rwt.protocol.MessageProcessor.processSet( "dummyId", details2 );
       }
       var endTime = ( new Date() ).getTime();
       return endTime - startTime;
@@ -89,10 +89,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.PerformanceTest", {
 
     // NOTE: Values need to change due to potential setter optimizations.
     _syncMixed : function( iterations ) {
-      var evalProc1 = "org.eclipse.rwt.protocol.Processor.processSet( \"dummyId\",";
+      var evalProc1 = "rwt.protocol.MessageProcessor.processSet( \"dummyId\",";
       evalProc1 += "{ \"textColor\" : \"#c20017\",\"left\" : 100,\"top\" : 100,\"label\" : \"foo\"\ }";
       evalProc1 += ");"
-      var evalProc2 = "org.eclipse.rwt.protocol.Processor.processSet( \"dummyId\",";
+      var evalProc2 = "rwt.protocol.MessageProcessor.processSet( \"dummyId\",";
       evalProc2 += "{ \"textColor\" : \"#000000\",\"left\" : 200,\"top\" : 200,\"label\" : \"bar\"\ }";
       evalProc2 += ");"
       var startTime = ( new Date() ).getTime();
@@ -110,9 +110,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.PerformanceTest", {
     _createDummyTarget : function( fakeProperties ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var registry = org.eclipse.rwt.protocol.AdapterRegistry;
-      var processor = org.eclipse.rwt.protocol.Processor;
-      var dummy = new qx.ui.basic.Atom();
+      var registry = rwt.protocol.AdapterRegistry;
+      var processor = rwt.protocol.MessageProcessor;
+      var dummy = new rwt.widgets.base.Atom();
       dummy.setLocation( 30, 10 );
       dummy.setDimension( 10, 10 );
       dummy.addToDocument();

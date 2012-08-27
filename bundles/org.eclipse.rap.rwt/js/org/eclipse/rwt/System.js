@@ -35,7 +35,7 @@ qx.Class.define( "org.eclipse.rwt.System", {
       this._applyPatches();
       org.eclipse.rwt.GraphicsUtil.init();
       var eventHandler = org.eclipse.rwt.EventHandler;
-      eventHandler.setAllowContextMenu( org.eclipse.rwt.widgets.Menu.getAllowContextMenu );
+      eventHandler.setAllowContextMenu( rwt.widgets.Menu.getAllowContextMenu );
       eventHandler.setMenuManager( org.eclipse.rwt.MenuManager.getInstance() );
     } else {
       this._handleUnsupported();
@@ -71,12 +71,12 @@ qx.Class.define( "org.eclipse.rwt.System", {
 
     _applyPatches : function() {
       if( !org.eclipse.rwt.Client.supportsCss3() ) {
-        qx.Class.patch( qx.ui.core.Parent, org.eclipse.rwt.GraphicsMixin );
-        qx.Class.patch( org.eclipse.rwt.widgets.BasicText, org.eclipse.rwt.GraphicsMixin );
-        qx.Class.patch( org.eclipse.rwt.widgets.GridRow, org.eclipse.rwt.GraphicsMixin );
-        qx.Class.patch( org.eclipse.rwt.widgets.MultiCellWidget, org.eclipse.rwt.GraphicsMixin );
+        qx.Class.patch( rwt.widgets.base.Parent, org.eclipse.rwt.GraphicsMixin );
+        qx.Class.patch( rwt.widgets.base.BasicText, org.eclipse.rwt.GraphicsMixin );
+        qx.Class.patch( rwt.widgets.base.GridRow, org.eclipse.rwt.GraphicsMixin );
+        qx.Class.patch( rwt.widgets.base.MultiCellWidget, org.eclipse.rwt.GraphicsMixin );
       } else {
-        qx.Class.patch( org.eclipse.swt.widgets.ProgressBar, org.eclipse.rwt.GraphicsMixin );
+        qx.Class.patch( rwt.widgets.ProgressBar, org.eclipse.rwt.GraphicsMixin );
       }
       qx.Class.patch( qx.event.type.DomEvent, org.eclipse.rwt.DomEventPatch );
     },
@@ -88,7 +88,7 @@ qx.Class.define( "org.eclipse.rwt.System", {
     _onload : function(e) {
       if( !this._onloadDone ) {
       this._onloadDone = true;
-      qx.ui.core.ClientDocument.getInstance();
+      rwt.widgets.base.ClientDocument.getInstance();
       org.eclipse.rwt.MobileWebkitSupport.init();
       qx.client.Timer.once( this._preload, this, 0 );
       }
@@ -106,7 +106,7 @@ qx.Class.define( "org.eclipse.rwt.System", {
       org.eclipse.rwt.EventHandler.init();
       org.eclipse.rwt.EventHandler.attachEvents();
       this.setUiReady( true );
-      qx.ui.core.Widget.flushGlobalQueues();
+      rwt.widgets.base.Widget.flushGlobalQueues();
       qx.client.Timer.once( this._postload, this, 100 );
     },
 

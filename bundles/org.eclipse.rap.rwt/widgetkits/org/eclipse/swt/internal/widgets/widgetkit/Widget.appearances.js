@@ -119,7 +119,7 @@ var appearances = {
     }
   },
 
-  // this applies to a qooxdoo qx.ui.basic.Atom that represents an RWT Label
+  // this applies to a qooxdoo rwt.widgets.base.Atom that represents an RWT Label
   
 
   "htmlcontainer" : {

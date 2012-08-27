@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
     testStrokeProperties : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var VML = org.eclipse.rwt.VML;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -54,7 +54,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
     testFillProperties : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var VML = org.eclipse.rwt.VML;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -79,7 +79,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testInit : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -96,7 +96,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testDrawLine : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -110,7 +110,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testDrawPoint : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -129,7 +129,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testDrawRectangle : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -145,7 +145,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testDrawRoundRectangle : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -161,7 +161,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testFillGradientRectangle : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -181,7 +181,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testDrawEllipse : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -210,7 +210,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
     //        used by ClientScripting
     testDrawArc : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -229,7 +229,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testDrawPolyline : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -252,7 +252,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
     testDrawImage : function() {
       // NOTE: drawImage can not be tested directly, test "setImageData" instead
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -283,7 +283,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testRestoreColorsOnDomInsert : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -305,7 +305,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testRestoreStrokeWeightOnDomInsert : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();

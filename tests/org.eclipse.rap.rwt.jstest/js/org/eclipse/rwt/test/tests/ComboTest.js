@@ -12,8 +12,8 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
-var Processor = org.eclipse.rwt.protocol.Processor;
+var ObjectManager = rwt.protocol.ObjectManager;
+var Processor = rwt.protocol.MessageProcessor;
 
 qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
   extend : qx.core.Object,
@@ -32,7 +32,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
         }
       } );
       var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget instanceof org.eclipse.swt.widgets.Combo );
+      assertTrue( widget instanceof rwt.widgets.Combo );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
       assertEquals( "combo", widget.getAppearance() );
@@ -53,7 +53,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
         }
       } );
       var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget instanceof org.eclipse.swt.widgets.Combo );
+      assertTrue( widget instanceof rwt.widgets.Combo );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
       assertEquals( "ccombo", widget.getAppearance() );
@@ -321,7 +321,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
 
     testCreateDispose : function() {
       var combo = this._createDefaultCombo();
-      assertTrue( combo instanceof org.eclipse.swt.widgets.Combo );
+      assertTrue( combo instanceof rwt.widgets.Combo );
       combo.destroy();
       TestUtil.flush();
       assertTrue( combo.isDisposed() );
@@ -503,7 +503,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     testEventRedispatch_2 : function() {
       var combo = this._createDefaultCombo();
       combo.setListVisible( true );
-      var checkbox = new org.eclipse.rwt.widgets.Button( "check" );
+      var checkbox = new rwt.widgets.Button( "check" );
       checkbox.addState( "rwt_CHECK" );
       checkbox.addToDocument();
       checkbox.setEnabled( false );
@@ -667,7 +667,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testFiresItemsChangedEvent : function() {
-      var combo = new org.eclipse.swt.widgets.Combo();
+      var combo = new rwt.widgets.Combo();
       var log = 0;
       combo.addEventListener( "itemsChanged", function() {
         log++;
@@ -682,7 +682,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testFiresSelectionChangedEvent : function() {
-      var combo = new org.eclipse.swt.widgets.Combo();
+      var combo = new rwt.widgets.Combo();
       var log = 0;
       combo.addEventListener( "selectionChanged", function() {
         log++;
@@ -698,10 +698,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testApplyListId_renderHtmlIdsActivated : function() {
-      var combo = new org.eclipse.swt.widgets.Combo();
+      var combo = new rwt.widgets.Combo();
       combo.addToDocument();
 
-      qx.ui.core.Widget._renderHtmlIds = true;
+      rwt.widgets.base.Widget._renderHtmlIds = true;
       combo.applyObjectId( "123" );
 
       assertEquals( "123-listbox" ,combo._list.getHtmlAttribute( "id" ) );
@@ -709,10 +709,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testApplyListId_renderHtmlIdsDeactivated : function() {
-      var combo = new org.eclipse.swt.widgets.Combo();
+      var combo = new rwt.widgets.Combo();
       combo.addToDocument();
 
-      qx.ui.core.Widget._renderHtmlIds = false;
+      rwt.widgets.base.Widget._renderHtmlIds = false;
       combo.applyObjectId( "123" );
 
       assertEquals( "" ,combo._list.getHtmlAttribute( "id" ) );
@@ -720,10 +720,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testApplyListItemIds_renderHtmlIdsActivated : function() {
-      var combo = new org.eclipse.swt.widgets.Combo();
+      var combo = new rwt.widgets.Combo();
       combo.addToDocument();
 
-      qx.ui.core.Widget._renderHtmlIds = true;
+      rwt.widgets.base.Widget._renderHtmlIds = true;
       combo.applyObjectId( "123" );
       combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
 
@@ -736,7 +736,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     // Helpers
 
     _createDefaultCombo : function() {
-      var combo = new org.eclipse.swt.widgets.Combo();
+      var combo = new rwt.widgets.Combo();
       combo.setSpace( 239, 81, 6, 23 );
       combo.setItemHeight( 19 );
       combo.setEditable( false );

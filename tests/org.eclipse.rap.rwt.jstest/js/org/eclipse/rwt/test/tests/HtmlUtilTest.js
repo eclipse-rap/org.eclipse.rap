@@ -163,12 +163,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
    // Helper
         
     _createWidget : function( noFlush ) {
-      var result = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var result = new rwt.widgets.base.MultiCellWidget( [] );
       result.addToDocument();
       result.setLocation( 0, 0 );
       result.setDimension( 100, 100 );
       if( noFlush !== true ) {
-        qx.ui.core.Widget.flushGlobalQueues();
+        rwt.widgets.base.Widget.flushGlobalQueues();
       }
       return result;
     }

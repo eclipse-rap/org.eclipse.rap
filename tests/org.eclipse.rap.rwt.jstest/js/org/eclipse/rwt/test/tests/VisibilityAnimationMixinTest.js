@@ -12,7 +12,7 @@
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Animation =  org.eclipse.rwt.Animation;
-var Processor = org.eclipse.rwt.protocol.Processor;
+var Processor = rwt.protocol.MessageProcessor;
 
 var shell;
 
@@ -242,7 +242,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
     },
 
     testShellFlyOutTopDestroyKeepSubwidgetsAlive : function() {
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var widget = new rwt.widgets.base.MultiCellWidget( [] );
       widget.setParent( shell );
       shell.setAnimation( { "flyOutTop" : [ 400, "linear" ] } );
       shell.show();
@@ -259,9 +259,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
     },
 
     testShellFlyOutTopDestroyKeepIndirectSubwidgetsAlive : function() {
-      var parent = new org.eclipse.swt.widgets.Composite();
+      var parent = new rwt.widgets.Composite();
       parent.setParent( shell );
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var widget = new rwt.widgets.base.MultiCellWidget( [] );
       widget.setParent( parent );
       shell.setAnimation( { "flyOutTop" : [ 400, "linear" ] } );
       shell.show();
@@ -278,9 +278,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", {
     },
 
     testShellFlyOutTopDestroyFinishIndirectSubwidgetsGetDestroyed : function() {
-      var parent = new org.eclipse.swt.widgets.Composite();
+      var parent = new rwt.widgets.Composite();
       parent.setParent( shell );
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var widget = new rwt.widgets.base.MultiCellWidget( [] );
       widget.setParent( parent );
       shell.setAnimation( { "flyOutTop" : [ 400, "linear" ] } );
       var animation = this.getDisappearAnimation( shell );

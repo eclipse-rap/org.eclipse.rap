@@ -123,11 +123,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testTreeColumnMetrics : function() {
-      tree = new org.eclipse.rwt.widgets.Grid( {
+      tree = new rwt.widgets.Grid( {
         "appearance": "tree",
         "indentionWidth" : 16
       } );
-      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem() );
+      var item = new rwt.widgets.GridItem( tree.getRootItem() );
       item.setTexts( [ "Test" ] );
       tree.setItemMetrics( 0, 10, 50, 12, 13, 30, 8 );
       assertEquals( 10, row._getItemLeft( item, 0, tree._config) );
@@ -139,11 +139,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testFirstColumnMetricsImageOverflow : function() {
-      tree = new org.eclipse.rwt.widgets.Grid( {
+      tree = new rwt.widgets.Grid( {
         "appearance": "tree",
         "indentionWidth" : 10
       } );
-      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem() );
+      var item = new rwt.widgets.GridItem( tree.getRootItem() );
       item.setTexts( [ "Test" ] );
       tree.setItemMetrics( 0, 0, 15, 0, 10, 10, 40 );
       assertEquals( 5, row._getItemImageWidth( item, 0, tree._config ) );
@@ -151,11 +151,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testSecondColumnAsTreeColumn : function() {
-      tree = new org.eclipse.rwt.widgets.Grid( {
+      tree = new rwt.widgets.Grid( {
         "appearance": "tree",
         "indentionWidth" : 16
       } );
-      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem() );
+      var item = new rwt.widgets.GridItem( tree.getRootItem() );
       item.setTexts( [ "Test", "Test2" ] );
       tree.setItemMetrics( 0, 64, 40, 66, 13, 69, 8 );
       tree.setItemMetrics( 1, 34, 40, 36, 13, 49, 8 );
@@ -177,25 +177,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testGetCheckBoxMetrics : function() {
-      tree = new org.eclipse.rwt.widgets.Grid( {
+      tree = new rwt.widgets.Grid( {
         "appearance": "tree",
         "check": true,
         "checkBoxMetrics": [ 5, 20 ],
         "indentionWidth" : 16
       } );
-      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem() );
+      var item = new rwt.widgets.GridItem( tree.getRootItem() );
       assertEquals( 21, row._getCheckBoxLeft( item, tree._config ) );
       assertEquals( 20, row._getCheckBoxWidth( item, tree._config ) );
     },
 
     testSetCheckBoxMetricsOverflow : function() {
-      tree = new org.eclipse.rwt.widgets.Grid( {
+      tree = new rwt.widgets.Grid( {
         "appearance": "tree",
         "check" : true,
         "checkBoxMetrics" : [ 5, 20 ],
         "indentionWidth" : 10
       } );
-      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem() );
+      var item = new rwt.widgets.GridItem( tree.getRootItem() );
       tree.setItemMetrics( 0, 0, 25, 0, 10, 10, 40 );
       assertEquals( 15, row._getCheckBoxLeft( item, tree._config ) );
       assertEquals( 10, row._getCheckBoxWidth( item, tree._config ) );
@@ -648,7 +648,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var startSymbol = TestUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbol.indexOf( "start.gif" ) != -1 );
       item.setItemCount( 3 );
-      new org.eclipse.rwt.widgets.GridItem( item, 2 );
+      new rwt.widgets.GridItem( item, 2 );
       row.renderItem( item, tree._config, false, null );
       var startSymbolCollapsed = TestUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbolCollapsed.indexOf( "start-collapsed.gif" ) != -1 );
@@ -666,7 +666,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var startSymbol = TestUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbol.indexOf( "end.gif" ) != -1 );
       item.setItemCount( 3 );
-      new org.eclipse.rwt.widgets.GridItem( item, 2 );
+      new rwt.widgets.GridItem( item, 2 );
       row.renderItem( item, tree._config, false, null );
       var startSymbolCollapsed = TestUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbolCollapsed.indexOf( "end-collapsed.gif" ) != -1 );
@@ -684,7 +684,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var startSymbol = TestUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbol.indexOf( "intermediate.gif" ) != -1 );
       item.setItemCount( 4 );
-      new org.eclipse.rwt.widgets.GridItem( item, 3 );
+      new rwt.widgets.GridItem( item, 3 );
       row.renderItem( item, tree._config, false, null );
       var startSymbolCollapsed = TestUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbolCollapsed.indexOf( "intermediate-collapsed.gif" ) != -1 );
@@ -702,7 +702,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var startSymbol = TestUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbol.indexOf( "single.gif" ) != -1 );
       item.setItemCount( 2 );
-      new org.eclipse.rwt.widgets.GridItem( item, 1 );
+      new rwt.widgets.GridItem( item, 1 );
       row.renderItem( item, tree._config, false, null );
       var startSymbolCollapsed = TestUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbolCollapsed.indexOf( "single-collapsed.gif" ) != -1 );
@@ -2079,7 +2079,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
           return result;
         }
       } );
-      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem() );
+      var item = new rwt.widgets.GridItem( tree.getRootItem() );
       item.setTexts( [ "Test1" ] );
       var selectionPadding = 4;
       tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 100 );
@@ -2111,7 +2111,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
           return result;
         }
       } );
-      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem() );
+      var item = new rwt.widgets.GridItem( tree.getRootItem() );
       item.setTexts( [ "Test1" ] );
       tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 100 );
 
@@ -2141,7 +2141,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
             return result;
           }
         } );
-        var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem() );
+        var item = new rwt.widgets.GridItem( tree.getRootItem() );
         item.setTexts( [ "a&b" ] );
         tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 100 );
 
@@ -2170,7 +2170,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
           return result;
         }
       } );
-      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem() );
+      var item = new rwt.widgets.GridItem( tree.getRootItem() );
       item.setTexts( [ "Test1" ] );
       var selectionPadding = 3; // only the left side
       tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 25 );
@@ -2199,7 +2199,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
           return result;
         }
       } );
-      var item = new org.eclipse.rwt.widgets.GridItem( tree.getRootItem() );
+      var item = new rwt.widgets.GridItem( tree.getRootItem() );
       item.setTexts( [ "Test1" ] );
       tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 0 );
       row.renderItem( item, tree._config, true, null );
@@ -2230,7 +2230,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
      _createRow : function( tree, isTable ) {
        if( row != null ) {
        }
-       var result = new org.eclipse.rwt.widgets.GridRow( tree );
+       var result = new rwt.widgets.base.GridRow( tree );
        if( isTable ) {
          result.setAppearance( "table-row" );
        } else {
@@ -2299,7 +2299,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       if( option2 ) {
         args[ option2 ] = true;
       }
-      var result = new org.eclipse.rwt.widgets.Grid( args );
+      var result = new rwt.widgets.Grid( args );
       result.setTextColor( "black" );
       result.setItemMetrics( 0, 4, 66, 24, 10, 5, 45 );
       result.setItemHeight( 15 );
@@ -2311,17 +2311,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     _createItem : function( parent, hasPrevious, hasNext ) {
-      var parentItem = org.eclipse.rwt.widgets.GridItem._getItem( parent );
+      var parentItem = rwt.widgets.GridItem._getItem( parent );
       var count = 0;
       parent.setItemCount( 1 + hasPrevious ? 1 : 0 + hasNext ? 1 : 0 );
       if( hasPrevious ) {
-        new org.eclipse.rwt.widgets.GridItem( parentItem, count );
+        new rwt.widgets.GridItem( parentItem, count );
         count++;
       }
-      var item = new org.eclipse.rwt.widgets.GridItem( parentItem, count );
+      var item = new rwt.widgets.GridItem( parentItem, count );
       count++;
       if( hasNext ) {
-        new org.eclipse.rwt.widgets.GridItem( parentItem, count );
+        new rwt.widgets.GridItem( parentItem, count );
       }
       return item;
     },

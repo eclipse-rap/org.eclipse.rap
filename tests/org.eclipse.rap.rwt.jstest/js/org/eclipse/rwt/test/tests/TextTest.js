@@ -12,12 +12,12 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var Processor = org.eclipse.rwt.protocol.Processor;
-var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+var Processor = rwt.protocol.MessageProcessor;
+var ObjectManager = rwt.protocol.ObjectManager;
 var Font = qx.ui.core.Font;
 var Border = org.eclipse.rwt.Border;
 var Client = org.eclipse.rwt.Client;
-var Server = org.eclipse.swt.Server;
+var Server = rwt.remote.Server;
 
 var shell;
 var text;
@@ -40,7 +40,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         }
       } );
       text = ObjectManager.getObject( "w3" );
-      assertTrue( text instanceof org.eclipse.rwt.widgets.Text );
+      assertTrue( text instanceof rwt.widgets.Text );
       assertIdentical( shell, text.getParent() );
       assertTrue( text.getUserData( "isControl") );
       assertTrue( text.hasState( "rwt_SINGLE" ) );
@@ -648,7 +648,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
     testFiresChangeReadOnlyEvent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var text = new org.eclipse.rwt.widgets.Text( false );
+      var text = new rwt.widgets.Text( false );
       text.addToDocument();
       TestUtil.flush();
       var log = 0;
@@ -1330,7 +1330,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 } );
 
 var createText = function( noflush, arg ) {
-  text = new org.eclipse.rwt.widgets.Text( arg ? arg : false );
+  text = new rwt.widgets.Text( arg ? arg : false );
   ObjectManager.add( "w3", text, null );
   text.setParent( shell );
   if( noflush !== true ) {

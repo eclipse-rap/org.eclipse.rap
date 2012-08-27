@@ -33,7 +33,7 @@ org.eclipse.rwt.GridUtil = {
     if( argsmap.splitContainer ) {
       result = org.eclipse.rwt.GridRowContainerWrapper.createInstance();
     } else {
-      result = new org.eclipse.rwt.widgets.GridRowContainer();
+      result = new rwt.widgets.base.GridRowContainer();
     }
     return result;
   },

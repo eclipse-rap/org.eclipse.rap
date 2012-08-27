@@ -22,9 +22,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
   members : {
 
     testCreateTableColumnByProtocol : function() {
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var Processor = org.eclipse.rwt.protocol.Processor;
+      var Processor = rwt.protocol.MessageProcessor;
       Processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -36,7 +36,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       } );
       TestUtil.flush();
       var column = ObjectManager.getObject( "w4" );
-      assertTrue( column instanceof org.eclipse.rwt.widgets.GridColumn );
+      assertTrue( column instanceof rwt.widgets.GridColumn );
       var label = this._getColumnLabel( tree, column )
       assertIdentical( tree._header, label.getParent() );
       assertEquals( "tree-column", label.getAppearance() );
@@ -322,7 +322,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
 
     testApplyObjectId : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      qx.ui.core.Widget._renderHtmlIds = true;
+      rwt.widgets.base.Widget._renderHtmlIds = true;
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       TestUtil.flush();
 
@@ -330,7 +330,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       assertEquals( "w4", label.getHtmlAttribute( "id" ) );
       column.dispose();
       tree.destroy();
-      qx.ui.core.Widget._renderHtmlIds = false;
+      rwt.widgets.base.Widget._renderHtmlIds = false;
 
     },
 
@@ -1003,9 +1003,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
     },
 
     testCreateColumnGroupByProtocol : function() {
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var Processor = org.eclipse.rwt.protocol.Processor;
+      var Processor = rwt.protocol.MessageProcessor;
 
       Processor.processOperation( {
         "target" : "w4",
@@ -1019,7 +1019,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
 
       var column = ObjectManager.getObject( "w4" );
-      assertTrue( column instanceof org.eclipse.rwt.widgets.GridColumn );
+      assertTrue( column instanceof rwt.widgets.GridColumn );
       assertTrue( column.isGroup() );
       var label = this._getColumnLabel( tree, column )
       assertIdentical( tree._header, label.getParent() );
@@ -1454,7 +1454,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
     // Helping methods
 
     _createTreeByProtocol : function( id, parentId, styles ) {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.Grid",
@@ -1470,11 +1470,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
           "headerVisible" : true
         }
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectManager.getObject( id );
     },
 
     _createColumnByProtocol : function( id, parentId, styles ) {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.GridColumn",
@@ -1484,11 +1484,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
         }
       } );
       TestUtil.flush( true );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectManager.getObject( id );
     },
 
     _createColumnGroupByProtocol : function( id, parentId, styles, noFlush ) {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.GridColumnGroup",
@@ -1500,7 +1500,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       if( !noFlush ) {
         TestUtil.flush( true );
       }
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectManager.getObject( id );
     },
 
     setUp : function() {

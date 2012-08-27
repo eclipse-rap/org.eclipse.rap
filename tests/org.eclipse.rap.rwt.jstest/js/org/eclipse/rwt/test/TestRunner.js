@@ -250,10 +250,10 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
         org.eclipse.rwt.test.fixture.TestUtil.resetObjectManager();
         org.eclipse.rwt.test.fixture.TestUtil.clearXMLHttpRequests();
         org.eclipse.rwt.EventHandler.setFocusRoot(
-          qx.ui.core.ClientDocument.getInstance()
+          rwt.widgets.base.ClientDocument.getInstance()
         );
       }
-      qx.ui.core.Widget.flushGlobalQueues();
+      rwt.widgets.base.Widget.flushGlobalQueues();
     },
 
     // called by Asserts.js
@@ -333,37 +333,37 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
     },
 
     _checkFlushState : function() {
-      if( qx.ui.core.Widget._inFlushGlobalQueues ) {
+      if( rwt.widgets.base.Widget._inFlushGlobalQueues ) {
         this.info( "Error occurred during Flush!");
-        if( qx.ui.core.Widget._globalWidgetQueue.length > 0 ) {
+        if( rwt.widgets.base.Widget._globalWidgetQueue.length > 0 ) {
           this.info( "There are widgets in _globalWidgetQueue!" );
         }
-        if( qx.ui.core.Widget._globalElementQueue.length > 0 ) {
+        if( rwt.widgets.base.Widget._globalElementQueue.length > 0 ) {
           this.info( "There are widgets in _globalElementQueue!" );
         }
-        if( qx.ui.core.Widget._globalStateQueue.length > 0 ) {
+        if( rwt.widgets.base.Widget._globalStateQueue.length > 0 ) {
           this.info( "There are widgets in _globalStateQueue!" );
         }
-        if( qx.ui.core.Widget._globalJobQueue.length > 0 ) {
+        if( rwt.widgets.base.Widget._globalJobQueue.length > 0 ) {
           this.info( "There are widgets in _globalJobQueue!" );
         }
-        if( qx.ui.core.Widget._globalLayoutQueue.length > 0 ) {
+        if( rwt.widgets.base.Widget._globalLayoutQueue.length > 0 ) {
           this.info( "There are widgets in _globalLayoutQueue!" );
         }
-        if( qx.ui.core.Widget._fastGlobalDisplayQueue.length > 0 ) {
+        if( rwt.widgets.base.Widget._fastGlobalDisplayQueue.length > 0 ) {
           this.info( "There are widgets in _fastGlobalDisplayQueue!" );
         }
-        if( qx.ui.core.Widget._lazyGlobalDisplayQueues.length > 0 ) {
+        if( rwt.widgets.base.Widget._lazyGlobalDisplayQueues.length > 0 ) {
           this.info( "There are widgets in _lazyGlobalDisplayQueues!" );
         }
-        if( qx.ui.core.Widget._globalDisposeQueue.length > 0 ) {
+        if( rwt.widgets.base.Widget._globalDisposeQueue.length > 0 ) {
           this.info( "There are widgets in _globalDisposeQueue!" );
         }
       }
     },
 
     _freezeQooxdoo : function() {
-      qx.ui.core.Widget.__allowFlushs = false;
+      rwt.widgets.base.Widget.__allowFlushs = false;
       org.eclipse.rwt.EventHandler.detachEvents();
       qx.core.Target.prototype.dispatchEvent = function(){};
       org.eclipse.rwt.Animation._stopLoop();
@@ -371,15 +371,15 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
     },
 
     _disableAutoFlush : function() {
-      qx.ui.core.Widget._removeAutoFlush();
-      qx.ui.core.Widget._initAutoFlush = function(){};
-      qx.ui.core.Widget.__orgFlushGlobalQueues = qx.ui.core.Widget.flushGlobalQueues;
-      qx.ui.core.Widget.flushGlobalQueues = function() {
+      rwt.widgets.base.Widget._removeAutoFlush();
+      rwt.widgets.base.Widget._initAutoFlush = function(){};
+      rwt.widgets.base.Widget.__orgFlushGlobalQueues = rwt.widgets.base.Widget.flushGlobalQueues;
+      rwt.widgets.base.Widget.flushGlobalQueues = function() {
         if( this.__allowFlushs ) {
-          qx.ui.core.Widget.__orgFlushGlobalQueues();
+          rwt.widgets.base.Widget.__orgFlushGlobalQueues();
         }
       };
-      qx.ui.core.Widget.__allowFlushs = true;
+      rwt.widgets.base.Widget.__allowFlushs = true;
     },
 
     getLog : function(){

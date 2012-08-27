@@ -21,7 +21,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
         = "!#$%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxy";
       var fontName = [ "Verdana", "Lucida Sans", "Arial", "Helvetica", "sans-serif" ];
       TestUtil.initRequestLog();
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w1",
         "action" : "call",
@@ -34,7 +34,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
         }
       } );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      var request = org.eclipse.swt.Server.getInstance();
+      var request = rwt.remote.Server.getInstance();
       assertNotNull( request.getParameter( "-785380229" ) );
       assertNotNull( request.getParameter( "-785380485" ) );
     },
@@ -43,7 +43,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var fontName = [ "Verdana", "Lucida Sans", "Arial", "Helvetica", "sans-serif" ];
       TestUtil.initRequestLog();
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w1",
         "action" : "call",
@@ -63,12 +63,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
 
     testSetFocusControlByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      var button = new rwt.widgets.Button( "push" );
       org.eclipse.swt.WidgetManager.getInstance().add( button, "btn1" );
       button.addToDocument();
       TestUtil.flush();
       assertFalse( button.getFocused() );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w1",
         "action" : "set",
@@ -81,7 +81,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
     },
 
     testSetCurrentThemeByProtocol : function() {
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w1",
         "action" : "set",
@@ -93,12 +93,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
     },
 
     testSetEnableUiTests : function() {
-      org.eclipse.rwt.Display._current = undefined;
-      var display = new org.eclipse.rwt.Display();
+      rwt.widgets.Display._current = undefined;
+      var display = new rwt.widgets.Display();
 
       display.setEnableUiTests( true );
 
-      assertIdentical( true, qx.ui.core.Widget._renderHtmlIds );
+      assertIdentical( true, rwt.widgets.base.Widget._renderHtmlIds );
       display.setEnableUiTests( false );
     }
 

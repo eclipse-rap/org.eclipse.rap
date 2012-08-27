@@ -137,7 +137,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.RequestTest", {
     setUp : function() {
       org.eclipse.rwt.test.fixture.NativeRequestMock.useFakeServer = false;
       org.eclipse.rwt.test.fixture.TestUtil.clearXMLHttpRequests();
-      request = new org.eclipse.rwt.Request( URL, "POST", "application/javascript" );
+      request = new rwt.remote.Request( URL, "POST", "application/javascript" );
     },
 
     tearDown : function() {

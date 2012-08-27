@@ -342,7 +342,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         }
       }
       if(    vDispatchTarget.getEnabled()
-          && !( vDispatchTarget instanceof qx.ui.core.ClientDocument )
+          && !( vDispatchTarget instanceof rwt.widgets.base.ClientDocument )
           && vType == "mousedown" ) {
         qx.event.handler.FocusHandler.mouseFocus = true;
         var vRoot = vDispatchTarget.getFocusRoot();
@@ -397,7 +397,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         toolTipManager.handleMouseEvent( vEventObject );
       }
       vEventObject.dispose();
-      qx.ui.core.Widget.flushGlobalQueues();
+      rwt.widgets.base.Widget.flushGlobalQueues();
       // Fix Click (Gecko Bug, see above)
       if( vFixClick ) {
         this._onmouseevent_post( vDomEvent, "click", this._lastMouseDownDomTarget );
@@ -438,7 +438,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           if( this._menuManager != null ) {
             this._menuManager.update( vTarget, vType );
           }
-          qx.ui.embed.IframeManager.getInstance().handleMouseDown( vEventObject );
+          rwt.widgets.base.IframeManager.getInstance().handleMouseDown( vEventObject );
         break;
         case "mouseup":
           // Mouseup event should always hide, independed of target,
@@ -446,8 +446,8 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           if( this._menuManager != null ) {
             this._menuManager.update( vTarget, vType );
           }
-          if( qx.Class.isDefined("qx.ui.embed.IframeManager" ) ) {
-            qx.ui.embed.IframeManager.getInstance().handleMouseUp( vEventObject );
+          if( qx.Class.isDefined("rwt.widgets.base.IframeManager" ) ) {
+            rwt.widgets.base.IframeManager.getInstance().handleMouseUp( vEventObject );
           }
         break;
       }
@@ -508,7 +508,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         if( qx.Class.isDefined( "qx.event.handler.DragAndDropHandler" ) ) {
           qx.event.handler.DragAndDropHandler.getInstance().globalCancelDrag();
         }
-        qx.ui.core.ClientDocument.getInstance().createDispatchEvent( "windowblur" );
+        rwt.widgets.base.ClientDocument.getInstance().createDispatchEvent( "windowblur" );
       } catch( ex ) {
         org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
@@ -520,7 +520,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           return;
         }
         this._focused = true;
-        qx.ui.core.ClientDocument.getInstance().createDispatchEvent( "windowfocus" );
+        rwt.widgets.base.ClientDocument.getInstance().createDispatchEvent( "windowfocus" );
       } catch( ex ) {
         org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
@@ -528,14 +528,14 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
 
     _onwindowresize : function( e ) {
       try {
-        var clientDocument = qx.ui.core.ClientDocument.getInstance();
+        var clientDocument = rwt.widgets.base.ClientDocument.getInstance();
         // Catch redundant resize events, fired for example by iPad:
         var oldWidth = clientDocument.getInnerWidth();
         var oldHeight = clientDocument.getInnerHeight();
         var width = clientDocument._computeInnerWidth();
         var height = clientDocument._computeInnerHeight();
         if( width !== oldWidth || height !== oldHeight ) {
-          qx.ui.core.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
+          rwt.widgets.base.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
         }
       } catch( ex ) {
         org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );

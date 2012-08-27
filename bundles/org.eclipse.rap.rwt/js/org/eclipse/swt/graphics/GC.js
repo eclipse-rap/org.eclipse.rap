@@ -21,7 +21,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     this._canvas = null;
     this._context = null;
     this._createCanvas();
-    this._canvas.rwtObject = this;
+    this._canvas.rwtObject = this; // like "rwtWidget" in Widget.js, useful for custom JS components
     this._textCanvas = document.createElement( "div" );
     this._textCanvas.style.position = "absolute";
     this._textCanvas.style.overflow = "hidden";
@@ -43,11 +43,13 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       this._removeCanvasFromDOM();
     }
     this._control = null;
+    this._canvas.rwtObject = null;
     this._canvas = null;
     if( this._context.dispose ) {
       this._context.dispose();
     }
     this._context = null;
+    this._textCanvas.rwtObject = null;
     this._textCanvas = null;
   },
 
@@ -58,7 +60,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
         // TODO [tb]: Should the control be detached from the DOM
         // (e.g. by Widget.prepareEnhancedBorder), this might lead to glitches
         // in IE/VML. The flush prevents this in some cases:
-        qx.ui.core.Widget.flushGlobalQueues();
+        rwt.widgets.base.Widget.flushGlobalQueues();
         this._initTextCanvas( width, height );
         this._context.clearRect( 0, 0, width, height );
         this._initFields( font, background, foreground );
@@ -251,7 +253,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     },
 
     _escapeText : function( value, drawMnemonic, drawDelemiter, drawTab ) {
-      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.protocol.EncodingUtil;
       var text = EncodingUtil.escapeText( value, drawMnemonic );
       var replacement = drawDelemiter ? "<br/>" : "";
       text = EncodingUtil.replaceNewLines( text, replacement );

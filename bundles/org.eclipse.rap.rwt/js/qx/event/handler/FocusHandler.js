@@ -281,7 +281,7 @@ qx.Class.define("qx.event.handler.FocusHandler",
       {
         child = children[i];
 
-        if (child.isDisposed() || !(child instanceof qx.ui.core.Parent) && !(child instanceof qx.ui.basic.Terminator)) {
+        if (child.isDisposed() || !(child instanceof rwt.widgets.base.Parent) && !(child instanceof rwt.widgets.base.Terminator)) {
           continue;
         }
 
@@ -289,7 +289,7 @@ qx.Class.define("qx.event.handler.FocusHandler",
           arr.push(children[i]);
         }
 
-        if (!child.isFocusRoot() && child instanceof qx.ui.core.Parent) {
+        if (!child.isFocusRoot() && child instanceof rwt.widgets.base.Parent) {
           this._getAllAfter(child, widget, arr);
         }
       }
@@ -315,7 +315,7 @@ qx.Class.define("qx.event.handler.FocusHandler",
       {
         child = children[i];
 
-        if (!(child instanceof qx.ui.core.Parent) && !(child instanceof qx.ui.basic.Terminator)) {
+        if (!(child instanceof rwt.widgets.base.Parent) && !(child instanceof rwt.widgets.base.Terminator)) {
           continue;
         }
 
@@ -323,7 +323,7 @@ qx.Class.define("qx.event.handler.FocusHandler",
           arr.push(child);
         }
 
-        if (!child.isFocusRoot() && child instanceof qx.ui.core.Parent) {
+        if (!child.isFocusRoot() && child instanceof rwt.widgets.base.Parent) {
           this._getAllBefore(child, widget, arr);
         }
       }
@@ -348,7 +348,7 @@ qx.Class.define("qx.event.handler.FocusHandler",
       {
         child = children[i];
 
-        if (!(child instanceof qx.ui.core.Parent) && !(child instanceof qx.ui.basic.Terminator)) {
+        if (!(child instanceof rwt.widgets.base.Parent) && !(child instanceof rwt.widgets.base.Terminator)) {
           continue;
         }
 
@@ -359,7 +359,7 @@ qx.Class.define("qx.event.handler.FocusHandler",
           }
         }
 
-        if (!child.isFocusRoot() && child instanceof qx.ui.core.Parent) {
+        if (!child.isFocusRoot() && child instanceof rwt.widgets.base.Parent) {
           firstWidget = this._getFirst(child, firstWidget);
         }
       }
@@ -386,7 +386,7 @@ qx.Class.define("qx.event.handler.FocusHandler",
       {
         child = children[i];
 
-        if (!(child instanceof qx.ui.core.Parent) && !(child instanceof qx.ui.basic.Terminator)) {
+        if (!(child instanceof rwt.widgets.base.Parent) && !(child instanceof rwt.widgets.base.Terminator)) {
           continue;
         }
 
@@ -397,7 +397,7 @@ qx.Class.define("qx.event.handler.FocusHandler",
           }
         }
 
-        if (!child.isFocusRoot() && child instanceof qx.ui.core.Parent) {
+        if (!child.isFocusRoot() && child instanceof rwt.widgets.base.Parent) {
           lastWidget = this._getLast(child, lastWidget);
         }
       }

@@ -692,7 +692,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   clearRequestLog : function() {
-    org.eclipse.swt.Server.getInstance().send();
+    rwt.remote.Server.getInstance().send();
     this._requestLog = [];
   },
 
@@ -821,10 +821,10 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   flush : function( inResponse ) {
     if( inResponse ) {
       org.eclipse.swt.EventUtil.setSuspended( true );
-      qx.ui.core.Widget.flushGlobalQueues();
+      rwt.widgets.base.Widget.flushGlobalQueues();
       org.eclipse.swt.EventUtil.setSuspended( true );
     } else {
-      qx.ui.core.Widget.flushGlobalQueues();
+      rwt.widgets.base.Widget.flushGlobalQueues();
     }
   },
 
@@ -833,13 +833,13 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   getDocument : function() {
-    return qx.ui.core.ClientDocument.getInstance();
+    return rwt.widgets.base.ClientDocument.getInstance();
   },
 
   preventFlushs : function( value ) {
     // this only works if the TestRunner-function"_disableAutoFlush"
     // has been called previously. (Happens in TestRunner.run)
-    qx.ui.core.Widget.__allowFlushs = !value;
+    rwt.widgets.base.Widget.__allowFlushs = !value;
   },
 
   emptyDragCache : function() {
@@ -903,7 +903,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
 
   createShellByProtocol : function( id ) {
     org.eclipse.swt.EventUtil.setSuspended( true );
-    org.eclipse.rwt.protocol.Processor.processOperation( {
+    rwt.protocol.MessageProcessor.processOperation( {
       "target" : id,
       "action" : "create",
       "type" : "rwt.widgets.Shell",
@@ -913,11 +913,11 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       }
     } );
     org.eclipse.swt.EventUtil.setSuspended( false );
-    return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+    return rwt.protocol.ObjectManager.getObject( id );
   },
 
   protocolListen : function( id, properties ) {
-    var processor = org.eclipse.rwt.protocol.Processor;
+    var processor = rwt.protocol.MessageProcessor;
     processor.processOperation( {
       "target" : id,
       "action" : "listen",
@@ -927,7 +927,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
 
   protocolSet : function( id, properties ) {
     org.eclipse.swt.EventUtil.setSuspended( true );
-    var processor = org.eclipse.rwt.protocol.Processor;
+    var processor = rwt.protocol.MessageProcessor;
     processor.processOperation( {
       "target" : id,
       "action" : "set",
@@ -937,9 +937,9 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   resetObjectManager : function() {
-    var w1 = org.eclipse.rwt.protocol.ObjectManager._map[ "w1" ];
-    org.eclipse.rwt.protocol.ObjectManager._map = { "w1" : w1 };
-    org.eclipse.rwt.protocol.ObjectManager._callbacks = {};
+    var w1 = rwt.protocol.ObjectManager._map[ "w1" ];
+    rwt.protocol.ObjectManager._map = { "w1" : w1 };
+    rwt.protocol.ObjectManager._callbacks = {};
   },
 
   getXMLHttpRequests : function() {

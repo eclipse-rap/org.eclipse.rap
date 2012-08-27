@@ -19,7 +19,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      assertTrue( widget instanceof org.eclipse.swt.widgets.ExpandBar );
+      assertTrue( widget instanceof rwt.widgets.ExpandBar );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
       shell.destroy();
@@ -64,7 +64,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
       var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
-      assertTrue( item instanceof org.eclipse.swt.widgets.ExpandItem );
+      assertTrue( item instanceof rwt.widgets.ExpandItem );
       assertIdentical( bar._clientArea, item.getParent() );
       shell.destroy();
       bar.destroy();
@@ -150,7 +150,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
     // Helper
 
     _createExpandBarByProtocol : function( id, parentId, style ) {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.ExpandBar",
@@ -159,11 +159,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
           "parent" : parentId
         }
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectManager.getObject( id );
     },
 
     _createExpandItemByProtocol : function( id, parentId ) {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.ExpandItem",
@@ -172,7 +172,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
           "parent" : parentId
         }
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectManager.getObject( id );
     }
 
   }

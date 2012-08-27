@@ -126,10 +126,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testInsertDomEvent : function() {
-      var parent = new qx.ui.layout.CanvasLayout();
+      var parent = new rwt.widgets.base.Parent();
       parent.addToDocument();
-      var child1 = new qx.ui.basic.Terminator();
-      var child2 = new qx.ui.basic.Terminator();
+      var child1 = new rwt.widgets.base.Terminator();
+      var child2 = new rwt.widgets.base.Terminator();
       child1.setParent( parent );
       child2.setParent( parent );
       child1.setVisibility( false );
@@ -152,9 +152,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testNoInsertDomEventOnParentInsert : function() {
-      var parent1 = new qx.ui.layout.CanvasLayout();
+      var parent1 = new rwt.widgets.base.Parent();
       parent1.addToDocument();
-      var child1 = new qx.ui.basic.Terminator();
+      var child1 = new rwt.widgets.base.Terminator();
       var log = [];
       child1.addEventListener( "insertDom", function( event ) {
         log.push( child1.getElement().parentNode );
@@ -173,15 +173,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testInsertDomEventLazy : function() {
-      var parent = new qx.ui.layout.CanvasLayout();
+      var parent = new rwt.widgets.base.Parent();
       parent.addToDocument();
       TestUtil.flush();
       // Note: parent must be seeable for the lazy queue to be used in Widget.js
       assertTrue( parent.isSeeable() );
       // Note: we need at least 3 siblings for the documentFragment to be used
-      var child1 = new qx.ui.basic.Terminator();
-      var child2 = new qx.ui.basic.Terminator();
-      var child3 = new qx.ui.basic.Terminator();
+      var child1 = new rwt.widgets.base.Terminator();
+      var child2 = new rwt.widgets.base.Terminator();
+      var child3 = new rwt.widgets.base.Terminator();
       child1.setParent( parent );
       child2.setParent( parent );
       child3.setParent( parent );
@@ -199,9 +199,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testInsertDomEventFastQueue : function() {
-      var parent = new qx.ui.layout.CanvasLayout();
+      var parent = new rwt.widgets.base.Parent();
       parent.addToDocument();
-      var child = new qx.ui.basic.Terminator();
+      var child = new rwt.widgets.base.Terminator();
       child.setParent( parent );
       var log = [];
       var logger = function( event ) {
@@ -216,10 +216,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
     // See Bug 359665 - "Background transparent don't work in IE"
     testNoInsertDomEventOnRoundedBorderRender : function() {
-      var parent = new qx.ui.layout.CanvasLayout();
+      var parent = new rwt.widgets.base.Parent();
       parent.addToDocument();
       TestUtil.flush();
-      var child = new qx.ui.basic.Terminator();
+      var child = new rwt.widgets.base.Terminator();
       var log = [];
       var logger = function( event ) {
         log.push( child.getElement().parentNode );
@@ -235,9 +235,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testRemoveDom : function() {
-      var parent = new qx.ui.layout.CanvasLayout();
+      var parent = new rwt.widgets.base.Parent();
       parent.addToDocument();
-      var child = new qx.ui.basic.Terminator();
+      var child = new rwt.widgets.base.Terminator();
       child.setParent( parent );
       TestUtil.flush();
       assertTrue( child.isInDom() );
@@ -250,9 +250,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testInsertDomEventOnPrepareEnhancedBorder : function() {
-      var parent = new qx.ui.layout.CanvasLayout();
+      var parent = new rwt.widgets.base.Parent();
       parent.addToDocument();
-      var child = new qx.ui.basic.Terminator();
+      var child = new rwt.widgets.base.Terminator();
       child.setParent( parent );
       var log = [];
       var logger = function( event ) {
@@ -269,7 +269,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testGetWidgetWidgetRenderAdapter : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       var adapter1 = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
       assertTrue( adapter1 instanceof org.eclipse.rwt.WidgetRenderAdapter );
       var adapter2 = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
@@ -278,7 +278,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testPreventMultipleWidgetRenderAdapter : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       var adapter1 = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
       assertTrue( adapter1 instanceof org.eclipse.rwt.WidgetRenderAdapter );
       var error = null;
@@ -292,7 +292,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testDisposeWidgetRenderAdapterWithWidget : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       var adapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
       widget.destroy();
       TestUtil.flush();
@@ -551,7 +551,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     } ),
 
     testDisableOfFocused : function() {
-      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      var button = new rwt.widgets.Button( "push" );
       button.addToDocument();
       button.setFocused( true );
       assertTrue( button.getFocused() );
@@ -560,10 +560,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testApplyObjectId_default : function() {
-      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      var button = new rwt.widgets.Button( "push" );
       button.addToDocument();
 
-      qx.ui.core.Widget._renderHtmlIds = false;
+      rwt.widgets.base.Widget._renderHtmlIds = false;
       button.applyObjectId( "w23" );
 
       assertIdentical( "", button.getHtmlAttribute( "id" ) );
@@ -571,19 +571,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testApplyObjectId_whenActivated : function() {
-      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      var button = new rwt.widgets.Button( "push" );
       button.addToDocument();
 
-      qx.ui.core.Widget._renderHtmlIds = true;
+      rwt.widgets.base.Widget._renderHtmlIds = true;
       button.applyObjectId( "w23" );
-      qx.ui.core.Widget._renderHtmlIds = false;
+      rwt.widgets.base.Widget._renderHtmlIds = false;
 
       assertEquals( "w23", button.getHtmlAttribute( "id" ) );
       button.destroy();
     },
 
     testFiresChangeEnabledEvent : function() {
-      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      var button = new rwt.widgets.Button( "push" );
       button.addToDocument();
       var log = 0;
       button.addEventListener( "changeEnabled", function() {
@@ -597,7 +597,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testFiresChangeContextMenuEvent : function() {
-      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      var button = new rwt.widgets.Button( "push" );
       var menu = this._createMenuWithItems( 3 );
       button.addToDocument();
       TestUtil.flush();
@@ -615,8 +615,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
 
     testDisposeChildrenWithParent : function() {
-      var widget = new qx.ui.basic.Terminator();
-      var composite = new org.eclipse.swt.widgets.Composite();
+      var widget = new rwt.widgets.base.Terminator();
+      var composite = new rwt.widgets.Composite();
       composite.addToDocument();
       widget.setParent( composite );
       TestUtil.flush();
@@ -635,7 +635,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       if(! org.eclipse.rwt.Client.supportsTouch() ) { // Test in MobileWebkitSupport.js
         var widget = this._createWidget();
         widget.setUserData( "toolTipText", "gogo" );
-        var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
+        var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
         widget.setToolTip( toolTip );
         TestUtil.flush();
 
@@ -653,7 +653,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     testDontShowToolTipOnTab : function() {
       var widget = this._createWidget();
       widget.setUserData( "toolTipText", "gogo" );
-      var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
+      var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
       widget.setToolTip( toolTip );
       TestUtil.flush();
       widget.focus();
@@ -674,7 +674,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     // Helper
 
     _createWidget : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       widget.setWidth( 100 );
       widget.setHeight( 100 );
@@ -683,12 +683,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     _createMenuWithItems : function( itemCount ) {
-      var menu = new org.eclipse.rwt.widgets.Menu();
+      var menu = new rwt.widgets.Menu();
       for( var i = 0; i < itemCount; i++ ) {
-        var menuItem = new org.eclipse.rwt.widgets.MenuItem( "push" );
+        var menuItem = new rwt.widgets.MenuItem( "push" );
         menu.addMenuItemAt( menuItem, i );
       }
-      var menuItem = new org.eclipse.rwt.widgets.MenuItem( "push" );
+      var menuItem = new rwt.widgets.MenuItem( "push" );
       menu.addMenuItemAt( menuItem, 0 );
       menu.show();
       TestUtil.flush();

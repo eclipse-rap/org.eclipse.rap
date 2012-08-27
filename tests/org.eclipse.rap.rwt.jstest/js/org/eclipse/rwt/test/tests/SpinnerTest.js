@@ -21,7 +21,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     testCreateSpinnerByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -31,9 +31,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget instanceof org.eclipse.swt.widgets.Spinner );
+      assertTrue( widget instanceof rwt.widgets.Spinner );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
       assertEquals( "spinner", widget.getAppearance() );
@@ -52,7 +52,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     testCreateSpinnerWithWrapAdndReadOnlyByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -62,7 +62,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertFalse( widget.getEditable() );
       assertTrue( widget.getWrap() );
@@ -73,7 +73,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     testSetMinimumByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "minimum" : 50
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 50, widget.getMin() );
       shell.destroy();
@@ -94,7 +94,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     testSetMaximumByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -105,7 +105,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "maximum" : 150
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 150, widget.getMax() );
       shell.destroy();
@@ -115,7 +115,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     testSetMinimumBiggerThanCurrentMaximumByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -127,7 +127,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "maximum" : 200
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 150, widget.getMin() );
       assertEquals( 200, widget.getMax() );
@@ -138,7 +138,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     testSetSelectionByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -149,7 +149,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "selection" : 50
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 50, widget.getValue() );
       shell.destroy();
@@ -159,7 +159,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     testSetDigitsByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -170,7 +170,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "digits" : 2
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 2, widget.getDigits() );
       shell.destroy();
@@ -180,7 +180,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     testSetIncrementByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -191,7 +191,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "increment" : 5
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 5, widget.getIncrementAmount() );
       assertEquals( 5, widget.getWheelIncrementAmount() );
@@ -202,7 +202,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     testSetPageIncrementByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -213,7 +213,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "pageIncrement" : 20
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 20, widget.getPageIncrementAmount() );
       shell.destroy();
@@ -223,7 +223,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     testSetTextLimitByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -234,7 +234,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "textLimit" : 3
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 3, widget._textfield.getMaxLength() );
       shell.destroy();
@@ -244,7 +244,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     testSetDecimalSeparatorLimitByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -255,7 +255,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "decimalSeparator" : ","
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( ",", widget.getDecimalSeparator() );
       shell.destroy();
@@ -265,7 +265,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     testSetHasSelectionListenerByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -276,7 +276,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "selection" : true } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
@@ -286,7 +286,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     testSetHasModifyListenerByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -297,7 +297,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "modify" : true } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasModifyListener );
       shell.destroy();
@@ -306,7 +306,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
 
     testCreate : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var spinner = new org.eclipse.swt.widgets.Spinner();
+      var spinner = new rwt.widgets.Spinner();
       spinner.addToDocument();
       spinner.addState( "rwt_BORDER" );
       spinner.setEditable( true );
@@ -322,7 +322,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     
     testGetManager : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var spinner = new org.eclipse.swt.widgets.Spinner();
+      var spinner = new rwt.widgets.Spinner();
       spinner.addToDocument();
       spinner.setSpace( 59, 60, 5, 20 );
       spinner.setZIndex( 299 );
@@ -332,7 +332,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     },
     
     testSetSeparator: function() {
-      var w = new org.eclipse.swt.widgets.Spinner();
+      var w = new rwt.widgets.Spinner();
       w.addToDocument();
       w.addState( "rwt_BORDER" );
       w.setEditable( true );
@@ -347,7 +347,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
   
     testDispose : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var spinner = new org.eclipse.swt.widgets.Spinner();
+      var spinner = new rwt.widgets.Spinner();
       spinner.addToDocument();
       spinner.setSpace( 59, 60, 5, 20 );
       TestUtil.flush();

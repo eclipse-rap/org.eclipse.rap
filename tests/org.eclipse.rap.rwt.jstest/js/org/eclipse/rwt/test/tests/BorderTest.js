@@ -280,7 +280,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
     //        looses its validity.
     testCacheRoundedBorder : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var button = new org.eclipse.rwt.widgets.Button( "push" ); 
+      var button = new rwt.widgets.Button( "push" ); 
       button.addState( "rwt_PUSH" );       
       button.addToDocument();
       TestUtil.flush();
@@ -391,7 +391,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
     
     _createWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var widget = new rwt.widgets.base.MultiCellWidget( [] );
       widget.addToDocument();
       TestUtil.flush();
       return widget;

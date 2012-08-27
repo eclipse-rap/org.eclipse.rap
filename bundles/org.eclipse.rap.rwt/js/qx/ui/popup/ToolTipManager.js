@@ -32,7 +32,7 @@ qx.Class.define("qx.ui.popup.ToolTipManager",
     /** Holds the current ToolTip instance */
     currentToolTip :
     {
-      check : "qx.ui.popup.ToolTip",
+      check : "rwt.widgets.base.ToolTip",
       nullable : true,
       apply : "_applyCurrentToolTip"
     }
@@ -117,7 +117,7 @@ qx.Class.define("qx.ui.popup.ToolTipManager",
       var vToolTip;
 
       // Allows us to use DOM Nodes as tooltip target :)
-      if (!(vTarget instanceof qx.ui.core.Widget) && vTarget.nodeType == 1) {
+      if (!(vTarget instanceof rwt.widgets.base.Widget) && vTarget.nodeType == 1) {
         vTarget = org.eclipse.rwt.EventHandlerUtil.getTargetObject(vTarget);
       }
 

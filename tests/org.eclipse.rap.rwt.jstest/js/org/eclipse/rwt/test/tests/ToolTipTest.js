@@ -19,8 +19,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
-      assertTrue( widget instanceof org.eclipse.swt.widgets.ToolTip );
-      assertIdentical( qx.ui.core.ClientDocument.getInstance(), widget.getParent() );
+      assertTrue( widget instanceof rwt.widgets.ToolTip );
+      assertIdentical( rwt.widgets.base.ClientDocument.getInstance(), widget.getParent() );
       assertTrue( widget.hasState( "rwt_BALLOON" ) );
       assertNull( widget._style );
       shell.destroy();
@@ -31,8 +31,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON", "ICON_ERROR" ] );
-      assertTrue( widget instanceof org.eclipse.swt.widgets.ToolTip );
-      assertIdentical( qx.ui.core.ClientDocument.getInstance(), widget.getParent() );
+      assertTrue( widget instanceof rwt.widgets.ToolTip );
+      assertIdentical( rwt.widgets.base.ClientDocument.getInstance(), widget.getParent() );
       assertTrue( widget.hasState( "rwt_BALLOON" ) );
       assertTrue( widget.hasState( "rwt_ICON_ERROR" ) );
       assertEquals( "error", widget._style );
@@ -44,8 +44,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON", "ICON_WARNING" ] );
-      assertTrue( widget instanceof org.eclipse.swt.widgets.ToolTip );
-      assertIdentical( qx.ui.core.ClientDocument.getInstance(), widget.getParent() );
+      assertTrue( widget instanceof rwt.widgets.ToolTip );
+      assertIdentical( rwt.widgets.base.ClientDocument.getInstance(), widget.getParent() );
       assertTrue( widget.hasState( "rwt_BALLOON" ) );
       assertTrue( widget.hasState( "rwt_ICON_WARNING" ) );
       assertEquals( "warning", widget._style );
@@ -57,8 +57,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON", "ICON_INFORMATION" ] );
-      assertTrue( widget instanceof org.eclipse.swt.widgets.ToolTip );
-      assertIdentical( qx.ui.core.ClientDocument.getInstance(), widget.getParent() );
+      assertTrue( widget instanceof rwt.widgets.ToolTip );
+      assertIdentical( rwt.widgets.base.ClientDocument.getInstance(), widget.getParent() );
       assertTrue( widget.hasState( "rwt_BALLOON" ) );
       assertTrue( widget.hasState( "rwt_ICON_INFORMATION" ) );
       assertEquals( "information", widget._style );
@@ -169,7 +169,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     // Helper
 
     _createToolTipByProtocol : function( id, parentId, style ) {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.ToolTip",
@@ -178,7 +178,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
           "parent" : parentId
         }
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectManager.getObject( id );
     }
 
   }

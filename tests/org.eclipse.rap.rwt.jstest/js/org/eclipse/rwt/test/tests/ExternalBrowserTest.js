@@ -11,8 +11,8 @@
 
 (function(){
 
-var Processor = org.eclipse.rwt.protocol.Processor;
-var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+var Processor = rwt.protocol.MessageProcessor;
+var ObjectManager = rwt.protocol.ObjectManager;
 
 qx.Class.define( "org.eclipse.rwt.test.tests.ExternalBrowserTest", {
 
@@ -22,12 +22,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExternalBrowserTest", {
 
     testCreateExternalBrowserByProtocol : function() {
       var externalBrowser = this._createExternalBrowser();
-      assertTrue( externalBrowser instanceof org.eclipse.rwt.widgets.ExternalBrowser );
-      assertIdentical( externalBrowser, org.eclipse.rwt.widgets.ExternalBrowser.getInstance() );
+      assertTrue( externalBrowser instanceof rwt.widgets.ExternalBrowser );
+      assertIdentical( externalBrowser, rwt.widgets.ExternalBrowser.getInstance() );
     },
 
     testEscapeId : function() {
-      var externalBrowser = org.eclipse.rwt.widgets.ExternalBrowser.getInstance();
+      var externalBrowser = rwt.widgets.ExternalBrowser.getInstance();
       var escapedId = externalBrowser._escapeId( "my.id" );
       assertEquals( -1, escapedId.indexOf( "." ) );
       escapedId = externalBrowser._escapeId( "my id" );

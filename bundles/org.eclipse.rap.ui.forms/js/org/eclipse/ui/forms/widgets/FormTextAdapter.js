@@ -9,23 +9,23 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-org.eclipse.rwt.protocol.AdapterRegistry.add( "forms.widgets.FormText", {
+rwt.protocol.AdapterRegistry.add( "forms.widgets.FormText", {
 
   factory : function( properties ) {
     var result = new org.eclipse.ui.forms.widgets.FormText();
     result.setUserData( "isControl", true );
-    org.eclipse.rwt.protocol.AdapterUtil.setParent( result, properties.parent );
+    rwt.protocol.AdapterUtil.setParent( result, properties.parent );
     return result;
   },
 
-  destructor : org.eclipse.rwt.protocol.AdapterUtil.getControlDestructor(),
+  destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
-  properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
+  properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "text",
     "hyperlinkSettings"
   ] ),
 
-  propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
+  propertyHandler : rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
     "text" : function( widget, value ) {
       widget.clearContent();
       for( var i = 0; i < value.length; i++ ) {
@@ -59,9 +59,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "forms.widgets.FormText", {
     }
   } ),
 
-  listeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [] ),
+  listeners : rwt.protocol.AdapterUtil.extendControlListeners( [] ),
 
-  listenerHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
+  listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
 
   methods : []
 

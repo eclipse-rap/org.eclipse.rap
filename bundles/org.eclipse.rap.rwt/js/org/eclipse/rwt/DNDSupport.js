@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
           this._currentDragSource = target;
           var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
           dndHandler.clearActions();
-          var doc = qx.ui.core.ClientDocument.getInstance();
+          var doc = rwt.widgets.base.ClientDocument.getInstance();
           doc.addEventListener( "mouseover", this._onMouseOver, this );
           doc.addEventListener( "keydown", this._onKeyEvent, this );
           doc.addEventListener( "keyup", this._onKeyEvent, this );
@@ -111,7 +111,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       // fix for Bug 301544: block new dragStarts until request is send
       this._blockDrag = true;
       if( !this._requestScheduled ) {
-        var req = org.eclipse.swt.Server.getInstance();
+        var req = rwt.remote.Server.getInstance();
         req.addEventListener( "send", this._onSend, this );
       }
       this._sendDragSourceEvent( target, "dragFinished", mouseEvent );
@@ -120,7 +120,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     },
 
     _sendDragSourceEvent : function( widget, type, qxDomEvent ) {
-      var req = org.eclipse.swt.Server.getInstance();
+      var req = rwt.remote.Server.getInstance();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( widget );
       var x = 0;
@@ -252,7 +252,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       event[ "param" ] = param;
       this._dropTargetEventQueue[ type ] = event;
       if( !this._requestScheduled ) {
-        var req = org.eclipse.swt.Server.getInstance();
+        var req = rwt.remote.Server.getInstance();
         req.addEventListener( "send", this._onSend, this );
         this._requestScheduled = true;
         qx.client.Timer.once( req.send, req, 200 );
@@ -279,7 +279,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     },
 
     _attachDropTargetEvents : function() {
-      var req = org.eclipse.swt.Server.getInstance();
+      var req = rwt.remote.Server.getInstance();
       var events = this._dropTargetEventQueue;
       for( var type in events ) {
         var event = events[ type ];
@@ -294,7 +294,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     _getCurrentItemTarget : function() {
       var result = null;
       var target = this._getCurrentFeedbackTarget();
-      if( target instanceof org.eclipse.rwt.widgets.GridRow ) {
+      if( target instanceof rwt.widgets.base.GridRow ) {
         var tree = this._currentDropTarget;
         result = tree._rowContainer.findItemByRow( target );
       } else {
@@ -390,7 +390,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
      */
     _createFeedback : function( widget ) {
       if( this._dropFeedbackRenderer == null ) {
-        if( widget instanceof org.eclipse.rwt.widgets.Grid ) {
+        if( widget instanceof rwt.widgets.Grid ) {
           this._dropFeedbackRenderer = new org.eclipse.rwt.GridDNDFeedback( widget );
         }
       }
@@ -406,7 +406,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     _getCurrentFeedbackTarget : function() {
       var result = null;
       var widget = this._currentTargetWidget;
-      if( widget instanceof org.eclipse.rwt.widgets.GridRow ) {
+      if( widget instanceof rwt.widgets.base.GridRow ) {
         // _currentDropTarget could be another tree
         if( this._currentDropTarget && this._currentDropTarget.contains( widget ) ) {
           result = widget;
@@ -421,13 +421,13 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       var success = false;
       if( this._dragFeedbackWidget == null ) {
         this._dragFeedbackWidget
-          = new org.eclipse.rwt.widgets.MultiCellWidget( [ "image", "label" ] );
+          = new rwt.widgets.base.MultiCellWidget( [ "image", "label" ] );
         this._dragFeedbackWidget.setOpacity( 0.7 );
         this._dragFeedbackWidget.setEnabled( false );
         this._dragFeedbackWidget.setPadding( 2 );
       }
       while( !success && item != control ) {
-        if( item instanceof org.eclipse.rwt.widgets.GridRow ) {
+        if( item instanceof rwt.widgets.base.GridRow ) {
           success = true;
           this._configureTreeRowFeedback( item );
         }
@@ -477,7 +477,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       this._attachDropTargetEvents();
       this._requestScheduled = false;
       this._blockDrag = false;
-      var req = org.eclipse.swt.Server.getInstance();
+      var req = rwt.remote.Server.getInstance();
       req.removeEventListener( "send", this._onSend, this );
     },
 
@@ -534,7 +534,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       this._dataTypeOverwrite = null;
       this._currentMousePosition.x = 0;
       this._currentMousePosition.y = 0;
-      var doc = qx.ui.core.ClientDocument.getInstance();
+      var doc = rwt.widgets.base.ClientDocument.getInstance();
       doc.removeEventListener( "mouseover", this._onMouseOver, this );
       doc.removeEventListener( "keydown", this._onKeyEvent, this );
       doc.removeEventListener( "keyup", this._onKeyEvent, this );

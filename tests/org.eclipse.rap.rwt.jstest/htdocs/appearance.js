@@ -112,7 +112,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
     }
   },
 
-  // this applies to a qooxdoo qx.ui.basic.Atom that represents an RWT Label
+  // this applies to a qooxdoo rwt.widgets.base.Atom that represents an RWT Label
 
 
   "htmlcontainer" : {
@@ -1499,12 +1499,12 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
     style : function( states ) {
       var result = {};
       if( states.horizontal ) {
-        result.left = org.eclipse.swt.widgets.Scale.PADDING;
-        result.top = org.eclipse.swt.widgets.Scale.SCALE_LINE_OFFSET;
+        result.left = rwt.widgets.Scale.PADDING;
+        result.top = rwt.widgets.Scale.SCALE_LINE_OFFSET;
         result.source = "widget/scale/h_line.gif";
       } else {
-        result.left = org.eclipse.swt.widgets.Scale.SCALE_LINE_OFFSET;
-        result.top = org.eclipse.swt.widgets.Scale.PADDING;
+        result.left = rwt.widgets.Scale.SCALE_LINE_OFFSET;
+        result.top = rwt.widgets.Scale.PADDING;
         result.source = "widget/scale/v_line.gif";
       }
       return result;
@@ -1518,14 +1518,14 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       if( states.horizontal ) {
-        result.left = org.eclipse.swt.widgets.Scale.PADDING;
-        result.top = org.eclipse.swt.widgets.Scale.THUMB_OFFSET;
+        result.left = rwt.widgets.Scale.PADDING;
+        result.top = rwt.widgets.Scale.THUMB_OFFSET;
         // TODO: make it themable
         result.width = 11;
         result.height = 21;
       } else {
-        result.left = org.eclipse.swt.widgets.Scale.THUMB_OFFSET;
-        result.top = org.eclipse.swt.widgets.Scale.PADDING;
+        result.left = rwt.widgets.Scale.THUMB_OFFSET;
+        result.top = rwt.widgets.Scale.PADDING;
         // TODO: make it themable
         result.width = 21;
         result.height = 11;

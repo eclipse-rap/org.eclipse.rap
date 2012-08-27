@@ -10,7 +10,7 @@
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
-  extend : qx.ui.layout.CanvasLayout,
+  extend : rwt.widgets.base.Parent,
 
   construct : function() {
     this.base( arguments );
@@ -35,7 +35,7 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
   members : {
 
     createBullet : function( style, image, text, bounds ) {
-      var bullet = new qx.ui.basic.Atom();
+      var bullet = new rwt.widgets.base.Atom();
       bullet.setAppearance( "formtext-bullet" );
       switch( style ) {
         case 2:
@@ -58,7 +58,7 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
     },
 
     createTextHyperlinkSegment : function( text, toolTip, bounds, font ) {
-      var textHyperlink = new qx.ui.basic.Label();
+      var textHyperlink = new rwt.widgets.base.Label();
       textHyperlink.setAppearance( "formtext-hyperlink" );
       var escapedText = this._escapeText( text );
       textHyperlink.set( {
@@ -80,7 +80,7 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
     },
 
     createTextSegment : function( text, bounds, font, color ) {
-      var textFragment = new qx.ui.basic.Label();
+      var textFragment = new rwt.widgets.base.Label();
       textFragment.setAppearance( "formtext-text" );
       var escapedText = this._escapeText( text );
       textFragment.set( {
@@ -102,7 +102,7 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
     },
 
     createImageHyperlinkSegment : function( source, toolTip, bounds ) {
-      var imageHyperlink = new qx.ui.basic.Image();
+      var imageHyperlink = new rwt.widgets.base.Image();
       imageHyperlink.setAppearance( "formtext-hyperlink" );
       imageHyperlink.set( {
         source     : source,
@@ -119,7 +119,7 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
     },
 
     createImageSegment : function( source, bounds ) {
-      var image = new qx.ui.basic.Image();
+      var image = new rwt.widgets.base.Image();
       image.setAppearance( "formtext-image" );
       image.set( {
         source : source,

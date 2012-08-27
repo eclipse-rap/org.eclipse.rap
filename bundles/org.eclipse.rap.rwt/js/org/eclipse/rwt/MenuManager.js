@@ -37,7 +37,7 @@ qx.Class.define( "org.eclipse.rwt.MenuManager", {
           // Gathering data
           var targetIsOpener = menu.getOpener() === target;
           var isContextMenu =
-            !( menu.getOpener() instanceof org.eclipse.rwt.widgets.MenuItem );
+            !( menu.getOpener() instanceof rwt.widgets.MenuItem );
           var notSameMenuBar = targetMenuBar != this._getMenuBar( menu );
           // 2. Global event like keydown or blur?
           if ( !eventHasTarget || !isMouseEvent ) {
@@ -72,21 +72,21 @@ qx.Class.define( "org.eclipse.rwt.MenuManager", {
     _getMenuBar : function( widget ) {
       var menu = null;
       var menuBar = null;
-      if( widget instanceof org.eclipse.rwt.widgets.MenuItem ) {
+      if( widget instanceof rwt.widgets.MenuItem ) {
         menu = widget.getParentMenu();
       } else {
-        if(    widget instanceof org.eclipse.rwt.widgets.Menu
-            || widget instanceof org.eclipse.rwt.widgets.MenuBar
+        if(    widget instanceof rwt.widgets.Menu
+            || widget instanceof rwt.widgets.MenuBar
         ) {
           menu = widget;
         }
       }
       while ( menuBar == null && menu != null ) {
-        if( menu instanceof org.eclipse.rwt.widgets.MenuBar ) {
+        if( menu instanceof rwt.widgets.MenuBar ) {
           menuBar = menu;
         } else {
           var hasOpener =
-            menu.getOpener() instanceof org.eclipse.rwt.widgets.MenuItem;
+            menu.getOpener() instanceof rwt.widgets.MenuItem;
           var menu = hasOpener ? menu.getOpener().getParentMenu() : null;
         }
       }

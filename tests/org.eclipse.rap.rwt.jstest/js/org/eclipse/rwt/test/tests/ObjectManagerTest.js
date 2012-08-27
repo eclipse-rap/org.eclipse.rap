@@ -16,7 +16,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ObjectManagerTest", {
   members : {
 
     testAdd : function() {
-      var manager = org.eclipse.rwt.protocol.ObjectManager;
+      var manager = rwt.protocol.ObjectManager;
       var obj = {};
 
       manager.add( "myId", obj, "myType" );
@@ -27,7 +27,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ObjectManagerTest", {
     },
 
     testRemove : function() {
-      var manager = org.eclipse.rwt.protocol.ObjectManager;
+      var manager = rwt.protocol.ObjectManager;
       var obj = {};
       manager.add( "myId", obj, "myType" );
 
@@ -39,7 +39,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ObjectManagerTest", {
     },
 
     testApplyObjectIdIsCalled : function() {
-      var manager = org.eclipse.rwt.protocol.ObjectManager;
+      var manager = rwt.protocol.ObjectManager;
       var log = "";
       var obj = {
         applyObjectId : function( id ) {
@@ -54,7 +54,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ObjectManagerTest", {
     },
 
     _clearObjectManager: function() {
-      var manager = org.eclipse.rwt.protocol.ObjectManager;
+      var manager = rwt.protocol.ObjectManager;
       manager._map = {};
       manager._callbacks = {};
     }

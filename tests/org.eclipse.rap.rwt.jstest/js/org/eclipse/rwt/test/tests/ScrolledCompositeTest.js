@@ -17,7 +17,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     testCreateScrolledCompositeByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -27,9 +27,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget instanceof org.eclipse.swt.custom.ScrolledComposite );
+      assertTrue( widget instanceof rwt.widgets.ScrolledComposite );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
       assertEquals( "scrolledcomposite", widget.getAppearance() );
@@ -43,7 +43,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     testSetBoundsByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -54,7 +54,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
           "bounds" : [ 1, 2, 3, 4 ]
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 1, widget.getLeft() );
       assertEquals( 2, widget.getTop() );
@@ -68,11 +68,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
 
     testSetBoundsByProtocol_WithTabFolderParent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var tabFolder = new qx.ui.pageview.tabview.TabView();
+      var tabFolder = new rwt.widgets.TabFolder();
       ObjectManager.add( "w4", tabFolder, null );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -98,7 +98,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     testSetOriginByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -109,7 +109,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
           "origin" : [ 1, 2 ]
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 1, widget._horzScrollBar.getValue() );
       assertEquals( 2, widget._vertScrollBar.getValue() );
@@ -120,7 +120,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     testSetShowFocusedControlByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -131,7 +131,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
           "showFocusedControl" : true
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._showFocusedControl );
       shell.destroy();
@@ -141,7 +141,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     testSetScrollBarsVisibleByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -152,7 +152,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
           "scrollBarsVisible" : [ false, false ]
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertFalse( widget._horzScrollBar.getDisplay() );
       assertFalse( widget._vertScrollBar.getDisplay() );
@@ -163,7 +163,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     testSetHasSelectionListenerByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -174,7 +174,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "scrollBarsSelection" : true } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
@@ -186,7 +186,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var composite = this._createComposite();
       wm.add( composite, "w3", true );
-      var child = new qx.ui.basic.Terminator();
+      var child = new rwt.widgets.base.Terminator();
       child.setDimension( 0, 0 );
       // This is temporary: change if testing via non-internals is possible
       assertNull( composite._content );
@@ -230,7 +230,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var client = composite._clientArea;
       var hbar = composite._horzScrollBar;
       var vbar = composite._vertScrollBar;
-      var barWidth = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
+      var barWidth = rwt.widgets.base.Scrollable.getNativeScrollBarWidth();
       assertEquals( "scroll", client._getTargetNode().style.overflow );
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = TestUtil.getElementBounds( client.getElement() );
@@ -418,7 +418,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
         assertEquals( [ 10, 20 ], position );      
         TestUtil.prepareTimerUse();
         composite.setHasSelectionListener( true );
-        var child = new qx.ui.basic.Terminator();
+        var child = new rwt.widgets.base.Terminator();
         child.setParent( composite._clientArea );
         child.setLeft( 0 );
         child.setTop( 0 );
@@ -492,8 +492,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       // This just ensures there are no bad errors
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = this._createComposite();
-      var child1 = new qx.ui.basic.Terminator();
-      var child2 = new qx.ui.basic.Terminator();
+      var child1 = new rwt.widgets.base.Terminator();
+      var child2 = new rwt.widgets.base.Terminator();
       // This is temporary: remove if testing via non-internals is possible
       assertNull( composite._content );
       composite.setContent( child1 );      
@@ -513,7 +513,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var client = composite._clientArea;
       var hbar = composite._horzScrollBar;
       var vbar = composite._vertScrollBar;
-      var barWidth = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
+      var barWidth = rwt.widgets.base.Scrollable.getNativeScrollBarWidth();
       assertEquals( "scroll", client._getTargetNode().style.overflow );
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = TestUtil.getElementBounds( client.getElement() );
@@ -538,7 +538,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
 
     testSetContentLocationByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var composite = this._createComposite();
       widgetManager.add( composite, "w3", true );
@@ -563,7 +563,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
 
     _createComposite : function( noflush ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var composite = new org.eclipse.swt.custom.ScrolledComposite();
+      var composite = new rwt.widgets.ScrolledComposite();
       composite.setLeft( 10 );
       composite.setTop( 10 );
       composite.setWidth( 100 );
@@ -598,7 +598,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
         child.setWidth( width );
         child.setHeight( height );
       } else {
-        child = new qx.ui.basic.Terminator();
+        child = new rwt.widgets.base.Terminator();
         child.setLeft( 0 );
         child.setTop( 0 );
         composite.setContent( child );

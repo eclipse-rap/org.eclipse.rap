@@ -22,7 +22,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testCreateTreeItemByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -32,9 +32,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "index": 3
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
-      assertTrue( item instanceof org.eclipse.rwt.widgets.GridItem );
+      assertTrue( item instanceof rwt.widgets.GridItem );
       assertIdentical( tree.getRootItem(), item.getParent() );
       assertNull( item.getUserData( "isControl") );
       assertEquals( 3, tree.getRootItem().indexOf( item ) );
@@ -45,7 +45,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testDestroyTreeItemByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -55,9 +55,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "index": 3
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : "w4",
         "action" : "destroy"
       } );
@@ -71,7 +71,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testSetItemCountByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -82,7 +82,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "itemCount" : 10
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( 10, item._children.length );
       shell.destroy();
@@ -92,7 +92,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testSetTextsByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -103,7 +103,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "texts" : [ "1", "2&<  >\"", "3" ]
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( "1", item.getText( 0 ) );
       assertEquals( "2&amp;&lt;&nbsp; &gt;&quot;", item.getText( 1 ) );
@@ -115,7 +115,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testSetImagesByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -126,7 +126,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "images" : [ [ "1.gif", 1, 1 ], [ "2.gif", 2, 2 ], [ "3.gif", 3, 3 ] ]
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( "1.gif", item.getImage( 0 ) );
       assertEquals( "2.gif", item.getImage( 1 ) );
@@ -138,7 +138,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testSetBackgroundByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -149,7 +149,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "background" : [ 0, 255, 0, 255 ]
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( "rgb(0,255,0)", item.getBackground() );
       shell.destroy();
@@ -159,7 +159,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testSetForegroundByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -170,7 +170,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "foreground" : [ 0, 255, 0, 255 ]
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( "rgb(0,255,0)", item._foreground );
       shell.destroy();
@@ -180,7 +180,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testSetFontByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -191,7 +191,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "font" : [ ["Arial"], 20, true, false ]
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( "bold 20px Arial", item._font.toCss() );
       shell.destroy();
@@ -201,7 +201,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testSetCellBackgroundsByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -212,7 +212,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "cellBackgrounds" : [ null, [ 0, 255, 0, 255 ], null ]
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertNull( item.getCellBackground( 0 ) );
       assertEquals( "rgb(0,255,0)", item.getCellBackground( 1 ) );
@@ -224,7 +224,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testSetCellForegroundsByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -235,7 +235,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "cellForegrounds" : [ null, [ 0, 255, 0, 255 ], null ]
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertNull( item.getCellForeground( 0 ) );
       assertEquals( "rgb(0,255,0)", item.getCellForeground( 1 ) );
@@ -247,7 +247,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testSetCellFontsByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -258,7 +258,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "cellFonts" : [ null, [ ["Arial"], 20, true, false ], null ]
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertNull( item.getCellFont( 0 ) );
       assertEquals( "bold 20px Arial", item.getCellFont( 1 ) );
@@ -270,7 +270,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testSetExpandedByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -281,7 +281,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "expanded" : true
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertTrue( item.isExpanded() );
       shell.destroy();
@@ -291,7 +291,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testSetCheckedByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [ "CHECK" ] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -302,7 +302,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "checked" : true
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertTrue( item.isChecked() );
       shell.destroy();
@@ -312,7 +312,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testSetCellCheckedByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [ "CHECK" ] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -323,7 +323,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "cellChecked" : [ true, true, false ]
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertTrue( item.isCellChecked( 0 ) );
       assertTrue( item.isCellChecked( 1 ) );
@@ -335,7 +335,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testSetCellGrayedByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [ "CHECK" ] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -346,7 +346,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "cellGrayed" : [ true, true, false ]
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertTrue( item.isCellGrayed( 0 ) );
       assertTrue( item.isCellGrayed( 1 ) );
@@ -358,7 +358,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testSetGrayedByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [ "CHECK" ] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -369,7 +369,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "grayed" : true
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertTrue( item.isGrayed() );
       shell.destroy();
@@ -379,7 +379,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     testSetCustomVariantByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -390,7 +390,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "customVariant" : "variant_blue"
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( "variant_blue", item.getVariant() );
       shell.destroy();
@@ -401,7 +401,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       tree.setItemHeight( 10 );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
 
       processor.processOperation( {
         "target" : "w4",
@@ -414,7 +414,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
         }
       } );
 
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( 33, item.getOwnHeight() );
       shell.destroy();
@@ -425,7 +425,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       tree.setItemHeight( 10 );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -439,7 +439,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
 
       TestUtil.protocolSet( "w4", { "height" : null } );
 
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( 10, item.getOwnHeight() );
       shell.destroy();
@@ -447,51 +447,51 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testCreateItem : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
-      assertTrue( item instanceof org.eclipse.rwt.widgets.GridItem );
+      var item = new rwt.widgets.GridItem();
+      assertTrue( item instanceof rwt.widgets.GridItem );
       assertEquals( "", item.getText( 0 ) );
       assertTrue( item.isCached() );
     },
 
     testCreateAndDisposeByServer: function() {
-      var parent = new org.eclipse.rwt.widgets.GridItem();
-      var item = org.eclipse.rwt.widgets.GridItem.createItem( parent, 0 );
-      assertTrue( item instanceof org.eclipse.rwt.widgets.GridItem );
+      var parent = new rwt.widgets.GridItem();
+      var item = rwt.widgets.GridItem.createItem( parent, 0 );
+      assertTrue( item instanceof rwt.widgets.GridItem );
       assertTrue( item.isCached() );
       item.dispose();
       assertIdentical( undefined, parent._children[ 0 ] );
     },
 
     testCreatePlaceholderItem : function() {
-      var parent = new org.eclipse.rwt.widgets.GridItem();
-      var item = new org.eclipse.rwt.widgets.GridItem( parent, 0, true );
+      var parent = new rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem( parent, 0, true );
       assertFalse( item.isCached() );
       item.markCached();
       assertTrue( item.isCached() );
     },
 
     testText : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setTexts( [ "<b>Test</b>", "<i>Test2</i>" ] );
       assertEquals( "&lt;b&gt;Test&lt;/b&gt;", item.getText( 0 ) );
       assertEquals( "&lt;i&gt;Test2&lt;/i&gt;", item.getText( 1 ) );
     },
 
     testTextAsMarkup : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setTexts( [ "<b>Test</b>", "<i>Test2</i>" ] );
       assertEquals( "<b>Test</b>", item.getText( 0, false ) );
       assertEquals( "<i>Test2</i>", item.getText( 1, false ) );
     },
 
     testItemFont : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setFont( "Arial" );
       assertEquals( "Arial", item.getCellFont( 0 ) );
     },
 
     testCellFonts : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setCellFonts( [ "Arial", "Verdana", "monospace" ] );
       assertEquals( "Arial", item.getCellFont( 0 ) );       
       assertEquals( "Verdana", item.getCellFont( 1 ) );       
@@ -499,7 +499,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSomeCellFontsSet : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setFont( "Arial" );
       item.setCellFonts( [ null, "Verdana" ] );
       assertEquals( "Arial", item.getCellFont( 0 ) );       
@@ -508,20 +508,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testForeground : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setForeground( "red" );
       assertEquals( "red", item.getCellForeground( 0 ) );
     },
 
     testCellForegrounds : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setCellForegrounds( [ "red", "green" ] );
       assertEquals( "red", item.getCellForeground( 0 ) );       
       assertEquals( "green", item.getCellForeground( 1 ) );
     },
 
     testSomeCellForegroundsSets : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setForeground( "red" );
       item.setCellForegrounds( [ null, "green" ] );
       assertEquals( "red", item.getCellForeground( 0 ) );
@@ -530,20 +530,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testBackground : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setBackground( "red" );
       assertEquals( "red", item.getBackground() );
     },
 
     testCellBackgrounds: function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setCellBackgrounds( [ "red", "green" ] );
       assertEquals( "red", item.getCellBackground( 0 ) );       
       assertEquals( "green", item.getCellBackground( 1 ) );       
     },
 
     testSomeCellBackgroundsSet : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setCellBackgrounds( [ null, "green" ] );
       item.setBackground( "red" );
       assertEquals( null, item.getCellBackground( 0 ) );       
@@ -551,7 +551,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testImages : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setImages( [ "test1.jpg", "test2.jpg" ] );
       assertEquals( "test1.jpg", item.getImage( 0 ) );
       assertEquals( "test2.jpg", item.getImage( 1 ) );
@@ -559,7 +559,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testClear : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setImages( [ "test1.jpg", "test2.jpg" ] );
       item.setTexts( [ "bla", "blubg" ] );
       item.setCellFonts( "arial", "windings" ) ;
@@ -582,71 +582,71 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testParent : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
-      var child = new org.eclipse.rwt.widgets.GridItem( item, 0 );
+      var item = new rwt.widgets.GridItem();
+      var child = new rwt.widgets.GridItem( item, 0 );
       assertIdentical( item, child.getParent() );
     },
 
     testChildren : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setItemCount( 2 );
-      var child1 = new org.eclipse.rwt.widgets.GridItem( item, 0 );
-      var child2 = new org.eclipse.rwt.widgets.GridItem( item, 1 );
+      var child1 = new rwt.widgets.GridItem( item, 0 );
+      var child2 = new rwt.widgets.GridItem( item, 1 );
       assertEquals( [ child1, child2 ], item._children );
     },
 
     testHasChildren : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       assertFalse( item.hasChildren() );
       item.setItemCount( 1 );
-      var child = new org.eclipse.rwt.widgets.GridItem( item, 0 );
+      var child = new rwt.widgets.GridItem( item, 0 );
       assertTrue( item.hasChildren() );
     },
 
     testSetExpanded : function() {
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       root.setItemCount( 1 );
-      var item = new org.eclipse.rwt.widgets.GridItem( root );
+      var item = new rwt.widgets.GridItem( root );
       assertFalse( item.isExpanded() );
       item.setExpanded( true );
       assertTrue( item.isExpanded() );       
     },
 
     testHasPreviousSibling : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setItemCount( 2 );
-      var child1 = new org.eclipse.rwt.widgets.GridItem( item, 0 );
-      var child2 = new org.eclipse.rwt.widgets.GridItem( item, 1 );
+      var child1 = new rwt.widgets.GridItem( item, 0 );
+      var child2 = new rwt.widgets.GridItem( item, 1 );
       assertFalse( child1.hasPreviousSibling() );
       assertTrue( child2.hasPreviousSibling() );
     },
 
     testHasNextSibling : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setItemCount( 2 );
-      var child1 = new org.eclipse.rwt.widgets.GridItem( item, 0 );
-      var child2 = new org.eclipse.rwt.widgets.GridItem( item, 1 );
+      var child1 = new rwt.widgets.GridItem( item, 0 );
+      var child2 = new rwt.widgets.GridItem( item, 1 );
       assertTrue( child1.hasNextSibling() );
       assertFalse( child2.hasNextSibling() );
     },
 
     testGetLevel : function() {
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       root.setItemCount( 1 );
-      var child1 = new org.eclipse.rwt.widgets.GridItem( root, 0 );
+      var child1 = new rwt.widgets.GridItem( root, 0 );
       child1.setItemCount( 1 );
-      var child2 = new org.eclipse.rwt.widgets.GridItem( child1, 0 );
+      var child2 = new rwt.widgets.GridItem( child1, 0 );
       assertEquals( -1, root.getLevel() );
       assertEquals( 0, child1.getLevel() );
       assertEquals( 1, child2.getLevel() );
     },
 
     testIsRootItem : function() {
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       root.setItemCount( 1 );
-      var child1 = new org.eclipse.rwt.widgets.GridItem( root );
+      var child1 = new rwt.widgets.GridItem( root );
       child1.setItemCount( 1 );
-      var child2 = new org.eclipse.rwt.widgets.GridItem( child1, 0 );
+      var child2 = new rwt.widgets.GridItem( child1, 0 );
       assertTrue( root.isRootItem() );
       assertFalse( child1.isRootItem() );
       assertFalse( child2.isRootItem() );
@@ -654,32 +654,32 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
 
     testItemAddedEvent : function() {
       var log = [];
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       root.addEventListener( "update", function( event ) {
         log.push( event.msg );
       }, this);
       root.setItemCount( 1 );
-      var child1 = new org.eclipse.rwt.widgets.GridItem( root, 0 );
+      var child1 = new rwt.widgets.GridItem( root, 0 );
       assertEquals( 1, log.length );
       assertEquals( "add", log[ 0 ] );
     },
 
     testItemAddedEventBubbles : function() {
       var log = [];
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       root.addEventListener( "update", function( event ) {
         log.push( event );
       }, this);
       root.setItemCount( 1 );
-      var child1 = new org.eclipse.rwt.widgets.GridItem( root, 0 );
+      var child1 = new rwt.widgets.GridItem( root, 0 );
       child1.setItemCount( 1 );
-      var child2 = new org.eclipse.rwt.widgets.GridItem( child1, 0 );
+      var child2 = new rwt.widgets.GridItem( child1, 0 );
       assertEquals( 2, log.length );
     },
 
     testItemChangedEvent : function() {
       var log = [];
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.addEventListener( "update", function( event ) {
         log.push( event );
       }, this);
@@ -695,11 +695,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testRemoveItem : function() {
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       root.setItemCount( 3 );
-      var child1 = new org.eclipse.rwt.widgets.GridItem( root, 0 );
-      var child2 = new org.eclipse.rwt.widgets.GridItem( root, 1 );
-      var child3 = new org.eclipse.rwt.widgets.GridItem( root, 2 );
+      var child1 = new rwt.widgets.GridItem( root, 0 );
+      var child2 = new rwt.widgets.GridItem( root, 1 );
+      var child3 = new rwt.widgets.GridItem( root, 2 );
       assertEquals( [ child1, child2, child3 ], root._children );
       child2.dispose();
       assertEquals( [ child1, child3, undefined ], root._children );
@@ -707,9 +707,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
 
     testRemoveItemEvent : function() {
       var log = [];
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       root.setItemCount( 1 );
-      var child = new org.eclipse.rwt.widgets.GridItem( root, 0 );
+      var child = new rwt.widgets.GridItem( root, 0 );
       root.addEventListener( "update", function( event ) {
         log.push( event.msg );
       }, this);
@@ -721,34 +721,34 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testGetChild : function() {
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       root.setItemCount( 1 );
-      var child1 = new org.eclipse.rwt.widgets.GridItem( root, 0 );
+      var child1 = new rwt.widgets.GridItem( root, 0 );
       assertEquals( child1, root.getChild( 0 ) );
       assertIdentical( undefined, root.getChild( 1 ) );
     },
 
     testGetPreviousSibling : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setItemCount( 2 );
-      var child1 = new org.eclipse.rwt.widgets.GridItem( item, 0 );
-      var child2 = new org.eclipse.rwt.widgets.GridItem( item, 1 );
+      var child1 = new rwt.widgets.GridItem( item, 0 );
+      var child2 = new rwt.widgets.GridItem( item, 1 );
       assertEquals( child1, child2.getPreviousSibling() );
     },
 
     testGetNextSibling : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setItemCount( 2 );
-      var child1 = new org.eclipse.rwt.widgets.GridItem( item, 0 );
-      var child2 = new org.eclipse.rwt.widgets.GridItem( item, 1 );
+      var child1 = new rwt.widgets.GridItem( item, 0 );
+      var child2 = new rwt.widgets.GridItem( item, 1 );
       assertEquals( child2, child1.getNextSibling() );
     },
 
     testItemExpandedEvent : function() {
       var log = [];
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       root.setItemCount( 1 );
-      var child1 = new org.eclipse.rwt.widgets.GridItem( root, 0 );
+      var child1 = new rwt.widgets.GridItem( root, 0 );
       root.addEventListener( "update", function( event ) {
         log.push( event.msg );
       }, this);
@@ -760,43 +760,43 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testVisibleChildrenCountOnlyOneLayer : function() {
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       root.setItemCount( 10 );
       for( var i = 0; i < 10; i++ ) {
-        new org.eclipse.rwt.widgets.GridItem( root, i );
+        new rwt.widgets.GridItem( root, i );
       }
       assertEquals( 10, root.getVisibleChildrenCount() );
     },
 
     testVisibleChildrenCount : function() {
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       root.setItemCount( 2 );
-      var item1 = new org.eclipse.rwt.widgets.GridItem( root, 0 );
-      var item2 = new org.eclipse.rwt.widgets.GridItem( root, 1 );
+      var item1 = new rwt.widgets.GridItem( root, 0 );
+      var item2 = new rwt.widgets.GridItem( root, 1 );
       item1.setItemCount( 1 );
       item2.setItemCount( 1 );
-      new org.eclipse.rwt.widgets.GridItem( item1, 0 );
-      new org.eclipse.rwt.widgets.GridItem( item2, 0 );
+      new rwt.widgets.GridItem( item1, 0 );
+      new rwt.widgets.GridItem( item2, 0 );
       item1.setExpanded( true );
       assertEquals( 3, root.getVisibleChildrenCount() );
     },
 
     testVisibleChildrenCountResultIsZeroNoChildren : function() {
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       assertEquals( 0, root.getVisibleChildrenCount() );
     },
 
     testVisibleChildrenCountResultIsZeroWithCollapsedChildren : function() {
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       root.setItemCount( 1 );
-      var item = new org.eclipse.rwt.widgets.GridItem( root, 0 );
+      var item = new rwt.widgets.GridItem( root, 0 );
       item.setItemCount( 1 );
-      new org.eclipse.rwt.widgets.GridItem( item, 0 );
+      new rwt.widgets.GridItem( item, 0 );
       assertEquals( 0, item.getVisibleChildrenCount() );
     },
 
     testSetChecked : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       assertFalse( item.isChecked() );
       item.setChecked( true );
       assertTrue( item.isChecked() );
@@ -806,9 +806,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
 
     testItemCheckedEvent : function() {
       var log = [];
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       root.setItemCount( 1 );
-      var child1 = new org.eclipse.rwt.widgets.GridItem( root, 0 );
+      var child1 = new rwt.widgets.GridItem( root, 0 );
       root.addEventListener( "update", function( event ) {
         log.push( event );
       }, this);
@@ -818,29 +818,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testAddItemAt : function() {
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       root.setItemCount( 3 );
-      var child1 = org.eclipse.rwt.widgets.GridItem.createItem( root, 0 );
-      var child2 = org.eclipse.rwt.widgets.GridItem.createItem( root, 1 );
-      var child3 = org.eclipse.rwt.widgets.GridItem.createItem( root, 1 );
+      var child1 = rwt.widgets.GridItem.createItem( root, 0 );
+      var child2 = rwt.widgets.GridItem.createItem( root, 1 );
+      var child3 = rwt.widgets.GridItem.createItem( root, 1 );
       assertEquals( [ child1, child3, child2 ], root._children );
       root.dispose();
     },
 
     testSetGrayed : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setGrayed( true );
       assertTrue( true, item.isGrayed() );
     },
 
     testIsDisplayable : function() {
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       root.setItemCount( 1 );
-      var child1 = new org.eclipse.rwt.widgets.GridItem( root, 0 );
+      var child1 = new rwt.widgets.GridItem( root, 0 );
       child1.setItemCount( 1 );
-      var child2 = new org.eclipse.rwt.widgets.GridItem( child1, 0 );
+      var child2 = new rwt.widgets.GridItem( child1, 0 );
       child2.setItemCount( 1 );
-      var child3 = new org.eclipse.rwt.widgets.GridItem( child2, 0 );
+      var child3 = new rwt.widgets.GridItem( child2, 0 );
       child1.setExpanded( true );
       child2.setExpanded( false );
       assertFalse( child3.isDisplayable() );
@@ -853,7 +853,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetItemCount : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       var log = [];
       item.addEventListener( "update", function( event ) {
         log.push( event.msg, event.target );
@@ -867,16 +867,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testSetItemCountStaysOnInsert : function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       var log = [];
       item.setItemCount( 4 );
       assertEquals( 4, item._children.length );
       assertEquals( [ undefined, undefined, undefined, undefined ], item._children );
-      var child1 = new org.eclipse.rwt.widgets.GridItem( item, 0 );
-      var child2 = new org.eclipse.rwt.widgets.GridItem( item, 1 );
+      var child1 = new rwt.widgets.GridItem( item, 0 );
+      var child2 = new rwt.widgets.GridItem( item, 1 );
       assertEquals( 4, item._children.length );
       assertEquals( [ child1, child2, undefined, undefined ], item._children );
-      var child3 = new org.eclipse.rwt.widgets.GridItem( item, 1 );
+      var child3 = new rwt.widgets.GridItem( item, 1 );
       // setItemCount is not rendered by server since it stays the same
       assertEquals( 4, item._children.length );
       assertEquals( [ child1, child3, child2, undefined ], item._children );
@@ -885,14 +885,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
 
     testReplaceUndefinedItem : function() {
       var log = [];
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
       root.addEventListener( "update", function( event ) {
         log.push( event.msg, event.target );
       }, this);
       root.setItemCount( 4 );
-      var child1 = new org.eclipse.rwt.widgets.GridItem( root, 0 );
-      var child2 = new org.eclipse.rwt.widgets.GridItem( root, 3 );
-      var child3 = new org.eclipse.rwt.widgets.GridItem( root, 2 );
+      var child1 = new rwt.widgets.GridItem( root, 0 );
+      var child2 = new rwt.widgets.GridItem( root, 3 );
+      var child3 = new rwt.widgets.GridItem( root, 2 );
       assertEquals( [ child1, undefined, child3, child2 ], root._children );
       // NOTE: Only one "add" for setItemCount. The other items have never been rendered 
       //       (otherwise woulnt be undefined) and don't shift anything either. 
@@ -900,7 +900,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testGetVirtualItem: function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setItemCount( 4 );
       var child = item.getChild( 0 );
       assertFalse( child.isCached() );
@@ -913,7 +913,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testHasVirtualSibling: function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setItemCount( 4 );
       var child = item.getChild( 0 );
       assertEquals( 0, item._children.indexOf( child ) );
@@ -923,7 +923,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testVirtualChildrenCount: function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setItemCount( 4 );
       assertEquals( 4, item.getVisibleChildrenCount() );
       assertEquals( [ undefined, undefined, undefined, undefined ], item._children );
@@ -931,7 +931,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testVirtualGetLastChild: function() {
-      var item = new org.eclipse.rwt.widgets.GridItem();
+      var item = new rwt.widgets.GridItem();
       item.setItemCount( 4 );
       var child = item.getLastChild();
       assertEquals( 3, item._children.indexOf( child ) );
@@ -939,11 +939,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testCacheItem : function() {
-      var parent = new org.eclipse.rwt.widgets.GridItem();
+      var parent = new rwt.widgets.GridItem();
       parent.setItemCount( 4 );
       var item = parent.getChild( 2 );
       assertFalse( item.isCached() );
-      var newItem = org.eclipse.rwt.widgets.GridItem.createItem( parent, 2 );
+      var newItem = rwt.widgets.GridItem.createItem( parent, 2 );
       assertIdentical( item, newItem );
       assertTrue( item.isCached() );
       assertEquals( "", item.getText( 0 ) );
@@ -1045,14 +1045,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     },
 
     testFindItemByOffsetNegative : function() {
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
 
       assertNull( root.findItemByOffset( -1 ) );
       root.dispose();
     },
 
     testFindItemByOffsetNoItems : function() {
-      var root = new org.eclipse.rwt.widgets.GridItem();
+      var root = new rwt.widgets.GridItem();
 
       assertNull( root.findItemByOffset( 0 ) );
       root.dispose();
@@ -1305,7 +1305,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
     // create complex tree
 
     _createTreeByProtocol : function( id, parentId, styles ) {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.Grid",
@@ -1320,12 +1320,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "columnCount" : 3
         }
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectManager.getObject( id );
     },
 
     // 20 + 1000 + 10 + 5 + 400 = 1435 items
     _createRoot : function() {
-      var result = new org.eclipse.rwt.widgets.GridItem();
+      var result = new rwt.widgets.GridItem();
       result.setItemCount( 20 ); 
       result.setDefaultHeight( 10 );
       result.getChild( 5 ).setItemCount( 1000 );

@@ -11,7 +11,7 @@
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
-  extend : qx.ui.basic.Atom,
+  extend : rwt.widgets.base.Atom,
 
   construct : function( style ) {
     this.base( arguments );

@@ -26,7 +26,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
 //    assertEquals( "undefined", backgroundColor );
       // create shell like the LCA would do:
       TestUtil.fakeResponse( true );
-      var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
+      var shell = new rwt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       shell.addState( "rwt_APPLICATION_MODAL" );
       shell.initialize();
       shell.open();
@@ -37,7 +37,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       TestUtil.fakeResponse( false );
       // Check for overlay background-image to be "blank.gif", as IE needs
       // this to capture mouse events.
-      var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
+      var overlay = rwt.widgets.base.ClientDocument.getInstance()._getBlocker();
       assertTrue( overlay.isSeeable() );
 // [if] This is not testable with the new default theme as we currently can't
 // fake the ThemeStore. Reactivate when the ThemeStore fixture is available.
@@ -52,7 +52,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     testDisplayOverlayCopyStates : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.fakeResponse( true );
-      var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
+      var shell = new rwt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       shell.addState( "rwt_APPLICATION_MODAL" );
       shell.addState( "rwt_myTest" );
       shell.initialize()
@@ -63,7 +63,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       TestUtil.flush();
       TestUtil.fakeResponse( false );
       // Check for overlay to have the same states as the shell
-      var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
+      var overlay = rwt.widgets.base.ClientDocument.getInstance()._getBlocker();
       assertTrue( overlay.isSeeable() );
       assertTrue( overlay.hasState( "rwt_APPLICATION_MODAL" ) );
       assertTrue( overlay.hasState( "rwt_myTest" ) );
@@ -77,7 +77,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     testDisplayOverlayAddStates : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.fakeResponse( true );
-      var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
+      var shell = new rwt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       shell.addState( "rwt_APPLICATION_MODAL" );
       shell.initialize();
       shell.open();
@@ -87,7 +87,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       TestUtil.flush();
       TestUtil.fakeResponse( false );
       // Check for overlay to have the same states as the shell
-      var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
+      var overlay = rwt.widgets.base.ClientDocument.getInstance()._getBlocker();
       assertTrue( overlay.isSeeable() );
       assertTrue( overlay.hasState( "rwt_APPLICATION_MODAL" ) );
       shell.addState( "rwt_myTest" );
@@ -103,13 +103,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
 
     testDisplayOverlayMultipleShells : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
+      var overlay = rwt.widgets.base.ClientDocument.getInstance()._getBlocker();
       var visibilityChanges = 0;
       overlay.addEventListener( "changeVisibility", function( event) {
         visibilityChanges++;
       } );
       TestUtil.fakeResponse( true );
-      var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
+      var shell = new rwt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       shell.addState( "rwt_APPLICATION_MODAL" );
       shell.initialize();
       shell.open();
@@ -117,7 +117,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.setSpace( 50, 300, 50, 200 );
       shell.setVisibility( true );
       TestUtil.flush();
-      var shell2 = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
+      var shell2 = new rwt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       shell2.addState( "rwt_APPLICATION_MODAL" );
       shell2.initialize();
       shell2.addState( "rwt_myTest2" );
@@ -155,7 +155,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     },
 
     testCustomVariant : function() {
-      var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
+      var shell = new rwt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       var variant = "variant_myCustomVariant";
       shell.addState( variant );
       assertTrue( shell._captionBar.hasState( variant) );
@@ -174,8 +174,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     },
 
     testDefaultButtonState : function() {
-      var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
-      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      var shell = new rwt.widgets.Shell( [ "APPLICATION_MODAL" ] );
+      var button = new rwt.widgets.Button( "push" );
       assertFalse( button.hasState( "default") );
       shell.setDefaultButton( button );
       assertTrue( button.hasState( "default") );
@@ -203,7 +203,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     _createDefaultShell : function( styles, noFlush ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.fakeResponse( true );
-      var shell = new org.eclipse.swt.widgets.Shell( styles );
+      var shell = new rwt.widgets.Shell( styles );
       shell.initialize();
       shell.open();
       shell.setActive( true );

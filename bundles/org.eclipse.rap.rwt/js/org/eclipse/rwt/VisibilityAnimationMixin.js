@@ -33,7 +33,7 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
     this.hide(); // forces _applyVisibility to be called on show() - not a good practice
     this.addEventListener( "changeVisibility", this._blockUserEvents, this );
     this.addEventListener( "destroy", this._onDestroyAnim, this );
-    if( this instanceof org.eclipse.swt.widgets.Composite ) {
+    if( this instanceof rwt.widgets.Composite ) {
       this.show();
     }
   },
@@ -128,7 +128,7 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
     _getAppearAnimation : function() {
       if( this._appearAnimation === null ) {
         this._appearAnimation = new Animation();
-        if( org.eclipse.rwt.Client.isMshtml() && this instanceof org.eclipse.swt.widgets.Shell) {
+        if( org.eclipse.rwt.Client.isMshtml() && this instanceof rwt.widgets.Shell) {
           this._appearAnimation.setExclusive( true );
         }
       }
@@ -223,7 +223,7 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
     _getDisappearAnimation : function() {
       if( this._disappearAnimation === null ) {
         this._disappearAnimation = new Animation();
-        if( this instanceof org.eclipse.swt.widgets.Shell ) {
+        if( this instanceof rwt.widgets.Shell ) {
           this._disappearAnimation.addEventListener( "init", this._lockActiveState, this );
           this._disappearAnimation.addEventListener( "cancel", this._unlockActiveState, this );
           if( org.eclipse.rwt.Client.isMshtml() ) {
@@ -261,7 +261,7 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
     },
 
     _unlockActiveState : function() {
-      var manager = qx.ui.window.Window.getDefaultWindowManager();
+      var manager = rwt.widgets.base.Window.getDefaultWindowManager();
       manager.blockActiveState = false;
       if( !this.isDisposed() && !this._isInGlobalDisposeQueue ) {
         //delete this._setActiveState;

@@ -11,8 +11,8 @@
 
 (function(){
 
-var Processor = org.eclipse.rwt.protocol.Processor;
-var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+var Processor = rwt.protocol.MessageProcessor;
+var ObjectManager = rwt.protocol.ObjectManager;
 
 qx.Class.define( "org.eclipse.rwt.test.tests.JSExecutorTest", {
 

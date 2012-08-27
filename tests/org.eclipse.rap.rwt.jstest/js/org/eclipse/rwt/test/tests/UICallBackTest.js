@@ -11,9 +11,9 @@
 
 (function(){
 
-var Processor = org.eclipse.rwt.protocol.Processor;
+var Processor = rwt.protocol.MessageProcessor;
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+var ObjectManager = rwt.protocol.ObjectManager;
 
 qx.Class.define( "org.eclipse.rwt.test.tests.UICallBackTest", {
 
@@ -42,7 +42,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.UICallBackTest", {
     testSendUIRequestByProtocol : function() {
       TestUtil.initRequestLog();
       var uiCallBack = this._createUICallBack();
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : "uicb",
         "action" : "call",
         "method" : "sendUIRequest",

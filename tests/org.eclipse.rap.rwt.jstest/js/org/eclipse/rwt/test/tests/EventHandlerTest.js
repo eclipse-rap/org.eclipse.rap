@@ -192,7 +192,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 //
     testKeyDownCharCode : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       widget.focus();
@@ -209,7 +209,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testKeyPressEnter : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       widget.focus();
@@ -227,7 +227,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testKeyPressEscape : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       widget.focus();
@@ -245,7 +245,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testKeyDownPrintable : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       widget.focus();
@@ -258,7 +258,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testCancelKeyDownPrintable : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       widget.addEventListener( "keydown", function( event ) {
         event.preventDefault();
@@ -274,7 +274,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testKeyHoldPrintable : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       widget.focus();
@@ -289,7 +289,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
     testKeyUp : function() {
       // See Bug 335753
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       widget.focus();
@@ -303,7 +303,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testKeyUpNumber : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       widget.focus();
@@ -317,7 +317,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testKeyDownNonPrintable : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       widget.focus();
@@ -330,7 +330,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testKeyHoldNonPrintable : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       widget.focus();
@@ -344,7 +344,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testKeyDownPrintableSpecialChar : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       widget.focus();
@@ -357,7 +357,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testKeyHoldPrintableSpecialChar : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       widget.focus();
@@ -371,7 +371,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testKeyDownPrintableSpecialCharNoKeyInput : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       widget.focus();
@@ -384,7 +384,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testKeyHoldPrintableSpecialCharNoKeyInput : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       widget.focus();
@@ -398,7 +398,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testPressDownModifier : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       widget.focus();
@@ -412,7 +412,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testKeyHoldModifier : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       TestUtil.flush();
       widget.focus();
@@ -425,7 +425,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
     },
 
     testCatchMouseEventError : function(){
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       widget.addToDocument();
       widget.addEventListener( "click", function() {
@@ -445,7 +445,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
     },
 
     testCatchKeyEventError : function() {
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       widget.addToDocument();
       widget.addEventListener( "keydown", function() {
@@ -466,10 +466,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testFocusWithoutCapturedWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget1 = new qx.ui.basic.Terminator();
+      var widget1 = new rwt.widgets.base.Terminator();
       widget1.setFocused( true );
       widget1.setTabIndex( 1 );
-      var widget2 = new qx.ui.basic.Terminator();
+      var widget2 = new rwt.widgets.base.Terminator();
       widget2.setTabIndex( 1 );
       widget1.addToDocument();
       widget2.addToDocument();
@@ -489,21 +489,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       TestUtil.flush();
       TestUtil.click( shell );
 
-      TestUtil.click( qx.ui.core.ClientDocument.getInstance() );
+      TestUtil.click( rwt.widgets.base.ClientDocument.getInstance() );
 
       assertTrue( shell.getFocused() );
-      assertFalse( qx.ui.core.ClientDocument.getInstance().getFocused() );
+      assertFalse( rwt.widgets.base.ClientDocument.getInstance().getFocused() );
       assertEquals( shell, org.eclipse.rwt.EventHandler.getFocusRoot() );
       shell.destroy();
     },
 
     testFocusWithCapturedWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget1 = new qx.ui.basic.Terminator();
+      var widget1 = new rwt.widgets.base.Terminator();
       widget1.setFocused( true );
       widget1.setTabIndex( 1 );
       widget1.setCapture( true );
-      var widget2 = new qx.ui.basic.Terminator();
+      var widget2 = new rwt.widgets.base.Terminator();
       widget2.setTabIndex( 1 );
       widget1.addToDocument();
       widget2.addToDocument();
@@ -518,7 +518,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
 
     testNativeMenuConsumesEvent : function(){
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var text = new org.eclipse.rwt.widgets.Text( false );
+      var text = new rwt.widgets.Text( false );
       text.addToDocument();
       text.setSpace( 0, 50, 0, 21 );
       TestUtil.flush();
@@ -560,7 +560,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
     },
 
     createDefaultWidget : function() {
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget(
+      var widget = new rwt.widgets.base.MultiCellWidget(
         [ "label", "label"]
       );
       widget.setCellContent( 0, "test0" );

@@ -16,8 +16,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
   construct : function() {
     var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
     TestUtil.prepareTimerUse();
-    qx.Class.__initializeClass( org.eclipse.rwt.widgets.ScrollBar );
-    org.eclipse.rwt.widgets.ScrollBar.prototype._getMinThumbSize = function() { return 8; };
+    qx.Class.__initializeClass( rwt.widgets.base.ScrollBar );
+    rwt.widgets.base.ScrollBar.prototype._getMinThumbSize = function() { return 8; };
   },
 
   members : {
@@ -499,7 +499,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
 
     _createScrollBar : function( noFlush, horizontal) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var bar = new org.eclipse.rwt.widgets.ScrollBar( horizontal );
+      var bar = new rwt.widgets.base.ScrollBar( horizontal );
       bar.setLeft( 10 );
       bar.setTop( 10 );
       bar.setMaximum( 300 );

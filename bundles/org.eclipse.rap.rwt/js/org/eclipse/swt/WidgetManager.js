@@ -67,7 +67,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       if( isControl === true ) {
         widget.setUserData( "isControl", true );
       }
-      org.eclipse.rwt.protocol.ObjectManager.add( id, widget, adapter );
+      rwt.protocol.ObjectManager.add( id, widget, adapter );
     },
 
     /**
@@ -76,7 +76,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      */
     remove : function( widget ) {
       var id = this.findIdByWidget( widget );
-      org.eclipse.rwt.protocol.ObjectManager.remove( id );
+      rwt.protocol.ObjectManager.remove( id );
     },
 
     /**
@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      * registered for the given id exists.
      */
     findWidgetById : function( id ) {
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectManager.getObject( id );
     },
 
     /**
@@ -92,7 +92,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      * registered.
      */
     findIdByWidget : function( widget ) {
-      return org.eclipse.rwt.protocol.ObjectManager.getId( widget );
+      return rwt.protocol.ObjectManager.getId( widget );
     },
 
     /**
@@ -128,12 +128,12 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       // TODO [rh] there seems to be a difference between add and setParent
       //      when using add sizes and clipping are treated differently
       // parent.add( widget );
-      if( parent instanceof org.eclipse.swt.custom.ScrolledComposite ) {
+      if( parent instanceof rwt.widgets.ScrolledComposite ) {
         // [if] do nothing, parent is set in ScrolledComposite#setContent which is called from the
         // server-side - see bug 349161
-      } else if ( parent instanceof qx.ui.pageview.tabview.TabView ) {
+      } else if ( parent instanceof rwt.widgets.TabFolder ) {
         // [if] do nothing, parent is set when the control is set on the tab item
-      } else if( parent instanceof org.eclipse.swt.widgets.ExpandBar ) {
+      } else if( parent instanceof rwt.widgets.ExpandBar ) {
         parent.addWidget( widget );
       } else {
         widget.setParent( parent );
@@ -191,7 +191,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     setToolTip : function( widget, toolTipText ) {
       if( toolTipText != null && toolTipText !== "" ) {
         widget.setUserData( "toolTipText", toolTipText );
-        var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
+        var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
         widget.setToolTip( toolTip );
         // make sure "boundToWidget" is initialized:
         if( toolTip.getParent() != null ) {
@@ -345,12 +345,12 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
         {
           nativeType : "keydown",
           context : undefined,
-          listener : org.eclipse.rwt.widgets.Menu.menuDetectedByKey
+          listener : rwt.widgets.Menu.menuDetectedByKey
         },
         {
           nativeType : "mouseup",
           context : undefined,
-          listener : org.eclipse.rwt.widgets.Menu.menuDetectedByMouse
+          listener : rwt.widgets.Menu.menuDetectedByMouse
         }
       ],
       "menuDetect" : [

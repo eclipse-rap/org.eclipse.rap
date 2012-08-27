@@ -12,7 +12,7 @@
  ******************************************************************************/
 
 /**
- * This manager is used by all objects which needs ranges like qx.ui.form.Spinner, ...
+ * This manager is used by all objects which needs ranges like rwt.widgets.base.Spinner, ...
  */
 qx.Class.define( "qx.util.range.Range", {
 

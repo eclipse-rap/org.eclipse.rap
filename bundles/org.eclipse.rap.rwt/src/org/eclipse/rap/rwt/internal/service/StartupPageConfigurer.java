@@ -125,7 +125,7 @@ final class StartupPageConfigurer {
   private static String getAppScript() {
     StringBuilder code = new StringBuilder();
     code.append( "if( org.eclipse.rwt.System.getInstance().isSupported() ) {" );
-    code.append( "org.eclipse.rwt.protocol.Processor.processMessage( " );
+    code.append( "rwt.protocol.MessageProcessor.processMessage( " );
     code.append( getStartupProtocolMessage( "w1" ) );
     code.append( ");/*EOM*/ }" );
     return code.toString();

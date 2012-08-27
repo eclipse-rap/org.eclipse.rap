@@ -306,9 +306,9 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     // Util
 
     blockGlobalFlushs : function( value ) {
-      qx.ui.core.Widget._inFlushGlobalQueues = value;
+      rwt.widgets.base.Widget._inFlushGlobalQueues = value;
       if( !value ) {
-        qx.ui.core.Widget._initAutoFlush( 0 );
+        rwt.widgets.base.Widget._initAutoFlush( 0 );
       }
     },
 

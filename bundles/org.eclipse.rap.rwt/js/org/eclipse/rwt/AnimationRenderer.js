@@ -163,9 +163,9 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
 
     _setup : function( config ) {
       if( this._active ) {
-        if( this._context instanceof qx.ui.core.Widget && this._context._isCreated !== true ) {
+        if( this._context instanceof rwt.widgets.base.Widget && this._context._isCreated !== true ) {
           if( this._context._isInGlobalElementQueue ) {
-            qx.ui.core.Widget.flushGlobalQueues();
+            rwt.widgets.base.Widget.flushGlobalQueues();
           } else {
             throw new Error( "AnimationRenderer setup failed: Widget not ready." );
           }

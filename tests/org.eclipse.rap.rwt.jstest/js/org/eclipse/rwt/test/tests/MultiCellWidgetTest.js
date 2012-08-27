@@ -88,7 +88,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
     },
 
     testSpacing : function() {
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget(
+      var widget = new rwt.widgets.base.MultiCellWidget(
         [ "image", "label", "image", "label", "image" ] );
       this._currentWidget = widget;
       widget.setSpacing( 10 );
@@ -183,7 +183,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
     },
 
     testPreferredDimension : function() {
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget(
+      var widget = new rwt.widgets.base.MultiCellWidget(
         [ "image", "label", "image", "label", "image" ] );
       widget.setCellContent( 0, "bla" );
       widget.setCellContent( 1, "bla" );
@@ -421,7 +421,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
     /* ------------------------ helper ------------------------------- */
 
     createDefaultWidget : function() {
-      return new org.eclipse.rwt.widgets.MultiCellWidget(
+      return new rwt.widgets.base.MultiCellWidget(
         [ "image", "label"] );
     },
 
@@ -445,7 +445,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
     },
 
     flush : function() {
-      qx.ui.core.Widget.flushGlobalQueues();
+      rwt.widgets.base.Widget.flushGlobalQueues();
     },
 
     almostEqual : function( value1, value2 ) {

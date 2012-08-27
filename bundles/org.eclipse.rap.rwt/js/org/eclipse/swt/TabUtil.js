@@ -16,7 +16,7 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
     createTabItem : function( id, parentId, index ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var tabFolder = widgetManager.findWidgetById( parentId );
-      var tabItem = new qx.ui.pageview.tabview.Button();
+      var tabItem = new rwt.widgets.TabItem();
       tabItem.setTabIndex( null );
       tabItem.setLabel( "(empty)" );
       tabItem.getLabelObject().setMode( "html" );
@@ -26,7 +26,7 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
       tabItem.addEventListener( "changeChecked", org.eclipse.swt.TabUtil._onTabItemSelected );
       tabItem.addEventListener( "click", org.eclipse.swt.TabUtil._onTabItemClick );
       tabFolder.getBar().addAt( tabItem, index );
-      var tabViewPage = new qx.ui.pageview.tabview.Page( tabItem );
+      var tabViewPage = new rwt.widgets.base.TabFolderPage( tabItem );
       tabFolder.getPane().add( tabViewPage );
       widgetManager.add( tabViewPage, id + "pg" );
       return tabItem;
@@ -64,7 +64,7 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         // TODO [rst] Add item parameter in doWidgetSelected
         var itemId = widgetManager.findIdByWidget( tab );
-        var req = org.eclipse.swt.Server.getInstance();
+        var req = rwt.remote.Server.getInstance();
         req.addParameter( "org.eclipse.swt.events.widgetSelected.item", itemId );
         var id = widgetManager.findIdByWidget( tab.getParent().getParent() );
         org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
@@ -73,7 +73,7 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
 
     onTabFolderKeyPress : function( evt ) {
       var folder = evt.getTarget();
-      if( folder.classname == "qx.ui.pageview.tabview.TabView" ) {
+      if( folder.classname == "rwt.widgets.TabFolder" ) {
         var manager = folder.getBar().getManager();
         var item = manager.getSelected();
         if( item != null ) {

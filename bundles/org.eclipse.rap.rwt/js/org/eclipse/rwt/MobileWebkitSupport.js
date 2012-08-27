@@ -19,16 +19,16 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     // if the widget is draggable.  If appearances are defined for a type, then one of the
     // appearances must match to allow the widget to be draggable.
     _draggableTypes : {
-      "org.eclipse.swt.widgets.Shell" : null,
-      "org.eclipse.swt.widgets.Sash"  : null,
-      "org.eclipse.swt.widgets.Scale" : [ "scale-thumb" ],
-      "org.eclipse.swt.widgets.Slider" : [ "slider-thumb" ],
-      "org.eclipse.rwt.widgets.ScrollBar" : null,
-      "org.eclipse.swt.custom.ScrolledComposite" : [ "scrollbar-thumb" ],
-      "org.eclipse.rwt.widgets.BasicButton" : [ "scrollbar-thumb" ],
-      "qx.ui.layout.CanvasLayout" : [ "coolitem-handle" ],
-      "org.eclipse.swt.widgets.List" : [ "scrollbar-thumb" ],
-      "org.eclipse.rwt.widgets.Grid" : [ "tree-column", "label", "image", "scrollbar-thumb" ]
+      "rwt.widgets.Shell" : null,
+      "rwt.widgets.Sash"  : null,
+      "rwt.widgets.Scale" : [ "scale-thumb" ],
+      "rwt.widgets.Slider" : [ "slider-thumb" ],
+      "rwt.widgets.base.ScrollBar" : null,
+      "rwt.widgets.ScrolledComposite" : [ "scrollbar-thumb" ],
+      "rwt.widgets.base.BasicButton" : [ "scrollbar-thumb" ],
+      "rwt.widgets.base.Parent" : [ "coolitem-handle" ],
+      "rwt.widgets.List" : [ "scrollbar-thumb" ],
+      "rwt.widgets.Grid" : [ "tree-column", "label", "image", "scrollbar-thumb" ]
     },
     _lastMouseOverTarget : null,
     _lastMouseClickTarget : null,
@@ -96,7 +96,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     },
 
     _configureToolTip : function() {
-      var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
+      var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
       toolTip.setShowInterval( 600 );
       toolTip.setHideInterval( 15000 );
       toolTip.setMousePointerOffsetX( -35 );
@@ -313,7 +313,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
 
     _initVirtualScroll : function( widget ) {
       var scrollable;
-      if( widget instanceof org.eclipse.rwt.widgets.GridRow ) {
+      if( widget instanceof rwt.widgets.base.GridRow ) {
         scrollable = widget.getParent().getParent();
       } else {
         scrollable = this._findScrollable( widget );
@@ -363,7 +363,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     // Helper
 
     _isFocusable : function( widgetTarget ) {
-      return widgetTarget instanceof org.eclipse.rwt.widgets.BasicText;
+      return widgetTarget instanceof rwt.widgets.base.BasicText;
     },
 
     _isScrollableWidget : function( widget ) {
@@ -371,16 +371,16 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     },
 
     _isGridRow : function( widgetTarget ) {
-      return widgetTarget instanceof org.eclipse.rwt.widgets.GridRow;
+      return widgetTarget instanceof rwt.widgets.base.GridRow;
     },
 
     _findScrollable : function( widget ) {
       var result = null;
       var currentWidget = widget;
       do {
-        if( currentWidget instanceof org.eclipse.swt.widgets.Scrollable ) {
+        if( currentWidget instanceof rwt.widgets.base.Scrollable ) {
           result = currentWidget;
-        } else if( currentWidget instanceof qx.ui.core.ClientDocument ) {
+        } else if( currentWidget instanceof rwt.widgets.base.ClientDocument ) {
           currentWidget = null;
         } else {
           currentWidget = currentWidget.getParent();
@@ -465,7 +465,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
 
     // The target used to release the virtual mouse without consequences
     _getDummyTarget : function() {
-      return qx.ui.core.ClientDocument.getInstance()._getTargetNode();
+      return rwt.widgets.base.ClientDocument.getInstance()._getTargetNode();
     },
 
     _enableMouse : function() {

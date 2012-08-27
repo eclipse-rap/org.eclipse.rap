@@ -50,7 +50,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( evt.getTarget() );
-        var req = org.eclipse.swt.Server.getInstance();
+        var req = rwt.remote.Server.getInstance();
         req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
         org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         req.send();
@@ -59,7 +59,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
 
     widgetSelected : function( evt ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var req = org.eclipse.swt.Server.getInstance();
+      var req = rwt.remote.Server.getInstance();
       var id = widgetManager.findIdByWidget( evt.getTarget() );
       var left = evt.getTarget().getLeft();
       var top = evt.getTarget().getTop();
@@ -70,7 +70,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
 
     doWidgetSelected : function( id, left, top, width, height ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var req = org.eclipse.swt.Server.getInstance();
+        var req = rwt.remote.Server.getInstance();
         req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
         org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         req.addParameter( id + ".bounds.x", left );
@@ -85,7 +85,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var modifier = org.eclipse.swt.EventUtil._getKeyModifier();
         if( modifier !== "" ) {
-          var req = org.eclipse.swt.Server.getInstance();
+          var req = rwt.remote.Server.getInstance();
           req.addParameter( "org.eclipse.swt.events.widgetSelected.modifier", modifier );
         }
       }
@@ -110,7 +110,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     focusGained : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         // [if] The focusControl parameter is added in the request in Shell.js
-        var req = org.eclipse.swt.Server.getInstance();
+        var req = rwt.remote.Server.getInstance();
         req.send();
       }
     },
@@ -118,7 +118,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     focusLost : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         // [if] The focusControl parameter is added in the request in Shell.js
-        var req = org.eclipse.swt.Server.getInstance();
+        var req = rwt.remote.Server.getInstance();
         req.send();
       }
     },
@@ -153,7 +153,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         }
         // Collect request parameters and send
         org.eclipse.swt.EventUtil._mouseDownParams( this, evt );
-        var req = org.eclipse.swt.Server.getInstance();
+        var req = rwt.remote.Server.getInstance();
         req.send();
       }
     },
@@ -171,7 +171,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         org.eclipse.swt.EventUtil._lastMouseDown.mouseUpCount += 1;
         // Add mouse-up request parameter
         org.eclipse.swt.EventUtil._mouseUpParams( this, evt );
-        var req = org.eclipse.swt.Server.getInstance();
+        var req = rwt.remote.Server.getInstance();
         req.send();
       }
     },
@@ -218,7 +218,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
 
     _mouseDownParams : function( widget, evt ) {
       var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
-      var req = org.eclipse.swt.Server.getInstance();
+      var req = rwt.remote.Server.getInstance();
       var button = org.eclipse.swt.EventUtil._determineMouseButton( evt );
       var modifier = org.eclipse.swt.EventUtil._getKeyModifier();
       req.addEvent( "org.eclipse.swt.events.mouseDown", id );
@@ -233,7 +233,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
 
     _mouseUpParams : function( widget, evt ) {
       var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
-      var req = org.eclipse.swt.Server.getInstance();
+      var req = rwt.remote.Server.getInstance();
       var button = org.eclipse.swt.EventUtil._determineMouseButton( evt );
       var modifier = org.eclipse.swt.EventUtil._getKeyModifier();
       req.addEvent( "org.eclipse.swt.events.mouseUp", id );
@@ -248,7 +248,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
 
     _mouseDoubleClickParams : function( widget, evt ) {
       var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
-      var req = org.eclipse.swt.Server.getInstance();
+      var req = rwt.remote.Server.getInstance();
       var modifier = org.eclipse.swt.EventUtil._getKeyModifier();
       req.addEvent( "org.eclipse.swt.events.mouseDoubleClick", id );
       req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.button",
@@ -305,7 +305,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
           id = widgetManager.findIdByWidget( widget );
         }
         if( id != null ) {
-          var req = org.eclipse.swt.Server.getInstance();
+          var req = rwt.remote.Server.getInstance();
           req.addEvent( "org.eclipse.swt.events.help", id );
           req.send();
         }
@@ -345,7 +345,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         }
         var id = widgetManager.findIdByWidget( widget );
         if( id != null ) {
-          var req = org.eclipse.swt.Server.getInstance();
+          var req = rwt.remote.Server.getInstance();
           req.addEvent( "org.eclipse.swt.events.menuDetect", id );
           req.addParameter( "org.eclipse.swt.events.menuDetect.x", x );
           req.addParameter( "org.eclipse.swt.events.menuDetect.y", y );

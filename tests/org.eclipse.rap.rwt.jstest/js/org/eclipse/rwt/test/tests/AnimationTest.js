@@ -416,7 +416,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     testIsAnimated : function() {
       var animation = new org.eclipse.rwt.Animation();
       var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       var typeAppear = org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR;
       var typeDisappear = org.eclipse.rwt.AnimationRenderer.ANIMATION_DISAPPEAR;
       var typeChange = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
@@ -644,7 +644,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     
     // Tests animationType "change" and renderType "height"
     testResize : function() {
-      var proto = org.eclipse.rwt.widgets.MultiCellWidget.prototype;
+      var proto = rwt.widgets.base.MultiCellWidget.prototype;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var animation = new org.eclipse.rwt.Animation();
       var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
@@ -677,7 +677,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     testDeactivatedRenderer : function() {
       // Simply tests that nothing whatsoever happens 
       // (uses resize-scenario, but should be valid for all cases)
-      var proto = org.eclipse.rwt.widgets.MultiCellWidget.prototype;
+      var proto = rwt.widgets.base.MultiCellWidget.prototype;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var animation = new org.eclipse.rwt.Animation();
       var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
@@ -771,7 +771,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     
     testChangeAnimatonNoAutoStart : function() {
       // Using "resize" scenario
-      var proto = org.eclipse.rwt.widgets.MultiCellWidget.prototype;
+      var proto = rwt.widgets.base.MultiCellWidget.prototype;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var animation = new org.eclipse.rwt.Animation();
       var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
@@ -1008,7 +1008,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       var animation = new org.eclipse.rwt.Animation();
       var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( "label" );
+      var widget = new rwt.widgets.base.MultiCellWidget( "label" );
       widget.setLocation( 10, 20 );
       widget.setDimension( 100, 200 );
       widget.hide();
@@ -1108,7 +1108,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     
     testFadeInToSolidFirstAppear : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( "label" );
+      var widget = new rwt.widgets.base.MultiCellWidget( "label" );
       widget.setLocation( 10, 20 );
       widget.setDimension( 100, 200 );
       widget.hide();
@@ -1140,7 +1140,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     
     testFadeInTransparencyFirstAppear : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( "label" );
+      var widget = new rwt.widgets.base.MultiCellWidget( "label" );
       widget.setLocation( 10, 20 );
       widget.setDimension( 100, 200 );
       widget.hide();
@@ -1175,7 +1175,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       var animation = new org.eclipse.rwt.Animation();
       var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( "label" );
+      var widget = new rwt.widgets.base.MultiCellWidget( "label" );
       widget.setLocation( 10, 20 );
       widget.setDimension( 100, 200 );
       widget.addToDocument();
@@ -1196,7 +1196,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     
     _createWidget : function( noFlush ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( "label" );
+      var widget = new rwt.widgets.base.MultiCellWidget( "label" );
       widget.setLocation( 10, 20 );
       widget.setDimension( 100, 200 );
       widget.addToDocument();

@@ -18,7 +18,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
     this.manager = qx.ui.popup.ToolTipManager.getInstance();
     this.wm = org.eclipse.swt.WidgetManager.getInstance();        
     this.TestUtil.flush();
-    this.toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
+    this.toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
   },
   
   members : {
@@ -26,8 +26,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
     TARGETPLATFORM : [ "win", "mac", "unix" ],
 
     testUpdateWidgetToolTipText : function() {
-      this.widget1 = new qx.ui.basic.Label( "Hello World 1" );
-      this.widget2 = new qx.ui.basic.Label( "Hello World 2" );
+      this.widget1 = new rwt.widgets.base.Label( "Hello World 1" );
+      this.widget2 = new rwt.widgets.base.Label( "Hello World 2" );
       this.widget1.addToDocument();
       this.widget2.addToDocument();
       this.TestUtil.flush();            
@@ -63,7 +63,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
     },
     
     testUpdateWigetToolTipTextWhileToolTipBound : function() {
-      this.widget1 = new qx.ui.basic.Label( "Hello World 1" );
+      this.widget1 = new rwt.widgets.base.Label( "Hello World 1" );
       this.widget1.addToDocument();
       this.TestUtil.flush();      
       this.wm.setToolTip( this.widget1, "test1" );            

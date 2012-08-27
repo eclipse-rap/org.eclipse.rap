@@ -19,7 +19,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createControlDecoratorByProtocol( "w3", "w2", [ "LEFT", "CENTER" ] );
-      assertTrue( widget instanceof org.eclipse.rwt.widgets.ControlDecorator );
+      assertTrue( widget instanceof rwt.widgets.ControlDecorator );
       assertIdentical( shell, widget.getParent() );
       shell.destroy();
       widget.destroy();
@@ -93,7 +93,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
     // Helper
 
     _createControlDecoratorByProtocol : function( id, parentId, style ) {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.ControlDecorator",
@@ -102,7 +102,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
           "parent" : parentId
         }
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectManager.getObject( id );
     }
 
   }

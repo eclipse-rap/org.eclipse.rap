@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-/** This singleton manages qx.ui.window.Windows */
+/** This singleton manages rwt.widgets.base.Windows */
 qx.Class.define("qx.ui.window.Manager",
 {
   extend : qx.util.manager.Object,
@@ -133,8 +133,8 @@ qx.Class.define("qx.ui.window.Manager",
      * other to determine the sort order.
      *
      * @type member
-     * @param w1 {qx.ui.window.Window} first window to compare
-     * @param w2 {qx.ui.window.Window} second window to compare
+     * @param w1 {rwt.widgets.base.Window} first window to compare
+     * @param w2 {rwt.widgets.base.Window} second window to compare
      * @return {int | var} 1 for first window active, -1 for second window active
      * and the subtraction of the zIndex if none of the two are active.
      */
@@ -154,11 +154,11 @@ qx.Class.define("qx.ui.window.Manager",
 
 
     /**
-     * Adds a {@link qx.ui.window.Window} instance to the manager and
+     * Adds a {@link rwt.widgets.base.Window} instance to the manager and
      * sets it as active window.
      *
      * @type member
-     * @param vWindow {qx.ui.window.Window} window instance to add
+     * @param vWindow {rwt.widgets.base.Window} window instance to add
      * @return {void}
      */
     add : function(vWindow)
@@ -170,13 +170,13 @@ qx.Class.define("qx.ui.window.Manager",
 
 
     /**
-     * Removes a {@link qx.ui.window.Window} instance from the manager.
+     * Removes a {@link rwt.widgets.base.Window} instance from the manager.
      * If the current active window is the one which should be removed the
      * existing windows are compared to determine the new active window
      * (using the {@link #compareWindows} method).
      *
      * @type member
-     * @param vWindow {qx.ui.window.Window} window instance
+     * @param vWindow {rwt.widgets.base.Window} window instance
      * @return {void}
      */
     remove : function( vWindow ) {

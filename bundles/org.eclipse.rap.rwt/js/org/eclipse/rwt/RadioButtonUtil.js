@@ -68,7 +68,7 @@ qx.Class.define( "org.eclipse.rwt.RadioButtonUtil", {
         var length = siblings.length;
         // For Radio-Buttons all Radio-items of the group count,
         // else the group is bounded by any non-radio items
-        if( widget.classname == "org.eclipse.rwt.widgets.Button" ) {
+        if( widget.classname == "rwt.widgets.Button" ) {
           for( var i = 0; i < length; i++ ) {
             if( this._isRadioElement( siblings[ i ] ) ) {
               group.push( siblings[ i ] );

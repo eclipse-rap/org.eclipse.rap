@@ -42,7 +42,7 @@ qx.Class.define( "qx.theme.manager.Appearance", {
         this.__cache[this._currentTheme.name] = {};
       }
       if( org.eclipse.rwt.System.getInstance().getUiReady() ) {
-        qx.ui.core.ClientDocument.getInstance()._recursiveAppearanceThemeUpdate( this._currentTheme );
+        rwt.widgets.base.ClientDocument.getInstance()._recursiveAppearanceThemeUpdate( this._currentTheme );
       }
     },
 

@@ -1,15 +1,15 @@
+/*global console:false, org:false */
 (function() {
   var getPropsFromCode = function( fun ) {
     var reg = /properties\.\w+/g;
-    var matches = fun.toString().match( reg )
-    if( matches == null ) {
+    var matches = fun.toString().match( reg );
+    if( matches === null ) {
       matches = [];
     } else {
       matches = matches.sort();
     }
     var lastMatch = null;
     var result = [];
-    var i = 0;
     while( matches.length > 0 ) {
       var prop = matches.pop().slice( 11 );
       if( prop !== lastMatch ) {
@@ -23,8 +23,8 @@
   var nl = "\n";
   var lv1 = "  ";
   var lv2 = "    ";
-  
-  var registry = org.eclipse.rwt.protocol.AdapterRegistry._registry;
+
+  var registry = rwt.protocol.AdapterRegistry._registry;
   var text = "RAP Protocol Reference" + nl + nl;
   for( var key in registry ) {
     try {
@@ -56,9 +56,9 @@
         }
       }
       text += nl;
-    } catch( ex ) { 
+    } catch( ex ) {
       console.log( ex );
     }
   }
   console.log( text );
-} )();
+}());

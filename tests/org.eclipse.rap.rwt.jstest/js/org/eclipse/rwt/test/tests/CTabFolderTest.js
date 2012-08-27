@@ -17,7 +17,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
     testCreateCTabFolderOnTopByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -28,17 +28,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "toolTipTexts" : [ "a", "b", "c", "d", "e" ]
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget instanceof org.eclipse.swt.custom.CTabFolder );
+      assertTrue( widget instanceof rwt.widgets.CTabFolder );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
       assertEquals( "top", widget.getTabPosition() );
-      assertEquals( "a", org.eclipse.swt.custom.CTabFolder.MIN_TOOLTIP );
-      assertEquals( "b", org.eclipse.swt.custom.CTabFolder.MAX_TOOLTIP );
-      assertEquals( "c", org.eclipse.swt.custom.CTabFolder.RESTORE_TOOLTIP );
-      assertEquals( "d", org.eclipse.swt.custom.CTabFolder.CHEVRON_TOOLTIP );
-      assertEquals( "e", org.eclipse.swt.custom.CTabFolder.CLOSE_TOOLTIP );
+      assertEquals( "a", rwt.widgets.CTabFolder.MIN_TOOLTIP );
+      assertEquals( "b", rwt.widgets.CTabFolder.MAX_TOOLTIP );
+      assertEquals( "c", rwt.widgets.CTabFolder.RESTORE_TOOLTIP );
+      assertEquals( "d", rwt.widgets.CTabFolder.CHEVRON_TOOLTIP );
+      assertEquals( "e", rwt.widgets.CTabFolder.CLOSE_TOOLTIP );
       shell.destroy();
       widget.destroy();
     },
@@ -46,7 +46,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
     testCreateCTabFolderOnBottomByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -58,9 +58,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "tabPosition" : "bottom"
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget instanceof org.eclipse.swt.custom.CTabFolder );
+      assertTrue( widget instanceof rwt.widgets.CTabFolder );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
       assertEquals( "bottom", widget.getTabPosition() );
@@ -72,7 +72,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createCTabFolderByProtocol( "w3", "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "destroy"
@@ -275,7 +275,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var folder = this._createCTabFolderByProtocol( "w3", "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -286,9 +286,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "index" : 0
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w4" );
-      assertTrue( widget instanceof org.eclipse.swt.custom.CTabItem );
+      assertTrue( widget instanceof rwt.widgets.CTabItem );
       assertIdentical( folder, widget.getParent() );
       assertFalse( widget._canClose );
       shell.destroy();
@@ -301,7 +301,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var folder = this._createCTabFolderByProtocol( "w3", "w2" );
       folder.addState( "rwt_CLOSE" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -312,7 +312,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "index" : 0
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w4" );
       assertTrue( widget._canClose );
       shell.destroy();
@@ -423,7 +423,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
 
     testSetBackgroundImage : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var folder = new org.eclipse.swt.custom.CTabFolder();
+      var folder = new rwt.widgets.CTabFolder();
       folder.setUserData( "backgroundImageSize", [ 50, 50 ] );
       folder.setBackgroundImage( "bla.jpg" );
       assertEquals( "bla.jpg", folder._body.getBackgroundImage() );
@@ -432,9 +432,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
             
     testSetSelectionBackgroundImage : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var folder = new org.eclipse.swt.custom.CTabFolder();
+      var folder = new rwt.widgets.CTabFolder();
       folder.setSelectionBackgroundImage( [ "bla.jpg", 50, 50 ] );
-      var item = new org.eclipse.swt.custom.CTabItem( folder, false );
+      var item = new rwt.widgets.CTabItem( folder, false );
       assertFalse( "bla.jpg" == item.getBackgroundImage() );
       item.setSelected( true );
       assertEquals( "bla.jpg", item.getBackgroundImage() );
@@ -445,7 +445,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
     // Helper
 
     _createCTabFolderByProtocol : function( id, parentId ) {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.CTabFolder",
@@ -455,11 +455,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "toolTipTexts": [ "Minimize", "Maximize", "Restore", "Show List", "Close" ]
         }
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectManager.getObject( id );
     },
 
     _createCTabItemByProtocol : function( id, parentId ) {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.CTabItem",
@@ -469,7 +469,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "index" : 0
         }
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectManager.getObject( id );
     }
 
   }

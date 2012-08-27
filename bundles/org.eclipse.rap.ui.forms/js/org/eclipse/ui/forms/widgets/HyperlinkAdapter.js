@@ -9,20 +9,20 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-org.eclipse.rwt.protocol.AdapterRegistry.add( "forms.widgets.Hyperlink", {
+rwt.protocol.AdapterRegistry.add( "forms.widgets.Hyperlink", {
 
   factory : function( properties ) {
     var wrap = properties.style.indexOf( "WRAP" ) !== -1 ? "wrap" : "";
     var result = new org.eclipse.ui.forms.widgets.Hyperlink( wrap );
-    org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
+    rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );
-    org.eclipse.rwt.protocol.AdapterUtil.setParent( result, properties.parent );
+    rwt.protocol.AdapterUtil.setParent( result, properties.parent );
     return result;
   },
 
-  destructor : org.eclipse.rwt.protocol.AdapterUtil.getControlDestructor(),
+  destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
-  properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
+  properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "text",
     "image",
     "underlined",
@@ -31,9 +31,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "forms.widgets.Hyperlink", {
     "activeBackground"
   ] ),
 
-  propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
+  propertyHandler : rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
     "text" : function( widget, value ) {
-      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.protocol.EncodingUtil;
       var text = EncodingUtil.escapeText( value, false );
       widget.setText( text );
     },
@@ -60,11 +60,11 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "forms.widgets.Hyperlink", {
     }
   } ),
 
-  listeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [
+  listeners : rwt.protocol.AdapterUtil.extendControlListeners( [
     "selection"
   ] ),
 
-  listenerHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
+  listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
 
   methods : []
 

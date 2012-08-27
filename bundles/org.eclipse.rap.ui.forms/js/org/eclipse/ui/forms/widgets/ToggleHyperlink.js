@@ -11,7 +11,7 @@
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.ui.forms.widgets.ToggleHyperlink", {
-  extend : qx.ui.basic.Image,
+  extend : rwt.widgets.base.Image,
   
   construct : function() {
     this.base( arguments );

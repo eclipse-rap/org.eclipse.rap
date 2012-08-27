@@ -16,16 +16,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
   members : {
 
     testCreateBrowserHistoryByProtocol : function() {
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var browserHistory = this._createBrowserHistoryByProtocol();
       assertTrue( browserHistory instanceof qx.client.History );
       assertFalse( browserHistory._timer.getEnabled() );
     },
 
     testSetHasNavigationListenerByProtocol : function() {
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var browserHistory = this._createBrowserHistoryByProtocol();
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : "bh",
         "action" : "listen",
         "properties" : {
@@ -39,9 +37,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
     },
 
     testAddByProtocol : function() {
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var browserHistory = this._createBrowserHistoryByProtocol();
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : "bh",
         "action" : "call",
         "method" : "add",
@@ -56,14 +54,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
     // Helper
 
     _createBrowserHistoryByProtocol : function() {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : "bh",
         "action" : "create",
         "type" : "rwt.BrowserHistory"
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( "bh" );
+      return rwt.protocol.ObjectManager.getObject( "bh" );
     }
 
   }
-  
+
 } );

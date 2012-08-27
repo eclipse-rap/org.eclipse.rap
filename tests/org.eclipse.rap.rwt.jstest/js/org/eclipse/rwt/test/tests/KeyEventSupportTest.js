@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
   members : {
     
     testSetActiveKeysByProtocol : function() {
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       
       processor.processOperation( {
@@ -37,7 +37,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testSetCancelKeysByProtocol : function() {
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       
       processor.processOperation( {
@@ -396,7 +396,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     testBufferEvents : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
-      var req = org.eclipse.swt.Server.getInstance();
+      var req = rwt.remote.Server.getInstance();
       req.removeEventListener( "received", keyUtil._onRequestReceived, keyUtil );
       TestUtil.initRequestLog();
       var text = this._createTextWidget();
@@ -421,7 +421,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     testBufferedEventInfo : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
-      var req = org.eclipse.swt.Server.getInstance();
+      var req = rwt.remote.Server.getInstance();
       req.removeEventListener( "received", keyUtil._onRequestReceived, keyUtil );
       TestUtil.initRequestLog();
       var text = this._createTextWidget();
@@ -667,11 +667,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     _createWidget : function() {
-      var result = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var result = new rwt.widgets.base.MultiCellWidget( [] );
       result.addToDocument();
       result.setLocation( 0, 0 );
       result.setDimension( 100, 100 );
-      qx.ui.core.Widget.flushGlobalQueues();
+      rwt.widgets.base.Widget.flushGlobalQueues();
       return result;
     },
     
@@ -679,7 +679,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -696,7 +696,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
           "key" : true
         }
       } );
-      var text = org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" );
+      var text = rwt.protocol.ObjectManager.getObject( "w3" );
       TestUtil.flush();
       text.focus();
       TestUtil.initRequestLog();
@@ -712,8 +712,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
     
     _setActiveKeys : function( widget, activeKeys ) {
-      var id = org.eclipse.rwt.protocol.ObjectManager.getId( widget );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var id = rwt.protocol.ObjectManager.getId( widget );
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : id,
         "action" : "set",
@@ -724,8 +724,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     _setCancelKeys : function( widget, cancelKeys ) {
-      var id = org.eclipse.rwt.protocol.ObjectManager.getId( widget );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var id = rwt.protocol.ObjectManager.getId( widget );
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : id,
         "action" : "set",

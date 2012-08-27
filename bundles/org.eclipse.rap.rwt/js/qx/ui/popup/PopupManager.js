@@ -51,13 +51,13 @@ qx.Class.define("qx.ui.popup.PopupManager",
      * Updates all registered popups
      *
      * @type member
-     * @param vTarget {qx.ui.popup.Popup | qx.ui.popup.ToolTip} current widget
+     * @param vTarget {rwt.widgets.base.Popup | rwt.widgets.base.ToolTip} current widget
      * @return {void}
      */
     update : function(vTarget)
     {
       // be sure that target is correctly set (needed for contains() later)
-      if (!(vTarget instanceof qx.ui.core.Widget)) {
+      if (!(vTarget instanceof rwt.widgets.base.Widget)) {
         vTarget = null;
       }
 
@@ -72,7 +72,7 @@ qx.Class.define("qx.ui.popup.PopupManager",
           continue;
         }
 
-        if (qx.Class.isDefined("qx.ui.popup.ToolTip") && vTarget instanceof qx.ui.popup.ToolTip && !(vPopup instanceof qx.ui.popup.ToolTip)) {
+        if (qx.Class.isDefined("rwt.widgets.base.ToolTip") && vTarget instanceof rwt.widgets.base.ToolTip && !(vPopup instanceof rwt.widgets.base.ToolTip)) {
           continue;
         }
 

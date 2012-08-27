@@ -172,7 +172,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
     },
 
     setStyleProperty : function( target, property, value ) {
-      if( target instanceof qx.ui.core.Widget ) {
+      if( target instanceof rwt.widgets.base.Widget ) {
         target.setStyleProperty( property, value );
       } else {
         target.style[ property ] = value;
@@ -180,7 +180,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
     },
 
     removeStyleProperty : function( target, property ) {
-      if( target instanceof qx.ui.core.Widget ) {
+      if( target instanceof rwt.widgets.base.Widget ) {
         target.removeStyleProperty( property );
       } else {
         target.style[ property ] = "";
@@ -189,7 +189,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
 
     removeCssFilter : function( target ) {
       var element = null;
-      if( target instanceof qx.ui.core.Widget ) {
+      if( target instanceof rwt.widgets.base.Widget ) {
         if( target.isCreated() ) {
           element = target.getElement();
         } else {

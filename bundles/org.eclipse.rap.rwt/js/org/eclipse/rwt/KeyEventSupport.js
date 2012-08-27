@@ -23,12 +23,12 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
     this._bufferedEvents = [];
     this._keyEventRequestRunning = false;
     this._ignoreNextKeypress = false;
-    var req = org.eclipse.swt.Server.getInstance();
+    var req = rwt.remote.Server.getInstance();
     req.addEventListener( "received", this._onRequestReceived, this );
   },
 
   destruct : function() {
-    var req = org.eclipse.swt.Server.getInstance();
+    var req = rwt.remote.Server.getInstance();
     req.removeEventListener( "received", this._onRequestReceived, this );
   },
 
@@ -146,12 +146,12 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
 
     _sendRequestAsync : function() {
       window.setTimeout( function() {
-        org.eclipse.swt.Server.getInstance().sendImmediate( true );
+        rwt.remote.Server.getInstance().sendImmediate( true );
       }, 0 );
     },
 
     _attachKeyEvent : function( widget, keyCode, charCode, domEvent ) {
-      var req = org.eclipse.swt.Server.getInstance();
+      var req = rwt.remote.Server.getInstance();
       var id;
       if( widget === null ) {
         id = "w1";

@@ -41,14 +41,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
-      assertTrue( widget instanceof org.eclipse.swt.widgets.DateTimeCalendar );
+      assertTrue( widget instanceof rwt.widgets.DateTimeCalendar );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl" ) );
       assertEquals( "datetime-calendar", widget.getAppearance() );
-      assertEquals( 34, org.eclipse.swt.widgets.Calendar.CELL_WIDTH );
-      assertEquals( 19, org.eclipse.swt.widgets.Calendar.CELL_HEIGHT );
-      assertEquals( this.monthNames, org.eclipse.swt.widgets.Calendar.MONTH_NAMES );
-      assertEquals( this.weekdayShortNames, org.eclipse.swt.widgets.Calendar.WEEKDAY_NAMES );
+      assertEquals( 34, rwt.widgets.base.Calendar.CELL_WIDTH );
+      assertEquals( 19, rwt.widgets.base.Calendar.CELL_HEIGHT );
+      assertEquals( this.monthNames, rwt.widgets.base.Calendar.MONTH_NAMES );
+      assertEquals( this.weekdayShortNames, rwt.widgets.base.Calendar.WEEKDAY_NAMES );
       shell.destroy();
       widget.destroy();
     },
@@ -95,8 +95,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
 
     testCreateDispose : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      org.eclipse.swt.widgets.Calendar.CELL_WIDTH = 24;
-      org.eclipse.swt.widgets.Calendar.CELL_HEIGHT = 16;
+      rwt.widgets.base.Calendar.CELL_WIDTH = 24;
+      rwt.widgets.base.Calendar.CELL_HEIGHT = 16;
       var months = [
         "Januar",
         "Februar",
@@ -113,7 +113,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
         ""
       ];
       var days = [ "", "So", "Mo", "Di", "Mi", "Do", "Fr", "Sa" ];
-      var calendar = new org.eclipse.swt.widgets.DateTimeCalendar( "medium",
+      var calendar = new rwt.widgets.DateTimeCalendar( "medium",
                                                                    months,
                                                                    days );
       calendar.addToDocument();
@@ -134,7 +134,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
     
     _createDefaultDateTimeByProtocol : function( id, parentId ) {
       var styles =  [ "CALENDAR", "MEDIUM" ];
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      rwt.protocol.MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.DateTime",
@@ -146,7 +146,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
           "weekdayShortNames" : this.weekdayShortNames
         }
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" );
+      return rwt.protocol.ObjectManager.getObject( "w3" );
     }
 
   }

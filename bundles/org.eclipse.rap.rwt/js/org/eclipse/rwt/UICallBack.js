@@ -38,7 +38,7 @@ org.eclipse.rwt.UICallBack.prototype = {
   },
 
   sendUIRequest : function() {
-    org.eclipse.swt.Server.getInstance().sendImmediate( true );
+    rwt.remote.Server.getInstance().sendImmediate( true );
   },
 
   sendUICallBackRequest : function() {
@@ -51,8 +51,8 @@ org.eclipse.rwt.UICallBack.prototype = {
   // workaround for bug 353819 - send UICallBackRequest with a timer
   _doSendUICallBackRequest : function() {
     this._requestTimer.stop();
-    var url = org.eclipse.swt.Server.getInstance().getUrl();
-    var request = new org.eclipse.rwt.Request( url, "GET", "application/javascript" );
+    var url = rwt.remote.Server.getInstance().getUrl();
+    var request = new rwt.remote.Request( url, "GET", "application/javascript" );
     request.setSuccessHandler( this._handleSuccess, this );
     request.setErrorHandler( this._handleError, this );
     request.setData( "custom_service_handler=org.eclipse.rap.uicallback" );
@@ -64,9 +64,9 @@ org.eclipse.rwt.UICallBack.prototype = {
     var text = event.responseText;
     try {
       var messageObject = JSON.parse( text );
-      org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
+      rwt.protocol.MessageProcessor.processMessage( messageObject );
     } catch( ex ) {
-      var escapedText = org.eclipse.rwt.protocol.EncodingUtil.escapeText( text, true );
+      var escapedText = rwt.protocol.EncodingUtil.escapeText( text, true );
       var msg = "Could not process UICallBack response: [" + escapedText + "]: " + ex;
       org.eclipse.rwt.ErrorHandler.showErrorPage( msg );
     }
@@ -75,7 +75,7 @@ org.eclipse.rwt.UICallBack.prototype = {
 
   _handleError : function( event ) {
     this._running = false;
-    if( org.eclipse.swt.Server.getInstance()._isConnectionError( event.status ) ) {
+    if( rwt.remote.Server.getInstance()._isConnectionError( event.status ) ) {
       qx.client.Timer.once( this.sendUICallBackRequest, this, this._retryInterval );
       this._increaseRetryInterval();
     }

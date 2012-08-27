@@ -176,7 +176,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolWriterTest", {
     // Helper
 
     setUp : function() {
-      writer = new org.eclipse.rwt.protocol.Writer();
+      writer = new rwt.protocol.MessageWriter();
     },
 
     tearDown : function() {

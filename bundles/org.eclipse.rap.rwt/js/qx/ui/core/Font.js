@@ -89,7 +89,7 @@ qx.Class.define( "qx.ui.core.Font", {
     /**
      * Removes all fond styles from this widget
      *
-     * @param widget {qx.ui.core.Widget} widget to reset
+     * @param widget {rwt.widgets.base.Widget} widget to reset
      */
     reset : function( widget ) {
       widget.removeStyleProperty("fontFamily");
@@ -210,7 +210,7 @@ qx.Class.define( "qx.ui.core.Font", {
     /**
      * Apply the font to the given widget.
      *
-     * @param widget {qx.ui.core.Widget} The widget to apply the font to
+     * @param widget {rwt.widgets.base.Widget} The widget to apply the font to
      */
     render : function( widget ) {
       widget.setStyleProperty( "fontFamily", this.__family );

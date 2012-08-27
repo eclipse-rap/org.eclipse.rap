@@ -1,0 +1,389 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                          and EclipseSource
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this
+ * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   1&1 Internet AG and others - original API and implementation
+ *   EclipseSource - adaptation for the Eclipse Rich Ajax Platform
+ ******************************************************************************/
+
+/**
+ * @appearance tab-view-button
+ * @state checked Set by {@link #checked}
+ * @state over
+ */
+qx.Class.define( "rwt.widgets.TabItem", {
+
+  extend : rwt.widgets.base.Atom,
+
+  construct : function( vText, vIcon, vIconWidth, vIconHeight, vFlash ) {
+    this.base( arguments, vText, vIcon, vIconWidth, vIconHeight, vFlash );
+    this.initChecked();
+    this.initTabIndex();
+    this.addEventListener("mouseover", this._onmouseover);
+    this.addEventListener("mouseout", this._onmouseout);
+    this.addEventListener("mousedown", this._onmousedown);
+    this.addEventListener("keydown", this._onkeydown);
+    this.addEventListener("keypress", this._onkeypress);
+  },
+
+  events: {
+    "closetab" : "qx.event.type.Event"
+  },
+
+  properties : {
+
+    appearance : {
+      refine : true,
+      init : "tab-view-button"
+    },
+
+    /** default Close Tab Button */
+    showCloseButton : {
+      check : "Boolean",
+      init : false,
+      apply : "_applyShowCloseButton",
+      event : "changeShowCloseButton"
+    },
+
+    /** Close Tab Icon */
+    closeButtonImage : {
+      check : "String",
+      init : "icon/16/actions/dialog-cancel.png",
+      apply : "_applyCloseButtonImage"
+    },
+
+    tabIndex : {
+      refine : true,
+      init : 1
+    },
+
+    /** If this tab is the currently selected/active one */
+    checked : {
+      check :"Boolean",
+      init : false,
+      apply : "_applyChecked",
+      event : "changeChecked"
+    },
+
+    /** The attached page of this tab */
+    page : {
+      check : "rwt.widgets.base.TabFolderPage",
+      apply : "_applyPage",
+      nullable : true
+    },
+
+    /** The assigned qx.ui.selection.RadioManager which handles the switching between registered buttons */
+    manager : {
+      check  : "qx.ui.selection.RadioManager",
+      nullable : true,
+      apply : "_applyManager"
+    },
+
+    /**
+     * The name of the radio group. All the radio elements in a group (registered by the same manager)
+     *  have the same name (and could have a different value).
+     */
+    name : {
+      check : "String",
+      apply : "_applyName"
+    }
+
+  },
+
+  members : {
+
+    /**
+     * TODOC
+     *
+     * @type member
+     * @param e {Event} TODOC
+     * @return {void}
+     */
+    _onkeydown : function( e ) {
+      var identifier = e.getKeyIdentifier();
+      if( identifier == "Enter" || identifier == "Space" ) {
+        // there is no toggeling, just make it checked
+        this.setChecked( true );
+      }
+    },
+
+    /**
+     * TODOC
+     *
+     * @type member
+     * @param e {Event} TODOC
+     * @return {void}
+     */
+    _onkeypress : function( e ) {
+      switch( e.getKeyIdentifier() ) {
+        case "Left":
+          var vPrev = this.getPreviousActiveSibling();
+          if ( vPrev && vPrev != this ) {
+            // we want to enable the outline border, because
+            // the user used the keyboard for activation
+            delete qx.event.handler.FocusHandler.mouseFocus;
+            // focus previous tab
+            vPrev.setFocused(true);
+            // and naturally make it also checked
+            vPrev.setChecked(true);
+          }
+        break;
+        case "Right":
+          var vNext = this.getNextActiveSibling();
+          if( vNext && vNext != this ) {
+            // we want to enable the outline border, because
+            // the user used the keyboard for activation
+            delete qx.event.handler.FocusHandler.mouseFocus;
+            // focus next tab
+            vNext.setFocused(true);
+            // and naturally make it also checked
+            vNext.setChecked(true);
+          }
+        break;
+      }
+    },
+
+    /**
+     * TODOC
+     *
+     * @type member
+     * @param e {Event} TODOC
+     * @return {void}
+     */
+    _ontabclose : function( e ) {
+      this.createDispatchDataEvent( "closetab", this );
+      e.stopPropagation();
+    },
+
+    /**
+     * TODOC
+     *
+     * @type member
+     * @param value {var} Current value
+     * @param old {var} Previous value
+     */
+    _applyShowCloseButton : function( value, old ) {
+      // if no image exists, then create one
+      if( !this._closeButtonImage ) {
+        this._closeButtonImage = new rwt.widgets.base.Image( this.getCloseButtonImage() );
+      }
+      if( value ) {
+        this._closeButtonImage.addEventListener( "click", this._ontabclose, this );
+        this.add( this._closeButtonImage );
+      } else {
+        this.remove( this._closeButtonImage );
+        this._closeButtonImage.removeEventListener( "click", this._ontabclose, this );
+      }
+    },
+
+    /**
+     * TODOC
+     *
+     * @type member
+     * @param value {var} Current value
+     * @param old {var} Previous value
+     */
+    _applyCloseButtonImage : function( value, old ) {
+      if( this._closeButtonImage ) {
+        this._closeButtonImage.setSource( value );
+      }
+    },
+
+    /**
+     * TODOC
+     *
+     * @type member
+     * @return {void}
+     */
+    _renderAppearance : function() {
+      if( this.getView() ) {
+        if( this.isFirstVisibleChild() ) {
+         this.addState( "firstChild" );
+        } else {
+          this.removeState( "lastChild" );
+        }
+        if( this.isLastVisibleChild() ) {
+          this.addState( "lastChild" );
+        } else {
+          this.removeState( "lastChild" );
+        }
+        if( this.getView().getAlignTabsToLeft() ) {
+          this.addState( "alignLeft" );
+        } else {
+          this.removeState( "alignLeft" );
+        }
+        if( !this.getView().getAlignTabsToLeft() ) {
+          this.addState( "alignRight" );
+        } else {
+          this.removeState( "alignRight" );
+        }
+        if( this.getView().getPlaceBarOnTop() ) {
+          this.addState( "barTop" );
+        } else {
+          this.removeState( "barTop" );
+        }
+        if( !this.getView().getPlaceBarOnTop() ) {
+          this.addState( "barBottom" );
+        } else {
+          this.removeState( "barBottom" );
+        }
+      }
+      this.base( arguments );
+    },
+
+    /**
+     * TODOC
+     *
+     * @type member
+     * @return {var} TODOC
+     */
+    getView : function() {
+      var pa = this.getParent();
+      return pa ? pa.getParent() : null;
+    },
+
+    /**
+     * TODOC
+     *
+     * @type member
+     * @param value {var} Current value
+     * @param old {var} Previous value
+     */
+    _applyManager : function( value, old ) {
+      if( old ) {
+        old.remove( this );
+      }
+      if( value ) {
+        value.add( this );
+      }
+    },
+
+    /**
+     * TODOC
+     *
+     * @type member
+     * @param value {var} Current value
+     * @param old {var} Previous value
+     * @return {var} TODOC
+     */
+    _applyParent : function( value, old ) {
+      this.base( arguments, value, old );
+      if ( old ) {
+        old.getManager().remove( this );
+      }
+      if( value ) {
+        value.getManager().add( this );
+      }
+    },
+
+    /**
+     * TODOC
+     *
+     * @type member
+     * @param value {var} Current value
+     * @param old {var} Previous value
+     */
+    _applyPage : function( value, old ) {
+      if( old ) {
+        old.setButton( null );
+      }
+      if( value ) {
+        value.setButton( this );
+        if( this.getChecked() ) {
+          value.show();
+        } else {
+          value.hide();
+        }
+      }
+    },
+
+    /**
+     * TODOC
+     *
+     * @type member
+     * @param value {var} Current value
+     * @param old {var} Previous value
+     */
+
+    _applyChecked : function( value, old )
+    {
+      if( this._hasParent ) {
+        var vManager = this.getManager();
+        if( vManager ) {
+          vManager.handleItemChecked(this, value);
+        }
+      }
+      if( value ) {
+        this.addState( "checked" );
+      } else {
+        this.removeState( "checked" );
+      }
+      var vPage = this.getPage();
+      if( vPage ) {
+        if( this.getChecked() ) {
+          vPage.show();
+        } else {
+          vPage.hide();
+        }
+      }
+      this.setZIndex( value ? 1 : 0 );
+    },
+
+    /**
+     * TODOC
+     *
+     * @type member
+     * @param value {var} Current value
+     * @param old {var} Previous value
+     */
+    _applyName : function( value, old ) {
+      if( this.getManager() ) {
+        this.getManager().setName(value);
+      }
+    },
+
+    /**
+     * TODOC
+     *
+     * @type member
+     * @param e {Event} TODOC
+     * @return {void}
+     */
+    _onmousedown : function( e ) {
+      this.setChecked( true );
+    },
+
+    /**
+     * TODOC
+     *
+     * @type member
+     * @param e {Event} TODOC
+     * @return {void}
+     */
+    _onmouseover : function( e ) {
+      this.addState( "over" );
+    },
+
+    /**
+     * TODOC
+     *
+     * @type member
+     * @param e {Event} TODOC
+     * @return {void}
+     */
+    _onmouseout : function( e ) {
+      this.removeState( "over" );
+    }
+
+  },
+
+  destruct : function() {
+    this._disposeObjects( "_closeButtonImage" );
+  }
+
+} );

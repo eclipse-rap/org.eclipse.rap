@@ -35,7 +35,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
         var param = size[ 0 ] + "," + size[ 1 ];
         var id = item[ 0 ];
         this._addRequestParam( id, param );
-        org.eclipse.swt.Server.getInstance().send();
+        rwt.remote.Server.getInstance().send();
       }
     },
 
@@ -127,12 +127,12 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
     },
 
     _addRequestParam : function ( name, value ) {
-      var request = org.eclipse.swt.Server.getInstance();
+      var request = rwt.remote.Server.getInstance();
       request.addParameter( name, value );
     },
 
     _escapeText : function( text ) {
-      var EncodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var EncodingUtil = rwt.protocol.EncodingUtil;
       var result = EncodingUtil.escapeText( text, true );
       result = EncodingUtil.replaceNewLines( result, "<br/>" );
       result = EncodingUtil.replaceWhiteSpaces( result );

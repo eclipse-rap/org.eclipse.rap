@@ -16,7 +16,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 
     testCreateAndDisposeGC : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -41,7 +41,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 
     testCreateGCObjectRef : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -54,11 +54,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 
     testCreateGCByProtocol : function() {
       this._createGCByProtocol();
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var shell = ObjectManager.getObject( "w2" );
       var canvas = ObjectManager.getObject( "w3" );
       var gc = ObjectManager.getObject( "w4" );
-      assertTrue( canvas instanceof org.eclipse.swt.widgets.Composite );
+      assertTrue( canvas instanceof rwt.widgets.Composite );
       assertTrue( gc instanceof org.eclipse.swt.graphics.GC );
       assertIdentical( shell, canvas.getParent() );
       assertIdentical( canvas, gc._control );
@@ -72,7 +72,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       this._createGCByProtocol();
       TestUtil.flush();
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectManager;
       var shell = ObjectManager.getObject( "w2" );
       var canvas = ObjectManager.getObject( "w3" );
       var gc = ObjectManager.getObject( "w4" );
@@ -80,7 +80,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       var node = canvas._getTargetNode();
       assertTrue( node.childNodes.length > 1 );
 
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w4",
         "action" : "destroy"
@@ -101,9 +101,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 //        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 //        var graphicsUtil = org.eclipse.rwt.GraphicsUtil;
 //        var border = new org.eclipse.rwt.Border( 3, "rounded", "#FF00F0", [ 0, 1, 2, 3 ] );
-//        var parent = new org.eclipse.swt.widgets.Composite();
+//        var parent = new rwt.widgets.Composite();
 //        parent.addToDocument();
-//        var canvas = new org.eclipse.swt.widgets.Composite();
+//        var canvas = new rwt.widgets.Composite();
 //        canvas.setDimension( 300, 300 );
 //        canvas.setParent( parent );
 //        var log = [];
@@ -126,7 +126,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 
     testCreateGCBeforeControl : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       assertFalse( canvas.isCreated() );
@@ -146,9 +146,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 
     testCanvasWithChildren : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
-      var widget = new qx.ui.basic.Terminator();
+      var widget = new rwt.widgets.base.Terminator();
       widget.setParent( canvas );
       canvas.addToDocument();
       TestUtil.flush();
@@ -165,7 +165,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 
     testSetAndResetFields : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -201,7 +201,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 
     testSaveAndRestoreFields : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -239,7 +239,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
 
     testDrawText : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -293,8 +293,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       assertEquals( expected, gc._escapeText( text, false, false, false ) );
 
       gc.dispose();
-      org.eclipse.rwt.protocol.ObjectManager.getObject( "w2" ).destroy();
-      org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" ).destroy();
+      rwt.protocol.ObjectManager.getObject( "w2" ).destroy();
+      rwt.protocol.ObjectManager.getObject( "w3" ).destroy();
     },
 
     /////////
@@ -303,7 +303,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
     _createGCByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
+      var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -321,7 +321,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
           "parent" : "w3"
         }
       } );
-      return org.eclipse.rwt.protocol.ObjectManager.getObject( "w4" );
+      return rwt.protocol.ObjectManager.getObject( "w4" );
     },
 
     _setProperty : function( gc, property, value ) {

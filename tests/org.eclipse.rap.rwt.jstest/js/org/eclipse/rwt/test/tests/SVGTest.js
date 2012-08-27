@@ -19,7 +19,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
     testDrawShapeInWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
-      var parent = new qx.ui.basic.Terminator();
+      var parent = new rwt.widgets.base.Terminator();
       parent.setLocation( 10, 10 );
       parent.setDimension( 400, 400 );
       parent.addToDocument();
@@ -210,7 +210,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
     testDisplay : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var GraphicsUtil = org.eclipse.rwt.GraphicsUtil;
-      var parent = new qx.ui.basic.Terminator();
+      var parent = new rwt.widgets.base.Terminator();
       parent.setLocation( 10, 10 );
       parent.setDimension( 400, 400 );
       parent.addToDocument();

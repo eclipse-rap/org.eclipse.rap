@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
 
     testInit : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -49,7 +49,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
 
     testDrawLine : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
@@ -77,7 +77,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
 
     testDrawEllipse : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
+      var canvas = new rwt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
