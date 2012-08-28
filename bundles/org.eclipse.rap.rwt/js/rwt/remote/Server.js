@@ -29,6 +29,8 @@ qx.Class.define( "rwt.remote.Server", {
     this.base( arguments );
     this._url = "";
     this._parameters = {};
+    this._writer = null;
+    this._event = null;
     this._uiRootId = "";
     this._requestCounter = null;
     this._sendTimer = new Timer( 60 );
@@ -82,12 +84,25 @@ qx.Class.define( "rwt.remote.Server", {
      */
     addParameter : function( name, value ) {
       this._parameters[ name ] = value;
+      var nameArr = typeof name === "string" ? name.split( "." ) : null;
+      if( nameArr ) {
+        if( this._event && name.indexOf( this._event[ 1 ] ) === 0 ) {
+          this._event[ 2 ][ nameArr.pop() ] = value;
+        } else {
+          this._flushEvent();
+          this._getMessageWriter().appendSet( nameArr[ 0 ], nameArr[ 1 ], value );
+        }
+      } else {
+        // Currently results of TSD are not compatible with protocol
+        //console.trace();
+      }
     },
 
     /**
      * Removes the parameter denoted by name from the next request
      */
     removeParameter : function( name ) {
+      // TODO [tb] : Can not be supported in JSON protocol
       delete this._parameters[ name ];
     },
 
@@ -96,6 +111,7 @@ qx.Class.define( "rwt.remote.Server", {
      * with such a name exists.
      */
     getParameter : function( name ) {
+      // TODO [tb] : Can not be supported in JSON protocol
       var result = this._parameters[ name ];
       if( result === undefined ) {
         result = null;
@@ -109,6 +125,15 @@ qx.Class.define( "rwt.remote.Server", {
      */
     addEvent : function( eventType, sourceId ) {
       this._parameters[ eventType ] = sourceId;
+      this._event = [ sourceId, eventType, {} ];
+    },
+
+    _flushEvent : function() {
+      if( this._event ) {
+        var writer = this._getMessageWriter();
+        writer.appendNotify.apply( writer, this._event );
+        this._event = null;
+      }
     },
 
     /**
@@ -133,6 +158,7 @@ qx.Class.define( "rwt.remote.Server", {
         this._parameters[ "uiRoot" ] = this._uiRootId;
         if( this._requestCounter != null ) {
           this._parameters[ "requestCounter" ] = this._requestCounter;
+          this._getMessageWriter().appendMeta( "requestCounter", this._requestCounter );
           this._requestCounter = -1;
         }
         var request = this._createRequest();
@@ -147,6 +173,13 @@ qx.Class.define( "rwt.remote.Server", {
     ////////////
     // Internals
 
+    _getMessageWriter : function() {
+      if( this._writer === null ) {
+        this._writer = new rwt.protocol.MessageWriter();
+      }
+      return this._writer;
+    },
+
     _attachParameters : function( request ) {
       var data = [];
       for( var key in this._parameters ) {
@@ -154,6 +187,10 @@ qx.Class.define( "rwt.remote.Server", {
           encodeURIComponent( key ) + "=" + encodeURIComponent( this._parameters[ key ] )
         );
       }
+      this._flushEvent();
+      data.push( "message=" + encodeURIComponent( this._getMessageWriter().createMessage() ) );
+      this._writer.dispose();
+      this._writer = null;
       request.setData( data.join( "&" ) );
     },
 

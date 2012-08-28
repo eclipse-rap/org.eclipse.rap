@@ -25,6 +25,7 @@ public class RWTTestsContribution implements TestContribution {
   private static final String[] RESOURCE_FILES = new String[] {
     "fixture/FakeServer.js",
     "fixture/NativeRequestMock.js",
+    "fixture/Message.js",
     "Presenter.js",
     "TestRunner.js",
     "fixture/TestUtil.js",
@@ -101,7 +102,9 @@ public class RWTTestsContribution implements TestContribution {
     "tests/ExternalBrowserTest.js",
     "tests/JSExecutorTest.js",
     "tests/BrowserHistoryTest.js",
-    "tests/FontSizeCalculationTest.js"
+    "tests/FontSizeCalculationTest.js",
+    "tests/MessageTest.js",
+    "tests/ServerTest.js"
   };
 
   public String getName() {

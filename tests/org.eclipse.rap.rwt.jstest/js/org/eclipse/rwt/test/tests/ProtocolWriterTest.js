@@ -74,24 +74,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolWriterTest", {
       }
     },
 
-    testMessageWithCall : function() {
+    testMessageWithNotify : function() {
       var shellId = "w2";
       var methodName = "methodName";
       var properties = {};
       properties[ "key1" ] = "a";
       properties[ "key2"] = "b" ;
 
-      writer.appendCall( shellId, methodName, properties );
+      writer.appendNotify( shellId, methodName, properties );
 
       var operation = getMessage().operations[ 0 ];
-      assertEquals( "call", operation[ 0 ] );
+      assertEquals( "notify", operation[ 0 ] );
       assertEquals( shellId, operation[ 1 ] );
       assertEquals( methodName, operation[ 2 ] );
       assertEquals( properties, operation[ 3 ] );
     },
 
 
-    testMessageWithTwoCalls : function() {
+    testMessageWithTwoNotify : function() {
       var shellId = "w2";
       var methodName = "methodName";
       var properties = {};
@@ -99,8 +99,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolWriterTest", {
       properties[ "key2" ] = "b";
       properties[ "key3" ] = false;
 
-      writer.appendCall( shellId, methodName, null );
-      writer.appendCall( shellId, methodName, properties );
+      writer.appendNotify( shellId, methodName, null );
+      writer.appendNotify( shellId, methodName, properties );
 
       var operation = getMessage().operations[ 1 ];
       assertEquals( shellId, operation[ 1 ] );
@@ -158,11 +158,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolWriterTest", {
       assertEquals( "newText", operation[ 2 ][ "text" ] );
     },
 
-    testMessageWithCallBetweenSetDuplicateProperty : function() {
+    testMessageWithNotifyBetweenSetDuplicateProperty : function() {
       var buttonId = "w5";
 
       writer.appendSet( buttonId, "text", "newText" );
-      writer.appendCall( buttonId, "methodName", null );
+      writer.appendNotify( buttonId, "methodName", null );
       writer.appendSet( buttonId, "text", "newText" );
 
       var message = getMessage();

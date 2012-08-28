@@ -700,6 +700,13 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     return this.getRequestLog()[ 0 ];
   },
 
+  getMessageObject : function() {
+    var message = this.getMessage();
+    message = message.split( "message=" )[ 1 ];
+    message = message.split( "&" )[ 0 ];
+    return new org.eclipse.rwt.test.fixture.Message( decodeURIComponent( message ) );
+  },
+
   scheduleResponse : function( func ) {
     this._response = func;
   },
