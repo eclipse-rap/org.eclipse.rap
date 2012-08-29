@@ -12,7 +12,7 @@
 qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
   extend : qx.core.Object,
-  
+
   members : {
 
     testCreateListByProtocol : function() {
@@ -343,7 +343,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       TestUtil.flush();
       assertTrue( list.isDisposed() );
     },
-    
+
     testSetItems : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
@@ -397,19 +397,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       this._addItems( list, 3 );
       TestUtil.flush();
       list.selectItem( 2 );
-      var selection = this._getSelection( list ); 
+      var selection = this._getSelection( list );
       assertEquals( 1, selection.length );
       assertEquals( "item2", selection[ 0 ].getLabel() );
       list.destroy();
     },
-    
+
     testSelectItemByCharacter : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       list.setItems( [ "Akira", "Boogiepop", "C something", "Daria" ] );
       TestUtil.flush();
       TestUtil.press( list, "c" );
-      var selection = this._getSelection( list ); 
+      var selection = this._getSelection( list );
       assertEquals( 1, selection.length );
       assertEquals( "C something", selection[ 0 ].getLabel() );
       list.destroy();
@@ -431,29 +431,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
         }
       } );
       var list = ObjectManager.getObject( "w3" );
-      
+
       list.setItems( [ "Akira", "Boogiepop", "<i>C</i> something", "Daria" ] );
       TestUtil.flush();
 
       TestUtil.press( list, "c" );
 
-      var selection = this._getSelection( list ); 
+      var selection = this._getSelection( list );
       assertEquals( 1, selection.length );
       assertEquals( "<i>C</i> something", selection[ 0 ].getLabel() );
       list.destroy();
     },
-    
+
     testSelectItems : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 3 );
       TestUtil.flush();
       list.selectItems( [ 1, 2 ] );
-      var selection = this._getSelection( list ); 
+      var selection = this._getSelection( list );
       assertEquals( 2, selection.length );
       assertEquals( "item1", selection[ 0 ].getLabel() );
       assertEquals( "item2", selection[ 1 ].getLabel() );
-      list.destroy();      
+      list.destroy();
     },
 
     testSelectAll : function() {
@@ -462,14 +462,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       this._addItems( list, 3 );
       TestUtil.flush();
       list.selectAll();
-      var selection = this._getSelection( list ); 
+      var selection = this._getSelection( list );
       assertEquals( 3, selection.length );
       assertEquals( "item0", selection[ 0 ].getLabel() );
       assertEquals( "item1", selection[ 1 ].getLabel() );
       assertEquals( "item2", selection[ 2 ].getLabel() );
-      list.destroy();            
+      list.destroy();
     },
-    
+
     testFocusItem : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
@@ -480,7 +480,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.selectAll();
       list.destroy();
     },
-    
+
     testSetTopIndex : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
@@ -491,7 +491,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.selectAll();
       list.destroy();
     },
-    
+
     testSendSelection : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
@@ -500,13 +500,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var item = this._getItems( list )[ 1 ];
       list.setHasSelectionListener( true );
       org.eclipse.swt.WidgetManager.getInstance().add( list, "w3" );
+
       TestUtil.click( item );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertTrue( TestUtil.getMessage().indexOf( "w3.selection=1" ) != -1 );
-      list.selectAll();
+      assertEquals( 1, TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
       list.destroy();
     },
-    
+
     testSetItemDimensions : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
@@ -535,10 +536,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var item = this._getItems( list )[ 1 ];
       list.setHasSelectionListener( true );
       org.eclipse.swt.WidgetManager.getInstance().add( list, "w3" );
+
       TestUtil.doubleClick( item );
+
       assertEquals( 2, TestUtil.getRequestsSend() );
-      var msg = TestUtil.getRequestLog()[ 1 ];
-      assertTrue( msg.indexOf( "widgetDefaultSelected=w3" ) != -1 );
+      var msg = TestUtil.getMessageObject( 1 );
+      assertNotNull( msg.findNotifyOperation( "w3", "widgetDefaultSelected" ) );
       list.selectAll();
       list.destroy();
     },
@@ -568,7 +571,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       assertEquals( clientBounds.height, hbarBounds.top );
       list.destroy();
     },
-    
+
     testScrollBarVisibility : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
@@ -590,7 +593,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       assertTrue( this._isScrollbarVisible( list, false ) );
       list.destroy();
     },
-    
+
     testRelayoutOnScrollBarShowHide : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
@@ -683,7 +686,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       TestUtil.flush();
       var position = this._getScrollPosition( list );
       assertEquals( [ 10, 20 ], position );
-      list.destroy();      
+      list.destroy();
     },
 
     testSyncScrollBars : function() {
@@ -692,7 +695,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       this._addItems( list, 70 );
       list.setItemDimensions( 500, 20 );
       TestUtil.flush();
-      list._clientArea.setScrollLeft( 10 ); 
+      list._clientArea.setScrollLeft( 10 );
       list._clientArea.setScrollTop( 20 );
       list._onscroll( {} );
       assertEquals( 10, list._horzScrollBar.getValue() );
@@ -712,8 +715,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list._onscroll( {} );
       TestUtil.forceTimerOnce();
       var position = this._getScrollPosition( list );
-      assertEquals( [ 0, 0 ], position );      
-      list.destroy();      
+      assertEquals( [ 0, 0 ], position );
+      list.destroy();
     },
 
     testOnlyHScrollStyle : function() {
@@ -729,7 +732,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list._onscroll( {} );
       var position = this._getScrollPosition( list );
       assertEquals( [ 50, 0 ], position );
-      list.destroy();      
+      list.destroy();
     },
 
     testOnlyVScrollStyle : function() {
@@ -743,13 +746,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list._clientArea.setScrollTop( 70 );
       list._onscroll( {} );
       var position = this._getScrollPosition( list );
-      assertEquals( [ 0, 70 ], position );      
+      assertEquals( [ 0, 70 ], position );
       list.destroy();
     },
-    
+
     //////////
     // Helpers
-    
+
     _createDefaultList : function( noflush ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = new rwt.widgets.List( true );
@@ -761,7 +764,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       }
       return list;
     },
-    
+
     _addItems : function( list, number ) {
       var items = [];
       for( var i = 0; i < number; i++ ) {
@@ -769,23 +772,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       }
       list.setItems( items );
     },
-    
+
     _getItems : function( list ) {
       return list._clientArea.getChildren();
     },
-    
+
     _getSelection : function( list ) {
       return list.getSelectedItems();
     },
-    
+
     _getLeadItem : function( list ) {
       return list.getManager().getLeadItem();
     },
-    
+
     _getTopItemIndex : function( list ) {
       return list._getTopIndex();
     },
-    
+
     _isScrollbarVisible : function( list, horiz ) {
       var result;
       if( horiz ) {
@@ -800,8 +803,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var client = list._clientArea;
       return [ client.getScrollLeft(), client.getScrollTop() ];
     },
-    
+
     _fakeAppearance : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.fakeAppearance( "list-item", {
         style : function( states ) {
           var result = {
@@ -815,11 +819,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           if( states.over && states.even ) {
             result.backgroundColor = "red";
           } else if( states.over && !states.even ) {
-            result.backgroundColor = "green";            
+            result.backgroundColor = "green";
           } else if( !states.over && states.even ) {
-            result.backgroundColor = "blue";                        
-          } else {            
-            result.backgroundColor = "white";                        
+            result.backgroundColor = "blue";
+          } else {
+            result.backgroundColor = "white";
           }
           result.textColor = "black";
           result.backgroundImage = null;
