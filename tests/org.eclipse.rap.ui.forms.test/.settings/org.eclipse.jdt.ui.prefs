@@ -1,7 +1,6 @@
-#Thu Apr 23 09:36:04 CEST 2009
 eclipse.preferences.version=1
 formatter_profile=_RAP
-formatter_settings_version=11
+formatter_settings_version=12
 org.eclipse.jdt.ui.ignorelowercasenames=true
 org.eclipse.jdt.ui.importorder=java;javax;org;com;
 org.eclipse.jdt.ui.javadoc=false

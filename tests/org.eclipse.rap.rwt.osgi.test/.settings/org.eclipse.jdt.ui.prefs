@@ -1,7 +1,6 @@
-#Tue May 31 09:25:28 CEST 2011
 eclipse.preferences.version=1
 formatter_profile=_RAP
-formatter_settings_version=11
+formatter_settings_version=12
 org.eclipse.jdt.ui.exception.name=e
 org.eclipse.jdt.ui.gettersetter.use.is=true
 org.eclipse.jdt.ui.ignorelowercasenames=true
