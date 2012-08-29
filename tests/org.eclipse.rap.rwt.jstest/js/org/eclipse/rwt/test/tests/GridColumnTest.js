@@ -37,7 +37,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
       var column = ObjectManager.getObject( "w4" );
       assertTrue( column instanceof rwt.widgets.GridColumn );
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
       assertIdentical( tree._header, label.getParent() );
       assertEquals( "tree-column", label.getAppearance() );
       column.dispose();
@@ -179,7 +179,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.protocolSet( "w4", { "index" : 1 } );
 
       assertFalse( column.getCheck() );
-      assertTrue( tree.getRenderConfig().itemCellCheck[ 1 ] != true );
+      assertTrue( tree.getRenderConfig().itemCellCheck[ 1 ] !== true );
       column.dispose();
       tree.destroy();
     },
@@ -369,7 +369,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.protocolSet( "w4", { "alignment" : "right" } );
       TestUtil.flush();
 
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
       assertEquals( "right", label.getHorizontalChildrenAlign() );
       assertEquals( "right", tree.getRenderConfig().alignment[ 0 ] );
       column.dispose();
@@ -503,7 +503,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.protocolSet( "w5", { "left" : 23, "width" : 177 } ); // makes header scrollable
       tree.setScrollLeft( 10 );
       TestUtil.flush();
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
       assertNotNull( label.getElement() );
       var button = qx.event.type.MouseEvent.buttons.left;
 
@@ -529,7 +529,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20, "fixed" : true } );
       TestUtil.protocolSet( "w5", { "left" : 23, "width" : 177 } ); // makes header scrollable
       TestUtil.flush();
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
       assertNotNull( label.getElement() );
       var button = qx.event.type.MouseEvent.buttons.left;
 
@@ -554,7 +554,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
       var button = qx.event.type.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       TestUtil.fakeMouseEventDOM( label.getElement(), "mousedown", button, 13, 3 );
       TestUtil.flush();
@@ -563,8 +563,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.fakeMouseEventDOM( label.getElement(), "mouseup", button, 20, 3 );
       TestUtil.flush();
 
-      var message = TestUtil.getMessage();
-      assertTrue( message.indexOf( "w4.left=10" ) !== -1 );
+      var message = TestUtil.getMessageObject();
+      assertEquals( 10, message.findSetProperty( "w4", "left" ) );
       column.dispose();
       tree.destroy();
     },
@@ -579,7 +579,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
       var button = qx.event.type.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       TestUtil.fakeMouseEventDOM( label.getElement(), "mouseover", button, 13, 3 );
       TestUtil.flush();
@@ -599,7 +599,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
       var button = qx.event.type.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       TestUtil.fakeMouseEventDOM( label.getElement(), "mouseover", button, 13, 3 );
       TestUtil.flush();
@@ -620,7 +620,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
       var button = qx.event.type.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       TestUtil.fakeMouseEventDOM( label.getElement(), "mousedown", button, 13, 3 );
       TestUtil.flush();
@@ -649,7 +649,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
       var button = qx.event.type.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       TestUtil.fakeMouseEventDOM( label.getElement(), "mousedown", button, 13, 3 );
       TestUtil.flush();
@@ -682,7 +682,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
       var button = qx.event.type.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       TestUtil.fakeMouseEventDOM( label.getElement(), "mousedown", button, 13, 3 );
       TestUtil.flush();
@@ -711,7 +711,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
       var button = qx.event.type.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       TestUtil.fakeMouseEventDOM( label.getElement(), "mousedown", button, 13, 3 );
       TestUtil.flush();
@@ -738,7 +738,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
       var button = qx.event.type.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       TestUtil.fakeMouseEventDOM( label.getElement(), "mousedown", button, 13, 3 );
       TestUtil.flush();
@@ -770,7 +770,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
       var button = qx.event.type.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       TestUtil.fakeMouseEventDOM( label.getElement(), "mousedown", button, 13, 3 );
       TestUtil.flush();
@@ -805,7 +805,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
       var button = qx.event.type.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       TestUtil.fakeMouseEventDOM( label.getElement(), "mousedown", button, 13, 3 );
       TestUtil.flush();
@@ -813,7 +813,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
       TestUtil.fakeMouseEventDOM( label.getElement(), "mouseup", button, 70, 3 );
       TestUtil.flush();
-      var feedbackLabel = this._getColumnDragFeedback( tree );
       var dummyLabel = this._getDummyLabel( tree );
       org.eclipse.swt.EventUtil.setSuspended( true );
       TestUtil.protocolSet( "w4", { "left" : 30 } );
@@ -853,7 +852,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
       var button = qx.event.type.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       TestUtil.fakeMouseEventDOM( label.getElement(), "mousedown", button, 13, 3 );
       TestUtil.flush();
@@ -887,7 +886,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
       var button = qx.event.type.MouseEvent.buttons.left;
       TestUtil.initRequestLog();
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       TestUtil.fakeMouseEventDOM( label.getElement(), "mousedown", button, 13, 3 );
       TestUtil.flush();
@@ -922,14 +921,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       column.setHasSelectionListener( true );
       TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20 } );
       TestUtil.flush();
-      var button = qx.event.type.MouseEvent.buttons.left;
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       TestUtil.click( label );
       TestUtil.flush();
 
-      var message = TestUtil.getMessage();
-      assertTrue( message.indexOf( "org.eclipse.swt.events.widgetSelected=w4" ) !== -1 );
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w4", "widgetSelected" ) );
       column.dispose();
       tree.destroy();
     },
@@ -942,14 +940,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       column.setHasSelectionListener( true );
       TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20 } );
       TestUtil.flush();
-      var button = qx.event.type.MouseEvent.buttons.left;
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       TestUtil.click( label, 23, 3 );
       TestUtil.flush();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.widgetSelected=w4" ) === -1 );
+      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w4", "widgetSelected" ) );
       column.dispose();
       tree.destroy();
     },
@@ -963,7 +960,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20, "moveable" : true } );
       TestUtil.flush();
       var button = qx.event.type.MouseEvent.buttons.left;
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       TestUtil.fakeMouseEventDOM( label.getElement(), "mousedown", button, 13, 3 );
       TestUtil.flush();
@@ -974,8 +971,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.fakeMouseEventDOM( label.getElement(), "click", button, 20, 3 );
       TestUtil.flush(); // NOTE: unrealistic. browser would very likely not fire click after moving
 
-      assertEquals( 1, TestUtil.getRequestsSend() );
-      assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.widgetSelected=w4" ) === -1 );
+      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w4", "widgetSelected" ) );
       column.dispose();
       tree.destroy();
     },
@@ -986,10 +982,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var column = this._createColumnByProtocol( "w4", "w3", [] );
       TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20 } );
       TestUtil.flush();
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
       assertNotNull( label.getElement() );
       var button = qx.event.type.MouseEvent.buttons.left;
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       TestUtil.fakeMouseEventDOM( label.getElement(), "mousedown", button, 23, 3 );
       TestUtil.fakeMouseEventDOM( label.getElement(), "mousedown", button, 23, 3 );
@@ -1021,7 +1017,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var column = ObjectManager.getObject( "w4" );
       assertTrue( column instanceof rwt.widgets.GridColumn );
       assertTrue( column.isGroup() );
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
       assertIdentical( tree._header, label.getParent() );
       assertEquals( "tree-column", label.getAppearance() );
       assertTrue( label.hasState( "group" ) );
@@ -1195,7 +1191,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       tree.setHeaderHeight( 50 );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
-      var group = this._createColumnGroupByProtocol( "w5", "w3", [], true );
+      this._createColumnGroupByProtocol( "w5", "w3", [], true );
 
       TestUtil.protocolSet( "w4", { "group" : "w5", "left" : 22, "width": 20 } );
       TestUtil.protocolSet( "w5", { "height" : 22, "left" : 10, "width": 40 } );
@@ -1348,7 +1344,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.treeCollapsed=w4" ) !== -1 );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w4", "treeCollapsed" ) );
+
       column.dispose();
       tree.destroy();
     },
@@ -1367,7 +1364,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.treeExpanded=w4" ) !== -1 );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w4", "treeExpanded" ) );
       assertEquals( "loading", label._chevron );
       column.dispose();
       tree.destroy();
@@ -1377,7 +1374,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       tree.setHeaderHeight( 50 );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
-      var group = this._createColumnGroupByProtocol( "w5", "w3", [], true );
+      this._createColumnGroupByProtocol( "w5", "w3", [], true );
       var columnTwo = this._createColumnByProtocol( "w6", "w3", [] );
       var button = qx.event.type.MouseEvent.buttons.left;
       TestUtil.protocolSet( "w4", { "group" : "w5", "left" : 22, "width": 20, "moveable" : true } );
@@ -1416,7 +1413,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       tree.setHeaderHeight( 50 );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
-      var group = this._createColumnGroupByProtocol( "w5", "w3", [], true );
+      this._createColumnGroupByProtocol( "w5", "w3", [], true );
       var columnTwo = this._createColumnByProtocol( "w6", "w3", [] );
       var button = qx.event.type.MouseEvent.buttons.left;
       TestUtil.protocolSet( "w4", { "group" : "w5", "left" : 22, "width": 20, "moveable" : true } );
