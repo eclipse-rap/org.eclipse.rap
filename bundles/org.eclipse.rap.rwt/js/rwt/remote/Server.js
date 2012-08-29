@@ -127,6 +127,7 @@ qx.Class.define( "rwt.remote.Server", {
      */
     addEvent : function( eventType, sourceId ) {
       this._parameters[ eventType ] = sourceId;
+      this._flushEvent();
       this._event = [ sourceId, eventType, {} ];
     },
 

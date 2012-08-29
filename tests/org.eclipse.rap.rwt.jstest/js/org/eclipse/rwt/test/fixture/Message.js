@@ -63,6 +63,9 @@ org.eclipse.rwt.test.fixture.Message.prototype = {
 
   findSetProperty : function( target, property ) {
     var op = this.findSetOperation( target, property );
+    if( op == null ) {
+      throw new Error( "No set operation for target " + target + " with property " + property );
+    }
     return op.properties[ property ];
   },
 
@@ -82,6 +85,14 @@ org.eclipse.rwt.test.fixture.Message.prototype = {
 
   findNotifyProperty : function( target, eventType, property ) {
     var op = this.findNotifyOperation( target, eventType );
+    if( op == null ) {
+      throw new Error(   "No notify operation for target "
+                       + target
+                       + " with event type "
+                       + eventType
+                       + " and property "
+                       + property );
+    }
     return op.properties[ property ];
   },
 

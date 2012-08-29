@@ -102,7 +102,9 @@ qx.Class.define( "org.eclipse.rwt.test.Presenter", {
 
     forceReload : function( e ) {
       var current = location.toString();
-      var current = current.slice( 0, current.indexOf( "?" ) );
+      if( current.indexOf( "?" ) !== -1 ) {
+        current = current.slice( 0, current.indexOf( "?" ) );
+      }
       var event = e || window.event;
       var target = event.target || event.srcElement;
       var newLoc = current + "?" + target.link;

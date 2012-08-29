@@ -104,6 +104,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       assertEquals( "set", set.type );
       assertEquals( "w3", set.target );
       assertEquals( 42, set.properties.myProp );
+    },
+
+    testSendTwoEventsInOneRequest : function() {
+      server.addEvent( "org.eclipse.swt.events.widgetSelected", "w3" );
+      server.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", "w3" );
+
+      server.send();
+
+      var op1 = TestUtil.getMessageObject().getOperation( 0 );
+      assertEquals( "notify", op1.type );
+      assertEquals( "w3", op1.target );
+      assertEquals( "widgetSelected", op1.eventType );
+      var op2 = TestUtil.getMessageObject().getOperation( 1 );
+      assertEquals( "notify", op2.type );
+      assertEquals( "w3", op2.target );
+      assertEquals( "widgetDefaultSelected", op2.eventType );
     }
 
   }

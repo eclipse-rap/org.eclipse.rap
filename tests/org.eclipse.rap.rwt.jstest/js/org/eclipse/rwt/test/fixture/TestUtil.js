@@ -687,7 +687,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   getRequestLog : function() {
-    return this._requestLog;
+    //return this._requestLog;
   },
 
   getRequestsSend : function() {

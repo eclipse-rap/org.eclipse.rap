@@ -400,7 +400,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       TestUtil.forceTimerOnce();
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();
-      console.log( msg.toString() );
       assertEquals( 10, msg.findSetProperty( "w3", "horizontalBar.selection" ) );
       assertEquals( 20, msg.findSetProperty( "w3", "verticalBar.selection" ) );
       composite.destroy();
