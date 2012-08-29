@@ -90,7 +90,9 @@ qx.Class.define( "rwt.remote.Server", {
           this._event[ 2 ][ nameArr.pop() ] = value;
         } else {
           this._flushEvent();
-          this._getMessageWriter().appendSet( nameArr[ 0 ], nameArr[ 1 ], value );
+          var id = nameArr.shift();
+          var property = nameArr.join( "." );// there are cases of event-types with "."
+          this._getMessageWriter().appendSet( id, property, value );
         }
       } else {
         // Currently results of TSD are not compatible with protocol
@@ -131,6 +133,7 @@ qx.Class.define( "rwt.remote.Server", {
     _flushEvent : function() {
       if( this._event ) {
         var writer = this._getMessageWriter();
+        this._event[ 1 ] = this._event[ 1 ].split( "." ).pop();
         writer.appendNotify.apply( writer, this._event );
         this._event = null;
       }

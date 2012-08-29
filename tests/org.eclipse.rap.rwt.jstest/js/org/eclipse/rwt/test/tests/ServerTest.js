@@ -52,6 +52,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       assertEquals( 0, message.getOperationCount() );
     },
 
+    testSendSetParameterWithDot : function() {
+      server.addParameter( "w3.my.Prop", 42 );
+
+      server.send();
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( 1, message.getOperationCount() );
+      var op = message.getOperation( 0 );
+      assertEquals( "set", op.type );
+      assertEquals( "w3", op.target );
+      assertEquals( 42, op.properties[ "my.Prop" ] );
+    },
+
+
     testSendEvent : function() {
       server.addEvent( "org.eclipse.swt.events.widgetSelected", "w3" );
 
@@ -60,6 +75,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       var op = TestUtil.getMessageObject().getOperation( 0 );
       assertEquals( "notify", op.type );
       assertEquals( "w3", op.target );
+      assertEquals( "widgetSelected", op.eventType );
     },
 
     testSendEventWithParam : function() {

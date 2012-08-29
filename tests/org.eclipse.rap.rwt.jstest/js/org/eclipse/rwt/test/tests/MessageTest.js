@@ -171,6 +171,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MessageTest", {
       assertEquals( "method", operation.eventType );
     },
 
+    testFindNotifyProperty : function() {
+      writer.appendNotify( "w1", "method", { "foo" : "bar" } );
+
+      var message = getMessage();
+
+      assertEquals( "bar", message.findNotifyProperty( "w1", "method", "foo" ) );
+    },
+
     testFindCallOperationFailed : function() {
       writer.appendNotify( "w2", "method1", null );
       writer.appendNotify( "w1", "method2", null );

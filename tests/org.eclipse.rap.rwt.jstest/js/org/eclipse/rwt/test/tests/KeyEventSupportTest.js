@@ -11,18 +11,18 @@
 qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
   extend : qx.core.Object,
-  
+
   construct : function() {
     this.base( arguments );
     org.eclipse.rwt.test.fixture.TestUtil.prepareTimerUse();
   },
-  
+
   members : {
-    
+
     testSetActiveKeysByProtocol : function() {
       var processor = rwt.protocol.MessageProcessor;
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
-      
+
       processor.processOperation( {
         "target" : "w1",
         "action" : "set",
@@ -30,7 +30,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
           "activeKeys" : [ "#65", "CTRL+#65" ]
         }
       } );
-      
+
       var expected = { "#65" : true, "CTRL+#65" : true };
       assertEquals( expected, keyUtil._keyBindings );
       keyUtil.setKeyBindings( {} );
@@ -39,7 +39,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     testSetCancelKeysByProtocol : function() {
       var processor = rwt.protocol.MessageProcessor;
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
-      
+
       processor.processOperation( {
         "target" : "w1",
         "action" : "set",
@@ -47,7 +47,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
           "cancelKeys" : [ "#65", "CTRL+#65" ]
         }
       } );
-      
+
       var expected = { "#65" : true, "CTRL+#65" : true };
       assertEquals( expected, keyUtil._cancelKeys );
       keyUtil.setCancelKeys( {} );
@@ -61,13 +61,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       keyUtil.setKeyBindings( { "#66" : true } );
       TestUtil.press( widget, "b" );
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var expected1 = "org.eclipse.swt.events.keyDown=w1"; 
-      var expected2 = "org.eclipse.swt.events.keyDown.keyCode=66";
-      var expected3 = "org.eclipse.swt.events.keyDown.charCode=98";
-      var msg = TestUtil.getMessage();
-      assertTrue( msg.indexOf( expected1 ) != -1 );
-      assertTrue( msg.indexOf( expected2 ) != -1 );
-      assertTrue( msg.indexOf( expected3 ) != -1 );
+
+      var msg = TestUtil.getMessageObject();
+
+      assertEquals( 66, msg.findNotifyProperty( "w1", "keyDown", "keyCode" ) );
+      assertEquals( 98, msg.findNotifyProperty( "w1", "keyDown", "charCode" ) );
       widget.destroy();
     },
 
@@ -79,14 +77,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       keyUtil.setKeyBindings( { "CTRL+SHIFT+#66" : true } );
       var dom = qx.event.type.DomEvent;
       var mod = dom.CTRL_MASK | dom.SHIFT_MASK;
+
       TestUtil.fireFakeKeyDomEvent( widget.getElement(), "keydown", "B", mod );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var expected1 = "org.eclipse.swt.events.keyDown=w1"; 
-      var expected2 = "org.eclipse.swt.events.keyDown.keyCode=66";
-      var expected2 = "org.eclipse.swt.events.keyDown.charCode=66";
-      var msg = TestUtil.getMessage();
-      assertTrue( msg.indexOf( expected1 ) != -1 );
-      assertTrue( msg.indexOf( expected2 ) != -1 );
+      var msg = TestUtil.getMessageObject();
+      assertEquals( 66, msg.findNotifyProperty( "w1", "keyDown", "keyCode" ) );
+      assertEquals( 66, msg.findNotifyProperty( "w1", "keyDown", "charCode" ) );
       widget.destroy();
     },
 
@@ -97,14 +94,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "CTRL+#66" : true } );
       var dom = qx.event.type.DomEvent;
+
       TestUtil.fireFakeKeyDomEvent( widget.getElement(), "keydown", "b", dom.CTRL_MASK );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var expected1 = "org.eclipse.swt.events.keyDown=w1"; 
-      var expected2 = "org.eclipse.swt.events.keyDown.keyCode=66";
-      var expected2 = "org.eclipse.swt.events.keyDown.charCode=98";
-      var msg = TestUtil.getMessage();
-      assertTrue( msg.indexOf( expected1 ) != -1 );
-      assertTrue( msg.indexOf( expected2 ) != -1 );
+      var msg = TestUtil.getMessageObject();
+      assertEquals( 66, msg.findNotifyProperty( "w1", "keyDown", "keyCode" ) );
+      assertEquals( 98, msg.findNotifyProperty( "w1", "keyDown", "charCode" ) );
       widget.destroy();
     },
 
@@ -114,19 +110,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "#66" : true } );
+
       TestUtil.keyDown( widget.getElement(), "b", 0 );
       TestUtil.keyHold( widget.getElement(), "b", 0 );
       TestUtil.keyUp( widget.getElement(), "b", 0 );
+
+
       assertEquals( 2, TestUtil.getRequestsSend() );
-      var expected1 = "org.eclipse.swt.events.keyDown=w1"; 
-      var expected2 = "org.eclipse.swt.events.keyDown.keyCode=66";
-      var expected2 = "org.eclipse.swt.events.keyDown.charCode=98";
-      var msg = TestUtil.getRequestLog()[ 0 ];
-      assertTrue( msg.indexOf( expected1 ) != -1 );
-      assertTrue( msg.indexOf( expected2 ) != -1 );
-      msg = TestUtil.getRequestLog()[ 1 ];
-      assertTrue( msg.indexOf( expected1 ) != -1 );
-      assertTrue( msg.indexOf( expected2 ) != -1 );
+      var msg1 = TestUtil.getMessageObject( 0 );
+      var msg2 = TestUtil.getMessageObject( 1 );
+      assertEquals( 66, msg1.findNotifyProperty( "w1", "keyDown", "keyCode" ) );
+      assertEquals( 98, msg1.findNotifyProperty( "w1", "keyDown", "charCode" ) );
+      assertEquals( 66, msg2.findNotifyProperty( "w1", "keyDown", "keyCode" ) );
+      assertEquals( 98, msg2.findNotifyProperty( "w1", "keyDown", "charCode" ) );
       widget.destroy();
     },
 
@@ -137,19 +133,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "#66" : true } );
       keyUtil.setCancelKeys( { "#66" : true } );
+
       TestUtil.keyDown( widget.getElement(), "b", 0 );
       TestUtil.keyHold( widget.getElement(), "b", 0 );
       TestUtil.keyUp( widget.getElement(), "b", 0 );
+
       assertEquals( 2, TestUtil.getRequestsSend() );
-      var expected1 = "org.eclipse.swt.events.keyDown=w1"; 
-      var expected2 = "org.eclipse.swt.events.keyDown.keyCode=66";
-      var expected2 = "org.eclipse.swt.events.keyDown.charCode=98";
-      var msg = TestUtil.getRequestLog()[ 0 ];
-      assertTrue( msg.indexOf( expected1 ) != -1 );
-      assertTrue( msg.indexOf( expected2 ) != -1 );
-      msg = TestUtil.getRequestLog()[ 1 ];
-      assertTrue( msg.indexOf( expected1 ) != -1 );
-      assertTrue( msg.indexOf( expected2 ) != -1 );
+      var msg1 = TestUtil.getMessageObject( 0 );
+      var msg2 = TestUtil.getMessageObject( 1 );
+      assertEquals( 66, msg1.findNotifyProperty( "w1", "keyDown", "keyCode" ) );
+      assertEquals( 98, msg1.findNotifyProperty( "w1", "keyDown", "charCode" ) );
+      assertEquals( 66, msg2.findNotifyProperty( "w1", "keyDown", "keyCode" ) );
+      assertEquals( 98, msg2.findNotifyProperty( "w1", "keyDown", "charCode" ) );
       widget.destroy();
     },
 
@@ -159,13 +154,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "/" : true } );
+
       TestUtil.press( widget, "/", false, 0 );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var expected1 = "org.eclipse.swt.events.keyDown=w1"; 
-      var expected2 = "org.eclipse.swt.events.keyDown.charCode=47"; 
-      var msg = TestUtil.getMessage();
-      assertTrue( msg.indexOf( expected1 ) != -1 );
-      assertTrue( msg.indexOf( expected2 ) != -1 );
+      var msg = TestUtil.getMessageObject();
+      assertEquals( 47, msg.findNotifyProperty( "w1", "keyDown", "charCode" ) );
       widget.destroy();
     },
 
@@ -175,13 +169,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "." : true } );
+
       TestUtil.press( widget, ".", false, 0 );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var expected1 = "org.eclipse.swt.events.keyDown=w1"; 
-      var expected2 = "org.eclipse.swt.events.keyDown.charCode=46"; 
-      var msg = TestUtil.getMessage();
-      assertTrue( msg.indexOf( expected1 ) != -1 );
-      assertTrue( msg.indexOf( expected2 ) != -1 );
+      var msg = TestUtil.getMessageObject();
+      assertEquals( 46, msg.findNotifyProperty( "w1", "keyDown", "charCode" ) );
       widget.destroy();
     },
 
@@ -241,7 +234,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       assertEquals( 6, log.length );
       widget.destroy();
     },
-    
+
     testKeyBindingsNoModifiersAllowed : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
@@ -256,7 +249,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var all = dom.CTRL_MASK | dom.SHIFT_MASK | dom.ALT_MASK;
       TestUtil.press( widget, "b", false, all );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      widget.destroy();    
+      widget.destroy();
     },
 
     testKeyBindingsModifiersNeeded : function() {
@@ -272,7 +265,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       assertEquals( 0, TestUtil.getRequestsSend() );
       TestUtil.press( widget, "b", false, dom.SHIFT_MASK );
       assertEquals( 1, TestUtil.getRequestsSend() );
-      widget.destroy();    
+      widget.destroy();
     },
 
     testKeyBindingsModifiersOrder : function() {
@@ -289,7 +282,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var all = dom.CTRL_MASK | dom.SHIFT_MASK | dom.ALT_MASK;
       TestUtil.press( widget, "b", false, all );
       assertEquals( 1, TestUtil.getRequestsSend() );
-      widget.destroy();          
+      widget.destroy();
     },
 
     testKeyBindingShiftAndNumberOnKeypress : function() {
@@ -299,17 +292,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "SHIFT+#53" : true } );
       var dom = qx.event.type.DomEvent;
+
       TestUtil.fireFakeKeyDomEvent( widget.getElement(), "keydown", 53, dom.SHIFT_MASK );
       assertEquals( 0, TestUtil.getRequestsSend() );
       TestUtil.fireFakeKeyDomEvent( widget.getElement(), "keypress", 53, dom.SHIFT_MASK );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var expected1 = "org.eclipse.swt.events.keyDown=w1"; 
-      var expected2 = "org.eclipse.swt.events.keyDown.keyCode=53";
-      var expected3 = "org.eclipse.swt.events.keyDown.charCode=53";
-      var msg = TestUtil.getMessage();
-      assertTrue( msg.indexOf( expected1 ) != -1 );
-      assertTrue( msg.indexOf( expected2 ) != -1 );
-      assertTrue( msg.indexOf( expected3 ) != -1 );
+      var msg = TestUtil.getMessageObject();
+      assertEquals( 53, msg.findNotifyProperty( "w1", "keyDown", "keyCode" ) );
+      assertEquals( 53, msg.findNotifyProperty( "w1", "keyDown", "charCode" ) );
       widget.destroy();
     },
 
@@ -400,7 +391,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       req.removeEventListener( "received", keyUtil._onRequestReceived, keyUtil );
       TestUtil.initRequestLog();
       var text = this._createTextWidget();
-      var node = text._inputElement;
       TestUtil.press( text, "x", false, 0 );
       assertEquals( 0, keyUtil._bufferedEvents.length );
       TestUtil.press( text, "y", false, 0 );
@@ -430,24 +420,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       assertEquals( 1, keyUtil._bufferedEvents.length );
 
       keyUtil._onRequestReceived();
-      var msg = TestUtil.getRequestLog()[ 1 ];
-      
+
       assertEquals( 2, TestUtil.getRequestsSend() );
-      var expected1 = "org.eclipse.swt.events.keyDown=w3"; 
-      var expected2 = "org.eclipse.swt.events.keyDown.keyCode=89"; 
-      var expected3 = "org.eclipse.swt.events.keyDown.charCode=121"; 
-      var expected4 = "org.eclipse.swt.events.keyDown.modifier=";
-      assertTrue( msg.indexOf( expected1 ) != -1 );
-      assertTrue( msg.indexOf( expected2 ) != -1 );
-      assertTrue( msg.indexOf( expected3 ) != -1 );
-      assertTrue( msg.indexOf( expected4 ) != -1 );
+      var msg = TestUtil.getMessageObject( 1 );
+      assertEquals( 89, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
+      assertEquals( 121, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
+      assertEquals( "", msg.findNotifyProperty( "w3", "keyDown", "modifier" ) );
       req.addEventListener( "received", keyUtil._onRequestReceived, keyUtil );
       this._disposeTextWidget( text );
     },
 
     testKeyEventListenerUntrustedKey : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var text = this._createTextWidget();
       var node = text._inputElement;
       // cancel event
@@ -458,151 +442,151 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
     testKeyCodeLowerCase : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var text = this._createTextWidget();
+
       TestUtil.press( text, "a", 0 );
-      var expectedChar = "org.eclipse.swt.events.keyDown.charCode=97";
-      var expectedKey = "org.eclipse.swt.events.keyDown.keyCode=65";
-      assertTrue( TestUtil.getMessage().indexOf( expectedChar ) != -1 );
-      assertTrue( TestUtil.getMessage().indexOf( expectedKey ) != -1 );
+
+      var msg = TestUtil.getMessageObject();
+      assertEquals( 65, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
+      assertEquals( 97, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
       this._disposeTextWidget( text );
     },
 
     testKeyCodeUpperCase : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var text = this._createTextWidget();
+
       TestUtil.press( text, "A", 0 );
-      var expectedChar = "org.eclipse.swt.events.keyDown.charCode=65";
-      var expectedKey = "org.eclipse.swt.events.keyDown.keyCode=65";
-      assertTrue( TestUtil.getMessage().indexOf( expectedChar ) != -1 );
-      assertTrue( TestUtil.getMessage().indexOf( expectedKey ) != -1 );
+
+      var msg = TestUtil.getMessageObject();
+      assertEquals( 65, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
+      assertEquals( 65, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
       this._disposeTextWidget( text );
     },
-    
+
     testSendModifier : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var text = this._createTextWidget();
       var shift = qx.event.type.DomEvent.SHIFT_MASK;
+
       TestUtil.keyDown( text.getElement(), "Shift", shift );
       TestUtil.keyHold( text.getElement(), "Shift", shift );
-      var expectedChar = "org.eclipse.swt.events.keyDown.charCode=0";
-      var expectedKey = "org.eclipse.swt.events.keyDown.keyCode=16";
-      assertEquals( 1, TestUtil.getRequestsSend() );
-      assertTrue( TestUtil.getMessage().indexOf( expectedChar ) != -1 );
-      assertTrue( TestUtil.getMessage().indexOf( expectedKey ) != -1 );
+
+      var msg = TestUtil.getMessageObject();
+      assertEquals( 16, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
+      assertEquals( 0, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
       this._disposeTextWidget( text );
     },
 
     testShiftCharacter : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var text = this._createTextWidget();
       var shift = qx.event.type.DomEvent.SHIFT_MASK;
       TestUtil.keyDown( text.getElement(), "Shift", shift );
       TestUtil.keyDown( text.getElement(), "A", shift );
+
       assertEquals( 2, TestUtil.getRequestsSend() );
+
       this._disposeTextWidget( text );
     },
 
-    testSetActiveKeysByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
+    testSetActiveKeys : function() {
       var text = this._createTextWidget();
+
       this._setActiveKeys( text, [ "a", "b" ] );
-      var expected = { "a" : true, "b" : true }
+
+      var expected = { "a" : true, "b" : true };
       assertEquals( expected, text.getUserData( "activeKeys" ) );
       this._disposeTextWidget( text );
     },
 
     testNonActiveCharKeysNotSent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var text = this._createTextWidget();
       this._setActiveKeys( text, [] );
+
       TestUtil.press( text, "a", 0 );
       TestUtil.press( text, "A", 0 );
       TestUtil.press( text, "z", 0 );
       TestUtil.press( text, "Z", 0 );
+
       assertEquals( 0, TestUtil.getRequestsSend() );
       this._disposeTextWidget( text );
     },
 
     testActiveLowerCharKeySent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var text = this._createTextWidget();
       this._setActiveKeys( text, [ "#90" ] );
+
       TestUtil.press( text, "a", 0 );
       TestUtil.press( text, "z", 0 );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var expectedChar = "org.eclipse.swt.events.keyDown.charCode=122";
-      var expectedKey = "org.eclipse.swt.events.keyDown.keyCode=90";
-      assertTrue( TestUtil.getMessage().indexOf( expectedChar ) != -1 );
-      assertTrue( TestUtil.getMessage().indexOf( expectedKey ) != -1 );
+      var msg = TestUtil.getMessageObject();
+      assertEquals( 90, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
+      assertEquals( 122, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
       this._disposeTextWidget( text );
     },
 
     testActiveUpperCharKeySent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var text = this._createTextWidget();
       this._setActiveKeys( text, [ "#90" ] );
+
       TestUtil.press( text, "Z", 0 );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var expectedChar = "org.eclipse.swt.events.keyDown.charCode=90";
-      var expectedKey = "org.eclipse.swt.events.keyDown.keyCode=90";
-      assertTrue( TestUtil.getMessage().indexOf( expectedChar ) != -1 );
-      assertTrue( TestUtil.getMessage().indexOf( expectedKey ) != -1 );
+      var msg = TestUtil.getMessageObject();
+      assertEquals( 90, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
+      assertEquals( 90, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
       this._disposeTextWidget( text );
     },
 
     testActiveSpecialKeySent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var text = this._createTextWidget();
       this._setActiveKeys( text, [ "#40" ] );
+
       TestUtil.press( text, "Up", 0 );
       TestUtil.press( text, "Down", 0 );
-      assertEquals( 1, TestUtil.getRequestsSend() )
-      var expectedChar = "org.eclipse.swt.events.keyDown.charCode=0";
-      var expectedKey = "org.eclipse.swt.events.keyDown.keyCode=40";
-      assertTrue( TestUtil.getMessage().indexOf( expectedChar ) != -1 );
-      assertTrue( TestUtil.getMessage().indexOf( expectedKey ) != -1 );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var msg = TestUtil.getMessageObject();
+      assertEquals( 40, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
+      assertEquals( 0, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
       this._disposeTextWidget( text );
     },
 
     testDontSendCtrlTab : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var text = this._createTextWidget();
       this._setActiveKeys( text, [ "CTRL+#9", "CTRL+SHIFT+#9" ] );
       var dom = qx.event.type.DomEvent;
 
       TestUtil.press( text, 9, false, dom.CTRL_MASK );
       TestUtil.press( text, 9, false, dom.CTRL_MASK | dom.SHIFT_MASK );
-      
+
       assertEquals( 0, TestUtil.getRequestsSend() );
       this._disposeTextWidget( text );
     },
 
     testActiveSpecialCharKeySent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var text = this._createTextWidget();
       this._setActiveKeys( text, [ "/" ] );
+
       TestUtil.press( text, "\\", 0 );
       TestUtil.press( text, "/", 0 );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var expectedChar = "org.eclipse.swt.events.keyDown.charCode=47";
-      assertTrue( TestUtil.getMessage().indexOf( expectedChar ) != -1 );
+      var msg = TestUtil.getMessageObject();
+      assertEquals( 47, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
       this._disposeTextWidget( text );
     },
 
     testActiveKeySequenceSent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var text = this._createTextWidget();
       this._setActiveKeys( text, [ "ALT+CTRL+#90" ] );
       var dom = qx.event.type.DomEvent;
@@ -611,22 +595,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       TestUtil.press( text, "z", false, dom.ALT_MASK );
       TestUtil.press( text, "z", false, dom.SHIFT_MASK );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      TestUtil.press( text, "z", false, dom.ALT_MASK | dom.CTRL_MASK);
+
+      TestUtil.press( text, "z", false, dom.ALT_MASK | dom.CTRL_MASK );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var expectedKey = "org.eclipse.swt.events.keyDown.keyCode=90";
-      assertTrue( TestUtil.getMessage().indexOf( expectedKey ) != -1 );
+      var msg = TestUtil.getMessageObject();
+      assertEquals( 90, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
       this._disposeTextWidget( text );
     },
 
     testCancelKeySequenceNotProcessed : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var text = this._createTextWidget();
       this._setCancelKeys( text, [
-        "#90", 
-        "ALT+#90", 
-        "CTRL+#90", 
-        "SHIFT+#90" 
+        "#90",
+        "ALT+#90",
+        "CTRL+#90",
+        "SHIFT+#90"
       ] );
       var log = [];
       var listener = function( e ) {
@@ -641,27 +626,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       TestUtil.press( text, "z", false, dom.ALT_MASK );
       TestUtil.press( text, "z", false, dom.SHIFT_MASK );
       assertEquals( 0, log.length );
+
       TestUtil.press( text, "z", false, dom.ALT_MASK | dom.CTRL_MASK );
+
       assertEquals( 3, log.length );
       this._disposeTextWidget( text );
     },
 
     testCancelKeySequenceSent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       var text = this._createTextWidget();
       this._setCancelKeys( text, [
-        "#90", 
-        "ALT+#90", 
-        "CTRL+#90", 
-        "SHIFT+#90" 
+        "#90",
+        "ALT+#90",
+        "CTRL+#90",
+        "SHIFT+#90"
       ] );
 
       var dom = qx.event.type.DomEvent;
+
       TestUtil.press( text, "z", false, 0 );
       TestUtil.press( text, "z", false, dom.CTRL_MASK );
       TestUtil.press( text, "z", false, dom.ALT_MASK );
       TestUtil.press( text, "z", false, dom.SHIFT_MASK );
+
       assertEquals( 4, TestUtil.getRequestsSend() );
       this._disposeTextWidget( text );
     },
@@ -674,11 +662,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       rwt.widgets.base.Widget.flushGlobalQueues();
       return result;
     },
-    
+
     _createTextWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
-      var shell = TestUtil.createShellByProtocol( "w2" );
+      TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
@@ -702,15 +690,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       TestUtil.initRequestLog();
       return text;
     },
-    
+
     _disposeTextWidget : function( text ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.clearRequestLog();
-      text.blur(); // otherwise TextUtil will crash on next server-request. 
+      text.blur(); // otherwise TextUtil will crash on next server-request.
       text.destroy();
       TestUtil.flush();
     },
-    
+
     _setActiveKeys : function( widget, activeKeys ) {
       var id = rwt.protocol.ObjectManager.getId( widget );
       var processor = rwt.protocol.MessageProcessor;
@@ -736,5 +724,5 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     }
 
   }
-  
+
 } );

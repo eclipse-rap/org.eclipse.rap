@@ -143,6 +143,9 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   // Event handling - DOM layer
 
   _createFakeDomEvent : function( target, type, mod ) {
+    if( target == null ) {
+      throw new Error( "Can not fire fake dom event on target " + target );
+    }
     var result = {
       "preventDefault" : function(){},
       "stopPropagation" : function(){},
@@ -700,8 +703,9 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     return this.getRequestLog()[ 0 ];
   },
 
-  getMessageObject : function() {
-    var message = this.getMessage();
+  getMessageObject : function( arg ) {
+    var index = typeof arg === "number" ? arg : 0;
+    var message = this._requestLog[ index ];
     message = message.split( "message=" )[ 1 ];
     message = message.split( "&" )[ 0 ];
     return new org.eclipse.rwt.test.fixture.Message( decodeURIComponent( message ) );

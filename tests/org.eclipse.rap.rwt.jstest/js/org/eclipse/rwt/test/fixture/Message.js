@@ -80,8 +80,17 @@ org.eclipse.rwt.test.fixture.Message.prototype = {
     return result;
   },
 
+  findNotifyProperty : function( target, eventType, property ) {
+    var op = this.findNotifyOperation( target, eventType );
+    return op.properties[ property ];
+  },
+
   getMeta : function() {
     return this._message.meta;
+  },
+
+  toString : function() {
+    return JSON.stringify( this._message );
   }
 
 };
