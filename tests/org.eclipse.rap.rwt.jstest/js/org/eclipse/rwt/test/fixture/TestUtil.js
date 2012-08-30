@@ -687,7 +687,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   getRequestLog : function() {
-    //return this._requestLog;
+    return this._requestLog;
   },
 
   getRequestsSend : function() {
@@ -709,6 +709,14 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     message = message.split( "message=" )[ 1 ];
     message = message.split( "&" )[ 0 ];
     return new org.eclipse.rwt.test.fixture.Message( decodeURIComponent( message ) );
+  },
+
+  getMessages : function() {
+    var result = [];
+    for( var i = 0; i < this._requestLog.length; i++ ) {
+      result.push( this.getMessageObject( i ) );
+    }
+    return result;
   },
 
   scheduleResponse : function( func ) {

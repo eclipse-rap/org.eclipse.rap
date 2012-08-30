@@ -169,7 +169,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
 
       TestUtil.protocolSet( "w3", { "headerVisible" : true } );
-      TestUtil.flush()
+      TestUtil.flush();
 
       assertTrue( widget._header.isSeeable() );
       shell.destroy();
@@ -244,7 +244,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testSetSelectionByProtocol : function() {
-      var processor = rwt.protocol.MessageProcessor;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", [ "MULTI" ] );
       widget.setItemCount( 3 );
@@ -272,7 +271,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testSetHasScrollBarsSelectionListenerByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      this._createDefaultTreeByProtocol( "w3", "w2", [] );
       TestUtil.protocolListen( "w3", { "scrollBarsSelection" : true } );
       var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
@@ -283,7 +282,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testSetHasSelectionListenerByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      this._createDefaultTreeByProtocol( "w3", "w2", [] );
       TestUtil.protocolListen( "w3", { "selection" : true } );
       var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
@@ -443,8 +442,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var node = tree._rowContainer.getElement();
       assertIdentical( tree._getTargetNode(), node.parentNode );
       assertEquals( "hidden", node.style.overflow );
-      assertEquals( 500, parseInt( node.style.height ) );
-      assertEquals( 600, parseInt( node.style.width ) );
+      assertEquals( 500, parseInt( node.style.height, 10 ) );
+      assertEquals( 600, parseInt( node.style.width, 10 ) );
       tree.destroy();
     },
 
@@ -460,8 +459,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setWidth( 700 );
       TestUtil.flush();
       var node = tree._rowContainer.getElement();
-      assertEquals( 400, parseInt( node.style.height ) );
-      assertEquals( 700, parseInt( node.style.width ) );
+      assertEquals( 400, parseInt( node.style.height, 10 ) );
+      assertEquals( 700, parseInt( node.style.width, 10 ) );
       tree.destroy();
     },
 
@@ -477,9 +476,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setBorder( border );
       TestUtil.flush();
       var node = tree._rowContainer.getElement();
-      assertIdentical( tree._getTargetNode(), node.parentNode )
-      assertEquals( 492, parseInt( node.style.height ) );
-      assertEquals( 592, parseInt( node.style.width ) );
+      assertIdentical( tree._getTargetNode(), node.parentNode );
+      assertEquals( 492, parseInt( node.style.height, 10 ) );
+      assertEquals( 592, parseInt( node.style.width, 10 ) );
       tree.destroy();
     },
 
@@ -775,7 +774,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setTopItemIndex( 55 ); // NOTE: NO Flush!
       var area = tree._rowContainer._getTargetNode();
       assertEquals( 1100, tree._vertScrollBar.getValue() );
-      assertEquals( 274, parseInt( tree._vertScrollBar._thumb.getElement().style.top ) );
+      assertEquals( 274, parseInt( tree._vertScrollBar._thumb.getElement().style.top, 10 ) );
       assertEquals( "Test55", area.childNodes[ 0 ].childNodes[ 0 ].innerHTML );
       tree.destroy();
     },
@@ -844,7 +843,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       tree.setScrollBarsVisible( true, true );
       TestUtil.flush();
-      var node = tree._getTargetNode();
       assertTrue( tree._horzScrollBar.getVisibility() );
       assertTrue( tree._vertScrollBar.getVisibility() );
       tree.destroy();
@@ -1137,7 +1135,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testSetCheckBoxMetrics : function() {
       var tree = this._createDefaultTree( false, false, "check", [ 5, 20 ] );
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       assertEquals( 5, tree._config.checkBoxLeft );
       assertEquals( 20, tree._config.checkBoxWidth );
       tree.destroy();
@@ -1163,18 +1161,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.clickDOM( node.parentNode ); // nothing happens:
       assertFalse( item.isChecked() );
       tree.setHasSelectionListener( true );
+
       TestUtil.clickDOM( node );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertTrue( item.isChecked() );
-      var request = TestUtil.getMessage();
-      var expected1 = "w2.checked=true";
-      var expected2 = "org.eclipse.swt.events.widgetSelected=w1";
-      var expected3 = "org.eclipse.swt.events.widgetSelected.item=w2";
-      var expected4 = "org.eclipse.swt.events.widgetSelected.detail=check";
-      assertTrue( request.indexOf( expected1 ) != -1 );
-      assertTrue( request.indexOf( expected2 ) != -1 );
-      assertTrue( request.indexOf( expected3 ) != -1 );
-      assertTrue( request.indexOf( expected4 ) != -1 );
+      var message = TestUtil.getMessageObject();
+      assertEquals( true, message.findSetProperty( "w2", "checked" ) );
+      assertEquals( "w2", message.findNotifyProperty( "w11", "widgetSelected", "item" ) );
+      assertEquals( "check", message.findNotifyProperty( "w11", "widgetSelected", "detail" ) );
       tree.destroy();
     },
 
@@ -1230,9 +1225,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.clickDOM( checkNode );
 
       rwt.remote.Server.getInstance().send();
-      var request = TestUtil.getMessage();
-      var expected = "w2.cellChecked=%5Btrue%5D";
-      assertTrue( request.indexOf( expected ) != -1 );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "[true]", message.findSetProperty( "w2", "cellChecked" ) );
       tree.destroy();
     },
 
@@ -1252,11 +1246,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       TestUtil.clickDOM( checkNode );
 
-      var request = TestUtil.getMessage();
-      var expected1 = "widgetSelected.detail=check";
-      var expected2 = "widgetSelected.index=0";
-      assertTrue( request.indexOf( expected1 ) != -1 );
-      assertTrue( request.indexOf( expected2 ) != -1 );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "check", message.findNotifyProperty( "w11", "widgetSelected", "detail" ) );
+      assertEquals( 0, message.findNotifyProperty( "w11", "widgetSelected", "index" ) );
+
       tree.destroy();
     },
 
@@ -1277,9 +1270,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.clickDOM( checkNode );
 
       rwt.remote.Server.getInstance().send();
-      var request = TestUtil.getMessage();
-      var expected = "w2.cellChecked=%5Btrue%2Cfalse%2Cfalse%2Cfalse%5D";
-      assertTrue( request.indexOf( expected ) != -1 );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "[true,false,false,false]", message.findSetProperty( "w2", "cellChecked" ) );
       tree.destroy();
     },
 
@@ -1367,8 +1359,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       TestUtil.initRequestLog();
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 1 );
       var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
       wm.add( tree, "w11" );
       wm.add( item2, "w2" );
@@ -1385,7 +1377,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var req = rwt.remote.Server.getInstance();
       var tree = this._createDefaultTree();
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
       var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
       wm.add( tree, "w11" );
@@ -1408,8 +1400,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.initRequestLog();
       tree.setItemCount( 3 );
       wm.add( tree, "w11" );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       TestUtil.clickDOM( tree._rowContainer._children[ 1 ]._getTargetNode() );
       TestUtil.flush();
@@ -1426,7 +1418,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       var node0 = tree._rowContainer._getTargetNode().childNodes[ 0 ];
-      var node1 = tree._rowContainer._getTargetNode().childNodes[ 1 ];
       var node2 = tree._rowContainer._getTargetNode().childNodes[ 2 ];
       TestUtil.clickDOM( node0 );
       assertTrue( tree.isItemSelected( item0 ) );
@@ -1445,7 +1436,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
       var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
       TestUtil.flush();
-      var left = qx.event.type.MouseEvent.buttons.left;
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       TestUtil.ctrlClick( tree._rowContainer._children[ 2 ] );
       assertTrue( tree.isItemSelected( item0 ) );
@@ -1478,10 +1468,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
       var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
       TestUtil.flush();
-      var node0 = tree._rowContainer._getTargetNode().childNodes[ 0 ];
-      var node1 = tree._rowContainer._getTargetNode().childNodes[ 1 ];
-      var node2 = tree._rowContainer._getTargetNode().childNodes[ 2 ];
-      var left = qx.event.type.MouseEvent.buttons.left;
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       TestUtil.ctrlClick( tree._rowContainer._children[ 2 ] );
       TestUtil.click( tree._rowContainer._children[ 0 ] );
@@ -1614,9 +1600,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var item4 = new rwt.widgets.GridItem( tree.getRootItem(), 4 );
       TestUtil.flush();
       var node0 = tree._rowContainer._getTargetNode().childNodes[ 0 ];
-      var node1 = tree._rowContainer._getTargetNode().childNodes[ 1 ];
       var node2 = tree._rowContainer._getTargetNode().childNodes[ 2 ];
-      var node3 = tree._rowContainer._getTargetNode().childNodes[ 3 ];
       var node4 = tree._rowContainer._getTargetNode().childNodes[ 4 ];
       var left = qx.event.type.MouseEvent.buttons.left;
       TestUtil.fakeMouseEventDOM( node0, "mousedown", left, 0, 0, 0 );
@@ -1688,13 +1672,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.initRequestLog();
       var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
       var child1 = new rwt.widgets.GridItem( tree.getRootItem() );
-      var child2 = new rwt.widgets.GridItem( child1 );
+      new rwt.widgets.GridItem( child1 );
       wm.add( child1, "wtest", false );
+
       child1.setExpanded( true );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var request = TestUtil.getMessage();
-      var expected = "org.eclipse.swt.events.treeExpanded=wtest";
-      assertTrue( request.indexOf( expected ) != -1 );
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "wtest", "treeExpanded" ) );
       wm.remove( child1 );
       tree.destroy();
     },
@@ -1703,15 +1688,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
       var child1 = new rwt.widgets.GridItem( tree.getRootItem() );
-      var child2 = new rwt.widgets.GridItem( child1 );
+      new rwt.widgets.GridItem( child1 );
       wm.add( child1, "wtest", false );
       child1.setExpanded( true );
       TestUtil.initRequestLog();
+
       child1.setExpanded( false );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var request = TestUtil.getMessage();
-      var expected = "org.eclipse.swt.events.treeCollapsed=wtest";
-      assertTrue( request.indexOf( expected ) != -1 );
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "wtest", "treeCollapsed" ) );
       wm.remove( child1 );
       tree.destroy();
     },
@@ -1723,13 +1709,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setItemCount( 1 );
       var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       child1.setItemCount( 1 );
-      var child2 = new rwt.widgets.GridItem( child1, 0 );
+      new rwt.widgets.GridItem( child1, 0 );
       wm.add( child1, "wtest", false );
+
       org.eclipse.swt.EventUtil.setSuspended( true );
       child1.setExpanded( true );
       child1.setExpanded( false );
-      assertEquals( 0, TestUtil.getRequestsSend() );
       org.eclipse.swt.EventUtil.setSuspended( false );
+
+      assertEquals( 0, TestUtil.getRequestsSend() );
       wm.remove( child1 );
       tree.destroy();
     },
@@ -1745,14 +1733,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       wm.add( child2, "w3", false );
       TestUtil.initRequestLog();
       TestUtil.flush();
+
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       tree._selectionTimestamp = null;
       TestUtil.ctrlClick( tree._rowContainer._children[ 1 ] );
+
       assertEquals( 0, TestUtil.getRequestsSend() );
       rwt.remote.Server.getInstance().send();
-      var request = TestUtil.getMessage();
-      var expected = "w11.selection=" + encodeURIComponent( "w2,w3" );
-      assertTrue( request.indexOf( expected ) != -1 );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "w2,w3", message.findSetProperty( "w11", "selection" ) );
       tree.destroy();
     },
 
@@ -1762,22 +1751,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHasSelectionListener( true );
       tree.setItemCount( 2 );
       var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var child2 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 1 );
       wm.add( tree, "w11", true );
       wm.add( child1, "w2", false );
       TestUtil.flush();
       TestUtil.initRequestLog();
+
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       tree._selectionTimestamp = null;
       TestUtil.ctrlClick( tree._rowContainer._children[ 0 ] );
+
       assertEquals( 2, TestUtil.getRequestsSend() );
-      var log = TestUtil.getRequestLog();
-      var expected1 = "org.eclipse.swt.events.widgetSelected=w1";
-      var expected2 = "org.eclipse.swt.events.widgetSelected.item=w2";
-      assertTrue( log[ 0 ].indexOf( expected1 ) != -1 );
-      assertTrue( log[ 0 ].indexOf( expected2 ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected1 ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected2 ) != -1 );
+      console.log( TestUtil.getMessageObject( 0 ) );
+      var messages = TestUtil.getMessages();
+      assertEquals( "w2", messages[ 0 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
+      assertEquals( "w2", messages[ 1 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
       tree.destroy();
     },
 
@@ -1791,24 +1779,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       wm.add( child1, "w2", false );
       TestUtil.flush();
       TestUtil.initRequestLog();
+
       TestUtil.doubleClick( tree._rowContainer._children[ 0 ] );
+
       assertEquals( 2, TestUtil.getRequestsSend() );
-      var log = TestUtil.getRequestLog();
-      var expected1a = "org.eclipse.swt.events.widgetSelected=w1";
-      var expected1b = "org.eclipse.swt.events.widgetSelected.item=w2";
-      var expected2a = "org.eclipse.swt.events.widgetDefaultSelected=w1";
-      var expected2b = "org.eclipse.swt.events.widgetDefaultSelected.item=w2";
-      var expected3 = "w11.selection=" + encodeURIComponent( "w2" );
-      assertTrue( log[ 0 ].indexOf( expected1a ) != -1 );
-      assertTrue( log[ 0 ].indexOf( expected1b ) != -1 );
-      assertTrue( log[ 0 ].indexOf( expected2a ) == -1 );
-      assertTrue( log[ 0 ].indexOf( expected2b ) == -1 );
-      assertTrue( log[ 0 ].indexOf( expected3 ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected1a ) == -1 );
-      assertTrue( log[ 1 ].indexOf( expected1b ) == -1 );
-      assertTrue( log[ 1 ].indexOf( expected2a ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected2b ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected3 ) == -1 );
+      var messages = TestUtil.getMessages();
+      assertEquals( "w2", messages[ 0 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
+      assertEquals( "w2", messages[ 0 ].findSetProperty( "w11", "selection" ) );
+      assertNull( messages[ 0 ].findNotifyOperation( "w11", "widgetDefaultSelected" ) );
+      assertEquals( "w2", messages[ 1 ].findNotifyProperty( "w11", "widgetDefaultSelected", "item" ) );
+      assertNull( messages[ 1 ].findNotifyOperation( "w11", "widgetSelected" ) );
+      assertNull( "w2", messages[ 1 ].findSetOperation( "w11", "selection" ) );
       tree.destroy();
     },
 
@@ -1820,8 +1801,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       child1.setItemCount( 1 );
       var child1_1 = new rwt.widgets.GridItem( child1, 0, false );
       child1_1.setItemCount( 1 );
-      var child1_1_1 = new rwt.widgets.GridItem( child1_1, 0, true );
-      var child2 = new rwt.widgets.GridItem( tree.getRootItem(), 1, true );
+      new rwt.widgets.GridItem( child1_1, 0, true );
+      new rwt.widgets.GridItem( tree.getRootItem(), 1, true );
       child1.setExpanded( true );
       child1_1.setExpanded( true );
       wm.add( tree, "w11", true );
@@ -1829,18 +1810,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       wm.add( child1_1, "w3", false );
       TestUtil.initRequestLog();
       TestUtil.flush();
+
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       tree._selectionTimestamp = null;
       tree.setHasSelectionListener( true );
       TestUtil.shiftClick( tree._rowContainer._children[ 3 ] );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var request = TestUtil.getMessage();
-      var expected1 = "w11.selection=" + encodeURIComponent( "w2,w3,w3#0,w11#1" );
-      var expected2 = "org.eclipse.swt.events.widgetSelected=w1";
-      var expected3 = "org.eclipse.swt.events.widgetSelected.item=" + encodeURIComponent( "w11#1" );
-      assertTrue( request.indexOf( expected1 ) != -1 );
-      assertTrue( request.indexOf( expected2 ) != -1 );
-      assertTrue( request.indexOf( expected3 ) != -1 );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "w2,w3,w3#0,w11#1", message.findSetProperty( "w11", "selection" ) );
+      assertEquals( "w11#1", message.findNotifyProperty( "w11", "widgetSelected", "item" ) );
       tree.destroy();
     },
 
@@ -1854,29 +1833,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
       tree.setItemCount( 2 );
       var child0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 1 );
       wm.add( tree, "w11", true );
       wm.add( child0, "w2", false );
       TestUtil.flush();
       TestUtil.initRequestLog();
+
       TestUtil.doubleClick( tree._rowContainer._children[ 0 ] );
-      var log = TestUtil.getRequestLog();
-      assertEquals( 2, TestUtil.getRequestsSend() );
-      var expected1a = "org.eclipse.swt.events.widgetSelected=w1";
-      var expected1b = "org.eclipse.swt.events.widgetSelected.item=w2";
-      var expected2a = "org.eclipse.swt.events.widgetDefaultSelected=w1";
-      var expected2b = "org.eclipse.swt.events.widgetDefaultSelected.item=w2";
-      var expected3 = "w11.selection=" + encodeURIComponent( "w2" );
-      assertTrue( log[ 0 ].indexOf( expected1a ) != -1 );
-      assertTrue( log[ 0 ].indexOf( expected1b ) != -1 );
-      assertTrue( log[ 0 ].indexOf( expected2a ) == -1 );
-      assertTrue( log[ 0 ].indexOf( expected2b ) == -1 );
-      assertTrue( log[ 0 ].indexOf( expected3 ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected1a ) == -1 );
-      assertTrue( log[ 1 ].indexOf( expected1b ) == -1 );
-      assertTrue( log[ 1 ].indexOf( expected2a ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected2b ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected3 ) == -1 );
+
+      var messages = TestUtil.getMessages();
+      assertEquals( "w2", messages[ 0 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
+      assertEquals( "w2", messages[ 0 ].findSetProperty( "w11", "selection" ) );
+      assertNull( messages[ 0 ].findNotifyOperation( "w11", "widgetDefaultSelected" ) );
+      assertEquals( "w2", messages[ 1 ].findNotifyProperty( "w11", "widgetDefaultSelected", "item" ) );
+      assertNull( messages[ 1 ].findNotifyOperation( "w11", "widgetSelected" ) );
+      assertNull( "w2", messages[ 1 ].findSetOperation( "w11", "selection" ) );
       tree.destroy();
     },
 
@@ -1890,16 +1861,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       wm.add( child1, "w2", false );
       TestUtil.flush();
       TestUtil.initRequestLog();
+
       TestUtil.rightClick( tree._rowContainer._children[ 0 ] );
       TestUtil.rightClick( tree._rowContainer._children[ 0 ] );
+
       assertEquals( 2, TestUtil.getRequestsSend() );
-      var log = TestUtil.getRequestLog();
-      var expected = "org.eclipse.swt.events.widgetSelected.item=w2";
-      var notExpected = "org.eclipse.swt.events.widgetDefaultSelected";
-      assertTrue( log[ 0 ].indexOf( notExpected ) == -1 );
-      assertTrue( log[ 1 ].indexOf( notExpected ) == -1 );
-      assertTrue( log[ 0 ].indexOf( expected ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected ) != -1 );
+      var messages = TestUtil.getMessages();
+      assertNull( messages[ 0 ].findNotifyOperation( "w11", "widgetDefaultSelected" ) );
+      assertNull( messages[ 1 ].findNotifyOperation( "w11", "widgetDefaultSelected" ) );
+      assertEquals( "w2", messages[ 0 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
+      assertEquals( "w2", messages[ 1 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
       tree.destroy();
     },
 
@@ -1914,25 +1885,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
       TestUtil.initRequestLog();
       var node = tree._rowContainer._children[ 0 ]._getTargetNode();
+
       TestUtil.clickDOM( node );
       TestUtil.keyDown( node, "Enter" );
+
       assertEquals( 2, TestUtil.getRequestsSend() );
-      var log = TestUtil.getRequestLog();
-      var expected1a = "org.eclipse.swt.events.widgetSelected=w1";
-      var expected1b = "org.eclipse.swt.events.widgetSelected.item=w2";
-      var expected2a = "org.eclipse.swt.events.widgetDefaultSelected=w1";
-      var expected2b = "org.eclipse.swt.events.widgetDefaultSelected.item=w2";
-      var expected3 = "w11.selection=" + encodeURIComponent( "w2" );
-      assertTrue( log[ 0 ].indexOf( expected1a ) != -1 );
-      assertTrue( log[ 0 ].indexOf( expected1b ) != -1 );
-      assertTrue( log[ 0 ].indexOf( expected2a ) == -1 );
-      assertTrue( log[ 0 ].indexOf( expected2b ) == -1 );
-      assertTrue( log[ 0 ].indexOf( expected3 ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected1a ) == -1 );
-      assertTrue( log[ 1 ].indexOf( expected1b ) == -1 );
-      assertTrue( log[ 1 ].indexOf( expected2a ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected2b ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected3 ) == -1 );
+      var messages = TestUtil.getMessages();
+      assertEquals( "w2", messages[ 0 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
+      assertEquals( "w2", messages[ 0 ].findSetProperty( "w11", "selection" ) );
+      assertNull( messages[ 0 ].findNotifyOperation( "w11", "widgetDefaultSelected" ) );
+      assertEquals( "w2", messages[ 1 ].findNotifyProperty( "w11", "widgetDefaultSelected", "item" ) );
+      assertNull( messages[ 1 ].findNotifyOperation( "w11", "widgetSelected" ) );
+      assertNull( "w2", messages[ 1 ].findSetOperation( "w11", "selection" ) );
       tree.destroy();
     },
 
@@ -1950,13 +1914,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
       TestUtil.initRequestLog();
       tree.setFocusItem( child2 );
+
       TestUtil.keyDown( tree._getTargetNode(), "Enter" );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var message = TestUtil.getMessage();
-      var expected1a = "org.eclipse.swt.events.widgetDefaultSelected=w1";
-      var expected1b = "org.eclipse.swt.events.widgetDefaultSelected.item=w3";
-      assertTrue( message.indexOf( expected1a ) != -1 );
-      assertTrue( message.indexOf( expected1b ) != -1 );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "w3", message.findNotifyProperty( "w11", "widgetDefaultSelected", "item" ) );
       tree.destroy();
     },
 
@@ -1972,17 +1935,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       wm.add( child2, "w3", false );
       TestUtil.flush();
       TestUtil.initRequestLog();
+
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       TestUtil.click( tree._rowContainer._children[ 1 ] );
+
       assertEquals( 2, TestUtil.getRequestsSend() );
-      var log = TestUtil.getRequestLog();
-      var expected1 = "org.eclipse.swt.events.widgetSelected.item=w2";
-      var expected2 = "org.eclipse.swt.events.widgetSelected.item=w3";
-      var notExpected = "org.eclipse.swt.events.widgetDefaultSelected";
-      assertTrue( log[ 0 ].indexOf( notExpected ) == -1 );
-      assertTrue( log[ 1 ].indexOf( notExpected ) == -1 );
-      assertTrue( log[ 0 ].indexOf( expected1 ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected2 ) != -1 );
+      var messages = TestUtil.getMessages();
+      assertNull( messages[ 0 ].findNotifyOperation( "w11", "widgetDefaultSelected" ) );
+      assertNull( messages[ 1 ].findNotifyOperation( "w11", "widgetDefaultSelected" ) );
+      assertEquals( "w2", messages[ 0 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
+      assertEquals( "w3", messages[ 1 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
       tree.destroy();
     },
 
@@ -2000,31 +1962,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       wm.add( child3, "w4", false );
       TestUtil.flush();
       TestUtil.initRequestLog();
+
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       tree._selectionTimestamp = null;
       TestUtil.shiftClick( tree._rowContainer._children[ 2 ] );
+
       assertEquals( 2, TestUtil.getRequestsSend() );
-      var log = TestUtil.getRequestLog();
-      var expected1a = "org.eclipse.swt.events.widgetSelected=w1";
-      var expected1b = "org.eclipse.swt.events.widgetSelected.item=w2";
-      var expected1c = "w11.selection=" + encodeURIComponent( "w2" );
-      var expected2a = "org.eclipse.swt.events.widgetSelected.item=w4";
-      var expected2b = "w11.selection=" + encodeURIComponent( "w2,w3,w4" );
-      var notExpected = "DefaultSelected";
-      assertTrue( log.join().indexOf( notExpected ) == -1 );
-      assertTrue( log[ 0 ].indexOf( expected1a ) != -1 );
-      assertTrue( log[ 0 ].indexOf( expected1b ) != -1 );
-      assertTrue( log[ 0 ].indexOf( expected1c ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected1a ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected2a ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected2b ) != -1 );
+      var messages = TestUtil.getMessages();
+      assertNull( messages[ 0 ].findNotifyOperation( "w11", "widgetDefaultSelected" ) );
+      assertNull( messages[ 1 ].findNotifyOperation( "w11", "widgetDefaultSelected" ) );
+      assertEquals( "w2", messages[ 0 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
+      assertEquals( "w4", messages[ 1 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
+      assertEquals( "w2,w3,w4", messages[ 1 ].findSetProperty( "w11", "selection" ) );
       tree.destroy();
     },
 
     testRenderOnFocus : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
-      var child = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       tree.focus();
       TestUtil.flush();
       assertFalse( tree._rowContainer._children[ 0 ].hasState( "parent_unfocused" ) );
@@ -2131,7 +2087,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         }
       } );
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       TestUtil.flush();
       var row = tree._rowContainer._children[ 0 ];
       var rowNode = row._getTargetNode();
@@ -2162,8 +2118,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         }
       } );
       tree.setItemCount( 2 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 1 );
       TestUtil.flush();
       var rowNode1 = tree._rowContainer._children[ 0 ]._getTargetNode();
       var rowNode2 = tree._rowContainer._children[ 1 ]._getTargetNode();
@@ -2196,7 +2152,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         }
       } );
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       TestUtil.flush();
       var rowNode = tree._rowContainer._children[ 0 ]._getTargetNode();
       TestUtil.hoverFromTo( document.body, rowNode );
@@ -2221,12 +2177,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fillTree( tree, 100 );
       TestUtil.initRequestLog();
       TestUtil.flush();
+
       tree._vertScrollBar.setValue( 160 );
       assertEquals( 0, TestUtil.getRequestsSend() );
       rwt.remote.Server.getInstance().send();
-      var request = TestUtil.getMessage();
-      var expected = "w11.topItemIndex=8";
-      assertTrue( request.indexOf( expected ) != -1 );
+
+      assertEquals( 8, TestUtil.getMessageObject().findSetProperty( "w11", "topItemIndex" ) );
       tree.destroy();
     },
 
@@ -2251,8 +2207,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setItemMetrics( 3, 500, 700, 0, 0, 0, 500 );
       tree.setColumnCount( 4 );
 
-      assertEquals( 1200, tree.getTableHeader()._scrollWidth )
-      assertEquals( 1200, tree.getFooter()._scrollWidth )
+      assertEquals( 1200, tree.getTableHeader()._scrollWidth );
+      assertEquals( 1200, tree.getFooter()._scrollWidth );
       tree.destroy();
     },
 
@@ -2277,14 +2233,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHeaderVisible( true );
       TestUtil.flush();
       var areaNode = tree._rowContainer.getElement();
-      assertEquals( 30, parseInt( areaNode.style.top ) );
-      assertEquals( 470, parseInt( areaNode.style.height ) );
-      assertEquals( 600, parseInt( areaNode.style.width ) );
+      assertEquals( 30, parseInt( areaNode.style.top, 10 ) );
+      assertEquals( 470, parseInt( areaNode.style.height, 10 ) );
+      assertEquals( 600, parseInt( areaNode.style.width, 10 ) );
       var headerNode = tree._header.getElement();
-      assertEquals( 0, parseInt( headerNode.style.top ) );
-      assertEquals( 30, parseInt( headerNode.style.height ) );
-      assertEquals( 600, parseInt( headerNode.style.width ) );
-      assertEquals( 2000, parseInt( headerNode.style.zIndex ) );
+      assertEquals( 0, parseInt( headerNode.style.top, 10 ) );
+      assertEquals( 30, parseInt( headerNode.style.height, 10 ) );
+      assertEquals( 600, parseInt( headerNode.style.width, 10 ) );
+      assertEquals( 2000, parseInt( headerNode.style.zIndex, 10 ) );
       tree.destroy();
     },
 
@@ -2302,10 +2258,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var horizontal = TestUtil.getElementBounds( tree._horzScrollBar.getElement() );
       var vertical = TestUtil.getElementBounds( tree._vertScrollBar.getElement() );
       var headerNode = tree._header.getElement();
-      assertEquals( 600, parseInt( headerNode.style.width ) );
+      assertEquals( 600, parseInt( headerNode.style.width, 10 ) );
       var areaNode = tree._rowContainer.getElement();
       var expectedAreaHeight = 470 - horizontal.height;
-      assertEquals( expectedAreaHeight, parseInt( areaNode.style.height ) );
+      assertEquals( expectedAreaHeight, parseInt( areaNode.style.height, 10 ) );
       assertEquals( expectedAreaHeight, vertical.height );
       assertEquals( 30, vertical.top );
       assertEquals( expectedAreaHeight + 30, horizontal.top );
@@ -2326,12 +2282,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       var areaNode = tree._rowContainer.getElement();
       var footerNode = tree._footer.getElement();
-      assertEquals( 0, parseInt( areaNode.style.top ) );
-      assertEquals( 470, parseInt( areaNode.style.height ) );
-      assertEquals( 600, parseInt( areaNode.style.width ) );
-      assertEquals( 470, parseInt( footerNode.style.top ) );
-      assertEquals( 30, parseInt( footerNode.style.height ) );
-      assertEquals( 600, parseInt( footerNode.style.width ) );
+      assertEquals( 0, parseInt( areaNode.style.top, 10 ) );
+      assertEquals( 470, parseInt( areaNode.style.height, 10 ) );
+      assertEquals( 600, parseInt( areaNode.style.width, 10 ) );
+      assertEquals( 470, parseInt( footerNode.style.top, 10 ) );
+      assertEquals( 30, parseInt( footerNode.style.height, 10 ) );
+      assertEquals( 600, parseInt( footerNode.style.width, 10 ) );
       tree.destroy();
     },
 
@@ -2352,15 +2308,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var areaNode = tree._rowContainer.getElement();
       var footerNode = tree._footer.getElement();
       var headerNode = tree._header.getElement();
-      assertEquals( 20, parseInt( areaNode.style.top ) );
-      assertEquals( 450, parseInt( areaNode.style.height ) );
-      assertEquals( 600, parseInt( areaNode.style.width ) );
-      assertEquals( 0, parseInt( headerNode.style.top ) );
-      assertEquals( 20, parseInt( headerNode.style.height ) );
-      assertEquals( 600, parseInt( headerNode.style.width ) );
-      assertEquals( 470, parseInt( footerNode.style.top ) );
-      assertEquals( 30, parseInt( footerNode.style.height ) );
-      assertEquals( 600, parseInt( footerNode.style.width ) );
+      assertEquals( 20, parseInt( areaNode.style.top, 10 ) );
+      assertEquals( 450, parseInt( areaNode.style.height, 10 ) );
+      assertEquals( 600, parseInt( areaNode.style.width, 10 ) );
+      assertEquals( 0, parseInt( headerNode.style.top, 10 ) );
+      assertEquals( 20, parseInt( headerNode.style.height, 10 ) );
+      assertEquals( 600, parseInt( headerNode.style.width, 10 ) );
+      assertEquals( 470, parseInt( footerNode.style.top, 10 ) );
+      assertEquals( 30, parseInt( footerNode.style.height, 10 ) );
+      assertEquals( 600, parseInt( footerNode.style.width, 10 ) );
       tree.destroy();
     },
 
@@ -2383,11 +2339,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var areaNode = tree._rowContainer.getElement();
       var expectedAreaHeight = 470 - horizontal.height; // 500 - footerHeight = 470
       var expectedAreaWidth = 600 - vertical.width;
-      assertEquals( 0, parseInt( areaNode.style.top ) );
-      assertEquals( expectedAreaHeight, parseInt( areaNode.style.height ) );
-      assertEquals( expectedAreaWidth, parseInt( areaNode.style.width ) );
-      assertEquals( 30, parseInt( footerNode.style.height ) );
-      assertEquals( 590, parseInt( footerNode.style.width ) );
+      assertEquals( 0, parseInt( areaNode.style.top, 10 ) );
+      assertEquals( expectedAreaHeight, parseInt( areaNode.style.height, 10 ) );
+      assertEquals( expectedAreaWidth, parseInt( areaNode.style.width, 10 ) );
+      assertEquals( 30, parseInt( footerNode.style.height, 10 ) );
+      assertEquals( 590, parseInt( footerNode.style.width, 10 ) );
       assertEquals( 0, vertical.top );
       assertEquals( expectedAreaHeight + 30, vertical.height );
       assertEquals( expectedAreaWidth, vertical.left );
@@ -2419,15 +2375,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var areaNode = tree._rowContainer.getElement();
       var expectedAreaHeight = 450 - horizontal.height; // 500 - footerHeight - headerHeigth = 450
       var expectedAreaWidth = 600 - vertical.width;
-      assertEquals( 20, parseInt( areaNode.style.top ) );
-      assertEquals( expectedAreaHeight, parseInt( areaNode.style.height ) );
-      assertEquals( expectedAreaWidth, parseInt( areaNode.style.width ) );
-      assertEquals( expectedAreaHeight + 20, parseInt( footerNode.style.top ) );
-      assertEquals( 30, parseInt( footerNode.style.height ) );
-      assertEquals( 590, parseInt( footerNode.style.width ) );
-      assertEquals( 0, parseInt( headerNode.style.top ) );
-      assertEquals( 20, parseInt( headerNode.style.height ) );
-      assertEquals( 600, parseInt( headerNode.style.width ) );
+      assertEquals( 20, parseInt( areaNode.style.top, 10 ) );
+      assertEquals( expectedAreaHeight, parseInt( areaNode.style.height, 10 ) );
+      assertEquals( expectedAreaWidth, parseInt( areaNode.style.width, 10 ) );
+      assertEquals( expectedAreaHeight + 20, parseInt( footerNode.style.top, 10 ) );
+      assertEquals( 30, parseInt( footerNode.style.height, 10 ) );
+      assertEquals( 590, parseInt( footerNode.style.width, 10 ) );
+      assertEquals( 0, parseInt( headerNode.style.top, 10 ) );
+      assertEquals( 20, parseInt( headerNode.style.height, 10 ) );
+      assertEquals( 600, parseInt( headerNode.style.width, 10 ) );
       assertEquals( 20, vertical.top );
       assertEquals( expectedAreaHeight + 30, vertical.height );
       assertEquals( expectedAreaWidth, vertical.left );
@@ -2442,7 +2398,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHeaderVisible( true );
       var column = new rwt.widgets.GridColumn( tree );
       TestUtil.flush();
-      var label = this._getColumnLabel( tree, column )
+      var label = this._getColumnLabel( tree, column );
 
       assertEquals( tree._header, label.getParent() );
       assertEquals( "tree-column", label.getAppearance() );
@@ -2662,7 +2618,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setItemMetrics( 0, 0, 500, 0, 0, 30, 500 );
       TestUtil.flush();
       var node = tree._rowContainer._children[ 0 ]._getTargetNode().firstChild;
-      assertEquals( 30, parseInt( node.style.left ) );
+      assertEquals( 30, parseInt( node.style.left, 10 ) );
       tree.destroy();
     },
 
@@ -2672,7 +2628,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHeaderVisible( true );
       var column = new rwt.widgets.GridColumn( tree );
       tree.setItemCount( 1 );
-      var child = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.add( column, "w11", false );
       column.setLeft( 100 );
@@ -2688,8 +2644,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.fakeMouseEventDOM( node, "mousemove", left, 5, 0 );
       TestUtil.fakeMouseEventDOM( node, "mouseup", left, 5, 0 );
 
-      var expected = "w11.left";
-      assertTrue( TestUtil.getMessage().indexOf( expected ) != -1 );
+      assertNotNull( TestUtil.getMessageObject().findSetOperation( "w11", "left" ) );
       tree.destroy();
     },
 
@@ -2699,7 +2654,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHeaderVisible( true );
       var column = new rwt.widgets.GridColumn( tree );
       tree.setItemCount( 1 );
-      var child = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.add( column, "w11", false );
       column.setLeft( 100 );
@@ -2710,16 +2665,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.initRequestLog();
       var left = qx.event.type.MouseEvent.buttons.left;
       var node = this._getColumnLabel( tree, column )._getTargetNode();
+
       TestUtil.fakeMouseEventDOM( node, "mousedown", left, 200, 0 );
       TestUtil.fakeMouseEventDOM( node, "mousemove", left, 205, 0 );
       assertEquals( "table-column-resizer", tree._resizeLine.getAppearance() );
       var line = tree._resizeLine._getTargetNode();
       assertIdentical( tree._getTargetNode(), line.parentNode );
-      assertEquals( 203, parseInt( line.style.left ) );
+      assertEquals( 203, parseInt( line.style.left, 10 ) );
       assertEquals( "", tree._resizeLine.getStyleProperty( "visibility" ) );
       TestUtil.fakeMouseEventDOM( node, "mouseup", left, 205, 0 );
-      var expected = "w11.width";
-      assertTrue( TestUtil.getMessage().indexOf( expected ) != -1 );
+
+      assertNotNull( TestUtil.getMessageObject().findSetOperation( "w11", "width" ) );
       assertEquals( "hidden", tree._resizeLine.getStyleProperty( "visibility" ) );
       tree.destroy();
     },
@@ -2774,15 +2730,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       wm.add( tree, "w11", false );
       tree.setTreeColumn( 1 );
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       TestUtil.initRequestLog();
       TestUtil.flush();
+
       tree._horzScrollBar.setValue( 160 );
       assertEquals( 0, TestUtil.getRequestsSend() );
       rwt.remote.Server.getInstance().send();
-      var request = TestUtil.getMessage();
-      var expected = "w11.scrollLeft=160";
-      assertTrue( request.indexOf( expected ) != -1 );
+
+      assertEquals( 160, TestUtil.getMessageObject().findSetProperty( "w11", "scrollLeft" ) );
       tree.destroy();
     },
 
@@ -2824,7 +2780,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       //Also, see Bug 325091.
 
 //    testSetScrollLeftBeforeAppearIEbug : function() {
-////      var tree = this._createDefaultTree();
+//      var tree = this._createDefaultTree();
 //      tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
 //      TestUtil.flush();
 //      tree.hide();
@@ -2886,14 +2842,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
       assertEquals( 160, tree._header.getScrollLeft() );
       assertEquals( 10, columnX.getLeft() );
-      assertEquals( 170, parseInt( label.getElement().style.left ) );
+      assertEquals( 170, parseInt( label.getElement().style.left, 10 ) );
       tree.setScrollLeft( 10 );
-      assertEquals( 20, parseInt( label.getElement().style.left ) );
+      assertEquals( 20, parseInt( label.getElement().style.left, 10 ) );
       columnX.setFixed( false );
       TestUtil.flush();
       assertEquals( 1, label.getZIndex() );
       TestUtil.flush();
-      assertEquals( 10, parseInt( label.getElement().style.left ) );
+      assertEquals( 10, parseInt( label.getElement().style.left, 10 ) );
       tree.destroy();
     },
 
@@ -2912,9 +2868,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setScrollLeft( 10 );
       org.eclipse.swt.EventUtil.setSuspended( false );
       var label = this._getColumnLabel( tree, columnX );
-      assertEquals( 10, parseInt( label.getElement().style.left ) );
+      assertEquals( 10, parseInt( label.getElement().style.left, 10 ) );
       TestUtil.flush();
-      assertEquals( 20, parseInt( label.getElement().style.left ) );
+      assertEquals( 20, parseInt( label.getElement().style.left, 10 ) );
       tree.destroy();
     },
 
@@ -2950,7 +2906,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree( true );
       tree.setLinesVisible( true );
       TestUtil.flush();
-      var row = tree._rowContainer._children[ 0 ];
       assertTrue( tree.hasState( "linesvisible" ) );
       tree.setLinesVisible( false );
       assertFalse( tree.hasState( "linesvisible" ) );
@@ -3047,7 +3002,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       if( !TestUtil.isMobileWebkit() ) {
         tree.setScrollBarsVisible( true, true );
         assertEquals( "0px", line.style.top );
-        assertTrue( parseInt( line.style.top ) < 480 );
+        assertTrue( parseInt( line.style.top, 10 ) < 480 );
       }
       tree.destroy();
     },
@@ -3064,9 +3019,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var line1 = tree._rowContainer._getTargetNode().childNodes[ offset ];
       var line2 = tree._rowContainer._getTargetNode().childNodes[ offset + 1 ];
       var line3 = tree._rowContainer._getTargetNode().childNodes[ offset + 2 ];
-      assertEquals( 201, parseInt( line1.style.left ) );
-      assertEquals( 304, parseInt( line2.style.left ) );
-      assertEquals( 359, parseInt( line3.style.left ) );
+      assertEquals( 201, parseInt( line1.style.left, 10 ) );
+      assertEquals( 304, parseInt( line2.style.left, 10 ) );
+      assertEquals( 359, parseInt( line3.style.left, 10 ) );
       tree.destroy();
     },
 
@@ -3090,9 +3045,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         }
       } );
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      new rwt.widgets.GridItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       var rows = tree._rowContainer._children;
       TestUtil.click( rows[ 0 ] );
@@ -3112,14 +3067,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fillTree( tree, 100 );
       TestUtil.initRequestLog();
       TestUtil.flush();
+
       tree._vertScrollBar.setValue( 50 );
       tree._vertScrollBar.setValue( 160 );
       assertEquals( 0, TestUtil.getRequestsSend() );
       TestUtil.forceInterval( tree._sendRequestTimer );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var request = TestUtil.getMessage();
-      var expected = "w11.topItemIndex=8";
-      assertTrue( request.indexOf( expected ) != -1 );
+      assertEquals( 8, TestUtil.getMessageObject().findSetProperty( "w11", "topItemIndex" ) );
       tree.destroy();
     },
 
@@ -3133,20 +3088,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       TestUtil.initRequestLog();
       TestUtil.flush();
+
       tree._horzScrollBar.setValue( 50 );
       tree._horzScrollBar.setValue( 160 );
       assertEquals( 0, TestUtil.getRequestsSend() );
       TestUtil.forceInterval( tree._sendRequestTimer );
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var request = TestUtil.getMessage();
-      var expected = "w11.scrollLeft=160";
-      assertTrue( request.indexOf( expected ) != -1 );
+      assertEquals( 160, TestUtil.getMessageObject().findSetProperty( "w11", "scrollLeft" ) );
       tree.destroy();
     },
 
     testCancelTimerOnRequest: function() {
       TestUtil.prepareTimerUse();
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "virtual" );
       tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
       new rwt.widgets.GridItem( tree.getRootItem() );
@@ -3759,13 +3713,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.click( tree._rowContainer._children[ 1 ], 20, 20 );
 
       assertEquals( 2, TestUtil.getRequestsSend() );
-      var log = TestUtil.getRequestLog();
-      var expected = "org.eclipse.swt.events.widgetSelected";
-      var notExpected = "org.eclipse.swt.events.widgetDefaultSelected";
-      assertTrue( log[ 0 ].indexOf( notExpected ) == -1 );
-      assertTrue( log[ 1 ].indexOf( notExpected ) == -1 );
-      assertTrue( log[ 0 ].indexOf( expected ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected ) != -1 );
+      assertNull( TestUtil.getMessageObject( 0 ).findNotifyOperation( "w11", "widgetDefaultSelected" ) );
+      assertNull( TestUtil.getMessageObject( 1 ).findNotifyOperation( "w11", "widgetDefaultSelected" ) );
+      assertNotNull( TestUtil.getMessageObject( 0 ).findNotifyOperation( "w11", "widgetSelected" ) );
+      assertNotNull( TestUtil.getMessageObject( 1 ).findNotifyOperation( "w11", "widgetSelected" ) );
       tree.destroy();
     },
 
@@ -3786,13 +3737,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.click( tree._rowContainer._children[ 0 ], 20, 10 );
 
       assertEquals( 2, TestUtil.getRequestsSend() );
-      var log = TestUtil.getRequestLog();
-      var expected = "org.eclipse.swt.events.widgetSelected";
-      var notExpected = "org.eclipse.swt.events.widgetDefaultSelected";
-      assertTrue( log[ 0 ].indexOf( notExpected ) == -1 );
-      assertTrue( log[ 1 ].indexOf( notExpected ) == -1 );
-      assertTrue( log[ 0 ].indexOf( expected ) != -1 );
-      assertTrue( log[ 1 ].indexOf( expected ) != -1 );
+      assertNull( TestUtil.getMessageObject( 0 ).findNotifyOperation( "w11", "widgetDefaultSelected" ) );
+      assertNull( TestUtil.getMessageObject( 1 ).findNotifyOperation( "w11", "widgetDefaultSelected" ) );
+      assertNotNull( TestUtil.getMessageObject( 0 ).findNotifyOperation( "w11", "widgetSelected" ) );
+      assertNotNull( TestUtil.getMessageObject( 1 ).findNotifyOperation( "w11", "widgetSelected" ) );
       tree.destroy();
     },
 
@@ -3807,19 +3755,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       wm.add( child0, "w2", false );
       TestUtil.flush();
       TestUtil.initRequestLog();
+
       TestUtil.ctrlPress( tree, "Space" );
       TestUtil.ctrlPress( tree, "Space" );
       TestUtil.ctrlPress( tree, "Space" );
       TestUtil.ctrlPress( tree, "Space" );
+
       assertEquals( 4, TestUtil.getRequestsSend() );
-      var log = TestUtil.getRequestLog();
-      var notExpected = "org.eclipse.swt.events.widgetDefaultSelected";
-      assertTrue( log.join().indexOf( notExpected ) == -1 );
+      assertNull( TestUtil.getMessageObject( 0 ).findNotifyOperation( "w11", "widgetDefaultSelected" ) );
+      assertNull( TestUtil.getMessageObject( 1 ).findNotifyOperation( "w11", "widgetDefaultSelected" ) );
+      assertNull( TestUtil.getMessageObject( 2 ).findNotifyOperation( "w11", "widgetDefaultSelected" ) );
+      assertNull( TestUtil.getMessageObject( 3 ).findNotifyOperation( "w11", "widgetDefaultSelected" ) );
       tree.destroy();
     },
 
     testKeyEventBeforeFlush : function() {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
       var child0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
@@ -3830,7 +3780,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testRemoveDisposedItemFromState : function() {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 2 );
       var child0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
@@ -3860,7 +3809,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testRemoveInderectlyDisposedItemFromState : function() {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setHeight( 15 );
       tree.setItemHeight( 20 );
@@ -3895,7 +3843,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testDisposeAndCollapseParentItem : function() {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
       var child0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
@@ -3997,15 +3944,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.initRequestLog();
       var leftButton = qx.event.type.MouseEvent.buttons.left;
       var node = tree._rowContainer.getChildren()[ 0 ].getElement();
+
       TestUtil.fakeMouseEventDOM( node, "mouseover", leftButton, 450, 11 );
       TestUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 450, 11 );
       TestUtil.forceInterval( tree._cellToolTip._showTimer );
-      var msg = TestUtil.getMessage();
+
       assertEquals( 1, TestUtil.getRequestsSend() );
-      var param1 = "org.eclipse.swt.events.cellToolTipTextRequested=w3";
-      var param2 = "org.eclipse.swt.events.cellToolTipTextRequested.cell=w45%2C5";
-      assertTrue( msg.indexOf( param1 ) != -1 );
-      assertTrue( msg.indexOf( param2 ) != -1 );
+      var message = TestUtil.getMessageObject( 0 );
+      var actual = message.findNotifyProperty( "w3", "cellToolTipTextRequested", "cell" );
+      assertEquals( "w45,5", actual );
       tree.destroy();
     },
 
