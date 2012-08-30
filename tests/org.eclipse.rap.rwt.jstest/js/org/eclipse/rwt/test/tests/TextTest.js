@@ -729,8 +729,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.fakeMouseEvent( text, "mouseup" );
       Server.getInstance().send();
 
-      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=3" ) !== -1 );
-      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
+      assertEquals( 3, TestUtil.getMessageObject().findSetProperty( "w3", "selectionStart" ) );
+      assertEquals( 0, TestUtil.getMessageObject().findSetProperty( "w3", "selectionLength" ) );
     },
 
 //    TODO [tb] : activate when fixed
@@ -758,8 +758,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.keyDown( text, "Enter" );
       Server.getInstance().send();
 
-      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=3" ) !== -1 );
-      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
+      assertEquals( 3, TestUtil.getMessageObject().findSetProperty( "w3", "selectionStart" ) );
+      assertEquals( 0, TestUtil.getMessageObject().findSetProperty( "w3", "selectionLength" ) );
     },
 
     testSendSelectionChangeOnTwoKeyPress : function() {
@@ -771,8 +771,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.keyDown( text, "Enter" ); // can send a request without releasing Right
       Server.getInstance().send();
 
-      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=3" ) !== -1 );
-      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
+      assertEquals( 3, TestUtil.getMessageObject().findSetProperty( "w3", "selectionStart" ) );
+      assertEquals( 0, TestUtil.getMessageObject().findSetProperty( "w3", "selectionLength" ) );
     },
 
     testSendSelectionChangeOnProgrammaticValueChange : function() {
@@ -783,8 +783,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setValue( "f" );
       Server.getInstance().send();
 
-      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionStart=1" ) !== -1 );
-      assertTrue( TestUtil.getMessage().indexOf( "w3.selectionLength=0" ) !== -1 );
+      assertEquals( 1, TestUtil.getMessageObject().findSetProperty( "w3", "selectionStart" ) );
+      assertEquals( 0, TestUtil.getMessageObject().findSetProperty( "w3", "selectionLength" ) );
     },
 
     testSendTextChange : function() {
@@ -793,7 +793,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setValue( "foobar" );
       Server.getInstance().send();
 
-      assertTrue( TestUtil.getMessage().indexOf( "w3.text=foobar" ) !== -1 );
+      assertEquals( "foobar", TestUtil.getMessageObject().findSetProperty( "w3", "text" ) );
     },
 
     testSendTextModifyEventWithModifyListener : function() {
@@ -803,7 +803,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setValue( "foobar" );
       TestUtil.forceTimerOnce();
 
-      assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.modifyText=w3" ) !== -1 );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "modifyText" ) );
     },
 
     testSendTextModifyEventWithVerifyListener : function() {
@@ -813,7 +813,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setValue( "foobar" );
       TestUtil.forceTimerOnce();
 
-      assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.modifyText=w3" ) !== -1 );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "modifyText" ) );
     },
 
     testSendNoModifyEvent : function() {
@@ -824,7 +824,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       assertEquals( 0, TestUtil.getRequestsSend() );
       Server.getInstance().send();
-      assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.modifyText" ) === -1 );
+      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "modifyText" ) );
     },
 
     testDontSendTextModifyEventTwice : function() {
@@ -836,8 +836,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.forceTimerOnce();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertTrue( TestUtil.getMessage().indexOf( "org.eclipse.swt.events.modifyText=w3" ) !== -1 );
-      assertTrue( TestUtil.getMessage().indexOf( "w3.text=barfoo" ) !== -1 );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "modifyText" ) );
+      assertEquals( "barfoo", TestUtil.getMessageObject().findSetProperty( "w3", "text" ) );
     },
 
     testSetMessageCreatesLabel : function() {
@@ -1262,6 +1262,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       var message = TestUtil.getMessage();
       assertTrue( message.indexOf( "org.eclipse.swt.events.widgetDefaultSelected=w3" ) !== -1 );
       assertTrue( message.indexOf( "org.eclipse.swt.events.widgetSelected.detail=search" ) !== -1 );
+      // TODO [tb] : Old indexof-based asserts remain until message-object based asserts work
+      //var message = TestUtil.getMessageObject();
+      //assertNotNull( message.findNotifyOperation( "w3", "widgetDefaultSelected" ) );
+      //assertEquals( "search", message.findNotifyProperty( "w3", "widgetSelected", "detail" ) );
     },
 
     testSendDefaultSelectionEventOnCancelIconClick : function() {
@@ -1284,6 +1288,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       var message = TestUtil.getMessage();
       assertTrue( message.indexOf( "org.eclipse.swt.events.widgetDefaultSelected=w3" ) !== -1 );
       assertTrue( message.indexOf( "org.eclipse.swt.events.widgetSelected.detail=cancel" ) !== -1 );
+      // TODO [tb] : Old indexof-based asserts remain until message-object based asserts work
+      //var message = TestUtil.getMessageObject();
+      //assertNotNull( message.findNotifyOperation( "w3", "widgetDefaultSelected" ) );
+      //assertEquals( "cancel", message.findNotifyProperty( "w3", "widgetSelected", "detail" ) );
     },
 
     testClearTextOnCancelIconClick : function() {
@@ -1303,7 +1311,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text = ObjectManager.getObject( "w3" );
       TestUtil.clickDOM( text._cancelIconElement, 5, 5 );
 
-      var message = TestUtil.getMessage();
       assertEquals( "", text.getValue() );
     },
 
