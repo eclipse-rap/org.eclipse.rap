@@ -12,12 +12,12 @@
 qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
 
   extend : qx.core.Object,
-  
+
   construct : function() {
     this.base( arguments );
-    this.TestUtil = org.eclipse.rwt.test.fixture.TestUtil;        
+    this.TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
   },
-  
+
   members : {
 
     testCreateTooBarByProtocol : function() {
@@ -336,7 +336,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
 
     testClickDropDown : function() {
       var item = new rwt.widgets.ToolItem( "dropDown" );
-      this.item = item; 
+      this.item = item;
       item.setLeft( 100 );
       item.setTop( 100 );
       item.setText( "hallo" );
@@ -350,23 +350,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.setHasSelectionListener( true );
       this.TestUtil.fakeMouseClick( item, 103, 103 );
       assertEquals( 1, this.TestUtil.getRequestsSend() );
-      var msg = this.TestUtil.getMessage();
-      assertContains( "widgetSelected=w1",  msg );
-      assertContainsNot( "detail=arrow", msg );
+      var message = this.TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w1", "widgetSelected"   ) );
+      assertEquals( undefined, message.findNotifyProperty( "w1", "widgetSelected", "detail" ) );
       this.TestUtil.clearRequestLog();
-      this.TestUtil.fakeMouseClick( item, 103 + parseInt( lineStyle.left ), 103 );
+      this.TestUtil.fakeMouseClick( item, 103 + parseInt( lineStyle.left, 10 ), 103 );
       assertEquals( 1, this.TestUtil.getRequestsSend() );
-      var msg = this.TestUtil.getMessage();
-      assertContains( "detail=arrow", msg );
+      var message = this.TestUtil.getMessageObject();
+      assertEquals( "arrow", message.findNotifyProperty( "w1", "widgetSelected", "detail" ) );
       this.TestUtil.clearRequestLog();
       item.destroy();
       this.item = null;
     },
-    
+
     testDropDownLayoutBug : function() {
       if( org.eclipse.rwt.Client.isMshtml() ) {
         var item = new rwt.widgets.ToolItem( "dropDown" );
-        this.item = item; 
+        this.item = item;
         item.setLeft( 100 );
         item.setTop( 100 );
         item.setWidth( 100 );
@@ -388,11 +388,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
 
     testDropDownLineHeight : function() {
       var item = new rwt.widgets.ToolItem( "dropDown" );
-      this.item = item; 
+      this.item = item;
       item.setText( "hallo" );
       item.setDropDownArrow( [ "bla.jpg", 13, 13 ] );
       item.setPaddingTop( 10 );
-      item.setPaddingBottom( 1 );     
+      item.setPaddingBottom( 1 );
       this._currentItem = item;
       item.addToDocument();
       rwt.widgets.base.Widget.flushGlobalQueues();
@@ -405,11 +405,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.destroy();
       this.item = null;
     },
-    
+
     testDropDownLineBorder : function() {
       var item = new rwt.widgets.ToolItem( "dropDown" );
-      var border = new org.eclipse.rwt.Border( 1, "outset", "black");  
-      this.item = item; 
+      var border = new org.eclipse.rwt.Border( 1, "outset", "black");
+      this.item = item;
       item.setText( "hallo" );
       item.setSeparatorBorder( border );
       item.setDropDownArrow( [ "bla.jpg", 13, 13 ] );
@@ -421,7 +421,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.destroy();
       this.item = null;
     },
-    
+
     testHotImage : function() {
       var item = new rwt.widgets.ToolItem( "push" );
       item.setText( "hallo" );
@@ -430,40 +430,40 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.TestUtil.flush();
       assertTrue( item.isSeeable() );
       var node = item.getCellNode( 1 );
-      assertContains( 
+      assertContains(
         "test1.jpg",
         this.TestUtil.getCssBackgroundImage ( node )
       );
-      this.TestUtil.mouseOver( item );      
+      this.TestUtil.mouseOver( item );
       this.TestUtil.flush();
-      assertContains( 
+      assertContains(
         "test1.jpg",
         this.TestUtil.getCssBackgroundImage ( node )
-      );      
-      this.TestUtil.mouseOut( item );      
+      );
+      this.TestUtil.mouseOut( item );
       item.setHotImage( "test2.jpg" );
       this.TestUtil.flush();
-      assertContains( 
+      assertContains(
         "test1.jpg",
         this.TestUtil.getCssBackgroundImage ( node )
       );
-      this.TestUtil.mouseOver( item );      
+      this.TestUtil.mouseOver( item );
       this.TestUtil.flush();
       assertTrue( item.hasState( "over" ) );
       this.item = item;
-      assertContains( 
+      assertContains(
         "test2.jpg",
         this.TestUtil.getCssBackgroundImage ( node )
-      );      
-      this.TestUtil.mouseOut( item );      
+      );
+      this.TestUtil.mouseOut( item );
       this.TestUtil.flush();
-      assertContains( 
+      assertContains(
         "test1.jpg",
         this.TestUtil.getCssBackgroundImage ( node )
-      );      
+      );
       item.destroy();
     },
-    
+
     testKeyboardControlActivate : function() {
       this.createDefaultToolBar();
       assertFalse( this.toolBar.isFocused() );
@@ -471,9 +471,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.toolBar.focus();
       assertTrue( this.toolBar.isFocused() );
       assertTrue( this.toolItem1.hasState( "over" ) );
-      this.disposeToolBar();      
+      this.disposeToolBar();
     },
-    
+
     testKeyboardControlActivateOnHover : function() {
       this.createDefaultToolBar();
       assertFalse( this.toolItem3.hasState( "over" ) );
@@ -483,9 +483,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       assertTrue( this.toolBar.isFocused() );
       assertFalse( this.toolItem1.hasState( "over" ) );
       assertTrue( this.toolItem3.hasState( "over" ) );
-      this.disposeToolBar();      
+      this.disposeToolBar();
     },
-    
+
     testKeyboardControlOffByHover : function() {
       this.createDefaultToolBar();
       this.toolBar.focus();
@@ -495,17 +495,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       assertTrue( this.toolItem3.hasState( "over" ) );
       this.disposeToolBar();
     },
-    
+
     testKeyboardControlOffByBlur : function() {
       this.createDefaultToolBar();
       this.toolBar.focus();
       assertTrue( this.toolItem1.hasState( "over" ) );
       this.toolBar.blur();
       assertFalse( this.toolItem1.hasState( "over" ) );
-      assertFalse( this.toolItem3.hasState( "over" ) );     
+      assertFalse( this.toolItem3.hasState( "over" ) );
       this.disposeToolBar();
     },
-    
+
     testKeyboardControlLeft : function() {
       this.createDefaultToolBar();
       this.toolBar.focus();
@@ -516,9 +516,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.TestUtil.press( this.toolBar, "Left" );
       assertTrue( this.toolItem1.hasState( "over" ) );
       assertFalse( this.toolItem3.hasState( "over" ) );
-      this.disposeToolBar();      
+      this.disposeToolBar();
     },
-    
+
     testKeyboardControlRight : function() {
       this.createDefaultToolBar();
       this.toolBar.focus();
@@ -529,9 +529,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.TestUtil.press( this.toolBar, "Right" );
       assertTrue( this.toolItem1.hasState( "over" ) );
       assertFalse( this.toolItem3.hasState( "over" ) );
-      this.disposeToolBar();      
+      this.disposeToolBar();
     },
-    
+
     testKeyboardControlExecute : function() {
       this.createDefaultToolBar();
       var executed = false;
@@ -540,9 +540,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       } );
       this.toolBar.focus();
       assertTrue( this.toolItem1.hasState( "over" ) );
-      this.TestUtil.press( this.toolBar, "Enter" );      
+      this.TestUtil.press( this.toolBar, "Enter" );
       assertTrue( executed );
-      this.disposeToolBar();      
+      this.disposeToolBar();
     },
 
     testKeyboardControlExecuteWithTextWidget : function() {
@@ -568,10 +568,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       text.dispose();
       this.disposeToolBar();
     },
-    
+
     testToolItemFiresDropDownClickedEvent : function() {
       var item = new rwt.widgets.ToolItem( "dropDown" );
-      this.item = item; 
+      this.item = item;
       item.setLeft( 100 );
       item.setTop( 100 );
       item.setText( "hallo" );
@@ -587,9 +587,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.addEventListener( "dropDownClicked", function() {
         log++;
       } );
-      
+
       this.TestUtil.fakeMouseClick( item, 103 + parseInt( lineStyle.left ), 103 );
-      
+
       assertTrue( log > 0 );
       this.TestUtil.clearRequestLog();
       item.destroy();
@@ -598,7 +598,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
 
     /////////
     // Helper
-    
+
     createDefaultToolBar : function() {
       var shell = this.TestUtil.createShellByProtocol( "w2" );
       this.toolBar = new rwt.widgets.ToolBar( false );
@@ -617,7 +617,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.toolBar.setParent( shell );
       this.TestUtil.flush();
     },
-    
+
     disposeToolBar : function() {
       this.toolBar.getParent().destroy();
       this.toolBar.setParent( null );
@@ -674,5 +674,5 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     }
 
   }
-  
+
 } );

@@ -71,7 +71,6 @@ qx.Class.define( "rwt.widgets.ToolItem", {
         this.removeState( "abandoned" );
         if( this._isDropdownClick( event ) ) {
           this._onDropDownClick();
-          this._sendChanges();
         } else {
           this.addState( "pressed" );
         }
@@ -95,7 +94,10 @@ qx.Class.define( "rwt.widgets.ToolItem", {
         if( this._sendEvent ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( this );
-          req.addEvent( "org.eclipse.swt.events.widgetSelected.detail", "arrow" );
+          req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
+          req.addParameter( "org.eclipse.swt.events.widgetSelected.detail", "arrow" );
+          req.send();
         }
       }
       this.dispatchSimpleEvent( "dropDownClicked" );
