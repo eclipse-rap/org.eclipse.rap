@@ -91,6 +91,7 @@ rwt.protocol.MessageProcessor = {
       adapter.destructor( targetObject );
     }
     rwt.protocol.ObjectManager.remove( targetId );
+    rwt.protocol.ServerObjectFactory.remove( targetId );
   },
 
   _processSet : function( targetId, properties ) {

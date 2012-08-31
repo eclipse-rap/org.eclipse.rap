@@ -92,7 +92,7 @@ qx.Class.define( "rwt.remote.Server", {
           this._flushEvent();
           var id = nameArr.shift();
           var property = nameArr.join( "." );// there are cases of event-types with "."
-          this._getMessageWriter().appendSet( id, property, value );
+          this.getMessageWriter().appendSet( id, property, value );
         }
       } else {
         // Currently results of TSD are not compatible with protocol
@@ -133,7 +133,7 @@ qx.Class.define( "rwt.remote.Server", {
 
     _flushEvent : function() {
       if( this._event ) {
-        var writer = this._getMessageWriter();
+        var writer = this.getMessageWriter();
         this._event[ 1 ] = this._event[ 1 ].split( "." ).pop();
         writer.appendNotify.apply( writer, this._event );
         this._event = null;
@@ -162,7 +162,7 @@ qx.Class.define( "rwt.remote.Server", {
         this._parameters[ "uiRoot" ] = this._uiRootId;
         if( this._requestCounter != null ) {
           this._parameters[ "requestCounter" ] = this._requestCounter;
-          this._getMessageWriter().appendMeta( "requestCounter", this._requestCounter );
+          this.getMessageWriter().appendMeta( "requestCounter", this._requestCounter );
           this._requestCounter = -1;
         }
         var request = this._createRequest();
@@ -174,15 +174,19 @@ qx.Class.define( "rwt.remote.Server", {
       }
     },
 
-    ////////////
-    // Internals
-
-    _getMessageWriter : function() {
+    getMessageWriter : function() {
       if( this._writer === null ) {
         this._writer = new rwt.protocol.MessageWriter();
       }
       return this._writer;
     },
+
+    getServerObject : function( target ) {
+      return rwt.protocol.ServerObjectFactory.getServerObject( target );
+    },
+
+    ////////////
+    // Internals
 
     _attachParameters : function( request ) {
       var data = [];
@@ -192,7 +196,7 @@ qx.Class.define( "rwt.remote.Server", {
         );
       }
       this._flushEvent();
-      data.push( "message=" + encodeURIComponent( this._getMessageWriter().createMessage() ) );
+      data.push( "message=" + encodeURIComponent( this.getMessageWriter().createMessage() ) );
       this._writer.dispose();
       this._writer = null;
       request.setData( data.join( "&" ) );

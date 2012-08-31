@@ -281,6 +281,8 @@ public final class ClientResources {
     "org/eclipse/rwt/UICallBack.js",
     "rwt/protocol/adapter/UICallBackAdapter.js",
     "rwt/remote/Server.js",
+    "rwt/protocol/ServerObject.js",
+    "rwt/protocol/ServerObjectFactory.js",
     "org/eclipse/rwt/KeyEventSupport.js",
     "org/eclipse/rwt/JSExecutor.js",
     "rwt/protocol/adapter/JSExecutorAdapter.js",

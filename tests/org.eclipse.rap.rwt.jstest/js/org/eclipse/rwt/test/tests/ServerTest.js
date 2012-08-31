@@ -120,6 +120,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       assertEquals( "notify", op2.type );
       assertEquals( "w3", op2.target );
       assertEquals( "widgetDefaultSelected", op2.eventType );
+    },
+
+    testGetServerObject : function() {
+      rwt.protocol.ObjectManager.add( "w1", rwt.widgets.Display.getCurrent() );
+      var serverObject = server.getServerObject( rwt.widgets.Display.getCurrent() );
+
+      assertTrue( serverObject instanceof rwt.protocol.ServerObject );
     }
 
   }

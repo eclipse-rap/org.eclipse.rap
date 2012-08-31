@@ -104,7 +104,9 @@ public class RWTTestsContribution implements TestContribution {
     "tests/BrowserHistoryTest.js",
     "tests/FontSizeCalculationTest.js",
     "tests/MessageTest.js",
-    "tests/ServerTest.js"
+    "tests/ServerTest.js",
+    "tests/ServerObjectTest.js",
+    "tests/ServerObjectFactoryTest.js"
   };
 
   public String getName() {

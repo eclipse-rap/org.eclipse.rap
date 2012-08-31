@@ -1762,7 +1762,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.ctrlClick( tree._rowContainer._children[ 0 ] );
 
       assertEquals( 2, TestUtil.getRequestsSend() );
-      console.log( TestUtil.getMessageObject( 0 ) );
       var messages = TestUtil.getMessages();
       assertEquals( "w2", messages[ 0 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
       assertEquals( "w2", messages[ 1 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
