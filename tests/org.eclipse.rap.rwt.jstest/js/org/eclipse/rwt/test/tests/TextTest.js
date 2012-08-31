@@ -1263,9 +1263,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertTrue( message.indexOf( "org.eclipse.swt.events.widgetDefaultSelected=w3" ) !== -1 );
       assertTrue( message.indexOf( "org.eclipse.swt.events.widgetSelected.detail=search" ) !== -1 );
       // TODO [tb] : Old indexof-based asserts remain until message-object based asserts work
-      //var message = TestUtil.getMessageObject();
-      //assertNotNull( message.findNotifyOperation( "w3", "widgetDefaultSelected" ) );
-      //assertEquals( "search", message.findNotifyProperty( "w3", "widgetSelected", "detail" ) );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "search", message.findNotifyProperty( "w3", "widgetDefaultSelected", "detail" ) );
     },
 
     testSendDefaultSelectionEventOnCancelIconClick : function() {
@@ -1289,9 +1288,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertTrue( message.indexOf( "org.eclipse.swt.events.widgetDefaultSelected=w3" ) !== -1 );
       assertTrue( message.indexOf( "org.eclipse.swt.events.widgetSelected.detail=cancel" ) !== -1 );
       // TODO [tb] : Old indexof-based asserts remain until message-object based asserts work
-      //var message = TestUtil.getMessageObject();
-      //assertNotNull( message.findNotifyOperation( "w3", "widgetDefaultSelected" ) );
-      //assertEquals( "cancel", message.findNotifyProperty( "w3", "widgetSelected", "detail" ) );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "cancel", message.findNotifyProperty( "w3", "widgetDefaultSelected", "detail" ) );
     },
 
     testClearTextOnCancelIconClick : function() {

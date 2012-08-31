@@ -92,7 +92,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     },
 
     _getKeyModifier : function() {
-      var modifier = "";
+      var modifier = ""; // TODO [tb] : use real array for json protocol
       var commandKey
         = org.eclipse.rwt.Client.getPlatform() === "mac" && org.eclipse.swt.EventUtil._metaKey;
       if( org.eclipse.swt.EventUtil._shiftKey ) {

@@ -203,12 +203,22 @@ qx.Class.define( "rwt.widgets.Text", {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
       var req = rwt.remote.Server.getInstance();
-      req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+      // TODO [tb] : clean up after final switch to protocol
       if( detail ) {
+        req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+        req._event = null; // dont add previous event
+        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         req.addEvent( "org.eclipse.swt.events.widgetSelected.detail", detail );
+        req._event = null;
+        req.getServerObject( this ).notify( "widgetDefaultSelected", {
+          "detail" : detail,
+          "modifier" : org.eclipse.swt.EventUtil._getKeyModifier()
+        } );
+      } else {
+        req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
+        req.send();
       }
-      org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-      req.send();
     },
 
     ///////////////////
