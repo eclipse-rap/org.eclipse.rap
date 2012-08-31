@@ -9,22 +9,21 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var ObjectManager = rwt.protocol.ObjectManager;
+var Processor = rwt.protocol.MessageProcessor;
+
 qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
 
   extend : qx.core.Object,
-  
-  construct : function() {
-    this.base( arguments );
-    this.TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-  },
-  
+
   members : {
 
     testCreatePushButtonByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Button",
@@ -33,7 +32,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Button );
       assertIdentical( shell, widget.getParent() );
@@ -42,14 +40,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertEquals( "push-button", widget.getAppearance() );
       assertEquals( -1, widget._flexibleCell );
       shell.destroy();
-      widget.destroy();
     },
-    
+
     testCreateToggleButtonByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Button",
@@ -58,7 +53,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_TOGGLE" ) );
       assertEquals( "push-button", widget.getAppearance() );
@@ -67,10 +61,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testCreateCheckButtonByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Button",
@@ -79,7 +71,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_CHECK" ) );
       assertEquals( "check-box", widget.getAppearance() );
@@ -88,10 +79,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testCreateRadioButtonByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Button",
@@ -100,7 +89,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_RADIO" ) );
       assertEquals( "radio-button", widget.getAppearance() );
@@ -109,11 +97,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testSetNoRadioGroupByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       shell.addState( "rwt_NO_RADIO_GROUP" );
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Button",
@@ -122,7 +108,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.getNoRadioGroup() );
       shell.destroy();
@@ -130,10 +115,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testSetWrapByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Button",
@@ -142,18 +125,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 2, widget._flexibleCell );
       shell.destroy();
       widget.destroy();
     },
-    
+
     testSetTextByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Button",
@@ -163,7 +143,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "text" : "text\n && \"text"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( "text\n &amp; &quot;text", widget.getCellContent( 2 ) );
       shell.destroy();
@@ -171,10 +150,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testSetTextByProtocolWithWrap : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Button",
@@ -184,7 +161,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "text" : "text\n && \"text"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( "text<br/> &amp; &quot;text", widget.getCellContent( 2 ) );
       shell.destroy();
@@ -192,10 +168,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testSetAlignmentByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
+      var Processor = rwt.protocol.MessageProcessor;
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Button",
@@ -205,7 +180,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "alignment" : "right"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( "right", widget.getHorizontalChildrenAlign() );
       assertEquals( "right", widget._alignment );
@@ -214,10 +188,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testSetAlignmentByProtocol_Arrow : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Button",
@@ -227,7 +199,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "alignment" : "down"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_DOWN" ) );
       assertEquals( "down", widget._alignment );
@@ -236,10 +207,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testSetImageByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Button",
@@ -249,7 +218,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "image" : [ "image.png", 10, 20 ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( "image.png", widget.getCellContent( 1 ) );
       assertEquals( [ 10, 20 ], widget.getCellDimension( 1 ) );
@@ -258,10 +226,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testSetSelectionByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Button",
@@ -271,7 +237,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "selection" : true
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._selected );
       shell.destroy();
@@ -279,10 +244,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testSetGrayedByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Button",
@@ -292,7 +255,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "grayed" : true
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasState( "grayed" ) );
       shell.destroy();
@@ -310,28 +272,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
         }
         return result;
       };
-      var focudIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
       var button = new rwt.widgets.Button( "push" );
       button.addState( "rwt_PUSH" );
       button.setText( "bla" );
-      this._currentButton = button;
       button.addToDocument();
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
       assertFalse( button.hasState( "focus" ) );
       assertFalse( hasFocusIndicator( button ) );
       button.focus();
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
       assertTrue( hasFocusIndicator( button ) );
       button.setImage( "test.jpg" );
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
       assertTrue( hasFocusIndicator( button ) );
       button.blur();
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
       assertFalse( hasFocusIndicator( button ) );
       button.destroy();
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
     },
-    
+
     testFocusIndicatorCheck : function() {
       var hasFocusIndicator = function( widget ) {
         var node = widget._getTargetNode();
@@ -343,152 +303,127 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
         }
         return result;
       };
-      var focudIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
-      var button = new rwt.widgets.Button( "check" );      
+      var button = new rwt.widgets.Button( "check" );
       button.addState( "rwt_CHECK" );
       button.setText( "bla" );
-      this._currentButton = button;
       button.addToDocument();
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
       assertFalse( button.hasState( "focus" ) );
       assertFalse( hasFocusIndicator( button ) );
       button.focus();
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
       assertTrue( hasFocusIndicator( button ) );
       button.setImage( "test.jpg" );
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
       assertTrue( hasFocusIndicator( button ) );
       button.blur();
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
       assertFalse( hasFocusIndicator( button ) );
       button.destroy();
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
     },
 
     testParent : function() {
       var button = new rwt.widgets.Button( "push" );
-      this._currentButton = button;
       button.setText( "Hello World!" );
       button.setImage( "url.jpg" );
       button.addToDocument();
-      rwt.widgets.base.Widget.flushGlobalQueues();
-      assertIdentical( 
-        button._getTargetNode(), 
-        button.getCellNode( 1 ).parentNode 
-      );
-      assertIdentical(
-        button._getTargetNode(), 
-        button.getCellNode( 2 ).parentNode 
-      );
+      TestUtil.flush();
+      assertIdentical( button._getTargetNode(), button.getCellNode( 1 ).parentNode );
+      assertIdentical( button._getTargetNode(), button.getCellNode( 2 ).parentNode );
       button.setParent( null );
       button.destroy();
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
     },
-    
+
     testText : function() {
       var button = new rwt.widgets.Button( "push" );
-      this._currentButton = button;
       button.setText( "Hello World!" );
       button.addToDocument();
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
       assertEquals( "Hello World!", button.getCellNode( 2 ).innerHTML );
       button.setParent( null );
       button.destroy();
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
     },
-    
+
     testImage : function() {
       var button = new rwt.widgets.Button( "push" );
-      this._currentButton = button;
       button.setImage( "test.jpg" );
       button.addToDocument();
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
       assertTrue(
-        this.TestUtil.getCssBackgroundImage( button.getCellNode( 1 ) ).search( "test.jpg" ) != -1 
+        TestUtil.getCssBackgroundImage( button.getCellNode( 1 ) ).search( "test.jpg" ) != -1
       );
       button.setParent( null );
       button.destroy();
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
     },
-    
-    testExecuteCheckButton : function() { 
+
+    testExecuteCheckButton : function() {
       //this test is also valid for toggle button
-      //var button = new org.eclipse.swt.widgets.CheckBox();
       var button = new rwt.widgets.Button( "check" );
       button.addState( "rwt_CHECK" );
       org.eclipse.swt.WidgetManager.getInstance().add( button, "w11" );
-      this._currentButton = button;
       button.addToDocument();
-      rwt.widgets.base.Widget.flushGlobalQueues();
-      this.TestUtil.clearRequestLog();
-      this.TestUtil.click( button );
-      assertEquals( 0, this.TestUtil.getRequestsSend() );
+      TestUtil.flush();
+
+      TestUtil.click( button );
+
+      assertEquals( 0, TestUtil.getRequestsSend() );
       assertTrue( button.hasState( "selected" ) );
-      assertTrue(
-        rwt.remote.Server.getInstance()._parameters[ "w11.selection" ]
-      );
-      button.setHasSelectionListener( true );
-      button.setSelection( false );
-      assertFalse( button.hasState( "selected" ) );
-      this.TestUtil.clearRequestLog();
-      this.TestUtil.click( button );
-      assertTrue( button.hasState( "selected" ) );
-      assertEquals( 1, this.TestUtil.getRequestsSend() );
-      assertContains( "w11.selection=true",  this.TestUtil.getMessage() );
-      this.TestUtil.clearRequestLog();
-      this.TestUtil.click( button );
-      assertFalse( button.hasState( "selected" ) );
-      assertEquals( 1, this.TestUtil.getRequestsSend() );
-      assertContains( "w11.selection=false",  this.TestUtil.getMessage() );
-      this.TestUtil.clearRequestLog();
-      this.TestUtil.press( button, "Space" );
-      assertTrue( button.hasState( "selected" ) );
-      assertEquals( 1, this.TestUtil.getRequestsSend() );
-      assertContains( "w11.selection=true",  this.TestUtil.getMessage() );
+      rwt.remote.Server.getInstance().send();
+      assertTrue( TestUtil.getMessageObject().findSetProperty( "w11", "selection" ) );
     },
-    
+
+    testExecuteCheckButtonWithSelectionListener : function() {
+      //this test is also valid for toggle button
+      var button = new rwt.widgets.Button( "check" );
+      button.addState( "rwt_CHECK" );
+      org.eclipse.swt.WidgetManager.getInstance().add( button, "w11" );
+      button.addToDocument();
+      TestUtil.flush();
+      TestUtil.clearRequestLog();
+      button.setHasSelectionListener( true );
+
+      TestUtil.click( button );
+
+      assertTrue( button.hasState( "selected" ) );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertTrue( TestUtil.getMessageObject().findSetProperty( "w11", "selection" ) );
+      TestUtil.clearRequestLog();
+      TestUtil.press( button, "Space" );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertFalse( TestUtil.getMessageObject().findSetProperty( "w11", "selection" ) );
+    },
+
     testExecuteRadioButton : function() {
       var button = new rwt.widgets.Button( "radio" );
       button.addState( "rwt_RADIO" );
       org.eclipse.swt.WidgetManager.getInstance().add( button, "w11" );
-      this._currentButton = button;
       button.addToDocument();
-      rwt.widgets.base.Widget.flushGlobalQueues();
-      this.TestUtil.clearRequestLog();
-      this.TestUtil.click( button );
-      assertEquals( 0, this.TestUtil.getRequestsSend() );      
-      assertTrue(
-        rwt.remote.Server.getInstance()._parameters[ "w11.selection" ]
-      );
-      button.setSelection( false );      
-      button.setHasSelectionListener( true );
-      this.TestUtil.clearRequestLog();
-      this.TestUtil.click( button );
-      assertEquals( 1, this.TestUtil.getRequestsSend() );
-      assertTrue( button.hasState( "selected" ) );      
-      assertContains( "w11.selection=true",  this.TestUtil.getMessage() );
+      TestUtil.flush();
+      TestUtil.click( button );
       var button2 = new rwt.widgets.Button( "radio" );
+      button.setHasSelectionListener( true );
       button2.addState( "rwt_RADIO" );
       org.eclipse.swt.WidgetManager.getInstance().add( button2, "w2" );
       button2.addToDocument();
-      rwt.widgets.base.Widget.flushGlobalQueues();
-      this.TestUtil.clearRequestLog();
+      TestUtil.flush();
       button2.setHasSelectionListener( true );
-      this.TestUtil.click( button2 );
+      TestUtil.click( button2 );
       assertFalse( button.hasState( "selected" ) );
       assertTrue( button2.hasState( "selected" ) );
-      assertEquals( 1, this.TestUtil.getRequestsSend() );      
-      var msg = this.TestUtil.getMessage();      
-      assertContains( "w11.selection=false", msg );
-      assertContains( "w2.selection=true", msg );
-      this.TestUtil.clearRequestLog();
-      this.TestUtil.press( button2, "Up" );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertFalse( TestUtil.getMessageObject().findSetProperty( "w11", "selection" ) );
+      assertTrue( TestUtil.getMessageObject().findSetProperty( "w2", "selection" ) );
+      TestUtil.clearRequestLog();
+      TestUtil.press( button2, "Up" );
       assertTrue( button.hasState( "selected" ) );
       assertFalse( button2.hasState( "selected" ) );
-      assertEquals( 1, this.TestUtil.getRequestsSend() );
-      msg = this.TestUtil.getMessage();
-      assertContains( "w11.selection=true", msg );
-      assertContains( "w2.selection=false", msg );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertTrue( TestUtil.getMessageObject().findSetProperty( "w11", "selection" ) );
+      assertFalse( TestUtil.getMessageObject().findSetProperty( "w2", "selection" ) );
     },
 
     testExecuteRadioButton_NoRadioGroup : function() {
@@ -504,61 +439,50 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       button2.setNoRadioGroup( true );
       button2.setHasSelectionListener( true );
       button2.addToDocument();
-      rwt.widgets.base.Widget.flushGlobalQueues();
-      this.TestUtil.clearRequestLog();
-      this.TestUtil.click( button1 );
+      TestUtil.flush();
+      TestUtil.clearRequestLog();
+      TestUtil.click( button1 );
       assertTrue( button1.hasState( "selected" ) );
       assertFalse( button2.hasState( "selected" ) );
-      assertEquals( 1, this.TestUtil.getRequestsSend() );      
-      var msg = this.TestUtil.getMessage();      
-      assertContains( "w11.selection=true", msg );
-      assertContainsNot( "w2.selection", msg );
-      this.TestUtil.clearRequestLog();
-      this.TestUtil.click( button2 );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertTrue( TestUtil.getMessageObject().findSetProperty( "w11", "selection" ) );
+      TestUtil.clearRequestLog();
+      TestUtil.click( button2 );
       assertTrue( button1.hasState( "selected" ) );
       assertTrue( button2.hasState( "selected" ) );
-      assertEquals( 1, this.TestUtil.getRequestsSend() );      
-      msg = this.TestUtil.getMessage();      
-      assertContainsNot( "w11.selection", msg );
-      assertContains( "w2.selection=true", msg );
-      this.TestUtil.clearRequestLog();
-      this.TestUtil.click( button2 );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertTrue( TestUtil.getMessageObject().findSetProperty( "w2", "selection" ) );
+      TestUtil.clearRequestLog();
+      TestUtil.click( button2 );
       assertTrue( button1.hasState( "selected" ) );
       assertFalse( button2.hasState( "selected" ) );
-      assertEquals( 1, this.TestUtil.getRequestsSend() );      
-      msg = this.TestUtil.getMessage();      
-      assertContainsNot( "w11.selection", msg );
-      assertContains( "w2.selection=false", msg );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertFalse( TestUtil.getMessageObject().findSetProperty( "w2", "selection" ) );
     },
 
     testExecutePushButton : function() {
       var button = new rwt.widgets.Button( "push" );
       button.addState( "rwt_PUSH" );
-      this._currentButton = button;
       button.addToDocument();
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
       org.eclipse.swt.WidgetManager.getInstance().add( button, "w11" );
-      this.TestUtil.clearRequestLog();
-      this.TestUtil.click( button );
-      assertEquals( 0, this.TestUtil.getRequestsSend() );      
+      TestUtil.clearRequestLog();
+      TestUtil.click( button );
+      assertEquals( 0, TestUtil.getRequestsSend() );
       button.setHasSelectionListener( true );
-      this.TestUtil.clearRequestLog();
-      this.TestUtil.click( button );
-      assertEquals( 1, this.TestUtil.getRequestsSend() );
-      assertFalse( button.hasState( "selected" ) );      
-      var msg = this.TestUtil.getMessage();
-      assertContains( "widgetSelected=w1",  msg );
-      assertContainsNot( "w11.selection=true",  msg );   
-      this.TestUtil.clearRequestLog();
-      this.TestUtil.press( button, "Enter" );
-      assertFalse( button.hasState( "selected" ) );      
-      assertEquals( 1, this.TestUtil.getRequestsSend() );
-      msg = this.TestUtil.getMessage();
-      assertContains( "widgetSelected=w1",  msg );      
+      TestUtil.clearRequestLog();
+      TestUtil.click( button );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertFalse( button.hasState( "selected" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "widgetSelected" ) );
+      TestUtil.clearRequestLog();
+      TestUtil.press( button, "Enter" );
+      assertFalse( button.hasState( "selected" ) );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "widgetSelected" ) );
     },
-    
+
     testWrap : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var button = new rwt.widgets.Button( "push" );
       button.addState( "rwt_PUSH" );
       button.addToDocument();
@@ -567,7 +491,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertEquals( 2, button._flexibleCell );
       button.destroy();
     }
-    
+
   }
-  
+
 } );
+
+}());
