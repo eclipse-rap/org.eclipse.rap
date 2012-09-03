@@ -24,7 +24,8 @@ rwt.protocol.ServerObject.prototype = {
   },
 
   notify : function( event, properties ) {
-    server.getMessageWriter().appendNotify( this._id, event, properties );
+    var actualProps = properties ? properties : {};
+    server.getMessageWriter().appendNotify( this._id, event, actualProps );
     server.send();
   }
 

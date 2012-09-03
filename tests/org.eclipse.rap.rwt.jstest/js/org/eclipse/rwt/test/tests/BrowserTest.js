@@ -9,6 +9,9 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+/*global foo:true */
+/*jshint scripturl:true */
+
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -65,7 +68,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testSetUrlByProtocol :  [
       function() {
-        var shell = TestUtil.createShellByProtocol( "w2" );
+        TestUtil.createShellByProtocol( "w2" );
         var processor = rwt.protocol.MessageProcessor;
         processor.processOperation( {
           "target" : "w3",
@@ -135,16 +138,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         browser.execute( "window.foo = 33;" );
         assertEquals( 17, foo );
         assertEquals( 33, win.foo );
-        var msg = TestUtil.getMessage();
-        assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 );
+        assertTrue( TestUtil.getMessageObject().findSetProperty( "w6", "executeResult" ) );
         browser.destroy();
-        delete foo;
+        delete window.foo;
       }
     ],
 
     testEvaluateByProtocol :  [
       function() {
-        var shell = TestUtil.createShellByProtocol( "w2" );
+        TestUtil.createShellByProtocol( "w2" );
         rwt.protocol.MessageProcessor.processOperation( {
           "target" : "w3",
           "action" : "create",
@@ -169,9 +171,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
             "script" : "33;"
           }
         } );
-        var msg = TestUtil.getMessage();
-        assertTrue( msg.indexOf( "w3.evaluateResult=%5B33%5D" ) != -1 );
-        assertTrue( msg.indexOf( "w3.executeResult=true" ) != -1 );
+        assertTrue( TestUtil.getMessageObject().findSetProperty( "w3", "executeResult" ) );
+        // TODO [tb] : use real json array
+        assertEquals( "[33]", TestUtil.getMessageObject().findSetProperty( "w3", "evaluateResult" ) );
         browser.destroy();
       }
     ],
@@ -221,10 +223,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertTrue( "slow connection?", browser._isLoaded );
         TestUtil.initRequestLog();
         browser.execute( "for(){}" );
-        var msg = TestUtil.getMessage();
-        assertTrue( msg.indexOf( "w6.executeResult=false" ) != -1 );
+        assertFalse( TestUtil.getMessageObject().findSetProperty( "w6", "executeResult" ) );
         browser.destroy();
-        delete foo;
+        delete window.foo;
       }
     ],
 
@@ -238,9 +239,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertTrue( "slow connection?", browser._isLoaded );
         TestUtil.initRequestLog();
         browser.execute( "/regexp/;" );
-        var msg = TestUtil.getMessage();
-        assertTrue( msg.indexOf( "w6.evaluateResult=null" ) != -1 );
-        assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 );
+        assertNull( TestUtil.getMessageObject().findSetProperty( "w6", "evaluateResult" ) );
+
         browser.destroy();
       }
     ],
@@ -255,9 +255,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertTrue( "slow connection?", browser._isLoaded );
         TestUtil.initRequestLog();
         browser.execute( "( function(){ return {};})();" );
-        var msg = TestUtil.getMessage();
-        assertTrue( msg.indexOf( "w6.evaluateResult=null" ) != -1 );
-        assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 );
+        assertNull( TestUtil.getMessageObject().findSetProperty( "w6", "evaluateResult" ) );
+        assertTrue( TestUtil.getMessageObject().findSetProperty( "w6", "executeResult" ) );
         browser.destroy();
       }
     ],
@@ -272,9 +271,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertTrue( "slow connection?", browser._isLoaded );
         TestUtil.initRequestLog();
         browser.execute( "( function(){ return [ 1,2,3 ]; } )();" );
-        var msg = TestUtil.getMessage();
-        assertTrue( msg.indexOf( "w6.evaluateResult=%5B%5B1%2C2%2C3%5D%5D" ) != -1 );
-        assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 );
+        var expected = "[[1,2,3]]";
+        assertTrue( TestUtil.getMessageObject().findSetProperty( "w6", "executeResult" ) );
+        assertEquals( expected, TestUtil.getMessageObject().findSetProperty( "w6", "evaluateResult" ) );
         browser.destroy();
       }
     ],
@@ -289,9 +288,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertTrue( "slow connection?", browser._isLoaded );
         TestUtil.initRequestLog();
         browser.execute( "( function(){ return function(){}; } )();" );
-        var msg = TestUtil.getMessage();
-        assertTrue( msg.indexOf( "w6.evaluateResult=%5B%5B%5D%5D" ) != -1 );
-        assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 );
+        assertTrue( TestUtil.getMessageObject().findSetProperty( "w6", "executeResult" ) );
+        assertEquals( "[[]]", TestUtil.getMessageObject().findSetProperty( "w6", "evaluateResult" ) );
         browser.destroy();
       }
     ],
@@ -517,7 +515,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           browser.setFunctionResult( "abc", null, "error" );
         } );
         try {
-          var result = win.abc();
+          win.abc();
           throw "Browser function should throw an error";
         } catch( e ) {
           assertEquals( "error", e.message );
@@ -554,7 +552,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testBrowserFunctionFailedByProtocol :  [
       function() {
-        var shell = TestUtil.createShellByProtocol( "w2" );
+        TestUtil.createShellByProtocol( "w2" );
         var browser = this._createBrowserByProtocol( "w3", "w2" );
         TestUtil.delayTest( 1000 );
         TestUtil.store( browser );
@@ -577,7 +575,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           TestUtil.protocolSet( "w3", { "functionResult" : [ "abc", null, "error" ] } );
         } );
         try {
-          var result = win.abc();
+          win.abc();
           throw "Browser function should throw an error";
         } catch( e ) {
           assertEquals( "error", e.message );
@@ -588,7 +586,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testBrowserFunctionSucceedByProtocol  :  [
       function() {
-        var shell = TestUtil.createShellByProtocol( "w2" );
+        TestUtil.createShellByProtocol( "w2" );
         var browser = this._createBrowserByProtocol( "w3", "w2" );
         TestUtil.delayTest( 1000 );
         TestUtil.store( browser );
@@ -706,8 +704,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
         assertEquals( 1, TestUtil.getRequestsSend() );
-        var msg = TestUtil.getMessage();
-        assertTrue( msg.indexOf( "w6.org.eclipse.swt.events.progressCompleted=true" ) != -1 );
+        assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w6", "progressCompleted" ) );
         browser.destroy();
       }
     ],

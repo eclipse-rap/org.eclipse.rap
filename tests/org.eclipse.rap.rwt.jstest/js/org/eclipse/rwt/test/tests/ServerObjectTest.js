@@ -50,6 +50,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerObjectTest", {
       assertEquals( "a", operation.properties[ "key" ] );
     },
 
+    testNotifyWithoutProperties : function() {
+      serverObject.notify( "method" );
+
+      var operation = TestUtil.getMessageObject().getOperation( 0 );
+      assertEquals( "notify", operation.type );
+      assertEquals( "w2", operation.target );
+      assertEquals( "method", operation.eventType );
+      assertEquals( {}, operation.properties );
+    },
+
     setUp : function() {
       shell = TestUtil.createShellByProtocol( "w2" );
       serverObject = rwt.protocol.ServerObjectFactory.getServerObject( shell );
