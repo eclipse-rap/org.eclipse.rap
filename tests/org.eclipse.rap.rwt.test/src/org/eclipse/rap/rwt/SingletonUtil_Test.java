@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.rwt;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.http.HttpSession;
 
@@ -23,7 +25,21 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 
 public class SingletonUtil_Test extends TestCase {
 
-  public void testGetInstanceWithNullArgument() {
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.createServiceContext();
+    createSessionStore();
+    SingletonManager.install( ContextProvider.getSessionStore() );
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    if( ContextProvider.hasContext() ) {
+      Fixture.disposeOfServiceContext();
+    }
+  }
+
+  public void testGetSessionInstance_failsWithNullArgument() {
     try {
       SingletonUtil.getSessionInstance( null );
       fail();
@@ -31,21 +47,37 @@ public class SingletonUtil_Test extends TestCase {
     }
   }
 
-  public void testGetInstance() {
+  public void testGetSessionInstance_returnsInstanceOfGivenClass() {
     Object instance = SingletonUtil.getSessionInstance( TestSingleton.class );
 
     assertNotNull( instance );
     assertSame( TestSingleton.class, instance.getClass() );
   }
 
-  public void testGetInstanceWithSameType() {
+  public void testGetSessionInstance_returnsSameInstanceInSameSession() {
     Object instance1 = SingletonUtil.getSessionInstance( TestSingleton.class );
     Object instance2 = SingletonUtil.getSessionInstance( TestSingleton.class );
 
     assertSame( instance1, instance2 );
   }
 
-  public void testGetInstanceFromBackgroundThreadWithContext() throws Throwable {
+  public void testGetSessionInstance_returnsNewInstanceInAnotherSession() throws Throwable {
+    Object instance1 = SingletonUtil.getSessionInstance( TestSingleton.class );
+    final AtomicReference<Object> instance2 = new AtomicReference<Object>();
+
+    Fixture.runInThread( new Runnable() {
+      public void run() {
+        Fixture.createServiceContext();
+        instance2.set( SingletonUtil.getSessionInstance( TestSingleton.class ) );
+      }
+    } );
+
+    assertNotSame( instance1, instance2.get() );
+  }
+
+  public void testGetSessionInstance_returnsInstanceWithFakeContext()
+    throws Throwable
+  {
     final ServiceContext serviceContext = ContextProvider.getContext();
     final Object[] instance = { null };
     Runnable runnable = new Runnable() {
@@ -60,24 +92,12 @@ public class SingletonUtil_Test extends TestCase {
     assertNotNull( instance[ 0 ] );
   }
 
-  public void testGetInstanceFromBackgroundThreadWithoutContext() {
+  public void testGetSessionInstance_failsWithoutContext() {
     ContextProvider.disposeContext();
     try {
       SingletonUtil.getSessionInstance( TestSingleton.class );
       fail();
     } catch( IllegalStateException expected ) {
-    }
-  }
-
-  protected void setUp() throws Exception {
-    Fixture.createServiceContext();
-    createSessionStore();
-    SingletonManager.install( ContextProvider.getSessionStore() );
-  }
-
-  protected void tearDown() throws Exception {
-    if( ContextProvider.hasContext() ) {
-      Fixture.disposeOfServiceContext();
     }
   }
 
