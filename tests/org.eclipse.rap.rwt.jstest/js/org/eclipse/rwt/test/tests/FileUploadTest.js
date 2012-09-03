@@ -9,6 +9,12 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+/*jshint scripturl:true */
+
+(function(){
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+
 qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
 
   extend : qx.core.Object,
@@ -18,9 +24,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     BLANK : "../rwt-resources/resource/static/html/blank.html",
 
     testCreateFileUploadByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var widget = this._createFileUploadByProtocol( "w3", "w2" );
+      var widget = createFileUploadByProtocol( "w3", "w2" );
       assertTrue( widget instanceof rwt.widgets.FileUpload );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -29,9 +34,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testDisposeFileUploadByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var widget = this._createFileUploadByProtocol( "w3", "w2" );
+      var widget = createFileUploadByProtocol( "w3", "w2" );
       var iframe = widget._iframe;
        rwt.protocol.MessageProcessor.processOperation( {
         "target" : "w3",
@@ -52,9 +56,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testSetTextByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var widget = this._createFileUploadByProtocol( "w3", "w2" );
+      var widget = createFileUploadByProtocol( "w3", "w2" );
       TestUtil.protocolSet( "w3", { "text" : "text\n && \"text" } );
       assertEquals( "text\n &amp; &quot;text", widget.getCellContent( 2 ) );
       shell.destroy();
@@ -62,9 +65,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testSetImageByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var widget = this._createFileUploadByProtocol( "w3", "w2" );
+      var widget = createFileUploadByProtocol( "w3", "w2" );
       TestUtil.protocolSet( "w3", { "image" : [ "image.png", 10, 20 ] } );
       assertEquals( "image.png", widget.getCellContent( 1 ) );
       assertEquals( [ 10, 20 ], widget.getCellDimension( 1 ) );
@@ -74,10 +76,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
 
     testSubmitProtocol : [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var shell = TestUtil.createShellByProtocol( "w2" );
-        var widget = this._createFileUploadByProtocol( "w3", "w2" );
-        this._setFileName( widget, "foo" );
+        var widget = createFileUploadByProtocol( "w3", "w2" );
+        setFileName( widget, "foo" );
         rwt.protocol.MessageProcessor.processOperation( {
           "target" : "w3",
           "action" : "call",
@@ -87,11 +88,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
           }
         } );
         TestUtil.delayTest( 600 );
-        TestUtil.store( shell );
-        TestUtil.store( widget );
+        TestUtil.store( widget, shell );
       },
-      function( widget ) {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      function( widget, shell ) {
         var iframe = widget._iframe;
         assertTrue( iframe.isLoaded() );
         assertTrue( iframe.queryCurrentUrl().indexOf( "blank.html" ) != -1 );
@@ -100,26 +99,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       }
     ],
 
-    testSubmitProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var widget = this._createFileUploadByProtocol( "w3", "w2" );
-
-      shell.destroy();
-      widget.destroy();
-    },
 
     testCreate : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       assertTrue( upload instanceof rwt.widgets.FileUpload );
       assertTrue( upload.isInDom() );
       upload.destroy();
     },
 
     testDispose : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       var iframe = upload._iframe;
       upload.destroy();
       TestUtil.flush();
@@ -136,8 +125,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testText : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       upload.setText( "Hello World!" );
       TestUtil.flush();
       assertEquals( "Hello World!", upload.getCellNode( 2 ).innerHTML );
@@ -145,8 +133,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testImage : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       upload.setImage( "test.jpg" );
       TestUtil.flush();
       assertTrue(
@@ -156,8 +143,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testHasFormElements : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       var form = upload._getTargetNode().lastChild;
       assertEquals( "form", form.tagName.toLowerCase() );
       assertEquals( "input", form.firstChild.tagName.toLowerCase() );
@@ -167,8 +153,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testKeepFormElementsWhenAddingContent : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       assertEquals( 1, upload._getTargetNode().childNodes.length );
       var originalForm = upload._formElement;
       var originalInput = upload._inputElement;
@@ -187,8 +172,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testFormElementsDefaultAttributes : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       var form = upload._formElement;
       assertEquals( "POST", form.getAttribute( "method" ).toUpperCase() );
       assertEquals( "multipart/form-data", form.getAttribute( "enctype" ) );
@@ -205,8 +189,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testTarget : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       var target = upload._formElement.getAttribute( "target" );
       var iframe = upload._iframe.getIframeNode();
       assertEquals( target, iframe.getAttribute( "name" ) );
@@ -214,8 +197,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testIframeProperties : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       var iframe = upload._iframe;
       assertEquals( TestUtil.getDocument(), iframe.getParent() );
       assertEquals( 0, iframe.getHeight() );
@@ -225,41 +207,38 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testOpacity : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       var input = upload._inputElement;
       TestUtil.hasElementOpacity( input );
       upload.destroy();
     },
 
     testInputLayout : function() {
-      var upload = this._createFileUpload();
-      this._checkInputLayout( upload );
+      var upload = createFileUpload();
+      checkInputLayout( upload );
       upload.destroy();
     },
 
     testInputLayoutResized : function() {
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       upload.setWidth( 200 );
       upload.setHeight( 40 );
-      this._checkInputLayout( upload );
+      checkInputLayout( upload );
       upload.destroy();
     },
 
     testInputLayoutNotVisible : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload( true );
+      var upload = createFileUpload( true );
       upload.setVisibility( false );
       TestUtil.flush();
       upload.setVisibility( true );
       TestUtil.flush();
-      this._checkInputLayout( upload );
+      checkInputLayout( upload );
       upload.destroy();
     },
 
     testInputLayoutParentNotVisible : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload( true );
+      var upload = createFileUpload( true );
       var parent = new rwt.widgets.Composite();
       parent.addToDocument();
       upload.setParent( parent );
@@ -267,13 +246,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       TestUtil.flush();
       upload.getParent().setVisibility( true );
       TestUtil.flush();
-      this._checkInputLayout( upload );
+      checkInputLayout( upload );
       upload.destroy();
     },
 
     testCursor : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload( true );
+      var upload = createFileUpload( true );
       upload.setCursor( "pointer" );
       TestUtil.flush();
       assertEquals( "", upload.getElement().style.cursor );
@@ -285,8 +263,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testMouseDown : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       TestUtil.fakeMouseEventDOM( upload.getElement(), "mousedown" );
       assertFalse( upload.hasState( "pressed" ) );
       TestUtil.fakeMouseEventDOM( upload._inputElement, "mousedown" );
@@ -297,8 +274,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testMouseOver : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       TestUtil.hoverFromTo( document.body, upload.getElement() );
       assertFalse( upload.hasState( "over" ) );
       TestUtil.hoverFromTo( upload.getElement(), upload._inputElement );
@@ -307,8 +283,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testDontInterfereWithKeyEvents : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       upload.focus();
       TestUtil.keyDown( upload.getElement(), "Space" );
       assertFalse( upload.hasState( "pressed" ) );
@@ -319,13 +294,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testShowFocusIndicator : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var isChrome = org.eclipse.rwt.Client.getBrowser() === "chrome";
       var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
       if( focusIndicator._frame == null ) {
         focusIndicator._createFrame();
       }
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       var node = upload._getTargetNode();
       upload.focus();
       assertEquals( !isChrome, focusIndicator._frame.parentNode === node );
@@ -340,8 +314,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testMouseUpWhileAbandoned : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       TestUtil.fakeMouseEventDOM( upload._inputElement, "mouseover" );
       assertTrue( upload.hasState( "over" ) );
       TestUtil.fakeMouseEventDOM( upload._inputElement, "mousedown" );
@@ -359,52 +332,58 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testDisable : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload( true );
+      var upload = createFileUpload( true );
       upload.setEnabled( false );
       TestUtil.flush();
       assertEquals( "none", upload._inputElement.style.display );
       upload.setWidth( 600 );
       upload.setEnabled( true );
       assertEquals( "", upload._inputElement.style.display );
-      this._checkInputLayout( upload );
+      checkInputLayout( upload );
       upload.destroy();
     },
 
     testSendValueChanged : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       TestUtil.initRequestLog();
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       wm.add( upload, "w200", true );
-      this._setFileName( upload, "foo" );
+
+      setFileName( upload, "foo" );
       upload._onValueChange();
-      var msg = TestUtil.getRequestLog()[ 0 ];
-      assertTrue( msg.indexOf( "w200.fileName=foo" ) !== -1 );
+
+      assertEquals( "foo", TestUtil.getMessageObject().findSetProperty( "w200", "fileName" ) );
       upload.destroy();
     },
 
-    testDontSendFullPathValue : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    testDontSendFullPathValueSlash : function() {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       TestUtil.initRequestLog();
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       wm.add( upload, "w200", true );
-      this._setFileName( upload, "c:\\mypath\\foo" );
+
+      setFileName( upload, "c:/mypath/foo" );
       upload._onValueChange();
-      var msg = TestUtil.getRequestLog()[ 0 ];
-      TestUtil.clearRequestLog();
-      assertTrue( msg.indexOf( "w200.fileName=foo" ) !== -1 );
-      this._setFileName( upload, "c:/mypath/foo" );
+
+      assertEquals( "foo", TestUtil.getMessageObject().findSetProperty( "w200", "fileName" ) );
+      upload.destroy();
+    },
+
+    testDontSendFullPathValueBackSlash : function() {
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      TestUtil.initRequestLog();
+      var upload = createFileUpload();
+      wm.add( upload, "w200", true );
+
+      setFileName( upload, "c:\\mypath\\foo" );
       upload._onValueChange();
-      var msg = TestUtil.getRequestLog()[ 0 ];
-      assertTrue( msg.indexOf( "w200.fileName=foo" ) !== -1 );
+
+      assertEquals( "foo", TestUtil.getMessageObject().findSetProperty( "w200", "fileName" ) );
       upload.destroy();
     },
 
     testSubmitWithoutUrl : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       assertTrue( typeof upload.submit == "function" );
       var error = null;
       try {
@@ -417,8 +396,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testSubmitWithoutValue : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = this._createFileUpload();
+      var upload = createFileUpload();
       assertTrue( typeof upload.submit == "function" );
       var error = null;
       try {
@@ -434,73 +412,71 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     //             currently no way to reproduce.
     testSubmit : [
       function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var upload = this._createFileUpload();
-        this._setFileName( upload, "foo" );
+        var upload = createFileUpload();
+        setFileName( upload, "foo" );
         upload.submit( this.BLANK );
         TestUtil.delayTest( 600 );
         TestUtil.store( upload );
       },
       function( upload ) {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var iframe = upload._iframe;
         assertTrue( iframe.isLoaded() );
         assertTrue( iframe.queryCurrentUrl().indexOf( "blank.html" ) != -1 );
         upload.destroy();
       }
-    ],
-
-    /////////
-    // Helper
-
-    _createFileUploadByProtocol : function( id, parentId ) {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      rwt.protocol.MessageProcessor.processOperation( {
-        "target" : id,
-        "action" : "create",
-        "type" : "rwt.widgets.FileUpload",
-        "properties" : {
-          "style" : [],
-          "parent" : parentId
-        }
-      } );
-      TestUtil.flush();
-      return rwt.protocol.ObjectManager.getObject( id );
-    },
-
-    _createFileUpload : function( noFlush ) {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var upload = new rwt.widgets.FileUpload();
-      upload.addToDocument();
-      upload.setWidth( 100 );
-      upload.setHeight( 30 );
-      if( !noFlush ) {
-        TestUtil.flush();
-      }
-      return upload;
-    },
-
-    _checkInputLayout : function( upload ) {
-      if( !org.eclipse.rwt.Client.isMobileSafari() ) {
-        var input = upload._inputElement;
-        var widgetWidth = upload.getBoxWidth();
-        var widgetHeight = upload.getBoxHeight();
-        var padding = 10;
-        var inputLeft = parseInt( input.style.left );
-        var inputTop = parseInt( input.style.top );
-        var inputWidth = parseInt( input.offsetWidth );
-        var inputHeight = parseInt( input.offsetHeight );
-        assertEquals( -1 * padding, inputTop );
-        assertEquals( widgetHeight + padding * 2, inputHeight );
-        assertTrue( inputWidth > ( widgetWidth * 1.4 + padding * 2 ) );
-        assertTrue( inputLeft < ( ( inputWidth * -0.4 ) - padding ) );
-      }
-    },
-
-    _setFileName : function( upload, value ) {
-      upload._getFileName = function(){ return value };
-    }
+    ]
 
   }
 
 } );
+
+/////////
+// Helper
+
+var createFileUploadByProtocol = function( id, parentId ) {
+  rwt.protocol.MessageProcessor.processOperation( {
+    "target" : id,
+    "action" : "create",
+    "type" : "rwt.widgets.FileUpload",
+    "properties" : {
+      "style" : [],
+      "parent" : parentId
+    }
+  } );
+  TestUtil.flush();
+  return rwt.protocol.ObjectManager.getObject( id );
+};
+
+var createFileUpload = function( noFlush ) {
+  var upload = new rwt.widgets.FileUpload();
+  upload.addToDocument();
+  upload.setWidth( 100 );
+  upload.setHeight( 30 );
+  if( !noFlush ) {
+    TestUtil.flush();
+  }
+  return upload;
+};
+
+var checkInputLayout = function( upload ) {
+  if( !org.eclipse.rwt.Client.isMobileSafari() ) {
+    var input = upload._inputElement;
+    var widgetWidth = upload.getBoxWidth();
+    var widgetHeight = upload.getBoxHeight();
+    var padding = 10;
+    var inputLeft = parseInt( input.style.left, 10 );
+    var inputTop = parseInt( input.style.top, 10 );
+    var inputWidth = parseInt( input.offsetWidth, 10 );
+    var inputHeight = parseInt( input.offsetHeight, 10 );
+    assertEquals( -1 * padding, inputTop );
+    assertEquals( widgetHeight + padding * 2, inputHeight );
+    assertTrue( inputWidth > ( widgetWidth * 1.4 + padding * 2 ) );
+    assertTrue( inputLeft < ( ( inputWidth * -0.4 ) - padding ) );
+  }
+};
+
+var setFileName = function( upload, value ) {
+  upload._getFileName = function(){ return value; };
+};
+
+}());
