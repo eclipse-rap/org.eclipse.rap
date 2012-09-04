@@ -179,13 +179,41 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MessageTest", {
       assertEquals( "bar", message.findNotifyProperty( "w1", "method", "foo" ) );
     },
 
-    testFindCallOperationFailed : function() {
+    testFindNotifyOperationFailed : function() {
       writer.appendNotify( "w2", "method1", null );
       writer.appendNotify( "w1", "method2", null );
 
       var message = getMessage();
 
       assertNull( message.findNotifyOperation( "w1", "method1" ) );
+    },
+
+    testFindCallOperation : function() {
+      writer.appendCall( "w1", "method", null );
+
+      var message = getMessage();
+
+      var operation = message.findCallOperation( "w1", "method" );
+      assertEquals( "call", operation.type );
+      assertEquals( "w1", operation.target );
+      assertEquals( "method", operation.method );
+    },
+
+    testFindCallProperty : function() {
+      writer.appendCall( "w1", "method", { "foo" : "bar" } );
+
+      var message = getMessage();
+
+      assertEquals( "bar", message.findCallProperty( "w1", "method", "foo" ) );
+    },
+
+    testFindCallOperationFailed : function() {
+      writer.appendCall( "w2", "method1", null );
+      writer.appendCall( "w1", "method2", null );
+
+      var message = getMessage();
+
+      assertNull( message.findCallOperation( "w1", "method1" ) );
     },
 
     //////////

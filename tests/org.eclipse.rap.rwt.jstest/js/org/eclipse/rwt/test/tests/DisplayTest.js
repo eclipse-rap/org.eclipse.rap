@@ -33,34 +33,46 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
           ]
         }
       } );
-      assertEquals( 0, TestUtil.getRequestsSend() );
-      var request = rwt.remote.Server.getInstance();
-      assertNotNull( request.getParameter( "-785380229" ) );
-      assertNotNull( request.getParameter( "-785380485" ) );
+      assertEquals( 2, TestUtil.getRequestsSend() ); // because timer is skipped in tests
+      var requests = TestUtil.getRequestLog();
+      assertTrue( requests[ 0 ].indexOf( "-785380229" ) !== - 1 );
+      assertTrue( requests[ 1 ].indexOf( "-785380485" ) !== - 1 );
+      //currently send in another format for json:
+      var op1 = TestUtil.getMessageObject( 0 ).findCallOperation( "w1", "storeMeasurement" );
+      var op2 = TestUtil.getMessageObject( 1 ).findCallOperation( "w1", "storeMeasurement" );
+      assertEquals( "-785380229", op1.properties.id );
+      assertEquals( 2, op1.properties.size.length );
+      assertEquals( "-785380485", op2.properties.id );
+      assertEquals( 2, op2.properties.size.length );
     },
 
-    // TODO [tb] : re-enable before commit!
-//    testCallMeasureStringsByProtocol : function() {
-//      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-//      var fontName = [ "Verdana", "Lucida Sans", "Arial", "Helvetica", "sans-serif" ];
-//      TestUtil.initRequestLog();
-//      var processor = rwt.protocol.MessageProcessor;
-//      processor.processOperation( {
-//        "target" : "w1",
-//        "action" : "call",
-//        "method" : "measureStrings",
-//        "properties" : {
-//          "strings" : [
-//             [ -1114032847, "Check", fontName, 12, false, false, -1 ],
-//             [ 1767849485, "  Push &&\n Button ", fontName, 12, false, false, -1 ]
-//          ]
-//        }
-//      } );
-//      assertEquals( 2, TestUtil.getRequestsSend() );
-//      var log = TestUtil.getRequestLog();
-//      assertTrue( log[ 0 ].indexOf( "-1114032847=" ) != -1 );
-//      assertTrue( log[ 1 ].indexOf( "1767849485=" ) != -1 );
-//    },
+    testCallMeasureStringsByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var fontName = [ "Verdana", "Lucida Sans", "Arial", "Helvetica", "sans-serif" ];
+      TestUtil.initRequestLog();
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w1",
+        "action" : "call",
+        "method" : "measureStrings",
+        "properties" : {
+          "strings" : [
+             [ -1114032847, "Check", fontName, 12, false, false, -1 ],
+             [ 1767849485, "  Push &&\n Button ", fontName, 12, false, false, -1 ]
+          ]
+        }
+      } );
+      assertEquals( 2, TestUtil.getRequestsSend() );
+      var log = TestUtil.getRequestLog();
+      assertTrue( log[ 0 ].indexOf( "-1114032847=" ) != -1 );
+      assertTrue( log[ 1 ].indexOf( "1767849485=" ) != -1 );
+      var op1 = TestUtil.getMessageObject( 0 ).findCallOperation( "w1", "storeMeasurement" );
+      var op2 = TestUtil.getMessageObject( 1 ).findCallOperation( "w1", "storeMeasurement" );
+      assertEquals( "-1114032847", op1.properties.id );
+      assertEquals( 2, op1.properties.size.length );
+      assertEquals( "1767849485", op2.properties.id );
+      assertEquals( 2, op2.properties.size.length );
+    },
 
     testSetFocusControlByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;

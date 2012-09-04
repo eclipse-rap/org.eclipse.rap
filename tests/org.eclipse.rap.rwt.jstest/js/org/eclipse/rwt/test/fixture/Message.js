@@ -42,6 +42,9 @@ org.eclipse.rwt.test.fixture.Message.prototype = {
       } else if( result.type === "notify" ) {
         result.eventType = op[ 2 ];
         result.properties = op[ 3 ];
+      } else if( result.type === "call" ) {
+        result.method = op[ 2 ];
+        result.properties = op[ 3 ];
       }
     }
     return result;
@@ -92,6 +95,33 @@ org.eclipse.rwt.test.fixture.Message.prototype = {
                        + eventType
                        + " and property "
                        + property );
+    }
+    return op.properties[ property ];
+  },
+
+  findCallOperation : function( target, method ) {
+    var result = null;
+    for( var i = 0; i < this.getOperationCount(); i++ ) {
+      var op = this.getOperation( i );
+      if(    op.type === "call"
+        && op.target === target
+        && op.method === method )
+      {
+        result = op;
+      }
+    }
+    return result;
+  },
+
+  findCallProperty : function( target, method, property ) {
+    var op = this.findCallOperation( target, method );
+    if( op == null ) {
+      throw new Error("No call operation for target "
+          + target
+          + " with method "
+          + method
+          + " and property "
+          + property );
     }
     return op.properties[ property ];
   },

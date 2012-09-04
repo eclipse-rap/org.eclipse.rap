@@ -55,6 +55,11 @@ rwt.protocol.MessageWriter.prototype = {
       this._operations.push( [ "notify", targetId, eventName, properties ] );
     },
 
+    appendCall : function( targetId, methodName, properties ) {
+      this._currentSetOperation = null;
+      this._operations.push( [ "call", targetId, methodName, properties ] );
+    },
+
     _getPropertiesObjectFor : function( targetId ) {
       if( this._currentSetOperation === null || this._currentSetOperation[ 1 ] !== targetId ) {
         this._currentSetOperation = [ "set", targetId, {} ];
