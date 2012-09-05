@@ -13,8 +13,12 @@ package org.eclipse.rap.rwt.internal.protocol;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
+import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -29,6 +33,7 @@ import org.eclipse.swt.internal.graphics.ImageFactory;
 public final class ProtocolUtil {
 
   private static final Pattern FONT_NAME_FILTER_PATTERN = Pattern.compile( "\"|\\\\" );
+  private static final String CLIENT_MESSAGE = ProtocolUtil.class.getName() + "#clientMessage";
 
   //////////////////////////////////////////////////////////////////////////////
   // TODO [fappel]: Experimental - profiler seems to indicate that buffering
@@ -39,6 +44,18 @@ public final class ProtocolUtil {
 
   private ProtocolUtil() {
     // prevent instantiation
+  }
+
+  public static ClientMessage getClientMessage() {
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ClientMessage clientMessage = ( ClientMessage )serviceStore.getAttribute( CLIENT_MESSAGE );
+    if( clientMessage == null ) {
+      HttpServletRequest request = ContextProvider.getRequest();
+      String json = request.getParameter( "message" );
+      clientMessage = new ClientMessage( json );
+      serviceStore.setAttribute( CLIENT_MESSAGE, clientMessage );
+    }
+    return clientMessage;
   }
 
   public static Object[] getFontAsArray( Font font ) {

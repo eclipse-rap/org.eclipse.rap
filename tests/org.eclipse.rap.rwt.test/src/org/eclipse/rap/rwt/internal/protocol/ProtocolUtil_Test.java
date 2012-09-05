@@ -138,4 +138,18 @@ public class ProtocolUtil_Test extends TestCase {
     assertEquals( Boolean.valueOf( bold ), array[ 2 ] );
     assertEquals( Boolean.valueOf( italic ), array[ 3 ] );
   }
+
+  public void testGetClientMessage() {
+    Fixture.fakeNewRequest( display );
+    StringBuilder json = new StringBuilder();
+    json.append( "{ \"operations\" : [" );
+    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]" );
+    json.append( "] }" );
+    Fixture.fakeRequestParam( "message", json.toString() );
+
+    ClientMessage message = ProtocolUtil.getClientMessage();
+
+    assertNotNull( message );
+    assertEquals( 1, message.getSetOperations( "w3" ).length );
+  }
 }
