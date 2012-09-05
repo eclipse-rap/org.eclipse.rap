@@ -13,8 +13,8 @@ package org.eclipse.rap.rwt.internal.protocol;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.PropertyNotFoundException;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
+import org.json.JSONObject;
 
 import junit.framework.TestCase;
 
@@ -104,12 +104,12 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( 0, operations.length );
   }
 
-  public void testGetSetOperations() throws PropertyNotFoundException {
+  public void testGetSetOperations() {
     StringBuilder json = new StringBuilder();
     json.append( "{ \"operations\" : [" );
     json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]," );
     json.append( "[ \"notify\", \"w3\", \"widgetSelected\", {} ]," );
-    json.append( "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]" );
+    json.append( "[ \"set\", \"w3\", { \"p2\" : true, \"p3\" : null } ]" );
     json.append( "] }" );
     ClientMessage message = new ClientMessage( json.toString() );
 
@@ -117,10 +117,11 @@ public class ClientMessage_Test extends TestCase {
 
     assertEquals( 2, operations.length );
     assertEquals( "foo", operations[ 0 ].getProperty( "p1" ) );
-    assertEquals( "bar", operations[ 1 ].getProperty( "p2" ) );
+    assertEquals( Boolean.TRUE, operations[ 1 ].getProperty( "p2" ) );
+    assertEquals( JSONObject.NULL, operations[ 1 ].getProperty( "p3" ) );
   }
 
-  public void testGetSetOperations_ByProperty() throws PropertyNotFoundException {
+  public void testGetSetOperations_ByProperty() {
     StringBuilder json = new StringBuilder();
     json.append( "{ \"operations\" : [" );
     json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]," );
@@ -166,7 +167,7 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( "store", operations[ 0 ].getMethodName() );
   }
 
-  public void testSetOperation() throws PropertyNotFoundException {
+  public void testSetOperation() {
     StringBuilder json = new StringBuilder();
     json.append( "{ \"operations\" : [" );
     json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : true } ]" );
@@ -214,14 +215,10 @@ public class ClientMessage_Test extends TestCase {
     ClientMessage message = new ClientMessage( json.toString() );
     SetOperation operation = message.getSetOperations( "w3" )[ 0 ];
 
-    try {
-      operation.getProperty( "abc" );
-      fail();
-    } catch( PropertyNotFoundException expected ) {
-    }
+    assertNull( operation.getProperty( "abc" ) );
   }
 
-  public void testNotifyOperation() throws PropertyNotFoundException {
+  public void testNotifyOperation() {
     StringBuilder json = new StringBuilder();
     json.append( "{ \"operations\" : [" );
     json.append( "[ \"notify\", \"w3\", \"widgetSelected\", { \"check\" : true } ]" );
@@ -261,7 +258,7 @@ public class ClientMessage_Test extends TestCase {
     }
   }
 
-  public void testCallOperation() throws PropertyNotFoundException {
+  public void testCallOperation() {
     StringBuilder json = new StringBuilder();
     json.append( "{ \"operations\" : [" );
     json.append( "[ \"call\", \"w3\", \"store\", { \"id\" : 123 } ]" );

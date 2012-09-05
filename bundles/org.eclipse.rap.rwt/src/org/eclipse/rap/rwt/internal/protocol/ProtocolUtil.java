@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
@@ -56,6 +57,16 @@ public final class ProtocolUtil {
       serviceStore.setAttribute( CLIENT_MESSAGE, clientMessage );
     }
     return clientMessage;
+  }
+
+  public static String readPropertyValue( String target, String property ) {
+    String result = null;
+    ClientMessage message = getClientMessage();
+    SetOperation[] operations =  message.getSetOperations( target, property );
+    if( operations.length > 0 ) {
+      result = operations[ operations.length - 1 ].getProperty( property ).toString();
+    }
+    return result;
   }
 
   public static Object[] getFontAsArray( Font font ) {

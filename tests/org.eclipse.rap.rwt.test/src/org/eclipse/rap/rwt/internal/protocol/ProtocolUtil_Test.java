@@ -140,16 +140,66 @@ public class ProtocolUtil_Test extends TestCase {
   }
 
   public void testGetClientMessage() {
-    Fixture.fakeNewRequest( display );
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]" );
-    json.append( "] }" );
-    Fixture.fakeRequestParam( "message", json.toString() );
+    fakeNewJsonMessage();
 
     ClientMessage message = ProtocolUtil.getClientMessage();
 
     assertNotNull( message );
-    assertEquals( 1, message.getSetOperations( "w3" ).length );
+    assertEquals( 3, message.getAllOperations( "w3" ).length );
+  }
+
+  public void testReadProperyValue_MissingProperty() {
+    fakeNewJsonMessage();
+
+    assertNull( ProtocolUtil.readPropertyValue( "w3", "p0" ) );
+  }
+
+  public void testReadProperyValue_String() {
+    fakeNewJsonMessage();
+
+    assertEquals( "foo", ProtocolUtil.readPropertyValue( "w3", "p1" ) );
+  }
+
+  public void testReadProperyValue_Integer() {
+    fakeNewJsonMessage();
+
+    assertEquals( "123", ProtocolUtil.readPropertyValue( "w3", "p2" ) );
+  }
+
+  public void testReadProperyValue_Boolean() {
+    fakeNewJsonMessage();
+
+    assertEquals( "true", ProtocolUtil.readPropertyValue( "w3", "p3" ) );
+  }
+
+  public void testReadProperyValue_Null() {
+    fakeNewJsonMessage();
+
+    assertEquals( "null", ProtocolUtil.readPropertyValue( "w3", "p4" ) );
+  }
+
+  public void testReadPropertyValue_LastSetValue() {
+    StringBuilder json = new StringBuilder();
+    json.append( "{ \"operations\" : [" );
+    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ], " );
+    json.append( "[ \"set\", \"w3\", { \"p1\" : \"bar\" } ] " );
+    json.append( "] }" );
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( "message", json.toString() );
+
+    assertEquals( "bar", ProtocolUtil.readPropertyValue( "w3", "p1" ) );
+  }
+
+  //////////////////
+  // Helping methods
+
+  private void fakeNewJsonMessage() {
+    StringBuilder json = new StringBuilder();
+    json.append( "{ \"operations\" : [" );
+    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : 123 } ], " );
+    json.append( "[ \"set\", \"w3\", { \"p3\" : true, \"p4\" : null } ] " );
+    json.append( "] }" );
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( "message", json.toString() );
   }
 }

@@ -171,13 +171,13 @@ public class ClientMessage {
       return Arrays.asList( names );
     }
 
-    public Object getProperty( String key ) throws PropertyNotFoundException {
-      Object result;
+    public Object getProperty( String key ) {
+      Object result = null;
       JSONObject properties = getProperties();
       try {
         result = properties.get( key );
       } catch( JSONException exception ) {
-        throw new PropertyNotFoundException( "Property does not exist for key: " + key );
+        // do nothing
       }
       return result;
     }
@@ -262,14 +262,6 @@ public class ClientMessage {
     @Override
     protected JSONObject getProperties() {
       return properties;
-    }
-
-  }
-
-  public final class PropertyNotFoundException extends Exception {
-
-    public PropertyNotFoundException( String message ) {
-      super(message);
     }
 
   }
