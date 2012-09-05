@@ -37,7 +37,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
     },
 
     testAddByProtocol : function() {
-      var ObjectManager = rwt.protocol.ObjectManager;
       var browserHistory = this._createBrowserHistoryByProtocol();
       rwt.protocol.MessageProcessor.processOperation( {
         "target" : "bh",
@@ -49,6 +48,36 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
       } );
       assertEquals( "text1", browserHistory._titles[ "id1" ] );
     },
+
+    testSendNavigated : [
+      function() {
+        var browserHistory = this._createBrowserHistoryByProtocol();
+        rwt.protocol.MessageProcessor.processOperation( {
+          "target" : "bh",
+          "action" : "call",
+          "method" : "add",
+          "properties" : {
+            "entries" : [ [ "id1", "text1" ], [ "id2", "text2" ] ]
+          }
+        } );
+        rwt.protocol.MessageProcessor.processOperation( {
+          "target" : "bh",
+          "action" : "listen",
+          "properties" : {
+            "navigation" : true
+          }
+        } );
+        org.eclipse.rwt.test.fixture.TestUtil.store( browserHistory );
+        org.eclipse.rwt.test.fixture.TestUtil.delayTest( 200 );
+      },
+      function( browserHistory) {
+        browserHistory.__getState = function() { return "id1"; };
+        org.eclipse.rwt.test.fixture.TestUtil.forceInterval( browserHistory._timer );
+
+        var message = org.eclipse.rwt.test.fixture.TestUtil.getMessageObject();
+        assertEquals( "id1", message.findNotifyProperty( "bh", "historyNavigated", "entryId") );
+      }
+    ],
 
     /////////
     // Helper
