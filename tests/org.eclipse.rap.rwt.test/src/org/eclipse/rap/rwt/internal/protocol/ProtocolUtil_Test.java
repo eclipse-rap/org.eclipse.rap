@@ -145,7 +145,16 @@ public class ProtocolUtil_Test extends TestCase {
     ClientMessage message = ProtocolUtil.getClientMessage();
 
     assertNotNull( message );
-    assertEquals( 3, message.getAllOperations( "w3" ).length );
+    assertEquals( 2, message.getAllOperations( "w3" ).length );
+  }
+
+  public void testGetClientMessage_SameInstance() {
+    fakeNewJsonMessage();
+
+    ClientMessage message1 = ProtocolUtil.getClientMessage();
+    ClientMessage message2 = ProtocolUtil.getClientMessage();
+
+    assertSame( message1, message2 );
   }
 
   public void testReadProperyValue_MissingProperty() {
