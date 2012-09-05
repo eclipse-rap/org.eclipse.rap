@@ -15,9 +15,86 @@ import java.util.Arrays;
 
 public class QxAnimation implements QxType {
 
+  public Animation[] animations;
+
+  public QxAnimation() {
+    animations = new Animation[ 0 ];
+  }
+
+  public void addAnimation( String name, int duration, String timingFunction ) {
+    Animation animation = new Animation( name, duration, timingFunction );
+    Animation[] newAnimations = new Animation[ animations.length + 1 ];
+    System.arraycopy( animations, 0, newAnimations, 0, animations.length );
+    newAnimations[ animations.length ] = animation;
+    animations = newAnimations;
+  }
+
+  public String toDefaultString() {
+    StringBuilder result = new StringBuilder();
+    for( int i = 0; i < animations.length; i++ ) {
+      if( result.length() != 0 ) {
+        result.append( ", " );
+      }
+      result.append( animations[ i ].name );
+      result.append( " " );
+      result.append( animations[ i ].duration );
+      result.append( "ms " );
+      result.append( animations[ i ].timingFunction );
+    }
+    return result.toString();
+  }
+
+  @Override
+  public String toString() {
+    return "QxAnimation{ " + toDefaultString() + " }";
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + Arrays.hashCode( animations );
+    return result;
+  }
+
+  @Override
+  public boolean equals( Object obj ) {
+    if( this == obj ) {
+      return true;
+    }
+    if( obj == null ) {
+      return false;
+    }
+    if( getClass() != obj.getClass() ) {
+      return false;
+    }
+    QxAnimation other = ( QxAnimation )obj;
+    if( !Arrays.equals( animations, other.animations ) ) {
+      return false;
+    }
+    return true;
+  }
+
+  public static String toCamelCaseString( String string ) {
+    StringBuilder result = new StringBuilder();
+    boolean toUpperCase = false;
+    for( int i = 0; i < string.length(); i++ ) {
+      char ch = string.charAt( i );
+      if( ch == '-' ) {
+        toUpperCase = true;
+      } else if( toUpperCase ) {
+        result.append( Character.toUpperCase( ch ) );
+        toUpperCase = false;
+      } else {
+        result.append( ch );
+      }
+    }
+    return result.toString();
+  }
+
   public static final class Animation {
 
-    private final String[] PREDEFINED_NAMES = new String[] {
+    private static final String[] PREDEFINED_NAMES = new String[] {
       "hoverIn",
       "hoverOut",
       "fadeIn",
@@ -34,7 +111,7 @@ public class QxAnimation implements QxType {
       "flyOutBottom"
     };
 
-    private final String[] PREDEFINED_TIMING_FUNCTIONS = new String[] {
+    private static final String[] PREDEFINED_TIMING_FUNCTIONS = new String[] {
       "ease",
       "linear",
       "ease-in",
@@ -88,92 +165,47 @@ public class QxAnimation implements QxType {
     }
 
     @Override
-    public boolean equals( Object object ) {
-      boolean result = false;
-      if( object == this ) {
-        result = true;
-      } else if( object instanceof Animation ) {
-        Animation other = ( Animation )object;
-        result = name.equals( other.name )
-                 && duration == other.duration
-                 && timingFunction.equals( other.timingFunction );
-      }
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + duration;
+      result = prime * result + ( ( name == null ) ? 0 : name.hashCode() );
+      result = prime * result + ( ( timingFunction == null ) ? 0 : timingFunction.hashCode() );
       return result;
     }
 
-  }
-
-  public Animation[] animations;
-
-  public QxAnimation() {
-    animations = new Animation[ 0 ];
-  }
-
-  public void addAnimation( String name, int duration, String timingFunction ) {
-    Animation animation = new Animation( name, duration, timingFunction );
-    Animation[] newAnimations = new Animation[ animations.length + 1 ];
-    System.arraycopy( animations, 0, newAnimations, 0, animations.length );
-    newAnimations[ animations.length ] = animation;
-    animations = newAnimations;
-  }
-
-  public String toDefaultString() {
-    StringBuilder result = new StringBuilder();
-    for( int i = 0; i < animations.length; i++ ) {
-      if( result.length() != 0 ) {
-        result.append( ", " );
+    @Override
+    public boolean equals( Object obj ) {
+      if( this == obj ) {
+        return true;
       }
-      result.append( animations[ i ].name );
-      result.append( " " );
-      result.append( animations[ i ].duration );
-      result.append( "ms " );
-      result.append( animations[ i ].timingFunction );
-    }
-    return result.toString();
-  }
-
-  @Override
-  public String toString() {
-    return "QxAnimation{ " + toDefaultString() + " }";
-  }
-
-  public static String toCamelCaseString( String string ) {
-    StringBuilder result = new StringBuilder();
-    boolean toUpperCase = false;
-    for( int i = 0; i < string.length(); i++ ) {
-      char ch = string.charAt( i );
-      if( ch == '-' ) {
-        toUpperCase = true;
-      } else if( toUpperCase ) {
-        result.append( Character.toUpperCase( ch ) );
-        toUpperCase = false;
-      } else {
-        result.append( ch );
+      if( obj == null ) {
+        return false;
       }
+      if( getClass() != obj.getClass() ) {
+        return false;
+      }
+      Animation other = ( Animation )obj;
+      if( duration != other.duration ) {
+        return false;
+      }
+      if( name == null ) {
+        if( other.name != null ) {
+          return false;
+        }
+      } else if( !name.equals( other.name ) ) {
+        return false;
+      }
+      if( timingFunction == null ) {
+        if( other.timingFunction != null ) {
+          return false;
+        }
+      } else if( !timingFunction.equals( other.timingFunction ) ) {
+        return false;
+      }
+      return true;
     }
-    return result.toString();
+
   }
 
-  @Override
-  public int hashCode() {
-    int result = 7;
-    for( int i = 0; i < animations.length; i++ ) {
-      result += 13 * result + animations[ i ].name.hashCode();
-      result += 13 * result + animations[ i ].duration;
-      result += 13 * result + animations[ i ].timingFunction.hashCode();
-    }
-    return result;
-  }
-
-  @Override
-  public boolean equals( Object object ) {
-    boolean result = false;
-    if( object == this ) {
-      result = true;
-    } else if( object instanceof QxAnimation ) {
-      QxAnimation other = ( QxAnimation )object;
-      result = Arrays.equals( animations, other.animations );
-    }
-    return result;
-  }
 }

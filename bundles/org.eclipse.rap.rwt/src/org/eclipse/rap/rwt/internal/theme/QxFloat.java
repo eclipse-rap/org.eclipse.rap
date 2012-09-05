@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
@@ -27,14 +28,14 @@ public class QxFloat implements QxType {
     }
     return result;
   }
-  
+
   public static QxFloat valueOf( String input ) {
     if( input == null ) {
       throw new NullPointerException( "input" );
-    }    
+    }
     return create( Float.parseFloat( input ) );
   }
-  
+
   public final float value;
 
   private QxFloat( float value ) {
@@ -45,18 +46,35 @@ public class QxFloat implements QxType {
     return String.valueOf( value );
   }
 
-  public boolean equals( Object object ) {
-    boolean result = false;
-    if( object == this ) {
-      result = true;
-    } else if( object instanceof QxFloat ) {
-      QxFloat other = ( QxFloat )object;
-      result = other.value == value;
+  @Override
+  public boolean equals( Object obj ) {
+    if( this == obj ) {
+      return true;
     }
+    if( obj == null ) {
+      return false;
+    }
+    if( getClass() != obj.getClass() ) {
+      return false;
+    }
+    QxFloat other = ( QxFloat )obj;
+    if( Float.floatToIntBits( value ) != Float.floatToIntBits( other.value ) ) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + Float.floatToIntBits( value );
     return result;
   }
 
+  @Override
   public String toString() {
     return "QxFloat{ " + String.valueOf( value ) + " }";
   }
+
 }

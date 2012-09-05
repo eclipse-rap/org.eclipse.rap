@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,14 +69,14 @@ public class ThemeStoreWriter_Test extends TestCase {
     storeWriter.addTheme( getTheme( THEME_ANIMATIONS ), true );
     String output = storeWriter.createJs();
     String expected =   "\"animations\": {\n"
-                      + "\"2e5f3d63\": {\n"
+                      + "\"46ab28c4\": {\n"
                       + "\"slideIn\": [ 2000, \"easeIn\" ],\n"
                       + "\"slideOut\": [ 2000, \"easeOut\" ]\n"
                       + "}\n"
                       + "}";
     assertTrue( output.contains( expected ) );
     expected =   "\"Menu\": {\n"
-               + "\"animation\": [ [ [], \"2e5f3d63\" ] ]\n"
+               + "\"animation\": [ [ [], \"46ab28c4\" ] ]\n"
                + "}";
     assertTrue( output.contains( expected ) );
   }
@@ -185,11 +185,13 @@ public class ThemeStoreWriter_Test extends TestCase {
     assertTrue( output.contains( expected ) );
   }
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     initializeThemesOnFirstSetUp();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -274,4 +276,5 @@ public class ThemeStoreWriter_Test extends TestCase {
   private Theme getTheme( String themeId ) {
     return themes.get( themeId );
   }
+
 }
