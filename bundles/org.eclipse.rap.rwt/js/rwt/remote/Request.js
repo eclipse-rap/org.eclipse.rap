@@ -15,7 +15,7 @@ namespace( "rwt.remote" );
 
 (function(){
 
-var Client = org.eclipse.rwt.Client;
+var Client = rwt.client.Client;
 
 rwt.remote.Request = function( url, method, responseType ) {
   this._url = url;

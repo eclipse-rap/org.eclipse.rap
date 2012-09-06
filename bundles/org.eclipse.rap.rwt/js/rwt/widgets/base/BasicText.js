@@ -42,7 +42,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
 
   destruct : function() {
     if( this._inputElement != null ) {
-      if( org.eclipse.rwt.Client.isMshtml() ) {
+      if( rwt.client.Client.isMshtml() ) {
         this._inputElement.onpropertychange = null;
       } else {
         this._inputElement.removeEventListener( "input", this.__oninput, false );
@@ -354,7 +354,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
         this._inputElement.setAttribute( "autoComplete", "off" );
         this._inputElement.disabled = this.getEnabled() === false;
         this._inputElement.readOnly = this.getReadOnly();
-        if( org.eclipse.rwt.Client.isMshtml() ) {
+        if( rwt.client.Client.isMshtml() ) {
           if( this.getValue() != null && this.getValue() !== "" ) {
             this._inputElement.value = this.getValue();
           } else {
@@ -441,7 +441,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
       var style = this._inputElement.style;
       var value = this.getCursor();
       if( value ) {
-        if( value === "pointer" && org.eclipse.rwt.Client.isMshtml() ) {
+        if( value === "pointer" && rwt.client.Client.isMshtml() ) {
           style.cursor = "hand";
         } else {
           style.cursor = value;
@@ -640,9 +640,9 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
         }
         if( doit ) {
           this.setValue( newValue ); // if doit is false, the listener has to do this
-        } else if( org.eclipse.rwt.Client.isWebkit() || org.eclipse.rwt.Client.isMshtml() ){
+        } else if( rwt.client.Client.isWebkit() || rwt.client.Client.isMshtml() ){
           // some browser set new selection after input event, ignoring all changes before that
-          qx.client.Timer.once( this._renderSelection, this, 0 );
+          rwt.client.Timer.once( this._renderSelection, this, 0 );
           this._selectionNeedsUpdate = true;
         }
       } catch( ex ) {
@@ -712,7 +712,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
       "default" : function() {},
       "newmshtml" : function() {
         // See Bug 372193 - Text widget: Modify Event not fired for Backspace key in IE
-        this._checkTimer = new qx.client.Timer( 0 );
+        this._checkTimer = new rwt.client.Timer( 0 );
         this._checkTimer.addEventListener( "interval", this._checkValueChanged, this );
         // For delete, backspace, CTRL+X, etc:
         this.addEventListener( "keypress", this._checkTimer.start, this._checkTimer );
@@ -738,7 +738,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
       "default" : function() {},
       "mshtml" : function() {
         if( this._firstInputFixApplied !== true && this._inputElement ) {
-          qx.client.Timer.once( this._ieFirstInputFix, this, 1 );
+          rwt.client.Timer.once( this._ieFirstInputFix, this, 1 );
         }
       }
     } ),

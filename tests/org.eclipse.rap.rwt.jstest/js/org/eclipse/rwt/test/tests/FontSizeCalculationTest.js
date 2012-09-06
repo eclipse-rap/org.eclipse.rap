@@ -42,7 +42,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
       assertTrue( size1[ 0 ] > size2[ 0 ] );
       assertTrue( size1[ 1 ] < size2[ 1 ] );
       // TODO: div is resized in IE8 even the style.width (wrap width) is fixed
-      if( !org.eclipse.rwt.Client.isMshtml() ) {
+      if( !rwt.client.Client.isMshtml() ) {
         assertTrue( size2[ 0 ] === size3[ 0 ] );
       }
       assertTrue( size2[ 1 ] === size3[ 1 ] );

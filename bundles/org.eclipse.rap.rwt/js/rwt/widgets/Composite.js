@@ -22,7 +22,7 @@ qx.Class.define( "rwt.widgets.Composite", {
     this.setHideFocus( true );
     this.addEventListener( "mouseover", this._onMouseOver, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
-    if( org.eclipse.rwt.Client.isMshtml() ) {
+    if( rwt.client.Client.isMshtml() ) {
       // Alternate fix for 299629. This might not always work if the composite
       // is changed back and forth between rounded and normal border.
       this._fixBackgroundTransparency();

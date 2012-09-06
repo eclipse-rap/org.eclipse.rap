@@ -9,24 +9,24 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-namespace( "org.eclipse.rwt" );
+namespace( "rwt.client" );
 
-org.eclipse.rwt.JSExecutor = function() {
-  if( org.eclipse.rwt.JSExecutor._instance !== undefined ) {
+rwt.client.JSExecutor = function() {
+  if( rwt.client.JSExecutor._instance !== undefined ) {
     throw new Error( "JSExecutor can not be created twice" );
   } else {
-    org.eclipse.rwt.JSExecutor._instance = this;
+    rwt.client.JSExecutor._instance = this;
   }
 };
 
-org.eclipse.rwt.JSExecutor.getInstance = function() {
-  if( org.eclipse.rwt.JSExecutor._instance === undefined ) {
-    new org.eclipse.rwt.JSExecutor();
+rwt.client.JSExecutor.getInstance = function() {
+  if( rwt.client.JSExecutor._instance === undefined ) {
+    new rwt.client.JSExecutor();
   }
-  return org.eclipse.rwt.JSExecutor._instance;
+  return rwt.client.JSExecutor._instance;
 };
 
-org.eclipse.rwt.JSExecutor.prototype = {
+rwt.client.JSExecutor.prototype = {
 
   execute : function( code ) {
     eval( code );

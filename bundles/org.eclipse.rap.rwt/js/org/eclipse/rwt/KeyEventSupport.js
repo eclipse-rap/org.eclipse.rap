@@ -164,7 +164,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
       req.addParameter( "org.eclipse.swt.events.keyDown.keyCode", keyCode );
       req.addParameter( "org.eclipse.swt.events.keyDown.charCode", finalCharCode );
       var modifier = "";
-      var commandKey = org.eclipse.rwt.Client.getPlatform() === "mac" && domEvent.metaKey;
+      var commandKey = rwt.client.Client.getPlatform() === "mac" && domEvent.metaKey;
       if( domEvent.shiftKey ) {
         modifier += "shift,";
       }

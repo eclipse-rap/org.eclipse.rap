@@ -77,7 +77,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
     // ************************************************************************
     //   BEHAVIOR
     // ************************************************************************
-    if( org.eclipse.rwt.Client.isMshtml() ) {
+    if( rwt.client.Client.isMshtml() ) {
       this.setStyleProperty("fontSize", "0px");
     }
 
@@ -121,7 +121,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
     // ************************************************************************
     //   TIMER
     // ************************************************************************
-    this._timer = new qx.client.Timer(this.getInterval());
+    this._timer = new rwt.client.Timer(this.getInterval());
 
     // ************************************************************************
     //   MANAGER

@@ -75,7 +75,7 @@ qx.Class.define( "rwt.widgets.FileUpload", {
       this._formElement = document.createElement( "form" );
       this._formElement.setAttribute( "target", this._getFrameName() );
       this._formElement.setAttribute( "method", "POST" );
-      if( org.eclipse.rwt.Client.isMshtml() ) {
+      if( rwt.client.Client.isMshtml() ) {
         this._formElement.setAttribute( "encoding", "multipart/form-data" );
       } else {
         this._formElement.setAttribute( "enctype", "multipart/form-data" );
@@ -133,7 +133,7 @@ qx.Class.define( "rwt.widgets.FileUpload", {
     },
 
     _layoutInputElement : function() {
-      if( this.getEnabled() && this.isSeeable() && !org.eclipse.rwt.Client.isMobileSafari() ) {
+      if( this.getEnabled() && this.isSeeable() && !rwt.client.Client.isMobileSafari() ) {
         //Assumed maximal padding between input button and input outer dimensions:
         var padding = 10;
         this._layoutInputElementHorizontal( padding );
@@ -221,7 +221,7 @@ qx.Class.define( "rwt.widgets.FileUpload", {
       if( event.getDomTarget() === this._inputElement ) {
         this.base( arguments, event );
       }
-      if( org.eclipse.rwt.Client.getBrowser() === "chrome") {
+      if( rwt.client.Client.getBrowser() === "chrome") {
         // Chrome looses keyboard control on mouse-focus, see _ontabfocus.
         this._onBlur();
       }
@@ -253,13 +253,13 @@ qx.Class.define( "rwt.widgets.FileUpload", {
     //        tabulator for keyboard control to work. To minimize confusion,
     //        do not display focus frame in other cases.
     _ontabfocus : function() {
-      if( org.eclipse.rwt.Client.getBrowser() === "chrome" ) {
+      if( rwt.client.Client.getBrowser() === "chrome" ) {
         this._showFocusIndicator( true );
       }
     },
 
     _showFocusIndicator : function( allow ) {
-      var isChrome = org.eclipse.rwt.Client.getBrowser() === "chrome";
+      var isChrome = rwt.client.Client.getBrowser() === "chrome";
       if( !isChrome || allow ) {
         var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
         var node =   this.getCellNode( 2 ) != null

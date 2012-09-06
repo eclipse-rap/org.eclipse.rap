@@ -50,7 +50,7 @@ qx.Class.define("qx.io.image.PreloaderSystem",
     }
 
     // Create timer
-    this._timer = new qx.client.Timer( 3000 );
+    this._timer = new rwt.client.Timer( 3000 );
     this._timer.addEventListener("interval", this.__oninterval, this);
 
     // If we use the compact syntax, automatically add an event listeners and start the loading process

@@ -208,7 +208,7 @@ qx.Class.define("qx.event.type.DomEvent",
      */
     isCtrlOrCommandPressed : function()
     {
-      if( org.eclipse.rwt.Client.getPlatform() === "mac" ) {
+      if( rwt.client.Client.getPlatform() === "mac" ) {
         return this.getDomEvent().metaKey;
       } else {
         return this.getDomEvent().ctrlKey;

@@ -554,7 +554,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       "click",
       "dblclick",
       "contextmenu",
-      org.eclipse.rwt.Client.isGecko() ? "DOMMouseScroll" : "mousewheel"
+      rwt.client.Client.isGecko() ? "DOMMouseScroll" : "mousewheel"
     ],
 
     _keyEventTypes : [
@@ -604,7 +604,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         // Gecko is a bit buggy to handle key events on document if
         // not previously focused. Internet Explorer has problems to use
         // 'window', so there we use the 'body' element
-        var el = org.eclipse.rwt.Client.isGecko() ? window : document.body;
+        var el = rwt.client.Client.isGecko() ? window : document.body;
         for( var i=0, l=vEventTypes.length; i<l; i++ ) {
           qx.html.EventRegistration.addEventListener( el, vEventTypes[i], vFunctionPointer );
         }
@@ -616,7 +616,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
 
     detachEventTypes : function( vEventTypes, vFunctionPointer ) {
       try {
-        var el = org.eclipse.rwt.Client.isGecko() ? window : document.body;
+        var el = rwt.client.Client.isGecko() ? window : document.body;
         for (var i=0, l=vEventTypes.length; i<l; i++) {
           qx.html.EventRegistration.removeEventListener( el, vEventTypes[i], vFunctionPointer );
         }

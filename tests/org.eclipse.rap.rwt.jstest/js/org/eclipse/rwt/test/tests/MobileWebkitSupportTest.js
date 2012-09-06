@@ -24,7 +24,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     // Eventlistener are detached by TestRunner to prevent user-interference,
     // but we need them here...
     org.eclipse.rwt.EventHandler.attachEvents();
-    if( org.eclipse.rwt.Client.isAndroidBrowser() ) {
+    if( rwt.client.Client.isAndroidBrowser() ) {
       org.eclipse.rwt.MobileWebkitSupport._getTouch = function( event ) {
         // touches is always null on faked TouchEvent, use fakedTouches instead
         var touches = event.touches || event.fakeTouches;
@@ -165,7 +165,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testFakeGestureEvent : function() {
-      if( !org.eclipse.rwt.Client.isAndroidBrowser() && !org.eclipse.rwt.Client.isMobileChrome() ) {
+      if( !rwt.client.Client.isAndroidBrowser() && !rwt.client.Client.isMobileChrome() ) {
         var div = document.createElement( "div" );
         document.body.appendChild( div );
         var log = [];
@@ -197,7 +197,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testFakeGestureEventTouch : function() {
-      if( !org.eclipse.rwt.Client.isAndroidBrowser() && !org.eclipse.rwt.Client.isMobileChrome() ) {
+      if( !rwt.client.Client.isAndroidBrowser() && !rwt.client.Client.isMobileChrome() ) {
         var div = document.createElement( "div" );
         document.body.appendChild( div );
         var log = [];
@@ -231,7 +231,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     // See Bug 323803 -  [ipad] Browser-widget/iframe broken
     testIFrameDimensionBug : function() {
-      if( org.eclipse.rwt.Client.isMobileSafari() ) {
+      if( rwt.client.Client.isMobileSafari() ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var iframe = new rwt.widgets.base.Iframe();
         iframe.addToDocument();
@@ -254,7 +254,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testTextFocusIOS : function() {
-      if( org.eclipse.rwt.Client.isMobileSafari() ) {
+      if( rwt.client.Client.isMobileSafari() ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var text = new rwt.widgets.Text( false );
         text.addToDocument();
@@ -278,7 +278,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testTextFocusAndroid : function() {
-      if( org.eclipse.rwt.Client.isAndroidBrowser() ) {
+      if( rwt.client.Client.isAndroidBrowser() ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var text = new rwt.widgets.Text( false );
         text.addToDocument();
@@ -640,7 +640,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testCancelOnGesture : function() {
-      if( !org.eclipse.rwt.Client.isAndroidBrowser() && !org.eclipse.rwt.Client.isMobileChrome() ) {
+      if( !rwt.client.Client.isAndroidBrowser() && !rwt.client.Client.isMobileChrome() ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var doc = rwt.widgets.base.ClientDocument.getInstance();
         var widget = new rwt.widgets.base.Terminator();
@@ -854,7 +854,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testAllowSwipeOnScrollable : function() {
-      if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
+      if( !rwt.client.Client.isAndroidBrowser() ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = new rwt.widgets.ScrolledComposite();
         widget.addToDocument();
@@ -878,7 +878,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testAllowSwipeOnScrollableChild : function() {
-      if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
+      if( !rwt.client.Client.isAndroidBrowser() ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var parent = new rwt.widgets.ScrolledComposite();
         var widget = new rwt.widgets.base.Terminator();
@@ -904,7 +904,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testDoNotBlockScrolling : function() {
-      if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
+      if( !rwt.client.Client.isAndroidBrowser() ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var composite = new rwt.widgets.ScrolledComposite();
         composite.setLeft( 10 );
@@ -1037,7 +1037,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testScrollGridInScrolledComposite : function() {
-      if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
+      if( !rwt.client.Client.isAndroidBrowser() ) {
         var grid = this._createGridByProtocol( true );
         var preventLog = [];
         var logger = function( event ) {
@@ -1066,7 +1066,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testDontScrollMinPosGridInScrolledComposite : function() {
-      if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
+      if( !rwt.client.Client.isAndroidBrowser() ) {
         var grid = this._createGridByProtocol( true );
         var scrollable = ObjectManager.getObject( "w5" );
         scrollable.setVBarSelection( 40 );
@@ -1098,7 +1098,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testDontScrollScrolledCompositeWithGridAfterDirectionChangeUp : function() {
-      if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
+      if( !rwt.client.Client.isAndroidBrowser() ) {
         var grid = this._createGridByProtocol( true );
         var preventLog = [];
         var logger = function( event ) {
@@ -1130,7 +1130,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testDontScrollMaxPosGridInScrolledComposite : function() {
-      if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
+      if( !rwt.client.Client.isAndroidBrowser() ) {
         var grid = this._createGridByProtocol( true );
         var preventLog = [];
         var logger = function( event ) {
@@ -1161,7 +1161,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     testDontScrollScrolledCompositeWithGridAfterDirectionChangeDown : function() {
-      if( !org.eclipse.rwt.Client.isAndroidBrowser() ) {
+      if( !rwt.client.Client.isAndroidBrowser() ) {
         var grid = this._createGridByProtocol( true );
         var scrollable = ObjectManager.getObject( "w5" );
         scrollable.setVBarSelection( 400 );
@@ -1213,7 +1213,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     createTouchList : function( touches ) {
       var result;
-      if( org.eclipse.rwt.Client.isAndroidBrowser() ) {
+      if( rwt.client.Client.isAndroidBrowser() ) {
         // "real" TouchList does not work propperly (length is always 0)
         result = {};
         result.length = touches.length;
@@ -1233,7 +1233,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     createTouchEvent : function( type, touchList ) {
       // Note: the screen/client values are not used in real touch-events.
       var result = document.createEvent( "TouchEvent" );
-      if( !org.eclipse.rwt.Client.isMobileSafari() ) {
+      if( !rwt.client.Client.isMobileSafari() ) {
         result.initTouchEvent(
             touchList,
             touchList,
@@ -1308,7 +1308,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     // Some nodes "swallow" (non-fake) touch-events;
     _isValidTouchTarget : function( node ) {
       var result = true;
-      if( org.eclipse.rwt.Client.isMobileSafari() ) {
+      if( rwt.client.Client.isMobileSafari() ) {
         var tag = node.tagName;
         result = ( tag != "INPUT" && tag != "TEXTAREA");
       }

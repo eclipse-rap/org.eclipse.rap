@@ -31,7 +31,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
     setBackgroundImage : ( function() {
       var result;
       // For IE6 without transparency we need to use CssFilter for PNG opacity to work:
-      if( org.eclipse.rwt.Client.isMshtml() && org.eclipse.rwt.Client.getVersion() < 7 ) {
+      if( rwt.client.Client.isMshtml() && rwt.client.Client.getVersion() < 7 ) {
         result = function( target, value, opacity ) {
           if( opacity != null && opacity < 1 ) {
             this.removeCssFilter( target );
@@ -124,7 +124,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
 
     setBoxShadow: function( target, shadowObject ) {
       var property;
-      if( org.eclipse.rwt.Client.isWebkit() ) {
+      if( rwt.client.Client.isWebkit() ) {
         property = this.BROWSER_PREFIX + "box-shadow";
       } else {
         property = "boxShadow";
@@ -159,10 +159,10 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
     } ),
 
     setPointerEvents : function( target, value ) {
-      var version = org.eclipse.rwt.Client.getVersion();
-      var ffSupport = org.eclipse.rwt.Client.getEngine() === "gecko" && version >= 1.9;
+      var version = rwt.client.Client.getVersion();
+      var ffSupport = rwt.client.Client.getEngine() === "gecko" && version >= 1.9;
       // NOTE: chrome does not support pointerEvents, but not on svg-nodes
-      var webKitSupport = org.eclipse.rwt.Client.getBrowser() === "safari" && version >= 530;
+      var webKitSupport = rwt.client.Client.getBrowser() === "safari" && version >= 530;
       if( ffSupport || webKitSupport ) {
         this.setStyleProperty( target, "pointerEvents", value );
         target.setAttribute( "pointerEvents", value );

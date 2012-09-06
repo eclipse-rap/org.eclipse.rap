@@ -42,7 +42,7 @@
  * The original code is licensed under a BSD license
  * (http://developer.yahoo.com/yui/license.txt).
  */
-qx.Class.define("qx.client.History",
+qx.Class.define("rwt.client.History",
 {
   type : "singleton",
   extend : qx.core.Target,
@@ -198,7 +198,7 @@ qx.Class.define("qx.client.History",
      * Simulates a back button click.
      */
      navigateBack : function() {
-       qx.client.Timer.once(function() {history.back();}, 0);
+       rwt.client.Timer.once(function() {history.back();}, 0);
      },
 
 
@@ -207,7 +207,7 @@ qx.Class.define("qx.client.History",
      * Simulates a forward button click.
      */
      navigateForward : function() {
-       qx.client.Timer.once(function() {history.forward();}, 0);
+       rwt.client.Timer.once(function() {history.forward();}, 0);
      },
 
 
@@ -241,7 +241,7 @@ qx.Class.define("qx.client.History",
      * or the fragment identifier on other browsers.
      */
     __startTimer : function() {
-      this._timer = new qx.client.Timer(this.getTimeoutInterval());
+      this._timer = new rwt.client.Timer(this.getTimeoutInterval());
 
       this._timer.addEventListener( "interval", function( e ) {
         var newHash = this.__getState();
@@ -350,7 +350,7 @@ qx.Class.define("qx.client.History",
       {
         if ( !this._iframe.contentWindow || !this._iframe.contentWindow.document ) {
             // Check again in 10 msec...
-            qx.client.Timer.once(function() {
+            rwt.client.Timer.once(function() {
               this.__waitForIFrame(callback, context);
             }, this, 10);
             return;

@@ -28,7 +28,7 @@ qx.Class.define( "rwt.widgets.base.GridRowContainer", {
     this._topItemIndex = 0;
     this._items = [];
     this._asyncQueue = {};
-    this._asyncTimer = new qx.client.Timer( 0 );
+    this._asyncTimer = new rwt.client.Timer( 0 );
     this._asyncTimer.addEventListener( "interval", this._onAsyncTimer, this );
     this._hoverItem = null;
     this._hoverElement = null;

@@ -70,7 +70,7 @@ qx.Class.define( "org.eclipse.rwt.System", {
     },
 
     _applyPatches : function() {
-      if( !org.eclipse.rwt.Client.supportsCss3() ) {
+      if( !rwt.client.Client.supportsCss3() ) {
         qx.Class.patch( rwt.widgets.base.Parent, org.eclipse.rwt.GraphicsMixin );
         qx.Class.patch( rwt.widgets.base.BasicText, org.eclipse.rwt.GraphicsMixin );
         qx.Class.patch( rwt.widgets.base.GridRow, org.eclipse.rwt.GraphicsMixin );
@@ -90,7 +90,7 @@ qx.Class.define( "org.eclipse.rwt.System", {
       this._onloadDone = true;
       rwt.widgets.base.ClientDocument.getInstance();
       org.eclipse.rwt.MobileWebkitSupport.init();
-      qx.client.Timer.once( this._preload, this, 0 );
+      rwt.client.Timer.once( this._preload, this, 0 );
       }
     },
 
@@ -107,7 +107,7 @@ qx.Class.define( "org.eclipse.rwt.System", {
       org.eclipse.rwt.EventHandler.attachEvents();
       this.setUiReady( true );
       rwt.widgets.base.Widget.flushGlobalQueues();
-      qx.client.Timer.once( this._postload, this, 100 );
+      rwt.client.Timer.once( this._postload, this, 100 );
     },
 
     _postload : function() {
@@ -138,8 +138,8 @@ qx.Class.define( "org.eclipse.rwt.System", {
 
     _isBrowserSupported : function() {
       var result = true;
-      var engine = org.eclipse.rwt.Client.getEngine();
-      var version = org.eclipse.rwt.Client.getMajor();
+      var engine = rwt.client.Client.getEngine();
+      var version = rwt.client.Client.getMajor();
       if( engine === "mshtml" && version < 7 ) {
         result = false;
       }
@@ -148,7 +148,7 @@ qx.Class.define( "org.eclipse.rwt.System", {
 
     _isModeSupported : function() {
       var result = true;
-      var engine = org.eclipse.rwt.Client.getEngine();
+      var engine = rwt.client.Client.getEngine();
       if( engine === "newmshtml" && document.documentMode < 9 ) {
         result = false;
       }

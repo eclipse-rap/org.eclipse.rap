@@ -911,7 +911,7 @@ qx.Class.define("rwt.widgets.base.Calendar", {
      * @return {String} territory
      */
     __getTerritory : function() {
-        var territory = org.eclipse.rwt.Client.getTerritory() || org.eclipse.rwt.Client.getLanguage();
+        var territory = rwt.client.Client.getTerritory() || rwt.client.Client.getLanguage();
       return territory.toUpperCase();
     }
   },

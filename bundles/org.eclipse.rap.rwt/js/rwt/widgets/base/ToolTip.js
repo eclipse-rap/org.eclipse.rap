@@ -37,10 +37,10 @@ qx.Class.define("rwt.widgets.base.ToolTip",
     // ************************************************************************
     //   TIMER
     // ************************************************************************
-    this._showTimer = new qx.client.Timer(this.getShowInterval());
+    this._showTimer = new rwt.client.Timer(this.getShowInterval());
     this._showTimer.addEventListener("interval", this._onshowtimer, this);
 
-    this._hideTimer = new qx.client.Timer(this.getHideInterval());
+    this._hideTimer = new rwt.client.Timer(this.getHideInterval());
     this._hideTimer.addEventListener("interval", this._onhidetimer, this);
 
     // ************************************************************************

@@ -50,7 +50,7 @@ org.eclipse.rwt.AnimationUntil = {
       widget.removeEventListener( "dispose", abort );
       widget.removeEventListener( "cancelAnimations", abort );
       // animation may still need to dispatch "finish", dispose later
-      qx.client.Timer.once( result.dispose, result, 0 );
+      rwt.client.Timer.once( result.dispose, result, 0 );
     } );
     return result;
   },

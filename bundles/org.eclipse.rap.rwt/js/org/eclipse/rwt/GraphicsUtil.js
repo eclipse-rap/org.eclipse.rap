@@ -16,9 +16,9 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
 
     init : function() {
       if( this._renderClass == null ) {
-        if( org.eclipse.rwt.Client.supportsVml() ) {
+        if( rwt.client.Client.supportsVml() ) {
           this._renderClass = org.eclipse.rwt.VML;
-        } else if ( org.eclipse.rwt.Client.supportsSvg() ) {
+        } else if ( rwt.client.Client.supportsSvg() ) {
           this._renderClass = org.eclipse.rwt.SVG;
         }
         if( this._renderClass != null ) {

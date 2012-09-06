@@ -36,7 +36,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
 
   destruct : function() {
     this._control.removeEventListener( "create", this._onControlCreate, this );
-    if( org.eclipse.rwt.Client.isMshtml() ) {
+    if( rwt.client.Client.isMshtml() ) {
       this._control.removeEventListener( "insertDom", this._onCanvasAppear, this );
     }
     if( this._control.isCreated() && !this._control.isDisposed() ) {
@@ -269,7 +269,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       image.src = args[ 0 ];
       args[ 0 ] = image;
       // On (native) canvas, only loaded images can be drawn:
-      if( image.complete || org.eclipse.rwt.Client.isMshtml() ) {
+      if( image.complete || rwt.client.Client.isMshtml() ) {
         this._context.drawImage.apply( this._context, args );
       } else {
         var alpha = this._context.globalAlpha;

@@ -71,7 +71,7 @@ qx.Class.define( "rwt.widgets.Text", {
       if( this._inputTag != "textarea" && this._inputType != type ) {
         this._inputType = type;
         if( this._isCreated ) {
-          if( org.eclipse.rwt.Client.getEngine() === "mshtml" ) {
+          if( rwt.client.Client.getEngine() === "mshtml" ) {
             this._reCreateInputField();
           } else {
             this._inputElement.type = this._inputType;
@@ -174,7 +174,7 @@ qx.Class.define( "rwt.widgets.Text", {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( this );
           req.addEvent( "org.eclipse.swt.events.modifyText", id );
-          qx.client.Timer.once( this._delayedSend, this, 500 );
+          rwt.client.Timer.once( this._delayedSend, this, 500 );
         }
       }
     },
@@ -334,7 +334,7 @@ qx.Class.define( "rwt.widgets.Text", {
         element = document.createElement( "div" );
         element.style.position = "absolute";
         element.style.cursor = "pointer";
-        if( org.eclipse.rwt.Client.isMshtml() ) {
+        if( rwt.client.Client.isMshtml() ) {
           element.style.fontSize = 0;
           element.style.lineHeight = 0;
         }
@@ -461,7 +461,7 @@ qx.Class.define( "rwt.widgets.Text", {
 
     _forceFocus : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
-        qx.client.Timer.once( function() {
+        rwt.client.Timer.once( function() {
           if( this._inputElement ) {
             this._inputElement.select();
             this._inputElement.focus();
@@ -469,7 +469,7 @@ qx.Class.define( "rwt.widgets.Text", {
         }, this, 1 );
       },
       "webkit" : function() {
-        qx.client.Timer.once( function() {
+        rwt.client.Timer.once( function() {
           if( this._inputElement ) {
             this._inputElement.focus();
           }

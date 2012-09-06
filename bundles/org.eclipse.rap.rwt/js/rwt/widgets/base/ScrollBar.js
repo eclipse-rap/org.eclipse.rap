@@ -91,7 +91,7 @@ qx.Class.define( "rwt.widgets.base.ScrollBar", {
         throw new Error( "mergeEvents can not be set to false" );
       } else if( value ) {
         this._mergeEvents = true;
-        this._eventTimer = new qx.client.Timer( 125 );
+        this._eventTimer = new rwt.client.Timer( 125 );
         this._eventTimer.addEventListener( "interval", this._dispatchValueChanged, this );
       }
     },

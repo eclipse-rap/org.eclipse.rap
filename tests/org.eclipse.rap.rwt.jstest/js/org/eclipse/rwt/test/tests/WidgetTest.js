@@ -25,7 +25,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       assertIdentical( element, widget._getTargetNode() );
       widget.setBorder( this._getComplexBorder() );
       TestUtil.flush();
-      var isGecko = org.eclipse.rwt.Client.isGecko();
+      var isGecko = rwt.client.Client.isGecko();
       if( isGecko ) {
         assertIdentical( element, widget._getTargetNode() );
       } else {
@@ -35,7 +35,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testRenderNormalBorderAfterComplexBorder : function() {
-      if( org.eclipse.rwt.Client.isMshtml() ) {
+      if( rwt.client.Client.isMshtml() ) {
         var widget = this._createWidget();
         widget.setBorder( this._getComplexBorder() );
         TestUtil.flush();
@@ -55,7 +55,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testRenderTooBigNormalBorderAfterComplexBorder : function() {
-      if( org.eclipse.rwt.Client.isMshtml() ) {
+      if( rwt.client.Client.isMshtml() ) {
         var widget = this._createWidget();
         widget.setWidth( 6 );
         widget.setBorder( this._getComplexBorder() );
@@ -80,7 +80,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       widget.prepareEnhancedBorder();
       TestUtil.flush();
       var targetNode = widget._getTargetNode();
-      var isMshtml = org.eclipse.rwt.Client.isMshtml();
+      var isMshtml = rwt.client.Client.isMshtml();
       if( isMshtml ) {
         var bounds = TestUtil.getElementBounds( targetNode )
         var expected = {
@@ -106,7 +106,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       widget.prepareEnhancedBorder();
       TestUtil.flush();
       var targetNode = widget._getTargetNode();
-      var isMshtml = org.eclipse.rwt.Client.isMshtml();
+      var isMshtml = rwt.client.Client.isMshtml();
       if( isMshtml ) {
         var bounds = TestUtil.getElementBounds( targetNode )
         var expected = {
@@ -383,7 +383,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testRenderSimpleBackgroundGradient : function() {
-      if( org.eclipse.rwt.Client.supportsCss3() ) {
+      if( rwt.client.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
         var widget = this._createWidget();
         widget.setBackgroundGradient( gradient );
@@ -397,7 +397,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testRemoveBackgroundGradient : function() {
-      if( org.eclipse.rwt.Client.supportsCss3() ) {
+      if( rwt.client.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
         var widget = this._createWidget();
         widget.setBackgroundGradient( gradient );
@@ -413,7 +413,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testRemoveBackgroundGradientAndRestoreBakgroundColor : function() {
-      if( org.eclipse.rwt.Client.supportsCss3() ) {
+      if( rwt.client.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
         var widget = this._createWidget();
         widget.setBackgroundColor( "red" );
@@ -429,7 +429,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testRemoveBackgroundGradientAndRestoreBakgroundImage : function() {
-      if( org.eclipse.rwt.Client.supportsCss3() ) {
+      if( rwt.client.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
         var widget = this._createWidget();
         widget.setBackgroundImage( "bla.png" );
@@ -445,7 +445,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testRenderHorizontalBackgroundGradient : function() {
-      if( org.eclipse.rwt.Client.supportsCss3() ) {
+      if( rwt.client.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
         gradient.horizontal = true;
         var widget = this._createWidget();
@@ -460,7 +460,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testRenderComplexBackgroundGradient : function() {
-      if( org.eclipse.rwt.Client.supportsCss3() ) {
+      if( rwt.client.Client.supportsCss3() ) {
         var gradient = [
           [ 0, "rgb(255, 0, 255)" ],
           [ 0.33, "rgb(255, 128, 255)" ],
@@ -489,14 +489,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 //         color, // string
 //         opacity, // number between 0 and 1
 //      ]
-      if( org.eclipse.rwt.Client.supportsCss3() ) {
+      if( rwt.client.Client.supportsCss3() ) {
         var shadow = [ false, 3, 5, 1, 0, "#090807", 0.4 ];
         var widget = this._createWidget();
         widget.setShadow( shadow );
         TestUtil.flush();
         var result = this._getCssShadow( widget.getElement() );
         var expected;
-        if( org.eclipse.rwt.Client.isWebkit() ) {
+        if( rwt.client.Client.isWebkit() ) {
           // webkit currently outputs "rgba(9, 8, 7, 0.398438) 3px 5px 1px"
           assertTrue( result.indexOf( "3px 5px 1px" ) !== -1 );
           assertTrue( result.indexOf( "rgba(9, 8, 7, 0." ) !== -1 );
@@ -510,7 +510,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testRenderBoxShadowInset : function() {
-      if( org.eclipse.rwt.Client.supportsCss3() ) {
+      if( rwt.client.Client.supportsCss3() ) {
         var shadow = [ true, 3, 5, 1, 0, "#090807", 0.4 ];
         var widget = this._createWidget();
         widget.setShadow( shadow );
@@ -522,7 +522,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testRemoveBoxShadow : function() {
-      if( org.eclipse.rwt.Client.supportsCss3() ) {
+      if( rwt.client.Client.supportsCss3() ) {
         var shadow = [ false, 3, 5, 1, 0, "#090807", 0.4 ];
         var widget = this._createWidget();
         widget.setShadow( shadow );
@@ -632,7 +632,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
 
     testShowToolTipOnHover : function() {
-      if(! org.eclipse.rwt.Client.supportsTouch() ) { // Test in MobileWebkitSupport.js
+      if(! rwt.client.Client.supportsTouch() ) { // Test in MobileWebkitSupport.js
         var widget = this._createWidget();
         widget.setUserData( "toolTipText", "gogo" );
         var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();

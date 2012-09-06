@@ -17,7 +17,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
 
     testCreateBrowserHistoryByProtocol : function() {
       var browserHistory = this._createBrowserHistoryByProtocol();
-      assertTrue( browserHistory instanceof qx.client.History );
+      assertTrue( browserHistory instanceof rwt.client.History );
       assertFalse( browserHistory._timer.getEnabled() );
     },
 

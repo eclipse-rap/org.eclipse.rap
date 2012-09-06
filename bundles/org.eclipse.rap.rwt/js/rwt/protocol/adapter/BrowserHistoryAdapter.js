@@ -12,7 +12,7 @@
 rwt.protocol.AdapterRegistry.add( "rwt.BrowserHistory", {
 
   factory : function( properties ) {
-    return qx.client.History.getInstance();
+    return rwt.client.History.getInstance();
   },
 
   destructor : qx.lang.Function.returnTrue,

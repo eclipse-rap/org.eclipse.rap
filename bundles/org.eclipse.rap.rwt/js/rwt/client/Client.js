@@ -17,7 +17,7 @@
  * Version names follow the wikipedia scheme: major.minor[.revision[.build]] at
  * http://en.wikipedia.org/wiki/Software_version
  */
-qx.Class.define( "org.eclipse.rwt.Client", {
+qx.Class.define( "rwt.client.Client", {
 
   statics : {
 
@@ -158,8 +158,8 @@ qx.Class.define( "org.eclipse.rwt.Client", {
 
     supportsSvg : function() {
       // NOTE: IE9 supports SVG, but not in quirksmode.
-      var engine = org.eclipse.rwt.Client.getEngine();
-      var version = org.eclipse.rwt.Client.getVersion();
+      var engine = rwt.client.Client.getEngine();
+      var version = rwt.client.Client.getVersion();
       var result =    engine === "gecko" && version >= 1.8
                    || engine === "webkit" && version >= 523
                    || engine === "opera" && version >= 9
@@ -173,8 +173,8 @@ qx.Class.define( "org.eclipse.rwt.Client", {
     // NOTE: This returns true if the browser sufficiently implements
     // border-radius, drop-shadow and linear-gradient. IE9 and opera (currently) ignored.
     supportsCss3 : function() {
-      var engine = org.eclipse.rwt.Client.getEngine();
-      var version = org.eclipse.rwt.Client.getVersion();
+      var engine = rwt.client.Client.getEngine();
+      var version = rwt.client.Client.getVersion();
       var result =    engine === "webkit" && version >= 522 //
                    || engine === "gecko" && version >= 2; // firefox 4+
                    // TODO [tb] : ie10+
@@ -392,7 +392,7 @@ qx.Class.define( "org.eclipse.rwt.Client", {
     statics.__init();
     qx.core.Variant.define( "qx.client",
                             [ "gecko", "mshtml", "opera", "webkit" ],
-                            org.eclipse.rwt.Client.getEngine() );
+                            rwt.client.Client.getEngine() );
   }
 
 } );

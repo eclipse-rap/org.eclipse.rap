@@ -9,29 +9,29 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-namespace( "org.eclipse.rwt" );
+namespace( "rwt.client" );
 
-org.eclipse.rwt.UICallBack = function() {
-  if( org.eclipse.rwt.UICallBack._instance !== undefined ) {
+rwt.client.UICallBack = function() {
+  if( rwt.client.UICallBack._instance !== undefined ) {
     throw new Error( "UICallBack can not be created twice" );
   } else {
-    org.eclipse.rwt.UICallBack._instance = this;
+    rwt.client.UICallBack._instance = this;
   }
   this._retryInterval = 0;
   this._active = false;
   this._running = false;
-  this._requestTimer = new qx.client.Timer( 0 );
+  this._requestTimer = new rwt.client.Timer( 0 );
   this._requestTimer.addEventListener( "interval", this._doSendUICallBackRequest, this );
 };
 
-org.eclipse.rwt.UICallBack.getInstance = function() {
-  if( org.eclipse.rwt.UICallBack._instance === undefined ) {
-    new org.eclipse.rwt.UICallBack();
+rwt.client.UICallBack.getInstance = function() {
+  if( rwt.client.UICallBack._instance === undefined ) {
+    new rwt.client.UICallBack();
   }
-  return org.eclipse.rwt.UICallBack._instance;
+  return rwt.client.UICallBack._instance;
 };
 
-org.eclipse.rwt.UICallBack.prototype = {
+rwt.client.UICallBack.prototype = {
 
   setActive : function( active ) {
     this._active = active;
@@ -76,7 +76,7 @@ org.eclipse.rwt.UICallBack.prototype = {
   _handleError : function( event ) {
     this._running = false;
     if( rwt.remote.Server.getInstance()._isConnectionError( event.status ) ) {
-      qx.client.Timer.once( this.sendUICallBackRequest, this, this._retryInterval );
+      rwt.client.Timer.once( this.sendUICallBackRequest, this, this._retryInterval );
       this._increaseRetryInterval();
     }
   },

@@ -50,7 +50,7 @@ qx.Class.define( "rwt.widgets.Combo", {
     this._blockMouseOver = false;
     this._list.addEventListener( "userScroll", function() {
       this._blockMouseOver = true;
-      qx.client.Timer.once( function() {
+      rwt.client.Timer.once( function() {
         this._blockMouseOver = false;
       }, this, 300 ); // the browser may fire a mouse event with some delay
     }, this );
@@ -663,7 +663,7 @@ qx.Class.define( "rwt.widgets.Combo", {
           var req = rwt.remote.Server.getInstance();
           req.addEventListener( "send", this._onSend, this );
           if( this._hasVerifyModifyListener() ) {
-            qx.client.Timer.once( this._sendModifyText, this, 500 );
+            rwt.client.Timer.once( this._sendModifyText, this, 500 );
           }
         }
       }

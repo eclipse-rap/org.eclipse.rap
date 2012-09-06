@@ -94,7 +94,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     _getKeyModifier : function() {
       var modifier = ""; // TODO [tb] : use real array for json protocol
       var commandKey
-        = org.eclipse.rwt.Client.getPlatform() === "mac" && org.eclipse.swt.EventUtil._metaKey;
+        = rwt.client.Client.getPlatform() === "mac" && org.eclipse.swt.EventUtil._metaKey;
       if( org.eclipse.swt.EventUtil._shiftKey ) {
         modifier += "shift,";
       }
@@ -147,7 +147,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
           lastMouseDown.x = evt.getPageX();
           lastMouseDown.y = evt.getPageY();
           lastMouseDown.mouseUpCount = 0;
-          qx.client.Timer.once( org.eclipse.swt.EventUtil._clearLastMouseDown,
+          rwt.client.Timer.once( org.eclipse.swt.EventUtil._clearLastMouseDown,
                                 this,
                                 org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME );
         }

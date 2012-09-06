@@ -55,14 +55,14 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     },
 
     init : function() {
-      if( org.eclipse.rwt.Client.supportsTouch() ) {
+      if( rwt.client.Client.supportsTouch() ) {
         this._configureToolTip();
         this._hideTabHighlight();
         this._bindListeners();
         this._registerListeners();
         this._registerFilter();
         // scrolling is currently very buggy in android, deactivated:
-        this.setTouchScrolling( !org.eclipse.rwt.Client.isAndroidBrowser() );
+        this.setTouchScrolling( !rwt.client.Client.isAndroidBrowser() );
       }
     },
 

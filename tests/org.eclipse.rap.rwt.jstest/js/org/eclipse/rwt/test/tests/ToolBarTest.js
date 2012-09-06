@@ -364,7 +364,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testDropDownLayoutBug : function() {
-      if( org.eclipse.rwt.Client.isMshtml() ) {
+      if( rwt.client.Client.isMshtml() ) {
         var item = new rwt.widgets.ToolItem( "dropDown" );
         this.item = item;
         item.setLeft( 100 );

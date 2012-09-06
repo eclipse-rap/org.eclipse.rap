@@ -12,7 +12,7 @@
 rwt.protocol.AdapterRegistry.add( "rwt.UICallBack", {
 
   factory : function( properties ) {
-    return org.eclipse.rwt.UICallBack.getInstance();
+    return rwt.client.UICallBack.getInstance();
   },
 
   destructor : qx.lang.Function.returnTrue,

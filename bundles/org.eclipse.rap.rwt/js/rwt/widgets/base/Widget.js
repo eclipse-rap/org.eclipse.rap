@@ -1703,7 +1703,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
             var index = vParent.getChildren().indexOf( this );
             vParent.getLayoutImpl().updateChildrenOnRemoveChild( this, index );
             vParent.addToJobQueue( "removeChild" );
-            var parentNode = org.eclipse.rwt.Client.isMshtml() ? this.getElement().parentElement : this.getElement().parentNode;
+            var parentNode = rwt.client.Client.isMshtml() ? this.getElement().parentElement : this.getElement().parentNode;
             if( parentNode ){
               parentNode.removeChild( this.getElement() );
               this._afterRemoveDom();
@@ -3643,7 +3643,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
         // and also not if we switch to IE emulation mode
         var pv = value;
         var pn = "overflow";
-        if( org.eclipse.rwt.Client.getVersion() < 9.8 ) {
+        if( rwt.client.Client.getVersion() < 9.8 ) {
           switch( pv ) {
             case "scrollX":
             case "scrollY":
@@ -3772,7 +3772,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
 
     _prepareGraphicsSupport : ( function() {
       var result;
-      if( org.eclipse.rwt.Client.supportsCss3() ) {
+      if( rwt.client.Client.supportsCss3() ) {
         result = qx.lang.Function.returnTrue;
       } else {
         result = function() {
@@ -3851,7 +3851,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
         this._targetNode = document.createElement( "div" );
         this._innerStyle = this._targetNode.style;
         this._targetNodeEnabled = true;
-        if( org.eclipse.rwt.Client.isMshtml() ) {
+        if( rwt.client.Client.isMshtml() ) {
           this.addToQueue( "width" );
           this.addToQueue( "height" );
         } else {
@@ -4117,7 +4117,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     // to substract the two border pixels assigned to
     // the outer element from the outer width to get
     // the inner width
-    if( org.eclipse.rwt.Client.isMshtml() ) {
+    if( rwt.client.Client.isMshtml() ) {
       members._renderRuntimeWidth = function(v) {
         this._style.pixelWidth = (v==null)?0:v;
         if( this._targetNodeEnabled ) {

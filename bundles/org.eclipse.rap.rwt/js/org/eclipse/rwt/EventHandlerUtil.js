@@ -124,7 +124,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       "click",
       "dblclick",
       "contextmenu",
-      ( org.eclipse.rwt.Client.isGecko() ? "DOMMouseScroll" : "mousewheel" ),
+      ( rwt.client.Client.isGecko() ? "DOMMouseScroll" : "mousewheel" ),
       "keydown",
       "keypress",
       "keyup"

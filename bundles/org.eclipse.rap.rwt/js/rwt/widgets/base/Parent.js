@@ -1343,7 +1343,7 @@ qx.Class.define("rwt.widgets.base.Parent",
     // TODO There must be a better way than to define this in defer
 
     // Fix Operas Rendering Bugs
-    if( org.eclipse.rwt.Client.isOpera() ) {
+    if( rwt.client.Client.isOpera() ) {
       members._layoutChildOrig = members._layoutChild;
 
       members._layoutChild = function(vChild)

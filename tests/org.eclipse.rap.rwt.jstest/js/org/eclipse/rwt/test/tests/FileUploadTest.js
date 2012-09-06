@@ -294,7 +294,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     },
 
     testShowFocusIndicator : function() {
-      var isChrome = org.eclipse.rwt.Client.getBrowser() === "chrome";
+      var isChrome = rwt.client.Client.getBrowser() === "chrome";
       var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
       if( focusIndicator._frame == null ) {
         focusIndicator._createFrame();
@@ -459,7 +459,7 @@ var createFileUpload = function( noFlush ) {
 };
 
 var checkInputLayout = function( upload ) {
-  if( !org.eclipse.rwt.Client.isMobileSafari() ) {
+  if( !rwt.client.Client.isMobileSafari() ) {
     var input = upload._inputElement;
     var widgetWidth = upload.getBoxWidth();
     var widgetHeight = upload.getBoxHeight();

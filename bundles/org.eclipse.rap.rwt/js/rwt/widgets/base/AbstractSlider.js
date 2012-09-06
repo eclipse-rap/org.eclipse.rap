@@ -30,8 +30,8 @@ qx.Class.define( "rwt.widgets.base.AbstractSlider", {
     this._thumbDragOffset = 0;
     this._autoRepeat = ""; // string indicating to auto-repeat an action
     this._mouseOffset = 0; // horizontal or vertical offset to slider start
-    this._delayTimer = new qx.client.Timer( 250 ); // delay auto-repeated actions
-    this._repeatTimer = new qx.client.Timer( 100 ); // for auto-repeated actions
+    this._delayTimer = new rwt.client.Timer( 250 ); // delay auto-repeated actions
+    this._repeatTimer = new rwt.client.Timer( 100 ); // for auto-repeated actions
     // subwidgets:
     this._thumb = new rwt.widgets.base.BasicButton( "push", true );
     this._minButton = new rwt.widgets.base.BasicButton( "push", true );

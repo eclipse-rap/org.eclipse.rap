@@ -10,7 +10,8 @@
  ******************************************************************************/
 
 /*global foo:true */
-/*jshint scripturl:true */
+/*jshint scripturl:true, delete:false */
+
 
 (function(){
 
@@ -140,7 +141,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertEquals( 33, win.foo );
         assertTrue( TestUtil.getMessageObject().findSetProperty( "w6", "executeResult" ) );
         browser.destroy();
-        delete window.foo;
+        delete foo;
       }
     ],
 

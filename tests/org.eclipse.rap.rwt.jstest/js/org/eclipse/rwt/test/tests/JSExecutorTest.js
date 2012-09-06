@@ -22,8 +22,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.JSExecutorTest", {
 
     testCreateJSExecutorByProtocol : function() {
       var jsExecutor = this._createJSExecutor();
-      assertTrue( jsExecutor instanceof org.eclipse.rwt.JSExecutor );
-      assertIdentical( jsExecutor, org.eclipse.rwt.JSExecutor.getInstance() );
+      assertTrue( jsExecutor instanceof rwt.client.JSExecutor );
+      assertIdentical( jsExecutor, rwt.client.JSExecutor.getInstance() );
     },
 
     testExecuteByProtocol : function() {

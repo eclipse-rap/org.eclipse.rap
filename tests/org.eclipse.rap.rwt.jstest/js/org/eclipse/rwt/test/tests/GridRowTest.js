@@ -487,7 +487,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "middle", node.style.verticalAlign );
       assertEquals( "nowrap", node.style.whiteSpace );
       assertEquals( "hidden", node.style.overflow );
-      if( org.eclipse.rwt.Client.isNewMshtml() ) {
+      if( rwt.client.Client.isNewMshtml() ) {
         assertEquals( "rgba(0, 0, 0, 0)", node.style.backgroundColor );
       }
       assertFalse( row.getSelectable() );

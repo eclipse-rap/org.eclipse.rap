@@ -19,7 +19,7 @@
  * {@link #once} is a special case. It will call a function deferred after a
  * given timeout.
  */
-qx.Class.define("qx.client.Timer",
+qx.Class.define("rwt.client.Timer",
 {
   extend : qx.core.Target,
 
@@ -90,7 +90,7 @@ qx.Class.define("qx.client.Timer",
     once : function(func, obj, timeout)
     {
       // Create time instance
-      var timer = new qx.client.Timer(timeout);
+      var timer = new rwt.client.Timer(timeout);
 
       // Add event listener to interval
       timer.addEventListener("interval", function(e)

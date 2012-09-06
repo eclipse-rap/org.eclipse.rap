@@ -82,7 +82,7 @@ qx.Class.define( "rwt.widgets.ToolTip", {
         this._update();
         this.bringToFront();
         if( this._hideAfterTimeout ) {
-          qx.client.Timer.once( this._hide, this, 5 * 1000 );
+          rwt.client.Timer.once( this._hide, this, 5 * 1000 );
         }
       }
     },

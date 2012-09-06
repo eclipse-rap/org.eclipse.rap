@@ -338,7 +338,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       TestUtil.flush();
       TestUtil.fakeResponse( false );
       assertEquals( 1, log.length );
-      if( !org.eclipse.rwt.Client.supportsCss3() ) {
+      if( !rwt.client.Client.supportsCss3() ) {
         shell.setBackgroundColor( "green" );
         shell.setBorder( new org.eclipse.rwt.Border( 1, "rounded", "black", 2 ) );
         TestUtil.flush();

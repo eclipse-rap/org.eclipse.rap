@@ -21,7 +21,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
 
   members : {
 
-    TARGETENGINE : org.eclipse.rwt.Client.supportsCss3() ? [ "none" ] : undefined,
+    TARGETENGINE : rwt.client.Client.supportsCss3() ? [ "none" ] : undefined,
 
     testSetGradient : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -176,7 +176,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     testComplexBorderWithGradient: function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
-      var engine = org.eclipse.rwt.Client.getEngine();
+      var engine = rwt.client.Client.getEngine();
       var widget = this._createWidget();
       // TODO [tb] : this test is not completely valid as RAP does not support different widths for
       //             complex borders (the Border class does, but not ThemeStore and Widget)

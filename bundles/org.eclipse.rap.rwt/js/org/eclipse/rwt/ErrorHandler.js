@@ -190,7 +190,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
     _enableTextSelection : function() {
       var doc = rwt.widgets.base.ClientDocument.getInstance();
       doc.setSelectable( true );
-      if( org.eclipse.rwt.Client.isGecko() ) {
+      if( rwt.client.Client.isGecko() ) {
         var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
         qx.html.EventRegistration.removeEventListener( document.documentElement,
                                                        "mousedown",

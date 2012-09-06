@@ -15,7 +15,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
   statics : {
 
     _measureNode : null,
-    _offset : org.eclipse.rwt.Client.isZoomed() ? 1 : 0,
+    _offset : rwt.client.Client.isZoomed() ? 1 : 0,
 
     probe : function( probeList ) {
       for( var i = 0; i < probeList.length; i++ ) {
@@ -58,7 +58,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
       var style = element.style;
       // Resetting style.font causes errors in IE with any of these syntaxes:
       // node.style.font = null | undefined | "inherit" | "";
-      if( !org.eclipse.rwt.Client.isMshtml() ) {
+      if( !rwt.client.Client.isMshtml() ) {
         style.font = "";
       }
       style.fontFamily = fontProps.fontFamily || "";
@@ -122,7 +122,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
         document.body.appendChild( node );
         this._measureNode = node;
       }
-      if( !org.eclipse.rwt.Client.isMshtml() ) {
+      if( !rwt.client.Client.isMshtml() ) {
         node.style.font = "";
       }
       return node;

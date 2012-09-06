@@ -235,7 +235,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = TestUtil.getElementBounds( client.getElement() );
       var targetBounds = TestUtil.getElementBounds( client._getTargetNode() );
-      if( org.eclipse.rwt.Client.isNewMshtml() ) {
+      if( rwt.client.Client.isNewMshtml() ) {
         assertEquals( elementBounds.width + ( barWidth * 2 ), targetBounds.width );
         assertEquals( elementBounds.height + ( barWidth * 2 ), targetBounds.height );
       } else {
@@ -406,8 +406,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
 
     testBlockScrolling : function() {
-      if(    !org.eclipse.rwt.Client.isAndroidBrowser()
-          && !org.eclipse.rwt.Client.isMobileSafari() )
+      if(    !rwt.client.Client.isAndroidBrowser()
+          && !rwt.client.Client.isMobileSafari() )
       {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var composite = this._createComposite();
@@ -518,7 +518,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = TestUtil.getElementBounds( client.getElement() );
       var targetBounds = TestUtil.getElementBounds( client._getTargetNode() );
-      if( org.eclipse.rwt.Client.isNewMshtml() ) {
+      if( rwt.client.Client.isNewMshtml() ) {
         assertEquals( elementBounds.width + ( barWidth * 2 ), targetBounds.width );
         assertEquals( elementBounds.height + ( barWidth * 2 ), targetBounds.height );
       } else {

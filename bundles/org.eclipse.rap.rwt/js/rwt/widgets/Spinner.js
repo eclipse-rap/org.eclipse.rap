@@ -130,7 +130,7 @@ qx.Class.define( "rwt.widgets.Spinner", {
           this._sendWidgetSelected();
         } else if( this._hasModifyListener ) {
           this._addModifyTextEvent();
-          qx.client.Timer.once( this._sendModifyText, this, 500 );
+          rwt.client.Timer.once( this._sendModifyText, this, 500 );
         }
       }
     },

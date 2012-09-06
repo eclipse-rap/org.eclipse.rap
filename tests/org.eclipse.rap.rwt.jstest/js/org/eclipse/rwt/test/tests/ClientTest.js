@@ -16,19 +16,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
     
     testRunsLocally : function() {
       var msg = "Always run tests from an http-server!";
-      assertFalse( msg, org.eclipse.rwt.Client.getRunsLocally() );
+      assertFalse( msg, rwt.client.Client.getRunsLocally() );
       // NOTE: If this fails, either getRunsLocally returns the wrong value
       //       or, more likely, you started tests from the filesystem
     },
     
     testQuirksmode : function() {
       // NOTE: RAP should always run in quirksmode in IE7/8
-      var expected = !org.eclipse.rwt.Client.isNewMshtml();
-      assertIdentical( expected, org.eclipse.rwt.Client.isInQuirksMode() );
+      var expected = !rwt.client.Client.isNewMshtml();
+      assertIdentical( expected, rwt.client.Client.isInQuirksMode() );
     },
 
     testEngine : function() {
-      var client = org.eclipse.rwt.Client;
+      var client = rwt.client.Client;
       var engines = [ "mshtml", "gecko", "webkit", "opera", "newmshtml" ];
       var currentEngine = client.getEngine();
       assertTrue( engines.indexOf( currentEngine ) != -1 );
@@ -45,7 +45,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
     },
     
     testVersions : function() {
-      var client = org.eclipse.rwt.Client;
+      var client = rwt.client.Client;
       assertEquals( "number", typeof client.getVersion() );
       assertEquals( "number", typeof client.getMajor() );
       assertEquals( "number", typeof client.getMinor() );
@@ -54,7 +54,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
     },
 
     testPlatform : function() {
-      var client = org.eclipse.rwt.Client;
+      var client = rwt.client.Client;
       var platforms = [ "win", "mac", "unix", "ios", "android" ];
       var currentPlatform = client.getPlatform();
       assertTrue( platforms.indexOf( currentPlatform ) != -1 );
@@ -62,9 +62,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
 
     testGraphicsSupport : function() {
       // Canvas present in all browser except IE, no check implemented.
-      var svg = org.eclipse.rwt.Client.supportsSvg();
-      var vml = org.eclipse.rwt.Client.supportsVml();
-      var css3 = org.eclipse.rwt.Client.supportsCss3();
+      var svg = rwt.client.Client.supportsSvg();
+      var vml = rwt.client.Client.supportsVml();
+      var css3 = rwt.client.Client.supportsCss3();
       assertEquals( "boolean", typeof svg );
       assertEquals( "boolean", typeof vml );
       assertEquals( "boolean", typeof css3 );
@@ -72,7 +72,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
     },
 
     testLocale : function() {
-      var client = org.eclipse.rwt.Client;
+      var client = rwt.client.Client;
       assertEquals( "string", typeof client.getLocale() );
       assertEquals( "string", typeof client.getLanguage() );
       assertEquals( "string", typeof client.getTerritory() );
@@ -81,13 +81,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
     },
     
     testBoxSizingAttributes : function() {
-      var attr = org.eclipse.rwt.Client.getEngineBoxSizingAttributes();
+      var attr = rwt.client.Client.getEngineBoxSizingAttributes();
       assertTrue( attr instanceof Array );
       assertEquals( "string", typeof attr[ 0 ] );
     },
     
     testMobile : function() {
-      var client = org.eclipse.rwt.Client;
+      var client = rwt.client.Client;
       var msafari = client.isMobileSafari();
       var androidb = client.isAndroidBrowser();
       assertEquals( "boolean", typeof msafari );

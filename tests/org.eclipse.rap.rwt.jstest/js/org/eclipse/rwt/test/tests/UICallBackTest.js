@@ -23,8 +23,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.UICallBackTest", {
 
     testCreateUICallBackByProtocol : function() {
       var uiCallBack = this._createUICallBack();
-      assertTrue( uiCallBack instanceof org.eclipse.rwt.UICallBack );
-      assertIdentical( uiCallBack, org.eclipse.rwt.UICallBack.getInstance() );
+      assertTrue( uiCallBack instanceof rwt.client.UICallBack );
+      assertIdentical( uiCallBack, rwt.client.UICallBack.getInstance() );
     },
 
     testSetActiveByProtocol : function() {

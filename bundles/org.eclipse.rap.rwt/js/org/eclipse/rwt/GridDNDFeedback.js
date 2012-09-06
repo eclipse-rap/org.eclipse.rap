@@ -174,7 +174,7 @@ qx.Class.define( "org.eclipse.rwt.GridDNDFeedback", {
 
     _startExpandTimer : function() {
       if( this._expandTimer == null ) {
-        this._expandTimer = new qx.client.Timer( 750 );
+        this._expandTimer = new rwt.client.Timer( 750 );
         this._expandTimer.addEventListener( "interval",
                                             this._onExpandTimer,
                                             this );
@@ -196,7 +196,7 @@ qx.Class.define( "org.eclipse.rwt.GridDNDFeedback", {
 
     _startScrollTimer : function() {
       if( this._scrollTimer == null ) {
-        this._scrollTimer = new qx.client.Timer( 250 );
+        this._scrollTimer = new rwt.client.Timer( 250 );
         this._scrollTimer.addEventListener( "interval", this._onScrollTimer, this );
       }
       this._scrollTimer.setEnabled( true );
@@ -234,7 +234,7 @@ qx.Class.define( "org.eclipse.rwt.GridDNDFeedback", {
           var wrapper = function() {
             this._targetUpdateCheck( oldRow, newRow );
           };
-          qx.client.Timer.once( wrapper, this, 1 );
+          rwt.client.Timer.once( wrapper, this, 1 );
         }
       }
     },

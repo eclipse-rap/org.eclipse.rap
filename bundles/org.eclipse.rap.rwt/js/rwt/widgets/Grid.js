@@ -40,7 +40,7 @@ qx.Class.define( "rwt.widgets.Grid", {
     this._footerHeight = 0;
     this._itemHeight = 16;
     // Timer & Border
-    this._mergeEventsTimer = new qx.client.Timer( 50 );
+    this._mergeEventsTimer = new rwt.client.Timer( 50 );
     this._sendRequestTimer = null;
     // Subwidgets
     this._rowContainer = org.eclipse.rwt.GridUtil.createTreeRowContainer( argsMap );
@@ -187,7 +187,7 @@ qx.Class.define( "rwt.widgets.Grid", {
 
     _createSendRequestTimer : function() {
       if( this._sendRequestTimer === null ) {
-        var timer = new qx.client.Timer( 400 );
+        var timer = new rwt.client.Timer( 400 );
         var req = rwt.remote.Server.getInstance();
         timer.addEventListener( "interval", req.send, req );
         req.addEventListener( "send", timer.stop, timer );

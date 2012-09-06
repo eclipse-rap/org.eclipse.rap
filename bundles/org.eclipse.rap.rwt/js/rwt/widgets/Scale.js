@@ -307,7 +307,7 @@ qx.Class.define( "rwt.widgets.Scale", {
     _scheduleSendChanges : function() {
       if( this._readyToSendChanges ) {
         this._readyToSendChanges = false;
-        qx.client.Timer.once( this._sendChanges, this, 500 );
+        rwt.client.Timer.once( this._sendChanges, this, 500 );
       }
     },
 

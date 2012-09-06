@@ -206,7 +206,7 @@ qx.Class.define( "rwt.widgets.Link", {
         if( this._readyToSendChanges ) {
           // [if] Fix for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=252559
           this._readyToSendChanges = false;
-          qx.client.Timer.once( function() {
+          rwt.client.Timer.once( function() {
             this._sendChanges( index );
           }, this, org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME );
         }
@@ -230,7 +230,7 @@ qx.Class.define( "rwt.widgets.Link", {
       if( evt.which ) {
         result = ( evt.which === 1 );
       } else if( evt.button ) {
-        if( org.eclipse.rwt.Client.isMshtml() ) {
+        if( rwt.client.Client.isMshtml() ) {
           result = ( evt.button === 1 );
         } else {
           result = ( evt.button === 0 );
@@ -266,7 +266,7 @@ qx.Class.define( "rwt.widgets.Link", {
 
     _getEventTarget : function( evt ) {
       var target;
-      if( org.eclipse.rwt.Client.isMshtml() ) {
+      if( rwt.client.Client.isMshtml() ) {
         target = window.event.srcElement;
       } else {
         target = evt.target;

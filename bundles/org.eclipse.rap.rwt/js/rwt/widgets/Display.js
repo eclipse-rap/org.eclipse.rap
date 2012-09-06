@@ -165,7 +165,7 @@ rwt.widgets.Display.prototype = {
     if( typeof screen.colorDepth == "number" ) {
       depth = parseInt( screen.colorDepth, 10 );
     }
-    if( org.eclipse.rwt.Client.isGecko() ) {
+    if( rwt.client.Client.isGecko() ) {
       // Firefox detects 24bit and 32bit as 24bit, but 32bit is more likely
       depth = depth == 24 ? 32 : depth;
     }

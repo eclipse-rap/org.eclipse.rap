@@ -200,7 +200,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       var solidStyles = [ "solid", "solid", "solid", "solid" ];
       assertEquals( solidStyles, this._getBorderStyles( widget._style ) );
       assertEquals( colorOuter, this._getBorderColors( widget._style ) );
-      if( org.eclipse.rwt.Client.isGecko() ) {
+      if( rwt.client.Client.isGecko() ) {
         assertEquals( [ 2, 2, 2, 2 ], this._getBorderWidths( widget._style ) );        
         assertEquals( "rgb(255, 0, 239) rgb(221, 0, 239)", widget._style.MozBorderTopColors );
         assertEquals( "rgb(255, 0, 238) rgb(221, 0, 238)", widget._style.MozBorderRightColors );
@@ -229,7 +229,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       assertEquals( [ "", "", "", "" ], this._getBorderColors( widget._style ) );
       assertEquals( [ "", "", "", "" ], this._getBorderStyles( widget._style ) );
       assertEquals( [ 0, 0, 0, 0 ], this._getBorderWidths( widget._style ) );
-      if( org.eclipse.rwt.Client.isGecko() ) {
+      if( rwt.client.Client.isGecko() ) {
         assertEquals( "", widget._style.MozBorderTopColors );
         assertEquals( "", widget._style.MozBorderRightColors );
         assertEquals( "", widget._style.MozBorderBottomColors );
@@ -260,7 +260,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       assertEquals( colorSimple, this._getBorderColors( widget._style ) );
       assertEquals( outsetStyles, this._getBorderStyles( widget._style ) );
       assertEquals( [ 2, 2, 2, 2 ], this._getBorderWidths( widget._style ) );        
-      if( org.eclipse.rwt.Client.isGecko() ) {
+      if( rwt.client.Client.isGecko() ) {
         assertEquals( "", widget._style.MozBorderTopColors );
         assertEquals( "", widget._style.MozBorderRightColors );
         assertEquals( "", widget._style.MozBorderBottomColors );
@@ -293,7 +293,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
     
     testRenderRoundedBorder : function() {
       // NOTE: Tests for non-css3 browser are in GraphicsMixinTest
-      if( org.eclipse.rwt.Client.supportsCss3() ) {
+      if( rwt.client.Client.supportsCss3() ) {
         var radii = [ 0, 1, 2, 3 ];
         var border = new org.eclipse.rwt.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] );
         var widget = this._createWidget();
@@ -316,7 +316,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
     
     testRemoveRoundedBorder : function() {
       // NOTE: Tests for non-css3 browser are in GraphicsMixinTest
-      if( org.eclipse.rwt.Client.supportsCss3() ) {
+      if( rwt.client.Client.supportsCss3() ) {
         var radii = [ 0, 1, 2, 3 ];
         var border = new org.eclipse.rwt.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] );
         var widget = this._createWidget();
@@ -334,7 +334,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
 
     testRemoveRadiiWithSimpleBorder : function() {
       // NOTE: Tests for non-css3 browser are in GraphicsMixinTest
-      if( org.eclipse.rwt.Client.supportsCss3() ) {
+      if( rwt.client.Client.supportsCss3() ) {
         var radii = [ 0, 1, 2, 3 ];
         var border = new org.eclipse.rwt.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] );
         var widget = this._createWidget();
@@ -350,7 +350,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
 
     testRemoveRadiiWithComplexBorder : function() {
       // NOTE: Tests for non-css3 browser are in GraphicsMixinTest
-      if( org.eclipse.rwt.Client.supportsCss3() ) {
+      if( rwt.client.Client.supportsCss3() ) {
         var radii = [ 0, 1, 2, 3 ];
         var border = new org.eclipse.rwt.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] );
         var widget = this._createWidget();

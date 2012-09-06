@@ -17,7 +17,7 @@ qx.Class.define( "rwt.widgets.ScrolledComposite", {
     this.base( arguments, new rwt.widgets.base.Parent() );
     this._clientArea.addEventListener( "mousewheel", this._onMouseWheel, this );
     this._clientArea.addEventListener( "keypress", this._onKeyPress, this );
-    if( org.eclipse.rwt.Client.supportsTouch() ) {
+    if( rwt.client.Client.supportsTouch() ) {
       this._clientArea.addEventListener( "mousedown", this._onTouch, this );
     }
     this.addEventListener( "userScroll", this._onUserScroll );
@@ -120,7 +120,7 @@ qx.Class.define( "rwt.widgets.ScrolledComposite", {
     _onUserScroll : function() {
       if( !this._requestTimerRunning ) {
         this._requestTimerRunning = true;
-        qx.client.Timer.once( this._sendChanges, this, 500 );
+        rwt.client.Timer.once( this._sendChanges, this, 500 );
       }
     },
 

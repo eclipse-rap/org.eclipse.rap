@@ -395,7 +395,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
         assertTrue( TestUtil._sendKeyPress( 9 ) );
         assertTrue( TestUtil._sendKeyPress( "Backspace" ) );
         assertTrue( TestUtil._sendKeyPress( 8 ) );
-        if( org.eclipse.rwt.Client.isOpera() ) {
+        if( rwt.client.Client.isOpera() ) {
           assertFalse( TestUtil._sendKeyPress( "Win" ) );
           assertFalse( TestUtil._sendKeyPress( 91 ) );
         } else {
@@ -423,7 +423,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
         assertFalse( TestUtil._sendKeyPress( 112 ) );
         assertTrue( TestUtil._sendKeyPress( "Space" ) );
         assertTrue( TestUtil._sendKeyPress( 32 ) );
-        if( org.eclipse.rwt.Client.isWebkit() ) {
+        if( rwt.client.Client.isWebkit() ) {
           assertFalse( TestUtil._sendKeyPress( "Escape" ) );
           assertFalse( TestUtil._sendKeyPress( 27 ) );
         } else {
@@ -610,7 +610,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     // NOTE : This test randomly fails in old IE due to very bad timer accuaracy.
     //        Possibly connected to test order. Test succeeds when choosing larger timespans,
     //        but this would make it less meaningful on other browser.
-    testDelayTest : org.eclipse.rwt.Client.isMshtml() ? null : [
+    testDelayTest : rwt.client.Client.isMshtml() ? null : [
       // NOTE: accuarcy of timeout is about 16-32 ms
       function() {
         var store = {

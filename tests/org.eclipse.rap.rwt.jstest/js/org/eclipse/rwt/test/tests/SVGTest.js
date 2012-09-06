@@ -180,7 +180,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       parent.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
       GraphicsUtil.handleAppear( canvas );
       var expected = "M 10 20 A 10 10 0 0 1 20 10 L 30 10 30 10 L 30 30 30 30 L 10 30 10 30 Z";
-      if( org.eclipse.rwt.Client.isNewMshtml() ) {
+      if( rwt.client.Client.isNewMshtml() ) {
         expected = "M 10 20 A 10 10 0 0 1 20 10 L 30 10 L 30 10 L 30 30 L 30 30 L 10 30 L 10 30 Z";
       }
       assertEquals( expected, shape.node.getAttribute( "d" ) );
@@ -200,7 +200,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       parent.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
       GraphicsUtil.handleAppear( canvas );
       var expected = "M 10 20 A 10 10 0 0 1 20 10 L 30 10 30 10 L 30 30 30 30 L 10 30 10 30 Z";
-      if( org.eclipse.rwt.Client.isNewMshtml() ) {
+      if( rwt.client.Client.isNewMshtml() ) {
         expected = "M 10 20 A 10 10 0 0 1 20 10 L 30 10 L 30 10 L 30 30 L 30 30 L 10 30 L 10 30 Z";
       } 
       assertEquals( expected, shape.node.getAttribute( "d" ) );
@@ -251,7 +251,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       assertEquals( 70, imageNode.getAttribute( "width" ) );
       assertEquals( 70, imageNode.getAttribute( "height" ) );
       // this is due to the workaround for Bug 301236:
-      if( org.eclipse.rwt.Client.getEngine() != "webkit" ) {
+      if( rwt.client.Client.getEngine() != "webkit" ) {
         assertEquals( url, imageNode.getAttribute( "href" ) );
       }
       assertEquals( "pattern", GraphicsUtil.getFillType( shape ) );
@@ -345,7 +345,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       assertIdentical( canvas.node, canvas.group.parentNode );
       assertIdentical( canvas.group, shape.node.parentNode );
       var transform = canvas.group.getAttribute( "transform" );
-      if( org.eclipse.rwt.Client.isNewMshtml() ) {
+      if( rwt.client.Client.isNewMshtml() ) {
         transform = transform.split( " " ).join( "," );
       } else {
         transform = transform.split( " " ).join( "" );

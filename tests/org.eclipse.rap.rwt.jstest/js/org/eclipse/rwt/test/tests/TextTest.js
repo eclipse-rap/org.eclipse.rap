@@ -16,7 +16,7 @@ var Processor = rwt.protocol.MessageProcessor;
 var ObjectManager = rwt.protocol.ObjectManager;
 var Font = qx.ui.core.Font;
 var Border = org.eclipse.rwt.Border;
-var Client = org.eclipse.rwt.Client;
+var Client = rwt.client.Client;
 var Server = rwt.remote.Server;
 
 var shell;
@@ -403,7 +403,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testRenderPaddingWithRoundedBorder : function() {
-      if( !org.eclipse.rwt.Client.supportsCss3() ) {
+      if( !rwt.client.Client.supportsCss3() ) {
         createText();
         text.setPadding( 3 );
         text.setBorder( new Border( 1, "rounded", "black", 0 ) );

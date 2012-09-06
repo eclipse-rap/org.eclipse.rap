@@ -12,12 +12,12 @@
 
 (function(){
 
-var Client = org.eclipse.rwt.Client;
-var Timer = qx.client.Timer;
+var Client = rwt.client.Client;
+var Timer = rwt.client.Timer;
 var Processor = rwt.protocol.MessageProcessor;
 var ErrorHandler = org.eclipse.rwt.ErrorHandler;
 var EventUtil = org.eclipse.swt.EventUtil;
-var UICallBack = org.eclipse.rwt.UICallBack;
+var UICallBack = rwt.client.UICallBack;
 var ClientDocument = rwt.widgets.base.ClientDocument;
 var Widget = rwt.widgets.base.Widget;
 

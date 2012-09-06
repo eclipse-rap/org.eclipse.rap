@@ -43,9 +43,9 @@ qx.Class.define( "rwt.widgets.Menu", {
     this.addEventListener( "mouseout", this._onMouseOut );
     this.addEventListener( "mouseover", this._onMouseOver );
     this.addEventListener( "keypress", this._onKeyPress );
-    this._openTimer = new qx.client.Timer( 250 );
+    this._openTimer = new rwt.client.Timer( 250 );
     this._openTimer.addEventListener( "interval", this._onopentimer, this );
-    this._closeTimer = new qx.client.Timer( 250 );
+    this._closeTimer = new rwt.client.Timer( 250 );
     this._closeTimer.addEventListener( "interval", this._onclosetimer, this );
     this.addToDocument();
   },

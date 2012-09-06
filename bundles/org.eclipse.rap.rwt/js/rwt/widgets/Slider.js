@@ -169,7 +169,7 @@ qx.Class.define( "rwt.widgets.Slider", {
           if( this._readyToSendChanges ) {
             this._readyToSendChanges = false;
             // Send changes
-            qx.client.Timer.once( this._sendChanges,
+            rwt.client.Timer.once( this._sendChanges,
                                   this,
                                   rwt.widgets.Slider.SEND_DELAY );
           }
@@ -183,7 +183,7 @@ qx.Class.define( "rwt.widgets.Slider", {
         if( this._readyToSendChanges ) {
           this._readyToSendChanges = false;
           // Send changes
-          qx.client.Timer.once( this._sendChanges, this, 500 );
+          rwt.client.Timer.once( this._sendChanges, this, 500 );
         }
       }
     },
@@ -194,7 +194,7 @@ qx.Class.define( "rwt.widgets.Slider", {
         if( !this._requestScheduled ) {
           this._requestScheduled = true;
           // Send changes
-          qx.client.Timer.once( this._sendChanges,
+          rwt.client.Timer.once( this._sendChanges,
                                 this,
                                 rwt.widgets.Slider.SEND_DELAY );
 

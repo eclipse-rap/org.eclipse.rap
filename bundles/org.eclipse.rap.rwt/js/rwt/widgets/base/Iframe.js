@@ -95,7 +95,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
     },
 
     _useAlternateLayouting : function() {
-      return org.eclipse.rwt.Client.isMobileSafari();
+      return rwt.client.Client.isMobileSafari();
     }
 
   },
@@ -349,7 +349,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
     {
       if (this._blockerNode &&
          (!this._blockerNode.parentElement ||
-         (org.eclipse.rwt.Client.isGecko() && !this._blockerNode.parentNode))) {
+         (rwt.client.Client.isGecko() && !this._blockerNode.parentNode))) {
         this._getBlockerParent().appendChild(this._blockerNode);
       }
     },
@@ -364,7 +364,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
     {
       if (this._blockerNode &&
          (this._blockerNode.parentElement ||
-         (org.eclipse.rwt.Client.isGecko() && this._blockerNode.parentNode))) {
+         (rwt.client.Client.isGecko() && this._blockerNode.parentNode))) {
         this._getBlockerParent().removeChild(this._blockerNode);
       }
     },
@@ -463,7 +463,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
       var blockerEl = rwt.widgets.base.Iframe._blocker = document.createElement("div");
       var blockerStyle = blockerEl.style;
 
-      if( org.eclipse.rwt.Client.isMshtml() ) {
+      if( rwt.client.Client.isMshtml() ) {
         // Setting the backgroundImage causes an "insecure elements" warning under SSL
         // blockerStyle.backgroundImage = "url(" + qx.io.Alias.getInstance().resolve("static/image/blank.gif") + ")";
 
@@ -670,7 +670,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
     destroy : function() {
       // best known method to remove iframe content from memory is to set this url:
       var src = "javascript:false;";
-      if( org.eclipse.rwt.Client.isMshtml() && this._iframeNode && this.getSource() !== src ) {
+      if( rwt.client.Client.isMshtml() && this._iframeNode && this.getSource() !== src ) {
         this.setStyleProperty( "visibility", "hidden" );
         this.addToDocument();
         this.addEventListener( "load", function() {

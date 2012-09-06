@@ -68,7 +68,7 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
     org.eclipse.rwt.EventHandler.setFocusRoot(this);
 
     // Gecko-specific settings
-    if( org.eclipse.rwt.Client.isGecko() ) {
+    if( rwt.client.Client.isGecko() ) {
       // Fix for bug 193703:
       this.getElement().style.position = "absolute";
       this.setSelectable( true );
@@ -599,7 +599,7 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
   defer : function()
   {
     // CSS fix
-    var boxSizingAttr = org.eclipse.rwt.Client.getEngineBoxSizingAttributes();
+    var boxSizingAttr = rwt.client.Client.getEngineBoxSizingAttributes();
     var borderBoxCss = boxSizingAttr.join(":border-box;") + ":border-box;";
     var contentBoxCss = boxSizingAttr.join(":content-box;") + ":content-box;";
 

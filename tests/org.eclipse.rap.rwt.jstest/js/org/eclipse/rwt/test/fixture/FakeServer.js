@@ -15,7 +15,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.FakeServer", {
 
   construct : function() {
     this.base( arguments );
-    this._timer = new qx.client.Timer( 0 );
+    this._timer = new rwt.client.Timer( 0 );
     this._timer.addEventListener( "interval", this._onTimer, this );
   },
 

@@ -653,7 +653,7 @@ qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     // TODO [tb] : refactor
     _getImageHtml : qx.core.Variant.select( "qx.client", {
       "mshtml" : function( cell ) {
-        if( org.eclipse.rwt.Client.getVersion() < 7 ) {
+        if( rwt.client.Client.getVersion() < 7 ) {
           var content = this.getCellContent( cell );
           var cssImageStr = "";
           if( content ) {

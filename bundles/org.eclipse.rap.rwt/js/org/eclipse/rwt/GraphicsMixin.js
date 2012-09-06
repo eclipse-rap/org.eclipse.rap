@@ -21,8 +21,8 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
 
     getSupportsShadows : function() {
       if( this._shadowSupport === undefined ) {
-        var engine = org.eclipse.rwt.Client.getEngine();
-        var version = org.eclipse.rwt.Client.getVersion();
+        var engine = rwt.client.Client.getEngine();
+        var version = rwt.client.Client.getVersion();
         this._shadowSupport = false;
         switch( engine ) {
           case "gecko":

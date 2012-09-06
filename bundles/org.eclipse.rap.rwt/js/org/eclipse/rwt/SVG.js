@@ -237,7 +237,7 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
         imageNode.setAttribute( "width", width );
         imageNode.setAttribute( "height", height );
         shape.node.setAttribute( "fill", "url(#" + patternId + ")" );
-        if( org.eclipse.rwt.Client.getEngine() == "webkit" ) {
+        if( rwt.client.Client.getEngine() == "webkit" ) {
           // Bug 301236: Loading an image using SVG causes a bad request
           // AFTER the image-request. Prevent by pre-loading the image.
           this._onImageLoad( source, function() {

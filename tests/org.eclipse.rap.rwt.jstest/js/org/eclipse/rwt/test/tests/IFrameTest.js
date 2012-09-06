@@ -16,7 +16,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.IFrameTest", {
   members : {
 
     testIFrameDimension : function() {
-      var platform = org.eclipse.rwt.Client.getPlatform();
+      var platform = rwt.client.Client.getPlatform();
       if( platform !== "ios" ) {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var iframe = new rwt.widgets.base.Iframe();

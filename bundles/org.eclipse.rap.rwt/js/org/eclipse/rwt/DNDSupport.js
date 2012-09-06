@@ -255,7 +255,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         var req = rwt.remote.Server.getInstance();
         req.addEventListener( "send", this._onSend, this );
         this._requestScheduled = true;
-        qx.client.Timer.once( req.send, req, 200 );
+        rwt.client.Timer.once( req.send, req, 200 );
       }
     },
 

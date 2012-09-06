@@ -12,7 +12,7 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var Client = org.eclipse.rwt.Client;
+var Client = rwt.client.Client;
 
 var request;
 

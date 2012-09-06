@@ -722,7 +722,7 @@ qx.Class.define( "rwt.widgets.DateTimeDate", {
 
     setHasSelectionListener : function( value ) {
       this._hasSelectionListener = value;
-      this._requestTimer = new qx.client.Timer( 110 );
+      this._requestTimer = new rwt.client.Timer( 110 );
       this._requestTimer.addEventListener( "interval", this._onInterval, this );
     },
 

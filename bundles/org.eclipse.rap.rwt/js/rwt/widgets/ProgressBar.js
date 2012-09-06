@@ -131,7 +131,7 @@ qx.Class.define( "rwt.widgets.ProgressBar", {
 
     addState : function( state ) {
       if( state === "rwt_INDETERMINATE" ) {
-        this._timer = new qx.client.Timer( 120 );
+        this._timer = new rwt.client.Timer( 120 );
         this._timer.addEventListener( "interval", this._onInterval, this );
         this._timer.start();
       }

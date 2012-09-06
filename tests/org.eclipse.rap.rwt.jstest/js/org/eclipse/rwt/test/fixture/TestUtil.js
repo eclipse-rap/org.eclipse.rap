@@ -220,7 +220,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     }
     var clientX = left;
     var clientY = top;
-    if( org.eclipse.rwt.Client.getEngine() == "mshtml" ) {
+    if( rwt.client.Client.getEngine() == "mshtml" ) {
       clientX -= qx.bom.Viewport.getScrollLeft( window );
       clientY -= qx.bom.Viewport.getScrollTop( window );
     }
@@ -448,7 +448,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     var isPrintableIdentifier =    typeof stringOrKeyCode === "string"
                                 && idMap[ stringOrKeyCode ] != null;
     var result = isChar || isPrintableKeyCode || isPrintableIdentifier;
-    if( org.eclipse.rwt.Client.isWebkit() ) {
+    if( rwt.client.Client.isWebkit() ) {
       if( stringOrKeyCode === 27 || stringOrKeyCode === "Escape" ) {
         result = false;
       }
@@ -748,29 +748,29 @@ org.eclipse.rwt.test.fixture.TestUtil = {
    * with debugging, calls to "once" are only logged
    */
   prepareTimerUse : function() {
-    qx.client.Timer.prototype._applyEnabled = function(){};
-    qx.client.Timer._onceCallsLog = [];
-    qx.client.Timer.once = function( func, obj, timeout ) {
+    rwt.client.Timer.prototype._applyEnabled = function(){};
+    rwt.client.Timer._onceCallsLog = [];
+    rwt.client.Timer.once = function( func, obj, timeout ) {
       var source = arguments.callee.caller;
       this._onceCallsLog.push( [ func, obj, timeout, source ] );
     };
   },
 
   getTimerOnceLog : function() {
-    return qx.client.Timer._onceCallsLog;
+    return rwt.client.Timer._onceCallsLog;
   },
 
   clearTimerOnceLog : function() {
-    qx.client.Timer._onceCallsLog = [];
+    rwt.client.Timer._onceCallsLog = [];
   },
 
   forceTimerOnce : function() {
     // TODO [tb] : sort order by time
-    var log = qx.client.Timer._onceCallsLog;
+    var log = rwt.client.Timer._onceCallsLog;
     for( var i = 0; i < log.length; i++ ) {
       log[ i ][ 0 ].call( log[ i ][ 1 ] );
     }
-    qx.client.Timer._onceCallsLog = [];
+    rwt.client.Timer._onceCallsLog = [];
   },
 
   forceInterval : function( timer ) {
@@ -826,7 +826,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   // Misc
 
   isMobileWebkit : function() {
-    return org.eclipse.rwt.Client.isMobileSafari() || org.eclipse.rwt.Client.isAndroidBrowser();
+    return rwt.client.Client.isMobileSafari() || rwt.client.Client.isAndroidBrowser();
   },
 
   isFocused : function( widget ) {

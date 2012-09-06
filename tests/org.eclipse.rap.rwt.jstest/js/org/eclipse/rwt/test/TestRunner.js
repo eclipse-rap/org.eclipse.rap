@@ -434,8 +434,8 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
 
     _createTestClassFilter : function() {
       var classes = qx.Class.__registry;
-      var engine = org.eclipse.rwt.Client.getEngine();
-      var platform = org.eclipse.rwt.Client.getPlatform();
+      var engine = rwt.client.Client.getEngine();
+      var platform = rwt.client.Client.getPlatform();
       var param = this._getFilterParam();
       var filterchar = this._FILTERCHAR;
       var filter = function( clazz ) {

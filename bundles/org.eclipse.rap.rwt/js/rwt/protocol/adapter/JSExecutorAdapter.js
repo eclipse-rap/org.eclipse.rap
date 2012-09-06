@@ -12,7 +12,7 @@
 rwt.protocol.AdapterRegistry.add( "rwt.JSExecutor", {
 
   factory : function( properties ) {
-    return org.eclipse.rwt.JSExecutor.getInstance();
+    return rwt.client.JSExecutor.getInstance();
   },
 
   destructor : qx.lang.Function.returnTrue,
