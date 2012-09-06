@@ -26,6 +26,9 @@ org.eclipse.rwt.protocol.Processor = {
       var req = org.eclipse.swt.Request.getInstance();
       req.setRequestCounter( meta.requestCounter );
     }
+    if( meta.redirect !== undefined ) {
+      document.location = meta.redirect;
+    }
   },
 
   processOperationArray : function( operation ) {

@@ -41,14 +41,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       }
       assertIdentical( shape.node, vmlCanvas.node.childNodes[ 0 ] );
       assertEquals( 4, VML.getStrokeWidth( shape ) );
-      glob = shape.node.strokeColor;
       assertEquals( [ 4, 5, 6 ], qx.util.ColorUtil.stringToRgb( shape.node.strokeColor.value ) );
       assertNotNull( shape.stroke );
       assertTrue( shape.node.style.filter.indexOf( "opacity=50" ) != -1 );
       assertEquals( "round", shape.stroke.endcap ); 
       assertEquals( "bevel", shape.stroke.joinstyle ); 
       canvas.destroy();
-      TestUtil.flush();      
+      TestUtil.flush();
     },
     
     testFillProperties : function() {
