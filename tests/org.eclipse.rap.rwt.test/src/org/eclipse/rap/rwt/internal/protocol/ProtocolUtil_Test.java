@@ -139,6 +139,20 @@ public class ProtocolUtil_Test extends TestCase {
     assertEquals( Boolean.valueOf( italic ), array[ 3 ] );
   }
 
+  public void testIsClientMessageProcessed_No() {
+    fakeNewJsonMessage();
+
+    assertFalse( ProtocolUtil.isClientMessageProcessed() );
+  }
+
+  public void testIsClientMessageProcessed_Yes() {
+    fakeNewJsonMessage();
+
+    ProtocolUtil.getClientMessage();
+
+    assertTrue( ProtocolUtil.isClientMessageProcessed() );
+  }
+
   public void testGetClientMessage() {
     fakeNewJsonMessage();
 
@@ -155,6 +169,18 @@ public class ProtocolUtil_Test extends TestCase {
     ClientMessage message2 = ProtocolUtil.getClientMessage();
 
     assertSame( message1, message2 );
+  }
+
+  public void testReadHeaderPropertyValue() {
+    fakeNewJsonMessage();
+
+    assertEquals( "21", ProtocolUtil.readHeaderPropertyValue( "requestCounter" ) );
+  }
+
+  public void testReadHeaderPropertyValue_MissingProperty() {
+    fakeNewJsonMessage();
+
+    assertNull( ProtocolUtil.readHeaderPropertyValue( "abc" ) );
   }
 
   public void testReadProperyValue_MissingProperty() {
@@ -188,13 +214,13 @@ public class ProtocolUtil_Test extends TestCase {
   }
 
   public void testReadPropertyValue_LastSetValue() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ], " );
-    json.append( "[ \"set\", \"w3\", { \"p1\" : \"bar\" } ] " );
-    json.append( "] }" );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ], "
+                + "[ \"set\", \"w3\", { \"p1\" : \"bar\" } ] "
+                + "] }";
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( "message", json.toString() );
+    Fixture.fakeRequestParam( "message", json );
 
     assertEquals( "bar", ProtocolUtil.readPropertyValue( "w3", "p1" ) );
   }
@@ -228,13 +254,13 @@ public class ProtocolUtil_Test extends TestCase {
   // Helping methods
 
   private void fakeNewJsonMessage() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : 123 } ], " );
-    json.append( "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ], " );
-    json.append( "[ \"set\", \"w3\", { \"p3\" : true, \"p4\" : null } ] " );
-    json.append( "] }" );
+    String json = "{ \"header\" : { \"requestCounter\" : 21 },"
+                + "\"operations\" : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : 123 } ], "
+                + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ], "
+                + "[ \"set\", \"w3\", { \"p3\" : true, \"p4\" : null } ] "
+                + "] }";
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( "message", json.toString() );
+    Fixture.fakeRequestParam( "message", json );
   }
 }

@@ -47,18 +47,41 @@ public class ClientMessage_Test extends TestCase {
     }
   }
 
-  public void testConstructWithoutOperations() {
+  public void testConstructWithoutHeader() {
     try {
       new ClientMessage( "{ \"foo\": 23 }" );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+      assertTrue( expected.getMessage().contains( "Missing header object" ) );
+    }
+  }
+
+  public void testConstructWithoutOperations() {
+    try {
+      new ClientMessage( "{ \"header\" : {}, \"foo\": 23 }" );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Missing operations array" ) );
     }
   }
 
+  public void testGetHeaderParameter() {
+    String json = "{ \"header\" : { \"abc\" : \"foo\" }, \"operations\": [] }";
+    ClientMessage message = new ClientMessage( json );
+
+    assertEquals( "foo", message.getHeaderProperty( "abc" ) );
+  }
+
+  public void testGetHeaderParameter_NoParameter() {
+    String json = "{ \"header\" : {}, \"operations\": [] }";
+    ClientMessage message = new ClientMessage( json );
+
+    assertNull( message.getHeaderProperty( "abc" ) );
+  }
+
   public void testConstructWithInvalidOperations() {
     try {
-      new ClientMessage( "{ \"operations\": 23 }" );
+      new ClientMessage( "{ \"header\" : {}, \"operations\": 23 }" );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Missing operations array" ) );
@@ -66,8 +89,10 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testConstructWithOperationUnknownType() {
+    String json = "{ \"header\" : {},"
+                + "  \"operations\" : [ [ \"abc\", \"w3\", { \"action\" : \"foo\" } ] ] }";
     try {
-      new ClientMessage( "{ \"operations\" : [ [ \"abc\", \"w3\", { \"action\" : \"foo\" } ] ] }" );
+      new ClientMessage( json );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Unknown operation action: abc" ) );
@@ -75,13 +100,13 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetAllOperations() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]," );
-    json.append( "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ]," );
-    json.append( "[ \"notify\", \"w3\", \"widgetSelected\", {} ]" );
-    json.append( "] }" );
-    ClientMessage message = new ClientMessage( json.toString() );
+    String json = "{ \"header\" : {},"
+    		    + "\"operations\" : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+                + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
+                + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
+                + "] }";
+    ClientMessage message = new ClientMessage( json );
 
     Operation[] operations = message.getAllOperations( "w3" );
 
@@ -91,13 +116,13 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetAllOperations_NoOperations() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]," );
-    json.append( "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ]," );
-    json.append( "[ \"notify\", \"w3\", \"widgetSelected\", {} ]" );
-    json.append( "] }" );
-    ClientMessage message = new ClientMessage( json.toString() );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+                + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
+                + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
+                + "] }";
+    ClientMessage message = new ClientMessage( json );
 
     Operation[] operations = message.getAllOperations( "w5" );
 
@@ -105,13 +130,13 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetSetOperations() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]," );
-    json.append( "[ \"notify\", \"w3\", \"widgetSelected\", {} ]," );
-    json.append( "[ \"set\", \"w3\", { \"p2\" : true, \"p3\" : null } ]" );
-    json.append( "] }" );
-    ClientMessage message = new ClientMessage( json.toString() );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+                + "[ \"notify\", \"w3\", \"widgetSelected\", {} ],"
+                + "[ \"set\", \"w3\", { \"p2\" : true, \"p3\" : null } ]"
+                + "] }";
+    ClientMessage message = new ClientMessage( json );
 
     SetOperation[] operations = message.getSetOperations( "w3" );
 
@@ -122,13 +147,13 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetSetOperations_ByProperty() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]," );
-    json.append( "[ \"set\", \"w3\", { \"p2\" : \"foo\" } ]," );
-    json.append( "[ \"set\", \"w3\", { \"p1\" : \"bar\" } ]" );
-    json.append( "] }" );
-    ClientMessage message = new ClientMessage( json.toString() );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+                + "[ \"set\", \"w3\", { \"p2\" : \"foo\" } ],"
+                + "[ \"set\", \"w3\", { \"p1\" : \"bar\" } ]"
+                + "] }";
+    ClientMessage message = new ClientMessage( json );
 
     SetOperation[] operations = message.getSetOperations( "w3", "p1" );
 
@@ -138,13 +163,13 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetNotifyOperations() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]," );
-    json.append( "[ \"notify\", \"w3\", \"widgetSelected\", {} ]," );
-    json.append( "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]" );
-    json.append( "] }" );
-    ClientMessage message = new ClientMessage( json.toString() );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+                + "[ \"notify\", \"w3\", \"widgetSelected\", {} ],"
+                + "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]"
+                + "] }";
+    ClientMessage message = new ClientMessage( json );
 
     NotifyOperation[] operations = message.getNotifyOperations( "w3" );
 
@@ -153,13 +178,13 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetNotifyOperations_ByEventName() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]," );
-    json.append( "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ]," );
-    json.append( "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]" );
-    json.append( "] }" );
-    ClientMessage message = new ClientMessage( json.toString() );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+                + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ],"
+                + "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]"
+                + "] }";
+    ClientMessage message = new ClientMessage( json );
 
     NotifyOperation[] operations = message.getNotifyOperations( "w3", "widgetSelected", null );
 
@@ -168,14 +193,14 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetNotifyOperations_ByProperty() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]," );
-    json.append( "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ]," );
-    json.append( "[ \"notify\", \"w3\", \"widgetDefaultSelected\", { \"detail\" : \"check\" } ]," );
-    json.append( "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]" );
-    json.append( "] }" );
-    ClientMessage message = new ClientMessage( json.toString() );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+                + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ],"
+                + "[ \"notify\", \"w3\", \"widgetDefaultSelected\", { \"detail\" : \"check\" } ],"
+                + "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]"
+                + "] }";
+    ClientMessage message = new ClientMessage( json );
 
     NotifyOperation[] operations = message.getNotifyOperations( "w3", null, "detail" );
 
@@ -183,14 +208,14 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetNotifyOperations_ByEventNameAndProperty() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]," );
-    json.append( "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ]," );
-    json.append( "[ \"notify\", \"w3\", \"widgetDefaultSelected\", { \"detail\" : \"check\" } ]," );
-    json.append( "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]" );
-    json.append( "] }" );
-    ClientMessage message = new ClientMessage( json.toString() );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+                + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ],"
+                + "[ \"notify\", \"w3\", \"widgetDefaultSelected\", { \"detail\" : \"check\" } ],"
+                + "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]"
+                + "] }";
+    ClientMessage message = new ClientMessage( json );
 
     NotifyOperation[] operations = message.getNotifyOperations( "w3", "widgetSelected", "detail" );
 
@@ -198,13 +223,13 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetCallOperations() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]," );
-    json.append( "[ \"call\", \"w3\", \"store\", {} ]," );
-    json.append( "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]" );
-    json.append( "] }" );
-    ClientMessage message = new ClientMessage( json.toString() );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+                + "[ \"call\", \"w3\", \"store\", {} ],"
+                + "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]"
+                + "] }";
+    ClientMessage message = new ClientMessage( json );
 
     CallOperation[] operations = message.getCallOperations( "w3" );
 
@@ -213,11 +238,11 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testSetOperation() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : true } ]" );
-    json.append( "] }" );
-    ClientMessage message = new ClientMessage( json.toString() );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : true } ]"
+                + "] }";
+    ClientMessage message = new ClientMessage( json );
 
     SetOperation operation = message.getSetOperations( "w3" )[ 0 ];
 
@@ -227,48 +252,48 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testSetOperation_WithoutTarget() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"set\", { \"p1\" : \"foo\", \"p2\" : true } ]" );
-    json.append( "] }" );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"set\", { \"p1\" : \"foo\", \"p2\" : true } ]"
+                + "] }";
 
     try {
-      new ClientMessage( json.toString() );
+      new ClientMessage( json );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testSetOperation_WithoutProperties() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"set\", \"w3\" ]" );
-    json.append( "] }" );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"set\", \"w3\" ]"
+                + "] }";
 
     try {
-      new ClientMessage( json.toString() );
+      new ClientMessage( json );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testSetOperation_InvalidProperty() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : true } ]" );
-    json.append( "] }" );
-    ClientMessage message = new ClientMessage( json.toString() );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : true } ]"
+                + "] }";
+    ClientMessage message = new ClientMessage( json );
     SetOperation operation = message.getSetOperations( "w3" )[ 0 ];
 
     assertNull( operation.getProperty( "abc" ) );
   }
 
   public void testNotifyOperation() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"notify\", \"w3\", \"widgetSelected\", { \"check\" : true } ]" );
-    json.append( "] }" );
-    ClientMessage message = new ClientMessage( json.toString() );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"notify\", \"w3\", \"widgetSelected\", { \"check\" : true } ]"
+                + "] }";
+    ClientMessage message = new ClientMessage( json );
 
     NotifyOperation operation = message.getNotifyOperations( "w3" )[ 0 ];
 
@@ -278,37 +303,37 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testNotifyOperation_WithoutEventType() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"notify\", \"w3\", { \"check\" : true } ]" );
-    json.append( "] }" );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"notify\", \"w3\", { \"check\" : true } ]"
+                + "] }";
 
     try {
-      new ClientMessage( json.toString() );
+      new ClientMessage( json );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testNotifyOperation_WithoutProperties() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"notify\", \"w3\", \"widgetSelected\"" );
-    json.append( "] }" );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"notify\", \"w3\", \"widgetSelected\""
+                + "] }";
 
     try {
-      new ClientMessage( json.toString() );
+      new ClientMessage( json );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testCallOperation() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"call\", \"w3\", \"store\", { \"id\" : 123 } ]" );
-    json.append( "] }" );
-    ClientMessage message = new ClientMessage( json.toString() );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"call\", \"w3\", \"store\", { \"id\" : 123 } ]"
+                + "] }";
+    ClientMessage message = new ClientMessage( json );
 
     CallOperation operation = message.getCallOperations( "w3" )[ 0 ];
 
@@ -318,26 +343,26 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testCallOperation_WithoutMethodName() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"call\", \"w3\", { \"id\" : 123 } ]" );
-    json.append( "] }" );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"call\", \"w3\", { \"id\" : 123 } ]"
+                + "] }";
 
     try {
-      new ClientMessage( json.toString() );
+      new ClientMessage( json );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testCallOperation_WithoutProperties() {
-    StringBuilder json = new StringBuilder();
-    json.append( "{ \"operations\" : [" );
-    json.append( "[ \"call\", \"w3\", \"store\"" );
-    json.append( "] }" );
+    String json = "{ \"header\" : {},"
+                + "\"operations\" : ["
+                + "[ \"call\", \"w3\", \"store\""
+                + "] }";
 
     try {
-      new ClientMessage( json.toString() );
+      new ClientMessage( json );
       fail();
     } catch( IllegalArgumentException expected ) {
     }

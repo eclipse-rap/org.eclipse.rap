@@ -24,7 +24,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -47,6 +49,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
@@ -64,6 +67,9 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
@@ -85,6 +91,13 @@ public final class Fixture {
   public static final String IMAGE3 = "resources/images/image3.gif";
   public static final String IMAGE_100x50 = "resources/images/test-100x50.png";
   public static final String IMAGE_50x100 = "resources/images/test-50x100.png";
+
+  private static final String PROP_MESSAGE = "message";
+  private static final String PROP_HEADER = "header";
+  private static final String PROP_OPERATIONS = "operations";
+  private static final String OPERATION_SET = "set";
+  private static final String OPERATION_NOTIFY = "notify";
+  private static final String OPERATION_CALL = "call";
 
   private static final String SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS
     = "usePerformanceOptimizations";
@@ -329,6 +342,7 @@ public final class Fixture {
     TestRequest request = new TestRequest();
     request.setSession( session );
     request.setMethod( method );
+    request.addParameter( PROP_MESSAGE, createEmptyMessage() );
     TestResponse response = new TestResponse();
     ServiceContext serviceContext = new ServiceContext( request, response );
     serviceContext.setServiceStore( new ServiceStore() );
@@ -337,9 +351,108 @@ public final class Fixture {
     fakeResponseWriter();
   }
 
+  private static String createEmptyMessage() {
+    JSONObject result = new JSONObject();
+    try {
+      result.put( PROP_HEADER, new JSONObject() );
+      result.put( PROP_OPERATIONS, new JSONArray() );
+    } catch( JSONException exception ) {
+      throw new IllegalStateException( "Failed to create json message", exception );
+    }
+    return result.toString();
+  }
+
   public static void fakeRequestParam( String key, String value ) {
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setParameter( key, value );
+  }
+
+  public static void fakeHeaderParameter( String key, Object value ) {
+    checkMessage();
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    String json = request.getParameter( PROP_MESSAGE );
+    try {
+      JSONObject message = new JSONObject( json );
+      JSONObject header = message.getJSONObject( PROP_HEADER );
+      header.put( key, value );
+      request.setParameter( PROP_MESSAGE, message.toString() );
+    } catch( JSONException exception ) {
+      throw new RuntimeException( "Failed to add header parameter", exception );
+    }
+  }
+
+  public static void fakeSetParameter( String target, String key, Object value ) {
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( key, value );
+    fakeSetOperation( target, parameters );
+  }
+
+  public static void fakeSetOperation( String target, Map<String, Object> parameters ) {
+    checkMessage();
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    String json = request.getParameter( PROP_MESSAGE );
+    try {
+      JSONObject message = new JSONObject( json );
+      JSONArray operations = message.getJSONArray( PROP_OPERATIONS );
+      JSONArray newOperation = new JSONArray();
+      newOperation.put( OPERATION_SET );
+      newOperation.put( target );
+      newOperation.put( new JSONObject( parameters ) );
+      operations.put( newOperation );
+      request.setParameter( PROP_MESSAGE, message.toString() );
+    } catch( JSONException exception ) {
+      throw new RuntimeException( "Failed to add set operation", exception );
+    }
+  }
+
+  public static void fakeNotifyOperation( String target,
+                                          String eventName,
+                                          Map<String, Object> parameters )
+  {
+    checkMessage();
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    String json = request.getParameter( PROP_MESSAGE );
+    try {
+      JSONObject message = new JSONObject( json );
+      JSONArray operations = message.getJSONArray( PROP_OPERATIONS );
+      JSONArray newOperation = new JSONArray();
+      newOperation.put( OPERATION_NOTIFY );
+      newOperation.put( target );
+      newOperation.put( eventName );
+      newOperation.put( new JSONObject( parameters ) );
+      operations.put( newOperation );
+      request.setParameter( PROP_MESSAGE, message.toString() );
+    } catch( JSONException exception ) {
+      throw new RuntimeException( "Failed to add notify operation", exception );
+    }
+  }
+
+  public static void fakeCallOperation( String target,
+                                        String methodName,
+                                        Map<String, Object> parameters )
+  {
+    checkMessage();
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    String json = request.getParameter( PROP_MESSAGE );
+    try {
+      JSONObject message = new JSONObject( json );
+      JSONArray operations = message.getJSONArray( PROP_OPERATIONS );
+      JSONArray newOperation = new JSONArray();
+      newOperation.put( OPERATION_CALL );
+      newOperation.put( target );
+      newOperation.put( methodName );
+      newOperation.put( new JSONObject( parameters ) );
+      operations.put( newOperation );
+      request.setParameter( PROP_MESSAGE, message.toString() );
+    } catch( JSONException exception ) {
+      throw new RuntimeException( "Failed to add call operation", exception );
+    }
+  }
+
+  private static void checkMessage() {
+    if( ProtocolUtil.isClientMessageProcessed() ) {
+      throw new IllegalStateException( "Client message is already processed" );
+    }
   }
 
   public static void fakeResponseWriter() {

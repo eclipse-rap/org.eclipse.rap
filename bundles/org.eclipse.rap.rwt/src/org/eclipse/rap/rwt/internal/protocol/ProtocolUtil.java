@@ -60,6 +60,17 @@ public final class ProtocolUtil {
     return clientMessage;
   }
 
+  public static boolean isClientMessageProcessed() {
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    return serviceStore.getAttribute( CLIENT_MESSAGE ) != null;
+  }
+
+  public static String readHeaderPropertyValue( String property ) {
+    ClientMessage message = getClientMessage();
+    Object result = message.getHeaderProperty( property );
+    return result == null ? null : result.toString();
+  }
+
   public static String readPropertyValue( String target, String property ) {
     String result = null;
     ClientMessage message = getClientMessage();

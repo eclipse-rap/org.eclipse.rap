@@ -25,6 +25,7 @@ import org.json.JSONObject;
 public class ClientMessage {
 
   private final JSONObject message;
+  private final JSONObject header;
   private HashMap<String,List<Operation>> operationsMap;
 
   public ClientMessage( String json ) {
@@ -34,15 +35,20 @@ public class ClientMessage {
     } catch( JSONException e ) {
       throw new IllegalArgumentException( "Could not parse json message: " + json );
     }
+    try {
+      header = message.getJSONObject( "header" );
+    } catch( JSONException exception ) {
+      throw new IllegalArgumentException( "Missing header object: " + json );
+    }
     JSONArray operations;
     try {
       operations = message.getJSONArray( "operations" );
-    } catch( JSONException e ) {
+    } catch( JSONException exception ) {
       throw new IllegalArgumentException( "Missing operations array: " + json );
     }
     try {
       createOperationsMap( operations );
-    } catch( JSONException e ) {
+    } catch( JSONException exception ) {
       throw new IllegalArgumentException( "Invalid operations array: " + json );
     }
   }
@@ -83,6 +89,16 @@ public class ClientMessage {
 
   public CallOperation[] getCallOperations( String target ) {
     return getOperations( CallOperation.class, target, null );
+  }
+
+  public Object getHeaderProperty( String key ) {
+    Object result = null;
+    try {
+      result = header.get( key );
+    } catch( JSONException exception ) {
+      // do nothing
+    }
+    return result;
   }
 
   @Override
