@@ -149,10 +149,10 @@ public class ClientMessage_Test extends TestCase {
     NotifyOperation[] operations = message.getNotifyOperations( "w3" );
 
     assertEquals( 1, operations.length );
-    assertEquals( "widgetSelected", operations[ 0 ].getEventType() );
+    assertEquals( "widgetSelected", operations[ 0 ].getEventName() );
   }
 
-  public void testGetNotifyOperations_ByEventType() {
+  public void testGetNotifyOperations_ByEventName() {
     StringBuilder json = new StringBuilder();
     json.append( "{ \"operations\" : [" );
     json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]," );
@@ -164,7 +164,7 @@ public class ClientMessage_Test extends TestCase {
     NotifyOperation[] operations = message.getNotifyOperations( "w3", "widgetSelected", null );
 
     assertEquals( 1, operations.length );
-    assertEquals( "widgetSelected", operations[ 0 ].getEventType() );
+    assertEquals( "widgetSelected", operations[ 0 ].getEventName() );
   }
 
   public void testGetNotifyOperations_ByProperty() {
@@ -182,7 +182,7 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( 2, operations.length );
   }
 
-  public void testGetNotifyOperations_ByEventTypeAndProperty() {
+  public void testGetNotifyOperations_ByEventNameAndProperty() {
     StringBuilder json = new StringBuilder();
     json.append( "{ \"operations\" : [" );
     json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]," );
@@ -273,7 +273,7 @@ public class ClientMessage_Test extends TestCase {
     NotifyOperation operation = message.getNotifyOperations( "w3" )[ 0 ];
 
     assertEquals( "w3", operation.getTarget() );
-    assertEquals( "widgetSelected", operation.getEventType() );
+    assertEquals( "widgetSelected", operation.getEventName() );
     assertEquals( Boolean.TRUE, operation.getProperty( "check" ) );
   }
 

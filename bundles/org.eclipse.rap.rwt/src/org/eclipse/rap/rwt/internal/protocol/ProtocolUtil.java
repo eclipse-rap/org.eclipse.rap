@@ -70,19 +70,19 @@ public final class ProtocolUtil {
     return result;
   }
 
-  public static String readEventPropertyValue( String target, String eventType, String property ) {
+  public static String readEventPropertyValue( String target, String eventName, String property ) {
     String result = null;
     ClientMessage message = getClientMessage();
-    NotifyOperation[] operations =  message.getNotifyOperations( target, eventType, property );
+    NotifyOperation[] operations =  message.getNotifyOperations( target, eventName, property );
     if( operations.length > 0 ) {
       result = operations[ operations.length - 1 ].getProperty( property ).toString();
     }
     return result;
   }
 
-  public static boolean wasEventSent( String target, String eventType ) {
+  public static boolean wasEventSent( String target, String eventName ) {
     ClientMessage message = getClientMessage();
-    NotifyOperation[] operations =  message.getNotifyOperations( target, eventType, null );
+    NotifyOperation[] operations =  message.getNotifyOperations( target, eventName, null );
     return operations.length > 0;
   }
 

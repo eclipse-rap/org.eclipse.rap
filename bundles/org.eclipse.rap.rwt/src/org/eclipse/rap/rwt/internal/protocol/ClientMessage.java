@@ -62,14 +62,14 @@ public class ClientMessage {
     return getOperations( NotifyOperation.class, target, null );
   }
 
-  public NotifyOperation[] getNotifyOperations( String target, String eventType, String property ) {
+  public NotifyOperation[] getNotifyOperations( String target, String eventName, String property ) {
     List<NotifyOperation> result = new ArrayList<NotifyOperation>();
     List<Operation> operations = operationsMap.get( target );
     if( operations != null ) {
       for( Operation operation : operations ) {
         if( operation instanceof NotifyOperation ) {
           NotifyOperation currentOperation = ( NotifyOperation )operation;
-          if(    ( eventType == null || currentOperation.getEventType().equals( eventType ) )
+          if(    ( eventName == null || currentOperation.getEventName().equals( eventName ) )
               && ( property == null || currentOperation.getPropertyNames().contains( property ) ) )
           {
             result.add( currentOperation );
@@ -210,13 +210,13 @@ public class ClientMessage {
 
   public final class NotifyOperation extends Operation {
 
-    private final String eventType;
+    private final String eventName;
     private final JSONObject properties;
 
     private NotifyOperation( JSONArray operation ) {
       super( operation );
       try {
-        eventType = operation.getString( 2 );
+        eventName = operation.getString( 2 );
       } catch( JSONException e ) {
         throw new IllegalArgumentException( "Event type missing in operation", e );
       }
@@ -227,8 +227,8 @@ public class ClientMessage {
       }
     }
 
-    public String getEventType() {
-      return eventType;
+    public String getEventName() {
+      return eventName;
     }
 
     @Override
