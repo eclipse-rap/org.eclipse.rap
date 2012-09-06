@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,12 +27,12 @@ public class ClientMessage {
   private final JSONObject message;
   private HashMap<String,List<Operation>> operationsMap;
 
-  public ClientMessage( String string ) {
-    String json = string.trim();
+  public ClientMessage( String json ) {
+    ParamCheck.notNull( json, "json" );
     try {
       message = new JSONObject( json );
     } catch( JSONException e ) {
-      throw new IllegalArgumentException( "Could not parse json: " + json );
+      throw new IllegalArgumentException( "Could not parse json message: " + json );
     }
     JSONArray operations;
     try {
