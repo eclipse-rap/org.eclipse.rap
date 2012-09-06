@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
@@ -67,6 +68,22 @@ public final class ProtocolUtil {
       result = operations[ operations.length - 1 ].getProperty( property ).toString();
     }
     return result;
+  }
+
+  public static String readEventPropertyValue( String target, String eventType, String property ) {
+    String result = null;
+    ClientMessage message = getClientMessage();
+    NotifyOperation[] operations =  message.getNotifyOperations( target, eventType, property );
+    if( operations.length > 0 ) {
+      result = operations[ operations.length - 1 ].getProperty( property ).toString();
+    }
+    return result;
+  }
+
+  public static boolean wasEventSent( String target, String eventType ) {
+    ClientMessage message = getClientMessage();
+    NotifyOperation[] operations =  message.getNotifyOperations( target, eventType, null );
+    return operations.length > 0;
   }
 
   public static Object[] getFontAsArray( Font font ) {

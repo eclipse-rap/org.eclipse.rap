@@ -145,7 +145,7 @@ public class ProtocolUtil_Test extends TestCase {
     ClientMessage message = ProtocolUtil.getClientMessage();
 
     assertNotNull( message );
-    assertEquals( 2, message.getAllOperations( "w3" ).length );
+    assertTrue( message.getAllOperations( "w3" ).length > 0 );
   }
 
   public void testGetClientMessage_SameInstance() {
@@ -199,6 +199,31 @@ public class ProtocolUtil_Test extends TestCase {
     assertEquals( "bar", ProtocolUtil.readPropertyValue( "w3", "p1" ) );
   }
 
+  public void testReadEventPropertyValue_MissingProperty() {
+    fakeNewJsonMessage();
+
+    assertNull( ProtocolUtil.readEventPropertyValue( "w3", "widgetSelected", "item" ) );
+  }
+
+  public void testReadEventPropertyValue() {
+    fakeNewJsonMessage();
+
+    String value = ProtocolUtil.readEventPropertyValue( "w3", "widgetSelected", "detail" );
+    assertEquals( "check", value );
+  }
+
+  public void testWasEventSend_Send() {
+    fakeNewJsonMessage();
+
+    assertTrue( ProtocolUtil.wasEventSent( "w3", "widgetSelected" ) );
+  }
+
+  public void testWasEventSend_NotSend() {
+    fakeNewJsonMessage();
+
+    assertFalse( ProtocolUtil.wasEventSent( "w3", "widgetDefaultSelected" ) );
+  }
+
   //////////////////
   // Helping methods
 
@@ -206,6 +231,7 @@ public class ProtocolUtil_Test extends TestCase {
     StringBuilder json = new StringBuilder();
     json.append( "{ \"operations\" : [" );
     json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : 123 } ], " );
+    json.append( "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ], " );
     json.append( "[ \"set\", \"w3\", { \"p3\" : true, \"p4\" : null } ] " );
     json.append( "] }" );
     Fixture.fakeNewRequest( display );

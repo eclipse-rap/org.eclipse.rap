@@ -152,6 +152,51 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( "widgetSelected", operations[ 0 ].getEventType() );
   }
 
+  public void testGetNotifyOperations_ByEventType() {
+    StringBuilder json = new StringBuilder();
+    json.append( "{ \"operations\" : [" );
+    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]," );
+    json.append( "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ]," );
+    json.append( "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]" );
+    json.append( "] }" );
+    ClientMessage message = new ClientMessage( json.toString() );
+
+    NotifyOperation[] operations = message.getNotifyOperations( "w3", "widgetSelected", null );
+
+    assertEquals( 1, operations.length );
+    assertEquals( "widgetSelected", operations[ 0 ].getEventType() );
+  }
+
+  public void testGetNotifyOperations_ByProperty() {
+    StringBuilder json = new StringBuilder();
+    json.append( "{ \"operations\" : [" );
+    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]," );
+    json.append( "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ]," );
+    json.append( "[ \"notify\", \"w3\", \"widgetDefaultSelected\", { \"detail\" : \"check\" } ]," );
+    json.append( "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]" );
+    json.append( "] }" );
+    ClientMessage message = new ClientMessage( json.toString() );
+
+    NotifyOperation[] operations = message.getNotifyOperations( "w3", null, "detail" );
+
+    assertEquals( 2, operations.length );
+  }
+
+  public void testGetNotifyOperations_ByEventTypeAndProperty() {
+    StringBuilder json = new StringBuilder();
+    json.append( "{ \"operations\" : [" );
+    json.append( "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ]," );
+    json.append( "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ]," );
+    json.append( "[ \"notify\", \"w3\", \"widgetDefaultSelected\", { \"detail\" : \"check\" } ]," );
+    json.append( "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]" );
+    json.append( "] }" );
+    ClientMessage message = new ClientMessage( json.toString() );
+
+    NotifyOperation[] operations = message.getNotifyOperations( "w3", "widgetSelected", "detail" );
+
+    assertEquals( 1, operations.length );
+  }
+
   public void testGetCallOperations() {
     StringBuilder json = new StringBuilder();
     json.append( "{ \"operations\" : [" );

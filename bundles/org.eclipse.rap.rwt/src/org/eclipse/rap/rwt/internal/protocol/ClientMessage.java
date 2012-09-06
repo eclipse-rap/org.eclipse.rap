@@ -62,14 +62,16 @@ public class ClientMessage {
     return getOperations( NotifyOperation.class, target, null );
   }
 
-  public NotifyOperation[] getNotifyOperations( String target, String eventType ) {
+  public NotifyOperation[] getNotifyOperations( String target, String eventType, String property ) {
     List<NotifyOperation> result = new ArrayList<NotifyOperation>();
     List<Operation> operations = operationsMap.get( target );
     if( operations != null ) {
       for( Operation operation : operations ) {
         if( operation instanceof NotifyOperation ) {
           NotifyOperation currentOperation = ( NotifyOperation )operation;
-          if( eventType == null || currentOperation.getEventType().equals( eventType ) ) {
+          if(    ( eventType == null || currentOperation.getEventType().equals( eventType ) )
+              && ( property == null || currentOperation.getPropertyNames().contains( property ) ) )
+          {
             result.add( currentOperation );
           }
         }
