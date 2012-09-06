@@ -160,6 +160,7 @@ qx.Class.define( "rwt.remote.Server", {
       } else {
         this.dispatchSimpleEvent( "send" );
         this._parameters[ "uiRoot" ] = this._uiRootId;
+        this.getMessageWriter().appendMeta( "uiRoot", this._uiRootId );
         if( this._requestCounter != null ) {
           this._parameters[ "requestCounter" ] = this._requestCounter;
           this.getMessageWriter().appendMeta( "requestCounter", this._requestCounter );

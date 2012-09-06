@@ -87,10 +87,10 @@ qx.Class.define( "org.eclipse.rwt.System", {
 
     _onload : function(e) {
       if( !this._onloadDone ) {
-      this._onloadDone = true;
-      rwt.widgets.base.ClientDocument.getInstance();
-      org.eclipse.rwt.MobileWebkitSupport.init();
-      rwt.client.Timer.once( this._preload, this, 0 );
+        this._onloadDone = true;
+        rwt.widgets.base.ClientDocument.getInstance();
+        org.eclipse.rwt.MobileWebkitSupport.init();
+        rwt.client.Timer.once( this._preload, this, 0 );
       }
     },
 
