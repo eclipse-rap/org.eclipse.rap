@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 public class ClientMessage {
 
+  public static final String PROP_MESSAGE = "message";
   public static final String PROP_HEADER = "header";
   public static final String PROP_OPERATIONS = "operations";
   public static final String OPERATION_SET = "set";

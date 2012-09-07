@@ -93,8 +93,6 @@ public final class Fixture {
   public static final String IMAGE_100x50 = "resources/images/test-100x50.png";
   public static final String IMAGE_50x100 = "resources/images/test-50x100.png";
 
-  private static final String PROP_MESSAGE = "message";
-
   private static final String SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS
     = "usePerformanceOptimizations";
 
@@ -327,6 +325,8 @@ public final class Fixture {
 
   public static void fakeNewRequest() {
     fakeNewRequest( HTTP.METHOD_POST );
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.addParameter( ClientMessage.PROP_MESSAGE, createEmptyMessage() );
   }
 
   public static void fakeNewGetRequest() {
@@ -338,7 +338,6 @@ public final class Fixture {
     TestRequest request = new TestRequest();
     request.setSession( session );
     request.setMethod( method );
-    request.addParameter( PROP_MESSAGE, createEmptyMessage() );
     TestResponse response = new TestResponse();
     ServiceContext serviceContext = new ServiceContext( request, response );
     serviceContext.setServiceStore( new ServiceStore() );
@@ -366,12 +365,12 @@ public final class Fixture {
   public static void fakeHeaderParameter( String key, Object value ) {
     checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    String json = request.getParameter( PROP_MESSAGE );
+    String json = request.getParameter( ClientMessage.PROP_MESSAGE );
     try {
       JSONObject message = new JSONObject( json );
       JSONObject header = message.getJSONObject( ClientMessage.PROP_HEADER );
       header.put( key, value );
-      request.setParameter( PROP_MESSAGE, message.toString() );
+      request.setParameter( ClientMessage.PROP_MESSAGE, message.toString() );
     } catch( JSONException exception ) {
       throw new RuntimeException( "Failed to add header parameter", exception );
     }
@@ -386,7 +385,7 @@ public final class Fixture {
   public static void fakeSetOperation( String target, Map<String, Object> parameters ) {
     checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    String json = request.getParameter( PROP_MESSAGE );
+    String json = request.getParameter( ClientMessage.PROP_MESSAGE );
     try {
       JSONObject message = new JSONObject( json );
       JSONArray operations = message.getJSONArray( ClientMessage.PROP_OPERATIONS );
@@ -395,7 +394,7 @@ public final class Fixture {
       newOperation.put( target );
       newOperation.put( new JSONObject( parameters ) );
       operations.put( newOperation );
-      request.setParameter( PROP_MESSAGE, message.toString() );
+      request.setParameter( ClientMessage.PROP_MESSAGE, message.toString() );
     } catch( JSONException exception ) {
       throw new RuntimeException( "Failed to add set operation", exception );
     }
@@ -407,7 +406,7 @@ public final class Fixture {
   {
     checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    String json = request.getParameter( PROP_MESSAGE );
+    String json = request.getParameter( ClientMessage.PROP_MESSAGE );
     try {
       JSONObject message = new JSONObject( json );
       JSONArray operations = message.getJSONArray( ClientMessage.PROP_OPERATIONS );
@@ -417,7 +416,7 @@ public final class Fixture {
       newOperation.put( eventName );
       newOperation.put( new JSONObject( parameters ) );
       operations.put( newOperation );
-      request.setParameter( PROP_MESSAGE, message.toString() );
+      request.setParameter( ClientMessage.PROP_MESSAGE, message.toString() );
     } catch( JSONException exception ) {
       throw new RuntimeException( "Failed to add notify operation", exception );
     }
@@ -429,7 +428,7 @@ public final class Fixture {
   {
     checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    String json = request.getParameter( PROP_MESSAGE );
+    String json = request.getParameter( ClientMessage.PROP_MESSAGE );
     try {
       JSONObject message = new JSONObject( json );
       JSONArray operations = message.getJSONArray( ClientMessage.PROP_OPERATIONS );
@@ -439,7 +438,7 @@ public final class Fixture {
       newOperation.put( methodName );
       newOperation.put( new JSONObject( parameters ) );
       operations.put( newOperation );
-      request.setParameter( PROP_MESSAGE, message.toString() );
+      request.setParameter( ClientMessage.PROP_MESSAGE, message.toString() );
     } catch( JSONException exception ) {
       throw new RuntimeException( "Failed to add call operation", exception );
     }

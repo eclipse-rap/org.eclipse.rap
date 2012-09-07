@@ -53,7 +53,7 @@ public final class ProtocolUtil {
     ClientMessage clientMessage = ( ClientMessage )serviceStore.getAttribute( CLIENT_MESSAGE );
     if( clientMessage == null ) {
       HttpServletRequest request = ContextProvider.getRequest();
-      String json = request.getParameter( "message" );
+      String json = request.getParameter( ClientMessage.PROP_MESSAGE );
       clientMessage = new ClientMessage( json );
       serviceStore.setAttribute( CLIENT_MESSAGE, clientMessage );
     }
