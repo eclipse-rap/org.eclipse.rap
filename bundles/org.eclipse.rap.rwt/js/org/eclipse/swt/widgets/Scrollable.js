@@ -248,11 +248,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
     _syncClientArea : function( horz, vert ) {
       if( horz ) {
         var scrollX = this._horzScrollBar.getValue();
-        this._clientArea.setScrollLeft( scrollX );
+        if( this._clientArea.getScrollLeft() !== scrollX ) {
+          this._clientArea.setScrollLeft( scrollX );
+        }
       }
       if( vert ) {
         var scrollY = this._vertScrollBar.getValue();
-        this._clientArea.setScrollTop( scrollY );
+        if( this._clientArea.getScrollTop() !== scrollY ) {
+          this._clientArea.setScrollTop( scrollY );
+        }
       }
     },
 
