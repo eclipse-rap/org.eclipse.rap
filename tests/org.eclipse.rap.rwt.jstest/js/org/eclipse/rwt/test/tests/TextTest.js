@@ -1056,6 +1056,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       }
     } ),
 
+    testMissedCtrlXInputEvent  : qx.core.Variant.select( "qx.client", {
+      "default" : function() {},
+      "newmshtml" : function() {
+        createText();
+        text.setValue( "foobar" );
+        var log = [];
+        text.addEventListener( "input", function( event ) {
+          log.push( event );
+        }, this );
+        var mod = qx.event.type.DomEvent.CTRL_MASK;
+
+        // Important: Fire no keypress:
+        TestUtil.fireFakeKeyDomEvent( text.getInputElement(), "keydown", "X", mod );
+        TestUtil.fireFakeKeyDomEvent( text.getInputElement(), "keyup", "X", mod );
+        text.getInputElement().value = "fooba";
+        TestUtil.forceInterval( text._checkTimer );
+
+        assertEquals( "fooba", text.getValue() );
+        assertEquals( "fooba", text.getComputedValue() );
+        assertEquals( 1, log.length );
+      }
+    } ),
+
     testMissedInputEventCatchOnBlur  : qx.core.Variant.select( "qx.client", {
       "default" : function() {},
       "newmshtml" : function() {

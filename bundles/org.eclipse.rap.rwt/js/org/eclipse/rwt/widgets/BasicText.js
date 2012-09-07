@@ -716,6 +716,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicText", {
         this._checkTimer.addEventListener( "interval", this._checkValueChanged, this );
         // For delete, backspace, CTRL+X, etc:
         this.addEventListener( "keypress", this._checkTimer.start, this._checkTimer );
+        this.addEventListener( "keyup", this._checkTimer.start, this._checkTimer );
         // For context menu: (might not catch the change instantly
         this.addEventListener( "mousemove", this._checkValueChanged, this );
         this.addEventListener( "mouseout", this._checkValueChanged, this );
