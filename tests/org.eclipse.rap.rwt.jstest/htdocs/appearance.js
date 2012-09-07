@@ -3,7 +3,7 @@
   Bug 378225 - [ipad] JavaScript tests not working when using jetty/ClientResourcesServiceHandler
 */
 
-qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
+rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
   name : "rwtAppearance",
   appearances : {
 
@@ -56,7 +56,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "client-document" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         font : tv.getCssFont( "*", "font" ),
         textColor : "black",
@@ -67,7 +67,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "client-document-blocker" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
         animation : tv.getCssAnimation( "Shell-DisplayOverlay", "animation" ),
@@ -144,7 +144,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "resizer-frame" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssNamedBorder( "shadow" )
       };
@@ -155,7 +155,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
     include : "popup",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "Widget-ToolTip", "border" );
       result.animation = tv.getCssAnimation( "Widget-ToolTip", "animation" );
@@ -175,7 +175,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "composite" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.backgroundColor = tv.getCssColor( "Composite", "background-color" );
       result.backgroundImage = tv.getCssImage( "Composite", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "Composite", "background-image" );
@@ -193,7 +193,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
     style : function( states ) {
       // [tb] exists for compatibility with the original qooxdoo button
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "Button", "font" );
       result.textColor = tv.getCssColor( "Button", "color" );
       result.backgroundColor = tv.getCssColor( "Button", "background-color" );
@@ -214,7 +214,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.animation = tv.getCssAnimation( "Button", "animation" );
       if( states.rwt_ARROW ) {
         result.icon = tv.getCssSizedImage( "Button-ArrowIcon", "background-image" );
@@ -228,7 +228,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "check-box" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssBorder( "Button", "border" ),
         font : tv.getCssFont( "Button", "font" ),
@@ -252,7 +252,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "radio-button" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssBorder( "Button", "border" ),
         font : tv.getCssFont( "Button", "font" ),
@@ -273,7 +273,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "combo" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "Combo", "border" );
       result.backgroundColor = tv.getCssColor( "Combo", "background-color" );
@@ -288,7 +288,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "combo-list" : {
     include : "list",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "Combo-List", "border" );
       result.textColor = tv.getCssColor( "Combo", "color" );
@@ -302,7 +302,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "combo-field" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.font = tv.getCssFont( "Combo", "font" );
       // [if] Do not apply top/bottom paddings on the client
@@ -323,7 +323,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "combo-button" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       var border = tv.getCssBorder( "Combo-Button", "border" );
       var borderLeft = tv.getCssBorder( "Combo-Button", "border-left" );
@@ -334,7 +334,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
       result.bottom = 0;
       result.right = 0;
       result.icon = tv.getCssImage( "Combo-Button-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "Combo-Button", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "Combo-Button", "background-image" );
@@ -350,7 +350,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "coolbar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "*", "border" );
       result.backgroundGradient = tv.getCssGradient( "CoolBar", "background-image" );
@@ -361,7 +361,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "coolitem" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "*", "border" );
       return result;
@@ -370,7 +370,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "coolitem-handle" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       if( states.vertical ) {
         result.height = tv.getCssDimension( "CoolItem-Handle", "width" );
@@ -388,7 +388,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "ctabfolder" : {
     style: function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "CTabItem", "font" );
       result.textColor = tv.getCssColor( "CTabItem", "color" );
       return result;
@@ -398,7 +398,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "ctabfolder-body" : {
     style: function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
       var color = tv.getCssColor( "CTabFolder", "border-color" );
       var radii = tv.getCssBoxDimensions( "CTabFolder", "border-radius" );
@@ -427,7 +427,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
         for( var property in states ) {
           statesWithSelected[ property ] = states[ property ];
         }
-        var tv = new org.eclipse.swt.theme.ThemeValues( statesWithSelected );
+        var tv = new rwt.theme.ThemeValues( statesWithSelected );
         var color = tv.getCssColor( "CTabItem", "background-color" );
         result.border = new org.eclipse.rwt.Border( 2, "solid", color );
       } else {
@@ -441,7 +441,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "ctabfolder-separator" : {
     style: function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var color = tv.getCssColor( "CTabFolder", "border-color" );
       var border;
       if( states.barTop ) {
@@ -457,7 +457,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "ctab-item" : {
     style: function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.cursor = "default";
       var padding = tv.getCssBoxDimensions( "CTabItem", "padding" );
       result.paddingLeft = padding[ 3 ];
@@ -516,7 +516,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
     include : "image",
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       if( states.over ) {
         result.backgroundColor = "white";
         var color = tv.getCssColor( "CTabFolder", "border-color" );
@@ -533,7 +533,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
     include : "ctabfolder-button",
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.icon = tv.getCssImage( "CTabFolder-DropDownButton-Icon", "background-image" );
       return result;
     }
@@ -552,7 +552,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "group-box" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         backgroundColor : tv.getCssColor( "Group", "background-color" ),
         border : tv.getCssBorder( "Group", "border" ),
@@ -565,7 +565,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "group-box-legend" : {
     include : "atom",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         top : 0,
         left : 0,
@@ -582,7 +582,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "group-box-frame" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var margin = tv.getCssBoxDimensions( "Group-Frame", "margin" );
       return {
         top : margin[ 0 ],
@@ -598,7 +598,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "label-wrapper" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "Label", "font" );
       var decoration = tv.getCssIdentifier( "Label", "text-decoration" );
       if( decoration != null && decoration != "none" ) {
@@ -624,7 +624,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "separator-line" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       if( states.rwt_VERTICAL ) {
         result.width = tv.getCssDimension( "Label-SeparatorLine", "width" );
@@ -652,7 +652,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "separator" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         backgroundColor : tv.getCssColor( "Label", "background-color" ),
         backgroundImage : tv.getCssImage( "Label", "background-image" ),
@@ -667,7 +667,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
  "link" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         cursor: "default",
         padding : 2,
@@ -681,7 +681,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "link-text" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         textColor: "inherit"
       };
@@ -691,7 +691,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "list" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.cursor = "default";
       result.overflow = "hidden";
@@ -705,7 +705,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "list-item" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         height : "auto",
         horizontalChildrenAlign : "left",
@@ -726,7 +726,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "menu" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         width : "auto",
         height : "auto",
@@ -747,7 +747,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "menu-item" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         spacing : 2,
         padding : tv.getCssBoxDimensions( "MenuItem", "padding" ),
@@ -789,7 +789,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "menu-separator" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         height : "auto",
         marginTop : 3,
@@ -801,7 +801,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "menu-separator-line" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         right : 0,
         left : 0,
@@ -814,7 +814,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "progressbar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "ProgressBar", "border" );
       result.backgroundColor = tv.getCssColor( "ProgressBar", "background-color" );
@@ -841,7 +841,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "window" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       // padding is only applied on the server, since client area content is
       // positioned absolutely
@@ -860,7 +860,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "window-captionbar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         verticalChildrenAlign : "middle"
       };
@@ -884,7 +884,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "window-resize-frame" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssNamedBorder( "shadow" )
       };
@@ -901,7 +901,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "window-captionbar-title" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         cursor : "default",
         font : tv.getCssFont( "Shell-Titlebar", "font" ),
@@ -913,7 +913,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "window-captionbar-minimize-button" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.icon = tv.getCssImage( "Shell-MinButton", "background-image" );
       result.margin = tv.getCssBoxDimensions( "Shell-MinButton", "margin" );
       return result;
@@ -923,7 +923,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "window-captionbar-maximize-button" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.icon = tv.getCssImage( "Shell-MaxButton", "background-image" );
       result.margin = tv.getCssBoxDimensions( "Shell-MaxButton", "margin" );
       return result;
@@ -937,7 +937,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "window-captionbar-close-button" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.icon = tv.getCssImage( "Shell-CloseButton", "background-image" );
       result.margin = tv.getCssBoxDimensions( "Shell-CloseButton", "margin" );
       return result;
@@ -960,7 +960,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "spinner" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "Spinner", "font" );
       result.textColor = tv.getCssColor( "Spinner", "color" );
       result.backgroundColor = tv.getCssColor( "Spinner", "background-color" );
@@ -974,7 +974,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "spinner-text-field" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       // [if] Do not apply top/bottom paddings on the client
       var cssPadding = tv.getCssBoxDimensions( "Spinner-Field", "padding" );
       result.paddingRight = cssPadding[ 1 ];
@@ -991,13 +991,13 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "spinner-button-up" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var border = tv.getCssBorder( "Spinner-UpButton", "border" );
       var borderLeft = tv.getCssBorder( "Spinner-UpButton", "border-left" );
       result.border = tv.mergeBorders( border, null, null, null, borderLeft );
       result.width = tv.getCssDimension( "Spinner-UpButton", "width" );
       result.icon = tv.getCssImage( "Spinner-UpButton-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "Spinner-UpButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "Spinner-UpButton", "background-image" );
@@ -1012,13 +1012,13 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "spinner-button-down" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var border = tv.getCssBorder( "Spinner-DownButton", "border" );
       var borderLeft = tv.getCssBorder( "Spinner-DownButton", "border-left" );
       result.border = tv.mergeBorders( border, null, null, null, borderLeft );
       result.width = tv.getCssDimension( "Spinner-DownButton", "width" );
       result.icon = tv.getCssImage( "Spinner-DownButton-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "Spinner-DownButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "Spinner-DownButton", "background-image" );
@@ -1033,7 +1033,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "tab-view" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.textColor = tv.getCssColor( "*", "color" );
       result.font = tv.getCssFont( "TabFolder", "font" );
@@ -1053,7 +1053,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "tab-view-pane" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.overflow = "hidden";
       result.backgroundColor = tv.getCssColor( "*", "background-color" );
@@ -1079,7 +1079,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var borderColor = tv.getCssNamedColor( "thinborder" );
       var top_color = tv.getCssColor( "TabItem", "border-top-color" );
       var bottom_color = tv.getCssColor( "TabItem", "border-bottom-color" );
@@ -1127,7 +1127,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "table" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         textColor : tv.getCssColor( "Table", "color" ),
         font : tv.getCssFont( "Table", "font" ),
@@ -1141,7 +1141,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "table-column" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
         spacing : 2,
@@ -1158,7 +1158,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
       var borderStyles = [ "solid", "solid", "solid", "solid" ];
       if( !states.dummy ) {
         var verticalState = { "vertical" : true };
-        var tvGrid = new org.eclipse.swt.theme.ThemeValues( verticalState );
+        var tvGrid = new rwt.theme.ThemeValues( verticalState );
         var gridColor = tvGrid.getCssColor( "Table-GridLine", "color" );
         gridColor = gridColor == "undefined" ? "transparent" : gridColor;
         borderColors[ 1 ] = gridColor;
@@ -1186,7 +1186,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "table-column-sort-indicator" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.source = tv.getCssImage( "TableColumn-SortIndicator", "background-image" );
       return result;
@@ -1195,7 +1195,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "table-row" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.itemBackground = tv.getCssColor( "TableItem", "background-color" );
       result.itemBackgroundImage = tv.getCssImage( "TableItem", "background-image" );
@@ -1213,7 +1213,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "table-row-check-box" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         backgroundImage : tv.getCssImage( "Table-Checkbox", "background-image" )
       };
@@ -1223,7 +1223,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "table-gridline-vertical" : {
     style : function( states ) {
       var verticalState = { "vertical" : true };
-      var tv = new org.eclipse.swt.theme.ThemeValues( verticalState );
+      var tv = new rwt.theme.ThemeValues( verticalState );
       var gridColor = tv.getCssColor( "Table-GridLine", "color" );
       gridColor = gridColor == "undefined" ? "transparent" : gridColor;
       var result = {};
@@ -1236,7 +1236,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "text-field" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "Text", "font" );
       result.textColor = tv.getCssColor( "Text", "color" );
       result.backgroundColor = tv.getCssColor( "Text", "background-color" );
@@ -1256,7 +1256,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "text-field-message" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "Text", "font" );
       result.textColor = tv.getCssColor( "Text-Message", "color" );
       // [if] Do not apply top/bottom paddings on the client
@@ -1281,7 +1281,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "toolbar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         font : tv.getCssFont( "ToolBar", "font" ),
         overflow : "hidden",
@@ -1303,7 +1303,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "toolbar-separator-line" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = null;
       if( states.vertical ) {
         result = {
@@ -1326,7 +1326,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "toolbar-button" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
         overflow : "hidden",
@@ -1358,7 +1358,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
 "tree" : {
   style : function( states ) {
-    var tv = new org.eclipse.swt.theme.ThemeValues( states );
+    var tv = new rwt.theme.ThemeValues( states );
     return {
       backgroundColor : tv.getCssColor( "Tree", "background-color" ),
       textColor : tv.getCssColor( "Tree", "color" ),
@@ -1370,7 +1370,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
 "tree-row" : {
   style : function( states ) {
-    var tv = new org.eclipse.swt.theme.ThemeValues( states );
+    var tv = new rwt.theme.ThemeValues( states );
     var result = {};
     result.itemBackground = tv.getCssColor( "TreeItem", "background-color" );
     result.itemBackgroundImage = tv.getCssImage( "TreeItem", "background-image" );
@@ -1388,7 +1388,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
 "tree-row-check-box" : {
   style : function( states ) {
-    var tv = new org.eclipse.swt.theme.ThemeValues( states );
+    var tv = new rwt.theme.ThemeValues( states );
     return {
       backgroundImage : tv.getCssImage( "Tree-Checkbox", "background-image" )
     };
@@ -1397,7 +1397,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
 "tree-row-indent" : {
   style : function( states ) {
-    var tv = new org.eclipse.swt.theme.ThemeValues( states );
+    var tv = new rwt.theme.ThemeValues( states );
     return {
       backgroundImage : tv.getCssImage( "Tree-Indent", "background-image" )
     };
@@ -1406,7 +1406,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
 "tree-column" : {
   style : function( states ) {
-    var tv = new org.eclipse.swt.theme.ThemeValues( states );
+    var tv = new rwt.theme.ThemeValues( states );
     var result = {};
     result.cursor = "default";
     result.spacing = 2;
@@ -1429,7 +1429,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
     var borderStyles = [ "solid", "solid", "solid", "solid" ];
     if( !states.dummy && !states.footer ) {
       var verticalState = { "vertical" : true };
-      var tvGrid = new org.eclipse.swt.theme.ThemeValues( verticalState );
+      var tvGrid = new rwt.theme.ThemeValues( verticalState );
       var gridColor = tvGrid.getCssColor( "Tree-GridLine", "color" );
       gridColor = gridColor == "undefined" ? "transparent" : gridColor;
       borderColors[ 1 ] = gridColor;
@@ -1457,7 +1457,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
 "tree-column-sort-indicator" : {
   style : function( states ) {
-    var tv = new org.eclipse.swt.theme.ThemeValues( states );
+    var tv = new rwt.theme.ThemeValues( states );
     var result = {};
     result.backgroundImage = tv.getCssSizedImage( "TreeColumn-SortIndicator", "background-image" );
     return result;
@@ -1466,7 +1466,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
 "tree-column-chevron" : {
   style : function( states ) {
-    var tv = new org.eclipse.swt.theme.ThemeValues( states );
+    var tv = new rwt.theme.ThemeValues( states );
     var result = {};
     if( states.loading ) {
       result.backgroundImage = [ "widget/tree/loading.gif", 16, 16 ];
@@ -1483,7 +1483,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "scale" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssBorder( "Scale", "border" ),
         font : tv.getCssFont( "*", "font" ),
@@ -1515,7 +1515,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
     include : "atom",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       if( states.horizontal ) {
         result.left = rwt.widgets.Scale.PADDING;
@@ -1540,7 +1540,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "datetime-date" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "DateTime", "border" );
       result.font = tv.getCssFont( "DateTime", "font" );
@@ -1554,7 +1554,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "datetime-time" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "DateTime", "border" );
       result.font = tv.getCssFont( "DateTime", "font" );
@@ -1568,7 +1568,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "datetime-calendar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "DateTime", "border" );
       result.font = tv.getCssFont( "*", "font" );
@@ -1581,7 +1581,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "datetime-field" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
         textAlign : "center",
@@ -1601,7 +1601,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "datetime-separator" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         cursor : "default"
       };
@@ -1612,14 +1612,14 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "datetime-button-up" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var border = tv.getCssBorder( "DateTime-UpButton", "border" );
       var borderLeft = tv.getCssBorder( "DateTime-UpButton", "border-left" );
       result.border = tv.mergeBorders( border, null, null, null, borderLeft );
       result.width = tv.getCssDimension( "DateTime-UpButton", "width" );
       result.icon = tv.getCssImage( "DateTime-UpButton-Icon",
                                     "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "DateTime-UpButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "DateTime-UpButton", "background-image" );
@@ -1634,13 +1634,13 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "datetime-button-down" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var border = tv.getCssBorder( "DateTime-DownButton", "border" );
       var borderLeft = tv.getCssBorder( "DateTime-DownButton", "border-left" );
       result.border = tv.mergeBorders( border, null, null, null, borderLeft );
       result.width = tv.getCssDimension( "DateTime-DownButton", "width" );
       result.icon = tv.getCssImage( "DateTime-DownButton-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "DateTime-DownButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "DateTime-DownButton", "background-image" );
@@ -1654,13 +1654,13 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "datetime-drop-down-button" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       var border = tv.getCssBorder( "DateTime-DropDownButton", "border" );
       var borderLeft = tv.getCssBorder( "DateTime-DropDownButton", "border-left" );
       result.border = tv.mergeBorders( border, null, null, null, borderLeft );
       result.icon = tv.getCssImage( "DateTime-DropDownButton-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "DateTime-DropDownButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "DateTime-DropDownButton", "background-image" );
@@ -1674,7 +1674,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "datetime-drop-down-calendar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "DateTime-DropDownCalendar", "border" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
@@ -1687,7 +1687,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "calendar-navBar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssBorder( "DateTime-Calendar-Navbar", "border" ),
         backgroundColor : tv.getCssColor( "DateTime-Calendar-Navbar", "background-color" ),
@@ -1721,7 +1721,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
     include: "calendar-toolbar-button",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         icon : tv.getCssImage( "DateTime-Calendar-PreviousYearButton", "background-image" ),
         cursor : tv.getCssCursor( "DateTime-Calendar-PreviousYearButton", "cursor" )
@@ -1733,7 +1733,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
     include: "calendar-toolbar-button",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         icon : tv.getCssImage( "DateTime-Calendar-PreviousMonthButton", "background-image" ),
         cursor : tv.getCssCursor( "DateTime-Calendar-PreviousMonthButton", "cursor" )
@@ -1745,7 +1745,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
     include: "calendar-toolbar-button",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         icon : tv.getCssImage( "DateTime-Calendar-NextMonthButton", "background-image" ),
         cursor : tv.getCssCursor( "DateTime-Calendar-NextMonthButton", "cursor" )
@@ -1757,7 +1757,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
     include: "calendar-toolbar-button",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         icon : tv.getCssImage( "DateTime-Calendar-NextYearButton", "background-image" ),
         cursor : tv.getCssCursor( "DateTime-Calendar-NextYearButton", "cursor" )
@@ -1767,7 +1767,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "calendar-monthyear" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         font : tv.getCssFont( "DateTime-Calendar-Navbar", "font" ),
         textAlign : "center",
@@ -1789,7 +1789,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "calendar-week" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       if( states.header ) {
         var border = new org.eclipse.rwt.Border( [ 0, 1, 1, 0 ], "solid", "gray" );
       } else {
@@ -1805,7 +1805,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "calendar-weekday" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var border = new org.eclipse.rwt.Border( [ 0, 0, 1, 0 ], "solid", "gray" );
       // FIXME: [if] Bigger font size leads to text cutoff
       var font = tv.getCssFont( "*", "font" );
@@ -1821,7 +1821,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "calendar-day" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         textAlign : "center",
         verticalAlign : "middle"
@@ -1844,7 +1844,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "expand-bar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "ExpandBar", "border" );
       result.font = tv.getCssFont( "ExpandBar", "font" );
@@ -1855,7 +1855,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "expand-item" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         overflow : "hidden",
         border : tv.getCssBorder( "ExpandItem", "border" )
@@ -1865,7 +1865,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "expand-item-chevron-button" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.width = 16;
       result.height = 16;
@@ -1880,7 +1880,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "expand-item-header" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.top = 0;
       result.left = 0;
@@ -1902,7 +1902,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "sash" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         backgroundColor : tv.getCssColor( "Sash", "background-color" ),
         backgroundImage : tv.getCssImage( "Sash", "background-image" ),
@@ -1924,7 +1924,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "sash-handle" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.backgroundImage = tv.getCssImage( "Sash-Handle", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "Sash-Handle", "background-image" );
@@ -1936,7 +1936,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "slider" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssBorder( "Slider", "border" ),
         font : tv.getCssFont( "*", "font" ),
@@ -1949,7 +1949,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "slider-thumb" : {
     include : "atom",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.backgroundColor = tv.getCssColor( "Slider-Thumb", "background-color" );
       result.border = tv.getCssBorder( "Slider-Thumb", "border" );
@@ -1962,7 +1962,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "slider-min-button" : {
     include : "atom",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.font = tv.getCssFont( "Button", "font" );
       result.textColor = tv.getCssColor( "Button", "color" );
@@ -1970,7 +1970,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
       result.padding = tv.getCssBoxDimensions( "Slider-DownButton", "padding" );
       result.backgroundColor = tv.getCssColor( "Slider-DownButton", "background-color" );
       result.icon = tv.getCssSizedImage( "Slider-DownButton-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssSizedImage( "Slider-DownButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "Slider-DownButton", "background-image" );
@@ -1990,7 +1990,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "slider-max-button" : {
     include : "atom",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.font = tv.getCssFont( "Button", "font" );
       result.textColor = tv.getCssColor( "Button", "color" );
@@ -1998,7 +1998,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
       result.padding = tv.getCssBoxDimensions( "Slider-UpButton", "padding" );
       result.backgroundColor = tv.getCssColor( "Slider-UpButton", "background-color" );
       result.icon = tv.getCssSizedImage( "Slider-UpButton-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssSizedImage( "Slider-UpButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "Slider-UpButton", "background-image" );
@@ -2020,7 +2020,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
     include : "popup",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.width = "auto";
       result.height = "auto";
@@ -2044,7 +2044,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "tool-tip-image" : {
     include: "image",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         source : tv.getCssImage( "ToolTip-Image", "background-image" )
       };
@@ -2053,7 +2053,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "tool-tip-text" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         font : tv.getCssFont( "ToolTip-Text", "font" ),
         textColor : tv.getCssColor( "ToolTip-Text", "color" ),
@@ -2065,7 +2065,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "tool-tip-message" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         font : tv.getCssFont( "ToolTip-Message", "font" ),
         textColor : tv.getCssColor( "ToolTip-Message", "color" ),
@@ -2078,7 +2078,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "ccombo" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "CCombo", "border" );
       result.backgroundColor = tv.getCssColor( "CCombo", "background-color" );
@@ -2093,7 +2093,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "ccombo-list" : {
     include : "list",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "CCombo-List", "border" );
       result.textColor = tv.getCssColor( "CCombo", "color" );
@@ -2107,7 +2107,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "ccombo-field" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.font = tv.getCssFont( "CCombo", "font" );
       // [if] Do not apply top/bottom paddings on the client
@@ -2128,7 +2128,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "ccombo-button" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       var border = tv.getCssBorder( "CCombo-Button", "border" );
       var borderLeft = tv.getCssBorder( "CCombo-Button", "border-left" );
@@ -2139,7 +2139,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
       result.bottom = 0;
       result.right = 0;
       result.icon = tv.getCssImage( "CCombo-Button-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "CCombo-Button", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "CCombo-Button", "background-image" );
@@ -2155,7 +2155,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "clabel" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.textColor = tv.getCssColor( "CLabel", "color" );
       result.backgroundColor = tv.getCssColor( "CLabel", "background-color" );
@@ -2181,7 +2181,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "browser" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssBorder( "Browser", "border" ),
         backgroundColor : "white"
@@ -2192,7 +2192,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "scrolledcomposite" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       if( states.rwt_BORDER ) {
         result.border = tv.getCssNamedBorder( "shadow" );
@@ -2206,7 +2206,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
   "scrollbar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         border : tv.getCssBorder( "ScrollBar", "border" ),
         backgroundColor : tv.getCssColor( "ScrollBar", "background-color" ),
@@ -2226,7 +2226,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "scrollbar-thumb" : {
     include : "atom",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.backgroundColor = tv.getCssColor( "ScrollBar-Thumb", "background-color" );
       result.border = tv.getCssBorder( "ScrollBar-Thumb", "border" );
@@ -2240,13 +2240,13 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "scrollbar-min-button" : {
     include : "atom",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.spacing = tv.getCssDimension( "Button", "spacing" );
       result.padding = tv.getCssBoxDimensions( "Button", "padding" );
       result.backgroundColor = tv.getCssColor( "ScrollBar-DownButton", "background-color" );
       result.icon = tv.getCssSizedImage( "ScrollBar-DownButton-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssSizedImage( "ScrollBar-DownButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "ScrollBar-DownButton", "background-image" );
@@ -2267,7 +2267,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
   "scrollbar-max-button" : {
     include : "atom",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.font = tv.getCssFont( "Button", "font" );
       result.textColor = tv.getCssColor( "Button", "color" );
@@ -2275,7 +2275,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
       result.padding = tv.getCssBoxDimensions( "Button", "padding" );
       result.backgroundColor = tv.getCssColor( "ScrollBar-UpButton", "background-color" );
       result.icon = tv.getCssSizedImage( "ScrollBar-UpButton-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssSizedImage( "ScrollBar-UpButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "ScrollBar-UpButton", "background-image" );
@@ -2299,7 +2299,7 @@ qx.theme.manager.Appearance.getInstance().setCurrentTheme( {
 
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "FileUpload", "font" );
       result.textColor = tv.getCssColor( "FileUpload", "color" );
       result.backgroundColor = tv.getCssColor( "FileUpload", "background-color" );

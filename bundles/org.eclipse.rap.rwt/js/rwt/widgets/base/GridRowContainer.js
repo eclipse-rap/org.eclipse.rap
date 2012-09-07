@@ -207,7 +207,7 @@ qx.Class.define( "rwt.widgets.base.GridRowContainer", {
     },
 
     _getGridBorder : function( state ) {
-      var tvGrid = new org.eclipse.swt.theme.ThemeValues( state );
+      var tvGrid = new rwt.theme.ThemeValues( state );
       var cssElement = qx.lang.String.toFirstUp( this._baseAppearance ) + "-GridLine";
       var gridColor = tvGrid.getCssColor( cssElement, "color" );
       tvGrid.dispose();

@@ -181,7 +181,7 @@ qx.Class.define( "rwt.widgets.ToolTip", {
     },
 
     _getMessageFont : function() {
-      var tv = new org.eclipse.swt.theme.ThemeValues( {} );
+      var tv = new rwt.theme.ThemeValues( {} );
       return tv.getCssFont( "ToolTip-Message", "font" );
     }
 

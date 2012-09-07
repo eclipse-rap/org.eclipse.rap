@@ -204,7 +204,7 @@ ts.defineValues( {
 "3ac": 20
 }
 } );
-ts.setThemeCssValues( "org.eclipse.swt.theme.Fallback", {
+ts.setThemeCssValues( "rwt.theme.Fallback", {
 "Spinner-DownButton": {
 "background-image": [ [ [], "a505df1b" ] ],
 "background-color": [ [ [], "4004dc1c" ] ],
@@ -971,4 +971,4 @@ ts.setThemeCssValues( "org.eclipse.swt.theme.Fallback", {
 "background-image": [ [ [], "49104d78" ] ]
 }
 }, true );
-} )( org.eclipse.swt.theme.ThemeStore.getInstance() );
+} )( rwt.theme.ThemeStore.getInstance() );

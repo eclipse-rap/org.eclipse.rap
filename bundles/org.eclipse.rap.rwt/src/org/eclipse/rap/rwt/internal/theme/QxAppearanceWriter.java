@@ -28,7 +28,7 @@ public final class QxAppearanceWriter {
   }
 
   private static void appendHead( StringBuilder code ) {
-    code.append( "qx.theme.manager.Appearance.getInstance().setCurrentTheme( {\n" );
+    code.append( "rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {\n" );
     code.append( "  name : \"rwtAppearance\",\n" );
     code.append( "  appearances : {\n" );
   }

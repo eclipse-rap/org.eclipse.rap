@@ -14,7 +14,7 @@ var appearances = {
 
   "scrollbar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         border : tv.getCssBorder( "ScrollBar", "border" ),
         backgroundColor : tv.getCssColor( "ScrollBar", "background-color" ),
@@ -34,7 +34,7 @@ var appearances = {
   "scrollbar-thumb" : {
     include : "atom",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.backgroundColor = tv.getCssColor( "ScrollBar-Thumb", "background-color" );
       result.border = tv.getCssBorder( "ScrollBar-Thumb", "border" );
@@ -48,13 +48,13 @@ var appearances = {
   "scrollbar-min-button" : {
     include : "atom",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.spacing = tv.getCssDimension( "Button", "spacing" );
       result.padding = tv.getCssBoxDimensions( "Button", "padding" );
       result.backgroundColor = tv.getCssColor( "ScrollBar-DownButton", "background-color" );
       result.icon = tv.getCssSizedImage( "ScrollBar-DownButton-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssSizedImage( "ScrollBar-DownButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "ScrollBar-DownButton", "background-image" );
@@ -75,7 +75,7 @@ var appearances = {
   "scrollbar-max-button" : {
     include : "atom",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.font = tv.getCssFont( "Button", "font" );
       result.textColor = tv.getCssColor( "Button", "color" );
@@ -83,7 +83,7 @@ var appearances = {
       result.padding = tv.getCssBoxDimensions( "Button", "padding" );
       result.backgroundColor = tv.getCssColor( "ScrollBar-UpButton", "background-color" );
       result.icon = tv.getCssSizedImage( "ScrollBar-UpButton-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssSizedImage( "ScrollBar-UpButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "ScrollBar-UpButton", "background-image" );

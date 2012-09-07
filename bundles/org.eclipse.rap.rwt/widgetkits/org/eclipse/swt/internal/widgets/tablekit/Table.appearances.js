@@ -14,7 +14,7 @@ var appearances = {
 
   "table" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         textColor : tv.getCssColor( "Table", "color" ),
         font : tv.getCssFont( "Table", "font" ),
@@ -28,7 +28,7 @@ var appearances = {
 
   "table-column" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
         spacing : 2,
@@ -45,7 +45,7 @@ var appearances = {
       var borderStyles = [ "solid", "solid", "solid", "solid" ];
       if( !states.dummy ) {
         var verticalState = { "vertical" : true };
-        var tvGrid = new org.eclipse.swt.theme.ThemeValues( verticalState );
+        var tvGrid = new rwt.theme.ThemeValues( verticalState );
         var gridColor = tvGrid.getCssColor( "Table-GridLine", "color" );
         gridColor = gridColor == "undefined" ? "transparent" : gridColor;
         borderColors[ 1 ] = gridColor;
@@ -77,7 +77,7 @@ var appearances = {
 
   "table-column-sort-indicator" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.backgroundImage = tv.getCssSizedImage( "TableColumn-SortIndicator", "background-image" );
       return result;
@@ -86,7 +86,7 @@ var appearances = {
 
   "table-row" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.itemBackground = tv.getCssColor( "TableItem", "background-color" );
       result.itemBackgroundImage = tv.getCssImage( "TableItem", "background-image" );
@@ -104,7 +104,7 @@ var appearances = {
 
   "table-row-check-box" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         backgroundImage : tv.getCssImage( "Table-Checkbox", "background-image" )
       };
@@ -114,7 +114,7 @@ var appearances = {
   "table-gridline-vertical" : {
     style : function( states ) {
       var verticalState = { "vertical" : true };
-      var tv = new org.eclipse.swt.theme.ThemeValues( verticalState );
+      var tv = new rwt.theme.ThemeValues( verticalState );
       var gridColor = tv.getCssColor( "Table-GridLine", "color" );
       gridColor = gridColor == "undefined" ? "transparent" : gridColor;
       var result = {};

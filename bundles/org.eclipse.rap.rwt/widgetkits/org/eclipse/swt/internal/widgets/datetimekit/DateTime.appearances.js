@@ -14,7 +14,7 @@ var appearances = {
 
   "datetime-date" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "DateTime", "border" );
       result.font = tv.getCssFont( "DateTime", "font" );
@@ -29,7 +29,7 @@ var appearances = {
 
   "datetime-time" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "DateTime", "border" );
       result.font = tv.getCssFont( "DateTime", "font" );
@@ -44,7 +44,7 @@ var appearances = {
 
   "datetime-calendar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "DateTime", "border" );
       result.font = tv.getCssFont( "*", "font" );
@@ -57,7 +57,7 @@ var appearances = {
 
   "datetime-field" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
         textAlign : "center",
@@ -77,7 +77,7 @@ var appearances = {
 
   "datetime-separator" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         cursor : "default"
       };
@@ -88,14 +88,14 @@ var appearances = {
   "datetime-button-up" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var border = tv.getCssBorder( "DateTime-UpButton", "border" );
       var borderLeft = tv.getCssBorder( "DateTime-UpButton", "border-left" );
       result.border = tv.mergeBorders( border, null, null, null, borderLeft );
       result.width = tv.getCssDimension( "DateTime-UpButton", "width" );
       result.icon = tv.getCssImage( "DateTime-UpButton-Icon",
                                     "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "DateTime-UpButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "DateTime-UpButton", "background-image" );
@@ -110,13 +110,13 @@ var appearances = {
   "datetime-button-down" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var border = tv.getCssBorder( "DateTime-DownButton", "border" );
       var borderLeft = tv.getCssBorder( "DateTime-DownButton", "border-left" );
       result.border = tv.mergeBorders( border, null, null, null, borderLeft );
       result.width = tv.getCssDimension( "DateTime-DownButton", "width" );
       result.icon = tv.getCssImage( "DateTime-DownButton-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "DateTime-DownButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "DateTime-DownButton", "background-image" );
@@ -130,13 +130,13 @@ var appearances = {
 
   "datetime-drop-down-button" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       var border = tv.getCssBorder( "DateTime-DropDownButton", "border" );
       var borderLeft = tv.getCssBorder( "DateTime-DropDownButton", "border-left" );
       result.border = tv.mergeBorders( border, null, null, null, borderLeft );
       result.icon = tv.getCssImage( "DateTime-DropDownButton-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "DateTime-DropDownButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "DateTime-DropDownButton", "background-image" );
@@ -150,7 +150,7 @@ var appearances = {
 
   "datetime-drop-down-calendar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "DateTime-DropDownCalendar", "border" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
@@ -163,7 +163,7 @@ var appearances = {
 
   "calendar-navBar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssBorder( "DateTime-Calendar-Navbar", "border" ),
         backgroundColor : tv.getCssColor( "DateTime-Calendar-Navbar", "background-color" ),
@@ -197,7 +197,7 @@ var appearances = {
     include: "calendar-toolbar-button",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         icon : tv.getCssImage( "DateTime-Calendar-PreviousYearButton", "background-image" ),
         cursor : tv.getCssCursor( "DateTime-Calendar-PreviousYearButton", "cursor" )
@@ -209,7 +209,7 @@ var appearances = {
     include: "calendar-toolbar-button",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         icon : tv.getCssImage( "DateTime-Calendar-PreviousMonthButton", "background-image" ),
         cursor : tv.getCssCursor( "DateTime-Calendar-PreviousMonthButton", "cursor" )
@@ -221,7 +221,7 @@ var appearances = {
     include: "calendar-toolbar-button",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         icon : tv.getCssImage( "DateTime-Calendar-NextMonthButton", "background-image" ),
         cursor : tv.getCssCursor( "DateTime-Calendar-NextMonthButton", "cursor" )
@@ -233,7 +233,7 @@ var appearances = {
     include: "calendar-toolbar-button",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         icon : tv.getCssImage( "DateTime-Calendar-NextYearButton", "background-image" ),
         cursor : tv.getCssCursor( "DateTime-Calendar-NextYearButton", "cursor" )
@@ -243,7 +243,7 @@ var appearances = {
 
   "calendar-monthyear" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         font : tv.getCssFont( "DateTime-Calendar-Navbar", "font" ),
         textAlign : "center",
@@ -265,7 +265,7 @@ var appearances = {
 
   "calendar-week" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       if( states.header ) {
         var border = new org.eclipse.rwt.Border( [ 0, 1, 1, 0 ], "solid", "gray" );
       } else {
@@ -281,7 +281,7 @@ var appearances = {
 
   "calendar-weekday" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var border = new org.eclipse.rwt.Border( [ 0, 0, 1, 0 ], "solid", "gray" );
       // FIXME: [if] Bigger font size leads to text cutoff
       var font = tv.getCssFont( "*", "font" );
@@ -297,7 +297,7 @@ var appearances = {
 
   "calendar-day" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         textAlign : "center",
         verticalAlign : "middle"

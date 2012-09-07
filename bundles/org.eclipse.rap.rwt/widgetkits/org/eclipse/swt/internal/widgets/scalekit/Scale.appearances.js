@@ -14,7 +14,7 @@ var appearances = {
 
   "scale" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssBorder( "Scale", "border" ),
         font : tv.getCssFont( "*", "font" ),
@@ -46,7 +46,7 @@ var appearances = {
     include : "atom",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       if( states.horizontal ) {
         result.left = rwt.widgets.Scale.PADDING;

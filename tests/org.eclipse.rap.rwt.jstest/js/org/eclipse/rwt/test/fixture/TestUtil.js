@@ -786,7 +786,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
 
   // assumes that the set appearance-theme does never change during tests
   fakeAppearance : function( appearanceId, value ) {
-    var manager = qx.theme.manager.Appearance.getInstance();
+    var manager = rwt.theme.AppearanceManager.getInstance();
     var themeName = manager.getCurrentTheme().name;
     var base = manager.getCurrentTheme().appearances;
     if( typeof this._appearanceBackups[ appearanceId ] == "undefined" ) {
@@ -801,7 +801,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   restoreAppearance : function() {
-    var manager = qx.theme.manager.Appearance.getInstance();
+    var manager = rwt.theme.AppearanceManager.getInstance();
     var base = manager.getCurrentTheme().appearances;
     for( var appearanceId in this._appearanceBackups ) {
       var value = this._appearanceBackups[ appearanceId ];
@@ -818,7 +818,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   _appearanceBackups : {},
 
   _clearAppearanceCache : function() {
-    var manager = qx.theme.manager.Appearance.getInstance();
+    var manager = rwt.theme.AppearanceManager.getInstance();
     manager.__cache[ manager.getCurrentTheme().name ] = {};
   },
 

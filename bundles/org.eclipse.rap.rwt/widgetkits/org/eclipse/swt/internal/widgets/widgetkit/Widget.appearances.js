@@ -63,7 +63,7 @@ var appearances = {
 
   "client-document" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         font : tv.getCssFont( "*", "font" ),
         textColor : "black",
@@ -74,7 +74,7 @@ var appearances = {
 
   "client-document-blocker" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
         animation : tv.getCssAnimation( "Shell-DisplayOverlay", "animation" ),
@@ -151,7 +151,7 @@ var appearances = {
 
   "resizer-frame" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssNamedBorder( "shadow" )
       };
@@ -162,7 +162,7 @@ var appearances = {
     include : "popup",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "Widget-ToolTip", "border" );
       result.animation = tv.getCssAnimation( "Widget-ToolTip", "animation" );

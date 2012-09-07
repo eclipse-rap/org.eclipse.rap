@@ -76,7 +76,7 @@ rwt.widgets.Display.prototype = {
   },
 
   setCurrentTheme : function( themeId ) {
-    org.eclipse.swt.theme.ThemeStore.getInstance().setCurrentTheme( themeId );
+    rwt.theme.ThemeStore.getInstance().setCurrentTheme( themeId );
   },
 
   setEnableUiTests : function( value ) {

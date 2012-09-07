@@ -102,7 +102,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
           "currentTheme" : "myTheme"
         }
       } );
-      assertEquals( "myTheme", org.eclipse.swt.theme.ThemeStore.getInstance()._currentTheme );
+      assertEquals( "myTheme", rwt.theme.ThemeStore.getInstance()._currentTheme );
     },
 
     testSetEnableUiTests : function() {

@@ -14,7 +14,7 @@ var appearances = {
 
   "browser" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssBorder( "Browser", "border" ),
         backgroundColor : "white"

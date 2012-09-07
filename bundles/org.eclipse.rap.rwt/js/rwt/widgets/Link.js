@@ -260,7 +260,7 @@ qx.Class.define( "rwt.widgets.Link", {
       } else {
         delete states[ "over" ];
       }
-      var manager = qx.theme.manager.Appearance.getInstance();
+      var manager = rwt.theme.AppearanceManager.getInstance();
       return manager.styleFrom( "link-hyperlink", states );
     },
 

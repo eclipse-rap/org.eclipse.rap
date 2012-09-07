@@ -14,7 +14,7 @@ var appearances = {
 
   "expand-bar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "ExpandBar", "border" );
       result.font = tv.getCssFont( "ExpandBar", "font" );
@@ -25,7 +25,7 @@ var appearances = {
 
   "expand-item" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         overflow : "hidden",
         border : tv.getCssBorder( "ExpandItem", "border" )
@@ -35,7 +35,7 @@ var appearances = {
 
   "expand-item-chevron-button" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.width = 16;
       result.height = 16;
@@ -50,7 +50,7 @@ var appearances = {
 
   "expand-item-header" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.top = 0;
       result.left = 0;

@@ -411,7 +411,7 @@ qx.Class.define( "rwt.widgets.Text", {
     },
 
     _getIconStyle : function( iconId ) {
-      var manager = qx.theme.manager.Appearance.getInstance();
+      var manager = rwt.theme.AppearanceManager.getInstance();
       return manager.styleFrom( "text-field-icon", iconId === "search" ? { search : true } : {} );
     },
 
@@ -534,7 +534,7 @@ qx.Class.define( "rwt.widgets.Text", {
     },
 
     _getMessageStyle : function() {
-      var manager = qx.theme.manager.Appearance.getInstance();
+      var manager = rwt.theme.AppearanceManager.getInstance();
       return manager.styleFrom( "text-field-message", {} );
     },
 

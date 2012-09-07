@@ -14,7 +14,7 @@ var appearances = {
 
   "toolbar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         font : tv.getCssFont( "ToolBar", "font" ),
         overflow : "hidden",
@@ -36,7 +36,7 @@ var appearances = {
 
   "toolbar-separator-line" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = null;
       if( states.vertical ) {
         result = {
@@ -59,7 +59,7 @@ var appearances = {
 
   "toolbar-button" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
         overflow : "hidden",

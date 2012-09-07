@@ -15,7 +15,7 @@ var appearances = {
   "ctabfolder" : {
     style: function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "CTabItem", "font" );
       result.textColor = tv.getCssColor( "CTabItem", "color" );
       return result;
@@ -25,7 +25,7 @@ var appearances = {
   "ctabfolder-body" : {
     style: function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
       var color = tv.getCssColor( "CTabFolder", "border-color" );
       var radii = tv.getCssBoxDimensions( "CTabFolder", "border-radius" );
@@ -54,7 +54,7 @@ var appearances = {
         for( var property in states ) {
           statesWithSelected[ property ] = states[ property ];
         }
-        var tv = new org.eclipse.swt.theme.ThemeValues( statesWithSelected );
+        var tv = new rwt.theme.ThemeValues( statesWithSelected );
         var color = tv.getCssColor( "CTabItem", "background-color" );
         result.border = new org.eclipse.rwt.Border( 2, "solid", color );
       } else {
@@ -68,7 +68,7 @@ var appearances = {
   "ctabfolder-separator" : {
     style: function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var color = tv.getCssColor( "CTabFolder", "border-color" );
       var border;
       if( states.barTop ) {
@@ -84,7 +84,7 @@ var appearances = {
   "ctab-item" : {
     style: function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.cursor = "default";
       var padding = tv.getCssBoxDimensions( "CTabItem", "padding" );
       result.paddingLeft = padding[ 3 ];
@@ -143,7 +143,7 @@ var appearances = {
     include : "image",
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       if( states.over ) {
         result.backgroundColor = "white";
         var color = tv.getCssColor( "CTabFolder", "border-color" );
@@ -160,7 +160,7 @@ var appearances = {
     include : "ctabfolder-button",
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.icon = tv.getCssImage( "CTabFolder-DropDownButton-Icon", "background-image" );
       return result;
     }

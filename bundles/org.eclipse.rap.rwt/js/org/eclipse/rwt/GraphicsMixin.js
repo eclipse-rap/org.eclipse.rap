@@ -662,7 +662,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     _getImageSize : function( source ) {
       var result = this.getUserData( "backgroundImageSize" );
       if( result == null ) {
-        var themeStore = org.eclipse.swt.theme.ThemeStore.getInstance();
+        var themeStore = rwt.theme.ThemeStore.getInstance();
         result = themeStore.getImageSize( source );
       }
       return result;

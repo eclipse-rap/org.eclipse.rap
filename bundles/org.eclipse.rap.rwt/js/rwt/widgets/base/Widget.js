@@ -2937,7 +2937,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       this._applyStateStyleFocus(this.__states);
       var vAppearance = this.getAppearance();
       if (vAppearance) {
-          var r = qx.theme.manager.Appearance.getInstance().styleFrom(vAppearance, this.__states);
+          var r = rwt.theme.AppearanceManager.getInstance().styleFrom(vAppearance, this.__states);
           if (r) {
             this._styleFromMap(r);
           }
@@ -2947,7 +2947,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     _resetAppearanceThemeWrapper : function(vNewAppearanceTheme, vOldAppearanceTheme) {
       var vAppearance = this.getAppearance();
       if (vAppearance) {
-        var vAppearanceManager = qx.theme.manager.Appearance.getInstance();
+        var vAppearanceManager = rwt.theme.AppearanceManager.getInstance();
         var vOldAppearanceProperties
           = vAppearanceManager.styleFromTheme(vOldAppearanceTheme, vAppearance, this.__states);
         var vNewAppearanceProperties
@@ -2988,7 +2988,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       if (!this.__states) {
         this.__states = {};
       }
-      var vAppearanceManager = qx.theme.manager.Appearance.getInstance();
+      var vAppearanceManager = rwt.theme.AppearanceManager.getInstance();
       if (value) {
         var vNewAppearanceProperties = vAppearanceManager.styleFrom(value, this.__states) || {};
       }

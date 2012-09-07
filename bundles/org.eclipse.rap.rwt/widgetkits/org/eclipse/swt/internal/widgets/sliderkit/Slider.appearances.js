@@ -14,7 +14,7 @@ var appearances = {
 
   "slider" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssBorder( "Slider", "border" ),
         font : tv.getCssFont( "*", "font" ),
@@ -27,7 +27,7 @@ var appearances = {
   "slider-thumb" : {
     include : "atom",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.backgroundColor = tv.getCssColor( "Slider-Thumb", "background-color" );
       result.border = tv.getCssBorder( "Slider-Thumb", "border" );
@@ -40,7 +40,7 @@ var appearances = {
   "slider-min-button" : {
     include : "atom",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.font = tv.getCssFont( "Button", "font" );
       result.textColor = tv.getCssColor( "Button", "color" );
@@ -48,7 +48,7 @@ var appearances = {
       result.padding = tv.getCssBoxDimensions( "Slider-DownButton", "padding" );
       result.backgroundColor = tv.getCssColor( "Slider-DownButton", "background-color" );
       result.icon = tv.getCssSizedImage( "Slider-DownButton-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssSizedImage( "Slider-DownButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "Slider-DownButton", "background-image" );
@@ -68,7 +68,7 @@ var appearances = {
   "slider-max-button" : {
     include : "atom",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.font = tv.getCssFont( "Button", "font" );
       result.textColor = tv.getCssColor( "Button", "color" );
@@ -76,7 +76,7 @@ var appearances = {
       result.padding = tv.getCssBoxDimensions( "Slider-UpButton", "padding" );
       result.backgroundColor = tv.getCssColor( "Slider-UpButton", "background-color" );
       result.icon = tv.getCssSizedImage( "Slider-UpButton-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssSizedImage( "Slider-UpButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "Slider-UpButton", "background-image" );

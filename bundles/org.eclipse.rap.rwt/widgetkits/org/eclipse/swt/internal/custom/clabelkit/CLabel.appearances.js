@@ -14,7 +14,7 @@ var appearances = {
 
   "clabel" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.textColor = tv.getCssColor( "CLabel", "color" );
       result.backgroundColor = tv.getCssColor( "CLabel", "background-color" );

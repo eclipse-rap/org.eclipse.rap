@@ -14,7 +14,7 @@ var appearances = {
 
   "coolbar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "*", "border" );
       result.backgroundGradient = tv.getCssGradient( "CoolBar", "background-image" );
@@ -25,7 +25,7 @@ var appearances = {
 
   "coolitem" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "*", "border" );
       return result;
@@ -34,7 +34,7 @@ var appearances = {
 
   "coolitem-handle" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       if( states.vertical ) {
         result.height = tv.getCssDimension( "CoolItem-Handle", "width" );

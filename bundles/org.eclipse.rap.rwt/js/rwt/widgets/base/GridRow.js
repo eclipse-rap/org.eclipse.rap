@@ -161,7 +161,7 @@ qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _getStyleMap : function() {
-      var manager = qx.theme.manager.Appearance.getInstance();
+      var manager = rwt.theme.AppearanceManager.getInstance();
       return manager.styleFrom( this.getAppearance(), this.__states );
     },
 
@@ -257,7 +257,7 @@ qx.Class.define( "rwt.widgets.base.GridRow", {
 
     _getImageFromAppearance : function( image, states ) {
       var appearance = this.getAppearance() + "-" + image;
-      var manager = qx.theme.manager.Appearance.getInstance();
+      var manager = rwt.theme.AppearanceManager.getInstance();
       var styleMap = manager.styleFrom( appearance, states );
       var valid = styleMap && styleMap.backgroundImage;
       return valid ? styleMap.backgroundImage : null;

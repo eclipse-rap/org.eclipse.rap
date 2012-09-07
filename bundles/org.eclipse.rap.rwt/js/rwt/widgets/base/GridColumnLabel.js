@@ -72,7 +72,7 @@ qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
 
     setSortIndicator : function( value ) {
       if( value ) {
-        var manager = qx.theme.manager.Appearance.getInstance();
+        var manager = rwt.theme.AppearanceManager.getInstance();
         var states = {};
         states[ value ] = true;
         var styleMap = manager.styleFrom( this.getAppearance() + "-sort-indicator", states );
@@ -105,7 +105,7 @@ qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
     _updateChevronImage : function( hover ) {
       if( this._chevron ) {
         this.setFlexibleCell( 1 );
-        var manager = qx.theme.manager.Appearance.getInstance();
+        var manager = rwt.theme.AppearanceManager.getInstance();
         var states = {};
         states[ this._chevron ] = true;
         if( hover ) {

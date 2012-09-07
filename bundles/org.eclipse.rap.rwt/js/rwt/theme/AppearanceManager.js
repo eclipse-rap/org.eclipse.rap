@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define( "qx.theme.manager.Appearance", {
+qx.Class.define( "rwt.theme.AppearanceManager", {
 
   type : "singleton",
   extend : qx.util.manager.Object,
