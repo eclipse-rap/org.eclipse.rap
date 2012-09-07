@@ -26,6 +26,9 @@ rwt.protocol.MessageProcessor = {
       var req = rwt.remote.Server.getInstance();
       req.setRequestCounter( meta.requestCounter );
     }
+    if( meta.redirect !== undefined ) {
+      document.location = meta.redirect;
+    }
   },
 
   processOperationArray : function( operation ) {
