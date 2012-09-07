@@ -58,7 +58,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testConstructWithoutOperations() {
     try {
-      new ClientMessage( "{ \"header\" : {}, \"foo\": 23 }" );
+      new ClientMessage( "{ " + ClientMessage.PROP_HEADER + " : {}, \"foo\": 23 }" );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Missing operations array" ) );
@@ -66,22 +66,30 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetHeaderParameter() {
-    String json = "{ \"header\" : { \"abc\" : \"foo\" }, \"operations\": [] }";
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : { \"abc\" : \"foo\" },"
+                + ClientMessage.PROP_OPERATIONS + " : [] }";
     ClientMessage message = new ClientMessage( json );
 
     assertEquals( "foo", message.getHeaderProperty( "abc" ) );
   }
 
   public void testGetHeaderParameter_NoParameter() {
-    String json = "{ \"header\" : {}, \"operations\": [] }";
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : [] }";
     ClientMessage message = new ClientMessage( json );
 
     assertNull( message.getHeaderProperty( "abc" ) );
   }
 
   public void testConstructWithInvalidOperations() {
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : 23 }";
+
     try {
-      new ClientMessage( "{ \"header\" : {}, \"operations\": 23 }" );
+      new ClientMessage( json );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Missing operations array" ) );
@@ -89,8 +97,11 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testConstructWithOperationUnknownType() {
-    String json = "{ \"header\" : {},"
-                + "  \"operations\" : [ [ \"abc\", \"w3\", { \"action\" : \"foo\" } ] ] }";
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
+                + "[ \"abc\", \"w3\", { \"action\" : \"foo\" } ]"
+                + "] }";
     try {
       new ClientMessage( json );
       fail();
@@ -100,8 +111,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetAllOperations() {
-    String json = "{ \"header\" : {},"
-    		    + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+    		    + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
@@ -116,8 +128,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetAllOperations_NoOperations() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
@@ -130,8 +143,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetSetOperations() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", {} ],"
                 + "[ \"set\", \"w3\", { \"p2\" : true, \"p3\" : null } ]"
@@ -147,8 +161,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetSetOperations_ByProperty() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"set\", \"w3\", { \"p2\" : \"foo\" } ],"
                 + "[ \"set\", \"w3\", { \"p1\" : \"bar\" } ]"
@@ -163,8 +178,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetNotifyOperations() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", {} ],"
                 + "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]"
@@ -178,8 +194,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetNotifyOperations_ByEventName() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ],"
                 + "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]"
@@ -193,8 +210,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetNotifyOperations_ByProperty() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetDefaultSelected\", { \"detail\" : \"check\" } ],"
@@ -208,8 +226,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetNotifyOperations_ByEventNameAndProperty() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetDefaultSelected\", { \"detail\" : \"check\" } ],"
@@ -223,8 +242,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testGetCallOperations() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"call\", \"w3\", \"store\", {} ],"
                 + "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]"
@@ -238,8 +258,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testSetOperation() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : true } ]"
                 + "] }";
     ClientMessage message = new ClientMessage( json );
@@ -252,8 +273,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testSetOperation_WithoutTarget() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", { \"p1\" : \"foo\", \"p2\" : true } ]"
                 + "] }";
 
@@ -265,8 +287,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testSetOperation_WithoutProperties() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\" ]"
                 + "] }";
 
@@ -278,8 +301,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testSetOperation_InvalidProperty() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : true } ]"
                 + "] }";
     ClientMessage message = new ClientMessage( json );
@@ -289,8 +313,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testNotifyOperation() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"notify\", \"w3\", \"widgetSelected\", { \"check\" : true } ]"
                 + "] }";
     ClientMessage message = new ClientMessage( json );
@@ -303,8 +328,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testNotifyOperation_WithoutEventType() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"notify\", \"w3\", { \"check\" : true } ]"
                 + "] }";
 
@@ -316,8 +342,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testNotifyOperation_WithoutProperties() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"notify\", \"w3\", \"widgetSelected\""
                 + "] }";
 
@@ -329,8 +356,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testCallOperation() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"call\", \"w3\", \"store\", { \"id\" : 123 } ]"
                 + "] }";
     ClientMessage message = new ClientMessage( json );
@@ -343,8 +371,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testCallOperation_WithoutMethodName() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"call\", \"w3\", { \"id\" : 123 } ]"
                 + "] }";
 
@@ -356,8 +385,9 @@ public class ClientMessage_Test extends TestCase {
   }
 
   public void testCallOperation_WithoutProperties() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"call\", \"w3\", \"store\""
                 + "] }";
 

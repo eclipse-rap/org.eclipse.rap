@@ -48,6 +48,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
@@ -93,11 +94,6 @@ public final class Fixture {
   public static final String IMAGE_50x100 = "resources/images/test-50x100.png";
 
   private static final String PROP_MESSAGE = "message";
-  private static final String PROP_HEADER = "header";
-  private static final String PROP_OPERATIONS = "operations";
-  private static final String OPERATION_SET = "set";
-  private static final String OPERATION_NOTIFY = "notify";
-  private static final String OPERATION_CALL = "call";
 
   private static final String SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS
     = "usePerformanceOptimizations";
@@ -354,8 +350,8 @@ public final class Fixture {
   private static String createEmptyMessage() {
     JSONObject result = new JSONObject();
     try {
-      result.put( PROP_HEADER, new JSONObject() );
-      result.put( PROP_OPERATIONS, new JSONArray() );
+      result.put( ClientMessage.PROP_HEADER, new JSONObject() );
+      result.put( ClientMessage.PROP_OPERATIONS, new JSONArray() );
     } catch( JSONException exception ) {
       throw new IllegalStateException( "Failed to create json message", exception );
     }
@@ -373,7 +369,7 @@ public final class Fixture {
     String json = request.getParameter( PROP_MESSAGE );
     try {
       JSONObject message = new JSONObject( json );
-      JSONObject header = message.getJSONObject( PROP_HEADER );
+      JSONObject header = message.getJSONObject( ClientMessage.PROP_HEADER );
       header.put( key, value );
       request.setParameter( PROP_MESSAGE, message.toString() );
     } catch( JSONException exception ) {
@@ -393,9 +389,9 @@ public final class Fixture {
     String json = request.getParameter( PROP_MESSAGE );
     try {
       JSONObject message = new JSONObject( json );
-      JSONArray operations = message.getJSONArray( PROP_OPERATIONS );
+      JSONArray operations = message.getJSONArray( ClientMessage.PROP_OPERATIONS );
       JSONArray newOperation = new JSONArray();
-      newOperation.put( OPERATION_SET );
+      newOperation.put( ClientMessage.OPERATION_SET );
       newOperation.put( target );
       newOperation.put( new JSONObject( parameters ) );
       operations.put( newOperation );
@@ -414,9 +410,9 @@ public final class Fixture {
     String json = request.getParameter( PROP_MESSAGE );
     try {
       JSONObject message = new JSONObject( json );
-      JSONArray operations = message.getJSONArray( PROP_OPERATIONS );
+      JSONArray operations = message.getJSONArray( ClientMessage.PROP_OPERATIONS );
       JSONArray newOperation = new JSONArray();
-      newOperation.put( OPERATION_NOTIFY );
+      newOperation.put( ClientMessage.OPERATION_NOTIFY );
       newOperation.put( target );
       newOperation.put( eventName );
       newOperation.put( new JSONObject( parameters ) );
@@ -436,9 +432,9 @@ public final class Fixture {
     String json = request.getParameter( PROP_MESSAGE );
     try {
       JSONObject message = new JSONObject( json );
-      JSONArray operations = message.getJSONArray( PROP_OPERATIONS );
+      JSONArray operations = message.getJSONArray( ClientMessage.PROP_OPERATIONS );
       JSONArray newOperation = new JSONArray();
-      newOperation.put( OPERATION_CALL );
+      newOperation.put( ClientMessage.OPERATION_CALL );
       newOperation.put( target );
       newOperation.put( methodName );
       newOperation.put( new JSONObject( parameters ) );

@@ -214,8 +214,9 @@ public class ProtocolUtil_Test extends TestCase {
   }
 
   public void testReadPropertyValue_LastSetValue() {
-    String json = "{ \"header\" : {},"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ], "
                 + "[ \"set\", \"w3\", { \"p1\" : \"bar\" } ] "
                 + "] }";
@@ -254,8 +255,9 @@ public class ProtocolUtil_Test extends TestCase {
   // Helping methods
 
   private void fakeNewJsonMessage() {
-    String json = "{ \"header\" : { \"requestCounter\" : 21 },"
-                + "\"operations\" : ["
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : { \"requestCounter\" : 21 },"
+                + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : 123 } ], "
                 + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ], "
                 + "[ \"set\", \"w3\", { \"p3\" : true, \"p4\" : null } ] "

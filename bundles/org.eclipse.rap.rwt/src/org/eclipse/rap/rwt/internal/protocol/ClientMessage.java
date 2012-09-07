@@ -24,6 +24,12 @@ import org.json.JSONObject;
 
 public class ClientMessage {
 
+  public static final String PROP_HEADER = "header";
+  public static final String PROP_OPERATIONS = "operations";
+  public static final String OPERATION_SET = "set";
+  public static final String OPERATION_NOTIFY = "notify";
+  public static final String OPERATION_CALL = "call";
+
   private final JSONObject message;
   private final JSONObject header;
   private HashMap<String,List<Operation>> operationsMap;
@@ -36,13 +42,13 @@ public class ClientMessage {
       throw new IllegalArgumentException( "Could not parse json message: " + json );
     }
     try {
-      header = message.getJSONObject( "header" );
+      header = message.getJSONObject( PROP_HEADER );
     } catch( JSONException exception ) {
       throw new IllegalArgumentException( "Missing header object: " + json );
     }
     JSONArray operations;
     try {
-      operations = message.getJSONArray( "operations" );
+      operations = message.getJSONArray( PROP_OPERATIONS );
     } catch( JSONException exception ) {
       throw new IllegalArgumentException( "Missing operations array: " + json );
     }
@@ -121,11 +127,11 @@ public class ClientMessage {
   private Operation createOperation( JSONArray data ) {
     Operation result = null;
     String action = getOperationAction( data );
-    if( action.equals( "set" ) ) {
+    if( action.equals( OPERATION_SET ) ) {
       result = new SetOperation( data );
-    } else if( action.equals( "notify" ) ) {
+    } else if( action.equals( OPERATION_NOTIFY ) ) {
       result = new NotifyOperation( data );
-    } else if( action.equals( "call" ) ) {
+    } else if( action.equals( OPERATION_CALL ) ) {
       result = new CallOperation( data );
     } else {
       throw new IllegalArgumentException( "Unknown operation action: " + action );
