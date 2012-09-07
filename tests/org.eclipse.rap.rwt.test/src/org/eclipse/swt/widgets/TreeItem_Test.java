@@ -1359,6 +1359,24 @@ public class TreeItem_Test extends TestCase {
     assertFalse( item.isCached() );
   }
 
+  public void testVirtualClearAll_DoesNotRequestData() {
+    final List<Event> eventLog = new ArrayList<Event>();
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    TreeItem parentItem = new TreeItem( tree, SWT.NONE );
+    TreeItem item = new TreeItem( parentItem, SWT.NONE );
+    item.setText( "item" ); // materialize the item
+    tree.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( Event event ) {
+        eventLog.add( event );
+      }
+    } );
+
+    parentItem.clearAll( true );
+
+    assertEquals( 0, eventLog.size() );
+    assertFalse( item.isCached() );
+  }
+
   public void testVirtualSetDataEventsOnSetExpand() {
     final Tree tree = new Tree( shell, SWT.VIRTUAL );
     final List<Event> log = new ArrayList<Event>();
