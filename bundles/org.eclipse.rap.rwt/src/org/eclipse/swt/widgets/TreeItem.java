@@ -1216,6 +1216,7 @@ public class TreeItem extends Item {
         if( recursive ) {
           item.clearAll( true, false );
         }
+        parent.checkData( item, item.index );
       }
     }
   }
