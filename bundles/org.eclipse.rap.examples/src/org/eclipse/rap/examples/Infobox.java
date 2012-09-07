@@ -30,6 +30,7 @@ public class Infobox extends Composite {
 
   private Composite createInfoboxContentComposite() {
     Composite contentComp = new Composite( this, SWT.NONE );
+    contentComp.setBackgroundMode( SWT.INHERIT_FORCE );
     contentComp.setData( RWT.CUSTOM_VARIANT, "infobox" );
     GridLayout layout = ExampleUtil.createGridLayoutWithoutMargin( 1, false );
     layout.marginHeight = 35;

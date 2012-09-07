@@ -76,7 +76,7 @@ Display {
 Composite {
   padding: 0;
   opacity: 1;
-  background-color: transparent;
+  background-color: #ffffff;
   background-image: none;
   border: none;
   box-shadow: none;
@@ -159,7 +159,7 @@ Button[TOGGLE]:selected:disabled {
   cursor: default;
   color: #d2d2d2;
   background-image: none;
-  background-color: transparent;
+  background-color: #fafafa;
   border: 1px solid #d2d2d2;
 }
 
@@ -431,7 +431,7 @@ Group-Label {
 Label {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
-  background-color: transparent;
+  background-color: #ffffff;
   background-image: none;
   border: none;
   border-radius: 0;
@@ -1507,7 +1507,7 @@ Tree-Indent:first:last:expanded:hover {
 /* Scale default theme */
 
 Scale {
-  background-color: transparent;
+  background-color: white;
   border-radius: 3px;
 }
 
