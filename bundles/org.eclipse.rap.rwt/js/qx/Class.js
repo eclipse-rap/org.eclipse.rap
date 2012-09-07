@@ -690,7 +690,7 @@ qx.Class.define( "qx.Class", {
 
 
     /** Stores all defined classes */
-    __registry : qx.core.Bootstrap.__registry,
+    __registry : rwt.runtime.Bootstrap.__registry,
 
 
     /** {Map} allowed keys in non-static class definition */

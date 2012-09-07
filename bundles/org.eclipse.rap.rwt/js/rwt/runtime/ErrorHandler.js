@@ -11,7 +11,7 @@
 
 /*global console: false */
 
-qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
+qx.Class.define( "rwt.runtime.ErrorHandler", {
 
   statics : {
 

@@ -646,7 +646,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
           this._selectionNeedsUpdate = true;
         }
       } catch( ex ) {
-        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
     },
 

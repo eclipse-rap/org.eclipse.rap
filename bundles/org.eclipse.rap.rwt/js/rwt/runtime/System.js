@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.System", {
+qx.Class.define( "rwt.runtime.System", {
 
   type : "singleton",
 
@@ -89,7 +89,7 @@ qx.Class.define( "org.eclipse.rwt.System", {
       if( !this._onloadDone ) {
         this._onloadDone = true;
         rwt.widgets.base.ClientDocument.getInstance();
-        org.eclipse.rwt.MobileWebkitSupport.init();
+        rwt.runtime.MobileWebkitSupport.init();
         rwt.client.Timer.once( this._preload, this, 0 );
       }
     },

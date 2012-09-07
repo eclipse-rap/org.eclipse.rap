@@ -10,7 +10,10 @@
  *     Austin Riddle (Texas Center for Applied Technology) - draggable types
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
+
+/*global alert:false, console:false */
+
+qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
 
   type : "static",
 

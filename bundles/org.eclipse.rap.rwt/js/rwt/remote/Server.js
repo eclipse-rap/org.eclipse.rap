@@ -15,7 +15,7 @@
 var Client = rwt.client.Client;
 var Timer = rwt.client.Timer;
 var Processor = rwt.protocol.MessageProcessor;
-var ErrorHandler = org.eclipse.rwt.ErrorHandler;
+var ErrorHandler = rwt.runtime.ErrorHandler;
 var EventUtil = org.eclipse.swt.EventUtil;
 var UICallBack = rwt.client.UICallBack;
 var ClientDocument = rwt.widgets.base.ClientDocument;
@@ -256,7 +256,7 @@ qx.Class.define( "rwt.remote.Server", {
         = "<p>The server seems to be temporarily unavailable</p>"
         + "<p><a href=\"javascript:rwt.remote.Server.getInstance()._retry();\">Retry</a></p>";
       ClientDocument.getInstance().setGlobalCursor( null );
-      org.eclipse.rwt.ErrorHandler.showErrorBox( msg, false );
+      rwt.runtime.ErrorHandler.showErrorBox( msg, false );
       this._retryHandler = function() {
         var request = this._createRequest();
         var failedRequest = event.target;
@@ -268,11 +268,11 @@ qx.Class.define( "rwt.remote.Server", {
 
     _retry : function() {
       try {
-        org.eclipse.rwt.ErrorHandler.hideErrorBox();
+        rwt.runtime.ErrorHandler.hideErrorBox();
         this._showWaitHint();
         this._retryHandler();
       } catch( ex ) {
-        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
     },
 

@@ -90,7 +90,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
           throw new Error("Could not find iframe which was loaded [B]!");
         }
       } catch( ex ) {
-        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
     },
 

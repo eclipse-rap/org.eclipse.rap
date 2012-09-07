@@ -41,7 +41,7 @@ qx.Class.define( "qx.theme.manager.Appearance", {
       if( this._currentTheme ) {
         this.__cache[this._currentTheme.name] = {};
       }
-      if( org.eclipse.rwt.System.getInstance().getUiReady() ) {
+      if( rwt.runtime.System.getInstance().getUiReady() ) {
         rwt.widgets.base.ClientDocument.getInstance()._recursiveAppearanceThemeUpdate( this._currentTheme );
       }
     },

@@ -37,7 +37,7 @@ public final class ClientResources {
 
   private static final String[] JAVASCRIPT_FILES = new String[] {
     "debug-settings.js",
-    "qx/core/Bootstrap.js",
+    "rwt/runtime/Bootstrap.js",
     "qx/lang/Core.js",
     "qx/lang/Array.js",
     "qx/core/Variant.js",
@@ -162,7 +162,7 @@ public final class ClientResources {
     "rwt/widgets/MenuItemSeparator.js",
     "rwt/widgets/base/TabFolderPage.js",
     "rwt/widgets/TabItem.js",
-    "org/eclipse/rwt/ErrorHandler.js",
+    "rwt/runtime/ErrorHandler.js",
     "rwt/widgets/base/GridRowContainer.js",
     "org/eclipse/rwt/GridRowContainerWrapper.js",
     "org/eclipse/rwt/GridUtil.js",
@@ -272,7 +272,7 @@ public final class ClientResources {
     "rwt/protocol/adapter/SeparatorAdapter.js",
     "rwt/widgets/ControlDecorator.js",
     "rwt/protocol/adapter/ControlDecoratorAdapter.js",
-    "org/eclipse/rwt/MobileWebkitSupport.js",
+    "rwt/runtime/MobileWebkitSupport.js",
     "rwt/widgets/ToolTip.js",
     "rwt/protocol/adapter/ToolTipAdapter.js",
     "org/eclipse/swt/WidgetManager.js",
@@ -286,7 +286,7 @@ public final class ClientResources {
     "org/eclipse/rwt/KeyEventSupport.js",
     "rwt/client/JSExecutor.js",
     "rwt/protocol/adapter/JSExecutorAdapter.js",
-    "org/eclipse/rwt/System.js"
+    "rwt/runtime/System.js"
   };
 
   private static final String[] WIDGET_IMAGES = new String[] {

@@ -287,7 +287,7 @@ qx.Class.define("rwt.client.Timer",
           this.dispatchEvent(this.__event, false);
         }
       } catch( ex ) {
-        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
     }
   },

@@ -240,7 +240,7 @@ qx.Class.define( "rwt.widgets.Browser", {
           if( org.eclipse.swt.EventUtil.getSuspended() ) {
             throw msg;
           } else {
-            org.eclipse.rwt.ErrorHandler.processJavaScriptError( msg );
+            rwt.runtime.ErrorHandler.processJavaScriptError( msg );
           }
         }
       }
@@ -290,7 +290,7 @@ qx.Class.define( "rwt.widgets.Browser", {
             }
           }
         } catch( ex ) {
-          org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
+          rwt.runtime.ErrorHandler.processJavaScriptError( ex );
         }
         return result;
       };

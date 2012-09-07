@@ -25,7 +25,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     // but we need them here...
     org.eclipse.rwt.EventHandler.attachEvents();
     if( rwt.client.Client.isAndroidBrowser() ) {
-      org.eclipse.rwt.MobileWebkitSupport._getTouch = function( event ) {
+      rwt.runtime.MobileWebkitSupport._getTouch = function( event ) {
         // touches is always null on faked TouchEvent, use fakedTouches instead
         var touches = event.touches || event.fakeTouches;
         var touch = touches.item( 0 );
@@ -798,7 +798,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var node = widget._getTargetNode();
       this.touch( node, "touchstart" );
       this.touch( node, "touchend" );
-      org.eclipse.rwt.MobileWebkitSupport._lastMouseClickTime -= 1000;
+      rwt.runtime.MobileWebkitSupport._lastMouseClickTime -= 1000;
       this.touch( node, "touchstart" );
       this.touch( node, "touchend" );
       var expected = [ "mousedown", "mouseup", "click", "mousedown", "mouseup", "click" ];
@@ -1317,7 +1317,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     _isDraggable : function ( widget ) {
       org.eclipse.rwt.test.fixture.TestUtil.flush();
-      return org.eclipse.rwt.MobileWebkitSupport._isDraggableWidget( widget );
+      return rwt.runtime.MobileWebkitSupport._isDraggableWidget( widget );
     },
 
     touch : function( node, type, touchesNumberOrArray ) {
@@ -1371,17 +1371,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     fakeFullscreen : function() {
-      org.eclipse.rwt.MobileWebkitSupport._fullscreen = true;
+      rwt.runtime.MobileWebkitSupport._fullscreen = true;
     },
 
     fakeZoom : function( value ) {
-      org.eclipse.rwt.MobileWebkitSupport._isZoomed = function(){
+      rwt.runtime.MobileWebkitSupport._isZoomed = function(){
         return value;
       };
     },
 
     resetMobileWebkitSupport : function() {
-      var mobile = org.eclipse.rwt.MobileWebkitSupport;
+      var mobile = rwt.runtime.MobileWebkitSupport;
       mobile._lastMouseOverTarget = null;
       mobile._lastMouseDownTarget = null;
       mobile._lastMouseDownPosition = null;

@@ -68,7 +68,7 @@ rwt.client.UICallBack.prototype = {
     } catch( ex ) {
       var escapedText = rwt.protocol.EncodingUtil.escapeText( text, true );
       var msg = "Could not process UICallBack response: [" + escapedText + "]: " + ex;
-      org.eclipse.rwt.ErrorHandler.showErrorPage( msg );
+      rwt.runtime.ErrorHandler.showErrorPage( msg );
     }
     this._retryInterval = 0;
   },

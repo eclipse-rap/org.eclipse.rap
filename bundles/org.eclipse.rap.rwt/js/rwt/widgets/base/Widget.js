@@ -127,7 +127,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
           rwt.widgets.base.Widget.flushGlobalQueues();
         }
       }catch( ex ) {
-        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
     },
 
@@ -138,7 +138,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       if( rwt.widgets.base.Widget._inFlushGlobalQueues ) {
         return;
       }
-      if( !org.eclipse.rwt.System.getInstance().getUiReady() ) {
+      if( !rwt.runtime.System.getInstance().getUiReady() ) {
         return;
       }
       rwt.widgets.base.Widget._inFlushGlobalQueues = true;
