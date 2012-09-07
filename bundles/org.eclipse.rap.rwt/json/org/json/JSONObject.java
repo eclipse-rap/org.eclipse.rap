@@ -103,17 +103,18 @@ public class JSONObject {
             return this;
         }
 
-
-        /**
-         * A Null object is equal to the null value and to itself.
-         * @param object    An object to test for nullness.
-         * @return true if the object parameter is the JSONObject.NULL object
-         *  or null.
-         */
-        public boolean equals(Object object) {
-            return object == null || object == this;
-        }
-
+// RAP [if] This method looks broken as the object is compared with null. Thus, the equal check is
+// not symmetric: null.equals( JSONObject.NULL ) is not valid.
+//        /**
+//         * A Null object is equal to the null value and to itself.
+//         * @param object    An object to test for nullness.
+//         * @return true if the object parameter is the JSONObject.NULL object
+//         *  or null.
+//         */
+//        public boolean equals(Object object) {
+//            return object == null || object == this;
+//        }
+// ENDRAP [if]
 
         /**
          * Get the "null" string value.
