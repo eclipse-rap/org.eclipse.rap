@@ -1360,31 +1360,23 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testVirtualClearAll_DoesNotRequestData() {
-    final List<Event> eventLog = new ArrayList<Event>();
+    LoggingListener log = new LoggingListener();
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     TreeItem parentItem = new TreeItem( tree, SWT.NONE );
     TreeItem item = new TreeItem( parentItem, SWT.NONE );
     item.setText( "item" ); // materialize the item
-    tree.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( Event event ) {
-        eventLog.add( event );
-      }
-    } );
+    tree.addListener( SWT.SetData, log );
 
     parentItem.clearAll( true );
 
-    assertEquals( 0, eventLog.size() );
+    assertEquals( 0, log.size() );
     assertFalse( item.isCached() );
   }
 
   public void testVirtualSetDataEventsOnSetExpand() {
+    LoggingListener log = new LoggingListener();
     final Tree tree = new Tree( shell, SWT.VIRTUAL );
-    final List<Event> log = new ArrayList<Event>();
-    tree.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( Event event ) {
-        log.add( event );
-      }
-    } );
+    tree.addListener( SWT.SetData, log );
     tree.setItemCount( 1 );
     TreeItem item = tree.getItem( 0 );
     item.setItemCount( 10 );
