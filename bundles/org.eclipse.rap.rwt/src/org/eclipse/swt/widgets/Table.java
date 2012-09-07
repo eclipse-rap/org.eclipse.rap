@@ -2570,8 +2570,9 @@ public class Table extends Composite {
 
   private void adjustTopIndex() {
     int visibleItemCount = getVisibleItemCount( false );
-    if( topIndex > itemCount - visibleItemCount - 1 ) {
-      topIndex = Math.max( 0, itemCount - visibleItemCount - 1 );
+    int correction = visibleItemCount == 0 ? 1 : 0;
+    if( topIndex > itemCount - visibleItemCount - correction ) {
+      topIndex = Math.max( 0, itemCount - visibleItemCount - correction );
     }
   }
 

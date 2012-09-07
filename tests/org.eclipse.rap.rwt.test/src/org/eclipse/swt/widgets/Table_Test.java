@@ -274,18 +274,19 @@ public class Table_Test extends TestCase {
     }
     int itemCount = table.getItemCount();
     int visibleItemCount = table.getVisibleItemCount( false );
-    assertEquals( itemCount - visibleItemCount - 1, table.getTopIndex() );
+    assertEquals( itemCount - visibleItemCount, table.getTopIndex() );
   }
 
   public void testTopIndexOnResize() {
     Table table = new Table( shell, SWT.NONE );
-    table.setSize( 100, 100 );
     createTableItems( table, 10 );
+    int visibleItems = 3;
+    table.setSize( 100, visibleItems * table.getItemHeight() );
     table.setTopIndex( 5 );
 
-    table.setSize( 100, 165 );
+    table.setSize( 100, ( visibleItems + 3 ) * table.getItemHeight() );
 
-    assertEquals( 3, table.getTopIndex() );
+    assertEquals( 4, table.getTopIndex() );
   }
 
   public void testTopIndexOnTemporaryResize() {
@@ -303,8 +304,9 @@ public class Table_Test extends TestCase {
   public void testTopIndexInResizeEvent() {
     final int[] log = new int[ 1 ];
     final Table table = new Table( shell, SWT.NONE );
-    table.setSize( 100, 100 );
     createTableItems( table, 10 );
+    int visibleItems = 3;
+    table.setSize( 100, visibleItems * table.getItemHeight() );
     table.setTopIndex( 5 );
     table.addControlListener( new ControlAdapter() {
       @Override
@@ -313,19 +315,20 @@ public class Table_Test extends TestCase {
       }
     } );
 
-    table.setSize( 100, 165 );
+    table.setSize( 100, ( visibleItems + 3 ) * table.getItemHeight() );
 
-    assertEquals( 3, log[ 0 ] );
+    assertEquals( 4, log[ 0 ] );
   }
 
   public void testSetTopIndexAdjust() {
     Table table = new Table( shell, SWT.NONE );
-    table.setSize( 100, 100 );
     createTableItems( table, 10 );
+    int visibleItems = 3;
+    table.setSize( 100, visibleItems * table.getItemHeight() );
 
     table.setTopIndex( 8 );
 
-    assertEquals( 6, table.getTopIndex() );
+    assertEquals( 7, table.getTopIndex() );
   }
 
   public void testDispose() {
@@ -1252,7 +1255,7 @@ public class Table_Test extends TestCase {
     assertEquals( 100, table.getTopIndex() );
 
     table.showItem( table.getItem( itemCount - 1 ) );
-    assertEquals( 199, table.getTopIndex() );
+    assertEquals( 200, table.getTopIndex() );
 
     table.showItem( table.getItem( 42 ) );
     assertEquals( 42, table.getTopIndex() );

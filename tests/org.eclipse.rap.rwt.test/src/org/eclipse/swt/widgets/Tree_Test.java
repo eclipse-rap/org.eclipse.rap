@@ -1356,13 +1356,14 @@ public class Tree_Test extends TestCase {
 
   public void testTopItemOnResize() {
     Tree tree = new Tree( composite, SWT.NONE );
-    tree.setSize( 100, 100 );
     createTreeItems( tree, 10 );
+    int visibleItems = 3;
+    tree.setSize( 100, visibleItems * tree.getItemHeight() );
     tree.setTopItem( tree.getItem( 5 ) );
 
-    tree.setSize( 100, 165 );
+    tree.setSize( 100, ( visibleItems + 3 ) * tree.getItemHeight() );
 
-    assertEquals( tree.getItem( 3 ), tree.getTopItem() );
+    assertEquals( tree.getItem( 4 ), tree.getTopItem() );
   }
 
   public void testTopIndexOnTemporaryResize() {
@@ -1380,8 +1381,9 @@ public class Tree_Test extends TestCase {
   public void testTopItemInResizeEvent() {
     final TreeItem[] log = new TreeItem[ 1 ];
     final Tree tree = new Tree( composite, SWT.NONE );
-    tree.setSize( 100, 100 );
     createTreeItems( tree, 10 );
+    int visibleItems = 3;
+    tree.setSize( 100, visibleItems * tree.getItemHeight() );
     tree.setTopItem( tree.getItem( 5 ) );
     tree.addControlListener( new ControlAdapter() {
       @Override
@@ -1390,9 +1392,9 @@ public class Tree_Test extends TestCase {
       }
     } );
 
-    tree.setSize( 100, 165 );
+    tree.setSize( 100, ( visibleItems + 3 ) * tree.getItemHeight() );
 
-    assertSame( tree.getItem( 3 ), log[ 0 ] );
+    assertSame( tree.getItem( 4 ), log[ 0 ] );
   }
 
   public void testSetTopItemTwice() {
