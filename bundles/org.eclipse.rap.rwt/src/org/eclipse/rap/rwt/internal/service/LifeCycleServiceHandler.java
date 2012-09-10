@@ -16,7 +16,6 @@ import java.text.MessageFormat;
 import java.util.Map;
 
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.branding.AbstractBranding;
@@ -29,6 +28,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTRequestVersionControl;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.theme.JsonValue;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
@@ -188,9 +188,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   }
 
   private static boolean hasInitializeParameter() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String initializeParameter = request.getParameter( RequestParams.RWT_INITIALIZE );
-    return "true".equals( initializeParameter );
+    return "true".equals( ProtocolUtil.readHeaderPropertyValue( RequestParams.RWT_INITIALIZE ) );
   }
 
   private static void setJsonResponseHeaders() {

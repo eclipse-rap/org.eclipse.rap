@@ -227,7 +227,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     Fixture.fakeNewRequest( new Display() );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
-    Fixture.fakeRequestParam( RequestParams.RWT_INITIALIZE, "true" );
+    Fixture.fakeHeaderParameter( RequestParams.RWT_INITIALIZE, "true" );
   }
 
   private void simulateUiRequest() {

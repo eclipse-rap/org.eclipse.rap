@@ -24,6 +24,7 @@ import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.events.*;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -148,9 +149,7 @@ public final class BrowserHistory
   // Helping methods
 
   private static boolean isStartup() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String initializeParameter = request.getParameter( RequestParams.RWT_INITIALIZE );
-    return "true".equals( initializeParameter );
+    return "true".equals( ProtocolUtil.readHeaderPropertyValue( RequestParams.RWT_INITIALIZE ) );
   }
 
   private void processNavigationEvent() {

@@ -28,10 +28,8 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
-import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -348,21 +346,20 @@ public class RWTLifeCycle2_Test extends TestCase {
   }
 
   private TestRequest newGetRequest() {
-    TestRequest result = new TestRequest();
-    result.setSession( session );
-    result.setMethod( HTTP.METHOD_GET );
+    Fixture.fakeNewGetRequest();
+    TestRequest result = ( TestRequest )ContextProvider.getRequest();
     result.setServletPath( "/test" );
+    result.setSession( session );
     return result;
   }
 
   private TestRequest newPostRequest( boolean initialize) {
-    TestRequest result = new TestRequest();
-    result.setSession( session );
-    result.setMethod( HTTP.METHOD_POST );
+    Fixture.fakeNewRequest();
+    TestRequest result = ( TestRequest )ContextProvider.getRequest();
     result.setServletPath( "/test" );
-    result.setParameter( ClientMessage.PROP_MESSAGE, Fixture.createEmptyMessage() );
+    result.setSession( session );
     if( initialize ) {
-      result.setParameter( RequestParams.RWT_INITIALIZE, "true" );
+      Fixture.fakeHeaderParameter( RequestParams.RWT_INITIALIZE, "true" );
     }
     return result;
   }
@@ -370,8 +367,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   private void registerTestLogger() {
     session = ContextProvider.getSessionStore().getHttpSession();
     ServletContext servletContext = session.getServletContext();
-    TestServletContext servletContextImpl
-      = ( TestServletContext )servletContext;
+    TestServletContext servletContextImpl = ( TestServletContext )servletContext;
     servletContextImpl.setLogger( new TestLogger() {
       public void log( String message, Throwable throwable ) {
         if( throwable != null ) {

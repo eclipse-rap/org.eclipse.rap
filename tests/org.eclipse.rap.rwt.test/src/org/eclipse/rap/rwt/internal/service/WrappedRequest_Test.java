@@ -104,7 +104,7 @@ public class WrappedRequest_Test extends TestCase {
 
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( "param", null );
-    Fixture.fakeRequestParam( RequestParams.RWT_INITIALIZE, "true" );
+    Fixture.fakeHeaderParameter( RequestParams.RWT_INITIALIZE, "true" );
     RWTFactory.getServiceManager().getHandler().service();
 
     assertEquals( "value", ContextProvider.getRequest().getParameter( "param" ) );
