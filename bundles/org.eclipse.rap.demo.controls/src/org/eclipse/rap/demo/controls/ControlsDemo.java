@@ -95,7 +95,7 @@ public class ControlsDemo implements IEntryPoint, Serializable {
       new ZOrderTab( topFolder ),
       new FocusTab( topFolder ),
       new VariantsTab( topFolder ),
-      new ControlDecoratorTab( topFolder ),
+      new ControlDecorationTab( topFolder ),
       new ErrorHandlingTab( topFolder ),
       new NLSTab( topFolder ),
     };
