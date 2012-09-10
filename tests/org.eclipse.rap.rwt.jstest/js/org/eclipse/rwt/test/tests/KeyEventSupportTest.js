@@ -684,7 +684,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
           "key" : true
         }
       } );
-      var text = rwt.protocol.ObjectManager.getObject( "w3" );
+      var text = rwt.protocol.ObjectRegistry.getObject( "w3" );
       TestUtil.flush();
       text.focus();
       TestUtil.initRequestLog();
@@ -700,7 +700,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     _setActiveKeys : function( widget, activeKeys ) {
-      var id = rwt.protocol.ObjectManager.getId( widget );
+      var id = rwt.protocol.ObjectRegistry.getId( widget );
       var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : id,
@@ -712,7 +712,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     _setCancelKeys : function( widget, cancelKeys ) {
-      var id = rwt.protocol.ObjectManager.getId( widget );
+      var id = rwt.protocol.ObjectRegistry.getId( widget );
       var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : id,

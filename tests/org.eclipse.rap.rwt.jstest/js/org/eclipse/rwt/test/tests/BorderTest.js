@@ -398,7 +398,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
     },
     
     _getBorderColors : function( style ) {
-      var ColorUtil = qx.util.ColorUtil;
+      var ColorUtil = rwt.util.ColorUtil;
       var result = [];
       result[ 0 ] = style.borderTopColor; 
       result[ 1 ] = style.borderRightColor;

@@ -535,7 +535,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
     },
 
-    testBackgroundColorTransparent : qx.core.Variant.select( "qx.client", {
+    testBackgroundColorTransparent : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
       "newmshtml" : function() {
         var widget = this._createWidget();

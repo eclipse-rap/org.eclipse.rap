@@ -173,7 +173,7 @@ qx.Class.define("qx.ui.selection.Selection",
      * @return {Boolean} whether the selection is empty
      */
     isEmpty : function() {
-      return qx.lang.Object.isEmpty(this.__storage);
+      return rwt.util.Object.isEmpty(this.__storage);
     }
   },
 

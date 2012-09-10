@@ -276,7 +276,7 @@ qx.Class.define( "rwt.remote.Server", {
       }
     },
 
-    _isConnectionError : qx.core.Variant.select( "qx.client", {
+    _isConnectionError : rwt.util.Variant.select( "qx.client", {
       "mshtml|newmshtml" : function( statusCode ) {
         // for a description of the IE status codes, see
         // http://support.microsoft.com/kb/193625
@@ -306,7 +306,7 @@ qx.Class.define( "rwt.remote.Server", {
 
     _isJsonResponse : function( event ) {
       var contentType = event.responseHeaders[ "Content-Type" ];
-      return contentType.indexOf( qx.util.Mime.JSON ) !== -1;
+      return contentType.indexOf( "application/json" ) !== -1;
     },
 
     ///////////////////////////////////////////////////

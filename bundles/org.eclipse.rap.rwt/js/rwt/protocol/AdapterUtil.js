@@ -51,7 +51,7 @@ rwt.protocol.AdapterUtil = {
       if( value !== null ) {
         var childrenCount = value.length;
         var applyZIndex = function( child ) {
-          var index = value.indexOf( rwt.protocol.ObjectManager.getId( child ) );
+          var index = value.indexOf( rwt.protocol.ObjectRegistry.getId( child ) );
           child.setZIndex( childrenCount - index );
         };
         for( var i = 0; i < childrenCount; i++ ) {
@@ -63,7 +63,7 @@ rwt.protocol.AdapterUtil = {
       if( value === null ) {
         widget.resetTextColor();
       } else {
-        widget.setTextColor( qx.util.ColorUtil.rgbToRgbString( value ) );
+        widget.setTextColor( rwt.util.ColorUtil.rgbToRgbString( value ) );
       }
     },
     "background" : function( widget, value ) {
@@ -76,7 +76,7 @@ rwt.protocol.AdapterUtil = {
         if( widget.__user$backgroundGradient == null ) {
           widget.setBackgroundGradient( null );
         }
-        var color = value[ 3 ] === 0 ? "transparent" : qx.util.ColorUtil.rgbToRgbString( value );
+        var color = value[ 3 ] === 0 ? "transparent" : rwt.util.ColorUtil.rgbToRgbString( value );
         widget.setBackgroundColor( color );
       }
     },
@@ -155,11 +155,11 @@ rwt.protocol.AdapterUtil = {
       } );
     },
     "activeKeys" : function( widget, value ) {
-      var map = qx.lang.Object.fromArray( value );
+      var map = rwt.util.Object.fromArray( value );
       widget.setUserData( "activeKeys", map );
     },
     "cancelKeys" : function( widget, value ) {
-      var map = qx.lang.Object.fromArray( value );
+      var map = rwt.util.Object.fromArray( value );
       widget.setUserData( "cancelKeys", map );
     }
   },
@@ -247,7 +247,7 @@ rwt.protocol.AdapterUtil = {
         var vertical = value[ 2 ];
         gradient = [];
         for( var i = 0; i < colors.length; i++ ) {
-          gradient[ i ] = [ percents[ i ] / 100, qx.util.ColorUtil.rgbToRgbString( colors[ i ] ) ];
+          gradient[ i ] = [ percents[ i ] / 100, rwt.util.ColorUtil.rgbToRgbString( colors[ i ] ) ];
         }
         gradient.horizontal = !vertical;
       }
@@ -256,7 +256,7 @@ rwt.protocol.AdapterUtil = {
     "roundedBorder" : function( widget, value ) {
       if( value ) {
         var width = value[ 0 ];
-        var color = qx.util.ColorUtil.rgbToRgbString( value[ 1 ] );
+        var color = rwt.util.ColorUtil.rgbToRgbString( value[ 1 ] );
         var radii = value.slice( -4 );
         var border = new org.eclipse.rwt.Border( width, "rounded", color, radii );
         widget.setBorder( border );
@@ -282,7 +282,7 @@ rwt.protocol.AdapterUtil = {
   },
 
   extendControlPropertyHandler : function( handler ) {
-    return qx.lang.Object.mergeWith( handler, this._controlPropertyHandler, false );
+    return rwt.util.Object.mergeWith( handler, this._controlPropertyHandler, false );
   },
 
   extendControlListeners : function( list ) {
@@ -290,7 +290,7 @@ rwt.protocol.AdapterUtil = {
   },
 
   extendControlListenerHandler : function( handler ) {
-    return qx.lang.Object.mergeWith( handler, this._controlListenerHandler, false );
+    return rwt.util.Object.mergeWith( handler, this._controlListenerHandler, false );
   },
 
   getBackgroundGradientHandler : function() {
@@ -356,11 +356,11 @@ rwt.protocol.AdapterUtil = {
     if( id == null ) {
       fun( null );
     } else {
-      var target = rwt.protocol.ObjectManager.getObject( id );
+      var target = rwt.protocol.ObjectRegistry.getObject( id );
       if( target ) {
         fun( target );
       } else {
-        rwt.protocol.ObjectManager.addRegistrationCallback( id, fun );
+        rwt.protocol.ObjectRegistry.addRegistrationCallback( id, fun );
       }
     }
   },

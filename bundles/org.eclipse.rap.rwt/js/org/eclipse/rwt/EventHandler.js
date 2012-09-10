@@ -17,7 +17,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
 
   statics : {
     _filter : {},
-    _allowContextMenu : qx.lang.Function.returnFalse,
+    _allowContextMenu : rwt.util.Function.returnFalse,
     _captureWidget : null,
     _focusRoot : null,
     _menuManager : null,
@@ -32,14 +32,14 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     // Public functions
 
     init : function() {
-      var functionUtil = qx.lang.Function;
+      var functionUtil = rwt.util.Function;
       this.__onmouseevent = functionUtil.bind( this._onmouseevent, this );
       this.__ondragevent = functionUtil.bind( this._ondragevent, this );
       this.__onselectevent = functionUtil.bind( this._onselectevent, this );
       this.__onwindowblur = functionUtil.bind( this._onwindowblur, this );
       this.__onwindowfocus = functionUtil.bind( this._onwindowfocus, this );
       this.__onwindowresize = functionUtil.bind( this._onwindowresize, this );
-      this.__onKeyEvent = qx.lang.Function.bind( this._onKeyEvent, this );
+      this.__onKeyEvent = rwt.util.Function.bind( this._onKeyEvent, this );
       org.eclipse.rwt.EventHandlerUtil.applyBrowserFixes();
     },
 
@@ -257,7 +257,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     },
 
     // TODO [tb] : refactor to work like _onKeyEvent
-    _processMouseEvent : qx.core.Variant.select("qx.client",  {
+    _processMouseEvent : rwt.util.Variant.select("qx.client",  {
       "mshtml" : function() {
         var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
         var vDomEvent = EventHandlerUtil.getDomEvent( arguments );
@@ -563,7 +563,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       "keyup"
     ],
 
-    _dragEventTypes : qx.core.Variant.select("qx.client", {
+    _dragEventTypes : rwt.util.Variant.select("qx.client", {
       "gecko" : [
         "dragdrop",
         "dragover",
@@ -632,7 +632,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
      * if the target of the mousedown is the same than with the mouseup.
      * If the content moved away, the click isn't fired.
      */
-    _onmouseevent_click_fix : qx.core.Variant.select("qx.client", {
+    _onmouseevent_click_fix : rwt.util.Variant.select("qx.client", {
       "gecko" : function( vDomTarget, vType, vDispatchTarget ) {
         var vReturn = false;
         switch( vType ) {

@@ -12,7 +12,7 @@
 rwt.protocol.AdapterRegistry.add( "rwt.GC", {
 
   factory : function( properties ) {
-    var parent = rwt.protocol.ObjectManager.getObject( properties.parent );
+    var parent = rwt.protocol.ObjectRegistry.getObject( properties.parent );
     return new org.eclipse.swt.graphics.GC( parent );
   },
 

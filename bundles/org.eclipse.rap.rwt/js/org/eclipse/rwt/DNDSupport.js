@@ -150,7 +150,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       this._dropTargets[ hash ] = {
         "actions" : this._operationsToActions( operations )
       };
-      widget.setSupportsDropMethod( qx.lang.Function.returnTrue );
+      widget.setSupportsDropMethod( rwt.util.Function.returnTrue );
     },
 
     setDropTargetTransferTypes : function( widget, transferTypes ) {

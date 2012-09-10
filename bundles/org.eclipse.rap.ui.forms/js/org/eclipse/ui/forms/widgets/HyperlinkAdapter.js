@@ -48,14 +48,14 @@ rwt.protocol.AdapterRegistry.add( "forms.widgets.Hyperlink", {
       if( value === null ) {
         widget.setActiveTextColor( null );
       } else {
-        widget.setActiveTextColor( qx.util.ColorUtil.rgbToRgbString( value ) );
+        widget.setActiveTextColor( rwt.util.ColorUtil.rgbToRgbString( value ) );
       }
     },
     "activeBackground" : function( widget, value ) {
       if( value === null ) {
         widget.setActiveBackgroundColor( null );
       } else {
-        widget.setActiveBackgroundColor( qx.util.ColorUtil.rgbToRgbString( value ) );
+        widget.setActiveBackgroundColor( rwt.util.ColorUtil.rgbToRgbString( value ) );
       }
     }
   } ),

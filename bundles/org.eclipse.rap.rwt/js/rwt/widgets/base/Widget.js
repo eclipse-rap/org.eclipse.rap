@@ -165,7 +165,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
 
     removeFromGlobalWidgetQueue : function(vWidget) {
       if (vWidget._isInGlobalWidgetQueue) {
-        qx.lang.Array.remove(rwt.widgets.base.Widget._globalWidgetQueue, vWidget);
+        rwt.util.Array.remove(rwt.widgets.base.Widget._globalWidgetQueue, vWidget);
         delete vWidget._isInGlobalWidgetQueue;
       }
     },
@@ -196,7 +196,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
 
     removeFromGlobalElementQueue : function(vWidget) {
       if (vWidget._isInGlobalElementQueue) {
-        qx.lang.Array.remove(rwt.widgets.base.Widget._globalElementQueue, vWidget);
+        rwt.util.Array.remove(rwt.widgets.base.Widget._globalElementQueue, vWidget);
         delete vWidget._isInGlobalElementQueue;
       }
     },
@@ -227,7 +227,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
 
     removeFromGlobalStateQueue : function(vWidget) {
       if (vWidget._isInGlobalStateQueue) {
-        qx.lang.Array.remove(rwt.widgets.base.Widget._globalStateQueue, vWidget);
+        rwt.util.Array.remove(rwt.widgets.base.Widget._globalStateQueue, vWidget);
         delete vWidget._isInGlobalStateQueue;
       }
     },
@@ -238,7 +238,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       // the queue may change while doing the flush so we work on a copy of
       // the queue and loop while the queue has any entries.
       while(Widget._globalStateQueue.length > 0) {
-        var queue = qx.lang.Array.copy(Widget._globalStateQueue);
+        var queue = rwt.util.Array.copy(Widget._globalStateQueue);
         Widget._globalStateQueue = [];
         for (var i=0, l=queue.length; i<l; i++) {
           var widget = queue[i];
@@ -262,7 +262,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
 
     removeFromGlobalJobQueue : function(vWidget) {
       if (vWidget._isInGlobalJobQueue) {
-        qx.lang.Array.remove(rwt.widgets.base.Widget._globalJobQueue, vWidget);
+        rwt.util.Array.remove(rwt.widgets.base.Widget._globalJobQueue, vWidget);
         delete vWidget._isInGlobalJobQueue;
       }
     },
@@ -294,7 +294,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
 
     removeFromGlobalLayoutQueue : function(vParent) {
       if (vParent._isInGlobalLayoutQueue) {
-        qx.lang.Array.remove(rwt.widgets.base.Widget._globalLayoutQueue, vParent);
+        rwt.util.Array.remove(rwt.widgets.base.Widget._globalLayoutQueue, vParent);
         delete vParent._isInGlobalLayoutQueue;
       }
     },
@@ -395,7 +395,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
         delete vLazyQueues[vKey];
       }
       // reset queue if it is empty. This frees some browser memory
-      if (qx.lang.Object.isEmpty(vLazyQueues)) {
+      if (rwt.util.Object.isEmpty(vLazyQueues)) {
         rwt.widgets.base.Widget._lazyGlobalDisplayQueues = {};
       }
       // Reset display queue flag for widgets in fastQueue
@@ -557,7 +557,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       ];
       for (var i=0, l=a.length, p, b, t; i<l; i++) {
         p = a[i];
-        b = "_computed" + qx.lang.String.toFirstUp(p);
+        b = "_computed" + rwt.util.String.toFirstUp(p);
         t = b + "Type";
         statics.layoutPropertyTypes[p] = {
           dataType    : t,
@@ -1543,16 +1543,16 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     // CHILDREN HANDLING
 
     // NOTE: Implemented in Parent.js
-    getChildren : qx.lang.Function.returnNull,
-    getChildrenLength : qx.lang.Function.returnZero,
-    hasChildren : qx.lang.Function.returnFalse,
-    isEmpty : qx.lang.Function.returnTrue,
-    indexOf : qx.lang.Function.returnNegativeIndex,
-    contains : qx.lang.Function.returnFalse,
-    getVisibleChildren : qx.lang.Function.returnNull,
-    getVisibleChildrenLength : qx.lang.Function.returnZero,
-    hasVisibleChildren : qx.lang.Function.returnFalse,
-    isVisibleEmpty : qx.lang.Function.returnTrue,
+    getChildren : rwt.util.Function.returnNull,
+    getChildrenLength : rwt.util.Function.returnZero,
+    hasChildren : rwt.util.Function.returnFalse,
+    isEmpty : rwt.util.Function.returnTrue,
+    indexOf : rwt.util.Function.returnNegativeIndex,
+    contains : rwt.util.Function.returnFalse,
+    getVisibleChildren : rwt.util.Function.returnNull,
+    getVisibleChildrenLength : rwt.util.Function.returnZero,
+    hasVisibleChildren : rwt.util.Function.returnFalse,
+    isVisibleEmpty : rwt.util.Function.returnTrue,
 
     /////////////////
     //  CORE MODIFIER
@@ -1593,7 +1593,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
         this._cachedInnerHeight = null;
         this._cachedOuterHeight = null;
         // Finally remove from children array
-        qx.lang.Array.removeAt(old.getChildren(), vOldIndex);
+        rwt.util.Array.removeAt(old.getChildren(), vOldIndex);
         // Invalidate visible children cache
         old._invalidateVisibleChildren();
         // Remove child from old parent's children queue
@@ -1610,7 +1610,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       if (value) {
         this._hasParent = true;
         if (typeof this._insertIndex == "number") {
-          qx.lang.Array.insertAt(value.getChildren(), this, this._insertIndex);
+          rwt.util.Array.insertAt(value.getChildren(), this, this._insertIndex);
           delete this._insertIndex;
         } else {
           value.getChildren().push(this);
@@ -1680,10 +1680,10 @@ qx.Class.define( "rwt.widgets.base.Widget", {
           rwt.widgets.base.Widget.addToGlobalElementQueue(this);
         }
         rwt.widgets.base.Widget.addToGlobalStateQueue( this );
-        if(!qx.lang.Object.isEmpty(this._jobQueue ) ) {
+        if(!rwt.util.Object.isEmpty(this._jobQueue ) ) {
           rwt.widgets.base.Widget.addToGlobalJobQueue( this );
         }
-        if( !qx.lang.Object.isEmpty( this._childrenQueue ) ) {
+        if( !rwt.util.Object.isEmpty( this._childrenQueue ) ) {
           rwt.widgets.base.Widget.addToGlobalLayoutQueue( this );
         }
         // displayable end
@@ -1719,9 +1719,9 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       return true;
     },
 
-    addToCustomQueues : qx.lang.Function.returnTrue,
-    removeFromCustomQueues : qx.lang.Function.returnTrue,
-    _handleDisplayableCustom : qx.lang.Function.returnTrue,
+    addToCustomQueues : rwt.util.Function.returnTrue,
+    removeFromCustomQueues : rwt.util.Function.returnTrue,
+    _handleDisplayableCustom : rwt.util.Function.returnTrue,
 
     _computeDisplayable : function() {
       return this.getDisplay() && this.getParent() && this.getParent()._isDisplayable ? true : false;
@@ -1736,7 +1736,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       this.dispatchSimpleEvent( "appear" );
     },
 
-    _ieFixLayoutOnAppear : qx.core.Variant.select( "qx.client", {
+    _ieFixLayoutOnAppear : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
         var width = this._style.width;
         var height = this._style.height;
@@ -1753,7 +1753,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
           this._innerStyle.height = height;
         }
       },
-      "default" : qx.lang.Function.returnTrue
+      "default" : rwt.util.Function.returnTrue
     } ),
 
     _beforeDisappear : function() {
@@ -1931,7 +1931,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       // 1. Pre checks
       var vQueue = this._jobQueue;
       var vParent = this.getParent();
-      if (!vParent || qx.lang.Object.isEmpty(vQueue)) {
+      if (!vParent || rwt.util.Object.isEmpty(vQueue)) {
         return;
       }
       var vLayoutImpl = this instanceof rwt.widgets.base.Parent ? this.getLayoutImpl() : null;
@@ -2048,8 +2048,8 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     ////////////////////////////////////////////
     // METHODS TO GIVE THE LAYOUTERS INFORMATION
 
-    _isWidthEssential : qx.lang.Function.returnTrue,
-    _isHeightEssential : qx.lang.Function.returnTrue,
+    _isWidthEssential : rwt.util.Function.returnTrue,
+    _isHeightEssential : rwt.util.Function.returnTrue,
 
     _computeBoxWidthFallback : function() {
       return 0;
@@ -2061,12 +2061,12 @@ qx.Class.define( "rwt.widgets.base.Widget", {
 
     _computeBoxWidth : function() {
       var vLayoutImpl = this.getParent().getLayoutImpl();
-      return Math.max(0, qx.lang.Number.limit(vLayoutImpl.computeChildBoxWidth(this), this.getMinWidthValue(), this.getMaxWidthValue()));
+      return Math.max(0, rwt.util.Number.limit(vLayoutImpl.computeChildBoxWidth(this), this.getMinWidthValue(), this.getMaxWidthValue()));
     },
 
     _computeBoxHeight : function() {
       var vLayoutImpl = this.getParent().getLayoutImpl();
-      return Math.max(0, qx.lang.Number.limit(vLayoutImpl.computeChildBoxHeight(this), this.getMinHeightValue(), this.getMaxHeightValue()));
+      return Math.max(0, rwt.util.Number.limit(vLayoutImpl.computeChildBoxHeight(this), this.getMinHeightValue(), this.getMaxHeightValue()));
     },
 
     _computeOuterWidth : function() {
@@ -2180,7 +2180,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     ///////////////////
     // RECOMPUTE RANGES
 
-    _recomputeRangeX : qx.core.Variant.select("qx.client", {
+    _recomputeRangeX : rwt.util.Variant.select("qx.client", {
       "mshtml|opera|webkit" : function() {
         if (this._computedLeftTypeNull || this._computedRightTypeNull) {
           return false;
@@ -2193,7 +2193,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       }
     } ),
 
-    _recomputeRangeY : qx.core.Variant.select("qx.client", {
+    _recomputeRangeY : rwt.util.Variant.select("qx.client", {
       "mshtml|opera|webkit" : function() {
         if (this._computedTopTypeNull || this._computedBottomTypeNull) {
           return false;
@@ -2209,7 +2209,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     ///////////////////////
     // RECOMPUTE STRETCHING
 
-    _recomputeStretchingX : qx.core.Variant.select("qx.client", {
+    _recomputeStretchingX : rwt.util.Variant.select("qx.client", {
       "mshtml|opera|webkit" : function() {
         if (this.getAllowStretchX() && this._computedWidthTypeNull) {
           this._computedWidthValue = null;
@@ -2226,7 +2226,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       }
     } ),
 
-    _recomputeStretchingY : qx.core.Variant.select("qx.client", {
+    _recomputeStretchingY : rwt.util.Variant.select("qx.client", {
       "mshtml|opera|webkit" : function() {
         if (this.getAllowStretchY() && this._computedHeightTypeNull) {
           this._computedHeightValue = null;
@@ -2914,7 +2914,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       }
     },
 
-    _prepareStyleMap : qx.core.Variant.select("qx.client", {
+    _prepareStyleMap : rwt.util.Variant.select("qx.client", {
       "mshtml" : function( map ) {
         if( map.shadow && map.border && map.border.getStyle() !== "rounded" ) {
           var width = map.border.getWidthTop();
@@ -2963,7 +2963,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       }
     },
 
-    _applyStateStyleFocus : qx.core.Variant.select("qx.client", {
+    _applyStateStyleFocus : rwt.util.Variant.select("qx.client", {
       "mshtml" : function(vStates) {},
       "default" : function(vStates) {
         if (vStates.focused) {
@@ -3032,7 +3032,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       return true;
     },
 
-    removeHtmlProperty : qx.core.Variant.select("qx.client", {
+    removeHtmlProperty : rwt.util.Variant.select("qx.client", {
       "mshtml" : function(propName) {
         if (!this._htmlProperties) {
           return;
@@ -3227,7 +3227,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       return null;
     },
 
-    _ontabfocus : qx.lang.Function.returnTrue,
+    _ontabfocus : rwt.util.Function.returnTrue,
 
     _applyFocused : function(value, old) {
       if (!this.isCreated()) {
@@ -3248,14 +3248,14 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       }
     },
 
-    _applyHideFocus : qx.core.Variant.select("qx.client", {
+    _applyHideFocus : rwt.util.Variant.select("qx.client", {
       "mshtml" : function(value, old) {
         this.setHtmlProperty("hideFocus", value);
       },
       // Need no implementation for others then mshtml, because
       // all these browsers support css outlines and do not
       // have an attribute "hideFocus" as IE.
-      "default" : qx.lang.Function.returnTrue
+      "default" : rwt.util.Function.returnTrue
     } ),
 
     _visualizeBlur : function() {
@@ -3317,7 +3317,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     ////////////////////
     // TAB INDEX SUPPORT
 
-    _applyTabIndex : qx.core.Variant.select("qx.client", {
+    _applyTabIndex : rwt.util.Variant.select("qx.client", {
       "mshtml" : function(value, old) {
         /*
         if (value < 0 || !this.getEnabled()) {
@@ -3349,7 +3349,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     /////////////////////
     // SELECTABLE SUPPORT
 
-    _applySelectable : qx.core.Variant.select("qx.client", {
+    _applySelectable : rwt.util.Variant.select("qx.client", {
       // "unselectable" works locally and does not affect children
       // "user-select" is not inherited, but it does affect children
       // in the same way that display: none does, it limits it.
@@ -3426,7 +3426,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     // CURSOR SUPPORT
 
     // TODO: maybe we could use cursor:url() for not suppoted cursors.
-    __cursorMap : qx.core.Variant.select("qx.client", {
+    __cursorMap : rwt.util.Variant.select("qx.client", {
       "mshtml" : {
         "default" : "default",
         "wait" : "wait",
@@ -3585,7 +3585,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     ///////////////////
     // OVERFLOW SUPPORT
 
-    _applyOverflow : qx.core.Variant.select("qx.client", {
+    _applyOverflow : rwt.util.Variant.select("qx.client", {
       "default" : function(value, old) {
         // Mshtml and WebKit conform to CSS3 Spec. Eventually there will be multiple
         // browsers which support these new overflowX overflowY properties.
@@ -3737,7 +3737,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
       }
     },
 
-    _removeBackgroundColor : qx.core.Variant.select( "qx.client", {
+    _removeBackgroundColor : rwt.util.Variant.select( "qx.client", {
       "default" : function() {
         this.removeStyleProperty( "backgroundColor" );
        },
@@ -3773,7 +3773,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
     _prepareGraphicsSupport : ( function() {
       var result;
       if( rwt.client.Client.supportsCss3() ) {
-        result = qx.lang.Function.returnTrue;
+        result = rwt.util.Function.returnTrue;
       } else {
         result = function() {
           if( !this._targetNodeEnabled && !this._isCreated ) {

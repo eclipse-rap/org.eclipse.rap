@@ -309,7 +309,7 @@ qx.Class.define( "rwt.widgets.Browser", {
       this._eval( script.join( "" ) );
     },
 
-    destroyFunction : qx.core.Variant.select( "qx.client", {
+    destroyFunction : rwt.util.Variant.select( "qx.client", {
       "default" : function( name ) {
         delete this._browserFunctions[ name ];
         var win = this.getContentWindow();

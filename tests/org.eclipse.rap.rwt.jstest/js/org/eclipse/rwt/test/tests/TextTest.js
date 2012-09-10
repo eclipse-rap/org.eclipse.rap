@@ -13,7 +13,7 @@
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Processor = rwt.protocol.MessageProcessor;
-var ObjectManager = rwt.protocol.ObjectManager;
+var ObjectManager = rwt.protocol.ObjectRegistry;
 var Font = qx.ui.core.Font;
 var Border = org.eclipse.rwt.Border;
 var Client = rwt.client.Client;
@@ -577,7 +577,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertTrue( wrapProperty == "soft" || wrapAttribute == "soft" );
     },
 
-    testTextAreaMaxLength : qx.core.Variant.select( "qx.client", {
+    testTextAreaMaxLength : rwt.util.Variant.select( "qx.client", {
       "mshtml|webkit" : function() {
         // NOTE: This test would fail in IE because it has a bug that sometimes
         // prevents a textFields value from being overwritten and read in the
@@ -662,7 +662,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.destroy();
     },
 
-    testFirstInputIE : qx.core.Variant.select( "qx.client", {
+    testFirstInputIE : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
       "mshtml" : function() {
         createText( true, true );
@@ -673,7 +673,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         }
     } ),
 
-    testBoxShadowAndNonRoundedBorder : qx.core.Variant.select( "qx.client", {
+    testBoxShadowAndNonRoundedBorder : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
       "mshtml" : function() {
           TestUtil.fakeAppearance( "text-field", {
@@ -1089,7 +1089,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( [ 2, 5 ], text.getComputedSelection() );
     },
 
-    testMissedDeleteInputEvent  : qx.core.Variant.select( "qx.client", {
+    testMissedDeleteInputEvent  : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
       "newmshtml" : function() {
         createText();
@@ -1110,7 +1110,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       }
     } ),
 
-    testMissedCtrlXInputEvent  : qx.core.Variant.select( "qx.client", {
+    testMissedCtrlXInputEvent  : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
       "newmshtml" : function() {
         createText();
@@ -1133,7 +1133,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       }
     } ),
 
-    testMissedInputEventCatchOnBlur  : qx.core.Variant.select( "qx.client", {
+    testMissedInputEventCatchOnBlur  : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
       "newmshtml" : function() {
         createText();
@@ -1152,7 +1152,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       }
     } ),
 
-    testTextFieldPreventEnter : qx.core.Variant.select( "qx.client", {
+    testTextFieldPreventEnter : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
       "webkit" : function() {
         createText();
@@ -1164,7 +1164,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       }
     } ),
 
-    testTextAreaNotPreventEnter : qx.core.Variant.select( "qx.client", {
+    testTextAreaNotPreventEnter : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
       "webkit" : function() {
         createText( false, true );

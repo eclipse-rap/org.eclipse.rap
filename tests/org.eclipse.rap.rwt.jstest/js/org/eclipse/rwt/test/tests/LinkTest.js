@@ -28,7 +28,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Link );
       assertIdentical( shell, widget.getParent() );
@@ -55,7 +55,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
           "text" : [ [ "text1 ", null ], [ "link1", 0 ], [ " text2 ", null ], [ "link2", 1 ] ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var expected
         = "text1 "
@@ -82,7 +82,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
           "text" : [ [ "text\ntext ", null ], [ "link\nlink", 0 ] ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var expected
         = "text<br/>text "
@@ -109,7 +109,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
           "text" : [ [ "foo && <> \" bar ", null ], [ "foo && <> \" bar", 0 ] ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var expected
         = "foo &amp;&amp; &lt;&gt; &quot; bar "
@@ -135,7 +135,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "selection" : true } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();

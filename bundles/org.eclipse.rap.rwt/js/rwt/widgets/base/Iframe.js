@@ -259,7 +259,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
     /**
      * @signature function()
      */
-    isLoaded : qx.core.Variant.select("qx.client",
+    isLoaded : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function()
       {
@@ -431,7 +431,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
       return frameEl;
     },
 
-    _createIframeNode : qx.core.Variant.select( "qx.client", {
+    _createIframeNode : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function( frameName ) {
         var nameStr = frameName ? 'name="' + frameName + '"' : '';
         var frameEl = rwt.widgets.base.Iframe._element = document.createElement(

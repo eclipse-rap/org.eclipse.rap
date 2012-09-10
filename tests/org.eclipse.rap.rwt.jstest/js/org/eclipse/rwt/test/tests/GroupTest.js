@@ -28,7 +28,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Group );
       assertIdentical( shell, widget.getParent() );
@@ -52,7 +52,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
           "text" : "foo && <> \" bar"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( "foo &amp; &lt;&gt; &quot; bar", widget.getLegend() );
       shell.destroy();
@@ -74,7 +74,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
 //          "parent" : "w2"
 //        }
 //      } );
-//      var ObjectManager = rwt.protocol.ObjectManager;
+//      var ObjectManager = rwt.protocol.ObjectRegistry;
 //      var widget = ObjectManager.getObject( "w3" );
 //      var labelObject = widget.getLegendObject().getLabelObject();
 //      

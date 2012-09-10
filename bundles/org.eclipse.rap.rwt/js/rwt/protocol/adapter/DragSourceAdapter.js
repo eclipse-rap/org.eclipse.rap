@@ -12,7 +12,7 @@
 rwt.protocol.AdapterRegistry.add( "rwt.widgets.DragSource", {
 
   factory : function( properties ) {
-    var control = rwt.protocol.ObjectManager.getObject( properties.control );
+    var control = rwt.protocol.ObjectRegistry.getObject( properties.control );
     var result = { "control" : control };
     org.eclipse.rwt.DNDSupport.getInstance().registerDragSource( control, properties.style );
     return result;
@@ -36,20 +36,20 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.DragSource", {
   methodHandler : {
     "changeFeedback" : function( source, properties ) {
       var dnd = org.eclipse.rwt.DNDSupport.getInstance();
-      var control = rwt.protocol.ObjectManager.getObject( properties.control );
+      var control = rwt.protocol.ObjectRegistry.getObject( properties.control );
       var feedback = properties.feedback;
       var flags = properties.flags;
       dnd.setFeedback( control, feedback, flags );
     },
     "changeDetail" : function( source, properties ) {
       var dnd = org.eclipse.rwt.DNDSupport.getInstance();
-      var control = rwt.protocol.ObjectManager.getObject( properties.control );
+      var control = rwt.protocol.ObjectRegistry.getObject( properties.control );
       var detail = properties.detail;
       dnd.setOperationOverwrite( control, detail );
     },
     "changeDataType" : function( source, properties ) {
       var dnd = org.eclipse.rwt.DNDSupport.getInstance();
-      var control = rwt.protocol.ObjectManager.getObject( properties.control );
+      var control = rwt.protocol.ObjectRegistry.getObject( properties.control );
       var dataType = properties.dataType;
       dnd.setDataType( control, dataType );
     }

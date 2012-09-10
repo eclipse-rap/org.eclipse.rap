@@ -12,7 +12,7 @@
 
 qx.Class.define( "org.eclipse.rwt.MenuManager", {
   type : "singleton",
-  extend : qx.util.manager.Object,
+  extend : rwt.util.ObjectManager,
 
   members :  {
 

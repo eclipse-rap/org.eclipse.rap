@@ -17,7 +17,7 @@
 (function() {
 
 var HtmlUtil = org.eclipse.rwt.HtmlUtil;
-var Variant = qx.core.Variant;
+var Variant = rwt.util.Variant;
 
 qx.Class.define( "rwt.widgets.base.GridRow", {
 
@@ -813,7 +813,7 @@ qx.Class.define( "rwt.widgets.base.GridRow", {
           }
         }
       },
-      "default" : qx.lang.Function.returnTrue
+      "default" : rwt.util.Function.returnTrue
     } ),
 
     ////////////////

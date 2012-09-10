@@ -256,13 +256,13 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         fill.color2 = gradient[ gradient.length - 1 ][ 1 ];
         fill.angle = gradient.horizontal ? 270 : 180;
         var transitionColors = "0% " + startColor;
-        var lastColor = qx.util.ColorUtil.stringToRgb( startColor );
+        var lastColor = rwt.util.ColorUtil.stringToRgb( startColor );
         var nextColor = null;
         var lastOffset = 0;
         var currentOffset = null;
         for( var colorPos = 1; colorPos < gradient.length; colorPos++ ) {
           var color = gradient[ colorPos ][ 1 ];
-          nextColor = qx.util.ColorUtil.stringToRgb( color );
+          nextColor = rwt.util.ColorUtil.stringToRgb( color );
           var nextOffset = gradient[ colorPos ][ 0 ];
           transitionColors += ", ";
           transitionColors += this._transitionColors( lastColor,

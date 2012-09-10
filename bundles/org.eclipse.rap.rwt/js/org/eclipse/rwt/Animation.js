@@ -187,7 +187,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
       if( this.isStarted() ) {
         throw "Cannot remove AnimationRenderer: Animation already started!";
       }
-      qx.lang.Array.remove( this._renderer, renderer );
+      rwt.util.Array.remove( this._renderer, renderer );
     },
 
     _init : function() {
@@ -260,7 +260,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
       if( animation === this._exclusive ) {
         this._exclusive = null;
       } else {
-        qx.lang.Array.remove( this._queue, animation );
+        rwt.util.Array.remove( this._queue, animation );
       }
       if( this._exclusive === null && this._queue.length === 0 ) {
         this._stopLoop();

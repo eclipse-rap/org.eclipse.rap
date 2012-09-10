@@ -55,7 +55,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
 
   members : {
 
-    init : qx.core.Variant.select( "qx.client", {
+    init : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function( width, height, font, background, foreground ) {
         // TODO [tb]: Should the control be detached from the DOM
         // (e.g. by Widget.prepareEnhancedBorder), this might lead to glitches
@@ -131,7 +131,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     ////////////
     // Internals
 
-    _createCanvas : qx.core.Variant.select( "qx.client", {
+    _createCanvas : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
         this._vmlCanvas = org.eclipse.rwt.VML.createCanvas();
         this._canvas = org.eclipse.rwt.VML.getCanvasNode( this._vmlCanvas );
@@ -180,8 +180,8 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     },
 
     _initFields : function( font, background, foreground ) {
-      this._context.strokeStyle = qx.util.ColorUtil.rgbToRgbString( foreground );
-      this._context.fillStyle = qx.util.ColorUtil.rgbToRgbString( background );
+      this._context.strokeStyle = rwt.util.ColorUtil.rgbToRgbString( foreground );
+      this._context.fillStyle = rwt.util.ColorUtil.rgbToRgbString( background );
       this._context.globalAlpha = 1.0;
       this._context.lineWidth = 1;
       this._context.lineCap = "butt";
@@ -190,7 +190,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     },
 
     // See http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#building-paths
-    _ellipse : qx.core.Variant.select( "qx.client", {
+    _ellipse : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function( operation ) {
         this._context[ operation[ 0 ] ].apply( this._context, operation.slice( 1 ) );
       },
@@ -220,7 +220,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       if( value === "linearGradient" ) {
         value = this._linearGradient;
       } else if( property === "fillStyle" || property === "strokeStyle" ) {
-        value = qx.util.ColorUtil.rgbToRgbString( value );
+        value = rwt.util.ColorUtil.rgbToRgbString( value );
       } else if( property === "font" ) {
         value = this._toCssFont( value );
       }
@@ -292,7 +292,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     _addColorStop : function( operation ) {
       this._linearGradient.addColorStop(
         operation[ 1 ],
-        qx.util.ColorUtil.rgbToRgbString( operation[ 2 ] )
+        rwt.util.ColorUtil.rgbToRgbString( operation[ 2 ] )
       );
     },
 

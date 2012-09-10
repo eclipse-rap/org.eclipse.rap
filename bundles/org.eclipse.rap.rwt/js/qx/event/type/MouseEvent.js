@@ -59,7 +59,7 @@ qx.Class.define("qx.event.type.MouseEvent",
     _pageY : 0,
     _button : null,
 
-    buttons : qx.core.Variant.select("qx.client",
+    buttons : rwt.util.Variant.select("qx.client",
     {
       "mshtml" :
       {
@@ -221,7 +221,7 @@ qx.Class.define("qx.event.type.MouseEvent",
      * @return {var} TODOC
      * @signature function()
      */
-    getPageX : qx.core.Variant.select("qx.client",
+    getPageX : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function() {
         return this.getDomEvent().clientX + qx.bom.Viewport.getScrollLeft(window);
@@ -239,7 +239,7 @@ qx.Class.define("qx.event.type.MouseEvent",
      * @return {var} TODOC
      * @signature function()
      */
-    getPageY : qx.core.Variant.select("qx.client",
+    getPageY : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function() {
         return this.getDomEvent().clientY + qx.bom.Viewport.getScrollTop(window);
@@ -311,7 +311,7 @@ qx.Class.define("qx.event.type.MouseEvent",
      * @return {var} TODOC
      * @signature function()
      */
-    isLeftButtonPressed : qx.core.Variant.select("qx.client",
+    isLeftButtonPressed : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function()
       {
@@ -350,7 +350,7 @@ qx.Class.define("qx.event.type.MouseEvent",
     },
 
 
-    __buttons : qx.core.Variant.select("qx.client",
+    __buttons : rwt.util.Variant.select("qx.client",
     {
       "mshtml" :
       {
@@ -406,7 +406,7 @@ qx.Class.define("qx.event.type.MouseEvent",
      * @return {var} TODOC
      * @signature function()
      */
-    _computeWheelDelta : qx.core.Variant.select("qx.client",
+    _computeWheelDelta : rwt.util.Variant.select("qx.client",
     {
       "default" : function() {
         return this.getDomEvent().wheelDelta / 120;

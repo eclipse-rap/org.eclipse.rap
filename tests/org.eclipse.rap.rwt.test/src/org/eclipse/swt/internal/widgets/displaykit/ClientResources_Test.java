@@ -54,7 +54,7 @@ public class ClientResources_Test extends TestCase {
     clientResources.registerResources();
 
     assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
-    assertFalse( resourceManager.isRegistered( "qx/lang/Core.js" ) );
+    assertFalse( resourceManager.isRegistered( "rwt/runtime/System.js" ) );
     Theme defaultTheme = RWTFactory.getThemeManager().getTheme( RWT.DEFAULT_THEME_ID );
     assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".js" ) );
   }
@@ -63,8 +63,8 @@ public class ClientResources_Test extends TestCase {
     clientResources.registerResources();
     String clientJs = getRegisteredContent( "rap-client.js", "UTF-8" );
 
-    assertTrue( clientJs.contains( "qx.Class.define(\"qx.lang.Core\");" ) );
-    assertTrue( clientJs.contains( "Appearance.getInstance().setCurrentTheme({" ) );
+    assertTrue( clientJs.contains( "qx.Class.define(\"rwt.runtime.System\"" ) );
+    assertTrue( clientJs.contains( "AppearanceManager.getInstance().setCurrentTheme({" ) );
     assertFalse( clientJs.contains( "/****" ) );
     assertFalse( clientJs.contains( "Copyright" ) );
     assertTrue( clientJs.contains( "{this.JSON={}}" ) );
@@ -76,8 +76,8 @@ public class ClientResources_Test extends TestCase {
     clientResources.registerResources();
     String clientJs = getRegisteredContent( "rap-client.js", "UTF-8" );
 
-    assertTrue( clientJs.contains( "qx.Class.define(\"qx.lang.Core\");" ) );
-    assertTrue( clientJs.contains( "Appearance.getInstance().setCurrentTheme( {" ) );
+    assertTrue( clientJs.contains( "qx.Class.define( \"rwt.runtime.System\"" ) );
+    assertTrue( clientJs.contains( "AppearanceManager.getInstance().setCurrentTheme( {" ) );
     assertTrue( clientJs.contains( "/****" ) );
     assertTrue( clientJs.contains( "Copyright" ) );
     assertTrue( clientJs.contains( "this.JSON = {};" ) );

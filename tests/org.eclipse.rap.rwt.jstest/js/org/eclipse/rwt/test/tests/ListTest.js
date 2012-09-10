@@ -28,7 +28,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.List );
       assertIdentical( shell, widget.getParent() );
@@ -52,7 +52,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.getManager().getMultiSelection() );
       shell.destroy();
@@ -73,7 +73,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "markupEnabled" : true
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._markupEnabled );
       shell.destroy();
@@ -94,7 +94,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "items" : [ "a", "b", "c" ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var items = widget.getItems();
       assertEquals( 3, widget.getItemsCount() );
@@ -119,7 +119,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "items" : [ "  foo &\nbar " ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var items = widget.getItems();
       assertEquals( "&nbsp; foo &amp; bar&nbsp;", items[ 0 ].getLabel() );
@@ -142,7 +142,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "items" : [ "<b>bold</b>  </br>  <i>italic</i>" ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var items = widget.getItems();
       assertEquals( "<b>bold</b>  </br>  <i>italic</i>", items[ 0 ].getLabel() );
@@ -165,7 +165,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "selectionIndices" : [ 2 ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var items = widget.getSelectedItems();
       assertEquals( 1, items.length );
@@ -189,7 +189,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "selectionIndices" : [ 0, 2 ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var items = widget.getSelectedItems();
       assertEquals( 2, items.length );
@@ -214,7 +214,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "selectionIndices" : [ 0, 1, 2 ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var items = widget.getSelectedItems();
       assertEquals( 3, items.length );
@@ -240,7 +240,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "topIndex" : 2
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 2, widget._topIndex );
       shell.destroy();
@@ -262,7 +262,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "focusIndex" : 2
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var focusItem = widget.getManager().getLeadItem();
       assertEquals( "c", focusItem.getLabel() );
@@ -284,7 +284,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "scrollBarsVisible" : [ false, false ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertFalse( widget._horzScrollBar.getDisplay() );
       assertFalse( widget._vertScrollBar.getDisplay() );
@@ -306,7 +306,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "itemDimensions" : [ 10, 20 ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 10, widget._itemWidth );
       assertEquals( 20, widget._itemHeight );
@@ -328,7 +328,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "selection" : true } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
@@ -417,7 +417,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
     testSelectMarkupItemByCharacter : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {

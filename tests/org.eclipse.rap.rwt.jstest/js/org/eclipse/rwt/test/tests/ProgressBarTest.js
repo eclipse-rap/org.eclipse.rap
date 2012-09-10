@@ -36,7 +36,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.ProgressBar );
       assertIdentical( shell, widget.getParent() );
@@ -66,7 +66,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertFalse( widget._isHorizontal() );
       assertTrue( widget._isVertical() );
@@ -88,7 +88,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertFalse( widget._isHorizontal() );
       assertTrue( widget._isVertical() );
@@ -111,7 +111,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
           "minimum" : 50
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 50, widget._minimum );
       shell.destroy();
@@ -132,7 +132,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
           "maximum" : 150
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 150, widget._maximum );
       shell.destroy();
@@ -154,7 +154,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
           "maximum" : 200
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 150, widget._minimum );
       assertEquals( 200, widget._maximum );
@@ -176,7 +176,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
           "selection" : 50
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 50, widget._selection );
       shell.destroy();
@@ -197,7 +197,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
           "backgroundImage" : [ "image.png", 10, 20 ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertNull( widget.getBackgroundImage() );
       var backgroundImage = widget.getBackgroundImageSized();
@@ -230,7 +230,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
           "backgroundImage" : [ "image.png", 10, 20 ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var backgroundImage = widget.getBackgroundImageSized();
       assertEquals( "image.png", backgroundImage[ 0 ] );
@@ -840,7 +840,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var progressBar = ObjectManager.getObject( "w3" );
       var log = 0;
       progressBar.addEventListener( "selectionChanged", function() {
@@ -867,7 +867,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var progressBar = ObjectManager.getObject( "w3" );
       var log = 0;
       progressBar.addEventListener( "minimumChanged", function() {
@@ -894,7 +894,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var progressBar = ObjectManager.getObject( "w3" );
       var log = 0;
       progressBar.addEventListener( "maximumChanged", function() {

@@ -23,7 +23,7 @@
 qx.Class.define("rwt.widgets.base.IframeManager",
 {
   type : "singleton",
-  extend : qx.util.manager.Object,
+  extend : rwt.util.ObjectManager,
 
 
 
@@ -66,8 +66,8 @@ qx.Class.define("rwt.widgets.base.IframeManager",
      */
     handleMouseDown : function(evt)
     {
-      var iframeMap = this._blockData = qx.lang.Object.copy(this.getAll());
-      // console.debug("Blocking frames: " + qx.lang.Object.getLength(iframeMap));
+      var iframeMap = this._blockData = rwt.util.Object.copy(this.getAll());
+      // console.debug("Blocking frames: " + rwt.util.Object.getLength(iframeMap));
 
       for (var key in iframeMap) {
         iframeMap[key].block();
@@ -85,7 +85,7 @@ qx.Class.define("rwt.widgets.base.IframeManager",
     handleMouseUp : function(evt)
     {
       var iframeMap = this._blockData;
-      // console.debug("Releasing frames: " + qx.lang.Object.getLength(iframeMap));
+      // console.debug("Releasing frames: " + rwt.util.Object.getLength(iframeMap));
 
       for (var key in iframeMap) {
         iframeMap[key].release();

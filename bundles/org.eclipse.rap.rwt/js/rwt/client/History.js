@@ -59,7 +59,7 @@ qx.Class.define("rwt.client.History",
   /**
    * @signature function()
    */
-  construct : qx.core.Variant.select("qx.client",
+  construct : rwt.util.Variant.select("qx.client",
   {
     "mshtml" : function()
     {
@@ -278,7 +278,7 @@ qx.Class.define("rwt.client.History",
      *
      * @return {String} current state of the browser history
      */
-    __getState : qx.core.Variant.select("qx.client",
+    __getState : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function()
       {
@@ -313,7 +313,7 @@ qx.Class.define("rwt.client.History",
      *   fail on the Internet Explorer if the hidden IFrame is not yet fully
      *   loaded.
      */
-    __storeState : qx.core.Variant.select("qx.client",
+    __storeState : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function( state ) {
         var html = '<html><body><div id="state">' + encodeURIComponent(state) + '</div></body></html>';
@@ -344,7 +344,7 @@ qx.Class.define("rwt.client.History",
      * @param callback {Function} This function will be called once the iframe is loaded
      * @param context {Object?window} The context for the callback.
      */
-    __waitForIFrame : qx.core.Variant.select("qx.client",
+    __waitForIFrame : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(callback, context)
       {

@@ -314,7 +314,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     "Pause" : 19,
     "Win" : 91,
     "Apps" : 93,
-    "Enter" : qx.core.Variant.select("qx.client", {
+    "Enter" : rwt.util.Variant.select("qx.client", {
       "default" : null,
       "gecko" : 13
     } ),
@@ -326,7 +326,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     "Tab" : 9,
     "Escape" : 27,
     "Space" : 32,
-    "Enter" : qx.core.Variant.select("qx.client", {
+    "Enter" : rwt.util.Variant.select("qx.client", {
       "default" : 13,
       "gecko" : null
     } )
@@ -358,7 +358,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     this.fireFakeKeyDomEvent( target, "keyup", key, mod );
   },
 
-  _sendKeyDownOnHold : qx.core.Variant.select("qx.client", {
+  _sendKeyDownOnHold : rwt.util.Variant.select("qx.client", {
     "default" : function( key ) {
       return true;
     },
@@ -367,7 +367,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     }
   } ),
 
-  _sendKeyPress : qx.core.Variant.select("qx.client", {
+  _sendKeyPress : rwt.util.Variant.select("qx.client", {
     "gecko|opera" : function( key, keyDownEvent ) {
       return !this._isModifier( key );
     },
@@ -396,7 +396,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     return domEvent;
   },
 
-  _getKeyCode : qx.core.Variant.select("qx.client", {
+  _getKeyCode : rwt.util.Variant.select("qx.client", {
     "default" : function( type, stringOrKeyCode ) {
       var result;
       // NOTE [tb] : This is called for non-printable keypress only in opera
@@ -418,7 +418,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     }
   } ),
 
-  _getCharCode : qx.core.Variant.select("qx.client", {
+  _getCharCode : rwt.util.Variant.select("qx.client", {
     "default" : function( type, stringOrKeyCode ) {
       return undefined;
     },
@@ -577,7 +577,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       throw( "Error in TestUtil.fakeMouseEvent: widget is not created" );
     }
     var target = widget._getTargetNode();
-    var type =   qx.core.Variant.isSet( "qx.client", "gecko" )
+    var type =   rwt.util.Variant.isSet( "qx.client", "gecko" )
                ? "DOMMouseScroll"
                : "mousewheel";
     var domEvent =
@@ -586,7 +586,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     this.fireFakeDomEvent( domEvent );
   },
 
-  _addWheelDelta : qx.core.Variant.select( "qx.client", {
+  _addWheelDelta : rwt.util.Variant.select( "qx.client", {
     "default" : function( event, value ) {
       event.wheelDelta = value * 120;
     },
@@ -932,7 +932,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       }
     } );
     org.eclipse.swt.EventUtil.setSuspended( false );
-    return rwt.protocol.ObjectManager.getObject( id );
+    return rwt.protocol.ObjectRegistry.getObject( id );
   },
 
   protocolListen : function( id, properties ) {
@@ -956,9 +956,9 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   resetObjectManager : function() {
-    var w1 = rwt.protocol.ObjectManager._map[ "w1" ];
-    rwt.protocol.ObjectManager._map = { "w1" : w1 };
-    rwt.protocol.ObjectManager._callbacks = {};
+    var w1 = rwt.protocol.ObjectRegistry._map[ "w1" ];
+    rwt.protocol.ObjectRegistry._map = { "w1" : w1 };
+    rwt.protocol.ObjectRegistry._callbacks = {};
   },
 
   getXMLHttpRequests : function() {

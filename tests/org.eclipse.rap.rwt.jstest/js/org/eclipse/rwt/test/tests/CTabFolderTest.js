@@ -28,7 +28,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "toolTipTexts" : [ "a", "b", "c", "d", "e" ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.CTabFolder );
       assertIdentical( shell, widget.getParent() );
@@ -58,7 +58,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "tabPosition" : "bottom"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.CTabFolder );
       assertIdentical( shell, widget.getParent() );
@@ -286,7 +286,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "index" : 0
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w4" );
       assertTrue( widget instanceof rwt.widgets.CTabItem );
       assertIdentical( folder, widget.getParent() );
@@ -312,7 +312,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "index" : 0
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w4" );
       assertTrue( widget._canClose );
       shell.destroy();
@@ -455,7 +455,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "toolTipTexts": [ "Minimize", "Maximize", "Restore", "Show List", "Close" ]
         }
       } );
-      return rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectRegistry.getObject( id );
     },
 
     _createCTabItemByProtocol : function( id, parentId ) {
@@ -469,7 +469,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "index" : 0
         }
       } );
-      return rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectRegistry.getObject( id );
     }
 
   }

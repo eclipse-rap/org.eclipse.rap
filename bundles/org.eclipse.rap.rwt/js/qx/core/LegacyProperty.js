@@ -77,7 +77,7 @@ qx.Class.define("qx.core.LegacyProperty",
     addFastProperty : function(config, proto)
     {
       var vName = config.name;
-      var vUpName = qx.lang.String.toFirstUp(vName);
+      var vUpName = rwt.util.String.toFirstUp(vName);
 
       var vStorageField = "_value" + vUpName;
       var vGetterName = "get" + vUpName;
@@ -143,7 +143,7 @@ qx.Class.define("qx.core.LegacyProperty",
     addCachedProperty : function(config, proto)
     {
       var vName = config.name;
-      var vUpName = qx.lang.String.toFirstUp(vName);
+      var vUpName = rwt.util.String.toFirstUp(vName);
 
       var vStorageField = "_cached" + vUpName;
       var vComputerName = "_compute" + vUpName;
@@ -227,8 +227,8 @@ qx.Class.define("qx.core.LegacyProperty",
         config.dispose = true;
       }
 
-      config.method = qx.lang.String.toFirstUp(config.name);
-      config.implMethod = config.impl ? qx.lang.String.toFirstUp(config.impl) : config.method;
+      config.method = rwt.util.String.toFirstUp(config.name);
+      config.implMethod = config.impl ? rwt.util.String.toFirstUp(config.impl) : config.method;
 
       if (config.defaultValue === undefined) {
         config.defaultValue = null;
@@ -319,7 +319,7 @@ qx.Class.define("qx.core.LegacyProperty",
         {
           // convert multiple arguments to array
           if (config.allowMultipleArguments && arguments.length > 1) {
-            newValue = qx.lang.Array.fromArguments(arguments);
+            newValue = rwt.util.Array.fromArguments(arguments);
           }
 
           // support converter methods
@@ -350,7 +350,7 @@ qx.Class.define("qx.core.LegacyProperty",
                 throw new Error("Attention! The value \"" + newValue + "\" is an invalid value for the property \"" + config.name + "\" which must be an instance of \"" + config.instance + "\"!");
               }
             }
-            else if (qx.core.Variant.isSet("qx.compatibility", "on"))
+            else if (rwt.util.Variant.isSet("qx.compatibility", "on"))
             {
               if (config.hasInstance && !(newValue instanceof qx.OO.classes[config.instance])) {
                 throw new Error("Attention! The value \"" + newValue + "\" is an invalid value for the property \"" + config.name + "\" which must be an instance of \"" + config.instance + "\"!");
@@ -361,7 +361,7 @@ qx.Class.define("qx.core.LegacyProperty",
               throw new Error("Attention! The value \"" + newValue + "\" is an invalid value for the property \"" + config.name + "\" which must be an object with the classname \"" + config.classname + "\"!");
             }
 
-            if (config.hasPossibleValues && newValue != null && !qx.lang.Array.contains(config.possibleValues, newValue)) {
+            if (config.hasPossibleValues && newValue != null && !rwt.util.Array.contains(config.possibleValues, newValue)) {
               throw new Error("Failed to save value for " + config.name + ". '" + newValue + "' is not a possible value!");
             }
           }

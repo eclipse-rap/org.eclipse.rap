@@ -246,7 +246,7 @@ qx.Class.define("qx.Mixin",
      * @return {Number} the number of classes
      */
     getTotalNumber : function() {
-      return qx.lang.Object.getLength(this.__registry);
+      return rwt.util.Object.getLength(this.__registry);
     },
 
 
@@ -305,7 +305,7 @@ qx.Class.define("qx.Mixin",
 
 
     /** {Map} allowed keys in mixin definition */
-    __allowedKeys : qx.core.Variant.select("qx.debug",
+    __allowedKeys : rwt.util.Variant.select("qx.debug",
     {
       "on":
       {
@@ -329,7 +329,7 @@ qx.Class.define("qx.Mixin",
      * @param name {String} The name of the class
      * @param config {Map} Configuration map
      */
-    __validateConfig : qx.core.Variant.select("qx.debug",
+    __validateConfig : rwt.util.Variant.select("qx.debug",
     {
       "on": function(name, config)
       {

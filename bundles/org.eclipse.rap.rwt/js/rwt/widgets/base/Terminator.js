@@ -125,7 +125,7 @@ qx.Class.define("rwt.widgets.base.Terminator",
     /**
      * @signature function()
      */
-    _postApply : qx.lang.Function.returnTrue,
+    _postApply : rwt.util.Function.returnTrue,
 
 
 
@@ -158,7 +158,7 @@ qx.Class.define("rwt.widgets.base.Terminator",
      * @return {Integer} the preffered inner width.
      * @signature function()
      */
-    _computePreferredInnerWidth : qx.lang.Function.returnZero,
+    _computePreferredInnerWidth : rwt.util.Function.returnZero,
 
     /**
      * Returns the preferred inner height of the widget. This value is used
@@ -167,7 +167,7 @@ qx.Class.define("rwt.widgets.base.Terminator",
      * @return {Integer} the preffered inner height.
      * @signature function()
      */
-    _computePreferredInnerHeight : qx.lang.Function.returnZero,
+    _computePreferredInnerHeight : rwt.util.Function.returnZero,
 
 
 

@@ -73,7 +73,7 @@ qx.Class.define("qx.html.Dimension",
      * @return {void}
      * @signature function(el)
      */
-    getAreaWidth : qx.core.Variant.select("qx.client",
+    getAreaWidth : rwt.util.Variant.select("qx.client",
     {
       "gecko" : function(el)
       {
@@ -110,7 +110,7 @@ qx.Class.define("qx.html.Dimension",
      * @return {void}
      * @signature function(el)
      */
-    getAreaHeight : qx.core.Variant.select("qx.client",
+    getAreaHeight : rwt.util.Variant.select("qx.client",
     {
       "gecko" : function(el)
       {
@@ -148,7 +148,7 @@ qx.Class.define("qx.html.Dimension",
      * @return {void}
      * @signature function(el)
      */
-    getInsetLeft : qx.core.Variant.select("qx.client",
+    getInsetLeft : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(el) {
         return el.clientLeft;
@@ -168,7 +168,7 @@ qx.Class.define("qx.html.Dimension",
      * @return {void}
      * @signature function(el)
      */
-    getInsetTop : qx.core.Variant.select("qx.client",
+    getInsetTop : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(el) {
         return el.clientTop;
@@ -188,7 +188,7 @@ qx.Class.define("qx.html.Dimension",
      * @return {void}
      * @signature function(el)
      */
-    getInsetRight : qx.core.Variant.select("qx.client",
+    getInsetRight : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(el)
       {
@@ -223,7 +223,7 @@ qx.Class.define("qx.html.Dimension",
      * @return {void}
      * @signature function(el)
      */
-    getInsetBottom : qx.core.Variant.select("qx.client",
+    getInsetBottom : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(el)
       {

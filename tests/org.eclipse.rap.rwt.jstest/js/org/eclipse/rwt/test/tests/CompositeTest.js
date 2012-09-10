@@ -43,7 +43,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
       assertTrue( composite.hasState( "rwt_BORDER" ) );
     },
 
-    testCompositeBackgroundInitial : qx.core.Variant.select( "qx.client", {
+    testCompositeBackgroundInitial : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var composite = new rwt.widgets.Composite();
@@ -59,7 +59,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
       "default" : function(){}
     } ),
         
-    testCompositeBackgroundFromColor : qx.core.Variant.select( "qx.client", {
+    testCompositeBackgroundFromColor : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var composite = new rwt.widgets.Composite();
@@ -78,7 +78,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
       "default" : function(){}
     } ),
         
-    testCompositeBackgroundFromImage : qx.core.Variant.select( "qx.client", {
+    testCompositeBackgroundFromImage : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var composite = new rwt.widgets.Composite();

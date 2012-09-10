@@ -120,9 +120,9 @@ qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
     },
 
     _bindListeners : function() {
-       this.__onTouchEvent = qx.lang.Function.bind( this._onTouchEvent, this );
-       this.__onGestureEvent = qx.lang.Function.bind( this._onGestureEvent, this );
-       this.__onOrientationEvent = qx.lang.Function.bind( this._onOrientationEvent, this );
+       this.__onTouchEvent = rwt.util.Function.bind( this._onTouchEvent, this );
+       this.__onGestureEvent = rwt.util.Function.bind( this._onGestureEvent, this );
+       this.__onOrientationEvent = rwt.util.Function.bind( this._onOrientationEvent, this );
     },
 
     _registerListeners : function() {

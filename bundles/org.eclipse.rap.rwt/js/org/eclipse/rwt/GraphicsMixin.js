@@ -65,7 +65,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       this._handleGfxBackground();
     },
 
-    _applyShadow : qx.core.Variant.select( "qx.client", {
+    _applyShadow : rwt.util.Variant.select( "qx.client", {
       "default" : function( value, oldValue ) {
         if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {
           if( value != null && value[ 0 ] ) {
@@ -89,8 +89,8 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       this._checkAntiAlias( value );
    },
 
-    _checkAntiAlias : qx.core.Variant.select( "qx.client", {
-      "default" : qx.lang.Function.returnTrue,
+    _checkAntiAlias : rwt.util.Variant.select( "qx.client", {
+      "default" : rwt.util.Function.returnTrue,
       "mshtml" : function( opacity ) {
         if( this._gfxData && this._gfxData.backgroundInsert ) {
           var antiAlias = opacity === 1 || opacity === null;
@@ -179,8 +179,8 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       this._handleCssRadii( radii );
     },
 
-    _handleCssRadii : qx.core.Variant.select( "qx.client", {
-      "default" : qx.lang.Function.returnTrue,
+    _handleCssRadii : rwt.util.Variant.select( "qx.client", {
+      "default" : rwt.util.Function.returnTrue,
       "newmshtml" : function( radii ) {
         // NOTE : While the actual border is rendred with vector graphics, CSS radii
         //        are set anyway to provide clipping and rounded CSS-shadows
@@ -358,7 +358,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       }
     },
 
-    _resetTargetNode : qx.core.Variant.select( "qx.client", {
+    _resetTargetNode : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
         if( this._innerStyle ) {
           this._innerStyle.left = "0px";
@@ -412,7 +412,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       this._prepareBackgroundShape();
     },
 
-    _prepareForCanvas : qx.core.Variant.select( "qx.client", {
+    _prepareForCanvas : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
         this.prepareEnhancedBorder();
         this._applyOpacity( this.getOpacity() );
@@ -669,7 +669,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     },
 
     _willBeLayouted : function() {
-      return this._jobQueue !== undefined || !qx.lang.Object.isEmpty( this._layoutChanges );
+      return this._jobQueue !== undefined || !rwt.util.Object.isEmpty( this._layoutChanges );
     }
 
   }

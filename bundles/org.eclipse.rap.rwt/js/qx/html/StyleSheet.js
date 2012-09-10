@@ -30,7 +30,7 @@ qx.Class.define("qx.html.StyleSheet",
      * @return {Stylesheet} stylesheet object
      * @signature function(vCssText)
      */
-    createElement : qx.lang.Object.select(document.createStyleSheet ? "ie4+" : "other",
+    createElement : rwt.util.Object.select(document.createStyleSheet ? "ie4+" : "other",
     {
       "ie4+" : function(vCssText)
       {
@@ -84,7 +84,7 @@ qx.Class.define("qx.html.StyleSheet",
      * @return {void}
      * @signature function(vSheet, vSelector, vStyle)
      */
-    addRule : qx.lang.Object.select(document.createStyleSheet ? "ie4+" : "other",
+    addRule : rwt.util.Object.select(document.createStyleSheet ? "ie4+" : "other",
     {
       "ie4+" : function(vSheet, vSelector, vStyle) {
         vSheet.addRule(vSelector, vStyle);
@@ -104,7 +104,7 @@ qx.Class.define("qx.html.StyleSheet",
      * @return {void}
      * @signature function(vSheet, vSelector)
      */
-    removeRule : qx.lang.Object.select(document.createStyleSheet ? "ie4+" : "other",
+    removeRule : rwt.util.Object.select(document.createStyleSheet ? "ie4+" : "other",
     {
       "ie4+" : function(vSheet, vSelector) {
         var vRules = vSheet.rules;
@@ -137,7 +137,7 @@ qx.Class.define("qx.html.StyleSheet",
      * @return {void}
      * @signature function(vSheet)
      */
-    removeAllRules : qx.lang.Object.select(document.createStyleSheet ? "ie4+" : "other",
+    removeAllRules : rwt.util.Object.select(document.createStyleSheet ? "ie4+" : "other",
     {
       "ie4+" : function(vSheet) {
         var vRules = vSheet.rules;

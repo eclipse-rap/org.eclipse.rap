@@ -178,7 +178,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
           "parent" : parentId
         }
       } );
-      return rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectRegistry.getObject( id );
     }
 
   }

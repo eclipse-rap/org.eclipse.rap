@@ -378,7 +378,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       widget.destroy();
     },
 
-    testSendKeyPress : qx.core.Variant.select("qx.client",  {
+    testSendKeyPress : rwt.util.Variant.select("qx.client",  {
       "gecko|opera" : function() {
         assertTrue( TestUtil._sendKeyPress( "a" ) );
         assertTrue( TestUtil._sendKeyPress( "A" ) );
@@ -482,7 +482,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       widget.focus();
       TestUtil.press( widget, "Enter" );
       var expected = [ "keydown", "Enter", "keypress", "Enter" ];
-      if( qx.core.Variant.isSet( "qx.client", "opera" ) ) {
+      if( rwt.util.Variant.isSet( "qx.client", "opera" ) ) {
         expected.push( "keyup", "Enter" );
       } else {
         expected.push( "keyup", "Enter" );
@@ -515,7 +515,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       } );
       widget.focus();
       TestUtil.press( widget, "Enter" );
-      var expected = qx.core.Variant.select( "qx.client", {
+      var expected = rwt.util.Variant.select( "qx.client", {
         "webkit" : [ 13, 13 ],
         "mshtml|opera|newmshtml" : [ 13, undefined ],
         "default" : [ 13, 0 ]
@@ -698,11 +698,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     testResetObjectManager : function() {
       TestUtil.createShellByProtocol( "w2" );
 
-      assertTrue( null != rwt.protocol.ObjectManager.getObject( "w1" ) );
+      assertTrue( null != rwt.protocol.ObjectRegistry.getObject( "w1" ) );
       TestUtil.resetObjectManager();
 
-      assertTrue( null == rwt.protocol.ObjectManager.getObject( "w2" ) );
-      assertTrue( null != rwt.protocol.ObjectManager.getObject( "w1" ) );
+      assertTrue( null == rwt.protocol.ObjectRegistry.getObject( "w2" ) );
+      assertTrue( null != rwt.protocol.ObjectRegistry.getObject( "w1" ) );
     },
 
     testProtocolListen : function() {

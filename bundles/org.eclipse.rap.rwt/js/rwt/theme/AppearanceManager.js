@@ -14,7 +14,7 @@
 qx.Class.define( "rwt.theme.AppearanceManager", {
 
   type : "singleton",
-  extend : qx.util.manager.Object,
+  extend : rwt.util.ObjectManager,
 
   construct : function() {
     this.base( arguments );
@@ -57,7 +57,7 @@ qx.Class.define( "rwt.theme.AppearanceManager", {
     styleFromTheme : function( theme, id, states ) {
       var entry = theme.appearances[id];
       if( !entry ) {
-        if( qx.core.Variant.isSet( "qx.debug", "on" ) ) {
+        if( rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
           throw new Error( "Missing appearance entry: " + id );
         }
         return null;

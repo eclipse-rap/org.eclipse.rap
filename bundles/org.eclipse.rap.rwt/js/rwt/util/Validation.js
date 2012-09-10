@@ -19,7 +19,7 @@
  *
  * http://developer.mozilla.org/en/docs/Core_JavaScript_1.5_Reference:Operators:Comparison_Operators
  */
-qx.Class.define("qx.util.Validation",
+qx.Class.define("rwt.util.Validation",
 {
   statics :
   {

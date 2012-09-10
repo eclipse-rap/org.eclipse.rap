@@ -118,7 +118,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
     setUp : function() {
       var display = rwt.widgets.Display.getCurrent();
       var adapter = rwt.protocol.AdapterRegistry.getAdapter( "rwt.Display" );
-      rwt.protocol.ObjectManager.add( "w1", display, adapter );
+      rwt.protocol.ObjectRegistry.add( "w1", display, adapter );
     }
 
   }

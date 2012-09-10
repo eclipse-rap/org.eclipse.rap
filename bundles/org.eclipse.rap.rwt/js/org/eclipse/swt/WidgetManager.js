@@ -67,7 +67,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       if( isControl === true ) {
         widget.setUserData( "isControl", true );
       }
-      rwt.protocol.ObjectManager.add( id, widget, adapter );
+      rwt.protocol.ObjectRegistry.add( id, widget, adapter );
     },
 
     /**
@@ -76,7 +76,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      */
     remove : function( widget ) {
       var id = this.findIdByWidget( widget );
-      rwt.protocol.ObjectManager.remove( id );
+      rwt.protocol.ObjectRegistry.remove( id );
     },
 
     /**
@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      * registered for the given id exists.
      */
     findWidgetById : function( id ) {
-      return rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectRegistry.getObject( id );
     },
 
     /**
@@ -92,7 +92,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      * registered.
      */
     findIdByWidget : function( widget ) {
-      return rwt.protocol.ObjectManager.getId( widget );
+      return rwt.protocol.ObjectRegistry.getId( widget );
     },
 
     /**

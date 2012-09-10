@@ -42,7 +42,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       assertIdentical( shape.node, vmlCanvas.node.childNodes[ 0 ] );
       assertEquals( 4, VML.getStrokeWidth( shape ) );
       glob = shape.node.strokeColor;
-      assertEquals( [ 4, 5, 6 ], qx.util.ColorUtil.stringToRgb( shape.node.strokeColor.value ) );
+      assertEquals( [ 4, 5, 6 ], rwt.util.ColorUtil.stringToRgb( shape.node.strokeColor.value ) );
       assertNotNull( shape.stroke );
       assertTrue( shape.node.style.filter.indexOf( "opacity=50" ) != -1 );
       assertEquals( "round", shape.stroke.endcap );
@@ -71,7 +71,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
         shape = vmlCanvas.children[ hash ];
       }
       assertIdentical( shape.node, vmlCanvas.node.childNodes[ 0 ] );
-      assertEquals( [ 1, 2, 3 ], qx.util.ColorUtil.stringToRgb( VML.getFillColor( shape ) ) );
+      assertEquals( [ 1, 2, 3 ], rwt.util.ColorUtil.stringToRgb( VML.getFillColor( shape ) ) );
       assertTrue( shape.node.style.filter.indexOf( "opacity=50" ) != -1 );
       canvas.destroy();
       TestUtil.flush();
@@ -294,11 +294,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       this._drawRectangle( gc,  10, 10, 20, 20, false );
       var node1 = vmlCanvas.node.childNodes[ 0 ];
       var node2 = vmlCanvas.node.childNodes[ 1 ];
-      assertEquals( [ 1, 2, 3 ], qx.util.ColorUtil.stringToRgb( node1.fill.color.value ) );
-      assertEquals( [ 4, 5, 6 ], qx.util.ColorUtil.stringToRgb( node2.stroke.color.value ) );
+      assertEquals( [ 1, 2, 3 ], rwt.util.ColorUtil.stringToRgb( node1.fill.color.value ) );
+      assertEquals( [ 4, 5, 6 ], rwt.util.ColorUtil.stringToRgb( node2.stroke.color.value ) );
       canvas.setBackgroundGradient( [ [ 0, "red" ], [ 1, "green" ] ] );
-      assertEquals( [ 1, 2, 3 ], qx.util.ColorUtil.stringToRgb( node1.fill.color.value ) );
-      assertEquals( [ 4, 5, 6 ], qx.util.ColorUtil.stringToRgb( node2.stroke.color.value ) );
+      assertEquals( [ 1, 2, 3 ], rwt.util.ColorUtil.stringToRgb( node1.fill.color.value ) );
+      assertEquals( [ 4, 5, 6 ], rwt.util.ColorUtil.stringToRgb( node2.stroke.color.value ) );
       canvas.destroy();
       TestUtil.flush();
     },

@@ -107,7 +107,7 @@ qx.Class.define( "org.eclipse.rwt.FocusIndicator", {
       this._styleFocusIndiactorOpacity( theme[ "opacity" ] );
     },
 
-    _styleFocusIndiactorOpacity : qx.core.Variant.select( "qx.client", {
+    _styleFocusIndiactorOpacity : rwt.util.Variant.select( "qx.client", {
       "default" : function( value ) {
         var style = this._frame.style;
         var opacity = value == 1 ? "" : value;

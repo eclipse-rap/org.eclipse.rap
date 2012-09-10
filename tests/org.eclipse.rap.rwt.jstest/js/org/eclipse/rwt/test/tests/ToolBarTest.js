@@ -33,7 +33,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.ToolBar );
       assertIdentical( shell, widget.getParent() );
@@ -57,7 +57,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_HORIZONTAL" ) );
       assertTrue( widget.hasState( "rwt_FLAT" ) );
@@ -189,7 +189,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       } );
       TestUtil.flush();
       assertTrue( widget.isDisposed() );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       assertEquals( undefined, ObjectManager.getObject( "w4" ) );
       shell.destroy();
       toolbar.destroy();
@@ -638,7 +638,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
           "parent" : parentId
         }
       } );
-      return rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectRegistry.getObject( id );
     },
 
     _createToolItemByProtocol : function( id, parentId, style ) {
@@ -652,7 +652,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
           "index" : 0
         }
       } );
-      return rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectRegistry.getObject( id );
     },
 
     _setPropertyByProtocol : function( id, properties ) {

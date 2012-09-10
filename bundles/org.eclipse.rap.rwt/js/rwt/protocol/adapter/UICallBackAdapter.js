@@ -15,7 +15,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.UICallBack", {
     return rwt.client.UICallBack.getInstance();
   },
 
-  destructor : qx.lang.Function.returnTrue,
+  destructor : rwt.util.Function.returnTrue,
 
   properties : [
     "active"

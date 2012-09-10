@@ -30,10 +30,10 @@ qx.Class.define( "rwt.widgets.Link", {
     this.add( this._link );
     this.setSelectable( false );
     this.setHideFocus( true );
-    this.__onMouseDown = qx.lang.Function.bindEvent( this._onMouseDown, this );
-    this.__onMouseOver = qx.lang.Function.bindEvent( this._onMouseOver, this );
-    this.__onMouseOut = qx.lang.Function.bindEvent( this._onMouseOut, this );
-    this.__onKeyDown = qx.lang.Function.bindEvent( this._onKeyDown, this );
+    this.__onMouseDown = rwt.util.Function.bindEvent( this._onMouseDown, this );
+    this.__onMouseOver = rwt.util.Function.bindEvent( this._onMouseOver, this );
+    this.__onMouseOut = rwt.util.Function.bindEvent( this._onMouseOut, this );
+    this.__onKeyDown = rwt.util.Function.bindEvent( this._onKeyDown, this );
     this.addEventListener( "appear", this._onAppear, this );
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
     this.addEventListener( "keypress", this._onKeyPress );

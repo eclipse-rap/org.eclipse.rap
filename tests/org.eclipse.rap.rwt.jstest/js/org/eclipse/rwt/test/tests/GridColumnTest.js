@@ -22,7 +22,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
   members : {
 
     testCreateTableColumnByProtocol : function() {
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var Processor = rwt.protocol.MessageProcessor;
       Processor.processOperation( {
@@ -999,7 +999,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
     },
 
     testCreateColumnGroupByProtocol : function() {
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var Processor = rwt.protocol.MessageProcessor;
 
@@ -1467,7 +1467,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
           "headerVisible" : true
         }
       } );
-      return rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectRegistry.getObject( id );
     },
 
     _createColumnByProtocol : function( id, parentId, styles ) {
@@ -1481,7 +1481,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
         }
       } );
       TestUtil.flush( true );
-      return rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectRegistry.getObject( id );
     },
 
     _createColumnGroupByProtocol : function( id, parentId, styles, noFlush ) {
@@ -1497,7 +1497,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       if( !noFlush ) {
         TestUtil.flush( true );
       }
-      return rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectRegistry.getObject( id );
     },
 
     setUp : function() {

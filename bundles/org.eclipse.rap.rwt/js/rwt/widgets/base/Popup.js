@@ -394,14 +394,14 @@ qx.Class.define("rwt.widgets.base.Popup",
      */
     _sendTo : function()
     {
-      var vPopups = qx.lang.Object.getValues(qx.ui.popup.PopupManager.getInstance().getAll());
+      var vPopups = rwt.util.Object.getValues(qx.ui.popup.PopupManager.getInstance().getAll());
       var zIndexCompare = function(a, b) {
         return a.getZIndex() - b.getZIndex();
       };
       if (org.eclipse.rwt.EventHandler.getMenuManager() != null)
       {
         var manager = org.eclipse.rwt.EventHandler.getMenuManager();
-        var vMenus = qx.lang.Object.getValues(manager.getAll());
+        var vMenus = rwt.util.Object.getValues(manager.getAll());
         var vAll = vPopups.concat(vMenus).sort(zIndexCompare);
       }
       else

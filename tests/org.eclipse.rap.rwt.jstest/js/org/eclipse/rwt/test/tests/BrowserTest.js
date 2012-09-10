@@ -38,7 +38,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Browser );
       assertIdentical( shell, widget.getParent() );
@@ -60,7 +60,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "progress" : true } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasProgressListener );
       shell.destroy();
@@ -82,7 +82,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           }
         } );
         TestUtil.delayTest( 7000 );
-        var browser = rwt.protocol.ObjectManager.getObject( "w3" );
+        var browser = rwt.protocol.ObjectRegistry.getObject( "w3" );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -158,7 +158,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           }
         } );
         TestUtil.delayTest( 1000 );
-        var browser = rwt.protocol.ObjectManager.getObject( "w3" );
+        var browser = rwt.protocol.ObjectRegistry.getObject( "w3" );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -459,7 +459,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         TestUtil.store( browser );
       },
       function( browser ) {
-        if( !qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+        if( !rwt.util.Variant.isSet( "qx.client", "mshtml" ) ) {
           assertTrue( "native loaded?", browser.getUserData( "nativeLoaded" ) );
         }
         assertNull( TestUtil.getErrorPage() );
@@ -486,7 +486,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         // NOTE: Some IE dont fire a load event for this scenario,
         //       therefore can not check that side is loaded,
         //       could lead to false negative (red) test
-        if( !qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+        if( !rwt.util.Variant.isSet( "qx.client", "mshtml" ) ) {
           assertTrue( "native loaded?", browser.getUserData( "nativeLoaded" ) );
         }
         var error = null;
@@ -636,7 +636,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertTrue( iframe.parentNode === el );
         wm.dispose( "w6" );
         TestUtil.flush();
-        if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+        if( rwt.util.Variant.isSet( "qx.client", "mshtml" ) ) {
           assertEquals( "javascript:false;", browser.getSource() );
           assertFalse( browser.isDisposed() );
           assertIdentical( TestUtil.getDocument(), browser.getParent() );
@@ -723,7 +723,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           "parent" : parentId
         }
       } );
-      return rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectRegistry.getObject( id );
     },
 
     _createBrowser : function() {

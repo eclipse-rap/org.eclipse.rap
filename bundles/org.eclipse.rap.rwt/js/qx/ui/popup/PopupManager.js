@@ -15,7 +15,7 @@
 qx.Class.define("qx.ui.popup.PopupManager",
 {
   type : "singleton",
-  extend : qx.util.manager.Object,
+  extend : rwt.util.ObjectManager,
 
 
 
