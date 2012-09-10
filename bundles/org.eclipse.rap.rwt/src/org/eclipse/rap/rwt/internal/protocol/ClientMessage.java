@@ -33,7 +33,7 @@ public class ClientMessage {
 
   private final JSONObject message;
   private final JSONObject header;
-  private HashMap<String,List<Operation>> operationsMap;
+  private final HashMap<String,List<Operation>> operationsMap;
 
   public ClientMessage( String json ) {
     ParamCheck.notNull( json, "json" );
@@ -54,7 +54,8 @@ public class ClientMessage {
       throw new IllegalArgumentException( "Missing operations array: " + json );
     }
     try {
-      createOperationsMap( operations );
+      operationsMap = new HashMap<String,List<Operation>>();
+      fillOperationsMap( operations );
     } catch( JSONException exception ) {
       throw new IllegalArgumentException( "Invalid operations array: " + json );
     }
@@ -117,8 +118,7 @@ public class ClientMessage {
     }
   }
 
-  private void createOperationsMap( JSONArray operations ) throws JSONException {
-    operationsMap = new HashMap<String,List<Operation>>();
+  private void fillOperationsMap( JSONArray operations ) throws JSONException {
     for( int i = 0; i < operations.length(); i++ ) {
       Operation operation = createOperation( operations.getJSONArray( i ) );
       appendOperation( operation );
