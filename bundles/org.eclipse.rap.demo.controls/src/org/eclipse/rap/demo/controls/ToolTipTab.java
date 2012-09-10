@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2011 Rüdiger Herrmann and others. All rights reserved.
+ * Copyright (c) 2011, 2012 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Rüdiger Herrmann - initial API and implementation
+ *    Rüdiger Herrmann - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
@@ -17,6 +18,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+
 
 public class ToolTipTab extends ExampleTab {
 
@@ -33,12 +35,14 @@ public class ToolTipTab extends ExampleTab {
     toolTipText = "";
     toolTipMessage = "";
     selectionListener = new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         ToolTipTab.this.log( "" + event );
       }
     };
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 1, false ) );
     createStyleButton( "BALLOON", SWT.BALLOON );
@@ -52,11 +56,13 @@ public class ToolTipTab extends ExampleTab {
     createSelectionListenerButton();
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 1, false ) );
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Show ToolTip" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         if( toolTip != null ) {
           toolTip.dispose();
@@ -107,7 +113,7 @@ public class ToolTipTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createLocationInput() {
     Composite group = new Composite( styleComp, SWT.NONE );
     group.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
@@ -136,6 +142,7 @@ public class ToolTipTab extends ExampleTab {
     button.setText( "AutoHide" );
     button.setSelection( toolTipAutoHide );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         Button button = ( Button )event.widget;
         toolTipAutoHide = button.getSelection();
@@ -148,6 +155,7 @@ public class ToolTipTab extends ExampleTab {
     button.setText( "SelectionListener" );
     button.setSelection( toolTipSelectionListener );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         Button button = ( Button )event.widget;
         toolTipSelectionListener = button.getSelection();

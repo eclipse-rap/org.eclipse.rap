@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2011 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2012 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Rüdigier Herrmann - initial API and implementation
+ *    Rüdigier Herrmann - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
@@ -18,7 +19,7 @@ import org.eclipse.swt.widgets.TableColumn;
 
 
 public class CheckboxTableViewerColumn {
-  
+
   private final TableViewer tableViewer;
   private final TableViewerColumn tableViewerColumn;
   private final int columnIndex;
@@ -29,14 +30,14 @@ public class CheckboxTableViewerColumn {
   private CheckboxEditingSupport editingSupportDelegate;
   private ColumnViewerEditor editor;
   private boolean editing;
-  
+
   public CheckboxTableViewerColumn( TableViewer tableViewer, int columnStyle ) {
     this.tableViewer = tableViewer;
-    this.checkboxLabelProvider = new CheckboxColumnLabelProvider();
-    this.checkboxEditingSupport = new CheckboxColumnEditingSupport();
-    this.editorActivationListener = new CheckboxEditorActivationListener();
-    this.tableViewerColumn = createViewerColumn( columnStyle );
-    this.columnIndex = computeColumnIndex();
+    checkboxLabelProvider = new CheckboxColumnLabelProvider();
+    checkboxEditingSupport = new CheckboxColumnEditingSupport();
+    editorActivationListener = new CheckboxEditorActivationListener();
+    tableViewerColumn = createViewerColumn( columnStyle );
+    columnIndex = computeColumnIndex();
     registerDisposeListener();
   }
 
@@ -45,26 +46,26 @@ public class CheckboxTableViewerColumn {
   }
 
   public void setLabelProvider( ILabelProvider labelProvider ) {
-    this.labelProviderDelegate = labelProvider;
+    labelProviderDelegate = labelProvider;
   }
-  
+
   public ILabelProvider getLabelProvider() {
     return labelProviderDelegate;
   }
-  
+
   public void setEditingSupport( CheckboxEditingSupport editingSupport ) {
-    this.editingSupportDelegate = editingSupport;
+    editingSupportDelegate = editingSupport;
   }
-  
+
   public CheckboxEditingSupport getEditingSupport() {
     return editingSupportDelegate;
   }
-  
+
   public void attachToEditor() {
     editor = tableViewer.getColumnViewerEditor();
     editor.addEditorActivationListener( editorActivationListener );
   }
-  
+
   private TableViewerColumn createViewerColumn( int columnStyle ) {
     TableViewerColumn result = new TableViewerColumn( tableViewer, columnStyle );
     result.setLabelProvider( checkboxLabelProvider );
@@ -93,7 +94,7 @@ public class CheckboxTableViewerColumn {
       labelProviderDelegate.dispose();
     }
   }
-  
+
   private class CheckboxColumnEditingSupport extends EditingSupport {
     CheckboxColumnEditingSupport() {
       super( tableViewer );
@@ -114,6 +115,7 @@ public class CheckboxTableViewerColumn {
     protected CellEditor getCellEditor( final Object element ) {
       CellEditor cellEditor = new CheckWidgetCellEditor( getColumn().getParent() );
       cellEditor.addListener( new CellEditorAdapter() {
+        @Override
         public void cancelEditor() {
           tableViewer.refresh( element );
         }
@@ -132,7 +134,7 @@ public class CheckboxTableViewerColumn {
       super.initializeCellEditorValue( cellEditor, cell );
     }
   }
-  
+
   private static class CellEditorAdapter implements ICellEditorListener {
     public void applyEditorValue() {
     }
@@ -143,7 +145,7 @@ public class CheckboxTableViewerColumn {
     public void editorValueChanged( boolean oldValidState, boolean newValidState ) {
     }
   }
-  
+
   private class CheckboxColumnLabelProvider extends ColumnLabelProvider {
 
     @Override
@@ -154,7 +156,7 @@ public class CheckboxTableViewerColumn {
       }
       return result;
     }
-    
+
     @Override
     public Image getImage( Object element ) {
       Image result = null;

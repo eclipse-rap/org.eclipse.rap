@@ -12,19 +12,57 @@
 package org.eclipse.rap.demo.controls;
 
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.ColumnViewerEditor;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.FocusCellOwnerDrawHighlighter;
+import org.eclipse.jface.viewers.ICellEditorValidator;
+import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.ILazyContentProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TableViewerEditor;
+import org.eclipse.jface.viewers.TableViewerFocusCellManager;
+import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 
 
 public class TableViewerTab extends ExampleTab {
@@ -257,7 +295,7 @@ public class TableViewerTab extends ExampleTab {
       @Override
       public void widgetSelected( SelectionEvent event ) {
         IStructuredSelection selection = ( IStructuredSelection )getViewer().getSelection();
-        Iterator iter = selection.iterator();
+        Iterator<?> iter = selection.iterator();
         while( iter.hasNext() ) {
           Person person = ( Person )iter.next();
           persons.remove( person );
@@ -374,7 +412,7 @@ public class TableViewerTab extends ExampleTab {
       if( newInput == null ) {
         elements = new Object[ 0 ];
       } else {
-        java.util.List personList = ( java.util.List )newInput;
+        List<?> personList = ( List<?> )newInput;
         elements = personList.toArray();
       }
     }
@@ -385,11 +423,11 @@ public class TableViewerTab extends ExampleTab {
 
   private static final class LazyPersonContentProvider implements ILazyContentProvider {
     private TableViewer tableViewer;
-    private List elements;
+    private List<?> elements;
 
     public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {
       tableViewer = ( TableViewer )viewer;
-      elements = ( List )newInput;
+      elements = ( List<?> )newInput;
     }
     public void updateElement( int index ) {
       tableViewer.replace( elements.get( index ), index );
@@ -405,7 +443,7 @@ public class TableViewerTab extends ExampleTab {
 
     public PersonLabelProvider( int columnIndex ) {
       this.columnIndex = columnIndex;
-      this.nameBackground = new Color( Display.getCurrent(), 248, 248, 248 );
+      nameBackground = new Color( Display.getCurrent(), 248, 248, 248 );
     }
 
     @Override

@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
@@ -21,6 +20,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
+
 
 public class FocusTab extends ExampleTab {
 
@@ -55,6 +55,7 @@ public class FocusTab extends ExampleTab {
     super( topFolder, "Focus" );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     createFocusButton( "Focus Label", label, parent );
     createFocusButton( "Focus Push Button", button, parent );
@@ -82,6 +83,7 @@ public class FocusTab extends ExampleTab {
     log.setLayoutData( new RowData( 300, 120 ) );
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new RowLayout() );
     label = new Label( parent, SWT.NONE );
@@ -181,6 +183,7 @@ public class FocusTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( text );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         targetControl.forceFocus();
       }

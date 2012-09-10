@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ public class ToolBarTab extends ExampleTab {
     super( topFolder, "ToolBar" );
   }
 
+  @Override
   protected void createStyleControls( Composite parent ) {
     createStyleButton( "HORIZONTAL", SWT.HORIZONTAL );
     createStyleButton( "VERTICAL", SWT.VERTICAL );
@@ -63,6 +64,7 @@ public class ToolBarTab extends ExampleTab {
     addItemButton.setText( "Add Item" );
     addItemButton.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         int newIndex = Integer.parseInt( index.getText() );
         ToolItem toolItem = new ToolItem( toolBar, SWT.RADIO, newIndex );
@@ -71,6 +73,7 @@ public class ToolBarTab extends ExampleTab {
     } );
   }
 
+  @Override
   protected void createExampleControls( Composite parent ) {
     parent.setLayout( new RowLayout() );
     Image imageNewFile = loadImage( "resources/newfile_wiz.gif" );
@@ -103,6 +106,7 @@ public class ToolBarTab extends ExampleTab {
     ToolItem item4 = new ToolItem( toolBar, SWT.CHECK );
     item4.setImage( imageSearch );
     item4.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         log( "check changed" + event );
       }
@@ -111,6 +115,7 @@ public class ToolBarTab extends ExampleTab {
     item5.setImage( imageSearch );
     ToolItem item6 = new ToolItem( toolBar, SWT.RADIO );
     SelectionAdapter radioSelectionListener = new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         log( "radio changed - " + event );
       }
@@ -124,6 +129,7 @@ public class ToolBarTab extends ExampleTab {
       item.setText( "Item " + count++ );
     }
     dropDownItem.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         if( event.detail == SWT.ARROW ) {
           Point point = toolBar.toDisplay( event.x, event.y );

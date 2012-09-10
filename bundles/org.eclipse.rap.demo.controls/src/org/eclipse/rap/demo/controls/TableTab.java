@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
@@ -48,6 +49,7 @@ public class TableTab extends ExampleTab {
     itemImage = smallImage;
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     createStyleButton( "MULTI", SWT.MULTI );
     createStyleButton( "CHECK", SWT.CHECK );
@@ -96,6 +98,7 @@ public class TableTab extends ExampleTab {
     createCursorCombo();
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     FillLayout layout = new FillLayout();
     layout.marginHeight = 5;
@@ -104,9 +107,11 @@ public class TableTab extends ExampleTab {
     int style = getStyle();
     table = new Table( parent, style );
     table.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         log( "click: " + event.item );
       }
+      @Override
       public void widgetDefaultSelected( final SelectionEvent event ) {
         log( "double-click: " + event.item );
       }
@@ -118,6 +123,7 @@ public class TableTab extends ExampleTab {
             if( updateVirtualItemsDelayed ) {
               final Display display = event.display;
               Job job = new Job( "Delayed Table Item Update" ) {
+                @Override
                 protected IStatus run( final IProgressMonitor monitor ) {
                   display.asyncExec( new Runnable() {
                     public void run() {
@@ -144,6 +150,7 @@ public class TableTab extends ExampleTab {
       column.setWidth( i == 0 ? 50 : 100 );
       column.setMoveable( columnsMoveable );
       column.addSelectionListener( new SelectionAdapter() {
+        @Override
         public void widgetSelected( final SelectionEvent event ) {
           Table table = column.getParent();
           if( table.getSortColumn() == column ) {
@@ -177,6 +184,7 @@ public class TableTab extends ExampleTab {
     button.setText( "headerVisible" );
     button.setSelection( headerVisible );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         headerVisible = button.getSelection();
         table.setHeaderVisible( headerVisible );
@@ -189,6 +197,7 @@ public class TableTab extends ExampleTab {
     button.setText( "linesVisible" );
     button.setSelection( linesVisible );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         linesVisible = button.getSelection();
         table.setLinesVisible( linesVisible );
@@ -201,6 +210,7 @@ public class TableTab extends ExampleTab {
     button.setText( "Moveable Columns" );
     button.setSelection( columnsMoveable );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         columnsMoveable = button.getSelection();
         TableColumn[] columns = table.getColumns();
@@ -216,6 +226,7 @@ public class TableTab extends ExampleTab {
     button.setText( "Column images" );
     button.setSelection( columnImages );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         columnImages = button.getSelection();
         TableColumn[] columns = getTable().getColumns();
@@ -234,6 +245,7 @@ public class TableTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "ClearAll" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         table.clearAll();
         table.setItemCount( 0 );
@@ -275,6 +287,7 @@ public class TableTab extends ExampleTab {
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "Item(s)" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         int count = -1;
         try {
@@ -298,6 +311,7 @@ public class TableTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Insert On Selected Item" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         int[] selectionIndices = getTable().getSelectionIndices();
         if( selectionIndices.length > 0 ) {
@@ -313,6 +327,7 @@ public class TableTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Select first Item" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         if( table.getItemCount() > 0 ) {
           table.setSelection( 0 );
@@ -325,6 +340,7 @@ public class TableTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Dispose first Column" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         if( getTable().getColumnCount() > 0 ) {
           int firstColumn = getTable().getColumnOrder()[ 0 ];
@@ -338,6 +354,7 @@ public class TableTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Dispose Selected Item" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         TableItem[] items = table.getSelection();
         for( int i = 0; i < items.length; i++ ) {
@@ -351,6 +368,7 @@ public class TableTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Recreate Last Item" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         int count = getTable().getItemCount();
         if( count > 0 ) {
@@ -367,6 +385,7 @@ public class TableTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Set topIndex = 100" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         table.setTopIndex( 100 );
       }
@@ -376,6 +395,7 @@ public class TableTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "showSelection" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         table.showSelection();
       }
@@ -386,6 +406,7 @@ public class TableTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Change checked for selection" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         TableItem[] selection = table.getSelection();
         for( int i = 0; i < selection.length; i++ ) {
@@ -399,6 +420,7 @@ public class TableTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Change grayed for selection" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         TableItem[] selection = table.getSelection();
         for( int i = 0; i < selection.length; i++ ) {
@@ -421,6 +443,7 @@ public class TableTab extends ExampleTab {
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "Change" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         try {
           columns = Integer.parseInt( text.getText() );
@@ -446,6 +469,7 @@ public class TableTab extends ExampleTab {
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "Show" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         try {
           int index = Integer.parseInt( text.getText() );
@@ -476,6 +500,7 @@ public class TableTab extends ExampleTab {
     button.setLayoutData( gridData );
     button.setText( "Change" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         try {
           int index = Integer.parseInt( txtIndex.getText() );
@@ -489,6 +514,7 @@ public class TableTab extends ExampleTab {
       }
     } );
     getTable().addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         try {
           int index = Integer.parseInt( txtIndex.getText() );
@@ -514,6 +540,7 @@ public class TableTab extends ExampleTab {
     Button btnChange = new Button( composite, SWT.PUSH );
     btnChange.setText( "Change" );
     btnChange.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         int itemCount = -1;
         try {
@@ -531,6 +558,7 @@ public class TableTab extends ExampleTab {
     cbDelayedUpdate.setLayoutData( gridData );
     cbDelayedUpdate.setText( "Update virtual items delayed" );
     cbDelayedUpdate.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         updateVirtualItemsDelayed = cbDelayedUpdate.getSelection();
       }
@@ -541,6 +569,7 @@ public class TableTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Revert Column Order" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         int[] columnOrder = table.getColumnOrder();
         int columnIndex = table.getColumnCount() - 1;
@@ -557,6 +586,7 @@ public class TableTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Pack Columns" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         TableColumn[] columns = getTable().getColumns();
         for( int i = 0; i < columns.length; i++ ) {
@@ -583,6 +613,7 @@ public class TableTab extends ExampleTab {
     Button btnChange = new Button( composite , SWT.PUSH );
     btnChange.setText( "Columns" );
     btnChange.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         columnsWidthImages = spnCount.getSelection();
         if( rbSmall.getSelection() ) {
@@ -615,6 +646,7 @@ public class TableTab extends ExampleTab {
     combo.add( "SWT.RIGHT" );
     combo.select( 0 );
     combo.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         int alignment = SWT.LEFT;
         if( combo.getSelectionIndex() == 1 ) {
@@ -634,6 +666,7 @@ public class TableTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Change Item Appearance" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         Display display = getTable().getDisplay();
         FontData fontData = getTable().getFont().getFontData()[ 0 ];
@@ -672,6 +705,7 @@ public class TableTab extends ExampleTab {
     Button btnSelect = new Button( composite, SWT.PUSH );
     btnSelect.setText( "OK" );
     btnSelect.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         try {
           int x = Integer.parseInt( txtX.getText() );
@@ -698,6 +732,7 @@ public class TableTab extends ExampleTab {
     Button btn = new Button( styleComp, SWT.PUSH );
     btn.setText( "Query topIndex" );
     btn.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Shell shell = styleComp.getShell();
         String msg = "Current topIndex: " + getTable().getTopIndex();
@@ -710,6 +745,7 @@ public class TableTab extends ExampleTab {
     final Button btn = new Button( styleComp, SWT.TOGGLE );
     btn.setText( "Item 0 Foreground" );
     btn.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         if( getTable().getItemCount() > 0 ) {
           Color color = btn.getSelection() ? FG_COLOR_ORANGE  : null;
@@ -723,6 +759,7 @@ public class TableTab extends ExampleTab {
     final Button btn = new Button( styleComp, SWT.TOGGLE );
     btn.setText( "Item 0 Background" );
     btn.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         if( getTable().getItemCount() > 0 ) {
           Color color = btn.getSelection() ? BG_COLOR_BROWN  : null;
@@ -739,6 +776,7 @@ public class TableTab extends ExampleTab {
 
       Font customFont = Graphics.getFont( "Courier", 11, SWT.BOLD );
 
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         if( getTable().getItemCount() > 0 ) {
           Font font = btn.getSelection() ? customFont : null;
@@ -752,6 +790,7 @@ public class TableTab extends ExampleTab {
     final Button btn = new Button( styleComp, SWT.TOGGLE );
     btn.setText( "Cell 0,0 Foreground" );
     btn.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         if( getTable().getItemCount() > 0 ) {
           Color color = btn.getSelection() ? FG_COLOR_RED  : null;
@@ -765,6 +804,7 @@ public class TableTab extends ExampleTab {
     final Button btn = new Button( styleComp, SWT.TOGGLE );
     btn.setText( "Cell 0,0 Background" );
     btn.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         if( getTable().getItemCount() > 0 ) {
           Color color = btn.getSelection() ? BG_COLOR_GREEN  : null;
@@ -781,6 +821,7 @@ public class TableTab extends ExampleTab {
 
       Font cellFont = Graphics.getFont( "Times", 13, SWT.ITALIC );
 
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         if( getTable().getItemCount() > 0 ) {
           Font font = btn.getSelection() ? cellFont : null;

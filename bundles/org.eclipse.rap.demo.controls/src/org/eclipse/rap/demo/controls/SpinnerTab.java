@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
@@ -40,6 +40,7 @@ public class SpinnerTab extends ExampleTab {
     selection = 0;
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "READ_ONLY", SWT.READ_ONLY );
@@ -53,6 +54,7 @@ public class SpinnerTab extends ExampleTab {
     createCursorCombo();
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     GridLayout gridLayout = new GridLayout( 2, false );
     parent.setLayout( gridLayout );
@@ -104,6 +106,7 @@ public class SpinnerTab extends ExampleTab {
     btnApply.setLayoutData( btnApplyData );
     btnApply.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         minimum = parseInt( txtMin, spinner.getMinimum() );
         maximum = parseInt( txtMax, spinner.getMaximum() );

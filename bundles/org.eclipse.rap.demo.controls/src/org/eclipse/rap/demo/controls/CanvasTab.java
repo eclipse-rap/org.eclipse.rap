@@ -8,7 +8,6 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -26,6 +25,7 @@ public final class CanvasTab extends ExampleTab {
     super( topFolder, "Canvas" );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     cteateRoundedBorderGroup();
@@ -36,6 +36,7 @@ public final class CanvasTab extends ExampleTab {
     createBgImageButton();
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     final Canvas canvas = new Canvas( parent, getStyle() );

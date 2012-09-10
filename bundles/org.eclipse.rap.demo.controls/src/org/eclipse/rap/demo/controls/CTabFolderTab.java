@@ -374,9 +374,9 @@ public class CTabFolderTab extends ExampleTab {
   }
 
   private void updateSelFgColor() {
-    Iterator iter = controls.iterator();
+    Iterator<Control> iter = controls.iterator();
     while( iter.hasNext() ) {
-      Control control = ( Control )iter.next();
+      Control control = iter.next();
       if( control instanceof CTabFolder ) {
         CTabFolder folder = ( CTabFolder )control;
         folder.setSelectionForeground( fgColors[ selFgIndex ] );
@@ -385,9 +385,9 @@ public class CTabFolderTab extends ExampleTab {
   }
 
   private void updateSelBgColor() {
-    Iterator iter = controls.iterator();
+    Iterator<Control> iter = controls.iterator();
     while( iter.hasNext() ) {
-      Control control = ( Control )iter.next();
+      Control control = iter.next();
       if( control instanceof CTabFolder ) {
         CTabFolder folder = ( CTabFolder )control;
         folder.setSelectionBackground( bgColors[ selBgIndex ] );
@@ -396,9 +396,9 @@ public class CTabFolderTab extends ExampleTab {
   }
 
   private void updateSelBgGradient() {
-    Iterator iter = controls.iterator();
+    Iterator<Control> iter = controls.iterator();
     while( iter.hasNext() ) {
-      Control control = ( Control )iter.next();
+      Control control = iter.next();
       if( control instanceof CTabFolder ) {
         CTabFolder folder = ( CTabFolder )control;
         if( showSelectionBgGradient ) {

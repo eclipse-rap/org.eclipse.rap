@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -19,6 +18,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.*;
+
 
 public class CoolBarTab extends ExampleTab {
 
@@ -31,6 +31,7 @@ public class CoolBarTab extends ExampleTab {
     image1 = Graphics.getImage( "resources/newfile_wiz.gif", loader );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     // TODO [rst] Allow for vertical CoolBars
 //  createStyleButton( "HORIZONTAL", SWT.HORIZONTAL );
@@ -44,6 +45,7 @@ public class CoolBarTab extends ExampleTab {
     createBgImageButton();
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     int style = getStyle();
     coolBar = new CoolBar( parent, style );
@@ -57,6 +59,7 @@ public class CoolBarTab extends ExampleTab {
     registerControl( coolBar );
 
     final ControlAdapter controlListener = new ControlAdapter() {
+      @Override
       public void controlResized( final ControlEvent e ) {
         coolBar.setSize( coolBar.computeSize( parent.getSize().x - 10, SWT.DEFAULT ) );
       }
@@ -103,6 +106,7 @@ public class CoolBarTab extends ExampleTab {
     button.setText( "Locked" );
     button.setSelection( coolBar.getLocked() );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         coolBar.setLocked( button.getSelection() );
       }

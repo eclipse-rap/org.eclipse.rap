@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.*;
 
 
 public class LinkTab extends ExampleTab {
-  
+
   private static final String PROP_CONTEXT_MENU = "contextMenu";
 
   private Link link1;
@@ -33,6 +33,7 @@ public class LinkTab extends ExampleTab {
     super( topFolder, "Link" );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createVisibilityButton();
@@ -42,16 +43,18 @@ public class LinkTab extends ExampleTab {
     createBgImageButton();
     createFontChooser();
     createCustomLinkControl( parent );
-    createPropertyCheckbox( "Add Context Menu On First Link", 
+    createPropertyCheckbox( "Add Context Menu On First Link",
                             PROP_CONTEXT_MENU );
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout() );
     int style = getStyle();
     link1 = new Link( parent, style );
     link1.setText( "Lorem <a>ipsum</a> dolor <a>sit amet</a>" );
     link1.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         String msg = "Link widget selected, text=" + event.text;
         MessageDialog.openInformation( getShell(), "Information", msg );
@@ -61,6 +64,7 @@ public class LinkTab extends ExampleTab {
       Menu linkMenu = new Menu( link1 );
       MenuItem linkMenuItem = new MenuItem( linkMenu, SWT.PUSH );
       linkMenuItem.addSelectionListener( new SelectionAdapter() {
+        @Override
         public void widgetSelected( final SelectionEvent event ) {
           String message = "You requested a context menu for the Link";
           MessageDialog.openInformation( link1.getShell(),
@@ -78,6 +82,7 @@ public class LinkTab extends ExampleTab {
     customLink = new Link( parent, style );
     customLink.setText( "Custom link, use controls to your right to change" );
     customLink.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         String msg = "Link widget selected, text=" + event.text;
         MessageDialog.openInformation( getShell(), "Information", msg );
@@ -102,6 +107,7 @@ public class LinkTab extends ExampleTab {
     Button btnChange = new Button( composite, SWT.PUSH );
     btnChange.setText( "Change" );
     btnChange.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         customLink.setText( txtText.getText() );
         customLink.getParent().layout();

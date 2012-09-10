@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
@@ -18,9 +18,10 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
+
 public class HtmlDialog {
 
-  private Shell shell;
+  private final Shell shell;
   private final String text;
 
   public HtmlDialog( final Shell parent, final String title, final String text )
@@ -39,19 +40,19 @@ public class HtmlDialog {
     shell.layout();
     shell.open();
   }
-  
+
   public void close() {
     shell.close();
   }
-  
+
   public void setSize( final int width, final int height ) {
     shell.setSize( width, height );
   }
-  
+
   public void setLocation( final int x, final int y ) {
     shell.setLocation( x, y );
   }
-  
+
   private void createContents( final Composite parent ) {
     Layout layout = new GridLayout();
     parent.setLayout( layout );
@@ -65,6 +66,7 @@ public class HtmlDialog {
     closeButton.setText( "Close" );
     shell.setDefaultButton( closeButton );
     closeButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         close();
       }

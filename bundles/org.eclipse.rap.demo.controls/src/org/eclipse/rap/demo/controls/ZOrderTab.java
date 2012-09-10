@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
@@ -18,6 +18,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
+
 public class ZOrderTab extends ExampleTab {
 
   private Label label;
@@ -26,12 +27,14 @@ public class ZOrderTab extends ExampleTab {
     super( topFolder, "Z-Order" );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
   }
 
+  @Override
   protected void createExampleControls( final Composite top ) {
     top.setLayout( new FormLayout() );
-    
+
     final Composite comp = new Composite( top, SWT.NONE );
     comp.setLayout( new FormLayout() );
     FormData fdComp = new FormData();
@@ -40,7 +43,7 @@ public class ZOrderTab extends ExampleTab {
     fdComp.right = new FormAttachment( 100, 0 );
     fdComp.bottom = new FormAttachment( 70, 0 );
     comp.setLayoutData( fdComp );
-    
+
     final Label labelA = createLabel( comp, 15, 45 );
     labelA.setText( "A" );
     labelA.setBackground( BG_COLOR_BLUE );
@@ -48,11 +51,11 @@ public class ZOrderTab extends ExampleTab {
     final Label labelB = createLabel( comp, 35, 65 );
     labelB.setText( "B" );
     labelB.setBackground( BG_COLOR_GREEN );
-    
+
     final Label labelC = createLabel( comp, 55, 85 );
     labelC.setText( "C" );
     labelC.setBackground( BG_COLOR_BROWN );
-    
+
     label = new Label( comp , SWT.CENTER );
     FormData fdData = fdComp;
     fdData.top = new FormAttachment( labelC, labelC.getSize().y + 10 );
@@ -60,10 +63,11 @@ public class ZOrderTab extends ExampleTab {
     fdData.right = new FormAttachment( 100, 0 );
     label.setLayoutData( fdData );
     label.setText( "trallala" );
-    
+
     Button aboveA = createButton( top, 80, 10, 36 );
     aboveA.setText( "B above A" );
     aboveA.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         labelB.moveAbove( labelA );
         printChildren( comp );
@@ -73,42 +77,47 @@ public class ZOrderTab extends ExampleTab {
     Button belowA = createButton( top, aboveA, 10, 36 );
     belowA.setText( "B below A" );
     belowA.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         labelB.moveBelow( labelA );
         printChildren( comp );
       }
     } );
-    
+
     Button aboveAll = createButton( top, 80, 37, 63 );
     aboveAll.setText( "B above all" );
     aboveAll.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         labelB.moveAbove( null );
         printChildren( comp );
       }
     } );
-    
+
     Button belowAll = createButton( top, aboveAll, 37, 63 );
     belowAll.setText( "B below all" );
     belowAll.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         labelB.moveBelow( null );
         printChildren( comp );
       }
     } );
-    
+
     Button aboveC = createButton( top, 80, 64, 90 );
     aboveC.setText( "B above C" );
     aboveC.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         labelB.moveAbove( labelC );
         printChildren( comp );
       }
     } );
-  
+
     Button belowC = createButton( top, aboveC, 64, 90 );
     belowC.setText( "B below C" );
     belowC.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         labelB.moveBelow( labelC );
         printChildren( comp );
@@ -120,9 +129,9 @@ public class ZOrderTab extends ExampleTab {
     } );
   }
 
-  private Button createButton( final Composite composite, 
-                               final int top, 
-                               final int left, 
+  private Button createButton( final Composite composite,
+                               final int top,
+                               final int left,
                                final int right )
   {
     Button result = new Button( composite, SWT.PUSH );
@@ -133,10 +142,10 @@ public class ZOrderTab extends ExampleTab {
     result.setLayoutData( fdButton );
     return result;
   }
-  
-  private Button createButton( final Composite composite, 
-                               final Control top, 
-                               final int left, 
+
+  private Button createButton( final Composite composite,
+                               final Control top,
+                               final int left,
                                final int right )
   {
     Button result = new Button( composite, SWT.PUSH );
@@ -148,8 +157,8 @@ public class ZOrderTab extends ExampleTab {
     return result;
   }
 
-  private Label createLabel( final Composite top, 
-                             final int topAndLeft, 
+  private Label createLabel( final Composite top,
+                             final int topAndLeft,
                              final int rightAndBottom )
   {
     final Label result = new Label( top, SWT.BORDER | SWT.CENTER );

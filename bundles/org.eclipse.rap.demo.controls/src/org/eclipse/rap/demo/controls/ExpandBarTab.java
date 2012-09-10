@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
@@ -20,11 +21,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
 
+
 class ExpandBarTab extends ExampleTab {
 
   private static final String PROP_CONTEXT_MENU = "contextMenu";
   private static final String PROP_EXPAND_LISTENER = "expandListener";
-  
+
   private ExpandBar expandBar;
   private Spinner spinner;
 
@@ -33,6 +35,7 @@ class ExpandBarTab extends ExampleTab {
     setDefaultStyle( SWT.BORDER | SWT.V_SCROLL );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     createStyleButton( "V_SCROLL", SWT.V_SCROLL, true );
     createStyleButton( "BORDER", SWT.BORDER, true );
@@ -49,6 +52,7 @@ class ExpandBarTab extends ExampleTab {
     createPropertyCheckbox( "Add Expand Listener", PROP_EXPAND_LISTENER );
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     ClassLoader classLoader = getClass().getClassLoader();
@@ -57,6 +61,7 @@ class ExpandBarTab extends ExampleTab {
       Menu expandBarMenu = new Menu( expandBar );
       MenuItem expandBarMenuItem = new MenuItem( expandBarMenu, SWT.PUSH );
       expandBarMenuItem.addSelectionListener( new SelectionAdapter() {
+        @Override
         public void widgetSelected( final SelectionEvent event ) {
           String message = "You requested a context menu for the expand bar";
           MessageDialog.openInformation( expandBar.getShell(),
@@ -129,7 +134,7 @@ class ExpandBarTab extends ExampleTab {
     item.setText( "What is your favorite icon?" );
     item.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
     item.setControl( composite );
-    item.setImage( Graphics.getImage( "resources/newprj_wiz.gif", 
+    item.setImage( Graphics.getImage( "resources/newprj_wiz.gif",
                                       classLoader ) );
     item.setExpanded( true );
     expandBar.computeSize( SWT.DEFAULT, SWT.DEFAULT );
@@ -163,6 +168,7 @@ class ExpandBarTab extends ExampleTab {
     button.setText( "Insert ExpandItem before first item" );
     button.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         ClassLoader classLoader = getClass().getClassLoader();
         ExpandItem item = new ExpandItem( expandBar, SWT.NONE, 0 );
@@ -180,6 +186,7 @@ class ExpandBarTab extends ExampleTab {
     button.setText( "Remove first ExpandItem" );
     button.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         ExpandItem item = expandBar.getItem( 0 );
         item.dispose();

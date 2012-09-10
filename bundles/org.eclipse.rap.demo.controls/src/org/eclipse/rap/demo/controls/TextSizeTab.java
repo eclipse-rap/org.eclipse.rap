@@ -79,9 +79,9 @@ public class TextSizeTab extends ExampleTab {
   }
 
   private void updateControls() {
-    Iterator iter = controls.iterator();
+    Iterator<Control> iter = controls.iterator();
     while( iter.hasNext() ) {
-      Control control = ( Control )iter.next();
+      Control control = iter.next();
       control.setFont( font );
       if( propFixedSize ) {
         control.setSize( control.computeSize( 200, SWT.DEFAULT ) );

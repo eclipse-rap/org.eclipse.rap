@@ -582,41 +582,41 @@ abstract class ExampleTab implements Serializable {
   }
 
   private void updateVisible( ) {
-    Iterator iter = controls.iterator();
+    Iterator<Control> iter = controls.iterator();
     while( iter.hasNext() ) {
-      Control control = ( Control )iter.next();
+      Control control = iter.next();
       control.setVisible( visible );
     }
   }
 
   private void updateEnabled( ) {
-    Iterator iter = controls.iterator();
+    Iterator<Control> iter = controls.iterator();
     while( iter.hasNext() ) {
-      Control control = ( Control )iter.next();
+      Control control = iter.next();
       control.setEnabled( enabled );
     }
   }
 
   private void updateFgColor() {
-    Iterator iter = controls.iterator();
+    Iterator<Control> iter = controls.iterator();
     while( iter.hasNext() ) {
-      Control control = ( Control )iter.next();
+      Control control = iter.next();
       control.setForeground( fgColors[ fgIndex ] );
     }
   }
 
   private void updateBgColor() {
-    Iterator iter = controls.iterator();
+    Iterator<Control> iter = controls.iterator();
     while( iter.hasNext() ) {
-      Control control = ( Control )iter.next();
+      Control control = iter.next();
       control.setBackground( bgColors[ bgIndex ] );
     }
   }
 
   private void updateBgGradient() {
-    Iterator iter = controls.iterator();
+    Iterator<Control> iter = controls.iterator();
     while( iter.hasNext() ) {
-      Control control = ( Control )iter.next();
+      Control control = iter.next();
       Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
       IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
       if( showBgGradient ) {
@@ -643,9 +643,9 @@ abstract class ExampleTab implements Serializable {
   }
 
   private void updateFont() {
-    Iterator iter = controls.iterator();
+    Iterator<Control> iter = controls.iterator();
     while( iter.hasNext() ) {
-      Control control = ( Control )iter.next();
+      Control control = iter.next();
       control.setFont( font );
     }
     // Force layout
@@ -657,7 +657,7 @@ abstract class ExampleTab implements Serializable {
 
   private void updateCursor( final String selection ) {
     Cursor cursor = null;
-    Class swtClass = SWT.class;
+    Class<SWT> swtClass = SWT.class;
     if( selection != null ) {
       try {
         Field field = swtClass.getField( selection );
@@ -667,9 +667,9 @@ abstract class ExampleTab implements Serializable {
         e.printStackTrace();
       }
     }
-    Iterator iter = controls.iterator();
+    Iterator<Control> iter = controls.iterator();
     while( iter.hasNext() ) {
-      Control control = ( Control )iter.next();
+      Control control = iter.next();
       control.setCursor( cursor );
     }
   }
@@ -680,9 +680,9 @@ abstract class ExampleTab implements Serializable {
                                     final int topRight,
                                     final int bottomRight,
                                     final int bottomLeft ) {
-    Iterator iter = controls.iterator();
+    Iterator<Control> iter = controls.iterator();
     while( iter.hasNext() ) {
-      Control control = ( Control )iter.next();
+      Control control = iter.next();
       Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
       IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
       gfxAdapter.setRoundedBorder( width,

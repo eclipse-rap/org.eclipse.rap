@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
@@ -29,6 +28,7 @@ public final class CompositeTab extends ExampleTab {
     super( topFolder, "Composite" );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     cteateRoundedBorderGroup();
@@ -42,6 +42,7 @@ public final class CompositeTab extends ExampleTab {
     Button cbAddMouseListener = new Button( parent, SWT.CHECK );
     cbAddMouseListener.setText( "Attach MouseListener" );
     cbAddMouseListener.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         addMouseListener = !addMouseListener;
         createNew();
@@ -50,6 +51,7 @@ public final class CompositeTab extends ExampleTab {
     cbAddMouseListener.setSelection( addMouseListener );
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     parent.setBackgroundMode( backgroundMode );
@@ -108,6 +110,7 @@ public final class CompositeTab extends ExampleTab {
     final Button forceButton = new Button( group, SWT.RADIO );
     forceButton.setText( "SWT.INHERIT_FORCE" );
     SelectionListener selectionAdapter = new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         if( defaultButton.getSelection() ) {
           backgroundMode = SWT.INHERIT_DEFAULT;

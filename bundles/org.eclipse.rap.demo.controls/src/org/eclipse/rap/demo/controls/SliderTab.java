@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -19,27 +19,28 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
 
-public class SliderTab extends ExampleTab {  
+public class SliderTab extends ExampleTab {
 
   private static final String PROP_CONTEXT_MENU = "contextMenu";
   private static final String PROP_SELECTION_LISTENER = "selectionListener";
-  
-  Slider slider;  
+
+  Slider slider;
   Spinner minimumSpinner, maximumSpinner, selectionSpinner, thumbSpinner,
           incrementSpinner, pageIncrementSpinner;
-  
+
   public SliderTab( final CTabFolder folder ) {
     super( folder, "Slider" );
     setDefaultStyle( SWT.HORIZONTAL );
   }
 
-  protected void createStyleControls( final Composite parent ) {   
+  @Override
+  protected void createStyleControls( final Composite parent ) {
     createStyleButton( parent, "HORIZONTAL", SWT.HORIZONTAL, SWT.RADIO, true );
-    createStyleButton( parent, "VERTICAL", SWT.VERTICAL, SWT.RADIO, false ); 
+    createStyleButton( parent, "VERTICAL", SWT.VERTICAL, SWT.RADIO, false );
     createVisibilityButton();
-    createEnablementButton();      
+    createEnablementButton();
     createBgColorButton();
-    createBgImageButton(); 
+    createBgImageButton();
     minimumSpinner = createSpinnerControl( parent, "Minimum",
                                            0, 100000, 0 );
     minimumSpinner.addModifyListener( new ModifyListener() {
@@ -98,6 +99,7 @@ public class SliderTab extends ExampleTab {
     createPropertyCheckbox( "Add Selection Listener", PROP_SELECTION_LISTENER );
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     int style = getStyle();
@@ -107,6 +109,7 @@ public class SliderTab extends ExampleTab {
       MenuItem sliderMenuItem = new MenuItem( sliderMenu, SWT.PUSH );
       sliderMenuItem.addSelectionListener( new SelectionAdapter() {
 
+        @Override
         public void widgetSelected( final SelectionEvent event ) {
           String message = "You requested a context menu for the Slider";
           MessageDialog.openInformation( slider.getShell(),
@@ -153,7 +156,7 @@ public class SliderTab extends ExampleTab {
     }
     registerControl( slider );
   }
-  
+
   protected Button createStyleButton( final Composite parent,
                                       final String name,
                                       final int style,
@@ -164,6 +167,7 @@ public class SliderTab extends ExampleTab {
     button.setText( name );
     button.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         createNew();
       }
@@ -172,7 +176,7 @@ public class SliderTab extends ExampleTab {
     button.setSelection( checked );
     return button;
   }
-  
+
   private Spinner createSpinnerControl( final Composite parent,
                                         final String labelText,
                                         final int minimum,
@@ -185,7 +189,7 @@ public class SliderTab extends ExampleTab {
     final Spinner spinner = new Spinner( composite, SWT.BORDER );
     spinner.setSelection( selection );
     spinner.setMinimum( minimum );
-    spinner.setMaximum( maximum ); 
+    spinner.setMaximum( maximum );
     return spinner;
   }
 }

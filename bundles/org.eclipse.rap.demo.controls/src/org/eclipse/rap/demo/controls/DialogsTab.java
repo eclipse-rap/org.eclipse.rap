@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
@@ -59,11 +59,13 @@ public class DialogsTab extends ExampleTab {
     super( topFolder, "Dialogs" );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 1, true ) );
     createMessageBoxStyleControls( parent );
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout() );
     Group group1 = new Group( parent, SWT.NONE );
@@ -75,6 +77,7 @@ public class DialogsTab extends ExampleTab {
     Button showInputDlgButton = new Button( group1, SWT.PUSH );
     showInputDlgButton.setText( "Input Dialog" );
     showInputDlgButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         showInputDialog();
       }
@@ -84,6 +87,7 @@ public class DialogsTab extends ExampleTab {
     showProgressDlgButton.setText( "ProgressDialog" );
     showProgressDlgButton.setLayoutData( createGridDataFillBoth() );
     showProgressDlgButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected(final SelectionEvent e) {
         showProgressDialog();
       }
@@ -100,6 +104,7 @@ public class DialogsTab extends ExampleTab {
     showMessageInfoDlgButton.setLayoutData( createGridDataFillBoth() );
     showMessageInfoDlgButton.setText( "Info Message" );
     showMessageInfoDlgButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         showMessageDialogInfo();
       }
@@ -109,6 +114,7 @@ public class DialogsTab extends ExampleTab {
     showMessageWarningDlgButton.setLayoutData( createGridDataFillBoth() );
     showMessageWarningDlgButton.setText( "Warning Dialog" );
     showMessageWarningDlgButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         showMessageDialogWarning();
       }
@@ -117,6 +123,7 @@ public class DialogsTab extends ExampleTab {
     showMessageErrorDlgButton.setLayoutData( createGridDataFillBoth() );
     showMessageErrorDlgButton.setText( "Error Message" );
     showMessageErrorDlgButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         showMessageDialogError();
       }
@@ -126,6 +133,7 @@ public class DialogsTab extends ExampleTab {
     showMessageQuestionDlgButton.setLayoutData( createGridDataFillBoth() );
     showMessageQuestionDlgButton.setText( "Question Dialog" );
     showMessageQuestionDlgButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         showMessageDialogQuestion();
       }
@@ -135,6 +143,7 @@ public class DialogsTab extends ExampleTab {
     showMessageConfirmDlgButton.setLayoutData( createGridDataFillBoth() );
     showMessageConfirmDlgButton.setText( "Confirm Message" );
     showMessageConfirmDlgButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         showMessageDialogConfirm();
       }
@@ -149,6 +158,7 @@ public class DialogsTab extends ExampleTab {
     showErrorDlgButton.setLayoutData( createGridDataFillBoth() );
     showErrorDlgButton.setText( "Error Dialog" );
     showErrorDlgButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         showErrorDialog();
       }
@@ -168,6 +178,7 @@ public class DialogsTab extends ExampleTab {
     Button showLoginDlgButton = new Button( group2, SWT.PUSH );
     showLoginDlgButton.setText( "Login Dialog" );
     showLoginDlgButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         showLoginDialog();
       }
@@ -188,14 +199,16 @@ public class DialogsTab extends ExampleTab {
     cbUseDialogCallback.setSelection( useDialogCallback );
     cbUseDialogCallback.setLayoutData( new GridData( SWT.LEFT, SWT.CENTER, false, false, 3, 1 ) );
     cbUseDialogCallback.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         useDialogCallback = cbUseDialogCallback.getSelection();
       }
     } );
-    
+
     showMessageBoxDlgButton = new Button( swtDialogsGroup, SWT.PUSH );
     showMessageBoxDlgButton.setText( "MessageBox Dialog" );
     showMessageBoxDlgButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         showMessageBoxDialog();
       }
@@ -205,6 +218,7 @@ public class DialogsTab extends ExampleTab {
     showColorDialogButton = new Button( swtDialogsGroup, SWT.PUSH );
     showColorDialogButton.setText( "ColorDialog" );
     showColorDialogButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         showColorDialog();
       }
@@ -213,12 +227,13 @@ public class DialogsTab extends ExampleTab {
     showFontDialogButton = new Button( swtDialogsGroup, SWT.PUSH );
     showFontDialogButton.setText( "FontDialog" );
     showFontDialogButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         showFontDialog();
       }
     });
     showFontDialogButton.setLayoutData( createGridDataFillBoth() );
-    
+
     messageBoxDlgResLabel = new Label( swtDialogsGroup, SWT.WRAP );
     messageBoxDlgResLabel.setText( "Result:" );
     GridData gdMessageBoxDlgResLabel = new GridData();

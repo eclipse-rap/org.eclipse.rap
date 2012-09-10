@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
- *     EclipseSource - modified to fit into ControlsDemo
+ *    IBM Corporation - initial API and implementation
+ *    EclipseSource - modified to fit into ControlsDemo
  *******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
@@ -21,6 +21,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
+
 
 public class DNDExampleTab extends ExampleTab {
 
@@ -65,6 +66,7 @@ public class DNDExampleTab extends ExampleTab {
     addDropTransfer( TextTransfer.getInstance() );
   }
 
+  @Override
   protected void createExampleControls( final Composite container ) {
     container.setLayout( new FillLayout() );
     ScrolledComposite sc = new ScrolledComposite( container, SWT.H_SCROLL
@@ -112,6 +114,7 @@ public class DNDExampleTab extends ExampleTab {
     MenuItem item = new MenuItem( menu, SWT.PUSH );
     item.setText( "Clear" );
     item.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         dragConsole.setText( "" );
       }
@@ -119,6 +122,7 @@ public class DNDExampleTab extends ExampleTab {
     item = new MenuItem( menu, SWT.CHECK );
     item.setText( "Show Event detail" );
     item.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         MenuItem item = ( MenuItem )e.widget;
         dragEventDetail = item.getSelection();
@@ -162,6 +166,7 @@ public class DNDExampleTab extends ExampleTab {
     item = new MenuItem( menu, SWT.PUSH );
     item.setText( "Clear" );
     item.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         dropConsole.setText( "" );
       }
@@ -169,6 +174,7 @@ public class DNDExampleTab extends ExampleTab {
     item = new MenuItem( menu, SWT.CHECK );
     item.setText( "Show Event detail" );
     item.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         MenuItem item = ( MenuItem )e.widget;
         dropEventDetail = item.getSelection();
@@ -213,6 +219,7 @@ public class DNDExampleTab extends ExampleTab {
     sc.setExpandVertical( true );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
   }
 
@@ -243,6 +250,7 @@ public class DNDExampleTab extends ExampleTab {
     moveButton.setSelection( true );
     dragOperation = DND.DROP_MOVE;
     moveButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -262,6 +270,7 @@ public class DNDExampleTab extends ExampleTab {
     Button b = new Button( parent, SWT.CHECK );
     b.setText( "DND.DROP_COPY" );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -281,6 +290,7 @@ public class DNDExampleTab extends ExampleTab {
     b = new Button( parent, SWT.CHECK );
     b.setText( "DND.DROP_LINK" );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -503,6 +513,7 @@ public class DNDExampleTab extends ExampleTab {
     Button b = new Button( parent, SWT.CHECK );
     b.setText( "Text Transfer" );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -516,6 +527,7 @@ public class DNDExampleTab extends ExampleTab {
     b = new Button( parent, SWT.CHECK );
     b.setText( "RTF Transfer" );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -528,6 +540,7 @@ public class DNDExampleTab extends ExampleTab {
     b = new Button( parent, SWT.CHECK );
     b.setText( "HTML Transfer" );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -556,6 +569,7 @@ public class DNDExampleTab extends ExampleTab {
     dragControlType = combo.getSelectionIndex();
     dragControl = createWidget( dragControlType, parent, "Drag Source" );
     combo.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Object data = dragControl.getLayoutData();
         Composite parent = dragControl.getParent();
@@ -571,6 +585,7 @@ public class DNDExampleTab extends ExampleTab {
     Button b = new Button( parent, SWT.CHECK );
     b.setText( "DragSource" );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         dragEnabled = ( ( Button )e.widget ).getSelection();
         updateDragSource();
@@ -615,6 +630,7 @@ public class DNDExampleTab extends ExampleTab {
     moveButton.setSelection( true );
     dropOperation = DND.DROP_MOVE;
     moveButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -636,6 +652,7 @@ public class DNDExampleTab extends ExampleTab {
     final Button copyButton = new Button( parent, SWT.CHECK );
     copyButton.setText( "DND.DROP_COPY" );
     copyButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -657,6 +674,7 @@ public class DNDExampleTab extends ExampleTab {
     final Button linkButton = new Button( parent, SWT.CHECK );
     linkButton.setText( "DND.DROP_LINK" );
     linkButton.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -679,6 +697,7 @@ public class DNDExampleTab extends ExampleTab {
     b.setText( "DND.DROP_DEFAULT" );
     defaultParent = new Composite( parent, SWT.NONE );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -702,6 +721,7 @@ public class DNDExampleTab extends ExampleTab {
     b = new Button( defaultParent, SWT.RADIO );
     b.setText( "DND.DROP_MOVE" );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         if( ( ( Button )e.widget ).getSelection() ) {
           dropDefaultOperation = DND.DROP_MOVE;
@@ -716,6 +736,7 @@ public class DNDExampleTab extends ExampleTab {
     b = new Button( defaultParent, SWT.RADIO );
     b.setText( "DND.DROP_COPY" );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -731,6 +752,7 @@ public class DNDExampleTab extends ExampleTab {
     b = new Button( defaultParent, SWT.RADIO );
     b.setText( "DND.DROP_LINK" );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -747,6 +769,7 @@ public class DNDExampleTab extends ExampleTab {
     b.setText( "DND.DROP_NONE" );
     b.setSelection( true );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -925,6 +948,7 @@ public class DNDExampleTab extends ExampleTab {
     Button b = new Button( parent, SWT.CHECK );
     b.setText( "FEEDBACK_SELECT" );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -937,6 +961,7 @@ public class DNDExampleTab extends ExampleTab {
     b = new Button( parent, SWT.CHECK );
     b.setText( "FEEDBACK_SCROLL" );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -950,6 +975,7 @@ public class DNDExampleTab extends ExampleTab {
     b.setText( "FEEDBACK_INSERT_BEFORE" );
     b.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -963,6 +989,7 @@ public class DNDExampleTab extends ExampleTab {
     b.setText( "FEEDBACK_INSERT_AFTER" );
     b.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -976,6 +1003,7 @@ public class DNDExampleTab extends ExampleTab {
     b.setText( "FEEDBACK_EXPAND" );
     b.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -992,6 +1020,7 @@ public class DNDExampleTab extends ExampleTab {
     Button b = new Button( parent, SWT.CHECK );
     b.setText( "Text Transfer" );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -1005,6 +1034,7 @@ public class DNDExampleTab extends ExampleTab {
     b = new Button( parent, SWT.CHECK );
     b.setText( "RTF Transfer" );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -1017,6 +1047,7 @@ public class DNDExampleTab extends ExampleTab {
     b = new Button( parent, SWT.CHECK );
     b.setText( "HTML Transfer" );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Button b = ( Button )e.widget;
         if( b.getSelection() ) {
@@ -1046,6 +1077,7 @@ public class DNDExampleTab extends ExampleTab {
     dropControlType = combo.getSelectionIndex();
     dropControl = createWidget( dropControlType, parent, "Drop Target" );
     combo.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         Object data = dropControl.getLayoutData();
         Composite parent = dropControl.getParent();
@@ -1061,6 +1093,7 @@ public class DNDExampleTab extends ExampleTab {
     Button b = new Button( parent, SWT.CHECK );
     b.setText( "DropTarget" );
     b.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent e ) {
         dropEnabled = ( ( Button )e.widget ).getSelection();
         updateDropTarget();

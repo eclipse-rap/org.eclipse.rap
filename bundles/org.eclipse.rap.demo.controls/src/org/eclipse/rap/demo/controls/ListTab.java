@@ -14,13 +14,28 @@ package org.eclipse.rap.demo.controls;
 import java.util.ArrayList;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.MenuAdapter;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 
 public class ListTab extends ExampleTab {
@@ -37,23 +52,6 @@ public class ListTab extends ExampleTab {
     ELEMENTS.add( text );
     for( int i = 1; i <= 25; i++ ) {
       ELEMENTS.add( "Item " + i );
-    }
-  }
-
-  private static final class ListContentProvider
-    implements IStructuredContentProvider
-  {
-    public Object[] getElements( final Object inputElement ) {
-      return ( ( java.util.List )inputElement ).toArray();
-    }
-    public void inputChanged( final Viewer viewer,
-                              final Object oldInput,
-                              final Object newInput )
-    {
-      // do nothing
-    }
-    public void dispose() {
-      // do nothing
     }
   }
 
@@ -106,7 +104,7 @@ public class ListTab extends ExampleTab {
     menuItem.setText( "Context menu item" );
     list.setMenu( menu );
     listViewer = new ListViewer( list );
-    listViewer.setContentProvider( new ListContentProvider() );
+    listViewer.setContentProvider( new ArrayContentProvider() );
     listViewer.setLabelProvider( new LabelProvider() );
     listViewer.setInput( ELEMENTS );
     list.addSelectionListener( new SelectionAdapter() {

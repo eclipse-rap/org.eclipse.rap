@@ -176,7 +176,7 @@ public class ButtonTab extends ExampleTab {
   }
 
   private void updateButtonGrayed( ) {
-    Iterator iter = controls.iterator();
+    Iterator<Control> iter = controls.iterator();
     while( iter.hasNext() ) {
       Button button = ( Button )iter.next();
       button.setGrayed( setGrayed );

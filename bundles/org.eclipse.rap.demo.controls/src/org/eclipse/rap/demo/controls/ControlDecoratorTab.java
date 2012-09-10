@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
@@ -19,6 +20,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
+
 public class ControlDecoratorTab extends ExampleTab {
 
   private static final String PROP_SELECTION_LISTENER = "selectionListener";
@@ -31,6 +33,7 @@ public class ControlDecoratorTab extends ExampleTab {
     super( topFolder, "ControlDecorator" );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     createStyleButton( "TOP", SWT.TOP );
     createStyleButton( "BOTTOM", SWT.BOTTOM );
@@ -56,6 +59,7 @@ public class ControlDecoratorTab extends ExampleTab {
     Button button = new Button( group, SWT.PUSH );
     button.setText( "Set" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         for( int i = 0; i < decorations.length; i++ ) {
           ControlDecoration decoration = decorations[ i ];
@@ -65,6 +69,7 @@ public class ControlDecoratorTab extends ExampleTab {
     } );
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 1, true ) );
     createControlDecorations( parent );
@@ -161,6 +166,7 @@ public class ControlDecoratorTab extends ExampleTab {
     final Button button = new Button( parent, SWT.CHECK );
     button.setText( "Show only on focus" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         showOnlyOnFocus = button.getSelection();
         decorations[ 0 ].setShowOnlyOnFocus( showOnlyOnFocus );
@@ -174,6 +180,7 @@ public class ControlDecoratorTab extends ExampleTab {
     button.setText( "Show hover" );
     button.setSelection( true );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         showHover = button.getSelection();
         decorations[ 0 ].setShowHover( showHover );

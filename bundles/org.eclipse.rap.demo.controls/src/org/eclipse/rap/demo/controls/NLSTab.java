@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing implementation
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import java.util.Locale;
@@ -21,22 +20,23 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
+
 public final class NLSTab extends ExampleTab {
 
   private static final String LOCALE_DATA = "locale";
 
   final static class NLSTabMessages {
-    
-    private static final String BUNDLE_NAME 
+
+    private static final String BUNDLE_NAME
       = "org.eclipse.rap.demo.controls.NLSTabMessages";
-    
+
     public String TranslatableMessage;
 
     public static NLSTabMessages get() {
-      return ( NLSTabMessages )RWT.NLS.getUTF8Encoded( BUNDLE_NAME, 
+      return ( NLSTabMessages )RWT.NLS.getUTF8Encoded( BUNDLE_NAME,
                                                        NLSTabMessages.class );
     }
-    
+
     private NLSTabMessages() {
     }
   }
@@ -47,9 +47,10 @@ public final class NLSTab extends ExampleTab {
     super( folder, "NLS" );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     Label lblInfo = new Label( parent, SWT.NONE );
-    String info 
+    String info
       = "Select one of the locales below to be set for the current session:";
     lblInfo.setText( info );
     String text = "Default (" + RWT.getLocale().getDisplayLanguage() + ")";
@@ -60,17 +61,19 @@ public final class NLSTab extends ExampleTab {
     createLocaleButton( parent, "Spanish", new Locale( "es" ) );
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     lblTranslatable = new Label( parent, SWT.NONE );
     updateTranslatable();
   }
-  
-  private Button createLocaleButton( final Composite parent, 
-                                     final String text, 
-                                     final Locale locale ) 
+
+  private Button createLocaleButton( final Composite parent,
+                                     final String text,
+                                     final Locale locale )
   {
     SelectionListener listener = new SelectionAdapter() {
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         Locale locale = ( Locale )event.widget.getData( LOCALE_DATA );
         if( ( ( Button )event.widget ).getSelection() ) {

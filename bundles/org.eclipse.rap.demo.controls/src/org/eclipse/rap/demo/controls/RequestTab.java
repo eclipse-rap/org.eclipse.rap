@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -26,14 +26,16 @@ public class RequestTab extends ExampleTab {
     super( parent, "Longrunning Request" );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 4, false ) );
     Label lblInfo = new Label( parent, SWT.WRAP );
-    String msg 
-      = "Simulate a long running server-side task. You should see the mouse " 
+    String msg
+      = "Simulate a long running server-side task. You should see the mouse "
       + "cursor change after a short delay.";
     lblInfo.setText( msg );
     GridData gridData = new GridData();
@@ -48,6 +50,7 @@ public class RequestTab extends ExampleTab {
     Button btnRun = new Button( parent, SWT.PUSH );
     btnRun.setText( "Run" );
     btnRun.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         String timeText = txtProcessingTime.getText().trim();
         int time = -1;
@@ -55,7 +58,7 @@ public class RequestTab extends ExampleTab {
           time = Integer.parseInt( timeText );
         } catch( NumberFormatException e ) {
           // ignore as time is initialized with an illegal value
-        } 
+        }
         if( time >= 0 ) {
           boolean interrupted = false;
           try {

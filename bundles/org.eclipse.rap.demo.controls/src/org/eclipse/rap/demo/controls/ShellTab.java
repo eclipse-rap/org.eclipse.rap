@@ -374,9 +374,9 @@ public class ShellTab extends ExampleTab {
     // remove eventually disposed of shells (may happen when shells without
     // ShellListeners are created and close by user interaction)
     Shell[] result;
-    Iterator iter = shells.iterator();
+    Iterator<Shell> iter = shells.iterator();
     while( iter.hasNext() ) {
-      Shell shell = ( Shell )iter.next();
+      Shell shell = iter.next();
       if( shell.isDisposed() ) {
         iter.remove();
       }

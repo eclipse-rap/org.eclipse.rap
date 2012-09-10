@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
@@ -27,6 +27,7 @@ public class ContainmentTab extends ExampleTab {
     super( topFolder, "Containment" );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     Button visibleButton = createVisibilityButton();
     visibleButton.setText( "Blue Visible" );
@@ -36,6 +37,7 @@ public class ContainmentTab extends ExampleTab {
     createFontChooser();
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     int style = getStyle();

@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
@@ -16,6 +17,7 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
+
 
 class DateTimeTab extends ExampleTab {
 
@@ -29,6 +31,7 @@ class DateTimeTab extends ExampleTab {
     setDefaultStyle( SWT.BORDER | SWT.DATE | SWT.MEDIUM );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     group1 = new Group( styleComp, SWT.SHADOW_IN );
     group1.setText( "Type" );
@@ -53,6 +56,7 @@ class DateTimeTab extends ExampleTab {
     createPropertyCheckbox( "Add Selection Listener", PROP_SELECTION_LISTENER );
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     int style = getStyle() | getStyle( group1 ) | getStyle( group2 );
@@ -63,6 +67,7 @@ class DateTimeTab extends ExampleTab {
       MenuItem dateTimeMenuItem = new MenuItem( dateTimeMenu, SWT.PUSH );
       dateTimeMenuItem.addSelectionListener( new SelectionAdapter() {
 
+        @Override
         public void widgetSelected( final SelectionEvent event ) {
           String message = "You requested a context menu for the DateTime";
           MessageDialog.openInformation( dateTime1.getShell(),
@@ -106,6 +111,7 @@ class DateTimeTab extends ExampleTab {
     button.setText( name );
     button.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         createNew();
       }

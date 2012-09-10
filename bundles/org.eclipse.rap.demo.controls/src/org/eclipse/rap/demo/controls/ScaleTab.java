@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -33,6 +33,7 @@ public class ScaleTab extends ExampleTab {
     setDefaultStyle( SWT.HORIZONTAL );
   }
 
+  @Override
   protected void createStyleControls( final Composite parent ) {
     createStyleButton( parent, "HORIZONTAL", SWT.HORIZONTAL, SWT.RADIO, true );
     createStyleButton( parent, "VERTICAL", SWT.VERTICAL, SWT.RADIO, false );
@@ -91,6 +92,7 @@ public class ScaleTab extends ExampleTab {
     createPropertyCheckbox( "Add Selection Listener", PROP_SELECTION_LISTENER );
   }
 
+  @Override
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     int style = getStyle();
@@ -100,6 +102,7 @@ public class ScaleTab extends ExampleTab {
       MenuItem scaleMenuItem = new MenuItem( scaleMenu, SWT.PUSH );
       scaleMenuItem.addSelectionListener( new SelectionAdapter() {
 
+        @Override
         public void widgetSelected( final SelectionEvent event ) {
           String message = "You requested a context menu for the Scale";
           MessageDialog.openInformation( scale.getShell(),
@@ -154,6 +157,7 @@ public class ScaleTab extends ExampleTab {
     button.setText( name );
     button.addSelectionListener( new SelectionAdapter() {
 
+      @Override
       public void widgetSelected( final SelectionEvent event ) {
         createNew();
       }

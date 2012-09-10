@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
@@ -18,6 +17,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
+
 
 public class TabFolderTab extends ExampleTab {
 
@@ -32,6 +32,7 @@ public class TabFolderTab extends ExampleTab {
     super( topFolder, "TabFolder" );
   }
 
+  @Override
   protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "TOP", SWT.TOP );
@@ -47,6 +48,7 @@ public class TabFolderTab extends ExampleTab {
       tabRadios[ i ] = createPropertyButton( "Select Tab " + i, SWT.RADIO );
       final int itemIndex = i;
       tabRadios[ i ].addSelectionListener( new SelectionAdapter() {
+        @Override
         public void widgetSelected( SelectionEvent event ) {
           Button radio = ( Button )event.getSource();
           if( radio.getSelection() ) {
@@ -61,12 +63,14 @@ public class TabFolderTab extends ExampleTab {
     createDisposeItemButton( parent );
   }
 
+  @Override
   protected void createExampleControls( Composite parent ) {
     parent.setLayout( new FillLayout() );
     folder = new TabFolder( parent, getStyle() );
     folder.setToolTipText( "Tab Folder Tooltip" );
     tabItems = new TabItem[ MAX_ITEMS ];
     folder.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         TabItem item = ( TabItem )event.item;
         if( tabRadios != null ) {
@@ -93,6 +97,7 @@ public class TabFolderTab extends ExampleTab {
     Button button = new Button( parent, SWT.CHECK );
     button.setText( "Create Item Content on Demand" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         Button button = ( Button )event.widget;
         onDemandContent = button.getSelection();
@@ -105,6 +110,7 @@ public class TabFolderTab extends ExampleTab {
     Button btnChangeContent = new Button( parent, SWT.PUSH );
     btnChangeContent.setText( "Change Content for Selected Item" );
     btnChangeContent.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         TabItem item = folder.getSelection()[ 0 ];
         Label content = new Label( folder, SWT.NONE );
@@ -119,6 +125,7 @@ public class TabFolderTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Insert item before first item" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         TabItem tabItem = new TabItem( folder, SWT.NONE, 0 );
         tabItem.setText( "TabItem " + folder.indexOf( tabItem ) );
@@ -134,6 +141,7 @@ public class TabFolderTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Dispose of selected item" );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         TabItem[] selection = folder.getSelection();
         if( selection.length > 0 ) {
