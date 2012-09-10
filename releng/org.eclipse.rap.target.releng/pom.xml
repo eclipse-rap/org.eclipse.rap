@@ -23,7 +23,7 @@
 
   <properties>
     <tycho-version>0.13.0</tycho-version>
-    <base-platform>4.2-M-builds/M20120829-1200/</base-platform>
+    <base-platform>4.2-M-builds/M20120905-2300/</base-platform>
   </properties>
 
   <prerequisites>
