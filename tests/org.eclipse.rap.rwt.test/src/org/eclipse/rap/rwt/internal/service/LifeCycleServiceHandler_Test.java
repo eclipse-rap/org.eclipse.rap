@@ -238,7 +238,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
   private void simulateUiRequestWithIllegalCounter() {
     Fixture.fakeNewRequest( new Display() );
-    Fixture.fakeRequestParam( "requestCounter", "23" );
+    Fixture.fakeHeaderParameter( "requestCounter", "23" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
   }

@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -55,9 +54,9 @@ public class DisplayLCA_Test extends TestCase {
   protected void setUp() throws Exception {
     clearLogs();
     Fixture.setUp();
-    Fixture.fakeNewRequest();
-    Fixture.fakeResponseWriter();
     display = new Display();
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeResponseWriter();
     displayId = DisplayUtil.getId( display );
     displayLCA = new DisplayLCA();
   }
@@ -87,6 +86,8 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testStartup() throws IOException {
+    Fixture.fakeNewRequest();
+
     displayLCA.render( display );
 
     Message message = Fixture.getProtocolMessage();
@@ -94,8 +95,6 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRender() throws IOException {
-    // fake request param to simulate second request
-    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
     LoggingWidgetLCA loggingWidgetLCA = new LoggingWidgetLCA();
     Shell shell1 = new CustomLCAShell( display, loggingWidgetLCA );
     Widget button1 = new CustomLCAWidget( shell1, loggingWidgetLCA );
@@ -112,8 +111,6 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderWithIOException() {
-    // fake request param to simulate second request
-    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
     Composite shell = new Shell( display , SWT.NONE );
     new CustomLCAWidget( shell, new TestWidgetLCA() {
       @Override
@@ -130,8 +127,6 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testReadData() {
-    // fake request param to simulate second request
-    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
     LoggingWidgetLCA loggingWidgetLCA = new LoggingWidgetLCA();
     Composite shell = new CustomLCAShell( display, loggingWidgetLCA );
     Widget button = new CustomLCAWidget( shell, loggingWidgetLCA );
@@ -146,7 +141,6 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testReadDisplayBounds() {
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".bounds.width", "30" );
     Fixture.fakeRequestParam( displayId + ".bounds.height", "70" );
 
@@ -156,8 +150,6 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderWithChangedAndDisposedWidget() throws IOException {
-    // fake request param to simulate subsequent request
-    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
     Shell shell = new Shell( display, SWT.NONE );
     Composite composite = new CustomLCAWidget( shell, new LoggingWidgetLCA() );
     Fixture.markInitialized( composite );
@@ -215,12 +207,9 @@ public class DisplayLCA_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     LifeCycleUtil.setSessionDisplay( null );
     lifeCycle.execute();
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.STARTUP, null );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
+    Fixture.fakeNewRequest( display );
     lifeCycle.execute();
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
+    Fixture.fakeNewRequest( display );
     final Shell[] shell = new Shell[ 1 ];
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -287,7 +276,6 @@ public class DisplayLCA_Test extends TestCase {
     shell2.setBounds( 0, 0, 300, 400 );
     shell2.setMaximized( true );
     // fake display resize
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".bounds.width", "700" );
     Fixture.fakeRequestParam( displayId + ".bounds.height", "500" );
 

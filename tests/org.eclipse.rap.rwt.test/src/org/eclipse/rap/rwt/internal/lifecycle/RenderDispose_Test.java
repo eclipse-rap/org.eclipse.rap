@@ -14,8 +14,6 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -25,21 +23,29 @@ import org.eclipse.swt.widgets.*;
 
 public class RenderDispose_Test extends TestCase {
 
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakeResponseWriter();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testDisposeNotYetInitialized() {
     // set up the test widget hierarchy
     Display display = new Display();
     final Composite shell = new Shell( display , SWT.NONE );
-    String displayId = DisplayUtil.getId( display );
     // first rendering: html document that contains the javaScript 'application'
     Fixture.executeLifeCycleFromServerThread( );
     // second rendering: initial markup that constructs the above created
     // widget hierarchy (display, shell and button)
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread( );
     // create and dispose of the button
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -62,12 +68,4 @@ public class RenderDispose_Test extends TestCase {
     assertEquals( 0, message.getOperationCount() );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakeResponseWriter();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

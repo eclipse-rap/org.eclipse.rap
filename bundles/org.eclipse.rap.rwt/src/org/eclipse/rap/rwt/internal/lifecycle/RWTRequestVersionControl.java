@@ -12,7 +12,7 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import org.eclipse.rap.rwt.SingletonUtil;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 // TODO [rh] find a handier name
@@ -32,7 +32,7 @@ public final class RWTRequestVersionControl implements SerializableCompatibility
   }
 
   public boolean isValid() {
-    String sentRequestId = ContextProvider.getRequest().getParameter( REQUEST_COUNTER );
+    String sentRequestId = ProtocolUtil.readHeaderPropertyValue( REQUEST_COUNTER );
     boolean initialRequest = sentRequestId == null;
     boolean invalidVersionState = INITIAL_REQUEST_ID.equals( requestId ) && sentRequestId != null;
     boolean requestIdEquals = requestId.toString().equals( sentRequestId );
@@ -47,7 +47,7 @@ public final class RWTRequestVersionControl implements SerializableCompatibility
   public Integer getCurrentRequestId() {
     return requestId;
   }
-  
+
   public void setCurrentRequestId( Integer version ) {
     this.requestId = version;
   }

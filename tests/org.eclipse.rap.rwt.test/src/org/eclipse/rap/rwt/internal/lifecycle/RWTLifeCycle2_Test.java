@@ -28,6 +28,7 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.util.HTTP;
@@ -359,6 +360,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     result.setSession( session );
     result.setMethod( HTTP.METHOD_POST );
     result.setServletPath( "/test" );
+    result.setParameter( ClientMessage.PROP_MESSAGE, Fixture.createEmptyMessage() );
     if( initialize ) {
       result.setParameter( RequestParams.RWT_INITIALIZE, "true" );
     }

@@ -13,8 +13,14 @@ package org.eclipse.rap.rwt.internal.protocol;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
+import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -29,6 +35,7 @@ import org.eclipse.swt.internal.graphics.ImageFactory;
 public final class ProtocolUtil {
 
   private static final Pattern FONT_NAME_FILTER_PATTERN = Pattern.compile( "\"|\\\\" );
+  private static final String CLIENT_MESSAGE = ProtocolUtil.class.getName() + "#clientMessage";
 
   //////////////////////////////////////////////////////////////////////////////
   // TODO [fappel]: Experimental - profiler seems to indicate that buffering
@@ -39,6 +46,55 @@ public final class ProtocolUtil {
 
   private ProtocolUtil() {
     // prevent instantiation
+  }
+
+  public static ClientMessage getClientMessage() {
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    ClientMessage clientMessage = ( ClientMessage )serviceStore.getAttribute( CLIENT_MESSAGE );
+    if( clientMessage == null ) {
+      HttpServletRequest request = ContextProvider.getRequest();
+      String json = request.getParameter( ClientMessage.PROP_MESSAGE );
+      clientMessage = new ClientMessage( json );
+      serviceStore.setAttribute( CLIENT_MESSAGE, clientMessage );
+    }
+    return clientMessage;
+  }
+
+  public static boolean isClientMessageProcessed() {
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    return serviceStore.getAttribute( CLIENT_MESSAGE ) != null;
+  }
+
+  public static String readHeaderPropertyValue( String property ) {
+    ClientMessage message = getClientMessage();
+    Object result = message.getHeaderProperty( property );
+    return result == null ? null : result.toString();
+  }
+
+  public static String readPropertyValue( String target, String property ) {
+    String result = null;
+    ClientMessage message = getClientMessage();
+    SetOperation[] operations =  message.getSetOperations( target, property );
+    if( operations.length > 0 ) {
+      result = operations[ operations.length - 1 ].getProperty( property ).toString();
+    }
+    return result;
+  }
+
+  public static String readEventPropertyValue( String target, String eventName, String property ) {
+    String result = null;
+    ClientMessage message = getClientMessage();
+    NotifyOperation[] operations =  message.getNotifyOperations( target, eventName, property );
+    if( operations.length > 0 ) {
+      result = operations[ operations.length - 1 ].getProperty( property ).toString();
+    }
+    return result;
+  }
+
+  public static boolean wasEventSent( String target, String eventName ) {
+    ClientMessage message = getClientMessage();
+    NotifyOperation[] operations =  message.getNotifyOperations( target, eventName, null );
+    return operations.length > 0;
   }
 
   public static Object[] getFontAsArray( Font font ) {

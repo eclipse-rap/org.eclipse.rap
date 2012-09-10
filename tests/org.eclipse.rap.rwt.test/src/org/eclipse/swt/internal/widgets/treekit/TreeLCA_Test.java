@@ -21,10 +21,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -334,8 +332,6 @@ public class TreeLCA_Test extends TestCase {
     tree.addSelectionListener( new LoggingSelectionListener( events ) );
     String treeId = WidgetUtil.getId( tree );
     String treeItemId = WidgetUtil.getId( treeItem );
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, treeId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".item", treeItemId );
     Fixture.readDataAndProcessAction( display );
@@ -398,8 +394,6 @@ public class TreeLCA_Test extends TestCase {
     tree.addSelectionListener( new LoggingSelectionListener( events ) );
     String treeId = WidgetUtil.getId( tree );
     String treeItemId = WidgetUtil.getId( treeItem );
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, treeId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED + ".item", treeItemId );
     Fixture.readDataAndProcessAction( display );
@@ -427,8 +421,6 @@ public class TreeLCA_Test extends TestCase {
     } );
     String treeId = WidgetUtil.getId( tree );
     String treeItemId = WidgetUtil.getId( treeItem );
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, treeId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED + ".item", treeItemId );
     Fixture.readDataAndProcessAction( display );
@@ -446,8 +438,6 @@ public class TreeLCA_Test extends TestCase {
   public void testInvalidScrollValues() {
     Tree tree = new Tree( shell, SWT.NONE );
     String treeId = WidgetUtil.getId( tree );
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( treeId + ".scrollLeft", "undefined" );
     Fixture.fakeRequestParam( treeId + ".scrollTop", "80" );
     Fixture.readDataAndProcessAction( display );

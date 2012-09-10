@@ -138,4 +138,131 @@ public class ProtocolUtil_Test extends TestCase {
     assertEquals( Boolean.valueOf( bold ), array[ 2 ] );
     assertEquals( Boolean.valueOf( italic ), array[ 3 ] );
   }
+
+  public void testIsClientMessageProcessed_No() {
+    fakeNewJsonMessage();
+
+    assertFalse( ProtocolUtil.isClientMessageProcessed() );
+  }
+
+  public void testIsClientMessageProcessed_Yes() {
+    fakeNewJsonMessage();
+
+    ProtocolUtil.getClientMessage();
+
+    assertTrue( ProtocolUtil.isClientMessageProcessed() );
+  }
+
+  public void testGetClientMessage() {
+    fakeNewJsonMessage();
+
+    ClientMessage message = ProtocolUtil.getClientMessage();
+
+    assertNotNull( message );
+    assertTrue( message.getAllOperations( "w3" ).length > 0 );
+  }
+
+  public void testGetClientMessage_SameInstance() {
+    fakeNewJsonMessage();
+
+    ClientMessage message1 = ProtocolUtil.getClientMessage();
+    ClientMessage message2 = ProtocolUtil.getClientMessage();
+
+    assertSame( message1, message2 );
+  }
+
+  public void testReadHeaderPropertyValue() {
+    fakeNewJsonMessage();
+
+    assertEquals( "21", ProtocolUtil.readHeaderPropertyValue( "requestCounter" ) );
+  }
+
+  public void testReadHeaderPropertyValue_MissingProperty() {
+    fakeNewJsonMessage();
+
+    assertNull( ProtocolUtil.readHeaderPropertyValue( "abc" ) );
+  }
+
+  public void testReadProperyValue_MissingProperty() {
+    fakeNewJsonMessage();
+
+    assertNull( ProtocolUtil.readPropertyValue( "w3", "p0" ) );
+  }
+
+  public void testReadProperyValue_String() {
+    fakeNewJsonMessage();
+
+    assertEquals( "foo", ProtocolUtil.readPropertyValue( "w3", "p1" ) );
+  }
+
+  public void testReadProperyValue_Integer() {
+    fakeNewJsonMessage();
+
+    assertEquals( "123", ProtocolUtil.readPropertyValue( "w3", "p2" ) );
+  }
+
+  public void testReadProperyValue_Boolean() {
+    fakeNewJsonMessage();
+
+    assertEquals( "true", ProtocolUtil.readPropertyValue( "w3", "p3" ) );
+  }
+
+  public void testReadProperyValue_Null() {
+    fakeNewJsonMessage();
+
+    assertEquals( "null", ProtocolUtil.readPropertyValue( "w3", "p4" ) );
+  }
+
+  public void testReadPropertyValue_LastSetValue() {
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ], "
+                + "[ \"set\", \"w3\", { \"p1\" : \"bar\" } ] "
+                + "] }";
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( "message", json );
+
+    assertEquals( "bar", ProtocolUtil.readPropertyValue( "w3", "p1" ) );
+  }
+
+  public void testReadEventPropertyValue_MissingProperty() {
+    fakeNewJsonMessage();
+
+    assertNull( ProtocolUtil.readEventPropertyValue( "w3", "widgetSelected", "item" ) );
+  }
+
+  public void testReadEventPropertyValue() {
+    fakeNewJsonMessage();
+
+    String value = ProtocolUtil.readEventPropertyValue( "w3", "widgetSelected", "detail" );
+    assertEquals( "check", value );
+  }
+
+  public void testWasEventSend_Send() {
+    fakeNewJsonMessage();
+
+    assertTrue( ProtocolUtil.wasEventSent( "w3", "widgetSelected" ) );
+  }
+
+  public void testWasEventSend_NotSend() {
+    fakeNewJsonMessage();
+
+    assertFalse( ProtocolUtil.wasEventSent( "w3", "widgetDefaultSelected" ) );
+  }
+
+  //////////////////
+  // Helping methods
+
+  private void fakeNewJsonMessage() {
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : { \"requestCounter\" : 21 },"
+                + ClientMessage.PROP_OPERATIONS + " : ["
+                + "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : 123 } ], "
+                + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ], "
+                + "[ \"set\", \"w3\", { \"p3\" : true, \"p4\" : null } ] "
+                + "] }";
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( "message", json );
+  }
 }

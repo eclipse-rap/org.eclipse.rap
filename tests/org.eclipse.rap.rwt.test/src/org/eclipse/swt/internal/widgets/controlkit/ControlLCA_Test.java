@@ -18,9 +18,7 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -31,9 +29,12 @@ import org.eclipse.swt.widgets.*;
 
 public class ControlLCA_Test extends TestCase {
 
+  private Display display;
+
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
   }
 
   @Override
@@ -42,7 +43,6 @@ public class ControlLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -100,7 +100,6 @@ public class ControlLCA_Test extends TestCase {
 
   public void testMenuDetectListener() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
     Shell shell = new Shell( display );
     Label label = new Label( shell, SWT.NONE );
     final java.util.List<MenuDetectEvent> log = new ArrayList<MenuDetectEvent>();
@@ -124,7 +123,6 @@ public class ControlLCA_Test extends TestCase {
   public void testRedrawAndDispose() {
     final StringBuilder log = new StringBuilder();
     // Set up test scenario
-    Display display = new Display();
     Shell shell = new Shell( display );
     Control control = new Composite( shell, SWT.NONE ) {
       private static final long serialVersionUID = 1L;
@@ -143,15 +141,11 @@ public class ControlLCA_Test extends TestCase {
             {
             }
             @Override
-            public void renderDispose( Widget widget )
-              throws IOException
-            {
+            public void renderDispose( Widget widget ) throws IOException {
               log.append( "renderDispose" );
             }
             @Override
-            public void renderInitialization( Widget widget )
-              throws IOException
-            {
+            public void renderInitialization( Widget widget ) throws IOException {
             }
             public void readData( Widget widget ) {
             }
@@ -166,6 +160,8 @@ public class ControlLCA_Test extends TestCase {
         return ( T )result;
       }
     };
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeResponseWriter();
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.markInitialized( control );
@@ -173,9 +169,6 @@ public class ControlLCA_Test extends TestCase {
     control.redraw();
     control.dispose();
     // run life cycle that (in this case) won't call doRedrawFake
-    Fixture.fakeResponseWriter();
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( "renderDispose", log.toString() );
   }

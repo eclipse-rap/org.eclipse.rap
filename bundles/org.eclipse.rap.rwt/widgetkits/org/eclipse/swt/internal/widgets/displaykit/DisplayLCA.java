@@ -25,6 +25,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.theme.Theme;
@@ -152,10 +153,9 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   public void render( Display display ) throws IOException {
-    HttpServletRequest request = ContextProvider.getRequest();
     // Note [rst] Startup page created in LifecycleServiceHandler#runLifeCycle
     // TODO [rh] should be replaced by requestCounter != 0
-    if( request.getParameter( RequestParams.UIROOT ) != null ) {
+    if( ProtocolUtil.readHeaderPropertyValue( RequestParams.UIROOT ) != null ) {
       disposeWidgets();
       renderRequestCounter();
       renderTheme( display );

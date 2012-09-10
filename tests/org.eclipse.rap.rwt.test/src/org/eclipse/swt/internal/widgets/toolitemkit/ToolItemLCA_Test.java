@@ -18,10 +18,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -83,9 +81,7 @@ public class ToolItemLCA_Test extends TestCase {
       }
     } );
     shell.open();
-    String displayId = DisplayUtil.getId( display );
     String toolItemId = WidgetUtil.getId( item );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( toolItemId + ".selection", "true" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, toolItemId );
     Fixture.readDataAndProcessAction( display );
@@ -96,10 +92,8 @@ public class ToolItemLCA_Test extends TestCase {
     ToolItem item0 = new ToolItem( toolbar, SWT.RADIO );
     item0.setSelection( true );
     ToolItem item1 = new ToolItem( toolbar, SWT.RADIO );
-    String displayId = DisplayUtil.getId( display );
     String item0Id = WidgetUtil.getId( item0 );
     String item1Id = WidgetUtil.getId( item1 );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( item1Id + ".selection", "true" );
     Fixture.fakeRequestParam( item0Id + ".selection", "false" );
     Fixture.readDataAndProcessAction( display );
