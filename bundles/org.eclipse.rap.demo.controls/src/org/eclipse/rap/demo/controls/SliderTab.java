@@ -13,11 +13,20 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Slider;
+import org.eclipse.swt.widgets.Spinner;
 
 public class SliderTab extends ExampleTab {
 
@@ -28,8 +37,8 @@ public class SliderTab extends ExampleTab {
   Spinner minimumSpinner, maximumSpinner, selectionSpinner, thumbSpinner,
           incrementSpinner, pageIncrementSpinner;
 
-  public SliderTab( final CTabFolder folder ) {
-    super( folder, "Slider" );
+  public SliderTab() {
+    super( "Slider" );
     setDefaultStyle( SWT.HORIZONTAL );
   }
 

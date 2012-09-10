@@ -13,13 +13,14 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 public class StackLayoutTab extends ExampleTab {
 
@@ -30,8 +31,8 @@ public class StackLayoutTab extends ExampleTab {
   private int index;
   private boolean propPrefSize;
 
-  public StackLayoutTab( final CTabFolder folder ) {
-    super( folder, "StackLayout" );
+  public StackLayoutTab() {
+    super( "StackLayout" );
     index = 0;
   }
 

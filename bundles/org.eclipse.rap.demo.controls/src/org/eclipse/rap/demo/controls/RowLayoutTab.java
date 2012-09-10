@@ -13,12 +13,18 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Text;
 
 
 class RowLayoutTab extends ExampleTab {
@@ -26,8 +32,8 @@ class RowLayoutTab extends ExampleTab {
   private boolean propPrefSize;
   private boolean propWrap;
 
-  public RowLayoutTab( final CTabFolder folder ) {
-    super( folder, "RowLayout" );
+  public RowLayoutTab() {
+    super( "RowLayout" );
   }
 
   @Override

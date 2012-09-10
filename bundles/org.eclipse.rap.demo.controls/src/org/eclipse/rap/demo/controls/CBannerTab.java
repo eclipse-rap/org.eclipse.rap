@@ -13,7 +13,6 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CBanner;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -22,8 +21,8 @@ import org.eclipse.swt.widgets.Label;
 
 public final class CBannerTab extends ExampleTab {
 
-  public CBannerTab( final CTabFolder parent ) {
-    super( parent, "CBanner" );
+  public CBannerTab() {
+    super( "CBanner" );
   }
 
   @Override

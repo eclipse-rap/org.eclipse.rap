@@ -18,12 +18,13 @@ import org.eclipse.rap.rwt.internal.widgets.JSExecutor;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 
 @SuppressWarnings("restriction")
@@ -31,8 +32,8 @@ public class ErrorHandlingTab extends ExampleTab {
 
   private static final int DELAY = 2000;
 
-  public ErrorHandlingTab( final CTabFolder topFolder ) {
-    super( topFolder, "Error Handling" );
+  public ErrorHandlingTab() {
+    super( "Error Handling" );
   }
 
   @Override

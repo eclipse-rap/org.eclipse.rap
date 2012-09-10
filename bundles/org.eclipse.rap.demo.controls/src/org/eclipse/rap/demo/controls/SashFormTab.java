@@ -12,16 +12,17 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Text;
 
 
 public class SashFormTab extends ExampleTab {
 
-  public SashFormTab( final CTabFolder topFolder ) {
-    super( topFolder, "SashForm" );
+  public SashFormTab() {
+    super( "SashForm" );
   }
 
   @Override

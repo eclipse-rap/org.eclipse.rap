@@ -12,11 +12,18 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Text;
 
 
 public class SpinnerTab extends ExampleTab {
@@ -30,8 +37,8 @@ public class SpinnerTab extends ExampleTab {
   private int pageIncrement;
   private int selection;
 
-  public SpinnerTab( final CTabFolder topFolder ) {
-    super( topFolder, "Spinner" );
+  public SpinnerTab() {
+    super( "Spinner" );
     minimum = 0;
     maximum = 100;
     digits = 0;

@@ -12,10 +12,22 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Text;
 
 
 public final class CompositeTab extends ExampleTab {
@@ -24,8 +36,8 @@ public final class CompositeTab extends ExampleTab {
   private boolean addMouseListener;
   private int backgroundMode;
 
-  public CompositeTab( final CTabFolder topFolder ) {
-    super( topFolder, "Composite" );
+  public CompositeTab() {
+    super( "Composite" );
   }
 
   @Override

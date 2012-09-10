@@ -15,10 +15,13 @@ import java.util.Locale;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 
 public final class NLSTab extends ExampleTab {
@@ -43,8 +46,8 @@ public final class NLSTab extends ExampleTab {
 
   private Label lblTranslatable;
 
-  public NLSTab( final CTabFolder folder ) {
-    super( folder, "NLS" );
+  public NLSTab() {
+    super( "NLS" );
   }
 
   @Override

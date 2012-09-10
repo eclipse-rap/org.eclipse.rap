@@ -13,10 +13,17 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.DateTime;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 
 
 class DateTimeTab extends ExampleTab {
@@ -26,8 +33,8 @@ class DateTimeTab extends ExampleTab {
   DateTime dateTime1;
   Group group1, group2;
 
-  DateTimeTab( final CTabFolder topFolder ) {
-    super( topFolder, "DateTime" );
+  DateTimeTab() {
+    super( "DateTime" );
     setDefaultStyle( SWT.BORDER | SWT.DATE | SWT.MEDIUM );
   }
 

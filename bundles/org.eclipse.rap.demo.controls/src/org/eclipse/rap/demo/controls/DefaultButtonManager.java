@@ -11,7 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import java.util.*;
+import java.util.EventListener;
+import java.util.EventObject;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.widgets.Button;

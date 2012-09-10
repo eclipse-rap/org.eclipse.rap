@@ -13,12 +13,18 @@ package org.eclipse.rap.demo.controls;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 
 public class ControlDecorationTab extends ExampleTab {
@@ -43,8 +49,8 @@ public class ControlDecorationTab extends ExampleTab {
 
   private final SelectionListener listener;
 
-  public ControlDecorationTab( CTabFolder topFolder ) {
-    super( topFolder, "ControlDecoration" );
+  public ControlDecorationTab() {
+    super( "ControlDecoration" );
     listener = new LoggingSelectionListener();
   }
 

@@ -14,19 +14,24 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 public class LabelTab extends ExampleTab {
 
   private Label varSizeLabel;
   private Label fixedSizeLabel;
-  private final Image image1;
-  private final Image image2;
+  private Image image1;
+  private Image image2;
   private final String text1;
   private final String text2;
   private final String markup;
@@ -34,10 +39,8 @@ public class LabelTab extends ExampleTab {
   private String labelText;
   private boolean markupEnabled;
 
-  public LabelTab( CTabFolder topFolder ) {
-    super( topFolder, "Label" );
-    image1 = loadImage( "resources/button-image.gif" );
-    image2 = loadImage( "resources/newfile_wiz.gif" );
+  public LabelTab() {
+    super( "Label" );
     text1 = "Some Text";
     text2 = "Some Other Text";
     markup = "<big><i>Some</i></big> <b>Other</b> <small>Text With Markup</small> - 2<sup>16</sup>";
@@ -48,6 +51,8 @@ public class LabelTab extends ExampleTab {
 
   @Override
   protected void createStyleControls( Composite parent ) {
+    image1 = loadImage( "resources/button-image.gif" );
+    image2 = loadImage( "resources/newfile_wiz.gif" );
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "SEPARATOR", SWT.SEPARATOR );
     createStyleButton( "HORIZONTAL", SWT.HORIZONTAL );

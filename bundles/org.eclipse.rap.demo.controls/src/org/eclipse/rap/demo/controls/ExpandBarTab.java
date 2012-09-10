@@ -14,12 +14,25 @@ package org.eclipse.rap.demo.controls;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ExpandEvent;
+import org.eclipse.swt.events.ExpandListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.ExpandBar;
+import org.eclipse.swt.widgets.ExpandItem;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Text;
 
 
 class ExpandBarTab extends ExampleTab {
@@ -30,8 +43,8 @@ class ExpandBarTab extends ExampleTab {
   private ExpandBar expandBar;
   private Spinner spinner;
 
-  ExpandBarTab( final CTabFolder topFolder ) {
-    super( topFolder, "ExpandBar" );
+  ExpandBarTab() {
+    super( "ExpandBar" );
     setDefaultStyle( SWT.BORDER | SWT.V_SCROLL );
   }
 
