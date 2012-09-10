@@ -19,7 +19,6 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -100,8 +99,8 @@ public class WidgetAdapter_Test extends TestCase {
   }
 
   public void testInitializedForShell() throws IOException {
+    Fixture.fakeNewRequest( display );
     Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
     Composite shell = new Shell( display, SWT.NONE );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
     assertEquals( false, adapter.isInitialized() );
@@ -111,6 +110,7 @@ public class WidgetAdapter_Test extends TestCase {
 
   public void testInitializedForDisplay() throws IOException {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    Fixture.fakeNewRequest();
     Fixture.fakeResponseWriter();
     DisplayUtil.getLCA( display ).render( display );
     assertEquals( false, adapter.isInitialized() );
@@ -144,8 +144,8 @@ public class WidgetAdapter_Test extends TestCase {
   }
 
   public void testMarkDisposed() {
+    Fixture.fakeNewRequest( display );
     Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
 
     // dispose un-initialized widget: must not occur in list of disposed widgets
     Widget widget = new Shell( display );

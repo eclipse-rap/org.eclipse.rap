@@ -177,6 +177,7 @@ public final class Fixture {
 
   public static void createServiceContext() {
     TestRequest request = new TestRequest();
+    request.addParameter( ClientMessage.PROP_MESSAGE, createEmptyMessage() );
     TestResponse response = new TestResponse();
     HttpSession session = createTestSession();
     request.setSession( session );
@@ -320,7 +321,7 @@ public final class Fixture {
 
   public static void fakeNewRequest( Display display ) {
     fakeNewRequest();
-    fakeRequestParam( RequestParams.UIROOT, DisplayUtil.getId( display ) );
+    fakeHeaderParameter( RequestParams.UIROOT, DisplayUtil.getId( display ) );
   }
 
   public static void fakeNewRequest() {
@@ -346,7 +347,7 @@ public final class Fixture {
     fakeResponseWriter();
   }
 
-  private static String createEmptyMessage() {
+  public static String createEmptyMessage() {
     JSONObject result = new JSONObject();
     try {
       result.put( ClientMessage.PROP_HEADER, new JSONObject() );

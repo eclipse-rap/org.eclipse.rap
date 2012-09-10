@@ -18,10 +18,8 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
@@ -86,7 +84,6 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessSelection() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuilder log = new StringBuilder();
     SelectionListener listener = new SelectionListener() {
       public void widgetSelected( SelectionEvent event ) {
@@ -98,39 +95,38 @@ public class ControlLCAUtil_Test extends TestCase {
     };
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( listener );
-    String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
 
     // Test that requestParams like '...events.widgetSelected=w3' cause the
     // event to be fired
     log.setLength( 0 );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    ControlLCAUtil.processSelection( button, null, true );
+    Fixture.readDataAndProcessAction( button );
     assertEquals( WIDGET_SELECTED, log.toString() );
 
     // Test that if requestParam '...events.widgetSelected' is null, no event
     // gets fired
     log.setLength( 0 );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, null );
-    ControlLCAUtil.processSelection( button, null, true );
+    Fixture.readDataAndProcessAction( button );
     assertEquals( "", log.toString() );
 
     // Test that requestParams like '...events.widgetDefaultSelected=w3' cause
     // the event to be fired
     log.setLength( 0 );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, buttonId );
-    ControlLCAUtil.processSelection( button, null, true );
+    Fixture.readDataAndProcessAction( button );
     assertEquals( WIDGET_DEFAULT_SELECTED, log.toString() );
 
     // Test that if requestParam '...events.widgetSelected' is null, no event
     // gets fired
     log.setLength( 0 );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, null );
-    ControlLCAUtil.processSelection( button, null, true );
+    Fixture.readDataAndProcessAction( button );
     assertEquals( "", log.toString() );
   }
 

@@ -19,10 +19,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -112,8 +110,6 @@ public class MenuItemLCA_Test extends TestCase {
         assertEquals( 0, event.height );
       }
     } );
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     String menuItemId = WidgetUtil.getId( menuItem );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, menuItemId );
     Fixture.readDataAndProcessAction( display );
@@ -139,9 +135,7 @@ public class MenuItemLCA_Test extends TestCase {
         assertEquals( true, menuItem.getSelection() );
       }
     } );
-    String displayId = DisplayUtil.getId( display );
     String menuItemId = WidgetUtil.getId( menuItem );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( menuItemId + ".selection", "true" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, menuItemId );
     Fixture.readDataAndProcessAction( display );

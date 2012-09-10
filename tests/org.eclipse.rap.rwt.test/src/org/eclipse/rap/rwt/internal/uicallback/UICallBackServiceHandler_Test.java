@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -109,8 +108,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
     UICallBackServiceHandler.writeUICallBackActivation( new ProtocolMessageWriter() );
 
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
+    Fixture.fakeNewRequest( display );
     UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
     new DisplayLCA().render( display );
 

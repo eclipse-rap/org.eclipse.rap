@@ -34,6 +34,17 @@ import org.eclipse.swt.widgets.TreeItem;
 
 public class ReadDispose_Test extends TestCase {
 
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakeResponseWriter();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   // see bug 195735: Widget disposal causes NullPointerException
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=195735
   public void testWidgetDisposal() throws Exception {
@@ -45,25 +56,13 @@ public class ReadDispose_Test extends TestCase {
     lifeCycle.execute();
     Fixture.fakeNewRequest();
     String dispId = WidgetDisposalEntryPoint.dispId;
-    Fixture.fakeRequestParam( RequestParams.UIROOT, dispId );
+    Fixture.fakeHeaderParameter( RequestParams.UIROOT, dispId );
     lifeCycle.execute();
     Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, dispId );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, dispId );
+    Fixture.fakeHeaderParameter( RequestParams.UIROOT, dispId );
     String buttonId = WidgetDisposalEntryPoint.buttonId;
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     lifeCycle.execute();
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakeResponseWriter();
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 
   private static class WidgetDisposalEntryPoint implements IEntryPoint {
