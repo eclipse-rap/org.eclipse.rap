@@ -24,7 +24,6 @@
  */
 qx.Class.define( "rwt.widgets.base.Widget", {
   extend : qx.core.Target,
-  include : qx.util.manager.MConnectedObject,
   type : "abstract",
 
   construct : function() {
