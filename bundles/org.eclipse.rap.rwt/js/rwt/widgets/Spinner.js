@@ -229,7 +229,7 @@ qx.Class.define( "rwt.widgets.Spinner", {
       var result = floatValue.toFixed( digits );
       var separator = this.getDecimalSeparator();
       if( separator != "." ) {
-        var dot = qx.lang.String.escapeRegexpChars( "." );
+        var dot = rwt.util.String.escapeRegexpChars( "." );
         result = result.replace( new RegExp( dot ), separator );
       }
       return result;
@@ -299,7 +299,7 @@ qx.Class.define( "rwt.widgets.Spinner", {
           var parseValue = strValue;
           var separator = this.getDecimalSeparator();
           if( this.getDigits() > 0 && separator != "." ) {
-            separator = qx.lang.String.escapeRegexpChars( separator );
+            separator = rwt.util.String.escapeRegexpChars( separator );
             parseValue = strValue.replace( new RegExp( separator ), "." );
           }
           var value = parseFloat( parseValue );

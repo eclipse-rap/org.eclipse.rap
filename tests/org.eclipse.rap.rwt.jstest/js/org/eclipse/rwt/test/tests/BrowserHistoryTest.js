@@ -88,7 +88,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
         "action" : "create",
         "type" : "rwt.BrowserHistory"
       } );
-      return rwt.protocol.ObjectManager.getObject( "bh" );
+      return rwt.protocol.ObjectRegistry.getObject( "bh" );
     }
 
   }

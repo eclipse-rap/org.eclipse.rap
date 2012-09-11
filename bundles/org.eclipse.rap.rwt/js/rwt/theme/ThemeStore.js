@@ -15,7 +15,7 @@
  * Store for theme values that cannot be kept in a qooxdoo theme. The store is
  * filled from the server at startup.
  */
-qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
+qx.Class.define( "rwt.theme.ThemeStore", {
 
   type : "singleton",
 
@@ -167,7 +167,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       } else {
         // TODO [rst] Handle null values - currently, both null and the string
         // "undefined" lead to a js error for icon property
-        result = org.eclipse.swt.theme.ThemeValues.NONE_IMAGE;
+        result = rwt.theme.ThemeValues.NONE_IMAGE;
       }
       return result;
     },
@@ -180,7 +180,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         // TODO [tb] : Revise hardcoded path
         result = [ "rwt-resources/themes/images/" + key ].concat( imageArray );
       } else {
-        result = org.eclipse.swt.theme.ThemeValues.NONE_IMAGE_SIZED;
+        result = rwt.theme.ThemeValues.NONE_IMAGE_SIZED;
       }
       return result;
     },
@@ -255,7 +255,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       var key = "_" + name;
       var result = this._values.borders[ key ];
       if( !result ) {
-        var borderDef = org.eclipse.swt.theme.BorderDefinitions.getDefinition( name );
+        var borderDef = rwt.theme.BorderDefinitions.getDefinition( name );
         if( borderDef ) {
           var color = this._resolveNamedColors( borderDef.color );
           var innerColor = this._resolveNamedColors( borderDef.innerColor );

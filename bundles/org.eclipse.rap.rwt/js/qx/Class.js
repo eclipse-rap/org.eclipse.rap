@@ -135,7 +135,7 @@ qx.Class.define( "qx.Class", {
      *       <tr><th>settings</th><td>Map</td><td>Map of settings for this class. For a description of the format of a setting see
      *           {@link qx.core.Setting}.</td></tr>
      *       <tr><th>variants</th><td>Map</td><td>Map of settings for this class. For a description of the format of a setting see
-     *           {@link qx.core.Variant}</td></tr>
+     *           {@link rwt.util.Variant}</td></tr>
      *       <tr><th>events</th><td>Map</td><td>
      *           Map of events the class fires. The keys are the names of the events and the values are the
      *           corresponding event type class names.
@@ -163,7 +163,7 @@ qx.Class.define( "qx.Class", {
           clazz = this.__wrapConstructor(config.construct, name, config.type);
           if( config.statics ) {
             var key;
-            for( var i = 0, a = qx.lang.Object.getKeys( config.statics ), l = a.length; i < l; i++ ) {
+            for( var i = 0, a = rwt.util.Object.getKeys( config.statics ), l = a.length; i < l; i++ ) {
               key = a[ i ];
               clazz[ key ] = config.statics[ key ];
             }
@@ -213,7 +213,7 @@ qx.Class.define( "qx.Class", {
         }
         if( config.variants ) {
           for (var key in config.variants) {
-            qx.core.Variant.define(key, config.variants[key].allowedValues, config.variants[key].defaultValue);
+            rwt.util.Variant.define(key, config.variants[key].allowedValues, config.variants[key].defaultValue);
           }
         }
         if( config.defer ) {
@@ -287,7 +287,7 @@ qx.Class.define( "qx.Class", {
      * @return {Number} the total number of classes
      */
     getTotalNumber : function() {
-      return qx.lang.Object.getLength(this.__registry);
+      return rwt.util.Object.getLength(this.__registry);
     },
 
 
@@ -690,11 +690,11 @@ qx.Class.define( "qx.Class", {
 
 
     /** Stores all defined classes */
-    __registry : qx.core.Bootstrap.__registry,
+    __registry : rwt.runtime.Bootstrap.__registry,
 
 
     /** {Map} allowed keys in non-static class definition */
-    __allowedKeys : qx.core.Variant.select("qx.debug",
+    __allowedKeys : rwt.util.Variant.select("qx.debug",
     {
       "on":
       {
@@ -718,7 +718,7 @@ qx.Class.define( "qx.Class", {
 
 
     /** {Map} allowed keys in static class definition */
-    __staticAllowedKeys : qx.core.Variant.select("qx.debug",
+    __staticAllowedKeys : rwt.util.Variant.select("qx.debug",
     {
       "on":
       {
@@ -742,7 +742,7 @@ qx.Class.define( "qx.Class", {
      * @return {void}
      * @throws TODOC
      */
-    __validateConfig : qx.core.Variant.select("qx.debug",
+    __validateConfig : rwt.util.Variant.select("qx.debug",
     {
       "on": function(name, config)
       {
@@ -949,7 +949,7 @@ qx.Class.define( "qx.Class", {
      * @param config {Map} configuration map
      * @param patch {Boolean ? false} enable refine/patch?
      */
-    __validateProperty : qx.core.Variant.select("qx.debug",
+    __validateProperty : rwt.util.Variant.select("qx.debug",
     {
       "on": function(clazz, name, config, patch)
       {
@@ -1051,7 +1051,7 @@ qx.Class.define( "qx.Class", {
     __addMembers : function( clazz, members, patch, base, wrap ) {
       var proto = clazz.prototype;
       var key, member;
-      for( var i = 0, a = qx.lang.Object.getKeys( members ), l = a.length; i < l; i++ ) {
+      for( var i = 0, a = rwt.util.Object.getKeys( members ), l = a.length; i < l; i++ ) {
         key = a[ i ];
         member = members[ key ];
         // Added helper stuff to functions

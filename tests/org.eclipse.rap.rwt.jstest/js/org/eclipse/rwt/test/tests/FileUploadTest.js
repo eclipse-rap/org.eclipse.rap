@@ -45,7 +45,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       assertTrue( widget.isDisposed() );
       assertNull( widget._formElement );
       assertNull( widget._inputElement );
-      var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
+      var isMshtml = rwt.util.Variant.isSet( "qx.client", "mshtml" );
       if( isMshtml ) {
         // IE disposes with delay
         assertEquals( "javascript:false;", iframe.getSource() );
@@ -115,7 +115,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       assertTrue( upload.isDisposed() );
       assertNull( upload._formElement );
       assertNull( upload._inputElement );
-      var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
+      var isMshtml = rwt.util.Variant.isSet( "qx.client", "mshtml" );
       if( isMshtml ) {
         // IE disposes with delay
         assertEquals( "javascript:false;", iframe.getSource() );
@@ -176,7 +176,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       var form = upload._formElement;
       assertEquals( "POST", form.getAttribute( "method" ).toUpperCase() );
       assertEquals( "multipart/form-data", form.getAttribute( "enctype" ) );
-      var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
+      var isMshtml = rwt.util.Variant.isSet( "qx.client", "mshtml" );
       if( isMshtml ) {
         assertEquals( "multipart/form-data", form.getAttribute( "encoding" ) );
       }
@@ -444,7 +444,7 @@ var createFileUploadByProtocol = function( id, parentId ) {
     }
   } );
   TestUtil.flush();
-  return rwt.protocol.ObjectManager.getObject( id );
+  return rwt.protocol.ObjectRegistry.getObject( id );
 };
 
 var createFileUpload = function( noFlush ) {

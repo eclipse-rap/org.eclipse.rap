@@ -58,14 +58,14 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridItem", {
       if( value === null ) {
         widget.setBackground( null );
       } else {
-        widget.setBackground( qx.util.ColorUtil.rgbToRgbString( value ) );
+        widget.setBackground( rwt.util.ColorUtil.rgbToRgbString( value ) );
       }
     },
     "foreground" : function( widget, value ) {
       if( value === null ) {
         widget.setForeground( null );
       } else {
-        widget.setForeground( qx.util.ColorUtil.rgbToRgbString( value ) );
+        widget.setForeground( rwt.util.ColorUtil.rgbToRgbString( value ) );
       }
     },
     "font" : function( widget, value ) {
@@ -83,7 +83,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridItem", {
         if( value[ i ] === null ) {
           backgrounds[ i ] = null;
         } else {
-          backgrounds[ i ] = qx.util.ColorUtil.rgbToRgbString( value[ i ] );
+          backgrounds[ i ] = rwt.util.ColorUtil.rgbToRgbString( value[ i ] );
         }
       }
       widget.setCellBackgrounds( backgrounds );
@@ -94,7 +94,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridItem", {
         if( value[ i ] === null ) {
           foregrounds[ i ] = null;
         } else {
-          foregrounds[ i ] = qx.util.ColorUtil.rgbToRgbString( value[ i ] );
+          foregrounds[ i ] = rwt.util.ColorUtil.rgbToRgbString( value[ i ] );
         }
       }
       widget.setCellForegrounds( foregrounds );

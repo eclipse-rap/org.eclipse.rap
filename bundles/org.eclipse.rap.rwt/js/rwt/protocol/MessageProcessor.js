@@ -87,18 +87,18 @@ rwt.protocol.MessageProcessor = {
   },
 
   _processDestroy : function( targetId ) {
-    var objectEntry = rwt.protocol.ObjectManager.getEntry( targetId );
+    var objectEntry = rwt.protocol.ObjectRegistry.getEntry( targetId );
     var adapter = objectEntry.adapter;
     var targetObject = objectEntry.object;
     if( adapter.destructor ) {
       adapter.destructor( targetObject );
     }
-    rwt.protocol.ObjectManager.remove( targetId );
+    rwt.protocol.ObjectRegistry.remove( targetId );
     rwt.protocol.ServerObjectFactory.remove( targetId );
   },
 
   _processSet : function( targetId, properties ) {
-    var objectEntry = rwt.protocol.ObjectManager.getEntry( targetId );
+    var objectEntry = rwt.protocol.ObjectRegistry.getEntry( targetId );
     this._processSetImpl( objectEntry.object, objectEntry.adapter, properties );
   },
 
@@ -120,7 +120,7 @@ rwt.protocol.MessageProcessor = {
   },
 
   _processCall : function( targetId, method, properties ) {
-    var objectEntry = rwt.protocol.ObjectManager.getEntry( targetId );
+    var objectEntry = rwt.protocol.ObjectRegistry.getEntry( targetId );
     var adapter = objectEntry.adapter;
     var targetObject = objectEntry.object;
     if( adapter.methods instanceof Array && adapter.methods.indexOf( method ) !== -1 ) {
@@ -133,7 +133,7 @@ rwt.protocol.MessageProcessor = {
   },
 
   _processListen : function( targetId, properties ) {
-    var objectEntry = rwt.protocol.ObjectManager.getEntry( targetId );
+    var objectEntry = rwt.protocol.ObjectRegistry.getEntry( targetId );
     var adapter = objectEntry.adapter;
     var targetObject = objectEntry.object;
     if( adapter.listeners instanceof Array ) {
@@ -160,7 +160,7 @@ rwt.protocol.MessageProcessor = {
     }
     var msg = "Operation \"" + operation[ 0 ] + "\"";
     msg += " on target \"" +  operation[ 1 ] + "\"";
-    var objectEntry = rwt.protocol.ObjectManager.getEntry( operation[ 1 ] );
+    var objectEntry = rwt.protocol.ObjectRegistry.getEntry( operation[ 1 ] );
     var target = objectEntry ? objectEntry.object : null;
     msg += " of type \"" +  ( target && target.classname ? target.classname : target ) + "\"";
     msg += " failed:";
@@ -197,7 +197,7 @@ rwt.protocol.MessageProcessor = {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       widgetManager.add( target, targetId, false, adapter ); // uses ObjectManager internally
     } else {
-      rwt.protocol.ObjectManager.add( targetId, target, adapter );
+      rwt.protocol.ObjectRegistry.add( targetId, target, adapter );
     }
   },
 
@@ -220,11 +220,11 @@ rwt.protocol.MessageProcessor = {
   },
 
   _getSetterName : function( property ) {
-    return "set" + qx.lang.String.toFirstUp( property );
+    return "set" + rwt.util.String.toFirstUp( property );
   },
 
   _getListenerSetterName : function( eventType ) {
-    return "setHas" + qx.lang.String.toFirstUp( eventType ) + "Listener";
+    return "setHas" + rwt.util.String.toFirstUp( eventType ) + "Listener";
   }
 
 };

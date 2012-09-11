@@ -95,7 +95,6 @@ public class RWTTestsContribution implements TestContribution {
     "tests/BrowserTest.js",
     "tests/FileUploadTest.js",
     "tests/UICallBackTest.js",
-    "tests/SystemTest.js",
     "tests/ToolTipTest.js",
     "tests/ExpandBarTest.js",
     "tests/ControlDecoratorTest.js",

@@ -21,7 +21,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
 
   statics : {
 
-    BROWSER_PREFIX : qx.core.Variant.select( "qx.client", {
+    BROWSER_PREFIX : rwt.util.Variant.select( "qx.client", {
       "gecko" : "-moz-",
       "webkit" : "-webkit-",
       "default" : ""
@@ -54,7 +54,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
       return result;
     } )(),
 
-    setOpacity  : qx.core.Variant.select( "qx.client", {
+    setOpacity  : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function( target, value ) {
         if( value == null || value >= 1 || value < 0 ) {
           this.removeCssFilter( target );
@@ -68,7 +68,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
           this.removeStyleProperty( target, "MozOpacity" );
           this.removeStyleProperty( target, "opacity" );
         } else {
-          var targetValue = qx.lang.Number.limit( value, 0, 1 );
+          var targetValue = rwt.util.Number.limit( value, 0, 1 );
           this.setStyleProperty( target, "MozOpacity", targetValue );
           this.setStyleProperty( target, "opacity", targetValue );
         }
@@ -77,13 +77,13 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
         if( value == null || value >= 1 ) {
           this.removeStyleProperty( target, "opacity" );
         } else {
-          var targetValue = qx.lang.Number.limit( value, 0, 1 );
+          var targetValue = rwt.util.Number.limit( value, 0, 1 );
           this.setStyleProperty( target, "opacity", targetValue );
         }
       }
     } ),
 
-    setBackgroundGradient : qx.core.Variant.select( "qx.client", {
+    setBackgroundGradient : rwt.util.Variant.select( "qx.client", {
       "webkit" : function( target, gradientObject ) {
         // NOTE: Webkit will also support the new syntax, but support for the old syntax
         //       will not be removed "in the foreseeable future". See:
@@ -133,7 +133,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
         // NOTE: older webkit dont accept spread, therefor only use parameters 1-3
         var string = shadowObject[ 0 ] ? "inset " : "";
         string += shadowObject.slice( 1, 4 ).join( "px " ) + "px";
-        var rgba = qx.util.ColorUtil.stringToRgb( shadowObject[ 5 ] );
+        var rgba = rwt.util.ColorUtil.stringToRgb( shadowObject[ 5 ] );
         rgba.push( shadowObject[ 6 ] );
         string += " rgba(" + rgba.join() + ")";
         this.setStyleProperty( target, property, string );
@@ -142,12 +142,12 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
       }
     },
 
-    setTextShadow  : qx.core.Variant.select( "qx.client", {
+    setTextShadow  : rwt.util.Variant.select( "qx.client", {
       "default" : function( target, shadowObject ) {
         var property = "textShadow";
         if( shadowObject ) {
           var string = shadowObject.slice( 1, 4 ).join( "px " ) + "px";
-          var rgba = qx.util.ColorUtil.stringToRgb( shadowObject[ 5 ] );
+          var rgba = rwt.util.ColorUtil.stringToRgb( shadowObject[ 5 ] );
           rgba.push( shadowObject[ 6 ] );
           string += " rgba(" + rgba.join() + ")";
           this.setStyleProperty( target, property, string );
@@ -271,7 +271,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
       domTarget.style.display = "";
     },
 
-    _refireEvent : qx.core.Variant.select("qx.client", {
+    _refireEvent : rwt.util.Variant.select("qx.client", {
       "mshtml" : function( target, type, originalEvent ) {
         var newEvent = document.createEventObject( originalEvent );
         target.fireEvent( "on" + type , newEvent );

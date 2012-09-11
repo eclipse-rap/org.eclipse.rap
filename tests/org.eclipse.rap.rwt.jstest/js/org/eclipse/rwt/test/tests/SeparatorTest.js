@@ -28,7 +28,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SeparatorTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Separator );
       assertIdentical( shell, widget.getParent() );
@@ -52,7 +52,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SeparatorTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._line.hasState( "rwt_VERTICAL" ) );
       shell.destroy();
@@ -72,7 +72,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SeparatorTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._line.hasState( "rwt_SHADOW_IN" ) );
       shell.destroy();
@@ -92,7 +92,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SeparatorTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._line.hasState( "rwt_SHADOW_OUT" ) );
       shell.destroy();

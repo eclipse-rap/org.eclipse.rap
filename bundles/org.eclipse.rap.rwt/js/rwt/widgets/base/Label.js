@@ -341,7 +341,7 @@ qx.Class.define("rwt.widgets.base.Label",
       var mode = this.getMode();
 
       if (mode === "auto") {
-        mode = qx.util.Validation.isValidString(text) && text.match(/<.*>/) ? "html" : "text";
+        mode = rwt.util.Validation.isValidString(text) && text.match(/<.*>/) ? "html" : "text";
       }
 
       switch (mode)
@@ -509,11 +509,11 @@ qx.Class.define("rwt.widgets.base.Label",
         {
           style.overflow = "hidden";
 
-          if (qx.core.Variant.isSet("qx.client", "mshtml|webkit"))
+          if (rwt.util.Variant.isSet("qx.client", "mshtml|webkit"))
           {
             style.textOverflow = "ellipsis";
           }
-          else if (qx.core.Variant.isSet("qx.client", "opera"))
+          else if (rwt.util.Variant.isSet("qx.client", "opera"))
           {
             style.OTextOverflow = "ellipsis";
           }
@@ -527,11 +527,11 @@ qx.Class.define("rwt.widgets.base.Label",
         {
           style.overflow = "";
 
-          if (qx.core.Variant.isSet("qx.client", "mshtml|webkit"))
+          if (rwt.util.Variant.isSet("qx.client", "mshtml|webkit"))
           {
             style.textOverflow = "";
           }
-          else if (qx.core.Variant.isSet("qx.client", "opera"))
+          else if (rwt.util.Variant.isSet("qx.client", "opera"))
           {
             style.OTextOverflow = "";
           }

@@ -321,7 +321,7 @@ public class CanvasLCA_Test extends TestCase {
 //    canvas.redraw();
 //    new CanvasLCA().renderChanges( canvas );
 //    String expected
-//      = "var gc = org.eclipse.rwt.protocol.ObjectManager.getObject( \"w2#gc\" );"
+//      = "var gc = org.eclipse.rwt.protocol.ObjectRegistry.getObject( \"w2#gc\" );"
 //      + "gc.init( 50, 50, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );"
 //      + "gc.setProperty( \"font\", \"bold 18px Verdana\" );"
 //      + "gc.drawLine( 1, 2, 3, 4 );";

@@ -13,7 +13,7 @@ appearances = {
 
   "formtext" : {
     style : function( states ) {      
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {        
         textColor       : tv.getCssColor( "FormText", "color" ),
         backgroundColor : tv.getCssColor( "FormText", "background-color" ),
@@ -25,7 +25,7 @@ appearances = {
   
   "formtext-text" : {
     style : function( states ) {      
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         cursor          : qx.constant.Style.CURSOR_DEFAULT
       }
@@ -34,7 +34,7 @@ appearances = {
   
   "formtext-image" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {        
       }
     }
@@ -42,7 +42,7 @@ appearances = {
   
   "formtext-bullet" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {        
       }
     }
@@ -50,7 +50,7 @@ appearances = {
   
   "formtext-hyperlink" : {
     style : function( states ) {      
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         cursor          : qx.constant.Style.CURSOR_HAND
       }

@@ -32,7 +32,7 @@
 
 /*global qxvariants:false*/
 
-qx.Class.define("qx.core.Variant",
+qx.Class.define("rwt.util.Variant",
 {
   statics :
   {
@@ -65,7 +65,7 @@ qx.Class.define("qx.core.Variant",
      */
     define : function(key, allowedValues, defaultValue)
     {
-      if (qx.core.Variant.compilerIsSet("qx.debug", "on"))
+      if (rwt.util.Variant.compilerIsSet("qx.debug", "on"))
       {
         if (!this.__isValidArray(allowedValues)) {
           throw new Error('Allowed values of variant "' + key + '" must be defined!');
@@ -80,7 +80,7 @@ qx.Class.define("qx.core.Variant",
       {
         this.__variants[key] = {};
       }
-      else if (qx.core.Variant.compilerIsSet("qx.debug", "on"))
+      else if (rwt.util.Variant.compilerIsSet("qx.debug", "on"))
       {
         if (this.__variants[key].defaultValue !== undefined) {
           throw new Error('Variant "' + key + '" is already defined!');
@@ -102,7 +102,7 @@ qx.Class.define("qx.core.Variant",
     {
       var data = this.__variants[key];
 
-      if (qx.core.Variant.compilerIsSet("qx.debug", "on"))
+      if (rwt.util.Variant.compilerIsSet("qx.debug", "on"))
       {
         if (data === undefined) {
           throw new Error('Variant "' + key + '" is not defined.');
@@ -128,7 +128,7 @@ qx.Class.define("qx.core.Variant",
       {
         for (var key in qxvariants)
         {
-          if (qx.core.Variant.compilerIsSet("qx.debug", "on"))
+          if (rwt.util.Variant.compilerIsSet("qx.debug", "on"))
           {
             if ((key.split(".")).length < 2) {
               throw new Error('Malformed settings key "' + key + '". Must be following the schema "namespace.key".');
@@ -176,7 +176,7 @@ qx.Class.define("qx.core.Variant",
      */
     select : function(key, variantFunctionMap)
     {
-      if (qx.core.Variant.compilerIsSet("qx.debug", "on"))
+      if (rwt.util.Variant.compilerIsSet("qx.debug", "on"))
       {
         // WARINING: all changes to this function must be duplicated in the generator!!
         // modules/variantoptimizer.py (processVariantSelect)
@@ -200,10 +200,10 @@ qx.Class.define("qx.core.Variant",
         return variantFunctionMap["default"];
       }
 
-      if (qx.core.Variant.compilerIsSet("qx.debug", "on"))
+      if (rwt.util.Variant.compilerIsSet("qx.debug", "on"))
       {
         throw new Error('No match for variant "' + key +
-          '" in variants [' + qx.lang.Object.getKeysAsString(variantFunctionMap) +
+          '" in variants [' + rwt.util.Object.getKeysAsString(variantFunctionMap) +
           '] found, and no default ("default") given');
       }
     },
@@ -220,9 +220,9 @@ qx.Class.define("qx.core.Variant",
      * Example:
      *
      * <pre class='javascript'>
-     * if (qx.core.Variant.isSet("qx.client", "mshtml")) {
+     * if (rwt.util.Variant.isSet("qx.client", "mshtml")) {
      *   // some Internet Explorer specific code
-     * } else if(qx.core.Variant.isSet("qx.client", "opera")){
+     * } else if(rwt.util.Variant.isSet("qx.client", "opera")){
      *   // Opera specific code
      * } else {
      *   // common code for all other browsers

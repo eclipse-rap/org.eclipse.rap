@@ -50,7 +50,7 @@ public final class ThemeStoreWriter {
       jsCode.append( themeEntry.isFallback );
       jsCode.append( " );\n" );
     }
-    jsCode.append( "} )( org.eclipse.swt.theme.ThemeStore.getInstance() );\n" );
+    jsCode.append( "} )( rwt.theme.ThemeStore.getInstance() );\n" );
     return jsCode.toString();
   }
 

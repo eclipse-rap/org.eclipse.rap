@@ -14,7 +14,7 @@ var appearances = {
 
  "link" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         cursor: "default",
         padding : 2,
@@ -36,7 +36,7 @@ var appearances = {
 
   "link-hyperlink" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         textColor : tv.getCssColor( "Link-Hyperlink", "color" ),
         textShadow : tv.getCssShadow( "Link-Hyperlink", "text-shadow" ),

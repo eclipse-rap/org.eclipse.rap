@@ -16,7 +16,7 @@ var appearances = {
     include : "popup",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.width = "auto";
       result.height = "auto";
@@ -40,7 +40,7 @@ var appearances = {
   "tool-tip-image" : {
     include: "image",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         source : tv.getCssImage( "ToolTip-Image", "background-image" )
       };
@@ -49,7 +49,7 @@ var appearances = {
 
   "tool-tip-text" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         font : tv.getCssFont( "ToolTip-Text", "font" ),
         textColor : tv.getCssColor( "ToolTip-Text", "color" ),
@@ -61,7 +61,7 @@ var appearances = {
 
   "tool-tip-message" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         font : tv.getCssFont( "ToolTip-Message", "font" ),
         textColor : tv.getCssColor( "ToolTip-Message", "color" ),

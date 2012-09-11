@@ -12,7 +12,7 @@
 rwt.protocol.AdapterRegistry.add( "rwt.widgets.DropTarget", {
 
   factory : function( properties ) {
-    var control = rwt.protocol.ObjectManager.getObject( properties.control );
+    var control = rwt.protocol.ObjectRegistry.getObject( properties.control );
     var result = { "control" : control };
     org.eclipse.rwt.DNDSupport.getInstance().registerDropTarget( control, properties.style );
     return result;

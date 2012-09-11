@@ -236,7 +236,7 @@ qx.Class.define( "rwt.widgets.GridColumn", {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var isTreeEvent = this._isGroup && event.chevron;
         if( this._hasSelectionListener || isTreeEvent ) {
-          var id = rwt.protocol.ObjectManager.getId( this );
+          var id = rwt.protocol.ObjectRegistry.getId( this );
           var req = rwt.remote.Server.getInstance();
           if( isTreeEvent ) {
             var eventStr = "org.eclipse.swt.events.";

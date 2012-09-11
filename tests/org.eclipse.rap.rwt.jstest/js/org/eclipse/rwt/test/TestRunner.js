@@ -146,7 +146,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
     _allFinished : function() {
       this.info( '', false );
       this.info( "Tests done.", false );
-      org.eclipse.rwt.MobileWebkitSupport._removeListeners();
+      rwt.runtime.MobileWebkitSupport._removeListeners();
     },
 
     _executeTestFunction : function() {
@@ -367,7 +367,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
       org.eclipse.rwt.EventHandler.detachEvents();
       qx.core.Target.prototype.dispatchEvent = function(){};
       org.eclipse.rwt.Animation._stopLoop();
-      org.eclipse.rwt.MobileWebkitSupport._removeListeners();
+      rwt.runtime.MobileWebkitSupport._removeListeners();
     },
 
     _disableAutoFlush : function() {

@@ -15,7 +15,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ExternalBrowser", {
     return rwt.widgets.ExternalBrowser.getInstance();
   },
 
-  destructor : qx.lang.Function.returnTrue,
+  destructor : rwt.util.Function.returnTrue,
 
   properties : [],
 

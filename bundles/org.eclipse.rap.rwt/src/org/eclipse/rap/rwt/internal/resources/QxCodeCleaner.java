@@ -155,9 +155,9 @@ public final class QxCodeCleaner {
     TokenMatcher nameMatcher = TokenMatcher.string();
     matched &= TokenMatcher.IF.matches( tokens.getToken( pos++ ) );
     matched &= TokenMatcher.LEFT_PAREN.matches( tokens.getToken( pos++ ) );
-    matched &= TokenMatcher.name( "qx" ).matches( tokens.getToken( pos++ ) );
+    matched &= TokenMatcher.name( "rwt" ).matches( tokens.getToken( pos++ ) );
     matched &= TokenMatcher.DOT.matches( tokens.getToken( pos++ ) );
-    matched &= TokenMatcher.name( "core" ).matches( tokens.getToken( pos++ ) );
+    matched &= TokenMatcher.name( "util" ).matches( tokens.getToken( pos++ ) );
     matched &= TokenMatcher.DOT.matches( tokens.getToken( pos++ ) );
     matched &= TokenMatcher.name( "Variant" ).matches( tokens.getToken( pos++ ) );
     matched &= TokenMatcher.DOT.matches( tokens.getToken( pos++ ) );
@@ -179,9 +179,9 @@ public final class QxCodeCleaner {
     int pos = offset;
     boolean matched = true;
     TokenMatcher nameMatcher = TokenMatcher.string();
-    matched &= TokenMatcher.name( "qx" ).matches( tokens.getToken( pos++ ) );
+    matched &= TokenMatcher.name( "rwt" ).matches( tokens.getToken( pos++ ) );
     matched &= TokenMatcher.DOT.matches( tokens.getToken( pos++ ) );
-    matched &= TokenMatcher.name( "core" ).matches( tokens.getToken( pos++ ) );
+    matched &= TokenMatcher.name( "util" ).matches( tokens.getToken( pos++ ) );
     matched &= TokenMatcher.DOT.matches( tokens.getToken( pos++ ) );
     matched &= TokenMatcher.name( "Variant" ).matches( tokens.getToken( pos++ ) );
     matched &= TokenMatcher.DOT.matches( tokens.getToken( pos++ ) );
@@ -215,7 +215,7 @@ public final class QxCodeCleaner {
   private static class Range {
     final int begin;
     final int end;
-    
+
     Range( int begin, int end ) {
       this.begin = begin;
       this.end = end;
@@ -233,7 +233,7 @@ public final class QxCodeCleaner {
 
   private static class VariantConditional extends Range {
     private final String variant;
-    
+
     VariantConditional( int begin, int end, String variant ) {
       super( begin, end );
       this.variant = variant;
@@ -242,7 +242,7 @@ public final class QxCodeCleaner {
 
   private static class VariantSelection extends Range {
     private final String variant;
-    
+
     VariantSelection( int begin, int end, String variant ) {
       super( begin, end );
       this.variant = variant;

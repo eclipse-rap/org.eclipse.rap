@@ -30,7 +30,7 @@ qx.Class.define("qx.dom.String",
      * @return {String} escaped string
      * @signature function(str, charCodeToEntities)
      */
-    escapeEntities : qx.core.Variant.select("qx.client",
+    escapeEntities : rwt.util.Variant.select("qx.client",
     {
       // IE and Opera:
       //  - use [].join() to build strings

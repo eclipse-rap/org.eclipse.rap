@@ -412,7 +412,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
     },
 
-    testRemoveBackgroundGradientAndRestoreBakgroundColor : function() {
+    testRemoveBackgroundGradientAndRestoreBackgroundColor : function() {
       if( rwt.client.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
         var widget = this._createWidget();
@@ -428,7 +428,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
     },
 
-    testRemoveBackgroundGradientAndRestoreBakgroundImage : function() {
+    testRemoveBackgroundGradientAndRestoreBackgroundImage : function() {
       if( rwt.client.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
         var widget = this._createWidget();
@@ -535,7 +535,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
     },
 
-    testBackgroundColorTransparent : qx.core.Variant.select( "qx.client", {
+    testBackgroundColorTransparent : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
       "newmshtml" : function() {
         var widget = this._createWidget();

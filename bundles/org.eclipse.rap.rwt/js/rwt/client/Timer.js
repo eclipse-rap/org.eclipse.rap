@@ -45,7 +45,7 @@ qx.Class.define("rwt.client.Timer",
       this.setInterval(interval);
     }
 
-    this.__oninterval = qx.lang.Function.bind(this._oninterval, this);
+    this.__oninterval = rwt.util.Function.bind(this._oninterval, this);
 
     //Event instance to dispatch when interval fires
     this.__event = new qx.event.type.Event("interval");
@@ -287,7 +287,7 @@ qx.Class.define("rwt.client.Timer",
           this.dispatchEvent(this.__event, false);
         }
       } catch( ex ) {
-        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
     }
   },

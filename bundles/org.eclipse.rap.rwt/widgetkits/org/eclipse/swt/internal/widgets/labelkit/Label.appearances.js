@@ -15,7 +15,7 @@ var appearances = {
   "label-wrapper" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "Label", "font" );
       var decoration = tv.getCssIdentifier( "Label", "text-decoration" );
       if( decoration != null && decoration != "none" ) {
@@ -41,7 +41,7 @@ var appearances = {
 
   "separator-line" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       if( states.rwt_VERTICAL ) {
         result.width = tv.getCssDimension( "Label-SeparatorLine", "width" );
@@ -69,7 +69,7 @@ var appearances = {
   
   "separator" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         backgroundColor : tv.getCssColor( "Label", "background-color" ),
         backgroundImage : tv.getCssImage( "Label", "background-image" ),

@@ -108,13 +108,13 @@ public class Theme_Test extends TestCase {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_SYNTAX_CSS );
     String defaultThemeId = RWT.DEFAULT_THEME_ID;
     Theme defaultTheme = new Theme( defaultThemeId, "Default", styleSheet );
-    assertEquals( "org.eclipse.swt.theme.Default", defaultTheme.getJsId() );
+    assertEquals( "rwt.theme.Default", defaultTheme.getJsId() );
   }
 
   public void testGetJsId() throws Exception {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_SYNTAX_CSS );
     Theme theme1 = new Theme( "custom.id1", "Custom 1", styleSheet );
-    assertTrue( theme1.getJsId().startsWith( "org.eclipse.swt.theme.Custom_" ) );
+    assertTrue( theme1.getJsId().startsWith( "rwt.theme.Custom_" ) );
     Theme theme2 = new Theme( "custom.id2", "Custom 2", styleSheet );
     assertFalse( theme2.getJsId().equals( theme1.getJsId() ) );
   }

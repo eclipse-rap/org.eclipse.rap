@@ -25,7 +25,7 @@ import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
 
 public class Theme {
 
-  private static final String JS_THEME_PREFIX = "org.eclipse.swt.theme.";
+  private static final String JS_THEME_PREFIX = "rwt.theme.";
 
   private final String id;
   private final String jsId;

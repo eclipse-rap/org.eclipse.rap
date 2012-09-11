@@ -14,7 +14,7 @@ var appearances = {
 
   "tree" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         backgroundColor : tv.getCssColor( "Tree", "background-color" ),
         textColor : tv.getCssColor( "Tree", "color" ),
@@ -26,7 +26,7 @@ var appearances = {
 
   "tree-row" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.itemBackground = tv.getCssColor( "TreeItem", "background-color" );
       result.itemBackgroundImage = tv.getCssImage( "TreeItem", "background-image" );
@@ -44,7 +44,7 @@ var appearances = {
 
   "tree-row-check-box" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         backgroundImage : tv.getCssImage( "Tree-Checkbox", "background-image" )
       };
@@ -53,7 +53,7 @@ var appearances = {
 
   "tree-row-indent" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         backgroundImage : tv.getCssImage( "Tree-Indent", "background-image" )
       };
@@ -62,7 +62,7 @@ var appearances = {
 
   "tree-column" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.cursor = "default";
       result.spacing = 2;
@@ -85,7 +85,7 @@ var appearances = {
       var borderStyles = [ "solid", "solid", "solid", "solid" ];
       if( !states.dummy && !states.footer ) {
         var verticalState = { "vertical" : true };
-        var tvGrid = new org.eclipse.swt.theme.ThemeValues( verticalState );
+        var tvGrid = new rwt.theme.ThemeValues( verticalState );
         var gridColor = tvGrid.getCssColor( "Tree-GridLine", "color" );
         gridColor = gridColor == "undefined" ? "transparent" : gridColor;
         borderColors[ 1 ] = gridColor;
@@ -104,7 +104,7 @@ var appearances = {
         borderWidths[ 2 ] = borderBottom.getWidthBottom();
         borderStyles[ 2 ] = borderBottom.getStyleBottom();
         borderColors[ 2 ] = borderBottom.getColorBottom();
-      } 
+      }
       result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
       result.textShadow = tv.getCssShadow( "TreeColumn", "text-shadow" );
       return result;
@@ -113,7 +113,7 @@ var appearances = {
 
   "tree-column-sort-indicator" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.backgroundImage = tv.getCssSizedImage( "TreeColumn-SortIndicator", "background-image" );
       return result;
@@ -122,12 +122,12 @@ var appearances = {
 
   "tree-column-chevron" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
+      var path = rwt.remote.Server.RESOURCE_PATH + "widget/rap/"
       if( states.loading ) {
-        result.backgroundImage = [ "widget/tree/loading.gif", 16, 16 ];
+        result.backgroundImage = [ path + "tree/loading.gif", 16, 16 ];
       } else {
-        var source = "widget/arrows/chevron-";
+        var source = path + "arrows/chevron-";
         source += states.expanded ? "left" : "right";
         source += states.mouseover ? "-hover" : "";
         source += ".png";

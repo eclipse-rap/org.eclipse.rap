@@ -32,7 +32,7 @@ qx.Class.define("qx.html.Iframe",
      * @return {DOMWindow} The DOM window object of the iframe.
      * @signature function(vIframe)
      */
-    getWindow : qx.core.Variant.select("qx.client",
+    getWindow : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(vIframe)
       {
@@ -66,7 +66,7 @@ qx.Class.define("qx.html.Iframe",
      * @return {DOMDocument} The DOM document object of the iframe.
      * @signature function(vIframe)
      */
-    getDocument : qx.core.Variant.select("qx.client",
+    getDocument : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(vIframe)
       {

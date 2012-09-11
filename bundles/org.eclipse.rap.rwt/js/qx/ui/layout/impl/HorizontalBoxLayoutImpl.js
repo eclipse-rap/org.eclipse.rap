@@ -183,7 +183,7 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
           vCurrentChild = vFlexibleChildren[vIterator];
 
           vComputedFlexibleWidth = vCurrentChild._computedWidthFlexValue = vCurrentChild._computedWidthParsed * vPartWidth;
-          vAllocationDiff += vComputedFlexibleWidth - qx.lang.Number.limit(vComputedFlexibleWidth, vCurrentChild.getMinWidthValue(), vCurrentChild.getMaxWidthValue());
+          vAllocationDiff += vComputedFlexibleWidth - rwt.util.Number.limit(vComputedFlexibleWidth, vCurrentChild.getMinWidthValue(), vCurrentChild.getMaxWidthValue());
         }
 
         // Rounding diff
@@ -227,7 +227,7 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
               }
               else
               {
-                qx.lang.Array.removeAt(vFlexibleChildren, vIterator);
+                rwt.util.Array.removeAt(vFlexibleChildren, vIterator);
 
                 vCurrentChild._computedWidthFlexValue = Math.round(vCurrentChild._computedWidthFlexValue);
                 vUsedWidth += Math.round(vCurrentChild._computedWidthFlexValue + vAdjust);
@@ -235,14 +235,14 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
             }
             else
             {
-              vAdjust = qx.util.Validation.isValidNumber(vCurrentChild.getMinWidthValue()) ? vCurrentChild._computedWidthFlexValue - vCurrentChild.getMinWidthValue() : vCurrentChild._computedWidthFlexValue;
+              vAdjust = rwt.util.Validation.isValidNumber(vCurrentChild.getMinWidthValue()) ? vCurrentChild._computedWidthFlexValue - vCurrentChild.getMinWidthValue() : vCurrentChild._computedWidthFlexValue;
 
               if (vAdjust > 0) {
                 vCurrentChild._allocationLoops = Math.floor(vAdjust / vCurrentChild._computedWidthParsed);
               }
               else
               {
-                qx.lang.Array.removeAt(vFlexibleChildren, vIterator);
+                rwt.util.Array.removeAt(vFlexibleChildren, vIterator);
 
                 vCurrentChild._computedWidthFlexValue = Math.round(vCurrentChild._computedWidthFlexValue);
                 vUsedWidth += Math.round(vCurrentChild._computedWidthFlexValue - vAdjust);
@@ -286,7 +286,7 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
 
                 vUsedWidth += vCurrentChild._computedWidthFlexValue;
                 delete vCurrentChild._allocationLoops;
-                qx.lang.Array.removeAt(vFlexibleChildren, vIterator);
+                rwt.util.Array.removeAt(vFlexibleChildren, vIterator);
               }
               else
               {
@@ -728,7 +728,7 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
      * @return {void}
      * @signature function(vChild, vJobs)
      */
-    layoutChild_sizeX : qx.core.Variant.select("qx.client",
+    layoutChild_sizeX : rwt.util.Variant.select("qx.client",
     {
       "mshtml|newmshtml|opera|webkit" : function(vChild, vJobs)
       {
@@ -765,7 +765,7 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
      * @return {void}
      * @signature function(vChild, vJobs)
      */
-    layoutChild_sizeY : qx.core.Variant.select("qx.client",
+    layoutChild_sizeY : rwt.util.Variant.select("qx.client",
     {
       "mshtml|newmshtml|opera|webkit" : function(vChild, vJobs)
       {

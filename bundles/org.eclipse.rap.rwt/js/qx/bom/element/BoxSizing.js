@@ -30,7 +30,7 @@ qx.Class.define("qx.bom.element.BoxSizing",
   statics :
   {
     /** {Map} Internal helper structure to return the valid box-sizing style property names */
-    __styleProperties : qx.core.Variant.select("qx.client",
+    __styleProperties : rwt.util.Variant.select("qx.client",
     {
       "mshtml|newmshtml" : null,
       "webkit" : ["boxSizing", "KhtmlBoxSizing", "WebkitBoxSizing"],
@@ -80,7 +80,7 @@ qx.Class.define("qx.bom.element.BoxSizing",
      * @param element {Element} The element to query
      * @return {String} Box sizing value of the given element.
      */
-    get : qx.core.Variant.select("qx.client",
+    get : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(element)
       {

@@ -125,7 +125,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.destroy();
     },
 
-    testClickFix : qx.core.Variant.select( "qx.client", {
+    testClickFix : rwt.util.Variant.select( "qx.client", {
       "gecko" : function() {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = this.createDefaultWidget();
@@ -149,7 +149,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       "default" : null
     } ),
 
-    testDoubleClickWithRightMouseButton : qx.core.Variant.select( "qx.client", {
+    testDoubleClickWithRightMouseButton : rwt.util.Variant.select( "qx.client", {
       "default" : function() {
         var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var widget = this.createDefaultWidget();

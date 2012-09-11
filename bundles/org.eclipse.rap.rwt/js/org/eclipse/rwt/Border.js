@@ -67,7 +67,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
       "MozBorderBottomColors",
       "MozBorderLeftColors"
     ],
-    _BORDERRADII : qx.core.Variant.select( "qx.client", {
+    _BORDERRADII : rwt.util.Variant.select( "qx.client", {
       "webkit" : [
         "-webkit-border-top-left-radius",
         "-webkit-border-top-right-radius",
@@ -103,7 +103,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
       }
     },
 
-    _resetComplexBorder : qx.core.Variant.select("qx.client", {
+    _resetComplexBorder : rwt.util.Variant.select("qx.client", {
       "gecko" : function( widget ) {
         var statics = org.eclipse.rwt.Border;
         var style = widget._style;
@@ -294,7 +294,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
       }
     },
 
-    _renderComplexBorder : qx.core.Variant.select( "qx.client", {
+    _renderComplexBorder : rwt.util.Variant.select( "qx.client", {
       "gecko" : function( widget ) {
         var statics = org.eclipse.rwt.Border;
         statics._resetRadii( widget );

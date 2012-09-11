@@ -14,7 +14,7 @@
  * An adapter class for accessing theme values.
  * Values for the widget state given in the construtor are selected if available.
  */
-qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
+qx.Class.define( "rwt.theme.ThemeValues", {
 
   extend : qx.core.Object,
 
@@ -27,7 +27,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       throw new Error( "no states given" );
     }
     this._states = states;
-    this._store = org.eclipse.swt.theme.ThemeStore.getInstance();
+    this._store = rwt.theme.ThemeStore.getInstance();
   },
 
   statics : {

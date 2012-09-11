@@ -14,7 +14,7 @@
 /** This singleton manages rwt.widgets.base.Windows */
 qx.Class.define("qx.ui.window.Manager",
 {
-  extend : qx.util.manager.Object,
+  extend : rwt.util.ObjectManager,
 
 
 

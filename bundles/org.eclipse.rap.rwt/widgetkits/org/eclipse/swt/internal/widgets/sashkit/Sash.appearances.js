@@ -14,7 +14,7 @@ var appearances = {
 
   "sash" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         backgroundColor : tv.getCssColor( "Sash", "background-color" ),
         backgroundImage : tv.getCssImage( "Sash", "background-image" ),
@@ -36,7 +36,7 @@ var appearances = {
 
   "sash-handle" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.backgroundImage = tv.getCssImage( "Sash-Handle", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "Sash-Handle", "background-image" );

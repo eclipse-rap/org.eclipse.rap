@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -11,10 +11,10 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define( "qx.theme.manager.Appearance", {
+qx.Class.define( "rwt.theme.AppearanceManager", {
 
   type : "singleton",
-  extend : qx.util.manager.Object,
+  extend : rwt.util.ObjectManager,
 
   construct : function() {
     this.base( arguments );
@@ -41,7 +41,7 @@ qx.Class.define( "qx.theme.manager.Appearance", {
       if( this._currentTheme ) {
         this.__cache[this._currentTheme.name] = {};
       }
-      if( org.eclipse.rwt.System.getInstance().getUiReady() ) {
+      if( rwt.runtime.System.getInstance().getUiReady() ) {
         rwt.widgets.base.ClientDocument.getInstance()._recursiveAppearanceThemeUpdate( this._currentTheme );
       }
     },
@@ -57,7 +57,7 @@ qx.Class.define( "qx.theme.manager.Appearance", {
     styleFromTheme : function( theme, id, states ) {
       var entry = theme.appearances[id];
       if( !entry ) {
-        if( qx.core.Variant.isSet( "qx.debug", "on" ) ) {
+        if( rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
           throw new Error( "Missing appearance entry: " + id );
         }
         return null;

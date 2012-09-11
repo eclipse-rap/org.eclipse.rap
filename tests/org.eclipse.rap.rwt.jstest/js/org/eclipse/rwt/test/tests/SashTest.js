@@ -28,7 +28,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Sash );
       assertIdentical( shell, widget.getParent() );
@@ -52,7 +52,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Sash );
       assertEquals( "horizontal", widget.getOrientation() );

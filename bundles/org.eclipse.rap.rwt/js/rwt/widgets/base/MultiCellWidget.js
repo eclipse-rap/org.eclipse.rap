@@ -138,11 +138,7 @@ qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       } else {
         this.addToQueue( "updateContent" );
       }
-      var newValue = value;
-      if( this._isImageCell( cell ) ) {
-        newValue = qx.io.Alias.getInstance().resolve( newValue );
-      }
-      this.__cellData[ cell ][ 1 ] = newValue;
+      this.__cellData[ cell ][ 1 ] = value;
     },
 
     /**
@@ -352,17 +348,17 @@ qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       this._afterScheduleLayoutY();
     },
 
-    _afterScheduleLayoutX : qx.lang.Function.returnTrue,
+    _afterScheduleLayoutX : rwt.util.Function.returnTrue,
 
-    _afterScheduleLayoutY : qx.lang.Function.returnTrue,
+    _afterScheduleLayoutY : rwt.util.Function.returnTrue,
 
-    _beforeComputeInnerWidth : qx.lang.Function.returnTrue,
+    _beforeComputeInnerWidth : rwt.util.Function.returnTrue,
 
-    _beforeComputeInnerHeight : qx.lang.Function.returnTrue,
+    _beforeComputeInnerHeight : rwt.util.Function.returnTrue,
 
-    _beforeRenderLayout : qx.lang.Function.returnTrue,
+    _beforeRenderLayout : rwt.util.Function.returnTrue,
 
-    _afterRenderLayout : qx.lang.Function.returnTrue,
+    _afterRenderLayout : rwt.util.Function.returnTrue,
 
     _cellHasContent : function( cell ) {
       var content = this.__cellData[ cell ][ 1 ];
@@ -441,8 +437,8 @@ qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       return dimension;
     },
 
-    _isWidthEssential : qx.lang.Function.returnTrue,
-    _isHeightEssential : qx.lang.Function.returnTrue,
+    _isWidthEssential : rwt.util.Function.returnTrue,
+    _isHeightEssential : rwt.util.Function.returnTrue,
 
     _computePreferredInnerWidth : function() {
       return this._getContentWidth( "ignoreFlexible" );
@@ -651,7 +647,7 @@ qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     */
 
     // TODO [tb] : refactor
-    _getImageHtml : qx.core.Variant.select( "qx.client", {
+    _getImageHtml : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function( cell ) {
         if( rwt.client.Client.getVersion() < 7 ) {
           var content = this.getCellContent( cell );

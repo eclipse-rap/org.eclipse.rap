@@ -15,7 +15,7 @@ appearances = {
 
   "hyperlink" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         font: tv.getCssFont( "*", "font" ),
         cursor : states.disabled ? "default" : "pointer",
@@ -30,7 +30,7 @@ appearances = {
   
   "hyperlink-label" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         textColor : states.disabled
                   ? tv.getCssColor( "*", "color" )

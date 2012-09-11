@@ -59,7 +59,7 @@ qx.Class.define( "qx.ui.core.Font", {
             break;
           default:
             var temp = parseInt( part, 10 );
-            if( temp == part || qx.lang.String.contains( part, "px" ) ) {
+            if( temp == part || rwt.util.String.contains( part, "px" ) ) {
               font.setSize(temp);
             } else {
               name.push(part);

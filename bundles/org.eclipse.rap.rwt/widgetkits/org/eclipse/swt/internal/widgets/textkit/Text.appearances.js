@@ -15,7 +15,7 @@ var appearances = {
   "text-field" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "Text", "font" );
       result.textColor = tv.getCssColor( "Text", "color" );
       result.backgroundColor = tv.getCssColor( "Text", "background-color" );
@@ -34,7 +34,7 @@ var appearances = {
 
   "text-field-icon" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var selector = states.search ? "Text-Search-Icon" : "Text-Cancel-Icon";
       return {
         icon : tv.getCssSizedImage( selector, "background-image" ),
@@ -46,7 +46,7 @@ var appearances = {
   "text-field-message" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "Text", "font" );
       result.textColor = tv.getCssColor( "Text-Message", "color" );
       // [if] Do not apply top/bottom paddings on the client

@@ -71,7 +71,7 @@ qx = {
       }
 
       // Store class reference in global class registry
-      qx.core.Bootstrap.__registry[ name ] = config.statics;
+      rwt.runtime.Bootstrap.__registry[ name ] = config.statics;
     }
   }
 };
@@ -83,7 +83,7 @@ qx = {
  * Automatically loads JavaScript language fixes, core logging possibilities
  * and language addons for arrays, strings, etc.
  */
-qx.Class.define( "qx.core.Bootstrap", {
+qx.Class.define( "rwt.runtime.Bootstrap", {
 
   statics : {
 

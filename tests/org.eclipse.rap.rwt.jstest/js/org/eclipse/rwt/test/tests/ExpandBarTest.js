@@ -159,7 +159,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
           "parent" : parentId
         }
       } );
-      return rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectRegistry.getObject( id );
     },
 
     _createExpandItemByProtocol : function( id, parentId ) {
@@ -172,7 +172,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
           "parent" : parentId
         }
       } );
-      return rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectRegistry.getObject( id );
     }
 
   }

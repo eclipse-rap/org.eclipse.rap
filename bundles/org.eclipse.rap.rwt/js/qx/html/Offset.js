@@ -36,7 +36,7 @@ qx.Class.define("qx.html.Offset",
      * @return {void}
      * @signature function(el)
      */
-    getLeft : qx.core.Variant.select("qx.client",
+    getLeft : rwt.util.Variant.select("qx.client",
     {
       "gecko" : function(el)
       {
@@ -90,7 +90,7 @@ qx.Class.define("qx.html.Offset",
      * @return {void}
      * @signature function(el)
      */
-    getTop  : qx.core.Variant.select("qx.client",
+    getTop  : rwt.util.Variant.select("qx.client",
     {
       "gecko" : function(el)
       {

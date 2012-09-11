@@ -25,10 +25,10 @@ qx.Class.define( "rwt.widgets.DateTimeDate", {
     this.setAppearance( "datetime-date" );
 
     // Get styles
-    this._short = qx.lang.String.contains( style, "short" );
-    this._medium = qx.lang.String.contains( style, "medium" );
-    this._long = qx.lang.String.contains( style, "long" );
-    this._drop_down = qx.lang.String.contains( style, "drop_down" );
+    this._short = rwt.util.String.contains( style, "short" );
+    this._medium = rwt.util.String.contains( style, "medium" );
+    this._long = rwt.util.String.contains( style, "long" );
+    this._drop_down = rwt.util.String.contains( style, "drop_down" );
 
     // Has selection listener
     this._hasSelectionListener = false;

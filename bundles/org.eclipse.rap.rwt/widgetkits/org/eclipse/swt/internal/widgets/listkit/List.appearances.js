@@ -14,7 +14,7 @@ var appearances = {
 
   "list" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.cursor = "default";
       result.overflow = "hidden";
@@ -28,7 +28,7 @@ var appearances = {
 
   "list-item" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         height : "auto",
         horizontalChildrenAlign : "left",

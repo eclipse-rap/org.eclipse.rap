@@ -91,7 +91,7 @@ public class ErrorHandlingTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         StringBuffer script = new StringBuffer();
         script.append( "window.setTimeout( '" );
-        script.append( "org.eclipse.rwt.ErrorHandler.processJavaScriptError( " );
+        script.append( "rwt.runtime.ErrorHandler.processJavaScriptError( " );
         script.append( "new Error( \"I am client-side error\" ) )" );
         script.append( "', 1000 );" );
         JSExecutor.executeJS( script.toString() );

@@ -14,7 +14,7 @@ var appearances = {
 
   "menu" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         width : "auto",
         height : "auto",
@@ -35,7 +35,7 @@ var appearances = {
 
   "menu-item" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         spacing : 2,
         padding : tv.getCssBoxDimensions( "MenuItem", "padding" ),
@@ -77,7 +77,7 @@ var appearances = {
 
   "menu-separator" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         height : "auto",
         marginTop : 3,
@@ -89,7 +89,7 @@ var appearances = {
 
   "menu-separator-line" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         right : 0,
         left : 0,

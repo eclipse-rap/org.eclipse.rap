@@ -15,7 +15,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.BrowserHistory", {
     return rwt.client.History.getInstance();
   },
 
-  destructor : qx.lang.Function.returnTrue,
+  destructor : rwt.util.Function.returnTrue,
 
   properties : [],
 

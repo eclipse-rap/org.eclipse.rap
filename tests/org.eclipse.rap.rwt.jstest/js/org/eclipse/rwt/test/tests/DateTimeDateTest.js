@@ -245,7 +245,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
           "datePattern" : this.datePattern
         }
       } );
-      return rwt.protocol.ObjectManager.getObject( "w3" );
+      return rwt.protocol.ObjectRegistry.getObject( "w3" );
     },
 
     _createDefaultDateTime : function( dropdown ) {

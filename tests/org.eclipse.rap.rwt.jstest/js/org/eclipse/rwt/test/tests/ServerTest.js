@@ -130,7 +130,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
     },
 
     testGetServerObject : function() {
-      rwt.protocol.ObjectManager.add( "w1", rwt.widgets.Display.getCurrent() );
+      rwt.protocol.ObjectRegistry.add( "w1", rwt.widgets.Display.getCurrent() );
       var serverObject = server.getServerObject( rwt.widgets.Display.getCurrent() );
 
       assertTrue( serverObject instanceof rwt.protocol.ServerObject );

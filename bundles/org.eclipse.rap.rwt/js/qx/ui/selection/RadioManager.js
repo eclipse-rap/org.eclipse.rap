@@ -177,7 +177,7 @@ qx.Class.define("qx.ui.selection.RadioManager",
       {
         vItem = vItems[i];
 
-        if (qx.lang.Array.contains(this._items, vItem)) {
+        if (rwt.util.Array.contains(this._items, vItem)) {
           return;
         }
 
@@ -208,7 +208,7 @@ qx.Class.define("qx.ui.selection.RadioManager",
     remove : function(vItem)
     {
       // Remove RadioButton from array
-      qx.lang.Array.remove(this._items, vItem);
+      rwt.util.Array.remove(this._items, vItem);
 
       // Inform radio button about new manager
       vItem.setManager(null);

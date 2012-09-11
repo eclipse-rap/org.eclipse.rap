@@ -31,7 +31,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Spinner );
       assertIdentical( shell, widget.getParent() );
@@ -62,7 +62,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertFalse( widget.getEditable() );
       assertTrue( widget.getWrap() );
@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "minimum" : 50
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 50, widget.getMin() );
       shell.destroy();
@@ -105,7 +105,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "maximum" : 150
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 150, widget.getMax() );
       shell.destroy();
@@ -127,7 +127,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "maximum" : 200
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 150, widget.getMin() );
       assertEquals( 200, widget.getMax() );
@@ -149,7 +149,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "selection" : 50
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 50, widget.getValue() );
       shell.destroy();
@@ -170,7 +170,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "digits" : 2
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 2, widget.getDigits() );
       shell.destroy();
@@ -191,7 +191,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "increment" : 5
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 5, widget.getIncrementAmount() );
       assertEquals( 5, widget.getWheelIncrementAmount() );
@@ -213,7 +213,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "pageIncrement" : 20
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 20, widget.getPageIncrementAmount() );
       shell.destroy();
@@ -234,7 +234,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "textLimit" : 3
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 3, widget._textfield.getMaxLength() );
       shell.destroy();
@@ -255,7 +255,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "decimalSeparator" : ","
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( ",", widget.getDecimalSeparator() );
       shell.destroy();
@@ -276,7 +276,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "selection" : true } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
@@ -297,7 +297,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "modify" : true } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasModifyListener );
       shell.destroy();
@@ -327,7 +327,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
       spinner.setSpace( 59, 60, 5, 20 );
       spinner.setZIndex( 299 );
       spinner.setTabIndex( 58 );
-      assertTrue( spinner.getManager() instanceof qx.util.range.Range );
+      assertTrue( spinner.getManager() instanceof rwt.util.Range );
       spinner.destroy();
     },
     

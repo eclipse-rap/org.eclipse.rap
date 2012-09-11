@@ -146,7 +146,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
           "weekdayShortNames" : this.weekdayShortNames
         }
       } );
-      return rwt.protocol.ObjectManager.getObject( "w3" );
+      return rwt.protocol.ObjectRegistry.getObject( "w3" );
     }
 
   }

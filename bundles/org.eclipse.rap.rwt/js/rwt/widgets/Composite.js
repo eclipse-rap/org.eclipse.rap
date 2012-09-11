@@ -49,7 +49,7 @@ qx.Class.define( "rwt.widgets.Composite", {
       this.removeState( "over" );
     },
 
-    _applyBackgroundImage : qx.core.Variant.select( "qx.client", {
+    _applyBackgroundImage : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function( newValue, oldValue ) {
         this.base( arguments, newValue, oldValue );
         if( newValue == null ) {

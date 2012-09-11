@@ -26,7 +26,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.DateTimeTime );
       assertIdentical( shell, widget.getParent() );
@@ -53,7 +53,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
           "hours" : 3
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 3, widget._hoursTextField.getText() );
       shell.destroy();
@@ -74,7 +74,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
           "minutes" : 33
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 33, widget._minutesTextField.getText() );
       shell.destroy();
@@ -95,7 +95,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
           "seconds" : 22
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 22, widget._secondsTextField.getText() );
       shell.destroy();
@@ -116,7 +116,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
           "subWidgetsBounds" : [ [ 8, 3, 5, 24, 18 ], [ 11, 27, 5, 6, 18 ] ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 3, widget._hoursTextField.getLeft() );
       assertEquals( 5, widget._hoursTextField.getTop() );
@@ -144,7 +144,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "selection" : true } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();

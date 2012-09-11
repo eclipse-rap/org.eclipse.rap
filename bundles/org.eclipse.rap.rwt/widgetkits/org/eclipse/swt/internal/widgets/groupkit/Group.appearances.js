@@ -14,7 +14,7 @@ var appearances = {
 
   "group-box" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         backgroundColor : tv.getCssColor( "Group", "background-color" ),
         border : tv.getCssBorder( "Group", "border" ),
@@ -27,7 +27,7 @@ var appearances = {
   "group-box-legend" : {
     include : "atom",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         top : 0,
         left : 0,
@@ -44,7 +44,7 @@ var appearances = {
 
   "group-box-frame" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var margin = tv.getCssBoxDimensions( "Group-Frame", "margin" );
       return {
         top : margin[ 0 ],

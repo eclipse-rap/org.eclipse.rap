@@ -8,7 +8,7 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-org.eclipse.rwt.System.getInstance().addEventListener( "uiready", function() {
+rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
   org.eclipse.rwt.KeyEventSupport.getInstance()._sendRequestAsync = function() {
     rwt.remote.Server.getInstance().sendImmediate( true );
   };
@@ -25,7 +25,7 @@ org.eclipse.rwt.System.getInstance().addEventListener( "uiready", function() {
     },
     "operations": [ [ "create", "w1", "rwt.Display" ] ]
   } );
-  org.eclipse.rwt.ErrorHandler.processJavaScriptErrorInResponse
+  rwt.runtime.ErrorHandler.processJavaScriptErrorInResponse
     = function( script, error, currentRequest ) { throw error; };
   rwt.remote.Server.getInstance().setRequestCounter( 0 );
   org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();

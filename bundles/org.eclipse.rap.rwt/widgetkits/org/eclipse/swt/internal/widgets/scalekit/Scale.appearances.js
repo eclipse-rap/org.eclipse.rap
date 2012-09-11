@@ -14,7 +14,7 @@ var appearances = {
 
   "scale" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssBorder( "Scale", "border" ),
         font : tv.getCssFont( "*", "font" ),
@@ -29,14 +29,15 @@ var appearances = {
 
     style : function( states ) {
       var result = {};
+      var path = rwt.remote.Server.RESOURCE_PATH + "widget/rap/scale/";
       if( states.horizontal ) {
         result.left = rwt.widgets.Scale.PADDING;
         result.top = rwt.widgets.Scale.SCALE_LINE_OFFSET;
-        result.source = "widget/scale/h_line.gif";
+        result.source = path + "h_line.gif";
       } else {
         result.left = rwt.widgets.Scale.SCALE_LINE_OFFSET;
         result.top = rwt.widgets.Scale.PADDING;
-        result.source = "widget/scale/v_line.gif";
+        result.source = path + "v_line.gif";
       }
       return result;
     }
@@ -46,7 +47,7 @@ var appearances = {
     include : "atom",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       if( states.horizontal ) {
         result.left = rwt.widgets.Scale.PADDING;

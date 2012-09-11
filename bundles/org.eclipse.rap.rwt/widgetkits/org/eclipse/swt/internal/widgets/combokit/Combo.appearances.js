@@ -14,7 +14,7 @@ var appearances = {
 
   "combo" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "Combo", "border" );
       result.backgroundColor = tv.getCssColor( "Combo", "background-color" );
@@ -29,7 +29,7 @@ var appearances = {
   "combo-list" : {
     include : "list",
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "Combo-List", "border" );
       result.textColor = tv.getCssColor( "Combo", "color" );
@@ -43,7 +43,7 @@ var appearances = {
 
   "combo-field" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.font = tv.getCssFont( "Combo", "font" );
       // [if] Do not apply top/bottom paddings on the client
@@ -64,7 +64,7 @@ var appearances = {
 
   "combo-button" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       var border = tv.getCssBorder( "Combo-Button", "border" );
       var borderLeft = tv.getCssBorder( "Combo-Button", "border-left" );
@@ -75,7 +75,7 @@ var appearances = {
       result.bottom = 0;
       result.right = 0;
       result.icon = tv.getCssImage( "Combo-Button-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "Combo-Button", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "Combo-Button", "background-image" );

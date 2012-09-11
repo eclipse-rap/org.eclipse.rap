@@ -96,7 +96,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AdapterUtilTest", {
       var handler = rwt.protocol.AdapterUtil.getControlPropertyHandler( "menu" );
       var widget = new rwt.widgets.Composite();
       var menu = new rwt.widgets.Menu();
-      rwt.protocol.ObjectManager.add( "w3", menu, "rwt.widgets.Menu" );
+      rwt.protocol.ObjectRegistry.add( "w3", menu, "rwt.widgets.Menu" );
       handler( widget, "w3" );
       assertIdentical( menu, widget.getContextMenu() );
     },
@@ -105,7 +105,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AdapterUtilTest", {
       var handler = rwt.protocol.AdapterUtil.getControlPropertyHandler( "menu" );
       var widget = new rwt.widgets.Composite();
       var menu = new rwt.widgets.Menu();
-      rwt.protocol.ObjectManager.add( "w3", menu, "rwt.widgets.Menu" );
+      rwt.protocol.ObjectRegistry.add( "w3", menu, "rwt.widgets.Menu" );
       handler( widget, "w3" );
       handler( widget, null );
       assertNull( widget.getContextMenu() );

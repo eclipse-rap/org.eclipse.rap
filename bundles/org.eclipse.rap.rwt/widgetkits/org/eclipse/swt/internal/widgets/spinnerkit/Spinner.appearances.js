@@ -15,7 +15,7 @@ var appearances = {
   "spinner" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "Spinner", "font" );
       result.textColor = tv.getCssColor( "Spinner", "color" );
       result.backgroundColor = tv.getCssColor( "Spinner", "background-color" );
@@ -29,7 +29,7 @@ var appearances = {
   "spinner-text-field" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       // [if] Do not apply top/bottom paddings on the client
       var cssPadding = tv.getCssBoxDimensions( "Spinner-Field", "padding" );
       result.paddingRight = cssPadding[ 1 ];
@@ -46,13 +46,13 @@ var appearances = {
   "spinner-button-up" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var border = tv.getCssBorder( "Spinner-UpButton", "border" );
       var borderLeft = tv.getCssBorder( "Spinner-UpButton", "border-left" );
       result.border = tv.mergeBorders( border, null, null, null, borderLeft );
       result.width = tv.getCssDimension( "Spinner-UpButton", "width" );
       result.icon = tv.getCssImage( "Spinner-UpButton-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "Spinner-UpButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "Spinner-UpButton", "background-image" );
@@ -67,13 +67,13 @@ var appearances = {
   "spinner-button-down" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var border = tv.getCssBorder( "Spinner-DownButton", "border" );
       var borderLeft = tv.getCssBorder( "Spinner-DownButton", "border-left" );
       result.border = tv.mergeBorders( border, null, null, null, borderLeft );
       result.width = tv.getCssDimension( "Spinner-DownButton", "width" );
       result.icon = tv.getCssImage( "Spinner-DownButton-Icon", "background-image" );
-      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "Spinner-DownButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "Spinner-DownButton", "background-image" );

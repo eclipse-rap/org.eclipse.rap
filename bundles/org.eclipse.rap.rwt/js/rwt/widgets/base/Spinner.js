@@ -21,7 +21,7 @@
  * current value can also be changed by editing the display field directly, or
  * using mouse wheel and cursor keys.
  *
- * To implement the range of a spinner's value, a {@link qx.util.range.Range
+ * To implement the range of a spinner's value, a {@link rwt.util.Range
  * Range} object is deployed as the {@link #manager} object. Here you can define the
  * boundaries of the range (*min* and *max* properties), the *default* value,
  * the *precision* and whether the range should *wrap* when stepping beyond a
@@ -126,7 +126,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
     // ************************************************************************
     //   MANAGER
     // ************************************************************************
-    this.setManager(new qx.util.range.Range());
+    this.setManager(new rwt.util.Range());
     this.initWrap();
 
     // ************************************************************************
@@ -309,7 +309,7 @@ qx.Class.define("rwt.widgets.base.Spinner",
     /** Range manager */
     manager :
     {
-      check : "qx.util.range.Range",
+      check : "rwt.util.Range",
       apply : "_applyManager",
       dispose : true
     },

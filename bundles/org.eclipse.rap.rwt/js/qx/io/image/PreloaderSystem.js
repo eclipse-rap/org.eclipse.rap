@@ -44,7 +44,7 @@ qx.Class.define("qx.io.image.PreloaderSystem",
 
     // internally use a map for the image sources
     if( vPreloadList instanceof Array ) {
-      this._list = qx.lang.Object.fromArray( vPreloadList );
+      this._list = rwt.util.Object.fromArray( vPreloadList );
     } else {
       this._list = vPreloadList;
     }
@@ -103,7 +103,7 @@ qx.Class.define("qx.io.image.PreloaderSystem",
      */
     start : function()
     {
-      if (qx.lang.Object.isEmpty(this._list))
+      if (rwt.util.Object.isEmpty(this._list))
       {
         this.createDispatchEvent("completed");
         return;
@@ -111,7 +111,7 @@ qx.Class.define("qx.io.image.PreloaderSystem",
 
       for (var vSource in this._list)
       {
-        var vPreloader = qx.io.image.PreloaderManager.getInstance().create(qx.io.Alias.getInstance().resolve(vSource));
+        var vPreloader = qx.io.image.PreloaderManager.getInstance().create( vSource );
 
         if (vPreloader.isErroneous() || vPreloader.isLoaded()) {
           delete this._list[vSource];
@@ -206,7 +206,7 @@ qx.Class.define("qx.io.image.PreloaderSystem",
         return;
       }
 
-      if (qx.lang.Object.isEmpty(this._list))
+      if (rwt.util.Object.isEmpty(this._list))
       {
         this._timer.stop();
         this.createDispatchEvent("completed");

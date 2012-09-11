@@ -12,7 +12,7 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var ObjectManager = rwt.protocol.ObjectManager;
+var ObjectManager = rwt.protocol.ObjectRegistry;
 var MessageProcessor = rwt.protocol.MessageProcessor;
 var Menu = rwt.widgets.Menu;
 var MenuItem = rwt.widgets.MenuItem;
@@ -1310,7 +1310,7 @@ var createPopUpMenuByProtocol = function( id ) {
       "style" : [ "POP_UP" ]
     }
   } );
-  return rwt.protocol.ObjectManager.getObject( id );
+  return rwt.protocol.ObjectRegistry.getObject( id );
 };
 
 var createMenuItemByProtocol = function( id, parentId, style ) {
@@ -1324,7 +1324,7 @@ var createMenuItemByProtocol = function( id, parentId, style ) {
       "index" : 0
     }
   } );
-  return rwt.protocol.ObjectManager.getObject( id );
+  return rwt.protocol.ObjectRegistry.getObject( id );
 };
 
 var createSimpleMenu = function( type ) {

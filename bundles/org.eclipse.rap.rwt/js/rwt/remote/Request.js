@@ -91,7 +91,7 @@ rwt.remote.Request.prototype = {
       this._request.setRequestHeader( "Content-Type", contentType );
       this._request.setRequestHeader( "Pragma", "no-cache" );
       this._request.setRequestHeader( "Cache-Control", "no-cache" );
-      this._request.onreadystatechange = qx.lang.Function.bind( this._onReadyStateChange, this );
+      this._request.onreadystatechange = rwt.util.Function.bind( this._onReadyStateChange, this );
     },
 
     _onReadyStateChange : function() {

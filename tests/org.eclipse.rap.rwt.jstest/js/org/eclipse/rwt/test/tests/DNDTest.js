@@ -22,7 +22,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testCreateDragSourceByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
@@ -60,7 +60,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testDisposeDragSourceByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
@@ -96,7 +96,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testSetDragSourceTransferByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
@@ -131,7 +131,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testCreateDropTargetByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
@@ -169,7 +169,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testDisposeDropTargetByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
@@ -205,7 +205,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     testSetDropTargetTransferByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {

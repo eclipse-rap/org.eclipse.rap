@@ -414,7 +414,7 @@ qx.Class.define("qx.core.Object",
     },
 
     // Prevent old custom widgets using logging from crashing:
-    debug : qx.core.Variant.select( "qx.debug", {
+    debug : rwt.util.Variant.select( "qx.debug", {
       "on" : function( msg ) {
         if( window.console && typeof console.log === "function" ) {
           console.log( msg );
@@ -436,7 +436,7 @@ qx.Class.define("qx.core.Object",
       this.debug( "ERROR: " + msg );
     },
 
-    printStackTrace : qx.core.Variant.select( "qx.debug", {
+    printStackTrace : rwt.util.Variant.select( "qx.debug", {
       "on" : function() {
         if( console && typeof console.trace === "function" ) {
           this.debug( "Current stack trace:" );

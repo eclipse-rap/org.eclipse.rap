@@ -14,7 +14,7 @@ var appearances = {
 
   "window" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       // padding is only applied on the server, since client area content is
       // positioned absolutely
@@ -33,7 +33,7 @@ var appearances = {
 
   "window-captionbar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         verticalChildrenAlign : "middle"
       };
@@ -57,7 +57,7 @@ var appearances = {
 
   "window-resize-frame" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssNamedBorder( "shadow" )
       };
@@ -74,7 +74,7 @@ var appearances = {
 
   "window-captionbar-title" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         cursor : "default",
         font : tv.getCssFont( "Shell-Titlebar", "font" ),
@@ -86,7 +86,7 @@ var appearances = {
   "window-captionbar-minimize-button" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.icon = tv.getCssImage( "Shell-MinButton", "background-image" );
       result.margin = tv.getCssBoxDimensions( "Shell-MinButton", "margin" );
       return result;
@@ -96,7 +96,7 @@ var appearances = {
   "window-captionbar-maximize-button" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.icon = tv.getCssImage( "Shell-MaxButton", "background-image" );
       result.margin = tv.getCssBoxDimensions( "Shell-MaxButton", "margin" );
       return result;
@@ -110,7 +110,7 @@ var appearances = {
   "window-captionbar-close-button" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.icon = tv.getCssImage( "Shell-CloseButton", "background-image" );
       result.margin = tv.getCssBoxDimensions( "Shell-CloseButton", "margin" );
       return result;

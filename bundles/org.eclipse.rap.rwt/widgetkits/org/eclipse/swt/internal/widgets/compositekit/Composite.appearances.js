@@ -15,7 +15,7 @@ var appearances = {
   "composite" : {
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.backgroundColor = tv.getCssColor( "Composite", "background-color" );
       result.backgroundImage = tv.getCssImage( "Composite", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "Composite", "background-image" );

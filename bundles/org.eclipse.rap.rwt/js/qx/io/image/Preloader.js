@@ -61,8 +61,8 @@ qx.Class.define("qx.io.image.Preloader",
     this._element = new Image();
 
     // Define handler if image events occurs
-    this._element.onload = qx.lang.Function.bind(this.__onload, this);
-    this._element.onerror = qx.lang.Function.bind(this.__onerror, this);
+    this._element.onload = rwt.util.Function.bind(this.__onload, this);
+    this._element.onerror = rwt.util.Function.bind(this.__onerror, this);
 
     // Set Source
     this._source = imageUrl;
@@ -146,8 +146,8 @@ qx.Class.define("qx.io.image.Preloader",
       return this._isErroneous;
     },
 
-    _checkPng : qx.core.Variant.select( "qx.client", {
-      "default": qx.lang.Function.returnTrue,
+    _checkPng : rwt.util.Variant.select( "qx.client", {
+      "default": rwt.util.Function.returnTrue,
       "mshtml" : function() {
         this._isPng = /\.png$/i.test(this._element.nameProp);
       }
@@ -176,7 +176,7 @@ qx.Class.define("qx.io.image.Preloader",
      * @return {Integer} The width of the image in pixel.
      * @signature function()
      */
-    getWidth : qx.core.Variant.select("qx.client",
+    getWidth : rwt.util.Variant.select("qx.client",
     {
       "gecko" : function() {
         return this._element.naturalWidth;
@@ -195,7 +195,7 @@ qx.Class.define("qx.io.image.Preloader",
      * @return {Integer} The height of the image in pixel.
      * @signature function()
      */
-    getHeight : qx.core.Variant.select("qx.client",
+    getHeight : rwt.util.Variant.select("qx.client",
     {
       "gecko" : function() {
         return this._element.naturalHeight;

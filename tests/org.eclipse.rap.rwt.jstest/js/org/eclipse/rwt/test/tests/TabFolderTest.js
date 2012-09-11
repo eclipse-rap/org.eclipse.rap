@@ -28,7 +28,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.TabFolder );
       assertIdentical( shell, widget.getParent() );
@@ -52,7 +52,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.TabFolder );
       assertIdentical( shell, widget.getParent() );
@@ -80,7 +80,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       var item2 = this._createTabItemByProtocol( "w5", "w3" );
       var item3 = this._createTabItemByProtocol( "w6", "w3" );
       TestUtil.protocolSet( "w3", { "selection" : "w5" } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertFalse( item1.getChecked() );
       assertTrue( item2.getChecked() );
@@ -100,7 +100,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       assertTrue( item instanceof rwt.widgets.TabItem );
       assertIdentical( folder.getBar(), item.getParent() );
       assertNull( item.getUserData( "isControl") );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var page = ObjectManager.getObject( "w4pg" );
       assertTrue( page instanceof rwt.widgets.base.TabFolderPage );
       shell.destroy();
@@ -113,7 +113,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var page = ObjectManager.getObject( "w4pg" );
       rwt.protocol.MessageProcessor.processOperation( {
         "target" : "w4",
@@ -237,7 +237,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
           "parent" : parentId
         }
       } );
-      return rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectRegistry.getObject( id );
     },
 
     _createTabItemByProtocol : function( id, parentId ) {
@@ -252,7 +252,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
           "index" : 0
         }
       } );
-      return rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectRegistry.getObject( id );
     }
 
   }
