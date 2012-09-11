@@ -28,10 +28,6 @@ qx.Class.define( "rwt.runtime.System", {
       qx.html.EventRegistration.addEventListener( window, "load", this._onloadWrapped );
       qx.html.EventRegistration.addEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
       qx.html.EventRegistration.addEventListener( window, "unload", this._onunloadWrapped );
-      // Overwrite the default mapping for internal images. This is necessary
-      // if the application is deployed under a root different from "/".
-      qx.io.Alias.getInstance().add( "static", "./rwt-resources/resource/static" );
-      qx.io.Alias.getInstance().add( "widget", "./rwt-resources/resource/widget/rap" );
       this._applyPatches();
       org.eclipse.rwt.GraphicsUtil.init();
       var eventHandler = org.eclipse.rwt.EventHandler;

@@ -465,7 +465,6 @@ qx.Class.define("rwt.widgets.base.Iframe",
 
       if( rwt.client.Client.isMshtml() ) {
         // Setting the backgroundImage causes an "insecure elements" warning under SSL
-        // blockerStyle.backgroundImage = "url(" + qx.io.Alias.getInstance().resolve("static/image/blank.gif") + ")";
 
         blockerStyle.backgroundColor = "white";
         blockerStyle.filter = "Alpha(Opacity=0)";
@@ -569,7 +568,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
       var currentSource = this.getSource();
 
       if (currentSource == null || currentSource === "") {
-        currentSource = qx.io.Alias.getInstance().resolve("static/html/blank.html");
+        currentSource = rwt.remote.Server.RESOURCE_PATH + "static/html/blank.html";
       }
 
       this._isLoaded = false;

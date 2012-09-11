@@ -291,22 +291,23 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
       var maxIcon = "";
       var minToolTip = "";
       var maxToolTip = "";
+      var path = rwt.remote.Server.RESOURCE_PATH + "widget/rap/ctabfolder/";
       switch( state ) {
         case "min":
-          minIcon = "widget/ctabfolder/restore.gif";
-          maxIcon = "widget/ctabfolder/maximize.gif";
+          minIcon = path + "restore.gif";
+          maxIcon = path + "maximize.gif";
           minToolTip = rwt.widgets.CTabFolder.RESTORE_TOOLTIP;
           maxToolTip = rwt.widgets.CTabFolder.MAX_TOOLTIP;
           break;
         case "max":
-          minIcon = "widget/ctabfolder/minimize.gif";
-          maxIcon = "widget/ctabfolder/restore.gif";
+          minIcon = path + "minimize.gif";
+          maxIcon = path + "restore.gif";
           minToolTip = rwt.widgets.CTabFolder.MIN_TOOLTIP;
           maxToolTip = rwt.widgets.CTabFolder.RESTORE_TOOLTIP;
           break;
         case "normal":
-          minIcon = "widget/ctabfolder/minimize.gif";
-          maxIcon = "widget/ctabfolder/maximize.gif";
+          minIcon = path + "minimize.gif";
+          maxIcon = path + "maximize.gif";
           minToolTip = rwt.widgets.CTabFolder.MIN_TOOLTIP;
           maxToolTip = rwt.widgets.CTabFolder.MAX_TOOLTIP;
           break;

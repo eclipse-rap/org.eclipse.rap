@@ -38,7 +38,7 @@ qx.Class.define("rwt.widgets.base.Image",
   {
     this.base(arguments);
 
-    this._blank = qx.io.Alias.getInstance().resolve("static/image/blank.gif");
+    this._blank = rwt.remote.Server.RESOURCE_PATH + "static/image/blank.gif";
 
     // Source
     if (vSource != null) {
@@ -309,10 +309,8 @@ qx.Class.define("rwt.widgets.base.Image",
      * @type member
      * @return {void}
      */
-    _connect : function()
-    {
-      var aliasMgr = qx.io.Alias.getInstance();
-      aliasMgr.connect(this._syncSource, this, this.getSource());
+    _connect : function() {
+      this._syncSource( this.getSource() );
     },
 
     /**

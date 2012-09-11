@@ -326,3 +326,9 @@ qx.Class.define( "rwt.remote.Server", {
 } );
 
 }());
+
+/**
+ * Path that points to the "resources/resource" path in the bundle. Files
+ * must be registered in ClientResources.java.
+ */
+rwt.remote.Server.RESOURCE_PATH = "./rwt-resources/resource/";

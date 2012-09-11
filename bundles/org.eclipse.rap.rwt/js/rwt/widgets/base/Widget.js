@@ -3506,7 +3506,7 @@ qx.Class.define( "rwt.widgets.base.Widget", {
 
     _applyCursor : function(value, old) {
       if (value) {
-        var url = "url( " + qx.io.Alias.getInstance().resolve( value ) + " ), default";
+        var url = "url( " + value + " ), default";
         this.setStyleProperty("cursor", this.__cursorMap[value] || url);
       } else {
         this.removeStyleProperty("cursor");
@@ -3526,14 +3526,13 @@ qx.Class.define( "rwt.widgets.base.Widget", {
 
     _applyBackgroundImage : function(value, old) {
       var imageMgr = qx.io.image.Manager.getInstance();
-      var aliasMgr = qx.io.Alias.getInstance();
       if (old) {
         imageMgr.hide(old);
       }
       if (value) {
         imageMgr.show(value);
       }
-      aliasMgr.connect(this._styleBackgroundImage, this, value);
+      this._styleBackgroundImage( value );
     },
 
     _styleBackgroundImage : function( value ) {

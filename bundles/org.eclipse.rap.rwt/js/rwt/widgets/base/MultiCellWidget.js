@@ -138,11 +138,7 @@ qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       } else {
         this.addToQueue( "updateContent" );
       }
-      var newValue = value;
-      if( this._isImageCell( cell ) ) {
-        newValue = qx.io.Alias.getInstance().resolve( newValue );
-      }
-      this.__cellData[ cell ][ 1 ] = newValue;
+      this.__cellData[ cell ][ 1 ] = value;
     },
 
     /**

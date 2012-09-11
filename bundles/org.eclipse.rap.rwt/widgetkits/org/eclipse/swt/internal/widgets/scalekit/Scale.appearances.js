@@ -29,14 +29,15 @@ var appearances = {
 
     style : function( states ) {
       var result = {};
+      var path = rwt.remote.Server.RESOURCE_PATH + "widget/rap/scale/";
       if( states.horizontal ) {
         result.left = rwt.widgets.Scale.PADDING;
         result.top = rwt.widgets.Scale.SCALE_LINE_OFFSET;
-        result.source = "widget/scale/h_line.gif";
+        result.source = path + "h_line.gif";
       } else {
         result.left = rwt.widgets.Scale.SCALE_LINE_OFFSET;
         result.top = rwt.widgets.Scale.PADDING;
-        result.source = "widget/scale/v_line.gif";
+        result.source = path + "v_line.gif";
       }
       return result;
     }

@@ -170,11 +170,12 @@ var appearances = {
     include : "image",
 
     style : function( states ) {
+      var path = rwt.remote.Server.RESOURCE_PATH + "widget/rap/ctabfolder/";
       return {
-        source : states.over ? "widget/ctabfolder/close_hover.gif" : "widget/ctabfolder/close.gif"
+        source : path + ( states.over ? "close_hover.gif" : "close.gif" )
       };
     }
   }
-    
+
 // END TEMPLATE //
 };

@@ -104,7 +104,7 @@ var appearances = {
         borderWidths[ 2 ] = borderBottom.getWidthBottom();
         borderStyles[ 2 ] = borderBottom.getStyleBottom();
         borderColors[ 2 ] = borderBottom.getColorBottom();
-      } 
+      }
       result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
       result.textShadow = tv.getCssShadow( "TreeColumn", "text-shadow" );
       return result;
@@ -122,12 +122,12 @@ var appearances = {
 
   "tree-column-chevron" : {
     style : function( states ) {
-      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
+      var path = rwt.remote.Server.RESOURCE_PATH + "widget/rap/"
       if( states.loading ) {
-        result.backgroundImage = [ "widget/tree/loading.gif", 16, 16 ];
+        result.backgroundImage = [ path + "tree/loading.gif", 16, 16 ];
       } else {
-        var source = "widget/arrows/chevron-";
+        var source = path + "arrows/chevron-";
         source += states.expanded ? "left" : "right";
         source += states.mouseover ? "-hover" : "";
         source += ".png";

@@ -32,7 +32,7 @@ var appearances = {
   "cursor-dnd-move" : {
     style : function( states ) {
       return {
-        source : "widget/cursors/move.gif"
+        source : rwt.remote.Server.RESOURCE_PATH + "widget/rap/cursors/move.gif"
       };
     }
   },
@@ -40,7 +40,7 @@ var appearances = {
   "cursor-dnd-copy" : {
     style : function( states ) {
       return {
-        source : "widget/cursors/copy.gif"
+        source : rwt.remote.Server.RESOURCE_PATH + "widget/rap/cursors/copy.gif"
       };
     }
   },
@@ -48,7 +48,7 @@ var appearances = {
   "cursor-dnd-alias" : {
     style : function( states ) {
       return {
-        source : "widget/cursors/alias.gif"
+        source : rwt.remote.Server.RESOURCE_PATH + "widget/rap/cursors/alias.gif"
       };
     }
   },
@@ -56,7 +56,7 @@ var appearances = {
   "cursor-dnd-nodrop" : {
     style : function( states ) {
       return {
-        source : "widget/cursors/nodrop.gif"
+        source : rwt.remote.Server.RESOURCE_PATH + "widget/rap/cursors/nodrop.gif"
       };
     }
   },
@@ -120,7 +120,7 @@ var appearances = {
   },
 
   // this applies to a qooxdoo rwt.widgets.base.Atom that represents an RWT Label
-  
+
 
   "htmlcontainer" : {
     include : "label"
@@ -128,7 +128,7 @@ var appearances = {
 
   "popup" : {
   },
-  
+
   "iframe" : {
     style : function( states ) {
       return { };

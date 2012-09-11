@@ -77,7 +77,7 @@ qx.Class.define("rwt.client.History",
        * Setting the source before adding the iframe to the document.
        * Otherwise IE will bring up a "Unsecure items ..." warning in SSL mode
        */
-      var src = qx.io.Alias.getInstance().resolve("static/html/blank.html");
+      var src = rwt.remote.Server.RESOURCE_PATH + "static/html/blank.html";
       this._iframe.src = src;
       document.body.appendChild(this._iframe);
 
