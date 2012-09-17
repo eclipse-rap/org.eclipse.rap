@@ -730,6 +730,7 @@ public class Display extends Device implements Adaptable {
   }
 
   private void runDisposeExecs() {
+    checkDevice();
     if( disposeList != null ) {
       for( int i = 0; i < disposeList.length; i++ ) {
         if( disposeList[ i ] != null ) {
