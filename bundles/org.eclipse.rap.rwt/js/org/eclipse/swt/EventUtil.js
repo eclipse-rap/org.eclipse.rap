@@ -42,7 +42,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     _metaKey : false,
 
     eventTimestamp : function() {
-      var init = org.eclipse.rwt.System.getInstance();
+      var init = rwt.runtime.System.getInstance();
       return new Date().getTime() - init.getStartupTime();
     },
 

@@ -104,7 +104,7 @@ qx.Class.define("qx.dom.Node",
      * @param node {Node} node to inspect
      * @return {Window} the <code>defaultView</code> of the given node
      */
-    getWindow : qx.core.Variant.select("qx.client",
+    getWindow : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(node) {
         return this.getDocument(node).parentWindow;

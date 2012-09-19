@@ -130,7 +130,7 @@ qx.Class.define("qx.bom.element.Location",
      * @param elem {Element} DOM element to query
      * @return {Map} Map which contains the <code>left</code> and <code>top</code> offsets
      */
-    __computeBody : qx.core.Variant.select("qx.client",
+    __computeBody : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(elem)
       {
@@ -273,7 +273,7 @@ qx.Class.define("qx.bom.element.Location",
      * @param elem {Element} DOM element to query
      * @return {Map} Map which contains the <code>left</code> and <code>top</code> offsets
      */
-    __computeOffset : qx.core.Variant.select("qx.client",
+    __computeOffset : rwt.util.Variant.select("qx.client",
     {
       "mshtml|newmshtml|webkit" : function(elem)
       {

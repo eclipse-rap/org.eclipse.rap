@@ -13,11 +13,20 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.CoolBar;
+import org.eclipse.swt.widgets.CoolItem;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 
 
 public class CoolBarTab extends ExampleTab {
@@ -25,8 +34,8 @@ public class CoolBarTab extends ExampleTab {
   private final Image image1;
   private CoolBar coolBar;
 
-  public CoolBarTab( final CTabFolder topFolder ) {
-    super( topFolder, "CoolBar" );
+  public CoolBarTab() {
+    super( "CoolBar" );
     ClassLoader loader = getClass().getClassLoader();
     image1 = Graphics.getImage( "resources/newfile_wiz.gif", loader );
   }

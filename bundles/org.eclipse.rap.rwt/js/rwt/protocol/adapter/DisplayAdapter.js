@@ -39,11 +39,11 @@ rwt.protocol.AdapterRegistry.add( "rwt.Display", {
 
   propertyHandler : {
     "activeKeys" : function( object, value ) {
-      var map = qx.lang.Object.fromArray( value );
+      var map = rwt.util.Object.fromArray( value );
       org.eclipse.rwt.KeyEventSupport.getInstance().setKeyBindings( map );
     },
     "cancelKeys" : function( object, value ) {
-      var map = qx.lang.Object.fromArray( value );
+      var map = rwt.util.Object.fromArray( value );
       org.eclipse.rwt.KeyEventSupport.getInstance().setCancelKeys( map );
     }
   }

@@ -31,7 +31,7 @@ qx.Class.define("qx.html.EventRegistration",
      * @return {void}
      * @signature function(vElement, vType, vFunction)
      */
-    addEventListener : qx.core.Variant.select("qx.client",
+    addEventListener : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(vElement, vType, vFunction) {
         vElement.attachEvent("on" + vType, vFunction);
@@ -52,7 +52,7 @@ qx.Class.define("qx.html.EventRegistration",
      * @param vFunction {Function} The pointer to the function to assign
      * @signature function(vElement, vType, vFunction)
      */
-    removeEventListener : qx.core.Variant.select("qx.client",
+    removeEventListener : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(vElement, vType, vFunction) {
         vElement.detachEvent("on" + vType, vFunction);

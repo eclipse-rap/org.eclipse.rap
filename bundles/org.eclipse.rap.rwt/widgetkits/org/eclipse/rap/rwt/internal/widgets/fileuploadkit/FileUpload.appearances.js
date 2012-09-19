@@ -16,7 +16,7 @@ var appearances = {
  
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "FileUpload", "font" );
       result.textColor = tv.getCssColor( "FileUpload", "color" );
       result.backgroundColor = tv.getCssColor( "FileUpload", "background-color" );

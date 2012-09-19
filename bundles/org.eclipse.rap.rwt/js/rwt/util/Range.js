@@ -14,7 +14,7 @@
 /**
  * This manager is used by all objects which needs ranges like rwt.widgets.base.Spinner, ...
  */
-qx.Class.define( "qx.util.range.Range", {
+qx.Class.define( "rwt.util.Range", {
 
   extend : qx.core.Target,
 

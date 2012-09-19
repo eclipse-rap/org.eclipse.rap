@@ -18,7 +18,7 @@ var appearances = {
     style : function( states ) {
       // [tb] exists for compatibility with the original qooxdoo button
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.font = tv.getCssFont( "Button", "font" );
       var decoration = tv.getCssIdentifier( "Button", "text-decoration" );
       if( decoration != null && decoration !== "none" ) {
@@ -49,7 +49,7 @@ var appearances = {
 
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       result.animation = tv.getCssAnimation( "Button", "animation" );
       if( states.rwt_ARROW ) {
         result.icon = tv.getCssSizedImage( "Button-ArrowIcon", "background-image" );
@@ -65,7 +65,7 @@ var appearances = {
     include : "button",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         selectionIndicator : tv.getCssSizedImage( "Button-CheckIcon", "background-image" )
       };
@@ -80,7 +80,7 @@ var appearances = {
     include : "button",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         selectionIndicator : tv.getCssSizedImage( "Button-RadioIcon", "background-image" )
       };

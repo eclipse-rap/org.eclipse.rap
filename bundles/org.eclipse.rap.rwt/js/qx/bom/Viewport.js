@@ -61,7 +61,7 @@ qx.Class.define("qx.bom.Viewport",
      * @param win {Window?window} The window to query
      * @return {Integer} The width of the viewable area of the page (excludes scrollbars).
      */
-    getWidth : qx.core.Variant.select("qx.client",
+    getWidth : rwt.util.Variant.select("qx.client",
     {
       "opera" : function(win) {
         return (win||window).document.body.clientWidth;
@@ -109,7 +109,7 @@ qx.Class.define("qx.bom.Viewport",
      * @param win {Window?window} The window to query
      * @return {Integer} The Height of the viewable area of the page (excludes scrollbars).
      */
-    getHeight : qx.core.Variant.select("qx.client",
+    getHeight : rwt.util.Variant.select("qx.client",
     {
       "opera" : function(win) {
         return (win||window).document.body.clientHeight;
@@ -149,7 +149,7 @@ qx.Class.define("qx.bom.Viewport",
      * @param win {Window?window} The window to query
      * @return {Integer} Scroll position from left edge, always a positive integer
      */
-    getScrollLeft : qx.core.Variant.select("qx.client",
+    getScrollLeft : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(win)
       {
@@ -185,7 +185,7 @@ qx.Class.define("qx.bom.Viewport",
      * @param win {Window?window} The window to query
      * @return {Integer} Scroll position from left edge, always a positive integer
      */
-    getScrollTop : qx.core.Variant.select("qx.client",
+    getScrollTop : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(win)
       {

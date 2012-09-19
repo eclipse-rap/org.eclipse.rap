@@ -15,13 +15,15 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 public class CLabelTab extends ExampleTab {
 
@@ -35,8 +37,8 @@ public class CLabelTab extends ExampleTab {
   private static final String IMAGE2 = "resources/newfile_wiz.gif";
   private static final String IMAGE1 = "resources/button-image.gif";
 
-  public CLabelTab( CTabFolder parent ) {
-    super( parent, "CLabel" );
+  public CLabelTab() {
+    super( "CLabel" );
     markup = "<big><i>Some</i></big> <b>Other</b> <small>Text With Markup</small> - 2<sup>16</sup>";
     markupEnabled = true;
   }

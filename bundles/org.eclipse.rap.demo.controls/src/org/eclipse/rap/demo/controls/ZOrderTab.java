@@ -12,19 +12,23 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 
 
 public class ZOrderTab extends ExampleTab {
 
   private Label label;
 
-  public ZOrderTab( final CTabFolder topFolder ) {
-    super( topFolder, "Z-Order" );
+  public ZOrderTab() {
+    super( "Z-Order" );
   }
 
   @Override

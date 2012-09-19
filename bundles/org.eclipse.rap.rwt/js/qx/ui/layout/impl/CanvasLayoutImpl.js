@@ -134,7 +134,7 @@ qx.Class.define("qx.ui.layout.impl.CanvasLayoutImpl",
         var vBox = (vChild._computedWidthTypePercent ? null : vChild.getWidthValue()) || vChild.getPreferredBoxWidth() || 0;
       }
 
-      return qx.lang.Number.limit(vBox, vMinBox, vMaxBox) + vLeft + vRight + vChild.getMarginLeft() + vChild.getMarginRight();
+      return rwt.util.Number.limit(vBox, vMinBox, vMaxBox) + vLeft + vRight + vChild.getMarginLeft() + vChild.getMarginRight();
     },
 
 
@@ -158,7 +158,7 @@ qx.Class.define("qx.ui.layout.impl.CanvasLayoutImpl",
         var vBox = (vChild._computedHeightTypePercent ? null : vChild.getHeightValue()) || vChild.getPreferredBoxHeight() || 0;
       }
 
-      return qx.lang.Number.limit(vBox, vMinBox, vMaxBox) + vTop + vBottom + vChild.getMarginTop() + vChild.getMarginBottom();
+      return rwt.util.Number.limit(vBox, vMinBox, vMaxBox) + vTop + vBottom + vChild.getMarginTop() + vChild.getMarginBottom();
     },
 
 
@@ -248,7 +248,7 @@ qx.Class.define("qx.ui.layout.impl.CanvasLayoutImpl",
      * @return {void}
      * @signature function(vChild, vJobs)
      */
-    layoutChild_sizeX : qx.core.Variant.select("qx.client",
+    layoutChild_sizeX : rwt.util.Variant.select("qx.client",
     {
       "mshtml|newmshtml|opera|webkit" : function(vChild, vJobs)
       {
@@ -283,7 +283,7 @@ qx.Class.define("qx.ui.layout.impl.CanvasLayoutImpl",
      * @return {void}
      * @signature function(vChild, vJobs)
      */
-    layoutChild_sizeY : qx.core.Variant.select("qx.client",
+    layoutChild_sizeY : rwt.util.Variant.select("qx.client",
     {
       "mshtml|newmshtml|opera|webkit" : function(vChild, vJobs)
       {

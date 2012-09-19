@@ -562,7 +562,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolProcessorTest", {
       };
       if( typeof targetId === "string" ) {
         var adapter = rwt.protocol.AdapterRegistry.getAdapter( "dummyType" );
-        rwt.protocol.ObjectManager.add( targetId, targetObject, adapter );
+        rwt.protocol.ObjectRegistry.add( targetId, targetObject, adapter );
       }
       return targetObject;
     },

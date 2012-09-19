@@ -25,7 +25,7 @@ qx.Class.define( "rwt.widgets.Group", {
     // Enable method remapping
     this.remapChildrenHandlingTo(this._frameObject);
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
-    var themeValues = new org.eclipse.swt.theme.ThemeValues( {} );
+    var themeValues = new rwt.theme.ThemeValues( {} );
     this._themeBackgroundColor = themeValues.getCssColor( "Group-Label", "background-color" );
     themeValues.dispose();
     // Make sure that the 'labelObject' is created

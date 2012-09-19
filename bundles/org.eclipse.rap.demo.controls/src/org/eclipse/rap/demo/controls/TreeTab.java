@@ -13,16 +13,38 @@ package org.eclipse.rap.demo.controls;
 
 import java.text.MessageFormat;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.TreeEvent;
+import org.eclipse.swt.events.TreeListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
 
 
 public class TreeTab extends ExampleTab {
@@ -35,22 +57,22 @@ public class TreeTab extends ExampleTab {
   private boolean updateVirtualItemsDelayed;
   private Tree tree;
   private boolean showImages;
-  private final Image treeImage;
+  private Image treeImage;
   private boolean columnImages;
-  private final Image columnImage;
+  private Image columnImage;
   private boolean columnsMoveable;
   private boolean addMouseListener;
 
-  public TreeTab( CTabFolder topFolder ) {
-    super( topFolder, "Tree" );
-    treeImage = Graphics.getImage( "resources/tree_item.gif", getClass().getClassLoader() );
-    columnImage = loadImage( "resources/shell.gif" );
+  public TreeTab() {
+    super( "Tree" );
     showImages = true;
     headerVisible = true;
   }
 
   @Override
   protected void createStyleControls( Composite parent ) {
+    treeImage = Graphics.getImage( "resources/tree_item.gif", getClass().getClassLoader() );
+    columnImage = loadImage( "resources/shell.gif" );
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "CHECK", SWT.CHECK );
     createStyleButton( "MULTI", SWT.MULTI );

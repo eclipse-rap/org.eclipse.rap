@@ -256,7 +256,7 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
     },
 
     _lockActiveState : function() {
-      //this._setActiveState = qx.lang.Function.returnNull;
+      //this._setActiveState = rwt.util.Function.returnNull;
       this.getWindowManager().blockActiveState = true;
     },
 

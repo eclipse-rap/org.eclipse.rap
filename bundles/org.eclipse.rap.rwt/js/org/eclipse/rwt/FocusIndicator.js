@@ -32,7 +32,7 @@ qx.Class.define( "org.eclipse.rwt.FocusIndicator", {
     _createTheme : function( widget, cssSelector, focusElement ) {
       var theme = null;
       var states = typeof widget.__states != "undefined" ? widget.__states : {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var border = tv.getCssBorder( cssSelector, "border" );
       var opacity = tv.getCssFloat( cssSelector, "opacity" );
       var hasValidBorder = border instanceof org.eclipse.rwt.Border;
@@ -107,7 +107,7 @@ qx.Class.define( "org.eclipse.rwt.FocusIndicator", {
       this._styleFocusIndiactorOpacity( theme[ "opacity" ] );
     },
 
-    _styleFocusIndiactorOpacity : qx.core.Variant.select( "qx.client", {
+    _styleFocusIndiactorOpacity : rwt.util.Variant.select( "qx.client", {
       "default" : function( value ) {
         var style = this._frame.style;
         var opacity = value == 1 ? "" : value;

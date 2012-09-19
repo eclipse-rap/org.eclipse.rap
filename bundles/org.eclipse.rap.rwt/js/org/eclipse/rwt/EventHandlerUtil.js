@@ -25,7 +25,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       delete this._lastKeyCode;
     },
 
-    applyBrowserFixes  : qx.core.Variant.select( "qx.client", {
+    applyBrowserFixes  : rwt.util.Variant.select( "qx.client", {
       "gecko" : function() {
         // Fix for bug 295475:
         // Prevent url-dropping in FF as a whole (see bug 304651)
@@ -56,7 +56,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
     /////////////////////////
     // GENERAL EVENT HANDLING
 
-    getDomEvent : qx.core.Variant.select( "qx.client", {
+    getDomEvent : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function( args ) {
         return args.length > 0 ? args[ 0 ] : window.event;
       },
@@ -65,7 +65,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       }
     } ),
 
-    getDomTarget : qx.core.Variant.select("qx.client", {
+    getDomTarget : rwt.util.Variant.select("qx.client", {
       "mshtml" : function( vDomEvent ) {
         return vDomEvent.target || vDomEvent.srcElement;
       },
@@ -211,7 +211,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
     ///////////////
     // KEY HANDLING
 
-    getKeyCode : qx.core.Variant.select( "qx.client", {
+    getKeyCode : rwt.util.Variant.select( "qx.client", {
       "gecko" : function( event ) {
         return event.keyCode;
       },
@@ -236,7 +236,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       }
     } ),
 
-    getCharCode : qx.core.Variant.select( "qx.client", {
+    getCharCode : rwt.util.Variant.select( "qx.client", {
       "default" : function( event ) {
         var hasCharCode = event.type === "keypress" && event.keyCode !== 13 && event.keyCode !== 27;
         return hasCharCode ? event.charCode : 0;
@@ -265,7 +265,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       return this._lastUpDownType[ keyCode ] !== "keydown";
     },
 
-    getEventPseudoTypes : qx.core.Variant.select( "qx.client", {
+    getEventPseudoTypes : rwt.util.Variant.select( "qx.client", {
       "default" : function( event, keyCode, charCode ) {
         var result;
         if( event.type === "keydown" ) {
@@ -305,7 +305,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       }
     } ),
 
-    mustRestoreKeypress  : qx.core.Variant.select( "qx.client", {
+    mustRestoreKeypress  : rwt.util.Variant.select( "qx.client", {
       "default" : function( event, pseudoTypes ) {
         var result = false;
         if( this.wasStopped( event ) ) {
@@ -350,7 +350,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       return result;
     },
 
-    isNonPrintableKeyCode  : qx.core.Variant.select( "qx.client", {
+    isNonPrintableKeyCode  : rwt.util.Variant.select( "qx.client", {
       "default" : function( keyCode ) {
         return this._keyCodeToIdentifierMap[ keyCode ] ? true : false;
       },

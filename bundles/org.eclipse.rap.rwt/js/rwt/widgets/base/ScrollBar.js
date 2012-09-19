@@ -190,7 +190,7 @@ qx.Class.define( "rwt.widgets.base.ScrollBar", {
     // Internals
 
     _getMinThumbSize : function() {
-      var themeValues = new org.eclipse.swt.theme.ThemeValues( this.__states );
+      var themeValues = new rwt.theme.ThemeValues( this.__states );
       return themeValues.getCssDimension( "ScrollBar-Thumb", "min-height" );
     },
 

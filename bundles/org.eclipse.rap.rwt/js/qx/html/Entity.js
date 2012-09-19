@@ -332,7 +332,7 @@ qx.Class.define( "qx.html.Entity", {
 
   defer : function( statics, members, properties ) {
     /** Mapping of char codes to HTML entity names */
-    statics.FROM_CHARCODE = qx.lang.Object.invert( statics.TO_CHARCODE );
+    statics.FROM_CHARCODE = rwt.util.Object.invert( statics.TO_CHARCODE );
   }
 
 } );

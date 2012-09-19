@@ -14,13 +14,21 @@ package org.eclipse.rap.demo.controls;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 
 
 public class VariantsTab extends ExampleTab {
@@ -45,8 +53,8 @@ public class VariantsTab extends ExampleTab {
   private List myList;
   private Tree myTree;
 
-  public VariantsTab( final CTabFolder folder ) {
-    super( folder, "Variants" );
+  public VariantsTab() {
+    super( "Variants" );
     ClassLoader classLoader = getClass().getClassLoader();
     buttonImage = Graphics.getImage( BUTTON_IMAGE_PATH, classLoader );
   }

@@ -11,17 +11,39 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 
 
 public class TableTab extends ExampleTab {
@@ -36,21 +58,18 @@ public class TableTab extends ExampleTab {
   private boolean columnsMoveable;
   private int columnsWidthImages = 0;
   private int columns = 5;
-  private final Image columnImage;
+  private Image columnImage;
   private Image itemImage;
-  private final Image smallImage;
-  private final Image largeImage;
+  private Image smallImage;
+  private Image largeImage;
 
-  public TableTab( final CTabFolder folder ) {
-    super( folder, "Table" );
-    columnImage = loadImage( "resources/shell.gif" );
-    smallImage = loadImage( "resources/newfile_wiz.gif" );
-    largeImage = loadImage( "resources/big_image.png" );
-    itemImage = smallImage;
+  public TableTab() {
+    super( "Table" );
   }
 
   @Override
   protected void createStyleControls( final Composite parent ) {
+    initializeImages();
     createStyleButton( "MULTI", SWT.MULTI );
     createStyleButton( "CHECK", SWT.CHECK );
     createStyleButton( "BORDER", SWT.BORDER );
@@ -177,6 +196,13 @@ public class TableTab extends ExampleTab {
     menuItem.setText( "Menu for Table" );
     table.setMenu( menu );
     registerControl( table );
+  }
+
+  private void initializeImages() {
+    columnImage = loadImage( "resources/shell.gif" );
+    smallImage = loadImage( "resources/newfile_wiz.gif" );
+    largeImage = loadImage( "resources/big_image.png" );
+    itemImage = smallImage;
   }
 
   private void createHeaderVisibleButton() {

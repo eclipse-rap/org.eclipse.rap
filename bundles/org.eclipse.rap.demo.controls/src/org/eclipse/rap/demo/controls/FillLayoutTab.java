@@ -13,10 +13,11 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
@@ -25,8 +26,8 @@ public class FillLayoutTab extends ExampleTab {
 
   private boolean propPrefSize;
 
-  public FillLayoutTab( final CTabFolder folder ) {
-    super( folder, "FillLayout" );
+  public FillLayoutTab() {
+    super( "FillLayout" );
   }
 
   @Override

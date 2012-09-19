@@ -32,7 +32,7 @@ var appearances = {
   "cursor-dnd-move" : {
     style : function( states ) {
       return {
-        source : "widget/cursors/move.gif"
+        source : rwt.remote.Server.RESOURCE_PATH + "widget/rap/cursors/move.gif"
       };
     }
   },
@@ -40,7 +40,7 @@ var appearances = {
   "cursor-dnd-copy" : {
     style : function( states ) {
       return {
-        source : "widget/cursors/copy.gif"
+        source : rwt.remote.Server.RESOURCE_PATH + "widget/rap/cursors/copy.gif"
       };
     }
   },
@@ -48,7 +48,7 @@ var appearances = {
   "cursor-dnd-alias" : {
     style : function( states ) {
       return {
-        source : "widget/cursors/alias.gif"
+        source : rwt.remote.Server.RESOURCE_PATH + "widget/rap/cursors/alias.gif"
       };
     }
   },
@@ -56,14 +56,14 @@ var appearances = {
   "cursor-dnd-nodrop" : {
     style : function( states ) {
       return {
-        source : "widget/cursors/nodrop.gif"
+        source : rwt.remote.Server.RESOURCE_PATH + "widget/rap/cursors/nodrop.gif"
       };
     }
   },
 
   "client-document" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         font : tv.getCssFont( "*", "font" ),
         textColor : "black",
@@ -74,7 +74,7 @@ var appearances = {
 
   "client-document-blocker" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
         animation : tv.getCssAnimation( "Shell-DisplayOverlay", "animation" ),
@@ -120,7 +120,7 @@ var appearances = {
   },
 
   // this applies to a qooxdoo rwt.widgets.base.Atom that represents an RWT Label
-  
+
 
   "htmlcontainer" : {
     include : "label"
@@ -128,7 +128,7 @@ var appearances = {
 
   "popup" : {
   },
-  
+
   "iframe" : {
     style : function( states ) {
       return { };
@@ -151,7 +151,7 @@ var appearances = {
 
   "resizer-frame" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssNamedBorder( "shadow" )
       };
@@ -162,7 +162,7 @@ var appearances = {
     include : "popup",
 
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "Widget-ToolTip", "border" );
       result.animation = tv.getCssAnimation( "Widget-ToolTip", "animation" );

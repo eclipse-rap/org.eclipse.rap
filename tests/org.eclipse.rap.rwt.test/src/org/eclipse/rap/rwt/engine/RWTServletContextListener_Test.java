@@ -12,7 +12,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.engine;
 
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -89,6 +93,30 @@ public class RWTServletContextListener_Test extends TestCase {
 
     rwtServletContextListener.contextInitialized( contextInitializedEvent );
 
+    assertEntryPointIsRegistered();
+    assertPhaseListenersAreRegistered();
+    assertResourceIsRegistered();
+  }
+
+  @SuppressWarnings( "unchecked" )
+  public void testConfiguratorWithThreadContextClassLoader() throws ClassNotFoundException {
+    // See bug 367033
+    // use a class name that cannot be found by RWT's class loader
+    servletContext.setInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM, "not.Existing" );
+    ClassLoader previousContextClassLoader = Thread.currentThread().getContextClassLoader();
+    Class configuratorClass = TestConfigurator.class;
+    // set a context class loader that can find the class
+    ClassLoader contextClassLoader = mock( ClassLoader.class );
+    when( contextClassLoader.loadClass( anyString() ) ).thenReturn( configuratorClass );
+
+    try {
+      Thread.currentThread().setContextClassLoader( contextClassLoader );
+      rwtServletContextListener.contextInitialized( contextInitializedEvent );
+    } finally {
+      Thread.currentThread().setContextClassLoader( previousContextClassLoader );
+    }
+
+    verify( contextClassLoader, times( 1 ) ).loadClass( anyString() );
     assertEntryPointIsRegistered();
     assertPhaseListenersAreRegistered();
     assertResourceIsRegistered();

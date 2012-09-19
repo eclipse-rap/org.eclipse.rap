@@ -38,7 +38,7 @@ qx.Class.define("rwt.widgets.base.Image",
   {
     this.base(arguments);
 
-    this._blank = qx.io.Alias.getInstance().resolve("static/image/blank.gif");
+    this._blank = rwt.remote.Server.RESOURCE_PATH + "static/image/blank.gif";
 
     // Source
     if (vSource != null) {
@@ -309,10 +309,8 @@ qx.Class.define("rwt.widgets.base.Image",
      * @type member
      * @return {void}
      */
-    _connect : function()
-    {
-      var aliasMgr = qx.io.Alias.getInstance();
-      aliasMgr.connect(this._syncSource, this, this.getSource());
+    _connect : function() {
+      this._syncSource( this.getSource() );
     },
 
     /**
@@ -432,7 +430,7 @@ qx.Class.define("rwt.widgets.base.Image",
     // Create Image-Node
     // Webkit has problems with "new Image". Maybe related to "new Function" with
     // is also not working correctly.
-    _createImageNode : qx.core.Variant.select( "qx.client", {
+    _createImageNode : rwt.util.Variant.select( "qx.client", {
       "webkit" : function() {
         this._image = document.createElement("img");
       },
@@ -441,11 +439,11 @@ qx.Class.define("rwt.widgets.base.Image",
       }
     } ),
 
-    _imageNodeCreated : qx.core.Variant.select( "qx.client", {
+    _imageNodeCreated : rwt.util.Variant.select( "qx.client", {
       "gecko|opera|webkit" : function() {
         this._styleEnabled();
       },
-      "default": qx.lang.Function.returnTrue
+      "default": rwt.util.Function.returnTrue
     } ),
 
     /*
@@ -494,7 +492,7 @@ qx.Class.define("rwt.widgets.base.Image",
      * @return {void}
      * @signature function()
      */
-    _updateContent : qx.core.Variant.select("qx.client",
+    _updateContent : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function()
       {
@@ -532,7 +530,7 @@ qx.Class.define("rwt.widgets.base.Image",
      * @return {void}
      * @signature function()
      */
-    _resetContent : qx.core.Variant.select("qx.client",
+    _resetContent : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function()
       {
@@ -553,7 +551,7 @@ qx.Class.define("rwt.widgets.base.Image",
      * @return {void}
      * @signature function()
      */
-    _styleEnabled : qx.core.Variant.select("qx.client",
+    _styleEnabled : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function()
       {
@@ -622,7 +620,7 @@ qx.Class.define("rwt.widgets.base.Image",
      * @return {void}
      * @signature function()
      */
-    _postApplyDimensions : qx.core.Variant.select("qx.client",
+    _postApplyDimensions : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function()
       {
@@ -689,7 +687,7 @@ qx.Class.define("rwt.widgets.base.Image",
      * @return {void}
      * @signature function(vNew, vOld)
      */
-    _changeInnerWidth : qx.core.Variant.select("qx.client",
+    _changeInnerWidth : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(vNew, vOld)
       {
@@ -716,7 +714,7 @@ qx.Class.define("rwt.widgets.base.Image",
      * @return {void}
      * @signature function(vNew, vOld)
      */
-    _changeInnerHeight : qx.core.Variant.select("qx.client",
+    _changeInnerHeight : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(vNew, vOld)
       {

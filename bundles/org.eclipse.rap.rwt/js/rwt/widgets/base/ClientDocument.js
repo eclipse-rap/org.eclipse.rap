@@ -195,14 +195,14 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
     /**
      * @signature function()
      */
-    _applyParent : qx.lang.Function.returnTrue,
+    _applyParent : rwt.util.Function.returnTrue,
 
 
     /**
      * @signature function()
      * @return {Object}
      */
-    getTopLevelWidget : qx.lang.Function.returnThis,
+    getTopLevelWidget : rwt.util.Function.returnThis,
 
 
     /**
@@ -234,7 +234,7 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
      * @return {rwt.widgets.base.Parent} TODOC
      * @signature function()
      */
-    getParent : qx.lang.Function.returnNull,
+    getParent : rwt.util.Function.returnNull,
 
 
     /**
@@ -244,7 +244,7 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
      * @return {rwt.widgets.base.ToolTip} TODOC
      * @signature function()
      */
-    getToolTip : qx.lang.Function.returnNull,
+    getToolTip : rwt.util.Function.returnNull,
 
     /**
      * TODOC
@@ -253,7 +253,7 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
      * @signature function()
      * @return {boolean}
      */
-    isSeeable : qx.lang.Function.returnTrue,
+    isSeeable : rwt.util.Function.returnTrue,
 
 
     _isDisplayable : true,
@@ -353,7 +353,7 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
         {
           this._modalNativeWindow = null;
         } else {
-          qx.lang.Array.remove( this._modalWidgets, vActiveChild );
+          rwt.util.Array.remove( this._modalWidgets, vActiveChild );
         }
       }
       var l = this._modalWidgets.length;
@@ -442,7 +442,7 @@ qx.Class.define("rwt.widgets.base.ClientDocument",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyGlobalCursor : qx.core.Variant.select("qx.client",
+    _applyGlobalCursor : rwt.util.Variant.select("qx.client",
     {
       // MSHTML uses special code here. The default code works, too in MSHTML
       // but is really really slow. To change style sheets or class names

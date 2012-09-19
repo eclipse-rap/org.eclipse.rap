@@ -19,7 +19,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -59,8 +58,8 @@ public class ListTab extends ExampleTab {
   private List list2;
   private ListViewer listViewer;
 
-  public ListTab( final CTabFolder topFolder ) {
-    super( topFolder, "List" );
+  public ListTab() {
+    super( "List" );
   }
 
   @Override

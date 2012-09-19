@@ -11,31 +11,51 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.*;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FontDialog;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 
 @SuppressWarnings("restriction")
 abstract class ExampleTab implements Serializable {
 
-  private boolean contentCreated;
-  private final CTabFolder folder;
   protected final List<Control> controls;
 
-  private Composite exmplComp;
+  private Composite exampleComp;
   protected Composite styleComp;
   protected Color[] bgColors;
   protected Color[] fgColors;
@@ -54,7 +74,6 @@ abstract class ExampleTab implements Serializable {
   private ColorChooser fgColorChooser;
   private ColorChooser bgColorChooser;
   private int defaultStyle = SWT.NONE;
-  private final CTabItem item;
   private final Set<String> properties = new HashSet<String>();
 
   public static final Color BG_COLOR_GREEN = Graphics.getColor( 154, 205, 50 );
@@ -92,31 +111,32 @@ abstract class ExampleTab implements Serializable {
     "CURSOR_HAND",
     "CURSOR_UPARROW"
   };
+  private final String name;
+  private Shell shell;
 
-  public ExampleTab( final CTabFolder parent, final String title ) {
-    folder = parent;
+  public ExampleTab( String name ) {
+    this.name = name;
     controls = new ArrayList<Control>();
-    item = new CTabItem( folder, SWT.NONE );
-    item.setText( title + " " );
   }
 
-  public void createContents() {
-    if( !contentCreated ) {
-      Control sashForm = createSashForm();
-      item.setControl( sashForm );
-      initColors();
-      createExampleControls( exmplComp );
-      createStyleControls( styleComp );
-      exmplComp.layout();
-      styleComp.layout();
-      contentCreated = true;
-    }
+  public String getName() {
+    return name;
+  }
+
+  public void createContents( Composite parent ) {
+    shell = parent.getShell();
+    createSashForm( parent );
+    initColors();
+    createExampleControls( exampleComp );
+    createStyleControls( styleComp );
+    exampleComp.layout();
+    styleComp.layout();
   }
 
   protected void createNew() {
     controls.clear();
     destroyExampleControls();
-    createExampleControls( exmplComp );
+    createExampleControls( exampleComp );
     updateVisible();
     updateEnabled();
     if( fgColorChooser != null ) {
@@ -135,43 +155,69 @@ abstract class ExampleTab implements Serializable {
       // }
       updateFont();
     }
-    exmplComp.layout();
+    exampleComp.layout();
   }
 
-  private Control createSashForm() {
-    SashForm vertSashForm = new SashForm( folder, SWT.VERTICAL );
+  private Control createSashForm( Composite parent ) {
+    SashForm vertSashForm = new SashForm( parent, SWT.VERTICAL );
     SashForm horSashForm = new SashForm( vertSashForm, SWT.HORIZONTAL );
-    Composite leftComp = new Composite( horSashForm, SWT.NONE );
-    Composite rightComp = new Composite( horSashForm, SWT.NONE );
-    Composite footComp = new Composite( vertSashForm, SWT.NONE );
-    createLeft( leftComp );
-    createRight( rightComp );
-    createFoot( footComp );
+    createLeft( horSashForm );
+    createRight( horSashForm );
+    createFoot( vertSashForm );
     horSashForm.setWeights( new int[] { 60, 40 } );
-    vertSashForm.setWeights( new int[] { 95, 5 } );
+    vertSashForm.setWeights( new int[] { 93, 7 } );
     return vertSashForm;
   }
 
-  private void createLeft( final Composite parent ) {
-    parent.setLayout( new FillLayout() );
-    Group exmplGroup = new Group( parent, SWT.NONE );
-    exmplGroup.setLayout( new FillLayout() );
-    exmplComp = new Composite( exmplGroup, SWT.NONE );
+  private void createLeft( Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setBackground( parent.getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
+    composite.setLayout( new FormLayout() );
+    Label header = new Label( composite, SWT.CENTER );
+    header.setFont( getHeaderFont( parent ) );
+    header.setText( getName() );
+    header.setLayoutData( createLayoutDataForHeader() );
+    exampleComp = new Composite( composite, SWT.NONE );
+    exampleComp.setLayoutData( createLayoutDataForExampleArea( header ) );
   }
 
-  private void createRight( final Composite parent ) {
-    parent.setLayout( new FillLayout() );
-    Group styleGroup = new Group( parent, SWT.NONE );
-    styleGroup.setText( "Styles and Parameters" );
-    styleGroup.setLayout( new FillLayout() );
-    styleComp = new Composite( styleGroup, SWT.NONE );
+  private void createRight( Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setBackground( parent.getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
+    composite.setLayout( new FormLayout() );
+    Label header = new Label( composite, SWT.LEFT );
+    header.setText( "Styles and Parameters" );
+    header.setLayoutData( createLayoutDataForHeader() );
+    styleComp = new Composite( composite, SWT.NONE );
+    styleComp.setLayoutData( createLayoutDataForExampleArea( header ) );
     styleComp.setLayout( new RowLayout( SWT.VERTICAL ) );
   }
 
-  private void createFoot( final Composite parent ) {
-    parent.setLayout( new FillLayout() );
-    text = new Text( parent, SWT.BORDER | SWT.READ_ONLY | SWT.MULTI );
+  private void createFoot( Composite parent ) {
+    text = new Text( parent, SWT.READ_ONLY | SWT.MULTI );
     text.setText( "---" );
+  }
+
+  private static Font getHeaderFont( Composite parent ) {
+    String fontName = parent.getFont().getFontData()[ 0 ].getName();
+    return new Font( parent.getDisplay(), fontName, 18, SWT.BOLD );
+  }
+
+  private static Object createLayoutDataForHeader() {
+    FormData formData = new FormData();
+    formData.top = new FormAttachment( 0, 5 );
+    formData.left = new FormAttachment( 0, 10 );
+    formData.right = new FormAttachment( 100, -10 );
+    return formData;
+  }
+
+  private static Object createLayoutDataForExampleArea( Control control ) {
+    FormData formData = new FormData();
+    formData.top = new FormAttachment( 0, 35 );
+    formData.left = new FormAttachment( 0, 5 );
+    formData.right = new FormAttachment( 100, -5 );
+    formData.bottom = new FormAttachment( 100, -5 );
+    return formData;
   }
 
   private void initColors() {
@@ -189,32 +235,25 @@ abstract class ExampleTab implements Serializable {
     };
   }
 
-  protected abstract void createStyleControls( final Composite parent);
+  protected abstract void createStyleControls( Composite parent);
 
-  protected abstract void createExampleControls( final Composite parent );
+  protected abstract void createExampleControls( Composite parent );
 
-  /**
-   * TODO [rst] Refactor ExampleTab to evaluate style controls before example
-   *      controls are created.
-   */
-  protected void setDefaultStyle( final int style ) {
+  // TODO [rst] Refactor ExampleTab to evaluate style controls before example controls are created
+  protected void setDefaultStyle( int style ) {
     defaultStyle = style;
   }
 
-  protected Button createStyleButton( final String fieldName,
-                                      final int style )
-  {
+  protected Button createStyleButton( String fieldName, int style ) {
     return createStyleButton( fieldName, style, false );
   }
 
-  protected Button createStyleButton( final String name,
-                                      final int style,
-                                      final boolean checked ) {
+  protected Button createStyleButton( String name, int style, boolean checked ) {
     Button button = new Button( styleComp, SWT.CHECK );
     button.setText( name );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         createNew();
       }
     } );
@@ -223,32 +262,27 @@ abstract class ExampleTab implements Serializable {
     return button;
   }
 
-  protected Button createPropertyButton( final String text ) {
+  protected Button createPropertyButton( String text ) {
     return createPropertyButton( text, SWT.CHECK );
   }
 
-  protected Button createPropertyButton( final String text, final int style ) {
+  protected Button createPropertyButton( String text, int style ) {
     Button button = new Button( styleComp, style );
     button.setText( text );
     return button;
   }
 
-  protected Button createPropertyCheckbox( final String text,
-                                           final String prop )
-  {
+  protected Button createPropertyCheckbox( String text, String prop ) {
     return createPropertyCheckbox( text, prop, false );
   }
 
-  protected Button createPropertyCheckbox( final String text,
-                                           final String prop,
-                                           final boolean checked )
-  {
+  protected Button createPropertyCheckbox( String text, final String prop, boolean checked ) {
     final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( text );
     button.setSelection( checked );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         if( button.getSelection() ) {
           properties.add( prop );
         } else {
@@ -260,7 +294,7 @@ abstract class ExampleTab implements Serializable {
     return button;
   }
 
-  public final boolean hasCreateProperty( final String name ) {
+  public final boolean hasCreateProperty( String name ) {
     return properties.contains( name );
   }
 
@@ -275,7 +309,7 @@ abstract class ExampleTab implements Serializable {
     button.setSelection( visible );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         visible = button.getSelection();
         updateVisible();
       }
@@ -294,7 +328,7 @@ abstract class ExampleTab implements Serializable {
     button.setSelection( enabled );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         enabled = button.getSelection();
         updateEnabled();
       }
@@ -314,7 +348,7 @@ abstract class ExampleTab implements Serializable {
     button.setText( "Foreground" );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         fgIndex = ( fgIndex + 1 ) % fgColors.length;
         updateFgColor();
       }
@@ -335,7 +369,7 @@ abstract class ExampleTab implements Serializable {
     button.setText( "Background" );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         bgIndex = ( bgIndex + 1 ) % fgColors.length;
         updateBgColor();
       }
@@ -354,7 +388,7 @@ abstract class ExampleTab implements Serializable {
     button.setText( "Background Gradient" );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         showBgGradient = button.getSelection();
         updateBgGradient();
       }
@@ -373,7 +407,7 @@ abstract class ExampleTab implements Serializable {
     button.setText( "Background Image" );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         showBgImage = button.getSelection();
         updateBgImage();
       }
@@ -386,7 +420,7 @@ abstract class ExampleTab implements Serializable {
     button.setText( "Font" );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         fontChooser = new FontDialog( getShell(), SWT.NONE );
         Control control = controls.get( 0 );
         fontChooser.setFontList( control.getFont().getFontData() );
@@ -407,7 +441,7 @@ abstract class ExampleTab implements Serializable {
     button.setText( "Theme Switcher" );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         Shell shell = new Shell( parent.getShell(), SWT.DIALOG_TRIM );
         shell.setText( "Theme Switcher" );
         shell.setLayout( new GridLayout() );
@@ -416,7 +450,7 @@ abstract class ExampleTab implements Serializable {
         themeButton.addSelectionListener( new SelectionAdapter() {
           String[] availableThemeIds = ThemeUtil.getAvailableThemeIds();
           @Override
-          public void widgetSelected( final SelectionEvent e ) {
+          public void widgetSelected( SelectionEvent e ) {
             int index = 0;
             String currThemeId = ThemeUtil.getCurrentThemeId();
             for( int i = 0; i < availableThemeIds.length; i++ ) {
@@ -448,9 +482,8 @@ abstract class ExampleTab implements Serializable {
     combo.setItems( SWT_CURSORS );
     combo.select( 0 );
     combo.addSelectionListener( new SelectionAdapter() {
-
       @Override
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         String selection = null;
         int index = combo.getSelectionIndex();
         if( index > 0 ) {
@@ -478,7 +511,7 @@ abstract class ExampleTab implements Serializable {
     buttonColor.setLayoutData( new GridData( 20, 20 ) );
     buttonColor.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         rbIndex = ( rbIndex + 1 ) % bgColors.length;
         if( bgColors[ rbIndex ] == null ) {
           buttonColor.setText( "" );
@@ -508,7 +541,7 @@ abstract class ExampleTab implements Serializable {
     button.addSelectionListener( new SelectionAdapter() {
 
       @Override
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         int width = parseInt( textWidth.getText() );
         Color color = buttonColor.getForeground();
         int topLeft = parseInt( textTopLeft.getText() );
@@ -532,18 +565,18 @@ abstract class ExampleTab implements Serializable {
    *
    * @param control A control that should be remote controlled.
    */
-  protected void registerControl( final Control control ) {
+  protected void registerControl( Control control ) {
     controls.add( control );
   }
 
-  protected void log( final String msg ) {
+  protected void log( String msg ) {
     content.insert( 0, msg.trim() + text.getLineDelimiter() );
     text.setText( content.toString() );
   }
 
   protected Image loadImage( String name ) {
     InputStream stream = getClass().getClassLoader().getResourceAsStream( name );
-    Image result = new Image( folder.getDisplay(), stream );
+    Image result = new Image( shell.getDisplay(), stream );
     try {
       stream.close();
     } catch( IOException ioe ) {
@@ -553,7 +586,7 @@ abstract class ExampleTab implements Serializable {
   }
 
   private void destroyExampleControls() {
-    Control[] controls = exmplComp.getChildren();
+    Control[] controls = exampleComp.getChildren();
     for( int i = 0; i < controls.length; i++ ) {
       controls[ i ].dispose();
     }
@@ -655,7 +688,7 @@ abstract class ExampleTab implements Serializable {
     }
   }
 
-  private void updateCursor( final String selection ) {
+  private void updateCursor( String selection ) {
     Cursor cursor = null;
     Class<SWT> swtClass = SWT.class;
     if( selection != null ) {
@@ -674,12 +707,13 @@ abstract class ExampleTab implements Serializable {
     }
   }
 
-  private void updateRoundedBorder( final int width,
-                                    final Color color,
-                                    final int topLeft,
-                                    final int topRight,
-                                    final int bottomRight,
-                                    final int bottomLeft ) {
+  private void updateRoundedBorder( int width,
+                                    Color color,
+                                    int topLeft,
+                                    int topRight,
+                                    int bottomRight,
+                                    int bottomLeft )
+  {
     Iterator<Control> iter = controls.iterator();
     while( iter.hasNext() ) {
       Control control = iter.next();
@@ -694,7 +728,7 @@ abstract class ExampleTab implements Serializable {
     }
   }
 
-  private int parseInt( final String text ) {
+  private int parseInt( String text ) {
     int result;
     try {
       result = Integer.parseInt( text );
@@ -705,6 +739,7 @@ abstract class ExampleTab implements Serializable {
   }
 
   protected Shell getShell() {
-    return folder.getShell();
+    return shell;
   }
+
 }

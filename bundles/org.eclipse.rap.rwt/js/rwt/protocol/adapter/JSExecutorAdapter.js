@@ -15,7 +15,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.JSExecutor", {
     return rwt.client.JSExecutor.getInstance();
   },
 
-  destructor : qx.lang.Function.returnTrue,
+  destructor : rwt.util.Function.returnTrue,
 
   properties : [],
 

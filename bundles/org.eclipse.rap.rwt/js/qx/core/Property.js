@@ -141,7 +141,7 @@ qx.Class.define( "qx.core.Property", {
       "Interface" : 'value !== null && value.$$type === "Interface"',
       "Theme"     : 'value !== null && value.$$type === "Theme"',
 
-      "Color"     : 'typeof value === "string" && qx.util.ColorUtil.isValid(value)',
+      "Color"     : 'typeof value === "string" && rwt.util.ColorUtil.isValid(value)',
       "Border"    : 'value !== null',
       "Font"      : 'value !== null',
       "Label"     : 'value !== null && typeof value === "string"'
@@ -314,14 +314,14 @@ qx.Class.define( "qx.core.Property", {
       if( name.charAt(0) === "_" ) {
         if( name.charAt(1) === "_" ) {
           prefix = "__";
-          postfix = qx.lang.String.toFirstUp(name.substring(2));
+          postfix = rwt.util.String.toFirstUp(name.substring(2));
         } else {
           prefix = "_";
-          postfix = qx.lang.String.toFirstUp(name.substring(1));
+          postfix = rwt.util.String.toFirstUp(name.substring(1));
         }
       } else {
         prefix = "";
-        postfix = qx.lang.String.toFirstUp(name);
+        postfix = rwt.util.String.toFirstUp(name);
       }
 
       // Attach methods
@@ -365,7 +365,7 @@ qx.Class.define( "qx.core.Property", {
       }
 
       if( config.mode == "shorthand" ) {
-        var shorthand = "a=qx.lang.Array.fromShortHand(qx.lang.Array.fromArguments(a));";
+        var shorthand = "a=rwt.util.Array.fromShortHand(rwt.util.Array.fromArguments(a));";
         setter.push( shorthand );
 
         if( themeable ) {
@@ -374,7 +374,7 @@ qx.Class.define( "qx.core.Property", {
       }
 
       for( var i=0, a=config.group, l=a.length; i<l; i++ ) {
-        if( qx.core.Variant.isSet( "qx.debug", "on" ) ) {
+        if( rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
           if( !this.$$method.set[a[i]] || !this.$$method.reset[a[i]] ) {
             throw new Error( "Cannot create property group '" + name + "' including non-existing property '" + a[i] + "'!" );
           }
@@ -384,7 +384,7 @@ qx.Class.define( "qx.core.Property", {
         resetter.push( "this.", this.$$method.reset[a[i]], "();" );
 
         if( themeable ) {
-          if( qx.core.Variant.isSet( "qx.debug", "on" ) ) {
+          if( rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
             if( !this.$$method.style[a[i]] ) {
               throw new Error( "Cannot add the non themable property '" + a[i] + "' to the themable property group '"+ name +"'" );
             }
@@ -538,7 +538,7 @@ qx.Class.define( "qx.core.Property", {
       var store = this.$$method[variant][name];
 
       // Output generate code
-      if( qx.core.Variant.isSet( "qx.debug", "on" ) ) {
+      if( rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
 
         // Overriding temporary wrapper
         try{
@@ -556,7 +556,7 @@ qx.Class.define( "qx.core.Property", {
       // Executing new function
       if( args === undefined ) {
         return instance[store]();
-      } else if( qx.core.Variant.isSet( "qx.debug", "on" ) ) {
+      } else if( rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
         return instance[store].apply( instance, args );
       } else {
         return instance[store]( args[0] );
@@ -647,7 +647,7 @@ qx.Class.define( "qx.core.Property", {
 
       // [2] PRE CONDITIONS
 
-      if( qx.core.Variant.isSet( "qx.debug", "on" ) ) {
+      if( rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
         code.push( 'var prop=qx.core.Property;' );
         if( variant === "init" ) {
           code.push( 'if(this.$$initialized)prop.error(this,0,"' + name + '","' + variant + '",value);' );
@@ -677,7 +677,7 @@ qx.Class.define( "qx.core.Property", {
 
         // Undefined check
         // TODO [rh] unused: changed as in patch to http://bugzilla.qooxdoo.org/show_bug.cgi?id=599
-        if( qx.core.Variant.isSet( "qx.debug", "on" ) && variant === "set" ) {
+        if( rwt.util.Variant.isSet( "qx.debug", "on" ) && variant === "set" ) {
           code.push( 'if(value===undefined)prop.error(this,2,"' + name + '","' + variant + '",value);' );
         }
       }
@@ -712,7 +712,7 @@ qx.Class.define( "qx.core.Property", {
       // Generate checks only in debug mode
 
       // TODO [rh] unused: changed as in patch to http://bugzilla.qooxdoo.org/show_bug.cgi?id=599
-      if( incomingValue && qx.core.Variant.isSet( "qx.debug", "on" ) ) {
+      if( incomingValue && rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
         // Null check
         if( !config.nullable ) {
           code.push( 'if(value===null)prop.error(this,4,"'+name+'","'+variant+'",value);' );
@@ -747,7 +747,7 @@ qx.Class.define( "qx.core.Property", {
           }
           else if( config.check instanceof Array ) {
             // reconfigure for faster access trough map usage
-            config.checkMap = qx.lang.Object.fromArray(config.check);
+            config.checkMap = rwt.util.Object.fromArray(config.check);
 
             code.push(clazz.classname, '.$$properties.', name);
             code.push( '.checkMap[value]===undefined' );

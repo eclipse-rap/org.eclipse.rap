@@ -31,7 +31,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
     this._active = true;
     this._activeOnce = false;
     // Widget integration:
-    this._invisibilityGetter = qx.lang.Function.returnZero;
+    this._invisibilityGetter = rwt.util.Function.returnZero;
     this._fullVisibilityValue = null;
     this._autoStartEnabled = true;
     this._renderType = null;
@@ -211,7 +211,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
             if( value == "transparent" || value === "" || value.slice( 0, 4 ) === "rgba" ) {
               result = null;
             } else {
-              result = qx.util.ColorUtil.cssStringToRgb( value );
+              result = rwt.util.ColorUtil.cssStringToRgb( value );
             }
           }
         break;
@@ -221,7 +221,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
             for( var i = 0; i < value.length; i++ ) {
               result[ i ] = [
                 value[ i ][ 0 ],
-                qx.util.ColorUtil.cssStringToRgb( value[ i ][ 1 ] )
+                rwt.util.ColorUtil.cssStringToRgb( value[ i ][ 1 ] )
               ];
             }
           }
@@ -619,7 +619,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
           part = Math.round( startValue[ i ] + partDiff * value );
           result[ i ] = Math.max( 0, Math.min( part, 255 ) );
         }
-        return qx.util.ColorUtil.rgbToRgbString( result );
+        return rwt.util.ColorUtil.rgbToRgbString( result );
       },
 
       // Assumes that the number of colors are identical

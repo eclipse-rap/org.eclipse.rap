@@ -17,7 +17,7 @@
 qx.Class.define("qx.event.handler.DragAndDropHandler",
 {
   type : "singleton",
-  extend : qx.util.manager.Object,
+  extend : rwt.util.ObjectManager,
 
 
 
@@ -230,7 +230,7 @@ qx.Class.define("qx.event.handler.DragAndDropHandler",
     /**
      * @signature function(e)
      */
-    getDropTarget : qx.core.Variant.select("qx.client",
+    getDropTarget : rwt.util.Variant.select("qx.client",
     {
       // This hack is no longer needed for Firefox 2.0
       // We should verify, which Firefox version needed this hack.

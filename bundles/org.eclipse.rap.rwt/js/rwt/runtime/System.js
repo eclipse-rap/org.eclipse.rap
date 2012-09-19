@@ -11,7 +11,7 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.System", {
+qx.Class.define( "rwt.runtime.System", {
 
   type : "singleton",
 
@@ -22,16 +22,12 @@ qx.Class.define( "org.eclipse.rwt.System", {
       this.base( arguments );
       this._startupTime = new Date().getTime();
       // Attach load/unload events
-      this._onloadWrapped = qx.lang.Function.bind( this._onload, this );
-      this._onbeforeunloadWrapped = qx.lang.Function.bind( this._onbeforeunload, this );
-      this._onunloadWrapped = qx.lang.Function.bind( this._onunload, this );
+      this._onloadWrapped = rwt.util.Function.bind( this._onload, this );
+      this._onbeforeunloadWrapped = rwt.util.Function.bind( this._onbeforeunload, this );
+      this._onunloadWrapped = rwt.util.Function.bind( this._onunload, this );
       qx.html.EventRegistration.addEventListener( window, "load", this._onloadWrapped );
       qx.html.EventRegistration.addEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
       qx.html.EventRegistration.addEventListener( window, "unload", this._onunloadWrapped );
-      // Overwrite the default mapping for internal images. This is necessary
-      // if the application is deployed under a root different from "/".
-      qx.io.Alias.getInstance().add( "static", "./rwt-resources/resource/static" );
-      qx.io.Alias.getInstance().add( "widget", "./rwt-resources/resource/widget/rap" );
       this._applyPatches();
       org.eclipse.rwt.GraphicsUtil.init();
       var eventHandler = org.eclipse.rwt.EventHandler;
@@ -89,7 +85,7 @@ qx.Class.define( "org.eclipse.rwt.System", {
       if( !this._onloadDone ) {
         this._onloadDone = true;
         rwt.widgets.base.ClientDocument.getInstance();
-        org.eclipse.rwt.MobileWebkitSupport.init();
+        rwt.runtime.MobileWebkitSupport.init();
         rwt.client.Timer.once( this._preload, this, 0 );
       }
     },

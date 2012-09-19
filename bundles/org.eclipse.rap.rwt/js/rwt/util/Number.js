@@ -20,7 +20,7 @@
  * by a setting in {@link qx.lang.Prototypes}. This feature is not enabled by
  * default.
  */
-qx.Class.define("qx.lang.Number",
+qx.Class.define("rwt.util.Number",
 {
   statics :
   {

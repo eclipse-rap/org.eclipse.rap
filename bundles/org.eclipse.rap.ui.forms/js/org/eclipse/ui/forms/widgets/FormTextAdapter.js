@@ -52,7 +52,7 @@ rwt.protocol.AdapterRegistry.add( "forms.widgets.FormText", {
       widget.updateHyperlinks();
     },
     "hyperlinkSettings" : function( widget, value ) {
-      var ColorUtil = qx.util.ColorUtil;
+      var ColorUtil = rwt.util.ColorUtil;
       var foreground = value[ 1 ] !== null ? ColorUtil.rgbToRgbString( value[ 1 ] ) : null;
       var activeForeground = value[ 2 ] !== null ? ColorUtil.rgbToRgbString( value[ 2 ] ) : null;
       widget.setHyperlinkSettings( value[ 0 ], foreground, activeForeground );

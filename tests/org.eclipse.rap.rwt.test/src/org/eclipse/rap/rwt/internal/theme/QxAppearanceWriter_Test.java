@@ -26,7 +26,7 @@ public class QxAppearanceWriter_Test extends TestCase {
     List<String> appearances = Collections.<String>emptyList();
     String code = QxAppearanceWriter.createQxAppearanceTheme( appearances );
 
-    assertTrue( code.startsWith( "qx.theme.manager.Appearance.getInstance().setCurrentTheme( {\n" ) );
+    assertTrue( code.startsWith( "rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {\n" ) );
     assertTrue( code.endsWith( "} );\n" ) );
   }
 
@@ -36,7 +36,7 @@ public class QxAppearanceWriter_Test extends TestCase {
     appearances.add( "bar\nbar" );
     String code = QxAppearanceWriter.createQxAppearanceTheme( appearances );
 
-    assertTrue( code.startsWith( "qx.theme.manager.Appearance.getInstance().setCurrentTheme( {\n" ) );
+    assertTrue( code.startsWith( "rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {\n" ) );
     assertTrue( code.endsWith( "} );\n" ) );
     assertTrue( code.contains( "foo\nfoo,\nbar\nbar" ) );
   }

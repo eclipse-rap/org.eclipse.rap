@@ -46,7 +46,6 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -76,8 +75,8 @@ public class TableViewerTab extends ExampleTab {
 
   private final PersonFilter viewerFilter;
   private final List<Person> persons;
-  private final Image uncheckedImage;
-  private final Image checkedImage;
+  private Image uncheckedImage;
+  private Image checkedImage;
   private TableViewer viewer;
   private TableViewerColumn firstNameColumn;
   private TableViewerColumn lastNameColumn;
@@ -86,16 +85,15 @@ public class TableViewerTab extends ExampleTab {
   private Label lblSelection;
   private Button btnCreateCellEditor;
 
-  public TableViewerTab( CTabFolder topFolder ) {
-    super( topFolder, "TableViewer" );
+  public TableViewerTab() {
+    super( "TableViewer" );
     persons = new ArrayList<Person>();
     viewerFilter = new PersonFilter();
-    uncheckedImage = loadImage( "resources/unchecked.png" );
-    checkedImage = loadImage( "resources/checked.png" );
   }
 
   @Override
   protected void createStyleControls( Composite parent ) {
+    initializeImages();
     createStyleButton( "MULTI", SWT.MULTI );
     createStyleButton( "VIRTUAL", SWT.VIRTUAL );
     createAddItemsButton();
@@ -103,6 +101,11 @@ public class TableViewerTab extends ExampleTab {
     createRemoveButton();
     createCellEditorButton();
     lblSelection = new Label( styleComp, SWT.WRAP );
+  }
+
+  private void initializeImages() {
+    uncheckedImage = loadImage( "resources/unchecked.png" );
+    checkedImage = loadImage( "resources/checked.png" );
   }
 
   @Override

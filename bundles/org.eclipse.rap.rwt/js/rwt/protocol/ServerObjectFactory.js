@@ -11,7 +11,7 @@
 
 (function(){
 
-var ObjectManager = rwt.protocol.ObjectManager;
+var ObjectManager = rwt.protocol.ObjectRegistry;
 
 rwt.protocol.ServerObjectFactory = { // TODO [tb] : merge with Server.js? (not a factory)
 

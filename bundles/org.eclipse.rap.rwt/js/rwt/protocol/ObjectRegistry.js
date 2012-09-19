@@ -11,7 +11,7 @@
 
 namespace( "rwt.protocol" );
 
-rwt.protocol.ObjectManager = {
+rwt.protocol.ObjectRegistry = {
 
   _map : {},
   _callbacks : {},

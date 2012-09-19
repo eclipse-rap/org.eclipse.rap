@@ -560,10 +560,10 @@ qx.Class.define("rwt.widgets.base.Parent",
         if (vOldIndex != vIndex)
         {
           if (vOldIndex != -1) {
-            qx.lang.Array.removeAt(vChildren, vOldIndex);
+            rwt.util.Array.removeAt(vChildren, vOldIndex);
           }
 
-          qx.lang.Array.insertAt(vChildren, vChild, vIndex);
+          rwt.util.Array.insertAt(vChildren, vChild, vIndex);
 
           if (this._initialLayoutDone)
           {
@@ -741,7 +741,7 @@ qx.Class.define("rwt.widgets.base.Parent",
      * @return {Widget|null} First child widget (null if this widget does not have any children)
      */
     getFirstChild : function() {
-      return qx.lang.Array.getFirst(this.getChildren()) || null;
+      return rwt.util.Array.getFirst(this.getChildren()) || null;
     },
 
 
@@ -753,7 +753,7 @@ qx.Class.define("rwt.widgets.base.Parent",
      *     not have any visible children)
      */
     getFirstVisibleChild : function() {
-      return qx.lang.Array.getFirst(this.getVisibleChildren()) || null;
+      return rwt.util.Array.getFirst(this.getVisibleChildren()) || null;
     },
 
 
@@ -786,7 +786,7 @@ qx.Class.define("rwt.widgets.base.Parent",
      *     not have any children)
      */
     getLastChild : function() {
-      return qx.lang.Array.getLast(this.getChildren()) || null;
+      return rwt.util.Array.getLast(this.getChildren()) || null;
     },
 
 
@@ -798,7 +798,7 @@ qx.Class.define("rwt.widgets.base.Parent",
      *     not have any visible children)
      */
     getLastVisibleChild : function() {
-      return qx.lang.Array.getLast(this.getVisibleChildren()) || null;
+      return rwt.util.Array.getLast(this.getVisibleChildren()) || null;
     },
 
 
@@ -906,7 +906,7 @@ qx.Class.define("rwt.widgets.base.Parent",
       });
     },
 
-    _ieFixLayoutOnAppear : qx.core.Variant.select( "qx.client", {
+    _ieFixLayoutOnAppear : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
         this.base( arguments );
         this.forEachVisibleChild( function() {
@@ -915,7 +915,7 @@ qx.Class.define("rwt.widgets.base.Parent",
           }
         } );
       },
-      "default" : qx.lang.Function.returnTrue
+      "default" : rwt.util.Function.returnTrue
     } ),
 
     // overridden
@@ -1082,7 +1082,7 @@ qx.Class.define("rwt.widgets.base.Parent",
       {
         delete this._childrenQueue[vChild.toHashCode()];
 
-        if (qx.lang.Object.isEmpty(this._childrenQueue))
+        if (rwt.util.Object.isEmpty(this._childrenQueue))
         {
           this._childrenQueue = {};
           rwt.widgets.base.Widget.removeFromGlobalLayoutQueue(this);
@@ -1099,7 +1099,7 @@ qx.Class.define("rwt.widgets.base.Parent",
      */
     _flushChildrenQueue : function()
     {
-      if (!qx.lang.Object.isEmpty(this._childrenQueue))
+      if (!rwt.util.Object.isEmpty(this._childrenQueue))
       {
         this.getLayoutImpl().flushChildrenQueue(this._childrenQueue);
         delete this._childrenQueue;

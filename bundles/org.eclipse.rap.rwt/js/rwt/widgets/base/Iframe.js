@@ -90,7 +90,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
           throw new Error("Could not find iframe which was loaded [B]!");
         }
       } catch( ex ) {
-        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
     },
 
@@ -259,7 +259,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
     /**
      * @signature function()
      */
-    isLoaded : qx.core.Variant.select("qx.client",
+    isLoaded : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function()
       {
@@ -431,7 +431,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
       return frameEl;
     },
 
-    _createIframeNode : qx.core.Variant.select( "qx.client", {
+    _createIframeNode : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function( frameName ) {
         var nameStr = frameName ? 'name="' + frameName + '"' : '';
         var frameEl = rwt.widgets.base.Iframe._element = document.createElement(
@@ -465,7 +465,6 @@ qx.Class.define("rwt.widgets.base.Iframe",
 
       if( rwt.client.Client.isMshtml() ) {
         // Setting the backgroundImage causes an "insecure elements" warning under SSL
-        // blockerStyle.backgroundImage = "url(" + qx.io.Alias.getInstance().resolve("static/image/blank.gif") + ")";
 
         blockerStyle.backgroundColor = "white";
         blockerStyle.filter = "Alpha(Opacity=0)";
@@ -569,7 +568,7 @@ qx.Class.define("rwt.widgets.base.Iframe",
       var currentSource = this.getSource();
 
       if (currentSource == null || currentSource === "") {
-        currentSource = qx.io.Alias.getInstance().resolve("static/html/blank.html");
+        currentSource = rwt.remote.Server.RESOURCE_PATH + "static/html/blank.html";
       }
 
       this._isLoaded = false;

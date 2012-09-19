@@ -310,7 +310,7 @@ public class DisplayLCA_Test extends TestCase {
     displayLCA.render( display );
 
     Message message = Fixture.getProtocolMessage();
-    String expected = "org.eclipse.swt.theme.Default";
+    String expected = "rwt.theme.Default";
     assertEquals( expected, message.findSetProperty( displayId, "currentTheme" ) );
   }
 

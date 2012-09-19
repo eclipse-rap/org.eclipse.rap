@@ -51,7 +51,8 @@ public class ControlLCAUtil {
 
   static final int MAX_STATIC_ZORDER = 300;
 
-  private static final String CURSOR_UPARROW = "widget/cursors/up_arrow.cur";
+  private static final String CURSOR_UPARROW
+    = "rwt-resources/resource/widget/rap/cursors/up_arrow.cur";
 
   private ControlLCAUtil() {
     // prevent instance creation

@@ -12,18 +12,19 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 
 
 public class GroupTab extends ExampleTab {
 
   private Group group;
 
-  public GroupTab( final CTabFolder folder ) {
-    super( folder, "Group" );
+  public GroupTab() {
+    super( "Group" );
   }
 
   @Override

@@ -184,7 +184,7 @@ qx.Class.define("qx.ui.layout.impl.VerticalBoxLayoutImpl",
           vCurrentChild = vFlexibleChildren[vIterator];
 
           vComputedFlexibleHeight = vCurrentChild._computedHeightFlexValue = vCurrentChild._computedHeightParsed * vPartHeight;
-          vAllocationDiff += vComputedFlexibleHeight - qx.lang.Number.limit(vComputedFlexibleHeight, vCurrentChild.getMinHeightValue(), vCurrentChild.getMaxHeightValue());
+          vAllocationDiff += vComputedFlexibleHeight - rwt.util.Number.limit(vComputedFlexibleHeight, vCurrentChild.getMinHeightValue(), vCurrentChild.getMaxHeightValue());
         }
 
         // Rounding diff
@@ -228,7 +228,7 @@ qx.Class.define("qx.ui.layout.impl.VerticalBoxLayoutImpl",
               }
               else
               {
-                qx.lang.Array.removeAt(vFlexibleChildren, vIterator);
+                rwt.util.Array.removeAt(vFlexibleChildren, vIterator);
 
                 vCurrentChild._computedHeightFlexValue = Math.round(vCurrentChild._computedHeightFlexValue);
                 vUsedHeight += Math.round(vCurrentChild._computedHeightFlexValue + vAdjust);
@@ -236,14 +236,14 @@ qx.Class.define("qx.ui.layout.impl.VerticalBoxLayoutImpl",
             }
             else
             {
-              vAdjust = qx.util.Validation.isValidNumber(vCurrentChild.getMinHeightValue()) ? vCurrentChild._computedHeightFlexValue - vCurrentChild.getMinHeightValue() : vCurrentChild._computedHeightFlexValue;
+              vAdjust = rwt.util.Validation.isValidNumber(vCurrentChild.getMinHeightValue()) ? vCurrentChild._computedHeightFlexValue - vCurrentChild.getMinHeightValue() : vCurrentChild._computedHeightFlexValue;
 
               if (vAdjust > 0) {
                 vCurrentChild._allocationLoops = Math.floor(vAdjust / vCurrentChild._computedHeightParsed);
               }
               else
               {
-                qx.lang.Array.removeAt(vFlexibleChildren, vIterator);
+                rwt.util.Array.removeAt(vFlexibleChildren, vIterator);
 
                 vCurrentChild._computedHeightFlexValue = Math.round(vCurrentChild._computedHeightFlexValue);
                 vUsedHeight += Math.round(vCurrentChild._computedHeightFlexValue - vAdjust);
@@ -286,7 +286,7 @@ qx.Class.define("qx.ui.layout.impl.VerticalBoxLayoutImpl",
 
                 vUsedHeight += vCurrentChild._computedHeightFlexValue;
                 delete vCurrentChild._allocationLoops;
-                qx.lang.Array.removeAt(vFlexibleChildren, vIterator);
+                rwt.util.Array.removeAt(vFlexibleChildren, vIterator);
               }
               else
               {
@@ -730,7 +730,7 @@ qx.Class.define("qx.ui.layout.impl.VerticalBoxLayoutImpl",
      * @return {void}
      * @signature function(vChild, vJobs)
      */
-    layoutChild_sizeX : qx.core.Variant.select("qx.client",
+    layoutChild_sizeX : rwt.util.Variant.select("qx.client",
     {
       "mshtml|newmshtml|opera|webkit" : function(vChild, vJobs)
       {
@@ -767,7 +767,7 @@ qx.Class.define("qx.ui.layout.impl.VerticalBoxLayoutImpl",
      * @return {void}
      * @signature function(vChild, vJobs)
      */
-    layoutChild_sizeY : qx.core.Variant.select("qx.client",
+    layoutChild_sizeY : rwt.util.Variant.select("qx.client",
     {
       "mshtml|newmshtml|opera|webkit" : function(vChild, vJobs)
       {

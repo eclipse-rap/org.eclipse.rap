@@ -17,7 +17,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     testDisplayOverlayBackground : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       // first check that the default theme for overlay has no background set
-      var tv = new org.eclipse.swt.theme.ThemeValues( {} );
+      var tv = new rwt.theme.ThemeValues( {} );
       var backgroundImage = tv.getCssImage( "Shell-DisplayOverlay",
                                             "background-image" );
       assertNull( backgroundImage );

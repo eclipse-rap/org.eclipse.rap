@@ -125,7 +125,7 @@ qx.Class.define("qx.ui.layout.impl.LayoutImpl",
 
       var vBox = (vChild._computedWidthTypePercent || vChild._computedWidthTypeFlex ? null : vChild.getWidthValue()) || vChild.getPreferredBoxWidth() || 0;
 
-      return qx.lang.Number.limit(vBox, vMinBox, vMaxBox) + vChild.getMarginLeft() + vChild.getMarginRight();
+      return rwt.util.Number.limit(vBox, vMinBox, vMaxBox) + vChild.getMarginLeft() + vChild.getMarginRight();
     },
 
 
@@ -145,7 +145,7 @@ qx.Class.define("qx.ui.layout.impl.LayoutImpl",
 
       var vBox = (vChild._computedHeightTypePercent || vChild._computedHeightTypeFlex ? null : vChild.getHeightValue()) || vChild.getPreferredBoxHeight() || 0;
 
-      return qx.lang.Number.limit(vBox, vMinBox, vMaxBox) + vChild.getMarginTop() + vChild.getMarginBottom();
+      return rwt.util.Number.limit(vBox, vMinBox, vMaxBox) + vChild.getMarginTop() + vChild.getMarginBottom();
     },
 
 
@@ -454,8 +454,8 @@ qx.Class.define("qx.ui.layout.impl.LayoutImpl",
      * @return {void}
      * @signature function(vChild, vJobs)
      */
-    layoutChild_sizeLimitX : qx.core.Variant.select( "qx.client", {
-      "mshtml" : qx.lang.Function.returnTrue,
+    layoutChild_sizeLimitX : rwt.util.Variant.select( "qx.client", {
+      "mshtml" : rwt.util.Function.returnTrue,
       "default" : function( vChild, vJobs ) {
         if( vJobs.minWidth ) {
           if( vChild._computedMinWidthTypeNull ) {
@@ -490,8 +490,8 @@ qx.Class.define("qx.ui.layout.impl.LayoutImpl",
      * @return {void}
      * @signature function(vChild, vJobs)
      */
-    layoutChild_sizeLimitY :  qx.core.Variant.select( "qx.client", {
-      "mshtml" : qx.lang.Function.returnTrue,
+    layoutChild_sizeLimitY :  rwt.util.Variant.select( "qx.client", {
+      "mshtml" : rwt.util.Function.returnTrue,
 
       "default" : function( vChild, vJobs ) {
         if( vJobs.minHeight ) {

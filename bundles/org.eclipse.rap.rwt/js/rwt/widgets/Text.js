@@ -21,7 +21,7 @@ qx.Class.define( "rwt.widgets.Text", {
       this._inputOverflow = "auto";
       this.setAppearance( "text-area" );
       this.setAllowStretchY( true );
-      this.__oninput = qx.lang.Function.bindEvent( this._oninputDomTextarea, this );
+      this.__oninput = rwt.util.Function.bindEvent( this._oninputDomTextarea, this );
     }
     this._hasSelectionListener = false;
     this._hasModifyListener = false;
@@ -247,7 +247,7 @@ qx.Class.define( "rwt.widgets.Text", {
       }
     },
 
-    _styleWrap : qx.core.Variant.select( "qx.client", {
+    _styleWrap : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
         if( this._inputElement ) {
           this._inputElement.wrap = this.getWrap() ? "soft" : "off";
@@ -411,7 +411,7 @@ qx.Class.define( "rwt.widgets.Text", {
     },
 
     _getIconStyle : function( iconId ) {
-      var manager = qx.theme.manager.Appearance.getInstance();
+      var manager = rwt.theme.AppearanceManager.getInstance();
       return manager.styleFrom( "text-field-icon", iconId === "search" ? { search : true } : {} );
     },
 
@@ -459,7 +459,7 @@ qx.Class.define( "rwt.widgets.Text", {
       }
     },
 
-    _forceFocus : qx.core.Variant.select( "qx.client", {
+    _forceFocus : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
         rwt.client.Timer.once( function() {
           if( this._inputElement ) {
@@ -534,7 +534,7 @@ qx.Class.define( "rwt.widgets.Text", {
     },
 
     _getMessageStyle : function() {
-      var manager = qx.theme.manager.Appearance.getInstance();
+      var manager = rwt.theme.AppearanceManager.getInstance();
       return manager.styleFrom( "text-field-message", {} );
     },
 

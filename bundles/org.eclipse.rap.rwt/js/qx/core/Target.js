@@ -136,7 +136,7 @@ qx.Class.define("qx.core.Target",
      * @return {var} TODOC
      */
     hasEventListeners : function(type) {
-      return this.__listeners && this.__listeners[type] !== undefined && !qx.lang.Object.isEmpty(this.__listeners[type]);
+      return this.__listeners && this.__listeners[type] !== undefined && !rwt.util.Object.isEmpty(this.__listeners[type]);
     },
 
 

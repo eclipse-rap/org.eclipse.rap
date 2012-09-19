@@ -73,7 +73,7 @@ public class RWTServletContextListener implements ServletContextListener {
   }
 
   private ApplicationConfiguration createConfiguration( String className ) {
-    ClassLoader loader = getClass().getClassLoader();
+    ClassLoader loader = getClassLoader();
     return ( ApplicationConfiguration )ClassUtil.newInstance( loader, className );
   }
 
@@ -90,9 +90,17 @@ public class RWTServletContextListener implements ServletContextListener {
     throws ClassNotFoundException
   {
     String className = context.getInitParameter( ENTRY_POINTS_PARAM );
-    ClassLoader loader = getClass().getClassLoader();
+    ClassLoader loader = getClassLoader();
     Class<?> entryPointClass = loader.loadClass( className );
     return new EntryPointRunnerConfiguration( ( Class<? extends IEntryPoint> )entryPointClass );
+  }
+
+  private ClassLoader getClassLoader() {
+    ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    if( loader == null ) {
+      loader = getClass().getClassLoader();
+    }
+    return loader;
   }
 
   private static class EntryPointRunnerConfiguration implements ApplicationConfiguration {

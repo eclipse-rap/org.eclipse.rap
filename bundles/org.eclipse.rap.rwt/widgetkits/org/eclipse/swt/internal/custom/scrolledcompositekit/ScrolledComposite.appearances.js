@@ -14,7 +14,7 @@ var appearances = {
 
   "scrolledcomposite" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       if( states.rwt_BORDER ) {
         result.border = tv.getCssNamedBorder( "shadow" );

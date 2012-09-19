@@ -75,8 +75,8 @@ qx.Class.define( "rwt.widgets.CTabItem", {
     STATE_OVER : "over",
     STATE_SELECTED : "selected",
 
-    IMG_CLOSE : "widget/ctabfolder/close.gif",
-    IMG_CLOSE_HOVER : "widget/ctabfolder/close_hover.gif"
+    IMG_CLOSE : rwt.remote.Server.RESOURCE_PATH + "widget/rap/ctabfolder/close.gif",
+    IMG_CLOSE_HOVER : rwt.remote.Server.RESOURCE_PATH + "widget/rap/ctabfolder/close_hover.gif"
   },
 
   members : {

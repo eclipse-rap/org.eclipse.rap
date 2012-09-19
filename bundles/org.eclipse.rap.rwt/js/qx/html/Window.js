@@ -30,7 +30,7 @@ qx.Class.define("qx.html.Window",
      * @return {Integer} the window's inner width
      * @signature function(vWindow)
      */
-    getInnerWidth  : qx.core.Variant.select("qx.client",
+    getInnerWidth  : rwt.util.Variant.select("qx.client",
     {
       "mshtml|webkit" : function(vWindow)
       {
@@ -57,7 +57,7 @@ qx.Class.define("qx.html.Window",
      * @return {Integer} the window's inner height
      * @signature function(vWindow)
      */
-    getInnerHeight : qx.core.Variant.select("qx.client",
+    getInnerHeight : rwt.util.Variant.select("qx.client",
     {
       "mshtml|webkit" : function(vWindow)
       {
@@ -84,7 +84,7 @@ qx.Class.define("qx.html.Window",
      * @return {Integer} the window's left scroll position
      * @signature function(vWindow)
      */
-    getScrollLeft  : qx.core.Variant.select("qx.client",
+    getScrollLeft  : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(vWindow)
       {
@@ -111,7 +111,7 @@ qx.Class.define("qx.html.Window",
      * @return {Integer} the window's top scroll position
      * @signature function(vWindow)
      */
-    getScrollTop   : qx.core.Variant.select("qx.client",
+    getScrollTop   : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(vWindow)
       {

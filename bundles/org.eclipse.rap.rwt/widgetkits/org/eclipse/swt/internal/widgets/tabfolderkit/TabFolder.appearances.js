@@ -14,7 +14,7 @@ var appearances = {
 
   "tab-view" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.textColor = tv.getCssColor( "*", "color" );
       result.font = tv.getCssFont( "TabFolder", "font" );
@@ -34,7 +34,7 @@ var appearances = {
 
   "tab-view-pane" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.overflow = "hidden";
       result.backgroundColor = tv.getCssColor( "*", "background-color" );
@@ -60,7 +60,7 @@ var appearances = {
 
     style : function( states ) {
       var result = {};
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var borderColor = tv.getCssNamedColor( "thinborder" );
       var top_color = tv.getCssColor( "TabItem", "border-top-color" );
       var bottom_color = tv.getCssColor( "TabItem", "border-bottom-color" );

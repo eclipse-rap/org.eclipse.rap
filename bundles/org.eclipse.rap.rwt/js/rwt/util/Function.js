@@ -14,7 +14,7 @@
 /**
  * Collection of helper methods operating on functions.
  */
-qx.Class.define("qx.lang.Function",
+qx.Class.define("rwt.util.Function",
 {
   statics :
   {
@@ -101,7 +101,7 @@ qx.Class.define("qx.lang.Function",
         var args = Array.prototype.slice.call( arguments, 2 );
         var wrap = function() {
           fcn.context = self;
-          var ret = fcn.apply(self, args.concat(qx.lang.Array.fromArguments(arguments)));
+          var ret = fcn.apply(self, args.concat(rwt.util.Array.fromArguments(arguments)));
           fcn.context = null;
           return ret;
         };

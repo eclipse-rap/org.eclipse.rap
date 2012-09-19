@@ -13,7 +13,6 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -27,8 +26,8 @@ public class GridLayoutTab extends ExampleTab {
   private boolean propPrefSize;
   private boolean propEqualWidth;
 
-  public GridLayoutTab( final CTabFolder folder ) {
-    super( folder, "GridLayout" );
+  public GridLayoutTab() {
+    super( "GridLayout" );
   }
 
   @Override

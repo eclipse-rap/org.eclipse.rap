@@ -74,7 +74,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
       return result;
     },
 
-    _measureElement : qx.core.Variant.select( "qx.client", {
+    _measureElement : rwt.util.Variant.select( "qx.client", {
       "default" : function( element ) {
         var result;
         if( element.getBoundingClientRect ) {

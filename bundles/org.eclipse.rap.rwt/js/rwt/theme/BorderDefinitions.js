@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.swt.theme.BorderDefinitions", {
+qx.Class.define( "rwt.theme.BorderDefinitions", {
 
   type : "static",
 

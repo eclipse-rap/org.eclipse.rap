@@ -115,7 +115,7 @@ qx.Class.define("qx.bom.element.Style",
      *    special implementations for some properties
      * @return {var} The value of the property
      */
-    get : qx.core.Variant.select("qx.client",
+    get : rwt.util.Variant.select("qx.client",
     {
       "mshtml" : function(element, name, mode, smart)
       {

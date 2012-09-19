@@ -1405,6 +1405,25 @@ public class Display_Test extends TestCase {
     assertNull( display.getActiveShell() );
   }
 
+  public void testDisposeFailsWhenInDisposal() {
+    // See bug 389384
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( DisposeEvent event ) {
+        display.dispose();
+      }
+    } );
+
+    try {
+      display.dispose();
+      fail();
+    } catch( SWTException exception ) {
+      assertEquals( "Device is disposed", exception.getMessage() );
+    }
+  }
+
   private static void setCursorLocation( Display display, int x, int y ) {
     IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
     adapter.setCursorLocation( x, y );

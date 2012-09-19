@@ -32,7 +32,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "index": 3
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertTrue( item instanceof rwt.widgets.GridItem );
       assertIdentical( tree.getRootItem(), item.getParent() );
@@ -55,7 +55,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "index": 3
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       rwt.protocol.MessageProcessor.processOperation( {
         "target" : "w4",
@@ -82,7 +82,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "itemCount" : 10
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( 10, item._children.length );
       shell.destroy();
@@ -103,7 +103,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "texts" : [ "1", "2&<  >\"", "3" ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( "1", item.getText( 0 ) );
       assertEquals( "2&amp;&lt;&nbsp; &gt;&quot;", item.getText( 1 ) );
@@ -126,7 +126,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "images" : [ [ "1.gif", 1, 1 ], [ "2.gif", 2, 2 ], [ "3.gif", 3, 3 ] ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( "1.gif", item.getImage( 0 ) );
       assertEquals( "2.gif", item.getImage( 1 ) );
@@ -149,7 +149,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "background" : [ 0, 255, 0, 255 ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( "rgb(0,255,0)", item.getBackground() );
       shell.destroy();
@@ -170,7 +170,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "foreground" : [ 0, 255, 0, 255 ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( "rgb(0,255,0)", item._foreground );
       shell.destroy();
@@ -191,7 +191,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "font" : [ ["Arial"], 20, true, false ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( "bold 20px Arial", item._font.toCss() );
       shell.destroy();
@@ -212,7 +212,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "cellBackgrounds" : [ null, [ 0, 255, 0, 255 ], null ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertNull( item.getCellBackground( 0 ) );
       assertEquals( "rgb(0,255,0)", item.getCellBackground( 1 ) );
@@ -235,7 +235,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "cellForegrounds" : [ null, [ 0, 255, 0, 255 ], null ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertNull( item.getCellForeground( 0 ) );
       assertEquals( "rgb(0,255,0)", item.getCellForeground( 1 ) );
@@ -258,7 +258,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "cellFonts" : [ null, [ ["Arial"], 20, true, false ], null ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertNull( item.getCellFont( 0 ) );
       assertEquals( "bold 20px Arial", item.getCellFont( 1 ) );
@@ -281,7 +281,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "expanded" : true
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertTrue( item.isExpanded() );
       shell.destroy();
@@ -302,7 +302,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "checked" : true
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertTrue( item.isChecked() );
       shell.destroy();
@@ -323,7 +323,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "cellChecked" : [ true, true, false ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertTrue( item.isCellChecked( 0 ) );
       assertTrue( item.isCellChecked( 1 ) );
@@ -346,7 +346,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "cellGrayed" : [ true, true, false ]
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertTrue( item.isCellGrayed( 0 ) );
       assertTrue( item.isCellGrayed( 1 ) );
@@ -369,7 +369,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "grayed" : true
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertTrue( item.isGrayed() );
       shell.destroy();
@@ -390,7 +390,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "customVariant" : "variant_blue"
         }
       } );
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( "variant_blue", item.getVariant() );
       shell.destroy();
@@ -414,7 +414,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
         }
       } );
 
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( 33, item.getOwnHeight() );
       shell.destroy();
@@ -439,7 +439,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
 
       TestUtil.protocolSet( "w4", { "height" : null } );
 
-      var ObjectManager = rwt.protocol.ObjectManager;
+      var ObjectManager = rwt.protocol.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( 10, item.getOwnHeight() );
       shell.destroy();
@@ -1320,7 +1320,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
           "columnCount" : 3
         }
       } );
-      return rwt.protocol.ObjectManager.getObject( id );
+      return rwt.protocol.ObjectRegistry.getObject( id );
     },
 
     // 20 + 1000 + 10 + 5 + 400 = 1435 items

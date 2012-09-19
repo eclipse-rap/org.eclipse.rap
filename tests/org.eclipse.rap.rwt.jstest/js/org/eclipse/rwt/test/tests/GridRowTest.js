@@ -2122,7 +2122,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "red", color );
     },
 
-    testSelectionBackgroundRendering_Bug373900 : qx.core.Variant.select( "qx.client", {
+    testSelectionBackgroundRendering_Bug373900 : rwt.util.Variant.select( "qx.client", {
       "mshtml|newmshtml" : function() {
         TestUtil.fakeAppearance( "tree-row", {
           style : function( states ) {

@@ -13,12 +13,18 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.ProgressBar;
 
 
 public class ProgressBarTab extends ExampleTab {
@@ -26,12 +32,8 @@ public class ProgressBarTab extends ExampleTab {
   private static final int COUNT = 20;
   private ProgressBar progressBar;
 
-  public ProgressBarTab( final CTabFolder parent ) {
-    this( parent, "ProgressBar" );
-  }
-
-  public ProgressBarTab( final CTabFolder parent, final String title ) {
-    super( parent, title );
+  public ProgressBarTab() {
+    super( "ProgressBar" );
   }
 
   @Override

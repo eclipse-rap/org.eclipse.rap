@@ -26,7 +26,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
     this.initTabIndex();
     this._selectionStart = 0;
     this._selectionLength = 0;
-    this.__oninput = qx.lang.Function.bindEvent( this._oninputDom, this );
+    this.__oninput = rwt.util.Function.bindEvent( this._oninputDom, this );
     this.addEventListener( "blur", this._onblur );
     this.addEventListener( "keydown", this._onkeydown );
     this.addEventListener( "keypress", this._onkeypress );
@@ -173,7 +173,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
       this._selectionLength = length;
     },
 
-    _setSelectionStart : qx.core.Variant.select( "qx.client", {
+    _setSelectionStart : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function( vStart ) {
         this._visualPropertyCheck();
         var vText = this._inputElement.value;
@@ -212,7 +212,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
       }
     } ),
 
-    _getSelectionStart : qx.core.Variant.select( "qx.client", {
+    _getSelectionStart : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
         this._visualPropertyCheck();
         var vSelectionRange = window.document.selection.createRange();
@@ -255,7 +255,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
       }
     } ),
 
-    _setSelectionLength : qx.core.Variant.select( "qx.client", {
+    _setSelectionLength : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function( vLength ) {
         this._visualPropertyCheck();
         var vSelectionRange = window.document.selection.createRange();
@@ -291,7 +291,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
       }
     } ),
 
-    _getSelectionLength : qx.core.Variant.select( "qx.client", {
+    _getSelectionLength : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
         this._visualPropertyCheck();
         var vSelectionRange = window.document.selection.createRange();
@@ -388,7 +388,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
       }
     },
 
-    _textInit : qx.core.Variant.select( "qx.client", {
+    _textInit : rwt.util.Variant.select( "qx.client", {
       "default" : function() {
         // Emulate IE hard-coded margin
         // Mozilla by default emulates this IE handling, but in a wrong
@@ -604,7 +604,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
       }
     },
 
-    _getInputElementHeight : qx.core.Variant.select( "qx.client", {
+    _getInputElementHeight : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
         var result = qx.html.Dimension.getBoxHeight( this._inputElement );
         if( result !== 0 ) {
@@ -620,7 +620,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
     ////////////////
     // event handler
 
-    _oninputDom : qx.core.Variant.select( "qx.client", {
+    _oninputDom : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function( event ) {
         if( !this._inValueProperty && event.propertyName === "value" ) {
           this._oninput();
@@ -646,7 +646,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
           this._selectionNeedsUpdate = true;
         }
       } catch( ex ) {
-        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
     },
 
@@ -708,7 +708,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
     /////////////////
     // browser quirks
 
-    _applyBrowserFixes : qx.core.Variant.select( "qx.client", {
+    _applyBrowserFixes : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
       "newmshtml" : function() {
         // See Bug 372193 - Text widget: Modify Event not fired for Backspace key in IE
@@ -734,7 +734,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
       }
     },
 
-    _applyBrowserFixesOnAppear : qx.core.Variant.select( "qx.client", {
+    _applyBrowserFixesOnAppear : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
       "mshtml" : function() {
         if( this._firstInputFixApplied !== true && this._inputElement ) {
@@ -753,7 +753,7 @@ qx.Class.define( "rwt.widgets.base.BasicText", {
       }
     },
 
-    _applyBrowserFixesOnCreate  : qx.core.Variant.select( "qx.client", {
+    _applyBrowserFixesOnCreate  : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
       "webkit" : function() {
         this.addEventListener( "keydown", this._preventEnter, this );

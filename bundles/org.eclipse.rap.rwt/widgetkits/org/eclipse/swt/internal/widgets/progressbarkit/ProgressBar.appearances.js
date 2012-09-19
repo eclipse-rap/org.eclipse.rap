@@ -14,7 +14,7 @@ var appearances = {
 
   "progressbar" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "ProgressBar", "border" );
       result.backgroundColor = tv.getCssColor( "ProgressBar", "background-color" );

@@ -11,7 +11,7 @@
 
 /*global console: false */
 
-qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
+qx.Class.define( "rwt.runtime.ErrorHandler", {
 
   statics : {
 
@@ -42,7 +42,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       }
       var debug = true;
       try {
-        debug = qx.core.Variant.isSet( "qx.debug", "on" );
+        debug = rwt.util.Variant.isSet( "qx.debug", "on" );
       } catch( ex ) {
         // ignore: Variant may not be loaded yet
       }
@@ -104,7 +104,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
             info.push( "Stack: " + error.stack );
           }
        }
-        info.push( "Debug: " + qx.core.Variant.get( "qx.debug" ) );
+        info.push( "Debug: " + rwt.util.Variant.get( "qx.debug" ) );
         if( currentRequest ) {
           info.push( "Request: " + currentRequest.getData() );
         }

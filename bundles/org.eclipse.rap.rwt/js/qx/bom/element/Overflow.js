@@ -50,7 +50,7 @@ qx.Class.define("qx.bom.element.Overflow",
      *   The computed mode is the default one.
      * @return {String} computed overflow value
      */
-    getX : qx.core.Variant.select("qx.client",
+    getX : rwt.util.Variant.select("qx.client",
     {
       // gecko support differs
       "gecko" : rwt.client.Client.getVersion() < 1.8 ?
@@ -107,7 +107,7 @@ qx.Class.define("qx.bom.element.Overflow",
      *   The computed mode is the default one.
      * @return {String} computed overflow value
      */
-    getY : qx.core.Variant.select("qx.client",
+    getY : rwt.util.Variant.select("qx.client",
     {
       // gecko support differs
       "gecko" : rwt.client.Client.getVersion() < 1.8 ?

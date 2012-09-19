@@ -11,11 +11,18 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 
 public final class ScrolledCompositeTab extends ExampleTab {
@@ -25,8 +32,8 @@ public final class ScrolledCompositeTab extends ExampleTab {
   private Button showFocusedControl;
   private Button alwaysShowScrollBars;
 
-  public ScrolledCompositeTab( final CTabFolder topFolder ) {
-    super( topFolder, "ScrolledComposite" );
+  public ScrolledCompositeTab() {
+    super( "ScrolledComposite" );
     setDefaultStyle( SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL );
   }
 

@@ -33,13 +33,13 @@ qx.Class.define("qx.html.Style",
      * @return {void}
      * @signature function(vElement, propertyName)
      */
-    getStylePropertySure : qx.lang.Object.select((document.defaultView && document.defaultView.getComputedStyle) ? "hasComputed" : "noComputed",
+    getStylePropertySure : rwt.util.Object.select((document.defaultView && document.defaultView.getComputedStyle) ? "hasComputed" : "noComputed",
     {
       "hasComputed" : function(el, prop) {
         return !el ? null : el.ownerDocument ? el.ownerDocument.defaultView.getComputedStyle(el, "")[prop] : el.style[prop];
       },
 
-      "noComputed" : qx.core.Variant.select("qx.client",
+      "noComputed" : rwt.util.Variant.select("qx.client",
       {
         "mshtml" : function(el, prop)
         {
@@ -85,7 +85,7 @@ qx.Class.define("qx.html.Style",
      * @return {String} the (CSS) style property
      * @signature function(vElement, propertyName)
      */
-    getStyleProperty : qx.lang.Object.select((document.defaultView && document.defaultView.getComputedStyle) ? "hasComputed" : "noComputed",
+    getStyleProperty : rwt.util.Object.select((document.defaultView && document.defaultView.getComputedStyle) ? "hasComputed" : "noComputed",
     {
       "hasComputed" : function(el, prop)
       {
@@ -96,7 +96,7 @@ qx.Class.define("qx.html.Style",
         }
       },
 
-      "noComputed" : qx.core.Variant.select("qx.client",
+      "noComputed" : rwt.util.Variant.select("qx.client",
       {
         "mshtml" : function(el, prop)
         {

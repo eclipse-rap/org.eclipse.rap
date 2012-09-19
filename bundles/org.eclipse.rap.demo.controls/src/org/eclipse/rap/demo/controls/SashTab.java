@@ -12,16 +12,17 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Sash;
 
 
 public class SashTab extends ExampleTab {
 
-  public SashTab( final CTabFolder topFolder ) {
-    super( topFolder, "Sash" );
+  public SashTab() {
+    super( "Sash" );
     setDefaultStyle( SWT.BORDER );
   }
 
