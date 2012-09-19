@@ -159,7 +159,7 @@ public class ProtocolUtil_Test extends TestCase {
     ClientMessage message = ProtocolUtil.getClientMessage();
 
     assertNotNull( message );
-    assertTrue( message.getAllOperations( "w3" ).length > 0 );
+    assertTrue( message.getAllOperationsFor( "w3" ).length > 0 );
   }
 
   public void testGetClientMessage_SameInstance() {

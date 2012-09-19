@@ -34,6 +34,7 @@ public class ClientMessage {
   private final JSONObject message;
   private final JSONObject header;
   private final HashMap<String,List<Operation>> operationsMap;
+  private final List<Operation> operationsList;
 
   public ClientMessage( String json ) {
     ParamCheck.notNull( json, "json" );
@@ -55,13 +56,18 @@ public class ClientMessage {
     }
     try {
       operationsMap = new HashMap<String,List<Operation>>();
-      fillOperationsMap( operations );
+      operationsList = new ArrayList<Operation>();
+      processOperations( operations );
     } catch( JSONException exception ) {
       throw new IllegalArgumentException( "Invalid operations array: " + json );
     }
   }
 
-  public Operation[] getAllOperations( String target ) {
+  public Operation[] getAllOperations() {
+    return operationsList.toArray( new Operation[ 0 ] );
+  }
+
+  public Operation[] getAllOperationsFor( String target ) {
     return getOperations( Operation.class, target, null );
   }
 
@@ -76,7 +82,7 @@ public class ClientMessage {
 
   public NotifyOperation getLastNotifyOperation( String target, String eventName ) {
     NotifyOperation result = null;
-    List<Operation> operations = operationsMap.get( target );
+    List<Operation> operations = target == null ? operationsList : operationsMap.get( target );
     if( operations != null ) {
       for( Operation operation : operations ) {
         if( operation instanceof NotifyOperation ) {
@@ -113,7 +119,7 @@ public class ClientMessage {
     }
   }
 
-  private void fillOperationsMap( JSONArray operations ) throws JSONException {
+  private void processOperations( JSONArray operations ) throws JSONException {
     for( int i = 0; i < operations.length(); i++ ) {
       Operation operation = createOperation( operations.getJSONArray( i ) );
       appendOperation( operation );
@@ -137,12 +143,13 @@ public class ClientMessage {
 
   private void appendOperation( Operation operation ) {
     String target = operation.getTarget();
-    List<Operation> operationsList = operationsMap.get( target );
-    if( operationsList == null ) {
-      operationsList = new ArrayList<Operation>();
+    List<Operation> targetOperations = operationsMap.get( target );
+    if( targetOperations == null ) {
+      targetOperations = new ArrayList<Operation>();
     }
+    targetOperations.add( operation );
+    operationsMap.put( target, targetOperations );
     operationsList.add( operation );
-    operationsMap.put( target, operationsList );
   }
 
   private String getOperationAction( JSONArray operation ) {
