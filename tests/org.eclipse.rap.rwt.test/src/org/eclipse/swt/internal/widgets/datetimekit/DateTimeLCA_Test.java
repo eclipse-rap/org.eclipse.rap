@@ -11,13 +11,18 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -30,6 +35,7 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.*;
 import org.json.JSONArray;
+import org.mockito.ArgumentCaptor;
 
 
 public class DateTimeLCA_Test extends TestCase {
@@ -38,6 +44,7 @@ public class DateTimeLCA_Test extends TestCase {
   private Shell shell;
   private DateTimeLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -46,6 +53,7 @@ public class DateTimeLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -91,12 +99,14 @@ public class DateTimeLCA_Test extends TestCase {
     testPreserveControlProperties( dateTime );
   }
 
-  public void testSelectionEvent() {
+  public void testSelectionEvent_Date() {
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
-    testSelectionEvent( dateTime );
-    // Time
-    dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
-    testSelectionEvent( dateTime );
+    fakeAndCheckSelectionEvent( dateTime );
+  }
+
+  public void testSelectionEvent_Time() {
+    DateTime dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
+    fakeAndCheckSelectionEvent( dateTime );
   }
 
   // 315950: [DateTime] method getDay() return wrong day in particular
@@ -109,12 +119,13 @@ public class DateTimeLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     // Test preserved day, month, year
     Fixture.preserveWidgets();
-    String dateTimeId = WidgetUtil.getId( dateTime );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, dateTimeId );
-    Fixture.fakeRequestParam( dateTimeId + ".day", "31" );
-    Fixture.fakeRequestParam( dateTimeId + ".month", "4" );
-    Fixture.fakeRequestParam( dateTimeId + ".year", "2010" );
+
+    Fixture.fakeNotifyOperation( getId( dateTime ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeSetParameter( getId( dateTime ), "day", Integer.valueOf( 31 ) );
+    Fixture.fakeSetParameter( getId( dateTime ), "month", Integer.valueOf( 4 ) );
+    Fixture.fakeSetParameter( getId( dateTime ), "year", Integer.valueOf( 2010 ) );
     Fixture.readDataAndProcessAction( dateTime );
+
     assertEquals( 31, dateTime.getDay() );
     assertEquals( 4, dateTime.getMonth() );
     assertEquals( 2010, dateTime.getYear() );
@@ -171,27 +182,24 @@ public class DateTimeLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
-  private void testSelectionEvent( final DateTime dateTime ) {
-    final StringBuilder log = new StringBuilder();
-    SelectionListener selectionListener = new SelectionAdapter() {
+  private void fakeAndCheckSelectionEvent( DateTime dateTime ) {
+    SelectionListener listener = mock( SelectionListener.class );
+    dateTime.addSelectionListener( listener );
 
-      public void widgetSelected( SelectionEvent event ) {
-        assertEquals( dateTime, event.getSource() );
-        assertEquals( null, event.item );
-        assertEquals( SWT.NONE, event.detail );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertEquals( true, event.doit );
-        log.append( "widgetSelected" );
-      }
-    };
-    dateTime.addSelectionListener( selectionListener );
-    String dateTimeId = WidgetUtil.getId( dateTime );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, dateTimeId );
+    Fixture.fakeNotifyOperation( getId( dateTime ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     Fixture.readDataAndProcessAction( dateTime );
-    assertEquals( "widgetSelected", log.toString() );
+
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertEquals( dateTime, event.getSource() );
+    assertEquals( null, event.item );
+    assertEquals( SWT.NONE, event.detail );
+    assertEquals( 0, event.x );
+    assertEquals( 0, event.y );
+    assertEquals( 0, event.width );
+    assertEquals( 0, event.height );
+    assertEquals( true, event.doit );
   }
 
   public void testRenderCreateDate() throws IOException {

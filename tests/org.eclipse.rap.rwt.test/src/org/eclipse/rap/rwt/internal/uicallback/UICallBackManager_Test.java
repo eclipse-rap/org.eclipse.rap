@@ -27,9 +27,7 @@ import javax.servlet.http.HttpSessionBindingListener;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
@@ -156,7 +154,7 @@ public class UICallBackManager_Test extends TestCase {
   }
 
   public void testAsyncExecWhileLifeCycleIsRunning() {
-    fakeRequestParam();
+    fakeNewRequest();
     Fixture.fakePhase( PhaseId.READ_DATA );
     simulateAsyncExecDuringLifeCycle();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -171,7 +169,7 @@ public class UICallBackManager_Test extends TestCase {
     // test unblocking in case of background addition of runnables
     simulateBackgroundAddition( ContextProvider.getContext() );
     // test runnables execution during lifecycle with interlocked additions
-    fakeRequestParam();
+    fakeNewRequest();
     Fixture.fakePhase( PhaseId.READ_DATA );
     simulateAsyncExecDuringLifeCycle();
     Fixture.executeLifeCycleFromServerThread();
@@ -279,7 +277,7 @@ public class UICallBackManager_Test extends TestCase {
 
     manager.notifyUIThreadEnd();
     simulateBackgroundAddition( context );
-    fakeRequestParam();
+    fakeNewRequest();
     Fixture.executeLifeCycleFromServerThread();
     // let request thread finish off and die
     callBackRequestSimulator.requestThread.join( 100 );
@@ -583,11 +581,9 @@ public class UICallBackManager_Test extends TestCase {
     Fixture.runInThread( runnable );
   }
 
-  private void fakeRequestParam() {
-    Fixture.fakeResponseWriter();
+  private void fakeNewRequest() {
+    Fixture.fakeNewRequest( display );
     ContextProvider.getSessionStore().setAttribute( "org.eclipse.swt.display", display );
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeHeaderParameter( RequestParams.UIROOT, displayId );
   }
 
   private static ServiceContext createServiceContext( TestResponse response ) {

@@ -12,10 +12,12 @@
 package org.eclipse.swt.internal.widgets.tabfolderkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -32,6 +34,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
 
   private static final String PROP_SELECTION = "selection";
 
+  @Override
   public void preserveValues( Widget widget ) {
     TabFolder folder = ( TabFolder )widget;
     ControlLCAUtil.preserveValues( folder );
@@ -41,12 +44,14 @@ public class TabFolderLCA extends AbstractWidgetLCA {
 
   public void readData( Widget widget ) {
     TabFolder folder = ( TabFolder )widget;
-    ControlLCAUtil.processMouseEvents( folder );
+    processSelectionEvent( folder );
+    ControlLCAUtil.processEvents( folder );
     ControlLCAUtil.processKeyEvents( folder );
     ControlLCAUtil.processMenuDetect( folder );
     WidgetLCAUtil.processHelp( widget );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     TabFolder folder = ( TabFolder )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( folder );
@@ -55,6 +60,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     clientObject.set( "style", WidgetLCAUtil.getStyles( folder, ALLOWED_STYLES ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     TabFolder folder = ( TabFolder )widget;
     ControlLCAUtil.renderChanges( folder );
@@ -62,6 +68,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     renderProperty( folder, PROP_SELECTION, getSelection( folder ), null );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }
@@ -78,7 +85,25 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     return selection;
   }
 
+  private static void processSelectionEvent( final TabFolder folder ) {
+    if( WidgetLCAUtil.wasEventSent( folder, ClientMessageConst.EVENT_WIDGET_SELECTED ) ) {
+      String itemId = readEventPropertyValue( folder,
+                                              ClientMessageConst.EVENT_WIDGET_SELECTED,
+                                              ClientMessageConst.EVENT_PARAM_ITEM );
+      final TabItem item = ( TabItem )WidgetUtil.find( folder, itemId );
+      if( item != null ) {
+        ProcessActionRunner.add( new Runnable() {
+          public void run() {
+            folder.setSelection( item );
+            ControlLCAUtil.processSelection( folder, item, false );
+          }
+        } );
+      }
+    }
+  }
+
   // TODO: Remove when all widgets are migrated to the protocol
+  @Override
   public Rectangle adjustCoordinates( Widget widget, Rectangle newBounds ) {
     return new Rectangle( 0, 0, newBounds.width, newBounds.height );
   }

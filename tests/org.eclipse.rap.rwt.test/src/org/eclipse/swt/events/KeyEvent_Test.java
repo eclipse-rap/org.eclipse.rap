@@ -10,18 +10,24 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import java.util.ArrayList;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
+import org.mockito.ArgumentCaptor;
 
 
 public class KeyEvent_Test extends TestCase {
@@ -33,10 +39,10 @@ public class KeyEvent_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     events = new LinkedList<Object>();
+    Fixture.fakeNewRequest( display );
   }
 
   @Override
@@ -45,14 +51,9 @@ public class KeyEvent_Test extends TestCase {
   }
 
   public void testCopyFieldsFromUntypedEvent() {
-    final List<KeyEvent> log = new ArrayList<KeyEvent>();
     Button button = new Button( shell, SWT.PUSH );
-    button.addKeyListener( new KeyAdapter() {
-      @Override
-      public void keyPressed( KeyEvent event ) {
-        log.add( event );
-      }
-    } );
+    KeyListener listener = mock( KeyListener.class );
+    button.addKeyListener( listener );
     Object data = new Object();
     Event event = new Event();
     event.stateMask = 23;
@@ -60,9 +61,13 @@ public class KeyEvent_Test extends TestCase {
     event.character = 'f';
     event.doit = true;
     event.data = data;
+
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     button.notifyListeners( SWT.KeyDown, event );
-    KeyEvent keyEvent = log.get( 0 );
+
+    ArgumentCaptor<KeyEvent> captor = ArgumentCaptor.forClass( KeyEvent.class );
+    verify( listener, times( 1 ) ).keyPressed( captor.capture() );
+    KeyEvent keyEvent = captor.getValue();
     assertSame( button, keyEvent.getSource() );
     assertSame( button, keyEvent.widget );
     assertSame( display, keyEvent.display );
@@ -154,28 +159,27 @@ public class KeyEvent_Test extends TestCase {
   }
 
   private static void fakeSelectionRequest( Widget widget, Widget item ) {
-    String widgetId = WidgetUtil.getId( widget );
-    String itemId = WidgetUtil.getId( item );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, widgetId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, itemId );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
+    Fixture.fakeNotifyOperation( getId( widget ),
+                                 ClientMessageConst.EVENT_WIDGET_SELECTED,
+                                 parameters  );
   }
 
   private static void fakeTreeRequest( Widget item ) {
-    String itemId = WidgetUtil.getId( item );
-    Fixture.fakeRequestParam( JSConst.EVENT_TREE_EXPANDED, itemId );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_TREE_EXPANDED, null  );
   }
 
   private static void fakeHelpRequest( Widget widget ) {
-    String widgetId = WidgetUtil.getId( widget );
-    Fixture.fakeRequestParam( JSConst.EVENT_HELP, widgetId );
+    Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_HELP, null  );
   }
 
   private static void fakeKeyDownRequest( Widget widget, int keyCode, int charCode ) {
-    String widgetId = WidgetUtil.getId( widget );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, widgetId );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, String.valueOf( keyCode ) );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, String.valueOf( charCode ) );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( ClientMessageConst.EVENT_PARAM_KEY_CODE, Integer.valueOf( keyCode ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_CHAR_CODE, Integer.valueOf( charCode ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_MODIFIER, "" );
+    Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_KEY_DOWN, parameters );
   }
 
   private static class LoggingKeyListener implements KeyListener {

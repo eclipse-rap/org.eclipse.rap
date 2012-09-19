@@ -9,6 +9,12 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+
+var shell;
+
 qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
 
   extend : qx.core.Object,
@@ -16,8 +22,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
   members : {
 
     testCreateTabFolderOnTopByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
@@ -35,13 +39,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       assertTrue( widget.getUserData( "isControl") );
       assertTrue( widget.getHideFocus() );
       assertTrue( widget.getPlaceBarOnTop() );
-      shell.destroy();
-      widget.destroy();
     },
 
     testCreateTabFolderOnBottomByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
@@ -59,13 +59,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       assertTrue( widget.getUserData( "isControl") );
       assertTrue( widget.getHideFocus() );
       assertFalse( widget.getPlaceBarOnTop() );
-      shell.destroy();
-      widget.destroy();
     },
 
     testSetSelectionByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w3",
@@ -85,16 +81,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       assertFalse( item1.getChecked() );
       assertTrue( item2.getChecked() );
       assertFalse( item3.getChecked() );
-      shell.destroy();
-      widget.destroy();
-      item1.destroy();
-      item2.destroy();
-      item3.destroy();
     },
 
     testCreateTabItemByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
       assertTrue( item instanceof rwt.widgets.TabItem );
@@ -103,14 +92,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       var ObjectManager = rwt.protocol.ObjectManager;
       var page = ObjectManager.getObject( "w4pg" );
       assertTrue( page instanceof rwt.widgets.base.TabFolderPage );
-      shell.destroy();
-      folder.destroy();
-      item.destroy();
     },
 
     testDestroyTabItemByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
       var ObjectManager = rwt.protocol.ObjectManager;
@@ -124,13 +108,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       assertTrue( page.isDisposed() );
       assertEquals( undefined, ObjectManager.getObject( "w4" ) );
       assertEquals( undefined, ObjectManager.getObject( "w4pg" ) );
-      shell.destroy();
-      folder.destroy();
     },
 
     testSetTextByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
       rwt.protocol.MessageProcessor.processOperation( {
@@ -141,14 +121,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
         }
       } );
       assertEquals( "foo&lt;&gt;&quot; bar", item.getLabel().toString() );
-      shell.destroy();
-      folder.destroy();
-      item.destroy();
     },
 
     testSetImageByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
       rwt.protocol.MessageProcessor.processOperation( {
@@ -159,14 +134,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
         }
       } );
       assertEquals( "image.png", item.getIcon() );
-      shell.destroy();
-      folder.destroy();
-      item.destroy();
     },
 
     testSetControlByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
       var control =  new rwt.widgets.Button( "push" );
@@ -181,15 +151,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       } );
       assertTrue( control.getParent() instanceof rwt.widgets.base.TabFolderPage );
       assertIdentical( widgetManager.findWidgetById( "w4pg" ), control.getParent() );
-      shell.destroy();
-      folder.destroy();
-      item.destroy();
-      control.destroy();
     },
 
     testSetToolTipByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
       rwt.protocol.MessageProcessor.processOperation( {
@@ -201,15 +165,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       } );
       assertEquals( "hello blue world", item.getUserData( "toolTipText" ) );
       assertTrue( item.getToolTip() !== null );
-      shell.destroy();
-      folder.destroy();
-      item.destroy();
     },
 
     testSetCustomVariantByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var folder = this._createTabFolderByProtocol( "w3", "w2" );
+      this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
       rwt.protocol.MessageProcessor.processOperation( {
         "target" : "w4",
@@ -219,13 +178,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
         }
       } );
       assertTrue( item.hasState( "variant_blue" ) );
-      shell.destroy();
-      folder.destroy();
-      item.destroy();
+    },
+
+    testSelectedEvent : function() {
+      this._createTabFolderByProtocol( "w3", "w2" );
+      var item = this._createTabItemByProtocol( "w4", "w3" );
+      TestUtil.flush();
+
+      item.setChecked( true );
+
+      var message = TestUtil.getMessageObject();
+      assertEquals( "w4", message.findNotifyProperty( "w3", "widgetSelected", "item" ) );
     },
 
     //////////////////
     // Helping methods
+
+    setUp : function() {
+      shell = TestUtil.createShellByProtocol( "w2" );
+    },
+
+    tearDown : function() {
+      shell.destroy();
+      shell = null;
+    },
 
     _createTabFolderByProtocol : function( id, parentId ) {
       rwt.protocol.MessageProcessor.processOperation( {
@@ -256,5 +232,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     }
 
   }
-  
+
 } );
+
+}());

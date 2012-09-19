@@ -11,12 +11,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.widgets;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventPropertyValueAsString;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.rap.rwt.*;
 import org.eclipse.rap.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rap.rwt.events.BrowserHistoryListener;
@@ -46,10 +46,8 @@ public final class BrowserHistory
   private final static String METHOD_ADD = "add";
   private static final String ATTR_HAS_NAVIGATION_LISTENER
     = BrowserHistory.class.getName() + ".hasNavigationListener";
-  private static final String EVENT_HISTORY_NAVIGATED
-    = "org.eclipse.rwt.events.historyNavigated";
-  private static final String EVENT_HISTORY_NAVIGATED_ENTRY_ID
-    = "org.eclipse.rwt.events.historyNavigated.entryId";
+  private static final String EVENT_HISTORY_NAVIGATED = "historyNavigated";
+  private static final String EVENT_HISTORY_NAVIGATED_ENTRY_ID = "entryId";
 
   private final Display display;
   private final List<HistoryEntry> entriesToAdd;
@@ -153,10 +151,10 @@ public final class BrowserHistory
   }
 
   private void processNavigationEvent() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String isEvent = request.getParameter( EVENT_HISTORY_NAVIGATED );
-    if( Boolean.valueOf( isEvent ).booleanValue() ) {
-      String entryId = request.getParameter( EVENT_HISTORY_NAVIGATED_ENTRY_ID );
+    if( ProtocolUtil.wasEventSent( BROWSER_HISTORY_ID, EVENT_HISTORY_NAVIGATED ) ) {
+      String entryId = readEventPropertyValueAsString( BROWSER_HISTORY_ID,
+                                                       EVENT_HISTORY_NAVIGATED,
+                                                       EVENT_HISTORY_NAVIGATED_ENTRY_ID );
       Event evt = new BrowserHistoryEvent( this, entryId );
       evt.processEvent();
     }

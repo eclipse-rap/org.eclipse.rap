@@ -10,9 +10,11 @@
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -30,6 +32,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
 
   private ToggleHyperlinkLCA lca;
 
+  @Override
   protected void setUp() {
     super.setUp();
     lca = new ToggleHyperlinkLCA();
@@ -58,8 +61,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
       }
     };
     hyperlink.addListener( SWT.DefaultSelection, listener );
-    String hyperlinkId = WidgetUtil.getId( hyperlink );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, hyperlinkId );
+    Fixture.fakeNotifyOperation( getId( hyperlink ), ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED, null );
     Fixture.readDataAndProcessAction( hyperlink );
     assertEquals( "widgetDefaultSelected", log.toString() );
   }

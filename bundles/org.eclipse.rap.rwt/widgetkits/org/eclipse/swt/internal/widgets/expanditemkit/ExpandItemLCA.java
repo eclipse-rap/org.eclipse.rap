@@ -31,14 +31,15 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
   private static final String TYPE = "rwt.widgets.ExpandItem";
 
   // Request parameters that denote ExpandEvents
-  public static final String EVENT_ITEM_EXPANDED = "org.eclipse.swt.events.expandItemExpanded";
-  public static final String EVENT_ITEM_COLLAPSED = "org.eclipse.swt.events.expandItemCollapsed";
+  public static final String EVENT_ITEM_EXPANDED = "expandItemExpanded";
+  public static final String EVENT_ITEM_COLLAPSED = "expandItemCollapsed";
 
   public static final String PROP_EXPANDED = "expanded";
   public static final String PROP_HEADER_HEIGHT = "headerHeight";
 
   public static final int DEFAULT_HEADER_HEIGHT = 24;
 
+  @Override
   public void preserveValues( Widget widget ) {
     ExpandItem item = ( ExpandItem )widget;
     WidgetLCAUtil.preserveCustomVariant( item );
@@ -68,6 +69,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
     }
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ExpandItem item = ( ExpandItem )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( item );
@@ -75,6 +77,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
     clientObject.set( "parent", WidgetUtil.getId( item.getParent() ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     ExpandItem item = ( ExpandItem )widget;
     WidgetLCAUtil.renderCustomVariant( widget );
@@ -84,6 +87,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
     renderProperty( item, PROP_HEADER_HEIGHT, item.getHeaderHeight(), DEFAULT_HEADER_HEIGHT );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }

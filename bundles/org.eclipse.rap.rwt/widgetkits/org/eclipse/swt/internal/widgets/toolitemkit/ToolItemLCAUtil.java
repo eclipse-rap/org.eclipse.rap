@@ -16,9 +16,9 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -98,9 +98,10 @@ final class ToolItemLCAUtil {
   // Selection
 
   static void processSelection( ToolItem toolItem ) {
-    if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
+    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( toolItem, eventName ) ) {
       Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-      int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+      int stateMask = EventLCAUtil.readStateMask( toolItem, eventName );
       SelectionEvent event = new SelectionEvent( toolItem,
                                                  null,
                                                  SelectionEvent.WIDGET_SELECTED,

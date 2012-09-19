@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
@@ -26,12 +26,13 @@ public class UntypedEvents_Test extends TestCase {
 
   private static final String WIDGET_SELECTED = "widgetSelected";
   private static final String WIDGET_DEFAULT_SELECTED = "widgetSelected";
-  
+
   private String log;
   private Display display;
   private Shell shell;
   private Button widget;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -41,6 +42,7 @@ public class UntypedEvents_Test extends TestCase {
     widget = new Button( shell, SWT.PUSH );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -109,16 +111,16 @@ public class UntypedEvents_Test extends TestCase {
       }
     } );
     widget.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         throw new RuntimeException( "This should never be called." );
       }
     } );
-    String buttonId = WidgetUtil.getId( widget );
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
+    Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
 
     Fixture.readDataAndProcessAction( display );
+
     assertTrue( executed[ 0 ] );
   }
 }

@@ -11,30 +11,54 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.buttonkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rap.rwt.internal.protocol.*;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
-import org.eclipse.swt.widgets.*;
-import org.json.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 // TODO [rst] Split into different test classes for button types
@@ -202,174 +226,109 @@ public class ButtonLCA_Test extends TestCase {
   }
 
   public void testDisabledButtonSelection() {
-    final StringBuilder log = new StringBuilder();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Button button = new Button( shell, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     ActivateEvent.addListener( button, new ActivateAdapter() {
       @Override
       public void activated( ActivateEvent event ) {
-        log.append( "widgetActivated|" );
         button.setEnabled( false );
       }
     } );
-    button.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        log.append( "widgetSelected|" );
-      }
-    } );
-    Object adapter = shell.getAdapter( IShellAdapter.class );
-    IShellAdapter shellAdapter = ( IShellAdapter )adapter;
-    shellAdapter.setActiveControl( label );
+    SelectionListener listener = mock( SelectionListener.class );
+    button.addSelectionListener( listener );
+    shell.getAdapter( IShellAdapter.class ).setActiveControl( label );
     Fixture.fakeNewRequest( display );
-    String buttonId = WidgetUtil.getId( button );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    fakeActivateEvent( button );
+
     Fixture.readDataAndProcessAction( display );
-    assertEquals( "widgetActivated|", log.toString() );
+
+    assertFalse( button.getEnabled() );
+    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   public void testSelectionEvent() {
-    final StringBuilder log = new StringBuilder();
-    final Button button = new Button( shell, SWT.PUSH );
-    button.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertSame( button, event.getSource() );
-        assertEquals( 0, event.detail );
-        log.append( "widgetSelected" );
-      }
-    } );
-    String buttonId = WidgetUtil.getId( button );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( "org.eclipse.swt.events.widgetSelected", buttonId );
-    Fixture.readDataAndProcessAction( display );
-    assertEquals( "widgetSelected", log.toString() );
+    Button button = new Button( shell, SWT.PUSH );
+    SelectionListener listener = mock( SelectionListener.class );
+    button.addSelectionListener( listener );
+
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.readDataAndProcessAction( button );
+
+    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
+  }
+
+  public void testRadioSelectionEvent() {
+    Button button = new Button( shell, SWT.RADIO );
+    SelectionListener listener = mock( SelectionListener.class );
+    button.addSelectionListener( listener );
+
+    Fixture.fakeSetParameter( getId( button ), "selection", Boolean.TRUE );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.readDataAndProcessAction( button );
+
+    assertTrue( button.getSelection() );
+    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=224872
-  public void testRadioSelectionEvent() {
-    final StringBuilder log = new StringBuilder();
-    final Button button1 = new Button( shell, SWT.RADIO );
-    button1.setText( "1" );
-    final Button button2 = new Button( shell, SWT.RADIO );
-    button2.setText( "2" );
-    final Button button3 = new Button( shell, SWT.RADIO );
-    button3.setText( "3" );
-    SelectionAdapter listener = new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        Button button = ( Button )event.getSource();
-        log.append( button.getText() );
-        log.append( ":" );
-        log.append( button.getSelection() );
-        log.append( "|" );
-      }
-    };
-    button1.addSelectionListener( listener );
-    button2.addSelectionListener( listener );
-    button3.addSelectionListener( listener );
-    String button1Id = WidgetUtil.getId( button1 );
-    String button2Id = WidgetUtil.getId( button2 );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( button1Id + ".selection", "true" );
-    Fixture.readDataAndProcessAction( display );
-    assertTrue( log.toString().contains( "1:true" ) );
-    assertTrue( log.toString().indexOf( "2:" ) == -1 );
-    assertTrue( log.toString().indexOf( "3:" ) == -1 );
+  public void testRadioDeselectionEvent() {
+    Button button = new Button( shell, SWT.RADIO );
+    button.setSelection( true );
+    SelectionListener listener = mock( SelectionListener.class );
+    button.addSelectionListener( listener );
 
-    log.delete( 0, log.length() );
+    Fixture.fakeSetParameter( getId( button ), "selection", Boolean.FALSE );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.readDataAndProcessAction( button );
 
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( button1Id + ".selection", "false" );
-    Fixture.fakeRequestParam( button2Id + ".selection", "true" );
-    Fixture.readDataAndProcessAction( display );
-    assertTrue( log.toString().contains( "1:false" ) );
-    assertTrue( log.toString().contains( "2:true" ) );
-    assertTrue( log.indexOf( "3:" ) == -1 );
+    assertFalse( button.getSelection() );
+    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   public void testRadioTypedSelectionEventOrder_TypedListener() {
-    final java.util.List<SelectionEvent> log = new ArrayList<SelectionEvent>();
+    final List<Widget> log = new ArrayList<Widget>();
     Button button1 = new Button( shell, SWT.RADIO );
-    button1.setText( "1" );
     Button button2 = new Button( shell, SWT.RADIO );
-    button2.setText( "2" );
+    button2.setSelection( true );
     SelectionAdapter listener = new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
-        log.add( event );
+        log.add( event.widget );
       }
     };
     button1.addSelectionListener( listener );
     button2.addSelectionListener( listener );
-    button2.setSelection( true );
-    String button1Id = WidgetUtil.getId( button1 );
-    String button2Id = WidgetUtil.getId( button2 );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( button1Id + ".selection", "true" );
-    Fixture.fakeRequestParam( button2Id + ".selection", "false" );
+
+    Fixture.fakeSetParameter( getId( button1 ), "selection", Boolean.TRUE );
+    Fixture.fakeSetParameter( getId( button2 ), "selection", Boolean.FALSE );
+    Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button2 ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     Fixture.readDataAndProcessAction( display );
-    assertEquals( 2, log.size() );
-    assertSame( button2, log.get( 0 ).widget );
-    assertSame( button1, log.get( 1 ).widget );
+
+    assertTrue( Arrays.equals( new Widget[]{ button2, button1 }, log.toArray() ) );
   }
 
   public void testRadioTypedSelectionEventOrder_UntypedListener() {
-    final java.util.List<Event> log = new ArrayList<Event>();
+    final List<Widget> log = new ArrayList<Widget>();
     Button button1 = new Button( shell, SWT.RADIO );
-    button1.setText( "1" );
     Button button2 = new Button( shell, SWT.RADIO );
-    button2.setText( "2" );
+    button2.setSelection( true );
     Listener listener = new Listener() {
       public void handleEvent( Event event ) {
-        log.add( event );
+        log.add( event.widget );
       }
     };
     button1.addListener( SWT.Selection, listener );
     button2.addListener( SWT.Selection, listener );
-    button2.setSelection( true );
-    String button1Id = WidgetUtil.getId( button1 );
-    String button2Id = WidgetUtil.getId( button2 );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( button1Id + ".selection", "true" );
-    Fixture.fakeRequestParam( button2Id + ".selection", "false" );
-    Fixture.readDataAndProcessAction( display );
-    assertEquals( 2, log.size() );
-    assertSame( button2, log.get( 0 ).widget );
-    assertSame( button1, log.get( 1 ).widget );
-  }
 
-  public void testRadioUntypedSelectionEventOrder() {
-    final java.util.List<Event> log = new ArrayList<Event>();
-    Button button1 = new Button( shell, SWT.RADIO );
-    button1.setText( "1" );
-    Button button2 = new Button( shell, SWT.RADIO );
-    button2.setText( "2" );
-    Listener listener = new Listener() {
-      public void handleEvent( Event event ) {
-        log.add( event );
-      }
-    };
-    button1.addListener( SWT.Selection, listener );
-    button2.addListener( SWT.Selection, listener );
-    button2.setSelection( true );
-    String button1Id = WidgetUtil.getId( button1 );
-    String button2Id = WidgetUtil.getId( button2 );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( button1Id + ".selection", "true" );
-    Fixture.fakeRequestParam( button2Id + ".selection", "false" );
+    Fixture.fakeSetParameter( getId( button1 ), "selection", Boolean.TRUE );
+    Fixture.fakeSetParameter( getId( button2 ), "selection", Boolean.FALSE );
+    Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button2 ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     Fixture.readDataAndProcessAction( display );
-    assertEquals( 2, log.size() );
-    Event event = log.get( 0 );
-    assertSame( button2, event.widget );
-    event = log.get( 1 );
-    assertSame( button1, event.widget );
+
+    assertTrue( Arrays.equals( new Widget[]{ button2, button1 }, log.toArray() ) );
   }
 
   public void testRenderWrap() throws Exception {
@@ -677,5 +636,11 @@ public class ButtonLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( button, "grayed" ) );
+  }
+
+  private void fakeActivateEvent( Control control ) {
+    Fixture.fakeNotifyOperation( getId( control ),
+                                 ClientMessageConst.EVENT_CONTROL_ACTIVATED,
+                                 null );
   }
 }

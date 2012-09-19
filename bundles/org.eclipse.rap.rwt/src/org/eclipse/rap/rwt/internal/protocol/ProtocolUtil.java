@@ -71,30 +71,39 @@ public final class ProtocolUtil {
     return result == null ? null : result.toString();
   }
 
-  public static String readPropertyValue( String target, String property ) {
+  public static String readPropertyValueAsString( String target, String property ) {
     String result = null;
     ClientMessage message = getClientMessage();
-    SetOperation[] operations =  message.getSetOperations( target, property );
-    if( operations.length > 0 ) {
-      result = operations[ operations.length - 1 ].getProperty( property ).toString();
+    SetOperation operation =  message.getLastSetOperation( target, property );
+    if( operation != null ) {
+      Object value = operation.getProperty( property );
+      if( value != null ) {
+        result = value.toString();
+      }
     }
     return result;
   }
 
-  public static String readEventPropertyValue( String target, String eventName, String property ) {
+  public static String readEventPropertyValueAsString( String target,
+                                                       String eventName,
+                                                       String property )
+  {
     String result = null;
     ClientMessage message = getClientMessage();
-    NotifyOperation[] operations =  message.getNotifyOperations( target, eventName, property );
-    if( operations.length > 0 ) {
-      result = operations[ operations.length - 1 ].getProperty( property ).toString();
+    NotifyOperation operation =  message.getLastNotifyOperation( target, eventName );
+    if( operation != null ) {
+      Object value = operation.getProperty( property );
+      if( value != null ) {
+        result = value.toString();
+      }
     }
     return result;
   }
 
   public static boolean wasEventSent( String target, String eventName ) {
     ClientMessage message = getClientMessage();
-    NotifyOperation[] operations =  message.getNotifyOperations( target, eventName, null );
-    return operations.length > 0;
+    NotifyOperation operation =  message.getLastNotifyOperation( target, eventName );
+    return operation != null;
   }
 
   public static Object[] getFontAsArray( Font font ) {

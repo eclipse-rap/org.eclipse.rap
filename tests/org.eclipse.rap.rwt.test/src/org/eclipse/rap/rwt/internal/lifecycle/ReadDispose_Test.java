@@ -15,8 +15,8 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -61,7 +61,7 @@ public class ReadDispose_Test extends TestCase {
     Fixture.fakeNewRequest();
     Fixture.fakeHeaderParameter( RequestParams.UIROOT, dispId );
     String buttonId = WidgetDisposalEntryPoint.buttonId;
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+    Fixture.fakeNotifyOperation( buttonId, ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     lifeCycle.execute();
   }
 

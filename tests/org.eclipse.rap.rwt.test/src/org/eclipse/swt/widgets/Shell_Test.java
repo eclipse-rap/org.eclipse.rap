@@ -31,6 +31,7 @@ public class Shell_Test extends TestCase {
   private Display display;
   private Shell shell;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -38,6 +39,7 @@ public class Shell_Test extends TestCase {
     shell = new Shell( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -191,9 +193,11 @@ public class Shell_Test extends TestCase {
     // during setVisible( true )
     final StringBuilder log = new StringBuilder();
     shell.setLayout( new Layout() {
+      @Override
       protected Point computeSize( Composite composite, int hint, int hint2, boolean flushCache ) {
         return null;
       }
+      @Override
       protected void layout( Composite composite, boolean flushCache ) {
         log.append( "layout" );
       }
@@ -213,6 +217,7 @@ public class Shell_Test extends TestCase {
   public void testCloseNotifiesShellListeners() {
     final ShellEvent[] shellEvent = { null };
     shell.addShellListener( new ShellAdapter() {
+      @Override
       public void shellClosed( ShellEvent event ) {
         shellEvent[ 0 ] = event;
       }
@@ -230,6 +235,14 @@ public class Shell_Test extends TestCase {
     Shell childShell = new Shell( shell );
     shell.close();
     assertTrue( childShell.isDisposed() );
+  }
+
+  public void testCloseDisposesShell() {
+    shell.open();
+
+    shell.close();
+
+    assertTrue( shell.isDisposed() );
   }
 
   public void testDisposeChildShell() {
@@ -402,9 +415,11 @@ public class Shell_Test extends TestCase {
     shell.open();
     assertSame( shell, display.getActiveShell() );
     shell.addShellListener( new ShellAdapter() {
+      @Override
       public void shellActivated( ShellEvent event ) {
         log .add( event );
       }
+      @Override
       public void shellDeactivated( ShellEvent event ) {
         log .add( event );
       }
@@ -421,12 +436,14 @@ public class Shell_Test extends TestCase {
     secondShell.open();
     assertSame( secondShell, display.getActiveShell() );
     shell.addShellListener( new ShellAdapter() {
+      @Override
       public void shellActivated( ShellEvent event ) {
         log.add( "shellActivated" );
       }
     } );
     Button button = new Button( shell, SWT.PUSH );
     button.addFocusListener( new FocusAdapter() {
+      @Override
       public void focusGained( FocusEvent event ) {
         log.add( "buttonFocusGained" );
       }
@@ -450,6 +467,7 @@ public class Shell_Test extends TestCase {
    */
   public void testCloseOnDeactivateWithSingleShell() {
     shell.addShellListener( new ShellAdapter() {
+      @Override
       public void shellDeactivated( ShellEvent event ) {
         shell.close();
       }
@@ -468,6 +486,7 @@ public class Shell_Test extends TestCase {
     final Shell dialog = new Shell( shell );
     dialog.setLayout( new FillLayout() );
     dialog.addShellListener( new ShellAdapter() {
+      @Override
       public void shellDeactivated( ShellEvent event ) {
         dialog.close();
       }
@@ -480,9 +499,11 @@ public class Shell_Test extends TestCase {
   public void testNoDeactivateEventOnDispose() {
     final StringBuilder log = new StringBuilder();
     shell.addShellListener( new ShellAdapter() {
+      @Override
       public void shellActivated( ShellEvent event ) {
         log.append( "shell activated" );
       }
+      @Override
       public void shellDeactivated( ShellEvent event ) {
         log.append( "shell deactivated" );
       }
@@ -528,6 +549,7 @@ public class Shell_Test extends TestCase {
     };
     shell.setBounds( 1, 2, 3, 4 );
     shell.addControlListener( new ControlAdapter() {
+      @Override
       public void controlResized( ControlEvent event ) {
         maximized[ 0 ] = shell.getMaximized();
       }
@@ -542,6 +564,7 @@ public class Shell_Test extends TestCase {
     shell.setBounds( 1, 2, 3, 4 );
     shell.setMaximized( true );
     shell.addControlListener( new ControlAdapter() {
+      @Override
       public void controlResized( ControlEvent event ) {
         log.add( event );
       }
@@ -574,6 +597,7 @@ public class Shell_Test extends TestCase {
   public void testMinimumSize() {
     final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
     shell.addControlListener( new ControlAdapter() {
+      @Override
       public void controlResized( ControlEvent event ) {
         log.add( event );
       }

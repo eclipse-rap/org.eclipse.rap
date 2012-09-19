@@ -13,18 +13,16 @@ package org.eclipse.swt.internal.widgets.treekit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -70,6 +68,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static final String PROP_ENABLE_CELL_TOOLTIP = "enableCellToolTip";
   private static final String PROP_CELL_TOOLTIP_TEXT = "cellToolTipText";
   private static final String PROP_MARKUP_ENABLED = "markupEnabled";
+  private static final String EVENT_SCROLLBAR_SELECTED = "scrollBarSelected";
 
   private static final int ZERO = 0 ;
   private static final String[] DEFAULT_SELECTION = new String[ 0 ];
@@ -113,10 +112,11 @@ public final class TreeLCA extends AbstractWidgetLCA {
     processWidgetSelectedEvent( tree );
     processWidgetDefaultSelectedEvent( tree );
     readCellToolTipTextRequested( tree );
-    ControlLCAUtil.processMouseEvents( tree );
+    ControlLCAUtil.processEvents( tree );
     ControlLCAUtil.processKeyEvents( tree );
     ControlLCAUtil.processMenuDetect( tree );
     WidgetLCAUtil.processHelp( tree );
+    processScrollBarSelectionEvent( tree );
   }
 
   @Override
@@ -190,20 +190,17 @@ public final class TreeLCA extends AbstractWidgetLCA {
   }
 
   private static void processWidgetSelectedEvent( Tree tree ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String eventName = JSConst.EVENT_WIDGET_SELECTED;
+    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
     if( WidgetLCAUtil.wasEventSent( tree, eventName ) ) {
-      Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-      String itemId = request.getParameter( eventName + ".item" );
-      Item treeItem = getItem( tree, itemId );
-      String detailStr = request.getParameter( eventName + ".detail" );
-      int detail = "check".equals( detailStr ) ? SWT.CHECK : SWT.NONE;
-      int eventType = SelectionEvent.WIDGET_SELECTED;
-      int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+      String value = readEventPropertyValue( tree, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
+      Item treeItem = getItem( tree, value );
+      value = readEventPropertyValue( tree, eventName, ClientMessageConst.EVENT_PARAM_DETAIL );
+      int detail = "check".equals( value ) ? SWT.CHECK : SWT.NONE;
+      int stateMask = EventLCAUtil.readStateMask( tree, eventName );
       SelectionEvent event = new SelectionEvent( tree,
                                                  treeItem,
-                                                 eventType,
-                                                 bounds,
+                                                 SelectionEvent.WIDGET_SELECTED,
+                                                 new Rectangle( 0, 0, 0, 0 ),
                                                  stateMask,
                                                  null,
                                                  true,
@@ -213,14 +210,13 @@ public final class TreeLCA extends AbstractWidgetLCA {
   }
 
   private static void processWidgetDefaultSelectedEvent( Tree tree ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String eventName = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
+    String eventName = ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED;
     if( WidgetLCAUtil.wasEventSent( tree, eventName ) ) {
-      String itemId = request.getParameter( eventName + ".item" );
-      Item treeItem = getItem( tree, itemId );
+      String value = readEventPropertyValue( tree, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
+      Item treeItem = getItem( tree, value );
       int eventType = SelectionEvent.WIDGET_DEFAULT_SELECTED;
       SelectionEvent event = new SelectionEvent( tree, treeItem, eventType );
-      event.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+      event.stateMask = EventLCAUtil.readStateMask( tree, eventName );
       event.processEvent();
     }
   }
@@ -284,12 +280,11 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static void readCellToolTipTextRequested( Tree tree ) {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
     adapter.setCellToolTipText( null );
-    String event = JSConst.EVENT_CELL_TOOLTIP_REQUESTED;
-    if( WidgetLCAUtil.wasEventSent( tree, event ) ) {
+    String eventName = ClientMessageConst.EVENT_CELL_TOOLTIP_REQUESTED;
+    if( WidgetLCAUtil.wasEventSent( tree, eventName ) ) {
       ICellToolTipProvider provider = adapter.getCellToolTipProvider();
       if( provider != null ) {
-        HttpServletRequest request = ContextProvider.getRequest();
-        String cell = request.getParameter( JSConst.EVENT_CELL_TOOLTIP_DETAILS );
+        String cell = readEventPropertyValue( tree, eventName, ClientMessageConst.EVENT_PARAM_CELL );
         String[] details = cell.split( "," );
         String itemId = details[ 0 ];
         int columnIndex = NumberFormatUtil.parseInt( details[ 1 ] );
@@ -386,10 +381,25 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static void processScrollBarSelection( ScrollBar scrollBar, int selection ) {
     if( scrollBar != null ) {
       scrollBar.setSelection( selection );
-      if( SelectionEvent.hasListener( scrollBar ) ) {
-        int eventId = SelectionEvent.WIDGET_SELECTED;
-        SelectionEvent evt = new SelectionEvent( scrollBar, null, eventId );
-        evt.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+    }
+  }
+
+  private static void processScrollBarSelectionEvent( Tree tree ) {
+    if( WidgetLCAUtil.wasEventSent( tree, EVENT_SCROLLBAR_SELECTED ) ) {
+      String horizontal = readEventPropertyValue( tree,
+                                                  EVENT_SCROLLBAR_SELECTED,
+                                                  "horizontal" );
+      String vertical = readEventPropertyValue( tree,
+                                                EVENT_SCROLLBAR_SELECTED,
+                                                "vertical" );
+      ScrollBar hScroll = tree.getHorizontalBar();
+      if( hScroll != null && "true".equals( horizontal ) ) {
+        SelectionEvent evt = new SelectionEvent( hScroll, null, SelectionEvent.WIDGET_SELECTED );
+        evt.processEvent();
+      }
+      ScrollBar vScroll = tree.getVerticalBar();
+      if( vScroll != null && "true".equals( vertical ) ) {
+        SelectionEvent evt = new SelectionEvent( vScroll, null, SelectionEvent.WIDGET_SELECTED );
         evt.processEvent();
       }
     }

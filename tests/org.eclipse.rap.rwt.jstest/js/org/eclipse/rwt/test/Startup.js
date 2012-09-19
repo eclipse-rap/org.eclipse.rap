@@ -13,11 +13,14 @@ org.eclipse.rwt.System.getInstance().addEventListener( "uiready", function() {
     rwt.remote.Server.getInstance().sendImmediate( true );
   };
   rwt.remote.Server.getInstance().send = function() {
-    if( this._requestCounter === -1 ) {
-      // prevent infinite loop:
-      throw new Error( "_requestCounter is -1" );
+    if( !this._sendTimer.isEnabled() ) {
+      this._sendTimer.start();
+      if( this._requestCounter === -1 ) {
+        // prevent infinite loop:
+        throw new Error( "_requestCounter is -1" );
+      }
+      this.sendImmediate( true ); // omit timer
     }
-    this.sendImmediate( true ); // omit timer
   };
   rwt.protocol.MessageProcessor.processMessage( {
     "meta": {

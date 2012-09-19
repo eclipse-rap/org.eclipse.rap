@@ -347,7 +347,7 @@ public final class Fixture {
     fakeResponseWriter();
   }
 
-  private static String createEmptyMessage() {
+  public static String createEmptyMessage() {
     JSONObject result = new JSONObject();
     try {
       result.put( ClientMessage.PROP_HEADER, new JSONObject() );

@@ -186,31 +186,31 @@ public class ProtocolUtil_Test extends TestCase {
   public void testReadProperyValue_MissingProperty() {
     fakeNewJsonMessage();
 
-    assertNull( ProtocolUtil.readPropertyValue( "w3", "p0" ) );
+    assertNull( ProtocolUtil.readPropertyValueAsString( "w3", "p0" ) );
   }
 
-  public void testReadProperyValue_String() {
+  public void testReadProperyValueAsString_String() {
     fakeNewJsonMessage();
 
-    assertEquals( "foo", ProtocolUtil.readPropertyValue( "w3", "p1" ) );
+    assertEquals( "foo", ProtocolUtil.readPropertyValueAsString( "w3", "p1" ) );
   }
 
-  public void testReadProperyValue_Integer() {
+  public void testReadProperyValueAsString_Integer() {
     fakeNewJsonMessage();
 
-    assertEquals( "123", ProtocolUtil.readPropertyValue( "w3", "p2" ) );
+    assertEquals( "123", ProtocolUtil.readPropertyValueAsString( "w3", "p2" ) );
   }
 
-  public void testReadProperyValue_Boolean() {
+  public void testReadProperyValueAsString_Boolean() {
     fakeNewJsonMessage();
 
-    assertEquals( "true", ProtocolUtil.readPropertyValue( "w3", "p3" ) );
+    assertEquals( "true", ProtocolUtil.readPropertyValueAsString( "w3", "p3" ) );
   }
 
-  public void testReadProperyValue_Null() {
+  public void testReadProperyValueAsString_Null() {
     fakeNewJsonMessage();
 
-    assertEquals( "null", ProtocolUtil.readPropertyValue( "w3", "p4" ) );
+    assertEquals( "null", ProtocolUtil.readPropertyValueAsString( "w3", "p4" ) );
   }
 
   public void testReadPropertyValue_LastSetValue() {
@@ -223,19 +223,19 @@ public class ProtocolUtil_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( "message", json );
 
-    assertEquals( "bar", ProtocolUtil.readPropertyValue( "w3", "p1" ) );
+    assertEquals( "bar", ProtocolUtil.readPropertyValueAsString( "w3", "p1" ) );
   }
 
   public void testReadEventPropertyValue_MissingProperty() {
     fakeNewJsonMessage();
 
-    assertNull( ProtocolUtil.readEventPropertyValue( "w3", "widgetSelected", "item" ) );
+    assertNull( ProtocolUtil.readEventPropertyValueAsString( "w3", "widgetSelected", "item" ) );
   }
 
   public void testReadEventPropertyValue() {
     fakeNewJsonMessage();
 
-    String value = ProtocolUtil.readEventPropertyValue( "w3", "widgetSelected", "detail" );
+    String value = ProtocolUtil.readEventPropertyValueAsString( "w3", "widgetSelected", "detail" );
     assertEquals( "check", value );
   }
 

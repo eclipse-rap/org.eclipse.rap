@@ -132,14 +132,19 @@ qx.Class.define( "rwt.widgets.ScrolledComposite", {
     _sendChanges : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() && this.isCreated() ) {
         var wm = org.eclipse.swt.WidgetManager.getInstance();
-        var req = rwt.remote.Server.getInstance();
+        var server = rwt.remote.Server.getInstance();
         var id = wm.findIdByWidget( this );
         var scrollX = this._clientArea.getScrollLeft();
-        req.addParameter( id + ".horizontalBar.selection", scrollX );
+        server.addParameter( id + ".horizontalBar.selection", scrollX );
         var scrollY = this._clientArea.getScrollTop();
-        req.addParameter( id + ".verticalBar.selection", scrollY );
+        server.addParameter( id + ".verticalBar.selection", scrollY );
         if( this._hasSelectionListener ) {
-          req.send();
+          // Note : This is consistent with previous behavior of always firing events
+          // on both scrollbars in ScrolledCompositeLCA.java
+          server.getServerObject( this ).notify( "scrollBarSelected", {
+            "vertical" : true,
+            "horizontal" : true
+          } );
         }
         this._requestTimerRunning = false;
       }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.internal.widgets.controldecoratorkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +22,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -28,12 +33,14 @@ import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.ControlDecorator;
 import org.eclipse.swt.widgets.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mockito.ArgumentCaptor;
 
 
 @SuppressWarnings("deprecation")
@@ -45,6 +52,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
   private ControlDecorator decorator;
   private ControlDecoratorLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -55,46 +63,43 @@ public class ControlDecoratorLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
 
   public void testSelectionEvent() {
-    final StringBuilder log = new StringBuilder();
-    SelectionListener selectionListener = new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-        assertEquals( decorator, event.getSource() );
-        assertEquals( null, event.item );
-        assertEquals( SWT.NONE, event.detail );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertEquals( true, event.doit );
-        log.append( "widgetSelected" );
-      }
-      public void widgetDefaultSelected( SelectionEvent event ) {
-        assertEquals( decorator, event.getSource() );
-        assertEquals( null, event.item );
-        assertEquals( SWT.NONE, event.detail );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertEquals( true, event.doit );
-        log.append( "widgetDefaultSelected" );
-      }
-    };
-    decorator.addSelectionListener( selectionListener );
-    String decorId = WidgetUtil.getId( decorator );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, decorId );
+    SelectionListener listener = mock( SelectionListener.class );
+    decorator.addSelectionListener( listener );
+
+    Fixture.fakeNotifyOperation( getId( decorator ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     Fixture.readDataAndProcessAction( decorator );
-    assertEquals( "widgetSelected", log.toString() );
-    Fixture.fakeNewRequest();
-    log.setLength( 0 );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, decorId );
+
+    ArgumentCaptor<SelectionEvent> capture = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener, times( 1 ) ).widgetSelected( capture.capture() );
+    SelectionEvent event = capture.getValue();
+    assertEquals( decorator, event.getSource() );
+    assertEquals( null, event.item );
+    assertEquals( SWT.NONE, event.detail );
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), getEventBounds( event ) );
+    assertEquals( true, event.doit );
+  }
+
+  public void testDefaultSelectionEvent() {
+    SelectionListener listener = mock( SelectionListener.class );
+    decorator.addSelectionListener( listener );
+
+    Fixture.fakeNotifyOperation( getId( decorator ), ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED, null );
     Fixture.readDataAndProcessAction( decorator );
-    assertEquals( "widgetDefaultSelected", log.toString() );
+
+    ArgumentCaptor<SelectionEvent> capture = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener, times( 1 ) ).widgetDefaultSelected( capture.capture() );
+    SelectionEvent event = capture.getValue();
+    assertEquals( decorator, event.getSource() );
+    assertEquals( null, event.item );
+    assertEquals( SWT.NONE, event.detail );
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), getEventBounds( event ) );
+    assertEquals( true, event.doit );
   }
 
   public void testRenderCreate() throws IOException {
@@ -354,5 +359,9 @@ public class ControlDecoratorLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( decorator, "selection" ) );
+  }
+
+  private static Rectangle getEventBounds( SelectionEvent event ) {
+    return new Rectangle( event.x, event.y, event.width, event.height );
   }
 }

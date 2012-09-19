@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,27 +10,25 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.events;
 
-import javax.servlet.http.HttpServletRequest;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventPropertyValueAsString;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Widget;
 
 
 public final class EventLCAUtil {
 
-  public static int readStateMask( String paramName ) {
+  public static int readStateMask( Widget widget, String eventName ) {
     int result = 0;
-    String modifiers = readStringParam( paramName );
+    String modifiers = readEventPropertyValueAsString( getId( widget ),
+                                                       eventName,
+                                                       ClientMessageConst.EVENT_PARAM_MODIFIER );
     if( modifiers != null ) {
       result = translateModifier( modifiers );
     }
     return result;
-  }
-
-  private static String readStringParam( String paramName ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String value = request.getParameter( paramName );
-    return value;
   }
 
   static int translateModifier( String value ) {

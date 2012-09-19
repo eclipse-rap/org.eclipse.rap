@@ -12,17 +12,19 @@
 
 package org.eclipse.swt.internal.widgets.combokit;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
+import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -47,6 +49,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mockito.ArgumentCaptor;
 
 public class ComboLCA_Test extends TestCase {
 
@@ -55,6 +58,7 @@ public class ComboLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private Combo combo;
   private ComboLCA lca;
 
   @Override
@@ -62,6 +66,7 @@ public class ComboLCA_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
+    combo = new Combo( shell, SWT.NONE );
     lca = new ComboLCA();
     Fixture.fakeNewRequest( display );
   }
@@ -72,7 +77,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testControlListeners() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( combo );
     ControlLCATestUtil.testFocusListener( combo );
     ControlLCATestUtil.testMouseListener( combo );
@@ -147,7 +151,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testEditablePreserveValues() {
-    Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
@@ -160,56 +163,60 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), textLimit );
   }
 
-  public void testReadData() {
-    final Combo combo = new Combo( shell, SWT.NONE );
-    String comboId = WidgetUtil.getId( combo );
-    // init combo items
+  public void testReadData_ListVisible() {
     combo.add( "item 1" );
     combo.add( "item 2" );
-    // read list visibility
-    Fixture.fakeRequestParam( comboId + ".listVisible", "true" );
-    WidgetUtil.getLCA( combo ).readData( combo );
+
+    Fixture.fakeSetParameter( getId( combo ), "listVisible", Boolean.TRUE );
+    lca.readData( combo );
+
     assertEquals( true, combo.getListVisible() );
-    // read changed selection
-    Fixture.fakeRequestParam( comboId + ".selectedItem", "1" );
-    WidgetUtil.getLCA( combo ).readData( combo );
+  }
+
+  public void testReadData_SelectedItem() {
+    combo.add( "item 1" );
+    combo.add( "item 2" );
+
+    Fixture.fakeSetParameter( getId( combo ), "selectedItem", Integer.valueOf( 1 ) );
+    lca.readData( combo );
+
     assertEquals( 1, combo.getSelectionIndex() );
-    // read changed selection and ensure that SelectionListener gets called
-    final StringBuilder log = new StringBuilder();
-    combo.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        assertSame( combo, event.getSource() );
-        assertEquals( 0, event.detail );
-        assertEquals( null, event.item );
-        assertEquals( true, event.doit );
-        log.append( "widgetSelected" );
-      }
-    } );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Fixture.fakeRequestParam( comboId + ".selectedItem", "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, comboId );
-    WidgetUtil.getLCA( combo ).readData( combo );
-    assertEquals( 0, combo.getSelectionIndex() );
-    assertEquals( "widgetSelected", log.toString() );
-    // read changed selection
-    Fixture.fakeRequestParam( comboId + ".text", "abc" );
-    Fixture.fakeRequestParam( comboId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( comboId + ".selectionLength", "1" );
-    WidgetUtil.getLCA( combo ).readData( combo );
+  }
+
+  public void testFireSelectionEvent() {
+    SelectionListener listener = mock( SelectionListener.class );
+    combo.addSelectionListener( listener );
+
+    Fixture.fakeNotifyOperation( getId( combo ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.readDataAndProcessAction( combo );
+
+    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
+  }
+
+  public void testReadData_Text() {
+    Fixture.fakeSetParameter( getId( combo ), "text", "abc" );
+
+    lca.readData( combo );
+
+    assertEquals( "abc", combo.getText() );
+  }
+
+  public void testReadData_TextAndSelection() {
+    Fixture.fakeSetParameter( getId( combo ), "text", "abc" );
+    Fixture.fakeSetParameter( getId( combo ), "selectionStart", Integer.valueOf( 1 ) );
+    Fixture.fakeSetParameter( getId( combo ), "selectionLength", Integer.valueOf( 1 ) );
+
+    lca.readData( combo );
+
     assertEquals( new Point( 1, 2 ), combo.getSelection() );
   }
 
-  public void testReadText() {
-    final Combo combo = new Combo( shell, SWT.BORDER );
-    shell.open();
+  public void testTextIsNotRenderdBack() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.markInitialized( combo );
-    Fixture.fakeNewRequest( display );
-    String comboId = WidgetUtil.getId( combo );
-    Fixture.fakeRequestParam( comboId + ".text", "some text" );
 
+    Fixture.fakeSetParameter( getId( combo ), "text", "some text" );
     Fixture.executeLifeCycleFromServerThread();
 
     // ensure that no text is sent back to the client
@@ -218,128 +225,78 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( "some text", combo.getText() );
   }
 
-  public void testReadText_withVerifyListener() {
-    final Combo combo = new Combo( shell, SWT.BORDER );
-    combo.setText( "some text" );
-    shell.open();
+  public void testReadText_WithVerifyListener() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.markInitialized( combo );
-    final StringBuilder log = new StringBuilder();
-    combo.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-        assertEquals( combo, event.widget );
-        assertEquals( "verify me", event.text );
-        assertEquals( 0, event.start );
-        assertEquals( 9, event.end );
-        log.append( event.text );
-      }
-    } );
-    Fixture.fakeNewRequest( display );
-    String comboId = WidgetUtil.getId( combo );
-    Fixture.fakeRequestParam( comboId + ".text", "verify me" );
+    combo.setText( "some text" );
+    VerifyListener listener = mock( VerifyListener.class );
+    combo.addVerifyListener( listener );
 
+    Fixture.fakeSetParameter( getId( combo ), "text", "verify me" );
     Fixture.executeLifeCycleFromServerThread();
 
-    // ensure that no text is sent back to the client
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( combo, "text" ) );
     assertEquals( "verify me", combo.getText() );
-    assertEquals( "verify me", log.toString() );
+    ArgumentCaptor<VerifyEvent> captor = ArgumentCaptor.forClass( VerifyEvent.class );
+    verify( listener, times( 1 ) ).verifyText( captor.capture() );
+    VerifyEvent event = captor.getValue();
+    assertEquals( "verify me", event.text );
+    assertEquals( 0, event.start );
+    assertEquals( 9, event.end );
   }
 
-  public void testTextSelectionWithVerifyEvent_emptyListener() {
-    // ensure that selection is unchanged in case a verify-listener is
-    // registered that does not change the text
-    final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
-    final Combo combo = new Combo( shell, SWT.NONE );
-    shell.open();
-    combo.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-        log.add( event );
-      }
-    } );
+  public void testTextSelectionWithVerifyEvent_EmptyListener() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.markInitialized( combo );
-    log.clear();
-    Fixture.fakeNewRequest( display );
-    String comboId = WidgetUtil.getId( combo );
-    Fixture.fakeRequestParam( comboId + ".text", "verify me" );
-    Fixture.fakeRequestParam( comboId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( comboId + ".selectionLength", "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, comboId );
+    VerifyListener listener = mock( VerifyListener.class );
+    combo.addVerifyListener( listener );
 
+    fakeTextAndSelectionParameters( "verify me", 1, 0 );
     Fixture.executeLifeCycleFromServerThread();
 
-    // ensure that an empty verify listener does not lead to sending the
-    // original text and selection values back to the client
+    verify( listener, times( 1 ) ).verifyText( any( VerifyEvent.class ) );
+    assertEquals( "verify me", combo.getText() );
+    assertEquals( new Point( 1, 1 ), combo.getSelection() );
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( combo, "text" ) );
     assertNull( message.findSetOperation( combo, "selection" ) );
-    assertEquals( 1, log.size() );
-    assertEquals( new Point( 1, 1 ), combo.getSelection() );
-    assertEquals( "verify me", combo.getText() );
   }
 
-  public void testTextSelectionWithVerifyEvent_listenerDoesNotChangeSelection() {
-    // ensure that selection is unchanged in case a verify-listener changes
-    // the incoming text within the limits of the selection
-    final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
-    final Combo combo = new Combo( shell, SWT.NONE );
-    shell.open();
+  public void testTextSelectionWithVerifyEvent_ListenerDoesNotChangeSelection() {
     combo.setText( "" );
-    VerifyListener alteringVerifyListener = new VerifyListener() {
+    combo.addVerifyListener( new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
-        log.add( event );
         event.text = "verified";
       }
-    };
-    combo.addVerifyListener( alteringVerifyListener );
-    Fixture.fakeNewRequest( display );
-    String comboId = WidgetUtil.getId( combo );
-    Fixture.fakeRequestParam( comboId + ".text", "verify me" );
-    Fixture.fakeRequestParam( comboId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( comboId + ".selectionLength", "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, comboId );
+    } );
 
+    fakeTextAndSelectionParameters( "verify me", 1, 0 );
     Fixture.executeLifeCycleFromServerThread( );
 
-    assertEquals( 1, log.size() );
     assertEquals( new Point( 1, 1 ), combo.getSelection() );
     assertEquals( "verified", combo.getText() );
   }
 
-  public void testTextSelectionWithVerifyEvent_listenerAdjustsSelection() {
-    // ensure that selection is adjusted in case a verify-listener changes
-    // the incoming text in a way that would result in an invalid selection
-    final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
-    final Combo combo = new Combo( shell, SWT.NONE );
-    shell.open();
-    String comboId = WidgetUtil.getId( combo );
+  public void testTextSelectionWithVerifyEvent_ListenerAdjustsSelection() {
     combo.setText( "" );
     combo.addVerifyListener( new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
-        log.add( event );
         event.text = "";
       }
     } );
-    log.clear();
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( comboId + ".text", "verify me" );
-    Fixture.fakeRequestParam( comboId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( comboId + ".selectionLength", "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, comboId );
 
+    fakeTextAndSelectionParameters( "verify me", 1, 0 );
     Fixture.executeLifeCycleFromServerThread( );
 
-    assertEquals( 1, log.size() );
     assertEquals( new Point( 0, 0 ), combo.getSelection() );
     assertEquals( "", combo.getText() );
   }
 
   public void testSelectionAfterRemoveAll() {
-    final Combo combo = new Combo( shell, SWT.READ_ONLY );
+    combo = new Combo( shell, SWT.READ_ONLY );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
     combo.add( "item 1" );
     combo.select( 0 );
     Button button = new Button( shell, SWT.PUSH );
@@ -352,23 +309,15 @@ public class ComboLCA_Test extends TestCase {
       }
     } );
 
-    String buttonId = WidgetUtil.getId( button );
-
-    // Execute life cycle once to simulate startup request
-    Fixture.fakeNewRequest( display );
-    Fixture.executeLifeCycleFromServerThread();
-
     // Simulate button click that executes widgetSelected
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     Fixture.executeLifeCycleFromServerThread();
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( new Integer( 0 ), message.findSetProperty( combo, PROP_SELECTION_INDEX ) );
   }
 
   public void testRenderCreate() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     lca.renderInitialization( combo );
 
     Message message = Fixture.getProtocolMessage();
@@ -377,8 +326,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     lca.renderInitialization( combo );
 
     Message message = Fixture.getProtocolMessage();
@@ -387,8 +334,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderInitialItemHeight() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     lca.render( combo );
 
     Message message = Fixture.getProtocolMessage();
@@ -397,8 +342,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderItemHeight() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     combo.setFont( Graphics.getFont( "Arial", 16, SWT.NONE ) );
     lca.renderChanges( combo );
 
@@ -407,7 +350,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderItemHeightUnchanged() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
 
@@ -420,8 +362,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderInitialVisibleItemCount() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     lca.render( combo );
 
     Message message = Fixture.getProtocolMessage();
@@ -430,8 +370,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderVisibleItemCount() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     combo.setVisibleItemCount( 10 );
     lca.renderChanges( combo );
 
@@ -440,7 +378,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderVisibleItemCountUnchanged() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
 
@@ -453,8 +390,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderInitialItems() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     lca.render( combo );
 
     Message message = Fixture.getProtocolMessage();
@@ -463,8 +398,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderItems() throws IOException, JSONException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     combo.setItems( new String[] { "a", "b", "c" } );
     lca.renderChanges( combo );
 
@@ -475,7 +408,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderItemsUnchanged() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
 
@@ -488,8 +420,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderInitialListVisible() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     lca.render( combo );
 
     Message message = Fixture.getProtocolMessage();
@@ -498,8 +428,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderListVisible() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     combo.setListVisible( true );
     lca.renderChanges( combo );
 
@@ -508,7 +436,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderListVisibleUnchanged() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
 
@@ -521,8 +448,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderEditable() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     lca.render( combo );
 
     Message message = Fixture.getProtocolMessage();
@@ -541,8 +466,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelectionIndex() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     lca.render( combo );
 
     Message message = Fixture.getProtocolMessage();
@@ -551,7 +474,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionIndex() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.setItems( new String[] { "a", "b", "c" } );
 
     combo.select( 1 );
@@ -562,7 +484,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionIndexUnchanged() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.setItems( new String[] { "a", "b", "c" } );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -576,8 +497,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderInitialText() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     lca.render( combo );
 
     Message message = Fixture.getProtocolMessage();
@@ -586,8 +505,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderText() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     combo.setText( "foo" );
     lca.renderChanges( combo );
 
@@ -606,7 +523,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderTextUnchanged() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
 
@@ -619,8 +535,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelection() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     lca.render( combo );
 
     Message message = Fixture.getProtocolMessage();
@@ -629,7 +543,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderSelection() throws IOException, JSONException {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.setText( "foo bar" );
 
     combo.setSelection( new Point( 1, 3 ) );
@@ -641,7 +554,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionUnchanged() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.setText( "foo bar" );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
@@ -655,8 +567,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderInitialTextLimit() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     lca.render( combo );
 
     Message message = Fixture.getProtocolMessage();
@@ -665,8 +575,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimit() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     combo.setTextLimit( 10 );
     lca.renderChanges( combo );
 
@@ -675,7 +583,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimitNoLimit() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
     combo.setTextLimit( 10 );
@@ -689,7 +596,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimitUnchanged() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
 
@@ -702,7 +608,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimitReset() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
 
@@ -716,7 +621,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimitResetWithNegative() throws IOException {
-    Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
 
@@ -730,7 +634,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderAddSelectionListener() throws Exception {
-    Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
     Fixture.preserveWidgets();
@@ -743,7 +646,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    Combo combo = new Combo( shell, SWT.NONE );
     SelectionListener listener = new SelectionAdapter() { };
     combo.addSelectionListener( listener );
     Fixture.markInitialized( display );
@@ -758,7 +660,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
-    Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
     Fixture.preserveWidgets();
@@ -772,7 +673,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderAddModifyListener() throws Exception {
-    Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
     Fixture.preserveWidgets();
@@ -788,7 +688,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveModifyListener() throws Exception {
-    Combo combo = new Combo( shell, SWT.NONE );
     ModifyListener listener = new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
       }
@@ -806,7 +705,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderModifyListenerUnchanged() throws Exception {
-    Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
     Fixture.preserveWidgets();
@@ -823,7 +721,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderAddVerifyListener() throws Exception {
-    Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
     Fixture.preserveWidgets();
@@ -839,7 +736,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveVerifyListener() throws Exception {
-    Combo combo = new Combo( shell, SWT.NONE );
     VerifyListener listener = new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
       }
@@ -857,7 +753,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testRenderVerifyListenerUnchanged() throws Exception {
-    Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
     Fixture.preserveWidgets();
@@ -871,5 +766,11 @@ public class ComboLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( combo, "verify" ) );
+  }
+
+  private void fakeTextAndSelectionParameters( String text, int start, int length ) {
+    Fixture.fakeSetParameter( getId( combo ), "text", text );
+    Fixture.fakeSetParameter( getId( combo ), "selectionStart", Integer.valueOf( start ) );
+    Fixture.fakeSetParameter( getId( combo ), "selectionLength", Integer.valueOf( length ) );
   }
 }

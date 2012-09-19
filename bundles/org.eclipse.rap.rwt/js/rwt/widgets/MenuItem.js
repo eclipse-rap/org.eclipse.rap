@@ -54,7 +54,7 @@ qx.Class.define("rwt.widgets.MenuItem",  {
       break;
       case "radio":
        this._isSelectable = true;
-       this._sendEvent = false;
+       this._sendEvent = true;
        this.setNoRadioGroup( false );
        org.eclipse.rwt.RadioButtonUtil.registerExecute( this );
       break;

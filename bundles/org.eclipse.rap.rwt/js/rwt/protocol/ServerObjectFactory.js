@@ -20,7 +20,7 @@ rwt.protocol.ServerObjectFactory = { // TODO [tb] : merge with Server.js? (not a
   getServerObject : function( target ) {
     var id = ObjectManager.getId( target );
     if( id === null ){
-      throw new Error( "Invalid target for ServerObject" );
+      throw new Error( "Invalid target for ServerObject, or target not in ObjectManager" );
     }
     return this._getServerObject( id );
   },

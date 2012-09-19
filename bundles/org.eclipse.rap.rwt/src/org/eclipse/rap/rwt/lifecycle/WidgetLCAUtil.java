@@ -12,11 +12,7 @@
 package org.eclipse.rap.rwt.lifecycle;
 
 import java.util.Arrays;
-import javax.servlet.http.HttpServletRequest;
-
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.*;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.HelpEvent;
@@ -99,22 +95,22 @@ public final class WidgetLCAUtil {
   }
 
   private static int readBoundsY( String widgetId, int defaultValue ) {
-    String value = readPropertyValue( widgetId, PARAM_Y );
+    String value = ProtocolUtil.readPropertyValueAsString( widgetId, PARAM_Y );
     return readBoundsValue( value, defaultValue );
   }
 
   private static int readBoundsX( String widgetId, int defaultValue ) {
-    String value = readPropertyValue( widgetId, PARAM_X );
+    String value = ProtocolUtil.readPropertyValueAsString( widgetId, PARAM_X );
     return readBoundsValue( value, defaultValue );
   }
 
   private static int readBoundsWidth( String widgetId, int defaultValue ) {
-    String value = WidgetLCAUtil.readPropertyValue( widgetId, PARAM_WIDTH );
+    String value = ProtocolUtil.readPropertyValueAsString( widgetId, PARAM_WIDTH );
     return readBoundsValue( value, defaultValue );
   }
 
   private static int readBoundsHeight( String widgetId, int defaultValue ) {
-    String value = WidgetLCAUtil.readPropertyValue( widgetId, PARAM_HEIGHT );
+    String value = ProtocolUtil.readPropertyValueAsString( widgetId, PARAM_HEIGHT );
     return readBoundsValue( value, defaultValue );
   }
 
@@ -136,7 +132,7 @@ public final class WidgetLCAUtil {
    * @since 1.3
    */
   public static void processHelp( Widget widget ) {
-    if( WidgetLCAUtil.wasEventSent( widget, JSConst.EVENT_HELP ) ) {
+    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_HELP ) ) {
       HelpEvent event = new HelpEvent( widget );
       event.processEvent();
     }
@@ -598,32 +594,40 @@ public final class WidgetLCAUtil {
   // Generic methods to read property values
 
   /**
-   * Reads the value of the specified property for the specified widget from the
-   * request that is currently processed. If this property is not submitted for
+   * Reads the value of the specified property for the specified widget from the message
+   * sent by the client that is currently processed. If this property is not submitted for
    * the given widget, <code>null</code> is returned.
    *
    * @param widget the widget whose property to read
    * @param property the name of the property to read
-   * @return the value read from the request or <code>null</code> if no value
+   * @return the value read from the client message or <code>null</code> if no value
    *         was submitted for the given property
    */
   public static String readPropertyValue( Widget widget, String property ) {
     String widgetId = WidgetUtil.getId( widget );
-    return readPropertyValue( widgetId, property );
+    return ProtocolUtil.readPropertyValueAsString( widgetId, property );
   }
 
-  private static String readPropertyValue( String widgetId, String propertyName ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    StringBuilder key = new StringBuilder();
-    key.append( widgetId );
-    key.append( "." );
-    key.append( propertyName );
-    return request.getParameter( key.toString() );
+  /**
+   * Reads the value of the specified event property for the specified widget from the message
+   * sent by the client that is currently processed. If this event property is not submitted for
+   * the given widget, <code>null</code> is returned.
+   *
+   * @param widget the widget whose property to read
+   * @param eventName the name of the event whose property to read
+   * @param property the name of the property to read
+   * @return the value read from the client message or <code>null</code> if no value
+   *         was submitted for the given property
+   * @since 2.0
+   */
+  public static String readEventPropertyValue( Widget widget, String eventName, String property ) {
+    String widgetId = WidgetUtil.getId( widget );
+    return ProtocolUtil.readEventPropertyValueAsString( widgetId, eventName, property );
   }
 
   /**
    * Determines whether an event with the specified name was submitted for the
-   * specified widget within the current request.
+   * specified widget within the current message sent by the client.
    *
    * @param widget the widget that should receive the event
    * @param eventName the name of the event to check for
@@ -631,10 +635,11 @@ public final class WidgetLCAUtil {
    *         otherwise.
    */
   public static boolean wasEventSent( Widget widget, String eventName ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String widgetId = request.getParameter( eventName );
-    return WidgetUtil.getId( widget ).equals( widgetId );
+    String widgetId = WidgetUtil.getId( widget );
+    return ProtocolUtil.wasEventSent( widgetId, eventName );
   }
+
+
 
   //////////////////////////////////////////////
   // Generic methods to preserve property values

@@ -26,7 +26,7 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
   void readData( Button button ) {
     ControlLCAUtil.processSelection( button, null, false );
     ButtonLCAUtil.readSelection( button );
-    ControlLCAUtil.processMouseEvents( button );
+    ControlLCAUtil.processEvents( button );
     ControlLCAUtil.processKeyEvents( button );
     ControlLCAUtil.processMenuDetect( button );
     WidgetLCAUtil.processHelp( button );

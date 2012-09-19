@@ -26,7 +26,7 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
   void readData( Button button ) {
     ButtonLCAUtil.readSelection( button );
     ControlLCAUtil.processSelection( button, null, true );
-    ControlLCAUtil.processMouseEvents( button );
+    ControlLCAUtil.processEvents( button );
     ControlLCAUtil.processKeyEvents( button );
     ControlLCAUtil.processMenuDetect( button );
     WidgetLCAUtil.processHelp( button );

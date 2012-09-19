@@ -11,6 +11,13 @@
 package org.eclipse.rap.rwt.widgets;
 
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.IBrowserHistory;
@@ -26,18 +33,21 @@ import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.swt.widgets.Display;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.mockito.ArgumentCaptor;
 
 
 public class BrowserHistory_Test extends TestCase {
 
   private Display display;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -82,6 +92,23 @@ public class BrowserHistory_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
+  }
+
+  public void testFireNavigationEvent() {
+    BrowserHistoryListener listener = mock( BrowserHistoryListener.class );
+    IBrowserHistory history = RWT.getBrowserHistory();
+    history.addBrowserHistoryListener( listener );
+
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( "entryId", "foo" );
+    Fixture.fakeNotifyOperation( "bh", "historyNavigated", parameters  );
+    Fixture.executeLifeCycleFromServerThread();
+
+    ArgumentCaptor<BrowserHistoryEvent> captor
+      = ArgumentCaptor.forClass( BrowserHistoryEvent.class );
+    verify( listener, times( 1 ) ).navigated( captor.capture() );
+    BrowserHistoryEvent event = captor.getValue();
+    assertEquals( "foo", event.entryId );
   }
 
   public void testRenderCreate() {

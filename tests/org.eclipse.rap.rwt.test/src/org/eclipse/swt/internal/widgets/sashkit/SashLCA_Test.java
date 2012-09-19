@@ -12,13 +12,20 @@
 
 package org.eclipse.swt.internal.widgets.sashkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -30,11 +37,13 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.*;
+import org.mockito.ArgumentCaptor;
 
 public class SashLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private Sash sash;
   private SashLCA lca;
 
   @Override
@@ -42,6 +51,7 @@ public class SashLCA_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
+    sash = new Sash( shell, SWT.NONE );
     lca = new SashLCA();
     Fixture.fakeNewRequest( display );
   }
@@ -52,7 +62,6 @@ public class SashLCA_Test extends TestCase {
   }
 
   public void testControlListeners() throws IOException {
-    Sash sash = new Sash( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( sash );
     ControlLCATestUtil.testFocusListener( sash );
     ControlLCATestUtil.testMouseListener( sash );
@@ -63,7 +72,6 @@ public class SashLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    Sash sash = new Sash( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     //control: enabled
@@ -134,34 +142,30 @@ public class SashLCA_Test extends TestCase {
   }
 
   public void testSelectionEvent() {
-    final Sash sash = new Sash( shell, SWT.NONE );
-    final StringBuilder log = new StringBuilder();
-    SelectionListener selectionListener = new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        assertEquals( sash, event.getSource() );
-        assertEquals( null, event.item );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertEquals( 0, event.stateMask );
-        assertEquals( SWT.DRAG, event.detail );
-        assertEquals( true, event.doit );
-        log.append( "widgetSelected" );
-      }
-    };
-    sash.addSelectionListener( selectionListener );
-    String sashId = WidgetUtil.getId( sash );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, sashId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".detail", "drag" );
+    SelectionListener listener = mock( SelectionListener.class );
+    sash.addSelectionListener( listener );
+
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( ClientMessageConst.EVENT_PARAM_DETAIL, "drag" );
+    Fixture.fakeNotifyOperation( getId( sash ),
+                                 ClientMessageConst.EVENT_WIDGET_SELECTED,
+                                 properties );
     Fixture.readDataAndProcessAction( sash );
-    assertEquals( "widgetSelected", log.toString() );
+
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertEquals( sash, event.getSource() );
+    assertEquals( null, event.item );
+    assertEquals( 0, event.x );
+    assertEquals( 0, event.y );
+    assertEquals( 0, event.width );
+    assertEquals( 0, event.height );
+    assertEquals( true, event.doit );
+    assertEquals( SWT.DRAG, event.detail );
   }
 
   public void testRenderCreate() throws IOException {
-    Sash sash = new Sash( shell, SWT.NONE );
-
     lca.renderInitialization( sash );
 
     Message message = Fixture.getProtocolMessage();
@@ -170,8 +174,6 @@ public class SashLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    Sash sash = new Sash( shell, SWT.NONE );
-
     lca.renderInitialization( sash );
 
     Message message = Fixture.getProtocolMessage();
@@ -180,7 +182,7 @@ public class SashLCA_Test extends TestCase {
   }
 
   public void testRenderCreateWithHorizontal() throws IOException {
-    Sash sash = new Sash( shell, SWT.HORIZONTAL );
+    sash = new Sash( shell, SWT.HORIZONTAL );
 
     lca.renderInitialization( sash );
 

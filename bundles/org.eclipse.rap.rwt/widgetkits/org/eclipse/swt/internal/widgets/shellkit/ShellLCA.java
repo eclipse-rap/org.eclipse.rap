@@ -18,11 +18,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.*;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellEvent;
@@ -87,12 +83,11 @@ public final class ShellLCA extends AbstractWidgetLCA {
     // Important: Order matters, readMode() before readBounds()
     readMode( shell );
     readBounds( shell );
-    if( WidgetLCAUtil.wasEventSent( shell, JSConst.EVENT_SHELL_CLOSED ) ) {
+    if( WidgetLCAUtil.wasEventSent( shell, ClientMessageConst.EVENT_SHELL_CLOSED ) ) {
       shell.close();
     }
     processActiveShell( shell );
-    processActivate( shell );
-    ControlLCAUtil.processMouseEvents( shell );
+    ControlLCAUtil.processEvents( shell );
     ControlLCAUtil.processKeyEvents( shell );
     ControlLCAUtil.processMenuDetect( shell );
     WidgetLCAUtil.processHelp( shell );
@@ -176,7 +171,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   }
 
   private static void processActiveShell( Shell shell ) {
-    if( WidgetLCAUtil.wasEventSent( shell, JSConst.EVENT_SHELL_ACTIVATED ) ) {
+    if( WidgetLCAUtil.wasEventSent( shell, ClientMessageConst.EVENT_SHELL_ACTIVATED ) ) {
       Shell lastActiveShell = shell.getDisplay().getActiveShell();
       setActiveShell( shell );
       ActivateEvent event;
@@ -208,37 +203,11 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  // TODO [rh] is this safe for multiple shells?
-  private static void processActivate( Shell shell ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String widgetId = request.getParameter( JSConst.EVENT_WIDGET_ACTIVATED );
-    if( widgetId != null ) {
-      Widget widget = WidgetUtil.find( shell, widgetId );
-      if( widget != null ) {
-        setActiveControl( shell, widget );
-      }
-    } else {
-      String activeControlId = WidgetLCAUtil.readPropertyValue( shell, "activeControl" );
-      Widget widget = WidgetUtil.find( shell, activeControlId );
-      if( widget != null ) {
-        setActiveControl( shell, widget );
-      }
-    }
-  }
-
   private static Control getActiveControl( Shell shell ) {
     Object adapter = shell.getAdapter( IShellAdapter.class );
     IShellAdapter shellAdapter = ( IShellAdapter )adapter;
     Control activeControl = shellAdapter.getActiveControl();
     return activeControl;
-  }
-
-  private static void setActiveControl( Shell shell, Widget widget ) {
-    if( EventUtil.isAccessible( widget ) ) {
-      Object adapter = shell.getAdapter( IShellAdapter.class );
-      IShellAdapter shellAdapter = ( IShellAdapter )adapter;
-      shellAdapter.setActiveControl( ( Control )widget );
-    }
   }
 
   private static void renderImage( Shell shell ) {

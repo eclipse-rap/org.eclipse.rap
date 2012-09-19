@@ -11,6 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.expanditemkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 
 import junit.framework.TestCase;
@@ -27,6 +32,7 @@ import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ExpandEvent;
 import org.eclipse.swt.events.ExpandListener;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Display;
@@ -36,6 +42,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mockito.ArgumentCaptor;
 
 
 @SuppressWarnings("deprecation")
@@ -63,55 +70,47 @@ public class ExpandItemLCA_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testExpandEvent() {
-    final StringBuilder log = new StringBuilder();
-    ExpandListener listener = new ExpandListener() {
-      public void itemCollapsed( ExpandEvent event ) {
-        assertEquals( expandBar, event.getSource() );
-        assertEquals( expandItem, event.item );
-        assertEquals( SWT.NONE, event.detail );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertEquals( true, event.doit );
-        log.append( "collapsed" );
-      }
-
-      public void itemExpanded( ExpandEvent event ) {
-        assertEquals( expandBar, event.getSource() );
-        assertEquals( expandItem, event.item );
-        assertEquals( SWT.NONE, event.detail );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertEquals( true, event.doit );
-        log.append( "expanded" );
-      }
-    };
+  public void testExpandItem() {
+    ExpandListener listener = mock( ExpandListener.class );
     expandBar.addExpandListener( listener );
-    String expandItemId = WidgetUtil.getId( expandItem );
-    Fixture.fakeRequestParam( ExpandItemLCA.EVENT_ITEM_EXPANDED, expandItemId );
-    Fixture.executeLifeCycleFromServerThread();
-    assertEquals( "expanded", log.toString() );
-    log.setLength( 0 );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( ExpandItemLCA.EVENT_ITEM_EXPANDED, null );
-    Fixture.fakeRequestParam( ExpandItemLCA.EVENT_ITEM_COLLAPSED, expandItemId );
-    Fixture.executeLifeCycleFromServerThread();
-    assertEquals( "collapsed", log.toString() );
+
+    Fixture.fakeNotifyOperation( getId( expandItem ), ExpandItemLCA.EVENT_ITEM_EXPANDED, null );
+    Fixture.readDataAndProcessAction( display );
+
+    ArgumentCaptor<ExpandEvent> captor = ArgumentCaptor.forClass( ExpandEvent.class );
+    verify( listener, times( 1 ) ).itemExpanded( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertEquals( expandBar, event.getSource() );
+    assertEquals( expandItem, event.item );
+    assertEquals( SWT.NONE, event.detail );
+    assertEquals( 0, event.x );
+    assertEquals( 0, event.y );
+    assertEquals( 0, event.width );
+    assertEquals( 0, event.height );
+    assertEquals( true, event.doit );
+    assertTrue( expandItem.getExpanded() );
   }
 
-  public void testExpandCollapse() {
-    String expandItemId = WidgetUtil.getId( expandItem );
-    Fixture.fakeRequestParam( ExpandItemLCA.EVENT_ITEM_EXPANDED, expandItemId );
-    Fixture.readDataAndProcessAction( expandItem );
-    assertEquals( true, expandItem.getExpanded() );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( ExpandItemLCA.EVENT_ITEM_COLLAPSED, expandItemId );
-    Fixture.readDataAndProcessAction( expandItem );
-    assertEquals( false, expandItem.getExpanded() );
+  public void testCollapseItem() {
+    ExpandListener listener = mock( ExpandListener.class );
+    expandBar.addExpandListener( listener );
+    expandItem.setExpanded( true );
+
+    Fixture.fakeNotifyOperation( getId( expandItem ), ExpandItemLCA.EVENT_ITEM_COLLAPSED, null );
+    Fixture.readDataAndProcessAction( display );
+
+    ArgumentCaptor<ExpandEvent> captor = ArgumentCaptor.forClass( ExpandEvent.class );
+    verify( listener, times( 1 ) ).itemCollapsed( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertEquals( expandBar, event.getSource() );
+    assertEquals( expandItem, event.item );
+    assertEquals( SWT.NONE, event.detail );
+    assertEquals( 0, event.x );
+    assertEquals( 0, event.y );
+    assertEquals( 0, event.width );
+    assertEquals( 0, event.height );
+    assertEquals( true, event.doit );
+    assertFalse( expandItem.getExpanded() );
   }
 
   public void testRenderCreate() throws IOException {

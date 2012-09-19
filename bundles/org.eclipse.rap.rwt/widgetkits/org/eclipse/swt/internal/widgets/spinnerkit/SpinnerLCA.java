@@ -83,7 +83,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
       spinner.setSelection( NumberFormatUtil.parseInt( value ) );
     }
     ControlLCAUtil.processSelection( widget, null, false );
-    ControlLCAUtil.processMouseEvents( spinner );
+    ControlLCAUtil.processEvents( spinner );
     ControlLCAUtil.processKeyEvents( spinner );
     ControlLCAUtil.processMenuDetect( spinner );
     WidgetLCAUtil.processHelp( spinner );

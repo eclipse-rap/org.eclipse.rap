@@ -11,14 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.sashkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
+
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -34,6 +34,7 @@ public final class SashLCA extends AbstractWidgetLCA {
     "HORIZONTAL", "VERTICAL", "SMOOTH", "BORDER"
   };
 
+  @Override
   public void preserveValues( Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
     WidgetLCAUtil.preserveCustomVariant( widget );
@@ -42,12 +43,13 @@ public final class SashLCA extends AbstractWidgetLCA {
   public void readData( Widget widget ) {
     Sash sash = ( Sash )widget;
     processSelection( sash );
-    ControlLCAUtil.processMouseEvents( sash );
+    ControlLCAUtil.processEvents( sash );
     ControlLCAUtil.processKeyEvents( sash );
     ControlLCAUtil.processMenuDetect( sash );
     WidgetLCAUtil.processHelp( sash );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Sash sash = ( Sash )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( sash );
@@ -56,27 +58,33 @@ public final class SashLCA extends AbstractWidgetLCA {
     clientObject.set( "style", WidgetLCAUtil.getStyles( sash, ALLOWED_STYLES ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     Sash sash = ( Sash )widget;
     ControlLCAUtil.renderChanges( sash );
     WidgetLCAUtil.renderCustomVariant( sash );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
   private static void processSelection( Sash sash ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String eventId = JSConst.EVENT_WIDGET_SELECTED;
-    if( WidgetLCAUtil.wasEventSent( sash, eventId ) ) {
-      int eventType = SelectionEvent.WIDGET_SELECTED;
+    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( sash, eventName ) ) {
       Rectangle bounds = WidgetLCAUtil.readBounds( sash, sash.getBounds() );
-      int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
-      String detailStr = request.getParameter( eventId + ".detail" );
-      int detail = "drag".equals( detailStr ) ? SWT.DRAG : SWT.NONE;
-      SelectionEvent event
-        = new SelectionEvent( sash, null, eventType, bounds, stateMask, null, true, detail );
+      int stateMask = EventLCAUtil.readStateMask( sash, eventName );
+      String value = readEventPropertyValue( sash, eventName, EVENT_PARAM_DETAIL );
+      int detail = "drag".equals( value ) ? SWT.DRAG : SWT.NONE;
+      SelectionEvent event = new SelectionEvent( sash,
+                                                 null,
+                                                 SelectionEvent.WIDGET_SELECTED,
+                                                 bounds,
+                                                 stateMask,
+                                                 null,
+                                                 true,
+                                                 detail );
       event.processEvent();
     }
   }

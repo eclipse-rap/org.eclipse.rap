@@ -11,13 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menukit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+
 import java.io.IOException;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -32,11 +34,12 @@ import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuListener;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -86,50 +89,22 @@ public class MenuLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( menuBar, "parent" ) );
   }
 
-  public void testWriteBoundsForMenuBar() throws IOException {
+  public void testRenderBoundsForMenuBar() throws JSONException {
     Menu menuBar = new Menu( shell, SWT.BAR );
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.markInitialized( menuBar );
-    // initial unassigned rendering -> no setSpace
-    lca.renderChanges( menuBar );
+    shell.setMenuBar( menuBar );
+
+    Fixture.fakeSetParameter( getId( shell ), "bounds.x", Integer.valueOf( 0 ) );
+    Fixture.fakeSetParameter( getId( shell ), "bounds.y", Integer.valueOf( 0 ) );
+    Fixture.fakeSetParameter( getId( shell ), "bounds.width", Integer.valueOf( 1234 ) );
+    Fixture.fakeSetParameter( getId( shell ), "bounds.height", Integer.valueOf( 4321 ) );
+    Fixture.executeLifeCycleFromServerThread( );
+
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( menuBar, "bounds" ) );
-    // initial assigned rendering -> no setSpace
-    Fixture.fakeNewRequest( display );
-    Fixture.preserveWidgets();
-    shell.setMenuBar( menuBar );
-    lca.renderChanges( menuBar );
-    message = Fixture.getProtocolMessage();
-    assertNotNull( message.findSetOperation( menuBar, "bounds" ) );
-    // changing bounds of shell -> an assigned menuBar must adjust its size
-    Fixture.fakeNewRequest( display );
-    Fixture.preserveWidgets();
-    shell.setBounds( new Rectangle( 1, 2, 3, 4 ) );
-    lca.renderChanges( menuBar );
-    message = Fixture.getProtocolMessage();
-    assertNotNull( message.findSetOperation( menuBar, "bounds" ) );
-    // changing bounds of shell -> an unassigned menuBar does nothing
-    Fixture.fakeNewRequest( display );
-    Fixture.preserveWidgets();
-    shell.setMenuBar( null );
-    Fixture.preserveWidgets();
-    shell.setBounds( new Rectangle( 5, 6, 7, 8 ) );
-    lca.renderChanges( menuBar );
-    message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( menuBar, "bounds" ) );
-    // Simulate client-side size-change of shell: menuBar must render new size
-    shell.setMenuBar( menuBar );
-    String shellId = WidgetUtil.getId( shell );
-    Fixture.fakeNewRequest( display );
-    Fixture.executeLifeCycleFromServerThread( );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( shellId + ".bounds.x", "0" );
-    Fixture.fakeRequestParam( shellId + ".bounds.y", "0" );
-    Fixture.fakeRequestParam( shellId + ".bounds.width", "1234" );
-    Fixture.fakeRequestParam( shellId + ".bounds.height", "4321" );
-    Fixture.executeLifeCycleFromServerThread( );
-    message = Fixture.getProtocolMessage();
+    JSONArray bounds = ( JSONArray )message.findSetProperty( menuBar, "bounds" );
+    assertEquals( 1234, bounds.getInt( 2 ) );
     assertNotNull( message.findSetOperation( menuBar, "bounds" ) );
   }
 
@@ -254,6 +229,36 @@ public class MenuLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( menu, "bounds" ) );
+  }
+
+  public void testRenderBoundsAfterRemoveMenubar() throws IOException {
+    Menu menu = new Menu( shell, SWT.BAR );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( menu );
+    shell.setMenuBar( menu );
+
+    // Note: Menu bounds are preserved in ShellLCA#readData
+    WidgetUtil.getLCA( shell ).readData( shell );
+    shell.setMenuBar( null );
+    lca.renderChanges( menu );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( menu, "bounds" ) );
+  }
+
+  public void testRenderBoundsAfterShellBoundsChange() throws IOException {
+    Menu menu = new Menu( shell, SWT.BAR );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( menu );
+    shell.setMenuBar( menu );
+
+    // Note: Menu bounds are preserved in ShellLCA#readData
+    WidgetUtil.getLCA( shell ).readData( shell );
+    shell.setBounds( 1, 2, 3, 4 );
+    lca.renderChanges( menu );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findSetOperation( menu, "bounds" ) );
   }
 
   public void testRenderInitialCustomVariant() throws IOException {
@@ -455,7 +460,7 @@ public class MenuLCA_Test extends TestCase {
     Fixture.markInitialized( menu );
     Fixture.preserveWidgets();
 
-    Fixture.fakeRequestParam( JSConst.EVENT_MENU_SHOWN, WidgetUtil.getId( menu ) );
+    Fixture.fakeNotifyOperation( getId( menu ), ClientMessageConst.EVENT_MENU_SHOWN, null );
     lca.renderChanges( menu );
 
     Message message = Fixture.getProtocolMessage();

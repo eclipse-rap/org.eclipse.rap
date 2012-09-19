@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -55,10 +57,9 @@ public class DisplayLCA_Test extends TestCase {
     clearLogs();
     Fixture.setUp();
     display = new Display();
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeResponseWriter();
     displayId = DisplayUtil.getId( display );
     displayLCA = new DisplayLCA();
+    Fixture.fakeNewRequest( display );
   }
 
   @Override
@@ -141,8 +142,8 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testReadDisplayBounds() {
-    Fixture.fakeRequestParam( displayId + ".bounds.width", "30" );
-    Fixture.fakeRequestParam( displayId + ".bounds.height", "70" );
+    Fixture.fakeSetParameter( getId( display ), "bounds.width", Integer.valueOf( 30 ) );
+    Fixture.fakeSetParameter( getId( display ), "bounds.height", Integer.valueOf( 70 ) );
 
     displayLCA.readData( display );
 
@@ -179,7 +180,6 @@ public class DisplayLCA_Test extends TestCase {
     // Ensure that the isInitialized state is to to true *right* after a widget
     // was rendered; as opposed to being set to true after the whole widget
     // tree was rendered
-    Fixture.fakeNewRequest( display );
     // check precondition
     assertEquals( false, WidgetUtil.getAdapter( composite ).isInitialized() );
 
@@ -237,7 +237,6 @@ public class DisplayLCA_Test extends TestCase {
     WidgetAdapter widgetAdapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
     IRenderRunnable renderRunnable = mock( IRenderRunnable.class );
     widgetAdapter.setRenderRunnable( renderRunnable );
-    Fixture.fakeNewRequest( display );
     IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
 
     displayLCA.render( display );
@@ -251,17 +250,15 @@ public class DisplayLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
     shell.open();
-    String controlId = WidgetUtil.getId( control );
 
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( displayId + ".focusControl", controlId );
+    Fixture.fakeSetParameter( getId( display ), "focusControl", getId( control ) );
     Fixture.readDataAndProcessAction( display );
     assertEquals( control, display.getFocusControl() );
 
     // Request parameter focusControl with value 'null' is ignored
     Control previousFocusControl = display.getFocusControl();
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( displayId + ".focusControl", "null" );
+    Fixture.fakeSetParameter( getId( display ), "focusControl", "null" );
     Fixture.readDataAndProcessAction( display );
     assertEquals( previousFocusControl, display.getFocusControl() );
   }
@@ -276,8 +273,8 @@ public class DisplayLCA_Test extends TestCase {
     shell2.setBounds( 0, 0, 300, 400 );
     shell2.setMaximized( true );
     // fake display resize
-    Fixture.fakeRequestParam( displayId + ".bounds.width", "700" );
-    Fixture.fakeRequestParam( displayId + ".bounds.height", "500" );
+    Fixture.fakeSetParameter( getId( display ), "bounds.width", Integer.valueOf( 700 ) );
+    Fixture.fakeSetParameter( getId( display ), "bounds.height", Integer.valueOf( 500 ) );
 
     displayLCA.readData( display );
 
@@ -291,9 +288,8 @@ public class DisplayLCA_Test extends TestCase {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     displayAdapter.setBounds( new Rectangle( 0, 0, 800, 600 ) );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( displayId + ".cursorLocation.x", "1" );
-    Fixture.fakeRequestParam( displayId + ".cursorLocation.y", "2" );
+    Fixture.fakeSetParameter( getId( display ), "cursorLocation.x", Integer.valueOf( 1 ) );
+    Fixture.fakeSetParameter( getId( display ), "cursorLocation.y", Integer.valueOf( 2 ) );
 
     displayLCA.readData( display );
 
@@ -301,7 +297,6 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testUICallBackUpdated() throws IOException {
-    Fixture.fakeNewRequest( display );
     Fixture.preserveWidgets();
 
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
@@ -312,8 +307,6 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderCurrentTheme() throws IOException {
-    Fixture.fakeNewRequest( display );
-
     displayLCA.render( display );
 
     Message message = Fixture.getProtocolMessage();
@@ -322,8 +315,6 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderBeep() throws IOException {
-    Fixture.fakeNewRequest( display );
-
     display.beep();
     displayLCA.render( display );
 
@@ -333,7 +324,6 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderEnableUiTests() throws IOException {
-    Fixture.fakeNewRequest( display );
     setEnableUiTests( true );
 
     displayLCA.render( display );
@@ -346,7 +336,6 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderEnableUiTests_WhenAlreadyInitialized() throws IOException {
-    Fixture.fakeNewRequest( display );
     Fixture.markInitialized( display );
     setEnableUiTests( true );
 
@@ -357,7 +346,6 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testInvalidCustomId() {
-    Fixture.fakeNewRequest( display );
     Fixture.markInitialized( display );
     setEnableUiTests( true );
     Shell shell = new Shell( display );

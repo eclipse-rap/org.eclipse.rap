@@ -14,18 +14,16 @@ package org.eclipse.swt.internal.widgets.linkkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
@@ -46,6 +44,7 @@ public class LinkLCA extends AbstractWidgetLCA {
   static final String PROP_TEXT = "text";
   static final String PROP_SELECTION_LISTENER = "selection";
 
+  @Override
   public void preserveValues( Widget widget ) {
     Link link = ( Link )widget;
     ControlLCAUtil.preserveValues( link );
@@ -57,12 +56,13 @@ public class LinkLCA extends AbstractWidgetLCA {
   public void readData( Widget widget ) {
     Link link = ( Link )widget;
     processSelectionEvent( link );
-    ControlLCAUtil.processMouseEvents( link );
+    ControlLCAUtil.processEvents( link );
     ControlLCAUtil.processKeyEvents( link );
     ControlLCAUtil.processMenuDetect( link );
     WidgetLCAUtil.processHelp( link );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Link link = ( Link )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( link );
@@ -71,6 +71,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     clientObject.set( "style", WidgetLCAUtil.getStyles( link, ALLOWED_STYLES ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     Link link = ( Link )widget;
     ControlLCAUtil.renderChanges( link );
@@ -79,6 +80,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     renderListener( link, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( link ), false );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }
@@ -125,17 +127,16 @@ public class LinkLCA extends AbstractWidgetLCA {
   }
 
   private static void processSelectionEvent( Link link ) {
-    String eventId = JSConst.EVENT_WIDGET_SELECTED;
-    if( WidgetLCAUtil.wasEventSent( link, eventId ) ) {
-      HttpServletRequest request = ContextProvider.getRequest();
-      String indexStr = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_INDEX );
-      int index = NumberFormatUtil.parseInt( indexStr );
+    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( link, eventName ) ) {
+      String value = readEventPropertyValue( link, eventName, ClientMessageConst.EVENT_PARAM_INDEX );
+      int index = NumberFormatUtil.parseInt( value );
       ILinkAdapter adapter = link.getAdapter( ILinkAdapter.class );
       String[] ids = adapter.getIds();
       if( index < ids.length ) {
         SelectionEvent event = new SelectionEvent( link, null, SelectionEvent.WIDGET_SELECTED );
         event.text = ids[ index ];
-        event.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+        event.stateMask = EventLCAUtil.readStateMask( link, eventName );
         event.processEvent();
       }
     }

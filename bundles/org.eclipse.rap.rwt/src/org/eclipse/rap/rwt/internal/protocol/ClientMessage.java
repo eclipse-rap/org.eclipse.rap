@@ -65,34 +65,29 @@ public class ClientMessage {
     return getOperations( Operation.class, target, null );
   }
 
-  public SetOperation[] getSetOperations( String target ) {
-    return getOperations( SetOperation.class, target, null );
+  public SetOperation getLastSetOperation( String target, String property ) {
+    SetOperation result = null;
+    SetOperation[] operations = getOperations( SetOperation.class, target, property );
+    if( operations.length > 0 ) {
+      result = operations[ operations.length - 1 ];
+    }
+    return result;
   }
 
-  public SetOperation[] getSetOperations( String target, String property ) {
-    return getOperations( SetOperation.class, target, property );
-  }
-
-  public NotifyOperation[] getNotifyOperations( String target ) {
-    return getOperations( NotifyOperation.class, target, null );
-  }
-
-  public NotifyOperation[] getNotifyOperations( String target, String eventName, String property ) {
-    List<NotifyOperation> result = new ArrayList<NotifyOperation>();
+  public NotifyOperation getLastNotifyOperation( String target, String eventName ) {
+    NotifyOperation result = null;
     List<Operation> operations = operationsMap.get( target );
     if( operations != null ) {
       for( Operation operation : operations ) {
         if( operation instanceof NotifyOperation ) {
           NotifyOperation currentOperation = ( NotifyOperation )operation;
-          if(    ( eventName == null || currentOperation.getEventName().equals( eventName ) )
-              && ( property == null || currentOperation.getPropertyNames().contains( property ) ) )
-          {
-            result.add( currentOperation );
+          if( eventName == null || currentOperation.getEventName().equals( eventName ) ) {
+            result = currentOperation;
           }
         }
       }
     }
-    return result.toArray( new NotifyOperation[ 0 ] );
+    return result;
   }
 
   public CallOperation[] getCallOperations( String target ) {

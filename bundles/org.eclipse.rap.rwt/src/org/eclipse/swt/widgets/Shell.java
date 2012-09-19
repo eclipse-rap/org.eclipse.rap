@@ -1150,10 +1150,8 @@ public class Shell extends Decorations {
     if( lastActive != control ) {
       // Compute the list of controls to be activated and deactivated by finding
       // the first common parent control.
-      Control[] activate
-        = ( control == null ) ? new Control[ 0 ] : control.getPath();
-      Control[] deactivate
-        = lastActive == null ? new Control[ 0 ] : lastActive.getPath();
+      Control[] activate = ( control == null ) ? new Control[ 0 ] : control.getPath();
+      Control[] deactivate = lastActive == null ? new Control[ 0 ] : lastActive.getPath();
       lastActive = control;
 
       int index = 0;

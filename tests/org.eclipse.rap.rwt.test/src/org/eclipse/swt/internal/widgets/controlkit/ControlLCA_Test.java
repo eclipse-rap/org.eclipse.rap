@@ -12,13 +12,19 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.controlkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -26,6 +32,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+import org.mockito.ArgumentCaptor;
 
 public class ControlLCA_Test extends TestCase {
 
@@ -35,6 +42,7 @@ public class ControlLCA_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
+    Fixture.fakeNewRequest( display );
   }
 
   @Override
@@ -99,23 +107,21 @@ public class ControlLCA_Test extends TestCase {
   }
 
   public void testMenuDetectListener() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Shell shell = new Shell( display );
     Label label = new Label( shell, SWT.NONE );
-    final java.util.List<MenuDetectEvent> log = new ArrayList<MenuDetectEvent>();
-    label.addMenuDetectListener( new MenuDetectListener() {
-      public void menuDetected( MenuDetectEvent event ) {
-        log.add( event );
-      }
-    });
-    String labelId = WidgetUtil.getId( label );
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT, labelId );
-    Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT_X, "10" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT_Y, "30" );
+    MenuDetectListener listener = mock( MenuDetectListener.class );
+    label.addMenuDetectListener( listener );
+
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( ClientMessageConst.EVENT_PARAM_X, Integer.valueOf( 10 ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( 30 ) );
+    Fixture.fakeNotifyOperation( getId( label ), ClientMessageConst.EVENT_MENU_DETECT, parameters );
     Fixture.readDataAndProcessAction( display );
-    MenuDetectEvent event = log.get( 0 );
-    assertSame( label, event.widget );
+
+    ArgumentCaptor<MenuDetectEvent> captor = ArgumentCaptor.forClass( MenuDetectEvent.class );
+    verify( listener, times( 1 ) ).menuDetected( captor.capture() );
+    MenuDetectEvent event = captor.getValue();
+    assertSame( label, event.getSource() );
     assertEquals( 10, event.x );
     assertEquals( 30, event.y );
   }

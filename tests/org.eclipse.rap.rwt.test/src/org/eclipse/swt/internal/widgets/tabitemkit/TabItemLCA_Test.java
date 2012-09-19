@@ -15,7 +15,6 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -35,24 +34,28 @@ public class TabItemLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private TabFolder folder;
+  private TabItem item;
   private TabItemLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
+    folder = new TabFolder( shell, SWT.NONE );
+    item = new TabItem( folder, SWT.NONE );
     lca = new TabItemLCA();
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
 
   public void testPreserveValues() {
-    TabFolder tabFolder = new TabFolder( shell, SWT.TOP );
-    new TabItem( tabFolder, SWT.NONE );
-    TabItem item = new TabItem( tabFolder, SWT.NONE );
+    new TabItem( folder, SWT.NONE );
 
     Fixture.markInitialized( display );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
@@ -61,7 +64,7 @@ public class TabItemLCA_Test extends TestCase {
     assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
     assertEquals( "", adapter.getPreserved( "toolTip" ) );
     Fixture.clearPreserved();
-    tabFolder.setSelection( 1 );
+    folder.setSelection( 1 );
     item.setText( "some text" );
     item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     item.setToolTipText( "tooltip text" );
@@ -71,23 +74,7 @@ public class TabItemLCA_Test extends TestCase {
     assertEquals( "tooltip text", adapter.getPreserved( "toolTip" ) );
   }
 
-  public void testReadData() {
-    TabFolder tabFolder = new TabFolder( shell, SWT.TOP );
-    new TabItem( tabFolder, SWT.NONE );
-    TabItem item = new TabItem( tabFolder, SWT.NONE );
-    String itemId = WidgetUtil.getId( item );
-    // read changed selection
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, itemId );
-    Fixture.fakeRequestParam( itemId + ".selection", "true" );
-    Fixture.readDataAndProcessAction( item );
-    assertSame( item, tabFolder.getSelection()[ 0 ] );
-  }
-
   public void testRenderCreate() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
-
     lca.renderInitialization( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -98,9 +85,6 @@ public class TabItemLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
-
     lca.renderInitialization( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -109,9 +93,6 @@ public class TabItemLCA_Test extends TestCase {
   }
 
   public void testRenderInitialToolTip() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
-
     lca.render( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -120,9 +101,6 @@ public class TabItemLCA_Test extends TestCase {
   }
 
   public void testRenderToolTip() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
-
     item.setToolTipText( "foo" );
     lca.renderChanges( item );
 
@@ -131,8 +109,6 @@ public class TabItemLCA_Test extends TestCase {
   }
 
   public void testRenderToolTipUnchanged() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -145,9 +121,6 @@ public class TabItemLCA_Test extends TestCase {
   }
 
   public void testRenderInitialText() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
-
     lca.render( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -156,9 +129,6 @@ public class TabItemLCA_Test extends TestCase {
   }
 
   public void testRenderText() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
-
     item.setText( "foo" );
     lca.renderChanges( item );
 
@@ -167,8 +137,6 @@ public class TabItemLCA_Test extends TestCase {
   }
 
   public void testRenderTextUnchanged() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
 
@@ -181,9 +149,6 @@ public class TabItemLCA_Test extends TestCase {
   }
 
   public void testRenderInitialImage() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
-
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -191,8 +156,6 @@ public class TabItemLCA_Test extends TestCase {
   }
 
   public void testRenderImage() throws IOException, JSONException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 
     item.setImage( image );
@@ -206,8 +169,6 @@ public class TabItemLCA_Test extends TestCase {
   }
 
   public void testRenderImageUnchanged() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
@@ -221,8 +182,6 @@ public class TabItemLCA_Test extends TestCase {
   }
 
   public void testRenderImageReset() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
@@ -237,9 +196,6 @@ public class TabItemLCA_Test extends TestCase {
   }
 
   public void testRenderInitialControl() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
-
     lca.render( item );
 
     Message message = Fixture.getProtocolMessage();
@@ -248,8 +204,6 @@ public class TabItemLCA_Test extends TestCase {
   }
 
   public void testRenderControl() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
     Composite content = new Composite( folder, SWT.NONE );
     String contentId = WidgetUtil.getId( content );
 
@@ -261,8 +215,6 @@ public class TabItemLCA_Test extends TestCase {
   }
 
   public void testRenderControlUnchanged() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
     Composite content = new Composite( folder, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
@@ -274,4 +226,5 @@ public class TabItemLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "control" ) );
   }
+
 }

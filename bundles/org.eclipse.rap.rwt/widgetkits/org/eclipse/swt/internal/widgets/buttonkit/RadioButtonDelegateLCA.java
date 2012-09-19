@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.widgets.buttonkit;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.events.DeselectionEvent;
@@ -34,10 +34,9 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     // and not on the selection event, because it is not possible to fire the
     // same event (Id) from javascript for two widgets (selected and unselected
     // radio button) at the same time.
-    if( ButtonLCAUtil.readSelection( button ) ) {
-      processSelectionEvent( button );
-    }
-    ControlLCAUtil.processMouseEvents( button );
+    ButtonLCAUtil.readSelection( button );
+    processSelectionEvent( button ); // order is relevant
+    ControlLCAUtil.processEvents( button );
     ControlLCAUtil.processKeyEvents( button );
     ControlLCAUtil.processMenuDetect( button );
     WidgetLCAUtil.processHelp( button );
@@ -54,16 +53,17 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
   }
 
   private static void processSelectionEvent( Button button ) {
-    if( SelectionEvent.hasListener( button ) ) {
-      int type = SelectionEvent.WIDGET_SELECTED;
+    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( button, eventName ) ) {
       SelectionEvent event;
       if( button.getSelection() ) {
-        event = new SelectionEvent( button, null, type );
+        event = new SelectionEvent( button, null, SelectionEvent.WIDGET_SELECTED );
       } else {
         event = new DeselectionEvent( button );
       }
-      event.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+      event.stateMask = EventLCAUtil.readStateMask( button, eventName );
       event.processEvent();
     }
   }
+
 }

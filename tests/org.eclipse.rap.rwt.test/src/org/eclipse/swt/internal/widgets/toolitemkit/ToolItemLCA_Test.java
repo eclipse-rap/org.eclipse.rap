@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -18,7 +20,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -81,10 +83,11 @@ public class ToolItemLCA_Test extends TestCase {
       }
     } );
     shell.open();
-    String toolItemId = WidgetUtil.getId( item );
-    Fixture.fakeRequestParam( toolItemId + ".selection", "true" );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, toolItemId );
+
+    Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     Fixture.readDataAndProcessAction( display );
+
     assertEquals( true, wasEventFired[ 0 ] );
   }
 
@@ -92,26 +95,29 @@ public class ToolItemLCA_Test extends TestCase {
     ToolItem item0 = new ToolItem( toolbar, SWT.RADIO );
     item0.setSelection( true );
     ToolItem item1 = new ToolItem( toolbar, SWT.RADIO );
-    String item0Id = WidgetUtil.getId( item0 );
-    String item1Id = WidgetUtil.getId( item1 );
-    Fixture.fakeRequestParam( item1Id + ".selection", "true" );
-    Fixture.fakeRequestParam( item0Id + ".selection", "false" );
+
+    Fixture.fakeSetParameter( getId( item1 ), "selection", Boolean.TRUE );
+    Fixture.fakeSetParameter( getId( item0 ), "selection", Boolean.FALSE );
     Fixture.readDataAndProcessAction( display );
+
     assertFalse( item0.getSelection() );
     assertTrue( item1.getSelection() );
   }
 
   public void testReadData() {
     ToolItem item = new ToolItem( toolbar, SWT.CHECK );
-    String itemId = WidgetUtil.getId( item );
-    // read changed selection
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, itemId );
-    Fixture.fakeRequestParam( itemId + ".selection", "true" );
+
+    Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     WidgetUtil.getLCA( item ).readData( item );
+
     assertEquals( Boolean.TRUE, Boolean.valueOf( item.getSelection() ) );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, itemId );
-    Fixture.fakeRequestParam( itemId + ".selection", "false" );
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeSetParameter( getId( item ), "selection", Boolean.FALSE );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     WidgetUtil.getLCA( item ).readData( item );
+
     assertEquals( Boolean.FALSE, Boolean.valueOf( item.getSelection() ) );
   }
 

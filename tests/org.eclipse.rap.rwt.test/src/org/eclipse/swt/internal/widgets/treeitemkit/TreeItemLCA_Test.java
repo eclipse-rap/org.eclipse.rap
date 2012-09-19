@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treeitemkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -18,7 +20,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -214,14 +216,18 @@ public class TreeItemLCA_Test extends TestCase {
       }
     };
     tree.addTreeListener( listener );
-    String treeItemId = WidgetUtil.getId( treeItem );
-    Fixture.fakeRequestParam( JSConst.EVENT_TREE_EXPANDED, treeItemId );
+
+    Fixture.fakeNotifyOperation( getId( treeItem ), ClientMessageConst.EVENT_TREE_EXPANDED, null );
     Fixture.readDataAndProcessAction( treeItem );
+
     assertEquals( "expanded", log.toString() );
+
     log.setLength( 0 );
-    Fixture.fakeRequestParam( JSConst.EVENT_TREE_EXPANDED, null );
-    Fixture.fakeRequestParam( JSConst.EVENT_TREE_COLLAPSED, treeItemId );
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeNotifyOperation( getId( treeItem ), ClientMessageConst.EVENT_TREE_COLLAPSED, null );
     Fixture.readDataAndProcessAction( treeItem );
+
     assertEquals( "collapsed", log.toString() );
   }
 
@@ -229,22 +235,27 @@ public class TreeItemLCA_Test extends TestCase {
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     new TreeItem( treeItem, SWT.NONE );
     treeItem.setExpanded( false );
-    String treeItemId = WidgetUtil.getId( treeItem );
-    Fixture.fakeRequestParam( JSConst.EVENT_TREE_EXPANDED, treeItemId );
+
+    Fixture.fakeNotifyOperation( getId( treeItem ), ClientMessageConst.EVENT_TREE_EXPANDED, null );
     Fixture.readDataAndProcessAction( treeItem );
+
     assertEquals( true, treeItem.getExpanded() );
-    Fixture.fakeRequestParam( JSConst.EVENT_TREE_COLLAPSED, treeItemId );
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeNotifyOperation( getId( treeItem ), ClientMessageConst.EVENT_TREE_COLLAPSED, null );
     Fixture.readDataAndProcessAction( treeItem );
+
     assertEquals( false, treeItem.getExpanded() );
   }
 
   public void testChecked() {
     tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    String treeItemId = WidgetUtil.getId( treeItem );
+
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( treeItemId + ".checked", "true" );
+    Fixture.fakeSetParameter( getId( treeItem ), "checked", "true" );
     Fixture.readDataAndProcessAction( display );
+
     assertEquals( true, treeItem.getChecked() );
   }
 
@@ -258,11 +269,12 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( 0, rootItem.getBounds().y );
     assertEquals( 27, rootItem2.getBounds().y );
     assertEquals( 54, rootItem3.getBounds().y );
-    Fixture.fakeNewRequest();
-    String treeId = WidgetUtil.getId( tree );
-    Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
-    Fixture.fakeRequestParam( treeId + ".topItemIndex", "2" );
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeSetParameter( getId( tree ), "scrollLeft", "0" );
+    Fixture.fakeSetParameter( getId( tree ), "topItemIndex", "2" );
     Fixture.readDataAndProcessAction( display );
+
     assertEquals( -54, rootItem.getBounds().y );
     assertEquals( -27, rootItem2.getBounds().y );
     assertEquals( 0, rootItem3.getBounds().y );

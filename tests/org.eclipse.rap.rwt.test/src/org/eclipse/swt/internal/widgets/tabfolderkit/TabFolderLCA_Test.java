@@ -11,14 +11,20 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tabfolderkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -29,13 +35,14 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
+import org.mockito.ArgumentCaptor;
 
 public class TabFolderLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private TabFolder folder;
   private TabFolderLCA lca;
 
   @Override
@@ -43,6 +50,7 @@ public class TabFolderLCA_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
+    folder = new TabFolder( shell, SWT.NONE );
     lca = new TabFolderLCA();
     Fixture.fakeNewRequest( display );
   }
@@ -53,102 +61,92 @@ public class TabFolderLCA_Test extends TestCase {
   }
 
   public void testControlListeners() throws IOException {
-    TabFolder tabfolder = new TabFolder( shell, SWT.NONE );
-    ControlLCATestUtil.testActivateListener( tabfolder );
-    ControlLCATestUtil.testFocusListener( tabfolder );
-    ControlLCATestUtil.testMouseListener( tabfolder );
-    ControlLCATestUtil.testKeyListener( tabfolder );
-    ControlLCATestUtil.testTraverseListener( tabfolder );
-    ControlLCATestUtil.testMenuDetectListener( tabfolder );
-    ControlLCATestUtil.testHelpListener( tabfolder );
+    ControlLCATestUtil.testActivateListener( folder );
+    ControlLCATestUtil.testFocusListener( folder );
+    ControlLCATestUtil.testMouseListener( folder );
+    ControlLCATestUtil.testKeyListener( folder );
+    ControlLCATestUtil.testTraverseListener( folder );
+    ControlLCATestUtil.testMenuDetectListener( folder );
+    ControlLCATestUtil.testHelpListener( folder );
   }
 
   public void testPreserveValues() {
-    TabFolder tabfolder = new TabFolder( shell, SWT.NONE );
     Fixture.markInitialized( display );
     //control: enabled
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( tabfolder );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( folder );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
-    tabfolder.setEnabled( false );
+    folder.setEnabled( false );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tabfolder );
+    adapter = WidgetUtil.getAdapter( folder );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
-    tabfolder.setEnabled( true );
+    folder.setEnabled( true );
     //visible
-    tabfolder.setSize( 10, 10 );
+    folder.setSize( 10, 10 );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tabfolder );
+    adapter = WidgetUtil.getAdapter( folder );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
     Fixture.clearPreserved();
-    tabfolder.setVisible( false );
+    folder.setVisible( false );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tabfolder );
+    adapter = WidgetUtil.getAdapter( folder );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
     Fixture.clearPreserved();
     //menu
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tabfolder );
+    adapter = WidgetUtil.getAdapter( folder );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
     Fixture.clearPreserved();
-    Menu menu = new Menu( tabfolder );
+    Menu menu = new Menu( folder );
     MenuItem item = new MenuItem( menu, SWT.NONE );
     item.setText( "1 Item" );
-    tabfolder.setMenu( menu );
+    folder.setMenu( menu );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tabfolder );
+    adapter = WidgetUtil.getAdapter( folder );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
     Fixture.clearPreserved();
     //bound
     Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
-    tabfolder.setBounds( rectangle );
+    folder.setBounds( rectangle );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tabfolder );
+    adapter = WidgetUtil.getAdapter( folder );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
     //foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
-    tabfolder.setBackground( background );
+    folder.setBackground( background );
     Color foreground = Graphics.getColor( 211, 178, 211 );
-    tabfolder.setForeground( foreground );
+    folder.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
-    tabfolder.setFont( font );
+    folder.setFont( font );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tabfolder );
+    adapter = WidgetUtil.getAdapter( folder );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
     Fixture.clearPreserved();
     //tooltiptext
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tabfolder );
-    assertEquals( null, tabfolder.getToolTipText() );
+    adapter = WidgetUtil.getAdapter( folder );
+    assertEquals( null, folder.getToolTipText() );
     Fixture.clearPreserved();
-    tabfolder.setToolTipText( "some text" );
+    folder.setToolTipText( "some text" );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tabfolder );
-    assertEquals( "some text", tabfolder.getToolTipText() );
+    adapter = WidgetUtil.getAdapter( folder );
+    assertEquals( "some text", folder.getToolTipText() );
   }
 
   public void testSelectionWithoutListener() {
-    shell.setLayout( new FillLayout() );
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item0 = new TabItem( folder, SWT.NONE );
     Control control0 = new Button( folder, SWT.PUSH );
     item0.setControl( control0 );
     TabItem item1 = new TabItem( folder, SWT.NONE );
     Control control1 = new Button( folder, SWT.PUSH );
     item1.setControl( control1 );
-    shell.open();
 
-    String folderId = WidgetUtil.getId( folder );
-    String item1Id = WidgetUtil.getId( item1 );
-
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item1Id );
+    fakeWidgetSelected( folder, item1 );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 1, folder.getSelectionIndex() );
@@ -157,37 +155,24 @@ public class TabFolderLCA_Test extends TestCase {
   }
 
   public void testSelectionWithListener() {
-    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>();
-    shell.setLayout( new FillLayout() );
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item0 = new TabItem( folder, SWT.NONE );
     Control control0 = new Button( folder, SWT.PUSH );
     item0.setControl( control0 );
     TabItem item1 = new TabItem( folder, SWT.NONE );
     Control control1 = new Button( folder, SWT.PUSH );
     item1.setControl( control1 );
-    shell.open();
-    folder.addSelectionListener( new SelectionListener() {
-      public void widgetSelected( SelectionEvent event ) {
-        events.add( event );
-      }
-      public void widgetDefaultSelected( SelectionEvent event ) {
-        events.add( event );
-      }
-    } );
+    SelectionListener listener = mock( SelectionListener.class );
+    folder.addSelectionListener( listener );
 
-    String item1Id = WidgetUtil.getId( item1 );
-    String folderId = WidgetUtil.getId( folder );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item1Id );
-
+    fakeWidgetSelected( folder, item1 );
     Fixture.readDataAndProcessAction( display );
+
     assertEquals( 1, folder.getSelectionIndex() );
     assertFalse( control0.getVisible() );
     assertTrue( control1.getVisible() );
-    assertEquals( 1, events.size() );
-    SelectionEvent event = events.get( 0 );
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
     assertSame( item1, event.item );
     assertSame( folder, event.widget );
     assertTrue( event.doit );
@@ -200,8 +185,6 @@ public class TabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderCreate() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-
     lca.renderInitialization( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -212,7 +195,7 @@ public class TabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderCreateOnBottom() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.BOTTOM );
+    folder = new TabFolder( shell, SWT.BOTTOM );
 
     lca.renderInitialization( folder );
 
@@ -224,8 +207,6 @@ public class TabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-
     lca.renderInitialization( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -234,8 +215,6 @@ public class TabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelectionWithoutItems() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-
     lca.render( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -244,7 +223,6 @@ public class TabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelectionWithItems() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item = new TabItem( folder, SWT.NONE );
     new TabItem( folder, SWT.NONE );
     new TabItem( folder, SWT.NONE );
@@ -257,7 +235,6 @@ public class TabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderSelection() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
     new TabItem( folder, SWT.NONE );
     TabItem item = new TabItem( folder, SWT.NONE );
     new TabItem( folder, SWT.NONE );
@@ -270,7 +247,6 @@ public class TabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionUnchanged() throws IOException {
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
     new TabItem( folder, SWT.NONE );
     new TabItem( folder, SWT.NONE );
     new TabItem( folder, SWT.NONE );
@@ -283,5 +259,23 @@ public class TabFolderLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( folder, "selection" ) );
+  }
+
+  public void testReadSelection() {
+    TabItem item = new TabItem( folder, SWT.NONE );
+    folder.setSelection( new TabItem[ 0 ] );
+
+    fakeWidgetSelected( folder, item );
+    Fixture.readDataAndProcessAction( folder );
+
+    assertSame( item, folder.getSelection()[ 0 ] );
+  }
+
+  private void fakeWidgetSelected( TabFolder folder, TabItem item ) {
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
+    Fixture.fakeNotifyOperation( getId( folder ),
+                                 ClientMessageConst.EVENT_WIDGET_SELECTED,
+                                 parameters );
   }
 }

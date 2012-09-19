@@ -62,12 +62,12 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
       var tab = evt.getTarget();
       if( !org.eclipse.swt.EventUtil.getSuspended() && tab.getChecked() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        // TODO [rst] Add item parameter in doWidgetSelected
         var itemId = widgetManager.findIdByWidget( tab );
-        var req = rwt.remote.Server.getInstance();
-        req.addParameter( "org.eclipse.swt.events.widgetSelected.item", itemId );
-        var id = widgetManager.findIdByWidget( tab.getParent().getParent() );
-        org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
+        var server = rwt.remote.Server.getInstance();
+        var folder = tab.getParent().getParent();
+        server.getServerObject( folder ).notify( "widgetSelected", {
+          "item" : itemId
+        } );
       }
     },
 

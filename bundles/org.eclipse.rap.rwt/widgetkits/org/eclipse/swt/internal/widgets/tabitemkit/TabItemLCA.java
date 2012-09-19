@@ -16,7 +16,6 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -30,6 +29,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
 
   private static final String PROP_CONTROL = "control";
 
+  @Override
   public void preserveValues( Widget widget ) {
     TabItem item = ( TabItem )widget;
     WidgetLCAUtil.preserveCustomVariant( item );
@@ -39,20 +39,9 @@ public class TabItemLCA extends AbstractWidgetLCA {
   }
 
   public void readData( Widget widget ) {
-    // TODO [rh] same hack as in CTabFolderLCA#readData
-    // Read selected item and process selection event
-    final TabItem item = ( TabItem )widget;
-    if( WidgetLCAUtil.wasEventSent( item, JSConst.EVENT_WIDGET_SELECTED_ITEM ) ) {
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          TabFolder folder = item.getParent();
-          folder.setSelection( item );
-          ControlLCAUtil.processSelection( folder, item, false );
-        }
-      } );
-    }
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     TabItem tabItem = ( TabItem )widget;
     TabFolder parent = tabItem.getParent();
@@ -63,6 +52,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     clientObject.set( "index", parent.indexOf( tabItem ) ) ;
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     TabItem tabItem = ( TabItem )widget;
     WidgetLCAUtil.renderCustomVariant( tabItem );
@@ -71,6 +61,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     renderProperty( tabItem, PROP_CONTROL, tabItem.getControl(), null );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }

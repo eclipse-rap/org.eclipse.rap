@@ -11,6 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Locale;
@@ -19,7 +25,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -39,12 +45,14 @@ public class SpinnerLCA_Test extends TestCase {
   private Display display;
   private Shell shell;
   private SpinnerLCA lca;
+  private Spinner spinner;
 
   @Override
   protected void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
+    spinner = new Spinner( shell, SWT.NONE );
     lca = new SpinnerLCA();
     Fixture.fakeNewRequest( display );
   }
@@ -55,7 +63,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testControlListeners() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( spinner );
     ControlLCATestUtil.testFocusListener( spinner );
     ControlLCATestUtil.testMouseListener( spinner );
@@ -66,7 +73,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( spinner );
@@ -180,66 +186,55 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( "some text", spinner.getToolTipText() );
   }
 
-  public void testReadData() {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
+  public void testReadSelection() {
     spinner.setMaximum( 100 );
-    String spinnerId = WidgetUtil.getId( spinner );
-    // simulate valid client-side selection
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( spinnerId + ".selection", "77" );
+
+    Fixture.fakeSetParameter( getId( spinner ), "selection", Integer.valueOf( 77 ) );
     Fixture.readDataAndProcessAction( display );
+
     assertEquals( 77, spinner.getSelection() );
-    // simulate invalid client-side selection
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( spinnerId + ".selection", "777" );
-    spinner.setSelection( 1 );
+  }
+
+  public void testReadSelection_Invalid() {
+    spinner.setMaximum( 100 );
+
+    Fixture.fakeSetParameter( getId( spinner ), "selection", Integer.valueOf( 777 ) );
     Fixture.readDataAndProcessAction( display );
+
     assertEquals( spinner.getMaximum(), spinner.getSelection() );
   }
 
-  public void testModifyAndSelectionEvent() {
-    final StringBuilder log = new StringBuilder();
-    final Spinner spinner = new Spinner( shell, SWT.NONE );
-    shell.open();
-    String spinnerId = WidgetUtil.getId( spinner );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, spinnerId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, spinnerId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, spinnerId );
-    Fixture.executeLifeCycleFromServerThread();
-    assertEquals( "", log.toString() );
-    log.setLength( 0 );
-    spinner.addModifyListener( new ModifyListener() {
-      public void modifyText( ModifyEvent event ) {
-        assertEquals( spinner, event.getSource() );
-        log.append( ".modifyText" );
-      }
-    } );
-    spinner.addSelectionListener( new SelectionListener() {
-      public void widgetSelected( SelectionEvent event ) {
-        assertEquals( spinner, event.getSource() );
-        log.append( ".widgetSelected" );
-      }
-      public void widgetDefaultSelected( SelectionEvent event ) {
-        assertEquals( spinner, event.getSource() );
-        log.append( ".widgetDefaultSelected" );
-      }
-    } );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( spinnerId + ".selection", "2" );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, spinnerId );
-    Fixture.executeLifeCycleFromServerThread();
-    assertEquals( ".modifyText.widgetSelected", log.toString() );
-    log.setLength( 0 );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, spinnerId );
-    Fixture.executeLifeCycleFromServerThread();
-    assertEquals( ".widgetDefaultSelected", log.toString() );
+  public void testSelectionEvent() {
+    SelectionListener listener = mock( SelectionListener.class );
+    spinner.addSelectionListener( listener );
+
+    Fixture.fakeNotifyOperation( getId( spinner ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.readDataAndProcessAction( spinner );
+
+    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
+  }
+
+  public void testDefaultSelectionEvent() {
+    SelectionListener listener = mock( SelectionListener.class );
+    spinner.addSelectionListener( listener );
+
+    Fixture.fakeNotifyOperation( getId( spinner ), ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED, null );
+    Fixture.readDataAndProcessAction( spinner );
+
+    verify( listener, times( 1 ) ).widgetDefaultSelected( any( SelectionEvent.class ) );
+  }
+
+  public void testModifyEvent() {
+    ModifyListener listener = mock( ModifyListener.class );
+    spinner.addModifyListener( listener );
+
+    Fixture.fakeSetParameter( getId( spinner ), "selection", Integer.valueOf( 2 ) );
+    Fixture.readDataAndProcessAction( spinner );
+
+    verify( listener, times( 1 ) ).modifyText( any( ModifyEvent.class ) );
   }
 
   public void testRenderCreate() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     lca.renderInitialization( spinner );
 
     Message message = Fixture.getProtocolMessage();
@@ -248,8 +243,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     lca.renderInitialization( spinner );
 
     Message message = Fixture.getProtocolMessage();
@@ -270,8 +263,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderInitialMinimum() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     lca.render( spinner );
 
     Message message = Fixture.getProtocolMessage();
@@ -280,8 +271,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderMinimum() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     spinner.setMinimum( 10 );
     lca.renderChanges( spinner );
 
@@ -290,7 +279,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderMinimumUnchanged() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
 
@@ -303,8 +291,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderInitialMaxmum() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     lca.render( spinner );
 
     Message message = Fixture.getProtocolMessage();
@@ -313,8 +299,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderMaxmum() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     spinner.setMaximum( 10 );
     lca.renderChanges( spinner );
 
@@ -323,7 +307,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderMaxmumUnchanged() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
 
@@ -336,8 +319,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelection() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     lca.render( spinner );
 
     Message message = Fixture.getProtocolMessage();
@@ -346,8 +327,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderSelection() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     spinner.setSelection( 10 );
     lca.renderChanges( spinner );
 
@@ -356,7 +335,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionUnchanged() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
 
@@ -369,8 +347,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderInitialDigits() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     lca.render( spinner );
 
     Message message = Fixture.getProtocolMessage();
@@ -379,8 +355,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderDigits() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     spinner.setDigits( 2 );
     lca.renderChanges( spinner );
 
@@ -389,7 +363,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderDigitsUnchanged() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
 
@@ -402,8 +375,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderInitialIncrement() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     lca.render( spinner );
 
     Message message = Fixture.getProtocolMessage();
@@ -412,8 +383,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderIncrement() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     spinner.setIncrement( 2 );
     lca.renderChanges( spinner );
 
@@ -422,7 +391,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderIncrementUnchanged() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
 
@@ -435,8 +403,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderInitialPageIncrement() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     lca.render( spinner );
 
     Message message = Fixture.getProtocolMessage();
@@ -445,8 +411,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderPageIncrement() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     spinner.setPageIncrement( 20 );
     lca.renderChanges( spinner );
 
@@ -455,7 +419,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderPageIncrementUnchanged() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
 
@@ -468,8 +431,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderInitialTextLimit() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     lca.renderChanges( spinner );
 
     Message message = Fixture.getProtocolMessage();
@@ -477,8 +438,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimit() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     spinner.setTextLimit( 10 );
     lca.renderChanges( spinner );
 
@@ -487,7 +446,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimitUnchanged() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
 
@@ -500,7 +458,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimitReset() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
 
@@ -514,7 +471,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimitResetWithNegative() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
 
@@ -528,8 +484,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderInitialDecimalSeparator() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     RWT.setLocale( Locale.US );
     lca.render( spinner );
 
@@ -539,8 +493,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderDecimalSeparator() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     RWT.setLocale( Locale.GERMANY );
     lca.renderChanges( spinner );
 
@@ -549,7 +501,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderDecimalSeparatorUnchanged() throws IOException {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
 
@@ -562,7 +513,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderAddSelectionListener() throws Exception {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
     Fixture.preserveWidgets();
@@ -575,7 +525,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     SelectionListener listener = new SelectionAdapter() { };
     spinner.addSelectionListener( listener );
     Fixture.markInitialized( display );
@@ -590,7 +539,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
     Fixture.preserveWidgets();
@@ -604,7 +552,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderAddModifyListener() throws Exception {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
     Fixture.preserveWidgets();
@@ -620,7 +567,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveModifyListener() throws Exception {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     ModifyListener listener = new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
       }
@@ -638,7 +584,6 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testRenderModifyListenerUnchanged() throws Exception {
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
     Fixture.preserveWidgets();

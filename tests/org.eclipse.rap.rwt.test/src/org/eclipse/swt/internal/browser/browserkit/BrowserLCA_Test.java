@@ -12,8 +12,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.browser.browserkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.testfixture.Fixture.fakeNewRequest;
+import static org.eclipse.rap.rwt.testfixture.Fixture.fakeSetParameter;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -159,27 +165,23 @@ public class BrowserLCA_Test extends TestCase {
 
   public void testExecuteFunction() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final StringBuilder log = new StringBuilder();
+    final List<Object> log = new ArrayList<Object>();
     Browser browser = new Browser( shell, SWT.NONE );
     new BrowserFunction( browser, "func" ) {
       @Override
       public Object function( Object[] arguments ) {
-        for( int i = 0; i < arguments.length; i++ ) {
-          log.append( arguments[ i ].toString() );
-          log.append( "|" );
-        }
+        log.addAll( Arrays.asList( arguments ) );
         return new Object[ 0 ];
       }
     };
-    Fixture.fakeNewRequest( display );
-    String browserId = WidgetUtil.getId( browser );
-    String param = browserId + "." + BrowserLCA.PARAM_EXECUTE_FUNCTION;
-    Fixture.fakeRequestParam( param, "func" );
-    param = browserId + "." + BrowserLCA.PARAM_EXECUTE_ARGUMENTS;
-    Fixture.fakeRequestParam( param, "[\"eclipse\",3.6]" );
+    fakeNewRequest( display );
+    fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_FUNCTION, "func" );
+    fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_ARGUMENTS, "[\"eclipse\",3.6]" );
+
     Fixture.readDataAndProcessAction( browser );
-    assertTrue( log.toString().contains( "eclipse" ) );
-    assertTrue( log.toString().contains( "3.6" ) );
+
+    Object[] expected = new Object[] { "eclipse", Double.valueOf( 3.6 ) };
+    assertTrue( Arrays.equals( expected, log.toArray() ) );
   }
 
   public void testParseArguments() {
@@ -288,9 +290,10 @@ public class BrowserLCA_Test extends TestCase {
         log.add( "completed" );
       }
     } );
-    String browserId = WidgetUtil.getId( browser );
-    Fixture.fakeRequestParam( browserId + "." + BrowserLCA.EVENT_PROGRESS_COMPLETED, "true" );
+
+    Fixture.fakeNotifyOperation( getId( browser ), BrowserLCA.EVENT_PROGRESS_COMPLETED, null );
     Fixture.readDataAndProcessAction( browser );
+
     assertEquals( 2, log.size() );
     assertEquals( "changed", log.get( 0 ) );
     assertEquals( "completed", log.get( 1 ) );
@@ -309,9 +312,10 @@ public class BrowserLCA_Test extends TestCase {
         log.add( "completed" );
       }
     } );
-    String browserId = WidgetUtil.getId( browser );
-    Fixture.fakeRequestParam( browserId + "." + BrowserLCA.EVENT_PROGRESS_COMPLETED, "true" );
+
+    Fixture.fakeNotifyOperation( getId( browser ), BrowserLCA.EVENT_PROGRESS_COMPLETED, null );
     Fixture.readDataAndProcessAction( browser );
+
     assertEquals( 2, log.size() );
     assertEquals( "changed", log.get( 0 ) );
     assertEquals( "completed", log.get( 1 ) );
@@ -331,9 +335,10 @@ public class BrowserLCA_Test extends TestCase {
         log.add( "completed" );
       }
     } );
-    String browserId = WidgetUtil.getId( browser );
-    Fixture.fakeRequestParam( browserId + "." + BrowserLCA.EVENT_PROGRESS_COMPLETED, "true" );
+
+    Fixture.fakeNotifyOperation( getId( browser ), BrowserLCA.EVENT_PROGRESS_COMPLETED, null );
     Fixture.readDataAndProcessAction( browser );
+
     assertEquals( 2, log.size() );
     assertEquals( "changed", log.get( 0 ) );
     assertEquals( "completed", log.get( 1 ) );
@@ -517,11 +522,9 @@ public class BrowserLCA_Test extends TestCase {
         };
       }
     };
-    String browserId = WidgetUtil.getId( browser );
-    String param = browserId + "." + BrowserLCA.PARAM_EXECUTE_FUNCTION;
-    Fixture.fakeRequestParam( param, "func" );
-    param = browserId + "." + BrowserLCA.PARAM_EXECUTE_ARGUMENTS;
-    Fixture.fakeRequestParam( param, "[\"eclipse\",3.6]" );
+    fakeNewRequest( display );
+    fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_FUNCTION, "func" );
+    fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_ARGUMENTS, "[\"eclipse\",3.6]" );
 
     Fixture.executeLifeCycleFromServerThread();
 

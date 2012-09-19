@@ -12,21 +12,28 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.textkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -62,12 +69,11 @@ public class TextLCA_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Fixture.fakeResponseWriter();
     lca = new TextLCA();
     display = new Display();
     shell = new Shell( display );
     text = new Text( shell, SWT.NONE );
+    Fixture.fakeNewRequest( display );
   }
 
   @Override
@@ -100,152 +106,115 @@ public class TextLCA_Test extends TestCase {
     testPreserveValues( text );
   }
 
-  public void testReadData() {
-    String textId = WidgetUtil.getId( text );
-    // read changed text
-    Fixture.fakeRequestParam( textId + ".text", "abc" );
+  public void testReadText() {
+    Fixture.fakeSetParameter( getId( text ), "text", "abc" );
+
     WidgetUtil.getLCA( text ).readData( text );
+
     assertEquals( "abc", text.getText() );
-    // read changed selection
-    Fixture.fakeRequestParam( textId + ".text", "abc" );
-    Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( textId + ".selectionLength", "1" );
+  }
+
+  public void testReadSelection() {
+    Fixture.fakeSetParameter( getId( text ), "text", "abc" );
+    Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
+    Fixture.fakeSetParameter( getId( text ), "selectionLength", Integer.valueOf( 1 ) );
+
     WidgetUtil.getLCA( text ).readData( text );
+
     assertEquals( new Point( 1, 2 ), text.getSelection() );
   }
 
   public void testModifyEvent() {
-    final StringBuilder log = new StringBuilder();
-    text.addModifyListener( new ModifyListener() {
+    ModifyListener listener = mock( ModifyListener.class );
+    text.addModifyListener( listener );
 
-      public void modifyText( ModifyEvent event ) {
-        assertEquals( text, event.getSource() );
-        log.append( "modifyText" );
-      }
-    } );
-    shell.open();
-    String textId = WidgetUtil.getId( text );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( textId + ".text", "new text" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
-    Fixture.readDataAndProcessAction( display );
-    assertEquals( "modifyText", log.toString() );
+    Fixture.fakeSetParameter( getId( text ), "text", "new text" );
+    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY_TEXT, null );
+    Fixture.readDataAndProcessAction( text );
+
+    verify( listener, times( 1 ) ).modifyText( any( ModifyEvent.class ) );
   }
 
   public void testVerifyEvent() {
-    final StringBuilder log = new StringBuilder();
-    text.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-        assertEquals( text, event.getSource() );
-        assertEquals( text, event.widget );
-        assertTrue( event.doit );
-        log.append( "verifyText" );
-      }
-    } );
-    shell.open();
-    String textId = WidgetUtil.getId( text );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( textId + ".text", "verify me" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
+    VerifyListener listener = mock( VerifyListener.class );
+    text.addVerifyListener( listener );
+
+    Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
+    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY_TEXT, null );
     Fixture.readDataAndProcessAction( display );
-    assertEquals( "verifyText", log.toString() );
+
+    verify( listener, times( 1 ) ).verifyText( any( VerifyEvent.class ) );
   }
 
-  public void testSelectionWithVerifyEvent_emptyListener() {
+  public void testSelectionWithVerifyEvent_EmptyListener() {
     // ensure that selection is unchanged in case a verify-listener is
     // registered that does not change the text
-    final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
-    shell.open();
-    String textId = WidgetUtil.getId( text );
-    text.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-        log.add( event );
-      }
-    } );
+    VerifyListener listener = mock( VerifyListener.class );
+    text.addVerifyListener( listener );
     Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
     Fixture.markInitialized( text );
-    log.clear();
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( textId + ".text", "verify me" );
-    Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
+
+    Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
+    Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
+    Fixture.fakeSetParameter( getId( text ), "selectionLength", Integer.valueOf( 0 ) );
+    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY_TEXT, null );
 
     Fixture.executeLifeCycleFromServerThread();
 
     // ensure that an empty verify listener does not lead to sending the
     // original text and selection values back to the client
+    verify( listener, times( 1 ) ).verifyText( any( VerifyEvent.class ) );
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "text" ) );
     assertNull( message.findSetOperation( text, "selection" ) );
-    assertEquals( 1, log.size() );
     assertEquals( new Point( 1, 1 ), text.getSelection() );
     assertEquals( "verify me", text.getText() );
   }
 
-  public void testSelectionWithVerifyEvent_listenerDoesNotChangeSelection() {
+  public void testSelectionWithVerifyEvent_ListenerDoesNotChangeSelection() {
     // ensure that selection is unchanged in case a verify-listener changes
     // the incoming text within the limits of the selection
-    final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
-    shell.open();
-    String textId = WidgetUtil.getId( text );
-    text.setText( "" );
     text.addVerifyListener( new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
-        log.add( event );
         event.text = "verified";
       }
     } );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( textId + ".text", "verify me" );
-    Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
+    Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
+    Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
+    Fixture.fakeSetParameter( getId( text ), "selectionLength", Integer.valueOf( 0 ) );
+    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY_TEXT, null );
 
     Fixture.executeLifeCycleFromServerThread( );
 
-    assertEquals( 1, log.size() );
     assertEquals( new Point( 1, 1 ), text.getSelection() );
     assertEquals( "verified", text.getText() );
   }
 
-  public void testSelectionWithVerifyEvent_listenerAdjustsSelection() {
+  public void testSelectionWithVerifyEvent_ListenerAdjustsSelection() {
     // ensure that selection is adjusted in case a verify-listener changes
     // the incoming text in a way that would result in an invalid selection
-    final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
-    shell.open();
-    String textId = WidgetUtil.getId( text );
-    text.setText( "" );
     text.addVerifyListener( new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
-        log.add( event );
         event.text = "";
       }
     } );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( textId + ".text", "verify me" );
-    Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
+    Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
+    Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
+    Fixture.fakeSetParameter( getId( text ), "selectionLength", Integer.valueOf( 0 ) );
+    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY_TEXT, null );
 
     Fixture.executeLifeCycleFromServerThread( );
 
-    assertEquals( 1, log.size() );
     assertEquals( new Point( 0, 0 ), text.getSelection() );
     assertEquals( "", text.getText() );
   }
 
   public void testPreserveText() {
-    shell.open();
     Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
     Fixture.markInitialized( text );
-    Fixture.fakeNewRequest( display );
-    String textId = WidgetUtil.getId( text );
-    Fixture.fakeRequestParam( textId + ".text", "verify me" );
-    Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
+    Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
+    Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
+    Fixture.fakeSetParameter( getId( text ), "selectionLength", Integer.valueOf( 0 ) );
 
     Fixture.executeLifeCycleFromServerThread();
 
@@ -257,9 +226,6 @@ public class TextLCA_Test extends TestCase {
 
   public void testVerifyAndModifyEvent() {
     final List<TypedEvent> log = new ArrayList<TypedEvent>();
-    // set up widgets to be tested
-    shell.open();
-    String textId = WidgetUtil.getId( text );
     // ensure that modify *and* verify event is fired
     text.setText( "" );
     text.addVerifyListener( new VerifyListener() {
@@ -272,12 +238,13 @@ public class TextLCA_Test extends TestCase {
         log.add( event );
       }
     } );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( textId + ".text", "verify me" );
-    Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
-    Fixture.readDataAndProcessAction( display );
+
+    Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
+    Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
+    Fixture.fakeSetParameter( getId( text ), "selectionLength", Integer.valueOf( 0 ) );
+    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY_TEXT, null );
+    Fixture.readDataAndProcessAction( text );
+
     assertEquals( 2, log.size() );
     assertTrue( log.get( 0 ) instanceof VerifyEvent );
     assertTrue( log.get( 1 ) instanceof ModifyEvent );
@@ -807,10 +774,8 @@ public class TextLCA_Test extends TestCase {
   public void testProcessDefaultSelectionEvent() {
     List<Event> events = new LinkedList<Event>();
     text.addListener( SWT.DefaultSelection, new LoggingListener( events ) );
-    String textId = WidgetUtil.getId( text );
 
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, textId );
+    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED, null );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 1, events.size() );
@@ -825,11 +790,12 @@ public class TextLCA_Test extends TestCase {
     List<Event> events = new LinkedList<Event>();
     text = new Text( shell, SWT.SEARCH | SWT.ICON_SEARCH | SWT.ICON_CANCEL );
     text.addListener( SWT.DefaultSelection, new LoggingListener( events ) );
-    String textId = WidgetUtil.getId( text );
 
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, textId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_DETAIL, "search" );
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( ClientMessageConst.EVENT_PARAM_DETAIL, "search" );
+    Fixture.fakeNotifyOperation( getId( text ),
+                                 ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED,
+                                 properties );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 1, events.size() );
@@ -844,11 +810,12 @@ public class TextLCA_Test extends TestCase {
     List<Event> events = new LinkedList<Event>();
     text = new Text( shell, SWT.SEARCH | SWT.ICON_SEARCH | SWT.ICON_CANCEL );
     text.addListener( SWT.DefaultSelection, new LoggingListener( events ) );
-    String textId = WidgetUtil.getId( text );
 
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, textId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_DETAIL, "cancel" );
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( ClientMessageConst.EVENT_PARAM_DETAIL, "cancel" );
+    Fixture.fakeNotifyOperation( getId( text ),
+                                 ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED,
+                                 properties );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 1, events.size() );

@@ -11,9 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
-import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
+import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsString;
 
+import java.io.IOException;
 import org.eclipse.rap.rwt.branding.AbstractBranding;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
@@ -335,11 +336,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   static void readFocusControl( Display display ) {
     // TODO [rh] revise this: traversing the widget tree once more only to find
     //      out which control is focused. Could that be optimized?
-    HttpServletRequest request = ContextProvider.getRequest();
-    StringBuilder focusControlParam = new StringBuilder();
-    focusControlParam.append( DisplayUtil.getId( display ) );
-    focusControlParam.append( ".focusControl" );
-    String id = request.getParameter( focusControlParam.toString() );
+    String id = readPropertyValue( display, "focusControl" );
     if( id != null ) {
       Control focusControl = null;
       // Even though the loop below would anyway result in focusControl == null
@@ -361,12 +358,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static String readPropertyValue( Display display, String propertyName ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    StringBuilder key = new StringBuilder();
-    key.append( DisplayUtil.getId( display ) );
-    key.append( "." );
-    key.append( propertyName );
-    return request.getParameter( key.toString() );
+    return readPropertyValueAsString( getId( display ), propertyName );
   }
 
   private static int readIntPropertyValue( Display display, String propertyName, int defaultValue )

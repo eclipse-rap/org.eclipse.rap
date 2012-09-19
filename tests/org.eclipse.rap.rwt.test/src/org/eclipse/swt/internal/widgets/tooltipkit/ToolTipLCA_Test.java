@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tooltipkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -18,7 +20,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -64,9 +66,10 @@ public class ToolTipLCA_Test extends TestCase {
 
   public void testReadVisibleWithRequestParamFalse() {
     toolTip.setVisible( true );
-    String toolTipId = WidgetUtil.getId( toolTip );
-    Fixture.fakeRequestParam( toolTipId + ".visible", "false" );
+
+    Fixture.fakeSetParameter( getId( toolTip ), "visible", Boolean.FALSE );
     Fixture.readDataAndProcessAction( display );
+
     assertFalse( toolTip.isVisible() );
   }
 
@@ -84,9 +87,10 @@ public class ToolTipLCA_Test extends TestCase {
         eventLog[ 0 ] = event;
       }
     } );
-    String toolTipId = WidgetUtil.getId( toolTip );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, toolTipId );
+
+    Fixture.fakeNotifyOperation( getId( toolTip ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     Fixture.readDataAndProcessAction( display );
+
     SelectionEvent event = eventLog[ 0 ];
     assertNotNull( event );
     assertSame( toolTip, event.widget );

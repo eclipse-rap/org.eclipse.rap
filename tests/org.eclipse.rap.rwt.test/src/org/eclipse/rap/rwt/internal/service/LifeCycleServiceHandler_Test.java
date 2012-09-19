@@ -224,20 +224,23 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   }
 
   private void simulateInitialUiRequest() {
-    Fixture.fakeNewRequest( new Display() );
+    Fixture.fakeNewRequest();
+    Fixture.fakeHeaderParameter( RequestParams.UIROOT, "w1" );
+    Fixture.fakeHeaderParameter( RequestParams.RWT_INITIALIZE, "true" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
-    Fixture.fakeHeaderParameter( RequestParams.RWT_INITIALIZE, "true" );
   }
 
   private void simulateUiRequest() {
-    Fixture.fakeNewRequest( new Display() );
+    Fixture.fakeNewRequest();
+    Fixture.fakeHeaderParameter( RequestParams.UIROOT, "w1" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
   }
 
   private void simulateUiRequestWithIllegalCounter() {
-    Fixture.fakeNewRequest( new Display() );
+    Fixture.fakeNewRequest();
+    Fixture.fakeHeaderParameter( RequestParams.UIROOT, "w1" );
     Fixture.fakeHeaderParameter( "requestCounter", "23" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
