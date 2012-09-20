@@ -22,6 +22,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       var fontName = [ "Verdana", "Lucida Sans", "Arial", "Helvetica", "sans-serif" ];
       TestUtil.initRequestLog();
       var processor = rwt.protocol.MessageProcessor;
+
       processor.processOperation( {
         "target" : "w1",
         "action" : "call",
@@ -33,17 +34,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
           ]
         }
       } );
-      assertEquals( 2, TestUtil.getRequestsSend() ); // because timer is skipped in tests
-      var requests = TestUtil.getRequestLog();
-      assertTrue( requests[ 0 ].indexOf( "-785380229" ) !== - 1 );
-      assertTrue( requests[ 1 ].indexOf( "-785380485" ) !== - 1 );
-      //currently send in another format for json:
-      var op1 = TestUtil.getMessageObject( 0 ).findCallOperation( "w1", "storeMeasurement" );
-      var op2 = TestUtil.getMessageObject( 1 ).findCallOperation( "w1", "storeMeasurement" );
-      assertEquals( "-785380229", op1.properties.id );
-      assertEquals( 2, op1.properties.size.length );
-      assertEquals( "-785380485", op2.properties.id );
-      assertEquals( 2, op2.properties.size.length );
+
+      assertEquals( 1, TestUtil.getRequestsSend() ); // because timer is skipped in tests
+      var op = TestUtil.getMessageObject().findCallOperation( "w1", "storeProbes" );
+      assertEquals( 2, op.properties.results[ "-785380229" ].length );
+      assertEquals( 2, op.properties.results[ "-785380485" ].length );
     },
 
     testCallMeasureStringsByProtocol : function() {
@@ -51,6 +46,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       var fontName = [ "Verdana", "Lucida Sans", "Arial", "Helvetica", "sans-serif" ];
       TestUtil.initRequestLog();
       var processor = rwt.protocol.MessageProcessor;
+
       processor.processOperation( {
         "target" : "w1",
         "action" : "call",
@@ -62,16 +58,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
           ]
         }
       } );
-      assertEquals( 2, TestUtil.getRequestsSend() );
-      var log = TestUtil.getRequestLog();
-      assertTrue( log[ 0 ].indexOf( "-1114032847=" ) != -1 );
-      assertTrue( log[ 1 ].indexOf( "1767849485=" ) != -1 );
-      var op1 = TestUtil.getMessageObject( 0 ).findCallOperation( "w1", "storeMeasurement" );
-      var op2 = TestUtil.getMessageObject( 1 ).findCallOperation( "w1", "storeMeasurement" );
-      assertEquals( "-1114032847", op1.properties.id );
-      assertEquals( 2, op1.properties.size.length );
-      assertEquals( "1767849485", op2.properties.id );
-      assertEquals( 2, op2.properties.size.length );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var op = TestUtil.getMessageObject().findCallOperation( "w1", "storeMeasurements" );
+      assertEquals( 2, op.properties.results[ "-1114032847" ].length );
+      assertEquals( 2, op.properties.results[ "1767849485" ].length );
     },
 
     testSetFocusControlByProtocol : function() {

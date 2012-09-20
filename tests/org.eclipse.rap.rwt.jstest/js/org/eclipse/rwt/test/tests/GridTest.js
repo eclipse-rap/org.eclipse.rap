@@ -4047,7 +4047,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       args[ "selectionPadding" ] = [ 2, 4 ];
       args[ "indentionWidth" ] = 16;
       var tree = new rwt.widgets.Grid( args );
-      rwt.protocol.ObjectManager.add( "w3", tree );
+      rwt.protocol.ObjectRegistry.add( "w3", tree );
       if( option === "fixedColumns" ) {
         org.eclipse.rwt.GridUtil.setFixedColumns( tree, arg );
       }

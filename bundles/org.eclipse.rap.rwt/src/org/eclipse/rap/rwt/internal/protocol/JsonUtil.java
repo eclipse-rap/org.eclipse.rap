@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,15 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.theme.*;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 final class JsonUtil {
@@ -81,4 +87,45 @@ final class JsonUtil {
     }
     return result;
   }
+
+  public static Object jsonToJava( JSONArray object ) {
+    Object result = object.toString();
+    try {
+      if( object.length() == 2 ) {
+          result = new Point( object.getInt( 0 ), object.getInt( 1 ) );
+      } else if( object.length() == 4 ) {
+        result = new Rectangle( object.getInt( 0 ),
+                                object.getInt( 1 ),
+                                object.getInt( 2 ),
+                                object.getInt( 3 ) );
+      }
+    } catch( JSONException e ) {
+      // do nothing - keep result as json string
+    }
+    return result;
+  }
+
+  public static Object jsonToJava( JSONObject object ) {
+    Map<String,Object> result = new HashMap<String, Object>();
+    String[] propertiyNames = JSONObject.getNames( object );
+    for( int i = 0; i < propertiyNames.length; i++ ) {
+      try {
+        result.put( propertiyNames[ i ], jsonToJava( object.get( propertiyNames[ i ] ) ) );
+      } catch( JSONException e ) {
+        throw new RuntimeException( "Unable to convert JSONObject to Java: " + object );
+      }
+    }
+    return result;
+  }
+
+  private static Object jsonToJava( Object object ) {
+    Object result = object;
+    if( object instanceof JSONArray ) {
+      result = jsonToJava( ( JSONArray )object );
+    } else if( object instanceof JSONObject ) {
+      result = jsonToJava( ( JSONObject )object );
+    }
+    return result;
+  }
+
 }

@@ -10,10 +10,15 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import java.util.Map;
+
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+
 import junit.framework.TestCase;
 
 
@@ -220,20 +225,55 @@ public class ClientMessage_Test extends TestCase {
     assertEquals( "w3", operation.getTarget() );
   }
 
-  public void testGetCallOperations() {
+  public void testGetAllCallOperations() {
+    String json = "{ "
+        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_OPERATIONS + " : ["
+        + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+        + "[ \"call\", \"w2\", \"store\", {} ],"
+        + "[ \"call\", \"w3\", \"foo\", {} ]"
+        + "] }";
+    ClientMessage message = new ClientMessage( json );
+
+    CallOperation[] operations = message.getAllCallOperationsFor( null, null );
+
+    assertEquals( 2, operations.length );
+    assertEquals( "store", operations[ 0 ].getMethodName() );
+    assertEquals( "foo", operations[ 1 ].getMethodName() );
+  }
+
+  public void testGetAllCallOperations_ByTarget() {
     String json = "{ "
                 + ClientMessage.PROP_HEADER + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"call\", \"w3\", \"store\", {} ],"
-                + "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]"
+                + "[ \"call\", \"w4\", \"foo\", {} ]"
                 + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    CallOperation[] operations = message.getAllCallOperationsFor( "w3" );
+    CallOperation[] operations = message.getAllCallOperationsFor( "w3", null );
 
     assertEquals( 1, operations.length );
     assertEquals( "store", operations[ 0 ].getMethodName() );
+  }
+
+  public void testGetAllCallOperations_ByTargetAnMethodName() {
+    String json = "{ "
+        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_OPERATIONS + " : ["
+        + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+        + "[ \"call\", \"w3\", \"store\", {} ],"
+        + "[ \"call\", \"w4\", \"foo\", { \"p1\" : \"abc\" } ],"
+        + "[ \"call\", \"w4\", \"foo\", { \"p2\" : \"def\" } ]"
+        + "] }";
+    ClientMessage message = new ClientMessage( json );
+
+    CallOperation[] operations = message.getAllCallOperationsFor( "w4", "foo" );
+
+    assertEquals( 2, operations.length );
+    assertEquals( "abc", operations[ 0 ].getProperty( "p1" ) );
+    assertEquals( "def", operations[ 1 ].getProperty( "p2" ) );
   }
 
   public void testSetOperation_WithoutTarget() {
@@ -300,7 +340,7 @@ public class ClientMessage_Test extends TestCase {
                 + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    CallOperation operation = message.getAllCallOperationsFor( "w3" )[ 0 ];
+    CallOperation operation = message.getAllCallOperationsFor( "w3", null )[ 0 ];
 
     assertEquals( "w3", operation.getTarget() );
     assertEquals( "store", operation.getMethodName() );
@@ -333,6 +373,92 @@ public class ClientMessage_Test extends TestCase {
       fail();
     } catch( IllegalArgumentException expected ) {
     }
+  }
+
+  public void testOperationGetPropertyAsPoint() {
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
+                + "[ \"set\", \"w3\", { \"result\" : [1,2] } ]"
+                + "] }";
+    ClientMessage message = new ClientMessage( json );
+
+    SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
+
+    assertEquals( new Point( 1, 2 ), operation.getProperty( "result" ) );
+  }
+
+  public void testOperationGetPropertyAsRectangle() {
+    String json = "{ "
+        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_OPERATIONS + " : ["
+        + "[ \"set\", \"w3\", { \"result\" : [1,2,3,4] } ]"
+        + "] }";
+    ClientMessage message = new ClientMessage( json );
+
+    SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
+
+    assertEquals( new Rectangle( 1, 2, 3, 4 ), operation.getProperty( "result" ) );
+  }
+
+  public void testOperationGetProperty_MixedArray() {
+    String json = "{ "
+        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_OPERATIONS + " : ["
+        + "[ \"set\", \"w3\", { \"result\" : [1,\"foo\",3,4] } ]"
+        + "] }";
+    ClientMessage message = new ClientMessage( json );
+
+    SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
+
+    assertEquals( "[1,\"foo\",3,4]", operation.getProperty( "result" ) );
+  }
+
+  public void testOperationGetProperty_DifferentArrayLenght() {
+    String json = "{ "
+        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_OPERATIONS + " : ["
+        + "[ \"set\", \"w3\", { \"result\" : [1,2,3] } ]"
+        + "] }";
+    ClientMessage message = new ClientMessage( json );
+
+    SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
+
+    assertEquals( "[1,2,3]", operation.getProperty( "result" ) );
+  }
+
+  public void testOperationGetPropertyAsMap() {
+    String json = "{ "
+        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_OPERATIONS + " : ["
+        + "[ \"set\", \"w3\", { \"result\" : { \"p1\" : \"foo\", \"p2\" : \"bar\" } } ]"
+        + "] }";
+    ClientMessage message = new ClientMessage( json );
+
+    SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
+
+    Object value = operation.getProperty( "result" );
+    assertTrue( value instanceof Map );
+    Map map = ( Map )value;
+    assertEquals( "foo", map.get( "p1" ) );
+    assertEquals( "bar", map.get( "p2" ) );
+  }
+
+  public void testOperationGetPropertyAsMap_WithPoint() {
+    String json = "{ "
+        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_OPERATIONS + " : ["
+        + "[ \"set\", \"w3\", { \"result\" : { \"p1\" : [1,2], \"p2\" : \"bar\" } } ]"
+        + "] }";
+    ClientMessage message = new ClientMessage( json );
+
+    SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
+
+    Object value = operation.getProperty( "result" );
+    assertTrue( value instanceof Map );
+    Map map = ( Map )value;
+    assertEquals( new Point( 1, 2 ), map.get( "p1" ) );
+    assertEquals( "bar", map.get( "p2" ) );
   }
 
 }

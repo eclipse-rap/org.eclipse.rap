@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -48,6 +51,7 @@ public class MeasurementOperator_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     operator = MeasurementOperator.getInstance();
+    Fixture.fakeNewRequest( display );
   }
 
   @Override
@@ -95,8 +99,8 @@ public class MeasurementOperator_Test extends TestCase {
     requestProbingOfFont1();
     requestMeasurementOfItem1();
     operator.handleMeasurementRequests();
-    fakeRequestParamWithMeasurementResultOfProbe( FONT_DATA_1 );
-    fakeRequestParamWithMeasurementResultOfItem( MEASUREMENT_ITEM_1 );
+    fakeMessageWithMeasurementResultOfProbe( FONT_DATA_1 );
+    fakeMessageWithMeasurementResultOfItem( MEASUREMENT_ITEM_1 );
 
     operator.handleMeasurementResults();
 
@@ -114,7 +118,7 @@ public class MeasurementOperator_Test extends TestCase {
 
   public void testHandleStartupProbeMeasurementResults() {
     createProbeOfFont1();
-    fakeRequestParamWithMeasurementResultOfProbe( FONT_DATA_1 );
+    fakeMessageWithMeasurementResultOfProbe( FONT_DATA_1 );
     MeasurementOperator measurementOperator = new MeasurementOperator();
 
     measurementOperator.handleStartupProbeMeasurementResults();
@@ -124,10 +128,10 @@ public class MeasurementOperator_Test extends TestCase {
 
   public void testHandleStartupProbeMeasurementResultsExecutedOnce() {
     requestProbing( FONT_DATA_1 );
-    fakeRequestParamWithMeasurementResultOfProbe( FONT_DATA_1 );
+    fakeMessageWithMeasurementResultOfProbe( FONT_DATA_1 );
     operator.handleStartupProbeMeasurementResults();
     requestProbing( FONT_DATA_2 );
-    fakeRequestParamWithMeasurementResultOfProbe( FONT_DATA_2 );
+    fakeMessageWithMeasurementResultOfProbe( FONT_DATA_2 );
 
     operator.handleStartupProbeMeasurementResults();
 
@@ -186,12 +190,20 @@ public class MeasurementOperator_Test extends TestCase {
     textSizeProbeStore.createProbe( fontData );
   }
 
-  private void fakeRequestParamWithMeasurementResultOfItem( MeasurementItem measurementItem ) {
-    Fixture.fakeRequestParam( String.valueOf( measurementItem.hashCode() ), "12,4" );
+  private void fakeMessageWithMeasurementResultOfItem( MeasurementItem measurementItem ) {
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    Map<String, Object> results = new HashMap<String, Object>();
+    results.put( String.valueOf( measurementItem.hashCode() ), new int[] { 12, 4 } );
+    parameters.put( "results", results );
+    Fixture.fakeCallOperation( DisplayUtil.getId( display ), "storeMeasurements", parameters  );
   }
 
-  private void fakeRequestParamWithMeasurementResultOfProbe( FontData fontData ) {
-    Fixture.fakeRequestParam( String.valueOf( fontData.hashCode() ), "3,4" );
+  private void fakeMessageWithMeasurementResultOfProbe( FontData fontData ) {
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    Map<String, Object> results = new HashMap<String, Object>();
+    results.put( String.valueOf( fontData.hashCode() ), new int[] { 3, 4 } );
+    parameters.put( "results", results );
+    Fixture.fakeCallOperation( DisplayUtil.getId( display ), "storeProbes", parameters  );
   }
 
   private void requestMeasurementOfItem1() {
@@ -211,7 +223,7 @@ public class MeasurementOperator_Test extends TestCase {
   }
 
   private void requestProbing( FontData fontData1 ) {
-    Fixture.fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     operator.addProbeToMeasure( fontData1 );
   }
 

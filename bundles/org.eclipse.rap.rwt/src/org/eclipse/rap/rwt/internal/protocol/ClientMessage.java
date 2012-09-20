@@ -96,8 +96,20 @@ public class ClientMessage {
     return result;
   }
 
-  public CallOperation[] getAllCallOperationsFor( String target ) {
-    return getOperations( CallOperation.class, target, null );
+  public CallOperation[] getAllCallOperationsFor( String target, String methodName ) {
+    List<CallOperation> result = new ArrayList<CallOperation>();
+    List<Operation> operations = target == null ? operationsList : operationsMap.get( target );
+    if( operations != null ) {
+      for( Operation operation : operations ) {
+        if( operation instanceof CallOperation ) {
+          CallOperation currentOperation = ( CallOperation )operation;
+          if( methodName == null || currentOperation.getMethodName().equals( methodName ) ) {
+            result.add( currentOperation );
+          }
+        }
+      }
+    }
+    return result.toArray( new CallOperation[ 0 ] );
   }
 
   public Object getHeaderProperty( String key ) {
@@ -203,7 +215,14 @@ public class ClientMessage {
       Object result = null;
       JSONObject properties = getProperties();
       try {
-        result = properties.get( key );
+        Object value = properties.get( key );
+        if( value instanceof JSONObject ) {
+          result = JsonUtil.jsonToJava( ( JSONObject )value );
+        } else if( value instanceof JSONArray ) {
+          result = JsonUtil.jsonToJava( ( JSONArray )value );
+        } else {
+          result = value;
+        }
       } catch( JSONException exception ) {
         // do nothing
       }
