@@ -165,7 +165,7 @@ public class ClientMessage_Test extends TestCase {
                 + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    SetOperation operation = message.getLastSetOperation( "w3", "p1" );
+    SetOperation operation = message.getLastSetOperationFor( "w3", "p1" );
 
     assertEquals( "bar", operation.getProperty( "p1" ) );
   }
@@ -181,7 +181,7 @@ public class ClientMessage_Test extends TestCase {
                 + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    NotifyOperation operation = message.getLastNotifyOperation( "w3", "widgetSelected" );
+    NotifyOperation operation = message.getLastNotifyOperationFor( "w3", "widgetSelected" );
 
     assertNotNull( operation );
     assertEquals( "widgetSelected", operation.getEventName() );
@@ -198,7 +198,7 @@ public class ClientMessage_Test extends TestCase {
         + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    NotifyOperation operation = message.getLastNotifyOperation( null, "widgetSelected" );
+    NotifyOperation operation = message.getLastNotifyOperationFor( null, "widgetSelected" );
     assertNotNull( operation );
     assertEquals( "widgetSelected", operation.getEventName() );
     assertEquals( "w3", operation.getTarget() );
@@ -214,7 +214,7 @@ public class ClientMessage_Test extends TestCase {
         + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    NotifyOperation operation = message.getLastNotifyOperation( null, null );
+    NotifyOperation operation = message.getLastNotifyOperationFor( null, null );
     assertNotNull( operation );
     assertEquals( "widgetDefaultSelected", operation.getEventName() );
     assertEquals( "w3", operation.getTarget() );
@@ -230,7 +230,7 @@ public class ClientMessage_Test extends TestCase {
                 + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    CallOperation[] operations = message.getCallOperations( "w3" );
+    CallOperation[] operations = message.getAllCallOperationsFor( "w3" );
 
     assertEquals( 1, operations.length );
     assertEquals( "store", operations[ 0 ].getMethodName() );
@@ -300,7 +300,7 @@ public class ClientMessage_Test extends TestCase {
                 + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    CallOperation operation = message.getCallOperations( "w3" )[ 0 ];
+    CallOperation operation = message.getAllCallOperationsFor( "w3" )[ 0 ];
 
     assertEquals( "w3", operation.getTarget() );
     assertEquals( "store", operation.getMethodName() );

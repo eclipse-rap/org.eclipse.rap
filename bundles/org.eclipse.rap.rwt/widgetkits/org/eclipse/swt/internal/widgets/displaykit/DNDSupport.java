@@ -71,7 +71,7 @@ public final class DNDSupport {
 
   private static void processDragStart() {
     ClientMessage message = ProtocolUtil.getClientMessage();
-    NotifyOperation notify = message.getLastNotifyOperation( null, EVENT_DRAG_START );
+    NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_START );
     if( notify != null ) {
       Control control = ( Control )findWidgetById( notify.getTarget() );
       DragSource dragSource = getDragSource( control );
@@ -90,7 +90,7 @@ public final class DNDSupport {
 
   private static void processDragEnter() {
     ClientMessage message = ProtocolUtil.getClientMessage();
-    NotifyOperation notify = message.getLastNotifyOperation( null, EVENT_DRAG_ENTER );
+    NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_ENTER );
     if( notify != null ) {
       Control control = ( Control )findWidgetById( notify.getTarget() );
       DropTarget dropTarget = getDropTarget( control );
@@ -126,7 +126,7 @@ public final class DNDSupport {
 
   private static void processDragOver() {
     ClientMessage message = ProtocolUtil.getClientMessage();
-    NotifyOperation notify = message.getLastNotifyOperation( null, EVENT_DRAG_OVER );
+    NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_OVER );
     if( notify != null ) {
       Control control = ( Control )findWidgetById( notify.getTarget() );
       DropTarget dropTarget = getDropTarget( control );
@@ -164,7 +164,7 @@ public final class DNDSupport {
 
   private static void processDragOperationChanged() {
     ClientMessage message = ProtocolUtil.getClientMessage();
-    NotifyOperation notify = message.getLastNotifyOperation( null, EVENT_DRAG_OPERATION_CHANGED );
+    NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_OPERATION_CHANGED );
     if( notify != null ) {
       Control control = ( Control )findWidgetById( notify.getTarget() );
       DropTarget dropTarget = getDropTarget( control );
@@ -202,7 +202,7 @@ public final class DNDSupport {
 
   private static void processDragLeave() {
     ClientMessage message = ProtocolUtil.getClientMessage();
-    NotifyOperation notify = message.getLastNotifyOperation( null, EVENT_DRAG_LEAVE );
+    NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_LEAVE );
     if( notify != null ) {
       Control control = ( Control )findWidgetById( notify.getTarget() );
       DropTarget dropTarget = getDropTarget( control );
@@ -216,7 +216,7 @@ public final class DNDSupport {
   private static void processDragFinished() {
     int operation = DND.DROP_NONE;
     ClientMessage message = ProtocolUtil.getClientMessage();
-    NotifyOperation notify = message.getLastNotifyOperation( null, EVENT_DROP_ACCEPT );
+    NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DROP_ACCEPT );
     if( notify != null ) {
       Control dropTargetControl = ( Control )findWidgetById( notify.getTarget() );
       DropTarget dropTarget = getDropTarget( dropTargetControl );
@@ -336,7 +336,7 @@ public final class DNDSupport {
 
   private static void fireDragFinished( int operation ) {
     ClientMessage message = ProtocolUtil.getClientMessage();
-    NotifyOperation notify = message.getLastNotifyOperation( null, EVENT_DRAG_FINISHED );
+    NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_FINISHED );
     if( notify != null ) {
       Control dragSourceControl = ( Control )findWidgetById( notify.getTarget() );
       // fire DRAG_END
@@ -537,8 +537,8 @@ public final class DNDSupport {
   private static boolean isLeaveBeforeEnter() {
     boolean result = false;
     ClientMessage message = ProtocolUtil.getClientMessage();
-    NotifyOperation enter = message.getLastNotifyOperation( null, EVENT_DRAG_ENTER );
-    NotifyOperation leave = message.getLastNotifyOperation( null, EVENT_DRAG_LEAVE );
+    NotifyOperation enter = message.getLastNotifyOperationFor( null, EVENT_DRAG_ENTER );
+    NotifyOperation leave = message.getLastNotifyOperationFor( null, EVENT_DRAG_LEAVE );
     if( enter != null && leave != null ) {
       int enterTime = readIntParam( enter, EVENT_PARAM_TIME );
       int leaveTime = readIntParam( leave, EVENT_PARAM_TIME );

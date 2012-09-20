@@ -71,7 +71,7 @@ public class ClientMessage {
     return getOperations( Operation.class, target, null );
   }
 
-  public SetOperation getLastSetOperation( String target, String property ) {
+  public SetOperation getLastSetOperationFor( String target, String property ) {
     SetOperation result = null;
     SetOperation[] operations = getOperations( SetOperation.class, target, property );
     if( operations.length > 0 ) {
@@ -80,7 +80,7 @@ public class ClientMessage {
     return result;
   }
 
-  public NotifyOperation getLastNotifyOperation( String target, String eventName ) {
+  public NotifyOperation getLastNotifyOperationFor( String target, String eventName ) {
     NotifyOperation result = null;
     List<Operation> operations = target == null ? operationsList : operationsMap.get( target );
     if( operations != null ) {
@@ -96,7 +96,7 @@ public class ClientMessage {
     return result;
   }
 
-  public CallOperation[] getCallOperations( String target ) {
+  public CallOperation[] getAllCallOperationsFor( String target ) {
     return getOperations( CallOperation.class, target, null );
   }
 

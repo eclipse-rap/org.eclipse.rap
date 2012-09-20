@@ -74,7 +74,7 @@ public final class ProtocolUtil {
   public static String readPropertyValueAsString( String target, String property ) {
     String result = null;
     ClientMessage message = getClientMessage();
-    SetOperation operation =  message.getLastSetOperation( target, property );
+    SetOperation operation =  message.getLastSetOperationFor( target, property );
     if( operation != null ) {
       Object value = operation.getProperty( property );
       if( value != null ) {
@@ -90,7 +90,7 @@ public final class ProtocolUtil {
   {
     String result = null;
     ClientMessage message = getClientMessage();
-    NotifyOperation operation =  message.getLastNotifyOperation( target, eventName );
+    NotifyOperation operation =  message.getLastNotifyOperationFor( target, eventName );
     if( operation != null ) {
       Object value = operation.getProperty( property );
       if( value != null ) {
@@ -102,7 +102,7 @@ public final class ProtocolUtil {
 
   public static boolean wasEventSent( String target, String eventName ) {
     ClientMessage message = getClientMessage();
-    NotifyOperation operation =  message.getLastNotifyOperation( target, eventName );
+    NotifyOperation operation =  message.getLastNotifyOperationFor( target, eventName );
     return operation != null;
   }
 
