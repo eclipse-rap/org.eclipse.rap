@@ -164,16 +164,14 @@ qx.Class.define( "rwt.remote.Server", {
     // Internals
 
     _attachParameters : function( request ) {
-      var data = [];
       this._flushEvent();
-      data.push( "message=" + encodeURIComponent( this.getMessageWriter().createMessage() ) );
+      request.setData( this.getMessageWriter().createMessage() );
       this._writer.dispose();
       this._writer = null;
-      request.setData( data.join( "&" ) );
     },
 
     _createRequest : function() {
-      var result = new rwt.remote.Request( this._url, "POST", "application/javascript" );
+      var result = new rwt.remote.Request( this._url, "POST", "application/json" );
       result.setSuccessHandler( this._handleSuccess, this );
       result.setErrorHandler( this._handleError, this );
       return result;

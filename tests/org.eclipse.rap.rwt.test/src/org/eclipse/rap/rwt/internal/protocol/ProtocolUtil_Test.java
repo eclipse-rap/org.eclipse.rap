@@ -11,6 +11,8 @@
 package org.eclipse.rap.rwt.internal.protocol;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
@@ -214,14 +216,9 @@ public class ProtocolUtil_Test extends TestCase {
   }
 
   public void testReadPropertyValue_LastSetValue() {
-    String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
-                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ], "
-                + "[ \"set\", \"w3\", { \"p1\" : \"bar\" } ] "
-                + "] }";
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( "message", json );
+    Fixture.fakeSetParameter( "w3", "p1", "foo" );
+    Fixture.fakeSetParameter( "w3", "p1", "bar" );
 
     assertEquals( "bar", ProtocolUtil.readPropertyValueAsString( "w3", "p1" ) );
   }
@@ -255,14 +252,18 @@ public class ProtocolUtil_Test extends TestCase {
   // Helping methods
 
   private void fakeNewJsonMessage() {
-    String json = "{ "
-                + ClientMessage.PROP_HEADER + " : { \"requestCounter\" : 21 },"
-                + ClientMessage.PROP_OPERATIONS + " : ["
-                + "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : 123 } ], "
-                + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ], "
-                + "[ \"set\", \"w3\", { \"p3\" : true, \"p4\" : null } ] "
-                + "] }";
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( "message", json );
+    Fixture.fakeHeaderParameter( "requestCounter", Integer.valueOf( 21 ) );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( "p1", "foo" );
+    parameters.put( "p2", Integer.valueOf( 123 ) );
+    Fixture.fakeSetOperation( "w3", parameters  );
+    parameters = new HashMap<String, Object>();
+    parameters.put( "detail", "check" );
+    Fixture.fakeNotifyOperation( "w3", "widgetSelected", parameters );
+    parameters = new HashMap<String, Object>();
+    parameters.put( "p3", Boolean.TRUE );
+    parameters.put( "p4", null );
+    Fixture.fakeSetOperation( "w3", parameters  );
   }
 }

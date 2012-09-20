@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,8 +56,20 @@ public final class ProtocolUtil {
     ClientMessage clientMessage = ( ClientMessage )serviceStore.getAttribute( CLIENT_MESSAGE );
     if( clientMessage == null ) {
       HttpServletRequest request = ContextProvider.getRequest();
-      String json = request.getParameter( ClientMessage.PROP_MESSAGE );
-      clientMessage = new ClientMessage( json );
+      StringBuilder json = new StringBuilder();
+      try {
+        InputStreamReader inputStreamReader = new InputStreamReader( request.getInputStream() );
+        BufferedReader reader = new BufferedReader( inputStreamReader );
+        String line = reader.readLine();
+        while( line != null ) {
+          json.append( line + "\n" );
+          line = reader.readLine();
+        }
+        reader.close();
+      } catch( IOException e ) {
+        throw new RuntimeException( "Unable to read the json message" );
+      }
+      clientMessage = new ClientMessage( json.toString() );
       serviceStore.setAttribute( CLIENT_MESSAGE, clientMessage );
     }
     return clientMessage;

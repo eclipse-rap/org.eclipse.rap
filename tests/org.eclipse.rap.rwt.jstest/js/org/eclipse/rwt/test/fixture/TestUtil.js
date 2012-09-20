@@ -700,10 +700,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
 
   getMessageObject : function( arg ) {
     var index = typeof arg === "number" ? arg : 0;
-    var message = this._requestLog[ index ];
-    message = message.split( "message=" )[ 1 ];
-    message = message.split( "&" )[ 0 ];
-    return new org.eclipse.rwt.test.fixture.Message( decodeURIComponent( message ) );
+    return new org.eclipse.rwt.test.fixture.Message( this._requestLog[ index ] );
   },
 
   getMessages : function() {

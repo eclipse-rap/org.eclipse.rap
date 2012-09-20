@@ -177,7 +177,7 @@ public final class Fixture {
 
   public static void createServiceContext() {
     TestRequest request = new TestRequest();
-    request.addParameter( ClientMessage.PROP_MESSAGE, createEmptyMessage() );
+    request.setBody( createEmptyMessage() );
     TestResponse response = new TestResponse();
     HttpSession session = createTestSession();
     request.setSession( session );
@@ -327,7 +327,7 @@ public final class Fixture {
   public static void fakeNewRequest() {
     fakeNewRequest( HTTP.METHOD_POST );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.addParameter( ClientMessage.PROP_MESSAGE, createEmptyMessage() );
+    request.setBody( createEmptyMessage() );
   }
 
   public static void fakeNewGetRequest() {
@@ -366,12 +366,12 @@ public final class Fixture {
   public static void fakeHeaderParameter( String key, Object value ) {
     checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    String json = request.getParameter( ClientMessage.PROP_MESSAGE );
+    String json = request.getBody();
     try {
       JSONObject message = new JSONObject( json );
       JSONObject header = message.getJSONObject( ClientMessage.PROP_HEADER );
       header.put( key, value );
-      request.setParameter( ClientMessage.PROP_MESSAGE, message.toString() );
+      request.setBody( message.toString() );
     } catch( JSONException exception ) {
       throw new RuntimeException( "Failed to add header parameter", exception );
     }
@@ -386,7 +386,7 @@ public final class Fixture {
   public static void fakeSetOperation( String target, Map<String, Object> parameters ) {
     checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    String json = request.getParameter( ClientMessage.PROP_MESSAGE );
+    String json = request.getBody();
     try {
       JSONObject message = new JSONObject( json );
       JSONArray operations = message.getJSONArray( ClientMessage.PROP_OPERATIONS );
@@ -395,7 +395,7 @@ public final class Fixture {
       newOperation.put( target );
       newOperation.put( new JSONObject( parameters ) );
       operations.put( newOperation );
-      request.setParameter( ClientMessage.PROP_MESSAGE, message.toString() );
+      request.setBody( message.toString() );
     } catch( JSONException exception ) {
       throw new RuntimeException( "Failed to add set operation", exception );
     }
@@ -407,7 +407,7 @@ public final class Fixture {
   {
     checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    String json = request.getParameter( ClientMessage.PROP_MESSAGE );
+    String json = request.getBody();
     try {
       JSONObject message = new JSONObject( json );
       JSONArray operations = message.getJSONArray( ClientMessage.PROP_OPERATIONS );
@@ -417,7 +417,7 @@ public final class Fixture {
       newOperation.put( eventName );
       newOperation.put( new JSONObject( parameters ) );
       operations.put( newOperation );
-      request.setParameter( ClientMessage.PROP_MESSAGE, message.toString() );
+      request.setBody( message.toString() );
     } catch( JSONException exception ) {
       throw new RuntimeException( "Failed to add notify operation", exception );
     }
@@ -429,7 +429,7 @@ public final class Fixture {
   {
     checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    String json = request.getParameter( ClientMessage.PROP_MESSAGE );
+    String json = request.getBody();
     try {
       JSONObject message = new JSONObject( json );
       JSONArray operations = message.getJSONArray( ClientMessage.PROP_OPERATIONS );
@@ -439,7 +439,7 @@ public final class Fixture {
       newOperation.put( methodName );
       newOperation.put( new JSONObject( parameters ) );
       operations.put( newOperation );
-      request.setParameter( ClientMessage.PROP_MESSAGE, message.toString() );
+      request.setBody( message.toString() );
     } catch( JSONException exception ) {
       throw new RuntimeException( "Failed to add call operation", exception );
     }

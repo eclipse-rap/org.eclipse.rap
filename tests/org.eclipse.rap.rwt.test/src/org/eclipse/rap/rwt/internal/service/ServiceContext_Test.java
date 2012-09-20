@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
@@ -135,7 +134,7 @@ public class ServiceContext_Test extends TestCase {
 
   private ServiceContext createContext() {
     TestRequest request = new TestRequest();
-    request.addParameter( ClientMessage.PROP_MESSAGE, Fixture.createEmptyMessage() );
+    request.setBody( Fixture.createEmptyMessage() );
     TestResponse response = new TestResponse();
     HttpSession session = new TestSession();
     if( sessionStore != null ) {

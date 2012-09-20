@@ -31,7 +31,6 @@ rwt.widgets.Display.prototype = {
   init : function( args ) {
     this._request.setUrl( args.url );
     this._request.setUIRootId( args.rootId );
-    this._request._parameters[ "rwt_initialize" ] = "true"; // skip json message writer
     this._request.getMessageWriter().appendMeta( "rwt_initialize", true );
     this._appendWindowSize();
     this._appendSystemDPI();
