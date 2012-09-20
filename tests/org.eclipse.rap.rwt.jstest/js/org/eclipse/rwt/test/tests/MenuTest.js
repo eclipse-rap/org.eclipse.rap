@@ -720,9 +720,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.click( menuItem );
       assertEquals( 0, TestUtil.getRequestsSend() );
       assertTrue( menuItem.hasState( "selected" ) );
-      assertTrue(
-        rwt.remote.Server.getInstance()._parameters[ "w3.selection" ]
-      );
       TestUtil.clearRequestLog();
       menuItem.setHasSelectionListener( true );
       menuItem.setSelection( false );
@@ -747,9 +744,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.clearRequestLog();
       TestUtil.click( menuItem );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      assertTrue(
-        rwt.remote.Server.getInstance()._parameters[ "w3.selection" ]
-      );
       menuItem.setSelection( false );
       menuItem.setHasSelectionListener( true );
       TestUtil.clearRequestLog();

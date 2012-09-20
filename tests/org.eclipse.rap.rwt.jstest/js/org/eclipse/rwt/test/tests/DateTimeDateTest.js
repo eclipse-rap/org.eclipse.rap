@@ -101,7 +101,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
-      TestUtil.protocolSet( "w3", { "subWidgetsBounds" : [ [ 0, 3, 5, 0, 18 ], 
+      TestUtil.protocolSet( "w3", { "subWidgetsBounds" : [ [ 0, 3, 5, 0, 18 ],
                                                            [ 4, 3, 5, 0, 18 ] ] } );
       assertEquals( 3, widget._weekdayTextField.getLeft() );
       assertEquals( 5, widget._weekdayTextField.getTop() );
@@ -141,11 +141,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       dateTime.setYear( 2010 );
       TestUtil.clearRequestLog();
       dateTime._sendChanges();
-      assertEquals( 0, TestUtil.getRequestsSend() );
       var req = rwt.remote.Server.getInstance();
-      assertEquals( 10, req._parameters[ "w3.day" ] );
-      assertEquals( 10, req._parameters[ "w3.month" ] );
-      assertEquals( 2010, req._parameters[ "w3.year" ] );
+      req.send();
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( 10, message.findSetProperty( "w3", "day" ) );
+      assertEquals( 10, message.findSetProperty( "w3", "month" ) );
+      assertEquals( 2010, message.findSetProperty( "w3", "year" ) );
       dateTime.destroy();
     },
 
@@ -160,7 +163,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       TestUtil.clearRequestLog();
       dateTime._sendChanges();
       // this should restart the timer, though there is currently no way to test it:
-      dateTime._sendChanges(); 
+      dateTime._sendChanges();
       assertEquals( 0, TestUtil.getRequestsSend() );
       TestUtil.forceInterval( dateTime._requestTimer );
       assertFalse( dateTime._requestTimer.getEnabled() );
@@ -179,7 +182,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       assertEquals( "May fail if browser-window not high enough", 23, calendar.getTop() );
       dateTime.destroy();
     },
-    
+
     testDropDownCalendarNotEnoughSpace : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dateTime = this._createDefaultDateTime( true );
@@ -224,7 +227,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
 
     //////////
     // Helpers
-    
+
     _createDefaultDateTimeByProtocol : function( id, parentId, dropdown ) {
       var styles =  [ "DATE", "MEDIUM" ];
       if( dropdown ) {

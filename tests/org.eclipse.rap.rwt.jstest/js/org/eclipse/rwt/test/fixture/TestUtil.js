@@ -345,7 +345,6 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   keyHold : function( target, key, mod ) {
-    var event = null;
     if( this._sendKeyDownOnHold( key ) ) {
       var event = this.fireFakeKeyDomEvent( target, "keydown", key, mod );
     }
@@ -697,10 +696,6 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   clearRequestLog : function() {
     rwt.remote.Server.getInstance().send();
     this._requestLog = [];
-  },
-
-  getMessage : function(){
-    return this.getRequestLog()[ 0 ];
   },
 
   getMessageObject : function( arg ) {

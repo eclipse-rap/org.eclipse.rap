@@ -863,7 +863,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( 0, tree._horzScrollBar.getValue() );
       assertEquals( 0, tree._vertScrollBar.getValue() );
       var req = rwt.remote.Server.getInstance();
-      assertEquals( "0", req.getParameter( "wtest.scrollLeft" ) );
+      req.send();
+      assertEquals( "0", TestUtil.getMessageObject().findSetProperty( "wtest", "scrollLeft" ) );
       wm.remove( tree );
       tree.destroy();
     },
@@ -1370,7 +1371,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.clickDOM( tree._rowContainer._children[ 2 ]._getTargetNode() );
       TestUtil.flush();
       assertTrue( tree.isFocusItem( item2 ) );
-      assertEquals( "w2", req.getParameter( "w11.focusItem" ) );
+      req.send();
+      assertEquals( "w2", TestUtil.getMessageObject().findSetProperty( "w11", "focusItem" ) );
       tree.destroy();
     },
 
@@ -1391,7 +1393,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
       assertFalse( tree.isFocusItem( item1 ) );
       assertTrue( tree.isFocusItem( item2 ) );
-      assertEquals( "w2", req.getParameter( "w11.focusItem" ) );
+      req.send();
+      assertEquals( "w2", TestUtil.getMessageObject().findSetProperty( "w11", "focusItem" ) );
       tree.destroy();
     },
 
@@ -1408,7 +1411,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.clickDOM( tree._rowContainer._children[ 1 ]._getTargetNode() );
       TestUtil.flush();
       assertTrue( tree.isFocusItem( tree.getRootItem()._children[ 1 ] ) );
-      assertEquals( "w11#1", req.getParameter( "w11.focusItem" ) );
+      req.send();
+      assertEquals( "w11#1", TestUtil.getMessageObject().findSetProperty( "w11", "focusItem" ) );
       tree.destroy();
     },
 
