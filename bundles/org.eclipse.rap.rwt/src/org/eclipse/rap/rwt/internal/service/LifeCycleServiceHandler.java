@@ -27,6 +27,7 @@ import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTRequestVersionControl;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.theme.JsonValue;
@@ -86,7 +87,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     } else {
       if( isSessionRestart() ) {
         reinitializeSessionStore();
-        clearServiceStore();
+        reinitializeServiceStore();
       }
       RequestParameterBuffer.merge();
       runLifeCycle();
@@ -160,9 +161,11 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     SingletonManager.install( sessionStore );
   }
 
-  private static void clearServiceStore() {
+  private static void reinitializeServiceStore() {
+    ClientMessage clientMessage = ProtocolUtil.getClientMessage();
     ServiceStore serviceStore = ( ServiceStore )ContextProvider.getServiceStore();
     serviceStore.clear();
+    ProtocolUtil.setClientMessage( clientMessage );
   }
 
   /*

@@ -21,7 +21,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.widgets.Display;
 
@@ -248,6 +250,39 @@ public class ProtocolUtil_Test extends TestCase {
     assertFalse( ProtocolUtil.wasEventSent( "w3", "widgetDefaultSelected" ) );
   }
 
+  public void testReadPropertyValueAsPoint() {
+    fakeNewJsonMessage();
+
+    assertEquals( new Point( 1, 2 ), ProtocolUtil.readPropertyValueAsPoint( "w3", "p5" ) );
+  }
+
+  public void testReadPropertyValueAsPoint_NotPoint() {
+    fakeNewJsonMessage();
+
+    try {
+      ProtocolUtil.readPropertyValueAsPoint( "w3", "p6" );
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
+  }
+
+  public void testReadPropertyValueAsRectangle() {
+    fakeNewJsonMessage();
+
+    Rectangle expected = new Rectangle( 1, 2, 3, 4 );
+    assertEquals( expected, ProtocolUtil.readPropertyValueAsRectangle( "w3", "p6" ) );
+  }
+
+  public void testReadPropertyValueAsRectangle_NotRectangle() {
+    fakeNewJsonMessage();
+
+    try {
+      ProtocolUtil.readPropertyValueAsRectangle( "w3", "p5" );
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
+  }
+
   //////////////////
   // Helping methods
 
@@ -264,6 +299,8 @@ public class ProtocolUtil_Test extends TestCase {
     parameters = new HashMap<String, Object>();
     parameters.put( "p3", Boolean.TRUE );
     parameters.put( "p4", null );
+    parameters.put( "p5", new int[] { 1, 2 } );
+    parameters.put( "p6", new int[] { 1, 2, 3, 4 } );
     Fixture.fakeSetOperation( "w3", parameters  );
   }
 }

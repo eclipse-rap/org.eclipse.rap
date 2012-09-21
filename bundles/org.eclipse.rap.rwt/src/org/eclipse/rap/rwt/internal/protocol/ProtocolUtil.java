@@ -29,6 +29,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontUtil;
@@ -75,6 +76,11 @@ public final class ProtocolUtil {
     return clientMessage;
   }
 
+  public static void setClientMessage( ClientMessage clientMessage ) {
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    serviceStore.setAttribute( CLIENT_MESSAGE, clientMessage );
+  }
+
   public static boolean isClientMessageProcessed() {
     IServiceStore serviceStore = ContextProvider.getServiceStore();
     return serviceStore.getAttribute( CLIENT_MESSAGE ) != null;
@@ -94,6 +100,36 @@ public final class ProtocolUtil {
       Object value = operation.getProperty( property );
       if( value != null ) {
         result = value.toString();
+      }
+    }
+    return result;
+  }
+
+  public static Point readPropertyValueAsPoint( String target, String property ) {
+    Point result = null;
+    ClientMessage message = getClientMessage();
+    SetOperation operation =  message.getLastSetOperationFor( target, property );
+    if( operation != null ) {
+      Object value = operation.getProperty( property );
+      if( value == null || value instanceof Point ) {
+        result = ( Point )value;
+      } else {
+        throw new IllegalStateException( "Property is not a point: " + property );
+      }
+    }
+    return result;
+  }
+
+  public static Rectangle readPropertyValueAsRectangle( String target, String property ) {
+    Rectangle result = null;
+    ClientMessage message = getClientMessage();
+    SetOperation operation =  message.getLastSetOperationFor( target, property );
+    if( operation != null ) {
+      Object value = operation.getProperty( property );
+      if( value == null || value instanceof Rectangle ) {
+        result = ( Rectangle )value;
+      } else {
+        throw new IllegalStateException( "Property is not a rectangle: " + property );
       }
     }
     return result;

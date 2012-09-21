@@ -28,6 +28,8 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.LifeCycleServiceHandler;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
@@ -160,6 +162,18 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
 
     assertNull( ContextProvider.getServiceStore().getAttribute( "foo" ) );
+  }
+
+  public void testClearServiceStoreAfterSessionRestart_RestoreMessage() throws IOException {
+    LifeCycleServiceHandler.markSessionStarted();
+    simulateInitialUiRequest();
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+
+    simulateInitialUiRequest();
+    ClientMessage message = ProtocolUtil.getClientMessage();
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+
+    assertSame( message, ProtocolUtil.getClientMessage() );
   }
 
   public void testFinishesProtocolWriter() throws IOException {
