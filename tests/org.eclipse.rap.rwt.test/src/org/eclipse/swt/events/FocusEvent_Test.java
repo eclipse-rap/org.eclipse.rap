@@ -11,14 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
@@ -48,6 +49,7 @@ public class FocusEvent_Test extends TestCase {
         events.add( event );
       }
     };
+    Fixture.fakeNewRequest( display );
   }
 
   @Override
@@ -79,11 +81,8 @@ public class FocusEvent_Test extends TestCase {
     unfocusControl.setFocus();
     unfocusControl.addFocusListener( listener );
     Control focusControl = new Button( shell, SWT.PUSH );
-    String focusControlId = WidgetUtil.getId( focusControl );
 
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( DisplayUtil.getId( display ) + ".focusControl", focusControlId );
-    Fixture.fakeRequestParam( "org.eclipse.swt.events.focusLost", focusControlId );
+    Fixture.fakeSetParameter( getId( display ), "focusControl", getId( focusControl ) );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 1, events.size() );
@@ -95,11 +94,8 @@ public class FocusEvent_Test extends TestCase {
   public void testFocusGained() {
     Control control = new Button( shell, SWT.PUSH );
     control.addFocusListener( listener );
-    String controlId = WidgetUtil.getId( control );
 
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( DisplayUtil.getId( display ) + ".focusControl", controlId );
-    Fixture.fakeRequestParam( "org.eclipse.swt.events.focusGained", controlId );
+    Fixture.fakeSetParameter( getId( display ), "focusControl", getId( control ) );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 1, events.size() );
@@ -115,10 +111,8 @@ public class FocusEvent_Test extends TestCase {
     button2.addFocusListener( listener );
     button1.setFocus();
     events.clear();
-    String button2Id = WidgetUtil.getId( button2 );
 
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( DisplayUtil.getId( display ) + ".focusControl", button2Id );
+    Fixture.fakeSetParameter( getId( display ), "focusControl", getId( button2 ) );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 2, events.size() );

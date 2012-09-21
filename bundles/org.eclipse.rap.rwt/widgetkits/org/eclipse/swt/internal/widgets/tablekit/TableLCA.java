@@ -13,18 +13,16 @@ package org.eclipse.swt.internal.widgets.tablekit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -72,6 +70,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final String PROP_ENABLE_CELL_TOOLTIP = "enableCellToolTip";
   private static final String PROP_CELL_TOOLTIP_TEXT = "cellToolTipText";
   private static final String PROP_MARKUP_ENABLED = "markupEnabled";
+  private static final String EVENT_SCROLLBAR_SELECTED = "scrollBarSelected";
 
   private static final int ZERO = 0 ;
   private static final String[] DEFAULT_SELECTION = new String[ 0 ];
@@ -116,9 +115,10 @@ public final class TableLCA extends AbstractWidgetLCA {
     readWidgetSelected( table );
     readWidgetDefaultSelected( table );
     readCellToolTipTextRequested( table );
-    ControlLCAUtil.processMouseEvents( table );
+    ControlLCAUtil.processEvents( table );
     ControlLCAUtil.processKeyEvents( table );
     ControlLCAUtil.processMenuDetect( table );
+    processScrollBarSelectionEvent( table );
   }
 
   @Override
@@ -244,47 +244,50 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
 
   private static void readWidgetSelected( Table table ) {
-    if( WidgetLCAUtil.wasEventSent( table, JSConst.EVENT_WIDGET_SELECTED ) ) {
-      HttpServletRequest request = ContextProvider.getRequest();
-      String selectionId = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_ITEM );
-      TableItem item = getItem( table, selectionId );
+    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( table, eventName ) ) {
+      String value = readEventPropertyValue( table, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
+      TableItem item = getItem( table, value );
       // Bugfix: check if index is valid before firing event to avoid problems with fast scrolling
       // TODO [tb] : Still useful? bugzilla id?
       if( item != null ) {
-        int detail = getWidgetSelectedDetail();
-        int id = SelectionEvent.WIDGET_SELECTED;
-        Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-        int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
-        SelectionEvent event
-          = new SelectionEvent( table, item, id, bounds, stateMask, "", true, detail );
+        int stateMask = EventLCAUtil.readStateMask( table, eventName );
+        SelectionEvent event = new SelectionEvent( table,
+                                                   item,
+                                                   SelectionEvent.WIDGET_SELECTED,
+                                                   new Rectangle( 0, 0, 0, 0 ),
+                                                   stateMask,
+                                                   "",
+                                                   true,
+                                                   getWidgetSelectedDetail( table ) );
         event.processEvent();
       }
     }
   }
 
   private static void readWidgetDefaultSelected( Table table ) {
-    String defaultSelectedParam = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
-    if( WidgetLCAUtil.wasEventSent( table, defaultSelectedParam ) ) {
+    String eventName = ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( table, eventName ) ) {
       // A default-selected event can occur without a selection being present.
       // In this case the event.item field points to the focused item
       TableItem item = getFocusItem( table );
-      HttpServletRequest request = ContextProvider.getRequest();
-      String selectionId = request.getParameter( defaultSelectedParam + ".item" );
-      TableItem selectedItem = getItem( table, selectionId );
+      String value = readEventPropertyValue( table, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
+      TableItem selectedItem = getItem( table, value );
       if( selectedItem != null ) {
         // TODO [rh] do something about when index points to unresolved item!
         item = selectedItem;
       }
-      int id = SelectionEvent.WIDGET_DEFAULT_SELECTED;
-      SelectionEvent event = new SelectionEvent( table, item, id );
-      event.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+      SelectionEvent event
+        = new SelectionEvent( table, item, SelectionEvent.WIDGET_DEFAULT_SELECTED );
+      event.stateMask = EventLCAUtil.readStateMask( table, eventName );
       event.processEvent();
     }
   }
 
-  private static int getWidgetSelectedDetail() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String value = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_DETAIL );
+  private static int getWidgetSelectedDetail( Table table ) {
+    String value = readEventPropertyValue( table,
+                                           ClientMessageConst.EVENT_WIDGET_SELECTED,
+                                           ClientMessageConst.EVENT_PARAM_DETAIL );
     return "check".equals( value ) ? SWT.CHECK : SWT.NONE;
   }
 
@@ -294,12 +297,13 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static void readCellToolTipTextRequested( Table table ) {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
     adapter.setCellToolTipText( null );
-    if( WidgetLCAUtil.wasEventSent( table, JSConst.EVENT_CELL_TOOLTIP_REQUESTED ) ) {
+    String eventName = ClientMessageConst.EVENT_CELL_TOOLTIP_REQUESTED;
+    if( WidgetLCAUtil.wasEventSent( table, eventName ) ) {
       ICellToolTipProvider provider = adapter.getCellToolTipProvider();
       if( provider != null ) {
-        HttpServletRequest request = ContextProvider.getRequest();
-        String cell = request.getParameter( JSConst.EVENT_CELL_TOOLTIP_DETAILS );
-        String[] details = cell.split( "," );
+        String value
+          = readEventPropertyValue( table, eventName, ClientMessageConst.EVENT_PARAM_CELL );
+        String[] details = value.split( "," );
         String itemId = details[ 0 ];
         int columnIndex = NumberFormatUtil.parseInt( details[ 1 ] );
         TableItem item = getItem( table, itemId );
@@ -390,9 +394,25 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static void processScrollBarSelection( ScrollBar scrollBar, int selection ) {
     if( scrollBar != null ) {
       scrollBar.setSelection( selection );
-      if( SelectionEvent.hasListener( scrollBar ) ) {
-        SelectionEvent evt = new SelectionEvent( scrollBar, null, SelectionEvent.WIDGET_SELECTED );
-        evt.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+    }
+  }
+
+  private static void processScrollBarSelectionEvent( Table table ) {
+    if( WidgetLCAUtil.wasEventSent( table, EVENT_SCROLLBAR_SELECTED ) ) {
+      String horizontal = readEventPropertyValue( table,
+                                                  EVENT_SCROLLBAR_SELECTED,
+                                                  "horizontal" );
+      String vertical = readEventPropertyValue( table,
+                                                EVENT_SCROLLBAR_SELECTED,
+                                                "vertical" );
+      ScrollBar hScroll = table.getHorizontalBar();
+      if( hScroll != null && "true".equals( horizontal ) ) {
+        SelectionEvent evt = new SelectionEvent( hScroll, null, SelectionEvent.WIDGET_SELECTED );
+        evt.processEvent();
+      }
+      ScrollBar vScroll = table.getVerticalBar();
+      if( vScroll != null && "true".equals( vertical ) ) {
+        SelectionEvent evt = new SelectionEvent( vScroll, null, SelectionEvent.WIDGET_SELECTED );
         evt.processEvent();
       }
     }

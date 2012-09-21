@@ -17,12 +17,11 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
 import org.eclipse.rap.rwt.internal.theme.*;
@@ -120,8 +119,7 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 public class Display extends Device implements Adaptable {
 
   private static final IFilterEntry[] EMPTY_FILTERS = new IFilterEntry[ 0 ];
-  private final static String AVAILABLE_WIDTH = "w1.bounds.width";
-  private final static String AVAILABLE_HEIGHT = "w1.bounds.height";
+  private final static String BOUNDS = "bounds";
   private static final String ATTR_INVALIDATE_FOCUS
     = DisplayAdapter.class.getName() + "#invalidateFocus";
   private static final String APP_NAME = Display.class.getName() + "#appName";
@@ -2248,18 +2246,11 @@ public class Display extends Device implements Adaptable {
   }
 
   private Rectangle readInitialBounds() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String widthVal = request.getParameter( Display.AVAILABLE_WIDTH );
-    int width = 1024;
-    if( widthVal != null ) {
-      width = Integer.parseInt( widthVal );
+    Rectangle result = ProtocolUtil.readPropertyValueAsRectangle( "w1",  Display.BOUNDS );
+    if( result == null ) {
+      result = new Rectangle( 0, 0, 1024, 768 );
     }
-    String heightVal = request.getParameter( Display.AVAILABLE_HEIGHT );
-    int height = 768;
-    if( heightVal != null ) {
-      height = Integer.parseInt( heightVal );
-    }
-    return new Rectangle( 0, 0, width, height );
+    return result;
   }
 
   private void notifyFilters( Event event ) {

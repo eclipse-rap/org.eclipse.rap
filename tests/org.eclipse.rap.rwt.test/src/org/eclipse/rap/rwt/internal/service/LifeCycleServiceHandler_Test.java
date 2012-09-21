@@ -28,6 +28,8 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.LifeCycleServiceHandler;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
@@ -162,6 +164,18 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     assertNull( ContextProvider.getServiceStore().getAttribute( "foo" ) );
   }
 
+  public void testClearServiceStoreAfterSessionRestart_RestoreMessage() throws IOException {
+    LifeCycleServiceHandler.markSessionStarted();
+    simulateInitialUiRequest();
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+
+    simulateInitialUiRequest();
+    ClientMessage message = ProtocolUtil.getClientMessage();
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+
+    assertSame( message, ProtocolUtil.getClientMessage() );
+  }
+
   public void testFinishesProtocolWriter() throws IOException {
     simulateUiRequest();
 
@@ -224,20 +238,23 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   }
 
   private void simulateInitialUiRequest() {
-    Fixture.fakeNewRequest( new Display() );
+    Fixture.fakeNewRequest();
+    Fixture.fakeHeaderParameter( RequestParams.UIROOT, "w1" );
+    Fixture.fakeHeaderParameter( RequestParams.RWT_INITIALIZE, "true" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
-    Fixture.fakeHeaderParameter( RequestParams.RWT_INITIALIZE, "true" );
   }
 
   private void simulateUiRequest() {
-    Fixture.fakeNewRequest( new Display() );
+    Fixture.fakeNewRequest();
+    Fixture.fakeHeaderParameter( RequestParams.UIROOT, "w1" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
   }
 
   private void simulateUiRequestWithIllegalCounter() {
-    Fixture.fakeNewRequest( new Display() );
+    Fixture.fakeNewRequest();
+    Fixture.fakeHeaderParameter( RequestParams.UIROOT, "w1" );
     Fixture.fakeHeaderParameter( "requestCounter", "23" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );

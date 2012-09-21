@@ -11,13 +11,20 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.shellkit;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -165,80 +172,81 @@ public class ShellLCA_Test extends TestCase {
   }
 
   public void testReadDataForClosed() {
-    final StringBuilder log = new StringBuilder();
     shell.open();
-    shell.addShellListener( new ShellAdapter() {
-      @Override
-      public void shellClosed( ShellEvent event ) {
-        log.append( "closed" );
-      }
-    } );
-    String shellId = WidgetUtil.getId( shell );
-    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_CLOSED, shellId );
+    ShellListener listener = mock( ShellListener.class );
+    shell.addShellListener( listener );
+
+    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_CLOSED, null );
     Fixture.readDataAndProcessAction( shell );
-    assertEquals( "closed", log.toString() );
+
+    verify( listener, times( 1 ) ).shellClosed( any( ShellEvent.class ) );
   }
 
   public void testReadDataForActiveControl() {
     Label label = new Label( shell, SWT.NONE );
     Label otherLabel = new Label( shell, SWT.NONE );
-    String shellId = WidgetUtil.getId( shell );
-    String labelId = WidgetUtil.getId( label );
-    String otherLabelId = WidgetUtil.getId( otherLabel );
     setActiveControl( shell, otherLabel );
-    Fixture.fakeRequestParam( shellId + ".activeControl", labelId );
+
+    Fixture.fakeSetParameter( getId( shell ), "activeControl", getId( label ) );
     Fixture.readDataAndProcessAction( display );
-    assertSame( label, getActiveControl( shell ) );
-    // Ensure that if there is both, an avtiveControl parameter and a
-    // controlActivated event, the activeControl parameter is ignored
-    setActiveControl( shell, otherLabel );
-    Fixture.fakeRequestParam( shellId + ".activeControl", otherLabelId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, labelId );
-    Fixture.readDataAndProcessAction( display );
+
     assertSame( label, getActiveControl( shell ) );
   }
 
-  public void testReadDataForMode() {
+  public void testReadDataForMode_Maximixed() {
     shell.open();
-    assertFalse( shell.getMaximized() );
-    assertFalse( shell.getMinimized() );
-    String shellId = WidgetUtil.getId( shell );
-    Fixture.fakeRequestParam( shellId + ".mode", "maximized" );
+
+    Fixture.fakeSetParameter( getId( shell ), "mode", "maximized" );
     Fixture.readDataAndProcessAction( shell );
+
     assertTrue( shell.getMaximized() );
     assertFalse( shell.getMinimized() );
-    Fixture.fakeRequestParam( shellId + ".mode", "minimized" );
-    Fixture.readDataAndProcessAction( shell );
-    assertFalse( shell.getMaximized() );
-    assertTrue( shell.getMinimized() );
-    Fixture.fakeRequestParam( shellId + ".mode", "null" );
-    Fixture.readDataAndProcessAction( shell );
-    assertFalse( shell.getMaximized() );
-    assertFalse( shell.getMinimized() );
   }
 
-  public void testReadModeBoundsOrder() {
+  public void testReadDataForMode_Minimixed() {
+    shell.open();
+
+    Fixture.fakeSetParameter( getId( shell ), "mode", "minimized" );
+    Fixture.readDataAndProcessAction( shell );
+
+    assertFalse( shell.getMaximized() );
+    assertTrue( shell.getMinimized() );
+  }
+
+  public void testReadDataForMode_Restore() {
+    shell.open();
+    shell.setMaximized( true );
+
+    Fixture.fakeSetParameter( getId( shell ), "mode", "null" );
+    Fixture.readDataAndProcessAction( shell );
+
+    assertFalse( shell.getMaximized() );
+  }
+
+  public void testReadModeBoundsOrder_Maximize() {
     Rectangle displayBounds = new Rectangle( 0, 0, 800, 600 );
     getDisplayAdapter( display ).setBounds( displayBounds );
     Rectangle shellBounds = new Rectangle( 10, 10, 100, 100 );
     shell.setBounds( shellBounds );
     shell.open();
-    assertFalse( shell.getMaximized() );
-    assertFalse( shell.getMinimized() );
-    String shellId = WidgetUtil.getId( shell );
-    Fixture.fakeRequestParam( shellId + ".mode", "maximized" );
-    Fixture.fakeRequestParam( shellId + ".bounds.width", "800" );
-    Fixture.fakeRequestParam( shellId + ".bounds.heigth", "600" );
-    Fixture.fakeRequestParam( shellId + ".bounds.x", "0" );
-    Fixture.fakeRequestParam( shellId + ".bounds.y", "0" );
+
+    fakeModeAndBounds( "maximized", 0, 0, 800, 600 );
     Fixture.readDataAndProcessAction( shell );
+
     assertEquals( displayBounds, shell.getBounds() );
-    Fixture.fakeRequestParam( shellId + ".mode", "null" );
-    Fixture.fakeRequestParam( shellId + ".bounds.width", "100" );
-    Fixture.fakeRequestParam( shellId + ".bounds.heigth", "100" );
-    Fixture.fakeRequestParam( shellId + ".bounds.x", "10" );
-    Fixture.fakeRequestParam( shellId + ".bounds.y", "10" );
+  }
+
+  public void testReadModeBoundsOrder_Restore() {
+    Rectangle displayBounds = new Rectangle( 0, 0, 800, 600 );
+    getDisplayAdapter( display ).setBounds( displayBounds );
+    Rectangle shellBounds = new Rectangle( 10, 10, 100, 100 );
+    shell.setBounds( shellBounds );
+    shell.setMaximized( true );
+    shell.open();
+
+    fakeModeAndBounds( "null", 10, 10, 100, 100 );
     Fixture.readDataAndProcessAction( shell );
+
     assertEquals( shellBounds, shell.getBounds() );
   }
 
@@ -259,7 +267,7 @@ public class ShellLCA_Test extends TestCase {
     activeShell.open();
     activeShell.setActive();
 
-    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, WidgetUtil.getId( shellToActivate ) );
+    Fixture.fakeNotifyOperation( getId( shellToActivate ), ClientMessageConst.EVENT_SHELL_ACTIVATED, null );
     Fixture.executeLifeCycleFromServerThread();
 
     assertSame( shellToActivate, display.getActiveShell() );
@@ -306,8 +314,7 @@ public class ShellLCA_Test extends TestCase {
     Fixture.markInitialized( activeShell );
     Fixture.markInitialized( shellToActivate );
 
-    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, WidgetUtil.getId( shellToActivate ) );
-
+    Fixture.fakeNotifyOperation( getId( shellToActivate ), ClientMessageConst.EVENT_SHELL_ACTIVATED, null );
     Fixture.executeLifeCycleFromServerThread();
 
     assertSame( shellToActivate, display.getActiveShell() );
@@ -315,36 +322,28 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( expected, activateEventLog.toString() );
     assertEquals( expected, shellEventLog.toString() );
     // Ensure that no setActive javaScript code is rendered for client-side activated Shell
-
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( shellToActivate, "active" ) );
   }
 
   public void testNoDeactivateNullActiveShell() {
+    // no deactivation event must be created for a null active shell (NPE)
     shell.setVisible( true );
     Shell shell2 = new Shell( display );
     shell2.setVisible( true );
-    assertNull( display.getActiveShell() );
-    // creating an event with null source throws exception
-    try {
-      new ActivateEvent( null, ActivateEvent.DEACTIVATED );
-      fail();
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    // no deactivation event must be created for a null active shell
-    //Fixture.fakeNewRequest( display );
-    String shell1Id = WidgetUtil.getId( shell );
-    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, shell1Id );
+
+    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_ACTIVATED, null );
     Fixture.readDataAndProcessAction( display );
+
     assertSame( shell, display.getActiveShell() );
   }
 
   public void testDisposeSingleShell() {
     shell.open();
-    String shellId = WidgetUtil.getId( shell );
-    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_CLOSED, shellId );
+
+    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_CLOSED, null );
     Fixture.readDataAndProcessAction( display );
+
     assertEquals( 0, display.getShells().length );
     assertEquals( null, display.getActiveShell() );
     assertEquals( true, shell.isDisposed() );
@@ -451,12 +450,13 @@ public class ShellLCA_Test extends TestCase {
     Fixture.markInitialized( shell );
     Button button = new Button( shell, SWT.PUSH );
     Text text = new Text( shell, SWT.NONE );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( "w1.focusControl", WidgetUtil.getId( button ) );
-    Fixture.executeLifeCycleFromServerThread();
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( "w1.focusControl", WidgetUtil.getId( text ) );
 
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeSetParameter( getId( display ), "focusControl", getId( button ) );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeSetParameter( getId( display ), "focusControl", getId( text ) );
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
@@ -738,6 +738,20 @@ public class ShellLCA_Test extends TestCase {
   private static IDisplayAdapter getDisplayAdapter( Display display ) {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     return ( IDisplayAdapter )adapter;
+  }
+
+  private void fakeWidgetActivated( Control control ) {
+    Fixture.fakeNotifyOperation( getId( control ),
+                                 ClientMessageConst.EVENT_CONTROL_ACTIVATED,
+                                 null );
+  }
+
+  private void fakeModeAndBounds( String mode, int x, int y, int width, int heigth ) {
+    Fixture.fakeSetParameter( getId( shell ), "mode", mode );
+    Fixture.fakeSetParameter( getId( shell ), "bounds.x", Integer.valueOf( x ) );
+    Fixture.fakeSetParameter( getId( shell ), "bounds.y", Integer.valueOf( y ) );
+    Fixture.fakeSetParameter( getId( shell ), "bounds.width", Integer.valueOf( width ) );
+    Fixture.fakeSetParameter( getId( shell ), "bounds.heigth", Integer.valueOf( heigth ) );
   }
 
 }

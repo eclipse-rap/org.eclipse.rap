@@ -28,7 +28,6 @@ qx.Class.define( "rwt.remote.Server", {
   construct : function() {
     this.base( arguments );
     this._url = "";
-    this._parameters = {};
     this._writer = null;
     this._event = null;
     this._uiRootId = "";
@@ -83,7 +82,6 @@ qx.Class.define( "rwt.remote.Server", {
      * Adds a request parameter to the next request with the given name and value
      */
     addParameter : function( name, value ) {
-      this._parameters[ name ] = value;
       var nameArr = typeof name === "string" ? name.split( "." ) : null;
       if( nameArr ) {
         if( this._event && name.indexOf( this._event[ 1 ] ) === 0 ) {
@@ -101,32 +99,10 @@ qx.Class.define( "rwt.remote.Server", {
     },
 
     /**
-     * Removes the parameter denoted by name from the next request
-     */
-    removeParameter : function( name ) {
-      // TODO [tb] : Can not be supported in JSON protocol
-      delete this._parameters[ name ];
-    },
-
-    /**
-     * Returns the parameter value for the given name or null if no parameter
-     * with such a name exists.
-     */
-    getParameter : function( name ) {
-      // TODO [tb] : Can not be supported in JSON protocol
-      var result = this._parameters[ name ];
-      if( result === undefined ) {
-        result = null;
-      }
-      return result;
-    },
-
-    /**
      * Adds the given eventType to this request. The sourceId denotes the id of
      * the widget that caused the event.
      */
     addEvent : function( eventType, sourceId ) {
-      this._parameters[ eventType ] = sourceId;
       this._flushEvent();
       this._event = [ sourceId, eventType, {} ];
     },
@@ -152,25 +128,27 @@ qx.Class.define( "rwt.remote.Server", {
      * since the last request will be sent.
      */
     sendImmediate : function( async ) {
-      this._sendTimer.stop();
       if( this._requestCounter === -1 ) {
         // NOTE: Delay sending the request until requestCounter is set
         // TOOD [tb] : This would not work with synchronous requests - bug?
+        this._sendTimer.stop();
         this.send();
       } else {
+        this._flushEvent();
         this.dispatchSimpleEvent( "send" );
-        this._parameters[ "uiRoot" ] = this._uiRootId;
+        this._flushEvent();
+        this._sendTimer.stop();
         this.getMessageWriter().appendMeta( "uiRoot", this._uiRootId );
         if( this._requestCounter != null ) {
-          this._parameters[ "requestCounter" ] = this._requestCounter;
           this.getMessageWriter().appendMeta( "requestCounter", this._requestCounter );
           this._requestCounter = -1;
         }
         var request = this._createRequest();
         request.setAsynchronous( async );
-        this._attachParameters( request );
+        request.setData( this.getMessageWriter().createMessage() );
+        this._writer.dispose();
+        this._writer = null;
         this._waitHintTimer.start();
-        this._parameters = {};
         request.send();
       }
     },
@@ -189,22 +167,8 @@ qx.Class.define( "rwt.remote.Server", {
     ////////////
     // Internals
 
-    _attachParameters : function( request ) {
-      var data = [];
-      for( var key in this._parameters ) {
-        data.push(
-          encodeURIComponent( key ) + "=" + encodeURIComponent( this._parameters[ key ] )
-        );
-      }
-      this._flushEvent();
-      data.push( "message=" + encodeURIComponent( this.getMessageWriter().createMessage() ) );
-      this._writer.dispose();
-      this._writer = null;
-      request.setData( data.join( "&" ) );
-    },
-
     _createRequest : function() {
-      var result = new rwt.remote.Request( this._url, "POST", "application/javascript" );
+      var result = new rwt.remote.Request( this._url, "POST", "application/json" );
       result.setSuccessHandler( this._handleSuccess, this );
       result.setErrorHandler( this._handleError, this );
       return result;

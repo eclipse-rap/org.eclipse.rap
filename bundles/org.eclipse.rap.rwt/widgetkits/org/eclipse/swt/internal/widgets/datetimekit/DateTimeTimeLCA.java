@@ -51,7 +51,7 @@ final class DateTimeTimeLCA extends AbstractDateTimeLCADelegate {
       dateTime.setSeconds( NumberFormatUtil.parseInt( value ) );
     }
     ControlLCAUtil.processSelection( dateTime, null, true );
-    ControlLCAUtil.processMouseEvents( dateTime );
+    ControlLCAUtil.processEvents( dateTime );
     ControlLCAUtil.processKeyEvents( dateTime );
     ControlLCAUtil.processMenuDetect( dateTime );
     WidgetLCAUtil.processHelp( dateTime );

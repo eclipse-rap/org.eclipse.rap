@@ -11,6 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treecolumnkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 
 import junit.framework.TestCase;
@@ -146,34 +152,20 @@ public class TreeColumnLCA_Test extends TestCase {
   }
 
   public void testResizeEvent() {
-    final StringBuilder log = new StringBuilder();
-    final TreeColumn column = new TreeColumn( tree, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+    Fixture.markInitialized( column );
     column.setWidth( 20 );
-    column.addControlListener( new ControlListener() {
+    ControlListener listener = mock( ControlListener.class );
+    column.addControlListener( listener );
 
-      public void controlMoved( ControlEvent e ) {
-        fail( "unexpected event: controlMoved" );
-      }
-
-      public void controlResized( ControlEvent e ) {
-        assertSame( column, e.getSource() );
-        log.append( "controlResized" );
-      }
-    } );
-    String columnId = WidgetUtil.getId( column );
-    //
-    Fixture.fakeNewRequest( display );
-    Fixture.executeLifeCycleFromServerThread();
-    // Simulate request that changes column width
     int newWidth = column.getWidth() + 2;
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( "org.eclipse.swt.events.controlResized", columnId );
-    Fixture.fakeRequestParam( columnId + ".width", String.valueOf( newWidth ) );
+    Fixture.fakeSetParameter( getId( column ), "width", String.valueOf( newWidth ) );
     Fixture.executeLifeCycleFromServerThread();
-    assertEquals( "controlResized", log.toString() );
+
+    verify( listener, times( 1 ) ).controlResized( any( ControlEvent.class ) );
+    verify( listener, times( 0 ) ).controlMoved( any( ControlEvent.class ) );
     assertEquals( newWidth, column.getWidth() );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
-    assertTrue( adapter.isInitialized() );
     Message message = Fixture.getProtocolMessage();
     assertEquals( Integer.valueOf( newWidth ), message.findSetProperty( column, "width" ) );
   }

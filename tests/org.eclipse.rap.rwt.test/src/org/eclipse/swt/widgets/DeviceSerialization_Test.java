@@ -17,7 +17,7 @@ import org.eclipse.swt.graphics.Device;
 
 
 public class DeviceSerialization_Test extends TestCase {
-  
+
   private static class TestDevice extends Device {
     Object getDeviceLock() {
       return deviceLock;
@@ -28,38 +28,40 @@ public class DeviceSerialization_Test extends TestCase {
 
   public void testDeviceLockIsSerializable() throws Exception {
     TestDevice device = new TestDevice();
-    
+
     TestDevice deserializedDevice = Fixture.serializeAndDeserialize( device );
-    
+
     assertNotNull( deserializedDevice.getDeviceLock() );
   }
-  
+
   public void testDisposedIsSerializable() throws Exception {
-    TestDevice device = new TestDevice();
-    
-    TestDevice deserializedDevice = Fixture.serializeAndDeserialize( device );
-    
-    assertFalse( deserializedDevice.isDisposed() );
-  }
-  
-  public void testDPIAndColorDepthIsSerializable() throws Exception {
-    Fixture.fakeRequestParam( "w1.dpi.x", "1" );
-    Fixture.fakeRequestParam( "w1.dpi.y", "2" );
-    Fixture.fakeRequestParam( "w1.colorDepth", "32" );
     TestDevice device = new TestDevice();
 
     TestDevice deserializedDevice = Fixture.serializeAndDeserialize( device );
-    
+
+    assertFalse( deserializedDevice.isDisposed() );
+  }
+
+  public void testDPIAndColorDepthIsSerializable() throws Exception {
+    Fixture.fakeSetParameter( "w1", "dpi", new int[] { 1, 2 } );
+    Fixture.fakeSetParameter( "w1", "colorDepth", Integer.valueOf( 32 ) );
+    TestDevice device = new TestDevice();
+
+    TestDevice deserializedDevice = Fixture.serializeAndDeserialize( device );
+
     assertEquals( 1, deserializedDevice.getDPI().x );
     assertEquals( 2, deserializedDevice.getDPI().y );
     assertEquals( 32, deserializedDevice.getDepth() );
   }
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     device = new TestDevice();
+    Fixture.fakeNewRequest();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     device.dispose();
     Fixture.tearDown();

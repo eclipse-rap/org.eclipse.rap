@@ -11,15 +11,24 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -39,6 +48,7 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.*;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.mockito.ArgumentCaptor;
 
 
 @SuppressWarnings("deprecation")
@@ -164,105 +174,80 @@ public class CTabFolderLCA_Test extends TestCase {
     item2.setControl( item2Control );
     shell.open();
 
-    String folderId = WidgetUtil.getId( folder );
-    String item2Id = WidgetUtil.getId( item2 );
-
-    // Let pass one startup request to init the 'system'
-    Fixture.fakeNewRequest( display );
-    Fixture.executeLifeCycleFromServerThread( );
-
     // The actual test request: item1 is selected, the request selects item2
     folder.setSelection( item1 );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( folderId + ".selectedItemId", item2Id );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.fakeSetParameter( getId( folder ), "selectedItemId", getId( item2 ) );
+    Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.executeLifeCycleFromServerThread();
+
     assertSame( item2, folder.getSelection() );
     assertEquals( "visible=false", item1Control.markup.toString() );
     assertEquals( "visible=true", item2Control.markup.toString() );
   }
 
   public void testSelectionEvent() {
-    final StringBuilder log = new StringBuilder();
-    SelectionListener listener = new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        log.append( "widgetSelected|" );
-      }
-    };
     CTabFolder folder = new CTabFolder( shell, SWT.MULTI );
+    SelectionListener listener = mock( SelectionListener.class );
     folder.addSelectionListener( listener );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
     CTabItem item2 = new CTabItem( folder, SWT.NONE );
-
-    // Select item1 and fake request that selects item2
     folder.setSelection( item1 );
-    String folderId = WidgetUtil.getId( folder );
-    String item2Id = WidgetUtil.getId( item2 );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
-    String name = folderId + "." + CTabFolderLCA.PARAM_SELECTED_ITEM_ID;
-    Fixture.fakeRequestParam( name, item2Id );
+
+    Map<String, Object> parameters = new HashMap<String, Object>();
+//    parameters.put( "item", WidgetUtil.getId( item2 ) );
+    Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_WIDGET_SELECTED, parameters );
+    Fixture.fakeSetParameter( getId( folder ),
+                              CTabFolderLCA.PARAM_SELECTED_ITEM_ID,
+                              getId( item2 ) );
+
     Fixture.readDataAndProcessAction( folder );
+
     assertSame( item2, folder.getSelection() );
-    assertEquals( "widgetSelected|", log.toString() );
+    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
-  public void testShowListEvent() {
-    // Widgets for test
+  public void testShowListEvent_WithVeto() {
     final CTabFolder folder = new CTabFolder( shell, SWT.SINGLE );
     folder.setSize( 30, 130 );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
     new CTabItem( folder, SWT.NONE );
-    //
-    Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
-    final ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
-    final StringBuilder log = new StringBuilder();
-    CTabFolder2Listener listener = new CTabFolder2Adapter() {
-      @Override
-      public void showList( CTabFolderEvent event ) {
-        assertEquals( true, event.doit );
-        log.append( "showList|" );
-      }
-    };
-    CTabFolder2Listener vetoListener = new CTabFolder2Adapter() {
-      @Override
-      public void showList( CTabFolderEvent event ) {
-        Rectangle chevronRect = folderAdapter.getChevronRect();
-        Rectangle eventRet
-          = new Rectangle( event.x, event.y, event.width, event.height);
-        assertEquals( eventRet, chevronRect );
-        assertEquals( true, event.doit );
-        assertEquals( folder, event.getSource() );
-        log.append( "vetoShowList|" );
-        event.doit = false;
-      }
-    };
-
-    // Test showList event with listeners that prevents menu form showing
-    // Note: this test must run first since it relies on the fact that the
-    //       showList menu wasn't populated by previous showList requests
     folder.setSelection( item1 );
-    folder.addCTabFolder2Listener( vetoListener );
-    String folderId = WidgetUtil.getId( folder );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( CTabFolderLCA.EVENT_SHOW_LIST, folderId );
-    Fixture.readDataAndProcessAction( folder );
-    assertEquals( "vetoShowList|", log.toString() );
-    Menu menu = getShowListMenu( folder );
-    assertEquals( null, menu );
-    // clean up above test
-    folder.removeCTabFolder2Listener( vetoListener );
+    final List<CTabFolderEvent> log = new ArrayList<CTabFolderEvent>();
+    folder.addCTabFolder2Listener( new CTabFolder2Adapter() {
+      @Override
+      public void showList( CTabFolderEvent event ) {
+        event.doit = false;
+        log.add( event );
+      }
+    } );
 
-    // Test showList event with listeners that does not veto showing
-    log.setLength( 0 );
-    folder.addCTabFolder2Listener( listener );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( CTabFolderLCA.EVENT_SHOW_LIST, folderId );
+    Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_SHOW_LIST, null );
     Fixture.readDataAndProcessAction( folder );
-    assertEquals( "showList|", log.toString() );
-    menu = getShowListMenu( folder );
-    assertEquals( 1, menu.getItemCount() );
+
+    CTabFolderEvent event = log.get( 0 );
+    Rectangle chevronRect = folder.getAdapter( ICTabFolderAdapter.class ).getChevronRect();
+    Rectangle eventRet = new Rectangle( event.x, event.y, event.width, event.height);
+    assertEquals( eventRet, chevronRect );
+    assertFalse( event.doit );
+    assertEquals( null, getShowListMenu( folder ) );
+  }
+
+  public void testShowListEvent_WithoutVeto() {
+    final CTabFolder folder = new CTabFolder( shell, SWT.SINGLE );
+    folder.setSize( 30, 130 );
+    CTabItem item1 = new CTabItem( folder, SWT.NONE );
+    new CTabItem( folder, SWT.NONE );
+    CTabFolder2Listener listener = mock( CTabFolder2Listener.class );
+    folder.addCTabFolder2Listener( listener );
+    folder.setSelection( item1 );
+
+    Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_SHOW_LIST, null );
+    Fixture.readDataAndProcessAction( folder );
+
+    ArgumentCaptor<CTabFolderEvent> captor = ArgumentCaptor.forClass( CTabFolderEvent.class );
+    verify( listener, times( 1 ) ).showList( captor.capture() );
+    assertTrue( captor.getValue().doit );
+    assertEquals( 1, getShowListMenu( folder ).getItemCount() );
   }
 
   public void testRenderCreate() throws IOException {

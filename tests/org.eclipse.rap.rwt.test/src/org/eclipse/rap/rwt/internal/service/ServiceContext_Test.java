@@ -134,6 +134,7 @@ public class ServiceContext_Test extends TestCase {
 
   private ServiceContext createContext() {
     TestRequest request = new TestRequest();
+    request.setBody( Fixture.createEmptyMessage() );
     TestResponse response = new TestResponse();
     HttpSession session = new TestSession();
     if( sessionStore != null ) {
@@ -144,6 +145,8 @@ public class ServiceContext_Test extends TestCase {
   }
 
   private ServiceContext createContext( TestRequest request, TestResponse response ) {
-    return new ServiceContext( request, response, sessionStore );
+    ServiceContext result = new ServiceContext( request, response, sessionStore );
+    result.setServiceStore( new ServiceStore() );
+    return result;
   }
 }

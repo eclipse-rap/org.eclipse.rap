@@ -34,6 +34,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
 
+  @Override
   public void preserveValues( Widget widget ) {
     FileUpload fileUpload = ( FileUpload ) widget;
     ControlLCAUtil.preserveValues( fileUpload );
@@ -42,6 +43,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
     preserveProperty( fileUpload, PROP_IMAGE, fileUpload.getImage() );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     FileUpload fileUpload = ( FileUpload ) widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( fileUpload );
@@ -55,6 +57,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
     readFileName( fileUpload );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     FileUpload fileUpload = ( FileUpload ) widget;
     ControlLCAUtil.renderChanges( fileUpload );
@@ -64,6 +67,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
     renderSubmit( fileUpload );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }
@@ -75,7 +79,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
     IFileUploadAdapter adapter = fileUpload.getAdapter( IFileUploadAdapter.class );
     String fileName = WidgetLCAUtil.readPropertyValue( fileUpload, "fileName" );
     if( fileName != null ) {
-      adapter.setFileName( fileName == "" ? null : fileName );
+      adapter.setFileName( fileName.equals( "" ) ? null : fileName );
       SelectionEvent event = new SelectionEvent( fileUpload, null, SelectionEvent.WIDGET_SELECTED );
       event.processEvent();
     }

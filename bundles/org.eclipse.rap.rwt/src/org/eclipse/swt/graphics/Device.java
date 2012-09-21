@@ -11,10 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.theme.*;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
 import org.eclipse.swt.SWT;
@@ -31,15 +29,15 @@ import org.eclipse.swt.internal.graphics.ResourceFactory;
  */
 public abstract class Device implements Drawable, SerializableCompatibility {
 
-  // SWT code uses Device.class as the synchronization lock. This synchronize 
+  // SWT code uses Device.class as the synchronization lock. This synchronize
   // access from all over the application. In RWT we need a way to synchronize
-  // access from within a session. Therefore Device.class was replaced by the 
+  // access from within a session. Therefore Device.class was replaced by the
   // 'deviceLock'.
   protected final SerializableLock deviceLock;
   private boolean disposed;
   private Point dpi;
   private int depth;
-  
+
   public Device() {
     deviceLock = new SerializableLock();
     readDPI();
@@ -224,7 +222,7 @@ public abstract class Device implements Drawable, SerializableCompatibility {
   /**
    * Returns the bit depth of the screen, which is the number of
    * bits it takes to represent the number of unique colors that
-   * the screen is currently capable of displaying. This number 
+   * the screen is currently capable of displaying. This number
    * will typically be one of 1, 8, 15, 16, 24 or 32.
    *
    * @return the depth of the screen
@@ -374,21 +372,16 @@ public abstract class Device implements Drawable, SerializableCompatibility {
       SWT.error( SWT.ERROR_DEVICE_DISPOSED );
     }
   }
-  
+
   private void readDPI() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    dpi = new Point( 0, 0 );
-    String dpiX = request.getParameter( "w1.dpi.x" );
-    String dpiY = request.getParameter( "w1.dpi.y" );
-    if( dpiX != null && dpiY != null ) {
-      dpi.x = Integer.parseInt( dpiX );
-      dpi.y = Integer.parseInt( dpiY );
+    dpi = ProtocolUtil.readPropertyValueAsPoint( "w1", "dpi" );
+    if( dpi == null ) {
+      dpi = new Point( 0, 0 );
     }
   }
 
   private void readDepth() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String parameter = request.getParameter( "w1.colorDepth" );
+    String parameter = ProtocolUtil.readPropertyValueAsString( "w1", "colorDepth" );
     if( parameter != null ) {
       depth = Integer.parseInt( parameter );
     } else {

@@ -12,13 +12,18 @@
 
 package org.eclipse.swt.internal.widgets.sliderkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -30,27 +35,31 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+import org.mockito.ArgumentCaptor;
 
 public class SliderLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
   private SliderLCA lca;
+  private Slider slider;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
+    slider = new Slider( shell, SWT.NONE );
     lca = new SliderLCA();
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
 
   public void testSliderPreserveValues() {
-    Slider slider = new Slider( shell, SWT.HORIZONTAL );
     Fixture.markInitialized( display );
     // Test preserved minimum, maximum,
     // selection, increment, pageIncrement and thumb
@@ -74,8 +83,22 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testSelectionEvent() {
-    Slider slider = new Slider( shell, SWT.HORIZONTAL );
-    testSelectionEvent( slider );
+    SelectionListener listener = mock( SelectionListener.class );
+    slider.addSelectionListener( listener );
+
+    Fixture.fakeNotifyOperation( getId( slider ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.readDataAndProcessAction( slider );
+
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertEquals( slider, event.getSource() );
+    assertEquals( null, event.item );
+    assertEquals( 0, event.x );
+    assertEquals( 0, event.y );
+    assertEquals( 0, event.width );
+    assertEquals( 0, event.height );
+    assertEquals( true, event.doit );
   }
 
   private void testPreserveControlProperties( Slider slider ) {
@@ -128,31 +151,7 @@ public class SliderLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
-  private void testSelectionEvent( final Slider slider ) {
-    final StringBuilder log = new StringBuilder();
-    SelectionListener selectionListener = new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-        assertEquals( slider, event.getSource() );
-        assertEquals( null, event.item );
-        assertEquals( SWT.NONE, event.detail );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertEquals( true, event.doit );
-        log.append( "widgetSelected" );
-      }
-    };
-    slider.addSelectionListener( selectionListener );
-    String dateTimeId = WidgetUtil.getId( slider );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, dateTimeId );
-    Fixture.readDataAndProcessAction( slider );
-    assertEquals( "widgetSelected", log.toString() );
-  }
-
   public void testRenderCreate() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
-
     lca.renderInitialization( slider );
 
     Message message = Fixture.getProtocolMessage();
@@ -161,8 +160,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
-
     lca.renderInitialization( slider );
 
     Message message = Fixture.getProtocolMessage();
@@ -182,8 +179,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialMinimum() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
-
     lca.render( slider );
 
     Message message = Fixture.getProtocolMessage();
@@ -192,8 +187,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderMinimum() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
-
     slider.setMinimum( 10 );
     lca.renderChanges( slider );
 
@@ -202,7 +195,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderMinimumUnchanged() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );
 
@@ -215,8 +207,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialMaxmum() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
-
     lca.render( slider );
 
     Message message = Fixture.getProtocolMessage();
@@ -225,8 +215,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderMaxmum() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
-
     slider.setMaximum( 10 );
     lca.renderChanges( slider );
 
@@ -235,7 +223,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderMaxmumUnchanged() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );
 
@@ -248,8 +235,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelection() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
-
     lca.render( slider );
 
     Message message = Fixture.getProtocolMessage();
@@ -258,8 +243,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderSelection() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
-
     slider.setSelection( 10 );
     lca.renderChanges( slider );
 
@@ -268,7 +251,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionUnchanged() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );
 
@@ -281,8 +263,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialIncrement() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
-
     lca.render( slider );
 
     Message message = Fixture.getProtocolMessage();
@@ -291,8 +271,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderIncrement() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
-
     slider.setIncrement( 2 );
     lca.renderChanges( slider );
 
@@ -301,7 +279,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderIncrementUnchanged() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );
 
@@ -314,8 +291,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialPageIncrement() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
-
     lca.render( slider );
 
     Message message = Fixture.getProtocolMessage();
@@ -324,8 +299,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderPageIncrement() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
-
     slider.setPageIncrement( 20 );
     lca.renderChanges( slider );
 
@@ -334,7 +307,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderPageIncrementUnchanged() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );
 
@@ -347,8 +319,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialThumb() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
-
     lca.render( slider );
 
     Message message = Fixture.getProtocolMessage();
@@ -357,8 +327,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderThumb() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
-
     slider.setThumb( 20 );
     lca.renderChanges( slider );
 
@@ -367,7 +335,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderThumbUnchanged() throws IOException {
-    Slider slider = new Slider( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );
 
@@ -380,7 +347,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderAddSelectionListener() throws Exception {
-    Slider slider = new Slider( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );
     Fixture.preserveWidgets();
@@ -393,7 +359,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    Slider slider = new Slider( shell, SWT.NONE );
     SelectionListener listener = new SelectionAdapter() { };
     slider.addSelectionListener( listener );
     Fixture.markInitialized( display );
@@ -408,7 +373,6 @@ public class SliderLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
-    Slider slider = new Slider( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );
     Fixture.preserveWidgets();

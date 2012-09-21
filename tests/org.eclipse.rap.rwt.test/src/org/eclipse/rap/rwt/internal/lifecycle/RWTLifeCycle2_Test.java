@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+
 import java.util.Enumeration;
 import java.util.LinkedList;
 
@@ -27,7 +29,7 @@ import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
@@ -114,7 +116,6 @@ public class RWTLifeCycle2_Test extends TestCase {
     // send 'application startup' request - response is JavaScript to create
     // client-side representation of what was created in IEntryPoint#createUI
     request = newPostRequest( false );
-    request.setParameter( RequestParams.UIROOT, "w1" );
     runRWTDelegate( request );
     assertNull( session.getAttribute( TEST_SESSION_ATTRIBUTE ) );
     assertTrue( createUIEntered );
@@ -123,8 +124,7 @@ public class RWTLifeCycle2_Test extends TestCase {
 
     // send 'malicious button click' - response is HTTP 500
     request = newPostRequest( false );
-    request.setParameter( RequestParams.UIROOT, "w1" );
-    request.setParameter( JSConst.EVENT_WIDGET_SELECTED, maliciousButtonId );
+    Fixture.fakeNotifyOperation( maliciousButtonId, ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     try {
       runRWTDelegate( request );
       fail();
@@ -191,7 +191,6 @@ public class RWTLifeCycle2_Test extends TestCase {
     // send 'application startup' request - response is JavaScript to create
     // client-side representation of what was created in IEntryPoint#createUI
     request = newPostRequest( true );
-    request.setParameter( RequestParams.UIROOT, "w1" );
     runRWTDelegate( request );
     assertTrue( createUIEntered );
     assertFalse( createUIExited );
@@ -213,7 +212,6 @@ public class RWTLifeCycle2_Test extends TestCase {
     RWTFactory.getEntryPointManager().registerByPath( "/test", clazz, null );
     // send initial request - response creates ui
     request = newPostRequest( true );
-    request.setParameter( RequestParams.UIROOT, "w1" );
     runRWTDelegate( request );
     assertTrue( createUIEntered );
     assertFalse( createUIExited );
@@ -235,20 +233,16 @@ public class RWTLifeCycle2_Test extends TestCase {
     RWTFactory.getEntryPointManager().registerByPath( "/test", entryPointClass, null );
     // send initial request - response creates ui
     request = newPostRequest( true );
-    request.setParameter( RequestParams.UIROOT, "w1" );
     runRWTDelegate( request );
     assertTrue( createUIEntered );
     assertFalse( createUIExited );
     // send a request that closes the main shell
     request = newPostRequest( false );
-    request.setParameter( RequestParams.UIROOT, "w1" );
-    String shellId = WidgetUtil.getId( testShell );
-    request.setParameter( "org.eclipse.swt.widgets.Shell_close", shellId );
+    Fixture.fakeNotifyOperation( getId( testShell ), ClientMessageConst.EVENT_SHELL_CLOSED, null );
     runRWTDelegate( request );
     assertTrue( createUIExited );
     // send a request after the createUI has been exited
     request = newPostRequest( false );
-    request.setParameter( RequestParams.UIROOT, "w1" );
     runRWTDelegate( request );
     // send another initial request to restart session
     request = newPostRequest( true );
@@ -358,6 +352,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     TestRequest result = ( TestRequest )ContextProvider.getRequest();
     result.setServletPath( "/test" );
     result.setSession( session );
+    Fixture.fakeHeaderParameter( RequestParams.UIROOT, "w1" );
     if( initialize ) {
       Fixture.fakeHeaderParameter( RequestParams.RWT_INITIALIZE, "true" );
     }

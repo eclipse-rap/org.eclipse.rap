@@ -763,6 +763,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       result.setLocation( 0, 0 );
       result.setDimension( 100, 100 );
       rwt.widgets.base.Widget.flushGlobalQueues();
+      rwt.protocol.ObjectRegistry.add( "w11", result );
       return result;
     },
 

@@ -11,14 +11,18 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -51,12 +55,14 @@ public class TypedEvent_Test extends TestCase {
   private Display display;
   private Shell shell;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -86,13 +92,13 @@ public class TypedEvent_Test extends TestCase {
     final StringBuilder log = new StringBuilder();
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         log.append( EVENT_FIRED );
       }
     } );
-    String buttonId = WidgetUtil.getId( button );
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -106,7 +112,9 @@ public class TypedEvent_Test extends TestCase {
         return PhaseId.ANY;
       }
     } );
+
     Fixture.executeLifeCycleFromServerThread( );
+
     String expected
       = BEFORE_PREPARE_UI_ROOT
       + AFTER_PREPARE_UI_ROOT
@@ -121,61 +129,55 @@ public class TypedEvent_Test extends TestCase {
   }
 
   public void testMultipleEventsInOneRequest() {
-    // Ensure that two events get fired in the order as it is specified in
-    // TypedEvent
     final java.util.List<TypedEvent> eventLog = new ArrayList<TypedEvent>();
-    Shell shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         eventLog.add( event );
       }
     } );
     ActivateEvent.addListener( button, new ActivateAdapter() {
+      @Override
       public void activated( ActivateEvent event ) {
         eventLog.add( event );
       }
     } );
-    String buttonId = WidgetUtil.getId( button );
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    fakeActivateRequestParam( button );
 
     Fixture.executeLifeCycleFromServerThread( );
+
     assertEquals( ActivateEvent.class, eventLog.get( 0 ).getClass() );
     assertEquals( SelectionEvent.class, eventLog.get( 1 ).getClass() );
+  }
 
-    // Ensure that the focus events are fired before the mouse events.
-    // This is important for cell editors activation/deactivation.
-    // See bug 262167:
-    // [Table] Selection activates the CellEditor differently every two rows
-    eventLog.clear();
-    button = new Button( shell, SWT.PUSH );
+  public void testFireFocusEventBeforeMouseEvent() {
+    final java.util.List<TypedEvent> eventLog = new ArrayList<TypedEvent>();
+    Button button = new Button( shell, SWT.PUSH );
     button.addMouseListener( new MouseAdapter() {
+      @Override
       public void mouseDown( MouseEvent event ) {
         eventLog.add( event );
       }
     } );
     button.addFocusListener( new FocusAdapter() {
+      @Override
       public void focusGained( FocusEvent event ) {
         eventLog.add( event );
       }
     } );
-    buttonId = WidgetUtil.getId( button );
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN, buttonId );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_BUTTON, "1" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_X, "1" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_Y, "1" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_TIME, "0" );
-    String focusedControlParam = DisplayUtil.getId( display ) + ".focusControl";
-    Fixture.fakeRequestParam( focusedControlParam, buttonId );
+    fakeMouseDownRequest( button, 1, 2 );
+    Fixture.fakeSetParameter( getId( display ), "focusControl", getId( button ) );
 
     Fixture.executeLifeCycleFromServerThread( );
+
     assertEquals( FocusEvent.class, eventLog.get( 0 ).getClass() );
     assertEquals( MouseEvent.class, eventLog.get( 1 ).getClass() );
   }
-  
+
   public void testSourceConstructor() {
     TypedEvent event = new TypedEvent( shell );
     assertSame( shell, event.widget );
@@ -192,7 +194,7 @@ public class TypedEvent_Test extends TestCase {
     assertSame( event.display, typedEvent.display );
     assertSame( event.data, typedEvent.data );
   }
-  
+
   public void testEventConstructorWithNullWidget() {
     Event event = new Event();
     try {
@@ -217,6 +219,20 @@ public class TypedEvent_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
-  
+
+  private static void fakeMouseDownRequest( Widget widget, int x, int y ) {
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( ClientMessageConst.EVENT_PARAM_BUTTON, Integer.valueOf( 1 ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_X, Integer.valueOf( x ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( y ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_TIME, Integer.valueOf( 0 ) );
+    Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_MOUSE_DOWN, parameters );
+  }
+
+  private void fakeActivateRequestParam( Control control ) {
+    Fixture.fakeNotifyOperation( getId( control ),
+                                 ClientMessageConst.EVENT_CONTROL_ACTIVATED,
+                                 null );
+  }
+
 }

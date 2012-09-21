@@ -9,6 +9,13 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var MessageProcessor = rwt.protocol.MessageProcessor;
+
+var display;
+
 qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
 
   extend : qx.core.Object,
@@ -16,13 +23,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
   members : {
 
     testCallProbeByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text
         = "!#$%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxy";
       var fontName = [ "Verdana", "Lucida Sans", "Arial", "Helvetica", "sans-serif" ];
       TestUtil.initRequestLog();
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
+
+      MessageProcessor.processOperation( {
         "target" : "w1",
         "action" : "call",
         "method" : "probe",
@@ -33,25 +39,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
           ]
         }
       } );
-      assertEquals( 2, TestUtil.getRequestsSend() ); // because timer is skipped in tests
-      var requests = TestUtil.getRequestLog();
-      assertTrue( requests[ 0 ].indexOf( "-785380229" ) !== - 1 );
-      assertTrue( requests[ 1 ].indexOf( "-785380485" ) !== - 1 );
-      //currently send in another format for json:
-      var op1 = TestUtil.getMessageObject( 0 ).findCallOperation( "w1", "storeMeasurement" );
-      var op2 = TestUtil.getMessageObject( 1 ).findCallOperation( "w1", "storeMeasurement" );
-      assertEquals( "-785380229", op1.properties.id );
-      assertEquals( 2, op1.properties.size.length );
-      assertEquals( "-785380485", op2.properties.id );
-      assertEquals( 2, op2.properties.size.length );
+
+      assertEquals( 1, TestUtil.getRequestsSend() ); // because timer is skipped in tests
+      var op = TestUtil.getMessageObject().findCallOperation( "w1", "storeProbes" );
+      assertEquals( 2, op.properties.results[ "-785380229" ].length );
+      assertEquals( 2, op.properties.results[ "-785380485" ].length );
     },
 
     testCallMeasureStringsByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var fontName = [ "Verdana", "Lucida Sans", "Arial", "Helvetica", "sans-serif" ];
       TestUtil.initRequestLog();
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
+
+      MessageProcessor.processOperation( {
         "target" : "w1",
         "action" : "call",
         "method" : "measureStrings",
@@ -62,20 +61,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
           ]
         }
       } );
-      assertEquals( 2, TestUtil.getRequestsSend() );
-      var log = TestUtil.getRequestLog();
-      assertTrue( log[ 0 ].indexOf( "-1114032847=" ) != -1 );
-      assertTrue( log[ 1 ].indexOf( "1767849485=" ) != -1 );
-      var op1 = TestUtil.getMessageObject( 0 ).findCallOperation( "w1", "storeMeasurement" );
-      var op2 = TestUtil.getMessageObject( 1 ).findCallOperation( "w1", "storeMeasurement" );
-      assertEquals( "-1114032847", op1.properties.id );
-      assertEquals( 2, op1.properties.size.length );
-      assertEquals( "1767849485", op2.properties.id );
-      assertEquals( 2, op2.properties.size.length );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var op = TestUtil.getMessageObject().findCallOperation( "w1", "storeMeasurements" );
+      assertEquals( 2, op.properties.results[ "-1114032847" ].length );
+      assertEquals( 2, op.properties.results[ "1767849485" ].length );
     },
 
     testSetFocusControlByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var button = new rwt.widgets.Button( "push" );
       org.eclipse.swt.WidgetManager.getInstance().add( button, "btn1" );
       button.addToDocument();
@@ -94,8 +87,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
     },
 
     testSetCurrentThemeByProtocol : function() {
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w1",
         "action" : "set",
         "properties" : {
@@ -106,17 +98,48 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
     },
 
     testSetEnableUiTests : function() {
-      rwt.widgets.Display._current = undefined;
-      var display = new rwt.widgets.Display();
-
       display.setEnableUiTests( true );
 
       assertIdentical( true, rwt.widgets.base.Widget._renderHtmlIds );
       display.setEnableUiTests( false );
     },
 
+    testSendCursorLocation : function() {
+      TestUtil.clickDOM( document.body, 10, 20 );
+      rwt.remote.Server.getInstance().send();
+
+      var message = TestUtil.getMessageObject();
+      assertEquals( [ 10, 20 ], message.findSetProperty( "w1", "cursorLocation" ) );
+    },
+
+    testSendWindowSize : function() {
+      var width = qx.html.Window.getInnerWidth( window );
+      var height = qx.html.Window.getInnerHeight( window );
+      rwt.widgets.base.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
+
+      var message = TestUtil.getMessageObject();
+      assertEquals( [ 0, 0, width, height ], message.findSetProperty( "w1", "bounds" ) );
+    },
+
+    testSendDPI : function() {
+      var dpi = display.getDPI();
+      display._appendSystemDPI();
+      rwt.remote.Server.getInstance().send();
+
+      var message = TestUtil.getMessageObject();
+      assertEquals( dpi, message.findSetProperty( "w1", "dpi" ) );
+    },
+
+    testSendColorDepth : function() {
+      display._appendColorDepth();
+      rwt.remote.Server.getInstance().send();
+
+      var message = TestUtil.getMessageObject();
+      assertTrue( typeof message.findSetProperty( "w1", "colorDepth" ) === "number" );
+    },
+
     setUp : function() {
-      var display = rwt.widgets.Display.getCurrent();
+      display = rwt.widgets.Display.getCurrent();
       var adapter = rwt.protocol.AdapterRegistry.getAdapter( "rwt.Display" );
       rwt.protocol.ObjectRegistry.add( "w1", display, adapter );
     }
@@ -124,3 +147,5 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
   }
 
 } );
+
+}());

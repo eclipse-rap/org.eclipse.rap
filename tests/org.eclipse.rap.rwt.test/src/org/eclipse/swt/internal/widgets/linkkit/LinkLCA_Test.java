@@ -12,12 +12,19 @@
 
 package org.eclipse.swt.internal.widgets.linkkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -30,18 +37,21 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.*;
 import org.json.*;
+import org.mockito.ArgumentCaptor;
 
 public class LinkLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
   private LinkLCA lca;
+  private Link link;
 
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
+    link = new Link( shell, SWT.NONE );
     lca = new LinkLCA();
     Fixture.fakeNewRequest( display );
   }
@@ -52,7 +62,6 @@ public class LinkLCA_Test extends TestCase {
   }
 
   public void testControlListeners() throws IOException {
-    Link link = new Link( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( link );
     ControlLCATestUtil.testFocusListener( link );
     ControlLCATestUtil.testMouseListener( link );
@@ -63,7 +72,6 @@ public class LinkLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    Link link = new Link( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( link );
@@ -142,33 +150,27 @@ public class LinkLCA_Test extends TestCase {
   }
 
   public void testSelectionEvent() {
-    final StringBuilder log = new StringBuilder();
-    final Link link = new Link( shell, SWT.NONE );
     link.setText( "Big <a>Bang</a>" );
-    link.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        log.append( "selectionEvent" );
-        assertSame( link, event.getSource() );
-        assertEquals( 0, event.detail );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertEquals( null, event.item );
-        assertEquals( true, event.doit );
-      }
-    } );
-    String linkId = WidgetUtil.getId( link );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, linkId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".index", "0" );
+    SelectionListener listener = mock( SelectionListener.class );
+    link.addSelectionListener( listener );
+
+    fakeWidgetSelectedEvent();
     Fixture.readDataAndProcessAction( link );
-    assertEquals( "selectionEvent", log.toString() );
+
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertEquals( null, event.item );
+    assertEquals( SWT.NONE, event.detail );
+    assertEquals( 0, event.x );
+    assertEquals( 0, event.y );
+    assertEquals( 0, event.width );
+    assertEquals( 0, event.height );
+    assertEquals( true, event.doit );
   }
 
   public void testIllegalSelectionEvent() {
     // Selection event should not fire if index out of bounds (see bug 252354)
-    Link link = new Link( shell, SWT.NONE );
     link.setText( "No Link" );
     link.addSelectionListener( new SelectionAdapter() {
       @Override
@@ -176,15 +178,12 @@ public class LinkLCA_Test extends TestCase {
         fail( "Should not be fired" );
       }
     } );
-    String linkId = WidgetUtil.getId( link );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, linkId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".index", "0" );
+
+    fakeWidgetSelectedEvent();
     Fixture.readDataAndProcessAction( link );
   }
 
   public void testRenderCreate() throws IOException {
-    Link link = new Link( shell, SWT.NONE );
-
     lca.renderInitialization( link );
 
     Message message = Fixture.getProtocolMessage();
@@ -193,8 +192,6 @@ public class LinkLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    Link link = new Link( shell, SWT.NONE );
-
     lca.renderInitialization( link );
 
     Message message = Fixture.getProtocolMessage();
@@ -203,8 +200,6 @@ public class LinkLCA_Test extends TestCase {
   }
 
   public void testRenderInitialText() throws IOException {
-    Link link = new Link( shell, SWT.NONE );
-
     lca.render( link );
 
     Message message = Fixture.getProtocolMessage();
@@ -213,8 +208,6 @@ public class LinkLCA_Test extends TestCase {
   }
 
   public void testRenderText() throws IOException, JSONException {
-    Link link = new Link( shell, SWT.NONE );
-
     link.setText( "foo <a>123</a> bar" );
     lca.renderChanges( link );
 
@@ -233,7 +226,6 @@ public class LinkLCA_Test extends TestCase {
   }
 
   public void testRenderTextEmpty() throws IOException {
-    Link link = new Link( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( link );
     link.setText( "foo bar" );
@@ -248,7 +240,6 @@ public class LinkLCA_Test extends TestCase {
   }
 
   public void testRenderTextUnchanged() throws IOException {
-    Link link = new Link( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( link );
 
@@ -261,7 +252,6 @@ public class LinkLCA_Test extends TestCase {
   }
 
   public void testRenderAddSelectionListener() throws Exception {
-    Link link = new Link( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( link );
     Fixture.preserveWidgets();
@@ -274,7 +264,6 @@ public class LinkLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    Link link = new Link( shell, SWT.NONE );
     SelectionListener listener = new SelectionAdapter() { };
     link.addSelectionListener( listener );
     Fixture.markInitialized( display );
@@ -289,7 +278,6 @@ public class LinkLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
-    Link link = new Link( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( link );
     Fixture.preserveWidgets();
@@ -300,5 +288,13 @@ public class LinkLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( link, "selection" ) );
+  }
+
+  private void fakeWidgetSelectedEvent() {
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( ClientMessageConst.EVENT_PARAM_INDEX, Integer.valueOf( 0 ) );
+    Fixture.fakeNotifyOperation( getId( link ),
+                                 ClientMessageConst.EVENT_WIDGET_SELECTED,
+                                 properties );
   }
 }

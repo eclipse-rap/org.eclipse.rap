@@ -16,9 +16,9 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.events.ArmEvent;
 import org.eclipse.swt.events.SelectionEvent;
@@ -69,7 +69,7 @@ final class MenuItemLCAUtil {
 
   static void processArmEvent( MenuItem item ) {
     Menu menu = item.getParent();
-    if( WidgetLCAUtil.wasEventSent( menu, JSConst.EVENT_MENU_SHOWN ) ) {
+    if( WidgetLCAUtil.wasEventSent( menu, ClientMessageConst.EVENT_MENU_SHOWN ) ) {
       if( ArmEvent.hasListener( item ) ) {
         ArmEvent event = new ArmEvent( item );
         event.processEvent();

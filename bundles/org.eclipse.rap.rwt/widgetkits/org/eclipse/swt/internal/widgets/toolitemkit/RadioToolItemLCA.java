@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.events.DeselectionEvent;
@@ -50,17 +50,16 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
   }
 
   private static void processSelectionEvent( ToolItem toolItem ) {
-    if( SelectionEvent.hasListener( toolItem ) ) {
-      int type = SelectionEvent.WIDGET_SELECTED;
+    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( toolItem, eventName ) ) {
       SelectionEvent event;
       if( toolItem.getSelection() ) {
-        event = new SelectionEvent( toolItem, null, type );
+        event = new SelectionEvent( toolItem, null, SelectionEvent.WIDGET_SELECTED );
       } else {
         event = new DeselectionEvent( toolItem );
       }
-      event.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+      event.stateMask = EventLCAUtil.readStateMask( toolItem, eventName );
       event.processEvent();
     }
-
   }
 }

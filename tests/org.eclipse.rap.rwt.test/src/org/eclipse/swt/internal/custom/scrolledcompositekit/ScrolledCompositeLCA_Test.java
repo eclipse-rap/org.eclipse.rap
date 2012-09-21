@@ -11,9 +11,16 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.scrolledcompositekit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -146,47 +153,31 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertEquals( "some text", sc.getToolTipText() );
   }
 
-  public void testReadData() {
-    final ArrayList<String> log = new ArrayList<String>();
-    int scStyle = SWT.H_SCROLL | SWT.V_SCROLL;
-    ScrolledComposite sc = new ScrolledComposite( shell, scStyle );
+  public void testReadData_ScrollBarsSelection() {
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     sc.setContent( new Composite( sc, SWT.NONE ) );
-    SelectionListener selectionListener = new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        log.add( "widgetSelected" );
-      }
-    };
+
+    Fixture.fakeSetParameter( getId( sc ), "horizontalBar.selection", Integer.valueOf( 1 ) );
+    Fixture.fakeSetParameter( getId( sc ), "verticalBar.selection", Integer.valueOf( 2 ) );
+    Fixture.readDataAndProcessAction( sc );
+
+    assertEquals( new Point( 1, 2 ), sc.getOrigin() );
+  }
+
+  public void testReadData_ScrollBarsSelectionEvent() {
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    sc.setContent( new Composite( sc, SWT.NONE ) );
+    SelectionListener selectionListener = mock( SelectionListener.class );
     sc.getHorizontalBar().addSelectionListener( selectionListener );
     sc.getVerticalBar().addSelectionListener( selectionListener );
-    String scId = WidgetUtil.getId( sc );
-    Fixture.fakeRequestParam( scId + ".horizontalBar.selection", "10" );
-    Fixture.fakeRequestParam( scId + ".verticalBar.selection", "10" );
+
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( "horizontal", Boolean.TRUE );
+    parameters.put( "vertical", Boolean.TRUE );
+    Fixture.fakeNotifyOperation( getId( sc ), "scrollBarSelected", parameters );
     Fixture.readDataAndProcessAction( sc );
-    assertEquals( 2, log.size() );
-    assertEquals( new Point( 10, 10 ), sc.getOrigin() );
-    assertEquals( 10, sc.getHorizontalBar().getSelection() );
-    assertEquals( 10, sc.getVerticalBar().getSelection() );
-    log.clear();
-    Fixture.fakeRequestParam( scId + ".horizontalBar.selection", null );
-    Fixture.fakeRequestParam( scId + ".verticalBar.selection", "20" );
-    Fixture.readDataAndProcessAction( sc );
-    assertEquals( 1, log.size() );
-    assertEquals( new Point( 10, 20 ), sc.getOrigin() );
-    assertEquals( 10, sc.getHorizontalBar().getSelection() );
-    assertEquals( 20, sc.getVerticalBar().getSelection() );
-    log.clear();
-    Fixture.fakeRequestParam( scId + ".horizontalBar.selection", "20" );
-    Fixture.fakeRequestParam( scId + ".verticalBar.selection", null );
-    Fixture.readDataAndProcessAction( sc );
-    assertEquals( 1, log.size() );
-    assertEquals( new Point( 20, 20 ), sc.getOrigin() );
-    assertEquals( 20, sc.getHorizontalBar().getSelection() );
-    assertEquals( 20, sc.getVerticalBar().getSelection() );
-    log.clear();
-    Fixture.fakeRequestParam( scId + ".horizontalBar.selection", null );
-    Fixture.fakeRequestParam( scId + ".verticalBar.selection", null );
-    assertEquals( 0, log.size() );
+
+    verify( selectionListener, times( 2 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   public void testRenderCreate() throws IOException {

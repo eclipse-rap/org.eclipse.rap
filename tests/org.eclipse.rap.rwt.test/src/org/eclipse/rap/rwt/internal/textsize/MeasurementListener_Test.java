@@ -11,11 +11,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementItem;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
@@ -42,8 +45,24 @@ public class MeasurementListener_Test extends TestCase {
   private static final String METHOD_MEASURE_STRINGS = "measureStrings";
   private static final String METHOD_PROBE = "probe";
 
+  private Display display;
   private MeasurementListener listener;
   private int resizeCount;
+
+  @Override
+  protected void setUp() throws Exception {
+    listener = new MeasurementListener();
+
+    Fixture.setUp();
+    display = new Display();
+    Fixture.fakeNewRequest( display );
+    initResizeCount();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testGetPhaseId() {
     PhaseId phaseId = listener.getPhaseId();
@@ -135,20 +154,6 @@ public class MeasurementListener_Test extends TestCase {
     checkProbeResultWasStored();
   }
 
-  @Override
-  protected void setUp() throws Exception {
-    listener = new MeasurementListener();
-
-    Fixture.setUp();
-    Fixture.fakeNewRequest( new Display() );
-    initResizeCount();
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
-
   private void checkProbeResultWasStored() {
     assertNotNull( ProbeResultStore.getInstance().getProbeResult( FONT_DATA ) );
   }
@@ -183,16 +188,22 @@ public class MeasurementListener_Test extends TestCase {
   private void fakeRequestWithProbeMeasurementResults() {
     MeasurementOperator.getInstance().addProbeToMeasure( FONT_DATA );
     listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
-    TestRequest request = ( TestRequest )RWT.getRequest();
-    request.addParameter( String.valueOf( FONT_DATA.hashCode() ), "5,10" );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    Map<String, Object> results = new HashMap<String, Object>();
+    results.put( String.valueOf( FONT_DATA.hashCode() ), new int[] { 5, 10 }  );
+    parameters.put( "results", results );
+    Fixture.fakeCallOperation( DisplayUtil.getId( display ), "storeProbes", parameters  );
   }
 
   private void fakeRequestWithItemMeasurementResults() {
     MeasurementItem itemToMeasure = createItem();
     MeasurementOperator.getInstance().addItemToMeasure( itemToMeasure );
     fakeRequestWithProbeMeasurementResults();
-    TestRequest request = ( TestRequest )RWT.getRequest();
-    request.addParameter( String.valueOf( itemToMeasure.hashCode() ), "100,10" );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    Map<String, Object> results = new HashMap<String, Object>();
+    results.put( String.valueOf( itemToMeasure.hashCode() ), new int[] { 100, 10 } );
+    parameters.put( "results", results );
+    Fixture.fakeCallOperation( DisplayUtil.getId( display ), "storeMeasurements", parameters  );
   }
 
   private void executeNonRenderPhases() {

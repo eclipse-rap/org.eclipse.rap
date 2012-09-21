@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,18 +11,22 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.events;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.util.ArrayList;
 import java.util.List;
-
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.widgets.*;
 
@@ -32,6 +36,7 @@ public class ActivateEvent_Test extends TestCase {
   private Display display;
   private Shell shell;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -39,6 +44,7 @@ public class ActivateEvent_Test extends TestCase {
     shell = new Shell( display, SWT.NONE );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -60,7 +66,7 @@ public class ActivateEvent_Test extends TestCase {
       }
     } );
 
-    fakeActivateRequestParam( label );
+    fakeActivateEvent( label );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 1, activatedCount[ 0 ] );
     assertSame( label, activated[ 0 ] );
@@ -92,8 +98,8 @@ public class ActivateEvent_Test extends TestCase {
     ActivateEvent.addListener( label, listener );
     ActivateEvent.addListener( otherComposite, listener );
     ActivateEvent.addListener( otherLabel, listener );
-    
-    fakeActivateRequestParam( label );
+
+    fakeActivateEvent( label );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 2, activatedCount[ 0 ] );
     assertSame( label, activated[ 0 ] );
@@ -109,7 +115,7 @@ public class ActivateEvent_Test extends TestCase {
     // This is the label to test the ActivateEvent on
     Label labelToActivate = new Label( shell, SWT.NONE );
     shell.open();
-    
+
     final java.util.List<ActivateEvent> log = new ArrayList<ActivateEvent>();
     ActivateEvent.addListener( labelToActivate, new ActivateListener() {
       public void activated( ActivateEvent event ) {
@@ -125,9 +131,9 @@ public class ActivateEvent_Test extends TestCase {
     assertEquals( labelToActivate, event.widget );
     assertEquals( ActivateEvent.ACTIVATED, event.getID() );
   }
-  
+
   public void testUntypedListener() {
-    final List<Event> log = new ArrayList<Event>(); 
+    final List<Event> log = new ArrayList<Event>();
     Listener listener = new Listener() {
       public void handleEvent( Event event ) {
         log.add( event );
@@ -139,19 +145,19 @@ public class ActivateEvent_Test extends TestCase {
     control.addListener( SWT.Activate, listener );
     control.addListener( SWT.Deactivate, listener );
     // simulated request: activate control -> Activate event fired
-    fakeActivateRequestParam( control );
+    fakeActivateEvent( control );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 1, log.size() );
     Event loggedEvent = log.get( 0 );
     assertEquals( SWT.Activate, loggedEvent.type );
     assertSame( control, loggedEvent.widget );
-    // simulated request: activate another control -> Deactivate event for 
-    // previously activated control is fired, then Activate event for new 
+    // simulated request: activate another control -> Deactivate event for
+    // previously activated control is fired, then Activate event for new
     // control is fired
     log.clear();
     Control newControl = new Label( shell, SWT.NONE );
     newControl.addListener( SWT.Activate, listener );
-    fakeActivateRequestParam( newControl );
+    fakeActivateEvent( newControl );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 2, log.size() );
     loggedEvent = log.get( 0 );
@@ -160,33 +166,33 @@ public class ActivateEvent_Test extends TestCase {
     loggedEvent = log.get( 1 );
     assertEquals( SWT.Activate, loggedEvent.type );
   }
-  
-  public void testShellWithTypedAndUntypedListener() {
-    final Event[] untypedEvent = { null };
-    final ShellEvent[] typedEvent = { null };
-    shell.addListener( SWT.Activate, new Listener() {
-      public void handleEvent( Event event ) {
-        untypedEvent[ 0 ] = event;
-      }
-    } );
-    shell.addShellListener( new ShellAdapter() {
-      public void shellActivated( ShellEvent event ) {
-        typedEvent[ 0 ] = event;
-      }
-    } );
-    String controlId = WidgetUtil.getId( shell );
+
+  public void testShellWithTypedActivateListener() {
+    ShellListener listener = mock( ShellListener.class );
+    shell.addShellListener( listener );
+
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, controlId );
+    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_ACTIVATED, null );
     Fixture.readDataAndProcessAction( display );
-    assertNotNull( untypedEvent[ 0 ] );
-    assertNotNull( typedEvent[ 0 ] );
-    assertEquals( SWT.Activate, untypedEvent[ 0 ].type );
-    assertSame( shell, untypedEvent[ 0 ].widget );
-    assertSame( shell, typedEvent[ 0 ].widget );
+
+    verify( listener, times( 1 ) ).shellActivated( any( ShellEvent.class ) );
   }
 
-  private void fakeActivateRequestParam( Control control ) {
+  public void testShellWithUntypedActivateListener() {
+    Listener listener = mock( Listener.class );
+    shell.addListener( SWT.Activate, listener );
+
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, WidgetUtil.getId( control ) );
+    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_ACTIVATED, null );
+    Fixture.readDataAndProcessAction( display );
+
+    verify( listener, times( 1 ) ).handleEvent( any( Event.class ) );
+  }
+
+  private void fakeActivateEvent( Control control ) {
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeNotifyOperation( getId( control ),
+                                 ClientMessageConst.EVENT_CONTROL_ACTIVATED,
+                                 null );
   }
 }

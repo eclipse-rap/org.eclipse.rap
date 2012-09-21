@@ -70,7 +70,7 @@ public class ListLCA extends AbstractWidgetLCA {
     readSelection( list );
     readFocusIndex( list );
     ControlLCAUtil.processSelection( list, null, true );
-    ControlLCAUtil.processMouseEvents( list );
+    ControlLCAUtil.processEvents( list );
     ControlLCAUtil.processKeyEvents( list );
     ControlLCAUtil.processMenuDetect( list );
     WidgetLCAUtil.processHelp( list );

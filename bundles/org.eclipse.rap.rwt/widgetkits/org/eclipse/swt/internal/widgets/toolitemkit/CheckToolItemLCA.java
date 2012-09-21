@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.widgets.ToolItem;
 
@@ -25,7 +25,7 @@ final class CheckToolItemLCA extends ToolItemDelegateLCA {
   }
 
   void readData( ToolItem toolItem ) {
-    if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( toolItem, ClientMessageConst.EVENT_WIDGET_SELECTED ) ) {
       String value = WidgetLCAUtil.readPropertyValue( toolItem, "selection" );
       toolItem.setSelection( Boolean.valueOf( value ).booleanValue() );
       ToolItemLCAUtil.processSelection( toolItem );

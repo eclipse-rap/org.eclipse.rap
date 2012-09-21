@@ -18,27 +18,26 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
     _offset : rwt.client.Client.isZoomed() ? 1 : 0,
 
     probe : function( probeList ) {
+      var results = {};
       for( var i = 0; i < probeList.length; i++ ) {
         var item = probeList[ i ];
         var size = this._measureItem( item, false );
-        var param = size[ 0 ] + "," + size[ 1 ];
         var id = item[ 0 ];
-        this._addRequestParam( id, param );
-        this._storeMeasurement( id, size );
+        results[ id ] = size;
       }
+      this._storeProbes( id, results );
     },
 
     measureStringItems : function( items ) {
+      var results = {};
       for( var i = 0; i < items.length; i++ ) {
         var item = items[ i ];
         var isMarkup = item[ 7 ];
         var size = this._measureItem( item, !isMarkup );
-        var param = size[ 0 ] + "," + size[ 1 ];
         var id = item[ 0 ];
-        this._addRequestParam( id, param );
-        this._storeMeasurement( id, size );
-        //rwt.remote.Server.getInstance().send();
+        results[ id ] = size;
       }
+      this._storeMeasurements( id, results );
     },
 
     _measureItem : function( item, escapeText ) {
@@ -133,12 +132,19 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
       request.addParameter( name, value );
     },
 
-    _storeMeasurement : function( id , size ) {
+    _storeMeasurements : function( id, results ) {
       var display = rwt.widgets.Display.getCurrent();
       var serverObject = rwt.remote.Server.getInstance().getServerObject( display );
-      serverObject.call( "storeMeasurement", {
-        "id" : id,
-        "size" : size
+      serverObject.call( "storeMeasurements", {
+        "results" : results
+      } );
+    },
+
+    _storeProbes : function( id, results ) {
+      var display = rwt.widgets.Display.getCurrent();
+      var serverObject = rwt.remote.Server.getInstance().getServerObject( display );
+      serverObject.call( "storeProbes", {
+        "results" : results
       } );
     },
 

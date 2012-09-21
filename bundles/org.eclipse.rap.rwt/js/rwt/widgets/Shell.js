@@ -83,7 +83,7 @@ qx.Class.define( "rwt.widgets.Shell", {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( shell );
         var req = rwt.remote.Server.getInstance();
-        req.addEvent( "rwt.widgets.Shell_close", id );
+        req.addEvent( "shellClosed", id );
       }
     },
 
@@ -386,13 +386,11 @@ qx.Class.define( "rwt.widgets.Shell", {
         var id = widgetMgr.findIdByWidget( widget );
         var shellId = widgetMgr.findIdByWidget( this );
         var req = rwt.remote.Server.getInstance();
+        req.addParameter( shellId + ".activeControl", id );
         if( this._isRelevantActivateEvent( widget ) ) {
           this._activeControl = widget;
-          req.removeParameter( shellId + ".activeControl" );
           req.addEvent( "org.eclipse.swt.events.controlActivated", id );
           req.send();
-        } else {
-          req.addParameter( shellId + ".activeControl", id );
         }
       }
     },

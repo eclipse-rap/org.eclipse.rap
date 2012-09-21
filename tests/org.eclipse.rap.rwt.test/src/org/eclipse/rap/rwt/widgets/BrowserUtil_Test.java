@@ -10,9 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.widgets;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.widgets.BrowserCallback;
 import org.eclipse.rap.rwt.widgets.BrowserUtil;
@@ -100,7 +100,6 @@ public class BrowserUtil_Test extends TestCase {
 
   public void testCallCallback_Succeeded() {
     final String[] log = new String[ 1 ];
-    String browserId = WidgetUtil.getId( browser );
     browserCallback = new BrowserCallback() {
       public void evaluationSucceeded( Object result ) {
         log[ 0 ] = result.toString();
@@ -111,8 +110,8 @@ public class BrowserUtil_Test extends TestCase {
     };
     BrowserUtil.evaluate( browser, "return 5;", browserCallback );
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( browserId + ".executeResult", "true" );
-    Fixture.fakeRequestParam( browserId + ".evaluateResult", "[5]" );
+    Fixture.fakeSetParameter( getId( browser ), "executeResult", Boolean.TRUE );
+    Fixture.fakeSetParameter( getId( browser ), "evaluateResult", "[5]" );
 
     Fixture.readDataAndProcessAction( browser );
 
@@ -121,7 +120,6 @@ public class BrowserUtil_Test extends TestCase {
 
   public void testCallCallback_Failed() {
     final String[] log = new String[ 1 ];
-    String browserId = WidgetUtil.getId( browser );
     browserCallback = new BrowserCallback() {
       public void evaluationSucceeded( Object result ) {
         log[ 0 ] = result.toString();
@@ -132,8 +130,8 @@ public class BrowserUtil_Test extends TestCase {
     };
     BrowserUtil.evaluate( browser, "return 5/0;", browserCallback );
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( browserId + ".executeResult", "false" );
-    Fixture.fakeRequestParam( browserId + ".evaluateResult", "devide by zero" );
+    Fixture.fakeSetParameter( getId( browser ), "executeResult", Boolean.FALSE );
+    Fixture.fakeSetParameter( getId( browser ), "evaluateResult", "devide by zero" );
 
     Fixture.readDataAndProcessAction( browser );
 

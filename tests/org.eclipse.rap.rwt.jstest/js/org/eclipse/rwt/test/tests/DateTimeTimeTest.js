@@ -167,11 +167,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
       dateTime.setSeconds( 55 );
       TestUtil.clearRequestLog();
       dateTime._sendChanges();
-      assertEquals( 0, TestUtil.getRequestsSend() );
       var req = rwt.remote.Server.getInstance();
-      assertEquals( 4, req._parameters[ "w3.hours" ] );
-      assertEquals( 34, req._parameters[ "w3.minutes" ] );
-      assertEquals( 55, req._parameters[ "w3.seconds" ] );
+      req.send();
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( 4, message.findSetProperty( "w3", "hours" ) );
+      assertEquals( 34, message.findSetProperty( "w3", "minutes" ) );
+      assertEquals( 55, message.findSetProperty( "w3", "seconds" ) );
     },
 
     testSendEvent : function() {

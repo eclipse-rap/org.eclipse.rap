@@ -11,19 +11,23 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.swt.SWT;
@@ -31,6 +35,8 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.MouseAdapter;
@@ -55,13 +61,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mockito.ArgumentCaptor;
 
 
 @SuppressWarnings("deprecation")
 public class ControlLCAUtil_Test extends TestCase {
-
-  private static final String WIDGET_DEFAULT_SELECTED = "widgetDefaultSelected";
-  private static final String WIDGET_SELECTED = "widgetSelected";
 
   private Display display;
   private Shell shell;
@@ -70,11 +74,11 @@ public class ControlLCAUtil_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.fakeResponseWriter();
     display = new Display();
     shell = new Shell( display );
     control = new Button( shell, SWT.PUSH );
     control.setSize( 10, 10 ); // Would be rendered as invisible otherwise
+    Fixture.fakeNewRequest( display );
   }
 
   @Override
@@ -84,219 +88,107 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessSelection() {
-    final StringBuilder log = new StringBuilder();
-    SelectionListener listener = new SelectionListener() {
-      public void widgetSelected( SelectionEvent event ) {
-        log.append( WIDGET_SELECTED );
-      }
-      public void widgetDefaultSelected( SelectionEvent e ) {
-        log.append( WIDGET_DEFAULT_SELECTED );
-      }
-    };
+    SelectionListener listener = mock( SelectionListener.class );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( listener );
-    String buttonId = WidgetUtil.getId( button );
 
-    // Test that requestParams like '...events.widgetSelected=w3' cause the
-    // event to be fired
-    log.setLength( 0 );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     Fixture.readDataAndProcessAction( button );
-    assertEquals( WIDGET_SELECTED, log.toString() );
 
-    // Test that if requestParam '...events.widgetSelected' is null, no event
-    // gets fired
-    log.setLength( 0 );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, null );
-    Fixture.readDataAndProcessAction( button );
-    assertEquals( "", log.toString() );
-
-    // Test that requestParams like '...events.widgetDefaultSelected=w3' cause
-    // the event to be fired
-    log.setLength( 0 );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, buttonId );
-    Fixture.readDataAndProcessAction( button );
-    assertEquals( WIDGET_DEFAULT_SELECTED, log.toString() );
-
-    // Test that if requestParam '...events.widgetSelected' is null, no event
-    // gets fired
-    log.setLength( 0 );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, null );
-    Fixture.readDataAndProcessAction( button );
-    assertEquals( "", log.toString() );
+    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class) );
+    verify( listener, times( 0 ) ).widgetDefaultSelected( any( SelectionEvent.class) );
   }
 
-  public void testProcessKeyEvents() {
-    final List<Event> eventLog = new ArrayList<Event>();
-    shell.open();
-    shell.addListener( SWT.KeyDown, new Listener() {
-      public void handleEvent( Event event ) {
-        eventLog.add( event );
-      }
-    } );
-    String shellId = WidgetUtil.getId( shell );
-    // Simulate requests that carry information about a key-down event
-    // - incomplete request
-    Fixture.fakeNewRequest();
-    Fixture.fakePhase( PhaseId.READ_DATA );
-    eventLog.clear();
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
-    try {
-      ControlLCAUtil.processKeyEvents( shell );
-      fail( "Attempting to process incomplete key-event-request must fail" );
-    } catch( RuntimeException e ) {
-      // expected
-    }
-    assertTrue( eventLog.isEmpty() );
-    // - key-event without meaningful information (e.g. Shift-key only)
-    Fixture.fakeNewRequest();
-    Fixture.fakePhase( PhaseId.READ_DATA );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
-    ControlLCAUtil.processKeyEvents( shell );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display.readAndDispatch();
-    Event event = eventLog.get( 0 );
-    assertEquals( SWT.KeyDown, event.type );
-    assertEquals( shell, event.widget );
-    assertEquals( 0, event.character );
-    assertEquals( 0, event.keyCode );
-    assertTrue( event.doit );
+  public void testProcessDefaultSelection() {
+    SelectionListener listener = mock( SelectionListener.class );
+    Button button = new Button( shell, SWT.PUSH );
+    button.addSelectionListener( listener );
+
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED, null );
+    Fixture.readDataAndProcessAction( button );
+
+    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class) );
+    verify( listener, times( 1 ) ).widgetDefaultSelected( any( SelectionEvent.class) );
   }
 
   public void testProcessKeyEventWithDisplayFilter() {
-    final List<Event> eventLog = new ArrayList<Event>();
     shell.open();
-    display.addFilter( SWT.KeyDown, new Listener() {
-      public void handleEvent( Event event ) {
-        eventLog.add( event );
-      }
-    } );
-    String shellId = WidgetUtil.getId( shell );
-    eventLog.clear();
-    Fixture.fakeNewRequest();
-    Fixture.fakePhase( PhaseId.READ_DATA );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "65" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "97" );
-    ControlLCAUtil.processKeyEvents( shell );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display.readAndDispatch();
-    Event event = eventLog.get( 0 );
-    assertEquals( 97, event.character );
-    assertEquals( 97, event.keyCode );
+    Listener listener = mock( Listener.class );
+    display.addFilter( SWT.KeyDown, listener );
+
+    fakeKeyDown( getId( shell ), 65, 97, "" );
+    Fixture.readDataAndProcessAction( display );
+
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( listener, times( 1 ) ).handleEvent( captor.capture() );
+    assertEquals( 97, captor.getValue().keyCode );
+    assertEquals( 'a', captor.getValue().character );
+    assertEquals( 0, captor.getValue().stateMask );
   }
 
   public void testProcessKeyEventWithLowerCaseCharacter() {
-    final List<Event> eventLog = new ArrayList<Event>();
     shell.open();
-    shell.addListener( SWT.KeyDown, new Listener() {
-      public void handleEvent( Event event ) {
-        eventLog.add( event );
-      }
-    } );
-    String shellId = WidgetUtil.getId( shell );
-    eventLog.clear();
-    Fixture.fakeNewRequest();
-    Fixture.fakePhase( PhaseId.READ_DATA );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "65" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "97" );
-    ControlLCAUtil.processKeyEvents( shell );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display.readAndDispatch();
-    Event event = eventLog.get( 0 );
-    assertEquals( 97, event.character );
-    assertEquals( 97, event.keyCode );
+    KeyListener listener = mock( KeyListener.class );
+    shell.addKeyListener( listener );
+
+    fakeKeyDown( getId( shell ), 65, 97, "" );
+    Fixture.readDataAndProcessAction( shell );
+
+    ArgumentCaptor<KeyEvent> captor = ArgumentCaptor.forClass( KeyEvent.class );
+    verify( listener, times( 1 ) ).keyPressed( captor.capture() );
+    assertEquals( 97, captor.getValue().keyCode );
+    assertEquals( 'a', captor.getValue().character );
+    assertEquals( 0, captor.getValue().stateMask );
   }
 
   public void testProcessKeyEventWithUpperCaseCharacter() {
-    final List<Event> eventLog = new ArrayList<Event>();
     shell.open();
-    shell.addListener( SWT.KeyDown, new Listener() {
-      public void handleEvent( Event event ) {
-        eventLog.add( event );
-      }
-    } );
-    String shellId = WidgetUtil.getId( shell );
-    eventLog.clear();
-    Fixture.fakeNewRequest();
-    Fixture.fakePhase( PhaseId.READ_DATA );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "65" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "65" );
-    ControlLCAUtil.processKeyEvents( shell );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display.readAndDispatch();
-    Event event = eventLog.get( 0 );
-    assertEquals( 65, event.character );
-    assertEquals( 97, event.keyCode );
+    KeyListener listener = mock( KeyListener.class );
+    shell.addKeyListener( listener );
+
+    fakeKeyDown( getId( shell ), 65, 65, "" );
+    Fixture.readDataAndProcessAction( shell );
+
+    ArgumentCaptor<KeyEvent> captor = ArgumentCaptor.forClass( KeyEvent.class );
+    verify( listener, times( 1 ) ).keyPressed( captor.capture() );
+    assertEquals( 97, captor.getValue().keyCode );
+    assertEquals( 'A', captor.getValue().character );
+    assertEquals( 0, captor.getValue().stateMask );
   }
 
   public void testProcessKeyEventWithDigitCharacter() {
-    final List<Event> eventLog = new ArrayList<Event>();
     shell.open();
-    shell.addListener( SWT.KeyDown, new Listener() {
-      public void handleEvent( Event event ) {
-        eventLog.add( event );
-      }
-    } );
-    String shellId = WidgetUtil.getId( shell );
-    eventLog.clear();
-    Fixture.fakeNewRequest();
-    Fixture.fakePhase( PhaseId.READ_DATA );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "49" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "49" );
-    ControlLCAUtil.processKeyEvents( shell );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display.readAndDispatch();
-    Event event = eventLog.get( 0 );
-    assertEquals( 49, event.character );
-    assertEquals( 49, event.keyCode );
+    KeyListener listener = mock( KeyListener.class );
+    shell.addKeyListener( listener );
+
+    fakeKeyDown( getId( shell ), 49, 49, "" );
+    Fixture.readDataAndProcessAction( shell );
+
+    ArgumentCaptor<KeyEvent> captor = ArgumentCaptor.forClass( KeyEvent.class );
+    verify( listener, times( 1 ) ).keyPressed( captor.capture() );
+    assertEquals( 49, captor.getValue().keyCode );
+    assertEquals( 49, captor.getValue().character );
+    assertEquals( 0, captor.getValue().stateMask );
   }
 
   public void testProcessKeyEventWithPunctuationCharacter() {
-    final List<Event> eventLog = new ArrayList<Event>();
     shell.open();
-    shell.addListener( SWT.KeyDown, new Listener() {
-      public void handleEvent( Event event ) {
-        eventLog.add( event );
-      }
-    } );
-    String shellId = WidgetUtil.getId( shell );
-    eventLog.clear();
-    Fixture.fakeNewRequest();
-    Fixture.fakePhase( PhaseId.READ_DATA );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "49" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "33" );
-    ControlLCAUtil.processKeyEvents( shell );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display.readAndDispatch();
-    Event event = eventLog.get( 0 );
-    assertEquals( 33, event.character );
-    assertEquals( 49, event.keyCode );
+    KeyListener listener = mock( KeyListener.class );
+    shell.addKeyListener( listener );
+
+    fakeKeyDown( getId( shell ), 49, 33, "" );
+    Fixture.readDataAndProcessAction( shell );
+
+    ArgumentCaptor<KeyEvent> captor = ArgumentCaptor.forClass( KeyEvent.class );
+    verify( listener, times( 1 ) ).keyPressed( captor.capture() );
+    assertEquals( 49, captor.getValue().keyCode );
+    assertEquals( 33, captor.getValue().character );
+    assertEquals( 0, captor.getValue().stateMask );
   }
 
   public void testKeyAndTraverseEvents() {
     final List<Event> eventLog = new ArrayList<Event>();
     shell.open();
-    String shellId = WidgetUtil.getId( shell );
-
-    // Ensure that if a key event that notifies about a traversal key is
-    // canceled (doit=false) the following traverse event isn't fired at all
     Listener listener = new Listener() {
       public void handleEvent( Event event ) {
         eventLog.add( event );
@@ -305,12 +197,10 @@ public class ControlLCAUtil_Test extends TestCase {
     shell.addListener( SWT.Traverse, listener );
     shell.addListener( SWT.KeyDown, listener );
     shell.addListener( SWT.KeyUp, listener );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "27" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
+
+    fakeKeyDown( getId( shell ), 27, 0, "" );
     Fixture.readDataAndProcessAction( display );
+
     assertEquals( 3, eventLog.size() );
     Event traverseEvent = eventLog.get( 0 );
     assertEquals( SWT.Traverse, traverseEvent.type );
@@ -359,19 +249,14 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessHelpEvent() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final List<HelpEvent> log = new ArrayList<HelpEvent>();
-    shell.addHelpListener( new HelpListener() {
-      public void helpRequested( HelpEvent event ) {
-        log.add( event );
-      }
-    } );
-    Fixture.fakeRequestParam( JSConst.EVENT_HELP, WidgetUtil.getId( shell ) );
-    WidgetLCAUtil.processHelp( shell );
-    assertEquals( 1, log.size() );
-    HelpEvent event = log.get( 0 );
-    assertSame( shell, event.widget );
-    assertSame( display, event.display );
+    shell.open();
+    HelpListener listener = mock( HelpListener.class );
+    shell.addHelpListener( listener );
+
+    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_HELP, null );
+    Fixture.readDataAndProcessAction( shell );
+
+    verify( listener, times( 1 ) ).helpRequested( any( HelpEvent.class) );
   }
 
   public void testRenderFocusListener_NotFocusableControl() {
@@ -1067,6 +952,15 @@ public class ControlLCAUtil_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( control, "menuDetect" ) );
+  }
+
+
+  private void fakeKeyDown( String target, int keyCode, int charCode, String modifier ) {
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( ClientMessageConst.EVENT_PARAM_KEY_CODE, Integer.valueOf( keyCode ) );
+    properties.put( ClientMessageConst.EVENT_PARAM_CHAR_CODE, Integer.valueOf( charCode ) );
+    properties.put( ClientMessageConst.EVENT_PARAM_MODIFIER, modifier );
+    Fixture.fakeNotifyOperation( target, ClientMessageConst.EVENT_KEY_DOWN, properties  );
   }
 
 }

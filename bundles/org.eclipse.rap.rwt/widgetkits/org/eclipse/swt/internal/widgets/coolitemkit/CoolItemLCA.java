@@ -15,12 +15,9 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
@@ -46,6 +43,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
    * Unnecesary to call ItemLCAUtil.preserve, CoolItem does neither use text
    * nor image
    */
+  @Override
   public void preserveValues( Widget widget ) {
     CoolItem coolItem = ( CoolItem )widget;
     IWidgetAdapter adapter = WidgetUtil.getAdapter( coolItem );
@@ -57,9 +55,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   public void readData( Widget widget ) {
     // TODO [rh] clean up this mess
     final CoolItem coolItem = ( CoolItem )widget;
-    HttpServletRequest request = ContextProvider.getRequest();
-    String movedWidgetId = request.getParameter( JSConst.EVENT_WIDGET_MOVED );
-    if( WidgetUtil.getId( coolItem ).equals( movedWidgetId ) ) {
+    if( WidgetLCAUtil.wasEventSent( coolItem, ClientMessageConst.EVENT_WIDGET_MOVED ) ) {
       String value = WidgetLCAUtil.readPropertyValue( coolItem, "bounds.x" );
       final int x = NumberFormatUtil.parseInt( value );
       ProcessActionRunner.add( new Runnable() {
@@ -70,6 +66,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     }
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     CoolItem item = ( CoolItem )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( item );
@@ -78,6 +75,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     clientObject.set( "style", WidgetLCAUtil.getStyles( item, ALLOWED_STYLES ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     CoolItem item = ( CoolItem )widget;
     WidgetLCAUtil.renderBounds( item, item.getBounds() );
@@ -85,6 +83,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderCustomVariant( item );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }

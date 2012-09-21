@@ -16,9 +16,9 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.graphics.*;
@@ -71,7 +71,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     if( value != null ) {
       item.setChecked( Boolean.valueOf( value ).booleanValue() );
     }
-    if( WidgetLCAUtil.wasEventSent( item, JSConst.EVENT_TREE_EXPANDED ) ) {
+    if( WidgetLCAUtil.wasEventSent( item, ClientMessageConst.EVENT_TREE_EXPANDED ) ) {
       // The event is fired before the setter is called. Order like in SWT.
       processTreeExpandedEvent( item );
       ProcessActionRunner.add( new Runnable() {
@@ -80,7 +80,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
         }
       } );
     }
-    if( WidgetLCAUtil.wasEventSent( item, JSConst.EVENT_TREE_COLLAPSED ) ) {
+    if( WidgetLCAUtil.wasEventSent( item, ClientMessageConst.EVENT_TREE_COLLAPSED ) ) {
       processTreeCollapsedEvent( item );
       ProcessActionRunner.add( new Runnable() {
         public void run() {

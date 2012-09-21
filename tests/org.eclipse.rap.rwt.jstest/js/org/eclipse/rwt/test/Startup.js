@@ -13,17 +13,21 @@ rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
     rwt.remote.Server.getInstance().sendImmediate( true );
   };
   rwt.remote.Server.getInstance().send = function() {
-    if( this._requestCounter === -1 ) {
-      // prevent infinite loop:
-      throw new Error( "_requestCounter is -1" );
+    if( !this._sendTimer.isEnabled() ) {
+      this._sendTimer.start();
+      if( this._requestCounter === -1 ) {
+        // prevent infinite loop:
+        throw new Error( "_requestCounter is -1" );
+      }
+      this.sendImmediate( true ); // omit timer
     }
-    this.sendImmediate( true ); // omit timer
   };
   rwt.protocol.MessageProcessor.processMessage( {
-    "meta": {
-      "requestCounter": -1
-    },
-    "operations": [ [ "create", "w1", "rwt.Display" ] ]
+    "meta": {},
+    "operations": [
+      [ "create", "w1", "rwt.Display" ],
+      [ "call", "w1", "init", { "url" : "", "rootId" : "w1" } ]
+    ]
   } );
   rwt.runtime.ErrorHandler.processJavaScriptErrorInResponse
     = function( script, error, currentRequest ) { throw error; };

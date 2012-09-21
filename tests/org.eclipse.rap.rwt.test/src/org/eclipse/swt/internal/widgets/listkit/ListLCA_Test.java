@@ -12,6 +12,11 @@
 
 package org.eclipse.swt.internal.widgets.listkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -19,7 +24,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -34,18 +39,21 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.*;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.mockito.ArgumentCaptor;
 
 public class ListLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
   private ListLCA lca;
+  private List list;
 
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
+    list = new List( shell, SWT.NONE );
     lca = new ListLCA();
     Fixture.fakeNewRequest( display );
   }
@@ -56,7 +64,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testControlListeners() throws IOException {
-    List list = new List( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( list );
     ControlLCATestUtil.testFocusListener( list );
     ControlLCATestUtil.testMouseListener( list );
@@ -67,7 +74,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    List list = new List( shell, SWT.SINGLE | SWT.BORDER );
     Fixture.markInitialized( display );
     // control: enabled
     Fixture.preserveWidgets();
@@ -136,123 +142,99 @@ public class ListLCA_Test extends TestCase {
     assertEquals( "some text", list.getToolTipText() );
   }
 
-  public void testReadDataForSingle() {
-    List list = new List( shell, SWT.SINGLE );
-    list.add( "item1" );
-    list.add( "item2" );
-    list.add( "item3" );
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( list );
-    String listId = WidgetUtil.getId( list );
-    // Test initial state for the followin tests
-    assertEquals( -1, list.getSelectionIndex() );
-    // Fake request that selected a single item
-    Fixture.fakeRequestParam( listId + ".selection", "0" );
+  public void testReadSelectionForSingle() {
+    createListItems( 3 );
+
+    fakeSelection( "0" );
     lca.readData( list );
+
     assertEquals( 0, list.getSelectionIndex() );
-    // Fake request that does not contain a selection parameter
+  }
+
+  public void testReadSelectionForSingle_DeselectAll() {
+    createListItems( 3 );
     list.setSelection( 1 );
-    Fixture.fakeRequestParam( listId + ".selection", null );
+
+    fakeSelection( "" );
     lca.readData( list );
-    assertEquals( 1, list.getSelectionIndex() );
-    // Fake request that contains empty selection parameter -> must deselect all
-    list.setSelection( 1 );
-    Fixture.fakeRequestParam( listId + ".selection", "" );
-    lca.readData( list );
+
     assertEquals( -1, list.getSelectionIndex() );
   }
 
-  public void testReadDataForMulti() {
-    List list = new List( shell, SWT.MULTI );
-    list.add( "item1" );
-    list.add( "item2" );
-    list.add( "item3" );
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( list );
-    String listId = WidgetUtil.getId( list );
-    // Test initial state for the followin tests
-    assertEquals( -1, list.getSelectionIndex() );
-    // Fake request that selected 'item1' and 'item2'
-    Fixture.fakeRequestParam( listId + ".selection", "0,1" );
+  public void testReadSelectionForMulti() {
+    list = new List( shell, SWT.MULTI );
+    createListItems( 3 );
+
+    fakeSelection( "0,1" );
     lca.readData( list );
-    assertEquals( 0, list.getSelectionIndex() );
-    int[] expected = new int[]{
-      0, 1
-    };
+
+    int[] expected = new int[]{ 0, 1 };
     assertTrue( Arrays.equals( expected, list.getSelectionIndices() ) );
-    // Fake request that does not contain a selection parameter
-    list.setSelection( 1 );
-    Fixture.fakeRequestParam( listId + ".selection", null );
-    lca.readData( list );
-    assertEquals( 1, list.getSelectionIndex() );
   }
 
   public void testSelectionEvent() {
-    final StringBuilder log = new StringBuilder();
-    final List list = new List( shell, SWT.SINGLE );
-    list.add( "item1" );
-    list.add( "item2" );
-    list.setSelection( -1 );
-    list.addSelectionListener( new SelectionAdapter() {
+    createListItems( 2 );
+    SelectionListener listener = mock( SelectionListener.class );
+    list.addSelectionListener( listener );
 
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        log.append( "selectionEvent" );
-        assertSame( list, event.getSource() );
-        assertEquals( 0, event.detail );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertEquals( null, event.item );
-        assertEquals( true, event.doit );
-      }
-    } );
-    String listId = WidgetUtil.getId( list );
-    Fixture.fakeRequestParam( listId + ".selection", "1" );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, listId );
+    Fixture.fakeNotifyOperation( getId( list ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     Fixture.readDataAndProcessAction( list );
-    assertEquals( "selectionEvent", log.toString() );
-    assertEquals( 1, list.getSelectionIndex() );
+
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertEquals( list, event.getSource() );
+    assertEquals( null, event.item );
+    assertEquals( SWT.NONE, event.detail );
+    assertEquals( 0, event.x );
+    assertEquals( 0, event.y );
+    assertEquals( 0, event.width );
+    assertEquals( 0, event.height );
+    assertEquals( true, event.doit );
   }
 
-  public void testFocusedItem() {
-    List list = new List( shell, SWT.NONE );
-    list.add( "item0" );
-    list.add( "item1" );
-    list.add( "item2" );
-    String listId = WidgetUtil.getId( list );
-    // Test with focusIndex -1
+  public void testReadFocusedIndex() {
+    createListItems( 3 );
     setFocusIndex( list, 0 );
-    Fixture.fakeRequestParam( listId + ".focusIndex", "-1" );
+
+    fakeFocusIndex( 1 );
     Fixture.readDataAndProcessAction( list );
-    assertEquals( -1, list.getFocusIndex() );
-    // Test with value focusIndex
-    setFocusIndex( list, 0 );
-    Fixture.fakeRequestParam( listId + ".focusIndex", "1" );
-    Fixture.readDataAndProcessAction( list );
+
+
     assertEquals( 1, list.getFocusIndex() );
-    // Test with focusIndex out of range
+  }
+
+  public void testReadFocusedIndex_Reset() {
+    createListItems( 3 );
     setFocusIndex( list, 0 );
-    Fixture.fakeRequestParam( listId + ".focusIndex", "22" );
+
+    fakeFocusIndex( -1 );
     Fixture.readDataAndProcessAction( list );
+
+    assertEquals( -1, list.getFocusIndex() );
+  }
+
+  public void testReadFocusedIndex_OutOfRange() {
+    createListItems( 3 );
+    setFocusIndex( list, 0 );
+
+    fakeFocusIndex(22 );
+    Fixture.readDataAndProcessAction( list );
+
     assertEquals( 0, list.getFocusIndex() );
   }
 
   public void testReadTopIndex() {
-    List list = new List( shell, SWT.MULTI );
     list.setSize( 100, 100 );
-    for( int i = 0; i < 6; i++ ) {
-      list.add( "Item " + i );
-    }
-    String listId = WidgetUtil.getId( list );
-    Fixture.fakeRequestParam( listId + ".topIndex", "5" );
-    ListLCA listLCA = new ListLCA();
-    listLCA.readData( list );
+    createListItems( 10 );
+
+    fakeTopIndex( 5 );
+    Fixture.readDataAndProcessAction( list );
+
     assertEquals( 5, list.getTopIndex() );
   }
 
   public void testRenderCreate() throws IOException {
-    List list = new List( shell, SWT.NONE );
-
     lca.renderInitialization( list );
 
     Message message = Fixture.getProtocolMessage();
@@ -274,8 +256,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    List list = new List( shell, SWT.NONE );
-
     lca.renderInitialization( list );
 
     Message message = Fixture.getProtocolMessage();
@@ -284,8 +264,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderInitialItems() throws IOException {
-    List list = new List( shell, SWT.NONE );
-
     lca.render( list );
 
     Message message = Fixture.getProtocolMessage();
@@ -294,8 +272,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderItems() throws IOException, JSONException {
-    List list = new List( shell, SWT.NONE );
-
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     lca.renderChanges( list );
 
@@ -306,7 +282,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderItemsUnchanged() throws IOException {
-    List list = new List( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( list );
 
@@ -319,8 +294,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelectionIndices() throws IOException {
-    List list = new List( shell, SWT.NONE );
-
     lca.render( list );
 
     Message message = Fixture.getProtocolMessage();
@@ -329,7 +302,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionIndices() throws IOException, JSONException {
-    List list = new List( shell, SWT.NONE );
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
 
     list.select( 1 );
@@ -353,7 +325,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionIndicesUnchanged() throws IOException {
-    List list = new List( shell, SWT.NONE );
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     Fixture.markInitialized( display );
     Fixture.markInitialized( list );
@@ -367,8 +338,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderInitialTopIndex() throws IOException {
-    List list = new List( shell, SWT.NONE );
-
     lca.render( list );
 
     Message message = Fixture.getProtocolMessage();
@@ -377,7 +346,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderTopIndex() throws IOException {
-    List list = new List( shell, SWT.NONE );
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
 
     list.setTopIndex( 2 );
@@ -388,7 +356,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderTopIndexUnchanged() throws IOException {
-    List list = new List( shell, SWT.NONE );
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     Fixture.markInitialized( display );
     Fixture.markInitialized( list );
@@ -402,8 +369,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderInitialFocusIndex() throws IOException {
-    List list = new List( shell, SWT.NONE );
-
     lca.render( list );
 
     Message message = Fixture.getProtocolMessage();
@@ -412,7 +377,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderFocusIndex() throws IOException {
-    List list = new List( shell, SWT.NONE );
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
 
     setFocusIndex( list, 2 );
@@ -423,7 +387,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderFocusIndexUnchanged() throws IOException {
-    List list = new List( shell, SWT.NONE );
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     Fixture.markInitialized( display );
     Fixture.markInitialized( list );
@@ -487,7 +450,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderInitialItemDimensions() throws IOException {
-    List list = new List( shell, SWT.NONE );
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
 
     lca.render( list );
@@ -498,8 +460,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderItemDimensions() throws IOException, JSONException {
-    List list = new List( shell, SWT.NONE );
-
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     lca.renderChanges( list );
 
@@ -509,7 +469,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderItemDimensionsUnchanged() throws IOException {
-    List list = new List( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( list );
 
@@ -522,7 +481,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderAddSelectionListener() throws Exception {
-    List list = new List( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( list );
     Fixture.preserveWidgets();
@@ -535,7 +493,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    List list = new List( shell, SWT.NONE );
     SelectionListener listener = new SelectionAdapter() { };
     list.addSelectionListener( listener );
     Fixture.markInitialized( display );
@@ -550,7 +507,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
-    List list = new List( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( list );
     Fixture.preserveWidgets();
@@ -564,7 +520,6 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testRenderMarkupEnabled() throws IOException {
-    List list = new List( shell, SWT.NONE );
     list.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
 
     lca.render( list );
@@ -575,5 +530,26 @@ public class ListLCA_Test extends TestCase {
 
   private static void setFocusIndex( List list, int focusIndex ) {
     list.getAdapter( IListAdapter.class ).setFocusIndex( focusIndex );
+  }
+
+  private void createListItems( int number ) {
+    for( int i = 0; i < number; i++ ) {
+      list.add( "Item " + i );
+    }
+  }
+
+  private void fakeSelection( String value ) {
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeSetParameter( getId( list ), "selection", value );
+  }
+
+  private void fakeFocusIndex( int value ) {
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeSetParameter( getId( list ), "focusIndex", Integer.valueOf( value ) );
+  }
+
+  private void fakeTopIndex( int value ) {
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeSetParameter( getId( list ), "topIndex", Integer.valueOf( value ) );
   }
 }

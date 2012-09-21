@@ -11,6 +11,8 @@
 package org.eclipse.rap.rwt.internal.protocol;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
@@ -19,7 +21,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.widgets.Display;
 
@@ -159,7 +163,7 @@ public class ProtocolUtil_Test extends TestCase {
     ClientMessage message = ProtocolUtil.getClientMessage();
 
     assertNotNull( message );
-    assertTrue( message.getAllOperations( "w3" ).length > 0 );
+    assertTrue( message.getAllOperationsFor( "w3" ).length > 0 );
   }
 
   public void testGetClientMessage_SameInstance() {
@@ -186,56 +190,51 @@ public class ProtocolUtil_Test extends TestCase {
   public void testReadProperyValue_MissingProperty() {
     fakeNewJsonMessage();
 
-    assertNull( ProtocolUtil.readPropertyValue( "w3", "p0" ) );
+    assertNull( ProtocolUtil.readPropertyValueAsString( "w3", "p0" ) );
   }
 
-  public void testReadProperyValue_String() {
+  public void testReadProperyValueAsString_String() {
     fakeNewJsonMessage();
 
-    assertEquals( "foo", ProtocolUtil.readPropertyValue( "w3", "p1" ) );
+    assertEquals( "foo", ProtocolUtil.readPropertyValueAsString( "w3", "p1" ) );
   }
 
-  public void testReadProperyValue_Integer() {
+  public void testReadProperyValueAsString_Integer() {
     fakeNewJsonMessage();
 
-    assertEquals( "123", ProtocolUtil.readPropertyValue( "w3", "p2" ) );
+    assertEquals( "123", ProtocolUtil.readPropertyValueAsString( "w3", "p2" ) );
   }
 
-  public void testReadProperyValue_Boolean() {
+  public void testReadProperyValueAsString_Boolean() {
     fakeNewJsonMessage();
 
-    assertEquals( "true", ProtocolUtil.readPropertyValue( "w3", "p3" ) );
+    assertEquals( "true", ProtocolUtil.readPropertyValueAsString( "w3", "p3" ) );
   }
 
-  public void testReadProperyValue_Null() {
+  public void testReadProperyValueAsString_Null() {
     fakeNewJsonMessage();
 
-    assertEquals( "null", ProtocolUtil.readPropertyValue( "w3", "p4" ) );
+    assertEquals( "null", ProtocolUtil.readPropertyValueAsString( "w3", "p4" ) );
   }
 
   public void testReadPropertyValue_LastSetValue() {
-    String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
-                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ], "
-                + "[ \"set\", \"w3\", { \"p1\" : \"bar\" } ] "
-                + "] }";
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( "message", json );
+    Fixture.fakeSetParameter( "w3", "p1", "foo" );
+    Fixture.fakeSetParameter( "w3", "p1", "bar" );
 
-    assertEquals( "bar", ProtocolUtil.readPropertyValue( "w3", "p1" ) );
+    assertEquals( "bar", ProtocolUtil.readPropertyValueAsString( "w3", "p1" ) );
   }
 
   public void testReadEventPropertyValue_MissingProperty() {
     fakeNewJsonMessage();
 
-    assertNull( ProtocolUtil.readEventPropertyValue( "w3", "widgetSelected", "item" ) );
+    assertNull( ProtocolUtil.readEventPropertyValueAsString( "w3", "widgetSelected", "item" ) );
   }
 
   public void testReadEventPropertyValue() {
     fakeNewJsonMessage();
 
-    String value = ProtocolUtil.readEventPropertyValue( "w3", "widgetSelected", "detail" );
+    String value = ProtocolUtil.readEventPropertyValueAsString( "w3", "widgetSelected", "detail" );
     assertEquals( "check", value );
   }
 
@@ -251,18 +250,57 @@ public class ProtocolUtil_Test extends TestCase {
     assertFalse( ProtocolUtil.wasEventSent( "w3", "widgetDefaultSelected" ) );
   }
 
+  public void testReadPropertyValueAsPoint() {
+    fakeNewJsonMessage();
+
+    assertEquals( new Point( 1, 2 ), ProtocolUtil.readPropertyValueAsPoint( "w3", "p5" ) );
+  }
+
+  public void testReadPropertyValueAsPoint_NotPoint() {
+    fakeNewJsonMessage();
+
+    try {
+      ProtocolUtil.readPropertyValueAsPoint( "w3", "p6" );
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
+  }
+
+  public void testReadPropertyValueAsRectangle() {
+    fakeNewJsonMessage();
+
+    Rectangle expected = new Rectangle( 1, 2, 3, 4 );
+    assertEquals( expected, ProtocolUtil.readPropertyValueAsRectangle( "w3", "p6" ) );
+  }
+
+  public void testReadPropertyValueAsRectangle_NotRectangle() {
+    fakeNewJsonMessage();
+
+    try {
+      ProtocolUtil.readPropertyValueAsRectangle( "w3", "p5" );
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
+  }
+
   //////////////////
   // Helping methods
 
   private void fakeNewJsonMessage() {
-    String json = "{ "
-                + ClientMessage.PROP_HEADER + " : { \"requestCounter\" : 21 },"
-                + ClientMessage.PROP_OPERATIONS + " : ["
-                + "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : 123 } ], "
-                + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ], "
-                + "[ \"set\", \"w3\", { \"p3\" : true, \"p4\" : null } ] "
-                + "] }";
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( "message", json );
+    Fixture.fakeHeaderParameter( "requestCounter", Integer.valueOf( 21 ) );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( "p1", "foo" );
+    parameters.put( "p2", Integer.valueOf( 123 ) );
+    Fixture.fakeSetOperation( "w3", parameters  );
+    parameters = new HashMap<String, Object>();
+    parameters.put( "detail", "check" );
+    Fixture.fakeNotifyOperation( "w3", "widgetSelected", parameters );
+    parameters = new HashMap<String, Object>();
+    parameters.put( "p3", Boolean.TRUE );
+    parameters.put( "p4", null );
+    parameters.put( "p5", new int[] { 1, 2 } );
+    parameters.put( "p6", new int[] { 1, 2, 3, 4 } );
+    Fixture.fakeSetOperation( "w3", parameters  );
   }
 }

@@ -87,7 +87,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     }
     readTextAndSelection( combo );
     ControlLCAUtil.processSelection( combo, null, true );
-    ControlLCAUtil.processMouseEvents( combo );
+    ControlLCAUtil.processEvents( combo );
     ControlLCAUtil.processKeyEvents( combo );
     ControlLCAUtil.processMenuDetect( combo );
     WidgetLCAUtil.processHelp( combo );

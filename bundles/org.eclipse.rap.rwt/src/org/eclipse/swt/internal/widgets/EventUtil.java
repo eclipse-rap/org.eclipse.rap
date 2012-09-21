@@ -42,8 +42,8 @@ public final class EventUtil {
   }
 
   private static boolean isAccessible( Control control ) {
-    return    control.getEnabled() 
-           && control.getVisible() 
+    return    control.getEnabled()
+           && control.getVisible()
            && isShellAccessible( control.getShell() );
   }
 
@@ -64,9 +64,9 @@ public final class EventUtil {
   private static boolean isShellAccessible( Shell shell ) {
     Shell modalShell = null;
     Shell activeShell = shell.getDisplay().getActiveShell();
-    if(    activeShell != null 
-        && activeShell.isVisible() 
-        && ( activeShell.getStyle() & SWT.APPLICATION_MODAL ) != 0 ) 
+    if(    activeShell != null
+        && activeShell.isVisible()
+        && ( activeShell.getStyle() & SWT.APPLICATION_MODAL ) != 0 )
     {
       modalShell = activeShell;
     }

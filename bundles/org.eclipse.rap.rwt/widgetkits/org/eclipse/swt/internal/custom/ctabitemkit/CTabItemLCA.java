@@ -32,13 +32,14 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   private static final String TYPE = "rwt.widgets.CTabItem";
   private static final String[] ALLOWED_STYLES = new String[] { "CLOSE" };
 
-  public static final String EVENT_ITEM_CLOSED = "org.eclipse.swt.events.ctabItemClosed";
+  public static final String EVENT_ITEM_CLOSED = "ctabItemClosed";
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
   private static final String PROP_SHOWING = "showing";
   private static final String PROP_SHOW_CLOSE = "showClose";
 
+  @Override
   public void preserveValues( Widget widget ) {
     CTabItem item = ( CTabItem )widget;
     WidgetLCAUtil.preserveCustomVariant( item );
@@ -66,6 +67,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     }
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     CTabItem item = ( CTabItem )widget;
     CTabFolder parent = item.getParent();
@@ -76,6 +78,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     clientObject.set( "style", WidgetLCAUtil.getStyles( item, ALLOWED_STYLES ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     CTabItem item = ( CTabItem )widget;
     WidgetLCAUtil.renderCustomVariant( item );
@@ -88,6 +91,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     renderProperty( item, PROP_SHOW_CLOSE, item.getShowClose(), false );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }

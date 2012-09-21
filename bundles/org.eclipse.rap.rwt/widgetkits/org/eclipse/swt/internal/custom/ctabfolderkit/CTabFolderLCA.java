@@ -18,6 +18,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
@@ -43,12 +44,6 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   // Request parameters for min/max state
   public static final String PARAM_MAXIMIZED = "maximized";
   public static final String PARAM_MINIMIZED = "minimized";
-
-  // Request parameters that denote CTabFolderEvents
-  public static final String EVENT_FOLDER_MINIMIZED = "org.eclipse.swt.events.ctabFolderMinimized";
-  public static final String EVENT_FOLDER_MAXIMIZED = "org.eclipse.swt.events.ctabFolderMaximized";
-  public static final String EVENT_FOLDER_RESTORED = "org.eclipse.swt.events.ctabFolderRestored";
-  public static final String EVENT_SHOW_LIST = "org.eclipse.swt.events.ctabFolderShowList";
 
   // Property names
   private static final String PROP_TOOLTIP_TEXTS = "toolTipTexts";
@@ -119,15 +114,15 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     if( value != null ) {
       folder.setMaximized( Boolean.valueOf( value ).booleanValue() );
     }
-    if( WidgetLCAUtil.wasEventSent( folder, EVENT_FOLDER_MINIMIZED ) ) {
+    if( WidgetLCAUtil.wasEventSent( folder, ClientMessageConst.EVENT_FOLDER_MINIMIZED ) ) {
       CTabFolderEvent event = CTabFolderLCA.minimize( folder );
       event.processEvent();
     }
-    if( WidgetLCAUtil.wasEventSent( folder, EVENT_FOLDER_MAXIMIZED ) ) {
+    if( WidgetLCAUtil.wasEventSent( folder, ClientMessageConst.EVENT_FOLDER_MAXIMIZED ) ) {
       CTabFolderEvent event = CTabFolderLCA.maximize( folder );
       event.processEvent();
     }
-    if( WidgetLCAUtil.wasEventSent( folder, EVENT_FOLDER_RESTORED ) ) {
+    if( WidgetLCAUtil.wasEventSent( folder, ClientMessageConst.EVENT_FOLDER_RESTORED ) ) {
       CTabFolderEvent event = CTabFolderLCA.restore( folder );
       event.processEvent();
     }
@@ -145,7 +140,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
         }
       } );
     }
-    if( WidgetLCAUtil.wasEventSent( folder, EVENT_SHOW_LIST ) ) {
+    if( WidgetLCAUtil.wasEventSent( folder, ClientMessageConst.EVENT_SHOW_LIST ) ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           CTabFolderEvent event = CTabFolderLCA.showList( folder );
@@ -157,7 +152,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
         }
       } );
     }
-    ControlLCAUtil.processMouseEvents( folder );
+    ControlLCAUtil.processEvents( folder );
     ControlLCAUtil.processKeyEvents( folder );
     ControlLCAUtil.processMenuDetect( folder );
     WidgetLCAUtil.processHelp( folder );

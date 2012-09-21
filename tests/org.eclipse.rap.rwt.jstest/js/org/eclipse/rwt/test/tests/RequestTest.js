@@ -50,7 +50,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.RequestTest", {
     testSetRequestHeader : function() {
       request.send();
 
-      var contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+      var contentType = "application/json; charset=UTF-8";
       if( !Client.isWebkit() ) {
         assertNotNull( findNativeCall( "setRequestHeader", [ "Referer", window.location.href ] ) );
       }
@@ -137,7 +137,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.RequestTest", {
     setUp : function() {
       org.eclipse.rwt.test.fixture.NativeRequestMock.useFakeServer = false;
       org.eclipse.rwt.test.fixture.TestUtil.clearXMLHttpRequests();
-      request = new rwt.remote.Request( URL, "POST", "application/javascript" );
+      request = new rwt.remote.Request( URL, "POST", "application/json" );
     },
 
     tearDown : function() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,40 +10,32 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.events;
 
-import javax.servlet.http.HttpServletRequest;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventPropertyValueAsString;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Widget;
 
 
 public final class EventLCAUtil {
 
-  public static int readStateMask( String paramName ) {
+  public static int readStateMask( Widget widget, String eventName ) {
+    String altKey = readEventPropertyValueAsString( getId( widget ), eventName, "altKey" );
+    String ctrlKey = readEventPropertyValueAsString( getId( widget ), eventName, "ctrlKey" );
+    String shiftKey = readEventPropertyValueAsString( getId( widget ), eventName, "shiftKey" );
+    return translateModifier( altKey, ctrlKey, shiftKey );
+  }
+
+  static int translateModifier( String altKey, String ctrlKey, String shiftKey ) {
     int result = 0;
-    String modifiers = readStringParam( paramName );
-    if( modifiers != null ) {
-      result = translateModifier( modifiers );
+    if( "true".equals( ctrlKey ) ) {
+      result |= SWT.CTRL;
     }
-    return result;
-  }
-
-  private static String readStringParam( String paramName ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String value = request.getParameter( paramName );
-    return value;
-  }
-
-  static int translateModifier( String value ) {
-    String[] modifiers = value.split( "," );
-    int result = 0;
-    for( int i = 0; i < modifiers.length; i++ ) {
-      if( "ctrl".equals( modifiers[ i ] ) ) {
-        result |= SWT.CTRL;
-      } else if( "alt".equals( modifiers[ i ] ) ) {
-        result |= SWT.ALT;
-      } else if ( "shift".equals(  modifiers[ i ] ) ) {
-        result |= SWT.SHIFT;
-      }
+    if( "true".equals( altKey ) ) {
+      result |= SWT.ALT;
+    }
+    if( "true".equals( shiftKey ) ) {
+      result |= SWT.SHIFT;
     }
     return result;
   }

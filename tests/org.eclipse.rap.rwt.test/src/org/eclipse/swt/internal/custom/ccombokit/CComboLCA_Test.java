@@ -10,18 +10,20 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ccombokit;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
+import java.io.IOException;
+import java.util.Arrays;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -47,6 +49,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mockito.ArgumentCaptor;
 
 
 public class CComboLCA_Test extends TestCase {
@@ -56,6 +59,7 @@ public class CComboLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private CCombo ccombo;
   private CComboLCA lca;
 
   @Override
@@ -63,6 +67,7 @@ public class CComboLCA_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
+    ccombo = new CCombo( shell, SWT.NONE );
     lca = new CComboLCA();
     Fixture.fakeNewRequest( display );
   }
@@ -73,7 +78,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testControlListeners() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( ccombo );
     ControlLCATestUtil.testFocusListener( ccombo );
     ControlLCATestUtil.testMouseListener( ccombo );
@@ -152,67 +156,66 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testEditablePreserveValues() {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( ccombo );
     assertEquals( Boolean.TRUE, adapter.getPreserved( CComboLCA.PROP_EDITABLE ) );
   }
 
-  public void testReadData() {
-    final CCombo ccombo = new CCombo( shell, SWT.NONE );
-    String ccomboId = WidgetUtil.getId( ccombo );
-    // init CCombo items
+  public void testReadData_ListVisible() {
     ccombo.add( "item 1" );
     ccombo.add( "item 2" );
-    // read list visibility
-    Fixture.fakeRequestParam( ccomboId + ".listVisible", "true" );
-    WidgetUtil.getLCA( ccombo ).readData( ccombo );
+
+    Fixture.fakeSetParameter( getId( ccombo ), "listVisible", Boolean.TRUE );
+    lca.readData( ccombo );
+
     assertEquals( true, ccombo.getListVisible() );
-    // read changed selection
-    Fixture.fakeRequestParam( ccomboId + ".selectedItem", "1" );
-    WidgetUtil.getLCA( ccombo ).readData( ccombo );
+  }
+
+  public void testReadData_SelectedItem() {
+    ccombo.add( "item 1" );
+    ccombo.add( "item 2" );
+
+    Fixture.fakeSetParameter( getId( ccombo ), "selectedItem", Integer.valueOf( 1 ) );
+    lca.readData( ccombo );
+
     assertEquals( 1, ccombo.getSelectionIndex() );
-    // read changed selection and ensure that SelectionListener gets called
-    final StringBuilder log = new StringBuilder();
-    ccombo.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        assertSame( ccombo, event.getSource() );
-        assertEquals( 0, event.detail );
-        assertEquals( null, event.item );
-        assertEquals( true, event.doit );
-        log.append( "widgetSelected" );
-      }
-    } );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Fixture.fakeRequestParam( ccomboId + ".selectedItem", "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, ccomboId );
-    WidgetUtil.getLCA( ccombo ).readData( ccombo );
-    assertEquals( 0, ccombo.getSelectionIndex() );
-    assertEquals( "widgetSelected", log.toString() );
-    // read changed text
-    Fixture.fakeRequestParam( ccomboId + ".text", "abc" );
-    WidgetUtil.getLCA( ccombo ).readData( ccombo );
+  }
+
+  public void testFireSelectionEvent() {
+    SelectionListener listener = mock( SelectionListener.class );
+    ccombo.addSelectionListener( listener );
+
+    Fixture.fakeNotifyOperation( getId( ccombo ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.readDataAndProcessAction( ccombo );
+
+    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
+  }
+
+  public void testReadData_Text() {
+    Fixture.fakeSetParameter( getId( ccombo ), "text", "abc" );
+
+    lca.readData( ccombo );
+
     assertEquals( "abc", ccombo.getText() );
-    // read changed selection
-    Fixture.fakeRequestParam( ccomboId + ".text", "abc" );
-    Fixture.fakeRequestParam( ccomboId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( ccomboId + ".selectionLength", "1" );
-    WidgetUtil.getLCA( ccombo ).readData( ccombo );
+  }
+
+  public void testReadData_TextAndSelection() {
+    Fixture.fakeSetParameter( getId( ccombo ), "text", "abc" );
+    Fixture.fakeSetParameter( getId( ccombo ), "selectionStart", Integer.valueOf( 1 ) );
+    Fixture.fakeSetParameter( getId( ccombo ), "selectionLength", Integer.valueOf( 1 ) );
+
+    lca.readData( ccombo );
+
     assertEquals( new Point( 1, 2 ), ccombo.getSelection() );
   }
 
-  public void testReadText() {
-    final CCombo ccombo = new CCombo( shell, SWT.NONE );
-    shell.open();
+  public void testTextIsNotRenderdBack() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.markInitialized( ccombo );
-    Fixture.fakeNewRequest( display );
-    String comboId = WidgetUtil.getId( ccombo );
-    Fixture.fakeRequestParam( comboId + ".text", "some text" );
 
+    Fixture.fakeSetParameter( getId( ccombo ), "text", "some text" );
     Fixture.executeLifeCycleFromServerThread();
 
     // ensure that no text is sent back to the client
@@ -221,126 +224,78 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( "some text", ccombo.getText() );
   }
 
-  public void testReadText_withVerifyListener() {
-    final CCombo ccombo = new CCombo( shell, SWT.NONE );
-    ccombo.setText( "some text" );
-    shell.open();
+  public void testReadText_WithVerifyListener() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.markInitialized( ccombo );
-    final StringBuilder log = new StringBuilder();
-    ccombo.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-        assertEquals( ccombo, event.widget );
-        assertEquals( "verify me", event.text );
-        assertEquals( 0, event.start );
-        assertEquals( 9, event.end );
-        log.append( event.text );
-      }
-    } );
-    Fixture.fakeNewRequest( display );
-    String comboId = WidgetUtil.getId( ccombo );
-    Fixture.fakeRequestParam( comboId + ".text", "verify me" );
+    ccombo.setText( "some text" );
+    VerifyListener listener = mock( VerifyListener.class );
+    ccombo.addVerifyListener( listener );
 
+    Fixture.fakeSetParameter( getId( ccombo ), "text", "verify me" );
     Fixture.executeLifeCycleFromServerThread();
 
-    // ensure that no text is sent back to the client
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( ccombo, "text" ) );
     assertEquals( "verify me", ccombo.getText() );
-    assertEquals( "verify me", log.toString() );
+    ArgumentCaptor<VerifyEvent> captor = ArgumentCaptor.forClass( VerifyEvent.class );
+    verify( listener, times( 1 ) ).verifyText( captor.capture() );
+    VerifyEvent event = captor.getValue();
+    assertEquals( "verify me", event.text );
+    assertEquals( 0, event.start );
+    assertEquals( 9, event.end );
   }
 
-  public void testTextSelectionWithVerifyEvent_emptyListener() {
-    // ensure that selection is unchanged in case a verify-listener is
-    // registered that does not change the text
-    final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-    shell.open();
-    ccombo.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-        log.add( event );
-      }
-    } );
+  public void testTextSelectionWithVerifyEvent_EmptyListener() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.markInitialized( ccombo );
-    log.clear();
-    Fixture.fakeNewRequest( display );
-    String ccomboId = WidgetUtil.getId( ccombo );
-    Fixture.fakeRequestParam( ccomboId + ".text", "verify me" );
-    Fixture.fakeRequestParam( ccomboId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( ccomboId + ".selectionLength", "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, ccomboId );
+    VerifyListener listener = mock( VerifyListener.class );
+    ccombo.addVerifyListener( listener );
 
+    fakeTextAndSelectionParameters( "verify me", 1, 0 );
     Fixture.executeLifeCycleFromServerThread();
 
-    // ensure that an empty verify listener does not lead to sending the
-    // original text and selection values back to the client
+    verify( listener, times( 1 ) ).verifyText( any( VerifyEvent.class ) );
+    assertEquals( "verify me", ccombo.getText() );
+    assertEquals( new Point( 1, 1 ), ccombo.getSelection() );
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( ccombo, "text" ) );
     assertNull( message.findSetOperation( ccombo, "selection" ) );
-    assertEquals( 1, log.size() );
-    assertEquals( new Point( 1, 1 ), ccombo.getSelection() );
-    assertEquals( "verify me", ccombo.getText() );
   }
 
-  public void testTextSelectionWithVerifyEvent_listenerDoesNotChangeSelection() {
-    // ensure that selection is unchanged in case a verify-listener changes
-    // the incoming text within the limits of the selection
-    final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-    shell.open();
+  public void testTextSelectionWithVerifyEvent_ListenerDoesNotChangeSelection() {
     ccombo.setText( "" );
     ccombo.addVerifyListener( new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
-        log.add( event );
         event.text = "verified";
       }
     } );
-    Fixture.fakeNewRequest( display );
-    String ccomboId = WidgetUtil.getId( ccombo );
-    Fixture.fakeRequestParam( ccomboId + ".text", "verify me" );
-    Fixture.fakeRequestParam( ccomboId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( ccomboId + ".selectionLength", "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, ccomboId );
 
+    fakeTextAndSelectionParameters( "verify me", 1, 0 );
     Fixture.executeLifeCycleFromServerThread( );
 
-    assertEquals( 1, log.size() );
     assertEquals( new Point( 1, 1 ), ccombo.getSelection() );
     assertEquals( "verified", ccombo.getText() );
   }
 
-  public void testTextSelectionWithVerifyEvent_listenerAdjustsSelection() {
-    // ensure that selection is adjusted in case a verify-listener changes
-    // the incoming text in a way that would result in an invalid selection
-    final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-    shell.open();
+  public void testTextSelectionWithVerifyEvent_ListenerAdjustsSelection() {
     ccombo.setText( "" );
     ccombo.addVerifyListener( new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
-        log.add( event );
         event.text = "";
       }
     } );
-    Fixture.fakeNewRequest( display );
-    String ccomboId = WidgetUtil.getId( ccombo );
-    Fixture.fakeRequestParam( ccomboId + ".text", "verify me" );
-    Fixture.fakeRequestParam( ccomboId + ".selectionStart", "1" );
-    Fixture.fakeRequestParam( ccomboId + ".selectionLength", "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, ccomboId );
 
+    fakeTextAndSelectionParameters( "verify me", 1, 0 );
     Fixture.executeLifeCycleFromServerThread( );
 
-    assertEquals( 1, log.size() );
     assertEquals( new Point( 0, 0 ), ccombo.getSelection() );
     assertEquals( "", ccombo.getText() );
   }
 
   public void testSelectionAfterRemoveAll() {
-    final CCombo ccombo = new CCombo( shell, SWT.READ_ONLY );
+    ccombo = new CCombo( shell, SWT.READ_ONLY );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
     ccombo.add( "item 1" );
     ccombo.select( 0 );
     Button button = new Button( shell, SWT.PUSH );
@@ -353,23 +308,15 @@ public class CComboLCA_Test extends TestCase {
       }
     } );
 
-    String buttonId = WidgetUtil.getId( button );
-
-    // Execute life cycle once to simulate startup request
-    Fixture.fakeNewRequest( display );
-    Fixture.executeLifeCycleFromServerThread();
-
     // Simulate button click that executes widgetSelected
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     Fixture.executeLifeCycleFromServerThread();
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( new Integer( 0 ), message.findSetProperty( ccombo, PROP_SELECTION_INDEX ) );
   }
 
   public void testRenderCreate() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     lca.renderInitialization( ccombo );
 
     Message message = Fixture.getProtocolMessage();
@@ -379,8 +326,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     lca.renderInitialization( ccombo );
 
     Message message = Fixture.getProtocolMessage();
@@ -400,8 +345,6 @@ public class CComboLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "FLAT" ) );
   }
   public void testRenderInitialItemHeight() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     lca.render( ccombo );
 
     Message message = Fixture.getProtocolMessage();
@@ -410,8 +353,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderItemHeight() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     ccombo.setFont( Graphics.getFont( "Arial", 16, SWT.NONE ) );
     lca.renderChanges( ccombo );
 
@@ -420,7 +361,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderItemHeightUnchanged() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
 
@@ -433,8 +373,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderInitialVisibleItemCount() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     lca.render( ccombo );
 
     Message message = Fixture.getProtocolMessage();
@@ -443,8 +381,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderVisibleItemCount() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     ccombo.setVisibleItemCount( 10 );
     lca.renderChanges( ccombo );
 
@@ -453,7 +389,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderVisibleItemCountUnchanged() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
 
@@ -466,8 +401,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderInitialItems() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     lca.render( ccombo );
 
     Message message = Fixture.getProtocolMessage();
@@ -476,8 +409,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderItems() throws IOException, JSONException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     ccombo.setItems( new String[] { "a", "b", "c" } );
     lca.renderChanges( ccombo );
 
@@ -488,7 +419,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderItemsUnchanged() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
 
@@ -501,8 +431,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderInitialListVisible() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     lca.render( ccombo );
 
     Message message = Fixture.getProtocolMessage();
@@ -511,8 +439,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderListVisible() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     ccombo.setListVisible( true );
     lca.renderChanges( ccombo );
 
@@ -521,7 +447,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderListVisibleUnchanged() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
 
@@ -534,8 +459,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelectionIndex() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     lca.render( ccombo );
 
     Message message = Fixture.getProtocolMessage();
@@ -544,7 +467,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionIndex() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     ccombo.setItems( new String[] { "a", "b", "c" } );
 
     ccombo.select( 1 );
@@ -555,7 +477,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionIndexUnchanged() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     ccombo.setItems( new String[] { "a", "b", "c" } );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
@@ -569,8 +490,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderInitialEditable() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     lca.render( ccombo );
 
     Message message = Fixture.getProtocolMessage();
@@ -579,8 +498,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderEditable() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     ccombo.setEditable( false );
     lca.renderChanges( ccombo );
 
@@ -589,7 +506,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderEditableUnchanged() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
 
@@ -602,8 +518,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderInitialText() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     lca.render( ccombo );
 
     Message message = Fixture.getProtocolMessage();
@@ -612,8 +526,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderText() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     ccombo.setText( "foo" );
     lca.renderChanges( ccombo );
 
@@ -632,7 +544,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderTextNotEditable() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     ccombo.setEditable( false );
 
     ccombo.setText( "foo" );
@@ -643,7 +554,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderTextUnchanged() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
 
@@ -656,8 +566,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelection() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     lca.render( ccombo );
 
     Message message = Fixture.getProtocolMessage();
@@ -666,7 +574,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderSelection() throws IOException, JSONException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     ccombo.setText( "foo bar" );
 
     ccombo.setSelection( new Point( 1, 3 ) );
@@ -678,7 +585,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionUnchanged() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     ccombo.setText( "foo bar" );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
@@ -692,8 +598,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderInitialTextLimit() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     lca.render( ccombo );
 
     Message message = Fixture.getProtocolMessage();
@@ -702,8 +606,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimit() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
-
     ccombo.setTextLimit( 10 );
     lca.renderChanges( ccombo );
 
@@ -712,7 +614,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimitNoLimit() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
     ccombo.setTextLimit( 10 );
@@ -726,7 +627,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimitUnchanged() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
 
@@ -739,7 +639,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimitReset() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
 
@@ -753,7 +652,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderTextLimitResetWithNegative() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
 
@@ -767,7 +665,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderAddSelectionListener() throws Exception {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
     Fixture.preserveWidgets();
@@ -780,7 +677,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     SelectionListener listener = new SelectionAdapter() { };
     ccombo.addSelectionListener( listener );
     Fixture.markInitialized( display );
@@ -795,7 +691,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
     Fixture.preserveWidgets();
@@ -809,7 +704,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderAddModifyListener() throws Exception {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
     Fixture.preserveWidgets();
@@ -825,7 +719,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveModifyListener() throws Exception {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     ModifyListener listener = new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
       }
@@ -843,7 +736,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderModifyListenerUnchanged() throws Exception {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
     Fixture.preserveWidgets();
@@ -860,7 +752,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderAddVerifyListener() throws Exception {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
     Fixture.preserveWidgets();
@@ -876,7 +767,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveVerifyListener() throws Exception {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     VerifyListener listener = new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
       }
@@ -894,7 +784,6 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testRenderVerifyListenerUnchanged() throws Exception {
-    CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
     Fixture.preserveWidgets();
@@ -908,5 +797,11 @@ public class CComboLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( ccombo, "verify" ) );
+  }
+
+  private void fakeTextAndSelectionParameters( String text, int start, int length ) {
+    Fixture.fakeSetParameter( getId( ccombo ), "text", text );
+    Fixture.fakeSetParameter( getId( ccombo ), "selectionStart", Integer.valueOf( start ) );
+    Fixture.fakeSetParameter( getId( ccombo ), "selectionLength", Integer.valueOf( length ) );
   }
 }

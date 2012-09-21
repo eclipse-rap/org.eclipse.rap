@@ -11,13 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tableitemkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+
 import java.io.IOException;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
@@ -203,10 +205,10 @@ public class TableItemLCA_Test extends TestCase {
         executed[ 0 ] = true;
       }
     } );
-    Fixture.fakeNewRequest( display );
-    String buttonId = WidgetUtil.getId( button );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     Fixture.readDataAndProcessAction( display );
+
     assertTrue( executed[ 0 ] );
   }
 

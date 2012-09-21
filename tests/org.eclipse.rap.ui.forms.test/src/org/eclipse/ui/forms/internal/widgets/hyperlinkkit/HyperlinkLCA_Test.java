@@ -10,10 +10,12 @@
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -32,6 +34,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   private Hyperlink hyperlink;
   private HyperlinkLCA lca;
 
+  @Override
   protected void setUp() {
     super.setUp();
     hyperlink = new Hyperlink( shell, SWT.NONE );
@@ -61,8 +64,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
       }
     };
     hyperlink.addListener( SWT.DefaultSelection, listener );
-    String hyperlinkId = WidgetUtil.getId( hyperlink );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, hyperlinkId );
+    Fixture.fakeNotifyOperation( getId( hyperlink ), ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED, null );
     Fixture.readDataAndProcessAction( hyperlink );
     assertEquals( "widgetDefaultSelected", log.toString() );
   }

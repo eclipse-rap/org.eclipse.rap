@@ -30,6 +30,8 @@ import static org.mockito.Mockito.verify;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -74,6 +76,7 @@ public class DNDSupport_Test extends TestCase {
   private DropTarget dropTarget;
   private Transfer[] transfers;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -90,6 +93,7 @@ public class DNDSupport_Test extends TestCase {
     };
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -119,6 +123,7 @@ public class DNDSupport_Test extends TestCase {
   public void testCancelStart() {
     createDragSource( DND.DROP_MOVE );
     dragSource.addDragListener( new DragSourceAdapter() {
+      @Override
       public void dragStart( DragSourceEvent event ) {
         event.doit = false;
       }
@@ -152,6 +157,7 @@ public class DNDSupport_Test extends TestCase {
     createDragSource( DND.DROP_MOVE );
     new DropTarget( targetControl, DND.DROP_MOVE );
     dragSource.addDragListener( new DragSourceAdapter() {
+      @Override
       public void dragStart( DragSourceEvent event ) {
         log.add( event );
       }
@@ -173,6 +179,7 @@ public class DNDSupport_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
     addLogger( dropTarget );
 
+    Fixture.fakeNewRequest( display );
     fakeDropTargetEvent( "dragLeave", 2 );
     fakeDropTargetEvent( "dragEnter", 3 );
     fakeDropTargetEvent( "dragOver", 4 );
@@ -181,7 +188,6 @@ public class DNDSupport_Test extends TestCase {
     int[] expected = new int[]{ DRAG_LEAVE, DRAG_ENTER, DRAG_OVER };
     assertTrue( Arrays.equals( expected, getEventOrder() ) );
   }
-
 
   public void testDropOverValidTarget() {
     createDragSource( DND.DROP_MOVE );
@@ -242,11 +248,13 @@ public class DNDSupport_Test extends TestCase {
     createDropTarget( DND.DROP_MOVE );
     final TransferData[] originalType = new TransferData[ 1 ];
     dropTarget.addDropListener( new DropTargetAdapter() {
+      @Override
       public void dropAccept( DropTargetEvent event ) {
         originalType[ 0 ] = event.currentDataType;
         boolean isFirstType = event.currentDataType.type == getType( transfers[ 0 ] ).type;
         event.currentDataType = getType( transfers[ isFirstType ? 1 : 0 ] );
       }
+      @Override
       public void drop( DropTargetEvent event ) {
         log.add( event );
       }
@@ -268,6 +276,7 @@ public class DNDSupport_Test extends TestCase {
     createDragSource( DND.DROP_MOVE );
     createDropTarget( DND.DROP_MOVE );
     dropTarget.addDropListener( new DropTargetAdapter() {
+      @Override
       public void dropAccept( DropTargetEvent event ) {
         RTFTransfer rtfTransfer = RTFTransfer.getInstance();
         event.currentDataType = rtfTransfer.getSupportedTypes()[ 0 ];
@@ -287,10 +296,12 @@ public class DNDSupport_Test extends TestCase {
     createDragSource( DND.DROP_MOVE );
     createDropTarget( DND.DROP_MOVE );
     dropTarget.addDropListener( new DropTargetAdapter() {
+      @Override
       public void dropAccept( DropTargetEvent event ) {
         log.add( event );
         event.detail = DND.DROP_NONE;
       }
+      @Override
       public void drop( DropTargetEvent event ) {
         log.add( event );
       }
@@ -327,10 +338,12 @@ public class DNDSupport_Test extends TestCase {
     addLogger( dragSource );
     addSetDataListener( dragSource, "text Data" );
     dropTarget.addDropListener( new DropTargetAdapter() {
+      @Override
       public void dropAccept( DropTargetEvent event ) {
         log.add( event );
         event.detail = DND.DROP_COPY;
       }
+      @Override
       public void drop( DropTargetEvent event ) {
         log.add( event );
       }
@@ -352,6 +365,7 @@ public class DNDSupport_Test extends TestCase {
     createDropTarget( DND.DROP_MOVE );
     addLogger( dragSource );
     dropTarget.addDropListener( new DropTargetAdapter() {
+      @Override
       public void dropAccept( DropTargetEvent event ) {
         event.detail = DND.DROP_COPY;
       }
@@ -371,6 +385,7 @@ public class DNDSupport_Test extends TestCase {
     addLogger( dragSource );
     addLogger( dropTarget );
     dragSource.addDragListener( new DragSourceAdapter() {
+      @Override
       public void dragSetData( DragSourceEvent event ) {
         event.data = "TestData";
         event.doit = false;
@@ -421,6 +436,7 @@ public class DNDSupport_Test extends TestCase {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     dropTarget.addDropListener( new DropTargetAdapter() {
+      @Override
       public void dragEnter( DropTargetEvent event ) {
         event.detail = DND.DROP_LINK;
       }
@@ -440,6 +456,7 @@ public class DNDSupport_Test extends TestCase {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     dropTarget.addDropListener( new DropTargetAdapter() {
+      @Override
       public void dragOver( DropTargetEvent event ) {
         event.detail = DND.DROP_LINK;
       }
@@ -461,6 +478,7 @@ public class DNDSupport_Test extends TestCase {
     addSetDataListener( dragSource, "some data" );
     addLogger( dropTarget );
     dropTarget.addDropListener( new DropTargetAdapter() {
+      @Override
       public void dragEnter( DropTargetEvent event ) {
         event.detail = DND.DROP_COPY;
       }
@@ -501,6 +519,7 @@ public class DNDSupport_Test extends TestCase {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     dropTarget.addDropListener( new DropTargetAdapter() {
+      @Override
       public void dragEnter( DropTargetEvent event ) {
         event.feedback = DND.FEEDBACK_SELECT;
       }
@@ -525,6 +544,7 @@ public class DNDSupport_Test extends TestCase {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     dropTarget.addDropListener( new DropTargetAdapter() {
+      @Override
       public void dragOver( DropTargetEvent event ) {
         event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SCROLL;
       }
@@ -573,6 +593,7 @@ public class DNDSupport_Test extends TestCase {
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     addLogger( dropTarget );
     dropTarget.addDropListener( new DropTargetAdapter() {
+      @Override
       public void dragOver( DropTargetEvent event ) {
         event.currentDataType = TextTransfer.getInstance().getSupportedTypes()[ 0 ];
       }
@@ -598,6 +619,7 @@ public class DNDSupport_Test extends TestCase {
     createDropTarget( operations );
     addLogger( dropTarget );
     dropTarget.addDropListener( new DropTargetAdapter() {
+      @Override
       public void dragEnter( DropTargetEvent event ) {
         event.currentDataType = TextTransfer.getInstance().getSupportedTypes()[ 0 ];
       }
@@ -627,6 +649,7 @@ public class DNDSupport_Test extends TestCase {
     dragSource.setTransfer( new Transfer[] { TextTransfer.getInstance() } );
     dropTarget.setTransfer( new Transfer[] { TextTransfer.getInstance() } );
     dropTarget.addDropListener( new DropTargetAdapter() {
+      @Override
       public void dragOver( DropTargetEvent event ) {
         event.currentDataType = RTFTransfer.getInstance().getSupportedTypes()[ 0 ];
       }
@@ -666,6 +689,7 @@ public class DNDSupport_Test extends TestCase {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK );
     dragSource.addDragListener( new DragSourceAdapter(){
+      @Override
       public void dragSetData( DragSourceEvent event ) {
         event.data = "text";
       }
@@ -695,12 +719,11 @@ public class DNDSupport_Test extends TestCase {
   }
 
   private void createDragSourceEvent( String eventType, int x, int y, String operation, int time ) {
-    String prefix = "org.eclipse.swt.dnd." + eventType;
-    String controlId = getId( sourceControl );
-    Fixture.fakeRequestParam( prefix, controlId );
-    Fixture.fakeRequestParam( prefix + ".x", String.valueOf( x ) );
-    Fixture.fakeRequestParam( prefix + ".y", String.valueOf( y ) );
-    Fixture.fakeRequestParam( prefix + ".time", String.valueOf( time ) );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( "x", String.valueOf( x ) );
+    parameters.put( "y", String.valueOf( y ) );
+    parameters.put( "time", String.valueOf( time ) );
+    Fixture.fakeNotifyOperation( getId( sourceControl ), eventType, parameters );
   }
 
   private void fakeDropTargetEvent( String eventType, int time ) {
@@ -714,17 +737,16 @@ public class DNDSupport_Test extends TestCase {
                                       int dataType,
                                       int time )
   {
-    String prefix = "org.eclipse.swt.dnd." + eventType;
-    String controlId = getId( targetControl );
-    String sourceId = getId( sourceControl );
-    Fixture.fakeRequestParam( prefix, controlId );
-    Fixture.fakeRequestParam( prefix + ".x", String.valueOf( x ) );
-    Fixture.fakeRequestParam( prefix + ".y", String.valueOf( y ) );
-    Fixture.fakeRequestParam( prefix + ".operation", operation );
-    Fixture.fakeRequestParam( prefix + ".feedback", "0" );
-    Fixture.fakeRequestParam( prefix + ".source", sourceId );
-    Fixture.fakeRequestParam( prefix + ".time", String.valueOf( time ) );
-    Fixture.fakeRequestParam( prefix + ".dataType", String.valueOf( dataType ) );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( "x", String.valueOf( x ) );
+    parameters.put( "y", String.valueOf( y ) );
+    parameters.put( "time", String.valueOf( time ) );
+    parameters.put( "operation", operation );
+    parameters.put( "feedback", String.valueOf( 0 ) );
+    parameters.put( "source", getId( sourceControl ) );
+    parameters.put( "dataType", String.valueOf( dataType ) );
+    Fixture.fakeNotifyOperation( getId( targetControl ), eventType, parameters );
+
   }
 
   private void createDropTarget( int style ) {
@@ -739,10 +761,6 @@ public class DNDSupport_Test extends TestCase {
 
   TransferData getType( Transfer transfer ) {
     return transfer.getSupportedTypes()[ 0 ];
-  }
-
-  private int getHTMLType() {
-    return getType( HTMLTransfer.getInstance() ).type;
   }
 
   private int getTextType() {
@@ -798,6 +816,7 @@ public class DNDSupport_Test extends TestCase {
 
   private void addSetDataListener( DragSource dragSource, final Object data ) {
     dragSource.addDragListener( new DragSourceAdapter() {
+      @Override
       public void dragSetData( DragSourceEvent event ) {
         event.data = data;
       }

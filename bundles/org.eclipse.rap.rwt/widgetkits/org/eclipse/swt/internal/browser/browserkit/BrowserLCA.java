@@ -53,8 +53,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   static final String BLANK_HTML = "<html><script></script></html>";
 
   // Request parameters that denote ProgressEvents
-  public static final String EVENT_PROGRESS_COMPLETED
-    = "org.eclipse.swt.events.progressCompleted";
+  public static final String EVENT_PROGRESS_COMPLETED = "progressCompleted";
 
   private static final String PARAM_EXECUTE_RESULT = "executeResult";
   private static final String PARAM_EVALUATE_RESULT = "evaluateResult";
@@ -123,8 +122,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   }
 
   private static void fireProgressEvent( Browser browser ) {
-    String fireProgressEvent = WidgetLCAUtil.readPropertyValue( browser, EVENT_PROGRESS_COMPLETED );
-    if( fireProgressEvent != null ) {
+    if( WidgetLCAUtil.wasEventSent( browser, EVENT_PROGRESS_COMPLETED ) ) {
       ProgressEvent changedEvent = new ProgressEvent( browser, ProgressEvent.CHANGED );
       changedEvent.processEvent();
       ProgressEvent completedEvent = new ProgressEvent( browser, ProgressEvent.COMPLETED );

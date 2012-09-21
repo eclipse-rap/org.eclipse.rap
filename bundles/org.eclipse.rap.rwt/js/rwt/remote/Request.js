@@ -87,7 +87,7 @@ rwt.remote.Request.prototype = {
       if( !Client.isWebkit() ) {
         this._request.setRequestHeader( "Referer", window.location.href );
       }
-      var contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+      var contentType = "application/json; charset=UTF-8";
       this._request.setRequestHeader( "Content-Type", contentType );
       this._request.setRequestHeader( "Pragma", "no-cache" );
       this._request.setRequestHeader( "Cache-Control", "no-cache" );

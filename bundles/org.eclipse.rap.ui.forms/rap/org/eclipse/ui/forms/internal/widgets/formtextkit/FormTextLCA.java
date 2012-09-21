@@ -74,7 +74,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
   public void readData( Widget widget ) {
     FormText formText = ( FormText )widget;
     ControlLCAUtil.processSelection( formText, null, false );
-    ControlLCAUtil.processMouseEvents( formText );
+    ControlLCAUtil.processEvents( formText );
     ControlLCAUtil.processKeyEvents( formText );
   }
 

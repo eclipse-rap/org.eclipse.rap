@@ -11,14 +11,17 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
@@ -383,45 +386,48 @@ public class MouseEvent_Test extends TestCase {
   }
 
   private static void fakeSelectionRequest( Widget widget, Widget item ) {
-    String widgetId = WidgetUtil.getId( widget );
-    String itemId = WidgetUtil.getId( item );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, widgetId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, itemId );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
+    Fixture.fakeNotifyOperation( getId( widget ),
+                                 ClientMessageConst.EVENT_WIDGET_SELECTED,
+                                 parameters );
   }
 
   private static void fakeMenuDetectRequest( Widget widget, int x, int y ) {
-    String widgetId = WidgetUtil.getId( widget );
-    Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT, widgetId );
-    Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT_X, String.valueOf( x ) );
-    Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT_Y, String.valueOf( y ) );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( ClientMessageConst.EVENT_PARAM_X, Integer.valueOf( x ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( y ) );
+    Fixture.fakeNotifyOperation( getId( widget ),
+                                 ClientMessageConst.EVENT_MENU_DETECT,
+                                 parameters );
   }
 
   private static void fakeMouseDoubleClickRequest( Widget widget, int x, int y ) {
-    String widgetId = WidgetUtil.getId( widget );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK, widgetId );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_BUTTON, "1" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_X,
-                              String.valueOf( x ) );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_Y,
-                              String.valueOf( y ) );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_TIME, "0" );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( ClientMessageConst.EVENT_PARAM_BUTTON, Integer.valueOf( 1 ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_X, Integer.valueOf( x ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( y ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_TIME, Integer.valueOf( 0 ) );
+    Fixture.fakeNotifyOperation( getId( widget ),
+                                 ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK,
+                                 parameters );
   }
 
   private static void fakeMouseUpRequest( Widget widget, int x, int y ) {
-    String widgetId = WidgetUtil.getId( widget );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_UP, widgetId );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_UP_BUTTON, "1" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_UP_X, String.valueOf( x ) );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_UP_Y, String.valueOf( y ) );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_UP_TIME, "0" );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( ClientMessageConst.EVENT_PARAM_BUTTON, Integer.valueOf( 1 ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_X, Integer.valueOf( x ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( y ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_TIME, Integer.valueOf( 0 ) );
+    Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_MOUSE_UP, parameters );
   }
 
   private static void fakeMouseDownRequest( Widget widget, int x, int y ) {
-    String widgetId = WidgetUtil.getId( widget );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN, widgetId );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_BUTTON, "1" );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_X, String.valueOf( x ) );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_Y, String.valueOf( y ) );
-    Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_TIME, "0" );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( ClientMessageConst.EVENT_PARAM_BUTTON, Integer.valueOf( 1 ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_X, Integer.valueOf( x ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( y ) );
+    parameters.put( ClientMessageConst.EVENT_PARAM_TIME, Integer.valueOf( 0 ) );
+    Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_MOUSE_DOWN, parameters );
   }
 }

@@ -36,7 +36,7 @@ public final class CanvasLCA extends AbstractWidgetLCA {
   }
 
   public void readData( Widget widget ) {
-    ControlLCAUtil.processMouseEvents( ( Control )widget );
+    ControlLCAUtil.processEvents( ( Control )widget );
     ControlLCAUtil.processKeyEvents( ( Control )widget );
     ControlLCAUtil.processMenuDetect( ( Control )widget );
   }

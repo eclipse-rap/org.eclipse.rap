@@ -13,12 +13,9 @@ package org.eclipse.rap.rwt.lifecycle;
 
 import java.lang.reflect.Field;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.swt.SWT;
@@ -87,11 +84,9 @@ public class ControlLCAUtil {
    * @since 1.3
    */
   public static void processMenuDetect( Control control ) {
-    if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MENU_DETECT ) ) {
+    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MENU_DETECT ) ) {
       MenuDetectEvent event = new MenuDetectEvent( control );
-      Point point = readXYParams( control,
-                                  JSConst.EVENT_MENU_DETECT_X,
-                                  JSConst.EVENT_MENU_DETECT_Y );
+      Point point = readEventXYProperties( control, ClientMessageConst.EVENT_MENU_DETECT );
       point = control.getDisplay().map( control, null, point );
       event.x = point.x;
       event.y = point.y;
@@ -99,52 +94,69 @@ public class ControlLCAUtil {
     }
   }
 
-  public static void processMouseEvents( Control control ) {
-    if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_DOWN ) ) {
-      MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_DOWN );
-      event.button = readIntParam( JSConst.EVENT_MOUSE_DOWN_BUTTON );
-      Point point = readXYParams( control, JSConst.EVENT_MOUSE_DOWN_X, JSConst.EVENT_MOUSE_DOWN_Y );
-      event.x = point.x;
-      event.y = point.y;
-      event.time = readIntParam( JSConst.EVENT_MOUSE_DOWN_TIME );
-      event.stateMask =   EventLCAUtil.readStateMask( JSConst.EVENT_MOUSE_DOWN_MODIFIER )
-                        | EventLCAUtil.translateButton( event.button );
-      checkAndProcessMouseEvent( event );
-    }
-    String eventId = JSConst.EVENT_MOUSE_DOUBLE_CLICK;
-    if( WidgetLCAUtil.wasEventSent( control, eventId ) ) {
-      MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_DOUBLE_CLICK );
-      event.button = readIntParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_BUTTON );
-      Point point = readXYParams( control,
-                                  JSConst.EVENT_MOUSE_DOUBLE_CLICK_X,
-                                  JSConst.EVENT_MOUSE_DOUBLE_CLICK_Y );
-      event.x = point.x;
-      event.y = point.y;
-      event.time = readIntParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_TIME );
-      String stateMaskParam = JSConst.EVENT_MOUSE_DOUBLE_CLICK_MODIFIER;
-      event.stateMask =   EventLCAUtil.readStateMask( stateMaskParam )
-                        | EventLCAUtil.translateButton( event.button );
-      checkAndProcessMouseEvent( event );
-    }
-    if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_UP ) ) {
-      MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_UP );
-      event.button = readIntParam( JSConst.EVENT_MOUSE_UP_BUTTON );
-      Point point = readXYParams( control, JSConst.EVENT_MOUSE_UP_X, JSConst.EVENT_MOUSE_UP_Y );
-      event.x = point.x;
-      event.y = point.y;
-      event.time = readIntParam( JSConst.EVENT_MOUSE_UP_TIME );
-      event.stateMask =   EventLCAUtil.readStateMask( JSConst.EVENT_MOUSE_UP_MODIFIER )
-                        | EventLCAUtil.translateButton( event.button );
-      checkAndProcessMouseEvent( event );
+  public static void processEvents( Control control ) {
+    processActivateEvents( control );
+    processMouseEvents( control );
+  }
+
+  public static void processActivateEvents( Control control ) {
+    Shell shell = control.getShell();
+    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_CONTROL_ACTIVATED ) ) {
+      setActiveControl( shell, control );
+    } else {
+      String activeControlId = WidgetLCAUtil.readPropertyValue( shell, "activeControl" );
+      if( WidgetUtil.getId( control ).equals( activeControlId ) ) {
+        setActiveControl( shell, control );
+      }
     }
   }
 
-  public static void processKeyEvents( final Control control ) {
-    if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_KEY_DOWN ) ) {
-      final int keyCode = readIntParam( JSConst.EVENT_KEY_DOWN_KEY_CODE );
-      final int charCode = readIntParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE );
-      final int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_KEY_DOWN_MODIFIER );
-      final int traverseKey = getTraverseKey( keyCode, stateMask );
+  private static void setActiveControl( Shell shell, Widget widget ) {
+    if( EventUtil.isAccessible( widget ) ) {
+      Object adapter = shell.getAdapter( IShellAdapter.class );
+      IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+      shellAdapter.setActiveControl( ( Control )widget );
+    }
+  }
+
+  public static void processMouseEvents( Control control ) {
+    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MOUSE_DOWN ) ) {
+      createMouseEvent( control, ClientMessageConst.EVENT_MOUSE_DOWN, SWT.MouseDown );
+    }
+    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK ) ) {
+      createMouseEvent( control, ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK, SWT.MouseDoubleClick );
+    }
+    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MOUSE_UP ) ) {
+      createMouseEvent( control, ClientMessageConst.EVENT_MOUSE_UP, SWT.MouseUp );
+    }
+  }
+
+  private static void createMouseEvent( Control control, String eventName, int eventId ) {
+    MouseEvent event = new MouseEvent( control, eventId );
+    event.button = readEventIntProperty( control,
+                                         eventName,
+                                         ClientMessageConst.EVENT_PARAM_BUTTON );
+    Point point = readEventXYProperties( control, eventName );
+    event.x = point.x;
+    event.y = point.y;
+    event.time = readEventIntProperty( control,
+                                       eventName,
+                                       ClientMessageConst.EVENT_PARAM_TIME );
+    event.stateMask = EventLCAUtil.readStateMask( control, eventName )
+                    | EventLCAUtil.translateButton( event.button );
+    checkAndProcessMouseEvent( event );
+  }
+
+  public static void processKeyEvents( Control control ) {
+    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_KEY_DOWN ) ) {
+      int keyCode = readEventIntProperty( control,
+                                          ClientMessageConst.EVENT_KEY_DOWN,
+                                          ClientMessageConst.EVENT_PARAM_KEY_CODE );
+      int charCode = readEventIntProperty( control,
+                                           ClientMessageConst.EVENT_KEY_DOWN,
+                                           ClientMessageConst.EVENT_PARAM_CHAR_CODE );
+      int stateMask = EventLCAUtil.readStateMask( control, ClientMessageConst.EVENT_KEY_DOWN );
+      int traverseKey = getTraverseKey( keyCode, stateMask );
       Event event;
       if( traverseKey != SWT.TRAVERSE_NONE ) {
         event = createEvent( control, TraverseEvent.KEY_TRAVERSED );
@@ -165,12 +177,12 @@ public class ControlLCAUtil {
   }
 
   public static void processSelection( Widget widget, Item item, boolean readBounds ) {
-    if( WidgetLCAUtil.wasEventSent( widget, JSConst.EVENT_WIDGET_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_WIDGET_SELECTED ) ) {
       SelectionEvent event
         = createSelectionEvent( widget, item, readBounds, SelectionEvent.WIDGET_SELECTED );
       event.processEvent();
     }
-    if( WidgetLCAUtil.wasEventSent( widget, JSConst.EVENT_WIDGET_DEFAULT_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED ) ) {
       SelectionEvent event
         = createSelectionEvent( widget, item, readBounds, SelectionEvent.WIDGET_DEFAULT_SELECTED );
       event.processEvent();
@@ -551,7 +563,10 @@ public class ControlLCAUtil {
     } else {
       bounds = new Rectangle( 0, 0, 0, 0 );
     }
-    int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+    String eventName = type == SelectionEvent.WIDGET_SELECTED
+                     ? ClientMessageConst.EVENT_WIDGET_SELECTED
+                     : ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED;
+    int stateMask = EventLCAUtil.readStateMask( widget, eventName );
     return new SelectionEvent( widget, item, type, bounds, stateMask, null, true, SWT.NONE );
   }
 
@@ -589,21 +604,23 @@ public class ControlLCAUtil {
   //////////////
   // read helper
 
-  private static Point readXYParams( Control control, String paramNameX, String paramNameY ) {
-    int x = readIntParam( paramNameX );
-    int y = readIntParam( paramNameY );
+  private static Point readEventXYProperties( Control control, String eventName ) {
+    int x = readEventIntProperty( control, eventName, ClientMessageConst.EVENT_PARAM_X );
+    int y = readEventIntProperty( control, eventName, ClientMessageConst.EVENT_PARAM_Y );
     return control.getDisplay().map( null, control, x, y );
   }
 
-  private static int readIntParam( String paramName ) {
-    String value = readStringParam( paramName );
+  private static int readEventIntProperty( Control control, String eventName, String property ) {
+    String value = readEventStringProperty( control, eventName, property );
     return NumberFormatUtil.parseInt( value );
   }
 
-  private static String readStringParam( String paramName ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String value = request.getParameter( paramName );
-    return value;
+  private static String readEventStringProperty( Control control,
+                                                 String eventName,
+                                                 String property )
+  {
+    WidgetLCAUtil.readEventPropertyValue( control, eventName, property );
+    return WidgetLCAUtil.readEventPropertyValue( control, eventName, property );
   }
 
   //////////////////////

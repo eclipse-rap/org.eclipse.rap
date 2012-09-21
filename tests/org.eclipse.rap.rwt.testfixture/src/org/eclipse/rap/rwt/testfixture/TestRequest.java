@@ -229,6 +229,7 @@ public final class TestRequest implements HttpServletRequest {
   public ServletInputStream getInputStream() throws IOException {
     final StringReader reader = new StringReader( body );
     return new ServletInputStream() {
+      @Override
       public int read() throws IOException {
         return reader.read();
       }
@@ -315,6 +316,10 @@ public final class TestRequest implements HttpServletRequest {
 
   public void setBody( String body ) {
     this.body = body;
+  }
+
+  public String getBody() {
+    return body;
   }
 
   public String getRemoteAddr() {

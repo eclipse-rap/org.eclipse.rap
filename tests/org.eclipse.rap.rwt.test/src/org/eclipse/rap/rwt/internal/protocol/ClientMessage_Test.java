@@ -10,12 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import java.util.Arrays;
+import java.util.Map;
+
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
-import org.json.JSONObject;
-
 import junit.framework.TestCase;
 
 
@@ -110,7 +111,7 @@ public class ClientMessage_Test extends TestCase {
     }
   }
 
-  public void testGetAllOperations() {
+  public void testGetAllOperationsFor() {
     String json = "{ "
                 + ClientMessage.PROP_HEADER + " : {},"
     		    + ClientMessage.PROP_OPERATIONS + " : ["
@@ -120,14 +121,14 @@ public class ClientMessage_Test extends TestCase {
                 + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    Operation[] operations = message.getAllOperations( "w3" );
+    Operation[] operations = message.getAllOperationsFor( "w3" );
 
     assertEquals( 2, operations.length );
     assertTrue( operations[ 0 ] instanceof SetOperation );
     assertTrue( operations[ 1 ] instanceof NotifyOperation );
   }
 
-  public void testGetAllOperations_NoOperations() {
+  public void testGetAllOperationsFor_NoOperations() {
     String json = "{ "
                 + ClientMessage.PROP_HEADER + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
@@ -137,30 +138,27 @@ public class ClientMessage_Test extends TestCase {
                 + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    Operation[] operations = message.getAllOperations( "w5" );
+    Operation[] operations = message.getAllOperationsFor( "w5" );
 
     assertEquals( 0, operations.length );
   }
 
-  public void testGetSetOperations() {
+  public void testGetAllOperations() {
     String json = "{ "
                 + ClientMessage.PROP_HEADER + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
-                + "[ \"notify\", \"w3\", \"widgetSelected\", {} ],"
-                + "[ \"set\", \"w3\", { \"p2\" : true, \"p3\" : null } ]"
+                + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
+                + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
                 + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    SetOperation[] operations = message.getSetOperations( "w3" );
+    Operation[] operations = message.getAllOperations();
 
-    assertEquals( 2, operations.length );
-    assertEquals( "foo", operations[ 0 ].getProperty( "p1" ) );
-    assertEquals( Boolean.TRUE, operations[ 1 ].getProperty( "p2" ) );
-    assertEquals( JSONObject.NULL, operations[ 1 ].getProperty( "p3" ) );
+    assertEquals( 3, operations.length );
   }
 
-  public void testGetSetOperations_ByProperty() {
+  public void testGetLastSetOperation_ByProperty() {
     String json = "{ "
                 + ClientMessage.PROP_HEADER + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
@@ -170,106 +168,110 @@ public class ClientMessage_Test extends TestCase {
                 + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    SetOperation[] operations = message.getSetOperations( "w3", "p1" );
+    SetOperation operation = message.getLastSetOperationFor( "w3", "p1" );
 
-    assertEquals( 2, operations.length );
-    assertEquals( "foo", operations[ 0 ].getProperty( "p1" ) );
-    assertEquals( "bar", operations[ 1 ].getProperty( "p1" ) );
+    assertEquals( "bar", operation.getProperty( "p1" ) );
   }
 
-  public void testGetNotifyOperations() {
+  public void testGetLastNotifyOperation() {
     String json = "{ "
                 + ClientMessage.PROP_HEADER + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+                + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", {} ],"
                 + "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]"
                 + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    NotifyOperation[] operations = message.getNotifyOperations( "w3" );
+    NotifyOperation operation = message.getLastNotifyOperationFor( "w3", "widgetSelected" );
 
-    assertEquals( 1, operations.length );
-    assertEquals( "widgetSelected", operations[ 0 ].getEventName() );
+    assertNotNull( operation );
+    assertEquals( "widgetSelected", operation.getEventName() );
+    assertNull( operation.getProperty( "detail" ) );
   }
 
-  public void testGetNotifyOperations_ByEventName() {
+  public void testGetLastNotifyOperation_WithoutTarget() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
-                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
-                + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ],"
-                + "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]"
-                + "] }";
+        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_OPERATIONS + " : ["
+        + "[ \"notify\", \"w4\", \"widgetSelected\", {} ],"
+        + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
+        + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
+        + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    NotifyOperation[] operations = message.getNotifyOperations( "w3", "widgetSelected", null );
-
-    assertEquals( 1, operations.length );
-    assertEquals( "widgetSelected", operations[ 0 ].getEventName() );
+    NotifyOperation operation = message.getLastNotifyOperationFor( null, "widgetSelected" );
+    assertNotNull( operation );
+    assertEquals( "widgetSelected", operation.getEventName() );
+    assertEquals( "w3", operation.getTarget() );
   }
 
-  public void testGetNotifyOperations_ByProperty() {
+  public void testGetLastNotifyOperation_WithoutTargetAndName() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
-                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
-                + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ],"
-                + "[ \"notify\", \"w3\", \"widgetDefaultSelected\", { \"detail\" : \"check\" } ],"
-                + "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]"
-                + "] }";
+        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_OPERATIONS + " : ["
+        + "[ \"notify\", \"w4\", \"widgetSelected\", {} ],"
+        + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
+        + "[ \"notify\", \"w3\", \"widgetDefaultSelected\", {} ]"
+        + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    NotifyOperation[] operations = message.getNotifyOperations( "w3", null, "detail" );
+    NotifyOperation operation = message.getLastNotifyOperationFor( null, null );
+    assertNotNull( operation );
+    assertEquals( "widgetDefaultSelected", operation.getEventName() );
+    assertEquals( "w3", operation.getTarget() );
+  }
+
+  public void testGetAllCallOperations() {
+    String json = "{ "
+        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_OPERATIONS + " : ["
+        + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+        + "[ \"call\", \"w2\", \"store\", {} ],"
+        + "[ \"call\", \"w3\", \"foo\", {} ]"
+        + "] }";
+    ClientMessage message = new ClientMessage( json );
+
+    CallOperation[] operations = message.getAllCallOperationsFor( null, null );
 
     assertEquals( 2, operations.length );
+    assertEquals( "store", operations[ 0 ].getMethodName() );
+    assertEquals( "foo", operations[ 1 ].getMethodName() );
   }
 
-  public void testGetNotifyOperations_ByEventNameAndProperty() {
-    String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
-                + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
-                + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ],"
-                + "[ \"notify\", \"w3\", \"widgetDefaultSelected\", { \"detail\" : \"check\" } ],"
-                + "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]"
-                + "] }";
-    ClientMessage message = new ClientMessage( json );
-
-    NotifyOperation[] operations = message.getNotifyOperations( "w3", "widgetSelected", "detail" );
-
-    assertEquals( 1, operations.length );
-  }
-
-  public void testGetCallOperations() {
+  public void testGetAllCallOperations_ByTarget() {
     String json = "{ "
                 + ClientMessage.PROP_HEADER + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"call\", \"w3\", \"store\", {} ],"
-                + "[ \"set\", \"w3\", { \"p2\" : \"bar\" } ]"
+                + "[ \"call\", \"w4\", \"foo\", {} ]"
                 + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    CallOperation[] operations = message.getCallOperations( "w3" );
+    CallOperation[] operations = message.getAllCallOperationsFor( "w3", null );
 
     assertEquals( 1, operations.length );
     assertEquals( "store", operations[ 0 ].getMethodName() );
   }
 
-  public void testSetOperation() {
+  public void testGetAllCallOperations_ByTargetAnMethodName() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
-                + "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : true } ]"
-                + "] }";
+        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_OPERATIONS + " : ["
+        + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
+        + "[ \"call\", \"w3\", \"store\", {} ],"
+        + "[ \"call\", \"w4\", \"foo\", { \"p1\" : \"abc\" } ],"
+        + "[ \"call\", \"w4\", \"foo\", { \"p2\" : \"def\" } ]"
+        + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    SetOperation operation = message.getSetOperations( "w3" )[ 0 ];
+    CallOperation[] operations = message.getAllCallOperationsFor( "w4", "foo" );
 
-    assertEquals( "w3", operation.getTarget() );
-    assertEquals( "foo", operation.getProperty( "p1" ) );
-    assertEquals( Boolean.TRUE, operation.getProperty( "p2" ) );
+    assertEquals( 2, operations.length );
+    assertEquals( "abc", operations[ 0 ].getProperty( "p1" ) );
+    assertEquals( "def", operations[ 1 ].getProperty( "p2" ) );
   }
 
   public void testSetOperation_WithoutTarget() {
@@ -298,33 +300,6 @@ public class ClientMessage_Test extends TestCase {
       fail();
     } catch( IllegalArgumentException expected ) {
     }
-  }
-
-  public void testSetOperation_InvalidProperty() {
-    String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
-                + "[ \"set\", \"w3\", { \"p1\" : \"foo\", \"p2\" : true } ]"
-                + "] }";
-    ClientMessage message = new ClientMessage( json );
-    SetOperation operation = message.getSetOperations( "w3" )[ 0 ];
-
-    assertNull( operation.getProperty( "abc" ) );
-  }
-
-  public void testNotifyOperation() {
-    String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
-                + ClientMessage.PROP_OPERATIONS + " : ["
-                + "[ \"notify\", \"w3\", \"widgetSelected\", { \"check\" : true } ]"
-                + "] }";
-    ClientMessage message = new ClientMessage( json );
-
-    NotifyOperation operation = message.getNotifyOperations( "w3" )[ 0 ];
-
-    assertEquals( "w3", operation.getTarget() );
-    assertEquals( "widgetSelected", operation.getEventName() );
-    assertEquals( Boolean.TRUE, operation.getProperty( "check" ) );
   }
 
   public void testNotifyOperation_WithoutEventType() {
@@ -363,7 +338,7 @@ public class ClientMessage_Test extends TestCase {
                 + "] }";
     ClientMessage message = new ClientMessage( json );
 
-    CallOperation operation = message.getCallOperations( "w3" )[ 0 ];
+    CallOperation operation = message.getAllCallOperationsFor( "w3", null )[ 0 ];
 
     assertEquals( "w3", operation.getTarget() );
     assertEquals( "store", operation.getMethodName() );
@@ -396,6 +371,73 @@ public class ClientMessage_Test extends TestCase {
       fail();
     } catch( IllegalArgumentException expected ) {
     }
+  }
+
+  public void testOperationGetPropertyAsArray() {
+    String json = "{ "
+                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_OPERATIONS + " : ["
+                + "[ \"set\", \"w3\", { \"result\" : [1,2] } ]"
+                + "] }";
+    ClientMessage message = new ClientMessage( json );
+
+    SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
+
+    Integer[] extected = new Integer[] { Integer.valueOf( 1 ),  Integer.valueOf( 2 ) };
+    assertTrue( Arrays.equals( extected, ( Object[] )operation.getProperty( "result" ) ) );
+  }
+
+  public void testOperationGetProperty_MixedArray() {
+    String json = "{ "
+        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_OPERATIONS + " : ["
+        + "[ \"set\", \"w3\", { \"result\" : [1,\"foo\",3,4] } ]"
+        + "] }";
+    ClientMessage message = new ClientMessage( json );
+
+    SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
+
+    Object[] extected = new Object[] {
+      Integer.valueOf( 1 ),
+      "foo",
+      Integer.valueOf( 3 ),
+      Integer.valueOf( 4 ) };
+    assertTrue( Arrays.equals( extected, ( Object[] )operation.getProperty( "result" ) ) );
+  }
+
+  public void testOperationGetPropertyAsMap() {
+    String json = "{ "
+        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_OPERATIONS + " : ["
+        + "[ \"set\", \"w3\", { \"result\" : { \"p1\" : \"foo\", \"p2\" : \"bar\" } } ]"
+        + "] }";
+    ClientMessage message = new ClientMessage( json );
+
+    SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
+
+    Object value = operation.getProperty( "result" );
+    assertTrue( value instanceof Map );
+    Map map = ( Map )value;
+    assertEquals( "foo", map.get( "p1" ) );
+    assertEquals( "bar", map.get( "p2" ) );
+  }
+
+  public void testOperationGetPropertyAsMap_WithArray() {
+    String json = "{ "
+        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_OPERATIONS + " : ["
+        + "[ \"set\", \"w3\", { \"result\" : { \"p1\" : [1,2], \"p2\" : \"bar\" } } ]"
+        + "] }";
+    ClientMessage message = new ClientMessage( json );
+
+    SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
+
+    Object value = operation.getProperty( "result" );
+    assertTrue( value instanceof Map );
+    Map map = ( Map )value;
+    Integer[] extected = new Integer[] { Integer.valueOf( 1 ),  Integer.valueOf( 2 ) };
+    assertTrue( Arrays.equals( extected, ( Object[] )map.get( "p1" ) ) );
+    assertEquals( "bar", map.get( "p2" ) );
   }
 
 }

@@ -10,10 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.widgets.fileuploadkit;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
+import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
@@ -30,8 +33,8 @@ import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.rap.rwt.widgets.FileUpload;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
@@ -89,36 +92,36 @@ public class FileUploadLCA_Test extends TestCase {
   }
 
   public void testReadFileName() {
-    String uploadId = WidgetUtil.getId( fileUpload );
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( uploadId + ".fileName", "foo" );
+    Fixture.fakeSetParameter( getId( fileUpload ), "fileName", "foo" );
     Fixture.executeLifeCycleFromServerThread( );
+
     assertEquals( "foo", fileUpload.getFileName() );
+
     Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread( );
+
     assertEquals( "foo", fileUpload.getFileName() );
+  }
+
+  public void testReadEmptyFileName() {
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( uploadId + ".fileName", "" );
+    Fixture.fakeSetParameter( getId( fileUpload ), "fileName", "" );
     Fixture.executeLifeCycleFromServerThread( );
+
     assertEquals( null, fileUpload.getFileName() );
   }
 
   public void testFireSelectionEvent() {
-    final List<SelectionEvent> eventLog = new ArrayList<SelectionEvent>();
-    fileUpload.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        eventLog.add( event );
-      }
-    } );
-    String uploadId = WidgetUtil.getId( fileUpload );
+    SelectionListener listener = mock( SelectionListener.class );
+    fileUpload.addSelectionListener( listener );
+
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( uploadId + ".fileName", "foo" );
+    Fixture.fakeSetParameter( getId( fileUpload ), "fileName", "foo" );
     Fixture.executeLifeCycleFromServerThread( );
+
     assertEquals( "foo", fileUpload.getFileName() );
-    assertEquals( 1, eventLog.size() );
-    SelectionEvent event = eventLog.get( 0 );
-    assertSame( fileUpload, event.widget );
+    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   public void testRenderCreate() throws IOException {

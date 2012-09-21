@@ -11,15 +11,23 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_WIDGET_SELECTED;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -47,6 +55,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.mockito.ArgumentCaptor;
 
 
 @SuppressWarnings("deprecation")
@@ -76,7 +85,7 @@ public class MenuItemLCA_Test extends TestCase {
 
   public void testBarPreserveValues() {
     shell.setMenuBar( menuBar );
-    final MenuItem menuItem = new MenuItem( menuBar, SWT.BAR );
+    MenuItem menuItem = new MenuItem( menuBar, SWT.BAR );
     Fixture.markInitialized( display );
     testPreserveEnabled( menuItem );
     testPreserveText( menuItem );
@@ -87,194 +96,150 @@ public class MenuItemLCA_Test extends TestCase {
     Menu fileMenu = new Menu( shell, SWT.DROP_DOWN );
     fileItem.setMenu( fileMenu );
     shell.setMenuBar( menuBar );
-    final MenuItem menuItem = new MenuItem( fileMenu, SWT.PUSH );
+    MenuItem menuItem = new MenuItem( fileMenu, SWT.PUSH );
     Fixture.markInitialized( display );
     testPreserveEnabled( menuItem );
     testPreserveText( menuItem );
   }
 
   public void testWidgetSelected() {
-    final boolean[] wasEventFired = { false };
     shell.setMenu( menu );
-    final MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
-    menuItem.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        wasEventFired[ 0 ] = true;
-        assertEquals( null, event.item );
-        assertSame( menuItem, event.getSource() );
-        assertEquals( true, event.doit );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-      }
-    } );
-    String menuItemId = WidgetUtil.getId( menuItem );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, menuItemId );
-    Fixture.readDataAndProcessAction( display );
-    assertEquals( true, wasEventFired[ 0 ] );
+    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
+    SelectionListener listener = mock( SelectionListener.class );
+    menuItem.addSelectionListener( listener );
+
+    Fixture.fakeNotifyOperation( getId( menuItem ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.readDataAndProcessAction( menuItem );
+
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertEquals( menuItem, event.getSource() );
+    assertEquals( null, event.item );
+    assertEquals( SWT.NONE, event.detail );
+    assertEquals( 0, event.x );
+    assertEquals( 0, event.y );
+    assertEquals( 0, event.width );
+    assertEquals( 0, event.height );
+    assertEquals( true, event.doit );
   }
 
   public void testCheckItemSelected() {
-    final boolean[] wasEventFired = { false };
-    shell.setMenuBar( menuBar );
-    Menu menu = new Menu( menuBar );
-    final MenuItem menuItem = new MenuItem( menu, SWT.CHECK );
-    menuItem.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        wasEventFired[ 0 ] = true;
-        assertEquals( null, event.item );
-        assertSame( menuItem, event.getSource() );
-        assertEquals( true, event.doit );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertEquals( true, menuItem.getSelection() );
-      }
-    } );
-    String menuItemId = WidgetUtil.getId( menuItem );
-    Fixture.fakeRequestParam( menuItemId + ".selection", "true" );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, menuItemId );
-    Fixture.readDataAndProcessAction( display );
-    assertEquals( true, wasEventFired[ 0 ] );
+    shell.setMenu( menu );
+    MenuItem menuItem = new MenuItem( menu, SWT.CHECK );
+
+    Fixture.fakeSetParameter( getId( menuItem ), "selection", Boolean.TRUE );
+    Fixture.readDataAndProcessAction( menuItem );
+
+    assertTrue( menuItem.getSelection() );
   }
 
   public void testRadioSelectionEvent() {
-    final java.util.List<SelectionEvent> log = new ArrayList<SelectionEvent>();
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
     menuBarItem.setMenu( menu );
-    new MenuItem( menu, SWT.PUSH );
-    final MenuItem radioItem1 = new MenuItem( menu, SWT.RADIO );
-    final MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
-    final MenuItem radioItem3 = new MenuItem( menu, SWT.RADIO );
-    new MenuItem( menu, SWT.CHECK );
-    SelectionAdapter listener = new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        log.add( event );
-      }
-    };
-    radioItem1.addSelectionListener( listener );
-    radioItem2.addSelectionListener( listener );
-    radioItem3.addSelectionListener( listener );
-    String radio1Id = WidgetUtil.getId( radioItem1 );
-    String radio2Id = WidgetUtil.getId( radioItem2 );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( radio1Id + ".selection", "true" );
-    Fixture.readDataAndProcessAction( display );
-    SelectionEvent event = log.get( 0 );
-    assertSame( radioItem1, event.widget );
-    assertTrue( radioItem1.getSelection() );
-    assertEquals( 1, log.size() );
-    log.clear();
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( radio1Id + ".selection", "false" );
-    Fixture.fakeRequestParam( radio2Id + ".selection", "true" );
-    Fixture.readDataAndProcessAction( display );
-    assertEquals( 2, log.size() );
-    event = log.get( 0 );
-    assertSame( radioItem1, event.widget );
-    assertFalse( radioItem1.getSelection() );
-    event = log.get( 1 );
-    assertSame( radioItem2, event.widget );
-    assertTrue( radioItem2.getSelection() );
+    MenuItem item = new MenuItem( menu, SWT.RADIO );
+    SelectionListener listener = mock( SelectionListener.class );
+    item.addSelectionListener( listener );
+
+    Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.readDataAndProcessAction( item );
+
+    assertTrue( item.getSelection() );
+    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
-  public void testRadioTypedSelectionEventOrder() {
-    final java.util.List<SelectionEvent> log = new ArrayList<SelectionEvent>();
+  // https://bugs.eclipse.org/bugs/show_bug.cgi?id=224872
+  public void testRadioDeselectionEvent() {
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
     menuBarItem.setMenu( menu );
-    final MenuItem radioItem1 = new MenuItem( menu, SWT.RADIO );
-    radioItem1.setText( "1" );
-    final MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
-    radioItem2.setText( "2" );
-    SelectionAdapter listener = new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        log.add( event );
-      }
-    };
-    radioItem1.addSelectionListener( listener );
-    radioItem2.addSelectionListener( listener );
+    MenuItem item = new MenuItem( menu, SWT.RADIO );
+    item.setSelection( true );
+    SelectionListener listener = mock( SelectionListener.class );
+    item.addSelectionListener( listener );
+
+    Fixture.fakeSetParameter( getId( item ), "selection", Boolean.FALSE );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.readDataAndProcessAction( item );
+
+    assertFalse( item.getSelection() );
+    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
+  }
+
+  public void testRadioTypedSelectionEventOrder_TypedListener() {
+    final List<Widget> log = new ArrayList<Widget>();
+    MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
+    Menu menu = new Menu( menuBarItem );
+    menuBarItem.setMenu( menu );
+    MenuItem radioItem1 = new MenuItem( menu, SWT.RADIO );
+    MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
     radioItem2.setSelection( true );
-    String item1Id = WidgetUtil.getId( radioItem1 );
-    String item2Id = WidgetUtil.getId( radioItem2);
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( item1Id + ".selection", "true" );
-    Fixture.fakeRequestParam( item2Id + ".selection", "false" );
+    SelectionAdapter listener = new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        log.add( event.widget );
+      }
+    };
+    radioItem1.addSelectionListener( listener );
+    radioItem2.addSelectionListener( listener );
+
+    Fixture.fakeSetParameter( getId( radioItem1 ), "selection", Boolean.TRUE );
+    Fixture.fakeSetParameter( getId( radioItem2 ), "selection", Boolean.FALSE );
+    Fixture.fakeNotifyOperation( getId( radioItem1 ), EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( radioItem2 ), EVENT_WIDGET_SELECTED, null );
     Fixture.readDataAndProcessAction( display );
-    assertEquals( 2, log.size() );
-    SelectionEvent event = log.get( 0 );
-    assertSame( radioItem2, event.widget );
-    event = log.get( 1 );
-    assertSame( radioItem1, event.widget );
+
+    assertTrue( Arrays.equals( new Widget[]{ radioItem2, radioItem1 }, log.toArray() ) );
   }
 
-  public void testRadioUntypedSelectionEventOrder() {
-    final java.util.List<Event> log = new ArrayList<Event>();
+  public void testRadioTypedSelectionEventOrder_UntypedListener() {
+    final List<Widget> log = new ArrayList<Widget>();
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
     menuBarItem.setMenu( menu );
-    final MenuItem radioItem1 = new MenuItem( menu, SWT.RADIO );
-    radioItem1.setText( "1" );
-    final MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
-    radioItem2.setText( "2" );
+    MenuItem radioItem1 = new MenuItem( menu, SWT.RADIO );
+    MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
+    radioItem2.setSelection( true );
     Listener listener = new Listener() {
       public void handleEvent( Event event ) {
-        log.add( event );
+        log.add( event.widget );
       }
     };
     radioItem1.addListener( SWT.Selection, listener );
     radioItem2.addListener( SWT.Selection, listener );
-    radioItem2.setSelection( true );
-    String item1Id = WidgetUtil.getId( radioItem1 );
-    String item2Id = WidgetUtil.getId( radioItem2);
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( item1Id + ".selection", "true" );
-    Fixture.fakeRequestParam( item2Id + ".selection", "false" );
+
+    Fixture.fakeSetParameter( getId( radioItem1 ), "selection", Boolean.TRUE );
+    Fixture.fakeSetParameter( getId( radioItem2 ), "selection", Boolean.FALSE );
+    Fixture.fakeNotifyOperation( getId( radioItem1 ), EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( radioItem2 ), EVENT_WIDGET_SELECTED, null );
     Fixture.readDataAndProcessAction( display );
-    assertEquals( 2, log.size() );
-    Event event = log.get( 0 );
-    assertSame( radioItem2, event.widget );
-    event = log.get( 1 );
-    assertSame( radioItem1, event.widget );
+
+    assertTrue( Arrays.equals( new Widget[]{ radioItem2, radioItem1 }, log.toArray() ) );
   }
 
   public void testArmEvent() {
-    final java.util.List<Widget> log = new ArrayList<Widget>();
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
     menuBarItem.setMenu( menu );
-    final MenuItem pushItem = new MenuItem( menu, SWT.PUSH );
-    final MenuItem radioItem1 = new MenuItem( menu, SWT.RADIO );
-    final MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
-    final MenuItem radioItem3 = new MenuItem( menu, SWT.RADIO );
-    final MenuItem checkItem = new MenuItem( menu, SWT.CHECK );
-    ArmListener listener = new ArmListener() {
-      public void widgetArmed( ArmEvent event ) {
-        log.add( event.widget );
-      }
-    };
-    pushItem.addArmListener( listener );
-    radioItem1.addArmListener( listener );
-    radioItem2.addArmListener( listener );
-    radioItem3.addArmListener( listener );
-    checkItem.addArmListener( listener );
-    String menuId = WidgetUtil.getId( menu );
+    MenuItem pushItem = new MenuItem( menu, SWT.PUSH );
+    MenuItem radioItem = new MenuItem( menu, SWT.RADIO );
+    MenuItem checkItem = new MenuItem( menu, SWT.CHECK );
+    ArmListener pushArmListener = mock( ArmListener.class );
+    pushItem.addArmListener( pushArmListener );
+    ArmListener radioArmListener = mock( ArmListener.class );
+    radioItem.addArmListener( radioArmListener );
+    ArmListener checkArmListener = mock( ArmListener.class );
+    checkItem.addArmListener( checkArmListener );
+
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( JSConst.EVENT_MENU_SHOWN, menuId );
+    Fixture.fakeNotifyOperation( getId( menu ), ClientMessageConst.EVENT_MENU_SHOWN, null );
     Fixture.readDataAndProcessAction( display );
-    assertEquals( 5, log.size() );
-    assertTrue( log.contains( pushItem ) );
-    assertTrue( log.contains( radioItem1 ) );
-    assertTrue( log.contains( radioItem2 ) );
-    assertTrue( log.contains( radioItem3 ) );
-    assertTrue( log.contains( checkItem ) );
+
+    verify( pushArmListener, times( 1 ) ).widgetArmed( any( ArmEvent.class ) );
+    verify( radioArmListener, times( 1 ) ).widgetArmed( any( ArmEvent.class ) );
+    verify( checkArmListener, times( 1 ) ).widgetArmed( any( ArmEvent.class ) );
   }
 
   private void testPreserveText( MenuItem menuItem ) {

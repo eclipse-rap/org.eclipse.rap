@@ -13,13 +13,14 @@ package org.eclipse.rap.rwt.internal.textsize;
 
 import java.util.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.SerializableCompatibility;
@@ -31,6 +32,9 @@ class MeasurementOperator implements SerializableCompatibility {
   private static final String METHOD_MEASURE_STRINGS = "measureStrings";
   private static final String PROPERTY_FONTS = "fonts";
   private static final String METHOD_PROBE = "probe";
+  private static final String METHOD_STORE_PROBES = "storeProbes";
+  private static final String METHOD_STORE_MEASUREMENTS = "storeMeasurements";
+  private static final String PROPERTY_RESULTS = "results";
 
   private final Set<Probe> probes;
   private final Set<MeasurementItem> items;
@@ -103,21 +107,20 @@ class MeasurementOperator implements SerializableCompatibility {
   }
 
   private void readMeasuredFontProbeSizes() {
-    HttpServletRequest request = ContextProvider.getRequest();
     Iterator probeList = probes.iterator();
+    CallOperation[] operations = getCallOperationsFor( METHOD_STORE_PROBES );
     while( probeList.hasNext() ) {
       Probe probe = ( Probe )probeList.next();
-      String name = String.valueOf( probe.getFontData().hashCode() );
-      String value = request.getParameter( name );
-      if( value != null ) {
-        createProbeResult( probe, value );
+      String id = String.valueOf( probe.getFontData().hashCode() );
+      Point size = readMeasuredSize( operations, id );
+      if( size != null ) {
+        createProbeResult( probe, size );
         probeList.remove();
       }
     }
   }
 
-  private void createProbeResult( Probe probe, String value ) {
-    Point size = getSize( value );
+  private void createProbeResult( Probe probe, Point size ) {
     ProbeResultStore.getInstance().createProbeResult( probe, size );
   }
 
@@ -129,14 +132,46 @@ class MeasurementOperator implements SerializableCompatibility {
   private boolean readMeasuredTextSizes() {
     int originalItemsSize = items.size();
     Iterator itemList = items.iterator();
+    CallOperation[] operations = getCallOperationsFor( METHOD_STORE_MEASUREMENTS );
     while( itemList.hasNext() ) {
       MeasurementItem item = ( MeasurementItem )itemList.next();
-      if( requestContainsMeasurementResult( item ) ) {
-        storeTextMeasurement( item );
+      String id = String.valueOf( item.hashCode() );
+      Point size = readMeasuredSize( operations, id );
+      if( size != null ) {
+        storeTextMeasurement( item, size );
         itemList.remove();
       }
     }
     return itemsHasBeenMeasured( originalItemsSize );
+  }
+
+  private static CallOperation[] getCallOperationsFor( String methodName ) {
+    CallOperation[] result = new CallOperation[ 0 ];
+    Display display = Display.getCurrent();
+    if( display != null ) {
+      ClientMessage message = ProtocolUtil.getClientMessage();
+      result = message.getAllCallOperationsFor( DisplayUtil.getId( display ), methodName );
+    }
+    return result;
+  }
+
+  private static Point readMeasuredSize( CallOperation[] operations, String id ) {
+    Point result = null;
+    for( int i = 0; i < operations.length; i++ ) {
+      Map resultsMap = ( Map )operations[ i ].getProperty( PROPERTY_RESULTS );
+      if( resultsMap != null ) {
+        result = ProtocolUtil.toPoint( resultsMap.get( id ) );
+      }
+    }
+    return result;
+  }
+
+  private static void storeTextMeasurement( MeasurementItem item, Point size ) {
+    FontData fontData = item.getFontData();
+    String textToMeasure = item.getTextToMeasure();
+    int wrapWidth = item.getWrapWidth();
+    int mode = item.getMode();
+    TextSizeStorageUtil.store( fontData, textToMeasure, wrapWidth, mode, size );
   }
 
   private boolean hasItemsToMeasure() {
@@ -145,32 +180,6 @@ class MeasurementOperator implements SerializableCompatibility {
 
   private boolean itemsHasBeenMeasured( int originalItemsSize ) {
     return originalItemsSize != items.size();
-  }
-
-  private static boolean requestContainsMeasurementResult( MeasurementItem newItem ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String value = request.getParameter( String.valueOf( newItem.hashCode() ) );
-    return value != null;
-  }
-
-  private static Point getSize( String value ) {
-    String[] split = value.split( "," );
-    return new Point( Integer.parseInt( split[ 0 ] ), Integer.parseInt( split[ 1 ] ) );
-  }
-
-  private static void storeTextMeasurement( MeasurementItem item ) {
-    Point size = readMeasuredItemSize( item );
-    FontData fontData = item.getFontData();
-    String textToMeasure = item.getTextToMeasure();
-    int wrapWidth = item.getWrapWidth();
-    int mode = item.getMode();
-    TextSizeStorageUtil.store( fontData, textToMeasure, wrapWidth, mode, size );
-  }
-
-  private static Point readMeasuredItemSize( MeasurementItem item ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String name = String.valueOf( item.hashCode() );
-    return getSize( request.getParameter( name ) );
   }
 
   private static void renderStringMeasurements() {

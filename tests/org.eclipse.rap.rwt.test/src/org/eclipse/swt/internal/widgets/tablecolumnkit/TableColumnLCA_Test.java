@@ -11,6 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 
 import junit.framework.TestCase;
@@ -65,7 +71,7 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testPreserveValus() {
-    Table table = new Table( shell, SWT.BORDER );
+    table = new Table( shell, SWT.BORDER );
     TableColumn column = new TableColumn( table, SWT.CENTER );
     Fixture.markInitialized( display );
     //text
@@ -128,40 +134,24 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testResizeEvent() {
-    final StringBuilder log = new StringBuilder();
-    Table table = new Table( shell, SWT.NONE );
-    final TableColumn column = new TableColumn( table, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( column );
     column.setWidth( 20 );
-    column.addControlListener( new ControlListener() {
-      public void controlMoved( ControlEvent e ) {
-        fail( "unexpected event: controlMoved" );
-      }
+    ControlListener listener = mock( ControlListener.class );
+    column.addControlListener( listener );
 
-      public void controlResized( ControlEvent e ) {
-        assertSame( column, e.getSource() );
-        log.append( "controlResized" );
-      }
-    } );
-    String columnId = WidgetUtil.getId( column );
-    //
-    Fixture.fakeNewRequest( display );
-    Fixture.executeLifeCycleFromServerThread( );
-    // Simulate request that changes column width
     int newWidth = column.getWidth() + 2;
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( "org.eclipse.swt.events.controlResized", columnId );
-    Fixture.fakeRequestParam( columnId + ".width", String.valueOf( newWidth ) );
+    Fixture.fakeSetParameter( getId( column ), "width", Integer.valueOf( newWidth ) );
     Fixture.executeLifeCycleFromServerThread( );
-    assertEquals( "controlResized", log.toString() );
+
     assertEquals( newWidth, column.getWidth() );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
-    assertTrue( adapter.isInitialized() );
+    verify( listener, times( 1 ) ).controlResized( any( ControlEvent.class ) );
+    verify( listener, times( 0 ) ).controlMoved( any( ControlEvent.class ) );
     Message message = Fixture.getProtocolMessage();
     assertEquals( Integer.valueOf( newWidth ), message.findSetProperty( column, "width" ) );
   }
 
   public void testGetLeft() {
-    Table table = new Table( shell, SWT.NONE );
     TableColumn column0 = new TableColumn( table, SWT.NONE );
     column0.setWidth( 10 );
     TableColumn column1 = new TableColumn( table, SWT.NONE );
@@ -182,7 +172,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testMoveColumn() {
-    Table table = new Table( shell, SWT.NONE );
     TableColumn column0 = new TableColumn( table, SWT.NONE );
     column0.setText( "Col 0" );
     column0.setWidth( 10 );
@@ -299,29 +288,18 @@ public class TableColumnLCA_Test extends TestCase {
   // see bug 336340
   public void testMoveColumn_ZeroWidth() {
     Fixture.markInitialized( display );
-    Table table = new Table( shell, SWT.NONE );
     Fixture.markInitialized( table );
-    TableColumn column0 = new TableColumn( table, SWT.NONE );
-    Fixture.markInitialized( column0 );
-    column0.setText( "Col 0" );
-    column0.setWidth( 10 );
-    TableColumn column1 = new TableColumn( table, SWT.NONE );
-    Fixture.markInitialized( column1 );
-    column1.setText( "Col 1" );
-    column1.setWidth( 20 );
-    TableColumn column2 = new TableColumn( table, SWT.NONE );
-    Fixture.markInitialized( column2 );
-    column2.setText( "Col 2" );
-    column2.setWidth( 0 );
-    TableColumn column3 = new TableColumn( table, SWT.NONE );
-    Fixture.markInitialized( column3 );
-    column3.setText( "Col 3" );
-    column3.setWidth( 30 );
-    Fixture.preserveWidgets();
-    String column1Id = WidgetUtil.getId( column1 );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( column1Id + ".left", String.valueOf( 35 ) );
+    for( int i = 1; i < 5; i++ ) {
+      TableColumn column = new TableColumn( table, SWT.NONE );
+      Fixture.markInitialized( column );
+      column.setWidth( i * 10 );
+    }
+    table.getColumn( 2 ).setWidth( 0 );
+
+    TableColumn column1 = table.getColumn( 1 );
+    Fixture.fakeSetParameter( getId( column1 ), "left", Integer.valueOf( 35 ) );
     Fixture.executeLifeCycleFromServerThread( );
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( Integer.valueOf( 10 ), message.findSetProperty( column1, "left" ) );
   }

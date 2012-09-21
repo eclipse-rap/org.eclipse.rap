@@ -31,7 +31,6 @@ rwt.widgets.Display.prototype = {
   init : function( args ) {
     this._request.setUrl( args.url );
     this._request.setUIRootId( args.rootId );
-    this._request._parameters[ "rwt_initialize" ] = "true"; // skip json message writer
     this._request.getMessageWriter().appendMeta( "rwt_initialize", true );
     this._appendWindowSize();
     this._appendSystemDPI();
@@ -83,6 +82,24 @@ rwt.widgets.Display.prototype = {
     rwt.widgets.base.Widget._renderHtmlIds = value;
   },
 
+  getDPI : function() {
+    var result = [ 0, 0 ];
+    if( typeof screen.systemXDPI == "number" ) {
+      result[ 0 ] = parseInt( screen.systemXDPI, 10 );
+      result[ 1 ] = parseInt( screen.systemYDPI, 10 );
+    } else {
+      var testElement = document.createElement( "div" );
+      testElement.style.width = "1in";
+      testElement.style.height = "1in";
+      testElement.style.padding = 0;
+      document.body.appendChild( testElement );
+      result[ 0 ] = parseInt( testElement.offsetWidth, 10 );
+      result[ 1 ] = parseInt( testElement.offsetHeight, 10 );
+      document.body.removeChild( testElement );
+    }
+    return result;
+  },
+
   ////////////////////////
   // Global Event handling
 
@@ -110,11 +127,11 @@ rwt.widgets.Display.prototype = {
   },
 
   _onSend : function( evt ) {
+    // TODO [tb] : This will attach the cursorLocation as the last operation, but should be first
     var pageX = qx.event.type.MouseEvent.getPageX();
     var pageY = qx.event.type.MouseEvent.getPageY();
-    var id = this._request.getUIRootId();
-    this._request.addParameter( id + ".cursorLocation.x", String( pageX ) );
-    this._request.addParameter( id + ".cursorLocation.y", String( pageY ) );
+    var location = [ pageX, pageY ];
+    rwt.remote.Server.getInstance().getServerObject( this ).set( "cursorLocation", location );
   },
 
   _onBeforeUnload : function( event ) {
@@ -136,29 +153,13 @@ rwt.widgets.Display.prototype = {
   _appendWindowSize : function() {
     var width = qx.html.Window.getInnerWidth( window );
     var height = qx.html.Window.getInnerHeight( window );
-    // Append document size to request
-    var id = this._request.getUIRootId();
-    this._request.addParameter( id + ".bounds.width", String( width ) );
-    this._request.addParameter( id + ".bounds.height", String( height ) );
+    var bounds = [ 0, 0, width, height ];
+    rwt.remote.Server.getInstance().getServerObject( this ).set( "bounds", bounds );
   },
 
   _appendSystemDPI : function() {
-    var dpi = [ 0, 0 ];
-    if( typeof screen.systemXDPI == "number" ) {
-      dpi[ 0 ] = parseInt( screen.systemXDPI, 10 );
-      dpi[ 1 ] = parseInt( screen.systemYDPI, 10 );
-    } else {
-      var testElement = document.createElement( "div" );
-      testElement.style.width = "1in";
-      testElement.style.height = "1in";
-      testElement.style.padding = 0;
-      document.body.appendChild( testElement );
-      dpi[ 0 ] = parseInt( testElement.offsetWidth, 10 );
-      dpi[ 1 ] = parseInt( testElement.offsetHeight, 10 );
-      document.body.removeChild( testElement );
-    }
-    this._request.addParameter( "w1.dpi.x", String( dpi[ 0 ] ) );
-    this._request.addParameter( "w1.dpi.y", String( dpi[ 1 ] ) );
+    var dpi = this.getDPI();
+    rwt.remote.Server.getInstance().getServerObject( this ).set( "dpi", dpi );
   },
 
   _appendColorDepth : function() {
@@ -170,7 +171,7 @@ rwt.widgets.Display.prototype = {
       // Firefox detects 24bit and 32bit as 24bit, but 32bit is more likely
       depth = depth == 24 ? 32 : depth;
     }
-    this._request.addParameter( "w1.colorDepth", String( depth ) );
+    rwt.remote.Server.getInstance().getServerObject( this ).set( "colorDepth", depth );
   },
 
   _appendInitialHistoryEvent : function() {

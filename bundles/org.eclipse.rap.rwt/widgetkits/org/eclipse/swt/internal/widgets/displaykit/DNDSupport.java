@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,11 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.util.ArrayList;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -29,65 +30,20 @@ import org.eclipse.swt.widgets.*;
 // TODO [rh] move these methods to DragSourceLCA
 public final class DNDSupport {
 
-  private static final String PACKAGE_PREFIX = "org.eclipse.swt.dnd";
+  private static final String EVENT_DRAG_START = "dragStart";
+  private static final String EVENT_DRAG_ENTER = "dragEnter";
+  private static final String EVENT_DRAG_OPERATION_CHANGED = "dragOperationChanged";
+  private static final String EVENT_DRAG_OVER = "dragOver";
+  private static final String EVENT_DRAG_LEAVE = "dragLeave";
+  private static final String EVENT_DROP_ACCEPT = "dropAccept";
+  private static final String EVENT_DRAG_FINISHED = "dragFinished";
 
-  private static final String EVENT_DRAG_START = PACKAGE_PREFIX + ".dragStart";
-  private static final String EVENT_DRAG_START_X = PACKAGE_PREFIX + ".dragStart.x";
-  private static final String EVENT_DRAG_START_Y = PACKAGE_PREFIX + ".dragStart.y";
-  private static final String EVENT_DRAG_START_TIME = PACKAGE_PREFIX + ".dragStart.time";
-  private static final String EVENT_DRAG_ENTER = PACKAGE_PREFIX + ".dragEnter";
-  private static final String EVENT_DRAG_ENTER_OPERATION = PACKAGE_PREFIX + ".dragEnter.operation";
-  private static final String EVENT_DRAG_ENTER_X = PACKAGE_PREFIX + ".dragEnter.x";
-  private static final String EVENT_DRAG_ENTER_Y = PACKAGE_PREFIX + ".dragEnter.y";
-  private static final String EVENT_DRAG_ENTER_ITEM = PACKAGE_PREFIX + ".dragEnter.item";
-  private static final String EVENT_DRAG_ENTER_TIME = PACKAGE_PREFIX + ".dragEnter.time";
-  private static final String EVENT_DRAG_ENTER_SOURCE = PACKAGE_PREFIX + ".dragEnter.source";
-  private static final String EVENT_DRAG_ENTER_FEEDBACK = PACKAGE_PREFIX + ".dragEnter.feedback";
-  private static final String EVENT_DRAG_OPERATION_CHANGED
-    = PACKAGE_PREFIX + ".dragOperationChanged";
-  private static final String EVENT_DRAG_OPERATION_CHANGED_OPERATION
-    = PACKAGE_PREFIX + ".dragOperationChanged.operation";
-  private static final String EVENT_DRAG_OPERATION_CHANGED_FEEDBACK
-    = PACKAGE_PREFIX + ".dragOperationChanged.feedback";
-  private static final String EVENT_DRAG_OPERATION_CHANGED_X
-    = PACKAGE_PREFIX + ".dragOperationChanged.x";
-  private static final String EVENT_DRAG_OPERATION_CHANGED_Y
-    = PACKAGE_PREFIX + ".dragOperationChanged.y";
-  private static final String EVENT_DRAG_OPERATION_CHANGED_ITEM
-    = PACKAGE_PREFIX + ".dragOperationChanged.item";
-  private static final String EVENT_DRAG_OPERATION_CHANGED_SOURCE
-    = PACKAGE_PREFIX + ".dragOperationChanged.source";
-  private static final String EVENT_DRAG_OPERATION_CHANGED_TIME
-    = PACKAGE_PREFIX + ".dragOperationChanged.time";
-  private static final String EVENT_DRAG_OPERATION_CHANGED_DATATYPE
-    = PACKAGE_PREFIX + ".dragOperationChanged.dataType";
-  private static final String EVENT_DRAG_OVER = PACKAGE_PREFIX + ".dragOver";
-  private static final String EVENT_DRAG_OVER_OPERATION = PACKAGE_PREFIX + ".dragOver.operation";
-  private static final String EVENT_DRAG_OVER_FEEDBACK = PACKAGE_PREFIX + ".dragOver.feedback";
-  private static final String EVENT_DRAG_OVER_X = PACKAGE_PREFIX + ".dragOver.x";
-  private static final String EVENT_DRAG_OVER_Y = PACKAGE_PREFIX + ".dragOver.y";
-  private static final String EVENT_DRAG_OVER_ITEM = PACKAGE_PREFIX + ".dragOver.item";
-  private static final String EVENT_DRAG_OVER_SOURCE = PACKAGE_PREFIX + ".dragOver.source";
-  private static final String EVENT_DRAG_OVER_TIME = PACKAGE_PREFIX + ".dragOver.time";
-  private static final String EVENT_DRAG_OVER_DATATYPE = PACKAGE_PREFIX + ".dragOver.dataType";
-  private static final String EVENT_DRAG_LEAVE = PACKAGE_PREFIX + ".dragLeave";
-  private static final String EVENT_DRAG_LEAVE_OPERATION = PACKAGE_PREFIX + ".dragLeave.operation";
-  private static final String EVENT_DRAG_LEAVE_X = PACKAGE_PREFIX + ".dragLeave.x";
-  private static final String EVENT_DRAG_LEAVE_Y = PACKAGE_PREFIX + ".dragLeave.y";
-  private static final String EVENT_DRAG_LEAVE_TIME = PACKAGE_PREFIX + ".dragLeave.time";
-  private static final String EVENT_DROP_ACCEPT = PACKAGE_PREFIX + ".dropAccept";
-  private static final String EVENT_DROP_ACCEPT_OPERATION = PACKAGE_PREFIX + ".dropAccept.operation";
-  private static final String EVENT_DROP_ACCEPT_X = PACKAGE_PREFIX + ".dropAccept.x";
-  private static final String EVENT_DROP_ACCEPT_Y = PACKAGE_PREFIX + ".dropAccept.y";
-  private static final String EVENT_DROP_ACCEPT_ITEM = PACKAGE_PREFIX + ".dropAccept.item";
-  private static final String EVENT_DROP_ACCEPT_SOURCE = PACKAGE_PREFIX + ".dropAccept.source";
-  private static final String EVENT_DROP_ACCEPT_TIME = PACKAGE_PREFIX + ".dropAccept.time";
-  private static final String EVENT_DROP_ACCEPT_DATATYPE = PACKAGE_PREFIX + ".dropAccept.dataType";
-  private static final String EVENT_DRAG_FINISHED = PACKAGE_PREFIX + ".dragFinished";
-  private static final String EVENT_DRAG_FINISHED_X = PACKAGE_PREFIX + ".dragFinished.x";
-  private static final String EVENT_DRAG_FINISHED_Y = PACKAGE_PREFIX + ".dragFinished.y";
-  private static final String EVENT_DRAG_FINISHED_TIME = PACKAGE_PREFIX + ".dragFinished.time";
-
+  private static final String EVENT_PARAM_OPERATION = "operation";
+  private static final String EVENT_PARAM_ITEM = "item";
+  private static final String EVENT_PARAM_TIME = "time";
+  private static final String EVENT_PARAM_SOURCE = "source";
+  private static final String EVENT_PARAM_FEEDBACK = "feedback";
+  private static final String EVENT_PARAM_DATATYPE = "dataType";
 
   private DNDSupport() {
     // prevent instantiation
@@ -114,15 +70,17 @@ public final class DNDSupport {
   }
 
   private static void processDragStart() {
-    Control control = readControlParam( EVENT_DRAG_START );
-    if( control != null ) {
+    ClientMessage message = ProtocolUtil.getClientMessage();
+    NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_START );
+    if( notify != null ) {
+      Control control = ( Control )findWidgetById( notify.getTarget() );
       DragSource dragSource = getDragSource( control );
-      Point point = readXYParams( EVENT_DRAG_START_X, EVENT_DRAG_START_Y );
+      Point point = readXYParams( notify ); // should be changed to array
       Point mappedPoint = control.getDisplay().map( null, control, point );
-      DragDetectEvent dragDetectEvent = createDragDetectEvent( control, mappedPoint );
+      DragDetectEvent dragDetectEvent = createDragDetectEvent( notify, control, mappedPoint );
       dragDetectEvent.processEvent();
       DragSourceEvent dragStartEvent
-        = createDragStartEvent( dragSource, mappedPoint, dragDetectEvent.time );
+      = createDragStartEvent( dragSource, mappedPoint, dragDetectEvent.time );
       dragStartEvent.processEvent();
       if( dragStartEvent.doit == false ) {
         getDNDAdapter( dragSource ).cancel();
@@ -131,16 +89,18 @@ public final class DNDSupport {
   }
 
   private static void processDragEnter() {
-    Control control = readControlParam( EVENT_DRAG_ENTER );
-    if( control != null ) {
+    ClientMessage message = ProtocolUtil.getClientMessage();
+    NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_ENTER );
+    if( notify != null ) {
+      Control control = ( Control )findWidgetById( notify.getTarget() );
       DropTarget dropTarget = getDropTarget( control );
-      Control sourceControl = readControlParam( EVENT_DRAG_ENTER_SOURCE );
+      Control sourceControl = readControlParam( notify );
       DragSource dragSource = getDragSource( sourceControl );
-      Point point = readXYParams( EVENT_DRAG_ENTER_X, EVENT_DRAG_ENTER_Y );
+      Point point = readXYParams( notify );
       DropTargetEvent event = new DropTargetEvent( dropTarget, DropTargetEvent.DRAG_ENTER );
-      int operation = readOperationParam( EVENT_DRAG_ENTER_OPERATION );
-      int feedback = readIntParam( EVENT_DRAG_ENTER_FEEDBACK );
-      Item item = readItemParam( EVENT_DRAG_ENTER_ITEM );
+      int operation = readOperationParam( notify );
+      int feedback = readIntParam( notify, EVENT_PARAM_FEEDBACK );
+      Item item = readItemParam( notify );
       TransferData[] validDataTypes = determineDataTypes( dragSource, dropTarget );
       TransferData dataType = validDataTypes[ 0 ];
       event.detail = operation;
@@ -151,7 +111,7 @@ public final class DNDSupport {
       event.item = item;
       event.x = point.x;
       event.y = point.y;
-      event.time = readIntParam( EVENT_DRAG_ENTER_TIME );
+      event.time = readIntParam( notify, EVENT_PARAM_TIME );
       event.processEvent();
       if( event.detail != operation ) {
         changeOperation( dragSource, dropTarget, event.detail );
@@ -165,17 +125,19 @@ public final class DNDSupport {
   }
 
   private static void processDragOver() {
-    Control control = readControlParam( EVENT_DRAG_OVER );
-    if( control != null ) {
+    ClientMessage message = ProtocolUtil.getClientMessage();
+    NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_OVER );
+    if( notify != null ) {
+      Control control = ( Control )findWidgetById( notify.getTarget() );
       DropTarget dropTarget = getDropTarget( control );
-      Control sourceControl = readControlParam( EVENT_DRAG_OVER_SOURCE );
+      Control sourceControl = readControlParam( notify );
       DragSource dragSource = getDragSource( sourceControl );
       IDNDAdapter dndAdapter = getDNDAdapter( dragSource );
-      int operation = readOperationParam( dndAdapter, EVENT_DRAG_OVER_OPERATION );
-      int feedback = readFeedbackParam( dndAdapter, EVENT_DRAG_OVER_FEEDBACK );
-      TransferData dataType = readTransferDataParam( dndAdapter, EVENT_DRAG_OVER_DATATYPE );
-      Point point = readXYParams( EVENT_DRAG_OVER_X, EVENT_DRAG_OVER_Y );
-      Item item = readItemParam( EVENT_DRAG_OVER_ITEM );
+      int operation = readOperationParam( dndAdapter, notify );
+      int feedback = readFeedbackParam( dndAdapter, notify );
+      TransferData dataType = readTransferDataParam( dndAdapter, notify );
+      Point point = readXYParams( notify );
+      Item item = readItemParam( notify );
       DropTargetEvent event = new DropTargetEvent( dropTarget, DropTargetEvent.DRAG_OVER );
       event.detail = operation;
       event.feedback = feedback;
@@ -185,7 +147,7 @@ public final class DNDSupport {
       event.item = item;
       event.x = point.x;
       event.y = point.y;
-      event.time = readIntParam( EVENT_DRAG_OVER_TIME );
+      event.time = readIntParam( notify, EVENT_PARAM_TIME );
       event.processEvent();
       if( event.detail != operation ) {
         changeOperation( dragSource, dropTarget, event.detail );
@@ -201,19 +163,20 @@ public final class DNDSupport {
 
 
   private static void processDragOperationChanged() {
-    Control control = readControlParam( EVENT_DRAG_OPERATION_CHANGED );
-    if( control != null ) {
+    ClientMessage message = ProtocolUtil.getClientMessage();
+    NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_OPERATION_CHANGED );
+    if( notify != null ) {
+      Control control = ( Control )findWidgetById( notify.getTarget() );
       DropTarget dropTarget = getDropTarget( control );
-      Control sourceControl = readControlParam( EVENT_DRAG_OPERATION_CHANGED_SOURCE );
+      Control sourceControl = readControlParam( notify );
       DragSource dragSource = getDragSource( sourceControl );
       IDNDAdapter dndAdapter = getDNDAdapter( dragSource );
-      int operation = readOperationParam( dndAdapter, EVENT_DRAG_OPERATION_CHANGED_OPERATION );
-      int feedback = readFeedbackParam( dndAdapter, EVENT_DRAG_OPERATION_CHANGED_FEEDBACK );
-      TransferData dataType
-        = readTransferDataParam( dndAdapter, EVENT_DRAG_OPERATION_CHANGED_DATATYPE );
-      Point point = readXYParams( EVENT_DRAG_OPERATION_CHANGED_X, EVENT_DRAG_OPERATION_CHANGED_Y );
-      Item item = readItemParam( EVENT_DRAG_OPERATION_CHANGED_ITEM );
-      DropTargetEvent event 
+      int operation = readOperationParam( dndAdapter, notify );
+      int feedback = readFeedbackParam( dndAdapter, notify );
+      TransferData dataType = readTransferDataParam( dndAdapter, notify );
+      Point point = readXYParams( notify );
+      Item item = readItemParam( notify );
+      DropTargetEvent event
         = new DropTargetEvent( dropTarget, DropTargetEvent.DRAG_OPERATION_CHANGED );
       event.detail = operation;
       event.feedback = feedback;
@@ -223,7 +186,7 @@ public final class DNDSupport {
       event.item = item;
       event.x = point.x;
       event.y = point.y;
-      event.time = readIntParam( EVENT_DRAG_OPERATION_CHANGED_TIME );
+      event.time = readIntParam( notify, EVENT_PARAM_TIME );
       event.processEvent();
       if( event.detail != operation ) {
         changeOperation( dragSource, dropTarget, event.detail );
@@ -238,29 +201,33 @@ public final class DNDSupport {
   }
 
   private static void processDragLeave() {
-    Control control = readControlParam( EVENT_DRAG_LEAVE );
-    if( control != null ) {
+    ClientMessage message = ProtocolUtil.getClientMessage();
+    NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_LEAVE );
+    if( notify != null ) {
+      Control control = ( Control )findWidgetById( notify.getTarget() );
       DropTarget dropTarget = getDropTarget( control );
-      Point point = readXYParams( EVENT_DRAG_LEAVE_X, EVENT_DRAG_LEAVE_Y );
-      int operation = readOperationParam( EVENT_DRAG_LEAVE_OPERATION );
-      int time = readIntParam( EVENT_DRAG_LEAVE_TIME );
+      Point point = readXYParams( notify );
+      int operation = readOperationParam( notify );
+      int time = readIntParam( notify, EVENT_PARAM_TIME );
       fireDragLeave( operation, dropTarget, point, time );
     }
   }
 
   private static void processDragFinished() {
     int operation = DND.DROP_NONE;
-    Control dropTargetControl = readControlParam( EVENT_DROP_ACCEPT );
-    if( dropTargetControl != null ) {
+    ClientMessage message = ProtocolUtil.getClientMessage();
+    NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DROP_ACCEPT );
+    if( notify != null ) {
+      Control dropTargetControl = ( Control )findWidgetById( notify.getTarget() );
       DropTarget dropTarget = getDropTarget( dropTargetControl );
-      Control sourceControl = readControlParam( EVENT_DROP_ACCEPT_SOURCE );
+      Control sourceControl = readControlParam( notify );
       DragSource dragSource = getDragSource( sourceControl );
       IDNDAdapter dndAdapter = getDNDAdapter( dragSource );
-      operation = readOperationParam( dndAdapter, EVENT_DROP_ACCEPT_OPERATION );
-      TransferData dataType = readTransferDataParam( dndAdapter, EVENT_DROP_ACCEPT_DATATYPE );
-      Point point = readXYParams( EVENT_DROP_ACCEPT_X, EVENT_DROP_ACCEPT_Y );
-      Item item = readItemParam( EVENT_DROP_ACCEPT_ITEM );
-      int time = readIntParam( EVENT_DROP_ACCEPT_TIME );
+      operation = readOperationParam( dndAdapter, notify );
+      TransferData dataType = readTransferDataParam( dndAdapter, notify );
+      Point point = readXYParams( notify );
+      Item item = readItemParam( notify );
+      int time = readIntParam( notify, EVENT_PARAM_TIME );
       // fire DRAG_LEAVE, which is suppressed by the client
       fireDragLeave( operation, dropTarget, point, time );
       // fire DROP_ACCEPT
@@ -297,12 +264,15 @@ public final class DNDSupport {
   //////////////////////////
   // Create and fire events
 
-  private static DragDetectEvent createDragDetectEvent( Control control, Point point ) {
+  private static DragDetectEvent createDragDetectEvent( NotifyOperation operation,
+                                                        Control control,
+                                                        Point point )
+  {
     DragDetectEvent result = new DragDetectEvent( control );
     result.x = point.x;
     result.y = point.y;
     result.button = 1;
-    result.time = readIntParam( EVENT_DRAG_START_TIME );
+    result.time = readIntParam( operation, EVENT_PARAM_TIME );
     return result;
   }
 
@@ -365,15 +335,17 @@ public final class DNDSupport {
   }
 
   private static void fireDragFinished( int operation ) {
-    Control dragSourceControl = readControlParam( EVENT_DRAG_FINISHED );
-    if( dragSourceControl != null ) {
+    ClientMessage message = ProtocolUtil.getClientMessage();
+    NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_FINISHED );
+    if( notify != null ) {
+      Control dragSourceControl = ( Control )findWidgetById( notify.getTarget() );
       // fire DRAG_END
       DragSource dragSource = getDragSource( dragSourceControl );
       IDNDAdapter dndAdapter = getDNDAdapter( dragSource );
       dndAdapter.cancelDetailChanged();
       dndAdapter.cancelFeedbackChanged();
       dndAdapter.cancelDataTypeChanged();
-      Point point = readXYParams( EVENT_DRAG_FINISHED_X, EVENT_DRAG_FINISHED_Y );
+      Point point = readXYParams( notify );
       DragSourceEvent event = new DragSourceEvent( dragSource, DragSourceEvent.DRAG_END );
       event.x = point.x;
       event.y = point.y;
@@ -381,7 +353,7 @@ public final class DNDSupport {
       // NOTE : Doit is always true in SWT/Win, but should be false
       //        if no drop occurred. (According to documentation.)
       event.doit = true;
-      event.time = readIntParam( EVENT_DRAG_FINISHED_TIME );
+      event.time = readIntParam( notify, EVENT_PARAM_TIME );
       event.processEvent();
     }
   }
@@ -464,37 +436,41 @@ public final class DNDSupport {
     return ( IDisplayAdapter )adapter;
   }
 
-  private static String readStringParam( String paramName ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    return request.getParameter( paramName );
+  private static String readStringParam( NotifyOperation operation, String property ) {
+    String result = null;
+    Object value = operation.getProperty( property );
+    if( value != null ) {
+      result = value.toString();
+    }
+    return result;
   }
 
-  private static int readIntParam( String paramName ) {
-    String value = readStringParam( paramName );
+  private static int readIntParam( NotifyOperation operation, String property ) {
+    String value = readStringParam( operation, property );
     return NumberFormatUtil.parseInt( value );
   }
 
-  private static Control readControlParam( String paramName ) {
+  private static Control readControlParam( NotifyOperation operation ) {
     Control result = null;
-    String value = readStringParam( paramName );
+    String value = ( String )operation.getProperty( EVENT_PARAM_SOURCE );
     if( value != null ) {
       result = ( Control )findWidgetById( value );
     }
     return result;
   }
 
-  private static Item readItemParam( String paramName ) {
+  private static Item readItemParam( NotifyOperation operation ) {
     Item result = null;
-    String value = readStringParam( paramName );
+    String value = readStringParam( operation, EVENT_PARAM_ITEM );
     if( value != null ) {
       result = ( Item )findWidgetById( value );
     }
     return result;
   }
 
-  private static TransferData readDataTypeParam( String paramName ) {
+  private static TransferData readDataTypeParam( NotifyOperation operation ) {
     TransferData result = null;
-    String value = readStringParam( paramName );
+    String value = readStringParam( operation, EVENT_PARAM_DATATYPE );
     value = "null".equals( value ) ? null : value;
     if( value != null ) {
       result = new TransferData();
@@ -507,45 +483,47 @@ public final class DNDSupport {
   //                 Yes, a drag would have to be canceled for invalid
   //                 coordinates on DragDetect, and dragEnter/Leave COULD
   //                 be thrown before they would be in SWT. (Severe problem?)
-  private static Point readXYParams( String xParamName, String yParamName ) {
-    int x = readIntParam( xParamName );
-    int y = readIntParam( yParamName );
-    return new Point( x,y );
+  private static Point readXYParams( NotifyOperation operation ) {
+    int x = readIntParam( operation, ClientMessageConst.EVENT_PARAM_X );
+    int y = readIntParam( operation, ClientMessageConst.EVENT_PARAM_Y );
+    return new Point( x, y );
   }
 
-  private static int readOperationParam( IDNDAdapter dndAdapter, String paramName ) {
+  private static int readOperationParam( IDNDAdapter dndAdapter, NotifyOperation operation ) {
     int result;
     if( dndAdapter.hasDetailChanged() ) {
       result = dndAdapter.getDetailChangedValue();
     } else {
-      result = readOperationParam( paramName );
+      result = readOperationParam( operation );
     }
     return result;
   }
 
-  private static int readFeedbackParam( IDNDAdapter dndAdapter, String paramName ) {
+  private static int readFeedbackParam( IDNDAdapter dndAdapter, NotifyOperation operation ) {
     int result;
     if( dndAdapter.hasFeedbackChanged() ) {
       result = dndAdapter.getFeedbackChangedValue();
     } else {
-      result = readIntParam( paramName );
+      result = readIntParam( operation, EVENT_PARAM_FEEDBACK );
     }
     return result;
   }
 
-  private static TransferData readTransferDataParam( IDNDAdapter adapter, String paramName ) {
+  private static TransferData readTransferDataParam( IDNDAdapter adapter,
+                                                     NotifyOperation operation )
+  {
     TransferData result;
     if( adapter.hasDataTypeChanged() ) {
       result = adapter.getDataTypeChangedValue();
     } else {
-      result = readDataTypeParam( paramName );
+      result = readDataTypeParam( operation );
     }
     return result;
   }
 
-  private static int readOperationParam( String paramName ) {
+  private static int readOperationParam( NotifyOperation operation ) {
     int result = DND.DROP_NONE;
-    String value = readStringParam( paramName );
+    String value = readStringParam( operation, EVENT_PARAM_OPERATION );
     if( "copy".equals( value ) ) {
       result = DND.DROP_COPY;
     } else if( "move".equals( value ) ) {
@@ -558,10 +536,13 @@ public final class DNDSupport {
 
   private static boolean isLeaveBeforeEnter() {
     boolean result = false;
-    String enter = readStringParam( EVENT_DRAG_ENTER_TIME );
-    String leave = readStringParam( EVENT_DRAG_LEAVE_TIME );
+    ClientMessage message = ProtocolUtil.getClientMessage();
+    NotifyOperation enter = message.getLastNotifyOperationFor( null, EVENT_DRAG_ENTER );
+    NotifyOperation leave = message.getLastNotifyOperationFor( null, EVENT_DRAG_LEAVE );
     if( enter != null && leave != null ) {
-      result = NumberFormatUtil.parseInt( leave ) <= NumberFormatUtil.parseInt( enter );
+      int enterTime = readIntParam( enter, EVENT_PARAM_TIME );
+      int leaveTime = readIntParam( leave, EVENT_PARAM_TIME );
+      result = leaveTime <= enterTime;
     }
     return result;
   }

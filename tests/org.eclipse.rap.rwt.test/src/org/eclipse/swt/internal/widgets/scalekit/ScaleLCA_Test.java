@@ -12,13 +12,17 @@
 
 package org.eclipse.swt.internal.widgets.scalekit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.Arrays;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -29,21 +33,26 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+import org.mockito.ArgumentCaptor;
 
 public class ScaleLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private Scale scale;
   private ScaleLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
+    scale = new Scale( shell, SWT.NONE );
     lca = new ScaleLCA();
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -71,8 +80,22 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testSelectionEvent() {
-    Scale scale = new Scale( shell, SWT.HORIZONTAL );
-    testSelectionEvent( scale );
+    SelectionListener listener = mock( SelectionListener.class );
+    scale.addSelectionListener( listener );
+
+    Fixture.fakeNotifyOperation( getId( scale ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.readDataAndProcessAction( scale );
+
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertEquals( scale, event.getSource() );
+    assertEquals( null, event.item );
+    assertEquals( 0, event.x );
+    assertEquals( 0, event.y );
+    assertEquals( 0, event.width );
+    assertEquals( 0, event.height );
+    assertEquals( true, event.doit );
   }
 
   private void testPreserveControlProperties( Scale scale ) {
@@ -132,31 +155,7 @@ public class ScaleLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
-  private void testSelectionEvent( final Scale scale ) {
-    final StringBuilder log = new StringBuilder();
-    SelectionListener selectionListener = new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-        assertEquals( scale, event.getSource() );
-        assertEquals( null, event.item );
-        assertEquals( SWT.NONE, event.detail );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertEquals( true, event.doit );
-        log.append( "widgetSelected" );
-      }
-    };
-    scale.addSelectionListener( selectionListener );
-    String scaleId = WidgetUtil.getId( scale );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, scaleId );
-    Fixture.readDataAndProcessAction( scale );
-    assertEquals( "widgetSelected", log.toString() );
-  }
-
   public void testRenderCreate() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
-
     lca.renderInitialization( scale );
 
     Message message = Fixture.getProtocolMessage();
@@ -165,8 +164,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
-
     lca.renderInitialization( scale );
 
     Message message = Fixture.getProtocolMessage();
@@ -186,8 +183,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderInitialMinimum() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
-
     lca.render( scale );
 
     Message message = Fixture.getProtocolMessage();
@@ -196,8 +191,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderMinimum() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
-
     scale.setMinimum( 10 );
     lca.renderChanges( scale );
 
@@ -206,7 +199,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderMinimumUnchanged() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( scale );
 
@@ -219,8 +211,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderInitialMaxmum() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
-
     lca.render( scale );
 
     Message message = Fixture.getProtocolMessage();
@@ -229,8 +219,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderMaxmum() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
-
     scale.setMaximum( 10 );
     lca.renderChanges( scale );
 
@@ -239,7 +227,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderMaxmumUnchanged() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( scale );
 
@@ -252,8 +239,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelection() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
-
     lca.render( scale );
 
     Message message = Fixture.getProtocolMessage();
@@ -262,8 +247,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderSelection() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
-
     scale.setSelection( 10 );
     lca.renderChanges( scale );
 
@@ -272,7 +255,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionUnchanged() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( scale );
 
@@ -285,8 +267,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderInitialIncrement() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
-
     lca.render( scale );
 
     Message message = Fixture.getProtocolMessage();
@@ -295,8 +275,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderIncrement() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
-
     scale.setIncrement( 2 );
     lca.renderChanges( scale );
 
@@ -305,7 +283,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderIncrementUnchanged() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( scale );
 
@@ -318,8 +295,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderInitialPageIncrement() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
-
     lca.render( scale );
 
     Message message = Fixture.getProtocolMessage();
@@ -328,8 +303,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderPageIncrement() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
-
     scale.setPageIncrement( 20 );
     lca.renderChanges( scale );
 
@@ -338,7 +311,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderPageIncrementUnchanged() throws IOException {
-    Scale scale = new Scale( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( scale );
 
@@ -351,7 +323,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderAddSelectionListener() throws Exception {
-    Scale scale = new Scale( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( scale );
     Fixture.preserveWidgets();
@@ -364,7 +335,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    Scale scale = new Scale( shell, SWT.NONE );
     SelectionListener listener = new SelectionAdapter() { };
     scale.addSelectionListener( listener );
     Fixture.markInitialized( display );
@@ -379,7 +349,6 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
-    Scale scale = new Scale( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( scale );
     Fixture.preserveWidgets();

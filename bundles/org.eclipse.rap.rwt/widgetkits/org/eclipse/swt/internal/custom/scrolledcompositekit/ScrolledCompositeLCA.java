@@ -13,12 +13,12 @@ package org.eclipse.swt.internal.custom.scrolledcompositekit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
@@ -26,7 +26,6 @@ import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.widgets.*;
 
 
@@ -45,6 +44,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   private static final String PROP_SHOW_FOCUSED_CONTROL = "showFocusedControl";
   private static final String PROP_SCROLLBARS_VISIBLE = "scrollBarsVisible";
   private static final String PROP_SCROLLBARS_SELECTION_LISTENER = "scrollBarsSelection";
+  private static final String EVENT_SCROLLBAR_SELECTED = "scrollBarSelected";
 
   // Default values
   private static final Point DEFAULT_ORIGIN = new Point( 0, 0 );
@@ -71,19 +71,18 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     ScrollBar hScroll = composite.getHorizontalBar();
     if( value != null && hScroll != null ) {
       origin.x = NumberFormatUtil.parseInt( value );
-      processSelection( hScroll );
     }
     value = WidgetLCAUtil.readPropertyValue( widget, PARAM_V_BAR_SELECTION );
     ScrollBar vScroll = composite.getVerticalBar();
     if( value != null && vScroll != null ) {
       origin.y = NumberFormatUtil.parseInt( value );
-      processSelection( vScroll );
     }
     composite.setOrigin( origin );
-    ControlLCAUtil.processMouseEvents( composite );
+    ControlLCAUtil.processEvents( composite );
     ControlLCAUtil.processKeyEvents( composite );
     ControlLCAUtil.processMenuDetect( composite );
     WidgetLCAUtil.processHelp( composite );
+    processScrollBarSelectionEvent( composite );
   }
 
   @Override
@@ -164,9 +163,24 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static void processSelection( ScrollBar scrollBar ) {
-    SelectionEvent evt = new SelectionEvent( scrollBar, null, SelectionEvent.WIDGET_SELECTED );
-    evt.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
-    evt.processEvent();
+  private static void processScrollBarSelectionEvent( ScrolledComposite composite ) {
+    if( WidgetLCAUtil.wasEventSent( composite, EVENT_SCROLLBAR_SELECTED ) ) {
+      String horizontal = readEventPropertyValue( composite,
+                                                  EVENT_SCROLLBAR_SELECTED,
+                                                  "horizontal" );
+      String vertical = readEventPropertyValue( composite,
+                                                EVENT_SCROLLBAR_SELECTED,
+                                                "vertical" );
+      ScrollBar hScroll = composite.getHorizontalBar();
+      if( hScroll != null && "true".equals( horizontal ) ) {
+        SelectionEvent evt = new SelectionEvent( hScroll, null, SelectionEvent.WIDGET_SELECTED );
+        evt.processEvent();
+      }
+      ScrollBar vScroll = composite.getVerticalBar();
+      if( vScroll != null && "true".equals( vertical ) ) {
+        SelectionEvent evt = new SelectionEvent( vScroll, null, SelectionEvent.WIDGET_SELECTED );
+        evt.processEvent();
+      }
+    }
   }
 }
