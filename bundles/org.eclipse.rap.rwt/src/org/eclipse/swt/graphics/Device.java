@@ -374,12 +374,9 @@ public abstract class Device implements Drawable, SerializableCompatibility {
   }
 
   private void readDPI() {
-    dpi = new Point( 0, 0 );
-    String dpiX = ProtocolUtil.readPropertyValueAsString( "w1", "dpi.x" );
-    String dpiY = ProtocolUtil.readPropertyValueAsString( "w1", "dpi.y" );
-    if( dpiX != null && dpiY != null ) {
-      dpi.x = Integer.parseInt( dpiX );
-      dpi.y = Integer.parseInt( dpiY );
+    dpi = ProtocolUtil.readPropertyValueAsPoint( "w1", "dpi" );
+    if( dpi == null ) {
+      dpi = new Point( 0, 0 );
     }
   }
 

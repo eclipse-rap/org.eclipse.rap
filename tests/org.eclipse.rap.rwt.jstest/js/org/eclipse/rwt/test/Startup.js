@@ -23,10 +23,11 @@ rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
     }
   };
   rwt.protocol.MessageProcessor.processMessage( {
-    "meta": {
-      "requestCounter": -1
-    },
-    "operations": [ [ "create", "w1", "rwt.Display" ] ]
+    "meta": {},
+    "operations": [
+      [ "create", "w1", "rwt.Display" ],
+      [ "call", "w1", "init", { "url" : "", "rootId" : "w1" } ]
+    ]
   } );
   rwt.runtime.ErrorHandler.processJavaScriptErrorInResponse
     = function( script, error, currentRequest ) { throw error; };

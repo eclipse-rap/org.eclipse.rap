@@ -40,6 +40,7 @@ import org.eclipse.rap.rwt.lifecycle.IWidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -321,16 +322,19 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   static void readBounds( Display display ) {
     Rectangle oldBounds = display.getBounds();
-    int width = readIntPropertyValue( display, "bounds.width", oldBounds.width );
-    int height = readIntPropertyValue( display, "bounds.height", oldBounds.height );
-    Rectangle bounds = new Rectangle( 0, 0, width, height );
+    Rectangle bounds = ProtocolUtil.readPropertyValueAsRectangle( "w1",  "bounds" );
+    if( bounds == null ) {
+      bounds = new Rectangle( 0, 0, oldBounds.width, oldBounds.height );
+    }
     getDisplayAdapter( display ).setBounds( bounds );
   }
 
   private static void readCursorLocation( Display display ) {
-    int x = readIntPropertyValue( display, "cursorLocation.x", 0 );
-    int y = readIntPropertyValue( display, "cursorLocation.y", 0 );
-    getDisplayAdapter( display ).setCursorLocation( x, y );
+    Point location = ProtocolUtil.readPropertyValueAsPoint( getId( display ), "cursorLocation" );
+    if( location == null ) {
+      location = new Point( 0, 0 );
+    }
+    getDisplayAdapter( display ).setCursorLocation( location.x, location.y );
   }
 
   static void readFocusControl( Display display ) {

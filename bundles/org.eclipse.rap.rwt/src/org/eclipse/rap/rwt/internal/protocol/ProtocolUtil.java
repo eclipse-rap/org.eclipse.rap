@@ -68,7 +68,7 @@ public final class ProtocolUtil {
         }
         reader.close();
       } catch( IOException e ) {
-        throw new RuntimeException( "Unable to read the json message" );
+        throw new IllegalStateException( "Unable to read the json message" );
       }
       clientMessage = new ClientMessage( json.toString() );
       serviceStore.setAttribute( CLIENT_MESSAGE, clientMessage );

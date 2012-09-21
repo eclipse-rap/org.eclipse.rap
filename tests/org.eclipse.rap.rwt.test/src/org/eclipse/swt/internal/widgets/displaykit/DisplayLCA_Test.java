@@ -142,8 +142,7 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testReadDisplayBounds() {
-    Fixture.fakeSetParameter( getId( display ), "bounds.width", Integer.valueOf( 30 ) );
-    Fixture.fakeSetParameter( getId( display ), "bounds.height", Integer.valueOf( 70 ) );
+    Fixture.fakeSetParameter( getId( display ), "bounds", new int[] { 0, 0, 30, 70 } );
 
     displayLCA.readData( display );
 
@@ -273,8 +272,7 @@ public class DisplayLCA_Test extends TestCase {
     shell2.setBounds( 0, 0, 300, 400 );
     shell2.setMaximized( true );
     // fake display resize
-    Fixture.fakeSetParameter( getId( display ), "bounds.width", Integer.valueOf( 700 ) );
-    Fixture.fakeSetParameter( getId( display ), "bounds.height", Integer.valueOf( 500 ) );
+    Fixture.fakeSetParameter( getId( display ), "bounds", new int[] { 0, 0, 700, 500 } );
 
     displayLCA.readData( display );
 
@@ -288,8 +286,7 @@ public class DisplayLCA_Test extends TestCase {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     displayAdapter.setBounds( new Rectangle( 0, 0, 800, 600 ) );
-    Fixture.fakeSetParameter( getId( display ), "cursorLocation.x", Integer.valueOf( 1 ) );
-    Fixture.fakeSetParameter( getId( display ), "cursorLocation.y", Integer.valueOf( 2 ) );
+    Fixture.fakeSetParameter( getId( display ), "cursorLocation", new int[] { 1, 2 } );
 
     displayLCA.readData( display );
 

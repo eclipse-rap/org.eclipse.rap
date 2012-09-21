@@ -119,8 +119,7 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 public class Display extends Device implements Adaptable {
 
   private static final IFilterEntry[] EMPTY_FILTERS = new IFilterEntry[ 0 ];
-  private final static String AVAILABLE_WIDTH = "bounds.width";
-  private final static String AVAILABLE_HEIGHT = "bounds.height";
+  private final static String BOUNDS = "bounds";
   private static final String ATTR_INVALIDATE_FOCUS
     = DisplayAdapter.class.getName() + "#invalidateFocus";
   private static final String APP_NAME = Display.class.getName() + "#appName";
@@ -2247,18 +2246,11 @@ public class Display extends Device implements Adaptable {
   }
 
   private Rectangle readInitialBounds() {
-    ProtocolUtil.readPropertyValueAsString( "w1",  Display.AVAILABLE_WIDTH );
-    String widthVal = ProtocolUtil.readPropertyValueAsString( "w1", Display.AVAILABLE_WIDTH );
-    int width = 1024;
-    if( widthVal != null ) {
-      width = Integer.parseInt( widthVal );
+    Rectangle result = ProtocolUtil.readPropertyValueAsRectangle( "w1",  Display.BOUNDS );
+    if( result == null ) {
+      result = new Rectangle( 0, 0, 1024, 768 );
     }
-    String heightVal = ProtocolUtil.readPropertyValueAsString( "w1", Display.AVAILABLE_HEIGHT );
-    int height = 768;
-    if( heightVal != null ) {
-      height = Integer.parseInt( heightVal );
-    }
-    return new Rectangle( 0, 0, width, height );
+    return result;
   }
 
   private void notifyFilters( Event event ) {

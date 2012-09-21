@@ -43,8 +43,7 @@ public class DeviceSerialization_Test extends TestCase {
   }
 
   public void testDPIAndColorDepthIsSerializable() throws Exception {
-    Fixture.fakeSetParameter( "w1", "dpi.x", Integer.valueOf( 1 ) );
-    Fixture.fakeSetParameter( "w1", "dpi.y", Integer.valueOf( 2 ) );
+    Fixture.fakeSetParameter( "w1", "dpi", new int[] { 1, 2 } );
     Fixture.fakeSetParameter( "w1", "colorDepth", Integer.valueOf( 32 ) );
     TestDevice device = new TestDevice();
 
