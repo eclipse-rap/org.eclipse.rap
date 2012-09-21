@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.theme.*;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -88,16 +86,11 @@ final class JsonUtil {
     return result;
   }
 
-  public static Object jsonToJava( JSONArray object ) {
-    Object result = object.toString();
+  public static Object[] jsonToJava( JSONArray object ) {
+    Object[] result = new Object[ object.length() ];
     try {
-      if( object.length() == 2 ) {
-          result = new Point( object.getInt( 0 ), object.getInt( 1 ) );
-      } else if( object.length() == 4 ) {
-        result = new Rectangle( object.getInt( 0 ),
-                                object.getInt( 1 ),
-                                object.getInt( 2 ),
-                                object.getInt( 3 ) );
+      for( int i = 0; i < result.length; i++ ) {
+        result[ i ] = jsonToJava( object.get( i ) );
       }
     } catch( JSONException e ) {
       // do nothing - keep result as json string

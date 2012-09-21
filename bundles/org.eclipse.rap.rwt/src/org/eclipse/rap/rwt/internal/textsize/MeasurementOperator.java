@@ -160,7 +160,7 @@ class MeasurementOperator implements SerializableCompatibility {
     for( int i = 0; i < operations.length; i++ ) {
       Map resultsMap = ( Map )operations[ i ].getProperty( PROPERTY_RESULTS );
       if( resultsMap != null ) {
-        result = ( Point )resultsMap.get( id );
+        result = ProtocolUtil.toPoint( resultsMap.get( id ) );
       }
     }
     return result;

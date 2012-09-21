@@ -59,7 +59,6 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
 
     widgetSelected : function( evt ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var req = rwt.remote.Server.getInstance();
       var id = widgetManager.findIdByWidget( evt.getTarget() );
       var left = evt.getTarget().getLeft();
       var top = evt.getTarget().getTop();

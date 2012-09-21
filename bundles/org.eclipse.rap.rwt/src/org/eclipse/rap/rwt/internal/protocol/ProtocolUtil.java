@@ -111,10 +111,8 @@ public final class ProtocolUtil {
     SetOperation operation =  message.getLastSetOperationFor( target, property );
     if( operation != null ) {
       Object value = operation.getProperty( property );
-      if( value == null || value instanceof Point ) {
-        result = ( Point )value;
-      } else {
-        throw new IllegalStateException( "Property is not a point: " + property );
+      if( value != null ) {
+        result = toPoint( value );
       }
     }
     return result;
@@ -126,10 +124,8 @@ public final class ProtocolUtil {
     SetOperation operation =  message.getLastSetOperationFor( target, property );
     if( operation != null ) {
       Object value = operation.getProperty( property );
-      if( value == null || value instanceof Rectangle ) {
-        result = ( Rectangle )value;
-      } else {
-        throw new IllegalStateException( "Property is not a rectangle: " + property );
+      if( value != null ) {
+        result = toRectangle( value );
       }
     }
     return result;
@@ -224,6 +220,44 @@ public final class ProtocolUtil {
       result = new int[] { 0, 0, 0, 0 };
     }
     return result;
+  }
+
+  public static Rectangle toRectangle( Object value ) {
+    int[] array = toIntArray( value );
+    checkArrayLength( array, 4 );
+    return new Rectangle( array[ 0 ], array[ 1 ], array[ 2 ], array[ 3 ] );
+  }
+
+  public static Point toPoint( Object value ) {
+    int[] array = toIntArray( value );
+    checkArrayLength( array, 2 );
+    return new Point( array[ 0 ], array[ 1 ] );
+  }
+
+  private static int[] toIntArray( Object value ) {
+    int[] result;
+    if( value instanceof Object[] ) {
+      Object[] array = ( Object[] )value;
+      result = new int[ array.length ];
+      for( int i = 0; i < array.length; i++ ) {
+        try {
+          result[ i ] = ( ( Integer )array[ i ] ).intValue();
+        } catch( ClassCastException exception ) {
+          String message = "Could not convert to int array: array contains non-int value";
+          throw new IllegalStateException( message );
+        }
+      }
+    } else {
+      throw new IllegalStateException( "Could not convert to int array: property is not an array" );
+    }
+    return result;
+  }
+
+  private static void checkArrayLength( int[] array, int length ) {
+    if( array.length != length ) {
+      String message = "Could not convert property to point: invalid array length";
+      throw new IllegalStateException( message );
+    }
   }
 
 }
