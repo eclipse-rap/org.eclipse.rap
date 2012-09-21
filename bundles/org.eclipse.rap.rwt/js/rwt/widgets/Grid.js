@@ -1028,7 +1028,6 @@ qx.Class.define( "rwt.widgets.Grid", {
         eventName += defaultSelected ? "DefaultSelected" : "Selected";
         var itemId = this._getItemId( item );
         req.addEvent( eventName, id );
-        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         req.addParameter( eventName + ".item", itemId );
         if( detail != null ) {
           req.addParameter( eventName + ".detail", detail );
@@ -1036,6 +1035,7 @@ qx.Class.define( "rwt.widgets.Grid", {
         if( !isNaN( index ) ) {
           req.addParameter( eventName + ".index", index );
         }
+        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         req.send();
       }
     },

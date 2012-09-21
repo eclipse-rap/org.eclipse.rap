@@ -134,7 +134,9 @@ qx.Class.define( "rwt.remote.Server", {
         this._sendTimer.stop();
         this.send();
       } else {
+        this._flushEvent();
         this.dispatchSimpleEvent( "send" );
+        this._flushEvent();
         this._sendTimer.stop();
         this.getMessageWriter().appendMeta( "uiRoot", this._uiRootId );
         if( this._requestCounter != null ) {
@@ -143,7 +145,9 @@ qx.Class.define( "rwt.remote.Server", {
         }
         var request = this._createRequest();
         request.setAsynchronous( async );
-        this._attachParameters( request );
+        request.setData( this.getMessageWriter().createMessage() );
+        this._writer.dispose();
+        this._writer = null;
         this._waitHintTimer.start();
         request.send();
       }
@@ -162,13 +166,6 @@ qx.Class.define( "rwt.remote.Server", {
 
     ////////////
     // Internals
-
-    _attachParameters : function( request ) {
-      this._flushEvent();
-      request.setData( this.getMessageWriter().createMessage() );
-      this._writer.dispose();
-      this._writer = null;
-    },
 
     _createRequest : function() {
       var result = new rwt.remote.Request( this._url, "POST", "application/json" );

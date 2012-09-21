@@ -52,7 +52,8 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         var id = widgetManager.findIdByWidget( evt.getTarget() );
         var req = rwt.remote.Server.getInstance();
         req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
-        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
+        // FIXME: [if] Attach correct properties
+//        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         req.send();
       }
     },
@@ -82,12 +83,24 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
 
     addWidgetSelectedModifier : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var modifier = org.eclipse.swt.EventUtil._getKeyModifier();
-        if( modifier !== "" ) {
-          var req = rwt.remote.Server.getInstance();
-          req.addParameter( "org.eclipse.swt.events.widgetSelected.modifier", modifier );
-        }
+        var commandKey
+        = rwt.client.Client.getPlatform() === "mac" && org.eclipse.swt.EventUtil._metaKey;
+        var shiftKey = org.eclipse.swt.EventUtil._shiftKey;
+        var ctrlKey = org.eclipse.swt.EventUtil._ctrlKey || commandKey;
+        var altKey = org.eclipse.swt.EventUtil._altKey;
+        var req = rwt.remote.Server.getInstance();
+        req.addParameter( "org.eclipse.swt.events.widgetSelected.shiftKey", shiftKey );
+        req.addParameter( "org.eclipse.swt.events.widgetSelected.ctrlKey", ctrlKey );
+        req.addParameter( "org.eclipse.swt.events.widgetSelected.altKey", altKey );
       }
+    },
+
+    addModifierToProperties : function( properties ) {
+      var commandKey
+        = rwt.client.Client.getPlatform() === "mac" && org.eclipse.swt.EventUtil._metaKey;
+      properties.shiftKey = org.eclipse.swt.EventUtil._shiftKey;
+      properties.ctrlKey = org.eclipse.swt.EventUtil._ctrlKey || commandKey;
+      properties.altKey = org.eclipse.swt.EventUtil._altKey;
     },
 
     _getKeyModifier : function() {

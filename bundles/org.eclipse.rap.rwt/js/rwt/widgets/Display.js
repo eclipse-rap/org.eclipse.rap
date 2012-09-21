@@ -127,6 +127,7 @@ rwt.widgets.Display.prototype = {
   },
 
   _onSend : function( evt ) {
+    // TODO [tb] : This will attach the cursorLocation as the last operation, but should be first
     var pageX = qx.event.type.MouseEvent.getPageX();
     var pageY = qx.event.type.MouseEvent.getPageY();
     var location = [ pageX, pageY ];

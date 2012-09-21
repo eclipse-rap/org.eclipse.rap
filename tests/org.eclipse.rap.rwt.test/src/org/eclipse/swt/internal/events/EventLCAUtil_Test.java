@@ -1,43 +1,95 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.events;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_WIDGET_SELECTED;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.mockito.ArgumentCaptor;
 
 
 public class EventLCAUtil_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
+    Fixture.fakeNewRequest( display );
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
+  public void testWidgetDefaultSeletedModifiers() {
+    Button button = new Button( shell, SWT.PUSH );
+    SelectionListener listener = mock( SelectionListener.class );
+    button.addSelectionListener( listener );
+
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( "altKey", Boolean.TRUE );
+    parameters.put( "ctrlKey", Boolean.FALSE );
+    parameters.put( "shiftKey", Boolean.FALSE );
+    Fixture.fakeNotifyOperation( getId( button ), EVENT_WIDGET_SELECTED, parameters );
+    Fixture.readDataAndProcessAction( button );
+
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertTrue( ( event.stateMask & SWT.ALT ) != 0 );
+    assertTrue( ( event.stateMask & SWT.CTRL ) == 0 );
+    assertTrue( ( event.stateMask & SWT.SHIFT ) == 0 );
+  }
+
   public void testTranslateModifier() {
-    int stateMask = EventLCAUtil.translateModifier( "" );
+    int stateMask = EventLCAUtil.translateModifier( "false", "false", "false" );
     assertEquals( 0, stateMask & SWT.MODIFIER_MASK );
     assertEquals( 0, stateMask & SWT.CTRL );
     assertEquals( 0, stateMask & SWT.SHIFT );
     assertEquals( 0, stateMask & SWT.ALT );
     // Shift
-    stateMask = EventLCAUtil.translateModifier( "shift," );
+    stateMask = EventLCAUtil.translateModifier( "false", "false", "true" );
     assertTrue( ( stateMask & SWT.MODIFIER_MASK ) != 0 );
     assertEquals( 0, stateMask & SWT.CTRL );
     assertTrue( ( stateMask & SWT.SHIFT ) != 0 );
     assertEquals( 0, stateMask & SWT.ALT );
     // Alt
-    stateMask = EventLCAUtil.translateModifier( "alt," );
+    stateMask = EventLCAUtil.translateModifier( "true", "false", "false" );
     assertTrue( ( stateMask & SWT.MODIFIER_MASK ) != 0 );
     assertEquals( 0, stateMask & SWT.CTRL );
     assertEquals( 0, stateMask & SWT.SHIFT );
     assertTrue( ( stateMask & SWT.ALT ) != 0 );
     // Shift + Ctrl + Alt
-    stateMask = EventLCAUtil.translateModifier( "alt,shift,ctrl" );
-    assertEquals( SWT.SHIFT | SWT.CTRL | SWT.ALT,
-                  stateMask & SWT.MODIFIER_MASK );
+    stateMask = EventLCAUtil.translateModifier( "true", "true", "true" );
+    assertEquals( SWT.SHIFT | SWT.CTRL | SWT.ALT, stateMask & SWT.MODIFIER_MASK );
     assertEquals( stateMask, stateMask & SWT.MODIFIER_MASK );
   }
 

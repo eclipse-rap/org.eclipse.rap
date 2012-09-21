@@ -482,6 +482,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "widgetSelected" ) );
     },
 
+    testSendModifier : function() {
+      var button = new rwt.widgets.Button( "push" );
+      button.addState( "rwt_PUSH" );
+      button.addToDocument();
+      button.setHasSelectionListener( true );
+      TestUtil.flush();
+      org.eclipse.swt.WidgetManager.getInstance().add( button, "w11" );
+
+      TestUtil.shiftClick( button );
+
+      var message = TestUtil.getMessageObject();
+      assertTrue( message.findNotifyProperty( "w11", "widgetSelected", "shiftKey" ) );
+      assertFalse( message.findNotifyProperty( "w11", "widgetSelected", "altKey" ) );
+      assertFalse( message.findNotifyProperty( "w11", "widgetSelected", "ctrlKey" ) );
+    },
+
     testWrap : function() {
       var button = new rwt.widgets.Button( "push" );
       button.addState( "rwt_PUSH" );

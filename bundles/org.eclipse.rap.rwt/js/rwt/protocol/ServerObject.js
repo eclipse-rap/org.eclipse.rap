@@ -23,10 +23,13 @@ rwt.protocol.ServerObject.prototype = {
     server.getMessageWriter().appendSet( this._id, key, value );
   },
 
-  notify : function( event, properties ) {
+  // TODO [tb]: suppressSend should be a temporariy workaround for KeyEventSupport.js
+  notify : function( event, properties, suppressSend ) {
     var actualProps = properties ? properties : {};
     server.getMessageWriter().appendNotify( this._id, event, actualProps );
-    server.send();
+    if( suppressSend !== true ) {
+      server.send();
+    }
   },
 
   call : function( method, properties ) {

@@ -41,7 +41,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      assertEquals( 1, message.getOperationCount() );
+      assertEquals( 2, message.getOperationCount() );
       var op = message.getOperation( 0 );
       assertEquals( "set", op.type );
       assertEquals( "w3", op.target );
@@ -56,7 +56,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       server.send();
 
       var message = TestUtil.getMessageObject();
-      assertEquals( 0, message.getOperationCount() );
+      assertEquals( 1, message.getOperationCount() );
     },
 
     testSendSetParameterWithDot : function() {
@@ -66,7 +66,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      assertEquals( 1, message.getOperationCount() );
+      assertEquals( 2, message.getOperationCount() );
       var op = message.getOperation( 0 );
       assertEquals( "set", op.type );
       assertEquals( "w3", op.target );

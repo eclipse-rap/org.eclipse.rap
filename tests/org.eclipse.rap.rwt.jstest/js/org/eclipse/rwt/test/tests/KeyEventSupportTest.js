@@ -115,7 +115,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       TestUtil.keyHold( widget.getElement(), "b", 0 );
       TestUtil.keyUp( widget.getElement(), "b", 0 );
 
-
       assertEquals( 2, TestUtil.getRequestsSend() );
       var msg1 = TestUtil.getMessageObject( 0 );
       var msg2 = TestUtil.getMessageObject( 1 );
@@ -425,7 +424,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var msg = TestUtil.getMessageObject( 1 );
       assertEquals( 89, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
       assertEquals( 121, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
-      assertEquals( "", msg.findNotifyProperty( "w3", "keyDown", "modifier" ) );
+      assertFalse( msg.findNotifyProperty( "w3", "keyDown", "ctrlKey" ) );
+      assertFalse( msg.findNotifyProperty( "w3", "keyDown", "shiftKey" ) );
+      assertFalse( msg.findNotifyProperty( "w3", "keyDown", "altKey" ) );
       req.addEventListener( "received", keyUtil._onRequestReceived, keyUtil );
       this._disposeTextWidget( text );
     },
@@ -654,18 +655,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       this._disposeTextWidget( text );
     },
 
+    setUp : function() {
+      display = rwt.widgets.Display.getCurrent();
+      var adapter = rwt.protocol.AdapterRegistry.getAdapter( "rwt.Display" );
+      rwt.protocol.ObjectRegistry.add( "w1", display, adapter );
+    },
+
     _createWidget : function() {
       var result = new rwt.widgets.base.MultiCellWidget( [] );
       result.addToDocument();
       result.setLocation( 0, 0 );
       result.setDimension( 100, 100 );
       rwt.widgets.base.Widget.flushGlobalQueues();
+      rwt.protocol.ObjectRegistry.add( "w11", result );
       return result;
     },
 
     _createTextWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
       TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {

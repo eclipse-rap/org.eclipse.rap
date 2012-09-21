@@ -13,7 +13,6 @@ package org.eclipse.swt.internal.events;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventPropertyValueAsString;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Widget;
 
@@ -21,27 +20,22 @@ import org.eclipse.swt.widgets.Widget;
 public final class EventLCAUtil {
 
   public static int readStateMask( Widget widget, String eventName ) {
-    int result = 0;
-    String modifiers = readEventPropertyValueAsString( getId( widget ),
-                                                       eventName,
-                                                       ClientMessageConst.EVENT_PARAM_MODIFIER );
-    if( modifiers != null ) {
-      result = translateModifier( modifiers );
-    }
-    return result;
+    String altKey = readEventPropertyValueAsString( getId( widget ), eventName, "altKey" );
+    String ctrlKey = readEventPropertyValueAsString( getId( widget ), eventName, "ctrlKey" );
+    String shiftKey = readEventPropertyValueAsString( getId( widget ), eventName, "shiftKey" );
+    return translateModifier( altKey, ctrlKey, shiftKey );
   }
 
-  static int translateModifier( String value ) {
-    String[] modifiers = value.split( "," );
+  static int translateModifier( String altKey, String ctrlKey, String shiftKey ) {
     int result = 0;
-    for( int i = 0; i < modifiers.length; i++ ) {
-      if( "ctrl".equals( modifiers[ i ] ) ) {
-        result |= SWT.CTRL;
-      } else if( "alt".equals( modifiers[ i ] ) ) {
-        result |= SWT.ALT;
-      } else if ( "shift".equals(  modifiers[ i ] ) ) {
-        result |= SWT.SHIFT;
-      }
+    if( "true".equals( ctrlKey ) ) {
+      result |= SWT.CTRL;
+    }
+    if( "true".equals( altKey ) ) {
+      result |= SWT.ALT;
+    }
+    if( "true".equals( shiftKey ) ) {
+      result |= SWT.SHIFT;
     }
     return result;
   }

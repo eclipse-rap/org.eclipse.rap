@@ -151,30 +151,20 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
     },
 
     _attachKeyEvent : function( widget, keyCode, charCode, domEvent ) {
-      var req = rwt.remote.Server.getInstance();
-      var id;
+      var server = rwt.remote.Server.getInstance();
+      var serverObject;
       if( widget === null ) {
-        id = "w1";
+        serverObject = server.getServerObject( rwt.widgets.Display.getCurrent() );
       } else {
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
-        id = wm.findIdByWidget( widget );
+        serverObject = server.getServerObject( widget );
       }
       var finalCharCode = this._getCharCode( keyCode, charCode, domEvent );
-      req.addEvent( "org.eclipse.swt.events.keyDown", id );
-      req.addParameter( "org.eclipse.swt.events.keyDown.keyCode", keyCode );
-      req.addParameter( "org.eclipse.swt.events.keyDown.charCode", finalCharCode );
-      var modifier = "";
-      var commandKey = rwt.client.Client.getPlatform() === "mac" && domEvent.metaKey;
-      if( domEvent.shiftKey ) {
-        modifier += "shift,";
-      }
-      if( domEvent.ctrlKey || commandKey ) {
-        modifier += "ctrl,";
-      }
-      if( domEvent.altKey ) {
-        modifier += "alt,";
-      }
-      req.addParameter( "org.eclipse.swt.events.keyDown.modifier", modifier );
+      var properties = {
+        "keyCode" : keyCode,
+        "charCode" : finalCharCode
+      };
+      org.eclipse.swt.EventUtil.addModifierToProperties( properties );
+      serverObject.notify( "keyDown", properties, true );
     },
 
     ///////////////
