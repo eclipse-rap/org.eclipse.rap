@@ -26,7 +26,7 @@ import org.eclipse.rap.rwt.internal.util.*;
 /**
  * A helping class that delivers the initial HTML page in order to bootstrap the client side.
  */
-public final class StartupPage {
+public class StartupPage {
 
   private final StartupPageConfigurer configurer;
 

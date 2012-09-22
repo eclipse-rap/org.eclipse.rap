@@ -17,11 +17,11 @@ import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 public class ApplicationContextHelper {
 
   public static void setSkipResoureRegistration( boolean ignore ) {
-    ApplicationContext.skipResoureRegistration = ignore;
+    ApplicationContextActivator.skipResoureRegistration = ignore;
   }
 
   public static void setSkipResoureDeletion( boolean ignore ) {
-    ApplicationContext.skipResoureDeletion = ignore;
+    ApplicationContextActivator.skipResoureDeletion = ignore;
   }
 
   public static void useDefaultResourceManager() {

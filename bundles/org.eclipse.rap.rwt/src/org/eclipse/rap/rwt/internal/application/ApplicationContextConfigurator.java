@@ -47,7 +47,7 @@ class ApplicationContextConfigurator {
   }
 
   private void configureCustomSettings( ApplicationContext applicationContext ) {
-    configuration.configure( createContext( applicationContext ) );
+    configuration.configure( createApplication( applicationContext ) );
   }
 
   private void configureInternalSettings( ApplicationContext applicationContext ) {
@@ -106,7 +106,8 @@ class ApplicationContextConfigurator {
     }
   }
 
-  private ApplicationImpl createContext( ApplicationContext applicationContext ) {
+  private ApplicationImpl createApplication( ApplicationContext applicationContext ) {
     return new ApplicationImpl( applicationContext, configuration );
   }
+
 }

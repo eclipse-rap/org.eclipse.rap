@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.application;
 
-import java.io.File;
-
 import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
@@ -42,19 +40,12 @@ import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.InternalImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.DisplaysHolder;
-import org.eclipse.swt.internal.widgets.displaykit.ClientResources;
 
 
 public class ApplicationContext {
   // TODO [fappel]: this allows to set a fake double of the resource manager for testing purpose.
   //                Think about a less intrusive solution.
   static IResourceManager testResourceManager;
-  // TODO [fappel]: this flag is used to skip resource registration. Think about
-  //                a less intrusive solution.
-  static boolean skipResoureRegistration;
-  // TODO [fappel]: this flag is used to skip resource deletion. Think about
-  //                a less intrusive solution.
-  static boolean skipResoureDeletion;
   // TODO [fappel]: themeManager isn't final for performance reasons of the testsuite.
   //                TestServletContext#setAttribute(String,Object) will replace the runtime
   //                implementation with an optimized version for testing purpose. Think about
@@ -83,6 +74,7 @@ public class ApplicationContext {
   private final ProbeStore probeStore;
   private final ServletContext servletContext;
   private final ApplicationContextConfigurator contextConfigurator;
+  private final ApplicationContextActivator contextActivator;
   private boolean activated;
 
   public ApplicationContext( ApplicationConfiguration applicationConfiguration,
@@ -113,6 +105,7 @@ public class ApplicationContext {
     this.servletContext = servletContext;
     contextConfigurator = new ApplicationContextConfigurator( applicationConfiguration,
                                                               servletContext );
+    contextActivator = new ApplicationContextActivator( this );
   }
 
   public boolean isActivated() {
@@ -254,63 +247,16 @@ public class ApplicationContext {
   private void doActivate() {
     themeManager.initialize();
     contextConfigurator.configure( this );
-    activateInstances();
-  }
-
-  private void activateInstances() {
-    ApplicationContextUtil.runWith( this, new Runnable() {
-      public void run() {
-        doActivateInstances();
-      }
-    } );
-  }
-
-  private void doActivateInstances() {
-    // TODO [SystemStart]: Unit testing
-    lifeCycleFactory.activate();
-    // Note: order is crucial here
-    jsLibraryConcatenator.startJSConcatenation();
-    themeManager.activate();
-    if( !skipResoureRegistration ) {
-      new ClientResources( getResourceManager(), themeManager ).registerResources();
-    }
-    jsLibraryConcatenator.activate();
+    contextActivator.activate();
   }
 
   private void doDeactivate() {
-    deactivateInstances();
+    contextActivator.deactivate();
     contextConfigurator.reset( this );
   }
-
-  private void deactivateInstances() {
-    ApplicationContextUtil.runWith( this, new Runnable() {
-      public void run() {
-        doDeactivateInstances();
-      }
-    } );
-  }
-
-  private void doDeactivateInstances() {
-    // TODO [SystemStart]: Unit testing
-    jsLibraryConcatenator.deactivate();
-    lifeCycleFactory.deactivate();
-    serviceManager.clear();
-    themeManager.deactivate();
-
-    // TODO [fappel]: think of better solution. This maps directly to the
-    //                default resource manager implementation while
-    //                the resource manager factory is configurable. Is
-    //                the latter really necessary since the only other factory
-    //                in use is for testing purpose (unfortunately API).
-    if( !skipResoureDeletion ) {
-      File resourcesDir = new File( rwtConfiguration.getContextDirectory(),
-                                    ResourceManagerImpl.RESOURCES );
-      ApplicationContextUtil.delete( resourcesDir );
-    }
-  }
-
 
   private ServiceManager createServiceManager() {
     return new ServiceManager( new LifeCycleServiceHandler( lifeCycleFactory, startupPage ) );
   }
+
 }
