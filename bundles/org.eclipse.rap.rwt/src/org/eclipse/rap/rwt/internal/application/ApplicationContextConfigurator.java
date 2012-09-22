@@ -37,6 +37,7 @@ class ApplicationContextConfigurator {
   }
 
   void configure( ApplicationContext applicationContext ) {
+    createDefaultTheme( applicationContext );
     configureCustomSettings( applicationContext );
     configureInternalSettings( applicationContext );
   }
@@ -104,6 +105,10 @@ class ApplicationContextConfigurator {
     if( !applicationContext.getSettingStoreManager().hasFactory() ) {
       applicationContext.getSettingStoreManager().register( new RWTFileSettingStoreFactory() );
     }
+  }
+
+  private void createDefaultTheme( ApplicationContext applicationContext ) {
+    applicationContext.getThemeManager().initialize();
   }
 
   private ApplicationImpl createApplication( ApplicationContext applicationContext ) {

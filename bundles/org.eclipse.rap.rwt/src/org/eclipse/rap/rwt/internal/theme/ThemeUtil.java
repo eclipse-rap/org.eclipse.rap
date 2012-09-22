@@ -87,13 +87,13 @@ public final class ThemeUtil {
 
   public static void initializeDefaultTheme( ThemeManager themeManager ) {
     if( !themeManager.hasTheme( RWT.DEFAULT_THEME_ID ) ) {
-      StyleSheet defaultStyleSheet = readDafaultThemeStyleSheet();
+      StyleSheet defaultStyleSheet = readDefaultThemeStyleSheet();
       Theme defaultTheme = new Theme( RWT.DEFAULT_THEME_ID, DEFAULT_THEME_NAME, defaultStyleSheet );
       themeManager.registerTheme( defaultTheme );
     }
   }
 
-  private static StyleSheet readDafaultThemeStyleSheet() {
+  private static StyleSheet readDefaultThemeStyleSheet() {
     StyleSheet result;
     try {
       ResourceLoader resLoader = ThemeManager.STANDARD_RESOURCE_LOADER;

@@ -245,7 +245,6 @@ public class ApplicationContext {
   }
 
   private void doActivate() {
-    themeManager.initialize();
     contextConfigurator.configure( this );
     contextActivator.activate();
   }
