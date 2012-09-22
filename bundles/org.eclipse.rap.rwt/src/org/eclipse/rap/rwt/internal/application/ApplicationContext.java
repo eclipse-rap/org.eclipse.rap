@@ -16,7 +16,6 @@ import javax.servlet.ServletContext;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.branding.BrandingManager;
 import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
-import org.eclipse.rap.rwt.internal.engine.RWTConfigurationImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
@@ -81,7 +80,7 @@ public class ApplicationContext {
                              ServletContext servletContext )
   {
     applicationStore = new ApplicationStoreImpl();
-    rwtConfiguration = new RWTConfigurationImpl();
+    rwtConfiguration = new RWTConfiguration();
     resourceManager = new ResourceManagerImpl( rwtConfiguration );
     phaseListenerRegistry = new PhaseListenerRegistry();
     entryPointManager = new EntryPointManager();

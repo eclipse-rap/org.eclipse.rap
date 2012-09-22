@@ -15,7 +15,6 @@ import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
-import org.eclipse.rap.rwt.internal.engine.RWTConfigurationImpl;
 import org.eclipse.rap.rwt.internal.service.ApplicationStoreImpl;
 import org.eclipse.rap.rwt.internal.service.ServiceManager;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
@@ -59,15 +58,13 @@ class ApplicationContextConfigurator {
   }
 
   private void setContextDirectory( ApplicationContext applicationContext ) {
-    RWTConfiguration configurationInstance = applicationContext.getConfiguration();
-    RWTConfigurationImpl configuration = ( RWTConfigurationImpl )configurationInstance;
+    RWTConfiguration configuration = applicationContext.getConfiguration();
     String location
       = ( String )servletContext.getAttribute( ApplicationConfiguration.RESOURCE_ROOT_LOCATION );
-    if( location != null ) {
-      configuration.configure( location );
-    } else {
-      configuration.configure( servletContext.getRealPath( "/" ) );
+    if( location == null ) {
+      location = servletContext.getRealPath( "/" );
     }
+    configuration.configure( location );
   }
 
   private void resetApplicationStore( ApplicationContext applicationContext ) {
@@ -86,8 +83,7 @@ class ApplicationContextConfigurator {
   }
 
   private void resetConfiguration( ApplicationContext applicationContext ) {
-    RWTConfiguration configurationInstance = applicationContext.getConfiguration();
-    RWTConfigurationImpl configuration = ( RWTConfigurationImpl )configurationInstance;
+    RWTConfiguration configuration = applicationContext.getConfiguration();
     configuration.reset();
   }
 

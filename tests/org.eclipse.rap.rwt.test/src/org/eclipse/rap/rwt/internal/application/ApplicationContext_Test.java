@@ -13,8 +13,7 @@ package org.eclipse.rap.rwt.internal.application;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
-import org.eclipse.rap.rwt.internal.engine.RWTConfigurationImpl;
+import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
@@ -25,7 +24,7 @@ public class ApplicationContext_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     context = new ApplicationContext( null, null );
-    RWTConfigurationImpl configuration = ( RWTConfigurationImpl )context.getConfiguration();
+    RWTConfiguration configuration = context.getConfiguration();
     configuration.configure( Fixture.WEB_CONTEXT_DIR.getAbsolutePath() );
   }
 

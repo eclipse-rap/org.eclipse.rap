@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
-import org.eclipse.rap.rwt.internal.engine.RWTConfigurationImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.resources.JSLibraryConcatenator;
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
@@ -72,7 +71,7 @@ public class ApplicationContextActivator_Test extends TestCase {
     lifeCycleFactory = mock( LifeCycleFactory.class );
     when( applicationContext.getLifeCycleFactory() ).thenReturn( lifeCycleFactory );
 
-    RWTConfiguration rwtConfiguration = mock( RWTConfigurationImpl.class );
+    RWTConfiguration rwtConfiguration = mock( RWTConfiguration.class );
     when( applicationContext.getConfiguration() ).thenReturn( rwtConfiguration );
 
     serviceManager = mock( ServiceManager.class );

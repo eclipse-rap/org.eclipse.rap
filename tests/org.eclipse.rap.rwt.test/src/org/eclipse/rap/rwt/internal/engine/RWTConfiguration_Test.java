@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,12 @@ package org.eclipse.rap.rwt.internal.engine;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.engine.RWTConfigurationImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
-public class RWTConfigurationImpl_Test extends TestCase {
+public class RWTConfiguration_Test extends TestCase {
 
-  private RWTConfigurationImpl configuration;
+  private RWTConfiguration configuration;
 
   public void testConfigure() {
     configure();
@@ -43,11 +42,13 @@ public class RWTConfigurationImpl_Test extends TestCase {
     }
   }
 
+  @Override
   protected void setUp() {
     Fixture.createWebContextDirectory();
-    configuration = new RWTConfigurationImpl();
+    configuration = new RWTConfiguration();
   }
 
+  @Override
   protected void tearDown() {
     Fixture.deleteWebContextDirectory();
   }

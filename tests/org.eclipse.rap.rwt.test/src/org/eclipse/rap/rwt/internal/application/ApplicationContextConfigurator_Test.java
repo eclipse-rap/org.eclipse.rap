@@ -24,7 +24,6 @@ import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
-import org.eclipse.rap.rwt.internal.engine.RWTConfigurationImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.internal.service.ServiceManager;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
@@ -243,7 +242,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   private void checkConfigurationHasBeenResetted() {
-    assertFalse( ( ( RWTConfigurationImpl )applicationContext.getConfiguration() ).isConfigured() );
+    assertFalse( applicationContext.getConfiguration().isConfigured() );
   }
 
   private void checkServiceHandlerHasBeenRemoved() {
