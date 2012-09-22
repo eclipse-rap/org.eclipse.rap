@@ -21,10 +21,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
+import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.service.ServiceManager;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.theme.Theme;
@@ -111,7 +109,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     checkEntryPointsHaveBeenRemoved();
     checkPhaseListenerHasBeenRemoved();
     checkResourceHasBeenRemoved();
-    checkConfigurationHasBeenResetted();
+    checkConfigurationHasBeenReset();
     checkServiceHandlerHasBeenRemoved();
     checkSettingStoreFactoryHasBeenRemoved();
     checkThemeManagerHasBeenResetted();
@@ -221,8 +219,8 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   private void checkContextDirectoryHasBeenSet( File contextDirectory ) {
-    RWTConfiguration rwtConfiguration = applicationContext.getConfiguration();
-    assertEquals( contextDirectory, rwtConfiguration.getContextDirectory() );
+    ResourceDirectory resourceDirectory = applicationContext.getResourceDirectory();
+    assertEquals( contextDirectory, resourceDirectory.getDirectory().getParentFile() );
   }
 
   private void checkBrandingHasBeenRemoved() {
@@ -241,8 +239,12 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     assertEquals( 0, applicationContext.getResourceRegistry().get().length );
   }
 
-  private void checkConfigurationHasBeenResetted() {
-    assertFalse( applicationContext.getConfiguration().isConfigured() );
+  private void checkConfigurationHasBeenReset() {
+    try {
+      applicationContext.getResourceDirectory().getDirectory();
+      fail();
+    } catch( IllegalStateException exception ) {
+    }
   }
 
   private void checkServiceHandlerHasBeenRemoved() {

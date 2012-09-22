@@ -21,7 +21,7 @@ import javax.servlet.ServletContext;
 import org.eclipse.rap.rwt.branding.AbstractBranding;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
+import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
@@ -53,7 +53,7 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
  */
 public class ApplicationRunner {
 
-  public final static String RESOURCES = ResourceManagerImpl.RESOURCES;
+  public final static String RESOURCES = ResourceDirectory.DIRNAME;
 
   private final ApplicationContext applicationContext;
 

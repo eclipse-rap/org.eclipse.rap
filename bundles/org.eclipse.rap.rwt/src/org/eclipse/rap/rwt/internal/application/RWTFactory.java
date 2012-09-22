@@ -11,17 +11,26 @@
 package org.eclipse.rap.rwt.internal.application;
 
 import org.eclipse.rap.rwt.internal.branding.BrandingManager;
-import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
-import org.eclipse.rap.rwt.internal.lifecycle.*;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.PhaseListenerRegistry;
 import org.eclipse.rap.rwt.internal.resources.JSLibraryConcatenator;
+import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
-import org.eclipse.rap.rwt.internal.service.*;
+import org.eclipse.rap.rwt.internal.service.ServiceManager;
+import org.eclipse.rap.rwt.internal.service.SettingStoreManager;
+import org.eclipse.rap.rwt.internal.service.StartupPage;
 import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.rap.rwt.service.IApplicationStore;
-import org.eclipse.swt.internal.graphics.*;
+import org.eclipse.swt.internal.graphics.FontDataFactory;
+import org.eclipse.swt.internal.graphics.ImageDataFactory;
+import org.eclipse.swt.internal.graphics.ImageFactory;
+import org.eclipse.swt.internal.graphics.InternalImageFactory;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.DisplaysHolder;
 
 
@@ -55,8 +64,8 @@ public class RWTFactory {
     return ApplicationContextUtil.getInstance().getSettingStoreManager();
   }
 
-  public static RWTConfiguration getConfiguration() {
-    return ApplicationContextUtil.getInstance().getConfiguration();
+  public static ResourceDirectory getResourceDirectory() {
+    return ApplicationContextUtil.getInstance().getResourceDirectory();
   }
 
   public static PhaseListenerRegistry getPhaseListenerRegistry() {

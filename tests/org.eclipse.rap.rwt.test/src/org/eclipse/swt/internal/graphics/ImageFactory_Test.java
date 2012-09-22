@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
+import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -99,7 +99,7 @@ public class ImageFactory_Test extends TestCase {
 
   private static String getRegisterPath( Image image ) {
     String imagePath = ImageFactory.getImagePath( image );
-    int prefixLength = ResourceManagerImpl.RESOURCES.length() + 1;
+    int prefixLength = ResourceDirectory.DIRNAME.length() + 1;
     return imagePath.substring( prefixLength );
   }
 }

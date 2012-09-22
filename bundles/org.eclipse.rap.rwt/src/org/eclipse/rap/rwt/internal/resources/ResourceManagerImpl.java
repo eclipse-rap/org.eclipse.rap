@@ -24,7 +24,6 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.RWTProperties;
-import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.resources.IResourceManager;
 
@@ -44,9 +43,7 @@ import org.eclipse.rap.rwt.resources.IResourceManager;
  */
 public class ResourceManagerImpl implements IResourceManager {
 
-  public static final String RESOURCES = "rwt-resources";
-
-  private final RWTConfiguration configuration;
+  private final ResourceDirectory resourceDirectory;
   private final Map<String,Resource> resources;
   private final ThreadLocal<ClassLoader> contextLoader;
 
@@ -68,8 +65,8 @@ public class ResourceManagerImpl implements IResourceManager {
     }
   }
 
-  public ResourceManagerImpl( RWTConfiguration configuration ) {
-    this.configuration = configuration;
+  public ResourceManagerImpl( ResourceDirectory resourceDirectory ) {
+    this.resourceDirectory = resourceDirectory;
     resources = new Hashtable<String,Resource>();
     contextLoader = new ThreadLocal<ClassLoader>();
   }
@@ -223,7 +220,7 @@ public class ResourceManagerImpl implements IResourceManager {
   private String createRequestURL( String fileName, Integer version ) {
     String newFileName = fileName.replace( '\\', '/' );
     StringBuilder url = new StringBuilder();
-    url.append( RESOURCES );
+    url.append( ResourceDirectory.DIRNAME );
     url.append( "/" );
     String escapedFilename = escapeFilename( newFileName );
     url.append( versionedResourceName( escapedFilename, version ) );
@@ -328,7 +325,7 @@ public class ResourceManagerImpl implements IResourceManager {
   }
 
   private File getDiskLocation( String name, Integer version ) {
-    File resourcesDir = new File( configuration.getContextDirectory(), RESOURCES );
+    File resourcesDir = resourceDirectory.getDirectory();
     String fileName = versionedResourceName( escapeFilename( name ), version );
     return new File( resourcesDir, fileName );
   }

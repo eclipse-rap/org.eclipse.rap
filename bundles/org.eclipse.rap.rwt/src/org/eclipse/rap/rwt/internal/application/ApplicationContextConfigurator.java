@@ -14,7 +14,6 @@ package org.eclipse.rap.rwt.internal.application;
 import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
-import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rap.rwt.internal.service.ApplicationStoreImpl;
 import org.eclipse.rap.rwt.internal.service.ServiceManager;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
@@ -58,13 +57,12 @@ class ApplicationContextConfigurator {
   }
 
   private void setContextDirectory( ApplicationContext applicationContext ) {
-    RWTConfiguration configuration = applicationContext.getConfiguration();
     String location
       = ( String )servletContext.getAttribute( ApplicationConfiguration.RESOURCE_ROOT_LOCATION );
     if( location == null ) {
       location = servletContext.getRealPath( "/" );
     }
-    configuration.configure( location );
+    applicationContext.getResourceDirectory().configure( location );
   }
 
   private void resetApplicationStore( ApplicationContext applicationContext ) {
@@ -79,12 +77,11 @@ class ApplicationContextConfigurator {
     applicationContext.getPhaseListenerRegistry().removeAll();
     applicationContext.getResourceRegistry().clear();
     applicationContext.getSettingStoreManager().deregisterFactory();
-    resetConfiguration( applicationContext );
+    resetContextDirectory( applicationContext );
   }
 
-  private void resetConfiguration( ApplicationContext applicationContext ) {
-    RWTConfiguration configuration = applicationContext.getConfiguration();
-    configuration.reset();
+  private void resetContextDirectory( ApplicationContext applicationContext ) {
+    applicationContext.getResourceDirectory().reset();
   }
 
   private void addInternalPhaseListeners( ApplicationContext applicationContext ) {

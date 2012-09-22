@@ -15,14 +15,13 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-import org.eclipse.rap.rwt.application.ApplicationRunner;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
+import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.resources.IResourceManager;
 
 
 public class TestResourceManager implements IResourceManager {
-  
+
   private ClassLoader loader = Thread.currentThread().getContextClassLoader();
   private final Set<String> registeredResources;
 
@@ -39,7 +38,7 @@ public class TestResourceManager implements IResourceManager {
   }
 
   public String getLocation( String name ) {
-    return ResourceManagerImpl.RESOURCES + "/" + name;
+    return ResourceDirectory.DIRNAME + "/" + name;
   }
 
   public URL getResource( String name ) {
@@ -94,7 +93,7 @@ public class TestResourceManager implements IResourceManager {
     createResourcesDirectory();
     registeredResources.add( name );
   }
-  
+
   public boolean unregister( String name ) {
     return registeredResources.remove( name );
   }
@@ -109,11 +108,8 @@ public class TestResourceManager implements IResourceManager {
 
   private void createResourcesDirectory() {
     if( registeredResources.isEmpty() ) {
-      File contextDirectory = RWTFactory.getConfiguration().getContextDirectory();
-      File file = new File( contextDirectory, ApplicationRunner.RESOURCES );
-      if( !file.exists() ) {
-        file.mkdirs();
-      }
+      RWTFactory.getResourceDirectory().createDirectory();
     }
   }
+
 }

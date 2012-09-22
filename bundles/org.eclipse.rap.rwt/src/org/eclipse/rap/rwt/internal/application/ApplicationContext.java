@@ -15,12 +15,12 @@ import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.branding.BrandingManager;
-import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseListenerRegistry;
 import org.eclipse.rap.rwt.internal.resources.JSLibraryConcatenator;
+import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rap.rwt.internal.service.ApplicationStoreImpl;
@@ -50,7 +50,7 @@ public class ApplicationContext {
   //                implementation with an optimized version for testing purpose. Think about
   //                a less intrusive solution.
   private ThemeManager themeManager;
-  private final RWTConfiguration rwtConfiguration;
+  private final ResourceDirectory resourceDirectory;
   private final ResourceManagerImpl resourceManager;
   private final BrandingManager brandingManager;
   private final PhaseListenerRegistry phaseListenerRegistry;
@@ -80,8 +80,8 @@ public class ApplicationContext {
                              ServletContext servletContext )
   {
     applicationStore = new ApplicationStoreImpl();
-    rwtConfiguration = new RWTConfiguration();
-    resourceManager = new ResourceManagerImpl( rwtConfiguration );
+    resourceDirectory = new ResourceDirectory();
+    resourceManager = new ResourceManagerImpl( resourceDirectory );
     phaseListenerRegistry = new PhaseListenerRegistry();
     entryPointManager = new EntryPointManager();
     lifeCycleFactory = new LifeCycleFactory( phaseListenerRegistry );
@@ -135,8 +135,8 @@ public class ApplicationContext {
     return servletContext;
   }
 
-  public RWTConfiguration getConfiguration() {
-    return rwtConfiguration;
+  public ResourceDirectory getResourceDirectory() {
+    return resourceDirectory;
   }
 
   public IResourceManager getResourceManager() {

@@ -441,7 +441,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   private static File getResourceCopyFile( String resourceName ) {
     String path =   getWebContextDirectory()
                   + File.separator
-                  + ResourceManagerImpl.RESOURCES
+                  + ResourceDirectory.DIRNAME
                   + File.separator
                   + resourceName;
     return new File( path );
@@ -456,7 +456,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   private static ResourceManagerImpl getResourceManager() {
-    return new ResourceManagerImpl( RWTFactory.getConfiguration() );
+    return new ResourceManagerImpl( RWTFactory.getResourceDirectory() );
   }
 
   private static String getWebContextDirectory() {

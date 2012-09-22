@@ -10,9 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.application;
 
-import java.io.File;
-
-import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.swt.internal.widgets.displaykit.ClientResources;
 
 
@@ -64,15 +61,8 @@ public class ApplicationContextActivator {
     applicationContext.getLifeCycleFactory().deactivate();
     applicationContext.getServiceManager().clear();
     applicationContext.getThemeManager().deactivate();
-    // TODO [fappel]: think of better solution. This maps directly to the
-    //                default resource manager implementation while
-    //                the resource manager factory is configurable. Is
-    //                the latter really necessary since the only other factory
-    //                in use is for testing purpose (unfortunately API).
     if( !skipResoureDeletion ) {
-      File resourcesDir = new File( applicationContext.getConfiguration().getContextDirectory(),
-                                    ResourceManagerImpl.RESOURCES );
-      ApplicationContextUtil.delete( resourcesDir );
+      applicationContext.getResourceDirectory().deleteDirectory();
     }
   }
 

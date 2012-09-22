@@ -51,7 +51,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
+import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
@@ -86,7 +86,7 @@ public final class Fixture {
   public final static File TEMP_DIR = createTempDir();
   public static final File WEB_CONTEXT_DIR = new File( TEMP_DIR, "testapp" );
   public static final File WEB_CONTEXT_RWT_RESOURCES_DIR
-    = new File( WEB_CONTEXT_DIR, ResourceManagerImpl.RESOURCES );
+    = new File( WEB_CONTEXT_DIR, ResourceDirectory.DIRNAME );
   public static final String IMAGE1 = "resources/images/image1.gif";
   public static final String IMAGE2 = "resources/images/image2.gif";
   public static final String IMAGE3 = "resources/images/image3.gif";

@@ -9,39 +9,44 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.engine;
+package org.eclipse.rap.rwt.internal.resources;
 
 import java.io.File;
 
+import org.eclipse.rap.rwt.application.ApplicationRunner;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
-public class RWTConfiguration {
+public class ResourceDirectory {
 
-  private File contextDirectory;
+  public static final String DIRNAME = "rwt-resources";
+  private File resourcesDir;
 
   public void configure( String contextDirectory ) {
     ParamCheck.notNull( contextDirectory, "contextDirectory" );
-    this.contextDirectory = new File( contextDirectory );
+    resourcesDir = new File( contextDirectory, ApplicationRunner.RESOURCES );
   }
 
   public void reset() {
-    contextDirectory = null;
+    resourcesDir = null;
   }
 
-  public File getContextDirectory() {
-    checkConfigured();
-    return contextDirectory;
-  }
-
-  public boolean isConfigured() {
-    return contextDirectory != null;
-  }
-
-  private void checkConfigured() {
-    if( !isConfigured() ) {
-      throw new IllegalStateException( "RWTConfigurationImpl has not been configured." );
+  public void createDirectory() {
+    if( !resourcesDir.exists() ) {
+      resourcesDir.mkdirs();
     }
+  }
+
+  public void deleteDirectory() {
+    ApplicationContextUtil.delete( resourcesDir );
+  }
+
+  public File getDirectory() {
+    if( resourcesDir == null ) {
+      throw new IllegalStateException( "Resources directory not configured" );
+    }
+    return resourcesDir;
   }
 
 }

@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.application;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
+import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
@@ -24,8 +24,8 @@ public class ApplicationContext_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     context = new ApplicationContext( null, null );
-    RWTConfiguration configuration = context.getConfiguration();
-    configuration.configure( Fixture.WEB_CONTEXT_DIR.getAbsolutePath() );
+    ResourceDirectory resourceDirectory = context.getResourceDirectory();
+    resourceDirectory.configure( Fixture.WEB_CONTEXT_DIR.getAbsolutePath() );
   }
 
   public void testApplicationContextSingletons() {
@@ -68,8 +68,8 @@ public class ApplicationContext_Test extends TestCase {
     assertNotNull( context.getResourceRegistry() );
     assertSame( context.getResourceRegistry(), context.getResourceRegistry() );
 
-    assertNotNull( context.getConfiguration() );
-    assertSame( context.getConfiguration(), context.getConfiguration() );
+    assertNotNull( context.getResourceDirectory() );
+    assertSame( context.getResourceDirectory(), context.getResourceDirectory() );
 
     assertNotNull( context.getResourceManager() );
     assertSame( context.getResourceManager(), context.getResourceManager() );

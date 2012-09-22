@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
+import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -108,7 +108,7 @@ public class Graphics_Test extends TestCase {
     Image image1 = Graphics.getImage( Fixture.IMAGE1 );
     String registerPath = getRegisterPath( image1 );
     assertTrue( resourceManager.isRegistered( registerPath ) );
-    File contextDir = new File( Fixture.WEB_CONTEXT_DIR, ResourceManagerImpl.RESOURCES );
+    File contextDir = new File( Fixture.WEB_CONTEXT_DIR, ResourceDirectory.DIRNAME );
     assertTrue( new File( contextDir, registerPath ).exists() );
     Image image1a = Graphics.getImage( Fixture.IMAGE1 );
     assertSame( image1, image1a );
@@ -279,7 +279,7 @@ public class Graphics_Test extends TestCase {
 
   private static String getRegisterPath( Image image ) {
     String imagePath = ImageFactory.getImagePath( image );
-    int prefixLength = ResourceManagerImpl.RESOURCES.length() + 1;
+    int prefixLength = ResourceDirectory.DIRNAME.length() + 1;
     return imagePath.substring( prefixLength );
   }
 
