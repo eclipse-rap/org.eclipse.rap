@@ -19,7 +19,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistrationException;
 import org.eclipse.rap.rwt.internal.util.HTTP;
@@ -457,9 +456,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   private static ResourceManagerImpl getResourceManager() {
-    DefaultResourceManagerFactory factory = new DefaultResourceManagerFactory();
-    factory.setConfiguration( RWTFactory.getConfiguration() );
-    return ( ResourceManagerImpl )factory.create();
+    return new ResourceManagerImpl( RWTFactory.getConfiguration() );
   }
 
   private static String getWebContextDirectory() {

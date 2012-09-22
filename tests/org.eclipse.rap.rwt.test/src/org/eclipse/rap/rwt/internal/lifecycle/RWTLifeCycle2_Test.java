@@ -14,7 +14,6 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
-import java.util.Enumeration;
 import java.util.LinkedList;
 
 import javax.servlet.ServletContext;
@@ -28,15 +27,12 @@ import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.resources.IResourceManager;
-import org.eclipse.rap.rwt.resources.IResourceManagerFactory;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.service.SessionStoreEvent;
 import org.eclipse.rap.rwt.service.SessionStoreListener;
@@ -45,7 +41,6 @@ import org.eclipse.rap.rwt.testfixture.TestLogger;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
-import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -63,7 +58,6 @@ import org.eclipse.swt.widgets.Shell;
  * Tests in here are separated from RWTLifeCycle_Test because they need
  * different setUp/tearDown implementations.
  */
-@SuppressWarnings("deprecation")
 public class RWTLifeCycle2_Test extends TestCase {
   private static final String TEST_SESSION_ATTRIBUTE = "testSessionAttr";
   private static final String EXCEPTION_MSG = "Error in readAndDispatch";
@@ -370,20 +364,6 @@ public class RWTLifeCycle2_Test extends TestCase {
         }
       }
     } );
-  }
-
-  public static class FakeResourceManagerFactory
-    implements IResourceManagerFactory
-  {
-
-    public IResourceManager create() {
-      return new TestResourceManager() {
-        @Override
-        public Enumeration getResources( String name ) {
-          return null;
-        }
-      };
-    }
   }
 
   public static final class ExceptionInReadAndDispatchEntryPoint implements IEntryPoint {
