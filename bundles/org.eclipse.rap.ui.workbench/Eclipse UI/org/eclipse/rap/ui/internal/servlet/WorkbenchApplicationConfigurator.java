@@ -32,12 +32,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.app.IApplication;
-import org.eclipse.rap.rwt.AdapterFactory;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.internal.application.ApplicationImpl;
-import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
@@ -56,10 +54,8 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 
 
-@SuppressWarnings( "deprecation" )
 public final class WorkbenchApplicationConfigurator implements ApplicationConfiguration {
 
-  private static final String ID_ADAPTER_FACTORY = "org.eclipse.rap.ui.adapterfactory";
   private static final String ID_ENTRY_POINT = "org.eclipse.rap.ui.entrypoint";
   private static final String ID_THEMES = "org.eclipse.rap.ui.themes";
   private static final String ELEMENT_THEME = "theme";
@@ -93,7 +89,6 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     registerThemeableWidgets( application );
     registerThemes( application );
     registerThemeContributions( application );
-    registerAdapterFactories( ( ApplicationImpl )application );
     registerResources( application );
     registerServiceHandlers( application );
     registerBrandings( application );
@@ -159,30 +154,6 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   private static String getOSGiProperty( String name ) {
 	Bundle systemBundle = Platform.getBundle( Constants.SYSTEM_BUNDLE_SYMBOLICNAME );
 	return systemBundle.getBundleContext().getProperty( name );
-  }
-
-  @SuppressWarnings( "unchecked" )
-  private void registerAdapterFactories( ApplicationImpl application ) {
-    IExtensionRegistry registry = Platform.getExtensionRegistry();
-    IExtensionPoint point = registry.getExtensionPoint( ID_ADAPTER_FACTORY );
-    IConfigurationElement[] elements = point.getConfigurationElements();
-    for( int i = 0; i < elements.length; i++ ) {
-      String contributorName = elements[ i ].getContributor().getName();
-      String factoryName = elements[ i ].getAttribute( "factoryClass" );
-      String adaptableName = elements[ i ].getAttribute( "adaptableClass" );
-      try {
-        Bundle bundle = Platform.getBundle( contributorName );
-        Class<? extends AdapterFactory> factoryClass
-          = (Class<? extends AdapterFactory>)bundle.loadClass( factoryName );
-        Class<?> adaptableClass = bundle.loadClass( adaptableName );
-        AdapterFactory adapterFactory = ClassUtil.newInstance( factoryClass ) ;
-        application.addAdapterFactory( adaptableClass, adapterFactory );
-      } catch( Throwable thr ) {
-        String text = "Could not register adapter factory ''{0}''  for the adapter type ''{1}''.";
-        Object[] param = new Object[] { factoryName, adaptableName};
-        logProblem( text, param, thr, contributorName );
-      }
-    }
   }
 
   @SuppressWarnings( "unchecked" )

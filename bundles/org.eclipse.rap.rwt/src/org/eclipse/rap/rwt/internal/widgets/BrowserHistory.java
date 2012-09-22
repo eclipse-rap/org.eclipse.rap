@@ -124,14 +124,12 @@ public final class BrowserHistory
 
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
+    T result = null;
     if( adapter == IEventAdapter.class ) {
       if( eventAdapter == null ) {
         eventAdapter = new EventAdapter();
       }
       result = ( T )eventAdapter;
-    } else {
-      result = ( T )RWTFactory.getAdapterManager().getAdapter( this, adapter );
     }
     return result;
   }

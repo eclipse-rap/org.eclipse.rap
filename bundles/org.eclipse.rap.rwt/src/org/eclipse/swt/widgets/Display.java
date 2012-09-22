@@ -748,7 +748,7 @@ public class Display extends Device implements Adaptable {
 
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
+    T result = null;
     if( adapter == IDisplayAdapter.class ) {
       if( displayAdapter == null ) {
         displayAdapter = new DisplayAdapter();
@@ -761,8 +761,6 @@ public class Display extends Device implements Adaptable {
       result = ( T )widgetAdapter;
     } else if( adapter == ILifeCycleAdapter.class ) {
       result = ( T )RWTFactory.getLifeCycleAdapterFactory().getAdapter( this );
-    } else {
-      result = ( T )RWTFactory.getAdapterManager().getAdapter( this, adapter );
     }
     return result;
   }

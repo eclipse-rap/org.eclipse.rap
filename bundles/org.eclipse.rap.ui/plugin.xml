@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   
-    
+
+
 <!-- RAP specific extension points -->
-   <extension-point id="adapterfactory" name="%ExtPoint.rap.adapterfactory" schema="schema/rap/adapterfactory.exsd"/>
    <extension-point id="branding" name="%ExtPoint.rap.branding" schema="schema/rap/branding.exsd"/>
    <extension-point id="entrypoint" name="%ExtPoint.rap.entrypoint" schema="schema/rap/entrypoint.exsd"/>
    <extension-point id="phaselistener" name="%ExtPoint.rap.phaselistener" schema="schema/rap/phaselistener.exsd"/>
@@ -15,7 +14,7 @@
    <extension-point id="layouts" name="%ExtPoint.layouts" schema="schema/rap/layouts.exsd"/>
    <extension-point id="stackPresentations" name="%ExtPoint.configurableStackPresentation" schema="schema/rap/stackPresentations.exsd"/>
    <extension-point id="serviceHandler" name="%ExtPoint.rap.serviceHandler" schema="schema/rap/serviceHandler.exsd"/>
-        
+
 <!-- Workbench extension points -->
    <!-- RAP [bm] deprecated
    <extension-point id="org.eclipse.ui.acceleratorConfigurations" name="%ExtPoint.acceleratorConfigurations" schema="schema/acceleratorConfigurations.exsd"/>
@@ -56,7 +55,7 @@
    <extension-point id="org.eclipse.ui.presentationFactories" name="%ExtPoint.presentationFactories" schema="schema/presentationFactories.exsd"/>
    <extension-point id="org.eclipse.ui.propertyPages" name="%ExtPoint.propertyPages" schema="schema/propertyPages.exsd"/>
    <extension-point id="org.eclipse.ui.services" name="%ExtPoint.services" schema="schema/services.exsd"/>
-   <!-- RAP [bm]: not applicable 
+   <!-- RAP [bm]: not applicable
    <extension-point id="org.eclipse.ui.splashHandlers" name="%ExtPoint.splashHandlers" schema="schema/splashHandlers.exsd"/>
    -->
    <extension-point id="org.eclipse.ui.startup" name="%ExtPoint.startup" schema="schema/startup.exsd"/>
@@ -67,12 +66,12 @@
    <extension-point id="org.eclipse.ui.views" name="%ExtPoint.views" schema="schema/views.exsd"/>
    <extension-point id="org.eclipse.ui.workingSets" name="%ExtPoint.workingSets" schema="schema/workingSets.exsd"/>
    <extension-point id="org.eclipse.ui.browserSupport" name="%ExtPoint.browserSupport" schema="schema/browserSupport.exsd"/>
-   <extension-point id="org.eclipse.ui.internalTweaklets" name="%ExtPoint.tweaklets" schema="schema/internalTweaklets.exsd"/>   
+   <extension-point id="org.eclipse.ui.internalTweaklets" name="%ExtPoint.tweaklets" schema="schema/internalTweaklets.exsd"/>
    <!-- RAP [bm]: not applicable
    <extension-point id="installationPages" name="%ExtPoint.installationPages" schema="schema/installationPages.exsd"/>
    -->
    <extension-point id="org.eclipse.ui.propertiesView" name="%ExtPoint.propertiesView" schema="schema/propertiesView.exsd"/>
-   
+
    <extension
          point="org.eclipse.ui.contexts">
       <context
@@ -116,7 +115,7 @@
             name="%context.actionSet.name">
       </context>
    </extension>
-   
+
    <extension point="org.eclipse.ui.bindings">
       <key
             commandId="org.eclipse.ui.newWizard"
@@ -168,7 +167,7 @@
             platform="carbon"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+I"/>
-<!-- RAP [if] Prevents browser refresh with F5   
+<!-- RAP [if] Prevents browser refresh with F5
       <key
             commandId="org.eclipse.ui.file.refresh"
             sequence="F5"
@@ -193,7 +192,7 @@
             commandId="org.eclipse.ui.edit.redo"
             contextId="org.eclipse.ui.contexts.dialogAndWindow"
             sequence="M1+M2+Z"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" 
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             platform="carbon"/>
 <!-- RAP [if] Clipboard
       <key
@@ -497,7 +496,7 @@
             commandId="org.eclipse.ui.edit.text.contentAssist.contextInformation"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M2+M3+?"/>
-            
+
       <!-- Content assist key binding for the Japanese language to prevent conflict with IME on Motif -->
       <key
             locale="ja"
@@ -563,7 +562,7 @@
             commandId="org.eclipse.ui.edit.text.contentAssist.contextInformation"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M2+M3+?"/>
-<!-- RAP [if] key sequences not supported (emacsAcceleratorConfiguration) 
+<!-- RAP [if] key sequences not supported (emacsAcceleratorConfiguration)
       <key
             commandId="org.eclipse.ui.file.close"
             sequence="CTRL+X K"
@@ -672,7 +671,7 @@
             description="%keyConfiguration.default.description"
             id="org.eclipse.ui.defaultAcceleratorConfiguration">
       </scheme>
-<!-- RAP [if] key sequences not supported (emacsAcceleratorConfiguration) 
+<!-- RAP [if] key sequences not supported (emacsAcceleratorConfiguration)
       <scheme
             name="%keyConfiguration.emacs.name"
             description="%keyConfiguration.emacs.description"
@@ -781,7 +780,7 @@
             description="%command.installationDialog.description"
             helpContextId="org.eclipse.ui.about_action_context"
             id="org.eclipse.ui.help.installationDialog"
-            name="%command.installationDialog.name"/>            
+            name="%command.installationDialog.name"/>
       -->
       <command
             categoryId="org.eclipse.ui.category.file"
@@ -1289,7 +1288,7 @@
             name="%command.expandAll.name">
       </command>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.commandImages">
       <image
@@ -1365,7 +1364,7 @@
             icon="$nl$/icons/full/eview16/new_persp.gif">
       </image>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.views">
       <category
@@ -1491,7 +1490,7 @@
             %Color.activeHyperlinkTextDesc
          </description>
       </colorDefinition>
-         
+
      <colorDefinition
             label="%Color.qualifierText"
             categoryId="org.eclipse.ui.workbenchMisc"
@@ -1509,7 +1508,7 @@
          <description>
             %Color.decorationsTextDesc
          </description>
-      </colorDefinition>      
+      </colorDefinition>
       <colorDefinition
             label="%Color.counterText"
             categoryId="org.eclipse.ui.workbenchMisc"
@@ -1647,7 +1646,7 @@
           <parameter
                   name="definitionId" value="org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_BG_START">
           </parameter>
-         </colorFactory>      </colorDefinition>      
+         </colorFactory>      </colorDefinition>
 <!-- Inactive Tab Colors -->
       <colorDefinition
             label="%Color.inactiveTabText"
@@ -1701,7 +1700,7 @@
       <data
             name="org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_PERCENT"
             value="100">
-      </data>      
+      </data>
 <!-- percentage value for the inactive tab gradient -->
       <data
             name="org.eclipse.ui.workbench.INACTIVE_TAB_PERCENT"
@@ -1716,13 +1715,13 @@
       <data
             name="org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_VERTICAL"
             value="true">
-      </data>      
+      </data>
 <!-- whether the inactive gradient is vertical -->
       <data
             name="org.eclipse.ui.workbench.INACTIVE_TAB_VERTICAL"
             value="true">
       </data>
-      
+
       <theme
             id="org.eclipse.ui.ide.systemDefault"
             name="%ThemeName.SystemDefault">
@@ -1753,8 +1752,8 @@
                value="COLOR_LIST_FOREGROUND"/>
          <colorOverride
                id="COUNTER_COLOR"
-               value="COLOR_LIST_FOREGROUND"/>               
-<!-- Override color factory for active tab colors, set to defaults based on title -->               
+               value="COLOR_LIST_FOREGROUND"/>
+<!-- Override color factory for active tab colors, set to defaults based on title -->
 		<colorOverride
 				id="org.eclipse.ui.workbench.ACTIVE_TAB_TEXT_COLOR"
 				value="COLOR_TITLE_FOREGROUND"/>
@@ -1872,9 +1871,9 @@
                id="pre_UI"
                value="true">
          </hint>
-      </triggerPoint>    
+      </triggerPoint>
    </extension>
- 
+
 <!-- RAP [rh] preferenceTransfer not supported
    <extension
          point="org.eclipse.ui.preferenceTransfer">
@@ -1892,7 +1891,7 @@
       </settingsTransfer>
    </extension>
 -->
-   
+
    <extension
            point="org.eclipse.core.expressions.propertyTesters">
         <propertyTester
@@ -2043,7 +2042,7 @@
                </instanceof>
             </with>
          </enabledWhen>
-      </handler>      
+      </handler>
       <handler
             class="org.eclipse.ui.internal.CyclePerspectiveHandler:true"
             commandId="org.eclipse.ui.window.nextPerspective">
@@ -2362,7 +2361,7 @@
             name="%installationPage.plugins.name"
             class="org.eclipse.ui.internal.about.AboutPluginsPage"
             id="30.PluginPage">
-          </page>        
+          </page>
           <page
             name="%installationPage.system.name"
             class="org.eclipse.ui.internal.about.AboutSystemPage"
@@ -2382,11 +2381,11 @@
            id="org.eclipse.rap.httpcontext">
      </httpcontext>
   </extension>
-  
+
   <!-- RAP specific -->
-  <extension id="preferences" 
+  <extension id="preferences"
              point="org.eclipse.core.runtime.preferences">
-    <scope name="session" 
+    <scope name="session"
            class="org.eclipse.rap.ui.internal.preferences.SessionPreferencesFactory"/>
   </extension>
 </plugin>

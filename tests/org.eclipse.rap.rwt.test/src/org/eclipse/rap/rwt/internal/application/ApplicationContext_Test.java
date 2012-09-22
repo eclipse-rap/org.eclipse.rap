@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ public class ApplicationContext_Test extends TestCase {
   private ApplicationContext context;
 
 
+  @Override
   protected void setUp() throws Exception {
     context = new ApplicationContext( null, null );
     RWTConfigurationImpl configuration = ( RWTConfigurationImpl )context.getConfiguration();
@@ -58,9 +59,6 @@ public class ApplicationContext_Test extends TestCase {
 
     assertNotNull( context.getFontDataFactory() );
     assertSame( context.getFontDataFactory(), context.getFontDataFactory() );
-
-    assertNotNull( context.getAdapterManager() );
-    assertSame( context.getAdapterManager(), context.getAdapterManager() );
 
     assertNotNull( context.getSettingStoreManager() );
     assertSame( context.getSettingStoreManager(), context.getSettingStoreManager() );

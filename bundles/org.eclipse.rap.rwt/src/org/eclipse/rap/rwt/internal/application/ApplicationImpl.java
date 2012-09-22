@@ -17,7 +17,6 @@ import java.text.MessageFormat;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.rap.rwt.AdapterFactory;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
@@ -37,7 +36,6 @@ import org.eclipse.rap.rwt.service.ISettingStoreFactory;
 import org.eclipse.swt.widgets.Widget;
 
 
-@SuppressWarnings("deprecation")
 public class ApplicationImpl implements Application, Adaptable {
 
   private final ApplicationContext applicationContext;
@@ -133,16 +131,6 @@ public class ApplicationImpl implements Application, Adaptable {
     applicationContext.getEntryPointManager().registerByName( parameter, entryPointFactory );
   }
 
-  /*
-   * Only for backward compatibility with the extension point "org.eclipse.rap.ui.adapterfactory"
-   */
-  public void addAdapterFactory( Class<?> adaptable, AdapterFactory adapterFactory ) {
-    ParamCheck.notNull( adaptable, "adaptable" );
-    ParamCheck.notNull( adapterFactory, "adapterFactory" );
-
-    applicationContext.getAdapterManager().registerAdapters( adaptable, adapterFactory );
-  }
-
   public void addResource( IResource resource ) {
     ParamCheck.notNull( resource, "resource" );
 
@@ -218,4 +206,5 @@ public class ApplicationImpl implements Application, Adaptable {
     }
     return result;
   }
+
 }

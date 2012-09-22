@@ -19,14 +19,10 @@ import javax.servlet.ServletException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.rap.rwt.AdapterFactory;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
-import org.eclipse.rap.rwt.internal.AdapterManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rap.rwt.internal.application.ApplicationImpl;
 import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rap.rwt.internal.engine.RWTConfigurationImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
@@ -50,7 +46,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 
-@SuppressWarnings("deprecation")
 public class ApplicationContextConfigurator_Test extends TestCase {
 
   private static final Object ATTRIBUTE_VALUE = new Object();
@@ -61,7 +56,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
 
   private TestPhaseListener testPhaseListener;
   private TestSettingStoreFactory testSettingStoreFactory;
-  private TestAdapterFactory testAdapterFactory;
   private TestResource testResource;
   private TestServiceHandler testServiceHandler;
   private String testServiceHandlerId;
@@ -71,7 +65,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   protected void setUp() {
     testPhaseListener = new TestPhaseListener();
     testSettingStoreFactory = new TestSettingStoreFactory();
-    testAdapterFactory = new TestAdapterFactory();
     testResource = new TestResource();
     testServiceHandler = new TestServiceHandler();
     testServiceHandlerId = "testServiceHandlerId";
@@ -84,7 +77,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     checkPhaseListenersHaveBeenAdded();
     checkSettingStoreManagerHasBeenSet();
     checkEntryPointsHaveBeenAdded();
-    checkAdapterFactoriesHaveBeenAdded();
     checkResourceHasBeenAdded();
     checkServiceHandlersHaveBeenAdded();
     checkThemeHasBeenAdded();
@@ -116,7 +108,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
 
     applicationContext.deactivate();
 
-    checkAdapterFactoriesHaveBeenRemoved();
     checkBrandingHasBeenRemoved();
     checkEntryPointsHaveBeenRemoved();
     checkPhaseListenerHasBeenRemoved();
@@ -178,10 +169,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
         configuration.addStyleSheet( THEME_ID, STYLE_SHEET_CONTRIBUTION );
         configuration.addThemableWidget( TestWidget.class );
         configuration.setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
-
-        // Only supported for Workbench API backward compatibility
-        ( ( ApplicationImpl )configuration )
-          .addAdapterFactory( TestAdaptable.class, testAdapterFactory );
       }
     };
   }
@@ -215,12 +202,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     assertSame( testResource, applicationContext.getResourceRegistry().get()[ 0 ] );
   }
 
-  private void checkAdapterFactoriesHaveBeenAdded() {
-    AdapterManager adapterManager = applicationContext.getAdapterManager();
-    Object testAdapter = adapterManager.getAdapter( new TestAdaptable(), TestAdapter.class );
-    assertTrue( testAdapter instanceof TestAdapter );
-  }
-
   private void checkEntryPointsHaveBeenAdded() {
     assertEquals( 2, applicationContext.getEntryPointManager().getServletPaths().size() );
   }
@@ -243,12 +224,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   private void checkContextDirectoryHasBeenSet( File contextDirectory ) {
     RWTConfiguration rwtConfiguration = applicationContext.getConfiguration();
     assertEquals( contextDirectory, rwtConfiguration.getContextDirectory() );
-  }
-
-  private void checkAdapterFactoriesHaveBeenRemoved() {
-    AdapterManager adapterManager = applicationContext.getAdapterManager();
-    Object testAdapter = adapterManager.getAdapter( new TestAdaptable(), TestAdapter.class );
-    assertNull( testAdapter );
   }
 
   private void checkBrandingHasBeenRemoved() {
@@ -318,24 +293,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
       return new MemorySettingStore( "" );
     }
   }
-
-  private static class TestAdapterFactory implements AdapterFactory {
-    public Object getAdapter( Object adaptable, Class adapter ) {
-      return new TestAdapter() {};
-    }
-
-    public Class[] getAdapterList() {
-      return new Class[] { TestAdapter.class };
-    }
-  }
-
-  private static class TestAdaptable implements Adaptable  {
-    public <T> T getAdapter( Class<T> adapter ) {
-      return null;
-    }
-  }
-
-  private interface TestAdapter {}
 
   private class TestResource implements IResource {
 

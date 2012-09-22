@@ -164,7 +164,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
   public <T> T getAdapter( Class<T> adapter ) {
     // The adapters returned here are buffered for performance reasons. Don't change this without
     // good reason
-    T result;
+    T result = null;
     if( adapter == IEventAdapter.class ) {
       // Note: This is not implemented via the AdapterManager, since the manager's mapping mechanism
       // prevents the component being released unless the session is invalidated.
@@ -189,8 +189,6 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
         lifeCycleAdapterFactory = RWTFactory.getLifeCycleAdapterFactory();
       }
       result = ( T )lifeCycleAdapterFactory.getAdapter( this );
-    } else {
-      result = ( T )RWTFactory.getAdapterManager().getAdapter( this, adapter );
     }
     return result;
   }
@@ -960,8 +958,8 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     style = checkBits (style, SWT.LEFT_TO_RIGHT, 0 /*SWT.RIGHT_TO_LEFT*/, 0, 0, 0, 0);
   }
 
-
   void error( int code ) {
     SWT.error( code );
   }
+
 }

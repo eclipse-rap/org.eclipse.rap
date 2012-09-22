@@ -14,7 +14,6 @@ package org.eclipse.swt.widgets;
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rap.rwt.internal.widgets.IDialogAdapter;
 import org.eclipse.rap.rwt.widgets.DialogCallback;
@@ -218,11 +217,9 @@ public abstract class Dialog implements Adaptable, SerializableCompatibility {
    */
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
+    T result = null;
     if( adapter == IDialogAdapter.class ) {
       result = ( T )new DialogAdapter();
-    } else {
-      result = ( T )RWTFactory.getAdapterManager().getAdapter( this, adapter );
     }
     return result;
   }

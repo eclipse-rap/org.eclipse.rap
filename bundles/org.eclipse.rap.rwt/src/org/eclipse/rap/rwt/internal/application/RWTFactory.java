@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.application;
 
-import org.eclipse.rap.rwt.internal.AdapterManager;
 import org.eclipse.rap.rwt.internal.branding.BrandingManager;
 import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
@@ -27,7 +26,7 @@ import org.eclipse.swt.internal.widgets.DisplaysHolder;
 
 
 public class RWTFactory {
-  
+
   public static IApplicationStore getApplicationStore() {
     return ApplicationContextUtil.getInstance().getApplicationStore();
   }
@@ -35,11 +34,11 @@ public class RWTFactory {
   public static LifeCycleFactory getLifeCycleFactory() {
     return ApplicationContextUtil.getInstance().getLifeCycleFactory();
   }
-  
+
   public static BrandingManager getBrandingManager() {
     return ApplicationContextUtil.getInstance().getBrandingManager();
   }
-  
+
   public static EntryPointManager getEntryPointManager() {
     return ApplicationContextUtil.getInstance().getEntryPointManager();
   }
@@ -55,7 +54,7 @@ public class RWTFactory {
   public static SettingStoreManager getSettingStoreManager() {
     return ApplicationContextUtil.getInstance().getSettingStoreManager();
   }
-  
+
   public static RWTConfiguration getConfiguration() {
     return ApplicationContextUtil.getInstance().getConfiguration();
   }
@@ -63,7 +62,7 @@ public class RWTFactory {
   public static PhaseListenerRegistry getPhaseListenerRegistry() {
     return ApplicationContextUtil.getInstance().getPhaseListenerRegistry();
   }
-  
+
   public static ThemeManager getThemeManager() {
     return ApplicationContextUtil.getInstance().getThemeManager();
   }
@@ -75,7 +74,7 @@ public class RWTFactory {
   public static ProbeStore getProbeStore() {
     return ApplicationContextUtil.getInstance().getProbeStore();
   }
-  
+
   public static ImageFactory getImageFactory() {
     return ApplicationContextUtil.getInstance().getImageFactory();
   }
@@ -95,17 +94,13 @@ public class RWTFactory {
   public static InternalImageFactory getInternalImageFactory() {
     return ApplicationContextUtil.getInstance().getInternalImageFactory();
   }
-  
+
   public static DisplaysHolder getDisplaysHolder() {
     return ApplicationContextUtil.getInstance().getDisplaysHolder();
   }
 
   public static JSLibraryConcatenator getJSLibraryConcatenator() {
     return ApplicationContextUtil.getInstance().getJSLibraryConcatenator();
-  }
-
-  public static AdapterManager getAdapterManager() {
-    return ApplicationContextUtil.getInstance().getAdapterManager();
   }
 
   public static LifeCycleAdapterFactory getLifeCycleAdapterFactory() {
@@ -119,8 +114,9 @@ public class RWTFactory {
   public static IResourceManager getResourceManager() {
     return ApplicationContextUtil.getInstance().getResourceManager();
   }
-  
+
   private RWTFactory() {
     // prevent instantiation
   }
+
 }

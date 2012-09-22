@@ -16,7 +16,6 @@ import java.io.File;
 import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
-import org.eclipse.rap.rwt.internal.AdapterManager;
 import org.eclipse.rap.rwt.internal.branding.BrandingManager;
 import org.eclipse.rap.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rap.rwt.internal.engine.RWTConfigurationImpl;
@@ -67,7 +66,6 @@ public class ApplicationContext {
   private final PhaseListenerRegistry phaseListenerRegistry;
   private final LifeCycleFactory lifeCycleFactory;
   private final EntryPointManager entryPointManager;
-  private final AdapterManager adapterManager;
   private final LifeCycleAdapterFactory lifeCycleAdapterFactory;
   private final SettingStoreManager settingStoreManager;
   private final ServiceManager serviceManager;
@@ -103,7 +101,6 @@ public class ApplicationContext {
     internalImageFactory = new InternalImageFactory();
     imageDataFactory = new ImageDataFactory( resourceManager );
     fontDataFactory = new FontDataFactory();
-    adapterManager = new AdapterManager();
     lifeCycleAdapterFactory = new LifeCycleAdapterFactory();
     settingStoreManager = new SettingStoreManager();
     resourceRegistry = new ResourceRegistry();
@@ -168,10 +165,6 @@ public class ApplicationContext {
 
   public PhaseListenerRegistry getPhaseListenerRegistry() {
     return phaseListenerRegistry;
-  }
-
-  public AdapterManager getAdapterManager() {
-    return adapterManager;
   }
 
   public LifeCycleAdapterFactory getLifeCycleAdapterFactory() {

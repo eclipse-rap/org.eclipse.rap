@@ -76,7 +76,6 @@ class ApplicationContextConfigurator {
   }
 
   private void resetSubSystems( ApplicationContext applicationContext ) {
-    applicationContext.getAdapterManager().deregisterAdapters();
     applicationContext.getBrandingManager().deregisterAll();
     applicationContext.getEntryPointManager().deregisterAll();
     applicationContext.getPhaseListenerRegistry().removeAll();
