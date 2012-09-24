@@ -97,41 +97,22 @@ cp $latestStableBuild . || exit 1
 echo "Uncompress latest stable build"
 unzip -q $zipFileName || exit 1
 
-# ensure structure of uncompressedd
+# ensure structure of uncompressed repository
 if [ ! -d $workingDir/features ]; then
   echo >&2 "Missing features directory in $workingDir"
+  exit 1
+fi
+if [ ! -d $workingDir/plugins ]; then
+  echo >&2 "Missing plugins directory in $workingDir"
   exit 1
 fi
 
 mkdir -p $targetDir || exit 1
 
-# Publish p2 repository
-launcher=$ECLIPSE_DIR/plugins/org.eclipse.equinox.launcher_*.jar
-echo "Start to generate p2 repository"
-java -jar $launcher \
-   -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher \
-   -metadataRepository file:$targetDir \
-   -artifactRepository file:$targetDir \
-   -source $workingDir \
-   -reusePackedFiles \
-   -compress \
-   -publishArtifacts || exit 1
-echo "Finished generating a p2 repository"
-
-# Generate category.xml
-echo '<?xml version="1.0" encoding="UTF-8"?>' > category.xml
-echo '<site>' >> category.xml
-echo '<category-def name="org.eclipse.rap.category" label="Rich Ajax Platform (RAP)"/>' >> category.xml
-ls -1 $targetDir/features/*.jar | sed 's/^.*\/\([^_]*\)_\(.*\)\.jar$/<feature url="features\/\1_\2.jar" id="\1" version="\2">\n<category name="org.eclipse.rap.category"\/>\n<\/feature>/' >> category.xml
-echo '</site>' >> category.xml
-
-# Add category to p2 directory
-java -cp $launcher org.eclipse.core.launcher.Main \
-   -consolelog \
-   -application org.eclipse.equinox.p2.publisher.CategoryPublisher \
-   -metadataRepository file:$targetDir \
-   -categoryDefinition file:$workingDir/category.xml \
-   -compress || exit 1
+# Publish p2 repository from zip archive
+echo "Copy p2 repository"
+rm $workingDir/$zipFileName
+cp -r $workingDir/* $targetDir || exit 1
 
 # Add to composite repository
 $SCRIPTS_DIR/comp-repo.sh $targetMainDir add $timeStamp || exit 1
