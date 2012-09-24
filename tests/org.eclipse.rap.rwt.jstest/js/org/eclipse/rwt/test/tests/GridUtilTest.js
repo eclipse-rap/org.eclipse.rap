@@ -534,6 +534,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       if( !noflush ) {
         TestUtil.flush();
       }
+      rwt.protocol.ObjectRegistry.add( "w3", tree );
       return tree;
     },
 

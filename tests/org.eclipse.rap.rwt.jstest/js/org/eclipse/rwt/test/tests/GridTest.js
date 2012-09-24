@@ -223,7 +223,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testSetFocusItemByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
-      var item1 = this._createTreeItemByProtocol( "w4", "w3", 0 );
+      this._createTreeItemByProtocol( "w4", "w3", 0 );
       var item2 = this._createTreeItemByProtocol( "w5", "w3", 1 );
       TestUtil.protocolSet( "w3", { "focusItem" : "w5" } );
       assertIdentical( item2, widget._focusItem );
@@ -511,7 +511,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       this._fillTree( tree, 10 );
       TestUtil.flush();
-      sample = tree._rowContainer._getTargetNode().childNodes[ 9 ];
+      var sample = tree._rowContainer._getTargetNode().childNodes[ 9 ];
       assertEquals( 1, sample.childNodes.length );
       assertEquals( "Test9", sample.childNodes[ 0 ].innerHTML );
       var bounds = TestUtil.getElementBounds( sample );
@@ -1747,7 +1747,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( 0, TestUtil.getRequestsSend() );
       rwt.remote.Server.getInstance().send();
       var message = TestUtil.getMessageObject();
-      assertEquals( "w2,w3", message.findSetProperty( "w11", "selection" ) );
+      assertEquals( [ "w2","w3" ], message.findSetProperty( "w11", "selection" ) );
       tree.destroy();
     },
 
@@ -1790,11 +1790,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( 2, TestUtil.getRequestsSend() );
       var messages = TestUtil.getMessages();
       assertEquals( "w2", messages[ 0 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
-      assertEquals( "w2", messages[ 0 ].findSetProperty( "w11", "selection" ) );
+      assertEquals( [ "w2" ], messages[ 0 ].findSetProperty( "w11", "selection" ) );
       assertNull( messages[ 0 ].findNotifyOperation( "w11", "widgetDefaultSelected" ) );
       assertEquals( "w2", messages[ 1 ].findNotifyProperty( "w11", "widgetDefaultSelected", "item" ) );
       assertNull( messages[ 1 ].findNotifyOperation( "w11", "widgetSelected" ) );
-      assertNull( "w2", messages[ 1 ].findSetOperation( "w11", "selection" ) );
+      assertNull( [ "w2" ], messages[ 1 ].findSetOperation( "w11", "selection" ) );
       tree.destroy();
     },
 
@@ -1823,7 +1823,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      assertEquals( "w2,w3,w3#0,w11#1", message.findSetProperty( "w11", "selection" ) );
+      assertEquals( [ "w2", "w3", "w3#0", "w11#1" ], message.findSetProperty( "w11", "selection" ) );
       assertEquals( "w11#1", message.findNotifyProperty( "w11", "widgetSelected", "item" ) );
       tree.destroy();
     },
@@ -1848,11 +1848,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       var messages = TestUtil.getMessages();
       assertEquals( "w2", messages[ 0 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
-      assertEquals( "w2", messages[ 0 ].findSetProperty( "w11", "selection" ) );
+      assertEquals( [ "w2" ], messages[ 0 ].findSetProperty( "w11", "selection" ) );
       assertNull( messages[ 0 ].findNotifyOperation( "w11", "widgetDefaultSelected" ) );
       assertEquals( "w2", messages[ 1 ].findNotifyProperty( "w11", "widgetDefaultSelected", "item" ) );
       assertNull( messages[ 1 ].findNotifyOperation( "w11", "widgetSelected" ) );
-      assertNull( "w2", messages[ 1 ].findSetOperation( "w11", "selection" ) );
+      assertNull( [ "w2" ], messages[ 1 ].findSetOperation( "w11", "selection" ) );
       tree.destroy();
     },
 
@@ -1897,11 +1897,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( 2, TestUtil.getRequestsSend() );
       var messages = TestUtil.getMessages();
       assertEquals( "w2", messages[ 0 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
-      assertEquals( "w2", messages[ 0 ].findSetProperty( "w11", "selection" ) );
+      assertEquals( [ "w2" ], messages[ 0 ].findSetProperty( "w11", "selection" ) );
       assertNull( messages[ 0 ].findNotifyOperation( "w11", "widgetDefaultSelected" ) );
       assertEquals( "w2", messages[ 1 ].findNotifyProperty( "w11", "widgetDefaultSelected", "item" ) );
       assertNull( messages[ 1 ].findNotifyOperation( "w11", "widgetSelected" ) );
-      assertNull( "w2", messages[ 1 ].findSetOperation( "w11", "selection" ) );
+      assertNull( [ "w2" ], messages[ 1 ].findSetOperation( "w11", "selection" ) );
       tree.destroy();
     },
 
@@ -1978,7 +1978,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertNull( messages[ 1 ].findNotifyOperation( "w11", "widgetDefaultSelected" ) );
       assertEquals( "w2", messages[ 0 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
       assertEquals( "w4", messages[ 1 ].findNotifyProperty( "w11", "widgetSelected", "item" ) );
-      assertEquals( "w2,w3,w4", messages[ 1 ].findSetProperty( "w11", "selection" ) );
+      assertEquals( [ "w2", "w3", "w4" ], messages[ 1 ].findSetProperty( "w11", "selection" ) );
       tree.destroy();
     },
 
@@ -3475,7 +3475,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setItemCount( 1 );
       var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       item0.setItemCount( 1 );
-      var item1 = new rwt.widgets.GridItem( item0, 0 );
+      new rwt.widgets.GridItem( item0, 0 );
       item0.setExpanded( true );
       TestUtil.flush();
       TestUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );

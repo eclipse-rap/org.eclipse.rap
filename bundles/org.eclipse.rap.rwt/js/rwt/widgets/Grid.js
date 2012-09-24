@@ -917,7 +917,8 @@ qx.Class.define( "rwt.widgets.Grid", {
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var id = wm.findIdByWidget( this );
         var selection = this._getSelectionList();
-        req.addParameter( id + ".selection", selection );
+//        req.addParameter( id + ".selection", selection );
+        rwt.remote.Server.getInstance().getServerObject( this ).set( "selection", selection );
         this._sendSelectionEvent( item, false, null );
       }
     },
@@ -1069,7 +1070,7 @@ qx.Class.define( "rwt.widgets.Grid", {
       for( var i = 0; i < this._selection.length; i++ ) {
         result.push( this._getItemId( this._selection[ i ] ) );
       }
-      return result.join();
+      return result;
     },
 
     _getItemId : function( item ) {

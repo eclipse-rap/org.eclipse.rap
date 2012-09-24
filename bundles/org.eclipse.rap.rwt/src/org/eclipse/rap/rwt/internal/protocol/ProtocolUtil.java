@@ -131,7 +131,6 @@ public final class ProtocolUtil {
     return result;
   }
 
-
   public static int[] readPropertyValueAsIntArray( String target, String property ) {
     int[] result = null;
     ClientMessage message = getClientMessage();
@@ -140,6 +139,19 @@ public final class ProtocolUtil {
       Object value = operation.getProperty( property );
       if( value != null ) {
         result = toIntArray( value );
+      }
+    }
+    return result;
+  }
+
+  public static String[] readPropertyValueAsStringArray( String target, String property ) {
+    String[] result = null;
+    ClientMessage message = getClientMessage();
+    SetOperation operation =  message.getLastSetOperationFor( target, property );
+    if( operation != null ) {
+      Object value = operation.getProperty( property );
+      if( value != null ) {
+        result = toStringArray( value );
       }
     }
     return result;
@@ -263,6 +275,25 @@ public final class ProtocolUtil {
       }
     } else {
       throw new IllegalStateException( "Could not convert to int array: property is not an array" );
+    }
+    return result;
+  }
+
+  private static String[] toStringArray( Object value ) {
+    String[] result;
+    if( value instanceof Object[] ) {
+      Object[] array = ( Object[] )value;
+      result = new String[ array.length ];
+      for( int i = 0; i < array.length; i++ ) {
+        try {
+          result[ i ] = ( ( String )array[ i ] );
+        } catch( ClassCastException exception ) {
+          String message = "Could not convert to string array: array contains non-string value";
+          throw new IllegalStateException( message );
+        }
+      }
+    } else {
+      throw new IllegalStateException( "Could not convert to string array: property is not a string" );
     }
     return result;
   }

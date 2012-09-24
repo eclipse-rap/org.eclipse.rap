@@ -291,6 +291,25 @@ public class ProtocolUtil_Test extends TestCase {
     assertTrue( Arrays.equals( expected, actual ) );
   }
 
+  public void testReadPropertyValueAsStringArray() {
+    fakeNewJsonMessage();
+
+    String[] expected = new String[]{ "a", "b", "c" };
+    String[] actual = ProtocolUtil.readPropertyValueAsStringArray( "w3", "p7" );
+    assertTrue( Arrays.equals( expected, actual ) );
+  }
+
+  public void testReadPropertyValueAsStringArray_NotString() {
+    fakeNewJsonMessage();
+
+    try {
+      ProtocolUtil.readPropertyValueAsStringArray( "w3", "p6" );
+      fail();
+    } catch( IllegalStateException ex ) {
+      // expected
+    }
+  }
+
   //////////////////
   // Helping methods
 
@@ -309,6 +328,7 @@ public class ProtocolUtil_Test extends TestCase {
     parameters.put( "p4", null );
     parameters.put( "p5", new int[] { 1, 2 } );
     parameters.put( "p6", new int[] { 1, 2, 3, 4 } );
+    parameters.put( "p7", new String[] { "a", "b", "c" } );
     Fixture.fakeSetOperation( "w3", parameters  );
   }
 }

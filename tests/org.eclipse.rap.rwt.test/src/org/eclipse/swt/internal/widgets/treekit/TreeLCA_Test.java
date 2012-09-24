@@ -578,7 +578,7 @@ public class TreeLCA_Test extends TestCase {
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
 
     Fixture.fakeNewRequest( display );
-    Fixture.fakeSetParameter( getId( tree ), "selection", getId( tree ) + "#" + 50 );
+    Fixture.fakeSetParameter( getId( tree ), "selection", new String[]{ getId( tree ) + "#" + 50 } );
     Fixture.readDataAndProcessAction( tree );
 
     assertEquals( 1, tree.getSelection().length );
@@ -595,7 +595,7 @@ public class TreeLCA_Test extends TestCase {
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
 
     Fixture.fakeNewRequest( display );
-    Fixture.fakeSetParameter( getId( tree ), "selection", getId( item ) + "#" + 50 );
+    Fixture.fakeSetParameter( getId( tree ), "selection", new String[]{ getId( item ) + "#" + 50 } );
     Fixture.readDataAndProcessAction( tree );
 
     assertEquals( 1, tree.getSelection().length );
@@ -608,7 +608,7 @@ public class TreeLCA_Test extends TestCase {
     new TreeItem( tree, SWT.NONE );
 
     Fixture.fakeNewRequest( display );
-    Fixture.fakeSetParameter( getId( tree ), "selection", getId( item1 ) );
+    Fixture.fakeSetParameter( getId( tree ), "selection", new String[]{ getId( item1 ) } );
     Fixture.readDataAndProcessAction( tree );
 
     TreeItem[] selectedItems = tree.getSelection();
@@ -622,7 +622,7 @@ public class TreeLCA_Test extends TestCase {
     item1.dispose();
 
     Fixture.fakeNewRequest( display );
-    Fixture.fakeSetParameter( getId( tree ), "selection", getId( item1 ) );
+    Fixture.fakeSetParameter( getId( tree ), "selection", new String[]{ getId( item1 ) } );
     Fixture.executeLifeCycleFromServerThread();
 
     TreeItem[] selectedItems = tree.getSelection();

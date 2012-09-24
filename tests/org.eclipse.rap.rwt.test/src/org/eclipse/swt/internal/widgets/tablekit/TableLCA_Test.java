@@ -325,7 +325,7 @@ public class TableLCA_Test extends TestCase {
     TableItem item1 = new TableItem( table, SWT.NONE );
     TableItem item2 = new TableItem( table, SWT.NONE );
 
-    Fixture.fakeSetParameter( getId( table ), "selection", getId( item1 ) + "," + getId( item2 ) );
+    Fixture.fakeSetParameter( getId( table ), "selection", new String[]{ getId( item1 ), getId( item2 ) } );
     Fixture.executeLifeCycleFromServerThread();
 
     TableItem[] selectedItems = table.getSelection();
@@ -341,7 +341,7 @@ public class TableLCA_Test extends TestCase {
     item.setText( "Item 1" );
 
     Fixture.fakeNewRequest( display );
-    String selection = getId( item ) + "," + getId( table ) + "#2";
+    String[] selection = new String[]{ getId( item ), getId( table ) + "#2" };
     Fixture.fakeSetParameter( getId( table ), "selection", selection );
     Fixture.executeLifeCycleFromServerThread();
 
@@ -359,7 +359,7 @@ public class TableLCA_Test extends TestCase {
     item.dispose();
 
     Fixture.fakeNewRequest( display );
-    Fixture.fakeSetParameter( getId( table ), "selection", getId( item ) );
+    Fixture.fakeSetParameter( getId( table ), "selection", new String[]{ getId( item ) } );
     Fixture.executeLifeCycleFromServerThread();
 
     TableItem[] selectedItems = table.getSelection();
@@ -569,7 +569,7 @@ public class TableLCA_Test extends TestCase {
     }
 
     Fixture.fakeSetParameter( getId( table ), "focusItem", indexToId( table, 4 ) );
-    String items = indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } );
+    String[] items = indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } );
     Fixture.fakeSetParameter( getId( table ), "selection", items );
     TableLCA tableLCA = new TableLCA();
     tableLCA.readData( table );
@@ -583,7 +583,7 @@ public class TableLCA_Test extends TestCase {
     createTableItems( table, 5 );
 
     Fixture.fakeSetParameter( getId( table ), "focusItem", getId( table ) + "#4" );
-    String items = indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } );
+    String[] items = indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } );
     Fixture.fakeSetParameter( getId( table ), "selection", items );
     TableLCA tableLCA = new TableLCA();
     tableLCA.readData( table );
@@ -596,7 +596,7 @@ public class TableLCA_Test extends TestCase {
     Table table = new Table( shell, SWT.MULTI );
     createTableItems( table, 5 );
 
-    String items = indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } );
+    String[] items = indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } );
     Fixture.fakeSetParameter( getId( table ), "selection", items );
     Fixture.fakeSetParameter( getId( table ), "focusItem", indexToId( table, 4 ) );
     table.getItem( 4 ).dispose();
@@ -617,7 +617,7 @@ public class TableLCA_Test extends TestCase {
       99,100,101,102,103,104,105,106,107,108,109,
       110,111,112,113,0
     };
-    String items = indicesToIds( table, indices );
+    String[] items = indicesToIds( table, indices );
     Fixture.fakeSetParameter( getId( table ), "selection", items );
     Fixture.fakeSetParameter( getId( table ), "topItemIndex", Integer.valueOf( 0 ) );
     TableLCA tableLCA = new TableLCA();
@@ -1632,13 +1632,10 @@ public class TableLCA_Test extends TestCase {
     return table.getAdapter( ITableAdapter.class ).isItemVirtual( index );
   }
 
-  private static String indicesToIds( Table table, int[] indices ) {
-    String items = new String();
+  private static String[] indicesToIds( Table table, int[] indices ) {
+    String[] items = new String[ indices.length ];
     for( int i = 0; i < indices.length; i++ ) {
-      items += indexToId( table, indices[ i ] );
-      if( i != indices.length - 1 ) {
-        items += ",";
-      }
+      items[ i ] = indexToId( table, indices[ i ] );
     }
     return items;
   }

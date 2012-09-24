@@ -16,6 +16,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
@@ -23,6 +24,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -191,22 +193,16 @@ public final class TableLCA extends AbstractWidgetLCA {
   // Helping methods to read client-side state changes
 
   private static void readSelection( Table table ) {
-    String value = WidgetLCAUtil.readPropertyValue( table, "selection" );
-    if( value != null ) {
-      int[] newSelection;
-      if( "".equals( value ) ) {
-        newSelection = new int[ 0 ];
-      } else {
-        String[] selectedItems = value.split( "," );
-        newSelection = new int[ selectedItems.length ];
-        for( int i = 0; i < selectedItems.length; i++ ) {
-          String itemId = selectedItems[ i ];
-          TableItem item = getItem( table, itemId );
-          if( item != null ) {
-            newSelection[ i ] = table.indexOf( item );
-          } else {
-            newSelection[ i ] = -1;
-          }
+    String[] values = ProtocolUtil.readPropertyValueAsStringArray( getId( table ), "selection" );
+    if( values != null ) {
+      int[] newSelection = new int[ values.length ];
+      for( int i = 0; i < values.length; i++ ) {
+        String itemId = values[ i ];
+        TableItem item = getItem( table, itemId );
+        if( item != null ) {
+          newSelection[ i ] = table.indexOf( item );
+        } else {
+          newSelection[ i ] = -1;
         }
       }
       table.deselectAll();

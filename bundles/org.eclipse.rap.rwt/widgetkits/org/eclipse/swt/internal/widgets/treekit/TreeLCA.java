@@ -16,6 +16,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
@@ -23,6 +24,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -124,7 +126,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     Tree tree = ( Tree )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( tree );
     clientObject.create( TYPE );
-    clientObject.set( "parent", WidgetUtil.getId( tree.getParent() ) );
+    clientObject.set( "parent", getId( tree.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( tree, ALLOWED_STYLES ) );
     clientObject.set( "appearance", "tree" );
     ITreeAdapter adapter = getTreeAdapter( tree );
@@ -225,9 +227,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
   // Helping methods to read client-side state
 
   private static void readSelection( Tree tree ) {
-    String value = WidgetLCAUtil.readPropertyValue( tree, "selection" );
-    if( value != null ) {
-      String[] values = value.split( "," );
+    String[] values = ProtocolUtil.readPropertyValueAsStringArray( getId( tree ), "selection" );
+    if( values != null ) {
       TreeItem[] selectedItems = new TreeItem[ values.length ];
       boolean validItemFound = false;
       for( int i = 0; i < values.length; i++ ) {
@@ -312,7 +313,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     TreeItem[] selection = tree.getSelection();
     String[] result = new String[ selection.length ];
     for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = WidgetUtil.getId( selection[ i ] );
+      result[ i ] = getId( selection[ i ] );
     }
     return result;
   }
@@ -412,7 +413,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
       Widget parent = WidgetUtil.find( tree, idParts[ 0 ] );
       if( parent != null ) {
         int itemIndex = Integer.parseInt( idParts[ 1 ] );
-        if( WidgetUtil.getId( tree ).equals( idParts[ 0 ] ) ) {
+        if( getId( tree ).equals( idParts[ 0 ] ) ) {
           item = tree.getItem( itemIndex );
         } else {
           item = ( ( TreeItem )parent ).getItem( itemIndex );
