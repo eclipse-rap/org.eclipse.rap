@@ -283,6 +283,14 @@ public class ProtocolUtil_Test extends TestCase {
     }
   }
 
+  public void testReadPropertyValueAsIntArray() {
+    fakeNewJsonMessage();
+
+    int[] expected = new int[]{ 1, 2, 3, 4 };
+    int[] actual = ProtocolUtil.readPropertyValueAsIntArray( "w3", "p6" );
+    assertTrue( Arrays.equals( expected, actual ) );
+  }
+
   //////////////////
   // Helping methods
 

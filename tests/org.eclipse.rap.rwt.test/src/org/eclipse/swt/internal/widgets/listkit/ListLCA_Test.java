@@ -145,7 +145,7 @@ public class ListLCA_Test extends TestCase {
   public void testReadSelectionForSingle() {
     createListItems( 3 );
 
-    fakeSelection( "0" );
+    fakeSelection( new int[]{ 0 } );
     lca.readData( list );
 
     assertEquals( 0, list.getSelectionIndex() );
@@ -155,7 +155,7 @@ public class ListLCA_Test extends TestCase {
     createListItems( 3 );
     list.setSelection( 1 );
 
-    fakeSelection( "" );
+    fakeSelection( new int[]{} );
     lca.readData( list );
 
     assertEquals( -1, list.getSelectionIndex() );
@@ -165,7 +165,7 @@ public class ListLCA_Test extends TestCase {
     list = new List( shell, SWT.MULTI );
     createListItems( 3 );
 
-    fakeSelection( "0,1" );
+    fakeSelection( new int[]{ 0, 1 } );
     lca.readData( list );
 
     int[] expected = new int[]{ 0, 1 };
@@ -538,9 +538,9 @@ public class ListLCA_Test extends TestCase {
     }
   }
 
-  private void fakeSelection( String value ) {
+  private void fakeSelection( int[] values ) {
     Fixture.fakeNewRequest( display );
-    Fixture.fakeSetParameter( getId( list ), "selection", value );
+    Fixture.fakeSetParameter( getId( list ), "selection", values );
   }
 
   private void fakeFocusIndex( int value ) {

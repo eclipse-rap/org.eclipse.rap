@@ -95,7 +95,7 @@ qx.Class.define( "rwt.widgets.List", {
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var id = wm.findIdByWidget( this );
         var req = rwt.remote.Server.getInstance();
-        req.addParameter( id + ".selection", this._getSelectionIndices() );
+        this._sendSelectionChange();
         if( this._hasSelectionListener ) {
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
           org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
@@ -103,6 +103,16 @@ qx.Class.define( "rwt.widgets.List", {
         }
       }
       this._updateSelectedItemState();
+    },
+
+    _sendSelectionChange : function() {
+      var selection = [];
+      var selectedItems = this.getManager().getSelectedItems();
+      for( var i = 0; i < selectedItems.length; i++ ) {
+        var index = this._clientArea.indexOf( selectedItems[ i ] );
+        selection.push( index );
+      }
+      rwt.remote.Server.getInstance().getServerObject( this ).set( "selection", selection );
     },
 
     _onSendRequest : function( evt ) {

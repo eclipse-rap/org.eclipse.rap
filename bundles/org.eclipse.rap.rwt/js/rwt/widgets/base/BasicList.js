@@ -359,25 +359,6 @@ qx.Class.define( "rwt.widgets.base.BasicList", {
       }
     },
 
-    _getSelectionIndices : function() {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var id = wm.findIdByWidget( this );
-      var selectionIndices = "";
-      var selectedItems = this.getManager().getSelectedItems();
-      for( var i = 0; i < selectedItems.length; i++ ) {
-        var index = this._clientArea.indexOf( selectedItems[ i ] );
-        // TODO [rh] find out why sometimes index == -1, cannot be reproduced
-        //      in standalone qooxdoo application
-        if( index >= 0 ) {
-          if( selectionIndices !== "" ) {
-            selectionIndices += ",";
-          }
-          selectionIndices += String( index );
-        }
-      }
-      return selectionIndices;
-    },
-
     _onListItemMouseOver : function( evt ) {
       evt.getTarget().addState( "over" );
     },

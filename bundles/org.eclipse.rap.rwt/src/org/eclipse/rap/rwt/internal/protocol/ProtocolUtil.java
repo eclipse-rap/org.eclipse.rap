@@ -131,6 +131,20 @@ public final class ProtocolUtil {
     return result;
   }
 
+
+  public static int[] readPropertyValueAsIntArray( String target, String property ) {
+    int[] result = null;
+    ClientMessage message = getClientMessage();
+    SetOperation operation =  message.getLastSetOperationFor( target, property );
+    if( operation != null ) {
+      Object value = operation.getProperty( property );
+      if( value != null ) {
+        result = toIntArray( value );
+      }
+    }
+    return result;
+  }
+
   public static String readEventPropertyValueAsString( String target,
                                                        String eventName,
                                                        String property )

@@ -15,12 +15,14 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
@@ -118,19 +120,9 @@ public class ListLCA extends AbstractWidgetLCA {
   // Helping methods to read client-side state
 
   private static void readSelection( List list ) {
-    String value = WidgetLCAUtil.readPropertyValue( list, "selection" );
+    int[] value = ProtocolUtil.readPropertyValueAsIntArray( getId( list ), "selection" );
     if( value != null ) {
-      String[] indiceStrings;
-      if( "".equals( value ) ) {
-        indiceStrings = new String[ 0 ];
-      } else {
-        indiceStrings = value.split( "," );
-      }
-      int[] indices = new int[ indiceStrings.length ];
-      for( int i = 0; i < indices.length; i++ ) {
-        indices[ i ] = NumberFormatUtil.parseInt( indiceStrings[ i ] );
-      }
-      list.setSelection( indices );
+      list.setSelection( value );
     }
   }
 

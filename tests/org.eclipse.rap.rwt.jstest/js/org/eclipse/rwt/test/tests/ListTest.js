@@ -504,7 +504,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       TestUtil.click( item );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertEquals( 1, TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
+      assertEquals( [ 1 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
       list.destroy();
     },
 
@@ -759,6 +759,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.setItemDimensions( 100, 20 );
       list.addToDocument();
       list.setSpace( 5, 238, 5, 436 );
+      rwt.protocol.ObjectRegistry.add( "w3", list );
       if( noflush !== true ) {
         TestUtil.flush();
       }
