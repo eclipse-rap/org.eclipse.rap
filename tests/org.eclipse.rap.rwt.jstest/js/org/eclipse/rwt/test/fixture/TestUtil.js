@@ -703,6 +703,10 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     return new org.eclipse.rwt.test.fixture.Message( this._requestLog[ index ] );
   },
 
+  getLastMessage : function() {
+    return this.getMessageObject( this._requestLog.length - 1 );
+  },
+
   getMessages : function() {
     var result = [];
     for( var i = 0; i < this._requestLog.length; i++ ) {

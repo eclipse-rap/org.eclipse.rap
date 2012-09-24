@@ -210,7 +210,7 @@ qx.Class.define( "rwt.widgets.CTabItem", {
 
     _onDblClick : function( evt ) {
       if( evt.getTarget() != this._closeButton ) {
-        evt.getTarget().getParent()._notifyItemDblClick( evt.getTarget() );
+        evt.getTarget().getParent()._notifyItemDblClick( evt );
       }
     },
 

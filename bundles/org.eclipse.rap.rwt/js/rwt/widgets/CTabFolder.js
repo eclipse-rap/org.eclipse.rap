@@ -526,9 +526,10 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
       }
     },
 
-    _notifyItemDblClick : function( item ) {
+    _notifyItemDblClick : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         if( this._hasSelectionListener ) {
+          var item = evt.getTarget();
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var req = rwt.remote.Server.getInstance();
           var id = widgetManager.findIdByWidget( this );
@@ -536,9 +537,7 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
           // TODO [rst] remove this parameter as soon as server-side code is revised
           //      -> CTabFolderLCA.readData()
           req.addParameter( id + ".selectedItemId", itemId );
-          req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
-          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-          req.send();
+          org.eclipse.swt.EventUtil.widgetDefaultSelected( evt, this );
         }
       }
     }

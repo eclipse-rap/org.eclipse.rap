@@ -11,7 +11,7 @@
 
 qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
   extend : qx.core.Object,
-  
+
   members : {
 
     testCreateCTabFolderOnTopByProtocol : function() {
@@ -422,16 +422,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
     },
 
     testSetBackgroundImage : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var folder = new rwt.widgets.CTabFolder();
       folder.setUserData( "backgroundImageSize", [ 50, 50 ] );
       folder.setBackgroundImage( "bla.jpg" );
       assertEquals( "bla.jpg", folder._body.getBackgroundImage() );
       assertEquals( [ 50, 50 ], folder._body.getUserData( "backgroundImageSize" ) );
     },
-            
+
     testSetSelectionBackgroundImage : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var folder = new rwt.widgets.CTabFolder();
       folder.setSelectionBackgroundImage( [ "bla.jpg", 50, 50 ] );
       var item = new rwt.widgets.CTabItem( folder, false );
@@ -439,6 +437,83 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       item.setSelected( true );
       assertEquals( "bla.jpg", item.getBackgroundImage() );
       assertEquals( [ 50, 50 ], item.getUserData( "backgroundImageSize" ) );
+    },
+
+    testItemDefaultSelected : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      folder.addState( "rwt_CLOSE" );
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.CTabItem",
+        "properties" : {
+          "style" : [],
+          "parent" : "w3",
+          "index" : 0
+        }
+      } );
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "listen",
+        "properties" : {
+          "selection" : true
+        }
+      } );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w4" );
+      TestUtil.flush();
+
+      TestUtil.doubleClick( widget );
+
+      var message = TestUtil.getLastMessage();
+      assertNotNull( message.findNotifyOperation( "w3", "widgetDefaultSelected" ) );
+      shell.destroy();
+    },
+
+    testItemDefaultSelectedModifier : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      folder.addState( "rwt_CLOSE" );
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.CTabItem",
+        "properties" : {
+          "style" : [],
+          "parent" : "w3",
+          "index" : 0
+        }
+      } );
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "listen",
+        "properties" : {
+          "selection" : true
+        }
+      } );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w4" );
+      TestUtil.flush();
+
+      TestUtil.fakeMouseEventDOM(
+          widget.getElement(),
+          "dblclick",
+          qx.event.type.MouseEvent.buttons.left,
+          0,
+          0,
+          qx.event.type.DomEvent.CTRL_MASK
+       );
+
+      var message = TestUtil.getLastMessage();
+      assertFalse( message.findNotifyProperty( "w3", "widgetDefaultSelected", "shiftKey" ) );
+      assertTrue( message.findNotifyProperty( "w3", "widgetDefaultSelected", "ctrlKey" ) );
+      assertFalse( message.findNotifyProperty( "w3", "widgetDefaultSelected", "altKey" ) );
+      shell.destroy();
     },
 
     /////////
@@ -473,5 +548,5 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
     }
 
   }
-  
+
 } );
