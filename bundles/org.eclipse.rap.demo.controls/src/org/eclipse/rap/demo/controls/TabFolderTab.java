@@ -80,7 +80,9 @@ public class TabFolderTab extends ExampleTab {
         if( tabRadios != null ) {
           int index = item.getParent().indexOf( item );
           for( int i = 0; i < MAX_ITEMS; i++ ) {
-            tabRadios[ i ].setSelection( index == i );
+            if( checkControl( tabRadios[ i ] ) ) {
+              tabRadios[ i ].setSelection( index == i );
+            }
           }
         }
         createItemContent( item );

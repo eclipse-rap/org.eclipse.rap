@@ -43,7 +43,7 @@ public class ScaleTab extends ExampleTab {
   }
 
   @Override
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( parent, "HORIZONTAL", SWT.HORIZONTAL, SWT.RADIO, true );
     createStyleButton( parent, "VERTICAL", SWT.VERTICAL, SWT.RADIO, false );
     createStyleButton( "BORDER", SWT.BORDER );
@@ -102,7 +102,7 @@ public class ScaleTab extends ExampleTab {
   }
 
   @Override
-  protected void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( Composite parent ) {
     parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     int style = getStyle();
     scale = new Scale( parent, style );
@@ -138,29 +138,29 @@ public class ScaleTab extends ExampleTab {
         }
       } );
     }
-    if( minimumSpinner != null ) {
+    if( checkControl( minimumSpinner ) ) {
       scale.setMinimum( minimumSpinner.getSelection() );
     }
-    if( maximumSpinner != null ) {
+    if( checkControl( maximumSpinner ) ) {
       scale.setMaximum( maximumSpinner.getSelection() );
     }
-    if( selectionSpinner != null ) {
+    if( checkControl( selectionSpinner ) ) {
       scale.setSelection( selectionSpinner.getSelection() );
     }
-    if( incrementSpinner != null ) {
+    if( checkControl( incrementSpinner ) ) {
       scale.setIncrement( incrementSpinner.getSelection() );
     }
-    if( pageIncrementSpinner != null ) {
+    if( checkControl( pageIncrementSpinner ) ) {
       scale.setPageIncrement( pageIncrementSpinner.getSelection() );
     }
     registerControl( scale );
   }
 
-  protected Button createStyleButton( final Composite parent,
-                                      final String name,
-                                      final int style,
-                                      final int buttonStyle,
-                                      final boolean checked )
+  protected Button createStyleButton( Composite parent,
+                                      String name,
+                                      int style,
+                                      int buttonStyle,
+                                      boolean checked )
   {
     Button button = new Button( parent, buttonStyle );
     button.setText( name );
@@ -176,11 +176,11 @@ public class ScaleTab extends ExampleTab {
     return button;
   }
 
-  private Spinner createSpinnerControl( final Composite parent,
-                                        final String labelText,
-                                        final int minimum,
-                                        final int maximum,
-                                        final int selection ) {
+  private Spinner createSpinnerControl( Composite parent,
+                                        String labelText,
+                                        int minimum,
+                                        int maximum,
+                                        int selection ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     Label label = new Label( composite, SWT.NONE );

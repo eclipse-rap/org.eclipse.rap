@@ -449,7 +449,7 @@ public class TextTab extends ExampleTab {
   }
 
   private void updateSelectionListener() {
-    if( btnSelectionListener != null ) {
+    if( checkControl( btnSelectionListener ) ) {
       if( btnSelectionListener.getSelection() ) {
         text.addSelectionListener( selectionListener );
       } else {
@@ -459,7 +459,7 @@ public class TextTab extends ExampleTab {
   }
 
   private void updateBlockingVerifyListener() {
-    if( btnBlockingVerifyListener != null ) {
+    if( checkControl( btnBlockingVerifyListener ) ) {
       if( btnBlockingVerifyListener.getSelection() ) {
         text.addVerifyListener( blockingVerifyListener );
       } else {
@@ -469,7 +469,7 @@ public class TextTab extends ExampleTab {
   }
 
   private void updateNumbersOnlyVerifyListener() {
-    if( btnNumbersOnlyVerifyListener != null ) {
+    if( checkControl( btnNumbersOnlyVerifyListener ) ) {
       if( btnNumbersOnlyVerifyListener.getSelection() ) {
         text.addVerifyListener( numberOnlyVerifyListener );
       } else {
@@ -479,7 +479,7 @@ public class TextTab extends ExampleTab {
   }
 
   private void updateModifyListener() {
-    if( btnModifyListener != null ) {
+    if( checkControl( btnModifyListener ) ) {
       if( btnModifyListener.getSelection() ) {
         text.addModifyListener( modifyListener );
       } else {
@@ -489,7 +489,7 @@ public class TextTab extends ExampleTab {
   }
 
   private void updateKeyListener() {
-    if( btnKeyListener != null ) {
+    if( checkControl( btnKeyListener ) ) {
       if( btnKeyListener.getSelection() ) {
         text.addKeyListener( keyListener );
       } else {
@@ -499,13 +499,13 @@ public class TextTab extends ExampleTab {
   }
 
   private void updateEditable() {
-    if( btnEditable != null ) {
+    if( checkControl( btnEditable ) ) {
       text.setEditable( btnEditable.getSelection() );
     }
   }
 
   private void updateEchoChar() {
-    if( btnEchoChar != null ) {
+    if( checkControl( btnEchoChar ) ) {
       text.setEchoChar( btnEchoChar.getSelection() ? '*' : 0);
     }
   }
