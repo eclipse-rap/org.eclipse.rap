@@ -58,8 +58,42 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
       assertEquals( "horizontal", widget.getOrientation() );
       shell.destroy();
       widget.destroy();
+    },
+
+    testSendWidgetSelected : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Sash",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "bounds" : [ 10, 20 , 10, 100 ]
+        }
+      } );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w3" );
+
+      this.fakeDrag( widget, 5, 0 );
+
+      var message = TestUtil.getLastMessage();
+      assertEquals( 15, message.findNotifyProperty( "w3", "widgetSelected", "x" ) );
+      assertEquals( 20, message.findNotifyProperty( "w3", "widgetSelected", "y" ) );
+      assertEquals( 10, message.findNotifyProperty( "w3", "widgetSelected", "width" ) );
+      assertEquals( 100, message.findNotifyProperty( "w3", "widgetSelected", "height" ) );
+      shell.destroy();
+    },
+
+    fakeDrag : function( sash, leftOffset, topOffset ) {
+      sash._commonMouseDown();
+      sash.setLeft( sash.getLeft() + leftOffset );
+      sash.setTop( sash.getTop() + topOffset );
+      sash._commonMouseUp();
     }
 
   }
-  
+
 } );

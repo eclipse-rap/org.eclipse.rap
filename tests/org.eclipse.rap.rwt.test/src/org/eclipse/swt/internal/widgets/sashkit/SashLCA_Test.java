@@ -147,6 +147,10 @@ public class SashLCA_Test extends TestCase {
 
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( ClientMessageConst.EVENT_PARAM_DETAIL, "drag" );
+    properties.put( ClientMessageConst.EVENT_PARAM_X, Integer.valueOf( 1 ) );
+    properties.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( 2 ) );
+    properties.put( ClientMessageConst.EVENT_PARAM_WIDTH, Integer.valueOf( 3 ) );
+    properties.put( ClientMessageConst.EVENT_PARAM_HEIGHT, Integer.valueOf( 4 ) );
     Fixture.fakeNotifyOperation( getId( sash ),
                                  ClientMessageConst.EVENT_WIDGET_SELECTED,
                                  properties );
@@ -157,10 +161,10 @@ public class SashLCA_Test extends TestCase {
     SelectionEvent event = captor.getValue();
     assertEquals( sash, event.getSource() );
     assertEquals( null, event.item );
-    assertEquals( 0, event.x );
-    assertEquals( 0, event.y );
-    assertEquals( 0, event.width );
-    assertEquals( 0, event.height );
+    assertEquals( 1, event.x );
+    assertEquals( 2, event.y );
+    assertEquals( 3, event.width );
+    assertEquals( 4, event.height );
     assertEquals( true, event.doit );
     assertEquals( SWT.DRAG, event.detail );
   }

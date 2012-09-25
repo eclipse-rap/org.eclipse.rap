@@ -57,6 +57,8 @@ public final class ClientMessageConst {
   public static final String EVENT_PARAM_BUTTON = "button";
   public static final String EVENT_PARAM_X = "x";
   public static final String EVENT_PARAM_Y = "y";
+  public static final String EVENT_PARAM_WIDTH = "width";
+  public static final String EVENT_PARAM_HEIGHT = "height";
   public static final String EVENT_PARAM_TIME = "time";
   public static final String EVENT_PARAM_KEY_CODE = "keyCode";
   public static final String EVENT_PARAM_CHAR_CODE = "charCode";

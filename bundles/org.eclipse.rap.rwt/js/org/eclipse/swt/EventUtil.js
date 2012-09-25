@@ -57,25 +57,25 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     },
 
     widgetSelected : function( evt ) {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( evt.getTarget() );
       var left = evt.getTarget().getLeft();
       var top = evt.getTarget().getTop();
       var width = evt.getTarget().getWidth();
       var height = evt.getTarget().getHeight();
-      org.eclipse.swt.EventUtil.doWidgetSelected( id, left, top, width, height );
+      org.eclipse.swt.EventUtil.sendWidgetSelected( evt.getTarget(), left, top, width, height );
     },
 
-    doWidgetSelected : function( id, left, top, width, height ) {
+    sendWidgetSelected : function( target, left, top, width, height, detail) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var req = rwt.remote.Server.getInstance();
-        req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
-        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-        req.addParameter( id + ".bounds.x", left );
-        req.addParameter( id + ".bounds.y", top );
-        req.addParameter( id + ".bounds.width", width );
-        req.addParameter( id + ".bounds.height", height );
-        req.send();
+        var server = rwt.remote.Server.getInstance();
+        var properties = {
+          "x" : left,
+          "y" : top,
+          "width" : width,
+          "height" : height,
+          "detail" : detail
+        };
+        org.eclipse.swt.EventUtil.addModifierToProperties( properties );
+        server.getServerObject( target ).notify( "widgetSelected", properties );
       }
     },
 

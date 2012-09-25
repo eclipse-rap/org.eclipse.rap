@@ -229,20 +229,14 @@ qx.Class.define( "rwt.widgets.Sash", {
         // TODO [rst] Clarify what the getOffsetLeft() does
         var leftOffset = this._slider.getLeft() + this._frameOffset;
         var topOffset = this._slider.getTop() + this._frameOffset;
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        var req = rwt.remote.Server.getInstance();
-        req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
-        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-        req.addParameter( id + ".bounds.x", this.getLeft() + leftOffset );
-        req.addParameter( id + ".bounds.y", this.getTop() + topOffset );
-        req.addParameter( id + ".bounds.width", this.getWidth() );
-        req.addParameter( id + ".bounds.height", this.getHeight() );
-        if( this.getCapture() ) {
-          req.addParameter( "org.eclipse.swt.events.widgetSelected.detail",
-                            "drag" );
-        }
-        req.send();
+        org.eclipse.swt.EventUtil.sendWidgetSelected(
+            this,
+            this.getLeft() + leftOffset,
+            this.getTop() + topOffset,
+            this.getWidth(),
+            this.getHeight(),
+            this.getCapture() ? "drag" : null
+         );
       }
     },
 
