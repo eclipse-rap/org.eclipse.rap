@@ -166,7 +166,7 @@ abstract class ExampleTab implements Serializable {
     createLeft( horSashForm );
     createRight( horSashForm );
     createFoot( vertSashForm );
-    horSashForm.setWeights( new int[] { 60, 40 } );
+    horSashForm.setWeights( new int[] { 50, 50 } );
     vertSashForm.setWeights( new int[] { 93, 7 } );
     return vertSashForm;
   }
