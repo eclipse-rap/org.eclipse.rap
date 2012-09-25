@@ -92,6 +92,16 @@ public final class ProtocolUtil {
     return result == null ? null : result.toString();
   }
 
+  public static Object readPropertyValue( String target, String property ) {
+    Object result = null;
+    ClientMessage message = getClientMessage();
+    SetOperation operation =  message.getLastSetOperationFor( target, property );
+    if( operation != null ) {
+      result = operation.getProperty( property );
+    }
+    return result;
+  }
+
   public static String readPropertyValueAsString( String target, String property ) {
     String result = null;
     ClientMessage message = getClientMessage();

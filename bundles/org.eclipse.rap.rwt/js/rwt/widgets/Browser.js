@@ -61,7 +61,7 @@ qx.Class.define( "rwt.widgets.Browser", {
             || lowerCaseUrl.indexOf( "ftp://" ) === 0
             || lowerCaseUrl.indexOf( "ftps://" ) === 0
         ) {
-          var domain = lowerCaseUrl.slice( lowerCaseUrl.indexOf( "://" ) + 3 );
+          domain = lowerCaseUrl.slice( lowerCaseUrl.indexOf( "://" ) + 3 );
           var pathStart = domain.indexOf( "/" );
           if( pathStart !== -1 ) {
             domain = domain.slice( 0, pathStart );
@@ -146,10 +146,9 @@ qx.Class.define( "rwt.widgets.Browser", {
         success = false;
       }
       var req = rwt.remote.Server.getInstance();
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var id = wm.findIdByWidget( this );
-      req.addParameter( id + ".executeResult", success );
-      req.addParameter( id + ".evaluateResult", result );
+      var serverObject = rwt.remote.Server.getInstance().getServerObject( this );
+      serverObject.set( "executeResult", success );
+      serverObject.set( "evaluateResult", result );
       if( this.getExecutedFunctionPending() ) {
         req.sendImmediate( false );
       } else {
@@ -218,12 +217,12 @@ qx.Class.define( "rwt.widgets.Browser", {
       var win = this.getContentWindow();
       // NOTE: This mimics the behavior of the evaluate method in SWT:
       if( value instanceof win.Function ) {
-        result = this.objectToString( [ [] ] );
+        result = this.toJSON( [ [] ] );
       } else if( value instanceof win.Array ) {
-        result = this.objectToString( [ value ] );
+        result = this.toJSON( [ value ] );
       } else if( typeof value !== "object" && typeof value !== "function" ) {
         // above: some browser say regular expressions of the type "function"
-        result = this.objectToString( [ value ] );
+        result = this.toJSON( [ value ] );
       }
       return result;
     },
@@ -258,9 +257,8 @@ qx.Class.define( "rwt.widgets.Browser", {
 
     _createFunctionImpl : function( name ) {
       var win = this.getContentWindow();
-      var req = rwt.remote.Server.getInstance();
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( this );
+      var server = rwt.remote.Server.getInstance();
+      var serverObject = server.getServerObject( this );
       var that = this;
       win[ name + "_impl" ] = function() {
         var result = {};
@@ -270,14 +268,14 @@ qx.Class.define( "rwt.widgets.Browser", {
               + name
               + "\". Another browser function is still pending.";
           } else {
-            var args = that.objectToString( arguments );
-            req.addParameter( id + ".executeFunction", name );
-            req.addParameter( id + ".executeArguments", args );
+            var args = that.toJSON( arguments );
+            serverObject.set( "executeFunction", name );
+            serverObject.set( "executeArguments", args );
             that.setExecutedFunctionResult( null );
             that.setExecutedFunctionError( null );
             that.setExecutedFunctionPending( true );
             that.setAsynchronousResult( false );
-            req.sendImmediate( false );
+            server.sendImmediate( false );
             if( that.getExecutedFunctionPending() ) {
               that.setAsynchronousResult( true );
             } else {
@@ -346,28 +344,20 @@ qx.Class.define( "rwt.widgets.Browser", {
       this.setExecutedFunctionPending( false );
     },
 
-    objectToString : function( object ) {
+    toJSON : function( object ) {
       var result;
-      var type = typeof( object );
+      var type = typeof object;
       if( object === null ) {
-        result = String( object );
-      } else if( type == "object" ) {
+        result = object;
+      } else if( type === "object" ) {
         result = [];
         for( var i = 0; i < object.length; i++ ) {
-          var value = object[ i ];
-          type = typeof( value );
-          if( type == "string" ) {
-            value = '"' + value.replace( /"/g, "\\\"" ) + '"';
-          } else if( type == "object" && value !== null ) {
-            value = this.objectToString( value );
-          }
-          result.push( String( value ) );
+          result.push( this.toJSON( object[ i ] ) );
         }
-        result = "[" + String( result ) + "]";
-      } else if( type == "string" ) {
-        result = '"' + object.replace( /"/g, "\\\"" ) + '"';
-      } else {
+      } else if( type === "function" ) {
         result = String( object );
+      } else {
+        result = object;
       }
       return result;
     },

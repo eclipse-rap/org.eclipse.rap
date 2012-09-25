@@ -99,10 +99,10 @@ public class BrowserUtil_Test extends TestCase {
   }
 
   public void testCallCallback_Succeeded() {
-    final String[] log = new String[ 1 ];
+    final Object[] log = new Object[ 1 ];
     browserCallback = new BrowserCallback() {
       public void evaluationSucceeded( Object result ) {
-        log[ 0 ] = result.toString();
+        log[ 0 ] = result;
       }
       public void evaluationFailed( Exception exception ) {
         log[ 0 ] = exception.getMessage();
@@ -111,18 +111,18 @@ public class BrowserUtil_Test extends TestCase {
     BrowserUtil.evaluate( browser, "return 5;", browserCallback );
     Fixture.fakeNewRequest( display );
     Fixture.fakeSetParameter( getId( browser ), "executeResult", Boolean.TRUE );
-    Fixture.fakeSetParameter( getId( browser ), "evaluateResult", "[5]" );
+    Fixture.fakeSetParameter( getId( browser ), "evaluateResult", new Double[]{ Double.valueOf( 5 ) } );
 
     Fixture.readDataAndProcessAction( browser );
 
-    assertEquals( "5.0", log[ 0 ] );
+    assertEquals( Integer.valueOf( 5 ), log[ 0 ] );
   }
 
   public void testCallCallback_Failed() {
-    final String[] log = new String[ 1 ];
+    final Object[] log = new Object[ 1 ];
     browserCallback = new BrowserCallback() {
       public void evaluationSucceeded( Object result ) {
-        log[ 0 ] = result.toString();
+        log[ 0 ] = result;
       }
       public void evaluationFailed( Exception exception ) {
         log[ 0 ] = exception.getMessage();

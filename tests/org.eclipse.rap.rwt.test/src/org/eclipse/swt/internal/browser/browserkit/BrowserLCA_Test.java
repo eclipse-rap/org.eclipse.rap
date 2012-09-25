@@ -15,6 +15,9 @@ package org.eclipse.swt.internal.browser.browserkit;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.Fixture.fakeNewRequest;
 import static org.eclipse.rap.rwt.testfixture.Fixture.fakeSetParameter;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -176,106 +179,13 @@ public class BrowserLCA_Test extends TestCase {
     };
     fakeNewRequest( display );
     fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_FUNCTION, "func" );
-    fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_ARGUMENTS, "[\"eclipse\",3.6]" );
+    Object[] args = new Object[] { "eclipse", Double.valueOf( 3.6 )};
+    fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_ARGUMENTS, args );
 
     Fixture.readDataAndProcessAction( browser );
 
     Object[] expected = new Object[] { "eclipse", Double.valueOf( 3.6 ) };
     assertTrue( Arrays.equals( expected, log.toArray() ) );
-  }
-
-  public void testParseArguments() {
-    String input = "[]";
-    Object result = BrowserLCA.parseArguments( input );
-    assertNotNull( result );
-    assertTrue( result.getClass().isArray() );
-    Object[] resultArray = ( Object[] )result;
-    assertEquals( 0, resultArray.length );
-    input = "[null]";
-    result = BrowserLCA.parseArguments( input );
-    assertTrue( result.getClass().isArray() );
-    resultArray = ( Object[] )result;
-    assertEquals( 1, resultArray.length );
-    assertNull( resultArray[ 0 ] );
-    input = "[undefined]";
-    result = BrowserLCA.parseArguments( input );
-    assertTrue( result.getClass().isArray() );
-    resultArray = ( Object[] )result;
-    assertEquals( 1, resultArray.length );
-    assertNull( resultArray[ 0 ] );
-    input = "[\"eclipse\"]";
-    result = BrowserLCA.parseArguments( input );
-    assertTrue( result.getClass().isArray() );
-    resultArray = ( Object[] )result;
-    assertEquals( 1, resultArray.length );
-    assertEquals( new String( "eclipse" ), resultArray[ 0 ] );
-    input = "[\"ecl[\\\"]ipse\"]";
-    result = BrowserLCA.parseArguments( input );
-    assertTrue( result.getClass().isArray() );
-    resultArray = ( Object[] )result;
-    assertEquals( 1, resultArray.length );
-    assertEquals( new String( "ecl[\"]ipse" ), resultArray[ 0 ] );
-    input = "[3.6]";
-    result = BrowserLCA.parseArguments( input );
-    assertTrue( result.getClass().isArray() );
-    resultArray = ( Object[] )result;
-    assertEquals( 1, resultArray.length );
-    assertEquals( new Double( 3.6 ), resultArray[ 0 ] );
-    input = "[12,false,null,[3.6,[\"swt\",true]],\"eclipse\"]";
-    result = BrowserLCA.parseArguments( input );
-    assertTrue( result.getClass().isArray() );
-    resultArray = ( Object[] )result;
-    assertEquals( 5, resultArray.length );
-    assertEquals( new Double( 12 ), resultArray[ 0 ] );
-    assertEquals( new Boolean( false ), resultArray[ 1 ] );
-    assertNull( resultArray[ 2 ] );
-    assertTrue( resultArray[ 3 ].getClass().isArray() );
-    Object[] resultArray1 = ( Object[] )resultArray[ 3 ];
-    assertEquals( 2, resultArray1.length );
-    assertEquals( new Double( 3.6 ), resultArray1[ 0 ] );
-    assertTrue( resultArray1[ 1 ].getClass().isArray() );
-    Object[] resultArray2 = ( Object[] )resultArray1[ 1 ];
-    assertEquals( 2, resultArray2.length );
-    assertEquals( "swt", resultArray2[ 0 ] );
-    assertEquals( new Boolean( true ), resultArray2[ 1 ] );
-    assertEquals( "eclipse", resultArray[ 4 ] );
-  }
-
-  public void testWithType() {
-    String input = "null";
-    Object result = BrowserLCA.withType( input );
-    assertNull( result );
-    input = "undefined";
-    result = BrowserLCA.withType( input );
-    assertNull( result );
-    input = "true";
-    result = BrowserLCA.withType( input );
-    assertTrue( result instanceof Boolean );
-    assertTrue( ( ( Boolean )result ).booleanValue() );
-    input = "false";
-    result = BrowserLCA.withType( input );
-    assertTrue( result instanceof Boolean );
-    assertFalse( ( ( Boolean )result ).booleanValue() );
-    input = "\"eclipse\"";
-    result = BrowserLCA.withType( input );
-    assertTrue( result instanceof String );
-    assertEquals( "eclipse", ( String )result );
-    input = "3.6";
-    result = BrowserLCA.withType( input );
-    assertTrue( result instanceof Double );
-    assertEquals( new Double( 3.6 ), result );
-    input = "bla-bla";
-    result = BrowserLCA.withType( input );
-    assertTrue( result instanceof String );
-    assertEquals( "bla-bla", ( String )result );
-    input = "3.6 percent";
-    result = BrowserLCA.withType( input );
-    assertTrue( result instanceof String );
-    assertEquals( "3.6 percent", ( String )result );
-    input = "null \" 3.6 true";
-    result = BrowserLCA.withType( input );
-    assertTrue( result instanceof String );
-    assertEquals( "null \" 3.6 true", ( String )result );
   }
 
   public void testProgressEvent() {
@@ -474,6 +384,23 @@ public class BrowserLCA_Test extends TestCase {
     assertEquals( "(function(){alert('33');})();", callOperation.getProperty( "script" ) );
   }
 
+  public void testEvaluateResponse() {
+    Browser browser = new Browser( shell, SWT.NONE );
+    BrowserCallback browserCallback = mock( BrowserCallback.class );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( browser );
+
+    BrowserUtil.evaluate( browser, "alert('33');", browserCallback );
+    Fixture.executeLifeCycleFromServerThread();
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeSetParameter( getId( browser ), "executeResult", Boolean.TRUE );
+    Object[] result = new Object[]{ Integer.valueOf( 27 ) };
+    Fixture.fakeSetParameter( getId( browser ), "evaluateResult", result );
+    Fixture.executeLifeCycleFromServerThread();
+
+    verify( browserCallback, times( 1 ) ).evaluationSucceeded( Integer.valueOf( 27 ) );
+  }
+
   public void testCallCreateFunctions() throws JSONException, IOException {
     Browser browser = new Browser( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -524,7 +451,8 @@ public class BrowserLCA_Test extends TestCase {
     };
     fakeNewRequest( display );
     fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_FUNCTION, "func" );
-    fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_ARGUMENTS, "[\"eclipse\",3.6]" );
+    Object[] args = new Object[] { "eclipse", Double.valueOf( 3.6 )};
+    fakeSetParameter( getId( browser ), BrowserLCA.PARAM_EXECUTE_ARGUMENTS, args );
 
     Fixture.executeLifeCycleFromServerThread();
 

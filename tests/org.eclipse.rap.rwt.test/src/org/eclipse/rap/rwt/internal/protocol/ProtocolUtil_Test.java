@@ -310,6 +310,14 @@ public class ProtocolUtil_Test extends TestCase {
     }
   }
 
+  public void testReadPropertyValue() {
+    fakeNewJsonMessage();
+
+    Object[] expected = new Object[]{ "a", new Integer( 2 ), Boolean.TRUE };
+    Object[] actual = ( Object[] )ProtocolUtil.readPropertyValue( "w3", "p8" );
+    assertTrue( Arrays.equals( expected, actual ) );
+  }
+
   //////////////////
   // Helping methods
 
@@ -329,6 +337,7 @@ public class ProtocolUtil_Test extends TestCase {
     parameters.put( "p5", new int[] { 1, 2 } );
     parameters.put( "p6", new int[] { 1, 2, 3, 4 } );
     parameters.put( "p7", new String[] { "a", "b", "c" } );
+    parameters.put( "p8", new Object[]{ "a", new Integer( 2 ), Boolean.TRUE } );
     Fixture.fakeSetOperation( "w3", parameters  );
   }
 }

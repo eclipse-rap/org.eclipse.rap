@@ -173,8 +173,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           }
         } );
         assertTrue( TestUtil.getMessageObject().findSetProperty( "w3", "executeResult" ) );
-        // TODO [tb] : use real json array
-        assertEquals( "[33]", TestUtil.getMessageObject().findSetProperty( "w3", "evaluateResult" ) );
+        assertEquals( [ 33 ], TestUtil.getMessageObject().findSetProperty( "w3", "evaluateResult" ) );
         browser.destroy();
       }
     ],
@@ -272,9 +271,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertTrue( "slow connection?", browser._isLoaded );
         TestUtil.initRequestLog();
         browser.execute( "( function(){ return [ 1,2,3 ]; } )();" );
-        var expected = "[[1,2,3]]";
+        var expected = [1,2,3];
         assertTrue( TestUtil.getMessageObject().findSetProperty( "w6", "executeResult" ) );
-        assertEquals( expected, TestUtil.getMessageObject().findSetProperty( "w6", "evaluateResult" ) );
+        assertEquals( expected, TestUtil.getMessageObject().findSetProperty( "w6", "evaluateResult" )[ 0 ] );
         browser.destroy();
       }
     ],
@@ -290,7 +289,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         TestUtil.initRequestLog();
         browser.execute( "( function(){ return function(){}; } )();" );
         assertTrue( TestUtil.getMessageObject().findSetProperty( "w6", "executeResult" ) );
-        assertEquals( "[[]]", TestUtil.getMessageObject().findSetProperty( "w6", "evaluateResult" ) );
+        assertEquals( [], TestUtil.getMessageObject().findSetProperty( "w6", "evaluateResult" )[ 0 ] );
         browser.destroy();
       }
     ],
@@ -679,7 +678,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       }
     ],
 
-    testObjectToString : function() {
+    testToJSON_NoChanges : function() {
       var browser = this._createBrowser();
       var object = [];
       object[ 0 ] = 12;
@@ -687,9 +686,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       object[ 2 ] = null;
       object[ 3 ] = "eclipse";
       object[ 4 ] = "double \" \" quotes";
-      object[ 5 ] = [ 3.6, [ 'swt', true ] ];
-      var ecpected = "[12,false,null,\"eclipse\",\"double \\\" \\\" quotes\",[3.6,[\"swt\",true]]]";
-      assertEquals( ecpected, browser.objectToString( object ) );
+      var ecpected = [ 12, false, null, "eclipse", "double \" \" quotes" ];
+      assertEquals( ecpected, browser.toJSON( object ) );
+    },
+
+    testToJSON_SpecialCases : function() {
+      var browser = this._createBrowser();
+      var object = [];
+      object[ 0 ] = [ 3.6, [ 'swt', true ] ];
+      object[ 1 ] = function(){};
+      object[ 2 ] = {};
+
+      var actual = browser.toJSON( object );
+
+      assertEquals( 3.6, actual[ 0 ][ 0 ] );
+      assertEquals( [ 'swt', true ], actual[ 0 ][ 1 ] );
+      assertEquals( "string", typeof actual[ 1 ] );
+      assertTrue( actual[ 2 ] instanceof Array );
     },
 
     testProgressEvent :  [

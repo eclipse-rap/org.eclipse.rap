@@ -11,8 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.browser.browserkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -27,6 +29,7 @@ import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
@@ -133,14 +136,12 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   private static void readExecuteResult( Browser browser ) {
     String executeValue = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_RESULT );
     if( executeValue != null ) {
-      String evalValue = WidgetLCAUtil.readPropertyValue( browser, PARAM_EVALUATE_RESULT );
+      Object evalValue
+        = ProtocolUtil.readPropertyValue( getId( browser ), PARAM_EVALUATE_RESULT );
       boolean executeResult = Boolean.valueOf( executeValue ).booleanValue();
       Object evalResult = null;
-      if( evalValue != null ) {
-        Object[] parsedValues = parseArguments( evalValue );
-        if( parsedValues.length == 1 ) {
-          evalResult = parsedValues[ 0 ];
-        }
+      if( evalValue != null && evalValue instanceof Object[] ) {
+        evalResult = ( ( Object[] )evalValue )[ 0 ];
       }
       browser.getAdapter( IBrowserAdapter.class ).setExecuteResult( executeResult, evalResult );
     }
@@ -256,7 +257,8 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   private static void executeFunction( final Browser browser ) {
     String function = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_FUNCTION );
-    String arguments = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_ARGUMENTS );
+    final Object[] arguments
+      = ( Object[] )readPropertyValue( getId( browser ), PARAM_EXECUTE_ARGUMENTS );
     if( function != null ) {
       IBrowserAdapter adapter = browser.getAdapter( IBrowserAdapter.class );
       BrowserFunction[] functions = adapter.getBrowserFunctions();
@@ -264,11 +266,10 @@ public final class BrowserLCA extends AbstractWidgetLCA {
       for( int i = 0; i < functions.length && !found; i++ ) {
         final BrowserFunction current = functions[ i ];
         if( current.getName().equals( function ) ) {
-          final Object[] args = parseArguments( arguments );
           ProcessActionRunner.add( new Runnable() {
             public void run() {
               try {
-                Object executedFunctionResult = current.function( args );
+                Object executedFunctionResult = current.function( arguments );
                 setExecutedFunctionResult( browser, executedFunctionResult );
               } catch( Exception e ) {
                 setExecutedFunctionError( browser, e.getMessage() );
@@ -315,70 +316,4 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     serviceStore.setAttribute( EXECUTED_FUNCTION_ERROR + id, error );
   }
 
-  static Object[] parseArguments( String arguments ) {
-    List<Object> result = new ArrayList<Object>();
-    if( arguments.startsWith( "[" ) && arguments.endsWith( "]" ) ) {
-      // remove [ ] brackets
-      String args = arguments.substring( 1, arguments.length() - 1 );
-      int openQuotes = 0;
-      int openBrackets = 0;
-      String arg;
-      StringBuilder argBuff = new StringBuilder();
-      char prevChar = ' ';
-      for( int i = 0; i < args.length(); i++ ) {
-        char ch = args.charAt( i );
-        if( ch == ',' && openQuotes == 0 && openBrackets == 0 ) {
-          arg = argBuff.toString();
-          if( arg.startsWith( "[" ) ) {
-            result.add( parseArguments( arg ) );
-          } else {
-            arg = arg.replaceAll( "\\\\\"", "\"" );
-            result.add( withType( arg ) );
-          }
-          argBuff.setLength( 0 );
-        } else {
-          if( ch == '"' && prevChar != '\\' ) {
-            if( openQuotes == 0 ) {
-              openQuotes++;
-            } else {
-              openQuotes--;
-            }
-          } else if( ch == '[' && openQuotes == 0 ) {
-            openBrackets++;
-          } else if( ch == ']'&& openQuotes == 0 ) {
-            openBrackets--;
-          }
-          argBuff.append( ch );
-        }
-        prevChar = ch;
-      }
-      // append last segment
-      arg = argBuff.toString();
-      if( arg.startsWith( "[" ) ) {
-        result.add( parseArguments( arg ) );
-      } else if( !arg.equals( "" ) ) {
-        arg = arg.replaceAll( "\\\\\"", "\"" );
-        result.add( withType( arg ) );
-      }
-    }
-    return result.toArray();
-  }
-
-  static Object withType( String argument ) {
-    Object result;
-    if( argument.equals( "null" ) || argument.equals( "undefined" ) ) {
-      result = null;
-    } else if( argument.equals( "true" ) || argument.equals( "false" ) ) {
-      result = new Boolean( argument );
-    } else if( argument.startsWith( "\"" ) ) {
-      result = argument.substring( 1, argument.length() - 1 );
-    } else {
-      try {
-        result = Double.valueOf( argument );
-      } catch( NumberFormatException nfe ) {
-        result = argument;
-      }
-    }
-    return result;
-  }
 }
