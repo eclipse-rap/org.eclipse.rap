@@ -137,7 +137,7 @@ public class FocusTab extends ExampleTab {
     list.add( "Item 3" );
     addFocusListener( list );
     tabFolder = new TabFolder( parent, SWT.NONE );
-    tabFolder.setLayoutData( new RowData( 80, 60 ) );
+    tabFolder.setLayoutData( new RowData( 120, 60 ) );
     TabItem tabItem = new TabItem( tabFolder, SWT.NONE );
     tabItem.setText( "Tab Item 1" );
     Label tabItemControl = new Label( tabFolder, SWT.NONE );

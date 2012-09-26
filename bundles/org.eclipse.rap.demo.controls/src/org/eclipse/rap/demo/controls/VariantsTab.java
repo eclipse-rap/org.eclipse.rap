@@ -60,7 +60,7 @@ public class VariantsTab extends ExampleTab {
   }
 
   @Override
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "FLAT", SWT.FLAT );
     createVisibilityButton();
@@ -142,9 +142,8 @@ public class VariantsTab extends ExampleTab {
     myShellButton.addSelectionListener( new SelectionAdapter() {
 
       @Override
-      public void widgetSelected( final SelectionEvent e ) {
-        Shell myShell = new Shell( parent.getShell(),
-                             SWT.CLOSE | SWT.APPLICATION_MODAL );
+      public void widgetSelected( SelectionEvent e ) {
+        Shell myShell = new Shell( parent.getShell(), SWT.CLOSE | SWT.APPLICATION_MODAL );
         myShell.setText( "My Shell" );
         myShell.setSize( 200, 150 );
         myShell.setData( RWT.CUSTOM_VARIANT, getVariant() );
@@ -153,7 +152,7 @@ public class VariantsTab extends ExampleTab {
     } );
   }
 
-  protected Combo createVariantsCombo( final String text ) {
+  protected Combo createVariantsCombo( String text ) {
     Composite group = new Composite( styleComp, SWT.NONE );
     group.setLayout( new GridLayout( 2, false ) );
     new Label( group, SWT.NONE ).setText( text );
@@ -162,18 +161,18 @@ public class VariantsTab extends ExampleTab {
     combo.select( 0 );
     combo.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         setCustomVariant( getVariant() );
       }
       @Override
-      public void widgetDefaultSelected( final SelectionEvent evt ) {
+      public void widgetDefaultSelected( SelectionEvent evt ) {
         setCustomVariant( getVariant() );
       }
     } );
     return combo;
   }
 
-  private void setCustomVariant( final String variant ) {
+  private void setCustomVariant( String variant ) {
     myButton.setData( RWT.CUSTOM_VARIANT, variant );
     myCombo.setData( RWT.CUSTOM_VARIANT, variant );
     myLabel.setData( RWT.CUSTOM_VARIANT, variant );
@@ -185,7 +184,7 @@ public class VariantsTab extends ExampleTab {
 
   private String getVariant() {
     String selection = null;
-    if( variantsCombo != null ) {
+    if( checkControl( variantsCombo ) ) {
       int index = variantsCombo.getSelectionIndex();
       if( index > 0 ) {
         selection = variantsCombo.getItem( index );

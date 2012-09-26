@@ -49,7 +49,7 @@ class ExpandBarTab extends ExampleTab {
   }
 
   @Override
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( "V_SCROLL", SWT.V_SCROLL, true );
     createStyleButton( "BORDER", SWT.BORDER, true );
     createVisibilityButton();
@@ -66,7 +66,7 @@ class ExpandBarTab extends ExampleTab {
   }
 
   @Override
-  protected void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( Composite parent ) {
     parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     ClassLoader classLoader = getClass().getClassLoader();
     expandBar = new ExpandBar( parent, getStyle() );
@@ -152,12 +152,12 @@ class ExpandBarTab extends ExampleTab {
     item.setExpanded( true );
     expandBar.computeSize( SWT.DEFAULT, SWT.DEFAULT );
     registerControl( expandBar );
-    if( spinner != null ) {
+    if( checkControl( spinner ) ) {
       expandBar.setSpacing( spinner.getSelection() );
     }
   }
 
-  private Spinner createSpacingControl( final Composite parent ) {
+  private Spinner createSpacingControl( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     Label label = new Label( composite, SWT.NONE );
@@ -176,7 +176,7 @@ class ExpandBarTab extends ExampleTab {
     return spinner;
   }
 
-  private void createInsertItemButton( final Composite parent ) {
+  private void createInsertItemButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Insert ExpandItem before first item" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -194,7 +194,7 @@ class ExpandBarTab extends ExampleTab {
     } );
   }
 
-  private void createRemoveItemButton( final Composite parent ) {
+  private void createRemoveItemButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Remove first ExpandItem" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -207,7 +207,7 @@ class ExpandBarTab extends ExampleTab {
     } );
   }
 
-  private void createItemContent( final ExpandItem item ) {
+  private void createItemContent( ExpandItem item ) {
     if( item.getControl() == null ) {
       ExpandBar bar = item.getParent();
       Text content = new Text( bar, SWT.WRAP | SWT.MULTI | SWT.READ_ONLY );

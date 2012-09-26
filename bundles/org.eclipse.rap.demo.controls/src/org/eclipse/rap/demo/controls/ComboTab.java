@@ -66,7 +66,7 @@ public class ComboTab extends ExampleTab {
   }
 
   @Override
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "READ_ONLY", SWT.READ_ONLY );
     createStyleButton( "FLAT", SWT.FLAT );
@@ -227,7 +227,7 @@ public class ComboTab extends ExampleTab {
     lblCCombo.setText( "CCombo" );
     cCombo = new CCombo( parent, style );
     cCombo.setItems( ITEMS );
-    cCombo.setEditable( editableButton == null ? true : editableButton.getSelection() );
+    cCombo.setEditable( checkControl( editableButton ) ? editableButton.getSelection() : true );
     if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
       cCombo.addSelectionListener( new SelectionAdapter() {
         @Override
@@ -262,7 +262,7 @@ public class ComboTab extends ExampleTab {
     registerControl( cCombo );
   }
 
-  private void createAddButton( final Composite parent ) {
+  private void createAddButton( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     Label lblAddItem = new Label( composite, SWT.NONE );
@@ -279,7 +279,7 @@ public class ComboTab extends ExampleTab {
     } );
   }
 
-  private void createRemoveAllButton( final Composite parent ) {
+  private void createRemoveAllButton( Composite parent ) {
     Button button = new Button( parent , SWT.PUSH );
     button.setText( "Remove All Items" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -290,7 +290,7 @@ public class ComboTab extends ExampleTab {
     } );
   }
 
-  private void createDeselectAllButton( final Composite parent ) {
+  private void createDeselectAllButton( Composite parent ) {
     Button button = new Button( parent , SWT.PUSH );
     button.setText( "Deselect All Items" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -301,7 +301,7 @@ public class ComboTab extends ExampleTab {
     } );
   }
 
-  private void createSelectFirstItemButton( final Composite parent ) {
+  private void createSelectFirstItemButton( Composite parent ) {
     Button button = new Button( parent , SWT.PUSH );
     button.setText( "Select First Item" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -314,7 +314,7 @@ public class ComboTab extends ExampleTab {
     } );
   }
 
-  private void createSetVisibleItemCountButton( final Composite parent ) {
+  private void createSetVisibleItemCountButton( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     final Text text = new Text( composite, SWT.BORDER | SWT.SINGLE );
@@ -334,7 +334,7 @@ public class ComboTab extends ExampleTab {
     } );
   }
 
-  private void createSetSelectionControls( final Composite parent ) {
+  private void createSetSelectionControls( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 5, false ) );
     Label lblSelectionFrom = new Label( composite, SWT.NONE );
@@ -366,7 +366,7 @@ public class ComboTab extends ExampleTab {
     } );
   }
 
-  private void createGetSelectionControls( final Composite parent ) {
+  private void createGetSelectionControls( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 2, false ) );
     final Text outputSelection =  new Text( composite, SWT.BORDER );
@@ -398,9 +398,7 @@ public class ComboTab extends ExampleTab {
     return result;
   }
 
-  private void createSetTextLimitButton( final Composite parent,
-                                         final boolean isCombo )
-  {
+  private void createSetTextLimitButton( Composite parent, final boolean isCombo ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 2, false ) );
     final Text text = new Text( composite, SWT.BORDER | SWT.SINGLE );
@@ -424,7 +422,7 @@ public class ComboTab extends ExampleTab {
     } );
   }
 
-  private void createChangeSizeButton( final Composite parent ) {
+  private void createChangeSizeButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Change Size" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -446,7 +444,7 @@ public class ComboTab extends ExampleTab {
     } );
   }
 
-  private void createToggleListVisibilityButton( final Composite parent ) {
+  private void createToggleListVisibilityButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Toggle List Visibility" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -470,7 +468,7 @@ public class ComboTab extends ExampleTab {
     } );
   }
 
-  private void createTextButton( final Composite parent ) {
+  private void createTextButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Change text" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -481,7 +479,7 @@ public class ComboTab extends ExampleTab {
     } );
   }
 
-  private void showSelection( final String[] items, final int selectionIndex ) {
+  private void showSelection( String[] items, int selectionIndex ) {
     String selection = "(nothing)";
     if( selectionIndex != -1 ) {
       selection = items[ selectionIndex ];

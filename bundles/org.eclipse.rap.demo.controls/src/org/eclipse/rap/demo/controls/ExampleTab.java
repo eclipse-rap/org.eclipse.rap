@@ -25,6 +25,8 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -164,7 +166,7 @@ abstract class ExampleTab implements Serializable {
     createLeft( horSashForm );
     createRight( horSashForm );
     createFoot( vertSashForm );
-    horSashForm.setWeights( new int[] { 60, 40 } );
+    horSashForm.setWeights( new int[] { 50, 50 } );
     vertSashForm.setWeights( new int[] { 93, 7 } );
     return vertSashForm;
   }
@@ -565,8 +567,13 @@ abstract class ExampleTab implements Serializable {
    *
    * @param control A control that should be remote controlled.
    */
-  protected void registerControl( Control control ) {
+  protected void registerControl( final Control control ) {
     controls.add( control );
+    control.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( DisposeEvent event ) {
+        controls.remove( control );
+      }
+    } );
   }
 
   protected void log( String msg ) {
@@ -740,6 +747,10 @@ abstract class ExampleTab implements Serializable {
 
   protected Shell getShell() {
     return shell;
+  }
+
+  protected boolean checkControl( Control control ) {
+    return control != null && !control.isDisposed();
   }
 
 }

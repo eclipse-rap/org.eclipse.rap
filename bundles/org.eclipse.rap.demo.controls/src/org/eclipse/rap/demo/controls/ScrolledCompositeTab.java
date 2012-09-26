@@ -73,10 +73,10 @@ public final class ScrolledCompositeTab extends ExampleTab {
     composite.setContent( content );
     composite.setExpandHorizontal( true );
     composite.setExpandVertical( true );
-    if( alwaysShowScrollBars != null ) {
+    if( checkControl( alwaysShowScrollBars ) ) {
       composite.setAlwaysShowScrollBars( alwaysShowScrollBars.getSelection() );
     }
-    if( showFocusedControl != null ) {
+    if( checkControl( showFocusedControl ) ) {
       composite.setShowFocusedControl( showFocusedControl.getSelection() );
     }
     composite.setMinSize( content.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );

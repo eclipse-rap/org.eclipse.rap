@@ -39,7 +39,7 @@ class DateTimeTab extends ExampleTab {
   }
 
   @Override
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     group1 = new Group( styleComp, SWT.SHADOW_IN );
     group1.setText( "Type" );
     group1.setLayout( new RowLayout( SWT.VERTICAL ) );
@@ -64,7 +64,7 @@ class DateTimeTab extends ExampleTab {
   }
 
   @Override
-  protected void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( Composite parent ) {
     parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     int style = getStyle() | getStyle( group1 ) | getStyle( group2 );
     /* Create the example widgets */
@@ -108,11 +108,11 @@ class DateTimeTab extends ExampleTab {
     registerControl( dateTime1 );
   }
 
-  protected Button createStyleButton( final Composite parent,
-                                      final String name,
-                                      final int style,
-                                      final int buttonStyle,
-                                      final boolean checked )
+  protected Button createStyleButton( Composite parent,
+                                      String name,
+                                      int style,
+                                      int buttonStyle,
+                                      boolean checked )
   {
     Button button = new Button( parent, buttonStyle );
     button.setText( name );
@@ -128,9 +128,9 @@ class DateTimeTab extends ExampleTab {
     return button;
   }
 
-  protected int getStyle( final Composite comp ) {
+  protected int getStyle( Composite comp ) {
     int result = SWT.NONE;
-    if( comp != null ) {
+    if( checkControl( comp ) ) {
       Control[] ctrls = comp.getChildren();
       if( ctrls.length != 0 ) {
         for( int i = 0; i < ctrls.length; i++ ) {
