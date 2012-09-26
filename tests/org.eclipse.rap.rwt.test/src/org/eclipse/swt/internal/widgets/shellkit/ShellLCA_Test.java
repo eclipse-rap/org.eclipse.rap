@@ -579,6 +579,21 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( shell, "shell" ) );
   }
 
+  // NOTE: Resize and Move are currently always set to listen after creation. This is to keep
+  //       the previous behavior where updates for bounds were always sent immediately.
+  public void testRenderControlListener() throws Exception {
+    Shell shell = new Shell( display , SWT.NO_TRIM );
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
+    ShellLCA lca = new ShellLCA();
+
+    lca.renderInitialization( shell );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( shell, "Resize" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( shell, "Move" ) );
+  }
+
   public void testRenderShellListenerUnchanged() throws Exception {
     Shell shell = new Shell( display , SWT.SHELL_TRIM );
     Fixture.markInitialized( display );

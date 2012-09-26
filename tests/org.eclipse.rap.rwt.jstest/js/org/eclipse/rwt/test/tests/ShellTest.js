@@ -55,7 +55,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       var shell = new rwt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       shell.addState( "rwt_APPLICATION_MODAL" );
       shell.addState( "rwt_myTest" );
-      shell.initialize()
+      shell.initialize();
       shell.open();
       shell.setActive( true );
       shell.setSpace( 50, 300, 50, 200 );
@@ -198,6 +198,78 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       assertTrue( log > 0 );
       shell.destroy();
       parentShell.destroy();
+    },
+
+    testSendBounds : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      rwt.protocol.MessageProcessor.processOperation( {
+        "target" : "w2",
+        "action" : "listen",
+        "properties" : { "Move" : true, "Resize" : true }
+      } );
+
+      shell.setLeft( 51 );
+      shell.setTop( 52 );
+      shell.setWidth( 53 );
+      shell.setHeight( 54 );
+
+      var messages = TestUtil.getMessages();
+      assertEquals( [ 51, 10, 100, 100 ], messages[ 0 ].findSetProperty( "w2", "bounds" ) );
+      assertEquals( [ 51, 52, 100, 100 ], messages[ 1 ].findSetProperty( "w2", "bounds" ) );
+      assertEquals( [ 51, 52, 53, 100 ], messages[ 2 ].findSetProperty( "w2", "bounds" ) );
+      assertEquals( [ 51, 52, 53, 54 ], messages[ 3 ].findSetProperty( "w2", "bounds" ) );
+      shell.destroy();
+    },
+
+    testSendResize : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      rwt.protocol.MessageProcessor.processOperation( {
+        "target" : "w2",
+        "action" : "listen",
+        "properties" : { "Resize" : true }
+      } );
+
+      shell.setLeft( 51 );
+      shell.setTop( 52 );
+      shell.setWidth( 53 );
+      shell.setHeight( 54 );
+
+      var messages = TestUtil.getMessages();
+      assertEquals( 2, messages.length );
+      assertEquals( [ 51, 52, 53, 100 ], messages[ 0 ].findSetProperty( "w2", "bounds" ) );
+      assertNotNull( messages[ 0 ].findNotifyOperation( "w2", "Resize" ) );
+      assertNull( messages[ 0 ].findNotifyOperation( "w2", "Move" ) );
+      assertEquals( [ 51, 52, 53, 54 ], messages[ 1 ].findSetProperty( "w2", "bounds" ) );
+      assertNotNull( messages[ 1 ].findNotifyOperation( "w2", "Resize" ) );
+      assertNull( messages[ 1 ].findNotifyOperation( "w2", "Move" ) );
+      shell.destroy();
+    },
+
+    testSendMove : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      rwt.protocol.MessageProcessor.processOperation( {
+        "target" : "w2",
+        "action" : "listen",
+        "properties" : { "Move" : true }
+      } );
+
+      shell.setLeft( 51 );
+      shell.setTop( 52 );
+      shell.setWidth( 53 );
+      shell.setHeight( 54 );
+
+      var messages = TestUtil.getMessages();
+      assertEquals( 2, messages.length );
+      assertEquals( [ 51, 10, 100, 100 ], messages[ 0 ].findSetProperty( "w2", "bounds" ) );
+      assertNull( messages[ 0 ].findNotifyOperation( "w2", "Resize" ) );
+      assertNotNull( messages[ 0 ].findNotifyOperation( "w2", "Move" ) );
+      assertEquals( [ 51, 52, 100, 100 ], messages[ 1 ].findSetProperty( "w2", "bounds" ) );
+      assertNull( messages[ 1 ].findNotifyOperation( "w2", "Resize" ) );
+      assertNotNull( messages[ 1 ].findNotifyOperation( "w2", "Move" ) );
+      shell.destroy();
     },
 
     _createDefaultShell : function( styles, noFlush ) {

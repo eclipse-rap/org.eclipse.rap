@@ -924,7 +924,8 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       "type" : "rwt.widgets.Shell",
       "properties" : {
         "style" : [ "BORDER" ],
-        "visibility" : true
+        "visibility" : true,
+        "bounds" : [ 10, 10, 100, 100 ]
       }
     } );
     org.eclipse.swt.EventUtil.setSuspended( false );

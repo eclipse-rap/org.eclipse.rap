@@ -96,10 +96,13 @@ public class MenuLCA_Test extends TestCase {
     Fixture.markInitialized( menuBar );
     shell.setMenuBar( menuBar );
 
-    Fixture.fakeSetParameter( getId( shell ), "bounds.x", Integer.valueOf( 0 ) );
-    Fixture.fakeSetParameter( getId( shell ), "bounds.y", Integer.valueOf( 0 ) );
-    Fixture.fakeSetParameter( getId( shell ), "bounds.width", Integer.valueOf( 1234 ) );
-    Fixture.fakeSetParameter( getId( shell ), "bounds.height", Integer.valueOf( 4321 ) );
+    Integer[] param = new Integer[] {
+      Integer.valueOf( 0 ),
+      Integer.valueOf( 0 ),
+      Integer.valueOf( 1234 ),
+      Integer.valueOf( 4321 )
+    };
+    Fixture.fakeSetParameter( getId( shell ), "bounds", param );
     Fixture.executeLifeCycleFromServerThread( );
 
     Message message = Fixture.getProtocolMessage();

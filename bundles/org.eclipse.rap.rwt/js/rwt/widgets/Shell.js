@@ -40,15 +40,16 @@ qx.Class.define( "rwt.widgets.Shell", {
     this._parentShell = null;
     this._renderZIndex = true;
     this._hasShellListener = false;
-    // TODO [rh] check whether these listeners must be removed upon disposal
+    this._hasResizeListener = false;
+    this._hasMoveListener = false;
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
     this.addEventListener( "changeFocusedChild", this._onChangeFocusedChild );
     this.addEventListener( "changeActive", this._onChangeActive );
     this.addEventListener( "changeMode", this._onChangeMode );
-    this.addEventListener( "changeLeft", this._onChangeLocation );
-    this.addEventListener( "changeTop", this._onChangeLocation );
-    this.addEventListener( "changeWidth", this._onChangeSize );
-    this.addEventListener( "changeHeight", this._onChangeSize );
+    this.addEventListener( "changeLeft", this._onChangeLocation, this );
+    this.addEventListener( "changeTop", this._onChangeLocation, this );
+    this.addEventListener( "changeWidth", this._onChangeSize, this );
+    this.addEventListener( "changeHeight", this._onChangeSize, this );
     this.addEventListener( "keydown", this._onKeydown );
     var req = rwt.remote.Server.getInstance();
     req.addEventListener( "send", this._onSend, this );
@@ -168,15 +169,6 @@ qx.Class.define( "rwt.widgets.Shell", {
 
   destruct : function() {
     this.setParentShell( null );
-    this.removeEventListener( "changeActiveChild", this._onChangeActiveChild );
-    this.removeEventListener( "changeFocusedChild", this._onChangeFocusedChild );
-    this.removeEventListener( "changeActive", this._onChangeActive );
-    this.removeEventListener( "changeMode", this._onChangeMode );
-    this.removeEventListener( "changeLeft", this._onChangeLocation );
-    this.removeEventListener( "changeTop", this._onChangeLocation );
-    this.removeEventListener( "changeWidth", this._onChangeSize );
-    this.removeEventListener( "changeHeight", this._onChangeSize );
-    this.removeEventListener( "keydown", this._onKeydown );
     var req = rwt.remote.Server.getInstance();
     req.removeEventListener( "send", this._onSend, this );
     if( this.isCreated() ) {
@@ -250,6 +242,14 @@ qx.Class.define( "rwt.widgets.Shell", {
 
     setHasShellListener : function( hasListener ) {
       this._hasShellListener = hasListener;
+    },
+
+    setHasResizeListener : function( hasListener ) {
+      this._hasResizeListener = hasListener;
+    },
+
+    setHasMoveListener : function( hasListener ) {
+      this._hasMoveListener = hasListener;
     },
 
     setActiveControl : function( control ) {
@@ -438,30 +438,36 @@ qx.Class.define( "rwt.widgets.Shell", {
 
     _onChangeSize : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var req = rwt.remote.Server.getInstance();
-        var id = widgetManager.findIdByWidget( evt.getTarget() );
-        var height = evt.getTarget().getHeightValue();
-        var width = evt.getTarget().getWidthValue();
-        req.addParameter( id + ".bounds.height", height );
-        req.addParameter( id + ".bounds.width", width );
-        req.send();
+        this._sendBounds();
+        if( this._hasResizeListener ) {
+          var server = rwt.remote.Server.getInstance();
+          server.getServerObject( this ).notify( "Resize", {} );
+        }
       }
     },
 
     _onChangeLocation : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var req = rwt.remote.Server.getInstance();
-        var id = widgetManager.findIdByWidget( evt.getTarget() );
-        var left = evt.getTarget().getLeft();
-        var top = evt.getTarget().getTop();
-        if( !isNaN( left ) && !isNaN( top ) ) {
-          req.addParameter( id + ".bounds.x", left );
-          req.addParameter( id + ".bounds.y", top );
+        this._sendBounds();
+        if( this._hasMoveListener ) {
+          var server = rwt.remote.Server.getInstance();
+          server.getServerObject( this ).notify( "Move", {} );
         }
-      req.send();
       }
+    },
+
+    _sendBounds : function() {
+      var server = rwt.remote.Server.getInstance();
+      var left = this._parseNumber( this.getLeft() );
+      var top = this._parseNumber( this.getTop() );
+      var height = this._parseNumber( this.getHeightValue() );
+      var width = this._parseNumber( this.getWidthValue() );
+      server.getServerObject( this ).set( "bounds", [ left, top, width, height ] );
+    },
+
+    _parseNumber : function( value ) {
+      var result = parseInt( value, 10 );
+      return isNaN( result ) ? 0 : result;
     },
 
     _onKeydown : function( evt ) {

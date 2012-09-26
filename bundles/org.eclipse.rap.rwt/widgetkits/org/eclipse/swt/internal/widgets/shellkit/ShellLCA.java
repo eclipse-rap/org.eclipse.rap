@@ -15,6 +15,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
@@ -57,6 +58,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
   static final String PROP_FULLSCREEN = "fullScreen";
   static final String PROP_MINIMUM_SIZE = "minimumSize";
   static final String PROP_SHELL_LISTENER = "shell";
+  static final String PROP_RESIZE_LISTENER = "Resize";
+  static final String PROP_MOVE_LISTENER = "Move";
   private static final String PROP_DEFAULT_BUTTON = "defaultButton";
 
   @Override
@@ -103,6 +106,9 @@ public final class ShellLCA extends AbstractWidgetLCA {
     if( parent instanceof Shell ) {
       clientObject.set( "parentShell", WidgetUtil.getId( parent ) );
     }
+    // TODO [tb] : These should be rendered only when there is an actual listener attached:
+    clientObject.listen( PROP_MOVE_LISTENER, true );
+    clientObject.listen( PROP_RESIZE_LISTENER, true );
   }
 
   @Override
@@ -224,10 +230,12 @@ public final class ShellLCA extends AbstractWidgetLCA {
   }
 
   private static void readBounds( Shell shell ) {
-    Rectangle bounds = WidgetLCAUtil.readBounds( shell, shell.getBounds() );
-    Object adapter = shell.getAdapter( IShellAdapter.class );
-    IShellAdapter shellAdapter = ( IShellAdapter )adapter;
-    shellAdapter.setBounds( bounds );
+    Rectangle bounds = ProtocolUtil.readPropertyValueAsRectangle( getId( shell ), "bounds" );
+    if( bounds != null ) {
+      Object adapter = shell.getAdapter( IShellAdapter.class );
+      IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+      shellAdapter.setBounds( bounds );
+    }
   }
 
   private static void readMode( Shell shell ) {

@@ -1502,6 +1502,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
 
     setUp : function() {
       shell = TestUtil.createShellByProtocol( "w2" );
+      shell.setLeft( 0 );
     },
 
     tearDown : function() {

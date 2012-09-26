@@ -60,8 +60,14 @@ public class ControlEvent_Test extends TestCase {
 
     // this does not belong to all controls, only to those which allow
     // resize or move operations by the user (e.g. Shell)
-    Fixture.fakeSetParameter( getId( control ), "bounds.width", Integer.valueOf( 50 ) );
-    Fixture.fakeSetParameter( getId( control ), "bounds.height", Integer.valueOf( 100 ) );
+    control.setLocation( 50, 50 );
+    Integer[] param = new Integer[] {
+      Integer.valueOf( 50 ),
+      Integer.valueOf( 50 ),
+      Integer.valueOf( 50 ),
+      Integer.valueOf( 100 )
+    };
+    Fixture.fakeSetParameter( getId( control ), "bounds", param );
     Fixture.readDataAndProcessAction( control );
 
     verify( listener, times( 1 ) ).controlResized( any( ControlEvent.class ) );
@@ -86,12 +92,17 @@ public class ControlEvent_Test extends TestCase {
 
     // this does not belong to all controls, only to those which allow
     // resize or move operations by the user (e.g. Shell)
-    Fixture.fakeSetParameter( getId( control ), "bounds.x", Integer.valueOf( 150 ) );
-    Fixture.fakeSetParameter( getId( control ), "bounds.y", Integer.valueOf( 200 ) );
+    Integer[] param = new Integer[] {
+      Integer.valueOf( 150 ),
+      Integer.valueOf( 200 ),
+      Integer.valueOf( control.getSize().x ),
+      Integer.valueOf( control.getSize().y )
+    };
+    Fixture.fakeSetParameter( getId( control ), "bounds", param );
     Fixture.readDataAndProcessAction( control );
 
-    verify( listener, times( 0 ) ).controlResized( any( ControlEvent.class ) );
     verify( listener, times( 1 ) ).controlMoved( any( ControlEvent.class ) );
+    verify( listener, times( 0 ) ).controlResized( any( ControlEvent.class ) );
     assertEquals( new Point( 150, 200 ), control.getLocation() );
   }
 
