@@ -23,7 +23,7 @@ import org.eclipse.rap.rwt.resources.IResource;
  *
  * @since 2.0
  */
-public class WebClient {
+public class WebClient implements Client {
 
   private static final String PREFIX = "org.eclipse.rap.rwt.webclient";
 
@@ -100,5 +100,9 @@ public class WebClient {
    *      Map)
    */
   public static final String FAVICON = PREFIX + ".favicon";
+
+  public <T> T getService( Class<T> type ) {
+    return null;
+  }
 
 }

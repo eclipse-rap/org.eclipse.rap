@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.application.Application;
+import org.eclipse.rap.rwt.client.Client;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
@@ -575,6 +577,18 @@ public final class RWT {
     }
     LifeCycle lifeCycle = ( LifeCycle )getLifeCycle();
     lifeCycle.requestThreadExec( runnable );
+  }
+
+  /**
+   * Returns a representation of the client that is connected with the server in the current
+   * session.
+   *
+   * @return The client for the current session
+   * @throws IllegalStateException when called outside of the request context
+   * @since 2.0
+   */
+  public static Client getClient() {
+    return ApplicationContextUtil.getInstance().getClientSelector().getSelectedClient();
   }
 
   private static void checkHasSessionContext() {

@@ -144,6 +144,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
       RequestParameterBuffer.store( bufferedParameters );
     }
     ApplicationContextUtil.set( sessionStore, applicationContext );
+    applicationContext.getClientSelector().selectClient( ContextProvider.getRequest() );
     AbstractBranding branding = BrandingUtil.determineBranding();
     if( branding.getThemeId() != null ) {
       ThemeUtil.setCurrentThemeId( branding.getThemeId() );
