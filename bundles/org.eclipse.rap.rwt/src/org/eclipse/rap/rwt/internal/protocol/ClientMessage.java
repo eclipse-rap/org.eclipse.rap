@@ -31,7 +31,7 @@ public class ClientMessage {
   public static final String OPERATION_CALL = "call";
 
   private final JSONObject message;
-  private final JSONObject header;
+  private final JSONObject head;
   private final HashMap<String,List<Operation>> operationsMap;
   private final List<Operation> operationsList;
 
@@ -43,7 +43,7 @@ public class ClientMessage {
       throw new IllegalArgumentException( "Could not parse json message: " + json );
     }
     try {
-      header = message.getJSONObject( PROP_HEAD );
+      head = message.getJSONObject( PROP_HEAD );
     } catch( JSONException exception ) {
       throw new IllegalArgumentException( "Missing header object: " + json );
     }
@@ -111,10 +111,10 @@ public class ClientMessage {
     return result.toArray( new CallOperation[ 0 ] );
   }
 
-  public Object getHeaderProperty( String key ) {
+  public Object getHeadProperty( String key ) {
     Object result = null;
     try {
-      result = header.get( key );
+      result = head.get( key );
     } catch( JSONException exception ) {
       // do nothing
     }

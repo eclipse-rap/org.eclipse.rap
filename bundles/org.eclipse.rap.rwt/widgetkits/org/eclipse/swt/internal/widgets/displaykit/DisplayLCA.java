@@ -157,7 +157,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   public void render( Display display ) throws IOException {
     // Note [rst] Startup page created in LifecycleServiceHandler#runLifeCycle
     // TODO [rh] should be replaced by requestCounter != 0
-    if( ProtocolUtil.readHeaderPropertyValue( RequestParams.UIROOT ) != null ) {
+    if( ProtocolUtil.readHeadPropertyValue( RequestParams.UIROOT ) != null ) {
       disposeWidgets();
       renderRequestCounter();
       renderTheme( display );

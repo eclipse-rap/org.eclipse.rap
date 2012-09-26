@@ -145,7 +145,7 @@ public final class BrowserHistory
   // Helping methods
 
   private static boolean isStartup() {
-    return "true".equals( ProtocolUtil.readHeaderPropertyValue( RequestParams.RWT_INITIALIZE ) );
+    return "true".equals( ProtocolUtil.readHeadPropertyValue( RequestParams.RWT_INITIALIZE ) );
   }
 
   private void processNavigationEvent() {

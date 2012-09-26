@@ -86,9 +86,9 @@ public final class ProtocolUtil {
     return serviceStore.getAttribute( CLIENT_MESSAGE ) != null;
   }
 
-  public static String readHeaderPropertyValue( String property ) {
+  public static String readHeadPropertyValue( String property ) {
     ClientMessage message = getClientMessage();
-    Object result = message.getHeaderProperty( property );
+    Object result = message.getHeadProperty( property );
     return result == null ? null : result.toString();
   }
 

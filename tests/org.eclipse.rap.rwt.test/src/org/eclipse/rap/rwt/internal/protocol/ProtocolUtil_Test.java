@@ -178,13 +178,13 @@ public class ProtocolUtil_Test extends TestCase {
   public void testReadHeaderPropertyValue() {
     fakeNewJsonMessage();
 
-    assertEquals( "21", ProtocolUtil.readHeaderPropertyValue( "requestCounter" ) );
+    assertEquals( "21", ProtocolUtil.readHeadPropertyValue( "requestCounter" ) );
   }
 
   public void testReadHeaderPropertyValue_MissingProperty() {
     fakeNewJsonMessage();
 
-    assertNull( ProtocolUtil.readHeaderPropertyValue( "abc" ) );
+    assertNull( ProtocolUtil.readHeadPropertyValue( "abc" ) );
   }
 
   public void testReadProperyValue_MissingProperty() {

@@ -191,7 +191,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   }
 
   private static boolean hasInitializeParameter() {
-    return "true".equals( ProtocolUtil.readHeaderPropertyValue( RequestParams.RWT_INITIALIZE ) );
+    return "true".equals( ProtocolUtil.readHeadPropertyValue( RequestParams.RWT_INITIALIZE ) );
   }
 
   private static void setJsonResponseHeaders() {

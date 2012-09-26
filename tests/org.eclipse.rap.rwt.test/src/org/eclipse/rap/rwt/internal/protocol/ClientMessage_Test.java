@@ -72,7 +72,7 @@ public class ClientMessage_Test extends TestCase {
                 + ClientMessage.PROP_OPERATIONS + " : [] }";
     ClientMessage message = new ClientMessage( json );
 
-    assertEquals( "foo", message.getHeaderProperty( "abc" ) );
+    assertEquals( "foo", message.getHeadProperty( "abc" ) );
   }
 
   public void testGetHeaderParameter_NoParameter() {
@@ -81,7 +81,7 @@ public class ClientMessage_Test extends TestCase {
                 + ClientMessage.PROP_OPERATIONS + " : [] }";
     ClientMessage message = new ClientMessage( json );
 
-    assertNull( message.getHeaderProperty( "abc" ) );
+    assertNull( message.getHeadProperty( "abc" ) );
   }
 
   public void testConstructWithInvalidOperations() {

@@ -32,7 +32,7 @@ public final class RWTRequestVersionControl implements SerializableCompatibility
   }
 
   public boolean isValid() {
-    String sentRequestId = ProtocolUtil.readHeaderPropertyValue( REQUEST_COUNTER );
+    String sentRequestId = ProtocolUtil.readHeadPropertyValue( REQUEST_COUNTER );
     boolean initialRequest = sentRequestId == null;
     boolean invalidVersionState = INITIAL_REQUEST_ID.equals( requestId ) && sentRequestId != null;
     boolean requestIdEquals = requestId.toString().equals( sentRequestId );
