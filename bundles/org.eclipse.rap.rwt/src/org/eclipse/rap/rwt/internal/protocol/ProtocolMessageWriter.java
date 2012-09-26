@@ -17,7 +17,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.ACTION_LIS
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.ACTION_SET;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.CALL_METHOD_NAME;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.CREATE_TYPE;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.META;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.HEAD;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolConstants.OPERATIONS;
 
 import java.util.Map;
@@ -29,13 +29,13 @@ import org.eclipse.rap.rwt.internal.theme.JsonValue;
 
 public class ProtocolMessageWriter {
 
-  private final JsonObject meta;
+  private final JsonObject head;
   private final JsonArray operations;
   private Operation pendingOperation;
   private boolean alreadyCreated;
 
   public ProtocolMessageWriter() {
-    meta = new JsonObject();
+    head = new JsonObject();
     operations = new JsonArray();
   }
 
@@ -43,13 +43,13 @@ public class ProtocolMessageWriter {
     return pendingOperation != null;
   }
 
-  public void appendMeta( String property, int value ) {
-    appendMeta( property, JsonValue.valueOf( value ) );
+  public void appendHead( String property, int value ) {
+    appendHead( property, JsonValue.valueOf( value ) );
   }
 
-  public void appendMeta( String property, JsonValue value ) {
+  public void appendHead( String property, JsonValue value ) {
     ensureMessagePending();
-    meta.append( property, value );
+    head.append( property, value );
   }
 
   public void appendCreate( String target, String type ) {
@@ -120,7 +120,7 @@ public class ProtocolMessageWriter {
 
   private JsonObject createMessageObject() {
     JsonObject message = new JsonObject();
-    message.append( META, meta );
+    message.append( HEAD, head );
     appendPendingOperation();
     message.append( OPERATIONS, operations );
     return message;

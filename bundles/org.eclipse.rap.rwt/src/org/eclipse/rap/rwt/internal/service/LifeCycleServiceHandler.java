@@ -129,8 +129,8 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   private static void renderError( int statusCode, String errorType, String errorMessage) {
     ContextProvider.getResponse().setStatus( statusCode );
     ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
-    writer.appendMeta( PROP_ERROR, JsonValue.valueOf( errorType ) );
-    writer.appendMeta( PROP_MESSAGE, JsonValue.valueOf( errorMessage ) );
+    writer.appendHead( PROP_ERROR, JsonValue.valueOf( errorType ) );
+    writer.appendHead( PROP_MESSAGE, JsonValue.valueOf( errorMessage ) );
   }
 
   private static void reinitializeSessionStore() {

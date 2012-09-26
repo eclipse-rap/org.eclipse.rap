@@ -12,7 +12,7 @@
 namespace( "rwt.protocol" );
 
 rwt.protocol.MessageWriter = function() {
-  this._meta = {};
+  this._head = {};
   this._operations = [];
   this._currentSetOperation = null;
   this._disposed = false;
@@ -22,7 +22,7 @@ rwt.protocol.MessageWriter.prototype = {
 
     dispose : function() {
       this._operations = null;
-      this._meta = null;
+      this._head = null;
       this._disposed = true;
     },
 
@@ -35,14 +35,14 @@ rwt.protocol.MessageWriter.prototype = {
         throw new Error( "Protocol message writer already disposed!" );
       }
       var message = {
-        "meta" : this._meta,
+        "head" : this._head,
         "operations" : this._operations
       };
       return JSON.stringify( message );
     },
 
-    appendMeta : function( property, value ) {
-      this._meta[ property ] = value;
+    appendHead : function( property, value ) {
+      this._head[ property ] = value;
     },
 
     appendSet : function( targetId, property, value ) {

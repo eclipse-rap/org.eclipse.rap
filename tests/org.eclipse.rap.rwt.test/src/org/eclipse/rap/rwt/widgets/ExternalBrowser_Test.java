@@ -89,7 +89,7 @@ public class ExternalBrowser_Test extends TestCase {
     RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
                                                       TestExecutionOrderEntryPoint.class );
     Fixture.fakeNewRequest();
-    Fixture.fakeHeaderParameter( RequestParams.UIROOT, "w1" );
+    Fixture.fakeHeadParameter( RequestParams.UIROOT, "w1" );
 
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();

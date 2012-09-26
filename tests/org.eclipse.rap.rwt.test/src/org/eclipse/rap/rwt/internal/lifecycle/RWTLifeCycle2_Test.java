@@ -346,9 +346,9 @@ public class RWTLifeCycle2_Test extends TestCase {
     TestRequest result = ( TestRequest )ContextProvider.getRequest();
     result.setServletPath( "/test" );
     result.setSession( session );
-    Fixture.fakeHeaderParameter( RequestParams.UIROOT, "w1" );
+    Fixture.fakeHeadParameter( RequestParams.UIROOT, "w1" );
     if( initialize ) {
-      Fixture.fakeHeaderParameter( RequestParams.RWT_INITIALIZE, "true" );
+      Fixture.fakeHeadParameter( RequestParams.RWT_INITIALIZE, "true" );
     }
     return result;
   }

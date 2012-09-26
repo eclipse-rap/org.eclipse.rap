@@ -321,7 +321,7 @@ public final class Fixture {
 
   public static void fakeNewRequest( Display display ) {
     fakeNewRequest();
-    fakeHeaderParameter( RequestParams.UIROOT, DisplayUtil.getId( display ) );
+    fakeHeadParameter( RequestParams.UIROOT, DisplayUtil.getId( display ) );
   }
 
   public static void fakeNewRequest() {
@@ -350,7 +350,7 @@ public final class Fixture {
   public static String createEmptyMessage() {
     JSONObject result = new JSONObject();
     try {
-      result.put( ClientMessage.PROP_HEADER, new JSONObject() );
+      result.put( ClientMessage.PROP_HEAD, new JSONObject() );
       result.put( ClientMessage.PROP_OPERATIONS, new JSONArray() );
     } catch( JSONException exception ) {
       throw new IllegalStateException( "Failed to create json message", exception );
@@ -363,13 +363,13 @@ public final class Fixture {
     request.setParameter( key, value );
   }
 
-  public static void fakeHeaderParameter( String key, Object value ) {
+  public static void fakeHeadParameter( String key, Object value ) {
     checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     String json = request.getBody();
     try {
       JSONObject message = new JSONObject( json );
-      JSONObject header = message.getJSONObject( ClientMessage.PROP_HEADER );
+      JSONObject header = message.getJSONObject( ClientMessage.PROP_HEAD );
       header.put( key, value );
       request.setBody( message.toString() );
     } catch( JSONException exception ) {

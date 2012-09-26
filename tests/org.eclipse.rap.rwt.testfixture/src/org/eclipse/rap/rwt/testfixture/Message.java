@@ -52,7 +52,7 @@ public final class Message {
 
   public int getRequestCounter() {
     try {
-      return message.getJSONObject( "meta" ).getInt( "requestCounter" );
+      return message.getJSONObject( "head" ).getInt( "requestCounter" );
     } catch( JSONException e ) {
       throw new RuntimeException( "Getting requestCounter failed" );
     }
@@ -60,7 +60,7 @@ public final class Message {
 
   public String getError() {
     try {
-      return message.getJSONObject( "meta" ).getString( "error" );
+      return message.getJSONObject( "head" ).getString( "error" );
     } catch( JSONException e ) {
       throw new RuntimeException( "Getting error failed" );
     }
@@ -68,7 +68,7 @@ public final class Message {
 
   public String getErrorMessage() {
     try {
-      return message.getJSONObject( "meta" ).getString( "message" );
+      return message.getJSONObject( "head" ).getString( "message" );
     } catch( JSONException e ) {
       throw new RuntimeException( "Getting error message failed" );
     }
@@ -292,6 +292,7 @@ public final class Message {
       return result;
     }
 
+    @Override
     protected JSONObject getProperties() {
       JSONObject properties;
       try {
@@ -337,6 +338,7 @@ public final class Message {
       return result;
     }
 
+    @Override
     protected JSONObject getProperties() {
       JSONObject properties;
       try {
@@ -355,6 +357,7 @@ public final class Message {
       super( operation );
     }
 
+    @Override
     protected JSONObject getProperties() {
       JSONObject properties;
       try {
@@ -377,6 +380,7 @@ public final class Message {
       return ( ( Boolean )getProperty( eventName ) ).booleanValue();
     }
 
+    @Override
     protected JSONObject getProperties() {
       JSONObject properties;
       try {
@@ -395,6 +399,7 @@ public final class Message {
       super( operation );
     }
 
+    @Override
     protected JSONObject getProperties() {
       throw new IllegalStateException( "Destroy operation has no properties" );
     }

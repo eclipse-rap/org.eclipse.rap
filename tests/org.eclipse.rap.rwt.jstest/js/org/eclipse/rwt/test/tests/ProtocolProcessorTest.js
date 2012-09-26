@@ -437,7 +437,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolProcessorTest", {
       var operation1 = [ "set", "dummyId", { "height" : 33 } ];
       var operation2 = [ "set", "dummyId", { "width" : 24 } ];
       var message = {
-        "meta" : {},
+        "head" : {},
         "operations" : [ operation1, operation2 ]
       };
       processor.processMessage( message );
@@ -454,7 +454,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolProcessorTest", {
       var targetObject = this._getDummyTarget( "dummyId" );
       var operation = [ "set", "dummyId", { "fail" : 99 } ];
       var message = {
-        "meta" : {},
+        "head" : {},
         "operations" : [ operation ]
       };
       var error = null;
@@ -477,10 +477,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolProcessorTest", {
       registry.remove( "dummyType" );
     },
 
-    testProcessMetaSetRequestCounter : function() {
+    testProcessHeadSetRequestCounter : function() {
       var processor = rwt.protocol.MessageProcessor;
       var message = {
-        "meta": {
+        "head": {
           "requestCounter": 3
         },
         "operations" : []

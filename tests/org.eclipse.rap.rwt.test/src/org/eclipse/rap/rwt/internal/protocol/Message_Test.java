@@ -394,7 +394,7 @@ public class Message_Test extends TestCase {
   }
 
   public void testGetError() {
-    writer.appendMeta( "error", JsonValue.valueOf( "test error" ) );
+    writer.appendHead( "error", JsonValue.valueOf( "test error" ) );
 
     assertEquals( "test error", getMessage().getError() );
   }
@@ -408,7 +408,7 @@ public class Message_Test extends TestCase {
   }
 
   public void testGetErrorMessage() {
-    writer.appendMeta( "message", JsonValue.valueOf( "test message" ) );
+    writer.appendHead( "message", JsonValue.valueOf( "test message" ) );
 
     assertEquals( "test message", getMessage().getErrorMessage() );
   }

@@ -323,7 +323,7 @@ public class ProtocolUtil_Test extends TestCase {
 
   private void fakeNewJsonMessage() {
     Fixture.fakeNewRequest( display );
-    Fixture.fakeHeaderParameter( "requestCounter", Integer.valueOf( 21 ) );
+    Fixture.fakeHeadParameter( "requestCounter", Integer.valueOf( 21 ) );
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put( "p1", "foo" );
     parameters.put( "p2", Integer.valueOf( 123 ) );

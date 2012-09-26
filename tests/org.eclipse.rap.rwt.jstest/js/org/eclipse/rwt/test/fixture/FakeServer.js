@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.FakeServer", {
       if( this.getRequestHandler() ) {
         response += this.getRequestHandler()( message );
       }
-      response =   "{ \"meta\" : { \"requestCounter\" : "
+      response =   "{ \"head\" : { \"requestCounter\" : "
                  + this._requestCounter
                  + " }, \"operations\" : [] }";
       return response;

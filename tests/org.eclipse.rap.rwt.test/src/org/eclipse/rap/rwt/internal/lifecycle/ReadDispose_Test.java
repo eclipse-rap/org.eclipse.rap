@@ -56,10 +56,10 @@ public class ReadDispose_Test extends TestCase {
     lifeCycle.execute();
     Fixture.fakeNewRequest();
     String dispId = WidgetDisposalEntryPoint.dispId;
-    Fixture.fakeHeaderParameter( RequestParams.UIROOT, dispId );
+    Fixture.fakeHeadParameter( RequestParams.UIROOT, dispId );
     lifeCycle.execute();
     Fixture.fakeNewRequest();
-    Fixture.fakeHeaderParameter( RequestParams.UIROOT, dispId );
+    Fixture.fakeHeadParameter( RequestParams.UIROOT, dispId );
     String buttonId = WidgetDisposalEntryPoint.buttonId;
     Fixture.fakeNotifyOperation( buttonId, ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     lifeCycle.execute();

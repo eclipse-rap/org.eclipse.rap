@@ -14,20 +14,20 @@ namespace( "rwt.protocol" );
 rwt.protocol.MessageProcessor = {
 
   processMessage : function( messageObject ) {
-    this.processMeta( messageObject.meta );
+    this.processHead( messageObject.head );
     var operations = messageObject.operations;
     for( var i = 0; i < operations.length; i++ ) {
       this.processOperationArray( operations[ i ] );
     }
   },
 
-  processMeta : function( meta ) {
-    if( meta.requestCounter !== undefined ) {
+  processHead : function( head ) {
+    if( head.requestCounter !== undefined ) {
       var req = rwt.remote.Server.getInstance();
-      req.setRequestCounter( meta.requestCounter );
+      req.setRequestCounter( head.requestCounter );
     }
-    if( meta.redirect !== undefined ) {
-      document.location = meta.redirect;
+    if( head.redirect !== undefined ) {
+      document.location = head.redirect;
     }
   },
 

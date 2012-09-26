@@ -24,14 +24,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
     testSendRequestCounter : function() {
       server.send();
 
-      assertEquals( "number", typeof TestUtil.getMessageObject().getMeta()[ "requestCounter" ] );
+      assertEquals( "number", typeof TestUtil.getMessageObject().getHead()[ "requestCounter" ] );
     },
 
     testSendUIRoot : function() {
       server.send();
 
       var uiRoot = server.getUIRootId();
-      assertEquals( uiRoot, TestUtil.getMessageObject().getMeta()[ "uiRoot" ] );
+      assertEquals( uiRoot, TestUtil.getMessageObject().getHead()[ "uiRoot" ] );
     },
 
     testSendSetParameter : function() {

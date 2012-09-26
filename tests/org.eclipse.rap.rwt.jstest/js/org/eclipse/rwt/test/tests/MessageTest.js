@@ -78,10 +78,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MessageTest", {
       assertEquals( 2, getMessage().getOperationCount() );
     },
 
-    testGetMeta : function() {
-      writer.appendMeta( "metaStuff", 31 );
+    testGetHead : function() {
+      writer.appendHead( "headStuff", 31 );
 
-      assertEquals( 31, getMessage().getMeta()[ "metaStuff" ] );
+      assertEquals( 31, getMessage().getHead()[ "headStuff" ] );
     },
 
     testGetOperation : function() {

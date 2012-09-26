@@ -24,7 +24,7 @@ import org.json.JSONObject;
 
 public class ClientMessage {
 
-  public static final String PROP_HEADER = "meta";
+  public static final String PROP_HEAD = "head";
   public static final String PROP_OPERATIONS = "operations";
   public static final String OPERATION_SET = "set";
   public static final String OPERATION_NOTIFY = "notify";
@@ -43,7 +43,7 @@ public class ClientMessage {
       throw new IllegalArgumentException( "Could not parse json message: " + json );
     }
     try {
-      header = message.getJSONObject( PROP_HEADER );
+      header = message.getJSONObject( PROP_HEAD );
     } catch( JSONException exception ) {
       throw new IllegalArgumentException( "Missing header object: " + json );
     }

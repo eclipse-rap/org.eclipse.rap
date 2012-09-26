@@ -23,7 +23,7 @@ rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
     }
   };
   rwt.protocol.MessageProcessor.processMessage( {
-    "meta": {},
+    "head": {},
     "operations": [
       [ "create", "w1", "rwt.Display" ],
       [ "call", "w1", "init", { "url" : "", "rootId" : "w1" } ]

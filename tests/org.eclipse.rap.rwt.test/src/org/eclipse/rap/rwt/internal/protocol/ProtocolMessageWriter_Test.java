@@ -60,14 +60,14 @@ public class ProtocolMessageWriter_Test extends TestCase {
   public void testEmptyMessage() throws JSONException {
     String messageString = writer.createMessage();
     JSONObject message = new JSONObject( messageString );
-    JSONObject meta = message.getJSONObject( "meta" );
-    assertEquals( 0, meta.length() );
+    JSONObject head = message.getJSONObject( "head" );
+    assertEquals( 0, head.length() );
     JSONArray operations = message.getJSONArray( "operations" );
     assertEquals( 0, operations.length() );
   }
 
   public void testMessageWithRequestCounter() {
-    writer.appendMeta( ProtocolConstants.META_REQUEST_COUNTER, 1 );
+    writer.appendHead( ProtocolConstants.REQUEST_COUNTER, 1 );
 
     assertEquals( 1, getMessage().getRequestCounter() );
   }

@@ -182,7 +182,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     new LifeCycleServiceHandler( mockLifeCycleFactory(), getStartupPage() ).service();
 
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
-    assertTrue( response.getContent().contains( "\"meta\":" ) );
+    assertTrue( response.getContent().contains( "\"head\":" ) );
   }
 
   public void testContentType() throws IOException {
@@ -239,23 +239,23 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
   private void simulateInitialUiRequest() {
     Fixture.fakeNewRequest();
-    Fixture.fakeHeaderParameter( RequestParams.UIROOT, "w1" );
-    Fixture.fakeHeaderParameter( RequestParams.RWT_INITIALIZE, "true" );
+    Fixture.fakeHeadParameter( RequestParams.UIROOT, "w1" );
+    Fixture.fakeHeadParameter( RequestParams.RWT_INITIALIZE, "true" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
   }
 
   private void simulateUiRequest() {
     Fixture.fakeNewRequest();
-    Fixture.fakeHeaderParameter( RequestParams.UIROOT, "w1" );
+    Fixture.fakeHeadParameter( RequestParams.UIROOT, "w1" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
   }
 
   private void simulateUiRequestWithIllegalCounter() {
     Fixture.fakeNewRequest();
-    Fixture.fakeHeaderParameter( RequestParams.UIROOT, "w1" );
-    Fixture.fakeHeaderParameter( "requestCounter", "23" );
+    Fixture.fakeHeadParameter( RequestParams.UIROOT, "w1" );
+    Fixture.fakeHeadParameter( "requestCounter", "23" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setServletPath( "/test" );
   }

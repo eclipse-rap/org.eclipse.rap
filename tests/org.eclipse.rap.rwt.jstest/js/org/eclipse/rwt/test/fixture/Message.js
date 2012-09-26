@@ -126,8 +126,8 @@ org.eclipse.rwt.test.fixture.Message.prototype = {
     return op.properties[ property ];
   },
 
-  getMeta : function() {
-    return this._message.meta;
+  getHead : function() {
+    return this._message.head;
   },
 
   toString : function() {

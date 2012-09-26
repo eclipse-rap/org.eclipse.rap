@@ -201,7 +201,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   private static void renderRequestCounter() {
     ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
     Integer requestId = RWTRequestVersionControl.getInstance().nextRequestId();
-    protocolWriter.appendMeta( PROP_REQUEST_COUNTER, requestId.intValue() );
+    protocolWriter.appendHead( PROP_REQUEST_COUNTER, requestId.intValue() );
   }
 
   private static void renderTheme( Display display ) {

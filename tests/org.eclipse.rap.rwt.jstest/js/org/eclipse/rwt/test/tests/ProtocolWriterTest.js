@@ -46,14 +46,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolWriterTest", {
       var messageString = writer.createMessage();
 
       var message = JSON.parse( messageString );
-      assertEquals( {}, message.meta );
+      assertEquals( {}, message.head );
       assertEquals( [], message.operations );
     },
 
     testMessageWithRequestCounter : function() {
-      writer.appendMeta( "requestCounter", 1 );
+      writer.appendHead( "requestCounter", 1 );
 
-      assertEquals( 1, getMessage().meta.requestCounter );
+      assertEquals( 1, getMessage().head.requestCounter );
     },
 
     testWriteMessageAfterDispose : function() {

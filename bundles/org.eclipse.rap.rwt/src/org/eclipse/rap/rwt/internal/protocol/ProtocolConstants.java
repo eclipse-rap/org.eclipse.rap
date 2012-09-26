@@ -1,4 +1,4 @@
-/******************************************************************************* 
+/*******************************************************************************
 * Copyright (c) 2011, 2012 EclipseSource and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
@@ -7,14 +7,14 @@
 *
 * Contributors:
 *    EclipseSource - initial API and implementation
-*******************************************************************************/ 
+*******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
 
 final class ProtocolConstants {
 
   // Message properties
-  public static final String META = "meta";
+  public static final String HEAD = "head";
   public static final String OPERATIONS = "operations";
 
   // Operation properties
@@ -30,7 +30,7 @@ final class ProtocolConstants {
   public static final String ACTION_DESTROY = "destroy";
 
   // Common properties
-  public static final String META_REQUEST_COUNTER = "requestCounter";
+  public static final String REQUEST_COUNTER = "requestCounter";
   public static final String CALL_METHOD_NAME = "method";
   public static final String CREATE_PARENT = "parent";
   public static final String CREATE_TYPE = "type";

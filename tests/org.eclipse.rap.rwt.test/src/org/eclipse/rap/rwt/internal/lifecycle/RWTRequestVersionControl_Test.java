@@ -44,7 +44,7 @@ public class RWTRequestVersionControl_Test extends TestCase {
 
   public void testIsValid() {
     Integer nextRequestId = RWTRequestVersionControl.getInstance().nextRequestId();
-    Fixture.fakeHeaderParameter( RWTRequestVersionControl.REQUEST_COUNTER, nextRequestId.toString() );
+    Fixture.fakeHeadParameter( RWTRequestVersionControl.REQUEST_COUNTER, nextRequestId.toString() );
 
     boolean valid = RWTRequestVersionControl.getInstance().isValid();
 
@@ -53,7 +53,7 @@ public class RWTRequestVersionControl_Test extends TestCase {
 
   public void testIsValidWithUnknownRequestVersion() {
     RWTRequestVersionControl.getInstance().nextRequestId();
-    Fixture.fakeHeaderParameter( RWTRequestVersionControl.REQUEST_COUNTER, "4711" );
+    Fixture.fakeHeadParameter( RWTRequestVersionControl.REQUEST_COUNTER, "4711" );
 
     boolean valid = RWTRequestVersionControl.getInstance().isValid();
 

@@ -138,9 +138,9 @@ qx.Class.define( "rwt.remote.Server", {
         this.dispatchSimpleEvent( "send" );
         this._flushEvent();
         this._sendTimer.stop();
-        this.getMessageWriter().appendMeta( "uiRoot", this._uiRootId );
+        this.getMessageWriter().appendHead( "uiRoot", this._uiRootId );
         if( this._requestCounter != null ) {
-          this.getMessageWriter().appendMeta( "requestCounter", this._requestCounter );
+          this.getMessageWriter().appendHead( "requestCounter", this._requestCounter );
           this._requestCounter = -1;
         }
         var request = this._createRequest();
@@ -185,7 +185,7 @@ qx.Class.define( "rwt.remote.Server", {
         if( text && text.length > 0 ) {
           if( this._isJsonResponse( event ) ) {
             var messageObject = JSON.parse( text );
-            ErrorHandler.showErrorBox( messageObject.meta.message, true );
+            ErrorHandler.showErrorBox( messageObject.head.message, true );
           } else {
             ErrorHandler.showErrorPage( text );
           }

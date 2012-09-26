@@ -59,7 +59,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testConstructWithoutOperations() {
     try {
-      new ClientMessage( "{ " + ClientMessage.PROP_HEADER + " : {}, \"foo\": 23 }" );
+      new ClientMessage( "{ " + ClientMessage.PROP_HEAD + " : {}, \"foo\": 23 }" );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Missing operations array" ) );
@@ -68,7 +68,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testGetHeaderParameter() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : { \"abc\" : \"foo\" },"
+                + ClientMessage.PROP_HEAD + " : { \"abc\" : \"foo\" },"
                 + ClientMessage.PROP_OPERATIONS + " : [] }";
     ClientMessage message = new ClientMessage( json );
 
@@ -77,7 +77,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testGetHeaderParameter_NoParameter() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : [] }";
     ClientMessage message = new ClientMessage( json );
 
@@ -86,7 +86,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testConstructWithInvalidOperations() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : 23 }";
 
     try {
@@ -99,7 +99,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testConstructWithOperationUnknownType() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"abc\", \"w3\", { \"action\" : \"foo\" } ]"
                 + "] }";
@@ -113,7 +113,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testGetAllOperationsFor() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
     		    + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
@@ -130,7 +130,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testGetAllOperationsFor_NoOperations() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
@@ -145,7 +145,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testGetAllOperations() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
@@ -160,7 +160,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testGetLastSetOperation_ByProperty() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"set\", \"w3\", { \"p2\" : \"foo\" } ],"
@@ -175,7 +175,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testGetLastNotifyOperation() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", { \"detail\" : \"check\" } ],"
@@ -193,7 +193,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testGetLastNotifyOperation_WithoutTarget() {
     String json = "{ "
-        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_HEAD + " : {},"
         + ClientMessage.PROP_OPERATIONS + " : ["
         + "[ \"notify\", \"w4\", \"widgetSelected\", {} ],"
         + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
@@ -209,7 +209,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testGetLastNotifyOperation_WithoutTargetAndName() {
     String json = "{ "
-        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_HEAD + " : {},"
         + ClientMessage.PROP_OPERATIONS + " : ["
         + "[ \"notify\", \"w4\", \"widgetSelected\", {} ],"
         + "[ \"set\", \"w4\", { \"p2\" : \"bar\" } ],"
@@ -225,7 +225,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testGetAllCallOperations() {
     String json = "{ "
-        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_HEAD + " : {},"
         + ClientMessage.PROP_OPERATIONS + " : ["
         + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
         + "[ \"call\", \"w2\", \"store\", {} ],"
@@ -242,7 +242,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testGetAllCallOperations_ByTarget() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
                 + "[ \"call\", \"w3\", \"store\", {} ],"
@@ -258,7 +258,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testGetAllCallOperations_ByTargetAnMethodName() {
     String json = "{ "
-        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_HEAD + " : {},"
         + ClientMessage.PROP_OPERATIONS + " : ["
         + "[ \"set\", \"w3\", { \"p1\" : \"foo\" } ],"
         + "[ \"call\", \"w3\", \"store\", {} ],"
@@ -276,7 +276,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testSetOperation_WithoutTarget() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", { \"p1\" : \"foo\", \"p2\" : true } ]"
                 + "] }";
@@ -290,7 +290,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testSetOperation_WithoutProperties() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\" ]"
                 + "] }";
@@ -304,7 +304,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testNotifyOperation_WithoutEventType() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"notify\", \"w3\", { \"check\" : true } ]"
                 + "] }";
@@ -318,7 +318,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testNotifyOperation_WithoutProperties() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"notify\", \"w3\", \"widgetSelected\""
                 + "] }";
@@ -332,7 +332,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testCallOperation() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"call\", \"w3\", \"store\", { \"id\" : 123 } ]"
                 + "] }";
@@ -347,7 +347,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testCallOperation_WithoutMethodName() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"call\", \"w3\", { \"id\" : 123 } ]"
                 + "] }";
@@ -361,7 +361,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testCallOperation_WithoutProperties() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"call\", \"w3\", \"store\""
                 + "] }";
@@ -375,7 +375,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testOperationGetPropertyAsArray() {
     String json = "{ "
-                + ClientMessage.PROP_HEADER + " : {},"
+                + ClientMessage.PROP_HEAD + " : {},"
                 + ClientMessage.PROP_OPERATIONS + " : ["
                 + "[ \"set\", \"w3\", { \"result\" : [1,2] } ]"
                 + "] }";
@@ -389,7 +389,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testOperationGetProperty_MixedArray() {
     String json = "{ "
-        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_HEAD + " : {},"
         + ClientMessage.PROP_OPERATIONS + " : ["
         + "[ \"set\", \"w3\", { \"result\" : [1,\"foo\",3,4] } ]"
         + "] }";
@@ -407,7 +407,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testOperationGetPropertyAsMap() {
     String json = "{ "
-        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_HEAD + " : {},"
         + ClientMessage.PROP_OPERATIONS + " : ["
         + "[ \"set\", \"w3\", { \"result\" : { \"p1\" : \"foo\", \"p2\" : \"bar\" } } ]"
         + "] }";
@@ -424,7 +424,7 @@ public class ClientMessage_Test extends TestCase {
 
   public void testOperationGetPropertyAsMap_WithArray() {
     String json = "{ "
-        + ClientMessage.PROP_HEADER + " : {},"
+        + ClientMessage.PROP_HEAD + " : {},"
         + ClientMessage.PROP_OPERATIONS + " : ["
         + "[ \"set\", \"w3\", { \"result\" : { \"p1\" : [1,2], \"p2\" : \"bar\" } } ]"
         + "] }";
