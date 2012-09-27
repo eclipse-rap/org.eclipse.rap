@@ -15,6 +15,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.resources.JSLibraryConcatenator;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
@@ -33,6 +34,7 @@ public class ApplicationContextActivator_Test extends TestCase {
   private ThemeManager themeManager;
   private JSLibraryConcatenator jsLibraryConcatenator;
   private ServiceManager serviceManager;
+  private ClientSelector clientSelector;
 
   @Override
   protected void setUp() {
@@ -48,6 +50,7 @@ public class ApplicationContextActivator_Test extends TestCase {
     verify( lifeCycleFactory ).activate();
     verify( jsLibraryConcatenator ).activate();
     verify( jsLibraryConcatenator ).startJSConcatenation();
+    verify( clientSelector ).activate();
   }
 
   public void testDeactivate() {
@@ -85,6 +88,9 @@ public class ApplicationContextActivator_Test extends TestCase {
 
     StartupPage startupPage = mock( StartupPage.class );
     when( applicationContext.getStartupPage() ).thenReturn( startupPage );
+
+    clientSelector = mock( ClientSelector.class );
+    when( applicationContext.getClientSelector() ).thenReturn( clientSelector );
 
     ResourceRegistry resourceRegistry = mock( ResourceRegistry.class );
     when( resourceRegistry.get() ).thenReturn( new IResource[ 0 ] );

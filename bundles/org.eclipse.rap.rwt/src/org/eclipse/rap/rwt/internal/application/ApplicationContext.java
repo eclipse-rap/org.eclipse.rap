@@ -15,6 +15,7 @@ import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.branding.BrandingManager;
+import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
@@ -74,6 +75,7 @@ public class ApplicationContext {
   private final ServletContext servletContext;
   private final ApplicationContextConfigurator contextConfigurator;
   private final ApplicationContextActivator contextActivator;
+  private final ClientSelector clientSelector;
   private boolean activated;
 
   public ApplicationContext( ApplicationConfiguration applicationConfiguration,
@@ -105,6 +107,7 @@ public class ApplicationContext {
     contextConfigurator = new ApplicationContextConfigurator( applicationConfiguration,
                                                               servletContext );
     contextActivator = new ApplicationContextActivator( this );
+    clientSelector = new ClientSelector();
   }
 
   public boolean isActivated() {
@@ -229,6 +232,10 @@ public class ApplicationContext {
 
   public ProbeStore getProbeStore() {
     return probeStore;
+  }
+
+  public ClientSelector getClientSelector() {
+    return clientSelector;
   }
 
   private void checkIsNotActivated() {

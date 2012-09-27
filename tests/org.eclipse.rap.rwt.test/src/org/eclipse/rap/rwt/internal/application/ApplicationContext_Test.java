@@ -88,6 +88,9 @@ public class ApplicationContext_Test extends TestCase {
 
     assertNotNull( context.getProbeStore() );
     assertSame( context.getProbeStore(), context.getProbeStore() );
+
+    assertNotNull( context.getClientSelector() );
+    assertSame( context.getClientSelector(), context.getClientSelector() );
   }
 
   public void testStateAfterCreation() {

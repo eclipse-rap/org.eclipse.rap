@@ -19,6 +19,7 @@ import java.util.Map;
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.internal.client.ClientProvider;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.service.ServiceManager;
 import org.eclipse.rap.rwt.internal.theme.Theme;
@@ -173,6 +174,10 @@ public class ApplicationImpl implements Application, Adaptable {
     ParamCheck.notNull( resourceLoader, "resourceLoader" );
 
     applicationContext.getThemeManager().addThemeableWidget( widget, resourceLoader );
+  }
+
+  public void addClientProvider( ClientProvider clientProvider ) {
+    applicationContext.getClientSelector().addClientProvider( clientProvider );
   }
 
   public void setAttribute( String name, Object value ) {

@@ -52,12 +52,12 @@ public final class SessionStoreImpl
 
   public SessionStoreImpl( HttpSession httpSession ) {
     ParamCheck.notNull( httpSession, "httpSession" );
-    this.requestLock = new SerializableLock();
-    this.lock = new SerializableLock();
-    this.attributes = new HashMap<String,Object>();
-    this.sessionStoreListeners = new HashSet<SessionStoreListener>();
-    this.id = httpSession.getId();
-    this.bound = true;
+    requestLock = new SerializableLock();
+    lock = new SerializableLock();
+    attributes = new HashMap<String,Object>();
+    sessionStoreListeners = new HashSet<SessionStoreListener>();
+    id = httpSession.getId();
+    bound = true;
     this.httpSession = httpSession;
   }
 
