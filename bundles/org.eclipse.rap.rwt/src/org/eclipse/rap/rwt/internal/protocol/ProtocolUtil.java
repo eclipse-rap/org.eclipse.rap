@@ -146,6 +146,8 @@ public final class ProtocolUtil {
           result = ( T )toBooleanArray( value );
         } else if( String[].class.equals( clazz ) ) {
           result = ( T )toStringArray( value );
+        } else {
+          throw new IllegalStateException( "Could not convert property to " + clazz.getName() );
         }
       }
     }
