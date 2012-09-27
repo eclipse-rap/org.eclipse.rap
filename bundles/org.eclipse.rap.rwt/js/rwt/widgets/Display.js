@@ -175,11 +175,13 @@ rwt.widgets.Display.prototype = {
   },
 
   _appendInitialHistoryEvent : function() {
-    var req = rwt.remote.Server.getInstance();
     var entryId = window.location.hash;
     if( entryId !== "" ) {
-      req.addParameter( "org.eclipse.rwt.events.historyNavigated", "true" );
-      req.addParameter( "org.eclipse.rwt.events.historyNavigated.entryId", entryId.substr( 1 ) );
+      var server = rwt.remote.Server.getInstance();
+      server.getServerObject( this ).notify( "historyNavigated", {
+        "entryId" : entryId.substr( 1 )
+      } );
+
     }
   }
 

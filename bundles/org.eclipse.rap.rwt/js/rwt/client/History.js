@@ -378,11 +378,8 @@ qx.Class.define("rwt.client.History",
 
     _historyNavigated : function( event ) {
       var entryId = event.getData();
-      var req = rwt.remote.Server.getInstance();
-      req.addEvent( "org.eclipse.rwt.events.historyNavigated", "true" );
-      req.addParameter( "org.eclipse.rwt.events.historyNavigated.entryId", entryId );
-      req._event = null; // do json notify separately
-      req.getServerObject( this ).notify( "historyNavigated", {
+      var server = rwt.remote.Server.getInstance();
+      server.getServerObject( this ).notify( "historyNavigated", {
         "entryId" : entryId
       } );
     }
