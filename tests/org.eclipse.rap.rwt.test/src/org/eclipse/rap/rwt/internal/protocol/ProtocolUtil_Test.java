@@ -291,6 +291,24 @@ public class ProtocolUtil_Test extends TestCase {
     assertTrue( Arrays.equals( expected, actual ) );
   }
 
+  public void testReadPropertyValueAsBooleanArray() {
+    fakeNewJsonMessage();
+
+    boolean[] expected = new boolean[]{ true, false, true };
+    boolean[] actual = ProtocolUtil.readPropertyValueAsBooleanArray( "w3", "p9" );
+    assertTrue( Arrays.equals( expected, actual ) );
+  }
+
+  public void testReadPropertyValueAsBooleanArray_NotBoolean() {
+    fakeNewJsonMessage();
+
+    try {
+      ProtocolUtil.readPropertyValueAsBooleanArray( "w3", "p7" );
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
+  }
+
   public void testReadPropertyValueAsStringArray() {
     fakeNewJsonMessage();
 
@@ -305,8 +323,7 @@ public class ProtocolUtil_Test extends TestCase {
     try {
       ProtocolUtil.readPropertyValueAsStringArray( "w3", "p6" );
       fail();
-    } catch( IllegalStateException ex ) {
-      // expected
+    } catch( IllegalStateException expected ) {
     }
   }
 
@@ -338,6 +355,7 @@ public class ProtocolUtil_Test extends TestCase {
     parameters.put( "p6", new int[] { 1, 2, 3, 4 } );
     parameters.put( "p7", new String[] { "a", "b", "c" } );
     parameters.put( "p8", new Object[]{ "a", new Integer( 2 ), Boolean.TRUE } );
+    parameters.put( "p9", new boolean[] { true, false, true } );
     Fixture.fakeSetOperation( "w3", parameters  );
   }
 }

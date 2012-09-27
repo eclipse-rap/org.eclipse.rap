@@ -103,65 +103,50 @@ public final class ProtocolUtil {
   }
 
   public static String readPropertyValueAsString( String target, String property ) {
-    String result = null;
-    ClientMessage message = getClientMessage();
-    SetOperation operation =  message.getLastSetOperationFor( target, property );
-    if( operation != null ) {
-      Object value = operation.getProperty( property );
-      if( value != null ) {
-        result = value.toString();
-      }
-    }
-    return result;
+    return readPropertyValueAs( target, property, String.class );
   }
 
   public static Point readPropertyValueAsPoint( String target, String property ) {
-    Point result = null;
-    ClientMessage message = getClientMessage();
-    SetOperation operation =  message.getLastSetOperationFor( target, property );
-    if( operation != null ) {
-      Object value = operation.getProperty( property );
-      if( value != null ) {
-        result = toPoint( value );
-      }
-    }
-    return result;
+    return readPropertyValueAs( target, property, Point.class );
   }
 
   public static Rectangle readPropertyValueAsRectangle( String target, String property ) {
-    Rectangle result = null;
-    ClientMessage message = getClientMessage();
-    SetOperation operation =  message.getLastSetOperationFor( target, property );
-    if( operation != null ) {
-      Object value = operation.getProperty( property );
-      if( value != null ) {
-        result = toRectangle( value );
-      }
-    }
-    return result;
+    return readPropertyValueAs( target, property, Rectangle.class );
   }
 
   public static int[] readPropertyValueAsIntArray( String target, String property ) {
-    int[] result = null;
-    ClientMessage message = getClientMessage();
-    SetOperation operation =  message.getLastSetOperationFor( target, property );
-    if( operation != null ) {
-      Object value = operation.getProperty( property );
-      if( value != null ) {
-        result = toIntArray( value );
-      }
-    }
-    return result;
+    return readPropertyValueAs( target, property, int[].class );
+  }
+
+  public static boolean[] readPropertyValueAsBooleanArray( String target, String property ) {
+    return readPropertyValueAs( target, property, boolean[].class );
   }
 
   public static String[] readPropertyValueAsStringArray( String target, String property ) {
-    String[] result = null;
+    return readPropertyValueAs( target, property, String[].class );
+  }
+
+  @SuppressWarnings( "unchecked" )
+  private static <T> T readPropertyValueAs( String target, String property, Class<T> clazz ) {
+    T result = null;
     ClientMessage message = getClientMessage();
     SetOperation operation =  message.getLastSetOperationFor( target, property );
     if( operation != null ) {
       Object value = operation.getProperty( property );
       if( value != null ) {
-        result = toStringArray( value );
+        if( String.class.equals( clazz ) ) {
+          result = ( T )value.toString();
+        } else if( Point.class.equals( clazz ) ) {
+          result = ( T )toPoint( value );
+        } else if( Rectangle.class.equals( clazz ) ) {
+          result = ( T )toRectangle( value );
+        } else if( int[].class.equals( clazz ) ) {
+          result = ( T )toIntArray( value );
+        } else if( boolean[].class.equals( clazz ) ) {
+          result = ( T )toBooleanArray( value );
+        } else if( String[].class.equals( clazz ) ) {
+          result = ( T )toStringArray( value );
+        }
       }
     }
     return result;
@@ -296,14 +281,35 @@ public final class ProtocolUtil {
       result = new String[ array.length ];
       for( int i = 0; i < array.length; i++ ) {
         try {
-          result[ i ] = ( ( String )array[ i ] );
+          result[ i ] = ( String )array[ i ];
         } catch( ClassCastException exception ) {
           String message = "Could not convert to string array: array contains non-string value";
           throw new IllegalStateException( message );
         }
       }
     } else {
-      throw new IllegalStateException( "Could not convert to string array: property is not a string" );
+      String message = "Could not convert to string array: property is not a string";
+      throw new IllegalStateException( message );
+    }
+    return result;
+  }
+
+  private static boolean[] toBooleanArray( Object value ) {
+    boolean[] result;
+    if( value instanceof Object[] ) {
+      Object[] array = ( Object[] )value;
+      result = new boolean[ array.length ];
+      for( int i = 0; i < array.length; i++ ) {
+        try {
+          result[ i ] = ( ( Boolean )array[ i ] ).booleanValue();
+        } catch( ClassCastException exception ) {
+          String message = "Could not convert to boolean array: array contains non-string value";
+          throw new IllegalStateException( message );
+        }
+      }
+    } else {
+      String message = "Could not convert to string array: property is not a string";
+      throw new IllegalStateException( message );
     }
     return result;
   }
