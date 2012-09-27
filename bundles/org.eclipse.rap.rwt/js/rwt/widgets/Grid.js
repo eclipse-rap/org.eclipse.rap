@@ -913,9 +913,6 @@ qx.Class.define( "rwt.widgets.Grid", {
 
     _sendSelectionChange : function( item ) {
       if( !this._inServerResponse() ) {
-        var req = rwt.remote.Server.getInstance();
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
-        var id = wm.findIdByWidget( this );
         var selection = this._getSelectionList();
         rwt.remote.Server.getInstance().getServerObject( this ).set( "selection", selection );
         this._sendSelectionEvent( item, false, null );

@@ -77,7 +77,7 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   public void readData( Widget widget ) {
     Combo combo = ( Combo )widget;
-    String value = WidgetLCAUtil.readPropertyValue( widget, "selectedItem" );
+    String value = WidgetLCAUtil.readPropertyValue( widget, "selectionIndex" );
     if( value != null ) {
       combo.select( NumberFormatUtil.parseInt( value ) );
     }
