@@ -702,7 +702,7 @@ qx.Class.define( "rwt.widgets.Combo", {
         var id = widgetManager.findIdByWidget( this );
         var list = this._list;
         var listItem = this._list.getSelectedItem();
-        req.addParameter( id + ".selectedItem", list.getItemIndex( listItem ) );
+        req.addParameter( id + ".selectionIndex", list.getItemIndex( listItem ) );
         if( this._hasSelectionListener || this._hasVerifyModifyListener() ) {
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
           org.eclipse.swt.EventUtil.addWidgetSelectedModifier();

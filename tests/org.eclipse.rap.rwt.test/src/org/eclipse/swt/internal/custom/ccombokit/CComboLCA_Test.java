@@ -176,7 +176,7 @@ public class CComboLCA_Test extends TestCase {
     ccombo.add( "item 1" );
     ccombo.add( "item 2" );
 
-    Fixture.fakeSetParameter( getId( ccombo ), "selectedItem", Integer.valueOf( 1 ) );
+    Fixture.fakeSetParameter( getId( ccombo ), "selectionIndex", Integer.valueOf( 1 ) );
     lca.readData( ccombo );
 
     assertEquals( 1, ccombo.getSelectionIndex() );

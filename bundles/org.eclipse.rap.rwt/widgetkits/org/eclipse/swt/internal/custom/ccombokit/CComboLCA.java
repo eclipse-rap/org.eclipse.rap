@@ -72,7 +72,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
 
   public void readData( Widget widget ) {
     CCombo ccombo = ( CCombo )widget;
-    String value = WidgetLCAUtil.readPropertyValue( ccombo, "selectedItem" );
+    String value = WidgetLCAUtil.readPropertyValue( ccombo, "selectionIndex" );
     if( value != null ) {
       ccombo.select( NumberFormatUtil.parseInt( value ) );
     }
