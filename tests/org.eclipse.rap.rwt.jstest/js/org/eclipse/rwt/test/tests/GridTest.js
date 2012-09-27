@@ -1229,7 +1229,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       rwt.remote.Server.getInstance().send();
       var message = TestUtil.getMessageObject();
-      assertEquals( "[true]", message.findSetProperty( "w2", "cellChecked" ) );
+      assertEquals( [ true ], message.findSetProperty( "w2", "cellChecked" ) );
       tree.destroy();
     },
 
@@ -1252,7 +1252,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var message = TestUtil.getMessageObject();
       assertEquals( "check", message.findNotifyProperty( "w11", "widgetSelected", "detail" ) );
       assertEquals( 0, message.findNotifyProperty( "w11", "widgetSelected", "index" ) );
-
       tree.destroy();
     },
 
@@ -1274,7 +1273,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       rwt.remote.Server.getInstance().send();
       var message = TestUtil.getMessageObject();
-      assertEquals( "[true,false,false,false]", message.findSetProperty( "w2", "cellChecked" ) );
+      assertEquals( [ true, false, false, false ], message.findSetProperty( "w2", "cellChecked" ) );
       tree.destroy();
     },
 

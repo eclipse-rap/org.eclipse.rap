@@ -934,16 +934,13 @@ qx.Class.define( "rwt.widgets.Grid", {
 
     _sendCellCheckedChange : function( item, cell ) { // TODO [tb] : item events should be send by item
       if( !this._inServerResponse() ) {
-        var req = rwt.remote.Server.getInstance();
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
-        var itemId = wm.findIdByWidget( item );
+        var server = rwt.remote.Server.getInstance();
         var arr = item.getCellChecked();
         var sendArr = [];
         for( var i = 0; i < this._config.columnCount; i++ ) {
           sendArr[ i ] = arr[ i ] === true;
         }
-        var checkString = "[" + sendArr.join( "," ) + "]";
-        req.addParameter( itemId + ".cellChecked", checkString );
+        server.getServerObject( item ).set( "cellChecked", sendArr );
         this._sendSelectionEvent( item, false, "check", cell );
       }
     },
