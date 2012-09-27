@@ -68,7 +68,10 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     _applyShadow : rwt.util.Variant.select( "qx.client", {
       "default" : function( value, oldValue ) {
         if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {
-          if( value != null && value[ 0 ] ) {
+          var isInset = value != null && value[ 0 ];
+          var hasOpacity = this.getOpacity() !== 1 && this.getOpacity() !== null;
+          var opacityBug = value != null && hasOpacity && rwt.client.Client.isMshtml();
+          if( isInset || opacityBug ) {
             this.setGfxProperty( "shadow", null );
           } else {
             this.setGfxProperty( "shadow", value );
@@ -87,6 +90,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     _applyOpacity : function( value, oldValue ) {
       this.base( arguments, value, oldValue );
       this._checkAntiAlias( value );
+      this._applyShadow( this.getShadow() );
    },
 
     _checkAntiAlias : rwt.util.Variant.select( "qx.client", {

@@ -225,7 +225,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         browser.execute( "for(){}" );
         assertFalse( TestUtil.getMessageObject().findSetProperty( "w6", "executeResult" ) );
         browser.destroy();
-        delete window.foo;
+        delete foo;
       }
     ],
 
