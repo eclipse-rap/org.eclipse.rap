@@ -176,7 +176,8 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor  {
      */
     @Override
     public void destroyResource(Object previouslyCreatedObject) {
-        ((Image)previouslyCreatedObject).dispose();
+//      TODO [rst] This line is still disabled because of 320201
+//      ((Image)previouslyCreatedObject).dispose();
     }
 
     /**
