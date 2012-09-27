@@ -303,12 +303,12 @@ public final class ProtocolUtil {
         try {
           result[ i ] = ( ( Boolean )array[ i ] ).booleanValue();
         } catch( ClassCastException exception ) {
-          String message = "Could not convert to boolean array: array contains non-string value";
+          String message = "Could not convert to boolean array: array contains non-boolean value";
           throw new IllegalStateException( message );
         }
       }
     } else {
-      String message = "Could not convert to string array: property is not a string";
+      String message = "Could not convert to boolean array: property is not an array";
       throw new IllegalStateException( message );
     }
     return result;
