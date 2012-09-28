@@ -155,6 +155,7 @@ qx.Class.define( "rwt.widgets.Combo", {
       if( state.substr( 0, 8 ) == "variant_" ) {
         this._field.addState( state );
         this._list.addState( state );
+        this._button.addState( state );
       }
     },
 
