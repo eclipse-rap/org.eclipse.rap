@@ -47,7 +47,7 @@ var appearances = {
       var tv = new rwt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "DateTime", "border" );
-      result.font = tv.getCssFont( "*", "font" );
+      result.font = tv.getCssFont( "DateTime", "font" );
       result.textColor = tv.getCssColor( "DateTime", "color" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
       result.textShadow = tv.getCssShadow( "DateTime", "text-shadow" );
@@ -63,7 +63,7 @@ var appearances = {
         textAlign : "center",
         padding : [ 0, 3 ]
       };
-      if( states.selected ) {
+      if( !states.disabled ) {
         result.textColor = tv.getCssColor( "DateTime-Field", "color" );
         result.backgroundColor = tv.getCssColor( "DateTime-Field", "background-color" );
       } else {
@@ -77,7 +77,6 @@ var appearances = {
 
   "datetime-separator" : {
     style : function( states ) {
-      var tv = new rwt.theme.ThemeValues( states );
       var result = {
         cursor : "default"
       };
@@ -265,11 +264,11 @@ var appearances = {
 
   "calendar-week" : {
     style : function( states ) {
-      var tv = new rwt.theme.ThemeValues( states );
+      var border;
       if( states.header ) {
-        var border = new org.eclipse.rwt.Border( [ 0, 1, 1, 0 ], "solid", "gray" );
+        border = new org.eclipse.rwt.Border( [ 0, 1, 1, 0 ], "solid", "gray" );
       } else {
-        var border = new org.eclipse.rwt.Border( [ 0, 1, 0, 0 ], "solid", "gray" );
+        border = new org.eclipse.rwt.Border( [ 0, 1, 0, 0 ], "solid", "gray" );
       }
       return {
         textAlign : "center",
@@ -284,7 +283,7 @@ var appearances = {
       var tv = new rwt.theme.ThemeValues( states );
       var border = new org.eclipse.rwt.Border( [ 0, 0, 1, 0 ], "solid", "gray" );
       // FIXME: [if] Bigger font size leads to text cutoff
-      var font = tv.getCssFont( "*", "font" );
+      var font = tv.getCssFont( "DateTime", "font" );
       var smallFont = qx.ui.core.Font.fromString( font.toCss() );
       smallFont.setSize( 11 );
       return {
@@ -302,7 +301,7 @@ var appearances = {
         textAlign : "center",
         verticalAlign : "middle"
       };
-      if( !states.disabled && ( states.selected || states.otherMonth || states.over ) ) {
+      if( !states.disabled ) {
         result.textColor = tv.getCssColor( "DateTime-Calendar-Day", "color" );
         result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day", "background-color" );
       } else {
