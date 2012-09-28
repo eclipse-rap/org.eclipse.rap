@@ -84,6 +84,36 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       shell.destroy();
     },
 
+    testRemoveCustomVariantByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Combo",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "customVariant" : "variant_mystyle"
+        }
+      } );
+
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "set",
+        "properties" : {
+          "customVariant" : null
+        }
+      } );
+
+      var widget = ObjectManager.getObject( "w3" );
+      assertFalse( widget.hasState( "variant_mystyle" ) );
+      assertFalse( widget._field.hasState( "variant_mystyle" ) );
+      assertFalse( widget._list.hasState( "variant_mystyle" ) );
+      assertFalse( widget._button.hasState( "variant_mystyle" ) );
+      shell.destroy();
+    },
+
     testSetItemHeightByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       Processor.processOperation( {

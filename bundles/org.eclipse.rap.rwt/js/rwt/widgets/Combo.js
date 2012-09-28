@@ -164,6 +164,7 @@ qx.Class.define( "rwt.widgets.Combo", {
       if( state.substr( 0, 8 ) == "variant_" ) {
         this._field.removeState( state );
         this._list.removeState( state );
+        this._button.removeState( state );
       }
     },
 
