@@ -178,10 +178,12 @@ rwt.widgets.Display.prototype = {
     var entryId = window.location.hash;
     if( entryId !== "" ) {
       var server = rwt.remote.Server.getInstance();
-      server.getServerObject( this ).notify( "historyNavigated", {
+      var history = rwt.client.History.getInstance();
+      // TODO: Temporary workaround for 388835
+      rwt.protocol.ObjectRegistry.add( "bh", history, "rwt.BrowserHistory" );
+      server.getServerObject( history ).notify( "historyNavigated", {
         "entryId" : entryId.substr( 1 )
       } );
-
     }
   }
 
