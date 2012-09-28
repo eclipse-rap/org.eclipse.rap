@@ -193,6 +193,7 @@ public class MainUi implements IEntryPoint {
 
   private Composite createFooter( Composite contentComposite ) {
     Composite footer = new Composite( contentComposite, SWT.NONE );
+    footer.setBackgroundMode( SWT.INHERIT_DEFAULT );
     footer.setLayout( new FormLayout() );
     footer.setData( RWT.CUSTOM_VARIANT, "footer" );
     footer.setLayoutData( createFooterFormData() );
