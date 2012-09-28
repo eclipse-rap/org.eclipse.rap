@@ -930,10 +930,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setWidth( 100 );
       text.setHeight( 30 );
 
-      TestUtil.fakeAppearance( "text-field-message", {
+      TestUtil.fakeAppearance( "text-field", {
         "style" : function( states ) {
           var result = {};
           result.font = new Font( 10 );
+          return result;
+        }
+      } );
+      TestUtil.fakeAppearance( "text-field-message", {
+        "style" : function( states ) {
+          var result = {};
           result.textColor = "red";
           result.paddingRight = 4;
           result.paddingLeft = 3;
@@ -960,10 +966,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setMessage( "konnichiwa" );
       text.setWidth( 100 );
       text.setHeight( 30 );
-      TestUtil.fakeAppearance( "text-field-message", {
+      TestUtil.fakeAppearance( "text-field", {
         "style" : function( states ) {
           var result = {};
           result.font = new Font( 10 );
+          return result;
+        }
+      } );
+      TestUtil.fakeAppearance( "text-field-message", {
+        "style" : function( states ) {
+          var result = {};
           result.textColor = "red";
           result.paddingRight = 4;
           result.paddingLeft = 3;
@@ -1302,6 +1314,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.clickDOM( text._cancelIconElement, 5, 5 );
 
       assertEquals( "", text.getValue() );
+    },
+
+    testUpdateMessageFont : function() {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SEARCH", "ICON_SEARCH", "ICON_CANCEL" ],
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 100, 20 ],
+          "message" : "foo"
+        }
+      } );
+
+      TestUtil.flush();
+      text = ObjectManager.getObject( "w3" );
+      text.setFont( new Font( 10 ) );
+
+      assertEquals( "10px", text._messageElement.style.fontSize );
     },
 
     /////////

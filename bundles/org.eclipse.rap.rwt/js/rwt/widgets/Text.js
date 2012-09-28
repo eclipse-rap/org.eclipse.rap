@@ -482,7 +482,12 @@ qx.Class.define( "rwt.widgets.Text", {
 
     _applyCursor : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
-      this._renderMessageCursor();
+      this._updateMessageCursor();
+    },
+
+    _applyFont : function( newValue, oldValue ) {
+      this.base( arguments, newValue, oldValue );
+      this._updateMessageFont();
     },
 
     // Overwritten
@@ -500,19 +505,18 @@ qx.Class.define( "rwt.widgets.Text", {
           style.position = "absolute";
           style.outline = "none";
           var styleMap = this._getMessageStyle();
-          styleMap.font.renderStyle( style );
           style.color = styleMap.textColor || "";
           style.left = styleMap.paddingLeft + "px";
-          style.height = Math.round( styleMap.font.getSize() * this._LINE_HEIGT_FACTOR ) + "px";
           org.eclipse.rwt.HtmlUtil.setTextShadow( this._messageElement, styleMap.textShadow );
           this._getTargetNode().insertBefore( this._messageElement, this._inputElement );
         }
         if( this._messageElement ) {
           this._messageElement.innerHTML = this._message ? this._message : "";
         }
-        this._layoutMessage();
-        this._renderMessageCursor();
+        this._updateMessageCursor();
         this._updateMessageVisibility();
+        this._updateMessageFont();
+        this._layoutMessage();
       }
     },
 
@@ -545,7 +549,16 @@ qx.Class.define( "rwt.widgets.Text", {
       }
     },
 
-    _renderMessageCursor : function() {
+    _updateMessageFont : function() {
+      if( this._messageElement ) {
+        var style = this._messageElement.style;
+        var font = this.getFont();
+        font.renderElement( this._messageElement );
+        style.height = Math.round( font.getSize() * this._LINE_HEIGT_FACTOR ) + "px";
+      }
+    },
+
+    _updateMessageCursor : function() {
       if( this._messageElement ) {
         var cursor = this._inputElement.style.cursor;
         if( cursor == null || cursor === "" ) {

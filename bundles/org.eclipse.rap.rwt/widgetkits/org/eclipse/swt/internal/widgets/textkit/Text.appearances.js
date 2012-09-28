@@ -47,7 +47,6 @@ var appearances = {
     style : function( states ) {
       var result = {};
       var tv = new rwt.theme.ThemeValues( states );
-      result.font = tv.getCssFont( "Text", "font" );
       result.textColor = tv.getCssColor( "Text-Message", "color" );
       // [if] Do not apply top/bottom paddings on the client
       var cssPadding = tv.getCssBoxDimensions( "Text", "padding" );
