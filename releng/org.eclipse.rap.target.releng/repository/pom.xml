@@ -35,6 +35,36 @@
           <compress>true</compress>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho.extras</groupId>
+        <artifactId>tycho-p2-extras-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <executions>
+          <execution>
+            <phase>prepare-package</phase>
+              <goals>
+                <goal>mirror</goal>
+              </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <source>
+            <repository>
+              <url>${base-platform-repository}</url>
+              <layout>p2</layout>
+            </repository>
+          </source>
+          <ius>
+            <iu>
+              <id>a.jre.javase</id>
+            </iu>
+          </ius>
+          <includeOptional>false</includeOptional>
+          <includeNonGreedy>false</includeNonGreedy>
+          <latestVersionOnly>true</latestVersionOnly>
+          <mirrorMetadataOnly>true</mirrorMetadataOnly>
+        </configuration>
+      </plugin>      
     </plugins>
   </build>
 

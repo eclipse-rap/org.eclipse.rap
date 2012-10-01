@@ -25,6 +25,7 @@
     <tycho-version>0.15.0</tycho-version>
     <signing-plugin-version>1.0.5</signing-plugin-version>
     <base-platform>4.3milestones/S-4.3M2-201209201300/</base-platform>
+    <base-platform-repository>http://download.eclipse.org/eclipse/updates/${base-platform}</base-platform-repository>
   </properties>
 
   <prerequisites>
@@ -48,7 +49,7 @@
     <repository>
       <id>base-platform-repository</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/eclipse/updates/${base-platform}</url>
+      <url>${base-platform-repository}</url>
     </repository>
     <repository>
       <id>extra-dependencies-repository</id>
