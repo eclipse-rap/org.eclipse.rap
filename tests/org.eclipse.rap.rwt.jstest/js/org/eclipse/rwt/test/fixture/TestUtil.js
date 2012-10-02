@@ -941,6 +941,16 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     } );
   },
 
+  protocolCall : function( id, method, properties ) {
+    var processor = rwt.protocol.MessageProcessor;
+    processor.processOperation( {
+      "target" : id,
+      "action" : "call",
+      "method" : method,
+      "properties" : properties
+    } );
+  },
+
   protocolSet : function( id, properties ) {
     org.eclipse.swt.EventUtil.setSuspended( true );
     var processor = rwt.protocol.MessageProcessor;

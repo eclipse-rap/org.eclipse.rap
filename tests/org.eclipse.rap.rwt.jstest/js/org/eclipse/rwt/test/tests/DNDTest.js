@@ -1427,8 +1427,56 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.flush();
     },
 
+    testCancelDragFromServerSide : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
+      dndHandler.__dragCache = null;
+      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      TestUtil.prepareTimerUse();
+      TestUtil.initRequestLog();
+      var source = this.createSource();
+      var dragSource = this.createDragSourceByProtocol( "w123", "w11" );
+      var sourceNode = source._getTargetNode();
+      var doc = document.body;
+      // drag
+      TestUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
+      TestUtil.clearRequestLog();
+      TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w11", "dragStart" ) );
+
+      TestUtil.protocolCall( "w123", "cancel", {} );
+      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
+      assertNull( dndHandler.__dragCache );
+
+      rwt.protocol.MessageProcessor.processOperation( {
+        "target" : "w123",
+        "action" : "destroy"
+      } );
+      dndSupport.deregisterDragSource( source );
+      source.setParent( null );
+      source.destroy();
+      TestUtil.flush();
+    },
+
     /////////
     // Helper
+
+    createDragSourceByProtocol : function( id, controlId ) {
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : id,
+        "action" : "create",
+        "type" : "rwt.widgets.DragSource",
+        "properties" : {
+          "control" : controlId,
+          "style" : [ "DROP_COPY", "DROP_MOVE" ],
+          "transfer" : [ "default" ]
+        }
+      } );
+      return rwt.protocol.ObjectRegistry.getObject( id );
+    },
 
     createSource : function() {
       var result = new rwt.widgets.base.Atom();

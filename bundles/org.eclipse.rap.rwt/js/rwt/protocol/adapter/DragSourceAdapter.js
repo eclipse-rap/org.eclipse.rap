@@ -31,7 +31,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.DragSource", {
     }
   },
 
-  methods : [ "changeFeedback", "changeDetail", "changeDataType" ],
+  methods : [ "changeFeedback", "changeDetail", "changeDataType", "cancel" ],
 
   methodHandler : {
     "changeFeedback" : function( source, properties ) {
@@ -52,6 +52,10 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.DragSource", {
       var control = rwt.protocol.ObjectRegistry.getObject( properties.control );
       var dataType = properties.dataType;
       dnd.setDataType( control, dataType );
+    },
+    "cancel" : function( source, properties ) {
+      var dnd = org.eclipse.rwt.DNDSupport.getInstance();
+      dnd.cancel();
     }
   }
 
