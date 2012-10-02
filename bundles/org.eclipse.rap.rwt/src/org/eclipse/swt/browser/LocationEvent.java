@@ -13,6 +13,7 @@ package org.eclipse.swt.browser;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
+import org.eclipse.swt.internal.events.EventTypes;
 
 
 /**
@@ -35,10 +36,11 @@ public class LocationEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int CHANGING = 5011;
-  public static final int CHANGED = 5012;
+  public static final int CHANGING = EventTypes.LOCALTION_CHANGING;
+  public static final int CHANGED = EventTypes.LOCALTION_CHANGED;
 
   private static final Class LISTENER = LocationListener.class;
+  private static final int[] EVENT_TYPES = { CHANGING, CHANGED };
 
   /** current location */
   public String location;
@@ -92,7 +94,7 @@ public class LocationEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -101,7 +103,7 @@ public class LocationEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, LocationListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -110,7 +112,7 @@ public class LocationEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, LocationListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -119,6 +121,6 @@ public class LocationEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 }

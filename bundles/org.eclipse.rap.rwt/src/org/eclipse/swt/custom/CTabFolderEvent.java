@@ -13,6 +13,7 @@ package org.eclipse.swt.custom;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
+import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Widget;
 
@@ -32,13 +33,14 @@ public class CTabFolderEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int CLOSE = 5031;
-  public static final int MINIMIZE = 5032;
-  public static final int MAXIMIZE = 5033;
-  public static final int RESTORE = 5034;
-  public static final int SHOW_LIST = 5035;
+  public static final int CLOSE = EventTypes.CTAB_FOLDER_CLOSE;
+  public static final int MINIMIZE = EventTypes.CTAB_FOLDER_MINIMIZE;
+  public static final int MAXIMIZE = EventTypes.CTAB_FOLDER_MAXIMIZE;
+  public static final int RESTORE = EventTypes.CTAB_FOLDER_RESTORE;
+  public static final int SHOW_LIST = EventTypes.CTAB_FOLDER_SHOW_LIST;
 
   private static final Class LISTENER = CTabFolder2Listener.class;
+  private static final int[] EVENT_TYPES = { CLOSE, MINIMIZE, MAXIMIZE, RESTORE, SHOW_LIST };
 
   /**
    * The tab item for the operation.
@@ -127,7 +129,7 @@ public class CTabFolderEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -136,7 +138,7 @@ public class CTabFolderEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, CTabFolder2Listener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -145,7 +147,7 @@ public class CTabFolderEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, CTabFolder2Listener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -154,7 +156,7 @@ public class CTabFolderEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 
   @Override

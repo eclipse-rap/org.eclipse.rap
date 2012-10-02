@@ -36,6 +36,7 @@ public final class ControlEvent extends TypedEvent {
   public static final int CONTROL_RESIZED = SWT.Resize;
 
   private static final Class LISTENER = ControlListener.class;
+  private static final int[] EVENT_TYPES = { CONTROL_MOVED, CONTROL_RESIZED };
 
   /**
    * Constructs a new instance of this class based on the
@@ -89,7 +90,7 @@ public final class ControlEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, ControlListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -98,7 +99,7 @@ public final class ControlEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, ControlListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -107,7 +108,7 @@ public final class ControlEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -116,6 +117,6 @@ public final class ControlEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 }

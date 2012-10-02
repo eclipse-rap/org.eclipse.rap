@@ -13,6 +13,7 @@ package org.eclipse.swt.events;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.*;
 
@@ -38,6 +39,7 @@ public class ExpandEvent extends SelectionEvent {
   public static final int COLLAPSE = SWT.Collapse;
 
   private static final Class LISTENER = ExpandListener.class;
+  private static final int[] EVENT_TYPES = { EXPAND, COLLAPSE };
 
   /**
    * Constructs a new instance of this class based on the information in the
@@ -92,7 +94,7 @@ public class ExpandEvent extends SelectionEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -101,7 +103,7 @@ public class ExpandEvent extends SelectionEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, ExpandListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -110,7 +112,7 @@ public class ExpandEvent extends SelectionEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, ExpandListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -119,7 +121,7 @@ public class ExpandEvent extends SelectionEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 
   @Override

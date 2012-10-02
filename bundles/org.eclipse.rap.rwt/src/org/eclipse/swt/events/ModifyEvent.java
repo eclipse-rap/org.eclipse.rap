@@ -36,6 +36,7 @@ public final class ModifyEvent extends TypedEvent {
   public static final int MODIFY_TEXT = SWT.Modify;
 
   private static final Class LISTENER = ModifyListener.class;
+  private static final int[] EVENT_TYPES = { MODIFY_TEXT };
 
   /**
    * Constructs a new instance of this class based on the
@@ -86,7 +87,7 @@ public final class ModifyEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, ModifyListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -95,7 +96,7 @@ public final class ModifyEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, ModifyListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -104,7 +105,7 @@ public final class ModifyEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -113,6 +114,6 @@ public final class ModifyEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 }

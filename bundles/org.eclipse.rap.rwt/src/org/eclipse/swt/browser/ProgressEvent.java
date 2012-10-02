@@ -12,6 +12,7 @@ package org.eclipse.swt.browser;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
+import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -32,10 +33,11 @@ public class ProgressEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int CHANGED = 5021;
-  public static final int COMPLETED = 5022;
+  public static final int CHANGED = EventTypes.PROGRESS_CHANGED;
+  public static final int COMPLETED = EventTypes.PROGRESS_COMPLETED;
 
   private static final Class LISTENER = ProgressListener.class;
+  private static final int[] EVENT_TYPES = { CHANGED, COMPLETED };
 
   /** current value */
   public int current;
@@ -94,7 +96,7 @@ public class ProgressEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -103,7 +105,7 @@ public class ProgressEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, ProgressListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -112,7 +114,7 @@ public class ProgressEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, ProgressListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -121,7 +123,7 @@ public class ProgressEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 
   /**

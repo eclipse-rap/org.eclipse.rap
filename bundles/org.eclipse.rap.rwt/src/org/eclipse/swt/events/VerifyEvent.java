@@ -34,7 +34,9 @@ public final class VerifyEvent extends KeyEvent {
   private static final long serialVersionUID = 1L;
 
   public static final int VERIFY_TEXT = SWT.Verify;
+  
   private static final Class LISTENER = VerifyListener.class;
+  private static final int[] EVENT_TYPES = { VERIFY_TEXT };
 
   /**
    * the new text that will be inserted.
@@ -101,7 +103,7 @@ public final class VerifyEvent extends KeyEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, VerifyListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -110,7 +112,7 @@ public final class VerifyEvent extends KeyEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, VerifyListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -119,7 +121,7 @@ public final class VerifyEvent extends KeyEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -128,7 +130,7 @@ public final class VerifyEvent extends KeyEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 
   /**

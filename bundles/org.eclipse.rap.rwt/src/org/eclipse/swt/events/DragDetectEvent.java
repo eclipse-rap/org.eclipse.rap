@@ -32,6 +32,7 @@ public class DragDetectEvent extends MouseEvent {
   public static final int DRAG_DETECT = SWT.DragDetect;
 
   private static final Class LISTENER = DragDetectListener.class;
+  private static final int[] EVENT_TYPES = { DRAG_DETECT };
 
   public DragDetectEvent( Control control ) {
     super( control, DRAG_DETECT );
@@ -74,7 +75,7 @@ public class DragDetectEvent extends MouseEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -83,7 +84,7 @@ public class DragDetectEvent extends MouseEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, DragDetectListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -92,7 +93,7 @@ public class DragDetectEvent extends MouseEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, DragDetectListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -101,6 +102,6 @@ public class DragDetectEvent extends MouseEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 }

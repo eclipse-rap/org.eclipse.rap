@@ -50,6 +50,7 @@ public class MouseEvent extends TypedEvent {
   public static final int MOUSE_DOUBLE_CLICK = SWT.MouseDoubleClick;
 
   private static final Class LISTENER = MouseListener.class;
+  private static final int[] EVENT_TYPES = { MOUSE_DOWN, MOUSE_UP, MOUSE_DOUBLE_CLICK };
 
   /**
    * the time that the event occurred.
@@ -186,7 +187,7 @@ public class MouseEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, MouseListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -195,7 +196,7 @@ public class MouseEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, MouseListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -204,7 +205,7 @@ public class MouseEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -213,6 +214,6 @@ public class MouseEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 }

@@ -41,6 +41,7 @@ public class SelectionEvent extends TypedEvent {
   public static final int WIDGET_DEFAULT_SELECTED = SWT.DefaultSelection;
 
   private static final Class LISTENER = SelectionListener.class;
+  private static final int[] EVENT_TYPES = { WIDGET_SELECTED, WIDGET_DEFAULT_SELECTED };
 
   /**
    * The x location of the selected area.
@@ -215,7 +216,7 @@ public class SelectionEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -224,7 +225,7 @@ public class SelectionEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, SelectionListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -233,7 +234,7 @@ public class SelectionEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, SelectionListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -242,7 +243,7 @@ public class SelectionEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 
   @Override

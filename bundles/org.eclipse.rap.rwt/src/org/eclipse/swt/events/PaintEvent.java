@@ -27,10 +27,10 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class PaintEvent extends TypedEvent {
 
-  private static final long serialVersionUID = 3256446919205992497L;
-
-  private static final Class LISTENER = PaintListener.class;
   private static final int PAINT_CONTROL = 9/* SWT.Paint */;
+  
+  private static final Class LISTENER = PaintListener.class;
+  private static final int[] EVENT_TYPES = { PAINT_CONTROL };
 
   /**
    * the graphics context to use when painting that is configured to use the
@@ -125,7 +125,7 @@ public final class PaintEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -134,7 +134,7 @@ public final class PaintEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, PaintListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -143,7 +143,7 @@ public final class PaintEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, PaintListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -152,7 +152,7 @@ public final class PaintEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 
   /**

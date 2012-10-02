@@ -51,7 +51,7 @@ public class KeyEvent extends TypedEvent {
   public static final int KEY_RELEASED = SWT.KeyUp;
 
   private static final Class LISTENER = KeyListener.class;
-
+  private static final int[] EVENT_TYPES = { KEY_PRESSED, KEY_RELEASED };
 
   /**
    * the character represented by the key that was typed. This is the final
@@ -160,7 +160,7 @@ public class KeyEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, KeyListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -169,7 +169,7 @@ public class KeyEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, KeyListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -178,6 +178,6 @@ public class KeyEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 }

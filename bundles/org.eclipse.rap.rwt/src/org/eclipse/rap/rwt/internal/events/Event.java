@@ -10,8 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.events;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
+import java.util.LinkedList;
 
 import org.eclipse.rap.rwt.Adaptable;
 
@@ -39,12 +42,10 @@ public abstract class Event extends EventObject {
 
   public void processEvent() {
     IEventAdapter eventAdapter = getEventAdapter( getEventSource() );
-    if( eventAdapter.hasListener( getListenerType() ) ) {
-      Object[] listener = eventAdapter.getListener( getListenerType() );
-      for( int i = 0; i < listener.length; i++ ) {
-        // TODO: [fappel] Exception handling ? 
-        dispatchToObserver( listener[ i ] );
-      }
+    Object[] listener = eventAdapter.getListener( id );
+    for( int i = 0; i < listener.length; i++ ) {
+      // TODO: [fappel] Exception handling ? 
+      dispatchToObserver( listener[ i ] );
     }
   }
 
@@ -56,25 +57,47 @@ public abstract class Event extends EventObject {
 
   protected abstract Class getListenerType();
 
-  protected static boolean hasListener( Adaptable adaptable, Class listenerType ) {
-    return getEventAdapter( adaptable ).hasListener( listenerType );
+  protected static boolean hasListener( Adaptable adaptable, int[] eventTypes ) {
+    return getListener( adaptable, eventTypes ).length > 0;
   }
 
-  protected static Object[] getListener( Adaptable adaptable, Class listenerType ) {
-    return getEventAdapter( adaptable ).getListener( listenerType );
+//  protected static Object[] getListener( Adaptable adaptable, Class listenerType ) {
+//    return getEventAdapter( adaptable ).getListener( listenerType );
+//  }
+
+  protected static Object[] getListener( Adaptable adaptable, int[] eventTypes ) {
+    Collection<Object> listeners = new LinkedList<Object>();
+    for( int eventType : eventTypes ) {
+      listeners.addAll( Arrays.asList( getEventAdapter( adaptable ).getListener( eventType ) ) );
+    }
+    return listeners.toArray( new Object[ listeners.size() ] );
+  }
+  
+//  protected static void addListener( Adaptable adaptable,
+//                                     Class listenerType,
+//                                     EventListener listener )
+//  {
+//    getEventAdapter( adaptable ).addListener( listenerType, listener );
+//  }
+  
+  protected static void addListener( Adaptable widget, int[] eventTypes, EventListener listener ) {
+    for( int eventType : eventTypes ) {
+      getEventAdapter( widget ).addListener( eventType, listener );
+    }
   }
 
-  protected static void addListener( Adaptable adaptable,
-                                     Class listenerType,
-                                     EventListener listener )
+//  protected static void removeListener( Adaptable adaptable,
+//                                        Class listenerType,
+//                                        EventListener listener )
+//  {
+//    getEventAdapter( adaptable ).removeListener( listenerType, listener );
+//  }
+
+  protected static void removeListener( Adaptable widget, int[] eventTypes, EventListener listener )
   {
-    getEventAdapter( adaptable ).addListener( listenerType, listener );
+    for( int eventType : eventTypes ) {
+      getEventAdapter( widget ).removeListener( eventType, listener );
+    }
   }
-
-  protected static void removeListener( Adaptable adaptable,
-                                        Class listenerType,
-                                        EventListener listener )
-  {
-    getEventAdapter( adaptable ).removeListener( listenerType, listener );
-  }
+  
 }

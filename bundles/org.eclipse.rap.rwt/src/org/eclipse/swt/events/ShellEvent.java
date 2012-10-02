@@ -38,6 +38,7 @@ public final class ShellEvent extends TypedEvent {
   public static final int SHELL_DEACTIVATED = SWT.Deactivate;
 
   private static final Class LISTENER = ShellListener.class;
+  private static final int[] EVENT_TYPES = { SHELL_CLOSED, SHELL_ACTIVATED, SHELL_DEACTIVATED };
 
   /**
    * A flag indicating whether the operation should be allowed.
@@ -108,7 +109,7 @@ public final class ShellEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -117,7 +118,7 @@ public final class ShellEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, ShellListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -126,7 +127,7 @@ public final class ShellEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, ShellListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -135,6 +136,6 @@ public final class ShellEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 }

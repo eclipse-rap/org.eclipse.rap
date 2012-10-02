@@ -33,6 +33,7 @@ public final class ArmEvent extends TypedEvent {
   private static final int WIDGET_ARMED = SWT.Arm;
 
   private static final Class LISTENER = ArmListener.class;
+  private static final int[] EVENT_TYPES = { WIDGET_ARMED };
 
   /**
    * Constructs a new instance of this class based on the
@@ -83,7 +84,7 @@ public final class ArmEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, ArmListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -92,7 +93,7 @@ public final class ArmEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, ArmListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -101,7 +102,7 @@ public final class ArmEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -110,7 +111,7 @@ public final class ArmEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 
 }

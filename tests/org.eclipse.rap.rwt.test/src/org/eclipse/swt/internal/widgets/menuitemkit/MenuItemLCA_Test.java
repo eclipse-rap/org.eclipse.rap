@@ -165,7 +165,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.readDataAndProcessAction( item );
 
     assertFalse( item.getSelection() );
-    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
+    verify( listener ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   public void testRadioTypedSelectionEventOrder_TypedListener() {

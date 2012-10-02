@@ -34,6 +34,7 @@ public class DropTargetEvent extends TypedEvent {
   public static final int DRAG_OPERATION_CHANGED = DND.DragOperationChanged;
 
   private static final Class LISTENER = DropTargetListener.class;
+  private static final int[] EVENT_TYPES = { DRAG_ENTER, DRAG_OVER, DRAG_LEAVE, DROP_ACCEPT, DROP, DRAG_OPERATION_CHANGED };
 
   /**
    * The x-cordinate of the cursor relative to the <code>Display</code>
@@ -197,7 +198,7 @@ public class DropTargetEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -206,7 +207,7 @@ public class DropTargetEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, DropTargetListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -215,7 +216,7 @@ public class DropTargetEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, DropTargetListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -224,6 +225,6 @@ public class DropTargetEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 }

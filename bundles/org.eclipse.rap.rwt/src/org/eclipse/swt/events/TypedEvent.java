@@ -25,6 +25,7 @@ import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.internal.events.DeselectionEvent;
+import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
 import org.eclipse.swt.widgets.Display;
@@ -49,6 +50,8 @@ public class TypedEvent extends Event {
     SWT.Resize,
     SWT.Deactivate,
     SWT.Activate,
+    EventTypes.CONTROL_ACTIVATED,
+    EventTypes.CONTROL_DEACTIVATED,
     SWT.Close,
     SWT.Hide,
     SWT.Show,
@@ -92,7 +95,7 @@ public class TypedEvent extends Event {
     ProgressEvent.CHANGED,
     ProgressEvent.COMPLETED,
     SWT.Arm,
-    9 // SWT.Paint
+    EventTypes.PAINT // SWT.Paint
   };
 
   private org.eclipse.swt.widgets.Event sourceEvent;
@@ -284,9 +287,7 @@ public class TypedEvent extends Event {
         }
       }
     }
-    TypedEvent[] result = new TypedEvent[ sortedEvents.size() ];
-    sortedEvents.toArray( result );
-    return result;
+    return sortedEvents.toArray( new TypedEvent[ sortedEvents.size() ] );
   }
 
   @SuppressWarnings("unchecked")
@@ -316,7 +317,6 @@ public class TypedEvent extends Event {
   	throw new UnsupportedOperationException( msg );
   }
 
-  // Exception to get rid of abstract TypedEvent
   @Override
   protected Class getListenerType() {
   	String msg = "Derived classes must override getListenerType.";

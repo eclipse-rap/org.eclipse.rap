@@ -26,9 +26,7 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class DeselectionEvent extends SelectionEvent {
 
-  private static final long serialVersionUID = 1L;
-
-  public static final int WIDGET_DESELECTED = 5001;
+  public static final int WIDGET_DESELECTED = EventTypes.WIDGET_DESELECTED;
 
   public DeselectionEvent( Widget widget ) {
     super( widget, null, WIDGET_DESELECTED, emptyRectangle(), 0, null, true, SWT.NONE );

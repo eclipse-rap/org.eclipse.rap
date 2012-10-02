@@ -113,8 +113,7 @@ public class ControlLCAUtil {
 
   private static void setActiveControl( Shell shell, Widget widget ) {
     if( EventUtil.isAccessible( widget ) ) {
-      Object adapter = shell.getAdapter( IShellAdapter.class );
-      IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+      IShellAdapter shellAdapter = shell.getAdapter( IShellAdapter.class );
       shellAdapter.setActiveControl( ( Control )widget );
     }
   }

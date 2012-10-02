@@ -283,7 +283,7 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.readDataAndProcessAction( button );
 
     assertFalse( button.getSelection() );
-    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
+    verify( listener ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   public void testRadioTypedSelectionEventOrder_TypedListener() {

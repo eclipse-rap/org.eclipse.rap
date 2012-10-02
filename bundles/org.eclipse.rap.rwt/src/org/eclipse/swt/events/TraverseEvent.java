@@ -95,6 +95,7 @@ public final class TraverseEvent extends KeyEvent {
   public static final int KEY_TRAVERSED = SWT.Traverse;
 
   private static final Class LISTENER = TraverseListener.class;
+  private static final int[] EVENT_TYPES = { KEY_TRAVERSED };
 
   /**
    * The traversal type.
@@ -184,7 +185,7 @@ public final class TraverseEvent extends KeyEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, TraverseListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -193,7 +194,7 @@ public final class TraverseEvent extends KeyEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, TraverseListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -202,6 +203,6 @@ public final class TraverseEvent extends KeyEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 }

@@ -68,6 +68,7 @@ public class ActivateEvent_Test extends TestCase {
 
     fakeActivateEvent( label );
     Fixture.readDataAndProcessAction( display );
+    
     assertEquals( 1, activatedCount[ 0 ] );
     assertSame( label, activated[ 0 ] );
   }

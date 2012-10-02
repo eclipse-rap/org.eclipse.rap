@@ -33,6 +33,7 @@ public final class MenuDetectEvent extends TypedEvent {
   private static final int MENU_DETECT = SWT.MenuDetect;
 
   private static final Class LISTENER = MenuDetectListener.class;
+  private static final int[] EVENT_TYPES = { MENU_DETECT };
 
   /**
 	 * the display-relative x coordinate of the pointer
@@ -122,7 +123,7 @@ public final class MenuDetectEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, MenuDetectListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -131,7 +132,7 @@ public final class MenuDetectEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, MenuDetectListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -140,7 +141,7 @@ public final class MenuDetectEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -149,6 +150,6 @@ public final class MenuDetectEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 }

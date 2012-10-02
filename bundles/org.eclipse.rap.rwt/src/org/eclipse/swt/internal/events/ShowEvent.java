@@ -33,7 +33,7 @@ public final class ShowEvent extends TypedEvent {
   public static final int HIDDEN = SWT.Hide;
 
   private static final Class LISTENER = ShowListener.class;
-
+  private static final int[] EVENT_TYPES = { SHOWN, HIDDEN };
 
   public ShowEvent( Control source, int id ) {
     super( source, id );
@@ -65,18 +65,18 @@ public final class ShowEvent extends TypedEvent {
   }
 
   public static void addListener( Adaptable adaptable, ShowListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   public static void removeListener( Adaptable adaptable, ShowListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 }

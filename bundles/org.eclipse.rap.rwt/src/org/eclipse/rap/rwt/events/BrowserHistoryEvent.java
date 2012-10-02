@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.events;
 
 import org.eclipse.rap.rwt.*;
 import org.eclipse.rap.rwt.internal.events.Event;
+import org.eclipse.swt.internal.events.EventTypes;
 
 
 /**
@@ -26,10 +27,10 @@ import org.eclipse.rap.rwt.internal.events.Event;
  */
 public final class BrowserHistoryEvent extends Event {
 
-  public static final int NAVIGATED = 40;
+  public static final int NAVIGATED = EventTypes.BROWSER_HISTORY_NAVIGATED;
 
-  private static final long serialVersionUID = 1L;
   private static final Class LISTENER = BrowserHistoryListener.class;
+  private static final int[] EVENT_TYPES = { NAVIGATED };
 
   /**
    * The browser history entry to which the user navigated.
@@ -58,18 +59,18 @@ public final class BrowserHistoryEvent extends Event {
   }
 
   public static void addListener( Adaptable adaptable, BrowserHistoryListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   public static void removeListener( Adaptable adaptable, BrowserHistoryListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 }

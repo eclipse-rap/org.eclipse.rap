@@ -37,6 +37,7 @@ public final class TreeEvent extends SelectionEvent {
   public static final int TREE_COLLAPSED = SWT.Collapse;
 
   private static final Class LISTENER = TreeListener.class;
+  private static final int[] EVENT_TYPES = { TREE_EXPANDED, TREE_COLLAPSED };
 
   /**
    * Constructs a new instance of this class based on the
@@ -90,7 +91,7 @@ public final class TreeEvent extends SelectionEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, TreeListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -99,7 +100,7 @@ public final class TreeEvent extends SelectionEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, TreeListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -108,7 +109,7 @@ public final class TreeEvent extends SelectionEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -117,6 +118,6 @@ public final class TreeEvent extends SelectionEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 }

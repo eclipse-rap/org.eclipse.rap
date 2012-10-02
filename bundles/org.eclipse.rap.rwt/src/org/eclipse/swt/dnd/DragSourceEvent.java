@@ -32,7 +32,8 @@ public class DragSourceEvent extends TypedEvent {
   public static final int DRAG_START = DND.DragStart;
   public static final int DRAG_END = DND.DragEnd;
   public static final int DRAG_SET_DATA = DND.DragSetData;
-
+  
+  private static final int[] EVENT_TYPES = { DRAG_START, DRAG_END, DRAG_SET_DATA };
   private static final Class LISTENER = DragSourceListener.class;
 
   /**
@@ -176,7 +177,7 @@ public class DragSourceEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -185,7 +186,7 @@ public class DragSourceEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, DragSourceListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -194,7 +195,7 @@ public class DragSourceEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, DragSourceListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -203,6 +204,6 @@ public class DragSourceEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 }

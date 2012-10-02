@@ -31,8 +31,9 @@ public final class ActivateEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int ACTIVATED = SWT.Activate;
-  public static final int DEACTIVATED = SWT.Deactivate;
+  public static final int ACTIVATED = EventTypes.CONTROL_ACTIVATED;
+  public static final int DEACTIVATED = EventTypes.CONTROL_DEACTIVATED;
+  private static final int[] EVENT_TYPES = { ACTIVATED, DEACTIVATED };
 
   private static final Class LISTENER = ActivateListener.class;
 
@@ -66,18 +67,18 @@ public final class ActivateEvent extends TypedEvent {
   }
 
   public static void addListener( Adaptable adaptable, ActivateListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   public static void removeListener( Adaptable adaptable, ActivateListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 }

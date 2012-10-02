@@ -24,6 +24,7 @@ public final class SetDataEvent extends TypedEvent {
   public static final int SET_DATA = SWT.SetData;
 
   private static final Class LISTENER = SetDataListener.class;
+  private static final int[] EVENT_TYPES = { SET_DATA };
 
   public Widget item;
   public int index;
@@ -59,18 +60,18 @@ public final class SetDataEvent extends TypedEvent {
   }
 
   public static void addListener( Adaptable adaptable, SetDataListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   public static void removeListener( Adaptable adaptable, SetDataListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return getListener( adaptable, EVENT_TYPES );
   }
 }
