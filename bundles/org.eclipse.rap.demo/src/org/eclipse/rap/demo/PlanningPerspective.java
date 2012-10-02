@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo;
@@ -28,14 +29,14 @@ public class PlanningPerspective implements IPerspectiveFactory {
                                                     IPageLayout.BOTTOM,
                                                     0.50f,
                                                     "topLeft" );
-    bottomLeft.addView( "org.eclipse.rap.demo.DemoTreeViewPartIII" );
+    bottomLeft.addView( "org.eclipse.rap.demo.DemoTreeViewPart" );
     IFolderLayout right = layout.createFolder( "right",
                                                IPageLayout.RIGHT,
                                                0.70f,
                                                editorArea );
     right.addView( "org.eclipse.rap.demo.DemoTableViewPart" );
     // add shortcuts to show view menu
-    layout.addShowViewShortcut( "org.eclipse.rap.demo.DemoTreeViewPartI" );
+    layout.addShowViewShortcut( "org.eclipse.rap.demo.DemoChartViewPart" );
     layout.addShowViewShortcut( "org.eclipse.rap.demo.DemoTreeViewPartII" );
     // add shortcut for other perspective
     layout.addPerspectiveShortcut( "org.eclipse.rap.demo.perspective" );
