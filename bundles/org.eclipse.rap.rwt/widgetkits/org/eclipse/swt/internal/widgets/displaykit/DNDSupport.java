@@ -80,9 +80,9 @@ public final class DNDSupport {
       DragDetectEvent dragDetectEvent = createDragDetectEvent( notify, control, mappedPoint );
       dragDetectEvent.processEvent();
       DragSourceEvent dragStartEvent
-      = createDragStartEvent( dragSource, mappedPoint, dragDetectEvent.time );
+        = createDragStartEvent( dragSource, mappedPoint, dragDetectEvent.time );
       dragStartEvent.processEvent();
-      if( dragStartEvent.doit == false ) {
+      if( !dragStartEvent.doit ) {
         getDNDAdapter( dragSource ).cancel();
       }
     }
