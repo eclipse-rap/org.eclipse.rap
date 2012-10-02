@@ -14,12 +14,9 @@ import java.io.Serializable;
 
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
-import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
-import org.eclipse.swt.internal.widgets.ITreeAdapter;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Tree;
 
 /**
  * Support for table/tree tool-tips in RAP
@@ -57,15 +54,8 @@ final class CellToolTipProvider implements ICellToolTipProvider, Serializable {
   }
 
   private static ICellToolTipAdapter getAdapter( ColumnViewer viewer ) {
-    ICellToolTipAdapter result = null;
-    if( viewer instanceof TableViewer ) {
-      Table table = ( ( TableViewer )viewer ).getTable();
-      result = ( ICellToolTipAdapter )table.getAdapter( ITableAdapter.class );
-    } else if( viewer instanceof TreeViewer ) {
-      Tree tree = ( ( TreeViewer )viewer ).getTree();
-      result = ( ICellToolTipAdapter )tree.getAdapter( ITreeAdapter.class );
-    }
-    return result;
+    Control control = viewer.getControl();
+    return control.getAdapter( ICellToolTipAdapter.class );
   }
 
 }
