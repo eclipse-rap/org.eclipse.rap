@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -345,6 +347,48 @@ public class TableColumn_Test extends TestCase {
     table.setColumnOrder( new int[]{ 1, 0, 2, 3, 4, 5, 6, 7, 8, 9 } );
     assertFalse( adapter.isFixedColumn( table.getColumn( 0 ) ) );
     assertTrue( adapter.isFixedColumn( table.getColumn( 1 ) ) );
+  }
+
+  public void testAddSelectionListener() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    column.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( column.isListening( SWT.Selection ) );
+    assertTrue( column.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    column.addSelectionListener( listener );
+
+    column.removeSelectionListener( listener );
+    
+    assertFalse( column.isListening( SWT.Selection ) );
+    assertFalse( column.isListening( SWT.DefaultSelection ) );
+  }
+
+  public void testAddSelectionListenerWithNullArgument() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    
+    try {
+      column.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveSelectionListenerWithNullArgument() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    
+    try {
+      column.removeSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 
   protected void setUp() throws Exception {

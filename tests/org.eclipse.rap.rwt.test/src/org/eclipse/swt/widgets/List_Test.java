@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.Arrays;
 
 import junit.framework.TestCase;
@@ -1459,6 +1461,44 @@ public class List_Test extends TestCase {
     list.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
 
     assertTrue( list.markupEnabled );
+  }
+
+  public void testAddSelectionListener() {
+    List list = new List( shell, SWT.NONE );
+
+    list.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( list.isListening( SWT.Selection ) );
+    assertTrue( list.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    List list = new List( shell, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    list.addSelectionListener( listener );
+
+    list.removeSelectionListener( listener );
+    
+    assertFalse( list.isListening( SWT.Selection ) );
+    assertFalse( list.isListening( SWT.DefaultSelection ) );
+  }
+
+  public void testAddSelectionListenerWithNullArgument() {
+    List list = new List( shell, SWT.NONE );
+    
+    try {
+      list.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveSelectionListenerWithNullArgument() {
+    List list = new List( shell, SWT.NONE );
+    
+    try {
+      list.removeSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 
   private boolean hasDuplicateIndices( int[] indices ) {

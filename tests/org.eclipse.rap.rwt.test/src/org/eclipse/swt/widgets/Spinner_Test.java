@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.Locale;
 
 import junit.framework.TestCase;
@@ -19,7 +21,11 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -131,6 +137,50 @@ public class Spinner_Test extends TestCase {
     log.setLength( 0 );
     spinner.setValues( 1, 0, 100, 0, 1, 10 );
     assertEquals( "modifyEvent", log.toString() );
+  }
+
+  public void testAddModifyListener() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+    
+    spinner.addModifyListener( mock( ModifyListener.class ) );
+  
+    assertTrue( spinner.isListening( SWT.Modify ) );
+  }
+
+  public void testRemoveModifyListener() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+    ModifyListener listener = mock( ModifyListener.class );
+    spinner.addModifyListener( listener );
+
+    spinner.removeModifyListener( listener );
+    
+    assertFalse( spinner.isListening( SWT.Modify ) );
+  }
+  
+  public void testAddModifyListenerWithNullArgument() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+    
+    try {
+      spinner.addModifyListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveModifyListenerWithNullArgument() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+    
+    try {
+      spinner.removeModifyListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 
   public void testComputeSize() {
@@ -303,5 +353,51 @@ public class Spinner_Test extends TestCase {
     Spinner deserializedSpinner = Fixture.serializeAndDeserialize( spinner );
     
     assertEquals( spinner.getSelection(), deserializedSpinner.getSelection() );
+  }
+
+  public void testAddSelectionListener() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+
+    spinner.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( spinner.isListening( SWT.Selection ) );
+    assertTrue( spinner.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    spinner.addSelectionListener( listener );
+
+    spinner.removeSelectionListener( listener );
+    
+    assertFalse( spinner.isListening( SWT.Selection ) );
+    assertFalse( spinner.isListening( SWT.DefaultSelection ) );
+  }
+
+  public void testAddSelectionListenerWithNullArgument() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+    
+    try {
+      spinner.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveSelectionListenerWithNullArgument() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+    
+    try {
+      spinner.removeSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 }

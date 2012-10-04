@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -29,6 +31,7 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.Font;
@@ -1560,7 +1563,7 @@ public class Tree_Test extends TestCase {
         eventLog.add( event );
       }
     } );
-    redrawTable( tree );
+    redrawTree( tree );
     eventLog.clear();
 
     markTemporaryResize();
@@ -1854,6 +1857,82 @@ public class Tree_Test extends TestCase {
     assertEquals( 100, adapter.getScrollLeft() );
   }
 
+  public void testAddTreeListener() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    
+    tree.addTreeListener( mock( TreeListener.class ) );
+    
+    assertTrue( tree.isListening( SWT.Expand ) );
+    assertTrue( tree.isListening( SWT.Collapse ) );
+  }
+
+  public void testRemoveTreeListener() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    TreeListener listener = mock( TreeListener.class );
+    tree.addTreeListener( listener );
+    
+    tree.removeTreeListener( listener );
+    
+    assertFalse( tree.isListening( SWT.Expand ) );
+    assertFalse( tree.isListening( SWT.Collapse ) );
+  }
+  
+  public void testAddTreeListenerWithNullArgument() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    
+    try {
+      tree.addTreeListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveTreeListenerWithNullArgument() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    
+    try {
+      tree.removeTreeListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testAddSelectionListener() {
+    Tree tree = new Tree( composite, SWT.NONE );
+
+    tree.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( tree.isListening( SWT.Selection ) );
+    assertTrue( tree.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    tree.addSelectionListener( listener );
+
+    tree.removeSelectionListener( listener );
+    
+    assertFalse( tree.isListening( SWT.Selection ) );
+    assertFalse( tree.isListening( SWT.DefaultSelection ) );
+  }
+
+  public void testAddSelectionListenerWithNullArgument() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    
+    try {
+      tree.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveSelectionListenerWithNullArgument() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    
+    try {
+      tree.removeSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
   /////////
   // Helper
 
@@ -1910,7 +1989,7 @@ public class Tree_Test extends TestCase {
     return tree.getAdapter( ITreeAdapter.class );
   }
 
-  private static void redrawTable( Tree tree ) {
+  private static void redrawTree( Tree tree ) {
     ITreeAdapter treeAdapter = tree.getAdapter( ITreeAdapter.class );
     treeAdapter.checkData();
   }

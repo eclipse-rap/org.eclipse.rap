@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -538,4 +540,55 @@ public class Text_Test extends TestCase {
 
     assertEquals( new Point( 6, 6 ), text.getSelection() );
   }
+
+  public void testAddModifyListenerRegistersUntypedEvents() {
+    text.addModifyListener( mock( ModifyListener.class ) );
+  
+    assertTrue( text.isListening( SWT.Modify ) );
+  }
+
+  public void testRemoveModifyListenerUnregistersUntypedEvents() {
+    ModifyListener listener = mock( ModifyListener.class );
+    text.addModifyListener( listener );
+
+    text.removeModifyListener( listener );
+    
+    assertFalse( text.isListening( SWT.Modify ) );
+  }
+  
+  public void testAddVerifyListenerRegistersUntypedEvents() {
+    text.addVerifyListener( mock( VerifyListener.class ) );
+    
+    assertTrue( text.isListening( SWT.Verify ) );
+  }
+  
+  public void testRemoveVerifyListenerUnregistersUntypedEvents() {
+    VerifyListener listener = mock( VerifyListener.class );
+    text.addVerifyListener( listener );
+    
+    text.removeVerifyListener( listener );
+    
+    assertFalse( text.isListening( SWT.Verify ) );
+  }
+  
+  public void testAddSelectionListener() {
+    Text text = new Text( shell, SWT.NONE );
+
+    text.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( text.isListening( SWT.Selection ) );
+    assertTrue( text.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    Text text = new Text( shell, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    text.addSelectionListener( listener );
+
+    text.removeSelectionListener( listener );
+    
+    assertFalse( text.isListening( SWT.Selection ) );
+    assertFalse( text.isListening( SWT.DefaultSelection ) );
+  }
+
 }

@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -19,6 +21,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
 
 
@@ -95,4 +98,34 @@ public class Canvas_Test extends TestCase {
     Canvas deserializedCanvas = Fixture.serializeAndDeserialize( canvas );
     assertNotNull( deserializedCanvas );
   }
+  
+  public void testAddPaintListener() {
+    canvas.addPaintListener( mock( PaintListener.class ) );
+    
+    assertTrue( canvas.isListening( EventTypes.PAINT ) );
+  }
+
+  public void testRemovePaintListenerUnregistersUntypedEvent() {
+    PaintListener listener = mock( PaintListener.class );
+    canvas.addPaintListener( listener );
+    
+    canvas.removePaintListener( listener );
+
+    assertFalse( canvas.isListening( EventTypes.PAINT ) );
+  }
+
+  public void testAddPaintListenerWithNullArgument() {
+    try {
+      canvas.addPaintListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemovePaintListenerWithNullArgument() {
+    try {
+      canvas.removePaintListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
 }

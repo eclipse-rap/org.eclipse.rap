@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -16,11 +17,13 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 
 @SuppressWarnings("deprecation")
+// TODO [rh] rename to ControlDecorator_Test
 public class Decorator_Test extends TestCase {
 
   private Shell shell;
@@ -165,6 +168,26 @@ public class Decorator_Test extends TestCase {
     assertTrue( decoration.isVisible() );
     button.setFocus();
     assertFalse( decoration.isVisible() );
+  }
+
+  public void testAddSelectionListener() {
+    ControlDecorator decoration = new ControlDecorator( shell, SWT.RIGHT, null );
+
+    decoration.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( decoration.isListening( SWT.Selection ) );
+    assertTrue( decoration.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    ControlDecorator decoration = new ControlDecorator( shell, SWT.RIGHT, null );
+    SelectionListener listener = mock( SelectionListener.class );
+    decoration.addSelectionListener( listener );
+
+    decoration.removeSelectionListener( listener );
+    
+    assertFalse( decoration.isListening( SWT.Selection ) );
+    assertFalse( decoration.isListening( SWT.DefaultSelection ) );
   }
 
   protected void setUp() throws Exception {

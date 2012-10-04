@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -177,5 +178,43 @@ public class ExpandBar_Test extends TestCase {
     ExpandBar deserializedExpandBar = Fixture.serializeAndDeserialize( expandBar );
     
     assertEquals( 1, deserializedExpandBar.getItemCount() );
+  }
+  
+  public void testAddExpandListener() {
+    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
+    
+    expandBar.addExpandListener( mock( ExpandListener.class ) );
+
+    assertTrue( expandBar.isListening( SWT.Expand ) );
+    assertTrue( expandBar.isListening( SWT.Collapse ) );
+  }
+
+  public void testRemoveExpandListener() {
+    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
+    ExpandListener listener = mock( ExpandListener.class );
+    expandBar.addExpandListener( listener );
+    
+    expandBar.removeExpandListener( listener );
+    
+    assertFalse( expandBar.isListening( SWT.Expand ) );
+    assertFalse( expandBar.isListening( SWT.Collapse ) );
+  }
+
+  public void testAddExpandListenerWithNullArgument() {
+    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
+    
+    try {
+      expandBar.addExpandListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveExpandListenerWithNullArgument() {
+    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
+    
+    try {
+      expandBar.removeExpandListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 }

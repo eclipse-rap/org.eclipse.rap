@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.Arrays;
 
 import junit.framework.TestCase;
@@ -697,6 +699,26 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( item.getText(), deserializedFolder.getItem( 0 ).getText() );
   }
   
+  public void testAddSelectionListener() {
+    CTabFolder tabFolder = new CTabFolder( shell, SWT.NONE );
+
+    tabFolder.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( tabFolder.isListening( SWT.Selection ) );
+    assertTrue( tabFolder.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    CTabFolder tabFolder = new CTabFolder( shell, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    tabFolder.addSelectionListener( listener );
+
+    tabFolder.removeSelectionListener( listener );
+    
+    assertFalse( tabFolder.isListening( SWT.Selection ) );
+    assertFalse( tabFolder.isListening( SWT.DefaultSelection ) );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );

@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.Locale;
 
 import junit.framework.TestCase;
@@ -19,6 +21,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 
 public class DateTime_Test extends TestCase {
@@ -252,5 +255,43 @@ public class DateTime_Test extends TestCase {
     assertEquals( 12, deserializedDateTime.getHours() );
     assertEquals( 12, deserializedDateTime.getMinutes() );
     assertEquals( 12, deserializedDateTime.getSeconds() );
+  }
+
+  public void testAddSelectionListener() {
+    DateTime dateTime = new DateTime( shell, SWT.NONE );
+
+    dateTime.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( dateTime.isListening( SWT.Selection ) );
+    assertTrue( dateTime.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    DateTime dateTime = new DateTime( shell, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    dateTime.addSelectionListener( listener );
+
+    dateTime.removeSelectionListener( listener );
+    
+    assertFalse( dateTime.isListening( SWT.Selection ) );
+    assertFalse( dateTime.isListening( SWT.DefaultSelection ) );
+  }
+
+  public void testAddSelectionListenerWithNullArgument() {
+    DateTime dateTime = new DateTime( shell, SWT.NONE );
+    
+    try {
+      dateTime.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveSelectionListenerWithNullArgument() {
+    DateTime dateTime = new DateTime( shell, SWT.NONE );
+    
+    try {
+      dateTime.removeSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 }

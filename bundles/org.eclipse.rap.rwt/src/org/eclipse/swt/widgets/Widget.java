@@ -26,6 +26,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.internal.SerializableCompatibility;
+import org.eclipse.swt.internal.events.EventTable;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.UntypedEventAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
@@ -101,12 +102,12 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
   int state;
   Display display;
   private Object data;
+  private EventTable eventTable;
   private transient LifeCycleAdapterFactory lifeCycleAdapterFactory;
   private IWidgetAdapter widgetAdapter;
   private IEventAdapter eventAdapter;
   private UntypedEventAdapter untypedAdapter;
   private IWidgetGraphicsAdapter widgetGraphicsAdapter;
-
 
   Widget() {
     // prevent instantiation from outside this package
@@ -147,7 +148,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     this.style = style;
-    display = parent.display;
+    this.display = parent.display;
     reskinWidget();
   }
 
@@ -166,12 +167,15 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     // good reason
     T result = null;
     if( adapter == IEventAdapter.class ) {
-      // Note: This is not implemented via the AdapterManager, since the manager's mapping mechanism
-      // prevents the component being released unless the session is invalidated.
       if( eventAdapter == null ) {
         eventAdapter = new EventAdapter();
       }
       result = ( T )eventAdapter;
+    } else if( adapter == EventTable.class ) {
+      if( eventTable == null ) {
+        eventTable = new EventTable();
+      }
+      result = ( T )eventTable;
     } else if( adapter == IClientObjectAdapter.class || adapter == IWidgetAdapter.class ) {
       if( widgetAdapter == null ) {
         widgetAdapter = new WidgetAdapter();

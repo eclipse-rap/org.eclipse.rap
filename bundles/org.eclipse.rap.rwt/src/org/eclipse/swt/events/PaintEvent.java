@@ -14,6 +14,7 @@ package org.eclipse.swt.events;
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
 
@@ -27,7 +28,7 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class PaintEvent extends TypedEvent {
 
-  private static final int PAINT_CONTROL = 9/* SWT.Paint */;
+  private static final int PAINT_CONTROL = EventTypes.PAINT;
   
   private static final Class LISTENER = PaintListener.class;
   private static final int[] EVENT_TYPES = { PAINT_CONTROL };

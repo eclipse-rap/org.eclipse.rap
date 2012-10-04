@@ -9,12 +9,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IToolTipAdapter;
 
@@ -141,10 +141,12 @@ public class ToolTip_Test extends TestCase {
   
   public void testAddSelectionListener() {
     ToolTip toolTip = new ToolTip( shell, SWT.NONE );
-    SelectionAdapter selectionListener = new SelectionAdapter() { };
+    SelectionListener selectionListener = mock( SelectionListener.class );
+    
     toolTip.addSelectionListener( selectionListener );
-    Object[] listeners = SelectionEvent.getListeners( toolTip );
-    assertSame( selectionListener, listeners[ 0 ] );
+    
+    assertTrue( toolTip.isListening( SWT.Selection ) );
+    assertTrue( toolTip.isListening( SWT.DefaultSelection ) );
   }
 
   public void testAddSelectionListenerWithNullArgument() {
@@ -157,11 +159,13 @@ public class ToolTip_Test extends TestCase {
   
   public void testRemoveSelectionListener() {
     ToolTip toolTip = new ToolTip( shell, SWT.NONE );
-    SelectionAdapter selectionListener = new SelectionAdapter() { };
+    SelectionListener selectionListener = mock( SelectionListener.class );
     toolTip.addSelectionListener( selectionListener );
+    
     toolTip.removeSelectionListener( selectionListener );
-    Object[] listeners = SelectionEvent.getListeners( toolTip );
-    assertEquals( 0, listeners.length );
+    
+    assertFalse( toolTip.isListening( SWT.Selection ) );
+    assertFalse( toolTip.isListening( SWT.DefaultSelection ) );
   }
 
   public void testRemoveSelectionListenerWithNullArgument() {
@@ -186,6 +190,7 @@ public class ToolTip_Test extends TestCase {
     
     assertEquals( toolTip.getMessage(), deserializedToolTip.getMessage() );
   }
+
 
   protected void setUp() throws Exception {
     Fixture.setUp();

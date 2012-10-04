@@ -12,12 +12,16 @@
 
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ArmListener;
+import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 
 public class MenuItem_Test extends TestCase {
@@ -183,8 +187,128 @@ public class MenuItem_Test extends TestCase {
     try {
       item.setID( -100 );
       fail( "negative ids not allowed" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testAddArmListener() {
+    Menu menu = new Menu( shell, SWT.BAR );
+    MenuItem item = new MenuItem( menu, SWT.CASCADE );
+
+    item.addArmListener( mock( ArmListener.class ) );
+    
+    assertTrue( item.isListening( SWT.Arm ) );
+  }
+
+  public void testRemoveArmListener() {
+    Menu menu = new Menu( shell, SWT.BAR );
+    MenuItem item = new MenuItem( menu, SWT.CASCADE );
+    ArmListener listener = mock( ArmListener.class );
+    item.addArmListener( listener );
+    
+    item.removeArmListener( listener );
+    
+    assertFalse( item.isListening( SWT.Arm ) );
+  }
+
+  public void testAddArmListenerWithNullArgument() {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
+    
+    try {
+      menuItem.addArmListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveArmListenerWithNullArgument() {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
+    
+    try {
+      menuItem.removeArmListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testAddHelpListener() {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
+    menuItem.addHelpListener( mock( HelpListener.class ) );
+
+    assertTrue( menuItem.isListening( SWT.Help ) );
+  }
+  
+  public void testRemoveHelpListener() {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
+    HelpListener listener = mock( HelpListener.class );
+    menuItem.addHelpListener( listener );
+    
+    menuItem.removeHelpListener( listener );
+
+    assertFalse( menuItem.isListening( SWT.Help ) );
+  }
+
+  public void testAddHelpListenerWithNullArgument() {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
+    
+    try {
+      menuItem.addHelpListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveHelpListenerWithNullArgument() {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
+    
+    try {
+      menuItem.removeHelpListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testAddSelectionListener() {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
+
+    menuItem.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( menuItem.isListening( SWT.Selection ) );
+    assertTrue( menuItem.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
+    SelectionListener listener = mock( SelectionListener.class );
+    menuItem.addSelectionListener( listener );
+
+    menuItem.removeSelectionListener( listener );
+    
+    assertFalse( menuItem.isListening( SWT.Selection ) );
+    assertFalse( menuItem.isListening( SWT.DefaultSelection ) );
+  }
+
+  public void testAddSelectionListenerWithNullArgument() {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
+    
+    try {
+      menuItem.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveSelectionListenerWithNullArgument() {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
+    
+    try {
+      menuItem.removeSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
     }
   }
 }

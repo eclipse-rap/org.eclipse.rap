@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.io.InputStream;
 
 import junit.framework.TestCase;
@@ -17,13 +19,17 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.widgets.FileUpload;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 
 public class FileUpload_Test extends TestCase {
@@ -166,6 +172,26 @@ public class FileUpload_Test extends TestCase {
     assertTrue( SelectionEvent.hasListener( upload ) );
     upload.removeSelectionListener( listener );
     assertFalse( SelectionEvent.hasListener( upload ) );
+  }
+
+  public void testAddSelectionListenerRegistersUntypedListeners() {
+    FileUpload upload = new FileUpload( shell, SWT.NONE );
+
+    upload.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( upload.isListening( SWT.Selection ) );
+    assertTrue( upload.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListenerUnregistersUntypedListeners() {
+    FileUpload upload = new FileUpload( shell, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    upload.addSelectionListener( listener );
+
+    upload.removeSelectionListener( listener );
+    
+    assertFalse( upload.isListening( SWT.Selection ) );
+    assertFalse( upload.isListening( SWT.DefaultSelection ) );
   }
 
   /////////

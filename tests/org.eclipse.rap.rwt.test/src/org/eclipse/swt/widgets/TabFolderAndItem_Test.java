@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -387,6 +389,44 @@ public class TabFolderAndItem_Test extends TestCase {
     assertEquals( folder.getItemCount(), deserializedFolder.getItemCount() );
     assertSame( deserializedFolder, deserializedFolder.getItem( 0 ).getParent() );
     assertEquals( item.getText(), deserializedFolder.getItem( 0 ).getText() );
+  }
+
+  public void testAddSelectionListener() {
+    TabFolder tabFolder = new TabFolder( shell, SWT.NONE );
+
+    tabFolder.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( tabFolder.isListening( SWT.Selection ) );
+    assertTrue( tabFolder.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    TabFolder tabFolder = new TabFolder( shell, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    tabFolder.addSelectionListener( listener );
+
+    tabFolder.removeSelectionListener( listener );
+    
+    assertFalse( tabFolder.isListening( SWT.Selection ) );
+    assertFalse( tabFolder.isListening( SWT.DefaultSelection ) );
+  }
+
+  public void testAddSelectionListenerWithNullArgument() {
+    TabFolder tabFolder = new TabFolder( shell, SWT.NONE );
+    
+    try {
+      tabFolder.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveSelectionListenerWithNullArgument() {
+    TabFolder tabFolder = new TabFolder( shell, SWT.NONE );
+    
+    try {
+      tabFolder.removeSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 
   protected void setUp() throws Exception {

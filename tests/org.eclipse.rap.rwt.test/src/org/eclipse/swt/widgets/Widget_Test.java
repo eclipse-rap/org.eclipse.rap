@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -22,7 +24,13 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.HelpEvent;
+import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.internal.events.EventTable;
 
 
 public class Widget_Test extends TestCase {
@@ -59,6 +67,19 @@ public class Widget_Test extends TestCase {
     
     assertNotNull( eventAdapter1 );
     assertSame( eventAdapter1, eventAdapter2 );
+  }
+  
+  public void testGetEventTableAdapter() {
+    EventTable eventTable = shell.getAdapter( EventTable.class );
+    
+    assertNotNull( eventTable );
+  }
+
+  public void testGetEventTableAdapterReturnsSame() {
+    EventTable eventTable1 = shell.getAdapter( EventTable.class );
+    EventTable eventTable2 = shell.getAdapter( EventTable.class );
+    
+    assertSame( eventTable1, eventTable2 );
   }
   
   public void testCheckWidget() throws Throwable {
@@ -216,7 +237,22 @@ public class Widget_Test extends TestCase {
     assertFalse( shell.isDisposed() );
     assertEquals( 0, DisposedWidgets.getAll().length );
   }
+  
+  public void testAddDisposeListener() {
+    shell.addDisposeListener( mock( DisposeListener.class ) );
+    
+    assertTrue( shell.isListening( SWT.Dispose ) );
+  }
 
+  public void testRemoveDisposeListener() {
+    DisposeListener listener = mock( DisposeListener.class );
+    shell.addDisposeListener( listener );
+    
+    shell.removeDisposeListener( listener );
+
+    assertFalse( shell.isListening( SWT.Dispose ) );
+  }
+  
   public void testRemoveListener() {
     // Ensure that removing a listener that was never added is ignored
     // silently see https://bugs.eclipse.org/251816
