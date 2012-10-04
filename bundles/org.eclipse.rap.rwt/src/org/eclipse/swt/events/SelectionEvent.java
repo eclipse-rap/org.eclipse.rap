@@ -14,6 +14,7 @@ package org.eclipse.swt.events;
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.events.DeselectionEvent;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.*;
 
@@ -41,7 +42,7 @@ public class SelectionEvent extends TypedEvent {
   public static final int WIDGET_DEFAULT_SELECTED = SWT.DefaultSelection;
 
   private static final Class LISTENER = SelectionListener.class;
-  private static final int[] EVENT_TYPES = { WIDGET_SELECTED, WIDGET_DEFAULT_SELECTED };
+  private static final int[] EVENT_TYPES = { WIDGET_SELECTED, WIDGET_DEFAULT_SELECTED, DeselectionEvent.WIDGET_DESELECTED };
 
   /**
    * The x location of the selected area.

@@ -38,8 +38,8 @@ public class EventTypes {
   public static final int CTAB_FOLDER_RESTORE = 5034;
   public static final int CTAB_FOLDER_SHOW_LIST = 5035;
   
-  public static final int CONTROL_ACTIVATED = 5041; // SWT.Activate;
-  public static final int CONTROL_DEACTIVATED = 5042; // SWT.Deactivate;
+  public static final int CONTROL_ACTIVATED = SWT.Activate;
+  public static final int CONTROL_DEACTIVATED = SWT.Deactivate;
   
   public static final int WIDGET_DESELECTED = 5051;
   
