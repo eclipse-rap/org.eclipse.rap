@@ -7,8 +7,18 @@
       point="org.eclipse.rap.ui.entrypoint">
     <entrypoint
           class="org.eclipse.rap.demo.DemoWorkbench"
-          id="org.eclipse.rap.demo.entrypoint1"
+          id="org.eclipse.rap.demo.workbench.default"
           path="/workbench"/>
+    <entrypoint
+          class="org.eclipse.rap.demo.DemoWorkbench"
+          id="org.eclipse.rap.demo.workbench.business"
+          path="/business">
+    </entrypoint>
+    <entrypoint
+          class="org.eclipse.rap.demo.DemoWorkbench"
+          id="org.eclipse.rap.demo.workbench.fancy"
+          path="/fancy">
+    </entrypoint>
   </extension>
 
   <extension
