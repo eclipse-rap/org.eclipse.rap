@@ -8,7 +8,11 @@
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="src" path="css"/>
 	<classpathentry kind="src" path="yui"/>
-	<classpathentry kind="src" path="json"/>
+	<classpathentry kind="src" path="json">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="rhino"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
