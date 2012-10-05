@@ -3955,8 +3955,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject( 0 );
-      var actual = message.findNotifyProperty( "w3", "cellToolTipTextRequested", "cell" );
-      assertEquals( "w45,5", actual );
+      var actualItem = message.findCallProperty( "w3", "renderToolTipText", "item" );
+      var actualCol = message.findCallProperty( "w3", "renderToolTipText", "column" );
+      assertEquals( "w45", actualItem );
+      assertEquals( 5, actualCol );
       tree.destroy();
     },
 

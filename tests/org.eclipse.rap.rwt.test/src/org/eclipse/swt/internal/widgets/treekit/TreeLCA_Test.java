@@ -661,12 +661,10 @@ public class TreeLCA_Test extends TestCase {
 
   private static void processCellToolTipRequest( Tree tree, String itemId, int column ) {
     Fixture.fakeNewRequest( tree.getDisplay() );
-    String cellString = itemId + "," + column;
     Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_CELL, cellString );
-    Fixture.fakeNotifyOperation( getId( tree ),
-                                 ClientMessageConst.EVENT_CELL_TOOLTIP_REQUESTED,
-                                 parameters );
+    parameters.put( "item", itemId );
+    parameters.put( "column", Integer.valueOf( column ) );
+    Fixture.fakeCallOperation( getId( tree ), "renderToolTipText", parameters );
     Fixture.executeLifeCycleFromServerThread();
   }
 

@@ -1620,12 +1620,10 @@ public class TableLCA_Test extends TestCase {
 
   private static void fakeCellToolTipRequest( Table table, String itemId, int column ) {
     Fixture.fakeNewRequest( table.getDisplay() );
-    String cellString = itemId + "," + column;
     Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( ClientMessageConst.EVENT_PARAM_CELL, cellString );
-    Fixture.fakeNotifyOperation( getId( table ),
-                                 ClientMessageConst.EVENT_CELL_TOOLTIP_REQUESTED,
-                                 parameters );
+    parameters.put( "item", itemId );
+    parameters.put( "column", Integer.valueOf( column ) );
+    Fixture.fakeCallOperation( getId( table ), "renderToolTipText", parameters );
   }
 
   private static boolean isItemVirtual( Table table, int index ) {

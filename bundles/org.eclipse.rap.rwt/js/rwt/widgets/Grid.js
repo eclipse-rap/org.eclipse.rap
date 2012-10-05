@@ -1356,9 +1356,7 @@ qx.Class.define( "rwt.widgets.Grid", {
 
     setEnableCellToolTip : function( value ) {
       if( value ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        this._cellToolTip = new rwt.widgets.base.GridCellToolTip( id );
+        this._cellToolTip = new rwt.widgets.base.GridCellToolTip( this );
         this._rowContainer.addEventListener( "mousemove", this._onClientAreaMouseMove, this );
         this._rowContainer.setToolTip( this._cellToolTip );
       } else {

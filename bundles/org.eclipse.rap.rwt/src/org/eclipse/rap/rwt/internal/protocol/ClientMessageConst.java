@@ -62,7 +62,6 @@ public final class ClientMessageConst {
   public static final String EVENT_PARAM_TIME = "time";
   public static final String EVENT_PARAM_KEY_CODE = "keyCode";
   public static final String EVENT_PARAM_CHAR_CODE = "charCode";
-  public static final String EVENT_PARAM_CELL = "cell";
 
   private ClientMessageConst() {
     // prevent instantiation

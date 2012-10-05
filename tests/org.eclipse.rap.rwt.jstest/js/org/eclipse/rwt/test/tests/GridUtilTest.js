@@ -374,8 +374,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      var actual = message.findNotifyProperty( "w3", "cellToolTipTextRequested", "cell" );
-      assertEquals( "w45,1", actual );
+      var actualItem = message.findCallProperty( "w3", "renderToolTipText", "item" );
+      var actualCol = message.findCallProperty( "w3", "renderToolTipText", "column" );
+      assertEquals( "w45", actualItem );
+      assertEquals( 1, actualCol );
       tree.destroy();
     },
 
@@ -409,8 +411,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      var actual = message.findNotifyProperty( "w3", "cellToolTipTextRequested", "cell" );
-      assertEquals( "w45,4", actual );
+      var actualItem = message.findCallProperty( "w3", "renderToolTipText", "item" );
+      var actualCol = message.findCallProperty( "w3", "renderToolTipText", "column" );
+      assertEquals( "w45", actualItem );
+      assertEquals( 4, actualCol );
       tree.destroy();
     },
 

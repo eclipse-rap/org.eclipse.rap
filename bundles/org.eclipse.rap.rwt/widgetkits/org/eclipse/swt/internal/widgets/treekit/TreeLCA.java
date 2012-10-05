@@ -21,11 +21,12 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -280,19 +281,18 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   private static void readCellToolTipTextRequested( Tree tree ) {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
+    ICellToolTipProvider provider = adapter.getCellToolTipProvider();
     adapter.setCellToolTipText( null );
-    String eventName = ClientMessageConst.EVENT_CELL_TOOLTIP_REQUESTED;
-    if( WidgetLCAUtil.wasEventSent( tree, eventName ) ) {
-      ICellToolTipProvider provider = adapter.getCellToolTipProvider();
-      if( provider != null ) {
-        String cell = readEventPropertyValue( tree, eventName, ClientMessageConst.EVENT_PARAM_CELL );
-        String[] details = cell.split( "," );
-        String itemId = details[ 0 ];
-        int columnIndex = NumberFormatUtil.parseInt( details[ 1 ] );
-        TreeItem item = getItem( tree, itemId );
-        if( item != null && ( columnIndex == 0 || columnIndex < tree.getColumnCount() ) ) {
-          provider.getToolTipText( item, columnIndex );
-        }
+    ClientMessage message = ProtocolUtil.getClientMessage();
+    CallOperation[] operations
+      = message.getAllCallOperationsFor( getId( tree ), "renderToolTipText" );
+    if( provider != null && operations.length > 0 ) {
+      CallOperation operation = operations[ operations.length - 1 ];
+      String itemId = ( String )operation.getProperty( "item" );
+      int columnIndex = ( ( Integer )operation.getProperty( "column" ) ).intValue();
+      TreeItem item = getItem( tree, itemId );
+      if( item != null && ( columnIndex == 0 || columnIndex < tree.getColumnCount() ) ) {
+        provider.getToolTipText( item, columnIndex );
       }
     }
   }

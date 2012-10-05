@@ -13,9 +13,9 @@ qx.Class.define( "rwt.widgets.base.GridCellToolTip", {
   extend : rwt.widgets.base.ToolTip,
   include : org.eclipse.rwt.VisibilityAnimationMixin,
 
-  construct : function( controlId ) {
+  construct : function( grid ) {
     this.base( arguments );
-    this._controlId = controlId;
+    this._grid = grid;
     this._itemId = null;
     this._columnIndex = -1;
   },
@@ -51,12 +51,12 @@ qx.Class.define( "rwt.widgets.base.GridCellToolTip", {
 
     _requestCellToolTipText : function() {
       if( this._isValidCell() ) {
-        var req = rwt.remote.Server.getInstance();
-        req.addEvent( "org.eclipse.swt.events.cellToolTipTextRequested", this._controlId );
+        var server = rwt.remote.Server.getInstance();
         this._requestedCell = this._itemId + "," + this._columnIndex;
-        req.addParameter( "org.eclipse.swt.events.cellToolTipTextRequested.cell",
-                          this._requestedCell );
-        req.send();
+        server.getServerObject( this._grid ).call( "renderToolTipText", {
+          "item" : this._itemId,
+          "column" : this._columnIndex
+        } );
       }
     },
 

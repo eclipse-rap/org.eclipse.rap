@@ -21,6 +21,8 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -292,21 +294,18 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   private static void readCellToolTipTextRequested( Table table ) {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
+    ICellToolTipProvider provider = adapter.getCellToolTipProvider();
     adapter.setCellToolTipText( null );
-    String eventName = ClientMessageConst.EVENT_CELL_TOOLTIP_REQUESTED;
-    if( WidgetLCAUtil.wasEventSent( table, eventName ) ) {
-      ICellToolTipProvider provider = adapter.getCellToolTipProvider();
-      if( provider != null ) {
-        String value
-          = readEventPropertyValue( table, eventName, ClientMessageConst.EVENT_PARAM_CELL );
-        String[] details = value.split( "," );
-        String itemId = details[ 0 ];
-        int columnIndex = NumberFormatUtil.parseInt( details[ 1 ] );
-        TableItem item = getItem( table, itemId );
-        // Bug 321119: Sometimes the client can request tooltips for already disposed cells.
-        if( item != null && ( columnIndex == 0 || columnIndex < table.getColumnCount() ) ) {
-          provider.getToolTipText( item, columnIndex );
-        }
+    ClientMessage message = ProtocolUtil.getClientMessage();
+    CallOperation[] operations
+      = message.getAllCallOperationsFor( getId( table ), "renderToolTipText" );
+    if( provider != null && operations.length > 0 ) {
+      CallOperation operation = operations[ operations.length - 1 ];
+      String itemId = ( String )operation.getProperty( "item" );
+      int columnIndex = ( ( Integer )operation.getProperty( "column" ) ).intValue();
+      TableItem item = getItem( table, itemId );
+      if( item != null && ( columnIndex == 0 || columnIndex < table.getColumnCount() ) ) {
+        provider.getToolTipText( item, columnIndex );
       }
     }
   }
