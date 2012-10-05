@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
