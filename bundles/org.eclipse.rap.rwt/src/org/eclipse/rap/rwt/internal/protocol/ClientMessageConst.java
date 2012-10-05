@@ -38,9 +38,6 @@ public final class ClientMessageConst {
   public static final String EVENT_HELP = "help";
   public static final String EVENT_MENU_DETECT = "menuDetect";
 
-  // Request cell tooltip text event
-  public static final String EVENT_CELL_TOOLTIP_REQUESTED = "cellToolTipTextRequested";
-
   // CTabFolder specific events
   public static final String EVENT_FOLDER_MINIMIZED = "ctabFolderMinimized";
   public static final String EVENT_FOLDER_MAXIMIZED = "ctabFolderMaximized";
