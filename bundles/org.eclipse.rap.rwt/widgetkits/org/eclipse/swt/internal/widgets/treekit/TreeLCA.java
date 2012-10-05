@@ -281,18 +281,20 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   private static void readCellToolTipTextRequested( Tree tree ) {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
-    ICellToolTipProvider provider = adapter.getCellToolTipProvider();
     adapter.setCellToolTipText( null );
-    ClientMessage message = ProtocolUtil.getClientMessage();
-    CallOperation[] operations
-      = message.getAllCallOperationsFor( getId( tree ), "renderToolTipText" );
-    if( provider != null && operations.length > 0 ) {
-      CallOperation operation = operations[ operations.length - 1 ];
-      String itemId = ( String )operation.getProperty( "item" );
-      int columnIndex = ( ( Integer )operation.getProperty( "column" ) ).intValue();
-      TreeItem item = getItem( tree, itemId );
-      if( item != null && ( columnIndex == 0 || columnIndex < tree.getColumnCount() ) ) {
-        provider.getToolTipText( item, columnIndex );
+    ICellToolTipProvider provider = adapter.getCellToolTipProvider();
+    if( provider != null ) {
+      ClientMessage message = ProtocolUtil.getClientMessage();
+      CallOperation[] operations
+        = message.getAllCallOperationsFor( getId( tree ), "renderToolTipText" );
+      if( operations.length > 0 ) {
+        CallOperation operation = operations[ operations.length - 1 ];
+        String itemId = ( String )operation.getProperty( "item" );
+        int columnIndex = ( ( Integer )operation.getProperty( "column" ) ).intValue();
+        TreeItem item = getItem( tree, itemId );
+        if( item != null && ( columnIndex == 0 || columnIndex < tree.getColumnCount() ) ) {
+          provider.getToolTipText( item, columnIndex );
+        }
       }
     }
   }
