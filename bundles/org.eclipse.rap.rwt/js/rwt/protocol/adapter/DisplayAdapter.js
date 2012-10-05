@@ -12,7 +12,7 @@
 rwt.protocol.AdapterRegistry.add( "rwt.Display", {
 
   factory : function( properties ) {
-    return new rwt.widgets.Display();
+    return new rwt.widgets.Display( properties );
   },
 
   destructor : null, // destroy is currently not called for display
@@ -29,7 +29,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.Display", {
   listeners : [],
 
   methods : [
-    "init",
     "probe",
     "measureStrings",
     "allowEvent",

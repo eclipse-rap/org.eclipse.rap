@@ -86,6 +86,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       button.destroy();
     },
 
+    testSendFocusControlByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      shell.open();
+      var button = new rwt.widgets.Button( "push" );
+      org.eclipse.swt.WidgetManager.getInstance().add( button, "btn1" );
+      button.setParent( shell );
+      TestUtil.flush();
+      shell.setActive( true );
+
+      TestUtil.click( button );
+      rwt.remote.Server.getInstance().send();
+
+      assertTrue( shell.getActive() );
+      var message = TestUtil.getLastMessage();
+      assertEquals( "btn1", message.findSetProperty( "w1", "focusControl" ) );
+      shell.destroy();
+    },
+
     testSetCurrentThemeByProtocol : function() {
       MessageProcessor.processOperation( {
         "target" : "w1",

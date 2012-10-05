@@ -27,13 +27,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       assertEquals( "number", typeof TestUtil.getMessageObject().getHead()[ "requestCounter" ] );
     },
 
-    testSendUIRoot : function() {
-      server.send();
-
-      var uiRoot = server.getUIRootId();
-      assertEquals( uiRoot, TestUtil.getMessageObject().getHead()[ "uiRoot" ] );
-    },
-
     testSendSetParameter : function() {
       server.addParameter( "w3.myProp", 42 );
 

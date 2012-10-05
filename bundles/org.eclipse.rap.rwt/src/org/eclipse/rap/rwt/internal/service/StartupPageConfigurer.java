@@ -35,6 +35,7 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rap.rwt.internal.service.StartupPageTemplateHolder.Variable;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementUtil;
+import org.eclipse.rap.rwt.internal.theme.JsonValue;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
@@ -53,7 +54,6 @@ final class StartupPageConfigurer {
   private static final String PROPERTY_FONTS = "fonts";
   private static final String METHOD_PROBE = "probe";
   private static final String PROPERTY_URL = "url";
-  private static final String METHOD_INIT = "init";
 
   private final ResourceRegistry resourceRegistry;
   private final List<String> jsLibraries;
@@ -134,12 +134,12 @@ final class StartupPageConfigurer {
     ProtocolMessageWriter writer = new ProtocolMessageWriter();
     appendCreateDisplay( id, writer );
     appendStartupTextSizeProbe( id, writer );
-    appendInitDisplay( id, writer );
     return writer.createMessage();
   }
 
   private static void appendCreateDisplay( String id, ProtocolMessageWriter writer ) {
     writer.appendCreate( id, DISPLAY_TYPE );
+    writer.appendHead( PROPERTY_URL, JsonValue.valueOf( getUrl() ) );
   }
 
   private static void appendStartupTextSizeProbe( String id, ProtocolMessageWriter writer ) {
@@ -149,12 +149,6 @@ final class StartupPageConfigurer {
       args.put( PROPERTY_FONTS, startupTextSizeProbeObject );
       writer.appendCall( id, METHOD_PROBE, args );
     }
-  }
-
-  private static void appendInitDisplay( String id, ProtocolMessageWriter writer ) {
-    Map<String, Object> args = new HashMap<String, Object>();
-    args.put( PROPERTY_URL, getUrl() );
-    writer.appendCall( id, METHOD_INIT, args );
   }
 
   private static Object getStartupTextSizeProbeObject() {

@@ -11,10 +11,11 @@
 
 namespace( "rwt.widgets" );
 
-rwt.widgets.Display = function() {
+rwt.widgets.Display = function( properties ) {
   this._document = rwt.widgets.base.ClientDocument.getInstance();
   this._request = rwt.remote.Server.getInstance();
   this._exitConfirmation = null;
+  this._initialized = false;
   if( rwt.widgets.Display._current !== undefined ) {
     throw new Error( "Display can not be created twice" );
   } else {
@@ -28,9 +29,13 @@ rwt.widgets.Display.getCurrent = function() {
 
 rwt.widgets.Display.prototype = {
 
-  init : function( args ) {
-    this._request.setUrl( args.url );
-    this._request.setUIRootId( args.rootId );
+  applyObjectId : function() {
+    if( !this._initialized ) {
+      this.init();
+    }
+  },
+
+  init : function() {
     this._request.getMessageWriter().appendHead( "rwt_initialize", true );
     this._appendWindowSize();
     this._appendSystemDPI();
@@ -38,6 +43,7 @@ rwt.widgets.Display.prototype = {
     this._appendInitialHistoryEvent();
     this._attachListener();
     this._request.sendImmediate( true );
+    this._initialized = true;
   },
 
   probe : function( args ) {

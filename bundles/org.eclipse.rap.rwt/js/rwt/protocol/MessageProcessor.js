@@ -22,9 +22,12 @@ rwt.protocol.MessageProcessor = {
   },
 
   processHead : function( head ) {
+    var server = rwt.remote.Server.getInstance();
+    if( head.url !== undefined ) {
+      server.setUrl( head.url );
+    }
     if( head.requestCounter !== undefined ) {
-      var req = rwt.remote.Server.getInstance();
-      req.setRequestCounter( head.requestCounter );
+      server.setRequestCounter( head.requestCounter );
     }
     if( head.redirect !== undefined ) {
       document.location = head.redirect;

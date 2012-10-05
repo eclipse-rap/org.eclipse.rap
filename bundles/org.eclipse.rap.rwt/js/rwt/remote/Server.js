@@ -30,7 +30,6 @@ qx.Class.define( "rwt.remote.Server", {
     this._url = "";
     this._writer = null;
     this._event = null;
-    this._uiRootId = "";
     this._requestCounter = null;
     this._sendTimer = new Timer( 60 );
     this._sendTimer.addEventListener( "interval", function() {
@@ -60,14 +59,6 @@ qx.Class.define( "rwt.remote.Server", {
 
     getUrl : function() {
       return this._url;
-    },
-
-    setUIRootId : function( uiRootId ) {
-      this._uiRootId = uiRootId;
-    },
-
-    getUIRootId : function() {
-      return this._uiRootId;
     },
 
     setRequestCounter : function( requestCounter ) {
@@ -138,7 +129,6 @@ qx.Class.define( "rwt.remote.Server", {
         this.dispatchSimpleEvent( "send" );
         this._flushEvent();
         this._sendTimer.stop();
-        this.getMessageWriter().appendHead( "uiRoot", this._uiRootId );
         if( this._requestCounter != null ) {
           this.getMessageWriter().appendHead( "requestCounter", this._requestCounter );
           this._requestCounter = -1;

@@ -494,8 +494,9 @@ qx.Class.define( "rwt.widgets.Shell", {
           this._focusControl = focusedChild;
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var focusedChildId = widgetManager.findIdByWidget( focusedChild );
-          var req = rwt.remote.Server.getInstance();
-          req.addParameter( req.getUIRootId() + ".focusControl", focusedChildId );
+          var server = rwt.remote.Server.getInstance();
+          var serverDisplay = server.getServerObject( rwt.widgets.Display.getCurrent() );
+          serverDisplay.set( "focusControl", focusedChildId );
         }
       }
     },

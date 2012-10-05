@@ -25,8 +25,7 @@ rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
   rwt.protocol.MessageProcessor.processMessage( {
     "head": {},
     "operations": [
-      [ "create", "w1", "rwt.Display" ],
-      [ "call", "w1", "init", { "url" : "", "rootId" : "w1" } ]
+      [ "create", "w1", "rwt.Display" ]
     ]
   } );
   rwt.runtime.ErrorHandler.processJavaScriptErrorInResponse
