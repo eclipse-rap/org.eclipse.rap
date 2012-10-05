@@ -439,6 +439,34 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       assertEquals( [ 50, 50 ], item.getUserData( "backgroundImageSize" ) );
     },
 
+    testSendSelection : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      this._createCTabFolderByProtocol( "w3", "w2" );
+      var MessageProcessor = rwt.protocol.MessageProcessor;
+      MessageProcessor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.CTabItem",
+        "properties" : {
+          "style" : [],
+          "parent" : "w3",
+          "index" : 0
+        }
+      } );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w4" );
+      TestUtil.flush();
+
+      TestUtil.click( widget );
+      rwt.remote.Server.getInstance().send();
+
+      //assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "w4", message.findSetProperty( "w3", "selection" ) );
+      shell.destroy();
+    },
+
     testItemDefaultSelected : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );

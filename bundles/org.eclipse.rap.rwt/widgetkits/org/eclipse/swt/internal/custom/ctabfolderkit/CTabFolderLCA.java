@@ -40,7 +40,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   };
 
   // Request parameter that denotes the id of the selected tab item
-  public static final String PARAM_SELECTED_ITEM_ID = "selectedItemId";
+  public static final String PARAM_SELECTION = "selection";
   // Request parameters for min/max state
   public static final String PARAM_MAXIMIZED = "maximized";
   public static final String PARAM_MINIMIZED = "minimized";
@@ -129,7 +129,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     // TODO [rh] it's a hack: necessary because folder.setSelection changes
     //      the visibility of tabItem.control; but preserveValues stores
     //      the already changed visibility and thus no JavaScript is rendered
-    String selectedItemId = WidgetLCAUtil.readPropertyValue( folder, PARAM_SELECTED_ITEM_ID );
+    String selectedItemId = WidgetLCAUtil.readPropertyValue( folder, PARAM_SELECTION );
     if( selectedItemId != null ) {
       final CTabItem item = ( CTabItem )WidgetUtil.find( folder, selectedItemId );
       ProcessActionRunner.add( new Runnable() {

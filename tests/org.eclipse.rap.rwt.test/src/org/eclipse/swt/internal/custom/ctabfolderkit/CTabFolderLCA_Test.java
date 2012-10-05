@@ -176,7 +176,7 @@ public class CTabFolderLCA_Test extends TestCase {
 
     // The actual test request: item1 is selected, the request selects item2
     folder.setSelection( item1 );
-    Fixture.fakeSetParameter( getId( folder ), "selectedItemId", getId( item2 ) );
+    Fixture.fakeSetParameter( getId( folder ), "selection", getId( item2 ) );
     Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     Fixture.executeLifeCycleFromServerThread();
 
@@ -197,7 +197,7 @@ public class CTabFolderLCA_Test extends TestCase {
 //    parameters.put( "item", WidgetUtil.getId( item2 ) );
     Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_WIDGET_SELECTED, parameters );
     Fixture.fakeSetParameter( getId( folder ),
-                              CTabFolderLCA.PARAM_SELECTED_ITEM_ID,
+                              CTabFolderLCA.PARAM_SELECTION,
                               getId( item2 ) );
 
     Fixture.readDataAndProcessAction( folder );

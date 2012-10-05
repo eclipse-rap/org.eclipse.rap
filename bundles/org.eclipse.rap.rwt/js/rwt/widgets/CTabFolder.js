@@ -518,7 +518,7 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
           var req = rwt.remote.Server.getInstance();
           var id = widgetManager.findIdByWidget( this );
           var itemId = widgetManager.findIdByWidget( item );
-          req.addParameter( id + ".selectedItemId", itemId );
+          req.addParameter( id + ".selection", itemId );
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
           org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();
