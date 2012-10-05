@@ -53,7 +53,6 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.util.HTTP;
@@ -321,7 +320,6 @@ public final class Fixture {
 
   public static void fakeNewRequest( Display display ) {
     fakeNewRequest();
-    fakeHeadParameter( RequestParams.UIROOT, DisplayUtil.getId( display ) );
   }
 
   public static void fakeNewRequest() {

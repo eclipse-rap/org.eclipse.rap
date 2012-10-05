@@ -28,7 +28,6 @@ import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
@@ -155,22 +154,18 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   public void render( Display display ) throws IOException {
-    // Note [rst] Startup page created in LifecycleServiceHandler#runLifeCycle
-    // TODO [rh] should be replaced by requestCounter != 0
-    if( ProtocolUtil.readHeadPropertyValue( RequestParams.UIROOT ) != null ) {
-      disposeWidgets();
-      renderRequestCounter();
-      renderTheme( display );
-      renderExitConfirmation( display );
-      renderEnableUiTests( display );
-      renderShells( display );
-      renderFocus( display );
-      renderBeep( display );
-      writeUICallBackActivation( display );
-      markInitialized( display );
-      ActiveKeysUtil.renderActiveKeys( display );
-      ActiveKeysUtil.renderCancelKeys( display );
-    }
+    disposeWidgets();
+    renderRequestCounter();
+    renderTheme( display );
+    renderExitConfirmation( display );
+    renderEnableUiTests( display );
+    renderShells( display );
+    renderFocus( display );
+    renderBeep( display );
+    writeUICallBackActivation( display );
+    markInitialized( display );
+    ActiveKeysUtil.renderActiveKeys( display );
+    ActiveKeysUtil.renderCancelKeys( display );
   }
 
   public void clearPreserved( Display display ) {

@@ -53,7 +53,6 @@ final class StartupPageConfigurer {
   private static final String PROPERTY_FONTS = "fonts";
   private static final String METHOD_PROBE = "probe";
   private static final String PROPERTY_URL = "url";
-  private static final String PROPERTY_ROOT_ID = "rootId";
   private static final String METHOD_INIT = "init";
 
   private final ResourceRegistry resourceRegistry;
@@ -155,7 +154,6 @@ final class StartupPageConfigurer {
   private static void appendInitDisplay( String id, ProtocolMessageWriter writer ) {
     Map<String, Object> args = new HashMap<String, Object>();
     args.put( PROPERTY_URL, getUrl() );
-    args.put( PROPERTY_ROOT_ID, id );  // TODO [tb] : refactor client to remove this line
     writer.appendCall( id, METHOD_INIT, args );
   }
 

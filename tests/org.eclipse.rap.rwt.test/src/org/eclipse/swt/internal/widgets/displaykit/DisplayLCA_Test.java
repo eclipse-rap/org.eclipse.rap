@@ -86,15 +86,6 @@ public class DisplayLCA_Test extends TestCase {
     assertNull( exitConfirmation );
   }
 
-  public void testStartup() throws IOException {
-    Fixture.fakeNewRequest();
-
-    displayLCA.render( display );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( 0, message.getOperationCount() );
-  }
-
   public void testRender() throws IOException {
     LoggingWidgetLCA loggingWidgetLCA = new LoggingWidgetLCA();
     Shell shell1 = new CustomLCAShell( display, loggingWidgetLCA );

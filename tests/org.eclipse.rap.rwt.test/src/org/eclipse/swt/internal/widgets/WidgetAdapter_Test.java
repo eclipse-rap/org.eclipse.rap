@@ -110,9 +110,6 @@ public class WidgetAdapter_Test extends TestCase {
 
   public void testInitializedForDisplay() throws IOException {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
-    Fixture.fakeNewRequest();
-    Fixture.fakeResponseWriter();
-    DisplayUtil.getLCA( display ).render( display );
     assertEquals( false, adapter.isInitialized() );
     Fixture.fakeNewRequest( display );
     DisplayUtil.getLCA( display ).render( display );

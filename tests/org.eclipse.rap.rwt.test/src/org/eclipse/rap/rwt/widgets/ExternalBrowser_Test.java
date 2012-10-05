@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -89,7 +88,6 @@ public class ExternalBrowser_Test extends TestCase {
     RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
                                                       TestExecutionOrderEntryPoint.class );
     Fixture.fakeNewRequest();
-    Fixture.fakeHeadParameter( RequestParams.UIROOT, "w1" );
 
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();

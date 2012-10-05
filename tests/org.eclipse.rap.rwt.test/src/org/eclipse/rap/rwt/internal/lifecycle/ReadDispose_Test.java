@@ -13,11 +13,9 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -55,23 +53,18 @@ public class ReadDispose_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
     Fixture.fakeNewRequest();
-    String dispId = WidgetDisposalEntryPoint.dispId;
-    Fixture.fakeHeadParameter( RequestParams.UIROOT, dispId );
     lifeCycle.execute();
     Fixture.fakeNewRequest();
-    Fixture.fakeHeadParameter( RequestParams.UIROOT, dispId );
     String buttonId = WidgetDisposalEntryPoint.buttonId;
     Fixture.fakeNotifyOperation( buttonId, ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     lifeCycle.execute();
   }
 
   private static class WidgetDisposalEntryPoint implements IEntryPoint {
-    private static String dispId;
     private static String buttonId;
 
     public int createUI() {
       Display display = new Display();
-      dispId = DisplayUtil.getId( display );
       Shell shell = new Shell( display, SWT.NONE );
       final Text text = new Text( shell, SWT.MULTI );
       final Tree tree = new Tree( shell, SWT.SINGLE );

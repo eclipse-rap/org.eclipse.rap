@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -189,18 +188,12 @@ public class PreserveWidgets_Test extends TestCase {
   }
 
   public void testStartup() throws Exception {
-    // Simulate startup with no startup entry point set
-    // First request: (renders html skeletion that contains 'application')
     RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
                                                       TestEntryPointWithShell.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
-    // Second request: first 'real' one that writes JavaScript to create display
-    Fixture.fakeResponseWriter();
-    Fixture.fakeNewRequest( LifeCycleUtil.getSessionDisplay() );
-    lifeCycle.execute();
     Message message = Fixture.getProtocolMessage();
-    assertTrue( message.getOperationCount()> 0 );
+    assertTrue( message.getOperationCount() > 0 );
   }
 
   public void testClearPreservedWithDisposedDisplay() {

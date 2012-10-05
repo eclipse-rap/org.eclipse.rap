@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.service;
 
 public final class RequestParams {
   public static final String STARTUP = "startup";
-  public static final String UIROOT = "uiRoot";
   public static final String RWT_INITIALIZE = "rwt_initialize";
 
   private RequestParams() {
