@@ -90,7 +90,7 @@ public class DNDExampleTab extends ExampleTab {
   private boolean dropEventDetail;
 
   public DNDExampleTab() {
-    super( "Drag && Drop" );
+    super( "Drag & Drop" );
     dragEnabled = true;
     dropEnabled = true;
     addDragTransfer( TextTransfer.getInstance() );
