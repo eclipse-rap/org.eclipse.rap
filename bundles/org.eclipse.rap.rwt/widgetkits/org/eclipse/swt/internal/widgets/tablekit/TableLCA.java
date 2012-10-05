@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablekit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
@@ -296,18 +297,14 @@ public final class TableLCA extends AbstractWidgetLCA {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
     adapter.setCellToolTipText( null );
     ICellToolTipProvider provider = adapter.getCellToolTipProvider();
-    if( provider != null ) {
-      ClientMessage message = ProtocolUtil.getClientMessage();
-      CallOperation[] operations
-        = message.getAllCallOperationsFor( getId( table ), "renderToolTipText" );
-      if( operations.length > 0 ) {
-        CallOperation operation = operations[ operations.length - 1 ];
-        String itemId = ( String )operation.getProperty( "item" );
-        int columnIndex = ( ( Integer )operation.getProperty( "column" ) ).intValue();
-        TableItem item = getItem( table, itemId );
-        if( item != null && ( columnIndex == 0 || columnIndex < table.getColumnCount() ) ) {
-          provider.getToolTipText( item, columnIndex );
-        }
+    String methodName = "renderToolTipText";
+    if( provider != null && ProtocolUtil.wasCallSend( getId( table ), methodName ) ) {
+      String itemId = readCallPropertyValueAsString( getId( table ), methodName, "item" );
+      String column = readCallPropertyValueAsString( getId( table ), methodName, "column" );
+      int columnIndex = NumberFormatUtil.parseInt( column );
+      TableItem item = getItem( table, itemId );
+      if( item != null && ( columnIndex == 0 || columnIndex < table.getColumnCount() ) ) {
+        provider.getToolTipText( item, columnIndex );
       }
     }
   }

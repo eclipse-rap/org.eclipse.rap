@@ -18,6 +18,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -141,7 +143,9 @@ public class TableColumnLCA_Test extends TestCase {
     column.addControlListener( listener );
 
     int newWidth = column.getWidth() + 2;
-    Fixture.fakeSetParameter( getId( column ), "width", Integer.valueOf( newWidth ) );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( "width", Integer.valueOf( newWidth ) );
+    Fixture.fakeCallOperation( getId( column ), "resize", parameters );
     Fixture.executeLifeCycleFromServerThread( );
 
     assertEquals( newWidth, column.getWidth() );
@@ -297,7 +301,9 @@ public class TableColumnLCA_Test extends TestCase {
     table.getColumn( 2 ).setWidth( 0 );
 
     TableColumn column1 = table.getColumn( 1 );
-    Fixture.fakeSetParameter( getId( column1 ), "left", Integer.valueOf( 35 ) );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( "left", Integer.valueOf( 35 ) );
+    Fixture.fakeCallOperation( getId( column1 ), "move", parameters  );
     Fixture.executeLifeCycleFromServerThread( );
 
     Message message = Fixture.getProtocolMessage();

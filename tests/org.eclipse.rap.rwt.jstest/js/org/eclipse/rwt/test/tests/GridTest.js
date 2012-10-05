@@ -12,6 +12,7 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var ObjectRegistry = rwt.protocol.ObjectRegistry;
 
 qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
@@ -2558,6 +2559,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHeaderHeight( 30 );
       tree.setHeaderVisible( true );
       var columnX = new rwt.widgets.GridColumn( tree );
+      ObjectRegistry.add( "wCol", columnX );
       columnX.setLeft( 0 );
       columnX.setWidth( 1100 );
       TestUtil.flush();
@@ -2648,7 +2650,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.fakeMouseEventDOM( node, "mousemove", left, 5, 0 );
       TestUtil.fakeMouseEventDOM( node, "mouseup", left, 5, 0 );
 
-      assertNotNull( TestUtil.getMessageObject().findSetOperation( "w11", "left" ) );
+      assertNotNull( TestUtil.getMessageObject().findCallOperation( "w11", "move" ) );
       tree.destroy();
     },
 
@@ -2679,7 +2681,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( "", tree._resizeLine.getStyleProperty( "visibility" ) );
       TestUtil.fakeMouseEventDOM( node, "mouseup", left, 205, 0 );
 
-      assertNotNull( TestUtil.getMessageObject().findSetOperation( "w11", "width" ) );
+      assertNotNull( TestUtil.getMessageObject().findCallOperation( "w11", "resize" ) );
       assertEquals( "hidden", tree._resizeLine.getStyleProperty( "visibility" ) );
       tree.destroy();
     },
@@ -2760,6 +2762,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
       var columnX = new rwt.widgets.GridColumn( tree );
+      ObjectRegistry.add( "colX", columnX );
       columnX.setLeft( 0 );
       columnX.setWidth( 1100 );
       tree.setHeaderHeight( 30 );
@@ -2800,6 +2803,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree( true );
       tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
       var columnX = new rwt.widgets.GridColumn( tree );
+      ObjectRegistry.add( "colX", columnX );
       columnX.setLeft( 0 );
       columnX.setWidth( 1100 );
       tree.setHeaderHeight( 30 );
@@ -2816,6 +2820,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
       var columnX = new rwt.widgets.GridColumn( tree );
+      ObjectRegistry.add( "colX", columnX );
       columnX.setLeft( 0 );
       columnX.setWidth( 1100 );
       TestUtil.flush();
@@ -2833,6 +2838,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       org.eclipse.swt.EventUtil.setSuspended( true );
       tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
       var columnX = new rwt.widgets.GridColumn( tree );
+      ObjectRegistry.add( "colX", columnX );
       columnX.setLeft( 10 );
       columnX.setWidth( 1100 );
       var label = this._getColumnLabel( tree, columnX );
@@ -2863,6 +2869,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
       var columnX = new rwt.widgets.GridColumn( tree );
       columnX.setLeft( 10 );
+      ObjectRegistry.add( "colX", columnX );
       columnX.setWidth( 1100 );
       columnX.setFixed( true );
       TestUtil.flush();

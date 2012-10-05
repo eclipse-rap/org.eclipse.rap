@@ -564,7 +564,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
 
       var message = TestUtil.getMessageObject();
-      assertEquals( 10, message.findSetProperty( "w4", "left" ) );
+      assertEquals( 10, message.findCallProperty( "w4", "move", "left" ) );
       column.dispose();
       tree.destroy();
     },

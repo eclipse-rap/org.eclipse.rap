@@ -11,16 +11,19 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -63,28 +66,23 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
 
   public void readData( Widget widget ) {
     final TableColumn column = ( TableColumn )widget;
-    // Though there is sent an event parameter called
-    // org.eclipse.swt.events.controlResized
-    // we will ignore it since setting the new width itself fires the
-    // desired controlResized-event
-    String value = WidgetLCAUtil.readPropertyValue( column, "width" );
-    if( value != null ) {
+    String methodName = "resize";
+    if( ProtocolUtil.wasCallSend( getId( column ), methodName ) ) {
       // TODO [rh] HACK: force width to have changed when client-side changes
       //      it. Since this is done while a column resize we must re-layout
       //      all columns including the resized one.
-      final int newWidth = NumberFormatUtil.parseInt( value );
+      String width = readCallPropertyValueAsString( getId( column ), methodName, "width" );
+      final int newWidth = NumberFormatUtil.parseInt( width );
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           column.setWidth( newWidth );
         }
       } );
     }
-    // Though there is an org.eclipse.swt.events.controlMoved event sent,
-    // we will ignore it since changing the column order fires the desired
-    // controlMoved event
-    value = WidgetLCAUtil.readPropertyValue( column, "left" );
-    if( value != null ) {
-      final int newLeft = NumberFormatUtil.parseInt( value );
+    methodName = "move";
+    if( ProtocolUtil.wasCallSend( getId( column ), methodName ) ) {
+      String left = readCallPropertyValueAsString( getId( column ), methodName, "left" );
+      final int newLeft = NumberFormatUtil.parseInt( left );
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           moveColumn( column, newLeft );

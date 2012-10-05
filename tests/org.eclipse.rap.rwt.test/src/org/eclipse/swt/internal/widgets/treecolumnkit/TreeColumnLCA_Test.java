@@ -18,6 +18,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -160,7 +162,9 @@ public class TreeColumnLCA_Test extends TestCase {
 
     int newWidth = column.getWidth() + 2;
     Fixture.fakeNewRequest( display );
-    Fixture.fakeSetParameter( getId( column ), "width", String.valueOf( newWidth ) );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( "width", Integer.valueOf( newWidth ) );
+    Fixture.fakeCallOperation( getId( column ), "resize", parameters );
     Fixture.executeLifeCycleFromServerThread();
 
     verify( listener, times( 1 ) ).controlResized( any( ControlEvent.class ) );

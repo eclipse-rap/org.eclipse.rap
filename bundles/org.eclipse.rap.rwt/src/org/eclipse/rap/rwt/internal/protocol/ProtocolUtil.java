@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,6 +20,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -160,7 +163,7 @@ public final class ProtocolUtil {
   {
     String result = null;
     ClientMessage message = getClientMessage();
-    NotifyOperation operation =  message.getLastNotifyOperationFor( target, eventName );
+    NotifyOperation operation = message.getLastNotifyOperationFor( target, eventName );
     if( operation != null ) {
       Object value = operation.getProperty( property );
       if( value != null ) {
@@ -174,6 +177,29 @@ public final class ProtocolUtil {
     ClientMessage message = getClientMessage();
     NotifyOperation operation =  message.getLastNotifyOperationFor( target, eventName );
     return operation != null;
+  }
+
+  public static String readCallPropertyValueAsString( String target,
+                                                      String methodName,
+                                                      String property )
+  {
+    String result = null;
+    ClientMessage message = getClientMessage();
+    CallOperation[] operations = message.getAllCallOperationsFor( target, methodName );
+    if( operations.length > 0 ) {
+      CallOperation operation = operations[ operations.length - 1 ];
+      Object value = operation.getProperty( property );
+      if( value != null ) {
+        result = value.toString();
+      }
+    }
+    return result;
+  }
+
+  public static boolean wasCallSend( String target, String methodName ) {
+    ClientMessage message = getClientMessage();
+    CallOperation[] operations = message.getAllCallOperationsFor( target, methodName );
+    return operations.length > 0;
   }
 
   public static Object[] getFontAsArray( Font font ) {

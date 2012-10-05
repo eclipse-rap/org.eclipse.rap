@@ -31,7 +31,7 @@ qx.Class.define( "rwt.widgets.GridColumn", {
     this._width = 0;
     this._toolTip = null;
     this._customVariant = null;
-    this._objectId;
+    this._objectId = null;
     this._text = "";
     this._font = null;
     this._image = null;
@@ -55,7 +55,7 @@ qx.Class.define( "rwt.widgets.GridColumn", {
         this._left = value;
         this._update();
       } else {
-        this._sendMoved( value );
+        this._sendMove( value );
       }
     },
 
@@ -68,7 +68,7 @@ qx.Class.define( "rwt.widgets.GridColumn", {
         this._width = value;
         this._update();
       } else {
-        this._sendResized( value );
+        this._sendResize( value );
       }
     },
 
@@ -287,23 +287,31 @@ qx.Class.define( "rwt.widgets.GridColumn", {
       this.dispatchSimpleEvent( "update" );
     },
 
-    _sendResized : function( width ) {
+    _sendResize : function( width ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        var req = rwt.remote.Server.getInstance();
-        req.addParameter( id + ".width", width );
-        req.send();
+//        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+//        var id = widgetManager.findIdByWidget( this );
+//        var req = rwt.remote.Server.getInstance();
+//        req.addParameter( id + ".width", width );
+//        req.send();
+        var serverColumn = rwt.remote.Server.getInstance().getServerObject( this );
+        serverColumn.call( "resize", {
+          "width" : width
+        } );
       }
     },
 
-    _sendMoved : function( left ) {
+    _sendMove : function( left ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        var req = rwt.remote.Server.getInstance();
-        req.addParameter( id + ".left", left );
-        req.send();
+//        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+//        var id = widgetManager.findIdByWidget( this );
+//        var req = rwt.remote.Server.getInstance();
+//        req.addParameter( id + ".left", left );
+//        req.send();
+        var serverColumn = rwt.remote.Server.getInstance().getServerObject( this );
+        serverColumn.call( "move", {
+          "left" : left
+        } );
       }
     }
 

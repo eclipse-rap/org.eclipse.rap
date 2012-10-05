@@ -423,6 +423,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       var tree = this._createSplitTree();
       for( var i = 0; i < 5; i++ ) {
         var column = new rwt.widgets.GridColumn( tree );
+        rwt.protocol.ObjectRegistry.add( "col", column );
         column.setLeft( tree.getRenderConfig().itemLeft[ i ] );
         column.setWidth( tree.getRenderConfig().itemWidth[ i ] );
         if( i < 2 ) {

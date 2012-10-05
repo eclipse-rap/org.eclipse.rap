@@ -335,6 +335,31 @@ public class ProtocolUtil_Test extends TestCase {
     assertTrue( Arrays.equals( expected, actual ) );
   }
 
+  public void testWasCallSent() {
+    fakeNewJsonMessage();
+
+    assertTrue( ProtocolUtil.wasCallSend( "w3", "resize" ) );
+    assertFalse( ProtocolUtil.wasCallSend( "w4", "resize" ) );
+  }
+
+  public void testReadCallProperty() {
+    fakeNewJsonMessage();
+
+    assertEquals( "10", ProtocolUtil.readCallPropertyValueAsString( "w3", "resize", "width" ) );
+  }
+
+  public void testReadCallProperty_MissingProperty() {
+    fakeNewJsonMessage();
+
+    assertNull( ProtocolUtil.readCallPropertyValueAsString( "w3", "resize", "left" ) );
+  }
+
+  public void testReadCallProperty_MissingOperation() {
+    fakeNewJsonMessage();
+
+    assertNull( ProtocolUtil.readCallPropertyValueAsString( "w4", "resize", "left" ) );
+  }
+
   //////////////////
   // Helping methods
 
@@ -357,5 +382,8 @@ public class ProtocolUtil_Test extends TestCase {
     parameters.put( "p8", new Object[]{ "a", new Integer( 2 ), Boolean.TRUE } );
     parameters.put( "p9", new boolean[] { true, false, true } );
     Fixture.fakeSetOperation( "w3", parameters  );
+    parameters = new HashMap<String, Object>();
+    parameters.put( "width", Integer.valueOf( 10 ) );
+    Fixture.fakeCallOperation( "w3", "resize", parameters );
   }
 }
