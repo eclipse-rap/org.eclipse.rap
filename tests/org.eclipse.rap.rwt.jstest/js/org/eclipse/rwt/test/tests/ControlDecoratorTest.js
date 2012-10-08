@@ -76,9 +76,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
     testSetHasSelectionListenerByProtocol : function() {
       var widget = this._createControlDecoratorByProtocol( "w3", "w2", [ "LEFT", "CENTER" ] );
 
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
 
       assertTrue( widget.hasEventListeners( "mousedown" ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHasDefaultSelectionListenerByProtocol : function() {
+      var widget = this._createControlDecoratorByProtocol( "w3", "w2", [ "LEFT", "CENTER" ] );
+
+      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
+
       assertTrue( widget.hasEventListeners( "dblclick" ) );
       shell.destroy();
       widget.destroy();
@@ -86,7 +95,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
 
     testWidgetDefaultSelected : function() {
       var widget = this._createControlDecoratorByProtocol( "w3", "w2", [ "LEFT", "CENTER" ] );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
 
       TestUtil.doubleClick( widget );
 
@@ -96,7 +105,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
 
     testWidgetDefaultSelectedModifier : function() {
       var widget = this._createControlDecoratorByProtocol( "w3", "w2", [ "LEFT", "CENTER" ] );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
 
       TestUtil.fakeMouseEventDOM(
           widget.getElement(),

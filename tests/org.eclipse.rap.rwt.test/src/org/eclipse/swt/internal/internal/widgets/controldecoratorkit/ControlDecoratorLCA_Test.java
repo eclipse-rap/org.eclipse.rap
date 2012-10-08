@@ -31,12 +31,16 @@ import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.ControlDecorator;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -331,7 +335,8 @@ public class ControlDecoratorLCA_Test extends TestCase {
     lca.renderChanges( decorator );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( decorator, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( decorator, "Selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( decorator, "DefaultSelection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
@@ -345,7 +350,8 @@ public class ControlDecoratorLCA_Test extends TestCase {
     lca.renderChanges( decorator );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( decorator, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( decorator, "Selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( decorator, "DefaultSelection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
@@ -358,7 +364,8 @@ public class ControlDecoratorLCA_Test extends TestCase {
     lca.renderChanges( decorator );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( decorator, "selection" ) );
+    assertNull( message.findListenOperation( decorator, "Selection" ) );
+    assertNull( message.findListenOperation( decorator, "DefaultSelection" ) );
   }
 
   private static Rectangle getEventBounds( SelectionEvent event ) {
