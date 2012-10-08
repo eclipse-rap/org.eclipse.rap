@@ -21,6 +21,7 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
     this.setOverflow( "hidden" );
     this._hasFolderListener = false;
     this._hasSelectionListener = false;
+    this._hasDefaultSelectionListener = false;
     this._tabPosition = "top";
     this._tabHeight = 0;
     this._selectionForeground = null;
@@ -403,6 +404,10 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
       this._hasSelectionListener = value;
     },
 
+    setHasDefaultSelectionListener : function( value ) {
+      this._hasDefaultSelectionListener = value;
+    },
+
     deselectAll : function() {
       this._mapItems( function( item ) {
         item.setSelected( false );
@@ -528,7 +533,7 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
 
     _notifyItemDblClick : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        if( this._hasSelectionListener ) {
+        if( this._hasDefaultSelectionListener ) {
           var item = evt.getTarget();
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var req = rwt.remote.Server.getInstance();
@@ -536,7 +541,7 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
           var itemId = widgetManager.findIdByWidget( item );
           // TODO [rst] remove this parameter as soon as server-side code is revised
           //      -> CTabFolderLCA.readData()
-          req.addParameter( id + ".selectedItemId", itemId );
+          req.addParameter( id + ".selection", itemId );
           org.eclipse.swt.EventUtil.widgetDefaultSelected( evt, this );
         }
       }

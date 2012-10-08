@@ -255,8 +255,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createCTabFolderByProtocol( "w3", "w2" );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
       assertTrue( widget._hasSelectionListener );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHasSelectionListenerByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var widget = this._createCTabFolderByProtocol( "w3", "w2" );
+      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
+      assertTrue( widget._hasDefaultSelectionListener );
       shell.destroy();
       widget.destroy();
     },
@@ -487,7 +497,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
         "target" : "w3",
         "action" : "listen",
         "properties" : {
-          "selection" : true
+          "DefaultSelection" : true
         }
       } );
       var ObjectManager = rwt.protocol.ObjectRegistry;
@@ -498,6 +508,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
 
       var message = TestUtil.getLastMessage();
       assertNotNull( message.findNotifyOperation( "w3", "DefaultSelection" ) );
+      // NOTE [tb] : current CTabFolderLCA#readData always requires "selection" property
+      //             when firing selection event
+      assertNotNull( message.findSetProperty( "w3", "selection" ) );
       shell.destroy();
     },
 
@@ -521,7 +534,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
         "target" : "w3",
         "action" : "listen",
         "properties" : {
-          "selection" : true
+          "DefaultSelection" : true
         }
       } );
       var ObjectManager = rwt.protocol.ObjectRegistry;

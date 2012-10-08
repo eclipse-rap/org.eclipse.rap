@@ -22,11 +22,19 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.*;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabFolderEvent;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.widgets.Widget;
@@ -70,7 +78,8 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     = "selectionBgGradientVertical";
   private static final String PROP_BORDER_VISIBLE = "borderVisible";
   private static final String PROP_FOLDER_LISTENER = "folder";
-  private static final String PROP_SELECTION_LISTENER = "selection";
+  private static final String PROP_SELECTION_LISTENER = "Selection";
+  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
 
   private static final String DEFAULT_TAB_POSITION = "top";
   private static final int DEFAULT_TAB_HEIGHT = 0;
@@ -101,6 +110,9 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     preserveSelectionBgGradient( folder );
     preserveProperty( folder, PROP_BORDER_VISIBLE, folder.getBorderVisible() );
     preserveListener( folder, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( folder ) );
+    preserveListener( folder,
+                      PROP_DEFAULT_SELECTION_LISTENER,
+                      SelectionEvent.hasListener( folder ) );
     preserveListener( folder, PROP_FOLDER_LISTENER, CTabFolderEvent.hasListener( folder ) );
   }
 
@@ -203,6 +215,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     renderSelectionBackgroundGradient( folder );
     renderProperty( folder, PROP_BORDER_VISIBLE, folder.getBorderVisible(), false );
     renderListener( folder, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( folder ), false );
+    renderListener( folder, PROP_DEFAULT_SELECTION_LISTENER, SelectionEvent.hasListener( folder ), false );
     renderListener( folder, PROP_FOLDER_LISTENER, CTabFolderEvent.hasListener( folder ), false );
   }
 
