@@ -29,11 +29,18 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.DateTime;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.mockito.ArgumentCaptor;
 
@@ -292,7 +299,7 @@ public class DateTimeLCA_Test extends TestCase {
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( dateTime, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( dateTime, "Selection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
@@ -307,7 +314,7 @@ public class DateTimeLCA_Test extends TestCase {
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( dateTime, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( dateTime, "Selection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {

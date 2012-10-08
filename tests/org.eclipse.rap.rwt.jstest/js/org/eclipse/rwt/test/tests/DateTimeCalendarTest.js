@@ -14,7 +14,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
   extend : qx.core.Object,
 
   members : {
-  
+
     monthNames : [ "January",
                    "February",
                    "March",
@@ -87,7 +87,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
       widget.destroy();
@@ -131,7 +131,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
 
     //////////
     // Helpers
-    
+
     _createDefaultDateTimeByProtocol : function( id, parentId ) {
       var styles =  [ "CALENDAR", "MEDIUM" ];
       rwt.protocol.MessageProcessor.processOperation( {

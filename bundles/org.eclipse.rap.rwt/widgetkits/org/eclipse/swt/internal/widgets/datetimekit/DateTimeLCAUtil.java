@@ -18,7 +18,9 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -39,7 +41,7 @@ final class DateTimeLCAUtil {
   private static final String PROP_DATE_SEPARATOR = "dateSeparator";
   private static final String PROP_DATE_PATTERN = "datePattern";
   private static final String PROP_SUB_WIDGETS_BOUNDS = "subWidgetsBounds";
-  private static final String PROP_SELECTION_LISTENER = "selection";
+  private static final String PROP_SELECTION_LISTENER = "Selection";
 
   private DateTimeLCAUtil() {
     // prevent instantiation
