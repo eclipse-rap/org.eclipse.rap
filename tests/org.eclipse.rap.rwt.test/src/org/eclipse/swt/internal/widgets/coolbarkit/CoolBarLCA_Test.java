@@ -20,7 +20,6 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -195,7 +194,7 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( 2, bar.getItemOrder()[ 2 ] );
 
     // Simulate that item2 is dragged left of item1
-    fakeMoveEvent( item2, item1.getBounds().x - 4, 0 );
+    fakeMove( item2, item1.getBounds().x - 4, 0 );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 0, bar.getItemOrder()[ 0 ] );
@@ -205,7 +204,7 @@ public final class CoolBarLCA_Test extends TestCase {
     // Simulate that item0 is dragged after the last item
     cba.setItemOrder( new int[] { 0, 1, 2, } );
 
-    fakeMoveEvent( item0, item2.getBounds().x + item2.getBounds().width + 10, 0 );
+    fakeMove( item0, item2.getBounds().x + item2.getBounds().width + 10, 0 );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 1, bar.getItemOrder()[ 0 ] );
@@ -215,7 +214,7 @@ public final class CoolBarLCA_Test extends TestCase {
     // Simulate that item0 is dragged onto itself -> nothing should change
     cba.setItemOrder( new int[] { 0, 1, 2, } );
 
-    fakeMoveEvent( item0, item0.getBounds().x + 2, 0 );
+    fakeMove( item0, item0.getBounds().x + 2, 0 );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 0, bar.getItemOrder()[ 0 ] );
@@ -225,7 +224,7 @@ public final class CoolBarLCA_Test extends TestCase {
     // Simulate that item1 is before the first item
     cba.setItemOrder( new int[] { 0, 1, 2, } );
 
-    fakeMoveEvent( item1, item0.getBounds().x - 5, 0 );
+    fakeMove( item1, item0.getBounds().x - 5, 0 );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 1, bar.getItemOrder()[ 0 ] );
@@ -245,7 +244,7 @@ public final class CoolBarLCA_Test extends TestCase {
     // Drag item0 and drop it inside the bounds of item1
     cba.setItemOrder( new int[] { 0, 1 } );
 
-    fakeMoveEvent( item0, 483, 0 );
+    fakeMove( item0, 483, 0 );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 1, bar.getItemOrder()[ 0 ] );
@@ -254,7 +253,7 @@ public final class CoolBarLCA_Test extends TestCase {
     // Drag item0 and drop it beyond the bounds of item1
     cba.setItemOrder( new int[] { 0, 1 } );
 
-    fakeMoveEvent( item0, 2000, 0 );
+    fakeMove( item0, 2000, 0 );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 1, bar.getItemOrder()[ 0 ] );
@@ -280,7 +279,7 @@ public final class CoolBarLCA_Test extends TestCase {
     // position
     cba.setItemOrder( new int[] { 0, 1 } );
 
-    fakeMoveEvent( item0, 10, 0 );
+    fakeMove( item0, 10, 0 );
     Fixture.executeLifeCycleFromServerThread();
 
     assertEquals( 0, bar.getItemOrder()[ 0 ] );
@@ -289,14 +288,11 @@ public final class CoolBarLCA_Test extends TestCase {
     assertNotNull( message.findSetOperation( item0, "bounds" ) );
   }
 
-  private void fakeMoveEvent( CoolItem coolItem, int x, int y ) {
+  private void fakeMove( CoolItem coolItem, int x, int y ) {
     Fixture.fakeNewRequest( display );
     Map<String, Object> parameters = new HashMap<String, Object>();
-//    parameters.put( "x", Integer.valueOf( x ) );
-//    parameters.put( "y", Integer.valueOf( y ) );
-    Fixture.fakeNotifyOperation( getId( coolItem ), ClientMessageConst.EVENT_WIDGET_MOVED, parameters );
-    Fixture.fakeSetParameter( getId( coolItem ), "bounds.x", Integer.toString( x ) );
-    Fixture.fakeSetParameter( getId( coolItem ), "bounds.y", Integer.toString( y ) );
+    parameters.put( "left", Integer.valueOf( x ) );
+    Fixture.fakeCallOperation( getId( coolItem ), "move", parameters );
   }
 
 }

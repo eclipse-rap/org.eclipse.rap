@@ -11,13 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.coolitemkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
@@ -53,14 +55,14 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   }
 
   public void readData( Widget widget ) {
-    // TODO [rh] clean up this mess
     final CoolItem coolItem = ( CoolItem )widget;
-    if( WidgetLCAUtil.wasEventSent( coolItem, ClientMessageConst.EVENT_WIDGET_MOVED ) ) {
-      String value = WidgetLCAUtil.readPropertyValue( coolItem, "bounds.x" );
-      final int x = NumberFormatUtil.parseInt( value );
+    String methodName = "move";
+    if( ProtocolUtil.wasCallSend( getId( coolItem ), methodName ) ) {
+      String left = readCallPropertyValueAsString( getId( coolItem ), methodName, "left" );
+      final int newLeft = NumberFormatUtil.parseInt( left );
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          moveItem( coolItem, x );
+          moveItem( coolItem, newLeft );
         }
       } );
     }

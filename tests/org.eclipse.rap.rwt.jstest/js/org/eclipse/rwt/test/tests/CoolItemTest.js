@@ -9,10 +9,14 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+
 qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
 
   extend : qx.core.Object,
-  
+
   members : {
 
     testCreateCoolItemByProtocol : function() {
@@ -176,22 +180,53 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
       bar.destroy();
     },
 
+    testMove : function() {
+      var bar = this._createCoolBar();
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.CoolItem",
+        "properties" : {
+          "style" : [ ],
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 100, 10 ]
+        }
+      } );
+      var item = rwt.protocol.ObjectRegistry.getObject( "w3" );
+      TestUtil.flush();
+
+      TestUtil.fakeMouseEvent( item._handle, "mousedown", 0, 0 );
+      TestUtil.fakeMouseEvent( item._handle, "mousemove", 20, 0 );
+      TestUtil.fakeMouseEvent( item._handle, "mouseup", 20, 0 );
+
+      assertEquals( 20, item.getLeft() );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getLastMessage();
+      assertEquals( 20, message.findCallProperty( "w3", "move", "left") );
+      bar.destroy();
+    },
+
     /////////
     // helper
-    
+
     _createCoolBar : function() {
+      TestUtil.createShellByProtocol( "shell" );
       var processor = rwt.protocol.MessageProcessor;
       processor.processOperation( {
         "target" : "w2",
         "action" : "create",
         "type" : "rwt.widgets.CoolBar",
         "properties" : {
-          "style" : [ "BORDER" ]
+          "style" : [ "BORDER" ],
+          "parent" : "shell"
         }
       } );
       return rwt.protocol.ObjectRegistry.getObject( "w2" );
     }
 
   }
-  
+
 } );
+
+}());

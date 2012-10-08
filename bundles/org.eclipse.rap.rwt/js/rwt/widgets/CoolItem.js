@@ -135,13 +135,9 @@ qx.Class.define( "rwt.widgets.CoolItem", {
       this.getTopLevelWidget().setGlobalCursor( null );
       // Send request that informs about dragged CoolItem
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        var req = rwt.remote.Server.getInstance();
-        req.addEvent( "org.eclipse.swt.events.widgetMoved", id );
-        req.addParameter( id + ".bounds.x", this.getLeft() );
-        req.addParameter( id + ".bounds.y", this.getTop() );
-        req.send();
+        rwt.remote.Server.getInstance().getServerObject( this ).call( "move", {
+          "left" : this.getLeft()
+        } );
       }
     },
 

@@ -11,8 +11,11 @@
 package org.eclipse.swt.internal.widgets.coolitemkit;
 
 import static org.eclipse.rap.rwt.internal.resources.TestUtil.assertArrayEquals;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -119,6 +122,21 @@ public class CoolItemLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( item, "control" );
     assertEquals( WidgetUtil.getId( button ), operation.getProperty( "control" ) );
+  }
+
+  public void testReadMove() {
+    bar.setSize( 100, 10 );
+    item.setSize( 10, 10 );
+    CoolItem item2 = new CoolItem( bar, SWT.NONE );
+    item2.setSize( 20, 10 );
+    int oldX = item.getBounds().x;
+
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( "left", Integer.valueOf( 25 ) );
+    Fixture.fakeCallOperation( getId( item ), "move", parameters  );
+    Fixture.readDataAndProcessAction( display );
+
+    assertTrue( oldX != item.getBounds().x );
   }
 
 }
