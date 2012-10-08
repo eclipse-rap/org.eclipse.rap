@@ -65,7 +65,7 @@ import org.json.JSONObject;
 @SuppressWarnings("deprecation")
 public class ButtonLCA_Test extends TestCase {
 
-  private static final String PROP_SELECTION_LISTENER = "listener_selection";
+  private static final String PROP_SELECTION_LISTENER = "listener_Selection";
 
   private Display display;
   private Shell shell;
@@ -490,7 +490,7 @@ public class ButtonLCA_Test extends TestCase {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( button, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( button, "Selection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
@@ -505,7 +505,7 @@ public class ButtonLCA_Test extends TestCase {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( button, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( button, "Selection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {

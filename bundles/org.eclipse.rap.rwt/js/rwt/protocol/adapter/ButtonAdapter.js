@@ -63,7 +63,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Button", {
   } ),
 
   listeners : rwt.protocol.AdapterUtil.extendControlListeners( [
-    "selection"
+    "Selection"
   ] ),
 
   listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
