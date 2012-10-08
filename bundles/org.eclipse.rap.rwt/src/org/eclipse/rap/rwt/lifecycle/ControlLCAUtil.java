@@ -199,12 +199,12 @@ public class ControlLCAUtil {
 
   // TODO [tb] : remove after all LCA usse processSelected
   public static void processSelection( Widget widget, Item item, boolean readBounds ) {
-    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_SELECTION ) ) {
       SelectionEvent event
         = createSelectionEvent( widget, item, readBounds, SelectionEvent.WIDGET_SELECTED );
       event.processEvent();
     }
-    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_DEFAULT_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_DEFAULT_SELECTION ) ) {
       SelectionEvent event
         = createSelectionEvent( widget, item, readBounds, SelectionEvent.WIDGET_DEFAULT_SELECTED );
       event.processEvent();
@@ -586,8 +586,8 @@ public class ControlLCAUtil {
       bounds = new Rectangle( 0, 0, 0, 0 );
     }
     String eventName = type == SelectionEvent.WIDGET_SELECTED
-                     ? ClientMessageConst.EVENT_SELECTED
-                     : ClientMessageConst.EVENT_DEFAULT_SELECTED;
+                     ? ClientMessageConst.EVENT_SELECTION
+                     : ClientMessageConst.EVENT_DEFAULT_SELECTION;
     int stateMask = EventLCAUtil.readStateMask( widget, eventName );
     return new SelectionEvent( widget, item, type, bounds, stateMask, null, true, SWT.NONE );
   }

@@ -177,7 +177,7 @@ public class ListLCA_Test extends TestCase {
     SelectionListener listener = mock( SelectionListener.class );
     list.addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( list ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( list ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( list );
 
     ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );

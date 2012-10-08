@@ -83,7 +83,7 @@ public class ScaleLCA_Test extends TestCase {
     SelectionListener listener = mock( SelectionListener.class );
     scale.addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( scale ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( scale ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( scale );
 
     ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );

@@ -117,7 +117,7 @@ public class UntypedEvents_Test extends TestCase {
       }
     } );
     Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_SELECTION, null );
 
     Fixture.readDataAndProcessAction( display );
 

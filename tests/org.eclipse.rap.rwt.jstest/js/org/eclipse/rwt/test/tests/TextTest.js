@@ -1272,7 +1272,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.clickDOM( text._searchIconElement, 5, 5 );
 
       var message = TestUtil.getMessageObject();
-      assertEquals( "search", message.findNotifyProperty( "w3", "DefaultSelected", "detail" ) );
+      assertEquals( "search", message.findNotifyProperty( "w3", "DefaultSelection", "detail" ) );
     },
 
     testSendDefaultSelectionEventOnCancelIconClick : function() {
@@ -1293,7 +1293,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.clickDOM( text._cancelIconElement, 5, 5 );
 
       var message = TestUtil.getMessageObject();
-      assertEquals( "cancel", message.findNotifyProperty( "w3", "DefaultSelected", "detail" ) );
+      assertEquals( "cancel", message.findNotifyProperty( "w3", "DefaultSelection", "detail" ) );
     },
 
     testClearTextOnCancelIconClick : function() {

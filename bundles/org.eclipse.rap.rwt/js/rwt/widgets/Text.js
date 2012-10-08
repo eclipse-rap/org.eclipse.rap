@@ -205,17 +205,17 @@ qx.Class.define( "rwt.widgets.Text", {
       var req = rwt.remote.Server.getInstance();
       // TODO [tb] : clean up after final switch to protocol
       if( detail ) {
-        req.addEvent( "org.eclipse.swt.events.DefaultSelected", id );
+        req.addEvent( "org.eclipse.swt.events.DefaultSelection", id );
         req._event = null; // dont add previous event
         org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-        req.addEvent( "org.eclipse.swt.events.Selected.detail", detail );
+        req.addEvent( "org.eclipse.swt.events.Selection.detail", detail );
         req._event = null;
-        req.getServerObject( this ).notify( "DefaultSelected", {
+        req.getServerObject( this ).notify( "DefaultSelection", {
           "detail" : detail,
           "modifier" : org.eclipse.swt.EventUtil._getKeyModifier()
         } );
       } else {
-        req.addEvent( "org.eclipse.swt.events.DefaultSelected", id );
+        req.addEvent( "org.eclipse.swt.events.DefaultSelection", id );
         org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         req.send();
       }

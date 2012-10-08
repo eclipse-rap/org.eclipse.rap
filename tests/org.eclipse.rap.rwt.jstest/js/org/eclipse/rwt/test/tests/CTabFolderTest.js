@@ -497,7 +497,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       TestUtil.doubleClick( widget );
 
       var message = TestUtil.getLastMessage();
-      assertNotNull( message.findNotifyOperation( "w3", "DefaultSelected" ) );
+      assertNotNull( message.findNotifyOperation( "w3", "DefaultSelection" ) );
       shell.destroy();
     },
 
@@ -538,9 +538,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
        );
 
       var message = TestUtil.getLastMessage();
-      assertFalse( message.findNotifyProperty( "w3", "DefaultSelected", "shiftKey" ) );
-      assertTrue( message.findNotifyProperty( "w3", "DefaultSelected", "ctrlKey" ) );
-      assertFalse( message.findNotifyProperty( "w3", "DefaultSelected", "altKey" ) );
+      assertFalse( message.findNotifyProperty( "w3", "DefaultSelection", "shiftKey" ) );
+      assertTrue( message.findNotifyProperty( "w3", "DefaultSelection", "ctrlKey" ) );
+      assertFalse( message.findNotifyProperty( "w3", "DefaultSelection", "altKey" ) );
       shell.destroy();
     },
 

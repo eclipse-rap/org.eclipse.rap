@@ -691,7 +691,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertEquals( 4, message.findSetProperty( "w3", "selectionIndex" ) );
-      assertNotNull( message.findNotifyOperation( "w3", "Selected" ) );
+      assertNotNull( message.findNotifyOperation( "w3", "Selection" ) );
       combo.destroy();
       shell.destroy();
     },
@@ -719,7 +719,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      assertNotNull( message.findNotifyOperation( "w3", "DefaultSelected" ) );
+      assertNotNull( message.findNotifyOperation( "w3", "DefaultSelection" ) );
       combo.destroy();
       shell.destroy();
     },

@@ -152,7 +152,7 @@ public class SashLCA_Test extends TestCase {
     properties.put( ClientMessageConst.EVENT_PARAM_WIDTH, Integer.valueOf( 3 ) );
     properties.put( ClientMessageConst.EVENT_PARAM_HEIGHT, Integer.valueOf( 4 ) );
     Fixture.fakeNotifyOperation( getId( sash ),
-                                 ClientMessageConst.EVENT_SELECTED,
+                                 ClientMessageConst.EVENT_SELECTION,
                                  properties );
     Fixture.readDataAndProcessAction( sash );
 

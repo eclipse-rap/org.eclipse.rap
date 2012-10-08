@@ -193,7 +193,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   }
 
   private static void processWidgetSelectedEvent( Tree tree ) {
-    String eventName = ClientMessageConst.EVENT_SELECTED;
+    String eventName = ClientMessageConst.EVENT_SELECTION;
     if( WidgetLCAUtil.wasEventSent( tree, eventName ) ) {
       String value = readEventPropertyValue( tree, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
       Item treeItem = getItem( tree, value );
@@ -213,7 +213,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   }
 
   private static void processWidgetDefaultSelectedEvent( Tree tree ) {
-    String eventName = ClientMessageConst.EVENT_DEFAULT_SELECTED;
+    String eventName = ClientMessageConst.EVENT_DEFAULT_SELECTION;
     if( WidgetLCAUtil.wasEventSent( tree, eventName ) ) {
       String value = readEventPropertyValue( tree, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
       Item treeItem = getItem( tree, value );

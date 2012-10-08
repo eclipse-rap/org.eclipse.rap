@@ -118,7 +118,7 @@ public class RWTLifeCycle2_Test extends TestCase {
 
     // send 'malicious button click' - response is HTTP 500
     request = newPostRequest( false );
-    Fixture.fakeNotifyOperation( maliciousButtonId, ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( maliciousButtonId, ClientMessageConst.EVENT_SELECTION, null );
     try {
       runRWTDelegate( request );
       fail();

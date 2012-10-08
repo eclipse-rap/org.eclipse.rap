@@ -32,7 +32,7 @@ final class DropDownToolItemLCA extends ToolItemDelegateLCA {
 
   @Override
   void readData( ToolItem toolItem ) {
-    String eventName = ClientMessageConst.EVENT_SELECTED;
+    String eventName = ClientMessageConst.EVENT_SELECTION;
     if( WidgetLCAUtil.wasEventSent( toolItem, eventName ) ) {
       String detail = readEventPropertyValue( toolItem,
                                               eventName,

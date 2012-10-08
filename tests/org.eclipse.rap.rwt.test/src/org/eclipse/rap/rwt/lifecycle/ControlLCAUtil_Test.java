@@ -92,7 +92,7 @@ public class ControlLCAUtil_Test extends TestCase {
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( button );
 
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
@@ -104,7 +104,7 @@ public class ControlLCAUtil_Test extends TestCase {
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_DEFAULT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_DEFAULT_SELECTION, null );
     Fixture.readDataAndProcessAction( button );
 
     verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class) );

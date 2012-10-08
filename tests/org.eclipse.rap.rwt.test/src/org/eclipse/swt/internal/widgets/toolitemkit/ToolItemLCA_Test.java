@@ -85,7 +85,7 @@ public class ToolItemLCA_Test extends TestCase {
     shell.open();
 
     Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( true, wasEventFired[ 0 ] );
@@ -108,14 +108,14 @@ public class ToolItemLCA_Test extends TestCase {
     ToolItem item = new ToolItem( toolbar, SWT.CHECK );
 
     Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, null );
     WidgetUtil.getLCA( item ).readData( item );
 
     assertEquals( Boolean.TRUE, Boolean.valueOf( item.getSelection() ) );
 
     Fixture.fakeNewRequest( display );
     Fixture.fakeSetParameter( getId( item ), "selection", Boolean.FALSE );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, null );
     WidgetUtil.getLCA( item ).readData( item );
 
     assertEquals( Boolean.FALSE, Boolean.valueOf( item.getSelection() ) );

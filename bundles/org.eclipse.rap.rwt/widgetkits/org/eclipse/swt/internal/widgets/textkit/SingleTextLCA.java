@@ -55,19 +55,19 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
   }
 
   private static void processSelection( Text text ) {
-    if( WidgetLCAUtil.wasEventSent( text, ClientMessageConst.EVENT_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( text, ClientMessageConst.EVENT_SELECTION ) ) {
       createSelectionEvent( text, SelectionEvent.WIDGET_SELECTED ).processEvent();
     }
-    if( WidgetLCAUtil.wasEventSent( text, ClientMessageConst.EVENT_DEFAULT_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( text, ClientMessageConst.EVENT_DEFAULT_SELECTION ) ) {
       createSelectionEvent( text, SelectionEvent.WIDGET_DEFAULT_SELECTED ).processEvent();
     }
   }
 
   private static SelectionEvent createSelectionEvent( Text text, int type ) {
     SelectionEvent result = new SelectionEvent( text, null, type );
-    String eventName = ClientMessageConst.EVENT_SELECTED;
+    String eventName = ClientMessageConst.EVENT_SELECTION;
     if( type == SelectionEvent.WIDGET_DEFAULT_SELECTED ) {
-      eventName = ClientMessageConst.EVENT_DEFAULT_SELECTED;
+      eventName = ClientMessageConst.EVENT_DEFAULT_SELECTION;
       result.detail = getWidgetDefaultSelectedDetail( text );
     }
     result.stateMask = EventLCAUtil.readStateMask( text, eventName );
@@ -76,7 +76,7 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
 
   private static int getWidgetDefaultSelectedDetail( Text text ) {
     String value = readEventPropertyValue( text,
-                                           ClientMessageConst.EVENT_DEFAULT_SELECTED,
+                                           ClientMessageConst.EVENT_DEFAULT_SELECTION,
                                            ClientMessageConst.EVENT_PARAM_DETAIL );
     int result = SWT.NONE;
     if( "search".equals( value ) ) {

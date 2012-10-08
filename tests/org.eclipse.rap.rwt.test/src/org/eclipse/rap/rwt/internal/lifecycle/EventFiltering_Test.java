@@ -68,7 +68,7 @@ public class EventFiltering_Test extends TestCase {
     button.addSelectionListener( listener );
     shell.open();
 
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( button );
 
     verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
@@ -81,7 +81,7 @@ public class EventFiltering_Test extends TestCase {
     button.addSelectionListener( listener );
     shell.open();
 
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( button );
 
     verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
@@ -95,7 +95,7 @@ public class EventFiltering_Test extends TestCase {
     button.dispose();
     shell.open();
 
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread();
 
     verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
@@ -110,7 +110,7 @@ public class EventFiltering_Test extends TestCase {
     dialog.setSize( 100, 100 );
     dialog.open();
 
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread();
 
     verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
@@ -137,7 +137,7 @@ public class EventFiltering_Test extends TestCase {
     // is sent. The focusList listener opens a modal shell, thus the event on
     // button must not be executed
     Fixture.fakeSetParameter( getId( display ), "focusControl", getId( button ) );
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread( );
 
     assertEquals( 1, events.size() );
@@ -172,7 +172,7 @@ public class EventFiltering_Test extends TestCase {
     button.addSelectionListener( selectionListener );
     childShell.open();
 
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread( );
 
     verify( selectionListener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );

@@ -927,7 +927,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
 
       var message = TestUtil.getMessageObject();
-      assertNotNull( message.findNotifyOperation( "w4", "Selected" ) );
+      assertNotNull( message.findNotifyOperation( "w4", "Selection" ) );
       column.dispose();
       tree.destroy();
     },
@@ -946,7 +946,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w4", "Selected" ) );
+      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w4", "Selection" ) );
       column.dispose();
       tree.destroy();
     },
@@ -971,7 +971,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.fakeMouseEventDOM( label.getElement(), "click", button, 20, 3 );
       TestUtil.flush(); // NOTE: unrealistic. browser would very likely not fire click after moving
 
-      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w4", "Selected" ) );
+      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w4", "Selection" ) );
       column.dispose();
       tree.destroy();
     },

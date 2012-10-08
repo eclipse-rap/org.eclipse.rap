@@ -188,7 +188,7 @@ public class ComboLCA_Test extends TestCase {
     SelectionListener listener = mock( SelectionListener.class );
     combo.addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( combo ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( combo ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( combo );
 
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
@@ -311,7 +311,7 @@ public class ComboLCA_Test extends TestCase {
     } );
 
     // Simulate button click that executes widgetSelected
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();

@@ -88,7 +88,7 @@ public class ToolTipLCA_Test extends TestCase {
       }
     } );
 
-    Fixture.fakeNotifyOperation( getId( toolTip ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( toolTip ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( display );
 
     SelectionEvent event = eventLog[ 0 ];

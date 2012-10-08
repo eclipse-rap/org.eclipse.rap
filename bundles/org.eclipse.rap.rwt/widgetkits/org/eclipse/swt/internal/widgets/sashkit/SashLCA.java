@@ -12,7 +12,7 @@
 package org.eclipse.swt.internal.widgets.sashkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTED;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 
 import java.io.IOException;
@@ -73,12 +73,12 @@ public final class SashLCA extends AbstractWidgetLCA {
   }
 
   private static void processSelection( Sash sash ) {
-    String eventName = EVENT_SELECTED;
+    String eventName = EVENT_SELECTION;
     if( WidgetLCAUtil.wasEventSent( sash, eventName ) ) {
-      String x = readEventPropertyValue( sash, EVENT_SELECTED, "x" );
-      String y = readEventPropertyValue( sash, EVENT_SELECTED, "y" );
-      String width = readEventPropertyValue( sash, EVENT_SELECTED, "width" );
-      String height = readEventPropertyValue( sash, EVENT_SELECTED, "height" );
+      String x = readEventPropertyValue( sash, EVENT_SELECTION, "x" );
+      String y = readEventPropertyValue( sash, EVENT_SELECTION, "y" );
+      String width = readEventPropertyValue( sash, EVENT_SELECTION, "width" );
+      String height = readEventPropertyValue( sash, EVENT_SELECTION, "height" );
       Rectangle bounds = new Rectangle(
         Integer.parseInt( x ),
         Integer.parseInt( y ),

@@ -56,7 +56,7 @@ public class ReadDispose_Test extends TestCase {
     lifeCycle.execute();
     Fixture.fakeNewRequest();
     String buttonId = WidgetDisposalEntryPoint.buttonId;
-    Fixture.fakeNotifyOperation( buttonId, ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( buttonId, ClientMessageConst.EVENT_SELECTION, null );
     lifeCycle.execute();
   }
 
