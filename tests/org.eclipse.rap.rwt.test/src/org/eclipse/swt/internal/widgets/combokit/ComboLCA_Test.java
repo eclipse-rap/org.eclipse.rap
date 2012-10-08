@@ -19,6 +19,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -642,7 +643,8 @@ public class ComboLCA_Test extends TestCase {
     lca.renderChanges( combo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( combo, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( combo, "Selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( combo, "DefaultSelection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
@@ -656,7 +658,8 @@ public class ComboLCA_Test extends TestCase {
     lca.renderChanges( combo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( combo, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( combo, "Selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( combo, "DefaultSelection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {

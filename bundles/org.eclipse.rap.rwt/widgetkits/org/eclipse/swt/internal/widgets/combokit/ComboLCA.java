@@ -22,11 +22,19 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class ComboLCA extends AbstractWidgetLCA {
@@ -47,7 +55,8 @@ public class ComboLCA extends AbstractWidgetLCA {
   static final String PROP_EDITABLE = "editable";
   static final String PROP_VISIBLE_ITEM_COUNT = "visibleItemCount";
   static final String PROP_ITEM_HEIGHT = "itemHeight";
-  static final String PROP_SELECTION_LISTENER = "selection";
+  static final String PROP_SELECTION_LISTENER = "Selection";
+  static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
   static final String PROP_MODIFY_LISTENER = "modify";
   static final String PROP_VERIFY_LISTENER = "verify";
 
@@ -71,6 +80,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     preserveProperty( combo, PROP_LIST_VISIBLE, combo.getListVisible() );
     preserveProperty( combo, PROP_EDITABLE, Boolean.valueOf( isEditable( combo ) ) );
     preserveListener( combo, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( combo ) );
+    preserveListener( combo, PROP_DEFAULT_SELECTION_LISTENER, SelectionEvent.hasListener( combo ) );
     preserveListener( combo, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( combo ) );
     preserveListener( combo, PROP_VERIFY_LISTENER, VerifyEvent.hasListener( combo ) );
   }
@@ -115,6 +125,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     renderSelection( combo );
     renderTextLimit( combo );
     renderListenSelection( combo );
+    renderListenDefaultSelection( combo );
     renderListenModify( combo );
     renderListenVerify( combo );
   }
@@ -235,6 +246,13 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   private static void renderListenSelection( Combo combo ) {
     renderListener( combo, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( combo ), false );
+  }
+
+  private static void renderListenDefaultSelection( Combo combo ) {
+    renderListener( combo,
+                    PROP_DEFAULT_SELECTION_LISTENER,
+                    SelectionEvent.hasListener( combo ),
+                    false );
   }
 
   private static void renderListenModify( Combo combo ) {

@@ -79,6 +79,21 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       }
     },
 
+    notifyDefaultSelected : function( target, left, top, width, height, detail) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+        var server = rwt.remote.Server.getInstance();
+        var properties = {
+            "x" : left,
+            "y" : top,
+            "width" : width,
+            "height" : height,
+            "detail" : detail
+        };
+        org.eclipse.swt.EventUtil.addModifierToProperties( properties );
+        server.getServerObject( target ).notify( "DefaultSelected", properties );
+      }
+    },
+
     addWidgetSelectedModifier : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var commandKey
