@@ -100,7 +100,7 @@ public class DisplayLCAFocus_Test extends TestCase {
 
   private void fakeSetFocusControl() {
     Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
     Fixture.fakeSetParameter( getId( display ), "focusControl", getId( button ) );
   }
 

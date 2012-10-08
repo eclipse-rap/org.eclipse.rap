@@ -13,19 +13,40 @@ package org.eclipse.rap.rwt.lifecycle;
 
 import java.lang.reflect.Field;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.MenuDetectEvent;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.events.EventLCAUtil;
-import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.internal.widgets.ControlUtil;
+import org.eclipse.swt.internal.widgets.EventUtil;
+import org.eclipse.swt.internal.widgets.IControlAdapter;
+import org.eclipse.swt.internal.widgets.IControlHolderAdapter;
+import org.eclipse.swt.internal.widgets.IShellAdapter;
+import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Scrollable;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 
 
 /**
@@ -176,13 +197,14 @@ public class ControlLCAUtil {
     }
   }
 
+  // TODO [tb] : remove after all LCA usse processSelected
   public static void processSelection( Widget widget, Item item, boolean readBounds ) {
-    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_WIDGET_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_SELECTED ) ) {
       SelectionEvent event
         = createSelectionEvent( widget, item, readBounds, SelectionEvent.WIDGET_SELECTED );
       event.processEvent();
     }
-    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_DEFAULT_SELECTED ) ) {
       SelectionEvent event
         = createSelectionEvent( widget, item, readBounds, SelectionEvent.WIDGET_DEFAULT_SELECTED );
       event.processEvent();
@@ -564,8 +586,8 @@ public class ControlLCAUtil {
       bounds = new Rectangle( 0, 0, 0, 0 );
     }
     String eventName = type == SelectionEvent.WIDGET_SELECTED
-                     ? ClientMessageConst.EVENT_WIDGET_SELECTED
-                     : ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED;
+                     ? ClientMessageConst.EVENT_SELECTED
+                     : ClientMessageConst.EVENT_DEFAULT_SELECTED;
     int stateMask = EventLCAUtil.readStateMask( widget, eventName );
     return new SelectionEvent( widget, item, type, bounds, stateMask, null, true, SWT.NONE );
   }

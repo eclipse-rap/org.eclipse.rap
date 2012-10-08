@@ -98,7 +98,7 @@ public class TypedEvent_Test extends TestCase {
       }
     } );
     Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
     ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -144,7 +144,7 @@ public class TypedEvent_Test extends TestCase {
       }
     } );
     Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
     fakeActivateRequestParam( button );
 
     Fixture.executeLifeCycleFromServerThread( );

@@ -163,7 +163,7 @@ qx.Class.define( "rwt.widgets.ToolTip", {
       if( this._hasSelectionListener ) {
         var id = this._getWidgetId();
         var req = rwt.remote.Server.getInstance();
-        req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+        req.addEvent( "org.eclipse.swt.events.Selected", id );
         req.send();
       }
     },

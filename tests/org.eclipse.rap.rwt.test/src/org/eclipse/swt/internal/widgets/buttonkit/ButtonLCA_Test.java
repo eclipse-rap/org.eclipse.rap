@@ -238,7 +238,7 @@ public class ButtonLCA_Test extends TestCase {
     button.addSelectionListener( listener );
     shell.getAdapter( IShellAdapter.class ).setActiveControl( label );
     Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
     fakeActivateEvent( button );
 
     Fixture.readDataAndProcessAction( display );
@@ -252,7 +252,7 @@ public class ButtonLCA_Test extends TestCase {
     SelectionListener listener = mock( SelectionListener.class );
     button.addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
     Fixture.readDataAndProcessAction( button );
 
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
@@ -264,7 +264,7 @@ public class ButtonLCA_Test extends TestCase {
     button.addSelectionListener( listener );
 
     Fixture.fakeSetParameter( getId( button ), "selection", Boolean.TRUE );
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
     Fixture.readDataAndProcessAction( button );
 
     assertTrue( button.getSelection() );
@@ -279,7 +279,7 @@ public class ButtonLCA_Test extends TestCase {
     button.addSelectionListener( listener );
 
     Fixture.fakeSetParameter( getId( button ), "selection", Boolean.FALSE );
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
     Fixture.readDataAndProcessAction( button );
 
     assertFalse( button.getSelection() );
@@ -302,8 +302,8 @@ public class ButtonLCA_Test extends TestCase {
 
     Fixture.fakeSetParameter( getId( button1 ), "selection", Boolean.TRUE );
     Fixture.fakeSetParameter( getId( button2 ), "selection", Boolean.FALSE );
-    Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
-    Fixture.fakeNotifyOperation( getId( button2 ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button2 ), ClientMessageConst.EVENT_SELECTED, null );
     Fixture.readDataAndProcessAction( display );
 
     assertTrue( Arrays.equals( new Widget[]{ button2, button1 }, log.toArray() ) );
@@ -324,8 +324,8 @@ public class ButtonLCA_Test extends TestCase {
 
     Fixture.fakeSetParameter( getId( button1 ), "selection", Boolean.TRUE );
     Fixture.fakeSetParameter( getId( button2 ), "selection", Boolean.FALSE );
-    Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
-    Fixture.fakeNotifyOperation( getId( button2 ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button2 ), ClientMessageConst.EVENT_SELECTED, null );
     Fixture.readDataAndProcessAction( display );
 
     assertTrue( Arrays.equals( new Widget[]{ button2, button1 }, log.toArray() ) );

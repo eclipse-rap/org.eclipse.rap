@@ -72,7 +72,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     SelectionListener listener = mock( SelectionListener.class );
     decorator.addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( decorator ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( decorator ), ClientMessageConst.EVENT_SELECTED, null );
     Fixture.readDataAndProcessAction( decorator );
 
     ArgumentCaptor<SelectionEvent> capture = ArgumentCaptor.forClass( SelectionEvent.class );
@@ -89,7 +89,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     SelectionListener listener = mock( SelectionListener.class );
     decorator.addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( decorator ), ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( decorator ), ClientMessageConst.EVENT_DEFAULT_SELECTED, null );
     Fixture.readDataAndProcessAction( decorator );
 
     ArgumentCaptor<SelectionEvent> capture = ArgumentCaptor.forClass( SelectionEvent.class );

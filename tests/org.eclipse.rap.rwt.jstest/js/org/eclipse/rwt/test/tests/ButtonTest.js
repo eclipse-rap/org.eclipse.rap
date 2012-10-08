@@ -474,12 +474,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       TestUtil.click( button );
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertFalse( button.hasState( "selected" ) );
-      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "widgetSelected" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "Selected" ) );
       TestUtil.clearRequestLog();
       TestUtil.press( button, "Enter" );
       assertFalse( button.hasState( "selected" ) );
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "widgetSelected" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "Selected" ) );
     },
 
     testSendModifier : function() {
@@ -493,9 +493,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       TestUtil.shiftClick( button );
 
       var message = TestUtil.getMessageObject();
-      assertTrue( message.findNotifyProperty( "w11", "widgetSelected", "shiftKey" ) );
-      assertFalse( message.findNotifyProperty( "w11", "widgetSelected", "altKey" ) );
-      assertFalse( message.findNotifyProperty( "w11", "widgetSelected", "ctrlKey" ) );
+      assertTrue( message.findNotifyProperty( "w11", "Selected", "shiftKey" ) );
+      assertFalse( message.findNotifyProperty( "w11", "Selected", "altKey" ) );
+      assertFalse( message.findNotifyProperty( "w11", "Selected", "ctrlKey" ) );
     },
 
     testWrap : function() {

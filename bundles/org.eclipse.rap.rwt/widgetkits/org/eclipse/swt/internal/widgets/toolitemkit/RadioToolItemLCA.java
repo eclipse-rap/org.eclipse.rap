@@ -50,7 +50,7 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
   }
 
   private static void processSelectionEvent( ToolItem toolItem ) {
-    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
+    String eventName = ClientMessageConst.EVENT_SELECTED;
     if( WidgetLCAUtil.wasEventSent( toolItem, eventName ) ) {
       SelectionEvent event;
       if( toolItem.getSelection() ) {

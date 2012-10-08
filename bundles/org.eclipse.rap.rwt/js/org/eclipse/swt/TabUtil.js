@@ -65,7 +65,7 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
         var itemId = widgetManager.findIdByWidget( tab );
         var server = rwt.remote.Server.getInstance();
         var folder = tab.getParent().getParent();
-        server.getServerObject( folder ).notify( "widgetSelected", {
+        server.getServerObject( folder ).notify( "Selected", {
           "item" : itemId
         } );
       }

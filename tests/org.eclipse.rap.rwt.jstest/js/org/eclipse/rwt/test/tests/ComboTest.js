@@ -671,7 +671,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertEquals( 4, message.findSetProperty( "w3", "selectionIndex" ) );
-      assertNotNull( message.findNotifyOperation( "w3", "widgetSelected" ) );
+      assertNotNull( message.findNotifyOperation( "w3", "Selected" ) );
       combo.destroy();
       shell.destroy();
     },

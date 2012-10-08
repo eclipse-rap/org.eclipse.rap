@@ -58,7 +58,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
   }
 
   private static void processSelectionEvent( MenuItem item ) {
-    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
+    String eventName = ClientMessageConst.EVENT_SELECTED;
     if( WidgetLCAUtil.wasEventSent( item, eventName ) ) {
       SelectionEvent event;
       if( item.getSelection() ) {

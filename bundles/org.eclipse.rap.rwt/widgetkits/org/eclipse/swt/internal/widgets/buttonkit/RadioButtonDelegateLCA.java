@@ -53,7 +53,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
   }
 
   private static void processSelectionEvent( Button button ) {
-    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
+    String eventName = ClientMessageConst.EVENT_SELECTED;
     if( WidgetLCAUtil.wasEventSent( button, eventName ) ) {
       SelectionEvent event;
       if( button.getSelection() ) {

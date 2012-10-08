@@ -120,7 +120,7 @@ public class DateTimeLCA_Test extends TestCase {
     // Test preserved day, month, year
     Fixture.preserveWidgets();
 
-    Fixture.fakeNotifyOperation( getId( dateTime ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( dateTime ), ClientMessageConst.EVENT_SELECTED, null );
     Fixture.fakeSetParameter( getId( dateTime ), "day", Integer.valueOf( 31 ) );
     Fixture.fakeSetParameter( getId( dateTime ), "month", Integer.valueOf( 4 ) );
     Fixture.fakeSetParameter( getId( dateTime ), "year", Integer.valueOf( 2010 ) );
@@ -186,7 +186,7 @@ public class DateTimeLCA_Test extends TestCase {
     SelectionListener listener = mock( SelectionListener.class );
     dateTime.addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( dateTime ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( dateTime ), ClientMessageConst.EVENT_SELECTED, null );
     Fixture.readDataAndProcessAction( dateTime );
 
     ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );

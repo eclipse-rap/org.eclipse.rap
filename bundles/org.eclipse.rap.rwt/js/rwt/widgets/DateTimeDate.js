@@ -676,7 +676,7 @@ qx.Class.define( "rwt.widgets.DateTimeDate", {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
       var req = rwt.remote.Server.getInstance();
-      req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+      req.addEvent( "org.eclipse.swt.events.Selected", id );
       org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
       req.send();
     },

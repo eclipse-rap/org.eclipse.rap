@@ -188,7 +188,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       item.setChecked( true );
 
       var message = TestUtil.getMessageObject();
-      assertEquals( "w4", message.findNotifyProperty( "w3", "widgetSelected", "item" ) );
+      assertEquals( "w4", message.findNotifyProperty( "w3", "Selected", "item" ) );
     },
 
     //////////////////

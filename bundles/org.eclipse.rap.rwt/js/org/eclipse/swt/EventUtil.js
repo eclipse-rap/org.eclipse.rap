@@ -52,7 +52,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         var properties = {};
         org.eclipse.swt.EventUtil.addModifierToProperties( properties );
         var serverObject = server.getServerObject( target ? target : evt.getTarget() );
-        serverObject.notify( "widgetDefaultSelected", properties );
+        serverObject.notify( "DefaultSelected", properties );
       }
     },
 
@@ -61,10 +61,10 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       var top = evt.getTarget().getTop();
       var width = evt.getTarget().getWidth();
       var height = evt.getTarget().getHeight();
-      org.eclipse.swt.EventUtil.sendWidgetSelected( evt.getTarget(), left, top, width, height );
+      org.eclipse.swt.EventUtil.notifySelected( evt.getTarget(), left, top, width, height );
     },
 
-    sendWidgetSelected : function( target, left, top, width, height, detail) {
+    notifySelected : function( target, left, top, width, height, detail) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var server = rwt.remote.Server.getInstance();
         var properties = {
@@ -75,7 +75,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
           "detail" : detail
         };
         org.eclipse.swt.EventUtil.addModifierToProperties( properties );
-        server.getServerObject( target ).notify( "widgetSelected", properties );
+        server.getServerObject( target ).notify( "Selected", properties );
       }
     },
 
@@ -87,9 +87,9 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         var ctrlKey = org.eclipse.swt.EventUtil._ctrlKey || commandKey;
         var altKey = org.eclipse.swt.EventUtil._altKey;
         var req = rwt.remote.Server.getInstance();
-        req.addParameter( "org.eclipse.swt.events.widgetSelected.shiftKey", shiftKey );
-        req.addParameter( "org.eclipse.swt.events.widgetSelected.ctrlKey", ctrlKey );
-        req.addParameter( "org.eclipse.swt.events.widgetSelected.altKey", altKey );
+        req.addParameter( "org.eclipse.swt.events.Selected.shiftKey", shiftKey );
+        req.addParameter( "org.eclipse.swt.events.Selected.ctrlKey", ctrlKey );
+        req.addParameter( "org.eclipse.swt.events.Selected.altKey", altKey );
       }
     },
 

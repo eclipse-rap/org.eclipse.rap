@@ -243,7 +243,7 @@ qx.Class.define( "rwt.widgets.GridColumn", {
             eventStr += this._expanded ? "treeCollapsed" : "treeExpanded";
             req.addEvent( eventStr, id );
           } else {
-            req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+            req.addEvent( "org.eclipse.swt.events.Selected", id );
           }
           org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();

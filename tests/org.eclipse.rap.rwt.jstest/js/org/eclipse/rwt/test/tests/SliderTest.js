@@ -420,7 +420,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       assertFalse( slider._requestScheduled );
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertEquals( 10, TestUtil.getMessageObject().findSetProperty( "w99", "selection" ) );
-      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w99", "widgetSelected" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w99", "Selected" ) );
       slider.destroy();
     },
 

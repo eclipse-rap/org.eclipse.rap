@@ -208,7 +208,7 @@ qx.Class.define( "rwt.widgets.Slider", {
       var id = widgetManager.findIdByWidget( this );
       req.addParameter( id + ".selection", this._selection );
       if( this._hasSelectionListener ) {
-        req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+        req.addEvent( "org.eclipse.swt.events.Selected", id );
         org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         req.send();
       }

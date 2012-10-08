@@ -25,7 +25,7 @@ final class CheckToolItemLCA extends ToolItemDelegateLCA {
   }
 
   void readData( ToolItem toolItem ) {
-    if( WidgetLCAUtil.wasEventSent( toolItem, ClientMessageConst.EVENT_WIDGET_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( toolItem, ClientMessageConst.EVENT_SELECTED ) ) {
       String value = WidgetLCAUtil.readPropertyValue( toolItem, "selection" );
       toolItem.setSelection( Boolean.valueOf( value ).booleanValue() );
       ToolItemLCAUtil.processSelection( toolItem );

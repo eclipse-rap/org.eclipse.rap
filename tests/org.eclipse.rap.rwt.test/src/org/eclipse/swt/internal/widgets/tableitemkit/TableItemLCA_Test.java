@@ -206,7 +206,7 @@ public class TableItemLCA_Test extends TestCase {
       }
     } );
 
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
     Fixture.readDataAndProcessAction( display );
 
     assertTrue( executed[ 0 ] );

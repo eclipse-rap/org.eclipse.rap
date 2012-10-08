@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.internal.widgets.controldecoratorkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED;
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_WIDGET_SELECTED;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTED;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTED;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
@@ -90,9 +90,9 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
   // Helping methods to read client-side state changes
 
   private static void readSelectionEvent( ControlDecorator decorator ) {
-    processSelectionEvent( decorator, EVENT_WIDGET_SELECTED, SelectionEvent.WIDGET_SELECTED );
+    processSelectionEvent( decorator, EVENT_SELECTED, SelectionEvent.WIDGET_SELECTED );
     processSelectionEvent( decorator,
-                           EVENT_WIDGET_DEFAULT_SELECTED,
+                           EVENT_DEFAULT_SELECTED,
                            SelectionEvent.WIDGET_DEFAULT_SELECTED );
   }
 

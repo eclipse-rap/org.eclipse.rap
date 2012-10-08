@@ -338,7 +338,7 @@ public class TreeLCA_Test extends TestCase {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( treeItem ) );
     Fixture.fakeNotifyOperation( getId( tree ),
-                                 ClientMessageConst.EVENT_WIDGET_SELECTED,
+                                 ClientMessageConst.EVENT_SELECTED,
                                  properties );
     Fixture.readDataAndProcessAction( display );
 
@@ -365,7 +365,7 @@ public class TreeLCA_Test extends TestCase {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( tree ) + "#" + 50 );
     Fixture.fakeNotifyOperation( getId( tree ),
-                                 ClientMessageConst.EVENT_WIDGET_SELECTED,
+                                 ClientMessageConst.EVENT_SELECTED,
                                  properties );
     Fixture.readDataAndProcessAction( display );
 
@@ -390,7 +390,7 @@ public class TreeLCA_Test extends TestCase {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) + "#" + 50 );
     Fixture.fakeNotifyOperation( getId( tree ),
-                                 ClientMessageConst.EVENT_WIDGET_SELECTED,
+                                 ClientMessageConst.EVENT_SELECTED,
                                  properties );
     Fixture.readDataAndProcessAction( display );
 
@@ -410,7 +410,7 @@ public class TreeLCA_Test extends TestCase {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( treeItem ) );
     Fixture.fakeNotifyOperation( getId( tree ),
-                                 ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED,
+                                 ClientMessageConst.EVENT_DEFAULT_SELECTED,
                                  properties );
     Fixture.readDataAndProcessAction( display );
 
@@ -440,7 +440,7 @@ public class TreeLCA_Test extends TestCase {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( treeItem ) );
     Fixture.fakeNotifyOperation( getId( tree ),
-                                 ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED,
+                                 ClientMessageConst.EVENT_DEFAULT_SELECTED,
                                  properties );
     Fixture.readDataAndProcessAction( display );
 

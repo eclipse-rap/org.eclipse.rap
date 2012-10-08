@@ -706,7 +706,7 @@ qx.Class.define( "rwt.widgets.Combo", {
         var listItem = this._list.getSelectedItem();
         req.addParameter( id + ".selectionIndex", list.getItemIndex( listItem ) );
         if( this._hasSelectionListener || this._hasVerifyModifyListener() ) {
-          req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+          req.addEvent( "org.eclipse.swt.events.Selected", id );
           org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();
         }
@@ -719,7 +719,7 @@ qx.Class.define( "rwt.widgets.Combo", {
         var req = rwt.remote.Server.getInstance();
         var id = widgetManager.findIdByWidget( this );
         if( this._hasSelectionListener ) {
-          req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+          req.addEvent( "org.eclipse.swt.events.DefaultSelected", id );
           org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();
         }

@@ -127,7 +127,7 @@ public class LinkLCA extends AbstractWidgetLCA {
   }
 
   private static void processSelectionEvent( Link link ) {
-    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
+    String eventName = ClientMessageConst.EVENT_SELECTED;
     if( WidgetLCAUtil.wasEventSent( link, eventName ) ) {
       String value = readEventPropertyValue( link, eventName, ClientMessageConst.EVENT_PARAM_INDEX );
       int index = NumberFormatUtil.parseInt( value );

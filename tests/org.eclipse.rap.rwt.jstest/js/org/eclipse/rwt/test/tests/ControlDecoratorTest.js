@@ -91,7 +91,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
       TestUtil.doubleClick( widget );
 
       var message = TestUtil.getLastMessage();
-      assertNotNull( message.findNotifyOperation( "w3", "widgetDefaultSelected" ) );
+      assertNotNull( message.findNotifyOperation( "w3", "DefaultSelected" ) );
     },
 
     testWidgetDefaultSelectedModifier : function() {
@@ -108,9 +108,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
        );
 
       var message = TestUtil.getLastMessage();
-      assertTrue( message.findNotifyProperty( "w3", "widgetDefaultSelected", "shiftKey" ) );
-      assertFalse( message.findNotifyProperty( "w3", "widgetDefaultSelected", "ctrlKey" ) );
-      assertFalse( message.findNotifyProperty( "w3", "widgetDefaultSelected", "altKey" ) );
+      assertTrue( message.findNotifyProperty( "w3", "DefaultSelected", "shiftKey" ) );
+      assertFalse( message.findNotifyProperty( "w3", "DefaultSelected", "ctrlKey" ) );
+      assertFalse( message.findNotifyProperty( "w3", "DefaultSelected", "altKey" ) );
     },
 
     /////////

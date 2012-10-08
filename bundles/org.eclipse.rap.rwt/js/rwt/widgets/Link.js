@@ -345,7 +345,7 @@ qx.Class.define( "rwt.widgets.Link", {
         var id = widgetManager.findIdByWidget( this );
         var req = rwt.remote.Server.getInstance();
         if( this._hasSelectionListener ) {
-          req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+          req.addEvent( "org.eclipse.swt.events.Selected", id );
           org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.addEvent( "org.eclipse.swt.events.widgetSelected.index", index );
           req.send();

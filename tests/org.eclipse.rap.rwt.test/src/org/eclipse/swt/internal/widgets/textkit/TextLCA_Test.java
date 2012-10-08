@@ -775,7 +775,7 @@ public class TextLCA_Test extends TestCase {
     List<Event> events = new LinkedList<Event>();
     text.addListener( SWT.DefaultSelection, new LoggingListener( events ) );
 
-    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_DEFAULT_SELECTED, null );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 1, events.size() );
@@ -794,7 +794,7 @@ public class TextLCA_Test extends TestCase {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( ClientMessageConst.EVENT_PARAM_DETAIL, "search" );
     Fixture.fakeNotifyOperation( getId( text ),
-                                 ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED,
+                                 ClientMessageConst.EVENT_DEFAULT_SELECTED,
                                  properties );
     Fixture.readDataAndProcessAction( display );
 
@@ -814,7 +814,7 @@ public class TextLCA_Test extends TestCase {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( ClientMessageConst.EVENT_PARAM_DETAIL, "cancel" );
     Fixture.fakeNotifyOperation( getId( text ),
-                                 ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED,
+                                 ClientMessageConst.EVENT_DEFAULT_SELECTED,
                                  properties );
     Fixture.readDataAndProcessAction( display );
 

@@ -186,7 +186,7 @@ public class CComboLCA_Test extends TestCase {
     SelectionListener listener = mock( SelectionListener.class );
     ccombo.addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( ccombo ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( ccombo ), ClientMessageConst.EVENT_SELECTED, null );
     Fixture.readDataAndProcessAction( ccombo );
 
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
@@ -309,7 +309,7 @@ public class CComboLCA_Test extends TestCase {
     } );
 
     // Simulate button click that executes widgetSelected
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();

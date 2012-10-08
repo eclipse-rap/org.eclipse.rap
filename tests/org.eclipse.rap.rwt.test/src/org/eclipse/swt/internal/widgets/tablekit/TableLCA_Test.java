@@ -232,7 +232,7 @@ public class TableLCA_Test extends TestCase {
     } );
     shell.open();
 
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTED, null );
     Fixture.executeLifeCycleFromServerThread();
 
     assertFalse( isItemVirtual( table[ 0 ], 0  ) );
@@ -1653,7 +1653,7 @@ public class TableLCA_Test extends TestCase {
       parameters.put( ClientMessageConst.EVENT_PARAM_DETAIL, detail );
     }
     Fixture.fakeNotifyOperation( getId( table ),
-                                 ClientMessageConst.EVENT_WIDGET_SELECTED,
+                                 ClientMessageConst.EVENT_SELECTED,
                                  parameters );
   }
 
@@ -1662,7 +1662,7 @@ public class TableLCA_Test extends TestCase {
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
     Fixture.fakeNotifyOperation( getId( table ),
-                                 ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED,
+                                 ClientMessageConst.EVENT_DEFAULT_SELECTED,
                                  parameters );
   }
 
