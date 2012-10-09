@@ -29,6 +29,10 @@ rwt.protocol.AdapterRegistry = {
       throw new Error( "No Adapter for type " + key );
     }
     return result;
+  },
+
+  hasAdapter : function( key ) {
+    return this._registry[ key ] != null;
   }
 
 };
