@@ -20,6 +20,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.FakeServer", {
   },
 
   properties : {
+
     responseTime : {
       check : "Number",
       nullable : false,
@@ -52,7 +53,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.FakeServer", {
     receive : function( request ){
       if( this.getUseAsync() && this._getCall( request, "open" )[ 2 ] ) {
         if( this._timer.isEnabled() ) {
-          this.error( "An Asynchronous requests is already processed!" );
+          throw new Error( "An Asynchronous requests is already processed!" );
         } else {
           this._currentAsyncRequest = request;
           this._timer.setInterval( this.getResponseTime() );
