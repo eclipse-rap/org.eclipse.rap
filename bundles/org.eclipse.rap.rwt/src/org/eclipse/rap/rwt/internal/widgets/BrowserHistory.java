@@ -17,17 +17,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.rap.rwt.*;
+
+import org.eclipse.rap.rwt.Adaptable;
+import org.eclipse.rap.rwt.IBrowserHistory;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rap.rwt.events.BrowserHistoryListener;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.events.*;
+import org.eclipse.rap.rwt.internal.events.Event;
+import org.eclipse.rap.rwt.internal.events.EventAdapter;
+import org.eclipse.rap.rwt.internal.events.IEventAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.PhaseListener;
+import org.eclipse.rap.rwt.lifecycle.PhaseListenerUtil;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.service.SessionStoreEvent;
 import org.eclipse.rap.rwt.service.SessionStoreListener;
@@ -39,8 +47,7 @@ public final class BrowserHistory
   implements IBrowserHistory, PhaseListener, Adaptable, SessionStoreListener
 {
 
-  private final static String TYPE = "rwt.BrowserHistory";
-  private final static String BROWSER_HISTORY_ID = "bh";
+  private final static String TYPE = "rwt.client.BrowserHistory";
   private final static String PROP_NAVIGATION_LISTENER = "navigation";
   private final static String PROP_ENTRIES = "entries";
   private final static String METHOD_ADD = "add";
@@ -52,7 +59,6 @@ public final class BrowserHistory
   private final Display display;
   private final List<HistoryEntry> entriesToAdd;
   private IEventAdapter eventAdapter;
-  private boolean created;
 
   public BrowserHistory() {
     display = Display.getCurrent();
@@ -99,7 +105,6 @@ public final class BrowserHistory
       } else if( PhaseListenerUtil.isReadData( event ) ) {
         preserveNavigationListener();
       } else if( PhaseListenerUtil.isRender( event ) ) {
-        renderCreate();
         renderNavigationListener();
         renderAdd();
       }
@@ -149,8 +154,8 @@ public final class BrowserHistory
   }
 
   private void processNavigationEvent() {
-    if( ProtocolUtil.wasEventSent( BROWSER_HISTORY_ID, EVENT_HISTORY_NAVIGATED ) ) {
-      String entryId = readEventPropertyValueAsString( BROWSER_HISTORY_ID,
+    if( ProtocolUtil.wasEventSent( TYPE, EVENT_HISTORY_NAVIGATED ) ) {
+      String entryId = readEventPropertyValueAsString( TYPE,
                                                        EVENT_HISTORY_NAVIGATED,
                                                        EVENT_HISTORY_NAVIGATED_ENTRY_ID );
       Event evt = new BrowserHistoryEvent( this, entryId );
@@ -174,20 +179,12 @@ public final class BrowserHistory
     return result;
   }
 
-  private void renderCreate() {
-    if( !created ) {
-      ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-      protocolWriter.appendCreate( BROWSER_HISTORY_ID, TYPE );
-      created = true;
-    }
-  }
-
   private void renderNavigationListener() {
     boolean actual = BrowserHistoryEvent.hasListener( this );
     boolean preserved = getPreservedNavigationListener();
     if( preserved != actual ) {
       ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-      protocolWriter.appendListen( BROWSER_HISTORY_ID, PROP_NAVIGATION_LISTENER, actual );
+      protocolWriter.appendListen( TYPE, PROP_NAVIGATION_LISTENER, actual );
     }
   }
 
@@ -196,7 +193,7 @@ public final class BrowserHistory
       Map<String, Object> properties = new HashMap<String, Object>();
       properties.put( PROP_ENTRIES, getEntriesAsArray() );
       ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-      protocolWriter.appendCall( BROWSER_HISTORY_ID, METHOD_ADD, properties );
+      protocolWriter.appendCall( TYPE, METHOD_ADD, properties );
       entriesToAdd.clear();
     }
   }

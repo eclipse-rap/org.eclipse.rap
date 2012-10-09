@@ -24,7 +24,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
     testSetHasNavigationListenerByProtocol : function() {
       var browserHistory = this._createBrowserHistoryByProtocol();
       rwt.protocol.MessageProcessor.processOperation( {
-        "target" : "bh",
+        "target" : "rwt.client.BrowserHistory",
         "action" : "listen",
         "properties" : {
           "navigation" : true
@@ -39,7 +39,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
     testAddByProtocol : function() {
       var browserHistory = this._createBrowserHistoryByProtocol();
       rwt.protocol.MessageProcessor.processOperation( {
-        "target" : "bh",
+        "target" : "rwt.client.BrowserHistory",
         "action" : "call",
         "method" : "add",
         "properties" : {
@@ -53,7 +53,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
       function() {
         var browserHistory = this._createBrowserHistoryByProtocol();
         rwt.protocol.MessageProcessor.processOperation( {
-          "target" : "bh",
+          "target" : "rwt.client.BrowserHistory",
           "action" : "call",
           "method" : "add",
           "properties" : {
@@ -61,7 +61,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
           }
         } );
         rwt.protocol.MessageProcessor.processOperation( {
-          "target" : "bh",
+          "target" : "rwt.client.BrowserHistory",
           "action" : "listen",
           "properties" : {
             "navigation" : true
@@ -75,7 +75,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
         org.eclipse.rwt.test.fixture.TestUtil.forceInterval( browserHistory._timer );
 
         var message = org.eclipse.rwt.test.fixture.TestUtil.getMessageObject();
-        assertEquals( "id1", message.findNotifyProperty( "bh", "historyNavigated", "entryId") );
+        var actual = message.findNotifyProperty( "rwt.client.BrowserHistory",
+                                                 "historyNavigated",
+                                                 "entryId" );
+        assertEquals( "id1", actual );
       }
     ],
 
@@ -83,12 +86,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
     // Helper
 
     _createBrowserHistoryByProtocol : function() {
-      rwt.protocol.MessageProcessor.processOperation( {
-        "target" : "bh",
-        "action" : "create",
-        "type" : "rwt.BrowserHistory"
-      } );
-      return rwt.protocol.ObjectRegistry.getObject( "bh" );
+      return rwt.protocol.ObjectRegistry.getObject( "rwt.client.BrowserHistory" );
     }
 
   }

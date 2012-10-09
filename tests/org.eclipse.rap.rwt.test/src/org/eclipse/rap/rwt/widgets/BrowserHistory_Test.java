@@ -38,6 +38,7 @@ import org.mockito.ArgumentCaptor;
 
 public class BrowserHistory_Test extends TestCase {
 
+  private static final String TYPE = "rwt.client.BrowserHistory";
   private Display display;
 
   @Override
@@ -101,7 +102,7 @@ public class BrowserHistory_Test extends TestCase {
 
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put( "entryId", "foo" );
-    Fixture.fakeNotifyOperation( "bh", "historyNavigated", parameters  );
+    Fixture.fakeNotifyOperation( TYPE, "historyNavigated", parameters  );
     Fixture.executeLifeCycleFromServerThread();
 
     ArgumentCaptor<BrowserHistoryEvent> captor
@@ -117,7 +118,7 @@ public class BrowserHistory_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    assertNotNull( message.findCreateOperation( "bh" ) );
+    assertNull( message.findCreateOperation( TYPE ) );
   }
 
   public void testRenderCreate_OnlyOnce() {
@@ -128,7 +129,7 @@ public class BrowserHistory_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findCreateOperation( "bh" ) );
+    assertNull( message.findCreateOperation( TYPE ) );
   }
 
   public void testRenderAddNavigationListener() {
@@ -145,7 +146,7 @@ public class BrowserHistory_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( "bh", "navigation" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( TYPE, "navigation" ) );
   }
 
   public void testRenderRemoveNavigationListener() {
@@ -164,7 +165,7 @@ public class BrowserHistory_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( "bh", "navigation" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( TYPE, "navigation" ) );
   }
 
   public void testRenderNavigationListenerUnchanged() {
@@ -176,7 +177,7 @@ public class BrowserHistory_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( "bh", "navigation" ) );
+    assertNull( message.findListenOperation( TYPE, "navigation" ) );
   }
 
   public void testRenderAdd() throws JSONException {
@@ -185,7 +186,7 @@ public class BrowserHistory_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    CallOperation operation = message.findCallOperation( "bh", "add" );
+    CallOperation operation = message.findCallOperation( TYPE, "add" );
     JSONArray entries = ( JSONArray )operation.getProperty( "entries" );
     JSONArray actual1 = entries.getJSONArray( 0 );
     assertTrue( ProtocolTestUtil.jsonEquals( "[\"testId\",\"testText\"]", actual1 ) );
@@ -199,7 +200,7 @@ public class BrowserHistory_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findCallOperation( "bh", "add" ) );
+    assertNull( message.findCallOperation( TYPE, "add" ) );
   }
 
   public void testRenderAddOrder() throws JSONException {
@@ -209,7 +210,7 @@ public class BrowserHistory_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    CallOperation operation = message.findCallOperation( "bh", "add" );
+    CallOperation operation = message.findCallOperation( TYPE, "add" );
     JSONArray entries = ( JSONArray )operation.getProperty( "entries" );
     JSONArray actual1 = entries.getJSONArray( 0 );
     assertTrue( ProtocolTestUtil.jsonEquals( "[\"testId1\",\"testText1\"]", actual1 ) );
