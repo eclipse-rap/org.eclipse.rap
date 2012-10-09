@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.dnd;
 
-import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Widget;
@@ -25,15 +24,6 @@ import org.eclipse.swt.widgets.Widget;
 public class DropTargetEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
-
-  public static final int DRAG_ENTER = DND.DragEnter;
-  public static final int DRAG_OVER = DND.DragOver;
-  public static final int DRAG_LEAVE = DND.DragLeave;
-  public static final int DROP_ACCEPT = DND.DropAccept;
-  public static final int DROP = DND.Drop;
-  public static final int DRAG_OPERATION_CHANGED = DND.DragOperationChanged;
-
-  private static final int[] EVENT_TYPES = { DRAG_ENTER, DRAG_OVER, DRAG_LEAVE, DROP_ACCEPT, DROP, DRAG_OPERATION_CHANGED };
 
   /**
    * The x-cordinate of the cursor relative to the <code>Display</code>
@@ -120,8 +110,38 @@ public class DropTargetEvent extends TypedEvent {
   // TODO [rh] in SWT, the field 'time' is declared in TypedEvent
   public int time;
 
-  public DropTargetEvent( Widget widget, int id ) {
-    super( widget, id );
+  /**
+   * Constructs a new instance of this class based on the
+   * information in the given untyped event.
+   *
+   * @param e the untyped event containing the information
+   * @since 2.0
+   */
+  public DropTargetEvent( DNDEvent e ) {
+    super( e );
+    this.data = e.data;
+    this.x = e.x;
+    this.y = e.y;
+    this.detail = e.detail;
+    this.currentDataType = e.dataType;
+    this.dataTypes = e.dataTypes;
+    this.operations = e.operations;
+    this.feedback = e.feedback;
+    this.item = e.item;
+  }
+
+  void updateEvent( DNDEvent e ) {
+    e.widget = this.widget;
+    e.time = this.time;
+    e.data = this.data;
+    e.x = this.x;
+    e.y = this.y;
+    e.detail = this.detail;
+    e.dataType = this.currentDataType;
+    e.dataTypes = this.dataTypes;
+    e.operations = this.operations;
+    e.feedback = this.feedback;
+    e.item = this.item;
   }
 
   @Override
@@ -160,39 +180,4 @@ public class DropTargetEvent extends TypedEvent {
     return EventUtil.isAccessible( widget );
   }
 
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, EVENT_TYPES );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, DropTargetListener listener ) {
-    addListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, DropTargetListener listener ) {
-    removeListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListeners( adaptable, EVENT_TYPES );
-  }
 }

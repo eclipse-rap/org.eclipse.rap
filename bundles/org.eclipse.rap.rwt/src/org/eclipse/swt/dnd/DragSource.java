@@ -234,7 +234,11 @@ public void addDragListener(DragSourceListener listener) {
   if( listener == null ) {
     DND.error( SWT.ERROR_NULL_ARGUMENT );
   }
-  DragSourceEvent.addListener( this, listener );
+  DNDListener typedListener = new DNDListener( listener );
+  typedListener.dndWidget = this;
+  addListener( DND.DragStart, typedListener );
+  addListener( DND.DragSetData, typedListener );
+  addListener( DND.DragEnd, typedListener );
 }
 
 protected void checkSubclass() {
@@ -274,7 +278,21 @@ public Control getControl() {
  * @see DragSourceEvent
  */
 public DragSourceListener[] getDragListeners() {
-  return ( DragSourceListener[] )DragSourceEvent.getListeners( this );
+  Listener[] listeners = getListeners(DND.DragStart);
+  int length = listeners.length;
+  DragSourceListener[] dragListeners = new DragSourceListener[length];
+  int count = 0;
+  for (int i = 0; i < length; i++) {
+      Listener listener = listeners[i];
+      if (listener instanceof DNDListener) {
+          dragListeners[count] = (DragSourceListener) ((DNDListener) listener).getEventListener();
+          count++;
+      }
+  }
+  if (count == length) return dragListeners;
+  DragSourceListener[] result = new DragSourceListener[count];
+  System.arraycopy(dragListeners, 0, result, 0, count);
+  return result;
 }
 
 /**
@@ -330,7 +348,9 @@ public void removeDragListener(DragSourceListener listener) {
 	if (listener == null) {
     DND.error(SWT.ERROR_NULL_ARGUMENT);
   }
-	DragSourceEvent.removeListener( this, listener );
+    removeListener(DND.DragStart, listener);
+    removeListener(DND.DragSetData, listener);
+    removeListener(DND.DragEnd, listener);
 }
 
 /**

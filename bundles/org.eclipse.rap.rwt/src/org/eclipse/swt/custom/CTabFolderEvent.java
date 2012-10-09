@@ -121,15 +121,6 @@ public class CTabFolderEvent extends TypedEvent {
     removeListener( adaptable, EVENT_TYPES, listener );
   }
 
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListeners( adaptable, EVENT_TYPES );
-  }
-
   @Override
   public String toString() {
     String string = super.toString();

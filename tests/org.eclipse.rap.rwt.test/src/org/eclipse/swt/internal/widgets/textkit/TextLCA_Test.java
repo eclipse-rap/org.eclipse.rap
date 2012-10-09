@@ -34,6 +34,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -225,6 +226,7 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testVerifyAndModifyEvent() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final List<TypedEvent> log = new ArrayList<TypedEvent>();
     // ensure that modify *and* verify event is fired
     text.setText( "" );

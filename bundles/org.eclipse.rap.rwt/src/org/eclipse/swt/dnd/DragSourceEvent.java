@@ -11,11 +11,9 @@
  *******************************************************************************/
 package org.eclipse.swt.dnd;
 
-import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.EventUtil;
-import org.eclipse.swt.widgets.Widget;
 
 
 /**
@@ -28,12 +26,6 @@ import org.eclipse.swt.widgets.Widget;
 public class DragSourceEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
-
-  public static final int DRAG_START = DND.DragStart;
-  public static final int DRAG_END = DND.DragEnd;
-  public static final int DRAG_SET_DATA = DND.DragSetData;
-  
-  private static final int[] EVENT_TYPES = { DRAG_START, DRAG_END, DRAG_SET_DATA };
 
   /**
    * The operation that was performed.
@@ -126,8 +118,38 @@ public class DragSourceEvent extends TypedEvent {
   // TODO [rh] in SWT, the field 'time' is declared in TypedEvent
   public int time;
 
-  public DragSourceEvent( Widget widget, int id ) {
-    super( widget, id );
+  /**
+   * Constructs a new instance of this class based on the
+   * information in the given untyped event.
+   *
+   * @param e the untyped event containing the information
+   * @since 2.0
+   */
+  public DragSourceEvent( DNDEvent e ) {
+    super( e );
+    this.data = e.data;
+    this.detail = e.detail;
+    this.doit = e.doit;
+    this.dataType = e.dataType;
+    this.x = e.x;
+    this.y = e.y;
+    this.image = e.image;
+    this.offsetX = e.offsetX;
+    this.offsetY = e.offsetY;
+  }
+
+  void updateEvent( DNDEvent e ) {
+    e.widget = this.widget;
+    e.time = this.time;
+    e.data = this.data;
+    e.detail = this.detail;
+    e.doit = this.doit;
+    e.dataType = this.dataType;
+    e.x = this.x;
+    e.y = this.y;
+    e.image = this.image;
+    e.offsetX = this.offsetX;
+    e.offsetY = this.offsetY;
   }
 
   @Override
@@ -148,39 +170,4 @@ public class DragSourceEvent extends TypedEvent {
     return EventUtil.isAccessible( widget );
   }
 
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, EVENT_TYPES );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, DragSourceListener listener ) {
-    addListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, DragSourceListener listener ) {
-    removeListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListeners( adaptable, EVENT_TYPES );
-  }
 }

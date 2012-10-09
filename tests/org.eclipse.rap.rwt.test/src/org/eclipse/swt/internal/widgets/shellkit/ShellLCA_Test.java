@@ -28,6 +28,7 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -269,10 +270,11 @@ public class ShellLCA_Test extends TestCase {
   }
 
   public void testUntypedActivateEvent() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    shell.open();
     Listener listener = mock( Listener.class );
     shell.addListener( SWT.Activate, listener );
 
-    Fixture.fakeNewRequest( display );
     Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_ACTIVATED, null );
     Fixture.readDataAndProcessAction( display );
 
@@ -280,6 +282,8 @@ public class ShellLCA_Test extends TestCase {
   }
 
   public void testTypedActivateEvent() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    shell.open();
     ShellListener listener = mock( ShellListener.class );
     shell.addShellListener( listener );
 

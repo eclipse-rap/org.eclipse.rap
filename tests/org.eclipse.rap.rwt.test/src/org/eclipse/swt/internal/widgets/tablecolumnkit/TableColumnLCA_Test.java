@@ -25,6 +25,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -63,6 +64,7 @@ public class TableColumnLCA_Test extends TestCase {
     table = new Table( shell, SWT.NONE );
     lca = new TableColumnLCA();
     Fixture.fakeNewRequest( display );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   @Override

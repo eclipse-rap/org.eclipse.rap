@@ -15,6 +15,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -39,9 +40,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 
-/*
- * The event filtering is done by the EventUtil#isAccessible
- */
 public class EventFiltering_Test extends TestCase {
 
   private Display display;
@@ -158,7 +156,7 @@ public class EventFiltering_Test extends TestCase {
     Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_CLOSED, null );
     Fixture.executeLifeCycleFromServerThread( );
 
-    verify( listener, times( 0 ) ).shellClosed( any( ShellEvent.class ) );
+    verify( listener, never() ).shellClosed( any( ShellEvent.class ) );
   }
 
   public void testNestedModalShell() {
@@ -175,7 +173,7 @@ public class EventFiltering_Test extends TestCase {
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
     Fixture.executeLifeCycleFromServerThread( );
 
-    verify( selectionListener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
+    verify( selectionListener ).widgetSelected( any( SelectionEvent.class ) );
   }
 
 }

@@ -55,9 +55,10 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.events.EventList;
+import org.eclipse.swt.internal.events.EventTable;
+import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
-import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
@@ -213,6 +214,7 @@ public class Display extends Device implements Adaptable {
   private List<FilterEntry> filters;
   private Collection<Control> redrawControls;
   private Control focusControl;
+  private EventTable filterTable;
   private transient Monitor monitor;
   private transient IDisplayAdapter displayAdapter;
   private WidgetAdapter widgetAdapter;
@@ -710,6 +712,7 @@ public class Display extends Device implements Adaptable {
     if( scheduler != null ) {
       scheduler.dispose();
     }
+    filterTable = null;
   }
 
   @Override
@@ -1176,6 +1179,7 @@ public class Display extends Device implements Adaptable {
     Event event = EventList.getInstance().removeNext();
     if( event != null ) {
       if( EventUtil.isAccessible( event.widget ) ) {
+        event.display.filterEvent( event );
         event.widget.notifyListeners( event.type, event );
         result = true;
       }
@@ -1732,10 +1736,10 @@ public class Display extends Device implements Adaptable {
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( filters == null ) {
-      filters = new ArrayList<FilterEntry>();
+    if( filterTable == null ) {
+      filterTable = new EventTable();
     }
-    filters.add( new FilterEntry( eventType, listener ) );
+    filterTable.hook( eventType, listener );
   }
 
   /**
@@ -1761,20 +1765,22 @@ public class Display extends Device implements Adaptable {
    * @see #addListener
    */
   public void removeFilter( int eventType, Listener listener ) {
-    checkDevice();
+    checkDevice ();
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    IFilterEntry[] entries = getFilterEntries();
-    boolean found = false;
-    for( int i = 0; !found && i < entries.length; i++ ) {
-      found = entries[ i ].getListener() == listener && entries[ i ].getType() == eventType;
-      if( found ) {
-        filters.remove( entries[ i ] );
-      }
+    if( filterTable == null ) {
+      return;
     }
-    if( filters != null && filters.isEmpty() ) {
-      filters = null;
+    filterTable.unhook( eventType, listener );
+    if( filterTable.size() == 0 ) {
+      filterTable = null;
+    }
+  }
+
+  void filterEvent( Event event ) {
+    if( filterTable != null ) {
+      filterTable.sendEvent( event );
     }
   }
 

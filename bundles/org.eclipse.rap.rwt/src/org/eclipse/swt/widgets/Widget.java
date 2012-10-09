@@ -27,6 +27,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.internal.SWTEventListener;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.events.EventList;
 import org.eclipse.swt.internal.events.EventTable;
@@ -548,8 +549,9 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    ensureEventTable();
-    eventTable.unhook( eventType, listener );
+    if( eventTable != null ) {
+      eventTable.unhook( eventType, listener );
+    }
   }
 
   /**
@@ -636,9 +638,46 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     return result;
   }
 
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when an event of the given type occurs.
+   * <p>
+   * <b>IMPORTANT:</b> This method is <em>not</em> part of the SWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by SWT. It should never be
+   * referenced from application code.
+   * </p>
+   *
+   * @param eventType the type of event to listen for
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see Listener
+   * @see #addListener
+   * 
+   * @noreference This method is not intended to be referenced by clients.
+   */
+  protected void removeListener( int eventType, SWTEventListener listener ) {
+    checkWidget();
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( eventTable != null ) {
+      eventTable.unhook( eventType, listener );
+    }
+  }
+
   private void sendEvent( Event event ) {
     if( isEventProcessingPhase() ) {
       if( eventTable != null ) {
+        event.display.filterEvent( event );
         eventTable.sendEvent( event );
       }
     } else {
