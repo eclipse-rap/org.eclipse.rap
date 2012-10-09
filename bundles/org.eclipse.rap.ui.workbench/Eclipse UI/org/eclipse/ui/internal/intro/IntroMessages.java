@@ -19,7 +19,7 @@ import org.eclipse.rap.rwt.RWT;
 public class IntroMessages {
 //public class IntroMessages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.ui.internal.intro.intro";//$NON-NLS-1$
-	
+
 	// RAP [bm]: I18n
 //	public static String Intro_could_not_create_part;
 //	public static String Intro_could_not_create_proxy;
@@ -37,16 +37,14 @@ public class IntroMessages {
     public String Intro_missing_product_title;
     public String Intro_missing_product_message;
     // ENDRAP
-    
-	
+
+
 	// RAP [bm]: different NLS due to multiple user/session capability
 //    static {
 //    	// load message values from bundle file
 //    	NLS.initializeMessages(BUNDLE_NAME, IntroMessages.class);
 //    }
     public static IntroMessages get() {
-      Class clazz = IntroMessages.class;
-      Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
-      return ( IntroMessages )result;
+      return RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, IntroMessages.class );
     }
 }

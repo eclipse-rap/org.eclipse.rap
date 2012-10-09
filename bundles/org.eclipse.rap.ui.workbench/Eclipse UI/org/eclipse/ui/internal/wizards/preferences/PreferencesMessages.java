@@ -71,8 +71,6 @@ public class PreferencesMessages {
      * @return localized message
      */
     public static PreferencesMessages get() {
-      Class clazz = PreferencesMessages.class;
-      Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
-      return ( PreferencesMessages )result;
+      return RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, PreferencesMessages.class );
     }
 }

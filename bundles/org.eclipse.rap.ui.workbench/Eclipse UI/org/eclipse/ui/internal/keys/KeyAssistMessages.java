@@ -40,8 +40,6 @@ public class KeyAssistMessages {
      * @return localized message
      */
     public static KeyAssistMessages get() {
-      Class clazz = KeyAssistMessages.class;
-      Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
-      return ( KeyAssistMessages )result;
+      return RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, KeyAssistMessages.class );
     }
 }
