@@ -14,7 +14,7 @@ import org.eclipse.rap.rwt.RWT;
 
 public class Messages {
 
-  private static final String BUNDLE_NAME 
+  private static final String BUNDLE_NAME
     = "org.eclipse.rap.internal.design.example.messages"; //$NON-NLS-1$
   public String ConfigurationDialog_Cancel;
   public String ConfigurationDialog_ConfigurationFor;
@@ -25,10 +25,9 @@ public class Messages {
   public String PerspectiveSwitcherBuilder_Other;
   public String ViewStackPresentation_ConfButtonToolTipDisabled;
   public String ViewStackPresentation_ConfButtonToolTipEnabled;
-  
+
   public static Messages get() {
-    Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, Messages.class );
-    return ( Messages )result;
+    return RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, Messages.class );
   }
 
   private Messages() {

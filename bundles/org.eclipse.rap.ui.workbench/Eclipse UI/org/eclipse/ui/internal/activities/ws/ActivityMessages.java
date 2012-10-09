@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.RWT;
 //  public class ActivityMessages extends NLS {
 public class ActivityMessages {
 	private static final String BUNDLE_NAME = "org.eclipse.ui.internal.activities.ws.messages";//$NON-NLS-1$
-	
+
 // RAP [fappel]: different NLS due to multiple user/session capability
 //	public static String ActivityEnabler_description;
 //	public static String ActivityEnabler_activities;
@@ -63,8 +63,6 @@ public class ActivityMessages {
 //		NLS.initializeMessages(BUNDLE_NAME, ActivityMessages.class);
 //	}
     public static ActivityMessages get() {
-      Class clazz = ActivityMessages.class;
-      Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
-      return ( ActivityMessages )result;
+      return RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, ActivityMessages.class );
     }
 }

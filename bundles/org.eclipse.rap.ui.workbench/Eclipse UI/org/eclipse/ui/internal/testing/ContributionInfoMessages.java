@@ -54,9 +54,7 @@ public class ContributionInfoMessages {
      * @return localized message
      */
     public static ContributionInfoMessages get() {
-      Class clazz = ContributionInfoMessages.class;
-      Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
-      return ( ContributionInfoMessages )result;
+      return RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, ContributionInfoMessages.class );
     }
 
 }

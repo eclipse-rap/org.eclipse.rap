@@ -34,8 +34,7 @@ public class NLS_Test extends TestCase {
     public String MyMessage;
 
     public static TestMessages get() {
-      return ( TestMessages )RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME,
-                                                          TestMessages.class );
+      return RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, TestMessages.class );
     }
 
     private TestMessages() {
@@ -48,8 +47,7 @@ public class NLS_Test extends TestCase {
     public String MyMessage;
 
     public static TestMessagesUTF8 get() {
-      Class clazz = TestMessagesUTF8.class;
-      return ( TestMessagesUTF8 )RWT.NLS.getUTF8Encoded( BUNDLE_NAME, clazz );
+      return RWT.NLS.getUTF8Encoded( BUNDLE_NAME, TestMessagesUTF8.class );
     }
 
     private TestMessagesUTF8() {
@@ -62,9 +60,7 @@ public class NLS_Test extends TestCase {
     public String NoTranslationAvailable;
 
     public static TestIncompleteMessages get() {
-      Class clazz = TestIncompleteMessages.class;
-      Object messages = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
-      return ( TestIncompleteMessages )messages;
+      return RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, TestIncompleteMessages.class );
     }
 
     private TestIncompleteMessages() {

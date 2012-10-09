@@ -121,7 +121,7 @@ public final class RWT {
      * @param bundleName the resource bundle to load.
      * @param clazz the class of the NLS object to load.
      */
-    public static Object getISO8859_1Encoded( String bundleName, Class<?> clazz ) {
+    public static <T> T getISO8859_1Encoded( String bundleName, Class<T> clazz ) {
       ClassLoader loader = clazz.getClassLoader();
       ResourceBundle bundle = ResourceBundle.getBundle( bundleName, getLocale(), loader );
       return internalGet( bundle, clazz );
@@ -137,16 +137,17 @@ public final class RWT {
      * @param bundleName the resource bundle to load.
      * @param clazz the class of the NLS object to load.
      */
-    public static Object getUTF8Encoded( String bundleName, Class<?> clazz ) {
+    public static <T> T getUTF8Encoded( String bundleName, Class<T> clazz ) {
       ClassLoader loader = clazz.getClassLoader();
       ResourceBundle bundle = Utf8ResourceBundle.getBundle( bundleName, getLocale(), loader );
       return internalGet( bundle, clazz );
     }
 
-    private static Object internalGet( ResourceBundle bundle, Class<?> clazz ) {
-      Object result;
+    @SuppressWarnings( "unchecked" )
+    private static <T> T internalGet( ResourceBundle bundle, Class<T> clazz ) {
+      T result;
       synchronized( map ) {
-        result = map.get( bundle );
+        result = ( T )map.get( bundle );
         if( result == null ) {
           result = ClassUtil.newInstance( clazz );
           Field[] fields = clazz.getDeclaredFields();

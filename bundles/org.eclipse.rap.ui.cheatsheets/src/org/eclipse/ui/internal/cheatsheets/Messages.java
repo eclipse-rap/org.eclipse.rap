@@ -163,8 +163,6 @@ public final class Messages {
      * @return localized message
      */
     public static Messages get() {
-      Class clazz = Messages.class;
-      Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
-      return ( Messages )result;
+      return RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, Messages.class );
     }
 }

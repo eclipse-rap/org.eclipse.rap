@@ -41,7 +41,7 @@ public class ProgressMessages {
 //	public static String ProgressView_CancelAction;
 //	public static String ProgressView_ClearAllAction;
 //	public static String ProgressView_NoOperations;
-//	
+//
 //	public static String NewProgressView_RemoveAllJobsToolTip;
 //	public static String NewProgressView_CancelJobToolTip;
 //	public static String NewProgressView_ClearJobToolTip;
@@ -96,7 +96,7 @@ public class ProgressMessages {
 	public String ProgressView_CancelAction;
 	public String ProgressView_ClearAllAction;
 	public String ProgressView_NoOperations;
-	
+
 	public String NewProgressView_RemoveAllJobsToolTip;
 	public String NewProgressView_CancelJobToolTip;
 	public String NewProgressView_ClearJobToolTip;
@@ -132,10 +132,8 @@ public class ProgressMessages {
 //		// load message values from bundle file
 //		NLS.initializeMessages(BUNDLE_NAME, ProgressMessages.class);
 //	}
-	
+
     public static ProgressMessages get() {
-      Class clazz = ProgressMessages.class;
-      Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
-      return ( ProgressMessages )result;
+      return RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, ProgressMessages.class );
     }
 }
