@@ -11,9 +11,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -46,14 +48,14 @@ import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.shellkit.ShellLCA;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -69,7 +71,7 @@ public class ControlLCAUtil_Test extends TestCase {
 
   private Display display;
   private Shell shell;
-  private Control control;
+  private Button control;
 
   @Override
   protected void setUp() throws Exception {
@@ -79,6 +81,7 @@ public class ControlLCAUtil_Test extends TestCase {
     control = new Button( shell, SWT.PUSH );
     control.setSize( 10, 10 ); // Would be rendered as invisible otherwise
     Fixture.fakeNewRequest( display );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   @Override
@@ -87,28 +90,122 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testProcessSelection() {
+  public void testProcessSelectionForControl() {
     SelectionListener listener = mock( SelectionListener.class );
-    Button button = new Button( shell, SWT.PUSH );
-    button.addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
-    Fixture.readDataAndProcessAction( button );
-
-    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class) );
-    verify( listener, times( 0 ) ).widgetDefaultSelected( any( SelectionEvent.class) );
+    control.addSelectionListener( listener );
+    
+    fakeSelectionEvent( control, null, null );
+    ControlLCAUtil.processSelection( control, null, true );
+    
+    verify( listener, never() ).widgetDefaultSelected( any( SelectionEvent.class ) );
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertEquals( control, event.widget );
+    assertEquals( control.getBounds(), 
+                  new Rectangle( event.x, event.y, event.width, event.height ) );
   }
 
+  public void testProcessSelectionForControlWithItem() {
+    Item item = mock( Item.class );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Selection, listener );
+    
+    fakeSelectionEvent( control, null, null );
+    ControlLCAUtil.processSelection( control, item, true );
+    
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( listener ).handleEvent( captor.capture() );
+    Event event = captor.getValue();
+    assertEquals( control, event.widget );
+    assertEquals( item, event.item );
+    assertEquals( SWT.Selection, event.type );
+    assertEquals( control.getBounds(), event.getBounds() );
+  }
+  
+  public void testProcessSelectionWithStateMask() {
+    SelectionListener listener = mock( SelectionListener.class );
+    control.addSelectionListener( listener );
+    
+    fakeSelectionEvent( control, "altKey", "true" );
+    ControlLCAUtil.processSelection( control, null, true );
+    
+    verify( listener, never() ).widgetDefaultSelected( any( SelectionEvent.class ) );
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertEquals( control, event.widget );
+    assertTrue( ( event.stateMask & SWT.ALT ) != 0 );
+    assertEquals( control.getBounds(), 
+                  new Rectangle( event.x, event.y, event.width, event.height ) );
+  }
+
+  public void testProcessSelectionWithoutReadingBounds() {
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Selection, listener );
+    
+    fakeSelectionEvent( control, null, null );
+    ControlLCAUtil.processSelection( control, null, false );
+    
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( listener ).handleEvent( captor.capture() );
+    Event event = captor.getValue();
+    assertEquals( control, event.widget );
+    assertEquals( SWT.Selection, event.type );
+    assertEquals( 0, event.x );
+    assertEquals( 0, event.y );
+    assertEquals( 0, event.width );
+    assertEquals( 0, event.height );
+  }
+  
+  public void testProcessSelectionWithDetailChecked() {
+    SelectionListener listener = mock( SelectionListener.class );
+    control.addSelectionListener( listener );
+    
+    fakeSelectionEvent( control, ClientMessageConst.EVENT_PARAM_DETAIL, "check" );
+    ControlLCAUtil.processSelection( control, null, false );
+    
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertEquals( SWT.CHECK, event.detail );
+  }
+
+  public void testProcessSelectionWithDetailSearch() {
+    SelectionListener listener = mock( SelectionListener.class );
+    control.addSelectionListener( listener );
+    
+    fakeSelectionEvent( control, ClientMessageConst.EVENT_PARAM_DETAIL, "search" );
+    ControlLCAUtil.processSelection( control, null, false );
+    
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertEquals( SWT.ICON_SEARCH, event.detail );
+  }
+  
+  public void testProcessSelectionWithDetailCancel() {
+    SelectionListener listener = mock( SelectionListener.class );
+    control.addSelectionListener( listener );
+    
+    fakeSelectionEvent( control, ClientMessageConst.EVENT_PARAM_DETAIL, "cancel" );
+    ControlLCAUtil.processSelection( control, null, false );
+    
+    ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
+    verify( listener ).widgetSelected( captor.capture() );
+    SelectionEvent event = captor.getValue();
+    assertEquals( SWT.CANCEL, event.detail );
+  }
+  
   public void testProcessDefaultSelection() {
     SelectionListener listener = mock( SelectionListener.class );
-    Button button = new Button( shell, SWT.PUSH );
-    button.addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED, null );
-    Fixture.readDataAndProcessAction( button );
-
-    verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class) );
-    verify( listener, times( 1 ) ).widgetDefaultSelected( any( SelectionEvent.class) );
+    control.addSelectionListener( listener );
+  
+    Fixture.fakeNotifyOperation( getId( control ), EVENT_WIDGET_DEFAULT_SELECTED, null );
+    ControlLCAUtil.processDefaultSelection( control, null );
+  
+    verify( listener, never() ).widgetSelected( any( SelectionEvent.class ) );
+    verify( listener ).widgetDefaultSelected( any( SelectionEvent.class ) );
   }
 
   public void testProcessKeyEventWithDisplayFilter() {
@@ -655,9 +752,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testRenderListenActivate() {
-    ActivateAdapter listener = new ActivateAdapter() {
-    };
-    ActivateEvent.addListener( control, listener );
+    control.addListener( SWT.Activate, mock( Listener.class ) );
 
     ControlLCAUtil.renderListenActivate( control );
 
@@ -666,11 +761,9 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testRenderListenActivateUnchanged() {
-    ActivateAdapter listener = new ActivateAdapter() {
-    };
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
-    ActivateEvent.addListener( control, listener );
+    control.addListener( SWT.Activate, mock( Listener.class ) );
 
     Fixture.preserveWidgets();
     ControlLCAUtil.renderListenActivate( control );
@@ -680,14 +773,13 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testRenderListenActivateRemoved() {
-    ActivateAdapter listener = new ActivateAdapter() {
-    };
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
-    ActivateEvent.addListener( control, listener );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Activate, listener );
     Fixture.preserveWidgets();
 
-    ActivateEvent.removeListener( control, listener );
+    control.removeListener( SWT.Activate, listener );
     ControlLCAUtil.renderListenActivate( control );
 
     Message message = Fixture.getProtocolMessage();
@@ -695,12 +787,10 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testRenderNoListenActivateOnDispose() {
-    ActivateAdapter listener = new ActivateAdapter() {
-    };
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     Fixture.preserveWidgets();
-    ActivateEvent.addListener( control, listener );
+    control.addListener( SWT.Activate, mock( Listener.class ) );
 
     control.dispose();
     ControlLCAUtil.renderListenActivate( control );
@@ -961,6 +1051,15 @@ public class ControlLCAUtil_Test extends TestCase {
     properties.put( ClientMessageConst.EVENT_PARAM_CHAR_CODE, Integer.valueOf( charCode ) );
     properties.put( ClientMessageConst.EVENT_PARAM_MODIFIER, modifier );
     Fixture.fakeNotifyOperation( target, ClientMessageConst.EVENT_KEY_DOWN, properties  );
+  }
+
+  private static void fakeSelectionEvent( Control control, String key, String value ) {
+    String id = getId( control );
+    Map<String, Object> parameters = new HashMap<String,Object>();
+    if( key != null ) {
+      parameters.put( key, value );
+    }
+    Fixture.fakeNotifyOperation( id, ClientMessageConst.EVENT_WIDGET_SELECTED, parameters );
   }
 
 }

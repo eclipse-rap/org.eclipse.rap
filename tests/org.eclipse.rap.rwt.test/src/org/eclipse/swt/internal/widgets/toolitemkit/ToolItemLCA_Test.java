@@ -15,6 +15,8 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -31,6 +33,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -80,17 +83,51 @@ public class ToolItemLCA_Test extends TestCase {
         assertEquals( 0, event.width );
         assertEquals( 0, event.height );
         assertEquals( true, item.getSelection() );
+        assertTrue( ( event.stateMask & SWT.ALT ) != 0 );
       }
     } );
     shell.open();
 
     Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Map<String,Object> params = new HashMap<String,Object>();
+    params.put( "altKey", "true" );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_WIDGET_SELECTED, params );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( true, wasEventFired[ 0 ] );
   }
 
+  public void testDropDownItemSelected() {
+    final boolean[] wasEventFired = { false };
+    final ToolItem item = new ToolItem( toolbar, SWT.DROP_DOWN );
+    item.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        wasEventFired[ 0 ] = true;
+        assertEquals( null, event.item );
+        assertSame( item, event.getSource() );
+        assertEquals( true, event.doit );
+        assertEquals( SWT.ARROW, event.detail );
+        Rectangle itemBounds = item.getBounds();
+        assertEquals( itemBounds.x, event.x );
+        assertEquals( itemBounds.y + itemBounds.height, event.y );
+        assertEquals( itemBounds.width, event.width );
+        assertEquals( itemBounds.height, event.height );
+        assertTrue( ( event.stateMask & SWT.ALT ) != 0 );
+      }
+    } );
+    shell.open();
+    
+    Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
+    Map<String,Object> params = new HashMap<String,Object>();
+    params.put( "altKey", "true" );
+    params.put( ClientMessageConst.EVENT_PARAM_DETAIL, "arrow" );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_WIDGET_SELECTED, params );
+    Fixture.readDataAndProcessAction( display );
+    
+    assertEquals( true, wasEventFired[ 0 ] );
+  }
+  
   public void testRadioItemSelected() {
     ToolItem item0 = new ToolItem( toolbar, SWT.RADIO );
     item0.setSelection( true );

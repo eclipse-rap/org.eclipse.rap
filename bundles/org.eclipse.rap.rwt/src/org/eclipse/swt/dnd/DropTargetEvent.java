@@ -33,7 +33,6 @@ public class DropTargetEvent extends TypedEvent {
   public static final int DROP = DND.Drop;
   public static final int DRAG_OPERATION_CHANGED = DND.DragOperationChanged;
 
-  private static final Class LISTENER = DropTargetListener.class;
   private static final int[] EVENT_TYPES = { DRAG_ENTER, DRAG_OVER, DRAG_LEAVE, DROP_ACCEPT, DROP, DRAG_OPERATION_CHANGED };
 
   /**
@@ -157,39 +156,8 @@ public class DropTargetEvent extends TypedEvent {
   }
 
   @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case DRAG_ENTER:
-        ( ( DropTargetListener )listener ).dragEnter( this );
-      break;
-      case DRAG_OVER:
-        ( ( DropTargetListener )listener ).dragOver( this );
-      break;
-      case DRAG_LEAVE:
-        ( ( DropTargetListener )listener ).dragLeave( this );
-      break;
-      case DROP_ACCEPT:
-        ( ( DropTargetListener )listener ).dropAccept( this );
-      break;
-      case DROP:
-        ( ( DropTargetListener )listener ).drop( this );
-      break;
-      case DRAG_OPERATION_CHANGED:
-        ( ( DropTargetListener )listener ).dragOperationChanged( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
   protected boolean allowProcessing() {
     return EventUtil.isAccessible( widget );
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
   }
 
   /**
@@ -225,6 +193,6 @@ public class DropTargetEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, EVENT_TYPES );
+    return getListeners( adaptable, EVENT_TYPES );
   }
 }

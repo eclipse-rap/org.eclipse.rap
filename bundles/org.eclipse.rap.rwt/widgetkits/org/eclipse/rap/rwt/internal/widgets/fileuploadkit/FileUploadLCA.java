@@ -20,9 +20,13 @@ import java.util.Map;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.widgets.FileUpload;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -80,8 +84,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
     String fileName = WidgetLCAUtil.readPropertyValue( fileUpload, "fileName" );
     if( fileName != null ) {
       adapter.setFileName( fileName.equals( "" ) ? null : fileName );
-      SelectionEvent event = new SelectionEvent( fileUpload, null, SelectionEvent.WIDGET_SELECTED );
-      event.processEvent();
+      fileUpload.notifyListeners( SWT.Selection, new Event() );
     }
   }
 

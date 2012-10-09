@@ -22,41 +22,38 @@ public class TreeEvent_Test extends TestCase {
 
   private static final String TREE_EXPANDED = "treeExpanded";
   private static final String TREE_COLLAPSED = "treeCollapsed";
+  
   private String log = "";
+  private Display display;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
   }
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
 
-  public void testAddRemoveClosedListener() {
+  public void testAddRemoveListener() {
     TreeListener listener = new TreeListener() {
-
       public void treeCollapsed( TreeEvent e ) {
         log += TREE_COLLAPSED;
       }
-
       public void treeExpanded( TreeEvent e ) {
         log += TREE_EXPANDED;
       }
     };
-    Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     tree.addTreeListener( listener );
     log = "";
-    TreeEvent event = new TreeEvent( tree, item, TreeEvent.TREE_COLLAPSED );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    event.processEvent();
+    tree.notifyListeners( SWT.Collapse, new Event() );
     assertEquals( TREE_COLLAPSED, log );
+
     log = "";
-    event = new TreeEvent( tree, item, TreeEvent.TREE_EXPANDED );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    event.processEvent();
+    tree.notifyListeners( SWT.Expand, new Event() );
     assertEquals( TREE_EXPANDED, log );
   }
 }

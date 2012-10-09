@@ -33,12 +33,7 @@ public final class ShellEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int SHELL_CLOSED = SWT.Close;
-  public static final int SHELL_ACTIVATED = SWT.Activate;
-  public static final int SHELL_DEACTIVATED = SWT.Deactivate;
-
-  private static final Class LISTENER = ShellListener.class;
-  private static final int[] EVENT_TYPES = { SHELL_CLOSED, SHELL_ACTIVATED, SHELL_DEACTIVATED };
+  private static final int[] EVENT_TYPES = { SWT.Close, SWT.Activate, SWT.Deactivate };
 
   /**
    * A flag indicating whether the operation should be allowed.
@@ -54,48 +49,13 @@ public final class ShellEvent extends TypedEvent {
    */
   public ShellEvent( Event event ) {
     super( event );
-    doit = true;
-  }
-
-  /**
-   * Constructs a new instance of this class.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
-  public ShellEvent( Object source, int id ) {
-    super( source, id );
-    doit = true;
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case SHELL_CLOSED:
-        ( ( ShellListener )listener ).shellClosed( this );
-        break;
-      case SHELL_ACTIVATED:
-        ( ( ShellListener )listener ).shellActivated( this );
-        break;
-      case SHELL_DEACTIVATED:
-        ( ( ShellListener )listener ).shellDeactivated( this );
-        break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
+    doit = event.doit;
   }
 
   @Override
   protected boolean allowProcessing() {
     boolean result;
-    if( getID() == SHELL_CLOSED ) {
+    if( getID() == SWT.Close ) {
       result = EventUtil.isAccessible( widget );
     } else {
       result = true;
@@ -136,6 +96,6 @@ public final class ShellEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, EVENT_TYPES );
+    return getListeners( adaptable, EVENT_TYPES );
   }
 }

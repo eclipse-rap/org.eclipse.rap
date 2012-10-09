@@ -11,7 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -524,6 +527,37 @@ public class Control_Test extends TestCase {
     assertEquals( false, composite.isVisible() );
     assertEquals( true, control.getVisible() );
     assertEquals( false, control.isVisible() );
+  }
+  
+  public void testSetVisibleSendsShowEvent() {
+    Control control = new Button( shell, SWT.PUSH );
+    control.setVisible( false );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Show, listener );
+    
+    control.setVisible( true );
+    
+    verify( listener ).handleEvent( any( Event.class ) );
+  }
+
+  public void testSetVisibleOnVisibleControl() {
+    Control control = new Button( shell, SWT.PUSH );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Show, listener );
+    
+    control.setVisible( true );
+    
+    verify( listener, never() ).handleEvent( any( Event.class ) );
+  }
+  
+  public void testSetVisibleSendsHideEvent() {
+    Control control = new Button( shell, SWT.PUSH );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Hide, listener );
+    
+    control.setVisible( false );
+    
+    verify( listener ).handleEvent( any( Event.class ) );
   }
 
   public void testZOrder() {

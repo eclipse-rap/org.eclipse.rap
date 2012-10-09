@@ -25,9 +25,6 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
-import org.eclipse.swt.internal.events.ActivateListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -55,7 +52,7 @@ public class DefaultTabFolder extends AbstractTabFolder {
     private Control viewToolBar;
     private Label titleLabel;
 // RAP [if] ActivateListener used for mimic the part activation that is done via mouse listeners
-    private ActivateListener activateListener;
+    private Listener activateListener;
     
     private PaneFolderButtonListener buttonListener = new PaneFolderButtonListener() {
         public void stateButtonPressed(int buttonId) {
@@ -151,10 +148,10 @@ public class DefaultTabFolder extends AbstractTabFolder {
         }
 
 // RAP [rh] create ActivateListener, used below       
-        activateListener = new ActivateAdapter() {
-            public void activated( ActivateEvent event ) {
-              fireEvent( TabFolderEvent.EVENT_GIVE_FOCUS_TO_PART );
-            }
+        activateListener = new Listener() {
+          public void handleEvent( Event event ) {
+            fireEvent( TabFolderEvent.EVENT_GIVE_FOCUS_TO_PART );
+          }
         };
 // END RAP-specific        
         
@@ -165,12 +162,12 @@ public class DefaultTabFolder extends AbstractTabFolder {
 	        titleLabel.setVisible(false);
             attachListeners(titleLabel, false);
 // RAP [rh] Mimic the part activation that is done via mouse listeners in attachListeners()  
-            ActivateEvent.addListener( titleLabel , activateListener );
+            titleLabel.addListener( SWT.Activate, activateListener );
         }
         
 // RAP [rh] Mimic the part activation that is done via mouse listeners in attachListeners()  
-        ActivateEvent.addListener( paneFolder.getControl(), activateListener );
-        ActivateEvent.addListener( paneFolder.getViewForm(), activateListener );
+        paneFolder.getControl().addListener( SWT.Activate, activateListener );
+        paneFolder.getViewForm().addListener( SWT.Activate, activateListener );
 
         attachListeners(paneFolder.getControl(), false);
         attachListeners(paneFolder.getViewForm(), false);
@@ -457,7 +454,7 @@ public class DefaultTabFolder extends AbstractTabFolder {
     public void setToolbar(Control toolbarControl) {
 // RAP [if] Mimic the part activation that is done via mouse listeners
         if( toolbarControl != null ) {
-          ActivateEvent.addListener( toolbarControl, activateListener );
+          toolbarControl.addListener( SWT.Activate, activateListener );
         }
         paneFolder.setTopCenter(toolbarControl);
         super.setToolbar(toolbarControl);

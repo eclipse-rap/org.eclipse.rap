@@ -137,6 +137,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
           folder.setSelection( item );
           preserveProperty( folder, PROP_SELECTION, folder.getSelection() );
           ControlLCAUtil.processSelection( folder, item, false );
+          ControlLCAUtil.processDefaultSelection( folder, item );
         }
       } );
     }

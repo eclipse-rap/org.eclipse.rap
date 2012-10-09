@@ -14,21 +14,16 @@ package org.eclipse.swt.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rap.rwt.internal.events.Event;
+import org.eclipse.rap.rwt.internal.events.RWTEvent;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.LocationEvent;
-import org.eclipse.swt.browser.ProgressEvent;
-import org.eclipse.swt.custom.CTabFolderEvent;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.internal.events.DeselectionEvent;
-import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -39,66 +34,13 @@ import org.eclipse.swt.widgets.Widget;
  *
  * @see org.eclipse.swt.widgets.Event
  */
-public class TypedEvent extends Event {
+public class TypedEvent extends RWTEvent {
   private static final long serialVersionUID = 1L;
 
   private static final String ATTR_SCHEDULED_EVENT_LIST
     = TypedEvent.class.getName() + "#scheduledEventList";
 
-  private static final int[] EVENT_ORDER = {
-    SWT.Move,
-    SWT.Resize,
-    SWT.Deactivate,
-    SWT.Activate,
-    EventTypes.CONTROL_ACTIVATED,
-    EventTypes.CONTROL_DEACTIVATED,
-    SWT.Close,
-    SWT.Hide,
-    SWT.Show,
-    SWT.Dispose,
-    SWT.SetData,
-    SWT.FocusOut,
-    SWT.FocusIn,
-    SWT.Traverse,
-    SWT.KeyDown,
-    SWT.Expand,
-    SWT.Collapse,
-    SWT.Verify,
-    SWT.Modify,
-    SWT.MouseDown,
-    SWT.MouseDoubleClick,
-    SWT.MenuDetect,
-    CTabFolderEvent.CLOSE,
-    CTabFolderEvent.MINIMIZE,
-    CTabFolderEvent.MAXIMIZE,
-    CTabFolderEvent.RESTORE,
-    CTabFolderEvent.SHOW_LIST,
-    DeselectionEvent.WIDGET_DESELECTED,
-    SWT.Selection,
-    SWT.DefaultSelection,
-    SWT.MouseUp,
-    SWT.Help,
-    SWT.KeyUp,
-    // TODO: Find the correct place of drag events - MouseDown/MouseUp/Selection
-    SWT.DragDetect,
-    DND.DragStart,
-    DND.DragEnd,
-    DND.DragSetData,
-    DND.DragEnter,
-    DND.DragOver,
-    DND.DragLeave,
-    DND.DropAccept,
-    DND.Drop,
-    DND.DragOperationChanged,
-    LocationEvent.CHANGING,
-    LocationEvent.CHANGED,
-    ProgressEvent.CHANGED,
-    ProgressEvent.COMPLETED,
-    SWT.Arm,
-    EventTypes.PAINT // SWT.Paint
-  };
-
-  private org.eclipse.swt.widgets.Event sourceEvent;
+  protected Event sourceEvent;
 
   /**
    * the display where the event occurred
@@ -121,14 +63,14 @@ public class TypedEvent extends Event {
    * Constructs a new instance of this class based on the
    * information in the argument.
    *
-   * @param e the low level event to initialize the receiver with
+   * @param event the low level event to initialize the receiver with
    */
-  public TypedEvent( org.eclipse.swt.widgets.Event e ) {
-    super( e.widget, e.type );
-    display = e.display;
-    widget = e.widget;
-    data = e.data;
-    sourceEvent = e;
+  public TypedEvent( Event event ) {
+    super( event.widget, event.type );
+    display = event.display;
+    widget = event.widget;
+    data = event.data;
+    sourceEvent = event;
   }
 
   /**
@@ -172,7 +114,6 @@ public class TypedEvent extends Event {
    * from application code.
    * </p>
    */
-  @Override
   public final void processEvent() {
     // TODO: [fappel] In case of session invalidation there's no phase.
     //                So no event processing should take place, this situation
@@ -186,7 +127,7 @@ public class TypedEvent extends Event {
         // TODO [fappel]: changes of the event fields in the filter handler
         //                methods should be forwarded to this event...
         if( !isFiltered( processFilters() ) ) {
-          super.processEvent();
+          sourceEvent.widget.notifyListeners( sourceEvent.type, sourceEvent );
         }
       } else {
         addToScheduledEvents( this );
@@ -194,34 +135,12 @@ public class TypedEvent extends Event {
     }
   }
 
-  /**
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
-  public static boolean executeNext() {
-    boolean result = false;
-    TypedEvent[] events = getScheduledEvents();
-    while( !result && events.length > 0 ) {
-      TypedEvent event = events[ 0 ];
-      getScheduledEventList().remove( event );
-      if( event.allowProcessing() ) {
-        event.processEvent();
-        result = true;
-      }
-      events = getScheduledEvents();
-    }
-    return result;
-  }
-
   ////////////////////////////////////
   // methods for filter implementation
 
-  private org.eclipse.swt.widgets.Event processFilters() {
+  private Event processFilters() {
     IFilterEntry[] filters = getFilterEntries();
-    org.eclipse.swt.widgets.Event result = new org.eclipse.swt.widgets.Event();
+    Event result = new Event();
     if( sourceEvent != null ) {
       copyFields( sourceEvent, result );
     }
@@ -236,7 +155,7 @@ public class TypedEvent extends Event {
     return result;
   }
 
-  private void copyFields( org.eclipse.swt.widgets.Event from, org.eclipse.swt.widgets.Event to ) {
+  private void copyFields( Event from, Event to ) {
     to.button = from.button;
     to.character = from.character;
     to.count = from.count;
@@ -259,7 +178,7 @@ public class TypedEvent extends Event {
     to.y = from.y;
   }
 
-  private static boolean isFiltered( org.eclipse.swt.widgets.Event event ) {
+  private static boolean isFiltered( Event event ) {
     return event.type == SWT.None;
   }
 
@@ -274,20 +193,6 @@ public class TypedEvent extends Event {
 
   private static void addToScheduledEvents( TypedEvent event ) {
     getScheduledEventList().add( event );
-  }
-
-  private static TypedEvent[] getScheduledEvents() {
-    List<TypedEvent> list = getScheduledEventList();
-    List<TypedEvent> sortedEvents = new ArrayList<TypedEvent>();
-    for( int i = 0; i < EVENT_ORDER.length; i++ ) {
-      for( int k = 0; k < list.size(); k++ ) {
-        TypedEvent event = list.get( k );
-        if( EVENT_ORDER[ i ] == event.getID() ) {
-          sortedEvents.add( event );
-        }
-      }
-    }
-    return sortedEvents.toArray( new TypedEvent[ sortedEvents.size() ] );
   }
 
   @SuppressWarnings("unchecked")
@@ -307,19 +212,6 @@ public class TypedEvent extends Event {
 
   protected boolean allowProcessing() {
   	String msg = "Derived classes must override allowProcessing.";
-  	throw new UnsupportedOperationException( msg );
-  }
-
-  // Exception to get rid of abstract TypedEvent
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-  	String msg = "Derived classes must override dispatchToObserver.";
-  	throw new UnsupportedOperationException( msg );
-  }
-
-  @Override
-  protected Class getListenerType() {
-  	String msg = "Derived classes must override getListenerType.";
   	throw new UnsupportedOperationException( msg );
   }
 

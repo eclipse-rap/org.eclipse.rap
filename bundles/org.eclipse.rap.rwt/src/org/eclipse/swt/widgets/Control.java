@@ -16,9 +16,34 @@ import org.eclipse.rap.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.accessibility.Accessible;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.events.ShowEvent;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.DragDetectEvent;
+import org.eclipse.swt.events.DragDetectListener;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.GestureListener;
+import org.eclipse.swt.events.HelpEvent;
+import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.MenuDetectEvent;
+import org.eclipse.swt.events.MenuDetectListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.events.TouchListener;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Drawable;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ControlHolder;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -249,8 +274,7 @@ public abstract class Control extends Widget implements Drawable {
     checkWidget();
     if( ( state & HIDDEN ) != 0 != !visible ) {
       if( visible ) {
-        ShowEvent event = new ShowEvent( this, ShowEvent.SHOWN );
-        event.processEvent();
+        notifyListeners( SWT.Show, null );
       }
       Control control = null;
       boolean fixFocus = false;
@@ -260,8 +284,7 @@ public abstract class Control extends Widget implements Drawable {
       }
       state = visible ? state & ~HIDDEN : state | HIDDEN;
       if( !visible ) {
-        ShowEvent event = new ShowEvent( this, ShowEvent.HIDDEN );
-        event.processEvent();
+        notifyListeners( SWT.Hide, null );
       }
       if( fixFocus ) {
         fixFocus( control );
@@ -2331,13 +2354,13 @@ public abstract class Control extends Widget implements Drawable {
 
   void notifyResize( Point oldSize ) {
     if( !oldSize.equals( getSize() ) ) {
-      new ControlEvent( this, ControlEvent.CONTROL_RESIZED ).processEvent();
+      notifyListeners( SWT.Resize, new Event() );
     }
   }
 
   void notifyMove( Point oldLocation ) {
     if( !oldLocation.equals( getLocation() ) ) {
-      new ControlEvent( this, ControlEvent.CONTROL_MOVED ).processEvent();
+      notifyListeners( SWT.Move, new Event() );
     }
   }
 

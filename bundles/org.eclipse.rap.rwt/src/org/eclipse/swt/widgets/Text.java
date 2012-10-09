@@ -198,8 +198,7 @@ public class Text extends Scrollable {
       }
       selection.x = 0;
       selection.y = 0;
-      ModifyEvent modifyEvent = new ModifyEvent( this );
-      modifyEvent.processEvent();
+      notifyListeners( SWT.Modify, new Event() );
     }
   }
 
@@ -1047,11 +1046,11 @@ public class Text extends Scrollable {
   // Text modification and verify event helper
 
   private String verifyText( String text, int start, int end ) {
-    VerifyEvent event = new VerifyEvent( this );
+    Event event = new Event();
     event.text = text;
     event.start = start;
     event.end = end;
-    event.processEvent();
+    notifyListeners( SWT.Verify, event );
     /*
      * It is possible (but unlikely), that application code could have disposed
      * the widget in the verify event. If this happens, answer null to cancel
@@ -1073,8 +1072,7 @@ public class Text extends Scrollable {
       if( selection != null ) {
         setSelection( selection.x, selection.y );
       }
-      ModifyEvent modifyEvent = new ModifyEvent( this );
-      modifyEvent.processEvent();
+      notifyListeners( SWT.Modify, new Event() );
     }
   }
 

@@ -1,14 +1,4 @@
-/*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *    EclipseSource - initial API and implementation
- ******************************************************************************/
-package org.eclipse.rap.rwt.widgets;
+package org.eclipse.rap.rwt.internal.widgets;
 
 
 import static org.mockito.Mockito.mock;
@@ -25,6 +15,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rap.rwt.events.BrowserHistoryListener;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rap.rwt.internal.widgets.BrowserHistory;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -53,44 +44,58 @@ public class BrowserHistory_Test extends TestCase {
   }
 
   public void testCreateEntry() {
+    BrowserHistory history = ( BrowserHistory )RWT.getBrowserHistory();
+    
+    history.createEntry( "id", "text" );
+    
+    assertEquals( 1, history.getEntries().length );
+    assertEquals( "id", history.getEntries()[ 0 ].id );
+    assertEquals( "text", history.getEntries()[ 0 ].text );
+  }
+  
+  public void testCreateEntryWithNullText() {
+    BrowserHistory history = ( BrowserHistory )RWT.getBrowserHistory();
+
+    history.createEntry( "id", null );
+    
+    assertEquals( 1, history.getEntries().length );
+    assertEquals( "id", history.getEntries()[ 0 ].id );
+    assertNull( history.getEntries()[ 0 ].text );
+  }
+  
+  public void testCreateEntryWithEmptyId() {
+    IBrowserHistory history = RWT.getBrowserHistory();
+    try {
+      history.createEntry( "", "name" );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testCreateEntryWithNullId() {
     IBrowserHistory history = RWT.getBrowserHistory();
     try {
       history.createEntry( null, "name" );
-      fail( "BrowserHistory#mark must not allow id == null" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    try {
-      history.createEntry( "", "name" );
-      fail( "BrowserHistory#mark must not id to be an empty string" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    try {
-      history.createEntry( null, null );
-      fail( "BrowserHistory#mark must not allow null for name or title" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+      fail();
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testAddBrowserHistoryListener() {
-    final IBrowserHistory history = RWT.getBrowserHistory();
+    IBrowserHistory history = RWT.getBrowserHistory();
     try {
       history.addBrowserHistoryListener( null );
       fail( "BrowserHistory#addBrowserHistoryListener must not allow null" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testRemoveBrowserHistoryListener() {
-    final IBrowserHistory history = RWT.getBrowserHistory();
+    IBrowserHistory history = RWT.getBrowserHistory();
     try {
       history.removeBrowserHistoryListener( null );
       fail( "BrowserHistory#removeBrowserHistoryListener must not allow null" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 

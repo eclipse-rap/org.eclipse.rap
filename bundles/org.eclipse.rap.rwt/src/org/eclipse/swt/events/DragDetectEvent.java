@@ -13,7 +13,6 @@ package org.eclipse.swt.events;
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -29,14 +28,7 @@ public class DragDetectEvent extends MouseEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int DRAG_DETECT = SWT.DragDetect;
-
-  private static final Class LISTENER = DragDetectListener.class;
-  private static final int[] EVENT_TYPES = { DRAG_DETECT };
-
-  public DragDetectEvent( Control control ) {
-    super( control, DRAG_DETECT );
-  }
+  private static final int[] EVENT_TYPES = { SWT.DragDetect };
 
   /**
    * Constructs a new instance of this class based on the
@@ -46,36 +38,12 @@ public class DragDetectEvent extends MouseEvent {
    */
   public DragDetectEvent( Event event ) {
     super( event );
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case DRAG_DETECT:
-        ( ( DragDetectListener )listener ).dragDetected( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
+    
   }
 
   @Override
   protected boolean allowProcessing() {
     return EventUtil.isAccessible( widget );
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -96,12 +64,4 @@ public class DragDetectEvent extends MouseEvent {
     removeListener( adaptable, EVENT_TYPES, listener );
   }
 
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, EVENT_TYPES );
-  }
 }

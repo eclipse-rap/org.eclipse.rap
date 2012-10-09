@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.events;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.SWTEventListener;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TypedListener;
@@ -24,7 +25,7 @@ import org.eclipse.swt.widgets.TypedListener;
  * same event type are supported.
  */
 // copied from SWT (note the different package there: org.eclipse.swt.widgets) 
-public class EventTable {
+public class EventTable implements SerializableCompatibility {
 	int [] types;
 	Listener [] listeners;
 	int level;

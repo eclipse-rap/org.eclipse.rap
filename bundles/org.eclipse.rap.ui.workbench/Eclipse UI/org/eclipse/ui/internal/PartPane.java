@@ -21,8 +21,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.events.ActivateEvent;
-import org.eclipse.swt.internal.events.ActivateListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -52,9 +50,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
  * should be removed from LayoutPart.
  */
 public abstract class PartPane extends LayoutPart implements IPropertyListener,
-		Listener, IPropertyChangeListener,
-// RAP [rh] ActivateListener to work around missing SWT.Activate		
-		ActivateListener 
+		Listener, IPropertyChangeListener
 		{
 
     public static final String PROP_ZOOMED = "zoomed"; //$NON-NLS-1$
@@ -156,9 +152,7 @@ public abstract class PartPane extends LayoutPart implements IPropertyListener,
 
         
         // When the pane or any child gains focus, notify the workbench.
-// RAP [rh] workaround for missing SWT.Activate event        
-//        control.addListener(SWT.Activate, this);
-        ActivateEvent.addListener( control, this );
+        control.addListener(SWT.Activate, this);
 
 // RAP [rh] Traverse events not implemented        
 //        control.addTraverseListener(traverseListener);
@@ -176,9 +170,7 @@ public abstract class PartPane extends LayoutPart implements IPropertyListener,
         super.dispose();
 
         if ((control != null) && (!control.isDisposed())) {
-// RAP [rh] Workaround for missing SWT.Activate event        	
-//            control.removeListener(SWT.Activate, this);
-        	ActivateEvent.removeListener(control, this);
+            control.removeListener(SWT.Activate, this);
 // RAP [rh] Traverse events not implemented            
 //            control.removeTraverseListener(traverseListener);
             try {
@@ -669,13 +661,4 @@ public abstract class PartPane extends LayoutPart implements IPropertyListener,
         return ((WorkbenchPartReference)partReference).getSizeFlags(horizontal);
     }
     
-// RAP [rh] ActivateListener methods to work around missing SWT.Activate event
-    public void activated( final ActivateEvent event ){
-	  requestActivation();
-    }
-
-    public void deactivated( final ActivateEvent event ) {
-    	// do nothing
-    }
-// RAP [rh] end RAP-specific    
 }

@@ -14,7 +14,6 @@ package org.eclipse.swt.events;
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -50,7 +49,6 @@ public class KeyEvent extends TypedEvent {
   public static final int KEY_PRESSED = SWT.KeyDown;
   public static final int KEY_RELEASED = SWT.KeyUp;
 
-  private static final Class LISTENER = KeyListener.class;
   private static final int[] EVENT_TYPES = { KEY_PRESSED, KEY_RELEASED };
 
   /**
@@ -101,30 +99,6 @@ public class KeyEvent extends TypedEvent {
     keyCode = event.keyCode;
     stateMask = event.stateMask;
     doit = event.doit;
-  }
-
-  public KeyEvent( Control source, int id ) {
-    super( source, id );
-    doit = true;
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case KEY_PRESSED:
-        ( ( KeyListener )listener ).keyPressed( this );
-      break;
-      case KEY_RELEASED:
-        ( ( KeyListener )listener ).keyReleased( this );
-        break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
   }
 
   @Override

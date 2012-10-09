@@ -13,7 +13,6 @@ package org.eclipse.swt.internal.custom.scrolledcompositekit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
@@ -22,11 +21,16 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.internal.events.EventLCAUtil;
+import org.eclipse.swt.widgets.ScrollBar;
+import org.eclipse.swt.widgets.Widget;
 
 
 public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
@@ -82,7 +86,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processKeyEvents( composite );
     ControlLCAUtil.processMenuDetect( composite );
     WidgetLCAUtil.processHelp( composite );
-    processScrollBarSelectionEvent( composite );
+    EventLCAUtil.processScrollBarSelection( composite );
   }
 
   @Override
@@ -161,26 +165,5 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
       result = result || SelectionEvent.hasListener( verticalBar );
     }
     return result;
-  }
-
-  private static void processScrollBarSelectionEvent( ScrolledComposite composite ) {
-    if( WidgetLCAUtil.wasEventSent( composite, EVENT_SCROLLBAR_SELECTED ) ) {
-      String horizontal = readEventPropertyValue( composite,
-                                                  EVENT_SCROLLBAR_SELECTED,
-                                                  "horizontal" );
-      String vertical = readEventPropertyValue( composite,
-                                                EVENT_SCROLLBAR_SELECTED,
-                                                "vertical" );
-      ScrollBar hScroll = composite.getHorizontalBar();
-      if( hScroll != null && "true".equals( horizontal ) ) {
-        SelectionEvent evt = new SelectionEvent( hScroll, null, SelectionEvent.WIDGET_SELECTED );
-        evt.processEvent();
-      }
-      ScrollBar vScroll = composite.getVerticalBar();
-      if( vScroll != null && "true".equals( vertical ) ) {
-        SelectionEvent evt = new SelectionEvent( vScroll, null, SelectionEvent.WIDGET_SELECTED );
-        evt.processEvent();
-      }
-    }
   }
 }

@@ -14,21 +14,28 @@ package org.eclipse.swt.internal.events;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
+import org.mockito.ArgumentCaptor;
 
 
 public class ActivateEvent_Test extends TestCase {
@@ -55,16 +62,19 @@ public class ActivateEvent_Test extends TestCase {
     final Widget[] deactivated = new Widget[ 10 ];
     final int[] deactivatedCount = { 0 };
     Label label = new Label( shell, SWT.NONE );
-    ActivateEvent.addListener( label, new ActivateListener() {
-      public void activated( ActivateEvent event ) {
-        activated[ activatedCount[ 0 ] ] = ( Widget )event.getSource();
-        activatedCount[ 0 ]++;
+    Listener listener = new Listener() {
+      public void handleEvent( Event event ) {
+        if( event.type == SWT.Activate ) {
+          activated[ activatedCount[ 0 ] ] = event.widget;
+          activatedCount[ 0 ]++;
+        } else {
+          deactivated[ deactivatedCount[ 0 ] ] = event.widget;
+          deactivatedCount[ 0 ]++;
+        }
       }
-      public void deactivated( ActivateEvent event ) {
-        deactivated[ deactivatedCount[ 0 ] ] = ( Widget )event.getSource();
-        deactivatedCount[ 0 ]++;
-      }
-    } );
+    };
+    label.addListener( SWT.Activate, listener );
+    label.addListener( SWT.Deactivate, listener );
 
     fakeActivateEvent( label );
     Fixture.readDataAndProcessAction( display );
@@ -78,30 +88,37 @@ public class ActivateEvent_Test extends TestCase {
     final int[] activatedCount = { 0 };
     final Widget[] deactivated = new Widget[ 10 ];
     final int[] deactivatedCount = { 0 };
-    ActivateListener listener = new ActivateListener() {
-      public void activated( ActivateEvent event ) {
-        activated[ activatedCount[ 0 ] ] = ( Widget )event.getSource();
-        activatedCount[ 0 ]++;
-      }
-      public void deactivated( ActivateEvent event ) {
-        deactivated[ deactivatedCount[ 0 ] ] = ( Widget )event.getSource();
-        deactivatedCount[ 0 ]++;
+    Listener listener = new Listener() {
+      public void handleEvent( Event event ) {
+        if( event.type == SWT.Activate ) {
+          activated[ activatedCount[ 0 ] ] = event.widget;
+          activatedCount[ 0 ]++;
+        } else {
+          deactivated[ deactivatedCount[ 0 ] ] = event.widget;
+          deactivatedCount[ 0 ]++;
+        }
       }
     };
     Composite composite = new Composite( shell, SWT.NONE );
     Label label = new Label( composite, SWT.NONE );
+    label.setText( "right" );
     Composite otherComposite = new Composite( shell, SWT.NONE );
     Label otherLabel = new Label( otherComposite, SWT.NONE );
-    Object adapter = shell.getAdapter( IShellAdapter.class );
-    IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+    otherLabel.setText( "wrong" );
+    IShellAdapter shellAdapter = shell.getAdapter( IShellAdapter.class );
     shellAdapter.setActiveControl( otherLabel );
-    ActivateEvent.addListener( composite, listener );
-    ActivateEvent.addListener( label, listener );
-    ActivateEvent.addListener( otherComposite, listener );
-    ActivateEvent.addListener( otherLabel, listener );
+    composite.addListener( SWT.Activate, listener );
+    composite.addListener( SWT.Deactivate, listener );
+    label.addListener( SWT.Activate, listener );
+    label.addListener( SWT.Deactivate, listener );
+    otherComposite.addListener( SWT.Activate, listener );
+    otherComposite.addListener( SWT.Deactivate, listener );
+    otherLabel.addListener( SWT.Activate, listener );
+    otherLabel.addListener( SWT.Deactivate, listener );
 
     fakeActivateEvent( label );
     Fixture.readDataAndProcessAction( display );
+    
     assertEquals( 2, activatedCount[ 0 ] );
     assertSame( label, activated[ 0 ] );
     assertSame( composite, activated[ 1 ] );
@@ -116,21 +133,18 @@ public class ActivateEvent_Test extends TestCase {
     // This is the label to test the ActivateEvent on
     Label labelToActivate = new Label( shell, SWT.NONE );
     shell.open();
+    Listener activateListener = mock( Listener.class );
+    Listener deactivateListener = mock( Listener.class );
+    labelToActivate.addListener( SWT.Activate, activateListener );
+    labelToActivate.addListener( SWT.Deactivate, deactivateListener );
 
-    final java.util.List<ActivateEvent> log = new ArrayList<ActivateEvent>();
-    ActivateEvent.addListener( labelToActivate, new ActivateListener() {
-      public void activated( ActivateEvent event ) {
-        log.add( event );
-      }
-      public void deactivated( ActivateEvent event ) {
-        log.add( event );
-      }
-    } );
     labelToActivate.forceFocus();
-    assertEquals( 1, log.size() );
-    ActivateEvent event = log.get( 0 );
-    assertEquals( labelToActivate, event.widget );
-    assertEquals( ActivateEvent.ACTIVATED, event.getID() );
+    
+    verify( deactivateListener, never() ).handleEvent( any( Event.class ) );
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( activateListener ).handleEvent( captor.capture() );
+    
+    assertEquals( labelToActivate, captor.getValue().widget );
   }
 
   public void testUntypedListener() {
@@ -166,28 +180,6 @@ public class ActivateEvent_Test extends TestCase {
     assertSame( control, loggedEvent.widget );
     loggedEvent = log.get( 1 );
     assertEquals( SWT.Activate, loggedEvent.type );
-  }
-
-  public void testShellWithTypedActivateListener() {
-    ShellListener listener = mock( ShellListener.class );
-    shell.addShellListener( listener );
-
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_ACTIVATED, null );
-    Fixture.readDataAndProcessAction( display );
-
-    verify( listener, times( 1 ) ).shellActivated( any( ShellEvent.class ) );
-  }
-
-  public void testShellWithUntypedActivateListener() {
-    Listener listener = mock( Listener.class );
-    shell.addListener( SWT.Activate, listener );
-
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_ACTIVATED, null );
-    Fixture.readDataAndProcessAction( display );
-
-    verify( listener, times( 1 ) ).handleEvent( any( Event.class ) );
   }
 
   private void fakeActivateEvent( Control control ) {

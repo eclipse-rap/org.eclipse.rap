@@ -100,6 +100,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
       } );
     }
     ControlLCAUtil.processSelection( column, null, false );
+    ControlLCAUtil.processDefaultSelection( column, null );
   }
 
   @Override

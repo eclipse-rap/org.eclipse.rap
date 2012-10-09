@@ -11,7 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 
@@ -30,7 +33,9 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.internal.events.EventList;
 import org.eclipse.swt.internal.events.EventTable;
+import org.mockito.ArgumentCaptor;
 
 
 public class Widget_Test extends TestCase {
@@ -48,7 +53,7 @@ public class Widget_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-
+  
   public void testGetAdapterForDisposedWidget() {
     shell.dispose();
     Object adapterOfDisposedWidget = shell.getAdapter( IWidgetAdapter.class );
@@ -71,6 +76,14 @@ public class Widget_Test extends TestCase {
   
   public void testGetEventTableAdapter() {
     EventTable eventTable = shell.getAdapter( EventTable.class );
+    
+    assertNotNull( eventTable );
+  }
+
+  public void testGetEventTableAdapterWithDefaultConstructor() {
+    Widget widget = new Widget() { };
+    
+    EventTable eventTable = widget.getAdapter( EventTable.class );
     
     assertNotNull( eventTable );
   }
@@ -349,6 +362,21 @@ public class Widget_Test extends TestCase {
     shell.notifyListeners( SWT.Resize, event );
     assertEquals( "filter", log.toString() );
   }
+  
+  public void testNotifyListenersWithEmptyEvent() {
+    Event event = new Event();
+    Listener listener = mock( Listener.class );
+    shell.addListener( SWT.Resize, listener );
+    
+    shell.notifyListeners( SWT.Resize, event );
+    
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( listener ).handleEvent( captor.capture() );
+    assertSame( event, captor.getValue() );
+    assertEquals( shell.getDisplay(), event.display );
+    assertEquals( shell, event.widget );
+    assertEquals( SWT.Resize, event.type );
+  }
 
   public void testNotifyListenersSetData() {
     final StringBuilder log = new StringBuilder();
@@ -382,11 +410,37 @@ public class Widget_Test extends TestCase {
   }
 
   public void testNotifyListenersInvalidEvent() {
+    Listener listener = mock( Listener.class );
+    shell.addListener( SWT.Resize, listener );
+
     shell.notifyListeners( 4711, new Event() );
-    // no assertion: this test ensures that invalid event types are silently
-    // ignored
+
+    verify( listener, never() ).handleEvent( any( Event.class ) );
+  }
+  
+  public void testNotifyListenersInReadDataPhase() {
+    Fixture.fakePhase( PhaseId.READ_DATA );
+    Listener listener = mock( Listener.class );
+    shell.addListener( SWT.Resize, listener );
+    
+    Event event = new Event();
+    shell.notifyListeners( SWT.Resize, event );
+    
+    verify( listener, never() ).handleEvent( any( Event.class ) );
+    assertEquals( 1, EventList.getInstance().getAll().length );
+    assertEquals( event, EventList.getInstance().getAll()[ 0 ] );
   }
 
+  public void testNotifyListenersWithNullPhase() {
+    Fixture.fakePhase( null );
+    Listener listener = mock( Listener.class );
+    shell.addListener( SWT.Resize, listener );
+    
+    shell.notifyListeners( SWT.Resize, new Event() );
+    
+    verify( listener, never() ).handleEvent( any( Event.class ) );
+  }
+  
   public void testGetListeners() {
     Listener[] listeners = shell.getListeners( 0 );
     assertNotNull( listeners );
@@ -407,18 +461,29 @@ public class Widget_Test extends TestCase {
     assertEquals( 2, shell.getListeners( SWT.Resize ).length );
   }
 
-  public void testIsListening() {
-    final Listener dummyListener = new Listener() {
-      public void handleEvent( Event event ) {
-      }
-    };
-    assertFalse( shell.isListening( SWT.Resize ) );
-    shell.addListener( SWT.Resize, dummyListener );
+  public void testIsListeningWithoutRegisteredListeners() {
+    boolean listening = shell.isListening( SWT.Dispose );
+    
+    assertFalse( listening );
+  }
+  
+  public void testIsListeningAfterAddListener() {
+    Listener listener = mock( Listener.class ); 
+    
+    shell.addListener( SWT.Resize, listener );
+    
     assertTrue( shell.isListening( SWT.Resize ) );
-    shell.removeListener( SWT.Resize, dummyListener );
-    assertFalse( shell.isListening( SWT.Resize ) );
   }
 
+  public void testIsListeningAfterRemoveListener() {
+    Listener listener = mock( Listener.class ); 
+    shell.addListener( SWT.Resize, listener );
+    
+    shell.removeListener( SWT.Resize, listener );
+    
+    assertFalse( shell.isListening( SWT.Resize ) );
+  }
+  
   public void testIsListeningForTypedEvent() {
     shell.addHelpListener( new HelpListener() {
       public void helpRequested( HelpEvent event ) {

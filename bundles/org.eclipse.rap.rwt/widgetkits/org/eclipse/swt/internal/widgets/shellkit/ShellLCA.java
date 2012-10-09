@@ -19,14 +19,30 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.*;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.events.ActivateEvent;
-import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.internal.widgets.IShellAdapter;
+import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 
 
 public final class ShellLCA extends AbstractWidgetLCA {
@@ -180,19 +196,15 @@ public final class ShellLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.wasEventSent( shell, ClientMessageConst.EVENT_SHELL_ACTIVATED ) ) {
       Shell lastActiveShell = shell.getDisplay().getActiveShell();
       setActiveShell( shell );
-      ActivateEvent event;
       if( lastActiveShell != null ) {
-        event = new ActivateEvent( lastActiveShell, ActivateEvent.DEACTIVATED );
-        event.processEvent();
+        lastActiveShell.notifyListeners( SWT.Deactivate, new Event() );
       }
-      event = new ActivateEvent( shell, ActivateEvent.ACTIVATED );
-      event.processEvent();
+      shell.notifyListeners( SWT.Activate, new Event() );
     }
   }
 
   private static void setActiveShell( Shell shell ) {
-    Object adapter = shell.getDisplay().getAdapter( IDisplayAdapter.class );
-    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
+    IDisplayAdapter displayAdapter = shell.getDisplay().getAdapter( IDisplayAdapter.class );
     displayAdapter.setActiveShell( shell );
   }
 
@@ -210,8 +222,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   }
 
   private static Control getActiveControl( Shell shell ) {
-    Object adapter = shell.getAdapter( IShellAdapter.class );
-    IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+    IShellAdapter shellAdapter = shell.getAdapter( IShellAdapter.class );
     Control activeControl = shellAdapter.getActiveControl();
     return activeControl;
   }
@@ -232,8 +243,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   private static void readBounds( Shell shell ) {
     Rectangle bounds = ProtocolUtil.readPropertyValueAsRectangle( getId( shell ), "bounds" );
     if( bounds != null ) {
-      Object adapter = shell.getAdapter( IShellAdapter.class );
-      IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+      IShellAdapter shellAdapter = shell.getAdapter( IShellAdapter.class );
       shellAdapter.setBounds( bounds );
     }
   }

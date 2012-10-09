@@ -15,8 +15,10 @@ import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.DeselectionEvent;
+import org.eclipse.swt.internal.events.EventFactory;
 import org.eclipse.swt.internal.widgets.EventUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Widget;
 
 
 /**
@@ -41,8 +43,11 @@ public class SelectionEvent extends TypedEvent {
   public static final int WIDGET_SELECTED = SWT.Selection;
   public static final int WIDGET_DEFAULT_SELECTED = SWT.DefaultSelection;
 
-  private static final Class LISTENER = SelectionListener.class;
-  private static final int[] EVENT_TYPES = { WIDGET_SELECTED, WIDGET_DEFAULT_SELECTED, DeselectionEvent.WIDGET_DESELECTED };
+  private static final int[] EVENT_TYPES = { 
+    WIDGET_SELECTED, 
+    WIDGET_DEFAULT_SELECTED, 
+    DeselectionEvent.WIDGET_DESELECTED 
+  };
 
   /**
    * The x location of the selected area.
@@ -157,14 +162,6 @@ public class SelectionEvent extends TypedEvent {
           SWT.NONE );
   }
 
-  /**
-   * Constructs a new instance of this class.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
   public SelectionEvent( Widget widget,
                          Widget item,
                          int id,
@@ -174,36 +171,8 @@ public class SelectionEvent extends TypedEvent {
                          boolean doit,
                          int detail )
   {
-    super( widget, id );
-    this.widget = widget;
-    x = bounds.x;
-    y = bounds.y;
-    width = bounds.width;
-    height = bounds.height;
-    this.stateMask = stateMask;
-    this.text = text;
-    this.doit = doit;
-    this.item = item;
-    this.detail = detail;
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case WIDGET_SELECTED:
-        ( ( SelectionListener )listener ).widgetSelected( this );
-      break;
-      case WIDGET_DEFAULT_SELECTED:
-        ( ( SelectionListener )listener ).widgetDefaultSelected( this );
-        break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
+    super( EventFactory.newSelectionEvent( widget, item, bounds, stateMask, text, doit, detail ) );
+    sourceEvent.type = id;
   }
 
   @Override
@@ -225,7 +194,7 @@ public class SelectionEvent extends TypedEvent {
    * @deprecated not part of the API, do not use in application code
    */
   @Deprecated
-  public static void addListener( Adaptable adaptable, SelectionListener listener ) {
+  public static void addListener( Widget adaptable, SelectionListener listener ) {
     addListener( adaptable, EVENT_TYPES, listener );
   }
 
@@ -234,7 +203,7 @@ public class SelectionEvent extends TypedEvent {
    * @deprecated not part of the API, do not use in application code
    */
   @Deprecated
-  public static void removeListener( Adaptable adaptable, SelectionListener listener ) {
+  public static void removeListener( Widget adaptable, SelectionListener listener ) {
     removeListener( adaptable, EVENT_TYPES, listener );
   }
 
@@ -244,7 +213,7 @@ public class SelectionEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, EVENT_TYPES );
+    return getListeners( adaptable, EVENT_TYPES );
   }
 
   @Override

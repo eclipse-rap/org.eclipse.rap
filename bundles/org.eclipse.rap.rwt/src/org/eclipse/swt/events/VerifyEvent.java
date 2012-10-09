@@ -13,7 +13,6 @@ package org.eclipse.swt.events;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -33,10 +32,7 @@ public final class VerifyEvent extends KeyEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int VERIFY_TEXT = SWT.Verify;
-  
-  private static final Class LISTENER = VerifyListener.class;
-  private static final int[] EVENT_TYPES = { VERIFY_TEXT };
+  private static final int[] EVENT_TYPES = { SWT.Verify };
 
   /**
    * the new text that will be inserted.
@@ -60,36 +56,9 @@ public final class VerifyEvent extends KeyEvent {
    */
   public VerifyEvent( Event event ) {
     super( event );
-    doit = true;
-  }
-
-  /**
-   * Constructs a new instance of this class.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
-  public VerifyEvent( Control source ) {
-    super( source, VERIFY_TEXT );
-    doit = true;
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case VERIFY_TEXT:
-        ( ( VerifyListener )listener ).verifyText( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
+    this.start = event.start;
+    this.end = event.end;
+    this.text = event.text;
   }
 
   @Override
@@ -130,7 +99,7 @@ public final class VerifyEvent extends KeyEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, EVENT_TYPES );
+    return getListeners( adaptable, EVENT_TYPES );
   }
 
   /**

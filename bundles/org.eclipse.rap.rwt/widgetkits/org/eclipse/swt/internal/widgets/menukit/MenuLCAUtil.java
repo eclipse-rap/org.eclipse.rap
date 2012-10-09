@@ -19,12 +19,14 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ArmEvent;
 import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
@@ -62,12 +64,10 @@ final class MenuLCAUtil {
 
   public static void readMenuEvent( Menu menu ) {
     if( WidgetLCAUtil.wasEventSent( menu, ClientMessageConst.EVENT_MENU_SHOWN ) ) {
-      MenuEvent event = new MenuEvent( menu, MenuEvent.MENU_SHOWN );
-      event.processEvent();
+      menu.notifyListeners( SWT.Show, new Event() );
     }
     if( WidgetLCAUtil.wasEventSent( menu, ClientMessageConst.EVENT_MENU_HIDDEN ) ) {
-      MenuEvent event = new MenuEvent( menu, MenuEvent.MENU_HIDDEN );
-      event.processEvent();
+      menu.notifyListeners( SWT.Hide, new Event() );
     }
   }
 

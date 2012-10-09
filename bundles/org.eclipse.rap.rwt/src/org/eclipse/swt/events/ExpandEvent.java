@@ -13,9 +13,8 @@ package org.eclipse.swt.events;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.internal.widgets.EventUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Event;
 
 
 /**
@@ -35,11 +34,7 @@ public class ExpandEvent extends SelectionEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int EXPAND = SWT.Expand;
-  public static final int COLLAPSE = SWT.Collapse;
-
-  private static final Class LISTENER = ExpandListener.class;
-  private static final int[] EVENT_TYPES = { EXPAND, COLLAPSE };
+  private static final int[] EVENT_TYPES = { SWT.Expand, SWT.Collapse };
 
   /**
    * Constructs a new instance of this class based on the information in the
@@ -49,38 +44,6 @@ public class ExpandEvent extends SelectionEvent {
    */
   public ExpandEvent( Event event ) {
     super( event );
-  }
-
-  /**
-   * Constructs a new instance of this class.
-   * <p>
-   * <strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared within the
-   * packages provided by RWT. It should never be accessed from application
-   * code.
-   * </p>
-   */
-  public ExpandEvent( Widget widget, Widget item, int id ) {
-    super( widget, item, id );
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case EXPAND:
-        ( ( ExpandListener )listener ).itemExpanded( this );
-      break;
-      case COLLAPSE:
-        ( ( ExpandListener )listener ).itemCollapsed( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
   }
 
   @Override
@@ -121,7 +84,7 @@ public class ExpandEvent extends SelectionEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, EVENT_TYPES );
+    return getListeners( adaptable, EVENT_TYPES );
   }
 
   @Override

@@ -21,7 +21,6 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
 
 
@@ -49,12 +48,17 @@ public class Canvas_Test extends TestCase {
         paintEventLog.add( event );
       }
     } );
-    assertEquals( 0, paintEventLog.size() );
+
     canvas.redraw();
+    
     assertEquals( 1, paintEventLog.size() );
     PaintEvent event = paintEventLog.get( 0 );
     assertSame( canvas, event.widget );
     assertTrue( event.gc.isDisposed() );
+    assertEquals( event.x, canvas.getClientArea().x );
+    assertEquals( event.y, canvas.getClientArea().y );
+    assertEquals( event.width, canvas.getClientArea().width );
+    assertEquals( event.height, canvas.getClientArea().height );
   }
   
   public void testRemovePaintListener() {
@@ -75,7 +79,6 @@ public class Canvas_Test extends TestCase {
         paintEventLog.add( event );
       }
     } );
-    assertEquals( 0, paintEventLog.size() );
     canvas.setSize( 100, 100 );
     assertEquals( 1, paintEventLog.size() );
   }
@@ -102,7 +105,7 @@ public class Canvas_Test extends TestCase {
   public void testAddPaintListener() {
     canvas.addPaintListener( mock( PaintListener.class ) );
     
-    assertTrue( canvas.isListening( EventTypes.PAINT ) );
+    assertTrue( canvas.isListening( SWT.Paint ) );
   }
 
   public void testRemovePaintListenerUnregistersUntypedEvent() {
@@ -111,7 +114,7 @@ public class Canvas_Test extends TestCase {
     
     canvas.removePaintListener( listener );
 
-    assertFalse( canvas.isListening( EventTypes.PAINT ) );
+    assertFalse( canvas.isListening( SWT.Paint ) );
   }
 
   public void testAddPaintListenerWithNullArgument() {

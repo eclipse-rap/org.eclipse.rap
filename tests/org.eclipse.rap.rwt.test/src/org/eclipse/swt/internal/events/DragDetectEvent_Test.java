@@ -10,8 +10,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.events;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.ArrayList;
-import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -19,8 +20,12 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DragDetectEvent;
-import org.eclipse.swt.events.DragDetectListener;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.events.EventTestHelper;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class DragDetectEvent_Test extends TestCase {
@@ -28,37 +33,21 @@ public class DragDetectEvent_Test extends TestCase {
   private Display display;
   private Shell shell;
 
-  public void testCopyFieldsFromUntypedEvent() {
-    final List<DragDetectEvent> log = new ArrayList<DragDetectEvent>();
-    Button button = new Button( shell, SWT.PUSH );
-    button.addDragDetectListener( new DragDetectListener() {
-      public void dragDetected( DragDetectEvent event ) {
-        log.add( event );
-      }
-    } );
-    Object data = new Object();
+  public void testUntypedEventConstructor() throws Exception {
     Event event = new Event();
+    event.display = display;
+    event.widget = mock( Widget.class );
+    event.data = new Object();
     event.x = 10;
     event.y = 20;
     event.button = 2;
     event.stateMask = 23;
-    event.data = data;
-    event.time = 4711;
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    button.notifyListeners( SWT.DragDetect, event );
-    DragDetectEvent dragDetectEvent = log.get( 0 );
-    assertSame( button, dragDetectEvent.getSource() );
-    assertSame( button, dragDetectEvent.widget );
-    assertSame( display, dragDetectEvent.display );
-    assertSame( data, dragDetectEvent.data );
-    assertEquals( 10, dragDetectEvent.x );
-    assertEquals( 20, dragDetectEvent.y );
-    assertEquals( 2, dragDetectEvent.button );
-    assertEquals( 23, dragDetectEvent.stateMask );
-    assertEquals( 4711, dragDetectEvent.time );
-    assertEquals( SWT.DragDetect, dragDetectEvent.getID() );
+    
+    DragDetectEvent dragEvent = new DragDetectEvent( event );
+    
+    EventTestHelper.assertFieldsEqual( dragEvent, event );
   }
-
+  
   public void testDragDetectEvent() {
     final java.util.List<Event> log = new ArrayList<Event>();
     Listener listener = new Listener() {

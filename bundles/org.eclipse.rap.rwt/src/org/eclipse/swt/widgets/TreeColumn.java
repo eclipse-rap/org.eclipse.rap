@@ -535,13 +535,11 @@ public class TreeColumn extends Item {
    *              </ul>
    */
   public void setWidth( int value ) {
-    // TODO: [bm] add support for ellipsis
     checkWidget();
     if( value >= 0 && width != value ) {
       width = value;
       parent.updateScrollBars();
-      ControlEvent event = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
-      event.processEvent();
+      notifyListeners( SWT.Resize, new Event() );
       processNextColumnsMoveEvent();
       packed = false;
     }
@@ -590,8 +588,7 @@ public class TreeColumn extends Item {
       if( column == this ) {
         found = true;
       } else if( found ) {
-        ControlEvent event = new ControlEvent( column, ControlEvent.CONTROL_MOVED );
-        event.processEvent();
+        column.notifyListeners( SWT.Move, new Event() );
       }
     }
   }

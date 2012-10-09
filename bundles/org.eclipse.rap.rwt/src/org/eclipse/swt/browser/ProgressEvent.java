@@ -36,7 +36,6 @@ public class ProgressEvent extends TypedEvent {
   public static final int CHANGED = EventTypes.PROGRESS_CHANGED;
   public static final int COMPLETED = EventTypes.PROGRESS_COMPLETED;
 
-  private static final Class LISTENER = ProgressListener.class;
   private static final int[] EVENT_TYPES = { CHANGED, COMPLETED };
 
   /** current value */
@@ -64,25 +63,6 @@ public class ProgressEvent extends TypedEvent {
    */
   public ProgressEvent( Widget source, int id ) {
     super( source, id );
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case CHANGED:
-        ( ( ProgressListener )listener ).changed( this );
-      break;
-      case COMPLETED:
-        ( ( ProgressListener )listener ).completed( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
   }
 
   @Override
@@ -123,7 +103,7 @@ public class ProgressEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, EVENT_TYPES );
+    return getListeners( adaptable, EVENT_TYPES );
   }
 
   /**

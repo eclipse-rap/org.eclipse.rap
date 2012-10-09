@@ -20,7 +20,7 @@ import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
 
@@ -715,8 +715,8 @@ public class Shell extends Decorations {
     checkWidget();
     ProcessActionRunner.add( new Runnable() {
       public void run() {
-        ShellEvent event = new ShellEvent( Shell.this, ShellEvent.SHELL_CLOSED );
-        event.processEvent();
+        Event event = new Event();
+        notifyListeners( SWT.Close, event );
         if( event.doit ) {
           Shell.this.dispose();
         }
@@ -1162,17 +1162,14 @@ public class Shell extends Decorations {
       // It is possible (but unlikely), that application code could have
       // destroyed some of the widgets. If this happens, keep processing those
       // widgets that are not disposed.
-      ActivateEvent evt;
       for( int i = deactivate.length - 1; i >= index; --i ) {
         if( !deactivate[ i ].isDisposed() ) {
-          evt = new ActivateEvent( deactivate[ i ], ActivateEvent.DEACTIVATED );
-          evt.processEvent();
+          deactivate[ i ].notifyListeners( SWT.Deactivate, new Event() );
         }
       }
       for( int i = activate.length - 1; i >= index; --i ) {
         if( !activate[ i ].isDisposed() ) {
-          evt = new ActivateEvent( activate[ i ], ActivateEvent.ACTIVATED );
-          evt.processEvent();
+          activate[ i ].notifyListeners( SWT.Activate, new Event() );
         }
       }
     }

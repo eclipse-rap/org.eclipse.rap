@@ -15,7 +15,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
 
@@ -177,8 +179,10 @@ public class Canvas extends Composite {
     }
     GC gc = new GC( this );
     Rectangle clientArea = getClientArea();
-    PaintEvent paintEvent = new PaintEvent( this, gc, clientArea );
-    paintEvent.processEvent();
+    Event paintEvent = new Event();
+    paintEvent.gc = gc;
+    paintEvent.setBounds( clientArea );
+    notifyListeners( SWT.Paint, paintEvent );
     gc.dispose();
   }
 }

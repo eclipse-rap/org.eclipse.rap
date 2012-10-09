@@ -35,7 +35,6 @@ public final class ControlEvent extends TypedEvent {
   public static final int CONTROL_MOVED = SWT.Move;
   public static final int CONTROL_RESIZED = SWT.Resize;
 
-  private static final Class LISTENER = ControlListener.class;
   private static final int[] EVENT_TYPES = { CONTROL_MOVED, CONTROL_RESIZED };
 
   /**
@@ -46,37 +45,6 @@ public final class ControlEvent extends TypedEvent {
    */
   public ControlEvent( Event event ) {
     super( event );
-  }
-
-  /**
-   * Constructs a new instance of this class.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
-  public ControlEvent( Object source, int id ) {
-    super( source, id );
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case CONTROL_MOVED:
-        ( ( ControlListener )listener ).controlMoved( this );
-      break;
-      case CONTROL_RESIZED:
-        ( ( ControlListener )listener ).controlResized( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
   }
 
   @Override
@@ -117,6 +85,6 @@ public final class ControlEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, EVENT_TYPES );
+    return getListeners( adaptable, EVENT_TYPES );
   }
 }

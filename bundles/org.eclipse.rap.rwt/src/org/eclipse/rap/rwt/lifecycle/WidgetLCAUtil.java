@@ -12,14 +12,27 @@
 package org.eclipse.rap.rwt.lifecycle;
 
 import java.util.Arrays;
-import org.eclipse.rap.rwt.internal.protocol.*;
-import org.eclipse.rap.rwt.internal.util.*;
+
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.protocol.StylesUtil;
+import org.eclipse.rap.rwt.internal.util.EncodingUtil;
+import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.HelpEvent;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Widget;
 
 
 /**
@@ -133,8 +146,7 @@ public final class WidgetLCAUtil {
    */
   public static void processHelp( Widget widget ) {
     if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_HELP ) ) {
-      HelpEvent event = new HelpEvent( widget );
-      event.processEvent();
+      widget.notifyListeners( SWT.Help, new Event() );
     }
   }
 

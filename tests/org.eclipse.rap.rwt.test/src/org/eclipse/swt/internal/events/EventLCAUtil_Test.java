@@ -142,4 +142,8 @@ public class EventLCAUtil_Test extends TestCase {
     assertEquals( 0, button & SWT.BUTTON4 );
     assertTrue( ( button & SWT.BUTTON5 ) != 0 );
   }
+  
+  public void testProcessScrollBarSelection() {
+    fail( "tests mising" );
+  }
 }

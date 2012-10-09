@@ -16,13 +16,15 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.events.ArmEvent;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
@@ -70,10 +72,7 @@ final class MenuItemLCAUtil {
   static void processArmEvent( MenuItem item ) {
     Menu menu = item.getParent();
     if( WidgetLCAUtil.wasEventSent( menu, ClientMessageConst.EVENT_MENU_SHOWN ) ) {
-      if( ArmEvent.hasListener( item ) ) {
-        ArmEvent event = new ArmEvent( item );
-        event.processEvent();
-      }
+      item.notifyListeners( SWT.Arm, new Event() );
     }
   }
 }

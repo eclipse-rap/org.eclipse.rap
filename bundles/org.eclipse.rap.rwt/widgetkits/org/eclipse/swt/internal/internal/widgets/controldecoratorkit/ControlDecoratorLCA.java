@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.internal.widgets.controldecoratorkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED;
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_WIDGET_SELECTED;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
@@ -21,11 +19,11 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.ControlDecorator;
 import org.eclipse.swt.widgets.Widget;
 
@@ -55,7 +53,8 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
   }
 
   public void readData( Widget widget ) {
-    readSelectionEvent( ( ControlDecorator )widget );
+    ControlLCAUtil.processSelection( widget, null, false );
+    ControlLCAUtil.processDefaultSelection( widget, null );
   }
 
   @Override
@@ -86,30 +85,4 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }
 
-  ////////////////////////////////////////////////////
-  // Helping methods to read client-side state changes
-
-  private static void readSelectionEvent( ControlDecorator decorator ) {
-    processSelectionEvent( decorator, EVENT_WIDGET_SELECTED, SelectionEvent.WIDGET_SELECTED );
-    processSelectionEvent( decorator,
-                           EVENT_WIDGET_DEFAULT_SELECTED,
-                           SelectionEvent.WIDGET_DEFAULT_SELECTED );
-  }
-
-  private static void processSelectionEvent( ControlDecorator decorator,
-                                             String eventName,
-                                             int eventId )
-  {
-    if( WidgetLCAUtil.wasEventSent( decorator, eventName ) ) {
-      SelectionEvent event = new SelectionEvent( decorator,
-                                                 null,
-                                                 eventId,
-                                                 new Rectangle( 0, 0, 0, 0 ),
-                                                 EventLCAUtil.readStateMask( decorator, eventName ),
-                                                 "",
-                                                 true,
-                                                 SWT.NONE );
-      event.processEvent();
-    }
-  }
 }

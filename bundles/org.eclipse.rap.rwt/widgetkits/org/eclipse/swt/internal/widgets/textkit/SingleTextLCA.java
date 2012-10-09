@@ -11,15 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.textkit;
 
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
-
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.internal.events.EventLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.widgets.Text;
 
 
@@ -55,36 +50,8 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
   }
 
   private static void processSelection( Text text ) {
-    if( WidgetLCAUtil.wasEventSent( text, ClientMessageConst.EVENT_WIDGET_SELECTED ) ) {
-      createSelectionEvent( text, SelectionEvent.WIDGET_SELECTED ).processEvent();
-    }
-    if( WidgetLCAUtil.wasEventSent( text, ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED ) ) {
-      createSelectionEvent( text, SelectionEvent.WIDGET_DEFAULT_SELECTED ).processEvent();
-    }
-  }
-
-  private static SelectionEvent createSelectionEvent( Text text, int type ) {
-    SelectionEvent result = new SelectionEvent( text, null, type );
-    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
-    if( type == SelectionEvent.WIDGET_DEFAULT_SELECTED ) {
-      eventName = ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED;
-      result.detail = getWidgetDefaultSelectedDetail( text );
-    }
-    result.stateMask = EventLCAUtil.readStateMask( text, eventName );
-    return result;
-  }
-
-  private static int getWidgetDefaultSelectedDetail( Text text ) {
-    String value = readEventPropertyValue( text,
-                                           ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED,
-                                           ClientMessageConst.EVENT_PARAM_DETAIL );
-    int result = SWT.NONE;
-    if( "search".equals( value ) ) {
-      result = SWT.ICON_SEARCH;
-    } else if( "cancel".equals( value ) ) {
-      result = SWT.ICON_CANCEL;
-    }
-    return result;
+    ControlLCAUtil.processSelection( text, null, false );
+    ControlLCAUtil.processDefaultSelection( text, null );
   }
 
 }

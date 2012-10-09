@@ -15,7 +15,6 @@ import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Widget;
 
 
 /**
@@ -45,12 +44,7 @@ public class MouseEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int MOUSE_DOWN = SWT.MouseDown;
-  public static final int MOUSE_UP = SWT.MouseUp;
-  public static final int MOUSE_DOUBLE_CLICK = SWT.MouseDoubleClick;
-
-  private static final Class LISTENER = MouseListener.class;
-  private static final int[] EVENT_TYPES = { MOUSE_DOWN, MOUSE_UP, MOUSE_DOUBLE_CLICK };
+  private static final int[] EVENT_TYPES = { SWT.MouseDown, SWT.MouseUp, SWT.MouseDoubleClick };
 
   /**
    * the time that the event occurred.
@@ -117,42 +111,6 @@ public class MouseEvent extends TypedEvent {
     time = event.time;
   }
 
-  /**
-   * Constructs a new instance of this class.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   *
-   * @since 1.2
-   */
-  public MouseEvent( Widget source, int id ) {
-    super( source, id );
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case MOUSE_UP:
-        ( ( MouseListener )listener ).mouseUp( this );
-        break;
-      case MOUSE_DOWN:
-        ( ( MouseListener )listener ).mouseDown( this );
-        break;
-      case MOUSE_DOUBLE_CLICK:
-        ( ( MouseListener )listener ).mouseDoubleClick( this );
-        break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
-  }
-
   @Override
   protected boolean allowProcessing() {
     return EventUtil.isAccessible( widget );
@@ -214,6 +172,6 @@ public class MouseEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, EVENT_TYPES );
+    return getListeners( adaptable, EVENT_TYPES );
   }
 }

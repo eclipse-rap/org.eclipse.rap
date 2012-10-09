@@ -12,6 +12,10 @@
 package org.eclipse.swt.events;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -25,7 +29,15 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class MouseEvent_Test extends TestCase {
@@ -99,64 +111,57 @@ public class MouseEvent_Test extends TestCase {
     assertEquals( SWT.MouseDown, mouseEvent.getID() );
   }
 
-  public void testAddRemoveListener() {
-    MouseListener listener = new LoggingMouseListener( events );
-    MouseEvent.addListener( shell, listener );
-    MouseEvent downEvent = new MouseEvent( shell, MouseEvent.MOUSE_DOWN );
-    downEvent.processEvent();
-    MouseEvent upEvent = new MouseEvent( shell, MouseEvent.MOUSE_UP );
-    upEvent.processEvent();
-    MouseEvent doubleClickEvent = new MouseEvent( shell, MouseEvent.MOUSE_DOUBLE_CLICK );
-    doubleClickEvent.processEvent();
-    assertSame( downEvent, events.get( 0 ) );
-    assertSame( upEvent, events.get( 1 ) );
-    assertSame( doubleClickEvent, events.get( 2 ) );
+  public void testAddListener() {
+    MouseListener listener = mock( MouseListener.class );
+    
+    shell.addMouseListener( listener );
+    shell.notifyListeners( SWT.MouseDown, new Event() );
+    shell.notifyListeners( SWT.MouseUp, new Event() );
+    shell.notifyListeners( SWT.MouseDoubleClick, new Event() );
+    
+    verify( listener ).mouseDown( any( MouseEvent.class ) );
+    verify( listener ).mouseUp( any( MouseEvent.class ) );
+    verify( listener ).mouseDoubleClick( any( MouseEvent.class ) );
   }
 
   public void testRemoveListener() {
-    MouseListener listener = new LoggingMouseListener( events );
-    MouseEvent.addListener( shell, listener );
-    MouseEvent.removeListener( shell, listener );
-    MouseEvent event = new MouseEvent( shell, MouseEvent.MOUSE_DOWN );
-    event.processEvent();
-    assertEquals( 0, events.size() );
+    MouseListener listener = mock( MouseListener.class );
+    shell.addMouseListener( listener );
+    shell.removeMouseListener( listener );
+
+    shell.notifyListeners( SWT.MouseDown, new Event() );
+    
+    verify( listener, never() ).mouseDown( any( MouseEvent.class ) );
   }
 
   public void testAddRemoveUntypedListener() {
     Listener listener = new LoggingListener( events );
     // MouseDown
     shell.addListener( SWT.MouseDown, listener );
-    MouseEvent event;
-    event = new MouseEvent( shell, MouseEvent.MOUSE_DOWN );
-    event.processEvent();
+    shell.notifyListeners( SWT.MouseDown, new Event() );
     Event firedEvent = ( Event )events.get( 0 );
     assertEquals( SWT.MouseDown, firedEvent.type );
     events.clear();
     shell.removeListener( SWT.MouseDown, listener );
-    event = new MouseEvent( shell, MouseEvent.MOUSE_DOWN );
-    event.processEvent();
+    shell.notifyListeners( SWT.MouseDown, new Event() );
     assertEquals( 0, events.size() );
     // MouseUp
     shell.addListener( SWT.MouseUp, listener );
-    event = new MouseEvent( shell, MouseEvent.MOUSE_UP );
-    event.processEvent();
+    shell.notifyListeners( SWT.MouseUp, new Event() );
     firedEvent = ( Event )events.get( 0 );
     assertEquals( SWT.MouseUp, firedEvent.type );
     events.clear();
     shell.removeListener( SWT.MouseUp, listener );
-    event = new MouseEvent( shell, MouseEvent.MOUSE_UP );
-    event.processEvent();
+    shell.notifyListeners( SWT.MouseUp, new Event() );
     assertEquals( 0, events.size() );
     // MouseDoubleCLick
     shell.addListener( SWT.MouseDoubleClick, listener );
-    event = new MouseEvent( shell, MouseEvent.MOUSE_DOUBLE_CLICK );
-    event.processEvent();
+    shell.notifyListeners( SWT.MouseDoubleClick, new Event() );
     firedEvent = ( Event )events.get( 0 );
     assertEquals( SWT.MouseDoubleClick, firedEvent.type );
     events.clear();
     shell.removeListener( SWT.MouseDoubleClick, listener );
-    event = new MouseEvent( shell, MouseEvent.MOUSE_DOUBLE_CLICK );
-    event.processEvent();
+    shell.notifyListeners( SWT.MouseDoubleClick, new Event() );
     assertEquals( 0, events.size() );
   }
 
@@ -173,13 +178,13 @@ public class MouseEvent_Test extends TestCase {
     Fixture.readDataAndProcessAction( display );
     assertEquals( 2, events.size() );
     MouseEvent mouseDown = ( ( MouseEvent )events.get( 0 ) );
-    assertEquals( MouseEvent.MOUSE_DOWN, mouseDown.getID() );
+    assertEquals( SWT.MouseDown, mouseDown.getID() );
     assertSame( shell, mouseDown.widget );
     assertEquals( 1, mouseDown.button );
     assertEquals( 15, mouseDown.x );
     assertEquals( 53, mouseDown.y );
     MouseEvent mouseUp = ( ( MouseEvent )events.get( 1 ) );
-    assertEquals( MouseEvent.MOUSE_UP, mouseUp.getID() );
+    assertEquals( SWT.MouseUp, mouseUp.getID() );
     assertSame( shell, mouseUp.widget );
     assertEquals( 1, mouseUp.button );
     assertEquals( 15, mouseUp.x );
@@ -201,21 +206,21 @@ public class MouseEvent_Test extends TestCase {
     Fixture.readDataAndProcessAction( display );
     assertEquals( 3, events.size() );
     MouseEvent mouseDown = ( ( MouseEvent )events.get( 0 ) );
-    assertEquals( MouseEvent.MOUSE_DOWN, mouseDown.getID() );
+    assertEquals( SWT.MouseDown, mouseDown.getID() );
     assertSame( shell, mouseDown.widget );
     assertEquals( 1, mouseDown.button );
     assertEquals( 15, mouseDown.x );
     assertEquals( 53, mouseDown.y );
     assertTrue( ( mouseDown.stateMask & SWT.BUTTON1 ) != 0 );
     MouseEvent mouseDoubleClick = ( ( MouseEvent )events.get( 1 ) );
-    assertEquals( MouseEvent.MOUSE_DOUBLE_CLICK, mouseDoubleClick.getID() );
+    assertEquals( SWT.MouseDoubleClick, mouseDoubleClick.getID() );
     assertSame( shell, mouseDoubleClick.widget );
     assertEquals( 1, mouseDoubleClick.button );
     assertEquals( 15, mouseDoubleClick.x );
     assertEquals( 53, mouseDoubleClick.y );
     assertTrue( ( mouseDoubleClick.stateMask & SWT.BUTTON1 ) != 0 );
     MouseEvent mouseUp = ( ( MouseEvent )events.get( 2 ) );
-    assertEquals( MouseEvent.MOUSE_UP, mouseUp.getID() );
+    assertEquals( SWT.MouseUp, mouseUp.getID() );
     assertSame( shell, mouseUp.widget );
     assertEquals( 1, mouseUp.button );
     assertEquals( 15, mouseUp.x );

@@ -202,7 +202,7 @@ public class Combo extends Composite {
     checkWidget();
     model.deselectAll();
     text = "";
-    fireModifyEvent();
+    sendModifyEvent();
   }
 
   /**
@@ -1053,7 +1053,7 @@ public class Combo extends Composite {
       String text = selectionIndex != -1 ? getItem( selectionIndex ) : "";
       internalSetText( text, false );
     } else {
-      fireModifyEvent();
+      sendModifyEvent();
     }
   }
 
@@ -1075,16 +1075,16 @@ public class Combo extends Composite {
       } else {
         this.text = verifiedText;
       }
-      fireModifyEvent();
+      sendModifyEvent();
     }
   }
 
   private String verifyText( String text, int start, int end ) {
-    VerifyEvent event = new VerifyEvent( this );
+    Event event = new Event();
     event.text = text;
     event.start = start;
     event.end = end;
-    event.processEvent();
+    notifyListeners( SWT.Verify, event );
     /*
      * It is possible (but unlikely), that application code could have disposed
      * the widget in the verify event. If this happens, answer null to cancel
@@ -1099,9 +1099,8 @@ public class Combo extends Composite {
     return result;
   }
 
-  private void fireModifyEvent() {
-    ModifyEvent modifyEvent = new ModifyEvent( this );
-    modifyEvent.processEvent();
+  private void sendModifyEvent() {
+    notifyListeners( SWT.Modify, new Event() );
   }
 
   private Rectangle getFieldPadding() {

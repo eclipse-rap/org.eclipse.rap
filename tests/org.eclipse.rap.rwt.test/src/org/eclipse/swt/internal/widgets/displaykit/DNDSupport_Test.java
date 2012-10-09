@@ -21,7 +21,6 @@ import static org.eclipse.swt.dnd.DropTargetEvent.DRAG_LEAVE;
 import static org.eclipse.swt.dnd.DropTargetEvent.DRAG_OVER;
 import static org.eclipse.swt.dnd.DropTargetEvent.DROP;
 import static org.eclipse.swt.dnd.DropTargetEvent.DROP_ACCEPT;
-import static org.eclipse.swt.events.DragDetectEvent.DRAG_DETECT;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -147,7 +146,7 @@ public class DNDSupport_Test extends TestCase {
     fakeDragSourceEvent( "dragStart", 1 );
     Fixture.executeLifeCycleFromServerThread();
 
-    int[] expected = new int[]{ DRAG_DETECT, DRAG_START };
+    int[] expected = new int[]{ SWT.DragDetect, DRAG_START };
     assertTrue( Arrays.equals( expected, getEventOrder() ) );
   }
 

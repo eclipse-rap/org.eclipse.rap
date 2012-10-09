@@ -20,12 +20,23 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.dnd.*;
-import org.eclipse.swt.events.DragDetectEvent;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.dnd.IDNDAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 
 // TODO [rh] move these methods to DragSourceLCA
 public final class DNDSupport {
@@ -77,8 +88,8 @@ public final class DNDSupport {
       DragSource dragSource = getDragSource( control );
       Point point = readXYParams( notify ); // should be changed to array
       Point mappedPoint = control.getDisplay().map( null, control, point );
-      DragDetectEvent dragDetectEvent = createDragDetectEvent( notify, control, mappedPoint );
-      dragDetectEvent.processEvent();
+      Event dragDetectEvent = createDragDetectEvent( notify, control, mappedPoint );
+      control.notifyListeners( SWT.DragDetect, dragDetectEvent );
       DragSourceEvent dragStartEvent
         = createDragStartEvent( dragSource, mappedPoint, dragDetectEvent.time );
       dragStartEvent.processEvent();
@@ -264,11 +275,11 @@ public final class DNDSupport {
   //////////////////////////
   // Create and fire events
 
-  private static DragDetectEvent createDragDetectEvent( NotifyOperation operation,
-                                                        Control control,
-                                                        Point point )
+  private static Event createDragDetectEvent( NotifyOperation operation,
+                                              Control control,
+                                              Point point )
   {
-    DragDetectEvent result = new DragDetectEvent( control );
+    Event result = new Event();
     result.x = point.x;
     result.y = point.y;
     result.button = 1;

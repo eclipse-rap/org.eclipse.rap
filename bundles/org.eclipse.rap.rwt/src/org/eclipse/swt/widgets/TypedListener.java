@@ -210,13 +210,13 @@ public void handleEvent (Event e) {
 			((ControlListener) eventListener).controlMoved(new ControlEvent(e));
 			break;
 		}
-//		case SWT.Paint: {
-//			/* Fields set by Control */
-//			PaintEvent event = new PaintEvent (e);
-//			((PaintListener) eventListener).paintControl (event);
-//			e.gc = event.gc;
-//			break;
-//		}
+		case SWT.Paint: {
+			/* Fields set by Control */
+			PaintEvent event = new PaintEvent (e);
+			((PaintListener) eventListener).paintControl (event);
+			e.gc = event.gc;
+			break;
+		}
 		case SWT.Resize: {
 			((ControlListener) eventListener).controlResized(new ControlEvent(e));
 			break;

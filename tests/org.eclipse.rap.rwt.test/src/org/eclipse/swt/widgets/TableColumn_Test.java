@@ -22,7 +22,10 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 
@@ -243,7 +246,7 @@ public class TableColumn_Test extends TestCase {
   public void testResizeEvent() {
     final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
     Table table = new Table( shell, SWT.NONE );
-    final TableColumn column = new TableColumn( table, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
     column.addControlListener( new ControlListener() {
       public void controlMoved( ControlEvent event ) {
         fail( "unexpected event: controlMoved" );

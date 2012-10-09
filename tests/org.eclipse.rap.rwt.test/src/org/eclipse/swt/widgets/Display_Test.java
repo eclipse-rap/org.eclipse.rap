@@ -12,7 +12,10 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -1422,6 +1425,20 @@ public class Display_Test extends TestCase {
     } catch( SWTException exception ) {
       assertEquals( "Device is disposed", exception.getMessage() );
     }
+  }
+  
+  public void testReadAndDispatchIgnoresEventsFromDisposedWidgets() {
+    Fixture.fakePhase( PhaseId.READ_DATA );
+    Display display = new Display();
+    Widget widget = new Shell( display );
+    Listener listener = mock( Listener.class );
+    widget.addListener( SWT.Activate, listener );
+    widget.dispose();
+    
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display.readAndDispatch();
+    
+    verify( listener, never() ).handleEvent( any( Event.class ) );
   }
 
   private static void setCursorLocation( Display display, int x, int y ) {

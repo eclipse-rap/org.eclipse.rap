@@ -253,8 +253,7 @@ public class TableColumn extends Item {
     if( width >= 0 ) {
       this.width = width;
       parent.updateScrollBars();
-      ControlEvent event = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
-      event.processEvent();
+      notifyListeners( SWT.Resize, new Event() );
       processNextColumnsMoveEvent();
       packed = false;
     }
@@ -560,8 +559,7 @@ public class TableColumn extends Item {
       if( column == this ) {
         found = true;
       } else if( found ) {
-        ControlEvent event = new ControlEvent( column, ControlEvent.CONTROL_MOVED );
-        event.processEvent();
+        column.notifyListeners( SWT.Move, new Event() );
       }
     }
   }

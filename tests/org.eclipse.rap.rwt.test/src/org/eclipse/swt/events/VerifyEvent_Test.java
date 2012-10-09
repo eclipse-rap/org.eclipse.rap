@@ -1,55 +1,39 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Innoopract Informationssysteme GmbH - initial API and implementation
- *    EclipseSource - ongoing development
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.events;
 
 import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class SelectionEvent_Test extends TestCase {
-  
-  private Display display;
+public class VerifyEvent_Test extends TestCase {
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display = new Display();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
-  
   public void testUntypedEventConstructor() throws Exception {
     Event event = new Event();
-    event.display = display;
+    event.display = mock( Display.class );
     event.widget = mock( Widget.class );
-    event.x = 1;
-    event.y = 2;
-    event.width = 3;
-    event.height = 4;
-    event.stateMask = 5;
-    event.text = "text";
+    event.start = 1;
+    event.end = 2;
+    event.text = new String();
     event.doit = true;
-    event.detail = 6;
     event.data = new Object();
+    event.character = 'x';
+    event.keyCode = 321;
+    event.stateMask = 444;
     
-    SelectionEvent selectionEvent = new SelectionEvent( event );
+    VerifyEvent selectionEvent = new VerifyEvent( event );
     
     EventTestHelper.assertFieldsEqual( selectionEvent, event );
   }

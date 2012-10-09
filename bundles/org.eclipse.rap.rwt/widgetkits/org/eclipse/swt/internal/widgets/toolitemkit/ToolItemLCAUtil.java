@@ -16,17 +16,19 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.EventLCAUtil;
-import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.internal.widgets.IToolItemAdapter;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 
 
 final class ToolItemLCAUtil {
@@ -100,17 +102,9 @@ final class ToolItemLCAUtil {
   static void processSelection( ToolItem toolItem ) {
     String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
     if( WidgetLCAUtil.wasEventSent( toolItem, eventName ) ) {
-      Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-      int stateMask = EventLCAUtil.readStateMask( toolItem, eventName );
-      SelectionEvent event = new SelectionEvent( toolItem,
-                                                 null,
-                                                 SelectionEvent.WIDGET_SELECTED,
-                                                 bounds,
-                                                 stateMask,
-                                                 null,
-                                                 true,
-                                                 SWT.NONE );
-      event.processEvent();
+      Event event = new Event();
+      event.stateMask = EventLCAUtil.readStateMask( toolItem, eventName );
+      toolItem.notifyListeners( SWT.Selection, event );
     }
   }
 

@@ -14,7 +14,6 @@ package org.eclipse.swt.events;
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -92,10 +91,7 @@ public final class TraverseEvent extends KeyEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int KEY_TRAVERSED = SWT.Traverse;
-
-  private static final Class LISTENER = TraverseListener.class;
-  private static final int[] EVENT_TYPES = { KEY_TRAVERSED };
+  private static final int[] EVENT_TYPES = { SWT.Traverse };
 
   /**
    * The traversal type.
@@ -139,10 +135,6 @@ public final class TraverseEvent extends KeyEvent {
     detail = e.detail;
   }
 
-  public TraverseEvent( Control source ) {
-    super( source, KEY_TRAVERSED );
-  }
-
   /**
    * Returns a string containing a concise, human-readable description of the
    * receiver.
@@ -156,22 +148,6 @@ public final class TraverseEvent extends KeyEvent {
            + " detail="
            + detail
            + "}";
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case KEY_TRAVERSED:
-        ( ( TraverseListener )listener ).keyTraversed( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
   }
 
   @Override

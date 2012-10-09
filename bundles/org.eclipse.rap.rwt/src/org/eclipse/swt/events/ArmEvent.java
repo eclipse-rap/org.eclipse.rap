@@ -14,7 +14,6 @@ import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Widget;
 
 
 /**
@@ -32,7 +31,6 @@ public final class ArmEvent extends TypedEvent {
 
   private static final int WIDGET_ARMED = SWT.Arm;
 
-  private static final Class LISTENER = ArmListener.class;
   private static final int[] EVENT_TYPES = { WIDGET_ARMED };
 
   /**
@@ -43,34 +41,6 @@ public final class ArmEvent extends TypedEvent {
    */
   public ArmEvent( Event event ) {
     super( event );
-  }
-
-  /**
-   * Constructs a new instance of this class.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
-  public ArmEvent( Widget source ) {
-    super( source, WIDGET_ARMED );
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case WIDGET_ARMED:
-        ( ( ArmListener )listener ).widgetArmed( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
   }
 
   @Override
@@ -111,7 +81,7 @@ public final class ArmEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, EVENT_TYPES );
+    return getListeners( adaptable, EVENT_TYPES );
   }
 
 }

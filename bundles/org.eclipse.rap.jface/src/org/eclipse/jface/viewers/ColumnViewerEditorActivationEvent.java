@@ -13,6 +13,7 @@ package org.eclipse.jface.viewers;
 
 import java.util.EventObject;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.TraverseEvent;
@@ -125,7 +126,7 @@ public class ColumnViewerEditorActivationEvent extends EventObject {
 // RAP [rh] MouseEvent#count not implemented. Changed if-statement works as
 //     long as conditions in the calling method don't change.
 //		if (event.count >= 2) {
-		if(event.getID() == MouseEvent.MOUSE_DOUBLE_CLICK) {
+		if(event.getID() == SWT.MouseDoubleClick) {
 			eventType = MOUSE_DOUBLE_CLICK_SELECTION;
 		} else {
 			eventType = MOUSE_CLICK_SELECTION;

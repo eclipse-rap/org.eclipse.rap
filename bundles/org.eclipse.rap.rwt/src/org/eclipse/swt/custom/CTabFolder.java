@@ -15,12 +15,33 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderThemeAdapter;
-import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
+import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
+import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.WidgetGraphicsAdapter;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Layout;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 
 
 /**
@@ -1979,9 +2000,7 @@ CTabItem[] items = itemHolder.getItems();
 //          20+d, 12+d,  21+d, 12+d,  22+d,  12+d };
 //    }
 
-//    notifyListeners(SWT.Resize, new Event());
-    ControlEvent event = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
-    event.processEvent();
+    notifyListeners(SWT.Resize, new Event());
 
     return true;
   }
@@ -2003,8 +2022,7 @@ CTabItem[] items = itemHolder.getItems();
     updateItems();
     Rectangle rectAfter = getClientArea();
     if( !rectBefore.equals( rectAfter ) ) {
-      ControlEvent event = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
-      event.processEvent();
+      notifyListeners( SWT.Resize, new Event() );
     }
   }
 
@@ -2174,10 +2192,9 @@ CTabItem[] items = itemHolder.getItems();
     int oldSelectedIndex = selectedIndex;
     setSelection( index );
     if( notify && selectedIndex != oldSelectedIndex && selectedIndex != -1 ) {
-      CTabItem selection = getSelection();
-      SelectionEvent event
-        = new SelectionEvent( this, selection, SelectionEvent.WIDGET_SELECTED );
-      event.processEvent();
+      Event event = new Event();
+      event.item = getSelection();
+      notifyListeners( SWT.Selection, event );
     }
   }
 

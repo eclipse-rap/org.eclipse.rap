@@ -64,12 +64,13 @@ public final class EventUtil {
   private static boolean isShellAccessible( Shell shell ) {
     Shell modalShell = null;
     Shell activeShell = shell.getDisplay().getActiveShell();
-    if(    activeShell != null
-        && activeShell.isVisible()
-        && ( activeShell.getStyle() & SWT.APPLICATION_MODAL ) != 0 )
-    {
+    if( activeShell != null && activeShell.isVisible() && isModal( activeShell ) ) {
       modalShell = activeShell;
     }
     return modalShell == null || shell == modalShell;
+  }
+
+  private static boolean isModal( Shell shell ) {
+    return ( shell.getStyle() & SWT.APPLICATION_MODAL ) != 0;
   }
 }

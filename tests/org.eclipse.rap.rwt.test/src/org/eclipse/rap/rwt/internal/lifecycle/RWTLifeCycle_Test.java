@@ -407,11 +407,9 @@ public class RWTLifeCycle_Test extends TestCase {
       }
     };
     SelectionEvent.addListener( widget, listener );
-    SelectionEvent event
-      = new SelectionEvent( widget, null, SelectionEvent.WIDGET_SELECTED );
     // event is scheduled but not executed at this point as there is no life
     // cycle running
-    event.processEvent();
+    widget.notifyListeners( SWT.Selection, new Event() );
     log.setLength( 0 );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     returnValue = Display.getCurrent().readAndDispatch();
@@ -436,9 +434,8 @@ public class RWTLifeCycle_Test extends TestCase {
       }
     };
     SelectionEvent.addListener( widget, listener );
-    SelectionEvent event
-      = new SelectionEvent( widget, null, SelectionEvent.WIDGET_SELECTED );
-    event.processEvent();
+    Event event = new Event();
+    widget.notifyListeners( SWT.Selection, event );
 
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display.readAndDispatch();

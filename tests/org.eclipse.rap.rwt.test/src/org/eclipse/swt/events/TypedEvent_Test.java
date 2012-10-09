@@ -23,12 +23,17 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
+import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class TypedEvent_Test extends TestCase {
@@ -128,31 +133,6 @@ public class TypedEvent_Test extends TestCase {
     assertEquals( expected, log.toString() );
   }
 
-  public void testMultipleEventsInOneRequest() {
-    final java.util.List<TypedEvent> eventLog = new ArrayList<TypedEvent>();
-    Button button = new Button( shell, SWT.PUSH );
-    button.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        eventLog.add( event );
-      }
-    } );
-    ActivateEvent.addListener( button, new ActivateAdapter() {
-      @Override
-      public void activated( ActivateEvent event ) {
-        eventLog.add( event );
-      }
-    } );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
-    fakeActivateRequestParam( button );
-
-    Fixture.executeLifeCycleFromServerThread( );
-
-    assertEquals( ActivateEvent.class, eventLog.get( 0 ).getClass() );
-    assertEquals( SelectionEvent.class, eventLog.get( 1 ).getClass() );
-  }
-
   public void testFireFocusEventBeforeMouseEvent() {
     final java.util.List<TypedEvent> eventLog = new ArrayList<TypedEvent>();
     Button button = new Button( shell, SWT.PUSH );
@@ -189,7 +169,10 @@ public class TypedEvent_Test extends TestCase {
     event.widget = shell;
     event.display = shell.getDisplay();
     event.data = new Object();
+    
     TypedEvent typedEvent = new TypedEvent( event );
+    
+    assertSame( event.widget, typedEvent.getSource() );
     assertSame( event.widget, typedEvent.widget );
     assertSame( event.display, typedEvent.display );
     assertSame( event.data, typedEvent.data );
@@ -227,12 +210,6 @@ public class TypedEvent_Test extends TestCase {
     parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( y ) );
     parameters.put( ClientMessageConst.EVENT_PARAM_TIME, Integer.valueOf( 0 ) );
     Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_MOUSE_DOWN, parameters );
-  }
-
-  private void fakeActivateRequestParam( Control control ) {
-    Fixture.fakeNotifyOperation( getId( control ),
-                                 ClientMessageConst.EVENT_CONTROL_ACTIVATED,
-                                 null );
   }
 
 }

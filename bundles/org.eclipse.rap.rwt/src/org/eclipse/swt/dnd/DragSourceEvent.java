@@ -34,7 +34,6 @@ public class DragSourceEvent extends TypedEvent {
   public static final int DRAG_SET_DATA = DND.DragSetData;
   
   private static final int[] EVENT_TYPES = { DRAG_START, DRAG_END, DRAG_SET_DATA };
-  private static final Class LISTENER = DragSourceListener.class;
 
   /**
    * The operation that was performed.
@@ -145,30 +144,8 @@ public class DragSourceEvent extends TypedEvent {
   }
 
   @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case DRAG_START:
-        ( ( DragSourceListener )listener ).dragStart( this );
-      break;
-      case DRAG_END:
-        ( ( DragSourceListener )listener ).dragFinished( this );
-      break;
-      case DRAG_SET_DATA:
-        ( ( DragSourceListener )listener ).dragSetData( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
   protected boolean allowProcessing() {
     return EventUtil.isAccessible( widget );
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
   }
 
   /**
@@ -204,6 +181,6 @@ public class DragSourceEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, EVENT_TYPES );
+    return getListeners( adaptable, EVENT_TYPES );
   }
 }

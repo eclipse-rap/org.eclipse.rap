@@ -151,6 +151,7 @@ public class SashLCA_Test extends TestCase {
     properties.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( 2 ) );
     properties.put( ClientMessageConst.EVENT_PARAM_WIDTH, Integer.valueOf( 3 ) );
     properties.put( ClientMessageConst.EVENT_PARAM_HEIGHT, Integer.valueOf( 4 ) );
+    properties.put( "altKey", "true" );
     Fixture.fakeNotifyOperation( getId( sash ),
                                  ClientMessageConst.EVENT_WIDGET_SELECTED,
                                  properties );
@@ -167,6 +168,7 @@ public class SashLCA_Test extends TestCase {
     assertEquals( 4, event.height );
     assertEquals( true, event.doit );
     assertEquals( SWT.DRAG, event.detail );
+    assertTrue( ( event.stateMask & SWT.ALT ) != 0 );
   }
 
   public void testRenderCreate() throws IOException {

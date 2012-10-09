@@ -17,7 +17,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.tabfolderkit.TabFolderThemeAdapter;
@@ -348,9 +349,9 @@ public class TabFolder extends Composite {
       if( newIndex != -1 ) {
         updateSelectedItemControl();
         if( notify ) {
-          TabItem item = itemHolder.getItem( newIndex );
-          SelectionEvent event = new SelectionEvent( this, item, SelectionEvent.WIDGET_SELECTED );
-          event.processEvent();
+          Event event = new Event();
+          event.item = itemHolder.getItem( newIndex );
+          notifyListeners( SWT.Selection, event );
         }
       }
     }

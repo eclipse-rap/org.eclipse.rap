@@ -24,6 +24,7 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -225,6 +226,7 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testReadText_WithVerifyListener() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.markInitialized( ccombo );

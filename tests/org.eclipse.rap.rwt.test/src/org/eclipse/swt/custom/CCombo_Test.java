@@ -717,7 +717,7 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testSetTextAndSelection() {
-    final CCombo combo = new CCombo( shell, SWT.NONE );
+    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test1" );
     combo.add( "test2" );
@@ -726,7 +726,9 @@ public class CCombo_Test extends TestCase {
         event.text = event.text + "2";
       }
     } );
+    
     combo.setText( "test" );
+    
     assertEquals( 2, combo.getSelectionIndex() );
   }
 

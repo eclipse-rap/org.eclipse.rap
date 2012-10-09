@@ -39,7 +39,6 @@ public class LocationEvent extends TypedEvent {
   public static final int CHANGING = EventTypes.LOCALTION_CHANGING;
   public static final int CHANGED = EventTypes.LOCALTION_CHANGED;
 
-  private static final Class LISTENER = LocationListener.class;
   private static final int[] EVENT_TYPES = { CHANGING, CHANGED };
 
   /** current location */
@@ -60,25 +59,6 @@ public class LocationEvent extends TypedEvent {
   LocationEvent( Object source, int id, String location ) {
     super( source, id );
     this.location = location;
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case CHANGING:
-        ( ( LocationListener )listener ).changing( this );
-      break;
-      case CHANGED:
-        ( ( LocationListener )listener ).changed( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
   }
 
   @Override
@@ -121,6 +101,6 @@ public class LocationEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, EVENT_TYPES );
+    return getListeners( adaptable, EVENT_TYPES );
   }
 }

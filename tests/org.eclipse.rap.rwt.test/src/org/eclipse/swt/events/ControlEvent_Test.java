@@ -15,6 +15,7 @@ package org.eclipse.swt.events;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import junit.framework.TestCase;
@@ -36,6 +37,7 @@ public class ControlEvent_Test extends TestCase {
     display = new Display();
     control = new Shell( display, SWT.NONE );
     Fixture.fakeNewRequest( display );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   @Override
@@ -47,7 +49,6 @@ public class ControlEvent_Test extends TestCase {
     ControlListener listener = mock( ControlListener.class );
     control.addControlListener( listener );
 
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     control.setSize( 10, 20 );
 
     verify( listener, times( 1 ) ).controlResized( any( ControlEvent.class ) );
@@ -55,12 +56,12 @@ public class ControlEvent_Test extends TestCase {
   }
 
   public void testResized_FromClient() {
+    control.setLocation( 50, 50 );
     ControlListener listener = mock( ControlListener.class );
     control.addControlListener( listener );
 
     // this does not belong to all controls, only to those which allow
     // resize or move operations by the user (e.g. Shell)
-    control.setLocation( 50, 50 );
     Integer[] param = new Integer[] {
       Integer.valueOf( 50 ),
       Integer.valueOf( 50 ),
@@ -70,8 +71,8 @@ public class ControlEvent_Test extends TestCase {
     Fixture.fakeSetParameter( getId( control ), "bounds", param );
     Fixture.readDataAndProcessAction( control );
 
-    verify( listener, times( 1 ) ).controlResized( any( ControlEvent.class ) );
-    verify( listener, times( 0 ) ).controlMoved( any( ControlEvent.class ) );
+    verify( listener ).controlResized( any( ControlEvent.class ) );
+    verify( listener, never() ).controlMoved( any( ControlEvent.class ) );
     assertEquals( new Point( 50, 100 ), control.getSize() );
   }
 
@@ -79,7 +80,6 @@ public class ControlEvent_Test extends TestCase {
     ControlListener listener = mock( ControlListener.class );
     control.addControlListener( listener );
 
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     control.setLocation( 30, 40 );
 
     verify( listener, times( 0 ) ).controlResized( any( ControlEvent.class ) );
@@ -101,8 +101,8 @@ public class ControlEvent_Test extends TestCase {
     Fixture.fakeSetParameter( getId( control ), "bounds", param );
     Fixture.readDataAndProcessAction( control );
 
-    verify( listener, times( 1 ) ).controlMoved( any( ControlEvent.class ) );
-    verify( listener, times( 0 ) ).controlResized( any( ControlEvent.class ) );
+    verify( listener ).controlMoved( any( ControlEvent.class ) );
+    verify( listener, never() ).controlResized( any( ControlEvent.class ) );
     assertEquals( new Point( 150, 200 ), control.getLocation() );
   }
 

@@ -16,7 +16,10 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 
 
 public class ShellEvent_Test extends TestCase {
@@ -24,13 +27,14 @@ public class ShellEvent_Test extends TestCase {
   private static final String SHELL_CLOSED = "shellClosed|";
   
   private String log;
+  private Display display;
   private Shell shell;
   
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     log = "";
-    Display display = new Display();
+    display = new Display();
     shell = new Shell( display );
   }
   
@@ -38,16 +42,18 @@ public class ShellEvent_Test extends TestCase {
     Fixture.tearDown();
   }
   
-  public void testInitialValues() {
-    ShellEvent shellEvent = new ShellEvent( shell, ShellEvent.SHELL_CLOSED );
-    assertNull( shellEvent.data );
-    assertSame( shell.getDisplay(), shellEvent.display );
-    assertSame( shell, shellEvent.widget );
-    assertSame( shell, shellEvent.getSource() );
-    assertTrue( shellEvent.doit );
-    assertEquals( ShellEvent.SHELL_CLOSED, shellEvent.getID() );
+  public void testUntypedEventConstructor() throws Exception {
+    Event event = new Event();
+    event.display = display;
+    event.widget = shell;
+    event.doit = false;
+    event.data = new Object();
+    
+    ShellEvent shellEvent = new ShellEvent( event );
+    
+    EventTestHelper.assertFieldsEqual( shellEvent, event );
   }
-  
+
   public void testAddRemoveClosedListener() {
     ShellListener listener = new ShellAdapter() {
       public void shellClosed( ShellEvent event ) {

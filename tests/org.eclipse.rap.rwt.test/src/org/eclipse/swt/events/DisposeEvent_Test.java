@@ -23,35 +23,45 @@ public class DisposeEvent_Test extends TestCase {
 
   private static final String WIDGET_DISPOSED = "widgetDiposed|";
 
-  private String log = "";
+  private String log;
+  private Display display;
+  private Composite shell;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    log = "";
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
 
-  public void testAddRemoveListener() {
+  public void testAddListener() {
     DisposeListener listener = new DisposeListener() {
       public void widgetDisposed( DisposeEvent event ) {
         log += WIDGET_DISPOSED;
       }
     };
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     shell.addDisposeListener( listener );
 
-    DisposeEvent event = new DisposeEvent( shell );
-    event.processEvent();
+    shell.notifyListeners( SWT.Dispose, new Event() );
+    
     assertEquals( WIDGET_DISPOSED, log );
+  }
+  
+  public void testRemoveListener() {
+    DisposeListener listener = new DisposeListener() {
+      public void widgetDisposed( DisposeEvent event ) {
+        log += WIDGET_DISPOSED;
+      }
+    };
+    shell.addDisposeListener( listener );
 
-    log = "";
     shell.removeDisposeListener( listener );
-    event = new DisposeEvent( shell );
-    event.processEvent();
+
     assertEquals( "", log );
   }
 
@@ -62,8 +72,6 @@ public class DisposeEvent_Test extends TestCase {
         log += WIDGET_DISPOSED;
       }
     };
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     shell.addDisposeListener( listener );
 
     Event event = new Event();
@@ -71,6 +79,7 @@ public class DisposeEvent_Test extends TestCase {
     event.type = SWT.Dispose;
     event.display = display;
     shell.notifyListeners( SWT.Dispose, event );
+
     assertEquals( WIDGET_DISPOSED, log );
   }
 }

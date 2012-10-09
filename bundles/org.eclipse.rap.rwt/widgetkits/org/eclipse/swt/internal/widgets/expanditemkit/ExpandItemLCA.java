@@ -18,12 +18,17 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.events.ExpandEvent;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IExpandBarAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.ExpandItem;
+import org.eclipse.swt.widgets.Widget;
 
 
 public final class ExpandItemLCA extends AbstractWidgetLCA {
@@ -55,7 +60,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           item.setExpanded( true );
-          createEvent( item, ExpandEvent.EXPAND ).processEvent();
+          sendEvent( item, SWT.Expand );
         }
       } );
     }
@@ -63,7 +68,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           item.setExpanded( false );
-          createEvent( item, ExpandEvent.COLLAPSE ).processEvent();
+          sendEvent( item, SWT.Collapse );
         }
       } );
     }
@@ -95,8 +100,10 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
   ////////////////
   // Event helper
 
-  private static ExpandEvent createEvent( ExpandItem item, int id ) {
-    return new ExpandEvent( item.getParent(), item, id );
+  private static void sendEvent( ExpandItem item, int eventType ) {
+    Event event = new Event();
+    event.item = item;
+    item.getParent().notifyListeners( eventType, event );
   }
 
   //////////////////

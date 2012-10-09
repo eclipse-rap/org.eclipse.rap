@@ -14,27 +14,52 @@ package org.eclipse.swt.widgets;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.*;
+import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
+import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
-import org.eclipse.rap.rwt.internal.theme.*;
+import org.eclipse.rap.rwt.internal.theme.QxColor;
+import org.eclipse.rap.rwt.internal.theme.QxImage;
+import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
+import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Device;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
-import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.events.EventList;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
+import org.eclipse.swt.internal.widgets.EventUtil;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 
 
@@ -282,16 +307,14 @@ public class Display extends Device implements Adaptable {
       if( this.focusControl != null && !this.focusControl.isInDispose() ) {
         Control currentFocusControl = this.focusControl;
         Shell shell = currentFocusControl.getShell();
-        FocusEvent event = new FocusEvent( currentFocusControl, FocusEvent.FOCUS_LOST );
-        event.processEvent();
+        currentFocusControl.notifyListeners( SWT.FocusOut, new Event() );
         shell.updateDefaultButton( currentFocusControl, false );
       }
       this.focusControl = focusControl;
       if( this.focusControl != null ) {
         Control currentFocusControl = this.focusControl;
         Shell shell = currentFocusControl.getShell();
-        FocusEvent event = new FocusEvent( currentFocusControl, FocusEvent.FOCUS_GAINED );
-        event.processEvent();
+        currentFocusControl.notifyListeners( SWT.FocusIn, new Event() );
         shell.updateDefaultButton( currentFocusControl, true );
       }
     }
@@ -815,15 +838,12 @@ public class Display extends Device implements Adaptable {
         shells.remove( activeShell );
         shells.add( activeShell );
       }
-      ShellEvent shellEvent;
       if( lastActiveShell != null && ( lastActiveShell.state & Widget.DISPOSE_SENT ) == 0 ) {
-        shellEvent = new ShellEvent( lastActiveShell, ShellEvent.SHELL_DEACTIVATED );
-        shellEvent.processEvent();
+        lastActiveShell.notifyListeners( SWT.Deactivate, new Event() );
       }
       this.activeShell = activeShell;
       if( activeShell != null ) {
-        shellEvent = new ShellEvent( activeShell, ShellEvent.SHELL_ACTIVATED );
-        shellEvent.processEvent();
+        activeShell.notifyListeners( SWT.Activate, new Event() );
       }
       if( this.activeShell != null ) {
         this.activeShell.restoreFocus();
@@ -1139,13 +1159,25 @@ public class Display extends Device implements Adaptable {
     {
       result = ProcessActionRunner.executeNext();
       if( !result ) {
-        result = TypedEvent.executeNext();
+        result = executeNextEvent();
       }
       if( !result ) {
         result = synchronizer.runAsyncMessages( false );
       }
       if( !result ) {
         result = executeNextRedraw();
+      }
+    }
+    return result;
+  }
+
+  private boolean executeNextEvent() {
+    boolean result = false;
+    Event event = EventList.getInstance().removeNext();
+    if( event != null ) {
+      if( EventUtil.isAccessible( event.widget ) ) {
+        event.widget.notifyListeners( event.type, event );
+        result = true;
       }
     }
     return result;

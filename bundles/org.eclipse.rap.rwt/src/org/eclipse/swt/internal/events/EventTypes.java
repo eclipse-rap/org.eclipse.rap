@@ -11,20 +11,19 @@
 package org.eclipse.swt.internal.events;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.LocationEvent;
+import org.eclipse.swt.browser.ProgressEvent;
+import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.dnd.DND;
 
 
-public class EventTypes {
+public final class EventTypes {
   
   public static final int MIN_SWT_EVENT = SWT.None;
   public static final int MAX_SWT_EVENT = SWT.Skin;
   
-  public static final int PAINT = 9; // SWT.Paint
-  
   public static final int MIN_DND_EVENT = DND.DragEnd;
   public static final int MAX_DND_EVENT = DND.DragStart;
-  
-  public static final int BROWSER_HISTORY_NAVIGATED = 5000;
   
   public static final int LOCALTION_CHANGING = 5011;
   public static final int LOCALTION_CHANGED = 5012;
@@ -38,9 +37,59 @@ public class EventTypes {
   public static final int CTAB_FOLDER_RESTORE = 5034;
   public static final int CTAB_FOLDER_SHOW_LIST = 5035;
   
-  public static final int CONTROL_ACTIVATED = SWT.Activate;
-  public static final int CONTROL_DEACTIVATED = SWT.Deactivate;
-  
   public static final int WIDGET_DESELECTED = 5051;
   
+  public static final int[] EVENT_ORDER = {
+    SWT.Move,
+    SWT.Resize,
+    SWT.Deactivate,
+    SWT.Activate,
+    SWT.Close,
+    SWT.Hide,
+    SWT.Show,
+    SWT.Dispose,
+    SWT.SetData,
+    SWT.FocusOut,
+    SWT.FocusIn,
+    SWT.Traverse,
+    SWT.KeyDown,
+    SWT.Expand,
+    SWT.Collapse,
+    SWT.Verify,
+    SWT.Modify,
+    SWT.MouseDown,
+    SWT.MouseDoubleClick,
+    SWT.MenuDetect,
+    CTabFolderEvent.CLOSE,
+    CTabFolderEvent.MINIMIZE,
+    CTabFolderEvent.MAXIMIZE,
+    CTabFolderEvent.RESTORE,
+    CTabFolderEvent.SHOW_LIST,
+    DeselectionEvent.WIDGET_DESELECTED,
+    SWT.Selection,
+    SWT.DefaultSelection,
+    SWT.MouseUp,
+    SWT.Help,
+    SWT.KeyUp,
+    SWT.DragDetect,
+    DND.DragStart,
+    DND.DragEnd,
+    DND.DragSetData,
+    DND.DragEnter,
+    DND.DragOver,
+    DND.DragLeave,
+    DND.DropAccept,
+    DND.Drop,
+    DND.DragOperationChanged,
+    LocationEvent.CHANGING,
+    LocationEvent.CHANGED,
+    ProgressEvent.CHANGED,
+    ProgressEvent.COMPLETED,
+    SWT.Arm,
+    SWT.Paint
+  };
+
+
+  private EventTypes() {
+  }
 }

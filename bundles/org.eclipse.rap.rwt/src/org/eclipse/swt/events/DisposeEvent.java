@@ -14,7 +14,6 @@ package org.eclipse.swt.events;
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Widget;
 
 
 /**
@@ -35,20 +34,7 @@ public final class DisposeEvent extends TypedEvent {
 
   public static final int WIDGET_DISPOSED = SWT.Dispose;
 
-  private static final Class LISTENER = DisposeListener.class;
   private static final int[] EVENT_TYPES = { WIDGET_DISPOSED };
-
-  /**
-   * Constructs a new instance of this class.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
-  public DisposeEvent( Widget source ) {
-    super( source, WIDGET_DISPOSED );
-  }
 
   /**
    * Constructs a new instance of this class based on the
@@ -58,16 +44,6 @@ public final class DisposeEvent extends TypedEvent {
    */
   public DisposeEvent( Event event ) {
     super( event );
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    ( ( DisposeListener )listener ).widgetDisposed( this );
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
   }
 
   @Override
@@ -108,6 +84,6 @@ public final class DisposeEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, EVENT_TYPES );
+    return getListeners( adaptable, EVENT_TYPES );
   }
 }

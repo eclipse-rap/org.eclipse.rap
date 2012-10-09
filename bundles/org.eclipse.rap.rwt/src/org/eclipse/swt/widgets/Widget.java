@@ -15,20 +15,22 @@ import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.events.EventAdapter;
 import org.eclipse.rap.rwt.internal.events.IEventAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.internal.SerializableCompatibility;
+import org.eclipse.swt.internal.events.EventList;
 import org.eclipse.swt.internal.events.EventTable;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
-import org.eclipse.swt.internal.widgets.UntypedEventAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.WidgetGraphicsAdapter;
 
@@ -106,7 +108,6 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
   private transient LifeCycleAdapterFactory lifeCycleAdapterFactory;
   private IWidgetAdapter widgetAdapter;
   private IEventAdapter eventAdapter;
-  private UntypedEventAdapter untypedAdapter;
   private IWidgetGraphicsAdapter widgetGraphicsAdapter;
 
   Widget() {
@@ -172,9 +173,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
       }
       result = ( T )eventAdapter;
     } else if( adapter == EventTable.class ) {
-      if( eventTable == null ) {
-        eventTable = new EventTable();
-      }
+      ensureEventTable();
       result = ( T )eventTable;
     } else if( adapter == IClientObjectAdapter.class || adapter == IWidgetAdapter.class ) {
       if( widgetAdapter == null ) {
@@ -196,9 +195,6 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     }
     return result;
   }
-
-  ///////////////////////////////////////////
-  // Methods to get/set single and keyed data
 
   /**
    * Returns the application defined widget data associated
@@ -388,6 +384,9 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     }
   }
 
+  ///////////////////////////////////////////
+  // Methods to get/set single and keyed data
+  
   /**
    * Returns the <code>Display</code> that is associated with
    * the receiver.
@@ -517,10 +516,8 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( untypedAdapter == null ) {
-      untypedAdapter = new UntypedEventAdapter();
-    }
-    untypedAdapter.addListener( this, eventType, listener );
+    ensureEventTable();
+    eventTable.hook( eventType, listener );
   }
 
   /**
@@ -551,12 +548,8 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( untypedAdapter != null ) {
-      untypedAdapter.removeListener( this, eventType, listener );
-      if( untypedAdapter.isEmpty() ) {
-        untypedAdapter = null;
-      }
-    }
+    ensureEventTable();
+    eventTable.unhook( eventType, listener );
   }
 
   /**
@@ -586,7 +579,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     newEvent.widget = this;
     newEvent.type = eventType;
     newEvent.display = display;
-    UntypedEventAdapter.notifyListeners( eventType, newEvent );
+    sendEvent( newEvent );
   }
 
   /**
@@ -608,14 +601,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    */
   public boolean isListening( int eventType ) {
     checkWidget();
-    boolean result = false;
-    if( untypedAdapter != null ) {
-      result = untypedAdapter.hasUntypedListener( eventType );
-    }
-    if( !result ) {
-      result = UntypedEventAdapter.hasTypedListener( this, eventType );
-    }
-    return result;
+    return eventTable == null ? false : eventTable.hooks( eventType );
   }
 
   /**
@@ -641,13 +627,35 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    */
   public Listener[] getListeners( int eventType ) {
     checkWidget();
-    Listener[] listeners;
-    if( untypedAdapter == null ) {
-      listeners = new Listener[ 0 ];
+    Listener[] result;
+    if( eventTable == null ) {
+      result = new Listener[ 0 ];
     } else {
-      listeners = untypedAdapter.getListeners( eventType );
+      result = eventTable.getListeners( eventType );
     }
-    return listeners;
+    return result;
+  }
+
+  private void sendEvent( Event event ) {
+    if( isEventProcessingPhase() ) {
+      if( eventTable != null ) {
+        eventTable.sendEvent( event );
+      }
+    } else {
+      EventList.getInstance().add( event );
+    }
+  }
+
+  private static boolean isEventProcessingPhase() {
+    PhaseId currentPhase = CurrentPhase.get();
+    return PhaseId.PREPARE_UI_ROOT.equals( currentPhase )
+        || PhaseId.PROCESS_ACTION.equals( currentPhase );
+  }
+
+  private void ensureEventTable() {
+    if( eventTable == null ) {
+      eventTable = new EventTable();
+    }
   }
 
   ///////////////////
@@ -784,8 +792,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
       }
       if( ( state & DISPOSE_SENT ) == 0 ) {
         state |= DISPOSE_SENT;
-        DisposeEvent disposeEvent = new DisposeEvent( this );
-        disposeEvent.processEvent();
+        notifyListeners( SWT.Dispose, new Event() );
       }
       if( ( state & DISPOSED ) == 0 ) {
         releaseChildren();
@@ -829,7 +836,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
 
   void releaseWidget() {
     lifeCycleAdapterFactory = null;
-    untypedAdapter = null;
+    eventTable = null;
     state |= DISPOSED;
   }
 

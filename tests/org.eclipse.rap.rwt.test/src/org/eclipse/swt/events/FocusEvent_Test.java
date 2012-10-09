@@ -13,6 +13,7 @@ package org.eclipse.swt.events;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,7 @@ public class FocusEvent_Test extends TestCase {
       }
     };
     Fixture.fakeNewRequest( display );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   @Override
@@ -57,37 +59,31 @@ public class FocusEvent_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testCopyFieldsFromUntypedEvent() {
-    Button button = new Button( shell, SWT.PUSH );
-    button.addFocusListener( listener );
-    Object data = new Object();
+  public void testUntypedEventConstructor() throws Exception {
     Event event = new Event();
-    event.data = data;
-
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    button.notifyListeners( SWT.FocusIn, event );
-
-    assertEquals( 1, events.size() );
-    FocusEvent focusEvent = events.get( 0 );
-    assertSame( button, focusEvent.getSource() );
-    assertSame( button, focusEvent.widget );
-    assertSame( display, focusEvent.display );
-    assertSame( data, focusEvent.data );
-    assertEquals( SWT.FocusIn, focusEvent.getID() );
+    event.display = display;
+    event.widget = mock( Widget.class );
+    event.data = new Object();
+    
+    FocusEvent focusEvent = new FocusEvent( event );
+    
+    EventTestHelper.assertFieldsEqual( focusEvent, event );
   }
 
   public void testFocusLost() {
-    Control unfocusControl = new Button( shell, SWT.PUSH );
+    Button unfocusControl = new Button( shell, SWT.PUSH );
+    unfocusControl.setText( "unfocusControl" );
     unfocusControl.setFocus();
     unfocusControl.addFocusListener( listener );
-    Control focusControl = new Button( shell, SWT.PUSH );
-
+    Button focusControl = new Button( shell, SWT.PUSH );
+    focusControl.setText( "focusControl" );
+    
     Fixture.fakeSetParameter( getId( display ), "focusControl", getId( focusControl ) );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 1, events.size() );
     FocusEvent event = events.get( 0 );
-    assertEquals( FocusEvent.FOCUS_LOST, event.getID() );
+    assertEquals( SWT.FocusOut, event.getID() );
     assertSame( unfocusControl, event.getSource() );
   }
 
@@ -100,7 +96,7 @@ public class FocusEvent_Test extends TestCase {
 
     assertEquals( 1, events.size() );
     FocusEvent event = events.get( 0 );
-    assertEquals( FocusEvent.FOCUS_GAINED, event.getID() );
+    assertEquals( SWT.FocusIn, event.getID() );
     assertSame( control, event.getSource() );
   }
 
@@ -117,10 +113,10 @@ public class FocusEvent_Test extends TestCase {
 
     assertEquals( 2, events.size() );
     FocusEvent event1 = events.get( 0 );
-    assertEquals( FocusEvent.FOCUS_LOST, event1.getID() );
+    assertEquals( SWT.FocusOut, event1.getID() );
     assertSame( button1, event1.widget );
     FocusEvent event2 = events.get( 1 );
-    assertEquals( FocusEvent.FOCUS_GAINED, event2.getID() );
+    assertEquals( SWT.FocusIn, event2.getID() );
     assertSame( button2, event2.widget );
   }
 }

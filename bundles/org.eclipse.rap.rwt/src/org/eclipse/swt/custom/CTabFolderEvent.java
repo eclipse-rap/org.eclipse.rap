@@ -39,7 +39,6 @@ public class CTabFolderEvent extends TypedEvent {
   public static final int RESTORE = EventTypes.CTAB_FOLDER_RESTORE;
   public static final int SHOW_LIST = EventTypes.CTAB_FOLDER_SHOW_LIST;
 
-  private static final Class LISTENER = CTabFolder2Listener.class;
   private static final int[] EVENT_TYPES = { CLOSE, MINIMIZE, MAXIMIZE, RESTORE, SHOW_LIST };
 
   /**
@@ -91,34 +90,6 @@ public class CTabFolderEvent extends TypedEvent {
   }
 
   @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case CLOSE:
-        ( ( CTabFolder2Listener )listener ).close( this );
-      break;
-      case MINIMIZE:
-        ( ( CTabFolder2Listener )listener ).minimize( this );
-      break;
-      case MAXIMIZE:
-        ( ( CTabFolder2Listener )listener ).maximize( this );
-      break;
-      case RESTORE:
-        ( ( CTabFolder2Listener )listener ).restore( this );
-      break;
-      case SHOW_LIST:
-        ( ( CTabFolder2Listener )listener ).showList( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
-  }
-
-  @Override
   protected boolean allowProcessing() {
     return EventUtil.isAccessible( widget );
   }
@@ -156,7 +127,7 @@ public class CTabFolderEvent extends TypedEvent {
    */
   @Deprecated
   public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, EVENT_TYPES );
+    return getListeners( adaptable, EVENT_TYPES );
   }
 
   @Override

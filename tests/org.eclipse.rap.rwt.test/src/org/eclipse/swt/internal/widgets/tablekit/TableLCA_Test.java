@@ -29,19 +29,42 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.PhaseListener;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.events.*;
-import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.CellToolTipUtil;
+import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
+import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
+import org.eclipse.swt.internal.widgets.ITableAdapter;
+import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCA.ItemMetrics;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.mockito.ArgumentCaptor;
@@ -160,7 +183,6 @@ public class TableLCA_Test extends TestCase {
     ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
     verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
     assertSame( item, captor.getValue().item );
-    assertEquals( "", captor.getValue().text );
     assertEquals( SWT.CHECK, captor.getValue().detail );
     verify( listener, times( 0 ) ).widgetDefaultSelected( any( SelectionEvent.class ) );
   }
@@ -383,7 +405,7 @@ public class TableLCA_Test extends TestCase {
         fail( "Must not trigger SetData event" );
       }
     } );
-
+    
     Fixture.fakePhase( PhaseId.READ_DATA );
     table.setItemCount( 1 );
     ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
@@ -392,10 +414,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     table.setItemCount( 0 );
     int eventCount = 0;
-    while( ProcessActionRunner.executeNext() ) {
-      eventCount++;
-    }
-    while( SetDataEvent.executeNext() ) {
+    while( display.readAndDispatch() ) {
       eventCount++;
     }
     assertEquals( 1, eventCount );

@@ -12,7 +12,6 @@ package org.eclipse.swt.internal.events;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
@@ -34,35 +33,6 @@ public final class DeselectionEvent extends SelectionEvent {
 
   public DeselectionEvent( Event e ) {
     super( e );
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    SelectionEvent event = cloneEvent();
-    switch( getID() ) {
-      case WIDGET_DESELECTED:
-        ( ( SelectionListener )listener ).widgetSelected( event );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  private SelectionEvent cloneEvent() {
-    Event event = new Event();
-    event.widget = widget;
-    event.type = SWT.Selection;
-    event.item = item;
-    event.x = x;
-    event.y = y;
-    event.width = width;
-    event.height = height;
-    event.stateMask = stateMask;
-    event.detail = detail;
-    event.data = data;
-    event.text = text;
-    event.doit = doit;
-    return new SelectionEvent( event );
   }
 
   private static Rectangle emptyRectangle() {

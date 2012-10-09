@@ -16,14 +16,25 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.events.TreeEvent;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.widgets.ITreeAdapter;
+import org.eclipse.swt.internal.widgets.ITreeItemAdapter;
+import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
+import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.swt.widgets.Widget;
 
 
 public final class TreeItemLCA extends AbstractWidgetLCA {
@@ -220,16 +231,14 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   // Process expand/collapse events
 
   private static void processTreeExpandedEvent( TreeItem item ) {
-    if( TreeEvent.hasListener( item.getParent() ) ) {
-      TreeEvent event = new TreeEvent( item.getParent(), item, TreeEvent.TREE_EXPANDED );
-      event.processEvent();
-    }
+    Event event = new Event();
+    event.item = item;
+    item.getParent().notifyListeners( SWT.Expand, event );
   }
 
   private static void processTreeCollapsedEvent( TreeItem item ) {
-    if( TreeEvent.hasListener( item.getParent() ) ) {
-      TreeEvent event = new TreeEvent( item.getParent(), item, TreeEvent.TREE_COLLAPSED );
-      event.processEvent();
-    }
+    Event event = new Event();
+    event.item = item;
+    item.getParent().notifyListeners( SWT.Collapse, event );
   }
 }
