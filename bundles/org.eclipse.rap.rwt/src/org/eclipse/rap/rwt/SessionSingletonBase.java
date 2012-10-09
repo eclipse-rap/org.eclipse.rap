@@ -25,7 +25,7 @@ package org.eclipse.rap.rwt;
  *   private FooSingleton() {}
  *
  *   public static FooSingleton getInstance() {
- *     return ( FooSingleton )SessionSingletonBase.getInstance( FooSingleton.class );
+ *     return SessionSingletonBase.getInstance( FooSingleton.class );
  *   }
  * }
  * </pre>
