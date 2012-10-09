@@ -15,10 +15,12 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.*;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.widgets.Display;
 
@@ -26,8 +28,7 @@ import org.eclipse.swt.widgets.Display;
 public final class JSExecutor {
 
   private static final String JS_EXECUTOR = JSExecutor.class.getName() + "#instance";
-  private static final String JSEXECUTOR_ID = "jsex";
-  private static final String JSEXECUTOR_TYPE = "rwt.JSExecutor";
+  private static final String JSEXECUTOR_TYPE = "rwt.client.JSExecutor";
   private static final String PARAM_CONTENT = "content";
   private static final String METHOD_EXECUTE = "execute";
 
@@ -42,8 +43,6 @@ public final class JSExecutor {
   }
 
   private JSExecutor() {
-    ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-    protocolWriter.appendCreate( JSEXECUTOR_ID, JSEXECUTOR_TYPE );
   }
 
   private static void ensureInstance() {
@@ -84,7 +83,7 @@ public final class JSExecutor {
         try {
           Map<String, Object> properties = new HashMap<String, Object>();
           properties.put( PARAM_CONTENT, code.toString().trim() );
-          protocolWriter.appendCall( JSEXECUTOR_ID, METHOD_EXECUTE, properties );
+          protocolWriter.appendCall( JSEXECUTOR_TYPE, METHOD_EXECUTE, properties );
         } finally {
           RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
         }
