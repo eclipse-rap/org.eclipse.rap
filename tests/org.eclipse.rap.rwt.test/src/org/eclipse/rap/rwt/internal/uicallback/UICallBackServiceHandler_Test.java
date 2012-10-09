@@ -20,8 +20,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
@@ -32,7 +30,7 @@ import org.eclipse.swt.widgets.Display;
 
 public class UICallBackServiceHandler_Test extends TestCase {
 
-  private final static String UI_CALLBACK_ID = "uicb";
+  private final static String UI_CALLBACK_ID = "rwt.client.UICallBack";
   private final static String PROP_ACTIVE = "active";
   private final static String METHOD_SEND_UI_REQUEST = "sendUIRequest";
 
@@ -55,14 +53,14 @@ public class UICallBackServiceHandler_Test extends TestCase {
     assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }
 
-  public void testCreateUICallBack() throws Exception {
+  public void testDoNotCreateUICallBackClientObject() throws Exception {
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
     ProtocolMessageWriter protocolWriter = new ProtocolMessageWriter();
 
     UICallBackServiceHandler.writeUICallBackActivation( protocolWriter );
 
     Message message = new Message( protocolWriter.createMessage() );
-    assertNotNull( message.findCreateOperation( UI_CALLBACK_ID ) );
+    assertNull( message.findCreateOperation( UI_CALLBACK_ID ) );
   }
 
   public void testWriteUICallBackActivation() throws Exception {
@@ -72,7 +70,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
     UICallBackServiceHandler.writeUICallBackActivation( protocolWriter );
 
     Message message = new Message( protocolWriter.createMessage() );
-    assertEquals( Boolean.TRUE, message.findCreateProperty( UI_CALLBACK_ID, PROP_ACTIVE ) );
+    assertEquals( Boolean.TRUE, message.findSetProperty( UI_CALLBACK_ID, PROP_ACTIVE ) );
   }
 
   public void testWriteUICallBackDeactivate() throws Exception {

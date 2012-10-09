@@ -25,8 +25,7 @@ import org.eclipse.rap.rwt.service.ISessionStore;
 
 public class UICallBackServiceHandler implements IServiceHandler {
 
-  private final static String UI_CALLBACK_ID = "uicb";
-  private final static String UI_CALLBACK_TYPE = "rwt.UICallBack";
+  private final static String UI_CALLBACK_ID = "rwt.client.UICallBack";
   private final static String PROP_ACTIVE = "active";
   private final static String METHOD_SEND_UI_REQUEST = "sendUIRequest";
 
@@ -53,7 +52,6 @@ public class UICallBackServiceHandler implements IServiceHandler {
     boolean actual = UICallBackManager.getInstance().needsActivation();
     boolean preserved = getPreservedUICallBackActivation();
     if( preserved != actual && actual ) {
-      ensureUICallBack( writer );
       writeUICallBackActivation( writer, actual );
       ISessionStore sessionStore = ContextProvider.getSessionStore();
       sessionStore.setAttribute( ATTR_NEEDS_UICALLBACK, Boolean.valueOf( actual ) );
@@ -64,7 +62,6 @@ public class UICallBackServiceHandler implements IServiceHandler {
     boolean actual = UICallBackManager.getInstance().needsActivation();
     boolean preserved = getPreservedUICallBackActivation();
     if( preserved != actual && !actual ) {
-      ensureUICallBack( writer );
       writeUICallBackActivation( writer, actual );
       ISessionStore sessionStore = ContextProvider.getSessionStore();
       sessionStore.setAttribute( ATTR_NEEDS_UICALLBACK, Boolean.valueOf( actual ) );
@@ -96,11 +93,4 @@ public class UICallBackServiceHandler implements IServiceHandler {
     }
   }
 
-  private static void ensureUICallBack( ProtocolMessageWriter writer ) {
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    Boolean needsUICallBack = ( Boolean )sessionStore.getAttribute( ATTR_NEEDS_UICALLBACK );
-    if( needsUICallBack == null ) {
-      writer.appendCreate( UI_CALLBACK_ID, UI_CALLBACK_TYPE );
-    }
-  }
 }
