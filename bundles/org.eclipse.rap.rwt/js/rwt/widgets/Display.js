@@ -42,7 +42,7 @@ rwt.widgets.Display.prototype = {
     this._appendColorDepth();
     this._appendInitialHistoryEvent();
     this._attachListener();
-    this._request.sendImmediate( true );
+    this._request.send();
     this._initialized = true;
   },
 

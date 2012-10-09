@@ -15,8 +15,6 @@ import java.util.*;
 
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
@@ -146,13 +144,9 @@ class MeasurementOperator implements SerializableCompatibility {
   }
 
   private static CallOperation[] getCallOperationsFor( String methodName ) {
-    CallOperation[] result = new CallOperation[ 0 ];
-    Display display = Display.getCurrent();
-    if( display != null ) {
-      ClientMessage message = ProtocolUtil.getClientMessage();
-      result = message.getAllCallOperationsFor( DisplayUtil.getId( display ), methodName );
-    }
-    return result;
+    // TODO: [if] w1 is used here as handleStartupProbeMeasurementResults is called before the
+    //            display is created (PREPARE_UI_ROOT of the first request)
+    return ProtocolUtil.getClientMessage().getAllCallOperationsFor( "w1", methodName );
   }
 
   private static Point readMeasuredSize( CallOperation[] operations, String id ) {

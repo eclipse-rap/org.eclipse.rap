@@ -131,8 +131,8 @@ qx.Class.define( "rwt.remote.Server", {
         this._sendTimer.stop();
         if( this._requestCounter != null ) {
           this.getMessageWriter().appendHead( "requestCounter", this._requestCounter );
-          this._requestCounter = -1;
         }
+        this._requestCounter = -1;
         var request = this._createRequest();
         request.setAsynchronous( async );
         request.setData( this.getMessageWriter().createMessage() );

@@ -66,7 +66,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       assertEquals( 42, op.properties[ "my.Prop" ] );
     },
 
-
     testSendEvent : function() {
       server.addEvent( "org.eclipse.swt.events.Selection", "w3" );
 
@@ -127,6 +126,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       var serverObject = server.getServerObject( rwt.widgets.Display.getCurrent() );
 
       assertTrue( serverObject instanceof rwt.protocol.ServerObject );
+    },
+
+    // See Bug 391393 - Invalid request counter on session restart
+    testSendTwoInitialRequests: function() {
+      var fakeServer = org.eclipse.rwt.test.fixture.FakeServer.getInstance();
+      fakeServer.setUseAsync( true );
+      server.setRequestCounter( null );
+
+      server.sendImmediate( true );
+      // NOTE [tb] : can not test sending second request since fixture for Server.js
+      //             does not support the requestCounter -1 case
+
+      assertEquals( -1, server.getRequestCounter() );
+      TestUtil.forceInterval( fakeServer._timer );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      org.eclipse.rwt.test.fixture.FakeServer.getInstance().setUseAsync( false );
     }
 
   }
