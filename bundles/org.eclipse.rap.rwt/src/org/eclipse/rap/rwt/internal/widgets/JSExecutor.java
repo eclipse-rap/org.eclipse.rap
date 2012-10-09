@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.widgets;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -43,10 +42,7 @@ public final class JSExecutor {
   }
 
   private JSExecutor() {
-  }
-
-  private static void ensureInstance() {
-    SingletonUtil.getSessionInstance( JSExecutor.class );
+    // prevent instantiation
   }
 
   private static JSExecutorPhaseListener getJSExecutor() {
@@ -78,7 +74,6 @@ public final class JSExecutor {
 
     public void afterPhase( PhaseEvent event ) {
       if( display == LifeCycleUtil.getSessionDisplay() ) {
-        ensureInstance();
         ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
         try {
           Map<String, Object> properties = new HashMap<String, Object>();
