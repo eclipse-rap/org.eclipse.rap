@@ -46,6 +46,7 @@ public class Display_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   @Override
@@ -814,9 +815,18 @@ public class Display_Test extends TestCase {
     assertSame( red, systemRed );
     assertSame( systemRed, display.getSystemColor( SWT.COLOR_RED ) );
   }
+  
+  public void testAddFilterWithNullArgument() {
+    Display display = new Display();
+    try {
+      display.addFilter( SWT.Dispose, null );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
 
   public void testAddAndRemoveFilter() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
     final int CLOSE_CALLBACK = 0;
     final int DISPOSE_CALLBACK = 1;
     final boolean[] callbackReceived = new boolean[]{ false, false };
@@ -829,14 +839,6 @@ public class Display_Test extends TestCase {
         }
       }
     };
-    // addFilter
-    Display display = new Display();
-    try {
-      display.addFilter( SWT.Dispose, null );
-      fail( "No exception thrown for addFilter with null argument" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
     display.addFilter( SWT.Close, listener );
     Shell shell = new Shell( display );
     shell.close();
@@ -845,12 +847,6 @@ public class Display_Test extends TestCase {
     // removeFilter
     callbackReceived[ CLOSE_CALLBACK ] = false;
     callbackReceived[ DISPOSE_CALLBACK ] = false;
-    try {
-      display.removeFilter( SWT.Dispose, null );
-      fail( "No exception thrown for removeFilter with null argument" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
     display.removeFilter( SWT.Close, listener );
     shell = new Shell( display );
     shell.close();
@@ -858,6 +854,17 @@ public class Display_Test extends TestCase {
     assertFalse( callbackReceived[ DISPOSE_CALLBACK ] );
     // remove filter for an event that was not added before -> do nothing
     display.removeFilter( SWT.FocusIn, listener );
+  }
+  
+  public void testRemoveFilterWithNullArgument() {
+    Display display = new Display();
+    
+    try {
+      display .removeFilter( SWT.Dispose, null );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+
   }
 
   public void testEnsureIdIsW1() throws IOException {
@@ -978,7 +985,6 @@ public class Display_Test extends TestCase {
     // 1. display dispose listener
     // 2. shell dispose listeners
     // 3. disposeRunnable(s)
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<Object> log = new ArrayList<Object>();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -1009,7 +1015,6 @@ public class Display_Test extends TestCase {
   }
 
   public void testDisposeWithExceptionsInListeners() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.addDisposeListener( new DisposeListener() {
@@ -1118,7 +1123,18 @@ public class Display_Test extends TestCase {
     SWTException swtException = ( SWTException )throwable[ 0 ];
     assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swtException.code );
   }
-
+  
+  public void testFilterWithoutListener() {
+    Display display = new Display();
+    Listener filter = mock( Listener.class );
+    display.addFilter( SWT.Resize, filter );
+    Widget widget = new Shell( display );
+    
+    widget.notifyListeners( SWT.Resize, new Event() );
+    
+    verify( filter ).handleEvent( any( Event.class ) );
+  }
+  
   public void testCloseEventFilter() {
     Display display = new Display();
     final StringBuilder order = new StringBuilder();
@@ -1136,7 +1152,9 @@ public class Display_Test extends TestCase {
         order.append( "listener" );
       }
     } );
+    
     display.close();
+    
     assertEquals( "filter, listener", order.toString() );
     assertEquals( 2, events.size() );
     Event filterEvent = events.get( 0 );
@@ -1410,7 +1428,6 @@ public class Display_Test extends TestCase {
 
   public void testDisposeFailsWhenInDisposal() {
     // See bug 389384
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Display display = new Display();
     Shell shell = new Shell( display );
     shell.addDisposeListener( new DisposeListener() {

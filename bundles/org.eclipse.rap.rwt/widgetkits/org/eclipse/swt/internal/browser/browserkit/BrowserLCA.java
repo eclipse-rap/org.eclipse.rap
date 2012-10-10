@@ -124,10 +124,8 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   private static void fireProgressEvent( Browser browser ) {
     if( WidgetLCAUtil.wasEventSent( browser, EVENT_PROGRESS_COMPLETED ) ) {
-      ProgressEvent changedEvent = new ProgressEvent( browser, ProgressEvent.CHANGED );
-      changedEvent.processEvent();
-      ProgressEvent completedEvent = new ProgressEvent( browser, ProgressEvent.COMPLETED );
-      completedEvent.processEvent();
+      IBrowserAdapter browserAdapter = browser.getAdapter( IBrowserAdapter.class );
+      browserAdapter.sendProgressCompletedEvent();
     }
   }
 

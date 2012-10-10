@@ -12,8 +12,10 @@
 package org.eclipse.swt.browser;
 
 import org.eclipse.rap.rwt.Adaptable;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.internal.events.EventTypes;
+import org.eclipse.swt.widgets.Event;
 
 
 /**
@@ -56,9 +58,11 @@ public class LocationEvent extends TypedEvent {
    */
   public boolean doit = true;
 
-  LocationEvent( Object source, int id, String location ) {
-    super( source, id );
-    this.location = location;
+  
+  LocationEvent( Event event ) {
+    super( event );
+    location = event.text;
+    top = event.detail == SWT.TOP;
   }
 
   /**

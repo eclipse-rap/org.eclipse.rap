@@ -184,8 +184,8 @@ public class DisplaySerialization_Test extends TestCase {
     display.addFilter( SWT.Skin, new SerializableListener() );
     
     Display deserializedDisplay = serializeAndDeserialize( display );
-    
-    assertEquals( 1, getDisplayAdapter( deserializedDisplay ).getFilters().length );
+
+    assertTrue( deserializedDisplay.filters( SWT.Skin ) );
   }
   
   public void testDisposeExecRunnablesIsSerializable() throws Exception {

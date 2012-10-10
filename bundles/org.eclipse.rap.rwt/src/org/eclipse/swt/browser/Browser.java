@@ -11,7 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.browser;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
@@ -20,13 +21,19 @@ import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.widgets.BrowserCallback;
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.internal.SWTEventListener;
 import org.eclipse.swt.internal.SerializableCompatibility;
+import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.TypedListener;
 
 
 /**
@@ -58,7 +65,7 @@ public class Browser extends Composite {
   private static final String FUNCTIONS_TO_DESTROY
     = Browser.class.getName() + "#functionsToDestroy.";
 
-  private static final String ABOUT_BLANK = "about:blank";
+  static final String ABOUT_BLANK = "about:blank";
 
   private String url;
   private String html;
@@ -133,18 +140,13 @@ public class Browser extends Composite {
     if( url == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    LocationEvent event = new LocationEvent( this, LocationEvent.CHANGING, url );
-    event.processEvent();
-    boolean result = event.doit;
+    boolean result = sendLocationChangingEvent( url );
     if( result ) {
       this.url = url;
       urlChanged = true;
       html = "";
-      event = new LocationEvent( this, LocationEvent.CHANGED, url );
-      event.top = true;
-      event.processEvent();
-      ProgressEvent progressEvent = new ProgressEvent( this, ProgressEvent.CHANGED );
-      progressEvent.processEvent();
+      sendLocationChangedEvent( url );
+      sendProgressChangedEvent();
     }
     return result;
   }
@@ -194,18 +196,13 @@ public class Browser extends Composite {
     if( html == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    LocationEvent event = new LocationEvent( this, LocationEvent.CHANGING, ABOUT_BLANK );
-    event.processEvent();
-    boolean result = event.doit;
+    boolean result = sendLocationChangingEvent( ABOUT_BLANK );
     if( result ) {
       this.html = html;
       url = "";
       urlChanged = true;
-      event = new LocationEvent( this, LocationEvent.CHANGED, ABOUT_BLANK );
-      event.top = true;
-      event.processEvent();
-      ProgressEvent progressEvent = new ProgressEvent( this, ProgressEvent.CHANGED );
-      progressEvent.processEvent();
+      sendLocationChangedEvent( ABOUT_BLANK );
+      sendProgressChangedEvent();
     }
     return result;
   }
@@ -361,7 +358,12 @@ public class Browser extends Composite {
    */
   public void addLocationListener( LocationListener listener ) {
     checkWidget();
-    LocationEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedBrowserListener browserListener = new TypedBrowserListener( listener );
+    addListener( EventTypes.LOCALTION_CHANGED, browserListener );
+    addListener( EventTypes.LOCALTION_CHANGING, browserListener );
   }
 
   /**
@@ -381,7 +383,8 @@ public class Browser extends Composite {
    */
   public void removeLocationListener( LocationListener listener ) {
     checkWidget();
-    LocationEvent.removeListener( this, listener );
+    removeListener( EventTypes.LOCALTION_CHANGED, listener );
+    removeListener( EventTypes.LOCALTION_CHANGING, listener );
   }
 
   /**
@@ -404,7 +407,12 @@ public class Browser extends Composite {
    */
   public void addProgressListener( ProgressListener listener ) {
     checkWidget();
-    ProgressEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedBrowserListener browserListener = new TypedBrowserListener( listener );
+    addListener( EventTypes.PROGRESS_CHANGED, browserListener );
+    addListener( EventTypes.PROGRESS_COMPLETED, browserListener );
   }
 
   /**
@@ -427,7 +435,8 @@ public class Browser extends Composite {
    */
   public void removeProgressListener( ProgressListener listener ) {
     checkWidget();
-    ProgressEvent.removeListener( this, listener );
+    removeListener( EventTypes.PROGRESS_CHANGED, listener );
+    removeListener( EventTypes.PROGRESS_COMPLETED, listener );
   }
 
   @Override
@@ -528,6 +537,28 @@ public class Browser extends Composite {
   //////////////////
   // Helping methods
 
+  private boolean sendLocationChangingEvent( String location ) {
+    Event event = new Event();
+    event.text = location;
+    notifyListeners( EventTypes.LOCALTION_CHANGING, event );
+    return event.doit;
+  }
+
+  private void sendLocationChangedEvent( String location ) {
+    Event event = new Event();
+    event.text = location;
+    event.detail = SWT.TOP;
+    notifyListeners( EventTypes.LOCALTION_CHANGED, event );
+  }
+
+  private void sendProgressChangedEvent() {
+    notifyListeners( EventTypes.PROGRESS_CHANGED, new Event() );
+  }
+  
+  private void sendProgressCompletedEvent() {
+    notifyListeners( EventTypes.PROGRESS_COMPLETED, new Event() );
+  }
+  
   private static String prepareScript( String script ) {
     StringBuilder buffer = new StringBuilder( "(function(){" );
     buffer.append( script );
@@ -582,6 +613,11 @@ public class Browser extends Composite {
     public String getText() {
       return html;
     }
+    
+    public void sendProgressCompletedEvent() {
+      Browser.this.sendProgressChangedEvent();
+      Browser.this.sendProgressCompletedEvent();
+    }
 
     public String getExecuteScript() {
       return executeScript;
@@ -615,6 +651,44 @@ public class Browser extends Composite {
       Browser.this.evaluateNonBlocking( script, browserCallback );
     }
 
+  }
+  
+  static class TypedBrowserListener extends TypedListener {
+
+    TypedBrowserListener( SWTEventListener listener ) {
+      super( listener );
+    }
+    
+    @Override
+    public void handleEvent( Event event ) {
+      switch( event.type ) {
+        case EventTypes.LOCALTION_CHANGING: {
+          LocationListener locationListener = ( LocationListener )getEventListener();
+          LocationEvent locationEvent = new LocationEvent( event );
+          locationListener.changing( locationEvent );
+          event.doit = locationEvent.doit;
+          break;
+        }
+        case EventTypes.LOCALTION_CHANGED: {
+          LocationListener locationListener = ( LocationListener )getEventListener();
+          LocationEvent locationEvent = new LocationEvent( event );
+          locationListener.changed( locationEvent );
+          break;
+        }
+        case EventTypes.PROGRESS_CHANGED: {
+          ProgressListener progressListener = ( ProgressListener )getEventListener();
+          ProgressEvent progressEvent = new ProgressEvent( event );
+          progressListener.changed( progressEvent );
+          break;
+        }
+        case EventTypes.PROGRESS_COMPLETED: {
+          ProgressListener progressListener = ( ProgressListener )getEventListener();
+          ProgressEvent progressEvent = new ProgressEvent( event );
+          progressListener.completed( progressEvent );
+          break;
+        }
+      }
+    }
   }
 
 }

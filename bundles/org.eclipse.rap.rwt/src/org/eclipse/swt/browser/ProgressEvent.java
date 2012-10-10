@@ -13,7 +13,7 @@ package org.eclipse.swt.browser;
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.internal.events.EventTypes;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.Event;
 
 
 /**
@@ -44,25 +44,8 @@ public class ProgressEvent extends TypedEvent {
   /** total value */
   public int total;
 
-  /**
-   * Constructs a new instance of this class.
-   *
-   * @param widget the widget that fired the event
-   */
-  public ProgressEvent( Widget widget ) {
-    super( widget );
-  }
-
-  /**
-   * Constructs a new instance of this class.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
-  public ProgressEvent( Widget source, int id ) {
-    super( source, id );
+  ProgressEvent( Event event ) {
+    super( event );
   }
 
   /**

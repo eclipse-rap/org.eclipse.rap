@@ -171,7 +171,7 @@ public class EventFiltering_Test extends TestCase {
     childShell.open();
 
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread();
 
     verify( selectionListener ).widgetSelected( any( SelectionEvent.class ) );
   }

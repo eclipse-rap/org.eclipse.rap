@@ -14,6 +14,7 @@ package org.eclipse.swt.custom;
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.internal.events.EventTypes;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -84,8 +85,14 @@ public class CTabFolderEvent extends TypedEvent {
    * from application code.
    * </p>
    */
-  public CTabFolderEvent( Object source, int id ) {
-    super( source, id );
+  public CTabFolderEvent( Event event ) {
+    super( event );
+    x = event.x;
+    y = event.y;
+    width = event.width;
+    height = event.height;
+    item = event.item;
+    doit = event.doit;
   }
 
   /**

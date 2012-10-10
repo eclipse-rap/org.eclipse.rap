@@ -80,6 +80,32 @@ public class EventList_Test extends TestCase {
     assertSame( lateEvent, events[ 1 ] );
   }
   
+  
+  public void testRemoveExistingEvent() {
+    Event event = creatEvent( FIRST_EVENT );
+    eventList.add( event );
+    
+    eventList.remove( event );
+    
+    assertEquals( 0, eventList.getAll().length );
+  }
+  
+  public void testRemoveNonExistingEvent() {
+    Event event = creatEvent( FIRST_EVENT );
+    
+    eventList.remove( event );
+    
+    assertEquals( 0, eventList.getAll().length );
+  }
+  
+  public void testRemoveEventWithNullArgument() {
+    try {
+      eventList.remove( null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+  
   public void testRemoveNext() {
     Event secondEvent = creatEvent( SECOND_EVENT );
     eventList.add( secondEvent );

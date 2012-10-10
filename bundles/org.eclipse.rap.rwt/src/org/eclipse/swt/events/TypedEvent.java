@@ -20,8 +20,6 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
@@ -138,66 +136,11 @@ public class TypedEvent extends RWTEvent {
       {
         // TODO [fappel]: changes of the event fields in the filter handler
         //                methods should be forwarded to this event...
-        if( !isFiltered( processFilters() ) ) {
-          sourceEvent.widget.notifyListeners( sourceEvent.type, sourceEvent );
-        }
+        sourceEvent.widget.notifyListeners( sourceEvent.type, sourceEvent );
       } else {
         addToScheduledEvents( this );
       }
     }
-  }
-
-  ////////////////////////////////////
-  // methods for filter implementation
-
-  private Event processFilters() {
-    IFilterEntry[] filters = getFilterEntries();
-    Event result = new Event();
-    if( sourceEvent != null ) {
-      copyFields( sourceEvent, result );
-    }
-    result.display = display;
-    result.widget = widget;
-    result.type = getID();
-    for( int i = 0; !isFiltered( result ) && i < filters.length; i++ ) {
-      if( filters[ i ].getType() == result.type ) {
-        filters[ i ].getListener().handleEvent( result );
-      }
-    }
-    return result;
-  }
-
-  private void copyFields( Event from, Event to ) {
-    to.button = from.button;
-    to.character = from.character;
-    to.count = from.count;
-    to.data = from.data;
-    to.detail = from.detail;
-    to.display = from.display;
-    to.doit = from.doit;
-    to.end = from.end;
-    to.height = from.height;
-    to.index = from.index;
-    to.item = from.item;
-    to.keyCode = from.keyCode;
-    to.start = from.start;
-    to.stateMask = from.stateMask;
-    to.text = from.text;
-    to.type = from.type;
-    to.widget = from.widget;
-    to.width = from.width;
-    to.x = from.x;
-    to.y = from.y;
-  }
-
-  private static boolean isFiltered( Event event ) {
-    return event.type == SWT.None;
-  }
-
-  private IFilterEntry[] getFilterEntries() {
-    Display display = widget.getDisplay();
-    IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
-    return adapter.getFilters();
   }
 
   ///////////////////////////////////////////////

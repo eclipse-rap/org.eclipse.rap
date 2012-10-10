@@ -49,10 +49,6 @@ public class EventUtil_Test extends TestCase {
     assertTrue( eventTime > 0 );
   }
   
-  public void testIsAccessible() {
-    fail( "missing tests for isAccessible" );
-  }
-
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();

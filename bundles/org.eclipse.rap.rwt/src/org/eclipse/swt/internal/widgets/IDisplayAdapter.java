@@ -18,11 +18,6 @@ import org.eclipse.swt.widgets.*;
 
 public interface IDisplayAdapter {
 
-  interface IFilterEntry {
-    int getType();
-    Listener getListener();
-  }
-
   void setBounds( Rectangle bounds );
   void setCursorLocation( int x, int y );
   void setActiveShell( Shell shell );
@@ -31,7 +26,6 @@ public interface IDisplayAdapter {
   boolean isFocusInvalidated();
   Shell[] getShells();
   ISessionStore getSessionStore();
-  IFilterEntry[] getFilters();
 
   void attachThread();
   void detachThread();

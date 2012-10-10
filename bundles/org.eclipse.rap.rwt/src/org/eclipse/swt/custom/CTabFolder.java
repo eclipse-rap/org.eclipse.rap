@@ -32,6 +32,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderThemeAdapter;
+import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
@@ -42,6 +43,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.TypedListener;
 
 
 /**
@@ -1420,7 +1422,12 @@ public class CTabFolder extends Composite {
    */
   public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Selection, typedListener );
+    addListener( SWT.DefaultSelection, typedListener );
   }
 
   /**
@@ -1439,7 +1446,11 @@ public class CTabFolder extends Composite {
    */
   public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.removeListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Selection, listener );
+    removeListener( SWT.DefaultSelection, listener );
   }
 
   /**
@@ -1465,7 +1476,15 @@ public class CTabFolder extends Composite {
    */
   public void addCTabFolder2Listener( CTabFolder2Listener listener ) {
     checkWidget();
-    CTabFolderEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedCTabFolderListener typedListener = new TypedCTabFolderListener( listener );
+    addListener( EventTypes.CTAB_FOLDER_MINIMIZE, typedListener );
+    addListener( EventTypes.CTAB_FOLDER_MAXIMIZE, typedListener );
+    addListener( EventTypes.CTAB_FOLDER_RESTORE, typedListener );
+    addListener( EventTypes.CTAB_FOLDER_CLOSE, typedListener );
+    addListener( EventTypes.CTAB_FOLDER_SHOW_LIST, typedListener );
   }
 
   /**
@@ -1486,7 +1505,14 @@ public class CTabFolder extends Composite {
    */
   public void removeCTabFolder2Listener( CTabFolder2Listener listener ) {
     checkWidget();
-    CTabFolderEvent.removeListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( EventTypes.CTAB_FOLDER_MINIMIZE, listener );
+    removeListener( EventTypes.CTAB_FOLDER_MAXIMIZE, listener );
+    removeListener( EventTypes.CTAB_FOLDER_RESTORE, listener );
+    removeListener( EventTypes.CTAB_FOLDER_CLOSE, listener );
+    removeListener( EventTypes.CTAB_FOLDER_SHOW_LIST, listener );
   }
 
   ///////////////////////////////////

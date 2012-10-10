@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.shellkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SHELL_ACTIVATED;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -318,15 +319,14 @@ public class ShellLCA_Test extends TestCase {
   }
 
   public void testShellActivate() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuilder activateEventLog = new StringBuilder();
     Listener activateListener = new Listener() {
       public void handleEvent( Event event ) {
         if( event.type == SWT.Activate ) {
-          Shell shell = ( Shell )event.widget;
-          activateEventLog.append( "activated:" + shell.getData() + "|" );
+          activateEventLog.append( "activated:" + event.widget.getData() + "|" );
         } else {
-          Shell shell = ( Shell )event.widget;
-          activateEventLog.append( "deactivated:" + shell.getData() + "|" );
+          activateEventLog.append( "deactivated:" + event.widget.getData() + "|" );
         }
       }
     };
@@ -334,13 +334,11 @@ public class ShellLCA_Test extends TestCase {
     ShellListener shellListener = new ShellAdapter() {
       @Override
       public void shellActivated( ShellEvent event ) {
-        Shell shell = ( Shell )event.getSource();
-        shellEventLog.append( "activated:" + shell.getData() + "|" );
+        shellEventLog.append( "activated:" + event.widget.getData() + "|" );
       }
       @Override
       public void shellDeactivated( ShellEvent event ) {
-        Shell shell = ( Shell )event.getSource();
-        shellEventLog.append( "deactivated:" + shell.getData() + "|" );
+        shellEventLog.append( "deactivated:" + event.widget.getData() + "|" );
       }
     };
     Shell shellToActivate = new Shell( display, SWT.NONE );
@@ -361,7 +359,7 @@ public class ShellLCA_Test extends TestCase {
     Fixture.markInitialized( activeShell );
     Fixture.markInitialized( shellToActivate );
 
-    Fixture.fakeNotifyOperation( getId( shellToActivate ), ClientMessageConst.EVENT_SHELL_ACTIVATED, null );
+    Fixture.fakeNotifyOperation( getId( shellToActivate ), EVENT_SHELL_ACTIVATED, null );
     Fixture.executeLifeCycleFromServerThread();
 
     assertSame( shellToActivate, display.getActiveShell() );

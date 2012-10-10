@@ -58,7 +58,6 @@ import org.eclipse.swt.internal.events.EventList;
 import org.eclipse.swt.internal.events.EventTable;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
@@ -144,7 +143,6 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
  */
 public class Display extends Device implements Adaptable {
 
-  private static final IFilterEntry[] EMPTY_FILTERS = new IFilterEntry[ 0 ];
   private final static String BOUNDS = "bounds";
   private static final String ATTR_INVALIDATE_FOCUS
     = DisplayAdapter.class.getName() + "#invalidateFocus";
@@ -211,7 +209,6 @@ public class Display extends Device implements Adaptable {
   private final Rectangle bounds;
   private final Point cursorLocation;
   private Shell activeShell;
-  private List<FilterEntry> filters;
   private Collection<Control> redrawControls;
   private Control focusControl;
   private EventTable filterTable;
@@ -1176,16 +1173,20 @@ public class Display extends Device implements Adaptable {
 
   private boolean executeNextEvent() {
     boolean result = false;
-    Event event = EventList.getInstance().removeNext();
-    if( event != null ) {
+    Event[] events = EventList.getInstance().getAll();
+    while( !result && events.length > 0 ) {
+      Event event = events[ 0 ];
+      EventList.getInstance().remove( event );
       if( EventUtil.isAccessible( event.widget ) ) {
         event.widget.notifyListeners( event.type, event );
         result = true;
+      } else {
+        events = EventList.getInstance().getAll();
       }
     }
     return result;
   }
-
+  
   /**
    * Causes the user-interface thread to <em>sleep</em> (that is,
    * to be put in a state where it does not consume CPU cycles)
@@ -1776,6 +1777,10 @@ public class Display extends Device implements Adaptable {
       filterTable = null;
     }
   }
+  
+  boolean filters( int eventType ) {
+    return filterTable != null ? filterTable.hooks( eventType ) : false;
+  }
 
   void filterEvent( Event event ) {
     if( filterTable != null ) {
@@ -2289,26 +2294,7 @@ public class Display extends Device implements Adaptable {
   }
 
   private void notifyFilters( Event event ) {
-    IFilterEntry[] filterEntries = getFilterEntries();
-    for( int i = 0; i < filterEntries.length; i++ ) {
-      if( filterEntries[ i ].getType() == event.type ) {
-        try {
-          filterEntries[ i ].getListener().handleEvent( event );
-        } catch( Throwable thr ) {
-          String msg = "Exception while executing filter.";
-          ServletLog.log( msg, thr );
-        }
-      }
-    }
-  }
-
-  private IFilterEntry[] getFilterEntries() {
-    IFilterEntry[] result = EMPTY_FILTERS;
-    if( filters != null ) {
-      result = new IFilterEntry[ filters.size() ];
-      filters.toArray( result );
-    }
-    return result;
+    filterEvent( event );
   }
 
   /////////////////
@@ -2316,25 +2302,6 @@ public class Display extends Device implements Adaptable {
 
   private static class WakeRunnable implements Runnable, SerializableCompatibility {
     public void run() {
-    }
-  }
-
-  private static class FilterEntry implements IFilterEntry, SerializableCompatibility {
-
-    private final int eventType;
-    private final Listener listener;
-
-    FilterEntry( int eventType, Listener listener ) {
-      this.eventType = eventType;
-      this.listener = listener;
-    }
-
-    public int getType() {
-      return eventType;
-    }
-
-    public Listener getListener() {
-      return listener;
     }
   }
 
@@ -2436,10 +2403,6 @@ public class Display extends Device implements Adaptable {
       return Display.this.sessionStore;
     }
 
-    public IFilterEntry[] getFilters() {
-      return getFilterEntries();
-    }
-
     public void attachThread() {
       Display.this.attachThread();
     }
@@ -2460,4 +2423,5 @@ public class Display extends Device implements Adaptable {
       Display.this.beep = false;
     }
   }
+
 }

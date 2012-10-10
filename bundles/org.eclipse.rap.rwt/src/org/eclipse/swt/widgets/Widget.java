@@ -688,8 +688,8 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
 
   private void sendEvent( Event event ) {
     if( isEventProcessingPhase() ) {
+      event.display.filterEvent( event );
       if( eventTable != null ) {
-        event.display.filterEvent( event );
         eventTable.sendEvent( event );
       }
     } else {

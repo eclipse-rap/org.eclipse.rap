@@ -36,6 +36,7 @@ public class ControlEvent_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     control = new Shell( display, SWT.NONE );
+    control.setVisible( true );
     Fixture.fakeNewRequest( display );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }

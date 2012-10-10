@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.widgets.Event;
 
@@ -48,6 +49,11 @@ public class EventList {
   
   public void add( Event event ) {
     events.add( event );
+  }
+
+  public void remove( Event event ) {
+    ParamCheck.notNull( event, "event" );
+    events.remove( event );
   }
 
   public Event[] getAll() {

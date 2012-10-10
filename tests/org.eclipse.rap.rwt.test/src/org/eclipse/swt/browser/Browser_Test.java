@@ -11,8 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.browser;
 
-import java.util.ArrayList;
-
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
@@ -20,9 +23,12 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
+import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 
 
 public class Browser_Test extends TestCase {
@@ -93,6 +99,89 @@ public class Browser_Test extends TestCase {
       assertEquals( "oldValue", getText( browser ) );
     }
   }
+  
+  public void testAddLocationListenerRegistersUntypedListeners() {
+    Browser browser = new Browser( shell, SWT.NONE );
+
+    browser.addLocationListener( mock( LocationListener.class ) );
+    
+    assertTrue( browser.isListening( EventTypes.LOCALTION_CHANGING ) );
+    assertTrue( browser.isListening( EventTypes.LOCALTION_CHANGED ) );
+  }
+  
+  public void testRemoveLocationListenerRegistersUntypedListeners() {
+    Browser browser = new Browser( shell, SWT.NONE );
+    LocationListener locationListener = mock( LocationListener.class );
+    browser.addLocationListener( locationListener );
+    
+    browser.removeLocationListener( locationListener );
+    
+    assertFalse( browser.isListening( EventTypes.LOCALTION_CHANGING ) );
+    assertFalse( browser.isListening( EventTypes.LOCALTION_CHANGED ) );
+  }
+  
+  public void testAddProgressListenerRegistersUntypedListeners() {
+    Browser browser = new Browser( shell, SWT.NONE );
+    
+    browser.addProgressListener( mock( ProgressListener.class ) );
+    
+    assertTrue( browser.isListening( EventTypes.PROGRESS_CHANGED ) );
+    assertTrue( browser.isListening( EventTypes.PROGRESS_COMPLETED ) );
+  }
+  
+  public void testRemoveProgressListenerRegistersUntypedListeners() {
+    Browser browser = new Browser( shell, SWT.NONE );
+    ProgressListener progressListener = mock( ProgressListener.class );
+    browser.addProgressListener( progressListener );
+    
+    browser.removeProgressListener( progressListener );
+    
+    assertFalse( browser.isListening( EventTypes.PROGRESS_CHANGED ) );
+    assertFalse( browser.isListening( EventTypes.PROGRESS_COMPLETED ) );
+  }
+  
+  public void testSetTextWithNonVetoingLocationListener() {
+    Browser browser = new Browser( shell, SWT.NONE );
+    LocationListener listener = mock( LocationListener.class );
+    browser.addLocationListener( listener );
+
+    browser.setText( "text" );
+    
+    ArgumentCaptor<LocationEvent> changingCaptor = ArgumentCaptor.forClass( LocationEvent.class );
+    verify( listener ).changing( changingCaptor.capture() );
+    assertEquals( Browser.ABOUT_BLANK, changingCaptor.getValue().location );
+    ArgumentCaptor<LocationEvent> changedCaptor = ArgumentCaptor.forClass( LocationEvent.class );
+    verify( listener ).changed( changedCaptor.capture() );
+    assertEquals( Browser.ABOUT_BLANK, changedCaptor.getValue().location );
+  }
+  
+  public void testSetUrlWithNonVetoingLocationListener() {
+    Browser browser = new Browser( shell, SWT.NONE );
+    LocationListener listener = mock( LocationListener.class );
+    browser.addLocationListener( listener );
+    
+    String newUrl = "NEW_URL";
+    browser.setUrl( newUrl );
+    
+    ArgumentCaptor<LocationEvent> changingCaptor = ArgumentCaptor.forClass( LocationEvent.class );
+    verify( listener ).changing( changingCaptor.capture() );
+    assertEquals( newUrl, changingCaptor.getValue().location );
+    ArgumentCaptor<LocationEvent> changedCaptor = ArgumentCaptor.forClass( LocationEvent.class );
+    verify( listener ).changed( changedCaptor.capture() );
+    assertEquals( newUrl, changedCaptor.getValue().location );
+  }
+  
+  public void testLocationListenerOrderInSetText() {
+    Browser browser = new Browser( shell, SWT.NONE );
+    LocationListener listener = mock( LocationListener.class );
+    browser.addLocationListener( listener );
+
+    browser.setText( "text" );
+    
+    InOrder inOrder = inOrder( listener );
+    inOrder.verify( listener ).changing( any( LocationEvent.class ) );
+    inOrder.verify( listener ).changed( any( LocationEvent.class ) );
+  }
 
   public void testLocationEvent() {
     final StringBuilder log = new StringBuilder();
@@ -112,15 +201,6 @@ public class Browser_Test extends TestCase {
         assertTrue( event.top );
       }
     };
-    LocationListener vetoListener = new LocationListener() {
-      public void changing( LocationEvent event ) {
-        log.append( "changing" + event.location + "|" );
-        event.doit = false;
-      }
-      public void changed( LocationEvent event ) {
-        log.append( "changed" + event.location );
-      }
-    };
 
     // test basic event behaviour with setUrl
     browser.addLocationListener( listener );
@@ -137,17 +217,6 @@ public class Browser_Test extends TestCase {
     log.setLength( 0 );
     browser.removeLocationListener( listener );
 
-    // test vetoing listener with with setUrl
-    browser.setUrl( "OLD_URL" );
-    browser.addLocationListener( vetoListener );
-    success = browser.setUrl( "NEW_URL" );
-    assertEquals( false, success );
-    assertEquals( "changingNEW_URL|", log.toString() );
-    assertEquals( "OLD_URL", browser.getUrl() );
-    // clean up
-    log.setLength( 0 );
-    browser.removeLocationListener( vetoListener );
-
     // test basic event behaviour with setText
     browser.addLocationListener( listener );
     expectedLocation[ 0 ] = "about:blank";
@@ -159,98 +228,76 @@ public class Browser_Test extends TestCase {
     success = browser.setText( "Some html" );
     assertEquals( true, success );
     assertEquals( "changingabout:blank|changedabout:blank", log.toString() );
-    // clean up
-    log.setLength( 0 );
-    browser.removeLocationListener( listener );
+  }
+  
+  public void testSetUrlWithVetoingLocationListener() {
+    String oldUrl = "OLD_URL";
+    Browser browser = new Browser( shell, SWT.NONE );
+    browser.setUrl( oldUrl );
+    browser.addLocationListener( new VetoingLocationListener() );
 
-    // test vetoing listener with with setText
-    browser.setText( "Old html" );
-    browser.addLocationListener( vetoListener );
-    success = browser.setText( "New html" );
-    assertEquals( false, success );
-    assertEquals( "changingabout:blank|", log.toString() );
-    assertEquals( "Old html", getText( browser ) );
-    // clean up
-    log.setLength( 0 );
-    browser.removeLocationListener( vetoListener );
+    browser.setUrl( "NEW_URL" );
+    
+    assertEquals( oldUrl, browser.getUrl() );
   }
 
-  public void testProgressEvent_setTextAllowed() {
-    final ArrayList<String> log = new ArrayList<String>();
-    final Browser browser = new Browser( shell, SWT.NONE );
-    browser.addProgressListener( new ProgressListener() {
-      public void changed( ProgressEvent event ) {
-        log.add( "changed" );
-      }
-      public void completed( ProgressEvent event ) {
-        log.add( "completed" );
-      }
-    } );
+  public void testSetTextWithVetoingLocationListener() {
+    String oldText = "OLD_TEXT";
+    Browser browser = new Browser( shell, SWT.NONE );
+    browser.setText( oldText );
+    browser.addLocationListener( new VetoingLocationListener() );
+    
+    browser.setUrl( "NEW_TEXT" );
+    
+    assertEquals( oldText, browser.getAdapter( IBrowserAdapter.class ).getText() );
+  }
+  
+  public void testSetTextWithProgressListener() {
+    Browser browser = new Browser( shell, SWT.NONE );
+    ProgressListener listener = mock( ProgressListener.class );
+    browser.addProgressListener( listener );
+    
     browser.setText( "test" );
-    assertEquals( 1, log.size() );
-    assertEquals( "changed", log.get( 0 ) );
+
+    verify( listener ).changed( any( ProgressEvent.class ) );
+    verify( listener, never() ).completed( any( ProgressEvent.class ) );
   }
 
-  public void testProgressEvent_setTextNotAllowed() {
-    final ArrayList<String> log = new ArrayList<String>();
-    final Browser browser = new Browser( shell, SWT.NONE );
-    browser.addLocationListener( new LocationListener() {
-      public void changing( LocationEvent event ) {
-        event.doit = false;
-      }
-      public void changed( LocationEvent event ) {
-      }
-    } );
-    browser.addProgressListener( new ProgressListener() {
-      public void changed( ProgressEvent event ) {
-        log.add( "changed" );
-      }
-      public void completed( ProgressEvent event ) {
-        log.add( "completed" );
-      }
-    } );
+  public void testVetoedSetTextWithProgressListener() {
+    Browser browser = new Browser( shell, SWT.NONE );
+    ProgressListener listener = mock( ProgressListener.class );
+    browser.addProgressListener( listener );
+    browser.addLocationListener( new VetoingLocationListener() );
+    
     browser.setText( "test" );
-    assertEquals( 0, log.size() );
+    
+    verify( listener, never() ).changed( any( ProgressEvent.class ) );
+    verify( listener, never() ).completed( any( ProgressEvent.class ) );
   }
-
-  public void testProgressEvent_setUrlAllowed() {
-    final ArrayList<String> log = new ArrayList<String>();
-    final Browser browser = new Browser( shell, SWT.NONE );
-    browser.addProgressListener( new ProgressListener() {
-      public void changed( ProgressEvent event ) {
-        log.add( "changed" );
-      }
-      public void completed( ProgressEvent event ) {
-        log.add( "completed" );
-      }
-    } );
-    browser.setUrl( "http://www.eclipse.org" );
-    assertEquals( 1, log.size() );
-    assertEquals( "changed", log.get( 0 ) );
+  
+  public void testSetUrlWithProgressListener() {
+    Browser browser = new Browser( shell, SWT.NONE );
+    ProgressListener listener = mock( ProgressListener.class );
+    browser.addProgressListener( listener );
+    
+    browser.setUrl( "http://eclipse.org/rap" );
+    
+    verify( listener ).changed( any( ProgressEvent.class ) );
+    verify( listener, never() ).completed( any( ProgressEvent.class ) );
   }
-
-  public void testProgressEvent_setUrlNotAllowed() {
-    final ArrayList<String> log = new ArrayList<String>();
-    final Browser browser = new Browser( shell, SWT.NONE );
-    browser.addLocationListener( new LocationListener() {
-      public void changing( LocationEvent event ) {
-        event.doit = false;
-      }
-      public void changed( LocationEvent event ) {
-      }
-    } );
-    browser.addProgressListener( new ProgressListener() {
-      public void changed( ProgressEvent event ) {
-        log.add( "changed" );
-      }
-      public void completed( ProgressEvent event ) {
-        log.add( "completed" );
-      }
-    } );
-    browser.setUrl( "http://www.eclipse.org" );
-    assertEquals( 0, log.size() );
+  
+  public void testVetoedSetUrlWithProgressListener() {
+    Browser browser = new Browser( shell, SWT.NONE );
+    ProgressListener listener = mock( ProgressListener.class );
+    browser.addProgressListener( listener );
+    browser.addLocationListener( new VetoingLocationListener() );
+    
+    browser.setUrl( "http://eclipse.org/rap" );
+    
+    verify( listener, never() ).changed( any( ProgressEvent.class ) );
+    verify( listener, never() ).completed( any( ProgressEvent.class ) );
   }
-
+  
   public void testGetWebBrowser() {
     Browser browser = new Browser( shell, SWT.NONE );
     assertNull( browser.getWebBrowser() );
@@ -311,4 +358,14 @@ public class Browser_Test extends TestCase {
     IBrowserAdapter browserAdapter = ( IBrowserAdapter )adapter;
     return browserAdapter.getText();
   }
+
+  private static class VetoingLocationListener implements LocationListener {
+    public void changing( LocationEvent event ) {
+      event.doit = false;
+    }
+
+    public void changed( LocationEvent event ) {
+    }
+  }
+
 }
