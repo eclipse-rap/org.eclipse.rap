@@ -20,6 +20,9 @@ import junit.framework.TestCase;
 
 public class EventList_Test extends TestCase {
 
+  private static final int EARLY_TIME = 1;
+  private static final int LATE_TIME = 100;
+  
   private static final int FIRST_EVENT = 1;
   private static final int SECOND_EVENT = 2;
   private static final int UNKNOWN_EVENT = 47;
@@ -60,6 +63,21 @@ public class EventList_Test extends TestCase {
     assertEquals( 2, events.length );
     assertSame( knownEvent, events[ 0 ] );
     assertSame( unknownEvent, events[ 1 ] );
+  }
+  
+  public void testGetAllWithSameEventType() {
+    Event lateEvent = creatEvent( FIRST_EVENT );
+    lateEvent.time = LATE_TIME;
+    Event earlyEvent = creatEvent( FIRST_EVENT );
+    earlyEvent.time = EARLY_TIME;
+    eventList.add( lateEvent );
+    eventList.add( earlyEvent );
+    
+    Event[] events = eventList.getAll();
+    
+    assertEquals( 2, events.length );
+    assertSame( earlyEvent, events[ 0 ] );
+    assertSame( lateEvent, events[ 1 ] );
   }
   
   public void testRemoveNext() {
@@ -118,7 +136,7 @@ public class EventList_Test extends TestCase {
     return result;
   }
 
-  private void simulateNewRequest() {
+  private static void simulateNewRequest() {
     ContextProvider.releaseContextHolder();
     Fixture.createServiceContext();
   }

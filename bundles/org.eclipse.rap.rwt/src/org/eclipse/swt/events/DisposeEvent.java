@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -32,10 +30,6 @@ public final class DisposeEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int WIDGET_DISPOSED = SWT.Dispose;
-
-  private static final int[] EVENT_TYPES = { WIDGET_DISPOSED };
-
   /**
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
@@ -46,44 +40,4 @@ public final class DisposeEvent extends TypedEvent {
     super( event );
   }
 
-  @Override
-  protected boolean allowProcessing() {
-    return true;
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, DisposeListener listener ) {
-    addListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, DisposeListener listener ) {
-    removeListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, EVENT_TYPES );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListeners( adaptable, EVENT_TYPES );
-  }
 }

@@ -12,7 +12,6 @@
 package org.eclipse.swt.dnd;
 
 import org.eclipse.swt.events.TypedEvent;
-import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Widget;
 
 /**
@@ -101,16 +100,6 @@ public class DropTargetEvent extends TypedEvent {
   public TransferData[] dataTypes;
 
   /**
-   * the time that the event occurred.
-   *
-   * NOTE: This field is an unsigned integer and should
-   * be AND'ed with 0xFFFFFFFFL so that it can be treated
-   * as a signed long.
-   */
-  // TODO [rh] in SWT, the field 'time' is declared in TypedEvent
-  public int time;
-
-  /**
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
    *
@@ -173,11 +162,6 @@ public class DropTargetEvent extends TypedEvent {
     sb.append( currentDataType != null ? currentDataType.type : '0' );
     sb.append( '}' );
     return sb.toString();
-  }
-
-  @Override
-  protected boolean allowProcessing() {
-    return EventUtil.isAccessible( widget );
   }
 
 }

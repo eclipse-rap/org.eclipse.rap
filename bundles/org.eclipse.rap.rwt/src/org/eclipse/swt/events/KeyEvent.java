@@ -13,7 +13,6 @@ package org.eclipse.swt.events;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -99,11 +98,6 @@ public class KeyEvent extends TypedEvent {
     keyCode = event.keyCode;
     stateMask = event.stateMask;
     doit = event.doit;
-  }
-
-  @Override
-  protected boolean allowProcessing() {
-    return EventUtil.isAccessible( widget );
   }
 
   /**

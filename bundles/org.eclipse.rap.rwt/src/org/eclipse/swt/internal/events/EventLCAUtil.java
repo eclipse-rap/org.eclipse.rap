@@ -14,6 +14,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventProper
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
@@ -82,6 +83,18 @@ public final class EventLCAUtil {
       if( vScroll != null && "true".equals( vertical ) ) {
         vScroll.notifyListeners( SWT.Selection, new Event() );
       }
+    }
+  }
+  
+  public static void processRadioSelection( Widget widget, boolean isWidgetSelected ) {
+    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( widget, eventName ) ) {
+      Event event = new Event();
+      if( !isWidgetSelected ) {
+        event.time = -1;
+      }
+      event.stateMask = EventLCAUtil.readStateMask( widget, eventName );
+      widget.notifyListeners( SWT.Selection, event );
     }
   }
 

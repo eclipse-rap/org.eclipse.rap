@@ -13,7 +13,6 @@ package org.eclipse.swt.events;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -52,17 +51,6 @@ public final class ShellEvent extends TypedEvent {
     doit = event.doit;
   }
 
-  @Override
-  protected boolean allowProcessing() {
-    boolean result;
-    if( getID() == SWT.Close ) {
-      result = EventUtil.isAccessible( widget );
-    } else {
-      result = true;
-    }
-    return result;
-  }
-
   /**
    * @since 2.0
    * @deprecated not part of the API, do not use in application code
@@ -90,12 +78,4 @@ public final class ShellEvent extends TypedEvent {
     removeListener( adaptable, EVENT_TYPES, listener );
   }
 
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListeners( adaptable, EVENT_TYPES );
-  }
 }

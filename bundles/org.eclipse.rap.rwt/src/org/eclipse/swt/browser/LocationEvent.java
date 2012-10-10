@@ -61,13 +61,6 @@ public class LocationEvent extends TypedEvent {
     this.location = location;
   }
 
-  @Override
-  protected boolean allowProcessing() {
-    // It is safe to always allow to fire this event as it is only generated
-    // server-side
-    return true;
-  }
-
   /**
    * @since 2.0
    * @deprecated not part of the API, do not use in application code
@@ -95,12 +88,4 @@ public class LocationEvent extends TypedEvent {
     removeListener( adaptable, EVENT_TYPES, listener );
   }
 
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListeners( adaptable, EVENT_TYPES );
-  }
 }

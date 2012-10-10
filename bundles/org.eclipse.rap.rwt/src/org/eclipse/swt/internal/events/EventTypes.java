@@ -65,7 +65,6 @@ public final class EventTypes {
     CTabFolderEvent.MAXIMIZE,
     CTabFolderEvent.RESTORE,
     CTabFolderEvent.SHOW_LIST,
-    DeselectionEvent.WIDGET_DESELECTED,
     SWT.Selection,
     SWT.DefaultSelection,
     SWT.MouseUp,

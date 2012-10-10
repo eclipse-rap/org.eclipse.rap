@@ -77,11 +77,6 @@ public final class PaintEvent extends TypedEvent {
     count = event.count;
   }
 
-  @Override
-  protected boolean allowProcessing() {
-    return true;
-  }
-
   /**
    * @since 2.0
    * @deprecated not part of the API, do not use in application code
@@ -107,15 +102,6 @@ public final class PaintEvent extends TypedEvent {
   @Deprecated
   public static void removeListener( Adaptable adaptable, PaintListener listener ) {
     removeListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListeners( adaptable, EVENT_TYPES );
   }
 
   /**

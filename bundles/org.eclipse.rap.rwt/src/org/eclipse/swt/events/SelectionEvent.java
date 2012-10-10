@@ -13,10 +13,6 @@ package org.eclipse.swt.events;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.events.DeselectionEvent;
-import org.eclipse.swt.internal.events.EventFactory;
-import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
 
@@ -40,14 +36,7 @@ public class SelectionEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int WIDGET_SELECTED = SWT.Selection;
-  public static final int WIDGET_DEFAULT_SELECTED = SWT.DefaultSelection;
-
-  private static final int[] EVENT_TYPES = { 
-    WIDGET_SELECTED, 
-    WIDGET_DEFAULT_SELECTED, 
-    DeselectionEvent.WIDGET_DESELECTED 
-  };
+  private static final int[] EVENT_TYPES = { SWT.Selection, SWT.DefaultSelection };
 
   /**
    * The x location of the selected area.
@@ -144,43 +133,6 @@ public class SelectionEvent extends TypedEvent {
   }
 
   /**
-   * Constructs a new instance of this class.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
-  public SelectionEvent( Widget widget, Widget item, int id ) {
-    this( widget,
-          item,
-          id,
-          new Rectangle( 0, 0, 0, 0 ),
-          0,
-          null,
-          true,
-          SWT.NONE );
-  }
-
-  public SelectionEvent( Widget widget,
-                         Widget item,
-                         int id,
-                         Rectangle bounds,
-                         int stateMask,
-                         String text,
-                         boolean doit,
-                         int detail )
-  {
-    super( EventFactory.newSelectionEvent( widget, item, bounds, stateMask, text, doit, detail ) );
-    sourceEvent.type = id;
-  }
-
-  @Override
-  protected boolean allowProcessing() {
-    return EventUtil.isAccessible( widget );
-  }
-
-  /**
    * @since 2.0
    * @deprecated not part of the API, do not use in application code
    */
@@ -205,15 +157,6 @@ public class SelectionEvent extends TypedEvent {
   @Deprecated
   public static void removeListener( Widget adaptable, SelectionListener listener ) {
     removeListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListeners( adaptable, EVENT_TYPES );
   }
 
   @Override

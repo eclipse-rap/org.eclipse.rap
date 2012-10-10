@@ -12,7 +12,6 @@ package org.eclipse.swt.events;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -43,11 +42,6 @@ public final class ArmEvent extends TypedEvent {
     super( event );
   }
 
-  @Override
-  protected boolean allowProcessing() {
-    return EventUtil.isAccessible( widget );
-  }
-
   /**
    * @since 2.0
    * @deprecated not part of the API, do not use in application code
@@ -73,15 +67,6 @@ public final class ArmEvent extends TypedEvent {
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, EVENT_TYPES );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListeners( adaptable, EVENT_TYPES );
   }
 
 }

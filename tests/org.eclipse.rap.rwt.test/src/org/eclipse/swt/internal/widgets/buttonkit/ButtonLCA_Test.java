@@ -265,7 +265,7 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.readDataAndProcessAction( button );
 
     assertTrue( button.getSelection() );
-    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
+    verify( listener ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=224872

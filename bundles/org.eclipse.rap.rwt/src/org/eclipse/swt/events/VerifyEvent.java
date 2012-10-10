@@ -61,11 +61,6 @@ public final class VerifyEvent extends KeyEvent {
     this.text = event.text;
   }
 
-  @Override
-  protected boolean allowProcessing() {
-    return true;
-  }
-
   /**
    * @since 2.0
    * @deprecated not part of the API, do not use in application code
@@ -91,15 +86,6 @@ public final class VerifyEvent extends KeyEvent {
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, EVENT_TYPES );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListeners( adaptable, EVENT_TYPES );
   }
 
   /**

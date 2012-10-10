@@ -13,7 +13,6 @@ package org.eclipse.swt.events;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -45,17 +44,6 @@ public class MouseEvent extends TypedEvent {
   private static final long serialVersionUID = 1L;
 
   private static final int[] EVENT_TYPES = { SWT.MouseDown, SWT.MouseUp, SWT.MouseDoubleClick };
-
-  /**
-   * the time that the event occurred.
-   *
-   * NOTE: This field is an unsigned integer and should
-   * be AND'ed with 0xFFFFFFFFL so that it can be treated
-   * as a signed long.
-   *
-   * @since 1.2
-   */
-  public int time;
 
   /**
    * the button that was pressed or released; 1 for the
@@ -107,13 +95,6 @@ public class MouseEvent extends TypedEvent {
     y = event.y;
     button = event.button;
     stateMask = event.stateMask;
-    // TODO [rst] Pull up when bug 332976 is fixed
-    time = event.time;
-  }
-
-  @Override
-  protected boolean allowProcessing() {
-    return EventUtil.isAccessible( widget );
   }
 
   /**
@@ -166,12 +147,4 @@ public class MouseEvent extends TypedEvent {
     return hasListener( adaptable, EVENT_TYPES );
   }
 
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListeners( adaptable, EVENT_TYPES );
-  }
 }

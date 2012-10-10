@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,17 +9,38 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets;
 
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.Widget;
 
 
 public final class EventUtil {
 
-  private EventUtil() {
-    // prevent instantiation
+  private static final String ATTR_LAST_EVENT_TIME = EventUtil.class.getName() + "#lastEventTime";
+
+  public static int getLastEventTime() {
+    Integer eventTime;
+    if( ContextProvider.hasContext() ) {
+      IServiceStore serviceStore = ContextProvider.getContext().getServiceStore();
+      eventTime = ( Integer )serviceStore.getAttribute( ATTR_LAST_EVENT_TIME );
+      if( eventTime == null ) {
+        eventTime = Integer.valueOf( ( int )System.currentTimeMillis() );
+      } else {
+        eventTime = Integer.valueOf( eventTime.intValue() + 1 );
+      }
+      serviceStore.setAttribute( ATTR_LAST_EVENT_TIME, eventTime );
+    } else {
+      eventTime = Integer.valueOf( ( int )System.currentTimeMillis() );
+    }
+    return eventTime.intValue();
   }
 
   public static boolean isAccessible( Widget widget ) {
@@ -72,5 +93,9 @@ public final class EventUtil {
 
   private static boolean isModal( Shell shell ) {
     return ( shell.getStyle() & SWT.APPLICATION_MODAL ) != 0;
+  }
+
+  private EventUtil() {
+    // prevent instantiation
   }
 }

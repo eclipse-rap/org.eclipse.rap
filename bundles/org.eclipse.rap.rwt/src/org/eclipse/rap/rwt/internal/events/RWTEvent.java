@@ -10,16 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.events;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.EventObject;
-import java.util.LinkedList;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.SWTEventListener;
 import org.eclipse.swt.internal.events.EventTable;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TypedListener;
 
 
@@ -47,15 +43,6 @@ public abstract class RWTEvent extends EventObject {
     return result;
   }
 
-  protected static Listener[] getListeners( Adaptable adaptable, int[] eventTypes ) {
-    Collection<Listener> listeners = new LinkedList<Listener>();
-    EventTable eventTable = adaptable.getAdapter( EventTable.class );
-    for( int eventType : eventTypes ) {
-      listeners.addAll( Arrays.asList( eventTable.getListeners( eventType ) ) );
-    }
-    return listeners.toArray( new Listener[ listeners.size() ] );
-  }
-  
   protected static void addListener( Adaptable adaptable, 
                                      int[] eventTypes, 
                                      SWTEventListener listener ) 

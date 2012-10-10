@@ -77,7 +77,11 @@ public class EventList {
     public int compare( Event event1, Event event2 ) {
       int index1 = getIndex( event1 );
       int index2 = getIndex( event2 );
-      return index1 - index2;
+      int result = index1 - index2;
+      if( result == 0 ) {
+        result = event1.time - event2.time;
+      }
+      return result;
     }
 
     private int getIndex( Event event ) {

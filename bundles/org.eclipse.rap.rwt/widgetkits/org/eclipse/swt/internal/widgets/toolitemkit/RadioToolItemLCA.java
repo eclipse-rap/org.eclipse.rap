@@ -13,10 +13,7 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.internal.events.DeselectionEvent;
 import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.widgets.ToolItem;
 
@@ -35,7 +32,7 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
     String value = WidgetLCAUtil.readPropertyValue( toolItem, PARAM_SELECTION );
     if( value != null ) {
       toolItem.setSelection( Boolean.valueOf( value ).booleanValue() );
-      processSelectionEvent( toolItem );
+      EventLCAUtil.processRadioSelection( toolItem, toolItem.getSelection() );
     }
   }
 
@@ -47,19 +44,5 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
   @Override
   void renderChanges( ToolItem toolItem ) throws IOException {
     ToolItemLCAUtil.renderChanges( toolItem );
-  }
-
-  private static void processSelectionEvent( ToolItem toolItem ) {
-    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
-    if( WidgetLCAUtil.wasEventSent( toolItem, eventName ) ) {
-      SelectionEvent event;
-      if( toolItem.getSelection() ) {
-        event = new SelectionEvent( toolItem, null, SelectionEvent.WIDGET_SELECTED );
-      } else {
-        event = new DeselectionEvent( toolItem );
-      }
-      event.stateMask = EventLCAUtil.readStateMask( toolItem, eventName );
-      event.processEvent();
-    }
   }
 }

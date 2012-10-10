@@ -30,7 +30,6 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
@@ -574,7 +573,7 @@ public class ControlLCAUtil {
       Rectangle bounds = WidgetLCAUtil.readBounds( control, control.getBounds() );
       result.setBounds( bounds );
     }
-    String eventName = type == SelectionEvent.WIDGET_SELECTED
+    String eventName = type == SWT.Selection
                      ? ClientMessageConst.EVENT_WIDGET_SELECTED
                      : ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED;
     result.stateMask = EventLCAUtil.readStateMask( widget, eventName );

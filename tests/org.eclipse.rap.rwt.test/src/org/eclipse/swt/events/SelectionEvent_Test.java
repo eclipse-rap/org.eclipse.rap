@@ -39,6 +39,7 @@ public class SelectionEvent_Test extends TestCase {
     Event event = new Event();
     event.display = display;
     event.widget = mock( Widget.class );
+    event.time = 4325;
     event.x = 1;
     event.y = 2;
     event.width = 3;

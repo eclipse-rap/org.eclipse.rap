@@ -44,11 +44,6 @@ public final class ModifyEvent extends TypedEvent {
     super( event );
   }
 
-  @Override
-  protected boolean allowProcessing() {
-    return true;
-  }
-
   /**
    * @since 2.0
    * @deprecated not part of the API, do not use in application code
@@ -76,12 +71,4 @@ public final class ModifyEvent extends TypedEvent {
     return hasListener( adaptable, EVENT_TYPES );
   }
 
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListeners( adaptable, EVENT_TYPES );
-  }
 }

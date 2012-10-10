@@ -29,7 +29,6 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -86,29 +85,20 @@ public class MouseEvent_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testCopyFieldsFromUntypedEvent() {
-    Button button = new Button( shell, SWT.PUSH );
-    button.addMouseListener( new LoggingMouseListener( events ) );
-    Object data = new Object();
+  public void testUntypedEventConstructor() throws Exception {
     Event event = new Event();
-    event.data = data;
+    event.display = display;
+    event.widget = mock( Widget.class );
+    event.time = 4711;
+    event.data = new Object();
     event.button = 2;
     event.x = 10;
     event.y = 20;
     event.stateMask = 23;
-    event.time = 4711;
-    button.notifyListeners( SWT.MouseDown, event );
-    MouseEvent mouseEvent = ( MouseEvent )events.get( 0 );
-    assertSame( button, mouseEvent.getSource() );
-    assertSame( button, mouseEvent.widget );
-    assertSame( display, mouseEvent.display );
-    assertSame( data, mouseEvent.data );
-    assertEquals( 10, mouseEvent.x );
-    assertEquals( 20, mouseEvent.y );
-    assertEquals( 2, mouseEvent.button );
-    assertEquals( 23, mouseEvent.stateMask );
-    assertEquals( 4711, mouseEvent.time );
-    assertEquals( SWT.MouseDown, mouseEvent.getID() );
+    
+    MouseEvent mouseEvent = new MouseEvent( event );
+    
+    EventTestHelper.assertFieldsEqual( mouseEvent, event );
   }
 
   public void testAddListener() {

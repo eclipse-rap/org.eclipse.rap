@@ -12,7 +12,6 @@ package org.eclipse.swt.events;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -39,11 +38,6 @@ public class DragDetectEvent extends MouseEvent {
   public DragDetectEvent( Event event ) {
     super( event );
     
-  }
-
-  @Override
-  protected boolean allowProcessing() {
-    return EventUtil.isAccessible( widget );
   }
 
   /**

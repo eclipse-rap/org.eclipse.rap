@@ -55,6 +55,17 @@ public class TypedEvent extends RWTEvent {
   public Widget widget;
 
   /**
+   * the time that the event occurred.
+   * 
+   * NOTE: This field is an unsigned integer and should
+   * be AND'ed with 0xFFFFFFFFL so that it can be treated
+   * as a signed long.
+   * 
+   * @since 2.0
+   */ 
+  public int time;
+  
+  /**
    * a field for application use
    */
   public Object data;
@@ -70,6 +81,7 @@ public class TypedEvent extends RWTEvent {
     display = event.display;
     widget = event.widget;
     data = event.data;
+    time = event.time;
     sourceEvent = event;
   }
 
@@ -207,28 +219,13 @@ public class TypedEvent extends RWTEvent {
     return result;
   }
 
-  ///////////////////////
-  // Stub implementations
-
-  protected boolean allowProcessing() {
-  	String msg = "Derived classes must override allowProcessing.";
-  	throw new UnsupportedOperationException( msg );
-  }
-
   ///////////////////////////////
   // toString & getName from SWT
 
   // this implementation is extended by subclasses
   @Override
   public String toString() {
-    return getName()
-        + "{"
-        + widget
-//        TODO [rst] uncomment when these public fields are implemented
-//        + " time=" + time +
-        + " data="
-        + data
-        + "}";
+    return getName() + "{" + widget + " time=" + time + " data=" + data + "}";
   }
 
   private String getName() {

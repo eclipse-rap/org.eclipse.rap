@@ -25,12 +25,12 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.internal.SWTEventListener;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.events.EventList;
 import org.eclipse.swt.internal.events.EventTable;
+import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.WidgetGraphicsAdapter;
@@ -460,7 +460,11 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    */
   public void addDisposeListener( DisposeListener listener ) {
     checkWidget();
-    DisposeEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Dispose, typedListener );
   }
 
   /**
@@ -482,7 +486,12 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    */
   public void removeDisposeListener( DisposeListener listener ) {
     checkWidget();
-    DisposeEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( eventTable != null ) {
+      eventTable.unhook( SWT.Dispose, listener );
+    }
   }
 
   ////////////////////////////////////////
@@ -581,6 +590,9 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     newEvent.widget = this;
     newEvent.type = eventType;
     newEvent.display = display;
+    if( newEvent.time == 0 ) {
+      newEvent.time = EventUtil.getLastEventTime();
+    }
     sendEvent( newEvent );
   }
 

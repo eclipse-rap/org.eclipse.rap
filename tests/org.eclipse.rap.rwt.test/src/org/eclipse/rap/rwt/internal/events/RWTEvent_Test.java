@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.internal.SWTEventListener;
 import org.eclipse.swt.internal.events.EventTable;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TypedListener;
 import org.mockito.ArgumentCaptor;
 
@@ -87,32 +86,6 @@ public class RWTEvent_Test extends TestCase {
     boolean hasListener = RWTEvent.hasListener( widget, new int[] { 47 } );
     
     assertFalse( hasListener );
-  }
-  
-  public void testGetListenerWithoutRegisteredListener() {
-    Listener[] listener = RWTEvent.getListeners( widget, new int[]{ 1 } );
-    
-    assertEquals( 0, listener.length );
-  }
-  
-  public void testGetListenerWithoutMatchingRegisteredListener() {
-    RWTEvent.addListener( widget, new int[]{ 1 }, mock( SWTEventListener.class ) );
-    
-    Listener[] listener = RWTEvent.getListeners( widget, new int[]{ 2 } );
-    
-    assertEquals( 0, listener.length );
-  }
-  
-  public void testGetListenerWithMatchingRegisteredListener() {
-    SWTEventListener listener = mock( SWTEventListener.class );
-    RWTEvent.addListener( widget, new int[]{ 1 }, listener );
-    
-    Listener[] listeners = RWTEvent.getListeners( widget, new int[]{ 1, 2 } );
-    
-    assertEquals( 1, listeners.length );
-    assertTrue( listeners[ 0 ] instanceof TypedListener );
-    TypedListener typedListener = ( TypedListener )listeners[ 0 ];
-    assertSame( listener, typedListener.getEventListener() );
   }
   
   @Override

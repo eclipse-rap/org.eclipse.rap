@@ -13,7 +13,6 @@ package org.eclipse.swt.events;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -46,11 +45,6 @@ public class ExpandEvent extends SelectionEvent {
     super( event );
   }
 
-  @Override
-  protected boolean allowProcessing() {
-    return EventUtil.isAccessible( widget );
-  }
-
   /**
    * @since 2.0
    * @deprecated not part of the API, do not use in application code
@@ -76,15 +70,6 @@ public class ExpandEvent extends SelectionEvent {
   @Deprecated
   public static void removeListener( Adaptable adaptable, ExpandListener listener ) {
     removeListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListeners( adaptable, EVENT_TYPES );
   }
 
   @Override

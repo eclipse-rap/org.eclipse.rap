@@ -13,10 +13,10 @@ package org.eclipse.swt.events;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -71,26 +71,17 @@ public class TypedEvent_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-
-  public void testCopyFieldsFromUntypedEvent() {
-    final List<HelpEvent> log = new ArrayList<HelpEvent>();
-    Button button = new Button( shell, SWT.PUSH );
-    button.addHelpListener( new HelpListener() {
-      public void helpRequested( HelpEvent event ) {
-        log.add( event );
-      }
-    } );
-    Object data = new Object();
+  
+  public void testUntypedEventConstructor() throws Exception {
     Event event = new Event();
-    event.data = data;
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    button.notifyListeners( SWT.Help, event );
-    TypedEvent typedEvent = log.get( 0 );
-    assertSame( button, typedEvent.getSource() );
-    assertSame( button, typedEvent.widget );
-    assertSame( display, typedEvent.display );
-    assertSame( data, typedEvent.data );
-    assertEquals( SWT.Help, typedEvent.getID() );
+    event.display = display;
+    event.widget = mock( Widget.class );
+    event.time = 9;
+    event.data = new Object();
+    
+    TestTypedEvent typedEvent = new TestTypedEvent( event );
+    
+    EventTestHelper.assertFieldsEqual( typedEvent, event );
   }
 
   public void testPhase() {
@@ -210,6 +201,14 @@ public class TypedEvent_Test extends TestCase {
     parameters.put( ClientMessageConst.EVENT_PARAM_Y, Integer.valueOf( y ) );
     parameters.put( ClientMessageConst.EVENT_PARAM_TIME, Integer.valueOf( 0 ) );
     Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_MOUSE_DOWN, parameters );
+  }
+
+  private static class TestTypedEvent extends TypedEvent {
+
+    public TestTypedEvent( Event event ) {
+      super( event );
+    }
+    
   }
 
 }

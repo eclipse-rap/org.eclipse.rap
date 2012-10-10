@@ -24,4 +24,13 @@
             </message_arguments>
         </filter>
     </resource>
+    <resource path="src/org/eclipse/swt/widgets/Widget.java" type="org.eclipse.swt.widgets.Widget">
+        <filter id="643846161">
+            <message_arguments>
+                <message_argument value="SWTEventListener"/>
+                <message_argument value="Widget"/>
+                <message_argument value="removeListener(int, SWTEventListener)"/>
+            </message_arguments>
+        </filter>
+    </resource>
 </component>
