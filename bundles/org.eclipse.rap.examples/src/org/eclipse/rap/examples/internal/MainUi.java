@@ -17,7 +17,7 @@ import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExampleContribution;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.client.service.IJavaScriptExecutor;
+import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rap.rwt.events.BrowserHistoryListener;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
@@ -333,7 +333,7 @@ public class MainUi implements IEntryPoint {
     control.addMouseListener( new MouseAdapter() {
       @Override
       public void mouseDown( MouseEvent e ) {
-        IJavaScriptExecutor executor = RWT.getClient().getService( IJavaScriptExecutor.class );
+        JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
         executor.execute( "window.location.href = '" + url + "'" );
       }
     } );

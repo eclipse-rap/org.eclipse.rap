@@ -14,7 +14,7 @@ package org.eclipse.rap.demo.controls;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.client.service.IJavaScriptExecutor;
+import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
@@ -80,7 +80,7 @@ public class ErrorHandlingTab extends ExampleTab {
     btnErrorResponse.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( final SelectionEvent event ) {
-        IJavaScriptExecutor executor = RWT.getClient().getService( IJavaScriptExecutor.class );
+        JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
         executor.execute( "this is no valid JavaScript!" );
       }
     } );
@@ -94,7 +94,7 @@ public class ErrorHandlingTab extends ExampleTab {
         script.append( "rwt.runtime.ErrorHandler.processJavaScriptError( " );
         script.append( "new Error( \"I am client-side error\" ) )" );
         script.append( "', 1000 );" );
-        IJavaScriptExecutor executor = RWT.getClient().getService( IJavaScriptExecutor.class );
+        JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
         executor.execute( script.toString() );
       }
     } );

@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.client.service.IJavaScriptExecutor;
+import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -25,10 +25,10 @@ import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.widgets.Display;
 
 
-public final class JavaScriptExecutor implements IJavaScriptExecutor {
+public final class JavaScriptExecutorImpl implements JavaScriptExecutor {
 
   private static final String JSE_PHASE_LISTENER
-    = JavaScriptExecutor.class.getName() + "#phaseListener";
+    = JavaScriptExecutorImpl.class.getName() + "#phaseListener";
   private static final String JSEXECUTOR_TYPE = "rwt.client.JavaScriptExecutor";
   private static final String PARAM_CONTENT = "content";
   private static final String METHOD_EXECUTE = "execute";

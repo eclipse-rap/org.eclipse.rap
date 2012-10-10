@@ -16,8 +16,8 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.client.service.ClientService;
-import org.eclipse.rap.rwt.client.service.IJavaScriptExecutor;
-import org.eclipse.rap.rwt.internal.widgets.JavaScriptExecutor;
+import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
+import org.eclipse.rap.rwt.internal.widgets.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.resources.IResource;
 
@@ -108,8 +108,8 @@ public class WebClient implements Client {
   @SuppressWarnings( "unchecked" )
   public <T extends ClientService> T getService( Class<T> type ) {
     T result = null;
-    if( type == IJavaScriptExecutor.class ) {
-      result = ( T )SingletonUtil.getSessionInstance( JavaScriptExecutor.class );
+    if( type == JavaScriptExecutor.class ) {
+      result = ( T )SingletonUtil.getSessionInstance( JavaScriptExecutorImpl.class );
     }
     return result;
   }

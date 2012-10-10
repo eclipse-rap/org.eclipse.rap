@@ -11,7 +11,8 @@
 package org.eclipse.rap.rwt.client;
 
 import org.eclipse.rap.rwt.client.service.ClientService;
-import org.eclipse.rap.rwt.client.service.IJavaScriptExecutor;
+import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
+import org.eclipse.rap.rwt.internal.widgets.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import junit.framework.TestCase;
 
@@ -36,13 +37,13 @@ public class WebClient_Test extends TestCase {
   }
 
   public void testGetJavaScriptExecutorService() {
-    ClientService service = client.getService( IJavaScriptExecutor.class );
-    assertTrue( service instanceof IJavaScriptExecutor );
+    ClientService service = client.getService( JavaScriptExecutor.class );
+    assertTrue( service instanceof JavaScriptExecutorImpl );
   }
 
   public void testGetServiveTwice() {
-    ClientService service1 = client.getService( IJavaScriptExecutor.class );
-    ClientService service2 = client.getService( IJavaScriptExecutor.class );
+    ClientService service1 = client.getService( JavaScriptExecutor.class );
+    ClientService service2 = client.getService( JavaScriptExecutor.class );
 
     assertSame( service1, service2 );
   }

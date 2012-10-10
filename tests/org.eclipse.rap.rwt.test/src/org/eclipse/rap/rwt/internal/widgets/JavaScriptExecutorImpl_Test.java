@@ -13,30 +13,26 @@ package org.eclipse.rap.rwt.internal.widgets;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.client.service.IJavaScriptExecutor;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.widgets.Display;
 
 
-public class JavaScriptExecutor_Test extends TestCase {
+public class JavaScriptExecutorImpl_Test extends TestCase {
 
   private static final String EXECUTE_1 = "execute_1";
   private static final String EXECUTE_2 = "execute_2";
 
-  private IJavaScriptExecutor executor;
+  private JavaScriptExecutorImpl executor;
 
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
     new Display();
-    WebClient client = new WebClient();
-    executor = client.getService( IJavaScriptExecutor.class );
+    executor = new JavaScriptExecutorImpl();
   }
 
   @Override
@@ -50,10 +46,7 @@ public class JavaScriptExecutor_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    int createIndex = indexOfCreateOperation( message );
-    int execute1Index = indexOfCallOperation( message, "execute", EXECUTE_1 );
-    assertTrue( createIndex == -1 );
-    assertTrue( execute1Index != -1 );
+    assertTrue( indexOfCallOperation( message, "execute", EXECUTE_1 ) != -1 );
   }
 
   public void testExecuteJSTwice() {
@@ -63,10 +56,7 @@ public class JavaScriptExecutor_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    int createIndex = indexOfCreateOperation( message );
-    int execute1Index = indexOfCallOperation( message, "execute", EXECUTE_1 + EXECUTE_2 );
-    assertTrue( createIndex == -1 );
-    assertTrue( execute1Index != -1 );
+    assertTrue( indexOfCallOperation( message, "execute", EXECUTE_1 + EXECUTE_2 ) != -1 );
   }
 
   public void testExecuteJSIsClearedAfterRender() {
@@ -86,21 +76,6 @@ public class JavaScriptExecutor_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     assertFalse( getMessageScript().contains( EXECUTE_1 ) );
-  }
-
-  private int indexOfCreateOperation( Message message ) {
-    int result = -1;
-    int operationCount = message.getOperationCount();
-    for( int position = 0; position < operationCount; position++ ) {
-      Operation operation = message.getOperation( position );
-      if( operation instanceof CreateOperation ) {
-        CreateOperation createOperation = ( CreateOperation )operation;
-        if( createOperation.getTarget().equals( "jsex" ) ) {
-          result = position;
-        }
-      }
-    }
-    return result;
   }
 
   private int indexOfCallOperation( Message message, String method, String contentProperty ) {
