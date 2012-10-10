@@ -39,7 +39,7 @@ public class JavaScriptExecutor_Test extends TestCase {
   }
 
   public void testExecuteJSOnce() {
-    JavaScriptExecutor.executeJS( EXECUTE_1 );
+    JavaScriptExecutor.execute( EXECUTE_1 );
 
     Fixture.executeLifeCycleFromServerThread();
 
@@ -51,8 +51,8 @@ public class JavaScriptExecutor_Test extends TestCase {
   }
 
   public void testExecuteJSTwice() {
-    JavaScriptExecutor.executeJS( EXECUTE_1 );
-    JavaScriptExecutor.executeJS( EXECUTE_2 );
+    JavaScriptExecutor.execute( EXECUTE_1 );
+    JavaScriptExecutor.execute( EXECUTE_2 );
 
     Fixture.executeLifeCycleFromServerThread();
 
@@ -64,7 +64,7 @@ public class JavaScriptExecutor_Test extends TestCase {
   }
 
   public void testExecuteJSIsClearedAfterRender() {
-    JavaScriptExecutor.executeJS( EXECUTE_1 );
+    JavaScriptExecutor.execute( EXECUTE_1 );
 
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeResponseWriter();
@@ -74,7 +74,7 @@ public class JavaScriptExecutor_Test extends TestCase {
   }
 
   public void testExecuteJSWithDifferentDisplay() {
-    JavaScriptExecutor.executeJS( EXECUTE_1 );
+    JavaScriptExecutor.execute( EXECUTE_1 );
 
     simulateDifferentDisplay();
     Fixture.executeLifeCycleFromServerThread();

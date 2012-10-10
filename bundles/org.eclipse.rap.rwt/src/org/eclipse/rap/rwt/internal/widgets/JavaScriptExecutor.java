@@ -31,7 +31,7 @@ public final class JavaScriptExecutor {
   private static final String PARAM_CONTENT = "content";
   private static final String METHOD_EXECUTE = "execute";
 
-  public static void executeJS( String code ) {
+  public static void execute( String code ) {
     JSExecutorPhaseListener jsExecutor = getJSExecutor();
     if( jsExecutor == null ) {
       jsExecutor = new JSExecutorPhaseListener();

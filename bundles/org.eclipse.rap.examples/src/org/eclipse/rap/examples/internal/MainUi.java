@@ -334,7 +334,7 @@ public class MainUi implements IEntryPoint {
     control.addMouseListener( new MouseAdapter() {
       @Override
       public void mouseDown( MouseEvent e ) {
-        JavaScriptExecutor.executeJS( "window.location.href = '" + url + "'" );
+        JavaScriptExecutor.execute( "window.location.href = '" + url + "'" );
       }
     } );
   }
