@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt;
 
-import org.eclipse.rap.rwt.events.BrowserHistoryListener;
+import org.eclipse.rap.rwt.client.service.BrowserHistory;
 
 
 /**
@@ -30,33 +30,8 @@ import org.eclipse.rap.rwt.events.BrowserHistoryListener;
  *
  * @since 2.0
  * @noimplement This interface is not intended to be implemented by clients.
+ * @deprecated Use BrowserHistory interface instead
  */
-public interface IBrowserHistory {
+public interface IBrowserHistory extends BrowserHistory {
 
-  /**
-   * Creates an entry in the browser history.
-   *
-   * @param id Identifies the entry and should be unique among all entries.
-   *          It is usually visible for the user within the address bar of
-   *          the browser. Must neither be <code>null</code> not empty.
-   * @param text A text for the user to identify the entry in the browser's UI
-   *          or <code>null</code>.
-   */
-  void createEntry( String id, String text );
-
-  /**
-   * Adds a {@link BrowserHistoryListener} to the history support.
-   *
-   * @param listener the {@link BrowserHistoryListener}. Must not be
-   *          <code>null</code>.
-   */
-  void addBrowserHistoryListener( BrowserHistoryListener listener );
-
-  /**
-   * Removes a {@link BrowserHistoryListener} from the history support.
-   *
-   * @param listener the {@link BrowserHistoryListener}. Must not be
-   *          <code>null</code>.
-   */
-  void removeBrowserHistoryListener( BrowserHistoryListener listener );
 }

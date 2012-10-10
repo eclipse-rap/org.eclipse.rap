@@ -35,7 +35,7 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.internal.widgets.BrowserHistory;
+import org.eclipse.rap.rwt.internal.widgets.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.rap.rwt.service.IApplicationStore;
@@ -551,9 +551,10 @@ public final class RWT {
    * @return the browser history support implementation
    * @see IBrowserHistory
    * @since 1.3
+   * @deprecated use BrowserHistory service instead
    */
   public static IBrowserHistory getBrowserHistory() {
-    return SingletonUtil.getSessionInstance( BrowserHistory.class );
+    return SingletonUtil.getSessionInstance( BrowserHistoryImpl.class );
   }
 
   /**

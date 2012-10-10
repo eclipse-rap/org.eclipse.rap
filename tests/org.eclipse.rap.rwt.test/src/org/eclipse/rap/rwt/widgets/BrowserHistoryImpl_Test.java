@@ -20,11 +20,10 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.IBrowserHistory;
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rap.rwt.events.BrowserHistoryListener;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rap.rwt.internal.widgets.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -36,15 +35,17 @@ import org.json.JSONException;
 import org.mockito.ArgumentCaptor;
 
 
-public class BrowserHistory_Test extends TestCase {
+public class BrowserHistoryImpl_Test extends TestCase {
 
   private static final String TYPE = "rwt.client.BrowserHistory";
   private Display display;
+  private BrowserHistoryImpl history;
 
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
+    history = new BrowserHistoryImpl();
     Fixture.fakeNewRequest( display );
   }
 
@@ -54,7 +55,6 @@ public class BrowserHistory_Test extends TestCase {
   }
 
   public void testCreateEntry() {
-    IBrowserHistory history = RWT.getBrowserHistory();
     try {
       history.createEntry( null, "name" );
       fail( "BrowserHistory#mark must not allow id == null" );
@@ -76,7 +76,6 @@ public class BrowserHistory_Test extends TestCase {
   }
 
   public void testAddBrowserHistoryListener() {
-    final IBrowserHistory history = RWT.getBrowserHistory();
     try {
       history.addBrowserHistoryListener( null );
       fail( "BrowserHistory#addBrowserHistoryListener must not allow null" );
@@ -86,7 +85,6 @@ public class BrowserHistory_Test extends TestCase {
   }
 
   public void testRemoveBrowserHistoryListener() {
-    final IBrowserHistory history = RWT.getBrowserHistory();
     try {
       history.removeBrowserHistoryListener( null );
       fail( "BrowserHistory#removeBrowserHistoryListener must not allow null" );
@@ -97,7 +95,6 @@ public class BrowserHistory_Test extends TestCase {
 
   public void testFireNavigationEvent() {
     BrowserHistoryListener listener = mock( BrowserHistoryListener.class );
-    IBrowserHistory history = RWT.getBrowserHistory();
     history.addBrowserHistoryListener( listener );
 
     Map<String, Object> parameters = new HashMap<String, Object>();
@@ -113,8 +110,6 @@ public class BrowserHistory_Test extends TestCase {
   }
 
   public void testRenderCreate() {
-    RWT.getBrowserHistory();
-
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
@@ -122,8 +117,6 @@ public class BrowserHistory_Test extends TestCase {
   }
 
   public void testRenderCreate_OnlyOnce() {
-    RWT.getBrowserHistory();
-
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
@@ -136,7 +129,7 @@ public class BrowserHistory_Test extends TestCase {
     Fixture.fakePhase( PhaseId.READ_DATA );
     ProcessActionRunner.add( new Runnable() {
       public void run() {
-        RWT.getBrowserHistory().addBrowserHistoryListener( new BrowserHistoryListener() {
+        history.addBrowserHistoryListener( new BrowserHistoryListener() {
           public void navigated( BrowserHistoryEvent event ) {
           }
         } );
@@ -154,11 +147,11 @@ public class BrowserHistory_Test extends TestCase {
       public void navigated( BrowserHistoryEvent event ) {
       }
     };
-    RWT.getBrowserHistory().addBrowserHistoryListener( listener );
+    history.addBrowserHistoryListener( listener );
     Fixture.fakePhase( PhaseId.READ_DATA );
     ProcessActionRunner.add( new Runnable() {
       public void run() {
-        RWT.getBrowserHistory().removeBrowserHistoryListener( listener );
+        history.removeBrowserHistoryListener( listener );
       }
     } );
 
@@ -169,7 +162,7 @@ public class BrowserHistory_Test extends TestCase {
   }
 
   public void testRenderNavigationListenerUnchanged() {
-    RWT.getBrowserHistory().addBrowserHistoryListener( new BrowserHistoryListener() {
+    history.addBrowserHistoryListener( new BrowserHistoryListener() {
       public void navigated( BrowserHistoryEvent event ) {
       }
     } );
@@ -181,7 +174,7 @@ public class BrowserHistory_Test extends TestCase {
   }
 
   public void testRenderAdd() throws JSONException {
-    RWT.getBrowserHistory().createEntry( "testId", "testText" );
+    history.createEntry( "testId", "testText" );
 
     Fixture.executeLifeCycleFromServerThread();
 
@@ -193,7 +186,7 @@ public class BrowserHistory_Test extends TestCase {
   }
 
   public void testRenderAdd_NoEntries() {
-    RWT.getBrowserHistory().createEntry( "testId", "testText" );
+    history.createEntry( "testId", "testText" );
 
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest( display );
@@ -204,8 +197,8 @@ public class BrowserHistory_Test extends TestCase {
   }
 
   public void testRenderAddOrder() throws JSONException {
-    RWT.getBrowserHistory().createEntry( "testId1", "testText1" );
-    RWT.getBrowserHistory().createEntry( "testId2", "testText2" );
+    history.createEntry( "testId1", "testText1" );
+    history.createEntry( "testId2", "testText2" );
 
     Fixture.executeLifeCycleFromServerThread();
 

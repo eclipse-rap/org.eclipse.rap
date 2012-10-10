@@ -17,6 +17,7 @@ import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExampleContribution;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.BrowserHistory;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rap.rwt.events.BrowserHistoryListener;
@@ -77,14 +78,17 @@ public class MainUi implements IEntryPoint {
   }
 
   private void attachHistoryListener() {
-    RWT.getBrowserHistory().addBrowserHistoryListener( new BrowserHistoryListener() {
-      public void navigated( BrowserHistoryEvent event ) {
-        IExampleContribution contribution = Examples.getInstance().getContribution( event.entryId );
-        if( contribution != null ) {
-          selectContribution( contribution );
+    BrowserHistory history = RWT.getClient().getService( BrowserHistory.class );
+    if( history != null ) {
+      history.addBrowserHistoryListener( new BrowserHistoryListener() {
+        public void navigated( BrowserHistoryEvent event ) {
+          IExampleContribution contribution = Examples.getInstance().getContribution( event.entryId );
+          if( contribution != null ) {
+            selectContribution( contribution );
+          }
         }
-      }
-    } );
+      } );
+    }
   }
 
   private Shell createMainShell( Display display ) {
@@ -253,7 +257,10 @@ public class MainUi implements IEntryPoint {
   private void activate( IExampleContribution contribution ) {
     IExamplePage examplePage = contribution.createPage();
     if( examplePage != null ) {
-      RWT.getBrowserHistory().createEntry( contribution.getId(), contribution.getTitle() );
+      BrowserHistory history = RWT.getClient().getService( BrowserHistory.class );
+      if( history != null ) {
+        history.createEntry( contribution.getId(), contribution.getTitle() );
+      }
       Control[] children = centerArea.getChildren();
       for( Control child : children ) {
         child.dispose();

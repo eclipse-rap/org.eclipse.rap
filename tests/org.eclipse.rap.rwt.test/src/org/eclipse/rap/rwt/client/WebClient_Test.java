@@ -10,8 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.client;
 
+import org.eclipse.rap.rwt.client.service.BrowserHistory;
 import org.eclipse.rap.rwt.client.service.ClientService;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
+import org.eclipse.rap.rwt.internal.widgets.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.internal.widgets.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import junit.framework.TestCase;
@@ -46,6 +48,11 @@ public class WebClient_Test extends TestCase {
     ClientService service2 = client.getService( JavaScriptExecutor.class );
 
     assertSame( service1, service2 );
+  }
+
+  public void testGetBrowserHistoryService() {
+    ClientService service = client.getService( BrowserHistory.class );
+    assertTrue( service instanceof BrowserHistoryImpl );
   }
 
   //////////////////

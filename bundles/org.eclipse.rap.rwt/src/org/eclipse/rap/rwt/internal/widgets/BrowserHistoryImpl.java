@@ -43,7 +43,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
 
-public final class BrowserHistory
+public final class BrowserHistoryImpl
   implements IBrowserHistory, PhaseListener, Adaptable, SessionStoreListener
 {
 
@@ -52,7 +52,7 @@ public final class BrowserHistory
   private final static String PROP_ENTRIES = "entries";
   private final static String METHOD_ADD = "add";
   private static final String ATTR_HAS_NAVIGATION_LISTENER
-    = BrowserHistory.class.getName() + ".hasNavigationListener";
+    = BrowserHistoryImpl.class.getName() + ".hasNavigationListener";
   private static final String EVENT_HISTORY_NAVIGATED = "historyNavigated";
   private static final String EVENT_HISTORY_NAVIGATED_ENTRY_ID = "entryId";
 
@@ -60,7 +60,7 @@ public final class BrowserHistory
   private final List<HistoryEntry> entriesToAdd;
   private IEventAdapter eventAdapter;
 
-  public BrowserHistory() {
+  public BrowserHistoryImpl() {
     display = Display.getCurrent();
     entriesToAdd = new ArrayList<HistoryEntry>();
     RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( this );

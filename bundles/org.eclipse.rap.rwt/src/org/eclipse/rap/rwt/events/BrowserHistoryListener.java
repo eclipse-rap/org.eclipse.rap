@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.events;
 
-import org.eclipse.rap.rwt.IBrowserHistory;
+import org.eclipse.rap.rwt.client.service.BrowserHistory;
 import org.eclipse.swt.internal.SWTEventListener;
 
 
@@ -19,7 +19,7 @@ import org.eclipse.swt.internal.SWTEventListener;
  * An event handler that is invoked after the user navigated to a previously
  * created history entry.
  * @see BrowserHistoryEvent
- * @see IBrowserHistory
+ * @see BrowserHistory
  * @since 2.0
  */
 public interface BrowserHistoryListener extends SWTEventListener {

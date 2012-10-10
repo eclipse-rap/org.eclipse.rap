@@ -15,8 +15,10 @@ import java.util.Map;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.application.Application;
+import org.eclipse.rap.rwt.client.service.BrowserHistory;
 import org.eclipse.rap.rwt.client.service.ClientService;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
+import org.eclipse.rap.rwt.internal.widgets.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.internal.widgets.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.resources.IResource;
@@ -38,8 +40,7 @@ public class WebClient implements Client {
    *
    * @see RWT#DEFAULT_THEME_ID
    * @see Application#addEntryPoint(String, Class, Map)
-   * @see Application#addEntryPoint(String, IEntryPointFactory,
-   *      Map)
+   * @see Application#addEntryPoint(String, IEntryPointFactory, Map)
    */
   public static final String THEME_ID = PREFIX + ".themeId";
 
@@ -57,8 +58,7 @@ public class WebClient implements Client {
    * </p>
    *
    * @see Application#addEntryPoint(String, Class, Map)
-   * @see Application#addEntryPoint(String, IEntryPointFactory,
-   *      Map)
+   * @see Application#addEntryPoint(String, IEntryPointFactory, Map)
    */
   public static final String HEAD_HTML = PREFIX + ".additionalHeaders";
 
@@ -100,8 +100,7 @@ public class WebClient implements Client {
    *
    * @see Application#addResource(IResource)
    * @see Application#addEntryPoint(String, Class, Map)
-   * @see Application#addEntryPoint(String, IEntryPointFactory,
-   *      Map)
+   * @see Application#addEntryPoint(String, IEntryPointFactory, Map)
    */
   public static final String FAVICON = PREFIX + ".favicon";
 
@@ -109,9 +108,15 @@ public class WebClient implements Client {
   public <T extends ClientService> T getService( Class<T> type ) {
     T result = null;
     if( type == JavaScriptExecutor.class ) {
-      result = ( T )SingletonUtil.getSessionInstance( JavaScriptExecutorImpl.class );
+      result = ( T )getServiceImpl( JavaScriptExecutorImpl.class );
+    } else if( type == BrowserHistory.class ) {
+      result = ( T )getServiceImpl( BrowserHistoryImpl.class );
     }
     return result;
+  }
+
+  private <T> T getServiceImpl( Class<T> impl ) {
+    return SingletonUtil.getSessionInstance( impl );
   }
 
 }
