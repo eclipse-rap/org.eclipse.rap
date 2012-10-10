@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt.client;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.ClientService;
 
 
 /**
@@ -31,6 +32,6 @@ public interface Client {
    *
    * @return the requested service if provided by this client, otherwise <code>null</code>
    */
-  <T> T getService( Class<T> type );
+  <T extends ClientService> T getService( Class<T> type );
 
 }

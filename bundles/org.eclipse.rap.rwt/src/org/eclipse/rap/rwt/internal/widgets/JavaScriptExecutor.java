@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.client.service.IJavaScriptExecutor;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -24,35 +25,32 @@ import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.widgets.Display;
 
 
-public final class JavaScriptExecutor {
+public final class JavaScriptExecutor implements IJavaScriptExecutor {
 
-  private static final String JS_EXECUTOR = JavaScriptExecutor.class.getName() + "#instance";
+  private static final String JSE_PHASE_LISTENER
+    = JavaScriptExecutor.class.getName() + "#phaseListener";
   private static final String JSEXECUTOR_TYPE = "rwt.client.JavaScriptExecutor";
   private static final String PARAM_CONTENT = "content";
   private static final String METHOD_EXECUTE = "execute";
 
-  public static void execute( String code ) {
-    JSExecutorPhaseListener jsExecutor = getJSExecutor();
-    if( jsExecutor == null ) {
-      jsExecutor = new JSExecutorPhaseListener();
-      RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( jsExecutor );
-      setJSExecutor( jsExecutor );
+  public void execute( String code ) {
+    JSExecutorPhaseListener phaseListener = getJSExecutorPhaseListener();
+    if( phaseListener == null ) {
+      phaseListener = new JSExecutorPhaseListener();
+      RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( phaseListener );
+      setJSExecutorPhaseListener( phaseListener );
     }
-    jsExecutor.append( code );
+    phaseListener.append( code );
   }
 
-  private JavaScriptExecutor() {
-    // prevent instantiation
-  }
-
-  private static JSExecutorPhaseListener getJSExecutor() {
+  private static JSExecutorPhaseListener getJSExecutorPhaseListener() {
     IServiceStore serviceStore = ContextProvider.getServiceStore();
-    return ( JSExecutorPhaseListener )serviceStore.getAttribute( JS_EXECUTOR );
+    return ( JSExecutorPhaseListener )serviceStore.getAttribute( JSE_PHASE_LISTENER );
   }
 
-  private static void setJSExecutor( JSExecutorPhaseListener jsExecutor ) {
+  private static void setJSExecutorPhaseListener( JSExecutorPhaseListener jsExecutor ) {
     IServiceStore serviceStore = ContextProvider.getServiceStore();
-    serviceStore.setAttribute( JS_EXECUTOR, jsExecutor );
+    serviceStore.setAttribute( JSE_PHASE_LISTENER, jsExecutor );
   }
 
   private static class JSExecutorPhaseListener implements PhaseListener {

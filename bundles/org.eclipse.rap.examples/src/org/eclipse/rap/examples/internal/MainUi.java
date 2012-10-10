@@ -17,9 +17,9 @@ import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExampleContribution;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.IJavaScriptExecutor;
 import org.eclipse.rap.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rap.rwt.events.BrowserHistoryListener;
-import org.eclipse.rap.rwt.internal.widgets.JavaScriptExecutor;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -39,7 +39,6 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.Version;
 
 
-@SuppressWarnings("restriction")
 public class MainUi implements IEntryPoint {
 
   private static final String RAP_PAGE_URL = "http://eclipse.org/rap/";
@@ -334,7 +333,8 @@ public class MainUi implements IEntryPoint {
     control.addMouseListener( new MouseAdapter() {
       @Override
       public void mouseDown( MouseEvent e ) {
-        JavaScriptExecutor.execute( "window.location.href = '" + url + "'" );
+        IJavaScriptExecutor executor = RWT.getClient().getService( IJavaScriptExecutor.class );
+        executor.execute( "window.location.href = '" + url + "'" );
       }
     } );
   }

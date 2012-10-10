@@ -13,6 +13,8 @@ package org.eclipse.rap.rwt.internal.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.client.WebClient;
+import org.eclipse.rap.rwt.client.service.IJavaScriptExecutor;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -26,11 +28,15 @@ public class JavaScriptExecutor_Test extends TestCase {
   private static final String EXECUTE_1 = "execute_1";
   private static final String EXECUTE_2 = "execute_2";
 
+  private IJavaScriptExecutor executor;
+
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
     new Display();
+    WebClient client = new WebClient();
+    executor = client.getService( IJavaScriptExecutor.class );
   }
 
   @Override
@@ -39,7 +45,7 @@ public class JavaScriptExecutor_Test extends TestCase {
   }
 
   public void testExecuteJSOnce() {
-    JavaScriptExecutor.execute( EXECUTE_1 );
+    executor.execute( EXECUTE_1 );
 
     Fixture.executeLifeCycleFromServerThread();
 
@@ -51,8 +57,8 @@ public class JavaScriptExecutor_Test extends TestCase {
   }
 
   public void testExecuteJSTwice() {
-    JavaScriptExecutor.execute( EXECUTE_1 );
-    JavaScriptExecutor.execute( EXECUTE_2 );
+    executor.execute( EXECUTE_1 );
+    executor.execute( EXECUTE_2 );
 
     Fixture.executeLifeCycleFromServerThread();
 
@@ -64,7 +70,7 @@ public class JavaScriptExecutor_Test extends TestCase {
   }
 
   public void testExecuteJSIsClearedAfterRender() {
-    JavaScriptExecutor.execute( EXECUTE_1 );
+    executor.execute( EXECUTE_1 );
 
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeResponseWriter();
@@ -74,7 +80,7 @@ public class JavaScriptExecutor_Test extends TestCase {
   }
 
   public void testExecuteJSWithDifferentDisplay() {
-    JavaScriptExecutor.execute( EXECUTE_1 );
+    executor.execute( EXECUTE_1 );
 
     simulateDifferentDisplay();
     Fixture.executeLifeCycleFromServerThread();

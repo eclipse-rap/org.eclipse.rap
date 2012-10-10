@@ -14,7 +14,7 @@ package org.eclipse.rap.demo.controls;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.widgets.JavaScriptExecutor;
+import org.eclipse.rap.rwt.client.service.IJavaScriptExecutor;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 
-@SuppressWarnings("restriction")
 public class ErrorHandlingTab extends ExampleTab {
 
   private static final int DELAY = 2000;
@@ -81,7 +80,8 @@ public class ErrorHandlingTab extends ExampleTab {
     btnErrorResponse.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( final SelectionEvent event ) {
-        JavaScriptExecutor.execute( "this is no valid JavaScript!" );
+        IJavaScriptExecutor executor = RWT.getClient().getService( IJavaScriptExecutor.class );
+        executor.execute( "this is no valid JavaScript!" );
       }
     } );
     Button btnClientError = new Button( parent, SWT.PUSH );
@@ -94,7 +94,8 @@ public class ErrorHandlingTab extends ExampleTab {
         script.append( "rwt.runtime.ErrorHandler.processJavaScriptError( " );
         script.append( "new Error( \"I am client-side error\" ) )" );
         script.append( "', 1000 );" );
-        JavaScriptExecutor.execute( script.toString() );
+        IJavaScriptExecutor executor = RWT.getClient().getService( IJavaScriptExecutor.class );
+        executor.execute( script.toString() );
       }
     } );
     Button btnServerException = new Button( parent, SWT.PUSH );
