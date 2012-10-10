@@ -81,7 +81,9 @@ public class ErrorHandlingTab extends ExampleTab {
       @Override
       public void widgetSelected( final SelectionEvent event ) {
         JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
-        executor.execute( "this is no valid JavaScript!" );
+        if( executor != null ) {
+          executor.execute( "this is no valid JavaScript!" );
+        }
       }
     } );
     Button btnClientError = new Button( parent, SWT.PUSH );
@@ -95,7 +97,9 @@ public class ErrorHandlingTab extends ExampleTab {
         script.append( "new Error( \"I am client-side error\" ) )" );
         script.append( "', 1000 );" );
         JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
-        executor.execute( script.toString() );
+        if( executor != null ) {
+          executor.execute( script.toString() );
+        }
       }
     } );
     Button btnServerException = new Button( parent, SWT.PUSH );

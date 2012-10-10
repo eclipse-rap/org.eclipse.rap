@@ -334,7 +334,9 @@ public class MainUi implements IEntryPoint {
       @Override
       public void mouseDown( MouseEvent e ) {
         JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
-        executor.execute( "window.location.href = '" + url + "'" );
+        if( executor != null ) {
+          executor.execute( "window.location.href = '" + url + "'" );
+        }
       }
     } );
   }
