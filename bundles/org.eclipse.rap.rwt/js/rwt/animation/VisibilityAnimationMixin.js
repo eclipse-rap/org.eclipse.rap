@@ -11,11 +11,11 @@
 
 ( function() {
 
-var Animation = org.eclipse.rwt.Animation;
-var AnimationRenderer = org.eclipse.rwt.AnimationRenderer;
+var Animation = rwt.animation.Animation;
+var AnimationRenderer = rwt.animation.AnimationRenderer;
 var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
 
-qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
+qx.Mixin.define( "rwt.animation.VisibilityAnimationMixin", {
 
   properties : {
 
@@ -108,19 +108,19 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
       switch( type ) {
         case "flyInTop":
           renderer.animate( this, "top", animationType );
-          renderer.setInvisibilityGetter( org.eclipse.rwt.VisibilityAnimationMixin.hideTop );
+          renderer.setInvisibilityGetter( rwt.animation.VisibilityAnimationMixin.hideTop );
         break;
         case "flyInBottom":
           renderer.animate( this, "top", animationType );
-          renderer.setInvisibilityGetter( org.eclipse.rwt.VisibilityAnimationMixin.hideBottom );
+          renderer.setInvisibilityGetter( rwt.animation.VisibilityAnimationMixin.hideBottom );
         break;
         case "flyInLeft":
           renderer.animate( this, "left", animationType );
-          renderer.setInvisibilityGetter( org.eclipse.rwt.VisibilityAnimationMixin.hideLeft );
+          renderer.setInvisibilityGetter( rwt.animation.VisibilityAnimationMixin.hideLeft );
         break;
         case "flyInRight":
           renderer.animate( this, "left", animationType );
-          renderer.setInvisibilityGetter( org.eclipse.rwt.VisibilityAnimationMixin.hideRight );
+          renderer.setInvisibilityGetter( rwt.animation.VisibilityAnimationMixin.hideRight );
         break;
       }
     },
@@ -203,19 +203,19 @@ qx.Mixin.define( "org.eclipse.rwt.VisibilityAnimationMixin", {
       switch( type ) {
         case "flyOutTop":
           renderer.animate( this, "top", animationType );
-          renderer.setInvisibilityGetter( org.eclipse.rwt.VisibilityAnimationMixin.hideTop );
+          renderer.setInvisibilityGetter( rwt.animation.VisibilityAnimationMixin.hideTop );
         break;
         case "flyOutBottom":
           renderer.animate( this, "top", animationType );
-          renderer.setInvisibilityGetter( org.eclipse.rwt.VisibilityAnimationMixin.hideBottom );
+          renderer.setInvisibilityGetter( rwt.animation.VisibilityAnimationMixin.hideBottom );
         break;
         case "flyOutLeft":
           renderer.animate( this, "left", animationType );
-          renderer.setInvisibilityGetter( org.eclipse.rwt.VisibilityAnimationMixin.hideLeft );
+          renderer.setInvisibilityGetter( rwt.animation.VisibilityAnimationMixin.hideLeft );
         break;
         case "flyOutRight":
           renderer.animate( this, "left", animationType );
-          renderer.setInvisibilityGetter( org.eclipse.rwt.VisibilityAnimationMixin.hideRight );
+          renderer.setInvisibilityGetter( rwt.animation.VisibilityAnimationMixin.hideRight );
         break;
       }
     },

@@ -11,7 +11,7 @@
 
 qx.Class.define( "rwt.widgets.base.GridCellToolTip", {
   extend : rwt.widgets.base.ToolTip,
-  include : org.eclipse.rwt.VisibilityAnimationMixin,
+  include : rwt.animation.VisibilityAnimationMixin,
 
   construct : function( grid ) {
     this.base( arguments );

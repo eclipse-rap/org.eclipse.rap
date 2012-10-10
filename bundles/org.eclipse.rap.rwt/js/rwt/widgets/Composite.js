@@ -13,7 +13,7 @@ qx.Class.define( "rwt.widgets.Composite", {
 
   extend : rwt.widgets.base.Parent,
 
-  include : org.eclipse.rwt.VisibilityAnimationMixin,
+  include : rwt.animation.VisibilityAnimationMixin,
 
   construct : function() {
     this.base( arguments );

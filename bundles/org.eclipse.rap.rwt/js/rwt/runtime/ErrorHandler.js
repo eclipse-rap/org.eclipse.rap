@@ -177,7 +177,7 @@ qx.Class.define( "rwt.runtime.ErrorHandler", {
         //qx.io.remote.RequestQueue.getInstance().setEnabled( false );
         org.eclipse.rwt.EventHandler.detachEvents();
         qx.core.Target.prototype.dispatchEvent = function() {};
-        org.eclipse.rwt.Animation._stopLoop();
+        rwt.animation.Animation._stopLoop();
       } catch( ex ) {
         try {
           console.log( "_freezeApplication exception: " + ex );

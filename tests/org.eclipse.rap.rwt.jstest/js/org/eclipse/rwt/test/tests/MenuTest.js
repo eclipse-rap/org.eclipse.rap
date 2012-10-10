@@ -1157,13 +1157,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       var animation = menu._appearAnimation;
       var renderer = menu._appearAnimation.getDefaultRenderer();
       menu.show();
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       assertTrue( menu._appearAnimation.isRunning() );
       menu.unhideItems();
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       menu.destroy();
       TestUtil.flush();
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       assertTrue( menu.isDisposed() );
       assertNull( menu._appearAnimation );
       assertTrue( animation.isDisposed() );

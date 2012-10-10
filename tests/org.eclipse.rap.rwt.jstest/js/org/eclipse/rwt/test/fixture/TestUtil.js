@@ -907,7 +907,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   skipAnimations : function() {
-    var queue = org.eclipse.rwt.Animation._queue;
+    var queue = rwt.animation.Animation._queue;
     while( queue.length > 0 ) {
       queue[ 0 ].skip();
     }

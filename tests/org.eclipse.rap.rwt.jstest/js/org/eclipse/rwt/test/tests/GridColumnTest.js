@@ -782,7 +782,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       org.eclipse.swt.EventUtil.setSuspended( true );
       TestUtil.protocolSet( "w4", { "left" : 3 } );
       TestUtil.flush();
-      var animation = org.eclipse.rwt.Animation._queue[ 0 ];
+      var animation = rwt.animation.Animation._queue[ 0 ];
       assertTrue( feedbackLabel.isSeeable() );
       org.eclipse.swt.EventUtil.setSuspended( false );
       TestUtil.skipAnimations();
@@ -866,11 +866,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
       org.eclipse.swt.EventUtil.setSuspended( false );
       assertTrue( feedbackLabel.isSeeable() );
-      org.eclipse.rwt.Animation._mainLoop();
-      var animation = org.eclipse.rwt.Animation._queue[ 0 ];
+      rwt.animation.Animation._mainLoop();
+      var animation = rwt.animation.Animation._queue[ 0 ];
       tree.destroy();
       TestUtil.flush();
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
 
       assertTrue( feedbackLabel.isDisposed() );
       assertTrue( animation.isDisposed() );
@@ -900,16 +900,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.flush();
       org.eclipse.swt.EventUtil.setSuspended( false );
       assertTrue( feedbackLabel.isSeeable() );
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       TestUtil.fakeMouseEventDOM( label.getElement(), "mousedown", button, 13, 3 );
       TestUtil.flush();
       TestUtil.fakeMouseEventDOM( label.getElement(), "mousemove", button, 70, 3 );
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       TestUtil.flush();
 
       assertTrue( feedbackLabel.isSeeable() );
       assertEquals( 60, feedbackLabel.getLeft() );
-      assertEquals( 0, org.eclipse.rwt.Animation._queue.length );
+      assertEquals( 0, rwt.animation.Animation._queue.length );
       tree.destroy();
     },
 

@@ -14,7 +14,7 @@ qx.Class.define( "rwt.widgets.Shell", {
 
   extend : rwt.widgets.base.Window,
 
-  include : org.eclipse.rwt.VisibilityAnimationMixin,
+  include : rwt.animation.VisibilityAnimationMixin,
 
   construct : function( styles ) {
     this.base( arguments );
