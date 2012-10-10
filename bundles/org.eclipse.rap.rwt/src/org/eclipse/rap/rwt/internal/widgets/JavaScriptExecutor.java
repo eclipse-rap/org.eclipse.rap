@@ -24,10 +24,10 @@ import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.widgets.Display;
 
 
-public final class JSExecutor {
+public final class JavaScriptExecutor {
 
-  private static final String JS_EXECUTOR = JSExecutor.class.getName() + "#instance";
-  private static final String JSEXECUTOR_TYPE = "rwt.client.JSExecutor";
+  private static final String JS_EXECUTOR = JavaScriptExecutor.class.getName() + "#instance";
+  private static final String JSEXECUTOR_TYPE = "rwt.client.JavaScriptExecutor";
   private static final String PARAM_CONTENT = "content";
   private static final String METHOD_EXECUTE = "execute";
 
@@ -41,7 +41,7 @@ public final class JSExecutor {
     jsExecutor.append( code );
   }
 
-  private JSExecutor() {
+  private JavaScriptExecutor() {
     // prevent instantiation
   }
 

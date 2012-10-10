@@ -280,8 +280,8 @@ public final class ClientResources {
     "rwt/protocol/ServerObject.js",
     "rwt/protocol/ServerObjectFactory.js",
     "org/eclipse/rwt/KeyEventSupport.js",
-    "rwt/client/JSExecutor.js",
-    "rwt/protocol/adapter/JSExecutorAdapter.js",
+    "rwt/client/JavaScriptExecutor.js",
+    "rwt/protocol/adapter/JavaScriptExecutorAdapter.js",
     "rwt/runtime/System.js"
   };
 

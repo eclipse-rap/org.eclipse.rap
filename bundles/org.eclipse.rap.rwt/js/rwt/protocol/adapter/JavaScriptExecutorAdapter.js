@@ -9,27 +9,32 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-namespace( "rwt.client" );
+rwt.protocol.AdapterRegistry.add( "rwt.client.JavaScriptExecutor", {
 
-rwt.client.JSExecutor = function() {
-  if( rwt.client.JSExecutor._instance !== undefined ) {
-    throw new Error( "JSExecutor can not be created twice" );
-  } else {
-    rwt.client.JSExecutor._instance = this;
+  factory : function( properties ) {
+    return rwt.client.JavaScriptExecutor.getInstance();
+  },
+
+  service : true,
+
+  destructor : rwt.util.Function.returnTrue,
+
+  properties : [],
+
+  propertyHandler : {},
+
+  listeners : [],
+
+  listenerHandler : {},
+
+  methods : [
+    "execute"
+  ],
+
+  methodHandler : {
+    "execute" : function( object, args ) {
+      object.execute( args.content );
+    }
   }
-};
 
-rwt.client.JSExecutor.getInstance = function() {
-  if( rwt.client.JSExecutor._instance === undefined ) {
-    new rwt.client.JSExecutor();
-  }
-  return rwt.client.JSExecutor._instance;
-};
-
-rwt.client.JSExecutor.prototype = {
-
-  execute : function( code ) {
-    eval( code );
-  }
-
-};
+} );

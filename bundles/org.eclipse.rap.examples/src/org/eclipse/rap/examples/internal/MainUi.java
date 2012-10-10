@@ -19,7 +19,7 @@ import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rap.rwt.events.BrowserHistoryListener;
-import org.eclipse.rap.rwt.internal.widgets.JSExecutor;
+import org.eclipse.rap.rwt.internal.widgets.JavaScriptExecutor;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -334,7 +334,7 @@ public class MainUi implements IEntryPoint {
     control.addMouseListener( new MouseAdapter() {
       @Override
       public void mouseDown( MouseEvent e ) {
-        JSExecutor.executeJS( "window.location.href = '" + url + "'" );
+        JavaScriptExecutor.executeJS( "window.location.href = '" + url + "'" );
       }
     } );
   }

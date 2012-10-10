@@ -14,22 +14,22 @@
 var Processor = rwt.protocol.MessageProcessor;
 var ObjectManager = rwt.protocol.ObjectRegistry;
 
-qx.Class.define( "org.eclipse.rwt.test.tests.JSExecutorTest", {
+qx.Class.define( "org.eclipse.rwt.test.tests.JavaScriptExecutorTest", {
 
   extend : qx.core.Object,
 
   members : {
 
-    testCreateJSExecutorByProtocol : function() {
-      var jsExecutor = this._createJSExecutor();
-      assertTrue( jsExecutor instanceof rwt.client.JSExecutor );
-      assertIdentical( jsExecutor, rwt.client.JSExecutor.getInstance() );
+    testCreateJavaScriptExecutorByProtocol : function() {
+      var jsExecutor = this._createJavaScriptExecutor();
+      assertTrue( jsExecutor instanceof rwt.client.JavaScriptExecutor );
+      assertIdentical( jsExecutor, rwt.client.JavaScriptExecutor.getInstance() );
     },
 
     testExecuteByProtocol : function() {
-      var jsExecutor = this._createJSExecutor();
+      var jsExecutor = this._createJavaScriptExecutor();
       Processor.processOperation( {
-        "target" : "rwt.client.JSExecutor",
+        "target" : "rwt.client.JavaScriptExecutor",
         "action" : "call",
         "method" : "execute",
         "properties" : {
@@ -40,8 +40,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.JSExecutorTest", {
       foo = undefined; // IE doesnt like delete window.foo or delete foo;
     },
 
-    _createJSExecutor : function() {
-      return ObjectManager.getObject( "rwt.client.JSExecutor" );
+    _createJavaScriptExecutor : function() {
+      return ObjectManager.getObject( "rwt.client.JavaScriptExecutor" );
     }
 
   }

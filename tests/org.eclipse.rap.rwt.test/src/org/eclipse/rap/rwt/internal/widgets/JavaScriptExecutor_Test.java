@@ -21,7 +21,7 @@ import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.widgets.Display;
 
 
-public class JSExecutor_Test extends TestCase {
+public class JavaScriptExecutor_Test extends TestCase {
 
   private static final String EXECUTE_1 = "execute_1";
   private static final String EXECUTE_2 = "execute_2";
@@ -39,7 +39,7 @@ public class JSExecutor_Test extends TestCase {
   }
 
   public void testExecuteJSOnce() {
-    JSExecutor.executeJS( EXECUTE_1 );
+    JavaScriptExecutor.executeJS( EXECUTE_1 );
 
     Fixture.executeLifeCycleFromServerThread();
 
@@ -51,8 +51,8 @@ public class JSExecutor_Test extends TestCase {
   }
 
   public void testExecuteJSTwice() {
-    JSExecutor.executeJS( EXECUTE_1 );
-    JSExecutor.executeJS( EXECUTE_2 );
+    JavaScriptExecutor.executeJS( EXECUTE_1 );
+    JavaScriptExecutor.executeJS( EXECUTE_2 );
 
     Fixture.executeLifeCycleFromServerThread();
 
@@ -64,7 +64,7 @@ public class JSExecutor_Test extends TestCase {
   }
 
   public void testExecuteJSIsClearedAfterRender() {
-    JSExecutor.executeJS( EXECUTE_1 );
+    JavaScriptExecutor.executeJS( EXECUTE_1 );
 
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeResponseWriter();
@@ -74,7 +74,7 @@ public class JSExecutor_Test extends TestCase {
   }
 
   public void testExecuteJSWithDifferentDisplay() {
-    JSExecutor.executeJS( EXECUTE_1 );
+    JavaScriptExecutor.executeJS( EXECUTE_1 );
 
     simulateDifferentDisplay();
     Fixture.executeLifeCycleFromServerThread();
@@ -123,7 +123,8 @@ public class JSExecutor_Test extends TestCase {
     String result = "";
     Message message = Fixture.getProtocolMessage();
     if( message.getOperationCount() > 0 ) {
-      CallOperation operation = message.findCallOperation( "rwt.client.JSExecutor", "execute" );
+      CallOperation operation
+        = message.findCallOperation( "rwt.client.JavaScriptExecutor", "execute" );
       if( operation != null ) {
         result = ( String )operation.getProperty( "content" );
       }

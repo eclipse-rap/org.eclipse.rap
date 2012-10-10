@@ -99,7 +99,7 @@ public class RWTTestsContribution implements TestContribution {
     "tests/ExpandBarTest.js",
     "tests/ControlDecoratorTest.js",
     "tests/ExternalBrowserTest.js",
-    "tests/JSExecutorTest.js",
+    "tests/JavaScriptExecutorTest.js",
     "tests/BrowserHistoryTest.js",
     "tests/FontSizeCalculationTest.js",
     "tests/MessageTest.js",

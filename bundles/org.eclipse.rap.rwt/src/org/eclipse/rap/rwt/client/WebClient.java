@@ -102,7 +102,8 @@ public class WebClient implements Client {
   public static final String FAVICON = PREFIX + ".favicon";
 
   public <T> T getService( Class<T> type ) {
-    return null;
+    T result = null;
+    return result;
   }
 
 }
