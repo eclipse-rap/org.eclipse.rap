@@ -11,7 +11,7 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var Animation =  org.eclipse.rwt.Animation;
+var Animation =  rwt.animation.Animation;
 var Processor = rwt.protocol.MessageProcessor;
 
 var shell;

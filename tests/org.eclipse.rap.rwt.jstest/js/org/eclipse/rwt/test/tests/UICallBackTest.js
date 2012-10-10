@@ -30,7 +30,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.UICallBackTest", {
     testSetActiveByProtocol : function() {
       var uiCallBack = this._createUICallBack();
       Processor.processOperation( {
-        "target" : "uicb",
+        "target" : "rwt.client.UICallBack",
         "action" : "set",
         "properties" : {
           "active" : true
@@ -41,9 +41,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.UICallBackTest", {
 
     testSendUIRequestByProtocol : function() {
       TestUtil.initRequestLog();
-      var uiCallBack = this._createUICallBack();
+      this._createUICallBack();
       rwt.protocol.MessageProcessor.processOperation( {
-        "target" : "uicb",
+        "target" : "rwt.client.UICallBack",
         "action" : "call",
         "method" : "sendUIRequest",
         "properties" : null
@@ -52,16 +52,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.UICallBackTest", {
     },
 
     _createUICallBack : function() {
-      Processor.processOperation( {
-        "target" : "uicb",
-        "action" : "create",
-        "type" : "rwt.UICallBack"
-      } );
-      return ObjectManager.getObject( "uicb" );
+      return ObjectManager.getObject( "rwt.client.UICallBack" );
     }
 
   }
-  
+
 } );
 
 }());

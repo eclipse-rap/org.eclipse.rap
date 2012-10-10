@@ -1141,9 +1141,7 @@ public class WorkbenchMessages {
 	 * @return localized message
 	 */
     public static WorkbenchMessages get() {
-      Class clazz = WorkbenchMessages.class;
-      Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
-      return ( WorkbenchMessages )result;
+      return RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, WorkbenchMessages.class );
     }
 
     public static WorkbenchMessages get( Display display ) {

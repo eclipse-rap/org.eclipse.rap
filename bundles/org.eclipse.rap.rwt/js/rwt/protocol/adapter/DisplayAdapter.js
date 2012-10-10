@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-rwt.protocol.AdapterRegistry.add( "rwt.Display", {
+rwt.protocol.AdapterRegistry.add( "rwt.widgets.Display", {
 
   factory : function( properties ) {
     return new rwt.widgets.Display( properties );

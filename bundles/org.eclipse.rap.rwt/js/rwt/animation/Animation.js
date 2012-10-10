@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.Animation", {
+qx.Class.define( "rwt.animation.Animation", {
 
   extend : qx.core.Target,
 
@@ -18,7 +18,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     this._renderer = [];
     // properties:
     this._duration = 1000;
-    this._transitionFunction = org.eclipse.rwt.Animation.transitions.linear;
+    this._transitionFunction = rwt.animation.Animation.transitions.linear;
     // setup:
     this._startOn = null;
     this._finishOn = null;
@@ -68,7 +68,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     },
 
     setTransition : function( type ) {
-      this._transitionFunction = org.eclipse.rwt.Animation.transitions[ type ];
+      this._transitionFunction = rwt.animation.Animation.transitions[ type ];
     },
 
     setProperties : function( properties ) {
@@ -82,7 +82,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
 
     getDefaultRenderer : function( active ) {
       if( this._defaultRenderer == null || this._defaultRenderer.isDisposed() ) {
-        this._defaultRenderer = new org.eclipse.rwt.AnimationRenderer( this );
+        this._defaultRenderer = new rwt.animation.AnimationRenderer( this );
       }
       if( typeof active != "undefined" ) {
         this._defaultRenderer.setActive( active );
@@ -117,7 +117,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     // then its set to null. Its given in the setup-function and all events.
     start : function( config ) {
       if ( !this.isStarted() ) {
-        org.eclipse.rwt.Animation._addToQueue( this );
+        rwt.animation.Animation._addToQueue( this );
         this._inQueue = true;
         this._config = config;
         this._init();
@@ -141,7 +141,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
         this._isRunning = false;
         this.createDispatchDataEvent( "cancel", this._config );
         this._config = null;
-        org.eclipse.rwt.Animation._removeFromLoop( this );
+        rwt.animation.Animation._removeFromLoop( this );
       }
     },
 
@@ -280,7 +280,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
       try {
         if( !org.eclipse.swt.EventUtil.getSuspended() ) {
           var time = new Date().getTime();
-          var Animation = org.eclipse.rwt.Animation;
+          var Animation = rwt.animation.Animation;
           try {
             if( Animation._exclusive !== null ) {
               Animation._exclusive._loop( time );
@@ -293,7 +293,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
             }
           } catch( e ) {
             // prevent endless error-messages:
-            org.eclipse.rwt.Animation._stopLoop();
+            rwt.animation.Animation._stopLoop();
             throw "Animation aborted: " + e;
           }
         }

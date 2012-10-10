@@ -36,8 +36,7 @@ public final class NLSTab extends ExampleTab {
     public String TranslatableMessage;
 
     public static NLSTabMessages get() {
-      return ( NLSTabMessages )RWT.NLS.getUTF8Encoded( BUNDLE_NAME,
-                                                       NLSTabMessages.class );
+      return RWT.NLS.getUTF8Encoded( BUNDLE_NAME, NLSTabMessages.class );
     }
 
     private NLSTabMessages() {

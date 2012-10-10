@@ -366,7 +366,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
       rwt.widgets.base.Widget.__allowFlushs = false;
       org.eclipse.rwt.EventHandler.detachEvents();
       qx.core.Target.prototype.dispatchEvent = function(){};
-      org.eclipse.rwt.Animation._stopLoop();
+      rwt.animation.Animation._stopLoop();
       rwt.runtime.MobileWebkitSupport._removeListeners();
     },
 

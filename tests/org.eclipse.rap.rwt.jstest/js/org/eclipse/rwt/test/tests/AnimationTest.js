@@ -17,7 +17,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     // Animation core
 
     testEventsAndCustomFunctions : function() {
-      var animation = new org.eclipse.rwt.Animation();
+      var animation = new rwt.animation.Animation();
       var renderer = animation.getDefaultRenderer();
       renderer.setStartValue( 10 );
       renderer.setEndValue( 20 );
@@ -27,28 +27,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       animation.start( "myConfig" );
       assertTrue( animation.isStarted() );
       assertFalse( animation.isRunning() );
-      assertNotNull( org.eclipse.rwt.Animation._interval );
-      org.eclipse.rwt.Animation._mainLoop();
+      assertNotNull( rwt.animation.Animation._interval );
+      rwt.animation.Animation._mainLoop();
       assertTrue( animation.isStarted() );
       assertTrue( animation.isRunning() );
       animation._finish();
       assertFalse( animation.isStarted() );
       assertFalse( animation.isRunning() );
-      org.eclipse.rwt.Animation._mainLoop();
-      assertNull( org.eclipse.rwt.Animation._interval );
+      rwt.animation.Animation._mainLoop();
+      assertNull( rwt.animation.Animation._interval );
       var expected = [];
       expected.push( "init", "myConfig", "setup", "myConfig" );
-      expected.push( "[object org.eclipse.rwt.AnimationRenderer]" );
+      expected.push( "[object rwt.animation.AnimationRenderer]" );
       expected.push( "convert", "number", 10, 20, "render", "number" );
       expected.push( "convert", "number", 10, 20, "render", "number" );
       expected.push( "cancel", "myConfig", "finish", "myConfig" );
       assertEquals( expected, log );
-      assertNull( org.eclipse.rwt.Animation._interval );
+      assertNull( rwt.animation.Animation._interval );
       animation.dispose();
     },
     
     testTransitions : function() {
-      var transitions = org.eclipse.rwt.Animation.transitions;
+      var transitions = rwt.animation.Animation.transitions;
       for( var key in transitions ) {
         assertFalse( key + " for 0", isNaN( transitions[ key ]( 0 ) ) );
         assertFalse( key + " for 0.5", isNaN( transitions[ key ]( 0.5 ) ) );
@@ -57,45 +57,45 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     },
 
     testDuration : function() {
-      var animation = new org.eclipse.rwt.Animation();
+      var animation = new rwt.animation.Animation();
       animation.setDuration( 2000 );
       animation.start();
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       var end = new Date().getTime() + 2001;
       assertTrue( animation.isRunning() );
       animation._loop( end );
       assertFalse( animation.isStarted() );
       assertFalse( animation.isRunning() );
-      org.eclipse.rwt.Animation._mainLoop();
-      assertNull( org.eclipse.rwt.Animation._interval );
+      rwt.animation.Animation._mainLoop();
+      assertNull( rwt.animation.Animation._interval );
       animation.dispose();
     },
 
     testStartTime : function() {
-      var animation = new org.eclipse.rwt.Animation();
+      var animation = new rwt.animation.Animation();
       animation.setDuration( 2 );
       var start = new Date().getTime();
       animation.start();
       assertNull( animation._startOn );
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       assertTrue( animation.isRunning() );
       assertTrue( animation._startOn >= start );
       animation.cancel();
-      assertNull( org.eclipse.rwt.Animation._interval );
+      assertNull( rwt.animation.Animation._interval );
       animation.dispose();
     },
 
     testDisposeAnimation : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       animation.dispose();
       assertTrue( animation.isDisposed() );      
       assertTrue( renderer.isDisposed() );      
     },
 
     testDisposeRenderer : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       renderer.dispose();
       assertFalse( animation.isDisposed() );      
       assertTrue( renderer.isDisposed() );      
@@ -103,41 +103,41 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     },
 
     testRestart : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       renderer.setRenderFunction( function(){} );      
       renderer.setConverter( "none" );      
       var log = this._attachLogger( animation, renderer, false );
       animation.start( "myConfig" );
       assertTrue( animation.isStarted() );
       assertFalse( animation.isRunning() );
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       assertTrue( animation.isStarted() );
       assertTrue( animation.isRunning() );
       animation.restart();
       assertTrue( animation.isStarted() );
       assertFalse( animation.isRunning() );
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       assertTrue( animation.isStarted() );
       assertTrue( animation.isRunning() );
       animation._finish();
       assertFalse( animation.isStarted() );
       assertFalse( animation.isRunning() );
-      org.eclipse.rwt.Animation._mainLoop();
-      assertNull( org.eclipse.rwt.Animation._interval );
+      rwt.animation.Animation._mainLoop();
+      assertNull( rwt.animation.Animation._interval );
       var expected = [];
       expected.push( "init", "myConfig", "setup", "myConfig" );
       expected.push( "cancel", "myConfig" );
       expected.push( "init", "myConfig", "setup", "myConfig" );
       expected.push( "cancel", "myConfig", "finish", "myConfig" );
       assertEquals( expected, log );
-      assertNull( org.eclipse.rwt.Animation._interval );
+      assertNull( rwt.animation.Animation._interval );
       animation.dispose();
     },
 
     testCancel : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       renderer.setStartValue( 10 );
       renderer.setEndValue( 20 );
       assertEquals( 1, animation.getRendererLength() );
@@ -146,24 +146,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       animation.start( "myConfig" );
       assertTrue( animation.isStarted() );
       assertFalse( animation.isRunning() );
-      assertNotNull( org.eclipse.rwt.Animation._interval );
+      assertNotNull( rwt.animation.Animation._interval );
       animation.cancel();
       assertNull( renderer.getLastValue() );
       assertFalse( animation.isStarted() );
       assertFalse( animation.isRunning() );
-      org.eclipse.rwt.Animation._mainLoop();
-      assertNull( org.eclipse.rwt.Animation._interval );
+      rwt.animation.Animation._mainLoop();
+      assertNull( rwt.animation.Animation._interval );
       var expected = [];
       expected.push( "init", "myConfig" );
       expected.push( "cancel", "myConfig" );
       assertEquals( expected, log );
-      assertNull( org.eclipse.rwt.Animation._interval );
+      assertNull( rwt.animation.Animation._interval );
       animation.dispose();
     },
     
    testSkip : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       renderer.setStartValue( 10 );
       renderer.setEndValue( 20 );
       assertEquals( 1, animation.getRendererLength() );
@@ -172,27 +172,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       animation.start( "myConfig" );
       assertTrue( animation.isStarted() );
       assertFalse( animation.isRunning() );
-      assertNotNull( org.eclipse.rwt.Animation._interval );
+      assertNotNull( rwt.animation.Animation._interval );
       animation.skip();
       assertEquals( 1, renderer.getLastValue() );
       assertFalse( animation.isStarted() );
       assertFalse( animation.isRunning() );
-      org.eclipse.rwt.Animation._mainLoop();
-      assertNull( org.eclipse.rwt.Animation._interval );
+      rwt.animation.Animation._mainLoop();
+      assertNull( rwt.animation.Animation._interval );
       var expected = [];
       expected.push( "init", "myConfig", "setup", "myConfig" );
-      expected.push( "[object org.eclipse.rwt.AnimationRenderer]" );
+      expected.push( "[object rwt.animation.AnimationRenderer]" );
       expected.push( "convert", "number", 10, 20, "render", "number" );
       expected.push( "convert", "number", 10, 20, "render", "number" );
       expected.push( "cancel", "myConfig", "finish", "myConfig" );
       assertEquals( expected, log );
-      assertNull( org.eclipse.rwt.Animation._interval );
+      assertNull( rwt.animation.Animation._interval );
       animation.dispose();
     },
 
     testExclusiveAnimation : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var animation2 = new org.eclipse.rwt.Animation();
+      var animation = new rwt.animation.Animation();
+      var animation2 = new rwt.animation.Animation();
       animation.setDuration( 1000 );
       animation2.setDuration( 1000 );
       var start = new Date().getTime();
@@ -200,7 +200,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       animation.setExclusive( true );
       animation2.start();
       animation.start();
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
 
       assertTrue( animation.isRunning() );
       assertFalse( animation2.isRunning() );
@@ -209,12 +209,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     },
     
     testSingleExclusiveAnimation : function() {
-      var animation = new org.eclipse.rwt.Animation();
+      var animation = new rwt.animation.Animation();
       animation.setDuration( 1000 );
       
       animation.setExclusive( true );
       animation.start();
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       
       assertTrue( animation.isRunning() );
       animation.dispose();
@@ -222,8 +222,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     
     
     testExclusiveAnimationCanceled : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var animation2 = new org.eclipse.rwt.Animation();
+      var animation = new rwt.animation.Animation();
+      var animation2 = new rwt.animation.Animation();
       animation.setDuration( 1000 );
       animation2.setDuration( 1000 );
       var start = new Date().getTime();
@@ -231,9 +231,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       animation.setExclusive( true );
       animation2.start();
       animation.start();
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       animation.cancel(); // TODO [tb] : split
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
     
       assertFalse( animation.isRunning() );
       assertTrue( animation2.isRunning() );
@@ -246,7 +246,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     // AnimationRenderer core
     
     testConverter : function() {
-      var converter = org.eclipse.rwt.AnimationRenderer.converter;
+      var converter = rwt.animation.AnimationRenderer.converter;
       assertEquals( -27.3, converter.none( -27.3 ) );
       assertEquals( -27, converter.round( -27.3 ) );
       assertEquals( 0, converter.positive( -27.3 ) );
@@ -279,8 +279,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     
     testActivateRendererOnce : function() {
       var log = [];
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer1 = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer1 = new rwt.animation.AnimationRenderer( animation );
       renderer1.setRenderFunction( function( value ){ 
         log.push( "render 1", typeof value ); 
       } );      
@@ -288,7 +288,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       renderer1.setSetupFunction( function( config, context ) { 
         log.push( "setup 1", config ); 
       } );
-      var renderer2 = new org.eclipse.rwt.AnimationRenderer( animation );
+      var renderer2 = new rwt.animation.AnimationRenderer( animation );
       renderer2.setRenderFunction( function( value ){ 
         log.push( "render 2", typeof value ); 
       } );      
@@ -301,23 +301,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       assertTrue( renderer2._active );
       assertFalse( renderer1._activeOnce );
       animation.start( "myConfig1" );
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       assertTrue( animation.isRunning() );
       animation._finish();
       assertFalse( animation.isStarted() );
-      org.eclipse.rwt.Animation._mainLoop();
-      assertNull( org.eclipse.rwt.Animation._interval );
+      rwt.animation.Animation._mainLoop();
+      assertNull( rwt.animation.Animation._interval );
       assertFalse( renderer1._activeOnce );
       assertFalse( renderer2._activeOnce );
       assertTrue( renderer1._active );
       assertFalse( renderer2._active );
       animation.start( "myConfig2" );
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       assertTrue( animation.isRunning() );
       animation._finish();
       assertFalse( animation.isStarted() );
-      org.eclipse.rwt.Animation._mainLoop();
-      assertNull( org.eclipse.rwt.Animation._interval );
+      rwt.animation.Animation._mainLoop();
+      assertNull( rwt.animation.Animation._interval );
       var expected = [];
       expected.push( "setup 1", "myConfig1", "setup 2", "myConfig1" );
       expected.push( "render 1", "number", "render 2", "number" );
@@ -325,14 +325,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       expected.push( "setup 1", "myConfig2" );
       expected.push( "render 1", "number", "render 1", "number" );
       assertEquals( expected, log );
-      assertNull( org.eclipse.rwt.Animation._interval );
+      assertNull( rwt.animation.Animation._interval );
       animation.dispose();
     },
     
     testActivateAllRendererOnce : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer1 = new org.eclipse.rwt.AnimationRenderer( animation );
-      var renderer2 = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer1 = new rwt.animation.AnimationRenderer( animation );
+      var renderer2 = new rwt.animation.AnimationRenderer( animation );
       animation.activateRendererOnce();
       assertTrue( renderer1._activeOnce );
       assertTrue( renderer2._activeOnce );
@@ -340,8 +340,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     },
 
     testPrepareValue : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       renderer._renderType = "height";
       assertEquals( 1, renderer._prepareValue( 1 ) );
       assertEquals( 0, renderer._prepareValue( null ) );
@@ -368,9 +368,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     },
 
     testCloneFrom : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer1 = new org.eclipse.rwt.AnimationRenderer( animation );
-      var renderer2 = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer1 = new rwt.animation.AnimationRenderer( animation );
+      var renderer2 = new rwt.animation.AnimationRenderer( animation );
       renderer1.setRenderFunction( function(){} );
       renderer2.setRenderFunction( function(){} );
       renderer1.setConverter( "numeric" );
@@ -392,8 +392,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     // AnimationRenderer - Widget integration
      
     testCheckValues : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       renderer._renderType = "height";
       renderer.setStartValue( 1 );
       renderer.setEndValue( 2 );
@@ -414,12 +414,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     },
 
     testIsAnimated : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = new rwt.widgets.base.Terminator();
-      var typeAppear = org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR;
-      var typeDisappear = org.eclipse.rwt.AnimationRenderer.ANIMATION_DISAPPEAR;
-      var typeChange = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
+      var typeAppear = rwt.animation.AnimationRenderer.ANIMATION_APPEAR;
+      var typeDisappear = rwt.animation.AnimationRenderer.ANIMATION_DISAPPEAR;
+      var typeChange = rwt.animation.AnimationRenderer.ANIMATION_CHANGE;
       assertFalse( renderer.isAnimated() );
       renderer.animate( widget, "opacity", typeAppear | typeDisappear );
       renderer.setActive( false );
@@ -444,16 +444,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     },
 
     testGetHeightFromWidget : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       renderer.animate( this._createWidget(), "height", 0 );
       assertEquals( 200, renderer.getValueFromWidget() );
       this._cleanUp( animation );
     },
 
     testGetBackgroundColorFromWidget : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
       widget.setBackgroundColor( "#FF0000" );
       renderer.animate( widget, "backgroundColor", 0 );
@@ -470,8 +470,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
 
     testGetBackgroundColorFromWidgetWidthRoundedBorder : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
       var border = new org.eclipse.rwt.Border( 1, "rounded", "black", 4 );
       widget.setBorder( border );
@@ -487,8 +487,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     }, 
 
     testGetBackgroundGradientFromWidget : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
       var gradient = [ [ 0, "#FF0000" ], [ 0, "#00FF00" ] ];
       widget.setBackgroundGradient( gradient );
@@ -500,10 +500,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     },
 
     testHandleAnimation : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
-      var typeChange = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
+      var typeChange = rwt.animation.AnimationRenderer.ANIMATION_CHANGE;
       var renderAdapter = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
       
       renderer.animate( widget, "opacity", typeChange );
@@ -523,11 +523,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     // Tests animationType "disappear" and renderType "opacity"
     testFadeOut : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
       assertFalse( TestUtil.hasElementOpacity( widget.getElement() ) );
-      var typeDisappear = org.eclipse.rwt.AnimationRenderer.ANIMATION_DISAPPEAR;      
+      var typeDisappear = rwt.animation.AnimationRenderer.ANIMATION_DISAPPEAR;      
       renderer.animate( widget, "opacity", typeDisappear );
       widget.hide();
       assertTrue( widget._style.display != "none" );
@@ -553,11 +553,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
 
     // Tests animationType "appear" and renderType "height"
     testSlideIn : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
       widget.hide();
-      var typeAppear = org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR;      
+      var typeAppear = rwt.animation.AnimationRenderer.ANIMATION_APPEAR;      
       renderer.animate( widget, "height", typeAppear );
       assertEquals( "none", widget._style.display );
       widget.show();
@@ -582,10 +582,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
 
     testNoDisappearAnimationBeforeCreate : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget( true );
-      var typeDisappear = org.eclipse.rwt.AnimationRenderer.ANIMATION_DISAPPEAR;      
+      var typeDisappear = rwt.animation.AnimationRenderer.ANIMATION_DISAPPEAR;      
       renderer.animate( widget, "opacity", typeDisappear );
       
       widget.hide();
@@ -598,12 +598,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     // Tests animationType "change" and renderType "backgroundColor"
     testGlow : function() {
       var ColorUtil = rwt.util.ColorUtil;
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
       widget.hide();
       widget.setBackgroundColor( "#FF0000" );
-      var typeChange = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
+      var typeChange = rwt.animation.AnimationRenderer.ANIMATION_CHANGE;
       renderer.animate( widget, "backgroundColor", typeChange );
       widget.show();
       assertFalse( animation.isStarted() );
@@ -627,12 +627,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
 
     // Can not animate from or to transparent/no color.  
     testGlowInvalidColor : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
       widget.hide();
       widget.setBackgroundColor( "#FF0000" );
-      var typeChange = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
+      var typeChange = rwt.animation.AnimationRenderer.ANIMATION_CHANGE;
       renderer.animate( widget, "backgroundColor", typeChange );
       widget.show();
       assertFalse( animation.isStarted() );
@@ -646,11 +646,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     testResize : function() {
       var proto = rwt.widgets.base.MultiCellWidget.prototype;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
-      var typeAppear = org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR;
-      var typeChange = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
+      var typeAppear = rwt.animation.AnimationRenderer.ANIMATION_APPEAR;
+      var typeChange = rwt.animation.AnimationRenderer.ANIMATION_CHANGE;
       renderer.animate( widget, "height", typeChange );
       assertFalse( proto._renderRuntimeHeight == widget._renderRuntimeHeight );      
       assertFalse( animation.isStarted() );
@@ -679,10 +679,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       // (uses resize-scenario, but should be valid for all cases)
       var proto = rwt.widgets.base.MultiCellWidget.prototype;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
-      var typeChange = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
+      var typeChange = rwt.animation.AnimationRenderer.ANIMATION_CHANGE;
       renderer.animate( widget, "height", typeChange );
       renderer.setActive( false );
       assertTrue( widget.isSeeable() );
@@ -709,11 +709,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     testDisappearAnimationNoAutoStart : function() {
       // Using "fadeout" scenario
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
       assertFalse( TestUtil.hasElementOpacity( widget.getElement() ) );
-      var typeDisappear = org.eclipse.rwt.AnimationRenderer.ANIMATION_DISAPPEAR;
+      var typeDisappear = rwt.animation.AnimationRenderer.ANIMATION_DISAPPEAR;
       renderer.animate( widget, "opacity", typeDisappear );
       renderer.setAutoStart( false );
       widget.hide();
@@ -739,11 +739,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
 
     testAppearAnimationNoAutoStart : function() {
       // Using "slideIn" scenario
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
       widget.hide();
-      var typeAppear = org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR;
+      var typeAppear = rwt.animation.AnimationRenderer.ANIMATION_APPEAR;
       renderer.animate( widget, "height", typeAppear );
       renderer.setAutoStart( false );
       assertEquals( "none", widget._style.display );
@@ -773,10 +773,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       // Using "resize" scenario
       var proto = rwt.widgets.base.MultiCellWidget.prototype;
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
-      var typeChange = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
+      var typeChange = rwt.animation.AnimationRenderer.ANIMATION_CHANGE;
       renderer.animate( widget, "height", typeChange );
       renderer.setAutoStart( false );
       assertFalse( proto._renderRuntimeHeight == widget._renderRuntimeHeight );      
@@ -808,10 +808,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     testRenderCallDuringChangeAnimation : function() {
       // using "resize" scenario
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
-      var typeChange = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
+      var typeChange = rwt.animation.AnimationRenderer.ANIMATION_CHANGE;
       renderer.animate( widget, "height", typeChange );
       widget.setHeight( 300 );
       TestUtil.flush();
@@ -843,10 +843,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     testRenderCallDuringChangeAnimationAndCancel : function() {
       // using "resize" scenario
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
-      var typeChange = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
+      var typeChange = rwt.animation.AnimationRenderer.ANIMATION_CHANGE;
       renderer.animate( widget, "height", typeChange );
       renderer.activateOnce();
       assertTrue( renderer._activeOnce );
@@ -877,10 +877,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     testDisappearDuringChangeAnimation : function() {
       // using "resize" scenario
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
-      var typeChange = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
+      var typeChange = rwt.animation.AnimationRenderer.ANIMATION_CHANGE;
       renderer.animate( widget, "height", typeChange );
       widget.setHeight( 300 );
       TestUtil.flush();
@@ -902,11 +902,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     
     testRenderCallDuringAppearAnimation : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
       widget.hide();
-      var typeAppear = org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR;
+      var typeAppear = rwt.animation.AnimationRenderer.ANIMATION_APPEAR;
       renderer.animate( widget, "height", typeAppear );
       assertEquals( "none", widget._style.display );
       widget.show();
@@ -941,11 +941,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     testRenderCallDuringDisappearAnimation : function() {
       // using "fadeOut" scenario
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
       assertFalse( TestUtil.hasElementOpacity( widget.getElement() ) );
-      var typeDisappear = org.eclipse.rwt.AnimationRenderer.ANIMATION_DISAPPEAR;
+      var typeDisappear = rwt.animation.AnimationRenderer.ANIMATION_DISAPPEAR;
       renderer.animate( widget, "opacity", typeDisappear );
       widget.hide();
       assertTrue( widget._style.display != "none" );
@@ -979,11 +979,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
 
     testDisappearDuringAppearAnimation : function() {
       // using "slideIn"-scenario
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
       widget.hide();
-      var typeAppear = org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR;
+      var typeAppear = rwt.animation.AnimationRenderer.ANIMATION_APPEAR;
       renderer.animate( widget, "height", typeAppear );
       assertEquals( "none", widget._style.display );
       widget.show();
@@ -1005,15 +1005,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
 
     testDisappearBeforeScheduledAppearAnimation : function() {
       // using "slideIn"-scenario
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new rwt.widgets.base.MultiCellWidget( "label" );
       widget.setLocation( 10, 20 );
       widget.setDimension( 100, 200 );
       widget.hide();
       widget.addToDocument();
-      var typeAppear = org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR;
+      var typeAppear = rwt.animation.AnimationRenderer.ANIMATION_APPEAR;
       renderer.animate( widget, "height", typeAppear );
       widget.show();
       assertFalse( widget.isCreated() );
@@ -1026,11 +1026,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     
     testAppearDuringDisappearAnimation : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
       assertFalse( TestUtil.hasElementOpacity( widget.getElement() ) );
-      var typeDisappear = org.eclipse.rwt.AnimationRenderer.ANIMATION_DISAPPEAR;
+      var typeDisappear = rwt.animation.AnimationRenderer.ANIMATION_DISAPPEAR;
       renderer.animate( widget, "opacity", typeDisappear );
       widget.hide();
       assertTrue( widget._style.display != "none" );
@@ -1053,11 +1053,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     
     testHandleAnimationWhileRunning : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var widget = this._createWidget();
       assertFalse( TestUtil.hasElementOpacity( widget.getElement() ) );
-      var typeDisappear = org.eclipse.rwt.AnimationRenderer.ANIMATION_DISAPPEAR;      
+      var typeDisappear = rwt.animation.AnimationRenderer.ANIMATION_DISAPPEAR;      
       renderer.animate( widget, "opacity", typeDisappear );
       widget.hide();
       assertTrue( widget._style.display != "none" );
@@ -1077,28 +1077,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     // Other issues
     
     testMultipleAnimationRenderer : function() {
-      var animation1 = new org.eclipse.rwt.Animation();
-      var animation2 = new org.eclipse.rwt.Animation();
-      var renderer1 = new org.eclipse.rwt.AnimationRenderer( animation1 );
-      var renderer2 = new org.eclipse.rwt.AnimationRenderer( animation2 );
+      var animation1 = new rwt.animation.Animation();
+      var animation2 = new rwt.animation.Animation();
+      var renderer1 = new rwt.animation.AnimationRenderer( animation1 );
+      var renderer2 = new rwt.animation.AnimationRenderer( animation2 );
       var widget = this._createWidget();
-      var typeDisappear = org.eclipse.rwt.AnimationRenderer.ANIMATION_DISAPPEAR;
-      var typeAppear = org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR;
+      var typeDisappear = rwt.animation.AnimationRenderer.ANIMATION_DISAPPEAR;
+      var typeAppear = rwt.animation.AnimationRenderer.ANIMATION_APPEAR;
       renderer1.animate( widget, "height", typeDisappear );
       renderer2.animate( widget, "opacity", typeAppear );
       
       widget.hide();
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       assertTrue( animation1.isRunning() );
       animation1.skip();
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       widget.show();
       
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       assertFalse( animation1.isRunning() );
       assertTrue( animation2.isRunning() );
       animation2.skip();
-      org.eclipse.rwt.Animation._mainLoop();
+      rwt.animation.Animation._mainLoop();
       animation1.dispose();
       animation2.dispose();
       renderer1.dispose();
@@ -1113,9 +1113,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       widget.setDimension( 100, 200 );
       widget.hide();
       widget.addToDocument();
-      var animation = new org.eclipse.rwt.Animation();
+      var animation = new rwt.animation.Animation();
       var renderer = animation.getDefaultRenderer();
-      var typeAppear = org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR;      
+      var typeAppear = rwt.animation.AnimationRenderer.ANIMATION_APPEAR;      
       renderer.animate( widget, "opacity", typeAppear );
       assertFalse( widget.isCreated() );
       widget.show();
@@ -1146,9 +1146,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       widget.hide();
       widget.setOpacity( 0.8 );
       widget.addToDocument();
-      var animation = new org.eclipse.rwt.Animation();
+      var animation = new rwt.animation.Animation();
       var renderer = animation.getDefaultRenderer();
-      var typeAppear = org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR;      
+      var typeAppear = rwt.animation.AnimationRenderer.ANIMATION_APPEAR;      
       renderer.animate( widget, "opacity", typeAppear );
       assertFalse( widget.isCreated() );
       widget.show();
@@ -1172,15 +1172,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
     },
     
     testSlideInOnFirstAppearBeforeFlush : function() {
-      var animation = new org.eclipse.rwt.Animation();
-      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var animation = new rwt.animation.Animation();
+      var renderer = new rwt.animation.AnimationRenderer( animation );
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new rwt.widgets.base.MultiCellWidget( "label" );
       widget.setLocation( 10, 20 );
       widget.setDimension( 100, 200 );
       widget.addToDocument();
       widget.hide();
-      var typeAppear = org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR;      
+      var typeAppear = rwt.animation.AnimationRenderer.ANIMATION_APPEAR;      
       renderer.animate( widget, "height", typeAppear );
       widget.show();
       assertFalse( widget.isCreated() );

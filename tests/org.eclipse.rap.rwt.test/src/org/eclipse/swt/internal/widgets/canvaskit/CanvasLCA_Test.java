@@ -84,7 +84,7 @@ public class CanvasLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( shell ), canvasCreate.getProperty( "parent" ) );
     String canvasId = WidgetUtil.getId( canvas );
     CreateOperation gcCreate = message.findCreateOperation( getGcId( canvas ) );
-    assertEquals( "rwt.GC", gcCreate.getType() );
+    assertEquals( "rwt.widgets.GC", gcCreate.getType() );
     assertEquals( canvasId, gcCreate.getProperty( "parent" ) );
   }
 

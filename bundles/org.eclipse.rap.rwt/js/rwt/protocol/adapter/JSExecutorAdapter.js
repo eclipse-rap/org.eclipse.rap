@@ -9,11 +9,13 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-rwt.protocol.AdapterRegistry.add( "rwt.JSExecutor", {
+rwt.protocol.AdapterRegistry.add( "rwt.client.JSExecutor", {
 
   factory : function( properties ) {
     return rwt.client.JSExecutor.getInstance();
   },
+
+  service : true,
 
   destructor : rwt.util.Function.returnTrue,
 

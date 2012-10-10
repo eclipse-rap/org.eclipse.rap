@@ -192,7 +192,7 @@ qx.Class.define( "rwt.widgets.base.GridHeader", {
       var widget = this._getDragFeedback( column );
       var left = label.getLeft();
       if( event.snap ) {
-        org.eclipse.rwt.AnimationUntil.snapTo( widget, 250, left, label.getTop(), true );
+        rwt.animation.AnimationUtil.snapTo( widget, 250, left, label.getTop(), true );
       } else {
         widget.setDisplay( false );
       }

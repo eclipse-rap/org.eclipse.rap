@@ -29,7 +29,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.JSExecutorTest", {
     testExecuteByProtocol : function() {
       var jsExecutor = this._createJSExecutor();
       Processor.processOperation( {
-        "target" : "jsex",
+        "target" : "rwt.client.JSExecutor",
         "action" : "call",
         "method" : "execute",
         "properties" : {
@@ -41,12 +41,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.JSExecutorTest", {
     },
 
     _createJSExecutor : function() {
-      Processor.processOperation( {
-        "target" : "jsex",
-        "action" : "create",
-        "type" : "rwt.JSExecutor"
-      } );
-      return ObjectManager.getObject( "jsex" );
+      return ObjectManager.getObject( "rwt.client.JSExecutor" );
     }
 
   }

@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
+qx.Class.define( "rwt.animation.AnimationRenderer", {
 
   extend : qx.core.Object,
 
@@ -63,7 +63,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
     // Converts transitionValue (usually between 0 and 1) to the render-value.
     setConverter : function( type ) {
       if( typeof type == "string" ) {
-        this._converterFunction = org.eclipse.rwt.AnimationRenderer.converter[ type ];
+        this._converterFunction = rwt.animation.AnimationRenderer.converter[ type ];
       } else {
         this._converterFunction = type;
       }
@@ -252,7 +252,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
         this._renderType = renderType;
         this._animationType = animationType;
         this._renderFunction = this._renderAdapter.getOriginalRenderer( this._renderType );
-        var map = org.eclipse.rwt.AnimationRenderer.converterByRenderType;
+        var map = rwt.animation.AnimationRenderer.converterByRenderType;
         this.setConverter( map[ this._renderType ] );
         this._handleAnimationType();
       }
@@ -437,7 +437,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
       } else {
         this._animation.cancel();
       }
-      var typeAppear = org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR;
+      var typeAppear = rwt.animation.AnimationRenderer.ANIMATION_APPEAR;
       if( this._context.isCreated() && this.isAnimated( typeAppear ) ) {
         this.setEndValue( this.getValueFromWidget() );
         if( this._invisibilityGetter != null ) {
@@ -451,7 +451,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
 
     _onBeforeDisappear : function() {
       this._animation.skip();
-      var typeDisappear = org.eclipse.rwt.AnimationRenderer.ANIMATION_DISAPPEAR;
+      var typeDisappear = rwt.animation.AnimationRenderer.ANIMATION_DISAPPEAR;
       var result = !this.isAnimated( typeDisappear );
       if( !result ) {
         if( this._invisibilityGetter !== null ) {
@@ -483,7 +483,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
           }
         }
       } else {
-        var typeChange = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
+        var typeChange = rwt.animation.AnimationRenderer.ANIMATION_CHANGE;
         if( this.isAnimated( typeChange ) && this._context.isSeeable() ) {
           this.setStartValue(   typeof oldValue !== "undefined"
                               ? oldValue
@@ -504,7 +504,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
 
     // Forces the widget to call the renderer, may be asynchronous due to flush.
     _forceWidgetRenderer : function() {
-      var applyName = org.eclipse.rwt.AnimationRenderer.applyFunctionNames[ this._renderType ];
+      var applyName = rwt.animation.AnimationRenderer.applyFunctionNames[ this._renderType ];
       this._context[ applyName ]( this._context.get( this._renderType ) );
     },
 
@@ -524,13 +524,13 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
     _typeToConfig : function( type ) {
       var result = null;
       switch( type ) {
-        case org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR:
+        case rwt.animation.AnimationRenderer.ANIMATION_APPEAR:
           result = "appear";
         break;
-        case org.eclipse.rwt.AnimationRenderer.ANIMATION_DISAPPEAR:
+        case rwt.animation.AnimationRenderer.ANIMATION_DISAPPEAR:
           result = "disappear";
         break;
-        case org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE:
+        case rwt.animation.AnimationRenderer.ANIMATION_CHANGE:
           result = "change";
         break;
       }
@@ -624,8 +624,8 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
 
       // Assumes that the number of colors are identical
       gradient : function( value, startValue, endValue ) {
-        var convertColor = org.eclipse.rwt.AnimationRenderer.converter.color;
-        var convertFactor = org.eclipse.rwt.AnimationRenderer.converter.factor;
+        var convertColor = rwt.animation.AnimationRenderer.converter.color;
+        var convertFactor = rwt.animation.AnimationRenderer.converter.factor;
         var result = [];
         var length = Math.min( endValue.length, startValue.length );
         for( var i = 0; i < length; i++ ) {

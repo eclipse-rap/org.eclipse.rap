@@ -45,8 +45,6 @@ public class ExtensionEventHandlerMessages {
      * @return localized message
      */
     public static ExtensionEventHandlerMessages get() {
-      Class clazz = ExtensionEventHandlerMessages.class;
-      Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
-      return ( ExtensionEventHandlerMessages )result;
+      return RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, ExtensionEventHandlerMessages.class );
     }
 }

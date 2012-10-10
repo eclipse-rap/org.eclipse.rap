@@ -9,13 +9,13 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-rwt.protocol.AdapterRegistry.add( "rwt.UICallBack", {
+rwt.protocol.AdapterRegistry.add( "rwt.client.UICallBack", {
 
   factory : function( properties ) {
     return rwt.client.UICallBack.getInstance();
   },
 
-  destructor : rwt.util.Function.returnTrue,
+  service : true,
 
   properties : [
     "active"

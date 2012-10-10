@@ -288,7 +288,7 @@ qx.Class.define( "rwt.widgets.base.BasicButton", {
     _applyAnimation : function( newValue, oldValue ) {
       if( newValue[ "hoverIn" ] || newValue[ "hoverOut" ] ) {
         if( this._animation == null ) {
-          this._animation = new org.eclipse.rwt.Animation();
+          this._animation = new rwt.animation.Animation();
           this._animation.addEventListener( "init",
                                             this._initAnimation,
                                             this );
@@ -317,7 +317,7 @@ qx.Class.define( "rwt.widgets.base.BasicButton", {
         var renderType =   this.getBackgroundGradient() != null
                          ? "backgroundGradient"
                          : "backgroundColor";
-        var animationType = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
+        var animationType = rwt.animation.AnimationRenderer.ANIMATION_CHANGE;
         renderer.animate( this, renderType, animationType );
       }
     },

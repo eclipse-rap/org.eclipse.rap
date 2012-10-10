@@ -24,7 +24,7 @@ public class ContentOutlineMessages{
 	// ==============================================================================
 	// Outline View
 	// ==============================================================================
-	
+
 	/**
 	 * The localized message that no outline is available
 	 */
@@ -34,8 +34,6 @@ public class ContentOutlineMessages{
 	 * @return the session/request specific localized messages object
 	 */
 	 public static ContentOutlineMessages get() {
-	    Class clazz = ContentOutlineMessages.class;
-        Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
-        return ( ContentOutlineMessages )result;
+        return RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, ContentOutlineMessages.class );
      }
 }

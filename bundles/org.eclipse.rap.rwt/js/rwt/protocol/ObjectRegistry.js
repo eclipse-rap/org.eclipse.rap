@@ -48,11 +48,20 @@ rwt.protocol.ObjectRegistry = {
   },
 
   getObject : function( id ) {
-    return this._map[ id ] ? this._map[ id ].object : undefined;
+    var entry = this.getEntry( id );
+    return entry ? entry.object : undefined;
   },
 
   getEntry : function( id ) {
-    return this._map[ id ];
+    var result = this._map[ id ];
+    if( result == null && rwt.protocol.AdapterRegistry.hasAdapter( id ) ) {
+      var adapter = rwt.protocol.AdapterRegistry.getAdapter( id );
+      if( adapter.service === true ) {
+        this.add( id, adapter.factory(), adapter );
+        result = this._map[ id ];
+      }
+    }
+    return result;
   },
 
   addRegistrationCallback : function( id, fun ) {

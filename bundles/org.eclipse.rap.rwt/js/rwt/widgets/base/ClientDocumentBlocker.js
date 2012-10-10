@@ -20,7 +20,7 @@
 qx.Class.define("rwt.widgets.base.ClientDocumentBlocker",
 {
   extend : rwt.widgets.base.Terminator,
-  include : org.eclipse.rwt.VisibilityAnimationMixin,
+  include : rwt.animation.VisibilityAnimationMixin,
 
 
 

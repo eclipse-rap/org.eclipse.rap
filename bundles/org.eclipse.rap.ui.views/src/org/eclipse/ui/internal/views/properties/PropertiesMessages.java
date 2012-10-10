@@ -61,8 +61,6 @@ public class PropertiesMessages {
      * @return the session/request specific localized messages object
      */
 	public static PropertiesMessages get() {
-      Class clazz = PropertiesMessages.class;
-      Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
-      return ( PropertiesMessages )result;
+      return RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, PropertiesMessages.class );
     }
 }

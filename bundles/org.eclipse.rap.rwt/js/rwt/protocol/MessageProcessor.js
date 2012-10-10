@@ -84,6 +84,9 @@ rwt.protocol.MessageProcessor = {
 
   _processCreate : function( targetId, type, properties ) {
     var adapter = rwt.protocol.AdapterRegistry.getAdapter( type );
+    if( adapter.service === true ) {
+      throw new Error( "Objects of type " + type + " can not be created" );
+    }
     var targetObject = adapter.factory( properties );
     this._addTarget( targetObject, targetId, adapter );
     this._processSetImpl( targetObject, adapter, properties );

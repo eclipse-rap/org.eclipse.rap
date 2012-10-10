@@ -12,7 +12,7 @@
 
 qx.Class.define( "rwt.widgets.ToolTip", {
   extend : rwt.widgets.base.Popup,
-  include : org.eclipse.rwt.VisibilityAnimationMixin,
+  include : rwt.animation.VisibilityAnimationMixin,
 
   construct : function( style ) {
     this.base( arguments );

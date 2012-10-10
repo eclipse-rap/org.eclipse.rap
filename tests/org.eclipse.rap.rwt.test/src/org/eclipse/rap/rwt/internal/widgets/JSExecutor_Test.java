@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.widgets;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.widgets.JSExecutor;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -47,9 +46,8 @@ public class JSExecutor_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     int createIndex = indexOfCreateOperation( message );
     int execute1Index = indexOfCallOperation( message, "execute", EXECUTE_1 );
-    assertTrue( createIndex != -1 );
+    assertTrue( createIndex == -1 );
     assertTrue( execute1Index != -1 );
-    assertTrue( createIndex < execute1Index );
   }
 
   public void testExecuteJSTwice() {
@@ -61,9 +59,8 @@ public class JSExecutor_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     int createIndex = indexOfCreateOperation( message );
     int execute1Index = indexOfCallOperation( message, "execute", EXECUTE_1 + EXECUTE_2 );
-    assertTrue( createIndex != -1 );
+    assertTrue( createIndex == -1 );
     assertTrue( execute1Index != -1 );
-    assertTrue( createIndex < execute1Index );
   }
 
   public void testExecuteJSIsClearedAfterRender() {
@@ -126,7 +123,7 @@ public class JSExecutor_Test extends TestCase {
     String result = "";
     Message message = Fixture.getProtocolMessage();
     if( message.getOperationCount() > 0 ) {
-      CallOperation operation = message.findCallOperation( "jsex", "execute" );
+      CallOperation operation = message.findCallOperation( "rwt.client.JSExecutor", "execute" );
       if( operation != null ) {
         result = ( String )operation.getProperty( "content" );
       }

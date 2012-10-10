@@ -11,7 +11,7 @@
 
 qx.Class.define( "rwt.widgets.Menu", {
   extend : rwt.widgets.base.Popup,
-  include : org.eclipse.rwt.VisibilityAnimationMixin,
+  include : rwt.animation.VisibilityAnimationMixin,
 
   construct : function() {
     this.base( arguments );

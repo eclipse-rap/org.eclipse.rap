@@ -12,7 +12,7 @@
 qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
   type : "singleton",
   extend : rwt.widgets.base.ToolTip,
-  include : org.eclipse.rwt.VisibilityAnimationMixin,
+  include : rwt.animation.VisibilityAnimationMixin,
 
   construct : function() {
     this.base( arguments );

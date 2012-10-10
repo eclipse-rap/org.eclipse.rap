@@ -39,8 +39,6 @@ public class CommandMessages {
      * @return localized message
      */
     public static CommandMessages get() {
-      Class clazz = CommandMessages.class;
-      Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
-      return ( CommandMessages )result;
+      return RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, CommandMessages.class );
     }
 }

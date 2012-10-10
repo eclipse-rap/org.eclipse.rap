@@ -11,10 +11,10 @@
 
 (function(){
 
-var AnimationRenderer = org.eclipse.rwt.AnimationRenderer;
-var Animation = org.eclipse.rwt.Animation;
+var AnimationRenderer = rwt.animation.AnimationRenderer;
+var Animation = rwt.animation.Animation;
 
-org.eclipse.rwt.AnimationUntil = {
+rwt.animation.AnimationUtil = {
 
   snapTo : function( widget, time, left, top, hide ) {
     var animation = this._createAnimation( widget, time, "easeOut" );

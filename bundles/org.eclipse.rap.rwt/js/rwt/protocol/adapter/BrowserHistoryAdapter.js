@@ -9,13 +9,13 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-rwt.protocol.AdapterRegistry.add( "rwt.BrowserHistory", {
+rwt.protocol.AdapterRegistry.add( "rwt.client.BrowserHistory", {
 
   factory : function( properties ) {
     return rwt.client.History.getInstance();
   },
 
-  destructor : rwt.util.Function.returnTrue,
+  service : true,
 
   properties : [],
 
