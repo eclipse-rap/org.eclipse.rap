@@ -15,16 +15,23 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.internal.graphics.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.internal.graphics.GCOperation;
+import org.eclipse.swt.internal.graphics.IGCAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Widget;
 
 
 public final class CanvasLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Canvas";
-  private static final String TYPE_GC = "rwt.GC";
+  private static final String TYPE_GC = "rwt.widgets.GC";
   private static final String[] ALLOWED_STYLES = new String[] { "NO_RADIO_GROUP", "BORDER" };
 
   @Override

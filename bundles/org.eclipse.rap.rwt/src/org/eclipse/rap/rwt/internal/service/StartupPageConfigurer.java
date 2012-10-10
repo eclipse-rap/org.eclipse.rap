@@ -50,7 +50,7 @@ final class StartupPageConfigurer {
   private final static String FOLDER = PACKAGE_NAME.replace( '.', '/' );
   private final static String INDEX_TEMPLATE = FOLDER + "/rwt-index.html";
 
-  private static final String DISPLAY_TYPE = "rwt.Display";
+  private static final String DISPLAY_TYPE = "rwt.widgets.Display";
   private static final String PROPERTY_FONTS = "fonts";
   private static final String METHOD_PROBE = "probe";
   private static final String PROPERTY_URL = "url";

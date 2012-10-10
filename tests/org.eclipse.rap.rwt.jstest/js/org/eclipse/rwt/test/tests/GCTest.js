@@ -316,7 +316,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
-        "type" : "rwt.GC",
+        "type" : "rwt.widgets.GC",
         "properties" : {
           "parent" : "w3"
         }

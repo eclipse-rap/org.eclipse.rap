@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-rwt.protocol.AdapterRegistry.add( "rwt.GC", {
+rwt.protocol.AdapterRegistry.add( "rwt.widgets.GC", {
 
   factory : function( properties ) {
     var parent = rwt.protocol.ObjectRegistry.getObject( properties.parent );
