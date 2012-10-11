@@ -36,7 +36,6 @@ import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.lifecycle.PhaseListenerUtil;
-import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.service.SessionStoreEvent;
 import org.eclipse.rap.rwt.service.SessionStoreListener;
 import org.eclipse.swt.SWT;
@@ -51,14 +50,13 @@ public final class BrowserHistoryImpl
   private final static String PROP_NAVIGATION_LISTENER = "navigation";
   private final static String PROP_ENTRIES = "entries";
   private final static String METHOD_ADD = "add";
-  private static final String ATTR_HAS_NAVIGATION_LISTENER
-    = BrowserHistoryImpl.class.getName() + ".hasNavigationListener";
   private static final String EVENT_HISTORY_NAVIGATED = "historyNavigated";
   private static final String EVENT_HISTORY_NAVIGATED_ENTRY_ID = "entryId";
 
   private final Display display;
   private final List<HistoryEntry> entriesToAdd;
   private IEventAdapter eventAdapter;
+  private boolean hasNavigationListener;
 
   public BrowserHistoryImpl() {
     display = Display.getCurrent();
@@ -164,19 +162,11 @@ public final class BrowserHistoryImpl
   }
 
   private void preserveNavigationListener() {
-    boolean hasListener = BrowserHistoryEvent.hasListener( this );
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    sessionStore.setAttribute( ATTR_HAS_NAVIGATION_LISTENER, Boolean.valueOf( hasListener ) );
+    hasNavigationListener = BrowserHistoryEvent.hasListener( this );
   }
 
-  private static boolean getPreservedNavigationListener() {
-    boolean result = false;
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    Boolean preserved = ( Boolean )sessionStore.getAttribute( ATTR_HAS_NAVIGATION_LISTENER );
-    if( preserved != null ) {
-      result = preserved.booleanValue();
-    }
-    return result;
+  private boolean getPreservedNavigationListener() {
+    return hasNavigationListener;
   }
 
   private void renderNavigationListener() {
