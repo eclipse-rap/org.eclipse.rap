@@ -16,18 +16,18 @@ import java.util.*;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.SerializableCompatibility;
-import org.eclipse.swt.widgets.Display;
 
 class MeasurementOperator implements SerializableCompatibility {
 
+  private static final String TYPE = "rwt.client.TextSizeMeasurement";
   private static final String PROPERTY_STRINGS = "strings";
-  private static final String METHOD_MEASURE_STRINGS = "measureStrings";
+  private static final String METHOD_MEASURE_ITEMS = "measureItems";
   private static final String PROPERTY_FONTS = "fonts";
   private static final String METHOD_PROBE = "probe";
   private static final String METHOD_STORE_PROBES = "storeProbes";
@@ -144,9 +144,7 @@ class MeasurementOperator implements SerializableCompatibility {
   }
 
   private static CallOperation[] getCallOperationsFor( String methodName ) {
-    // TODO: [if] w1 is used here as handleStartupProbeMeasurementResults is called before the
-    //            display is created (PREPARE_UI_ROOT of the first request)
-    return ProtocolUtil.getClientMessage().getAllCallOperationsFor( "w1", methodName );
+    return ProtocolUtil.getClientMessage().getAllCallOperationsFor( TYPE, methodName );
   }
 
   private static Point readMeasuredSize( CallOperation[] operations, String id ) {
@@ -183,7 +181,7 @@ class MeasurementOperator implements SerializableCompatibility {
       for( int i = 0; i < items.length; i++ ) {
         itemsObject[ i ] = MeasurementUtil.createItemParamObject( items[ i ] );
       }
-      callDisplayMethod( METHOD_MEASURE_STRINGS, PROPERTY_STRINGS, itemsObject );
+      callClientMethod( METHOD_MEASURE_ITEMS, PROPERTY_STRINGS, itemsObject );
     }
   }
 
@@ -194,17 +192,14 @@ class MeasurementOperator implements SerializableCompatibility {
       for( int i = 0; i < probeList.length; i++ ) {
         probesObject[ i ] = MeasurementUtil.createProbeParamObject( probeList[ i ] );
       }
-      callDisplayMethod( METHOD_PROBE, PROPERTY_FONTS, probesObject );
+      callClientMethod( METHOD_PROBE, PROPERTY_FONTS, probesObject );
     }
   }
 
-  private static void callDisplayMethod( String method, String property, Object value ) {
-    Display display = Display.getCurrent();
-    if( display != null ) {
-      IClientObject clientObject = ClientObjectFactory.getClientObject( display );
-      Map<String, Object> args = new HashMap<String, Object>();
-      args.put( property, value );
-      clientObject.call( method, args );
-    }
+  private static void callClientMethod( String method, String property, Object value ) {
+    ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( property, value );
+    protocolWriter.appendCall( TYPE, method, properties );
   }
 }

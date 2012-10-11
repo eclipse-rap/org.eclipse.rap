@@ -22,52 +22,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
 
   members : {
 
-    testCallProbeByProtocol : function() {
-      var text
-        = "!#$%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxy";
-      var fontName = [ "Verdana", "Lucida Sans", "Arial", "Helvetica", "sans-serif" ];
-      TestUtil.initRequestLog();
-
-      MessageProcessor.processOperation( {
-        "target" : "w1",
-        "action" : "call",
-        "method" : "probe",
-        "properties" : {
-          "fonts" : [
-             [ -785380229, text, fontName, 11, false, false ],
-             [ -785380485, text, fontName, 12, false, false ]
-          ]
-        }
-      } );
-
-      assertEquals( 1, TestUtil.getRequestsSend() ); // because timer is skipped in tests
-      var op = TestUtil.getMessageObject().findCallOperation( "w1", "storeProbes" );
-      assertEquals( 2, op.properties.results[ "-785380229" ].length );
-      assertEquals( 2, op.properties.results[ "-785380485" ].length );
-    },
-
-    testCallMeasureStringsByProtocol : function() {
-      var fontName = [ "Verdana", "Lucida Sans", "Arial", "Helvetica", "sans-serif" ];
-      TestUtil.initRequestLog();
-
-      MessageProcessor.processOperation( {
-        "target" : "w1",
-        "action" : "call",
-        "method" : "measureStrings",
-        "properties" : {
-          "strings" : [
-             [ -1114032847, "Check", fontName, 12, false, false, -1 ],
-             [ 1767849485, "  Push &&\n Button ", fontName, 12, false, false, -1 ]
-          ]
-        }
-      } );
-
-      assertEquals( 1, TestUtil.getRequestsSend() );
-      var op = TestUtil.getMessageObject().findCallOperation( "w1", "storeMeasurements" );
-      assertEquals( 2, op.properties.results[ "-1114032847" ].length );
-      assertEquals( 2, op.properties.results[ "1767849485" ].length );
-    },
-
     testSetFocusControlByProtocol : function() {
       var button = new rwt.widgets.Button( "push" );
       org.eclipse.swt.WidgetManager.getInstance().add( button, "btn1" );

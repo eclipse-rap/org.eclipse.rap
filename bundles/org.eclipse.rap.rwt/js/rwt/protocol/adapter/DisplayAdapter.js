@@ -29,8 +29,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Display", {
   listeners : [],
 
   methods : [
-    "probe",
-    "measureStrings",
     "allowEvent",
     "cancelEvent",
     "beep"

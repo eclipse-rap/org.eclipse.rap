@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementItem;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementOperator;
 import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
@@ -34,6 +33,7 @@ import org.eclipse.swt.widgets.Display;
 
 public class MeasurementOperator_Test extends TestCase {
 
+  private static final String TSD_ID = "rwt.client.TextSizeMeasurement";
   private static final FontData FONT_DATA_1 = new FontData( "arial", 12, SWT.NONE );
   private static final FontData FONT_DATA_2 = new FontData( "courier", 14, SWT.BOLD );
   private static final String TEXT_TO_MEASURE = "textToMeasure";
@@ -195,7 +195,7 @@ public class MeasurementOperator_Test extends TestCase {
     Map<String, Object> results = new HashMap<String, Object>();
     results.put( String.valueOf( measurementItem.hashCode() ), new int[] { 12, 4 } );
     parameters.put( "results", results );
-    Fixture.fakeCallOperation( DisplayUtil.getId( display ), "storeMeasurements", parameters  );
+    Fixture.fakeCallOperation( TSD_ID, "storeMeasurements", parameters  );
   }
 
   private void fakeMessageWithMeasurementResultOfProbe( FontData fontData ) {
@@ -203,7 +203,7 @@ public class MeasurementOperator_Test extends TestCase {
     Map<String, Object> results = new HashMap<String, Object>();
     results.put( String.valueOf( fontData.hashCode() ), new int[] { 3, 4 } );
     parameters.put( "results", results );
-    Fixture.fakeCallOperation( DisplayUtil.getId( display ), "storeProbes", parameters  );
+    Fixture.fakeCallOperation( TSD_ID, "storeProbes", parameters  );
   }
 
   private void requestMeasurementOfItem1() {
@@ -234,8 +234,7 @@ public class MeasurementOperator_Test extends TestCase {
 
   private void checkResponseContainsMeasurementCall() {
     Message message = Fixture.getProtocolMessage();
-    CallOperation operation
-      = message.findCallOperation( DisplayUtil.getId( display ), "measureStrings" );
+    CallOperation operation = message.findCallOperation( TSD_ID, "measureItems" );
     Object stringsProperty = operation.getProperty( "strings" );
     String[] expected = getMeasurementCall();
     checkResponseContainsContent( expected, stringsProperty.toString() );
@@ -243,7 +242,7 @@ public class MeasurementOperator_Test extends TestCase {
 
   private void checkResponseContainsProbeCall() {
     Message message = Fixture.getProtocolMessage();
-    CallOperation operation = message.findCallOperation( DisplayUtil.getId( display ), "probe" );
+    CallOperation operation = message.findCallOperation( TSD_ID, "probe" );
     Object fontsProperty = operation.getProperty( "fonts" );
     String[] expected = getProbeCall();
     checkResponseContainsContent( expected, fontsProperty.toString() );

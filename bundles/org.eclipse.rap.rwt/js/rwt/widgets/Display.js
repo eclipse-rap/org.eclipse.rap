@@ -46,14 +46,6 @@ rwt.widgets.Display.prototype = {
     this._initialized = true;
   },
 
-  probe : function( args ) {
-    org.eclipse.swt.FontSizeCalculation.probe( args.fonts );
-  },
-
-  measureStrings : function( args ) {
-    org.eclipse.swt.FontSizeCalculation.measureStringItems( args.strings );
-  },
-
   allowEvent : function() {
     // NOTE : in the future might need a parameter if there are multiple types of cancelable events
     org.eclipse.rwt.KeyEventSupport.getInstance().allowEvent();
