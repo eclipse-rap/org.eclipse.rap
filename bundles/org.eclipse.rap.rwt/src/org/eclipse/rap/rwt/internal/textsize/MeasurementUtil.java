@@ -11,7 +11,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -21,7 +25,17 @@ import org.eclipse.swt.internal.graphics.FontUtil;
 
 public class MeasurementUtil {
 
-  public static Object getStartupProbeObject() {
+
+  public static void appendStartupTextSizeProbe( ProtocolMessageWriter writer ) {
+    Object startupProbeObject = getStartupProbeObject();
+    if( startupProbeObject != null ) {
+      Map<String, Object> args = new HashMap<String, Object>();
+      args.put( MeasurementOperator.PROPERTY_ITEMS, startupProbeObject );
+      writer.appendCall( MeasurementOperator.TYPE, MeasurementOperator.METHOD_MEASURE_ITEMS, args );
+    }
+  }
+
+  private static Object getStartupProbeObject() {
     Object[] result = null;
     Probe[] probeList = RWTFactory.getProbeStore().getProbes();
     if( probeList.length > 0 ) {
@@ -48,7 +62,7 @@ public class MeasurementUtil {
   }
 
   static Object createProbeParamObject( Probe probe ) {
-    Object[] result = new Object[ 6 ];
+    Object[] result = new Object[ 8 ];
     FontData fontData = probe.getFontData();
     result[ 0 ] = Integer.valueOf( fontData.hashCode() );
     result[ 1 ] = probe.getText();
@@ -56,6 +70,8 @@ public class MeasurementUtil {
     result[ 3 ] = Integer.valueOf( fontData.getHeight() );
     result[ 4 ] = Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 );
     result[ 5 ] = Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 );
+    result[ 6 ] = Integer.valueOf( -1 );
+    result[ 7 ] = Boolean.TRUE;
     return result;
   }
 

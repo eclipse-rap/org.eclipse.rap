@@ -11,6 +11,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.METHOD_MEASURE_ITEMS;
+import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.METHOD_STORE_MEASUREMENTS;
+import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.PROPERTY_ITEMS;
+import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.PROPERTY_RESULTS;
+import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.TYPE;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +39,6 @@ import org.eclipse.swt.widgets.Display;
 
 public class MeasurementOperator_Test extends TestCase {
 
-  private static final String TSD_ID = "rwt.client.TextSizeMeasurement";
   private static final FontData FONT_DATA_1 = new FontData( "arial", 12, SWT.NONE );
   private static final FontData FONT_DATA_2 = new FontData( "courier", 14, SWT.BOLD );
   private static final String TEXT_TO_MEASURE = "textToMeasure";
@@ -99,8 +104,7 @@ public class MeasurementOperator_Test extends TestCase {
     requestProbingOfFont1();
     requestMeasurementOfItem1();
     operator.handleMeasurementRequests();
-    fakeMessageWithMeasurementResultOfProbe( FONT_DATA_1 );
-    fakeMessageWithMeasurementResultOfItem( MEASUREMENT_ITEM_1 );
+    fakeMessageWithMeasurementResult( FONT_DATA_1, MEASUREMENT_ITEM_1 );
 
     operator.handleMeasurementResults();
 
@@ -118,7 +122,7 @@ public class MeasurementOperator_Test extends TestCase {
 
   public void testHandleStartupProbeMeasurementResults() {
     createProbeOfFont1();
-    fakeMessageWithMeasurementResultOfProbe( FONT_DATA_1 );
+    fakeMessageWithMeasurementResult( FONT_DATA_1, null );
     MeasurementOperator measurementOperator = new MeasurementOperator();
 
     measurementOperator.handleStartupProbeMeasurementResults();
@@ -128,10 +132,10 @@ public class MeasurementOperator_Test extends TestCase {
 
   public void testHandleStartupProbeMeasurementResultsExecutedOnce() {
     requestProbing( FONT_DATA_1 );
-    fakeMessageWithMeasurementResultOfProbe( FONT_DATA_1 );
+    fakeMessageWithMeasurementResult( FONT_DATA_1, null );
     operator.handleStartupProbeMeasurementResults();
     requestProbing( FONT_DATA_2 );
-    fakeMessageWithMeasurementResultOfProbe( FONT_DATA_2 );
+    fakeMessageWithMeasurementResult( FONT_DATA_2, null );
 
     operator.handleStartupProbeMeasurementResults();
 
@@ -190,20 +194,20 @@ public class MeasurementOperator_Test extends TestCase {
     textSizeProbeStore.createProbe( fontData );
   }
 
-  private void fakeMessageWithMeasurementResultOfItem( MeasurementItem measurementItem ) {
+  private void fakeMessageWithMeasurementResult( FontData fontData,
+                                                 MeasurementItem measurementItem )
+  {
+    Fixture.fakeNewRequest();
     Map<String, Object> parameters = new HashMap<String, Object>();
     Map<String, Object> results = new HashMap<String, Object>();
-    results.put( String.valueOf( measurementItem.hashCode() ), new int[] { 12, 4 } );
-    parameters.put( "results", results );
-    Fixture.fakeCallOperation( TSD_ID, "storeMeasurements", parameters  );
-  }
-
-  private void fakeMessageWithMeasurementResultOfProbe( FontData fontData ) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    Map<String, Object> results = new HashMap<String, Object>();
-    results.put( String.valueOf( fontData.hashCode() ), new int[] { 3, 4 } );
-    parameters.put( "results", results );
-    Fixture.fakeCallOperation( TSD_ID, "storeProbes", parameters  );
+    if( fontData != null ) {
+      results.put( String.valueOf( fontData.hashCode() ), new int[] { 3, 4 } );
+    }
+    if( measurementItem != null ) {
+      results.put( String.valueOf( measurementItem.hashCode() ), new int[] { 12, 4 } );
+    }
+    parameters.put( PROPERTY_RESULTS, results );
+    Fixture.fakeCallOperation( TYPE, METHOD_STORE_MEASUREMENTS, parameters  );
   }
 
   private void requestMeasurementOfItem1() {
@@ -234,18 +238,18 @@ public class MeasurementOperator_Test extends TestCase {
 
   private void checkResponseContainsMeasurementCall() {
     Message message = Fixture.getProtocolMessage();
-    CallOperation operation = message.findCallOperation( TSD_ID, "measureItems" );
-    Object stringsProperty = operation.getProperty( "strings" );
+    CallOperation operation = message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS );
+    Object itemsProperty = operation.getProperty( PROPERTY_ITEMS );
     String[] expected = getMeasurementCall();
-    checkResponseContainsContent( expected, stringsProperty.toString() );
+    checkResponseContainsContent( expected, itemsProperty.toString() );
   }
 
   private void checkResponseContainsProbeCall() {
     Message message = Fixture.getProtocolMessage();
-    CallOperation operation = message.findCallOperation( TSD_ID, "probe" );
-    Object fontsProperty = operation.getProperty( "fonts" );
+    CallOperation operation = message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS );
+    Object itemsProperty = operation.getProperty( PROPERTY_ITEMS );
     String[] expected = getProbeCall();
-    checkResponseContainsContent( expected, fontsProperty.toString() );
+    checkResponseContainsContent( expected, itemsProperty.toString() );
   }
 
   private void checkResponseContainsContent( String[] expected, String markup ) {
@@ -262,9 +266,9 @@ public class MeasurementOperator_Test extends TestCase {
 
   private String[] getProbeCall() {
     return new String[] {
-      ",[\"arial\"],10,true,false]",
-      ",[\"helvetia\",\"ms sans serif\"],12,true,false]",
-      ",[\"Bogus  Font  Name\"],12,true,false]"
+      ",[\"arial\"],10,true,false,-1,true]",
+      ",[\"helvetia\",\"ms sans serif\"],12,true,false,-1,true]",
+      ",[\"Bogus  Font  Name\"],12,true,false,-1,true]"
     };
   }
 

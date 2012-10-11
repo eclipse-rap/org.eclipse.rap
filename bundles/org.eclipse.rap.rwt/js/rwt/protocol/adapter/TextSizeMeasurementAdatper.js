@@ -22,7 +22,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.client.TextSizeMeasurement", {
   listeners : [],
 
   methods : [
-    "probe",
     "measureItems"
   ],
 

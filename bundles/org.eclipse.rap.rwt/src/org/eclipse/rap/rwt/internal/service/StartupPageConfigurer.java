@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,8 +50,6 @@ final class StartupPageConfigurer {
   private final static String INDEX_TEMPLATE = FOLDER + "/rwt-index.html";
 
   private static final String DISPLAY_TYPE = "rwt.widgets.Display";
-  private static final String PROPERTY_FONTS = "fonts";
-  private static final String METHOD_PROBE = "probe";
   private static final String PROPERTY_URL = "url";
 
   private final ResourceRegistry resourceRegistry;
@@ -133,26 +130,13 @@ final class StartupPageConfigurer {
   private static String getStartupProtocolMessage( String id ) {
     ProtocolMessageWriter writer = new ProtocolMessageWriter();
     appendCreateDisplay( id, writer );
-    appendStartupTextSizeProbe( id, writer );
+    MeasurementUtil.appendStartupTextSizeProbe( writer );
     return writer.createMessage();
   }
 
   private static void appendCreateDisplay( String id, ProtocolMessageWriter writer ) {
     writer.appendCreate( id, DISPLAY_TYPE );
     writer.appendHead( PROPERTY_URL, JsonValue.valueOf( getUrl() ) );
-  }
-
-  private static void appendStartupTextSizeProbe( String id, ProtocolMessageWriter writer ) {
-    Object startupTextSizeProbeObject = getStartupTextSizeProbeObject();
-    if( startupTextSizeProbeObject != null ) {
-      Map<String, Object> args = new HashMap<String, Object>();
-      args.put( PROPERTY_FONTS, startupTextSizeProbeObject );
-      writer.appendCall( id, METHOD_PROBE, args );
-    }
-  }
-
-  private static Object getStartupTextSizeProbeObject() {
-    return MeasurementUtil.getStartupProbeObject();
   }
 
   private static String getUrl() {

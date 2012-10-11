@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
 
   members : {
 
-    testCallProbeByProtocol : function() {
+    testMeasureFontByProtocol : function() {
       var text
         = "!#$%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxy";
       var fontName = [ "Verdana", "Lucida Sans", "Arial", "Helvetica", "sans-serif" ];
@@ -29,9 +29,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
       MessageProcessor.processOperation( {
         "target" : "rwt.client.TextSizeMeasurement",
         "action" : "call",
-        "method" : "probe",
+        "method" : "measureItems",
         "properties" : {
-          "fonts" : [
+          "items" : [
              [ -785380229, text, fontName, 11, false, false ],
              [ -785380485, text, fontName, 12, false, false ]
           ]
@@ -40,12 +40,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() ); // because timer is skipped in tests
       var message = TestUtil.getMessageObject();
-      var op = message.findCallOperation( "rwt.client.TextSizeMeasurement", "storeProbes" );
+      var op = message.findCallOperation( "rwt.client.TextSizeMeasurement", "storeMeasurements" );
       assertEquals( 2, op.properties.results[ "-785380229" ].length );
       assertEquals( 2, op.properties.results[ "-785380485" ].length );
     },
 
-    testCallMeasureStringsByProtocol : function() {
+    testMeasureStringsByProtocol : function() {
       var fontName = [ "Verdana", "Lucida Sans", "Arial", "Helvetica", "sans-serif" ];
       TestUtil.initRequestLog();
 
@@ -54,7 +54,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
         "action" : "call",
         "method" : "measureItems",
         "properties" : {
-          "strings" : [
+          "items" : [
              [ -1114032847, "Check", fontName, 12, false, false, -1 ],
              [ 1767849485, "  Push &&\n Button ", fontName, 12, false, false, -1 ]
           ]

@@ -17,20 +17,8 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
     _measureNode : null,
     _offset : rwt.client.Client.isZoomed() ? 1 : 0,
 
-    probe : function( args ) {
-      var probeList = args.fonts;
-      var results = {};
-      for( var i = 0; i < probeList.length; i++ ) {
-        var item = probeList[ i ];
-        var size = this._measureItem( item, false );
-        var id = item[ 0 ];
-        results[ id ] = size;
-      }
-      this._storeProbes( id, results );
-    },
-
     measureItems : function( args ) {
-      var items = args.strings;
+      var items = args.items;
       var results = {};
       for( var i = 0; i < items.length; i++ ) {
         var item = items[ i ];
@@ -137,13 +125,6 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
     _storeMeasurements : function( id, results ) {
       var serverObject = rwt.remote.Server.getInstance().getServerObject( this );
       serverObject.call( "storeMeasurements", {
-        "results" : results
-      } );
-    },
-
-    _storeProbes : function( id, results ) {
-      var serverObject = rwt.remote.Server.getInstance().getServerObject( this );
-      serverObject.call( "storeProbes", {
         "results" : results
       } );
     },

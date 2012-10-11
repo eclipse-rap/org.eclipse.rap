@@ -25,14 +25,11 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 class MeasurementOperator implements SerializableCompatibility {
 
-  private static final String TYPE = "rwt.client.TextSizeMeasurement";
-  private static final String PROPERTY_STRINGS = "strings";
-  private static final String METHOD_MEASURE_ITEMS = "measureItems";
-  private static final String PROPERTY_FONTS = "fonts";
-  private static final String METHOD_PROBE = "probe";
-  private static final String METHOD_STORE_PROBES = "storeProbes";
-  private static final String METHOD_STORE_MEASUREMENTS = "storeMeasurements";
-  private static final String PROPERTY_RESULTS = "results";
+  static final String TYPE = "rwt.client.TextSizeMeasurement";
+  static final String METHOD_MEASURE_ITEMS = "measureItems";
+  static final String PROPERTY_ITEMS = "items";
+  static final String METHOD_STORE_MEASUREMENTS = "storeMeasurements";
+  static final String PROPERTY_RESULTS = "results";
 
   private final Set<Probe> probes;
   private final Set<MeasurementItem> items;
@@ -49,12 +46,7 @@ class MeasurementOperator implements SerializableCompatibility {
   }
 
   void handleMeasurementRequests() {
-    if( hasProbesToMeasure() ) {
-      renderFontProbing();
-    }
-    if( hasItemsToMeasure() ) {
-      renderStringMeasurements();
-    }
+    renderMeasurements();
   }
 
   boolean handleMeasurementResults() {
@@ -100,13 +92,9 @@ class MeasurementOperator implements SerializableCompatibility {
   //////////////////
   // helping methods
 
-  private boolean hasProbesToMeasure() {
-    return !probes.isEmpty();
-  }
-
   private void readMeasuredFontProbeSizes() {
     Iterator probeList = probes.iterator();
-    CallOperation[] operations = getCallOperationsFor( METHOD_STORE_PROBES );
+    CallOperation[] operations = getCallOperationsFor( METHOD_STORE_MEASUREMENTS );
     while( probeList.hasNext() ) {
       Probe probe = ( Probe )probeList.next();
       String id = String.valueOf( probe.getFontData().hashCode() );
@@ -152,7 +140,10 @@ class MeasurementOperator implements SerializableCompatibility {
     for( int i = 0; i < operations.length; i++ ) {
       Map resultsMap = ( Map )operations[ i ].getProperty( PROPERTY_RESULTS );
       if( resultsMap != null ) {
-        result = ProtocolUtil.toPoint( resultsMap.get( id ) );
+        Object value = resultsMap.get( id );
+        if( value != null ) {
+          result = ProtocolUtil.toPoint( value );
+        }
       }
     }
     return result;
@@ -166,33 +157,22 @@ class MeasurementOperator implements SerializableCompatibility {
     TextSizeStorageUtil.store( fontData, textToMeasure, wrapWidth, mode, size );
   }
 
-  private boolean hasItemsToMeasure() {
-    return !items.isEmpty();
-  }
-
   private boolean itemsHasBeenMeasured( int originalItemsSize ) {
     return originalItemsSize != items.size();
   }
 
-  private static void renderStringMeasurements() {
-    MeasurementItem[] items = MeasurementOperator.getInstance().getItems();
-    if( items.length > 0 ) {
-      Object[] itemsObject = new Object[ items.length ];
+  private void renderMeasurements() {
+    Probe[] probes = getProbes();
+    MeasurementItem[] items = getItems();
+    if( probes.length > 0 || items.length > 0 ) {
+      Object[] itemsObject = new Object[ probes.length + items.length ];
+      for( int i = 0; i < probes.length; i++ ) {
+        itemsObject[ i ] = MeasurementUtil.createProbeParamObject( probes[ i ] );
+      }
       for( int i = 0; i < items.length; i++ ) {
-        itemsObject[ i ] = MeasurementUtil.createItemParamObject( items[ i ] );
+        itemsObject[ probes.length + i ] = MeasurementUtil.createItemParamObject( items[ i ] );
       }
-      callClientMethod( METHOD_MEASURE_ITEMS, PROPERTY_STRINGS, itemsObject );
-    }
-  }
-
-  private static void renderFontProbing() {
-    Probe[] probeList = MeasurementOperator.getInstance().getProbes();
-    if( probeList.length > 0 ) {
-      Object[] probesObject = new Object[ probeList.length ];
-      for( int i = 0; i < probeList.length; i++ ) {
-        probesObject[ i ] = MeasurementUtil.createProbeParamObject( probeList[ i ] );
-      }
-      callClientMethod( METHOD_PROBE, PROPERTY_FONTS, probesObject );
+      callClientMethod( METHOD_MEASURE_ITEMS, PROPERTY_ITEMS, itemsObject );
     }
   }
 

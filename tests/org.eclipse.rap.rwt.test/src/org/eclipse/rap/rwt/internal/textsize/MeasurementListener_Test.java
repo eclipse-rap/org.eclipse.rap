@@ -11,6 +11,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.METHOD_MEASURE_ITEMS;
+import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.METHOD_STORE_MEASUREMENTS;
+import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.PROPERTY_RESULTS;
+import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.TYPE;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,9 +45,6 @@ import org.eclipse.swt.widgets.Shell;
 public class MeasurementListener_Test extends TestCase {
   private static final int EXPAND_AND_RESTORE = 2;
   private static final FontData FONT_DATA = new FontData( "arial", 12, SWT.BOLD );
-  private static final String TSD_ID = "rwt.client.TextSizeMeasurement";
-  private static final String METHOD_MEASURE_ITEMS = "measureItems";
-  private static final String METHOD_PROBE = "probe";
 
   private Display display;
   private MeasurementListener listener;
@@ -73,8 +75,7 @@ public class MeasurementListener_Test extends TestCase {
     listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findCallOperation( TSD_ID, METHOD_PROBE ) );
-    assertNull( message.findCallOperation( TSD_ID, METHOD_MEASURE_ITEMS ) );
+    assertNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
   }
 
   public void testAfterPhaseWithMeasurementItems() {
@@ -83,8 +84,7 @@ public class MeasurementListener_Test extends TestCase {
     listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findCallOperation( TSD_ID, METHOD_PROBE ) );
-    assertNotNull( message.findCallOperation( TSD_ID, METHOD_MEASURE_ITEMS ) );
+    assertNotNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
   }
 
   public void testAfterPhaseWithProbes() {
@@ -93,8 +93,7 @@ public class MeasurementListener_Test extends TestCase {
     listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
 
     Message message = Fixture.getProtocolMessage();
-    assertNotNull( message.findCallOperation( TSD_ID, METHOD_PROBE ) );
-    assertNull( message.findCallOperation( TSD_ID, METHOD_MEASURE_ITEMS ) );
+    assertNotNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
   }
 
   public void testAfterPhaseWithMeasurementItemsButWrongPhaseId() {
@@ -103,8 +102,7 @@ public class MeasurementListener_Test extends TestCase {
     executeNonRenderPhases();
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findCallOperation( TSD_ID, METHOD_PROBE ) );
-    assertNull( message.findCallOperation( TSD_ID, METHOD_MEASURE_ITEMS ) );
+    assertNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
   }
 
   public void testAfterPhaseWithProbesButWrongPhaseId() {
@@ -113,8 +111,7 @@ public class MeasurementListener_Test extends TestCase {
     executeNonRenderPhases();
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findCallOperation( TSD_ID, METHOD_PROBE ) );
-    assertNull( message.findCallOperation( TSD_ID, METHOD_MEASURE_ITEMS ) );
+    assertNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
   }
 
   public void testBeforePhaseWithMeasuredProbes() {
@@ -189,8 +186,8 @@ public class MeasurementListener_Test extends TestCase {
     Map<String, Object> parameters = new HashMap<String, Object>();
     Map<String, Object> results = new HashMap<String, Object>();
     results.put( String.valueOf( FONT_DATA.hashCode() ), new int[] { 5, 10 }  );
-    parameters.put( "results", results );
-    Fixture.fakeCallOperation( TSD_ID, "storeProbes", parameters  );
+    parameters.put( PROPERTY_RESULTS, results );
+    Fixture.fakeCallOperation( TYPE, METHOD_STORE_MEASUREMENTS, parameters  );
   }
 
   private void fakeRequestWithItemMeasurementResults() {
@@ -200,8 +197,8 @@ public class MeasurementListener_Test extends TestCase {
     Map<String, Object> parameters = new HashMap<String, Object>();
     Map<String, Object> results = new HashMap<String, Object>();
     results.put( String.valueOf( itemToMeasure.hashCode() ), new int[] { 100, 10 } );
-    parameters.put( "results", results );
-    Fixture.fakeCallOperation( TSD_ID, "storeMeasurements", parameters  );
+    parameters.put( PROPERTY_RESULTS, results );
+    Fixture.fakeCallOperation( TYPE, METHOD_STORE_MEASUREMENTS, parameters  );
   }
 
   private void executeNonRenderPhases() {

@@ -25,10 +25,12 @@ public class MeasurementUtil_Test extends TestCase {
 
   private static final String TEXT_TO_MEASURE = " text \"to\" measure ";
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -53,33 +55,35 @@ public class MeasurementUtil_Test extends TestCase {
     assertTrue( itemObject instanceof Object[] );
     Object[] itemObjectArray = ( Object[] )itemObject;
     assertEquals( 8, itemObjectArray.length );
-    assertEquals( new Integer( item.hashCode() ),  itemObjectArray[ 0 ] );
+    assertEquals( Integer.valueOf( item.hashCode() ),  itemObjectArray[ 0 ] );
     String escaped = " text \"to\" measure ";
     assertEquals( escaped, itemObjectArray[ 1 ] );
     assertTrue( itemObjectArray[ 2 ] instanceof String[] );
     String[] fontNameArray = ( String[] )itemObjectArray[ 2 ];
     assertEquals( 1, fontNameArray.length );
     assertEquals( "fontName", fontNameArray[ 0 ] );
-    assertEquals( new Integer( 1 ), itemObjectArray[ 3 ] );
+    assertEquals( Integer.valueOf( 1 ), itemObjectArray[ 3 ] );
     assertEquals( Boolean.FALSE, itemObjectArray[ 4 ] );
     assertEquals( Boolean.FALSE, itemObjectArray[ 5 ] );
-    assertEquals( new Integer( 17 ), itemObjectArray[ 6 ] );
+    assertEquals( Integer.valueOf( 17 ), itemObjectArray[ 6 ] );
     assertEquals( Boolean.FALSE, itemObjectArray[ 7 ] );
   }
 
   private void checkProbeObject( Object probeObject, Probe probe ) {
     assertTrue( probeObject instanceof Object[] );
     Object[] probeObjectArray = ( Object[] )probeObject;
-    assertEquals( 6, probeObjectArray.length );
-    assertEquals( new Integer( probe.getFontData().hashCode() ),  probeObjectArray[ 0 ] );
+    assertEquals( 8, probeObjectArray.length );
+    assertEquals( Integer.valueOf( probe.getFontData().hashCode() ),  probeObjectArray[ 0 ] );
     assertEquals( TEXT_TO_MEASURE, probeObjectArray[ 1 ] );
     assertTrue( probeObjectArray[ 2 ] instanceof String[] );
     String[] fontNameArray = ( String[] )probeObjectArray[ 2 ];
     assertEquals( 1, fontNameArray.length );
     assertEquals( "fontName", fontNameArray[ 0 ] );
-    assertEquals( new Integer( 1 ), probeObjectArray[ 3 ] );
+    assertEquals( Integer.valueOf( 1 ), probeObjectArray[ 3 ] );
     assertEquals( Boolean.FALSE, probeObjectArray[ 4 ] );
     assertEquals( Boolean.FALSE, probeObjectArray[ 5 ] );
+    assertEquals( Integer.valueOf( -1 ), probeObjectArray[ 6 ] );
+    assertEquals( Boolean.TRUE, probeObjectArray[ 7 ] );
   }
 
   private Probe createProbe() {
