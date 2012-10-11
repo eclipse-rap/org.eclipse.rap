@@ -30,9 +30,9 @@ public class JavaScriptExecutorImpl_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.fakeResponseWriter();
     new Display();
     executor = new JavaScriptExecutorImpl();
+    Fixture.fakeNewRequest();
   }
 
   @Override
@@ -63,10 +63,13 @@ public class JavaScriptExecutorImpl_Test extends TestCase {
     executor.execute( EXECUTE_1 );
 
     Fixture.executeLifeCycleFromServerThread();
-    Fixture.fakeResponseWriter();
+    Fixture.fakeNewRequest();
+    executor.execute( EXECUTE_2 );
     Fixture.executeLifeCycleFromServerThread();
 
-    assertFalse( getMessageScript().contains( EXECUTE_1 ) );
+    String script = getMessageScript();
+    assertFalse( script.contains( EXECUTE_1 ) );
+    assertTrue( script.contains( EXECUTE_2 ) );
   }
 
   public void testExecuteJSWithDifferentDisplay() {

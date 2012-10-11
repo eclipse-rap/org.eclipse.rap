@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
@@ -21,70 +22,59 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.service.SessionStoreEvent;
+import org.eclipse.rap.rwt.service.SessionStoreListener;
 import org.eclipse.swt.widgets.Display;
 
 
-public final class JavaScriptExecutorImpl implements JavaScriptExecutor {
+public final class JavaScriptExecutorImpl implements
+  JavaScriptExecutor, PhaseListener, SessionStoreListener
+{
 
-  private static final String JSE_PHASE_LISTENER
-    = JavaScriptExecutorImpl.class.getName() + "#phaseListener";
   private static final String JSEXECUTOR_TYPE = "rwt.client.JavaScriptExecutor";
   private static final String PARAM_CONTENT = "content";
   private static final String METHOD_EXECUTE = "execute";
 
+  private final Display display;
+  private final StringBuilder codeBuilder;
+
+  public JavaScriptExecutorImpl() {
+    display = Display.getCurrent();
+    codeBuilder = new StringBuilder();
+    RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( this );
+    RWT.getSessionStore().addSessionStoreListener( this );
+  }
+
   public void execute( String code ) {
-    JSExecutorPhaseListener phaseListener = getJSExecutorPhaseListener();
-    if( phaseListener == null ) {
-      phaseListener = new JSExecutorPhaseListener();
-      RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( phaseListener );
-      setJSExecutorPhaseListener( phaseListener );
-    }
-    phaseListener.append( code );
+    codeBuilder.append( code );
   }
 
-  private static JSExecutorPhaseListener getJSExecutorPhaseListener() {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
-    return ( JSExecutorPhaseListener )serviceStore.getAttribute( JSE_PHASE_LISTENER );
+  ///////////////////////
+  // PhaseListener
+
+  public void beforePhase( PhaseEvent event ) {
+    // do nothing
   }
 
-  private static void setJSExecutorPhaseListener( JSExecutorPhaseListener jsExecutor ) {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
-    serviceStore.setAttribute( JSE_PHASE_LISTENER, jsExecutor );
-  }
-
-  private static class JSExecutorPhaseListener implements PhaseListener {
-    private final StringBuilder code;
-    private final Display display;
-
-    JSExecutorPhaseListener() {
-      display =  Display.getCurrent() ;
-      code = new StringBuilder();
-    }
-
-    void append( String command ) {
-      code.append( command );
-    }
-
-    public void beforePhase( PhaseEvent event ) {
-      // do nothing
-    }
-
-    public void afterPhase( PhaseEvent event ) {
-      if( display == LifeCycleUtil.getSessionDisplay() ) {
-        ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-        try {
-          Map<String, Object> properties = new HashMap<String, Object>();
-          properties.put( PARAM_CONTENT, code.toString().trim() );
-          protocolWriter.appendCall( JSEXECUTOR_TYPE, METHOD_EXECUTE, properties );
-        } finally {
-          RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
-        }
-      }
-    }
-
-    public PhaseId getPhaseId() {
-      return PhaseId.RENDER;
+  public void afterPhase( PhaseEvent event ) {
+    if( display == LifeCycleUtil.getSessionDisplay() ) {
+      ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
+      Map<String, Object> properties = new HashMap<String, Object>();
+      properties.put( PARAM_CONTENT, codeBuilder.toString().trim() );
+      protocolWriter.appendCall( JSEXECUTOR_TYPE, METHOD_EXECUTE, properties );
+      codeBuilder.setLength( 0 );
     }
   }
+
+  public PhaseId getPhaseId() {
+    return PhaseId.RENDER;
+  }
+
+  ///////////////////////
+  // SessionStoreListener
+
+  public void beforeDestroy( SessionStoreEvent event ) {
+    RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
+  }
+
 }
