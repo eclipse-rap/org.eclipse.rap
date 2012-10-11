@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -60,7 +61,7 @@ public class DNDSupport_Test extends TestCase {
 
   private Display display;
   private Shell shell;
-  private java.util.List<TypedEvent> log;
+  private List<TypedEvent> log;
   private Control sourceControl;
   private Control targetControl;
   private DragSource dragSource;
@@ -70,7 +71,6 @@ public class DNDSupport_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     shell.open();
@@ -78,6 +78,7 @@ public class DNDSupport_Test extends TestCase {
     targetControl = new Label( shell, SWT.NONE );
     log = new ArrayList<TypedEvent>();
     Fixture.fakeNewRequest( display );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     transfers = new Transfer[] {
       HTMLTransfer.getInstance(),
       TextTransfer.getInstance()
@@ -185,7 +186,7 @@ public class DNDSupport_Test extends TestCase {
     createDropTarget( DND.DROP_MOVE );
     addLogger( dragSource );
     addLogger( dropTarget );
-    addSetDataListener( dragSource, "text" );
+    addSetDragDataListener( dragSource, "text" );
 
     fakeDropTargetEvent( "dropAccept", 1 );
     fakeDragSourceEvent( "dragFinished", 2 );
@@ -200,7 +201,7 @@ public class DNDSupport_Test extends TestCase {
     createDropTarget( DND.DROP_MOVE );
     addLogger( dragSource );
     addLogger( dropTarget );
-    addSetDataListener( dragSource, "Hello World!" );
+    addSetDragDataListener( dragSource, "Hello World!" );
 
 
     createDropTargetEvent( "dropAccept", 0, 0, "move", getTextType(), 1 );
@@ -217,7 +218,7 @@ public class DNDSupport_Test extends TestCase {
     createDropTarget( DND.DROP_MOVE );
     addLogger( dragSource );
     addLogger( dropTarget );
-    addSetDataListener( dragSource, new Date() );
+    addSetDragDataListener( dragSource, new Date() );
 
     SWTException exception = null;
 
@@ -251,7 +252,7 @@ public class DNDSupport_Test extends TestCase {
       }
     } );
     addLogger( dragSource );
-    addSetDataListener( dragSource, "data" );
+    addSetDragDataListener( dragSource, "data" );
 
 
     fakeDropTargetEvent( "dropAccept", 1 );
@@ -327,7 +328,7 @@ public class DNDSupport_Test extends TestCase {
     createDragSource( DND.DROP_MOVE | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_COPY );
     addLogger( dragSource );
-    addSetDataListener( dragSource, "text Data" );
+    addSetDragDataListener( dragSource, "text Data" );
     dropTarget.addDropListener( new DropTargetAdapter() {
       @Override
       public void dropAccept( DropTargetEvent event ) {
@@ -403,9 +404,9 @@ public class DNDSupport_Test extends TestCase {
   public void testDragSetDataDataType() {
     createDragSource( DND.DROP_MOVE );
     createDropTarget( DND.DROP_MOVE );
+    addSetDragDataListener( dragSource, "string" );
     addLogger( dropTarget );
     addLogger( dragSource );
-    addSetDataListener( dragSource, "string" );
 
     fakeDropTargetEvent( "dropAccept", 0 );
     Fixture.readDataAndProcessAction( display );
@@ -472,14 +473,14 @@ public class DNDSupport_Test extends TestCase {
   public void testDropAcceptWithDetailChangedOnEnter() {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
-    addSetDataListener( dragSource, "some data" );
-    addLogger( dropTarget );
+    addSetDragDataListener( dragSource, "some data" );
     dropTarget.addDropListener( new DropTargetAdapter() {
       @Override
       public void dragEnter( DropTargetEvent event ) {
         event.detail = DND.DROP_COPY;
       }
     } );
+    addLogger( dropTarget );
 
     Fixture.executeLifeCycleFromServerThread(); // clear pending message operations
     Fixture.fakeNewRequest( display );
@@ -779,10 +780,10 @@ public class DNDSupport_Test extends TestCase {
   }
 
   private void addLogger( DropTarget dropTarget ) {
-    dropTarget.addDropListener( new LogingDropTargetListener() );
+    dropTarget.addDropListener( new LoggingDropTargetListener() );
   }
 
-  private class LogingDropTargetListener implements DropTargetListener {
+  private class LoggingDropTargetListener implements DropTargetListener {
     public void dragEnter( DropTargetEvent event ) {
       log.add( event );
     }
@@ -811,7 +812,7 @@ public class DNDSupport_Test extends TestCase {
     return result;
   }
 
-  private void addSetDataListener( DragSource dragSource, final Object data ) {
+  private void addSetDragDataListener( DragSource dragSource, final Object data ) {
     dragSource.addDragListener( new DragSourceAdapter() {
       @Override
       public void dragSetData( DragSourceEvent event ) {
@@ -820,12 +821,12 @@ public class DNDSupport_Test extends TestCase {
     } );
   }
 
-  private DropTargetEvent getDropTargetEvent( int i ) {
-    return ( DropTargetEvent )log.get( i );
+  private DropTargetEvent getDropTargetEvent( int index ) {
+    return ( DropTargetEvent )log.get( index );
   }
 
-  private DragSourceEvent getDragSourceEvent( int i ) {
-    return ( DragSourceEvent )log.get( i );
+  private DragSourceEvent getDragSourceEvent( int index ) {
+    return ( DragSourceEvent )log.get( index );
   }
 
 }

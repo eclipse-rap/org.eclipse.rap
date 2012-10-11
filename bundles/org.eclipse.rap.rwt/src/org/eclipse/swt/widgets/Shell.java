@@ -16,7 +16,6 @@ import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -1081,7 +1080,13 @@ public class Shell extends Decorations {
    */
   public void addShellListener( ShellListener listener ) {
     checkWidget();
-    ShellEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Close, typedListener );
+    addListener( SWT.Activate, typedListener );
+    addListener( SWT.Deactivate, typedListener );
   }
 
   /**
@@ -1103,7 +1108,12 @@ public class Shell extends Decorations {
    */
   public void removeShellListener( ShellListener listener ) {
     checkWidget();
-    ShellEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Close, listener );
+    removeListener( SWT.Activate, listener );
+    removeListener( SWT.Deactivate, listener );
   }
 
   ///////////

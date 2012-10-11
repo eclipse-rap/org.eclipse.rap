@@ -14,7 +14,9 @@ package org.eclipse.swt.internal.widgets;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -43,8 +45,35 @@ public final class EventUtil {
     return eventTime.intValue();
   }
 
+  public static boolean allowProcessing( Event event ) {
+    boolean result;
+    if( event.widget.isDisposed() ) {
+      result = false;
+    } else {
+      switch( event.type ) {
+        case SWT.Activate:
+        case SWT.Deactivate:
+        case SWT.Move:
+        case SWT.Resize:
+        case SWT.Paint:
+        case SWT.Modify:
+        case SWT.Verify:
+        case SWT.SetData:
+        case EventTypes.PROGRESS_CHANGED:
+        case EventTypes.PROGRESS_COMPLETED:
+          result = true;
+        break;
+        default:
+          result = isAccessible( event.widget );
+        break;
+      }
+    }
+    return result;
+  }
+
   public static boolean isAccessible( Widget widget ) {
-    boolean result = !widget.isDisposed();
+    boolean result;
+    result = !widget.isDisposed();
     if( result ) {
       if( widget instanceof Control ) {
         result = isAccessible( ( Control )widget );
@@ -63,9 +92,7 @@ public final class EventUtil {
   }
 
   private static boolean isAccessible( Control control ) {
-    return    control.getEnabled()
-           && control.getVisible()
-           && isShellAccessible( control.getShell() );
+    return control.getEnabled() && control.getVisible() && isShellAccessible( control.getShell() );
   }
 
   private static boolean isAccessible( Menu menu ) {
@@ -73,13 +100,11 @@ public final class EventUtil {
   }
 
   private static boolean isAccessible( MenuItem menuItem ) {
-    Shell shell = menuItem.getParent().getShell();
-    return menuItem.getEnabled() && isShellAccessible( shell );
+    return menuItem.getEnabled() && isShellAccessible( menuItem.getParent().getShell() );
   }
 
   private static boolean isAccessible( ToolItem toolItem ) {
-    Shell shell = toolItem.getParent().getShell();
-    return toolItem.getEnabled() && isShellAccessible( shell );
+    return toolItem.getEnabled() && isShellAccessible( toolItem.getParent().getShell() );
   }
 
   private static boolean isShellAccessible( Shell shell ) {

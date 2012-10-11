@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -32,8 +30,6 @@ public final class ShellEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  private static final int[] EVENT_TYPES = { SWT.Close, SWT.Activate, SWT.Deactivate };
-
   /**
    * A flag indicating whether the operation should be allowed.
    * Setting this field to <code>false</code> will cancel the operation.
@@ -49,33 +45,6 @@ public final class ShellEvent extends TypedEvent {
   public ShellEvent( Event event ) {
     super( event );
     doit = event.doit;
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, EVENT_TYPES );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, ShellListener listener ) {
-    addListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, ShellListener listener ) {
-    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
 }

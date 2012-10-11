@@ -72,7 +72,6 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final String PROP_ENABLE_CELL_TOOLTIP = "enableCellToolTip";
   private static final String PROP_CELL_TOOLTIP_TEXT = "cellToolTipText";
   private static final String PROP_MARKUP_ENABLED = "markupEnabled";
-  private static final String EVENT_SCROLLBAR_SELECTED = "scrollBarSelected";
 
   private static final int ZERO = 0 ;
   private static final String[] DEFAULT_SELECTION = new String[ 0 ];

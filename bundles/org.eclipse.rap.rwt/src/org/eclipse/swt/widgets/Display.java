@@ -1177,7 +1177,7 @@ public class Display extends Device implements Adaptable {
     while( !result && events.length > 0 ) {
       Event event = events[ 0 ];
       EventList.getInstance().remove( event );
-      if( EventUtil.isAccessible( event.widget ) ) {
+      if( EventUtil.allowProcessing( event ) ) {
         event.widget.notifyListeners( event.type, event );
         result = true;
       } else {

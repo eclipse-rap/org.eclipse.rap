@@ -80,7 +80,7 @@ public final class MenuDetectEvent extends TypedEvent {
   }
 
   protected boolean allowProcessing() {
-    return EventUtil.isAccessible( widget );
+    return EventUtil.allowProcessing( sourceEvent );
   }
 
   /**

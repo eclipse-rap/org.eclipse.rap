@@ -74,6 +74,7 @@ public class ShellLCA_Test extends TestCase {
     display = new Display();
     shell = new Shell( display );
     Fixture.fakeNewRequest( display );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   @Override
@@ -271,8 +272,9 @@ public class ShellLCA_Test extends TestCase {
   }
 
   public void testUntypedActivateEvent() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.open();
+    Shell otherShell = new Shell( display );
+    otherShell.open();
     Listener listener = mock( Listener.class );
     shell.addListener( SWT.Activate, listener );
 
@@ -283,8 +285,9 @@ public class ShellLCA_Test extends TestCase {
   }
 
   public void testTypedActivateEvent() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.open();
+    Shell otherShell = new Shell( display );
+    otherShell.open();
     ShellListener listener = mock( ShellListener.class );
     shell.addShellListener( listener );
 
@@ -319,7 +322,6 @@ public class ShellLCA_Test extends TestCase {
   }
 
   public void testShellActivate() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuilder activateEventLog = new StringBuilder();
     Listener activateListener = new Listener() {
       public void handleEvent( Event event ) {
@@ -366,8 +368,6 @@ public class ShellLCA_Test extends TestCase {
 
     assertSame( shellToActivate, display.getActiveShell() );
     String expected = "deactivated:activeShell|activated:shellToActivate|";
-System.out.println( "expected " + expected );    
-System.out.println( "actual   " + activateEventLog.toString() );    
     assertEquals( expected, activateEventLog.toString() );
     assertEquals( expected, shellEventLog.toString() );
     // Ensure that no setActive javaScript code is rendered for client-side activated Shell

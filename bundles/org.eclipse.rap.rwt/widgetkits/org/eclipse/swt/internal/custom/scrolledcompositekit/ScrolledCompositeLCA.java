@@ -48,7 +48,6 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   private static final String PROP_SHOW_FOCUSED_CONTROL = "showFocusedControl";
   private static final String PROP_SCROLLBARS_VISIBLE = "scrollBarsVisible";
   private static final String PROP_SCROLLBARS_SELECTION_LISTENER = "scrollBarsSelection";
-  private static final String EVENT_SCROLLBAR_SELECTED = "scrollBarSelected";
 
   // Default values
   private static final Point DEFAULT_ORIGIN = new Point( 0, 0 );

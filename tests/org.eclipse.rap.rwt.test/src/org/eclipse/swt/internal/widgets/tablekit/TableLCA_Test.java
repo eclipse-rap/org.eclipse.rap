@@ -16,6 +16,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -400,11 +401,8 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.VIRTUAL );
-    table.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( Event event ) {
-        fail( "Must not trigger SetData event" );
-      }
-    } );
+    Listener setDataListener = mock( Listener.class );
+    table.addListener( SWT.SetData, setDataListener );
     
     Fixture.fakePhase( PhaseId.READ_DATA );
     table.setItemCount( 1 );
@@ -413,11 +411,9 @@ public class TableLCA_Test extends TestCase {
 
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     table.setItemCount( 0 );
-    int eventCount = 0;
     while( display.readAndDispatch() ) {
-      eventCount++;
     }
-    assertEquals( 1, eventCount );
+    verifyZeroInteractions( setDataListener );
   }
 
   public void testGetItemMetrics() {
@@ -728,9 +724,8 @@ public class TableLCA_Test extends TestCase {
     Fixture.readDataAndProcessAction( table );
 
     ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
+    verify( listener ).widgetSelected( captor.capture() );
     assertSame( table.getItem( 2 ), captor.getValue().item );
-    assertEquals( "", captor.getValue().text );
   }
 
   public void testRenderNonNegativeImageWidth() {

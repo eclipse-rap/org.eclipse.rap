@@ -29,7 +29,6 @@ import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -91,7 +90,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     preserveProperty( shell, PROP_FULLSCREEN, Boolean.valueOf( shell.getFullScreen() ) );
     preserveProperty( shell, PROP_MINIMUM_SIZE, shell.getMinimumSize() );
     preserveProperty( shell, PROP_DEFAULT_BUTTON, shell.getDefaultButton() );
-    preserveListener( shell, PROP_SHELL_LISTENER, ShellEvent.hasListener( shell ) );
+    preserveListener( shell, PROP_SHELL_LISTENER, hasShellListener( shell ) );
   }
 
   public void readData( Widget widget ) {
@@ -269,8 +268,14 @@ public final class ShellLCA extends AbstractWidgetLCA {
     // the "activeControl" property and "controlActivated" event (also sent by the shell and
     // processed in ShellLCA#processActivate).
     // The listener property for this event is rendered by ControlLCAUtil#renderActivateListener
-    boolean newValue = ShellEvent.hasListener( shell );
+    boolean newValue = hasShellListener( shell );
     renderListener( shell, PROP_SHELL_LISTENER, newValue, false );
+  }
+
+  private static boolean hasShellListener( Shell shell ) {
+    return shell.isListening( SWT.Close ) 
+        || shell.isListening( SWT.Activate ) 
+        || shell.isListening( SWT.Deactivate );
   }
 
   private static String getMode( Shell shell ) {
