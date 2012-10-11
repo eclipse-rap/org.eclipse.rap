@@ -109,22 +109,6 @@ public class BrowserHistoryImpl_Test extends TestCase {
     assertEquals( "foo", event.entryId );
   }
 
-  public void testRenderCreate() {
-    Fixture.executeLifeCycleFromServerThread();
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findCreateOperation( TYPE ) );
-  }
-
-  public void testRenderCreate_OnlyOnce() {
-    Fixture.executeLifeCycleFromServerThread();
-    Fixture.fakeNewRequest( display );
-    Fixture.executeLifeCycleFromServerThread();
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findCreateOperation( TYPE ) );
-  }
-
   public void testRenderAddNavigationListener() {
     Fixture.fakePhase( PhaseId.READ_DATA );
     ProcessActionRunner.add( new Runnable() {
