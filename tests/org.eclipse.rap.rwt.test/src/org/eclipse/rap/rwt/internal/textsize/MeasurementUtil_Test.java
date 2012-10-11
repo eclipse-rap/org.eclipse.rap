@@ -55,7 +55,7 @@ public class MeasurementUtil_Test extends TestCase {
     assertTrue( itemObject instanceof Object[] );
     Object[] itemObjectArray = ( Object[] )itemObject;
     assertEquals( 8, itemObjectArray.length );
-    assertEquals( Integer.valueOf( item.hashCode() ),  itemObjectArray[ 0 ] );
+    assertEquals( MeasurementUtil.getId( item ), itemObjectArray[ 0 ] );
     String escaped = " text \"to\" measure ";
     assertEquals( escaped, itemObjectArray[ 1 ] );
     assertTrue( itemObjectArray[ 2 ] instanceof String[] );
@@ -73,7 +73,7 @@ public class MeasurementUtil_Test extends TestCase {
     assertTrue( probeObject instanceof Object[] );
     Object[] probeObjectArray = ( Object[] )probeObject;
     assertEquals( 8, probeObjectArray.length );
-    assertEquals( Integer.valueOf( probe.getFontData().hashCode() ),  probeObjectArray[ 0 ] );
+    assertEquals( MeasurementUtil.getId( probe ), probeObjectArray[ 0 ] );
     assertEquals( TEXT_TO_MEASURE, probeObjectArray[ 1 ] );
     assertTrue( probeObjectArray[ 2 ] instanceof String[] );
     String[] fontNameArray = ( String[] )probeObjectArray[ 2 ];

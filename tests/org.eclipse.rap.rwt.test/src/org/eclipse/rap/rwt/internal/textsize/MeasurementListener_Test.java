@@ -185,7 +185,7 @@ public class MeasurementListener_Test extends TestCase {
     listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
     Map<String, Object> parameters = new HashMap<String, Object>();
     Map<String, Object> results = new HashMap<String, Object>();
-    results.put( String.valueOf( FONT_DATA.hashCode() ), new int[] { 5, 10 }  );
+    results.put( MeasurementUtil.getId( FONT_DATA ), new int[] { 5, 10 }  );
     parameters.put( PROPERTY_RESULTS, results );
     Fixture.fakeCallOperation( TYPE, METHOD_STORE_MEASUREMENTS, parameters  );
   }
@@ -196,7 +196,7 @@ public class MeasurementListener_Test extends TestCase {
     fakeRequestWithProbeMeasurementResults();
     Map<String, Object> parameters = new HashMap<String, Object>();
     Map<String, Object> results = new HashMap<String, Object>();
-    results.put( String.valueOf( itemToMeasure.hashCode() ), new int[] { 100, 10 } );
+    results.put( MeasurementUtil.getId( itemToMeasure ), new int[] { 100, 10 } );
     parameters.put( PROPERTY_RESULTS, results );
     Fixture.fakeCallOperation( TYPE, METHOD_STORE_MEASUREMENTS, parameters  );
   }

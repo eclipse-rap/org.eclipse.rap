@@ -45,6 +45,15 @@ class MeasurementOperator implements SerializableCompatibility {
     addStartupProbesToBuffer();
   }
 
+  void appendStartupTextSizeProbe( ProtocolMessageWriter writer ) {
+    Object startupProbeObject = getStartupProbeObject();
+    if( startupProbeObject != null ) {
+      Map<String, Object> properties = new HashMap<String, Object>();
+      properties.put( PROPERTY_ITEMS, startupProbeObject );
+      writer.appendCall( TYPE, METHOD_MEASURE_ITEMS, properties );
+    }
+  }
+
   void handleMeasurementRequests() {
     renderMeasurements();
   }
@@ -92,13 +101,24 @@ class MeasurementOperator implements SerializableCompatibility {
   //////////////////
   // helping methods
 
+  private static Object getStartupProbeObject() {
+    Object[] result = null;
+    Probe[] probeList = RWTFactory.getProbeStore().getProbes();
+    if( probeList.length > 0 ) {
+      result = new Object[ probeList.length ];
+      for( int i = 0; i < probeList.length; i++ ) {
+        result[ i ] = MeasurementUtil.createProbeParamObject( probeList[ i ] );
+      }
+    }
+    return result;
+  }
+
   private void readMeasuredFontProbeSizes() {
     Iterator probeList = probes.iterator();
     CallOperation[] operations = getCallOperationsFor( METHOD_STORE_MEASUREMENTS );
     while( probeList.hasNext() ) {
       Probe probe = ( Probe )probeList.next();
-      String id = String.valueOf( probe.getFontData().hashCode() );
-      Point size = readMeasuredSize( operations, id );
+      Point size = readMeasuredSize( operations, MeasurementUtil.getId( probe ) );
       if( size != null ) {
         createProbeResult( probe, size );
         probeList.remove();
@@ -121,8 +141,7 @@ class MeasurementOperator implements SerializableCompatibility {
     CallOperation[] operations = getCallOperationsFor( METHOD_STORE_MEASUREMENTS );
     while( itemList.hasNext() ) {
       MeasurementItem item = ( MeasurementItem )itemList.next();
-      String id = String.valueOf( item.hashCode() );
-      Point size = readMeasuredSize( operations, id );
+      Point size = readMeasuredSize( operations, MeasurementUtil.getId( item ) );
       if( size != null ) {
         storeTextMeasurement( item, size );
         itemList.remove();

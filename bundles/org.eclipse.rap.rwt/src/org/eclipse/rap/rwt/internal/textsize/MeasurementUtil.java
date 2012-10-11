@@ -11,10 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.swt.SWT;
@@ -25,33 +21,15 @@ import org.eclipse.swt.internal.graphics.FontUtil;
 
 public class MeasurementUtil {
 
-
   public static void appendStartupTextSizeProbe( ProtocolMessageWriter writer ) {
-    Object startupProbeObject = getStartupProbeObject();
-    if( startupProbeObject != null ) {
-      Map<String, Object> args = new HashMap<String, Object>();
-      args.put( MeasurementOperator.PROPERTY_ITEMS, startupProbeObject );
-      writer.appendCall( MeasurementOperator.TYPE, MeasurementOperator.METHOD_MEASURE_ITEMS, args );
-    }
-  }
-
-  private static Object getStartupProbeObject() {
-    Object[] result = null;
-    Probe[] probeList = RWTFactory.getProbeStore().getProbes();
-    if( probeList.length > 0 ) {
-      result = new Object[ probeList.length ];
-      for( int i = 0; i < probeList.length; i++ ) {
-        result[ i ] = createProbeParamObject( probeList[ i ] );
-      }
-    }
-    return result;
+    MeasurementOperator.getInstance().appendStartupTextSizeProbe( writer );
   }
 
   static Object createItemParamObject( MeasurementItem item ) {
     Object[] result = new Object[ 8 ];
-    result[ 0 ] = Integer.valueOf( item.hashCode() );
-    result[ 1 ] = item.getTextToMeasure();
     FontData fontData = item.getFontData();
+    result[ 0 ] = getId( item );
+    result[ 1 ] = item.getTextToMeasure();
     result[ 2 ] = ProtocolUtil.parseFontName( fontData.getName() );
     result[ 3 ] = Integer.valueOf( fontData.getHeight() );
     result[ 4 ] = Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 );
@@ -64,7 +42,7 @@ public class MeasurementUtil {
   static Object createProbeParamObject( Probe probe ) {
     Object[] result = new Object[ 8 ];
     FontData fontData = probe.getFontData();
-    result[ 0 ] = Integer.valueOf( fontData.hashCode() );
+    result[ 0 ] = getId( probe );
     result[ 1 ] = probe.getText();
     result[ 2 ] = ProtocolUtil.parseFontName( fontData.getName() );
     result[ 3 ] = Integer.valueOf( fontData.getHeight() );
@@ -79,6 +57,18 @@ public class MeasurementUtil {
     FontData fontData = FontUtil.getData( font );
     MeasurementItem newItem = new MeasurementItem( toMeasure, fontData, wrapWidth, mode );
     MeasurementOperator.getInstance().addItemToMeasure( newItem );
+  }
+
+  static String getId( Probe probe ) {
+    return getId( probe.getFontData() );
+  }
+
+  static String getId( MeasurementItem item ) {
+    return "t" + Integer.toString( item.hashCode() );
+  }
+
+  static String getId( FontData fontData ) {
+    return "p" + Integer.toString( fontData.hashCode() );
   }
 
   private static boolean isMarkup( int mode ) {

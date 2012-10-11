@@ -201,10 +201,10 @@ public class MeasurementOperator_Test extends TestCase {
     Map<String, Object> parameters = new HashMap<String, Object>();
     Map<String, Object> results = new HashMap<String, Object>();
     if( fontData != null ) {
-      results.put( String.valueOf( fontData.hashCode() ), new int[] { 3, 4 } );
+      results.put( MeasurementUtil.getId( fontData ), new int[] { 3, 4 } );
     }
     if( measurementItem != null ) {
-      results.put( String.valueOf( measurementItem.hashCode() ), new int[] { 12, 4 } );
+      results.put( MeasurementUtil.getId( measurementItem ), new int[] { 12, 4 } );
     }
     parameters.put( PROPERTY_RESULTS, results );
     Fixture.fakeCallOperation( TYPE, METHOD_STORE_MEASUREMENTS, parameters  );
