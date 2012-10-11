@@ -57,10 +57,11 @@ public final class JavaScriptExecutorImpl implements
   }
 
   public void afterPhase( PhaseEvent event ) {
-    if( display == LifeCycleUtil.getSessionDisplay() ) {
+    String content = codeBuilder.toString().trim();
+    if( display == LifeCycleUtil.getSessionDisplay() && content.length() > 0 ) {
       ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
       Map<String, Object> properties = new HashMap<String, Object>();
-      properties.put( PARAM_CONTENT, codeBuilder.toString().trim() );
+      properties.put( PARAM_CONTENT, content );
       protocolWriter.appendCall( JSEXECUTOR_TYPE, METHOD_EXECUTE, properties );
       codeBuilder.setLength( 0 );
     }

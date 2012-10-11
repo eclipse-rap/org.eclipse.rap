@@ -81,6 +81,13 @@ public class JavaScriptExecutorImpl_Test extends TestCase {
     assertFalse( getMessageScript().contains( EXECUTE_1 ) );
   }
 
+  public void testEmptyScriptIsNotRendered() {
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findCallOperation( "rwt.client.JavaScriptExecutor", "execute" ) );
+  }
+
   private int indexOfCallOperation( Message message, String method, String contentProperty ) {
     int result = -1;
     int operationCount = message.getOperationCount();
