@@ -62,16 +62,6 @@ public class EventList {
     return result;
   }
 
-  public Event removeNext() {
-    Event result = null;
-    Event[] allEvents = getAll();
-    if( allEvents.length > 0 ) {
-      result = allEvents[ 0 ];
-      events.remove( result );
-    }
-    return result;
-  }
-
   private static class EventComparator implements Comparator<Event> {
   
     private final int[] eventOrder;

@@ -15,6 +15,7 @@ package org.eclipse.swt.internal.browser.browserkit;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.Fixture.fakeNewRequest;
 import static org.eclipse.rap.rwt.testfixture.Fixture.fakeSetParameter;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -210,48 +211,32 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   public void testProgressEvent_InvisibleBrowser() {
-    final ArrayList<String> log = new ArrayList<String>();
     Fixture.markInitialized( display );
     Browser browser = new Browser( shell, SWT.NONE );
     browser.setVisible( false );
-    browser.addProgressListener( new ProgressListener() {
-      public void changed( ProgressEvent event ) {
-        log.add( "changed" );
-      }
-      public void completed( ProgressEvent event ) {
-        log.add( "completed" );
-      }
-    } );
+    ProgressListener listener = mock( ProgressListener.class );
+    browser.addProgressListener( listener );
 
     Fixture.fakeNotifyOperation( getId( browser ), BrowserLCA.EVENT_PROGRESS_COMPLETED, null );
     Fixture.readDataAndProcessAction( browser );
 
-    assertEquals( 2, log.size() );
-    assertEquals( "changed", log.get( 0 ) );
-    assertEquals( "completed", log.get( 1 ) );
+    verify( listener ).changed( any( ProgressEvent.class ) );
+    verify( listener ).completed( any( ProgressEvent.class ) );
   }
 
   public void testProgressEvent_DisabledBrowser() {
-    final ArrayList<String> log = new ArrayList<String>();
     Fixture.markInitialized( display );
     Browser browser = new Browser( shell, SWT.NONE );
     browser.setEnabled( false );
     browser.setVisible( false );
-    browser.addProgressListener( new ProgressListener() {
-      public void changed( ProgressEvent event ) {
-        log.add( "changed" );
-      }
-      public void completed( ProgressEvent event ) {
-        log.add( "completed" );
-      }
-    } );
+    ProgressListener listener = mock( ProgressListener.class );
+    browser.addProgressListener( listener );
 
     Fixture.fakeNotifyOperation( getId( browser ), BrowserLCA.EVENT_PROGRESS_COMPLETED, null );
     Fixture.readDataAndProcessAction( browser );
 
-    assertEquals( 2, log.size() );
-    assertEquals( "changed", log.get( 0 ) );
-    assertEquals( "completed", log.get( 1 ) );
+    verify( listener ).changed( any( ProgressEvent.class ) );
+    verify( listener ).completed( any( ProgressEvent.class ) );
   }
 
   public void testRenderCreate() throws IOException {

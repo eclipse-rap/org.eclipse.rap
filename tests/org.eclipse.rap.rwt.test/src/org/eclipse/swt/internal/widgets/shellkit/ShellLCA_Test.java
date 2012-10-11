@@ -324,9 +324,9 @@ public class ShellLCA_Test extends TestCase {
     Listener activateListener = new Listener() {
       public void handleEvent( Event event ) {
         if( event.type == SWT.Activate ) {
-          activateEventLog.append( "activated:" + event.widget.getData() + "|" );
+          activateEventLog.append( "activated:" + ( ( Shell )event.widget ).getText() + "|" );
         } else {
-          activateEventLog.append( "deactivated:" + event.widget.getData() + "|" );
+          activateEventLog.append( "deactivated:" + ( ( Shell )event.widget ).getText() + "|" );
         }
       }
     };
@@ -334,18 +334,18 @@ public class ShellLCA_Test extends TestCase {
     ShellListener shellListener = new ShellAdapter() {
       @Override
       public void shellActivated( ShellEvent event ) {
-        shellEventLog.append( "activated:" + event.widget.getData() + "|" );
+        shellEventLog.append( "activated:" + ( ( Shell )event.widget ).getText() + "|" );
       }
       @Override
       public void shellDeactivated( ShellEvent event ) {
-        shellEventLog.append( "deactivated:" + event.widget.getData() + "|" );
+        shellEventLog.append( "deactivated:" + ( ( Shell )event.widget ).getText() + "|" );
       }
     };
     Shell shellToActivate = new Shell( display, SWT.NONE );
-    shellToActivate.setData( "shellToActivate" );
+    shellToActivate.setText( "shellToActivate" );
     shellToActivate.open();
     Shell activeShell = new Shell( display, SWT.NONE );
-    activeShell.setData( "activeShell" );
+    activeShell.setText( "activeShell" );
     activeShell.open();
     activeShell.setActive();
     shellToActivate.addListener( SWT.Activate, activateListener );
@@ -354,6 +354,8 @@ public class ShellLCA_Test extends TestCase {
     activeShell.addListener( SWT.Deactivate, activateListener );
     shellToActivate.addShellListener( shellListener );
     activeShell.addShellListener( shellListener );
+    activateEventLog.setLength( 0 );
+    shellEventLog.setLength( 0 );
 
     Fixture.markInitialized( display );
     Fixture.markInitialized( activeShell );
@@ -364,6 +366,8 @@ public class ShellLCA_Test extends TestCase {
 
     assertSame( shellToActivate, display.getActiveShell() );
     String expected = "deactivated:activeShell|activated:shellToActivate|";
+System.out.println( "expected " + expected );    
+System.out.println( "actual   " + activateEventLog.toString() );    
     assertEquals( expected, activateEventLog.toString() );
     assertEquals( expected, shellEventLog.toString() );
     // Ensure that no setActive javaScript code is rendered for client-side activated Shell

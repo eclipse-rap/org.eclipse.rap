@@ -106,24 +106,6 @@ public class EventList_Test extends TestCase {
     }
   }
   
-  public void testRemoveNext() {
-    Event secondEvent = creatEvent( SECOND_EVENT );
-    eventList.add( secondEvent );
-    Event firstEvent = creatEvent( FIRST_EVENT );
-    eventList.add( firstEvent );
-
-    Event event = eventList.removeNext();
-    
-    assertEquals( FIRST_EVENT, event.type );
-    assertEquals( 1, eventList.getAll().length );
-  }
-  
-  public void testRemoveNextWithEmptyList() {
-    Event event = eventList.removeNext();
-    
-    assertNull( event );
-  }
-  
   public void testGetInstance() {
     EventList instance = EventList.getInstance();
     

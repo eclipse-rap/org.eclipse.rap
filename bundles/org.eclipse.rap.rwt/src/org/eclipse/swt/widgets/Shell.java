@@ -20,8 +20,9 @@ import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.events.EventTypes;
-import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.internal.widgets.IShellAdapter;
+import org.eclipse.swt.internal.widgets.MenuHolder;
 import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
 
 /**

@@ -39,7 +39,6 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
@@ -194,18 +193,9 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   private static void processActiveShell( Shell shell ) {
     if( WidgetLCAUtil.wasEventSent( shell, ClientMessageConst.EVENT_SHELL_ACTIVATED ) ) {
-      Shell lastActiveShell = shell.getDisplay().getActiveShell();
-      setActiveShell( shell );
-      if( lastActiveShell != null ) {
-        lastActiveShell.notifyListeners( SWT.Deactivate, new Event() );
-      }
-      shell.notifyListeners( SWT.Activate, new Event() );
+      IDisplayAdapter displayAdapter = shell.getDisplay().getAdapter( IDisplayAdapter.class );
+      displayAdapter.setActiveShell( shell );
     }
-  }
-
-  private static void setActiveShell( Shell shell ) {
-    IDisplayAdapter displayAdapter = shell.getDisplay().getAdapter( IDisplayAdapter.class );
-    displayAdapter.setActiveShell( shell );
   }
 
   private static void renderActiveControl( Shell shell ) {
