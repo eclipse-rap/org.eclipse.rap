@@ -18,9 +18,9 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.EventLCAUtil;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.ToolItem;
 
 final class DropDownToolItemLCA extends ToolItemDelegateLCA {
@@ -41,15 +41,11 @@ final class DropDownToolItemLCA extends ToolItemDelegateLCA {
         Rectangle bounds = toolItem.getBounds();
         bounds.y += bounds.height;
         int stateMask = EventLCAUtil.readStateMask( toolItem, eventName );
-        SelectionEvent event = new SelectionEvent( toolItem,
-                                                   null,
-                                                   SelectionEvent.WIDGET_SELECTED,
-                                                   bounds,
-                                                   stateMask,
-                                                   null,
-                                                   true,
-                                                   SWT.ARROW );
-        event.processEvent();
+        Event event = new Event();
+        event.detail = SWT.ARROW;
+        event.stateMask = stateMask;
+        event.setBounds( bounds );
+        toolItem.notifyListeners( SWT.Selection, event );
       } else {
         ToolItemLCAUtil.processSelection( toolItem );
       }

@@ -13,7 +13,6 @@ package org.eclipse.swt.internal.widgets.tabfolderkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
@@ -26,16 +25,27 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.mockito.ArgumentCaptor;
 
 public class TabFolderLCA_Test extends TestCase {
@@ -155,6 +165,7 @@ public class TabFolderLCA_Test extends TestCase {
   }
 
   public void testSelectionWithListener() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     TabItem item0 = new TabItem( folder, SWT.NONE );
     Control control0 = new Button( folder, SWT.PUSH );
     item0.setControl( control0 );
@@ -171,7 +182,7 @@ public class TabFolderLCA_Test extends TestCase {
     assertFalse( control0.getVisible() );
     assertTrue( control1.getVisible() );
     ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
-    verify( listener, times( 1 ) ).widgetSelected( captor.capture() );
+    verify( listener ).widgetSelected( captor.capture() );
     SelectionEvent event = captor.getValue();
     assertSame( item1, event.item );
     assertSame( folder, event.widget );

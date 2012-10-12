@@ -122,10 +122,7 @@ public class ColumnViewerEditorActivationEvent extends EventObject {
 	public ColumnViewerEditorActivationEvent(ViewerCell cell, MouseEvent event) {
 		super(cell);
 
-// RAP [rh] MouseEvent#count not implemented. Changed if-statement works as
-//     long as conditions in the calling method don't change.
-//		if (event.count >= 2) {
-		if(event.getID() == MouseEvent.MOUSE_DOUBLE_CLICK) {
+		if (event.count >= 2) {
 			eventType = MOUSE_DOUBLE_CLICK_SELECTION;
 		} else {
 			eventType = MOUSE_CLICK_SELECTION;
@@ -145,8 +142,7 @@ public class ColumnViewerEditorActivationEvent extends EventObject {
 		super(cell);
 		this.eventType = KEY_PRESSED;
 		this.sourceEvent = event;
-// RAP [rh] event timestamps not supported  
-//		this.time = event.time;
+		this.time = event.time;
 		this.keyCode = event.keyCode;
 		this.character = event.character;
 		this.stateMask = event.stateMask;

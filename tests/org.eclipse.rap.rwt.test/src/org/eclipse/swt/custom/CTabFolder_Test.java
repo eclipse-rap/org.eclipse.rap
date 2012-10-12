@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.Arrays;
 
 import junit.framework.TestCase;
@@ -22,6 +24,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
+import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.layout.FillLayout;
@@ -695,6 +698,88 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( folder.getItemCount(), deserializedFolder.getItemCount() );
     assertSame( deserializedFolder, deserializedFolder.getItem( 0 ).getParent() );
     assertEquals( item.getText(), deserializedFolder.getItem( 0 ).getText() );
+  }
+  
+  public void testAddCTabFolder2ListenerWithNullArgument() {
+    CTabFolder tabFolder = new CTabFolder( shell, SWT.NONE );
+    
+    try {
+      tabFolder.addCTabFolder2Listener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testAddCTabFolder2Listener() {
+    CTabFolder tabFolder = new CTabFolder( shell, SWT.NONE );
+
+    tabFolder.addCTabFolder2Listener( mock( CTabFolder2Listener.class ) );
+    
+    assertTrue( tabFolder.isListening( EventTypes.CTAB_FOLDER_CLOSE ) );
+    assertTrue( tabFolder.isListening( EventTypes.CTAB_FOLDER_MINIMIZE ) );
+    assertTrue( tabFolder.isListening( EventTypes.CTAB_FOLDER_MAXIMIZE ) );
+    assertTrue( tabFolder.isListening( EventTypes.CTAB_FOLDER_RESTORE ) );
+    assertTrue( tabFolder.isListening( EventTypes.CTAB_FOLDER_SHOW_LIST ) );
+  }
+  
+  public void testRemoveCTabFolder2ListenerWithNullArgument() {
+    CTabFolder tabFolder = new CTabFolder( shell, SWT.NONE );
+    
+    try {
+      tabFolder.removeCTabFolder2Listener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testRemoveCTabFolder2Listener() {
+    CTabFolder tabFolder = new CTabFolder( shell, SWT.NONE );
+    CTabFolder2Listener listener = mock( CTabFolder2Listener.class );
+    tabFolder.addCTabFolder2Listener( listener );
+
+    tabFolder.removeCTabFolder2Listener( listener );
+    
+    assertFalse( tabFolder.isListening( EventTypes.CTAB_FOLDER_CLOSE ) );
+    assertFalse( tabFolder.isListening( EventTypes.CTAB_FOLDER_MINIMIZE ) );
+    assertFalse( tabFolder.isListening( EventTypes.CTAB_FOLDER_MAXIMIZE ) );
+    assertFalse( tabFolder.isListening( EventTypes.CTAB_FOLDER_RESTORE ) );
+    assertFalse( tabFolder.isListening( EventTypes.CTAB_FOLDER_SHOW_LIST ) );
+  }
+  
+  public void testAddSelectionListenerWithNullArgument() {
+    CTabFolder tabFolder = new CTabFolder( shell, SWT.NONE );
+    
+    try {
+      tabFolder.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testAddSelectionListener() {
+    CTabFolder tabFolder = new CTabFolder( shell, SWT.NONE );
+
+    tabFolder.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( tabFolder.isListening( SWT.Selection ) );
+    assertTrue( tabFolder.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    CTabFolder tabFolder = new CTabFolder( shell, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    tabFolder.addSelectionListener( listener );
+
+    tabFolder.removeSelectionListener( listener );
+    
+    assertFalse( tabFolder.isListening( SWT.Selection ) );
+    assertFalse( tabFolder.isListening( SWT.DefaultSelection ) );
+  }
+
+  public void testRemoveSelectionListenerWithNullArgument() {
+    CTabFolder tabFolder = new CTabFolder( shell, SWT.NONE );
+    
+    try {
+      tabFolder.removeSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
   
   protected void setUp() throws Exception {

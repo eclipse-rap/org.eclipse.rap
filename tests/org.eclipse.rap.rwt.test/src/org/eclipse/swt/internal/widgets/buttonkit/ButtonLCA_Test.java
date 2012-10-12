@@ -40,8 +40,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
@@ -228,9 +226,8 @@ public class ButtonLCA_Test extends TestCase {
   public void testDisabledButtonSelection() {
     final Button button = new Button( shell, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
-    ActivateEvent.addListener( button, new ActivateAdapter() {
-      @Override
-      public void activated( ActivateEvent event ) {
+    button.addListener( SWT.Activate, new Listener() {
+      public void handleEvent( Event event ) {
         button.setEnabled( false );
       }
     } );
@@ -268,7 +265,7 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.readDataAndProcessAction( button );
 
     assertTrue( button.getSelection() );
-    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
+    verify( listener ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=224872
@@ -283,7 +280,7 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.readDataAndProcessAction( button );
 
     assertFalse( button.getSelection() );
-    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
+    verify( listener ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   public void testRadioTypedSelectionEventOrder_TypedListener() {

@@ -10,10 +10,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionListener;
 
 
 public class Sash_Test extends TestCase {
@@ -37,5 +39,43 @@ public class Sash_Test extends TestCase {
     Sash deserializedSash = Fixture.serializeAndDeserialize( sash );
     
     assertEquals( sash.getSize(), deserializedSash.getSize() );
+  }
+
+  public void testAddSelectionListener() {
+    Sash sash = new Sash( shell, SWT.NONE );
+
+    sash.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( sash.isListening( SWT.Selection ) );
+    assertTrue( sash.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    Sash sash = new Sash( shell, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    sash.addSelectionListener( listener );
+
+    sash.removeSelectionListener( listener );
+    
+    assertFalse( sash.isListening( SWT.Selection ) );
+    assertFalse( sash.isListening( SWT.DefaultSelection ) );
+  }
+
+  public void testAddSelectionListenerWithNullArgument() {
+    Sash sash = new Sash( shell, SWT.NONE );
+    
+    try {
+      sash.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveSelectionListenerWithNullArgument() {
+    Sash sash = new Sash( shell, SWT.NONE );
+    
+    try {
+      sash.removeSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 }

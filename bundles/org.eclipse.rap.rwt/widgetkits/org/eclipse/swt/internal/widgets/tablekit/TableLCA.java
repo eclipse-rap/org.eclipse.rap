@@ -73,7 +73,6 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final String PROP_ENABLE_CELL_TOOLTIP = "enableCellToolTip";
   private static final String PROP_CELL_TOOLTIP_TEXT = "cellToolTipText";
   private static final String PROP_MARKUP_ENABLED = "markupEnabled";
-  private static final String EVENT_SCROLLBAR_SELECTED = "scrollBarSelected";
 
   private static final int ZERO = 0 ;
   private static final String[] DEFAULT_SELECTION = new String[ 0 ];
@@ -121,7 +120,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processEvents( table );
     ControlLCAUtil.processKeyEvents( table );
     ControlLCAUtil.processMenuDetect( table );
-    processScrollBarSelectionEvent( table );
+    EventLCAUtil.processScrollBarSelection( table );
   }
 
   @Override
@@ -248,16 +247,7 @@ public final class TableLCA extends AbstractWidgetLCA {
       // Bugfix: check if index is valid before firing event to avoid problems with fast scrolling
       // TODO [tb] : Still useful? bugzilla id?
       if( item != null ) {
-        int stateMask = EventLCAUtil.readStateMask( table, eventName );
-        SelectionEvent event = new SelectionEvent( table,
-                                                   item,
-                                                   SelectionEvent.WIDGET_SELECTED,
-                                                   new Rectangle( 0, 0, 0, 0 ),
-                                                   stateMask,
-                                                   "",
-                                                   true,
-                                                   getWidgetSelectedDetail( table ) );
-        event.processEvent();
+        ControlLCAUtil.processSelection( table, item, false );
       }
     }
   }
@@ -274,18 +264,8 @@ public final class TableLCA extends AbstractWidgetLCA {
         // TODO [rh] do something about when index points to unresolved item!
         item = selectedItem;
       }
-      SelectionEvent event
-        = new SelectionEvent( table, item, SelectionEvent.WIDGET_DEFAULT_SELECTED );
-      event.stateMask = EventLCAUtil.readStateMask( table, eventName );
-      event.processEvent();
+      ControlLCAUtil.processDefaultSelection( table, item );
     }
-  }
-
-  private static int getWidgetSelectedDetail( Table table ) {
-    String value = readEventPropertyValue( table,
-                                           ClientMessageConst.EVENT_WIDGET_SELECTED,
-                                           ClientMessageConst.EVENT_PARAM_DETAIL );
-    return "check".equals( value ) ? SWT.CHECK : SWT.NONE;
   }
 
   ////////////////
@@ -386,27 +366,6 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static void processScrollBarSelection( ScrollBar scrollBar, int selection ) {
     if( scrollBar != null ) {
       scrollBar.setSelection( selection );
-    }
-  }
-
-  private static void processScrollBarSelectionEvent( Table table ) {
-    if( WidgetLCAUtil.wasEventSent( table, EVENT_SCROLLBAR_SELECTED ) ) {
-      String horizontal = readEventPropertyValue( table,
-                                                  EVENT_SCROLLBAR_SELECTED,
-                                                  "horizontal" );
-      String vertical = readEventPropertyValue( table,
-                                                EVENT_SCROLLBAR_SELECTED,
-                                                "vertical" );
-      ScrollBar hScroll = table.getHorizontalBar();
-      if( hScroll != null && "true".equals( horizontal ) ) {
-        SelectionEvent evt = new SelectionEvent( hScroll, null, SelectionEvent.WIDGET_SELECTED );
-        evt.processEvent();
-      }
-      ScrollBar vScroll = table.getVerticalBar();
-      if( vScroll != null && "true".equals( vertical ) ) {
-        SelectionEvent evt = new SelectionEvent( vScroll, null, SelectionEvent.WIDGET_SELECTED );
-        evt.processEvent();
-      }
     }
   }
 

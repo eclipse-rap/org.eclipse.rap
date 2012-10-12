@@ -18,12 +18,18 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.custom.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
+import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -57,9 +63,8 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.wasEventSent( item, EVENT_ITEM_CLOSED ) ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          CTabFolderEvent event = createCloseEvent( item );
-          event.processEvent();
-          if( event.doit ) {
+          boolean doit = sendCloseEvent( item );
+          if( doit ) {
             item.dispose();
           }
         }
@@ -118,10 +123,11 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   ///////////////
   // Event helper
 
-  private static CTabFolderEvent createCloseEvent( CTabItem item ) {
-    CTabFolderEvent result = new CTabFolderEvent( item.getParent(), CTabFolderEvent.CLOSE );
-    result.item = item;
-    result.doit = true;
-    return result;
+  private static boolean sendCloseEvent( CTabItem item ) {
+    Event event = new Event();
+    event.item = item;
+    event.doit = true;
+    item.getParent().notifyListeners( EventTypes.CTAB_FOLDER_CLOSE, event );
+    return event.doit;
   }
 }

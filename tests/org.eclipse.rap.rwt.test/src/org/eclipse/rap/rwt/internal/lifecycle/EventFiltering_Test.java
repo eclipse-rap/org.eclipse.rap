@@ -15,6 +15,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -25,6 +26,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionEvent;
@@ -32,16 +34,19 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.events.TypedEvent;
+import org.eclipse.swt.internal.events.EventTypes;
+import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Widget;
 
 
-/*
- * The event filtering is done by the EventUtil#isAccessible
- */
 public class EventFiltering_Test extends TestCase {
 
   private Display display;
@@ -60,7 +65,96 @@ public class EventFiltering_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
+  
+  public void testAllowProcessingForActivateEventOnInvisibleControl() {
+    Control control = new Button( shell, SWT.PUSH );
+    control.setEnabled( false );
+    Event event = createEvent( control, SWT.Activate );
+    
+    boolean accessible = EventUtil.allowProcessing( event );
+    
+    assertTrue( accessible );
+  }
+  
+  public void testAllowProcessingForDeactivateEventOnInvisibleControl() {
+    Control control = new Button( shell, SWT.PUSH );
+    control.setEnabled( false );
+    Event event = createEvent( control, SWT.Deactivate );
+    
+    boolean accessible = EventUtil.allowProcessing( event );
+    
+    assertTrue( accessible );
+  }
+  
+  public void testAllowProcessingForProgressEventOnInvisibleBrowser() {
+    Browser browser = new Browser( shell, SWT.NONE );
+    Event event = createEvent( browser, EventTypes.PROGRESS_CHANGED );
+    
+    boolean accessible = EventUtil.allowProcessing( event );
+    
+    assertTrue( accessible );
+  }
 
+  public void testAllowProcessingForResizeEventOnDisabledControl() {
+    Control control = new Button( shell, SWT.PUSH );
+    control.setEnabled( false );
+    Event event = createEvent( control, SWT.Resize );
+    
+    boolean accessible = EventUtil.allowProcessing( event );
+    
+    assertTrue( accessible );
+  }
+  
+  public void testAllowProcessingForMoveEventOnDisabledControl() {
+    Control control = new Button( shell, SWT.PUSH );
+    control.setEnabled( false );
+    Event event = createEvent( control, SWT.Move );
+    
+    boolean accessible = EventUtil.allowProcessing( event );
+    
+    assertTrue( accessible );
+  }
+  
+  public void testAllowProcessingForModifyEventOnDisabledText() {
+    Text text = new Text( shell, SWT.PUSH );
+    text.setEnabled( false );
+    Event event = createEvent( text, SWT.Modify );
+    
+    boolean accessible = EventUtil.allowProcessing( event );
+    
+    assertTrue( accessible );
+  }
+  
+  public void testAllowProcessingForVerifyEventOnDisabledText() {
+    Text text = new Text( shell, SWT.PUSH );
+    text.setEnabled( false );
+    Event event = createEvent( text, SWT.Verify );
+    
+    boolean accessible = EventUtil.allowProcessing( event );
+    
+    assertTrue( accessible );
+  }
+  
+  public void testAllowProcessingForPaintEventOnDisabledControl() {
+    Control control = new Canvas( shell, SWT.PUSH );
+    control.setEnabled( false );
+    Event event = createEvent( control, SWT.Paint );
+    
+    boolean accessible = EventUtil.allowProcessing( event );
+    
+    assertTrue( accessible );
+  }
+  
+  public void testAllowProcessingForSetDataEventOnDisabledControl() {
+    Control text = new Canvas( shell, SWT.PUSH );
+    text.setEnabled( false );
+    Event event = createEvent( text, SWT.SetData );
+    
+    boolean accessible = EventUtil.allowProcessing( event );
+    
+    assertTrue( accessible );
+  }
+  
   public void testЕventNotFiredOnDisabledButton() {
     Button button = new Button( shell, SWT.PUSH );
     button.setEnabled( false );
@@ -158,7 +252,7 @@ public class EventFiltering_Test extends TestCase {
     Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_CLOSED, null );
     Fixture.executeLifeCycleFromServerThread( );
 
-    verify( listener, times( 0 ) ).shellClosed( any( ShellEvent.class ) );
+    verify( listener, never() ).shellClosed( any( ShellEvent.class ) );
   }
 
   public void testNestedModalShell() {
@@ -173,9 +267,16 @@ public class EventFiltering_Test extends TestCase {
     childShell.open();
 
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread();
 
-    verify( selectionListener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
+    verify( selectionListener ).widgetSelected( any( SelectionEvent.class ) );
+  }
+
+  private static Event createEvent( Widget widget, int eventType ) {
+    Event result = new Event();
+    result.widget = widget;
+    result.type = eventType;
+    return result;
   }
 
 }

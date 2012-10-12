@@ -9,7 +9,9 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.swt.widgets;import java.io.IOException;
+package org.eclipse.swt.widgets;import static org.mockito.Mockito.mock;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
 
@@ -2458,6 +2460,44 @@ public class Table_Test extends TestCase {
     table.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
 
     assertTrue( table.markupEnabled );
+  }
+
+  public void testAddSelectionListener() {
+    Table table = new Table( shell, SWT.NONE );
+
+    table.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( table.isListening( SWT.Selection ) );
+    assertTrue( table.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    Table table = new Table( shell, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    table.addSelectionListener( listener );
+
+    table.removeSelectionListener( listener );
+    
+    assertFalse( table.isListening( SWT.Selection ) );
+    assertFalse( table.isListening( SWT.DefaultSelection ) );
+  }
+
+  public void testAddSelectionListenerWithNullArgument() {
+    Table table = new Table( shell, SWT.NONE );
+    
+    try {
+      table.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveSelectionListenerWithNullArgument() {
+    Table table = new Table( shell, SWT.NONE );
+    
+    try {
+      table.removeSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 
   private Image createImage50x100() throws IOException {

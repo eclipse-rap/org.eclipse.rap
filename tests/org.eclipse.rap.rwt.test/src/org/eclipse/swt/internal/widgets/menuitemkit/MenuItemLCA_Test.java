@@ -147,7 +147,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.readDataAndProcessAction( item );
 
     assertTrue( item.getSelection() );
-    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
+    verify( listener ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=224872
@@ -165,7 +165,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.readDataAndProcessAction( item );
 
     assertFalse( item.getSelection() );
-    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
+    verify( listener ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   public void testRadioTypedSelectionEventOrder_TypedListener() {

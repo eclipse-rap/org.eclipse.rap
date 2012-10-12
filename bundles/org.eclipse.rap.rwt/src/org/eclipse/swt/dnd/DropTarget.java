@@ -189,7 +189,14 @@ public void addDropListener(DropTargetListener listener) {
   if( listener == null ) {
     DND.error( SWT.ERROR_NULL_ARGUMENT );
   }
-  DropTargetEvent.addListener( this, listener );
+  DNDListener typedListener = new DNDListener (listener);
+  typedListener.dndWidget = this;
+  addListener (DND.DragEnter, typedListener);
+  addListener (DND.DragLeave, typedListener);
+  addListener (DND.DragOver, typedListener);
+  addListener (DND.DragOperationChanged, typedListener);
+  addListener (DND.Drop, typedListener);
+  addListener (DND.DropAccept, typedListener);
 }
 
 protected void checkSubclass () {
@@ -229,7 +236,21 @@ public Control getControl () {
  * @see DropTargetEvent
  */
 public DropTargetListener[] getDropListeners() {
-  return ( DropTargetListener[] )DropTargetEvent.getListeners( this );
+  Listener[] listeners = getListeners(DND.DragEnter);
+  int length = listeners.length;
+  DropTargetListener[] dropListeners = new DropTargetListener[length];
+  int count = 0;
+  for (int i = 0; i < length; i++) {
+      Listener listener = listeners[i];
+      if (listener instanceof DNDListener) {
+          dropListeners[count] = (DropTargetListener) ((DNDListener) listener).getEventListener();
+          count++;
+      }
+  }
+  if (count == length) return dropListeners;
+  DropTargetListener[] result = new DropTargetListener[count];
+  System.arraycopy(dropListeners, 0, result, 0, count);
+  return result;
 }
 
 /**
@@ -283,9 +304,14 @@ public Transfer[] getTransfer() {
  */
 public void removeDropListener(DropTargetListener listener) {	
 	if (listener == null) {
-    DND.error (SWT.ERROR_NULL_ARGUMENT);
-  }
-	DropTargetEvent.removeListener( this, listener );
+      DND.error (SWT.ERROR_NULL_ARGUMENT);
+    }
+    removeListener (DND.DragEnter, listener);
+    removeListener (DND.DragLeave, listener);
+    removeListener (DND.DragOver, listener);
+    removeListener (DND.DragOperationChanged, listener);
+    removeListener (DND.Drop, listener);
+    removeListener (DND.DropAccept, listener);
 }
 
 /**
@@ -295,7 +321,6 @@ public void removeDropListener(DropTargetListener listener) {
  *
  * @param effect the drop effect that is registered for this DropTarget
  */
-// TODO [rh] investigate if this is useful at all
 public void setDropTargetEffect(DropTargetEffect effect) {
 	dropEffect = effect;
 }

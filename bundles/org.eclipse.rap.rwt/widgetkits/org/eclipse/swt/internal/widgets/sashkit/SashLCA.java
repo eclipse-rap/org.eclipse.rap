@@ -19,14 +19,17 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.EventLCAUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Sash;
+import org.eclipse.swt.widgets.Widget;
 
 
 public final class SashLCA extends AbstractWidgetLCA {
@@ -88,15 +91,11 @@ public final class SashLCA extends AbstractWidgetLCA {
       int stateMask = EventLCAUtil.readStateMask( sash, eventName );
       String value = readEventPropertyValue( sash, eventName, EVENT_PARAM_DETAIL );
       int detail = "drag".equals( value ) ? SWT.DRAG : SWT.NONE;
-      SelectionEvent event = new SelectionEvent( sash,
-                                                 null,
-                                                 SelectionEvent.WIDGET_SELECTED,
-                                                 bounds,
-                                                 stateMask,
-                                                 null,
-                                                 true,
-                                                 detail );
-      event.processEvent();
+      Event event = new Event();
+      event.setBounds( bounds );
+      event.detail = detail;
+      event.stateMask = stateMask;
+      sash.notifyListeners( SWT.Selection, event );
     }
   }
 }

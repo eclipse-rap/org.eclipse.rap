@@ -14,27 +14,52 @@ package org.eclipse.swt.widgets;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.*;
+import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
+import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
-import org.eclipse.rap.rwt.internal.theme.*;
+import org.eclipse.rap.rwt.internal.theme.QxColor;
+import org.eclipse.rap.rwt.internal.theme.QxImage;
+import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
+import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Device;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
-import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
+import org.eclipse.swt.internal.events.EventList;
+import org.eclipse.swt.internal.events.EventTable;
+import org.eclipse.swt.internal.widgets.EventUtil;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 
 
@@ -118,7 +143,6 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
  */
 public class Display extends Device implements Adaptable {
 
-  private static final IFilterEntry[] EMPTY_FILTERS = new IFilterEntry[ 0 ];
   private final static String BOUNDS = "bounds";
   private static final String ATTR_INVALIDATE_FOCUS
     = DisplayAdapter.class.getName() + "#invalidateFocus";
@@ -185,20 +209,18 @@ public class Display extends Device implements Adaptable {
   private final Rectangle bounds;
   private final Point cursorLocation;
   private Shell activeShell;
-  private List<FilterEntry> filters;
   private Collection<Control> redrawControls;
   private Control focusControl;
+  private EventTable filterTable;
+  private EventTable eventTable;
   private transient Monitor monitor;
   private transient IDisplayAdapter displayAdapter;
   private WidgetAdapter widgetAdapter;
-  private Set<Listener> closeListeners;
-  private Set<Listener> disposeListeners;
   private Runnable[] disposeList;
   private Composite[] layoutDeferred;
   private int layoutDeferredCount;
   private Widget[] skinList;
   private int skinCount;
-  private Set<Listener> skinListeners;
   private boolean beep;
 
   /* Display Data */
@@ -282,16 +304,14 @@ public class Display extends Device implements Adaptable {
       if( this.focusControl != null && !this.focusControl.isInDispose() ) {
         Control currentFocusControl = this.focusControl;
         Shell shell = currentFocusControl.getShell();
-        FocusEvent event = new FocusEvent( currentFocusControl, FocusEvent.FOCUS_LOST );
-        event.processEvent();
+        currentFocusControl.notifyListeners( SWT.FocusOut, new Event() );
         shell.updateDefaultButton( currentFocusControl, false );
       }
       this.focusControl = focusControl;
       if( this.focusControl != null ) {
         Control currentFocusControl = this.focusControl;
         Shell shell = currentFocusControl.getShell();
-        FocusEvent event = new FocusEvent( currentFocusControl, FocusEvent.FOCUS_GAINED );
-        event.processEvent();
+        currentFocusControl.notifyListeners( SWT.FocusIn, new Event() );
         shell.updateDefaultButton( currentFocusControl, true );
       }
     }
@@ -553,22 +573,10 @@ public class Display extends Device implements Adaptable {
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( eventType == SWT.Close ) {
-      if( closeListeners == null ) {
-        closeListeners = new HashSet<Listener>();
-      }
-      closeListeners.add( listener );
-    } else if( eventType == SWT.Dispose ) {
-      if( disposeListeners == null ) {
-        disposeListeners = new HashSet<Listener>();
-      }
-      disposeListeners.add( listener );
-    } else if( eventType == SWT.Skin ) {
-      if( skinListeners == null ) {
-        skinListeners = new HashSet<Listener>();
-      }
-      skinListeners.add( listener );
+    if( eventTable == null ) {
+      eventTable = new EventTable();
     }
+    eventTable.hook( eventType, listener );
   }
 
   /**
@@ -598,21 +606,20 @@ public class Display extends Device implements Adaptable {
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( eventType == SWT.Close && closeListeners != null ) {
-      closeListeners.remove( listener );
-      if( closeListeners.size() == 0 ) {
-        closeListeners = null;
-      }
-    } else if ( eventType == SWT.Dispose && disposeListeners != null ) {
-      disposeListeners.remove( listener );
-      if( disposeListeners.size() == 0 ) {
-        disposeListeners = null;
-      }
-    } else if ( eventType == SWT.Skin && skinListeners != null ) {
-      skinListeners.remove( listener );
-      if( skinListeners.size() == 0 ) {
-        skinListeners = null;
-      }
+    if( eventTable != null ) {
+      eventTable.unhook( eventType, listener );
+    }
+  }
+
+  void sendEvent( int eventType, Event event ) {
+    event.display = this;
+    event.type = eventType;
+    if( event.time == 0 ) {
+      event.time = EventUtil.getLastEventTime();
+    }
+    filterEvent( event );
+    if( eventTable != null ) {
+      eventTable.sendEvent( event );
     }
   }
 
@@ -663,16 +670,7 @@ public class Display extends Device implements Adaptable {
   public void close() {
     checkDevice();
     Event event = new Event();
-    event.display = this;
-    event.type = SWT.Close;
-    notifyFilters( event );
-    if( closeListeners != null ) {
-      Listener[] listeners = new Listener[ closeListeners.size() ];
-      closeListeners.toArray( listeners );
-      for( int i = 0; i < listeners.length; i++ ) {
-        listeners[ i ].handleEvent( event );
-      }
-    }
+    sendEvent( SWT.Close, event );
     if( event.doit ) {
       dispose();
     }
@@ -687,6 +685,8 @@ public class Display extends Device implements Adaptable {
     if( scheduler != null ) {
       scheduler.dispose();
     }
+    filterTable = null;
+    eventTable = null;
   }
 
   @Override
@@ -695,22 +695,7 @@ public class Display extends Device implements Adaptable {
   }
 
   private void sendDisposeEvent() {
-    Event event = new Event();
-    event.display = this;
-    event.type = SWT.Dispose;
-    notifyFilters( event );
-    if( disposeListeners != null ) {
-      Listener[] listeners = new Listener[ disposeListeners.size() ];
-      disposeListeners.toArray( listeners );
-      for( int i = 0; i < listeners.length; i++ ) {
-        try {
-          listeners[ i ].handleEvent( event );
-        } catch( Throwable thr ) {
-          String msg = "Exception while executing dispose-listener.";
-          ServletLog.log( msg, thr );
-        }
-      }
-    }
+    sendEvent( SWT.Dispose, new Event() );
   }
 
   private void disposeShells() {
@@ -815,15 +800,12 @@ public class Display extends Device implements Adaptable {
         shells.remove( activeShell );
         shells.add( activeShell );
       }
-      ShellEvent shellEvent;
       if( lastActiveShell != null && ( lastActiveShell.state & Widget.DISPOSE_SENT ) == 0 ) {
-        shellEvent = new ShellEvent( lastActiveShell, ShellEvent.SHELL_DEACTIVATED );
-        shellEvent.processEvent();
+        lastActiveShell.notifyListeners( SWT.Deactivate, new Event() );
       }
       this.activeShell = activeShell;
       if( activeShell != null ) {
-        shellEvent = new ShellEvent( activeShell, ShellEvent.SHELL_ACTIVATED );
-        shellEvent.processEvent();
+        activeShell.notifyListeners( SWT.Activate, new Event() );
       }
       if( this.activeShell != null ) {
         this.activeShell.restoreFocus();
@@ -1139,7 +1121,7 @@ public class Display extends Device implements Adaptable {
     {
       result = ProcessActionRunner.executeNext();
       if( !result ) {
-        result = TypedEvent.executeNext();
+        result = executeNextEvent();
       }
       if( !result ) {
         result = synchronizer.runAsyncMessages( false );
@@ -1151,6 +1133,22 @@ public class Display extends Device implements Adaptable {
     return result;
   }
 
+  private boolean executeNextEvent() {
+    boolean result = false;
+    Event[] events = EventList.getInstance().getAll();
+    while( !result && events.length > 0 ) {
+      Event event = events[ 0 ];
+      EventList.getInstance().remove( event );
+      if( EventUtil.allowProcessing( event ) ) {
+        event.widget.notifyListeners( event.type, event );
+        result = true;
+      } else {
+        events = EventList.getInstance().getAll();
+      }
+    }
+    return result;
+  }
+  
   /**
    * Causes the user-interface thread to <em>sleep</em> (that is,
    * to be put in a state where it does not consume CPU cycles)
@@ -1700,10 +1698,10 @@ public class Display extends Device implements Adaptable {
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( filters == null ) {
-      filters = new ArrayList<FilterEntry>();
+    if( filterTable == null ) {
+      filterTable = new EventTable();
     }
-    filters.add( new FilterEntry( eventType, listener ) );
+    filterTable.hook( eventType, listener );
   }
 
   /**
@@ -1729,20 +1727,26 @@ public class Display extends Device implements Adaptable {
    * @see #addListener
    */
   public void removeFilter( int eventType, Listener listener ) {
-    checkDevice();
+    checkDevice ();
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    IFilterEntry[] entries = getFilterEntries();
-    boolean found = false;
-    for( int i = 0; !found && i < entries.length; i++ ) {
-      found = entries[ i ].getListener() == listener && entries[ i ].getType() == eventType;
-      if( found ) {
-        filters.remove( entries[ i ] );
-      }
+    if( filterTable == null ) {
+      return;
     }
-    if( filters != null && filters.isEmpty() ) {
-      filters = null;
+    filterTable.unhook( eventType, listener );
+    if( filterTable.size() == 0 ) {
+      filterTable = null;
+    }
+  }
+  
+  boolean filters( int eventType ) {
+    return filterTable != null ? filterTable.hooks( eventType ) : false;
+  }
+
+  void filterEvent( Event event ) {
+    if( filterTable != null ) {
+      filterTable.sendEvent( event );
     }
   }
 
@@ -1814,16 +1818,7 @@ public class Display extends Device implements Adaptable {
   private void sendSkinEvent( Widget widget ) {
     Event event = new Event();
     event.widget = widget;
-    event.display = this;
-    event.type = SWT.Skin;
-    notifyFilters( event );
-    if( skinListeners != null ) {
-      Listener[] listeners = new Listener[ skinListeners.size() ];
-      skinListeners.toArray( listeners );
-      for( int i = 0; i < listeners.length; i++ ) {
-        listeners[ i ].handleEvent( event );
-      }
-    }
+    sendEvent( SWT.Skin, event );
   }
 
   ///////////////
@@ -2251,53 +2246,11 @@ public class Display extends Device implements Adaptable {
     return result;
   }
 
-  private void notifyFilters( Event event ) {
-    IFilterEntry[] filterEntries = getFilterEntries();
-    for( int i = 0; i < filterEntries.length; i++ ) {
-      if( filterEntries[ i ].getType() == event.type ) {
-        try {
-          filterEntries[ i ].getListener().handleEvent( event );
-        } catch( Throwable thr ) {
-          String msg = "Exception while executing filter.";
-          ServletLog.log( msg, thr );
-        }
-      }
-    }
-  }
-
-  private IFilterEntry[] getFilterEntries() {
-    IFilterEntry[] result = EMPTY_FILTERS;
-    if( filters != null ) {
-      result = new IFilterEntry[ filters.size() ];
-      filters.toArray( result );
-    }
-    return result;
-  }
-
   /////////////////
   // Inner classes
 
   private static class WakeRunnable implements Runnable, SerializableCompatibility {
     public void run() {
-    }
-  }
-
-  private static class FilterEntry implements IFilterEntry, SerializableCompatibility {
-
-    private final int eventType;
-    private final Listener listener;
-
-    FilterEntry( int eventType, Listener listener ) {
-      this.eventType = eventType;
-      this.listener = listener;
-    }
-
-    public int getType() {
-      return eventType;
-    }
-
-    public Listener getListener() {
-      return listener;
     }
   }
 
@@ -2399,10 +2352,6 @@ public class Display extends Device implements Adaptable {
       return Display.this.sessionStore;
     }
 
-    public IFilterEntry[] getFilters() {
-      return getFilterEntries();
-    }
-
     public void attachThread() {
       Display.this.attachThread();
     }
@@ -2423,4 +2372,5 @@ public class Display extends Device implements Adaptable {
       Display.this.beep = false;
     }
   }
+
 }

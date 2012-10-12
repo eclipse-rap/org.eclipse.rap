@@ -11,9 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.dnd;
 
-import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
-import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Widget;
 
 /**
@@ -25,15 +23,6 @@ import org.eclipse.swt.widgets.Widget;
 public class DropTargetEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
-
-  public static final int DRAG_ENTER = DND.DragEnter;
-  public static final int DRAG_OVER = DND.DragOver;
-  public static final int DRAG_LEAVE = DND.DragLeave;
-  public static final int DROP_ACCEPT = DND.DropAccept;
-  public static final int DROP = DND.Drop;
-  public static final int DRAG_OPERATION_CHANGED = DND.DragOperationChanged;
-
-  private static final Class LISTENER = DropTargetListener.class;
 
   /**
    * The x-cordinate of the cursor relative to the <code>Display</code>
@@ -111,17 +100,37 @@ public class DropTargetEvent extends TypedEvent {
   public TransferData[] dataTypes;
 
   /**
-   * the time that the event occurred.
+   * Constructs a new instance of this class based on the
+   * information in the given untyped event.
    *
-   * NOTE: This field is an unsigned integer and should
-   * be AND'ed with 0xFFFFFFFFL so that it can be treated
-   * as a signed long.
+   * @param e the untyped event containing the information
+   * @since 2.0
    */
-  // TODO [rh] in SWT, the field 'time' is declared in TypedEvent
-  public int time;
+  public DropTargetEvent( DNDEvent e ) {
+    super( e );
+    this.data = e.data;
+    this.x = e.x;
+    this.y = e.y;
+    this.detail = e.detail;
+    this.currentDataType = e.dataType;
+    this.dataTypes = e.dataTypes;
+    this.operations = e.operations;
+    this.feedback = e.feedback;
+    this.item = e.item;
+  }
 
-  public DropTargetEvent( Widget widget, int id ) {
-    super( widget, id );
+  void updateEvent( DNDEvent e ) {
+    e.widget = this.widget;
+    e.time = this.time;
+    e.data = this.data;
+    e.x = this.x;
+    e.y = this.y;
+    e.detail = this.detail;
+    e.dataType = this.currentDataType;
+    e.dataTypes = this.dataTypes;
+    e.operations = this.operations;
+    e.feedback = this.feedback;
+    e.item = this.item;
   }
 
   @Override
@@ -155,75 +164,4 @@ public class DropTargetEvent extends TypedEvent {
     return sb.toString();
   }
 
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case DRAG_ENTER:
-        ( ( DropTargetListener )listener ).dragEnter( this );
-      break;
-      case DRAG_OVER:
-        ( ( DropTargetListener )listener ).dragOver( this );
-      break;
-      case DRAG_LEAVE:
-        ( ( DropTargetListener )listener ).dragLeave( this );
-      break;
-      case DROP_ACCEPT:
-        ( ( DropTargetListener )listener ).dropAccept( this );
-      break;
-      case DROP:
-        ( ( DropTargetListener )listener ).drop( this );
-      break;
-      case DRAG_OPERATION_CHANGED:
-        ( ( DropTargetListener )listener ).dragOperationChanged( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected boolean allowProcessing() {
-    return EventUtil.isAccessible( widget );
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, DropTargetListener listener ) {
-    addListener( adaptable, LISTENER, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, DropTargetListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
-  }
 }

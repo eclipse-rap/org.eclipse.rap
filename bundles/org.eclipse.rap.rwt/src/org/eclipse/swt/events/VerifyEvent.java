@@ -13,7 +13,6 @@ package org.eclipse.swt.events;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -33,8 +32,7 @@ public final class VerifyEvent extends KeyEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int VERIFY_TEXT = SWT.Verify;
-  private static final Class LISTENER = VerifyListener.class;
+  private static final int[] EVENT_TYPES = { SWT.Verify };
 
   /**
    * the new text that will be inserted.
@@ -58,41 +56,9 @@ public final class VerifyEvent extends KeyEvent {
    */
   public VerifyEvent( Event event ) {
     super( event );
-    doit = true;
-  }
-
-  /**
-   * Constructs a new instance of this class.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
-  public VerifyEvent( Control source ) {
-    super( source, VERIFY_TEXT );
-    doit = true;
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case VERIFY_TEXT:
-        ( ( VerifyListener )listener ).verifyText( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
-  }
-
-  @Override
-  protected boolean allowProcessing() {
-    return true;
+    this.start = event.start;
+    this.end = event.end;
+    this.text = event.text;
   }
 
   /**
@@ -101,7 +67,7 @@ public final class VerifyEvent extends KeyEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, VerifyListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -110,7 +76,7 @@ public final class VerifyEvent extends KeyEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, VerifyListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -119,16 +85,7 @@ public final class VerifyEvent extends KeyEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**

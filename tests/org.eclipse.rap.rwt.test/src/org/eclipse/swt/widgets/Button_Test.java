@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -21,6 +23,7 @@ import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 
@@ -49,12 +52,13 @@ public class Button_Test extends TestCase {
 
   }
   
-  public void testSetImageWithDisposedImage() {
+  public void testSetImageWithDisposedImage() throws IOException {
     Button button = new Button( shell, SWT.NONE );
     
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Image image = new Image( display, stream );
+    stream.close();
     image.dispose();
     try {
       button.setImage( image );
@@ -307,6 +311,33 @@ public class Button_Test extends TestCase {
     assertEquals( new Point( 47, 49 ), buttonWrap.computeSize( 45, SWT.DEFAULT ) );
   }
   
+  public void testAddSelectionListenerWithNullArgument() {
+    Button button = new Button( shell, SWT.NONE );
+    try {
+      button.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testAddSelectionListener() {
+    Button button = new Button( shell, SWT.PUSH );
+    button.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( button.isListening( SWT.Selection ) );
+    assertTrue( button.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    Button button = new Button( shell, SWT.PUSH );
+    SelectionListener listener = mock( SelectionListener.class );
+    button.addSelectionListener( listener );
+
+    button.removeSelectionListener( listener );
+    
+    assertFalse( button.isListening( SWT.Selection ) );
+    assertFalse( button.isListening( SWT.DefaultSelection ) );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();

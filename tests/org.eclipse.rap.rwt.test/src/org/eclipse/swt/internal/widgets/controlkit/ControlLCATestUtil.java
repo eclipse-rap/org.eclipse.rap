@@ -10,13 +10,16 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.controlkit;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
+import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
@@ -26,9 +29,8 @@ import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Listener;
 
 
 public class ControlLCATestUtil {
@@ -90,26 +92,26 @@ public class ControlLCATestUtil {
   }
 
   private static void testRenderAddActivateListener( Control control ) throws IOException {
-    ActivateAdapter listener = new ActivateAdapter() {};
+    Listener listener = mock( Listener.class );
     Fixture.fakeNewRequest( control.getDisplay() );
     Fixture.preserveWidgets();
 
-    ActivateEvent.addListener( control, listener );
+    control.addListener( SWT.Activate, listener );
     WidgetUtil.getLCA( control ).renderChanges( control );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findListenProperty( control, "activate" ) );
-
-    ActivateEvent.removeListener( control, listener );
+    
+    control.removeListener( SWT.Activate, listener );
   }
 
   private static void testRenderRemoveActivateListener( Control control ) throws IOException {
-    ActivateAdapter listener = new ActivateAdapter() {};
-    ActivateEvent.addListener( control, listener );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Activate, listener );
     Fixture.fakeNewRequest( control.getDisplay() );
     Fixture.preserveWidgets();
 
-    ActivateEvent.removeListener( control, listener );
+    control.removeListener( SWT.Activate, listener );
     WidgetUtil.getLCA( control ).renderChanges( control );
 
     Message message = Fixture.getProtocolMessage();
@@ -117,18 +119,18 @@ public class ControlLCATestUtil {
   }
 
   private static void testRenderActivateListenerUnchanged( Control control ) throws IOException {
-    ActivateAdapter listener = new ActivateAdapter() {};
+    Listener listener = mock( Listener.class );
     Fixture.fakeNewRequest( control.getDisplay() );
     Fixture.preserveWidgets();
 
-    ActivateEvent.addListener( control, listener );
+    control.addListener( SWT.Activate, listener );
     Fixture.preserveWidgets();
     WidgetUtil.getLCA( control ).renderChanges( control );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( control, "activate" ) );
-
-    ActivateEvent.removeListener( control, listener );
+    
+    control.removeListener( SWT.Activate, listener );
   }
 
   private static void testRenderAddFocusListener( Control control ) throws IOException {

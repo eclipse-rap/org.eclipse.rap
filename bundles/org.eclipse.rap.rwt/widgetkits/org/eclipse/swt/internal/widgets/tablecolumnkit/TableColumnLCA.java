@@ -90,6 +90,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
       } );
     }
     ControlLCAUtil.processSelection( column, null, false );
+    ControlLCAUtil.processDefaultSelection( column, null );
   }
 
   public void renderInitialization( Widget widget ) throws IOException {

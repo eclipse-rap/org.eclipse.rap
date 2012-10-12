@@ -24,8 +24,8 @@ import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.TableViewerFocusCellManager;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
@@ -83,11 +83,9 @@ public class Bug264226TableViewerTest extends ViewerTestCase {
 	    = new StructuredSelection( new Object[] { input[ 5 ] } );
 	  viewer.setSelection( selection );
 	  // Set SWTFocusCellManager focusCell by firing selection event
-	  SelectionEvent event
-	    = new SelectionEvent( table,
-	                          table.getItem( 5 ),
-	                          SelectionEvent.WIDGET_SELECTED );
-	  event.processEvent();
+	  Event event = new Event();
+	  event.item = table.getItem( 5 );
+	  table.notifyListeners( SWT.Selection, event );
 	  // Simulate item 5 deleted
 	  input = new String[ 9 ];
       for( int i = 0; i < 5; i++ ) {

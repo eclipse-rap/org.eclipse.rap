@@ -34,35 +34,35 @@ public interface IEventAdapter {
    * <p>Returns an array containing all listeners of type 
    * <code>listenerType</code> for the object that returned this 
    * <code>IEventAdapter</code>.</p>
-   * @param listenerType the type of the listeners to be returned  
+   * @param eventType the type of the listeners to be returned  
    * @return an array of listeners or an empty array if no listeners are
    * available.
    */
-  EventListener[] getListener( Class listenerType );
+  EventListener[] getListener( int eventType );
   
   /**
    * <p>Returns whether there are any listeners of type 
    * <code>listenerType</code> registered for the object that returned this 
    * <code>IEventAdapter</code>.</p>
-   * @param listenerType the type of the listeners to be returned  
+   * @param eventType the type of the listeners to be returned  
    * @return <code>true</code> if any listeners of <code>listenerType</code>
    * are registered; <code>false</code> otherwise.
    */
-  boolean hasListener( Class listenerType );
+  boolean hasListener( int eventType );
   
   /**
    * <p>Adds the given listener for the object that returned this 
    * <code>IEventAdapter</code>.</p>
-   * @param listenerType the type of the listeners to be added
+   * @param eventType the type of the listeners to be added
    * @param listener the listener to be added 
    */
-  void addListener( Class listenerType, EventListener listener );
+  void addListener( int eventType, EventListener listener );
   
   /**
    * <p>Removes the given listener from the object that returned this 
    * <code>IEventAdapter</code>.</p>
-   * @param listenerType the type of the listeners to be removed
+   * @param eventType the type of the listeners to be removed
    * @param listener the listener to be removed
    */
-  void removeListener( Class listenerType, EventListener listener );
+  void removeListener( int eventType, EventListener listener );
 }

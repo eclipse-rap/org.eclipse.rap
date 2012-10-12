@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -46,24 +48,17 @@ public class Canvas_Test extends TestCase {
         paintEventLog.add( event );
       }
     } );
-    assertEquals( 0, paintEventLog.size() );
+
     canvas.redraw();
+    
     assertEquals( 1, paintEventLog.size() );
     PaintEvent event = paintEventLog.get( 0 );
     assertSame( canvas, event.widget );
     assertTrue( event.gc.isDisposed() );
-  }
-  
-  public void testRemovePaintListener() {
-    PaintListener listener = new PaintListener() {
-      public void paintControl( PaintEvent event ) {
-        paintEventLog.add( event );
-      }
-    };
-    canvas.addPaintListener( listener );
-    canvas.removePaintListener( listener );
-    canvas.redraw();
-    assertEquals( 0, paintEventLog.size() );
+    assertEquals( event.x, canvas.getClientArea().x );
+    assertEquals( event.y, canvas.getClientArea().y );
+    assertEquals( event.width, canvas.getClientArea().width );
+    assertEquals( event.height, canvas.getClientArea().height );
   }
   
   public void testResize() {
@@ -72,7 +67,6 @@ public class Canvas_Test extends TestCase {
         paintEventLog.add( event );
       }
     } );
-    assertEquals( 0, paintEventLog.size() );
     canvas.setSize( 100, 100 );
     assertEquals( 1, paintEventLog.size() );
   }
@@ -95,4 +89,43 @@ public class Canvas_Test extends TestCase {
     Canvas deserializedCanvas = Fixture.serializeAndDeserialize( canvas );
     assertNotNull( deserializedCanvas );
   }
+  
+  public void testAddPaintListener() {
+    canvas.addPaintListener( mock( PaintListener.class ) );
+    
+    assertTrue( canvas.isListening( SWT.Paint ) );
+  }
+
+  public void testRemovePaintListener() {
+    PaintListener listener = mock( PaintListener.class );
+    canvas.addPaintListener( listener );
+    
+    canvas.removePaintListener( listener );
+    
+    assertFalse( canvas.isListening( SWT.Paint ) );
+  }
+  
+  public void testRemovePaintListenerUnregistersUntypedEvent() {
+    PaintListener listener = mock( PaintListener.class );
+    canvas.addPaintListener( listener );
+    
+    canvas.removePaintListener( listener );
+
+    assertFalse( canvas.isListening( SWT.Paint ) );
+  }
+
+  public void testAddPaintListenerWithNullArgument() {
+    try {
+      canvas.addPaintListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemovePaintListenerWithNullArgument() {
+    try {
+      canvas.removePaintListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
 }

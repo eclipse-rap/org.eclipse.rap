@@ -13,7 +13,13 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ArmListener;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.HelpEvent;
+import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 
@@ -499,7 +505,11 @@ public class MenuItem extends Item {
    */
   public void addArmListener( ArmListener listener ) {
     checkWidget();
-    ArmEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Arm, typedListener );
   }
 
   /**
@@ -522,7 +532,7 @@ public class MenuItem extends Item {
    */
   public void removeArmListener( ArmListener listener ) {
     checkWidget();
-    ArmEvent.removeListener( this, listener );
+    removeListener( SWT.Arm, listener );
   }
 
   //////////////////

@@ -12,15 +12,15 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.events;
 
+import static org.mockito.Mockito.mock;
+
+import java.util.EventListener;
+
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.events.IEventAdapter;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.SWTEventListener;
-import org.eclipse.swt.widgets.*;
 
 
 public class EventAdapter_Test extends TestCase {
@@ -28,73 +28,81 @@ public class EventAdapter_Test extends TestCase {
   private static class SerializableListener implements SWTEventListener {
   }
 
-  private Widget widget;
+  private IEventAdapter eventAdapter;
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    widget = new Shell( display );
-  }
-  
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
-  
-  public void testActionPerformed()  {
-    IEventAdapter eventAdapter = widget.getAdapter( IEventAdapter.class );
-    assertNotNull( eventAdapter );
-    assertSame( eventAdapter, widget.getAdapter( IEventAdapter.class ) );
-    assertFalse( eventAdapter.hasListener( SelectionListener.class ) );
-    try {
-      eventAdapter.hasListener( Object.class );
-      fail();
-    } catch( IllegalArgumentException iae ) {
-    }
+  public void testGetListenersForEventType() {
+    EventListener[] listener = eventAdapter.getListener( SWT.Selection );
     
-    Object[] listener = eventAdapter.getListener( SelectionListener.class );
     assertEquals( 0, listener.length );
-    SelectionListener actionListener = new SelectionAdapter() {
-    }; 
-    eventAdapter.addListener( SelectionListener.class, actionListener );
-    assertTrue( eventAdapter.hasListener( SelectionListener.class ) );
-    listener = eventAdapter.getListener( SelectionListener.class );
-    assertEquals( 1, listener.length );
-    assertSame( actionListener, listener[ 0 ] );
-    eventAdapter.removeListener( SelectionListener.class, actionListener );
-    assertFalse( eventAdapter.hasListener( SelectionListener.class ) );
   }
   
-  public void testAddListenerWithIllegalArguments() {
-    IEventAdapter eventAdapter = widget.getAdapter( IEventAdapter.class );
+  public void testGetListeners() {
+    SWTEventListener listener = mock( SWTEventListener.class );
+    eventAdapter.addListener( SWT.Selection, listener );
+
+    EventListener[] listeners = eventAdapter.getListeners();
+
+    assertEquals( 1, listeners.length );
+    assertSame( listener, listeners[ 0 ] );
+  }
+
+  public void testAddListener() {
+    SWTEventListener listener = mock( SWTEventListener.class );
+    
+    eventAdapter.addListener( SWT.Selection, listener );
+    
+    assertEquals( 1, eventAdapter.getListener( SWT.Selection ).length );
+    assertSame( listener, eventAdapter.getListener( SWT.Selection )[ 0 ] );
+  }
+  
+  public void testAddListenerWithBogusEventType() {
+    int eventType = -12;
+    SWTEventListener listener = mock( SWTEventListener.class );
+
+    eventAdapter.addListener( eventType, listener );
+
+    assertTrue( eventAdapter.hasListener( eventType ) );
+    assertEquals( 1, eventAdapter.getListener( eventType ).length );
+    assertSame( listener, eventAdapter.getListener( eventType )[ 0 ] );
+  }
+  
+  public void testAddListenerWithNullListener() {
     try {
-      eventAdapter.addListener( SelectionListener.class, new SWTEventListener() { } );
+      eventAdapter.addListener( SWT.Selection, null );
       fail();
-    } catch( IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException expected ) {
     }
-    try {
-      eventAdapter.addListener( SelectionListener.class, null );
-      fail();
-    } catch( IllegalArgumentException iae ) {
-    }
-    try {
-      SelectionListener validListener = new SelectionAdapter() {
-      }; 
-      eventAdapter.addListener( null, validListener );
-      fail();
-    } catch( IllegalArgumentException iae ) {
-    }
-    Object[] listeners = eventAdapter.getListener( SelectionListener.class );
-    assertEquals( 0, listeners.length );
+  }
+  
+  public void testRemoveListener() {
+    SWTEventListener listener = mock( SWTEventListener.class );
+    eventAdapter.addListener( SWT.Selection, listener );
+    
+    eventAdapter.removeListener( SWT.Selection, listener );
+    
+    assertEquals( 0, eventAdapter.getListener( SWT.Selection ).length );
+  }
+  
+  public void testHasListener() {
+    eventAdapter.addListener( SWT.Selection, mock( SWTEventListener.class ) );
+    
+    boolean hasSelectionListener = eventAdapter.hasListener( SWT.Selection );
+    boolean hasOtherListener = eventAdapter.hasListener( SWT.Resize );
+    
+    assertTrue( hasSelectionListener );
+    assertFalse( hasOtherListener );
   }
   
   public void testIsSerializable() throws Exception {
-    IEventAdapter eventAdapter = widget.getAdapter( IEventAdapter.class );
-    eventAdapter.addListener( SerializableListener.class, new SerializableListener() );
+    eventAdapter.addListener( SWT.Selection, new SerializableListener() );
 
     IEventAdapter deserialized = Fixture.serializeAndDeserialize( eventAdapter );
     
-    assertEquals( 1, deserialized.getListeners().length );
+    assertEquals( 1, deserialized.getListener( SWT.Selection ).length );
     assertEquals( SerializableListener.class, deserialized.getListeners()[ 0 ].getClass() );
+  }
+
+  protected void setUp() throws Exception {
+    eventAdapter = new EventAdapter();
   }
 }

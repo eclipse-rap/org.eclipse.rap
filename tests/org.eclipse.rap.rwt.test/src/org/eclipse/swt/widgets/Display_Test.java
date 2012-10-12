@@ -12,7 +12,11 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -24,18 +28,39 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.*;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Device;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.layout.FillLayout;
+import org.mockito.ArgumentCaptor;
 
 
 public class Display_Test extends TestCase {
@@ -43,6 +68,7 @@ public class Display_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   @Override
@@ -811,9 +837,18 @@ public class Display_Test extends TestCase {
     assertSame( red, systemRed );
     assertSame( systemRed, display.getSystemColor( SWT.COLOR_RED ) );
   }
+  
+  public void testAddFilterWithNullArgument() {
+    Display display = new Display();
+    try {
+      display.addFilter( SWT.Dispose, null );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
 
   public void testAddAndRemoveFilter() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
     final int CLOSE_CALLBACK = 0;
     final int DISPOSE_CALLBACK = 1;
     final boolean[] callbackReceived = new boolean[]{ false, false };
@@ -826,14 +861,6 @@ public class Display_Test extends TestCase {
         }
       }
     };
-    // addFilter
-    Display display = new Display();
-    try {
-      display.addFilter( SWT.Dispose, null );
-      fail( "No exception thrown for addFilter with null argument" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
     display.addFilter( SWT.Close, listener );
     Shell shell = new Shell( display );
     shell.close();
@@ -842,12 +869,6 @@ public class Display_Test extends TestCase {
     // removeFilter
     callbackReceived[ CLOSE_CALLBACK ] = false;
     callbackReceived[ DISPOSE_CALLBACK ] = false;
-    try {
-      display.removeFilter( SWT.Dispose, null );
-      fail( "No exception thrown for removeFilter with null argument" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
     display.removeFilter( SWT.Close, listener );
     shell = new Shell( display );
     shell.close();
@@ -855,6 +876,17 @@ public class Display_Test extends TestCase {
     assertFalse( callbackReceived[ DISPOSE_CALLBACK ] );
     // remove filter for an event that was not added before -> do nothing
     display.removeFilter( SWT.FocusIn, listener );
+  }
+  
+  public void testRemoveFilterWithNullArgument() {
+    Display display = new Display();
+    
+    try {
+      display .removeFilter( SWT.Dispose, null );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+
   }
 
   public void testEnsureIdIsW1() throws IOException {
@@ -975,7 +1007,6 @@ public class Display_Test extends TestCase {
     // 1. display dispose listener
     // 2. shell dispose listeners
     // 3. disposeRunnable(s)
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<Object> log = new ArrayList<Object>();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -1002,29 +1033,6 @@ public class Display_Test extends TestCase {
     assertSame( shell, shellDisposeEvent.widget );
     String disposeExecRunnable = ( String )log.get( 2 );
     assertEquals( "disposeRunnable", disposeExecRunnable );
-    assertTrue( display.isDisposed() );
-  }
-
-  public void testDisposeWithExceptionsInListeners() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    shell.addDisposeListener( new DisposeListener() {
-      public void widgetDisposed( DisposeEvent event ) {
-        throw new RuntimeException();
-      }
-    } );
-    display.addListener( SWT.Dispose, new Listener() {
-      public void handleEvent( Event event ) {
-        throw new RuntimeException();
-      }
-    } );
-    display.disposeExec( new Runnable() {
-      public void run() {
-        throw new RuntimeException();
-      }
-    } );
-    display.dispose();
     assertTrue( display.isDisposed() );
   }
 
@@ -1115,7 +1123,18 @@ public class Display_Test extends TestCase {
     SWTException swtException = ( SWTException )throwable[ 0 ];
     assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swtException.code );
   }
-
+  
+  public void testFilterWithoutListener() {
+    Display display = new Display();
+    Listener filter = mock( Listener.class );
+    display.addFilter( SWT.Resize, filter );
+    Widget widget = new Shell( display );
+    
+    widget.notifyListeners( SWT.Resize, new Event() );
+    
+    verify( filter ).handleEvent( any( Event.class ) );
+  }
+  
   public void testCloseEventFilter() {
     Display display = new Display();
     final StringBuilder order = new StringBuilder();
@@ -1133,7 +1152,9 @@ public class Display_Test extends TestCase {
         order.append( "listener" );
       }
     } );
+    
     display.close();
+    
     assertEquals( "filter, listener", order.toString() );
     assertEquals( 2, events.size() );
     Event filterEvent = events.get( 0 );
@@ -1407,7 +1428,6 @@ public class Display_Test extends TestCase {
 
   public void testDisposeFailsWhenInDisposal() {
     // See bug 389384
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Display display = new Display();
     Shell shell = new Shell( display );
     shell.addDisposeListener( new DisposeListener() {
@@ -1423,13 +1443,109 @@ public class Display_Test extends TestCase {
       assertEquals( "Device is disposed", exception.getMessage() );
     }
   }
+  
+  public void testReadAndDispatchIgnoresEventsFromDisposedWidgets() {
+    Fixture.fakePhase( PhaseId.READ_DATA );
+    Display display = new Display();
+    Widget widget = new Shell( display );
+    Listener listener = mock( Listener.class );
+    widget.addListener( SWT.Activate, listener );
+    widget.dispose();
+    
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display.readAndDispatch();
+    
+    verify( listener, never() ).handleEvent( any( Event.class ) );
+  }
+  
+  public void testAddListenerWithNullArgument() {
+    Display display = new Display();
+    
+    try {
+      display.addListener( 123, null );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
 
+  public void testRemoveListenerWithNullArgument() {
+    Display display = new Display();
+    
+    try {
+      display.removeListener( 123, null );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testAddListener() {
+    Display display = new Display();
+    Listener listener = mock( Listener.class );
+    
+    display.addListener( 123, listener );
+    Event event = new Event();
+    display.sendEvent( 123, event );
+    
+    verify( listener ).handleEvent( event );
+  }
+  
+  public void testRemoveListener() {
+    Display display = new Display();
+    Listener listener = mock( Listener.class );
+    display.addListener( 123, listener );
+    
+    display.removeListener( 123, listener );
+    display.sendEvent( 123, new Event() );
+    
+    verifyZeroInteractions( listener );
+  }
+  
+  public void testSendEvent() {
+    Display display = new Display();
+    Listener listener = mock( Listener.class );
+    display.addListener( 123, listener );
+    
+    display.sendEvent( 123, new Event() );
+    
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( listener ).handleEvent( captor.capture() );
+    assertEquals( 123, captor.getValue().type );
+    assertEquals( display, captor.getValue().display );
+    assertTrue( captor.getValue().time > 0 );
+  }
+  
+  public void testSendEventWithPredefinedTime() {
+    Display display = new Display();
+    Listener listener = mock( Listener.class );
+    display.addListener( 123, listener );
+    
+    Event event = new Event();
+    event.time = 4;
+    display.sendEvent( 123, event );
+    
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( listener ).handleEvent( captor.capture() );
+    assertEquals( 123, captor.getValue().type );
+    assertEquals( display, captor.getValue().display );
+    assertEquals( event.time, captor.getValue().time );
+  }
+  
+  public void testRemoveListenerWithoutAddingListener() {
+    Display display = new Display();
+    Listener listener = mock( Listener.class );
+    
+    display.removeListener( 123, listener );
+    display.sendEvent( 123, new Event() );
+    
+    verifyZeroInteractions( listener );
+  }
+  
   private static void setCursorLocation( Display display, int x, int y ) {
     IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
     adapter.setCursorLocation( x, y );
   }
 
-  public static final class EnsureIdEntryPoint implements IEntryPoint {
+  public static class EnsureIdEntryPoint implements IEntryPoint {
     public int createUI() {
       Display display = new Display();
       Shell shell = new Shell( display );

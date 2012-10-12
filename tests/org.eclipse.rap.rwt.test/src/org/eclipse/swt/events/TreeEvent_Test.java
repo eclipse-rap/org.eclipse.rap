@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,52 +11,25 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
+import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Widget;
 
 public class TreeEvent_Test extends TestCase {
 
-  private static final String TREE_EXPANDED = "treeExpanded";
-  private static final String TREE_COLLAPSED = "treeCollapsed";
-  private String log = "";
-
-  protected void setUp() throws Exception {
-    Fixture.setUp();
+  public void testUntypedEventConstructor() {
+    Event event = new Event();
+    event.display = mock( Display.class );
+    event.widget = mock( Widget.class );
+    event.time = 7;
+    event.data = new Object();
+    
+    TreeEvent treeEvent = new TreeEvent( event );
+    
+    EventTestHelper.assertFieldsEqual( treeEvent, event );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
-
-  public void testAddRemoveClosedListener() {
-    TreeListener listener = new TreeListener() {
-
-      public void treeCollapsed( TreeEvent e ) {
-        log += TREE_COLLAPSED;
-      }
-
-      public void treeExpanded( TreeEvent e ) {
-        log += TREE_EXPANDED;
-      }
-    };
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-    tree.addTreeListener( listener );
-    log = "";
-    TreeEvent event = new TreeEvent( tree, item, TreeEvent.TREE_COLLAPSED );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    event.processEvent();
-    assertEquals( TREE_COLLAPSED, log );
-    log = "";
-    event = new TreeEvent( tree, item, TreeEvent.TREE_EXPANDED );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    event.processEvent();
-    assertEquals( TREE_EXPANDED, log );
-  }
 }

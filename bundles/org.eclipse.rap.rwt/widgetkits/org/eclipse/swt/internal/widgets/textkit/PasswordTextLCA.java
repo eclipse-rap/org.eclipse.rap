@@ -30,6 +30,7 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
   void readData( Text text ) {
     TextLCAUtil.readTextAndSelection( text );
     ControlLCAUtil.processSelection( text, null, false );
+    ControlLCAUtil.processDefaultSelection( text, null );
     ControlLCAUtil.processEvents( text );
     ControlLCAUtil.processKeyEvents( text );
     ControlLCAUtil.processMenuDetect( text );

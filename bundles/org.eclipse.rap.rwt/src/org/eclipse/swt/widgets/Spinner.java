@@ -329,8 +329,7 @@ public class Spinner extends Composite {
   public void setSelection( int value ) {
     checkWidget();
     selection = Math.min( Math.max( minimum, value ), maximum );
-    ModifyEvent modifyEvent = new ModifyEvent( this );
-    modifyEvent.processEvent();
+    notifyListeners( SWT.Modify, new Event() );
   }
 
   /**

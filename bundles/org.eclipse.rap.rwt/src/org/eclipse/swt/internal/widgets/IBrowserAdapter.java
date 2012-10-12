@@ -17,6 +17,7 @@ import org.eclipse.swt.browser.BrowserFunction;
 public interface IBrowserAdapter {
 
   String getText();
+  void sendProgressCompletedEvent();
 
   String getExecuteScript();
   void setExecuteResult( boolean executeResult, Object evalResult );
@@ -26,6 +27,5 @@ public interface IBrowserAdapter {
   void resetUrlChanged();
 
   BrowserFunction[] getBrowserFunctions();
-
   void evaluateNonBlocking( String script, BrowserCallback browserCallback );
 }

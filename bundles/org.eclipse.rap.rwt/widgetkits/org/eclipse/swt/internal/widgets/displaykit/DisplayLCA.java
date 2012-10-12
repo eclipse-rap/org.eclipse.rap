@@ -15,6 +15,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsString;
 
 import java.io.IOException;
+
 import org.eclipse.rap.rwt.branding.AbstractBranding;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
@@ -32,7 +33,6 @@ import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.IWidgetLifeCycleAdapter;
@@ -358,18 +358,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static String readPropertyValue( Display display, String propertyName ) {
     return readPropertyValueAsString( getId( display ), propertyName );
-  }
-
-  private static int readIntPropertyValue( Display display, String propertyName, int defaultValue )
-  {
-    String value = readPropertyValue( display, propertyName );
-    int result;
-    if( value == null ) {
-      result = defaultValue;
-    } else {
-      result = NumberFormatUtil.parseInt( value );
-    }
-    return result;
   }
 
   private static IDisplayAdapter getDisplayAdapter( Display display ) {

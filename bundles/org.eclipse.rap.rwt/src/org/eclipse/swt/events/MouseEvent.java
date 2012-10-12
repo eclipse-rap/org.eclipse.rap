@@ -13,9 +13,7 @@ package org.eclipse.swt.events;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Widget;
 
 
 /**
@@ -45,22 +43,7 @@ public class MouseEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int MOUSE_DOWN = SWT.MouseDown;
-  public static final int MOUSE_UP = SWT.MouseUp;
-  public static final int MOUSE_DOUBLE_CLICK = SWT.MouseDoubleClick;
-
-  private static final Class LISTENER = MouseListener.class;
-
-  /**
-   * the time that the event occurred.
-   *
-   * NOTE: This field is an unsigned integer and should
-   * be AND'ed with 0xFFFFFFFFL so that it can be treated
-   * as a signed long.
-   *
-   * @since 1.2
-   */
-  public int time;
+  private static final int[] EVENT_TYPES = { SWT.MouseDown, SWT.MouseUp, SWT.MouseDoubleClick };
 
   /**
    * the button that was pressed or released; 1 for the
@@ -89,14 +72,14 @@ public class MouseEvent extends TypedEvent {
    */
   public int y;
 
-//  /**
-//   * the number times the mouse has been clicked, as defined
-//   * by the operating system; 1 for the first click, 2 for the
-//   * second click and so on.
-//   *
-//   * @since 3.3
-//   */
-//  public int count;
+  /**
+   * the number times the mouse has been clicked, as defined
+   * by the operating system; 1 for the first click, 2 for the
+   * second click and so on.
+   *
+   * @since 2.0
+   */
+  public int count;
 
   /**
    * Constructs a new instance of this class based on the
@@ -112,49 +95,7 @@ public class MouseEvent extends TypedEvent {
     y = event.y;
     button = event.button;
     stateMask = event.stateMask;
-    // TODO [rst] Pull up when bug 332976 is fixed
-    time = event.time;
-  }
-
-  /**
-   * Constructs a new instance of this class.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   *
-   * @since 1.2
-   */
-  public MouseEvent( Widget source, int id ) {
-    super( source, id );
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case MOUSE_UP:
-        ( ( MouseListener )listener ).mouseUp( this );
-        break;
-      case MOUSE_DOWN:
-        ( ( MouseListener )listener ).mouseDown( this );
-        break;
-      case MOUSE_DOUBLE_CLICK:
-        ( ( MouseListener )listener ).mouseDoubleClick( this );
-        break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
-  }
-
-  @Override
-  protected boolean allowProcessing() {
-    return EventUtil.isAccessible( widget );
+    count = event.count;
   }
 
   /**
@@ -186,7 +127,7 @@ public class MouseEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, MouseListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -195,7 +136,7 @@ public class MouseEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, MouseListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -204,15 +145,7 @@ public class MouseEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
-  }
 }

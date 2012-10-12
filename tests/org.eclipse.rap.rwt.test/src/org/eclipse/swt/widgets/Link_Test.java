@@ -11,11 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
 
@@ -102,6 +104,43 @@ public class Link_Test extends TestCase {
     assertEquals( text, deserializedLink.getText() );
   }
   
+  public void testAddSelectionListener() {
+    Link link = new Link( shell, SWT.NONE );
+
+    link.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( link.isListening( SWT.Selection ) );
+    assertTrue( link.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    Link link = new Link( shell, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    link.addSelectionListener( listener );
+
+    link.removeSelectionListener( listener );
+    
+    assertFalse( link.isListening( SWT.Selection ) );
+    assertFalse( link.isListening( SWT.DefaultSelection ) );
+  }
+
+  public void testAddSelectionListenerWithNullArgument() {
+    Link link = new Link( shell, SWT.NONE );
+    
+    try {
+      link.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveSelectionListenerWithNullArgument() {
+    Link link = new Link( shell, SWT.NONE );
+    
+    try {
+      link.removeSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );

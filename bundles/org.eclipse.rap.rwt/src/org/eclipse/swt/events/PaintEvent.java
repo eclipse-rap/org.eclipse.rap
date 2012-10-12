@@ -11,11 +11,8 @@
  *******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Widget;
 
 
 /**
@@ -26,11 +23,6 @@ import org.eclipse.swt.widgets.Widget;
  * @since 1.3
  */
 public final class PaintEvent extends TypedEvent {
-
-  private static final long serialVersionUID = 3256446919205992497L;
-
-  private static final Class LISTENER = PaintListener.class;
-  private static final int PAINT_CONTROL = 9/* SWT.Paint */;
 
   /**
    * the graphics context to use when painting that is configured to use the
@@ -79,80 +71,6 @@ public final class PaintEvent extends TypedEvent {
     width = event.width;
     height = event.height;
     count = event.count;
-  }
-
-  /**
-   * Constructs a new instance of this class.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
-  public PaintEvent( Widget widget, GC gc, Rectangle bounds ) {
-    super( widget, PAINT_CONTROL );
-    this.gc = gc;
-    x = bounds.x;
-    y = bounds.y;
-    width = bounds.width;
-    height = bounds.height;
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case PAINT_CONTROL:
-        ( ( PaintListener )listener ).paintControl( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
-  }
-
-  @Override
-  protected boolean allowProcessing() {
-    return true;
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, PaintListener listener ) {
-    addListener( adaptable, LISTENER, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, PaintListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
   }
 
   /**

@@ -13,7 +13,6 @@ package org.eclipse.swt.events;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -33,9 +32,7 @@ public final class ModifyEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int MODIFY_TEXT = SWT.Modify;
-
-  private static final Class LISTENER = ModifyListener.class;
+  private static final int[] EVENT_TYPES = { SWT.Modify };
 
   /**
    * Constructs a new instance of this class based on the
@@ -48,45 +45,12 @@ public final class ModifyEvent extends TypedEvent {
   }
 
   /**
-   * Constructs a new instance of this class.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
-  public ModifyEvent( Control source ) {
-    super( source, MODIFY_TEXT );
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case MODIFY_TEXT:
-        ( ( ModifyListener )listener ).modifyText( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
-  }
-
-  @Override
-  protected boolean allowProcessing() {
-    return true;
-  }
-
-  /**
    * @since 2.0
    * @deprecated not part of the API, do not use in application code
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, ModifyListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -95,7 +59,7 @@ public final class ModifyEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, ModifyListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -104,15 +68,7 @@ public final class ModifyEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
-  }
 }

@@ -1,14 +1,4 @@
-/*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *    EclipseSource - initial API and implementation
- ******************************************************************************/
-package org.eclipse.rap.rwt.widgets;
+package org.eclipse.rap.rwt.internal.widgets;
 
 
 import static org.mockito.Mockito.mock;
@@ -23,7 +13,6 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rap.rwt.events.BrowserHistoryListener;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.internal.widgets.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -38,6 +27,7 @@ import org.mockito.ArgumentCaptor;
 public class BrowserHistoryImpl_Test extends TestCase {
 
   private static final String TYPE = "rwt.client.BrowserHistory";
+  
   private Display display;
   private BrowserHistoryImpl history;
 
@@ -55,23 +45,34 @@ public class BrowserHistoryImpl_Test extends TestCase {
   }
 
   public void testCreateEntry() {
-    try {
-      history.createEntry( null, "name" );
-      fail( "BrowserHistory#mark must not allow id == null" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+    history.createEntry( "id", "text" );
+    
+    assertEquals( 1, history.getEntries().length );
+    assertEquals( "id", history.getEntries()[ 0 ].id );
+    assertEquals( "text", history.getEntries()[ 0 ].text );
+  }
+  
+  public void testCreateEntryWithNullText() {
+    history.createEntry( "id", null );
+    
+    assertEquals( 1, history.getEntries().length );
+    assertEquals( "id", history.getEntries()[ 0 ].id );
+    assertNull( history.getEntries()[ 0 ].text );
+  }
+  
+  public void testCreateEntryWithEmptyId() {
     try {
       history.createEntry( "", "name" );
-      fail( "BrowserHistory#mark must not id to be an empty string" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+      fail();
+    } catch( IllegalArgumentException expected ) {
     }
+  }
+  
+  public void testCreateEntryWithNullId() {
     try {
-      history.createEntry( null, null );
-      fail( "BrowserHistory#mark must not allow null for name or title" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+      history.createEntry( null, "name" );
+      fail();
+    } catch( IllegalArgumentException expected ) {
     }
   }
 

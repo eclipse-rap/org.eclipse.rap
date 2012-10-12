@@ -10,57 +10,43 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class MenuDetectEvent_Test extends TestCase {
 
   private Display display;
-  private Shell shell;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
-    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
 
-  public void testCopyFieldsFromUntypedEvent() {
-    final List<MenuDetectEvent> log = new ArrayList<MenuDetectEvent>();
-    Button button = new Button( shell, SWT.PUSH );
-    button.addMenuDetectListener( new MenuDetectListener() {
-      public void menuDetected( MenuDetectEvent event ) {
-        log.add( event );
-      }
-    } );
-    Object data = new Object();
+  public void testUntypedEventConstructor() throws Exception {
     Event event = new Event();
+    event.display = display;
+    event.widget = mock( Widget.class );
+    event.time = 4325;
     event.x = 10;
     event.y = 20;
     event.doit = true;
-    event.data = data;
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    button.notifyListeners( SWT.MenuDetect, event );
-    MenuDetectEvent menuDetectEvent = log.get( 0 );
-    assertSame( button, menuDetectEvent.getSource() );
-    assertSame( button, menuDetectEvent.widget );
-    assertSame( display, menuDetectEvent.display );
-    assertSame( data, menuDetectEvent.data );
-    assertEquals( event.x, menuDetectEvent.x );
-    assertEquals( event.y, menuDetectEvent.y );
-    assertEquals( event.doit, menuDetectEvent.doit );
-    assertEquals( SWT.MenuDetect, menuDetectEvent.getID() );
+    event.data = new Object();
+    
+    MenuDetectEvent menuDeteectEvent = new MenuDetectEvent( event );
+    
+    EventTestHelper.assertFieldsEqual( menuDeteectEvent, event );
   }
+
 }

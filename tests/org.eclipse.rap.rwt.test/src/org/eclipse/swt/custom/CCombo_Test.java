@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -18,9 +20,16 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.TypedEvent;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 
 /*
@@ -412,7 +421,7 @@ public class CCombo_Test extends TestCase {
 
   public void testAddModifyListener() {
     CCombo combo = new CCombo( shell, SWT.NONE );
-    combo.setItems (new String [] {"A-1", "B-1", "C-1"});
+    combo.setItems( new String [] { "A-1", "B-1", "C-1" } );
     ModifyListener listener = new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
         listenerCalled = true;
@@ -473,6 +482,14 @@ public class CCombo_Test extends TestCase {
       fail( "removeModifyListener must not allow null listener" );
     } catch( IllegalArgumentException e ) {
       // expected
+    }
+  }
+
+  public void testAddModifyListenerWithNullArgument() {
+    CCombo combo = new CCombo( shell, SWT.NONE );
+    try {
+      combo.addModifyListener( null );
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -539,6 +556,48 @@ public class CCombo_Test extends TestCase {
     }
   }
 
+  public void testAddModifyListenerRegistersUntypedEvents() {
+    CCombo combo = new CCombo( shell, SWT.NONE );
+    combo.addModifyListener( mock( ModifyListener.class ) );
+  
+    assertTrue( combo.isListening( SWT.Modify ) );
+  }
+
+  public void testRemoveModifyListenerUnregistersUntypedEvents() {
+    CCombo combo = new CCombo( shell, SWT.NONE );
+    ModifyListener listener = mock( ModifyListener.class );
+    combo.addModifyListener( listener );
+
+    combo.removeModifyListener( listener );
+    
+    assertFalse( combo.isListening( SWT.Modify ) );
+  }
+  
+  public void testAddVerifyListenerWithNullArgument() {
+    CCombo combo = new CCombo( shell, SWT.NONE );
+    try {
+      combo.addVerifyListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testAddVerifyListenerRegistersUntypedEvents() {
+    CCombo combo = new CCombo( shell, SWT.NONE );
+    combo.addVerifyListener( mock( VerifyListener.class ) );
+    
+    assertTrue( combo.isListening( SWT.Verify ) );
+  }
+  
+  public void testRemoveVerifyListenerUnregistersUntypedEvents() {
+    CCombo combo = new CCombo( shell, SWT.NONE );
+    VerifyListener listener = mock( VerifyListener.class );
+    combo.addVerifyListener( listener );
+    
+    combo.removeVerifyListener( listener );
+    
+    assertFalse( combo.isListening( SWT.Verify ) );
+  }
+  
   public void testVerifyEvent() {
     VerifyListener verifyListener;
     final java.util.List<TypedEvent> log = new ArrayList<TypedEvent>();
@@ -658,7 +717,7 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testSetTextAndSelection() {
-    final CCombo combo = new CCombo( shell, SWT.NONE );
+    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test1" );
     combo.add( "test2" );
@@ -667,7 +726,9 @@ public class CCombo_Test extends TestCase {
         event.text = event.text + "2";
       }
     } );
+    
     combo.setText( "test" );
+    
     assertEquals( 2, combo.getSelectionIndex() );
   }
 
@@ -711,4 +772,33 @@ public class CCombo_Test extends TestCase {
     combo.select( 2 );
     assertEquals( 2, combo.getSelectionIndex() );
   }
+  
+  public void testAddSelectionListener() {
+    CCombo combo = new CCombo( shell, SWT.NONE );
+
+    combo.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( combo.isListening( SWT.Selection ) );
+    assertTrue( combo.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    CCombo combo = new CCombo( shell, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    combo.addSelectionListener( listener );
+
+    combo.removeSelectionListener( listener );
+    
+    assertFalse( combo.isListening( SWT.Selection ) );
+    assertFalse( combo.isListening( SWT.DefaultSelection ) );
+  }
+
+  public void testAddSelectionListenerWithNullArgument() {
+    CCombo combo = new CCombo( shell, SWT.NONE );
+    try {
+      combo.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
 }

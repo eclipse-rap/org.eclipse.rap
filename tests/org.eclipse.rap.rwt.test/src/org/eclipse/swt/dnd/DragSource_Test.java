@@ -38,7 +38,9 @@ public class DragSource_Test extends TestCase {
   public void testAddDragListener() {
     DragSource dragSource = new DragSource( shell, DND.DROP_DEFAULT );
     assertEquals( 0, dragSource.getDragListeners().length );
+
     dragSource.addDragListener( new DragSourceAdapter() );
+    
     assertEquals( 1, dragSource.getDragListeners().length );
   }
 
@@ -46,7 +48,9 @@ public class DragSource_Test extends TestCase {
     DragSource dragSource = new DragSource( shell, DND.DROP_DEFAULT );
     DragSourceAdapter listener = new DragSourceAdapter();
     dragSource.addDragListener( listener );
+    
     dragSource.removeDragListener( listener );
+    
     assertEquals( 0, dragSource.getDragListeners().length );
   }
 

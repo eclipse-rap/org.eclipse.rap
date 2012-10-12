@@ -11,10 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.widgets.EventUtil;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -92,10 +88,6 @@ public final class TraverseEvent extends KeyEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int KEY_TRAVERSED = SWT.Traverse;
-
-  private static final Class LISTENER = TraverseListener.class;
-
   /**
    * The traversal type.
    * <p>
@@ -138,10 +130,6 @@ public final class TraverseEvent extends KeyEvent {
     detail = e.detail;
   }
 
-  public TraverseEvent( Control source ) {
-    super( source, KEY_TRAVERSED );
-  }
-
   /**
    * Returns a string containing a concise, human-readable description of the
    * receiver.
@@ -157,51 +145,4 @@ public final class TraverseEvent extends KeyEvent {
            + "}";
   }
 
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case KEY_TRAVERSED:
-        ( ( TraverseListener )listener ).keyTraversed( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
-  }
-
-  @Override
-  protected boolean allowProcessing() {
-    return EventUtil.isAccessible( widget );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, TraverseListener listener ) {
-    addListener( adaptable, LISTENER, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, TraverseListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
-  }
 }

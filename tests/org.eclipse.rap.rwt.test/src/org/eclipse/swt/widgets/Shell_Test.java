@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -792,5 +794,38 @@ public class Shell_Test extends TestCase {
     Shell deserializedShell = Fixture.serializeAndDeserialize( shell );
 
     assertEquals( shell.getText(), deserializedShell.getText() );
+  }
+  
+  public void testAddShellListener() {
+    shell.addShellListener( mock( ShellListener.class ) );
+    
+    assertTrue( shell.isListening( SWT.Activate ) );
+    assertTrue( shell.isListening( SWT.Deactivate ) );
+    assertTrue( shell.isListening( SWT.Close ) );
+  }
+
+  public void testRemoveShellListener() {
+    ShellListener listener = mock( ShellListener.class );
+    shell.addShellListener( listener );
+
+    shell.removeShellListener( listener );
+    
+    assertFalse( shell.isListening( SWT.Activate ) );
+    assertFalse( shell.isListening( SWT.Deactivate ) );
+    assertFalse( shell.isListening( SWT.Close ) );
+  }
+
+  public void testAddShellListenerWithNullArgument() {
+    try {
+      shell.addShellListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveShellListenerWithNullArgument() {
+    try {
+      shell.removeShellListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 }

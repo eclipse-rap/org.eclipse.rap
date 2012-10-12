@@ -11,11 +11,8 @@
  *******************************************************************************/
 package org.eclipse.swt.dnd;
 
-import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.internal.widgets.EventUtil;
-import org.eclipse.swt.widgets.Widget;
 
 
 /**
@@ -28,12 +25,6 @@ import org.eclipse.swt.widgets.Widget;
 public class DragSourceEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
-
-  public static final int DRAG_START = DND.DragStart;
-  public static final int DRAG_END = DND.DragEnd;
-  public static final int DRAG_SET_DATA = DND.DragSetData;
-
-  private static final Class LISTENER = DragSourceListener.class;
 
   /**
    * The operation that was performed.
@@ -117,17 +108,37 @@ public class DragSourceEvent extends TypedEvent {
   public int offsetY;
 
   /**
-   * the time that the event occurred.
+   * Constructs a new instance of this class based on the
+   * information in the given untyped event.
    *
-   * NOTE: This field is an unsigned integer and should
-   * be AND'ed with 0xFFFFFFFFL so that it can be treated
-   * as a signed long.
+   * @param e the untyped event containing the information
+   * @since 2.0
    */
-  // TODO [rh] in SWT, the field 'time' is declared in TypedEvent
-  public int time;
+  public DragSourceEvent( DNDEvent e ) {
+    super( e );
+    this.data = e.data;
+    this.detail = e.detail;
+    this.doit = e.doit;
+    this.dataType = e.dataType;
+    this.x = e.x;
+    this.y = e.y;
+    this.image = e.image;
+    this.offsetX = e.offsetX;
+    this.offsetY = e.offsetY;
+  }
 
-  public DragSourceEvent( Widget widget, int id ) {
-    super( widget, id );
+  void updateEvent( DNDEvent e ) {
+    e.widget = this.widget;
+    e.time = this.time;
+    e.data = this.data;
+    e.detail = this.detail;
+    e.doit = this.doit;
+    e.dataType = this.dataType;
+    e.x = this.x;
+    e.y = this.y;
+    e.image = this.image;
+    e.offsetX = this.offsetX;
+    e.offsetY = this.offsetY;
   }
 
   @Override
@@ -143,66 +154,4 @@ public class DragSourceEvent extends TypedEvent {
            + "}";
   }
 
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case DRAG_START:
-        ( ( DragSourceListener )listener ).dragStart( this );
-      break;
-      case DRAG_END:
-        ( ( DragSourceListener )listener ).dragFinished( this );
-      break;
-      case DRAG_SET_DATA:
-        ( ( DragSourceListener )listener ).dragSetData( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected boolean allowProcessing() {
-    return EventUtil.isAccessible( widget );
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, DragSourceListener listener ) {
-    addListener( adaptable, LISTENER, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, DragSourceListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
-  }
 }

@@ -22,13 +22,23 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.*;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabFolderEvent;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
+import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -115,16 +125,13 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
       folder.setMaximized( Boolean.valueOf( value ).booleanValue() );
     }
     if( WidgetLCAUtil.wasEventSent( folder, ClientMessageConst.EVENT_FOLDER_MINIMIZED ) ) {
-      CTabFolderEvent event = CTabFolderLCA.minimize( folder );
-      event.processEvent();
+      folder.notifyListeners( EventTypes.CTAB_FOLDER_MINIMIZE, new Event() );
     }
     if( WidgetLCAUtil.wasEventSent( folder, ClientMessageConst.EVENT_FOLDER_MAXIMIZED ) ) {
-      CTabFolderEvent event = CTabFolderLCA.maximize( folder );
-      event.processEvent();
+      folder.notifyListeners( EventTypes.CTAB_FOLDER_MAXIMIZE, new Event() );
     }
     if( WidgetLCAUtil.wasEventSent( folder, ClientMessageConst.EVENT_FOLDER_RESTORED ) ) {
-      CTabFolderEvent event = CTabFolderLCA.restore( folder );
-      event.processEvent();
+      folder.notifyListeners( EventTypes.CTAB_FOLDER_RESTORE, new Event() );
     }
     // TODO [rh] it's a hack: necessary because folder.setSelection changes
     //      the visibility of tabItem.control; but preserveValues stores
@@ -137,15 +144,15 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
           folder.setSelection( item );
           preserveProperty( folder, PROP_SELECTION, folder.getSelection() );
           ControlLCAUtil.processSelection( folder, item, false );
+          ControlLCAUtil.processDefaultSelection( folder, item );
         }
       } );
     }
     if( WidgetLCAUtil.wasEventSent( folder, ClientMessageConst.EVENT_SHOW_LIST ) ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          CTabFolderEvent event = CTabFolderLCA.showList( folder );
-          event.processEvent();
-          if( event.doit ) {
+          boolean doit = sendShowListEvent( folder );
+          if( doit ) {
             ICTabFolderAdapter adapter = getCTabFolderAdapter( folder );
             adapter.showListMenu();
           }
@@ -267,27 +274,16 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   ///////////////
   // Event helper
 
-  private static CTabFolderEvent showList( CTabFolder folder ) {
-    CTabFolderEvent result = new CTabFolderEvent( folder, CTabFolderEvent.SHOW_LIST );
+  private static boolean sendShowListEvent( CTabFolder folder ) {
+    Event event = new Event();
     Rectangle chevronRect = getChevronBounds( folder );
-    result.x = chevronRect.x;
-    result.y = chevronRect.y;
-    result.height = chevronRect.height;
-    result.width = chevronRect.width;
-    result.doit = true;
-    return result;
-  }
-
-  private static CTabFolderEvent restore( CTabFolder tabFolder ) {
-    return new CTabFolderEvent( tabFolder, CTabFolderEvent.RESTORE );
-  }
-
-  private static CTabFolderEvent maximize( CTabFolder tabFolder ) {
-    return new CTabFolderEvent( tabFolder, CTabFolderEvent.MAXIMIZE );
-  }
-
-  private static CTabFolderEvent minimize( CTabFolder tabFolder ) {
-    return new CTabFolderEvent( tabFolder, CTabFolderEvent.MINIMIZE );
+    event.x = chevronRect.x;
+    event.y = chevronRect.y;
+    event.height = chevronRect.height;
+    event.width = chevronRect.width;
+    event.doit = true;
+    folder.notifyListeners( EventTypes.CTAB_FOLDER_SHOW_LIST, event );
+    return event.doit;
   }
 
   //////////////////

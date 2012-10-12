@@ -373,8 +373,7 @@ public class Menu extends Widget {
       if( this.visible != visible ) {
         this.visible = visible;
         if( visible ) {
-          MenuEvent event = new MenuEvent( this, MenuEvent.MENU_SHOWN );
-          event.processEvent();
+          notifyListeners( SWT.Show, new Event() );
         }
       }
     }

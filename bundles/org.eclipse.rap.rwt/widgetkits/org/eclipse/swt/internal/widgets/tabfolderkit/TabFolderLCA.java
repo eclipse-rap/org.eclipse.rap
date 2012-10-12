@@ -96,6 +96,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
           public void run() {
             folder.setSelection( item );
             ControlLCAUtil.processSelection( folder, item, false );
+            ControlLCAUtil.processDefaultSelection( folder, item );
           }
         } );
       }

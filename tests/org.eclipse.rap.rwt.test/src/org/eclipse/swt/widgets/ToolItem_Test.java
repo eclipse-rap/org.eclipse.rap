@@ -9,16 +9,23 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionListener;
 
 
 public class ToolItem_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display , SWT.NONE );    
   }
 
   protected void tearDown() throws Exception {
@@ -26,8 +33,6 @@ public class ToolItem_Test extends TestCase {
   }
 
   public void testText() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem item = new ToolItem( toolbar, SWT.NONE );
     ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
@@ -46,8 +51,6 @@ public class ToolItem_Test extends TestCase {
   }
 
   public void testImage() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem item = new ToolItem( toolbar, SWT.NONE );
     item.setImage( null );
@@ -55,8 +58,6 @@ public class ToolItem_Test extends TestCase {
   }
 
   public void testEnabled() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem item = new ToolItem( toolbar, SWT.NONE );
     ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
@@ -83,8 +84,6 @@ public class ToolItem_Test extends TestCase {
   }
 
   public void testSeparatorWithControl() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem item = new ToolItem( toolbar, SWT.NONE );
     ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
@@ -137,8 +136,6 @@ public class ToolItem_Test extends TestCase {
   }
   
   public void testSeparatorWithControlBounds() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );    
     ToolBar toolBar = new ToolBar( shell, SWT.NONE );
     ToolItem push = new ToolItem( toolBar, SWT.PUSH );
     ToolItem separator = new ToolItem( toolBar, SWT.SEPARATOR );
@@ -151,8 +148,6 @@ public class ToolItem_Test extends TestCase {
   }
   
   public void testSeparatorWidthHorizontal() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );    
     ToolBar toolBar = new ToolBar( shell, SWT.NONE );
     ToolItem push = new ToolItem( toolBar, SWT.PUSH );
     ToolItem separator = new ToolItem( toolBar, SWT.SEPARATOR );
@@ -167,8 +162,6 @@ public class ToolItem_Test extends TestCase {
   }
   
   public void testSeparatorWidthVertical() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );    
     ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
     ToolItem push = new ToolItem( toolBar, SWT.PUSH );
     ToolItem separator = new ToolItem( toolBar, SWT.SEPARATOR );
@@ -183,20 +176,16 @@ public class ToolItem_Test extends TestCase {
   }
   
   public void testPreferredHeight() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );    
     ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
     ToolItem push = new ToolItem( toolBar, SWT.PUSH );
     assertEquals( 22, push.getPreferredHeight() );
     push.setText( "Hello" );
     assertEquals( 30, push.getPreferredHeight() );
-    push.setImage(  display.getSystemImage( SWT.ICON_ERROR ) );
+    push.setImage( display.getSystemImage( SWT.ICON_ERROR ) );
     assertEquals( 48, push.getPreferredHeight() );    
   }
   
   public void testPreferredWidth() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );    
     ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
     ToolItem push = new ToolItem( toolBar, SWT.PUSH );
     assertEquals( 16, push.getPreferredWidth() );
@@ -207,8 +196,6 @@ public class ToolItem_Test extends TestCase {
   }
   
   public void testDropDownPreferredWidth() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );    
     ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
     ToolItem push = new ToolItem( toolBar, SWT.DROP_DOWN );
     assertEquals( 32, push.getPreferredWidth() );
@@ -216,5 +203,47 @@ public class ToolItem_Test extends TestCase {
     assertEquals( 64, push.getPreferredWidth() );
     push.setText( "x" );
     assertTrue( push.getPreferredWidth() > 60 );
+  }
+
+  public void testAddSelectionListener() {
+    ToolBar toolBar = new ToolBar( shell, SWT.NONE);
+    ToolItem item = new ToolItem( toolBar, SWT.NONE );
+
+    item.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( item.isListening( SWT.Selection ) );
+    assertTrue( item.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    ToolBar toolBar = new ToolBar( shell, SWT.NONE);
+    ToolItem item = new ToolItem( toolBar, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    item.addSelectionListener( listener );
+
+    item.removeSelectionListener( listener );
+    
+    assertFalse( item.isListening( SWT.Selection ) );
+    assertFalse( item.isListening( SWT.DefaultSelection ) );
+  }
+
+  public void testAddSelectionListenerWithNullArgument() {
+    ToolBar toolBar = new ToolBar( shell, SWT.NONE);
+    ToolItem item = new ToolItem( toolBar, SWT.NONE );
+    
+    try {
+      item.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveSelectionListenerWithNullArgument() {
+    ToolBar toolBar = new ToolBar( shell, SWT.NONE);
+    ToolItem item = new ToolItem( toolBar, SWT.NONE );
+    
+    try {
+      item.removeSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 }

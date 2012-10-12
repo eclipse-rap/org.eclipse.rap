@@ -18,11 +18,19 @@ import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
-import org.eclipse.swt.internal.events.SetDataEvent;
-import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
+import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
+import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
+import org.eclipse.swt.internal.widgets.ITableAdapter;
+import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
 
 
@@ -531,9 +539,7 @@ public class Table extends Composite {
         for( int i = 0; i < seen.length; i++ ) {
           if( oldOrder[ i ] != columnOrder[ i ] ) {
             TableColumn column = columnHolder.getItem( columnOrder[ i ] );
-            int controlMoved = ControlEvent.CONTROL_MOVED;
-            ControlEvent controlEvent = new ControlEvent( column, controlMoved );
-            controlEvent.processEvent();
+            column.notifyListeners( SWT.Move, new Event() );
           }
         }
       }
@@ -2319,8 +2325,10 @@ public class Table extends Composite {
     boolean virtual = ( style & SWT.VIRTUAL ) != 0;
     if( virtual && !item.cached && index >= 0 && index < itemCount ) {
       item.cached = true;
-      SetDataEvent event = new SetDataEvent( Table.this, item, index );
-      event.processEvent();
+      Event event = new Event();
+      event.item = item;
+      event.index = index;
+      notifyListeners( SWT.SetData, event );
       // widget could be disposed at this point
       if( isDisposed() || item.isDisposed() ) {
         result = false;

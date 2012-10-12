@@ -16,7 +16,6 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -161,7 +160,12 @@ public class TreeColumn extends Item {
    */
   public void addControlListener( ControlListener listener ) {
     checkWidget();
-    ControlEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Move, typedListener );
+    addListener( SWT.Resize, typedListener );
   }
 
   /**
@@ -393,7 +397,11 @@ public class TreeColumn extends Item {
    */
   public void removeControlListener( ControlListener listener ) {
     checkWidget();
-    ControlEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Move, listener );
+    removeListener( SWT.Resize, listener );
   }
 
   /**
@@ -535,13 +543,11 @@ public class TreeColumn extends Item {
    *              </ul>
    */
   public void setWidth( int value ) {
-    // TODO: [bm] add support for ellipsis
     checkWidget();
     if( value >= 0 && width != value ) {
       width = value;
       parent.updateScrollBars();
-      ControlEvent event = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
-      event.processEvent();
+      notifyListeners( SWT.Resize, new Event() );
       processNextColumnsMoveEvent();
       packed = false;
     }
@@ -590,8 +596,7 @@ public class TreeColumn extends Item {
       if( column == this ) {
         found = true;
       } else if( found ) {
-        ControlEvent event = new ControlEvent( column, ControlEvent.CONTROL_MOVED );
-        event.processEvent();
+        column.notifyListeners( SWT.Move, new Event() );
       }
     }
   }

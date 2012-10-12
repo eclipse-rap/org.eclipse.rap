@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -19,7 +21,12 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.TypedEvent;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Point;
 
 
@@ -564,6 +571,56 @@ public class Combo_Test extends TestCase {
     }
   }
 
+  public void testAddModifyListenerWithNullArgument() {
+    Combo combo = new Combo( shell, SWT.NONE );
+    try {
+      combo.addModifyListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testAddModifyListenerRegistersUntypedEvents() {
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.addModifyListener( mock( ModifyListener.class ) );
+  
+    assertTrue( combo.isListening( SWT.Modify ) );
+  }
+
+  public void testRemoveModifyListenerUnregistersUntypedEvents() {
+    Combo combo = new Combo( shell, SWT.NONE );
+    ModifyListener listener = mock( ModifyListener.class );
+    combo.addModifyListener( listener );
+
+    combo.removeModifyListener( listener );
+    
+    assertFalse( combo.isListening( SWT.Modify ) );
+  }
+  
+  public void testAddVerifyListenerWithNullArgument() {
+    Combo combo = new Combo( shell, SWT.NONE );
+    try {
+      combo.addVerifyListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testAddVerifyListenerRegistersUntypedEvents() {
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.addVerifyListener( mock( VerifyListener.class ) );
+    
+    assertTrue( combo.isListening( SWT.Verify ) );
+  }
+  
+  public void testRemoveVerifyListenerUnregistersUntypedEvents() {
+    Combo combo = new Combo( shell, SWT.NONE );
+    VerifyListener listener = mock( VerifyListener.class );
+    combo.addVerifyListener( listener );
+    
+    combo.removeVerifyListener( listener );
+    
+    assertFalse( combo.isListening( SWT.Verify ) );
+  }
+  
   public void testVerifyEvent() {
     VerifyListener verifyListener;
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -734,5 +791,33 @@ public class Combo_Test extends TestCase {
 
     combo.select( 2 );
     assertEquals( 2, combo.getSelectionIndex() );
+  }
+
+  public void testAddSelectionListener() {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    combo.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( combo.isListening( SWT.Selection ) );
+    assertTrue( combo.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testAddSelectionListenerWithNullArgument() {
+    Combo combo = new Combo( shell, SWT.NONE );
+    try {
+      combo.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testRemoveSelectionListener() {
+    Combo combo = new Combo( shell, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    combo.addSelectionListener( listener );
+
+    combo.removeSelectionListener( listener );
+    
+    assertFalse( combo.isListening( SWT.Selection ) );
+    assertFalse( combo.isListening( SWT.DefaultSelection ) );
   }
 }

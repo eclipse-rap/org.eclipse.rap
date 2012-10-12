@@ -92,6 +92,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 				}
 
 				public void mouseDoubleClick(MouseEvent e) {
+				  e.count = 1;
 					handleMouseDown(e);
 				}
 			});

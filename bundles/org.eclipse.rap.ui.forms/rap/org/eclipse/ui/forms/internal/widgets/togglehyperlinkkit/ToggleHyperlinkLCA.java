@@ -61,6 +61,7 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
     // It is not neccessary to read the expanded state as a HyperlinkListener
     // will always be registered (see ToggleHyperlink).
     ControlLCAUtil.processSelection( widget, null, false );
+    ControlLCAUtil.processDefaultSelection( widget, null );
   }
 
   public void renderInitialization( Widget widget ) throws IOException {

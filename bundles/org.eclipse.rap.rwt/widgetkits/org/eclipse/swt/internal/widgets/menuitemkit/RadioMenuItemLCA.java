@@ -13,10 +13,7 @@ package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.internal.events.DeselectionEvent;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.widgets.MenuItem;
 
@@ -31,7 +28,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
   @Override
   void readData( MenuItem item ) {
     readSelection( item );
-    processSelectionEvent( item ); // order is relevant
+    EventLCAUtil.processRadioSelection( item, item.getSelection() ); // order is relevant
     WidgetLCAUtil.processHelp( item );
     MenuItemLCAUtil.processArmEvent( item );
   }
@@ -55,20 +52,6 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
       item.setSelection( Boolean.valueOf( value ).booleanValue() );
     }
     return value != null;
-  }
-
-  private static void processSelectionEvent( MenuItem item ) {
-    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
-    if( WidgetLCAUtil.wasEventSent( item, eventName ) ) {
-      SelectionEvent event;
-      if( item.getSelection() ) {
-        event = new SelectionEvent( item, null, SelectionEvent.WIDGET_SELECTED );
-      } else {
-        event = new DeselectionEvent( item );
-      }
-      event.stateMask = EventLCAUtil.readStateMask( item, eventName );
-      event.processEvent();
-    }
   }
 
 }

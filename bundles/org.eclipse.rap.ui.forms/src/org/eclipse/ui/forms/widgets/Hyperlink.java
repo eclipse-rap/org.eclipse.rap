@@ -11,12 +11,13 @@
 package org.eclipse.ui.forms.widgets;
 
 import org.eclipse.swt.SWT;
-//import org.eclipse.swt.accessibility.*;
+import org.eclipse.swt.accessibility.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Composite;
-//import org.eclipse.ui.forms.FormColors;
-import org.eclipse.ui.internal.forms.widgets.*;
 import org.eclipse.ui.forms.internal.widgets.IHyperlinkAdapter;
+import org.eclipse.ui.internal.forms.widgets.FormUtil;
+//import org.eclipse.swt.accessibility.*;
+//import org.eclipse.ui.forms.FormColors;
 
 /**
  * Hyperlink is a concrete implementation of the abstract base class that draws
@@ -58,14 +59,14 @@ public class Hyperlink extends AbstractHyperlink {
 	 */
 	public Hyperlink(Composite parent, int style) {
 		super(parent, style);
-// RAP [rh] missing accessibility support
-//		initAccessible();
+		initAccessible();
 		text = ""; //$NON-NLS-1$
 	}
 
   // RAP [rh] getAdapter implementation
-  public Object getAdapter( final Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( final Class<T> adapter ) {
+    T result;
     if( adapter == IHyperlinkAdapter.class ) {
       if( hyperlinkAdapter == null ) {
         hyperlinkAdapter = new IHyperlinkAdapter() {
@@ -92,63 +93,62 @@ public class Hyperlink extends AbstractHyperlink {
           }
         };
       }
-      result = hyperlinkAdapter;
+      result = ( T )hyperlinkAdapter;
     } else {
       result = super.getAdapter( adapter );
     }
     return result;
   }
 
-// RAP [rh] missing accessibility support
-//	protected void initAccessible() {
-//		Accessible accessible = getAccessible();
-//		accessible.addAccessibleListener(new AccessibleAdapter() {
-//			public void getName(AccessibleEvent e) {
-//				e.result = getText();
-//				if (e.result == null)
-//					getHelp(e);
-//			}
-//
-//			public void getHelp(AccessibleEvent e) {
-//				e.result = getToolTipText();
-//			}
-//		});
-//		accessible.addAccessibleControlListener(new AccessibleControlAdapter() {
-//			public void getChildAtPoint(AccessibleControlEvent e) {
-//				Point pt = toControl(new Point(e.x, e.y));
-//				e.childID = (getBounds().contains(pt)) ? ACC.CHILDID_SELF
-//						: ACC.CHILDID_NONE;
-//			}
-//
-//			public void getLocation(AccessibleControlEvent e) {
-//				Rectangle location = getBounds();
-//				Point pt = toDisplay(new Point(location.x, location.y));
-//				e.x = pt.x;
-//				e.y = pt.y;
-//				e.width = location.width;
-//				e.height = location.height;
-//			}
-//
-//			public void getChildCount(AccessibleControlEvent e) {
-//				e.detail = 0;
-//			}
-//
-//			public void getRole(AccessibleControlEvent e) {
-//				e.detail = ACC.ROLE_LINK;
-//			}
-//
-//			public void getDefaultAction (AccessibleControlEvent e) {
-//				e.result = SWT.getMessage ("SWT_Press"); //$NON-NLS-1$
-//			}
-//
-//			public void getState(AccessibleControlEvent e) {
-//				int state = ACC.STATE_NORMAL;
-//				if (Hyperlink.this.getSelection())
-//					state = ACC.STATE_SELECTED | ACC.STATE_FOCUSED;
-//				e.detail = state;
-//			}
-//		});
-//	}
+	protected void initAccessible() {
+		Accessible accessible = getAccessible();
+		accessible.addAccessibleListener(new AccessibleAdapter() {
+			public void getName(AccessibleEvent e) {
+				e.result = getText();
+				if (e.result == null)
+					getHelp(e);
+			}
+
+			public void getHelp(AccessibleEvent e) {
+				e.result = getToolTipText();
+			}
+		});
+		accessible.addAccessibleControlListener(new AccessibleControlAdapter() {
+			public void getChildAtPoint(AccessibleControlEvent e) {
+				Point pt = toControl(new Point(e.x, e.y));
+				e.childID = (getBounds().contains(pt)) ? ACC.CHILDID_SELF
+						: ACC.CHILDID_NONE;
+			}
+
+			public void getLocation(AccessibleControlEvent e) {
+				Rectangle location = getBounds();
+				Point pt = toDisplay(new Point(location.x, location.y));
+				e.x = pt.x;
+				e.y = pt.y;
+				e.width = location.width;
+				e.height = location.height;
+			}
+
+			public void getChildCount(AccessibleControlEvent e) {
+				e.detail = 0;
+			}
+
+			public void getRole(AccessibleControlEvent e) {
+				e.detail = ACC.ROLE_LINK;
+			}
+
+			public void getDefaultAction (AccessibleControlEvent e) {
+				e.result = SWT.getMessage ("SWT_Press"); //$NON-NLS-1$
+			}
+
+			public void getState(AccessibleControlEvent e) {
+				int state = ACC.STATE_NORMAL;
+				if (Hyperlink.this.getSelection())
+					state = ACC.STATE_SELECTED | ACC.STATE_FOCUSED;
+				e.detail = state;
+			}
+		});
+	}
 
 	/**
 	 * Sets the underlined state. It is not necessary to call this method when

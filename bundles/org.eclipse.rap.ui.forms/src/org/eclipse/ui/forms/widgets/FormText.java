@@ -1398,15 +1398,11 @@ public class FormText extends Canvas {
 		event.widget = this;
 		event.display = this.getDisplay();
 		event.type = SWT.Selection;
-// RAP [if] Process selection event
-//		notifyListeners(SWT.Selection, event);
-		SelectionEvent selEvent = new SelectionEvent( event );
-		selEvent.processEvent();
-// RAP [if] accessibility not supported
-//		// A listener could have caused the widget to be disposed
-//		if (!isDisposed()) {
-//		    getAccessible().selectionChanged();
-//		}
+		notifyListeners(SWT.Selection, event);
+		// A listener could have caused the widget to be disposed
+		if (!isDisposed()) {
+		    getAccessible().selectionChanged();
+		}
 	}
 
 // RAP [if] MouseMoveListener not supported

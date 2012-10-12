@@ -44,6 +44,7 @@ final class DateTimeCalendarLCA extends AbstractDateTimeLCADelegate {
                         NumberFormatUtil.parseInt( day ) );
     }
     ControlLCAUtil.processSelection( dateTime, null, true );
+    ControlLCAUtil.processDefaultSelection( dateTime, null );
     ControlLCAUtil.processEvents( dateTime );
     ControlLCAUtil.processKeyEvents( dateTime );
     ControlLCAUtil.processMenuDetect( dateTime );

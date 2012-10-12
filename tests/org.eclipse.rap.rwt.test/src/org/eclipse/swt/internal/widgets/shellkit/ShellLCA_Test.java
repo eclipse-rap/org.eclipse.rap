@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.shellkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SHELL_ACTIVATED;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -26,18 +27,37 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.events.*;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.internal.widgets.IShellAdapter;
+import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -54,6 +74,7 @@ public class ShellLCA_Test extends TestCase {
     display = new Display();
     shell = new Shell( display );
     Fixture.fakeNewRequest( display );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   @Override
@@ -179,7 +200,7 @@ public class ShellLCA_Test extends TestCase {
     Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_CLOSED, null );
     Fixture.readDataAndProcessAction( shell );
 
-    verify( listener, times( 1 ) ).shellClosed( any( ShellEvent.class ) );
+    verify( listener ).shellClosed( any( ShellEvent.class ) );
   }
 
   public void testReadDataForActiveControl() {
@@ -250,7 +271,34 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( shellBounds, shell.getBounds() );
   }
 
-  public void testLatestOpenedShellIsActivate() {
+  public void testUntypedActivateEvent() {
+    shell.open();
+    Shell otherShell = new Shell( display );
+    otherShell.open();
+    Listener listener = mock( Listener.class );
+    shell.addListener( SWT.Activate, listener );
+
+    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_ACTIVATED, null );
+    Fixture.readDataAndProcessAction( display );
+
+    verify( listener ).handleEvent( any( Event.class ) );
+  }
+
+  public void testTypedActivateEvent() {
+    shell.open();
+    Shell otherShell = new Shell( display );
+    otherShell.open();
+    ShellListener listener = mock( ShellListener.class );
+    shell.addShellListener( listener );
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_ACTIVATED, null );
+    Fixture.readDataAndProcessAction( display );
+
+    verify( listener, times( 1 ) ).shellActivated( any( ShellEvent.class ) );
+  }
+
+  public void testLatestOpenedShellIsActive() {
     shell.open();
     Shell secondShell = new Shell( display );
     secondShell.open();
@@ -275,46 +323,47 @@ public class ShellLCA_Test extends TestCase {
 
   public void testShellActivate() {
     final StringBuilder activateEventLog = new StringBuilder();
-    ActivateListener activateListener = new ActivateListener() {
-      public void activated( ActivateEvent event ) {
-        Shell shell = ( Shell )event.getSource();
-        activateEventLog.append( "activated:" + shell.getData() + "|" );
-      }
-      public void deactivated( ActivateEvent event ) {
-        Shell shell = ( Shell )event.getSource();
-        activateEventLog.append( "deactivated:" + shell.getData() + "|" );
+    Listener activateListener = new Listener() {
+      public void handleEvent( Event event ) {
+        if( event.type == SWT.Activate ) {
+          activateEventLog.append( "activated:" + ( ( Shell )event.widget ).getText() + "|" );
+        } else {
+          activateEventLog.append( "deactivated:" + ( ( Shell )event.widget ).getText() + "|" );
+        }
       }
     };
     final StringBuilder shellEventLog = new StringBuilder();
     ShellListener shellListener = new ShellAdapter() {
       @Override
       public void shellActivated( ShellEvent event ) {
-        Shell shell = ( Shell )event.getSource();
-        shellEventLog.append( "activated:" + shell.getData() + "|" );
+        shellEventLog.append( "activated:" + ( ( Shell )event.widget ).getText() + "|" );
       }
       @Override
       public void shellDeactivated( ShellEvent event ) {
-        Shell shell = ( Shell )event.getSource();
-        shellEventLog.append( "deactivated:" + shell.getData() + "|" );
+        shellEventLog.append( "deactivated:" + ( ( Shell )event.widget ).getText() + "|" );
       }
     };
     Shell shellToActivate = new Shell( display, SWT.NONE );
-    shellToActivate.setData( "shellToActivate" );
+    shellToActivate.setText( "shellToActivate" );
     shellToActivate.open();
     Shell activeShell = new Shell( display, SWT.NONE );
-    activeShell.setData( "activeShell" );
+    activeShell.setText( "activeShell" );
     activeShell.open();
     activeShell.setActive();
-    ActivateEvent.addListener( shellToActivate, activateListener );
-    ActivateEvent.addListener( activeShell, activateListener );
+    shellToActivate.addListener( SWT.Activate, activateListener );
+    shellToActivate.addListener( SWT.Deactivate, activateListener );
+    activeShell.addListener( SWT.Activate, activateListener );
+    activeShell.addListener( SWT.Deactivate, activateListener );
     shellToActivate.addShellListener( shellListener );
     activeShell.addShellListener( shellListener );
+    activateEventLog.setLength( 0 );
+    shellEventLog.setLength( 0 );
 
     Fixture.markInitialized( display );
     Fixture.markInitialized( activeShell );
     Fixture.markInitialized( shellToActivate );
 
-    Fixture.fakeNotifyOperation( getId( shellToActivate ), ClientMessageConst.EVENT_SHELL_ACTIVATED, null );
+    Fixture.fakeNotifyOperation( getId( shellToActivate ), EVENT_SHELL_ACTIVATED, null );
     Fixture.executeLifeCycleFromServerThread();
 
     assertSame( shellToActivate, display.getActiveShell() );
@@ -753,12 +802,6 @@ public class ShellLCA_Test extends TestCase {
   private static IDisplayAdapter getDisplayAdapter( Display display ) {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     return ( IDisplayAdapter )adapter;
-  }
-
-  private void fakeWidgetActivated( Control control ) {
-    Fixture.fakeNotifyOperation( getId( control ),
-                                 ClientMessageConst.EVENT_CONTROL_ACTIVATED,
-                                 null );
   }
 
   private void fakeModeAndBounds( String mode, int x, int y, int width, int heigth ) {

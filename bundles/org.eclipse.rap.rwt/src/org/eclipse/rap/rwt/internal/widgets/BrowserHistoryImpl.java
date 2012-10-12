@@ -14,19 +14,17 @@ package org.eclipse.rap.rwt.internal.widgets;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventPropertyValueAsString;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.IBrowserHistory;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rap.rwt.events.BrowserHistoryListener;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.events.Event;
-import org.eclipse.rap.rwt.internal.events.EventAdapter;
-import org.eclipse.rap.rwt.internal.events.IEventAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
@@ -43,7 +41,7 @@ import org.eclipse.swt.widgets.Display;
 
 
 public final class BrowserHistoryImpl
-  implements IBrowserHistory, PhaseListener, Adaptable, SessionStoreListener
+  implements IBrowserHistory, PhaseListener, SessionStoreListener
 {
 
   private final static String TYPE = "rwt.client.BrowserHistory";
@@ -55,12 +53,13 @@ public final class BrowserHistoryImpl
 
   private final Display display;
   private final List<HistoryEntry> entriesToAdd;
-  private IEventAdapter eventAdapter;
+  private final Collection<BrowserHistoryListener> listeners;
   private boolean hasNavigationListener;
 
   public BrowserHistoryImpl() {
     display = Display.getCurrent();
     entriesToAdd = new ArrayList<HistoryEntry>();
+    listeners = new LinkedList<BrowserHistoryListener>();
     RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( this );
     RWT.getSessionStore().addSessionStoreListener( this );
   }
@@ -69,7 +68,7 @@ public final class BrowserHistoryImpl
   // IBrowserHistory
 
   public void createEntry( String id, String text ) {
-    if( null == id ) {
+    if( id == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( id.length() == 0 ) {
@@ -79,17 +78,17 @@ public final class BrowserHistoryImpl
   }
 
   public void addBrowserHistoryListener( BrowserHistoryListener listener ) {
-    if( null == listener ) {
+    if( listener == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    BrowserHistoryEvent.addListener( this, listener );
+    listeners.add( listener );
   }
 
   public void removeBrowserHistoryListener( BrowserHistoryListener listener ) {
-    if( null == listener ) {
+    if( listener == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    BrowserHistoryEvent.removeListener( this, listener );
+    listeners.remove( listener );
   }
 
   ////////////////
@@ -122,21 +121,6 @@ public final class BrowserHistoryImpl
     return PhaseId.ANY;
   }
 
-  ////////////
-  // Adaptable
-
-  @SuppressWarnings("unchecked")
-  public <T> T getAdapter( Class<T> adapter ) {
-    T result = null;
-    if( adapter == IEventAdapter.class ) {
-      if( eventAdapter == null ) {
-        eventAdapter = new EventAdapter();
-      }
-      result = ( T )eventAdapter;
-    }
-    return result;
-  }
-
   ///////////////////////
   // SessionStoreListener
 
@@ -156,13 +140,20 @@ public final class BrowserHistoryImpl
       String entryId = readEventPropertyValueAsString( TYPE,
                                                        EVENT_HISTORY_NAVIGATED,
                                                        EVENT_HISTORY_NAVIGATED_ENTRY_ID );
-      Event evt = new BrowserHistoryEvent( this, entryId );
-      evt.processEvent();
+      BrowserHistoryEvent event = new BrowserHistoryEvent( this, entryId );
+      BrowserHistoryListener[] listener = getListeners();
+      for( int i = 0; i < listener.length; i++ ) {
+        listener[ i ].navigated( event );
+      }
     }
   }
 
+  private BrowserHistoryListener[] getListeners() {
+    return listeners.toArray( new BrowserHistoryListener[ listeners.size() ] );
+  }
+
   private void preserveNavigationListener() {
-    hasNavigationListener = BrowserHistoryEvent.hasListener( this );
+    hasNavigationListener = !listeners.isEmpty();
   }
 
   private boolean getPreservedNavigationListener() {
@@ -170,7 +161,7 @@ public final class BrowserHistoryImpl
   }
 
   private void renderNavigationListener() {
-    boolean actual = BrowserHistoryEvent.hasListener( this );
+    boolean actual = !listeners.isEmpty();
     boolean preserved = getPreservedNavigationListener();
     if( preserved != actual ) {
       ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
@@ -181,15 +172,15 @@ public final class BrowserHistoryImpl
   private void renderAdd() {
     if( !entriesToAdd.isEmpty() ) {
       Map<String, Object> properties = new HashMap<String, Object>();
-      properties.put( PROP_ENTRIES, getEntriesAsArray() );
+      properties.put( PROP_ENTRIES, entriesAsArray() );
       ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
       protocolWriter.appendCall( TYPE, METHOD_ADD, properties );
       entriesToAdd.clear();
     }
   }
 
-  private Object[] getEntriesAsArray() {
-    HistoryEntry[] entries = entriesToAdd.toArray( new HistoryEntry[ 0 ] );
+  private Object[] entriesAsArray() {
+    HistoryEntry[] entries = getEntries();
     Object[][] result = new Object[ entries.length ][ 2 ];
     for( int i = 0; i < result.length; i++ ) {
       result[ i ][ 0 ] = entries[ i ].id;
@@ -198,14 +189,18 @@ public final class BrowserHistoryImpl
     return result;
   }
 
+  HistoryEntry[] getEntries() {
+    return entriesToAdd.toArray( new HistoryEntry[ entriesToAdd.size() ] );
+  }
+
   ////////////////
   // Inner classes
 
-  private final class HistoryEntry {
-    public final String id;
-    public final String text;
+  final class HistoryEntry {
+    final String id;
+    final String text;
 
-    public HistoryEntry( String id, String text ) {
+    HistoryEntry( String id, String text ) {
       this.id = id;
       this.text = text;
     }

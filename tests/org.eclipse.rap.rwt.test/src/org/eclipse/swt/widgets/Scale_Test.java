@@ -11,18 +11,25 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 
 
 public class Scale_Test extends TestCase {
 
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
@@ -30,9 +37,8 @@ public class Scale_Test extends TestCase {
   }
 
   public void testInitialValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Scale scale = new Scale( shell, SWT.NONE );
+
     assertEquals( 0, scale.getMinimum() );
     assertEquals( 100, scale.getMaximum() );
     assertEquals( 0, scale.getSelection() );
@@ -41,8 +47,6 @@ public class Scale_Test extends TestCase {
   }
 
   public void testValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Scale scale = new Scale( shell, SWT.NONE );
 
     scale.setSelection( 34 );
@@ -85,8 +89,6 @@ public class Scale_Test extends TestCase {
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     // Test SWT.NONE
     Scale scale = new Scale( shell, SWT.NONE );
     assertTrue( ( scale.getStyle() & SWT.HORIZONTAL ) != 0 );
@@ -104,17 +106,12 @@ public class Scale_Test extends TestCase {
   }
 
   public void testDispose() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Scale scale = new Scale( shell, SWT.NONE );
     scale.dispose();
     assertTrue( scale.isDisposed() );
   }
 
   public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Scale scale = new Scale( shell, SWT.HORIZONTAL );
     Point expected = new Point( 160, 41 );
     assertEquals( expected, scale.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -136,13 +133,49 @@ public class Scale_Test extends TestCase {
   }
   
   public void testIsSerializable() throws Exception {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Scale scale = new Scale( shell, SWT.HORIZONTAL );
     scale.setSelection( 12 );
     
     Scale deserializedScale = Fixture.serializeAndDeserialize( scale );
     
     assertEquals( scale.getSelection(), deserializedScale.getSelection() );
+  }
+
+  public void testAddSelectionListener() {
+    Scale scale = new Scale( shell, SWT.NONE );
+
+    scale.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( scale.isListening( SWT.Selection ) );
+    assertTrue( scale.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    Scale scale = new Scale( shell, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    scale.addSelectionListener( listener );
+
+    scale.removeSelectionListener( listener );
+    
+    assertFalse( scale.isListening( SWT.Selection ) );
+    assertFalse( scale.isListening( SWT.DefaultSelection ) );
+  }
+
+  public void testAddSelectionListenerWithNullArgument() {
+    Scale scale = new Scale( shell, SWT.NONE );
+    
+    try {
+      scale.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveSelectionListenerWithNullArgument() {
+    Scale scale = new Scale( shell, SWT.NONE );
+    
+    try {
+      scale.removeSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 }

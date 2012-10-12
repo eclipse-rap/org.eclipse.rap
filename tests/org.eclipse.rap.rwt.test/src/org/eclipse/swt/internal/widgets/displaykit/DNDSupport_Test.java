@@ -13,15 +13,6 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.Fixture.getProtocolMessage;
-import static org.eclipse.swt.dnd.DragSourceEvent.DRAG_END;
-import static org.eclipse.swt.dnd.DragSourceEvent.DRAG_SET_DATA;
-import static org.eclipse.swt.dnd.DragSourceEvent.DRAG_START;
-import static org.eclipse.swt.dnd.DropTargetEvent.DRAG_ENTER;
-import static org.eclipse.swt.dnd.DropTargetEvent.DRAG_LEAVE;
-import static org.eclipse.swt.dnd.DropTargetEvent.DRAG_OVER;
-import static org.eclipse.swt.dnd.DropTargetEvent.DROP;
-import static org.eclipse.swt.dnd.DropTargetEvent.DROP_ACCEPT;
-import static org.eclipse.swt.events.DragDetectEvent.DRAG_DETECT;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -31,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -69,7 +61,8 @@ public class DNDSupport_Test extends TestCase {
 
   private Display display;
   private Shell shell;
-  private java.util.List<TypedEvent> log;
+  private List<TypedEvent> events;
+  private List<Integer> eventTypes;
   private Control sourceControl;
   private Control targetControl;
   private DragSource dragSource;
@@ -79,14 +72,15 @@ public class DNDSupport_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     shell.open();
     sourceControl = new Label( shell, SWT.NONE );
     targetControl = new Label( shell, SWT.NONE );
-    log = new ArrayList<TypedEvent>();
+    events = new ArrayList<TypedEvent>();
+    eventTypes = new ArrayList<Integer>();
     Fixture.fakeNewRequest( display );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     transfers = new Transfer[] {
       HTMLTransfer.getInstance(),
       TextTransfer.getInstance()
@@ -140,14 +134,15 @@ public class DNDSupport_Test extends TestCase {
     addLogger( dragSource );
     sourceControl.addDragDetectListener( new DragDetectListener() {
       public void dragDetected( DragDetectEvent event ) {
-        log.add( event );
+        events.add( event );
+        eventTypes.add( Integer.valueOf( SWT.DragDetect ) );
       }
     } );
 
     fakeDragSourceEvent( "dragStart", 1 );
     Fixture.executeLifeCycleFromServerThread();
 
-    int[] expected = new int[]{ DRAG_DETECT, DRAG_START };
+    int[] expected = new int[]{ SWT.DragDetect, DND.DragStart };
     assertTrue( Arrays.equals( expected, getEventOrder() ) );
   }
 
@@ -159,7 +154,7 @@ public class DNDSupport_Test extends TestCase {
     dragSource.addDragListener( new DragSourceAdapter() {
       @Override
       public void dragStart( DragSourceEvent event ) {
-        log.add( event );
+        events.add( event );
       }
     } );
 
@@ -167,7 +162,7 @@ public class DNDSupport_Test extends TestCase {
     createDragSourceEvent( "dragStart", 20, 30, "move", 1 );
     Fixture.executeLifeCycleFromServerThread();
 
-    DragSourceEvent dragSourceEvent = ( DragSourceEvent )log.get( 0 );
+    DragSourceEvent dragSourceEvent = ( DragSourceEvent )events.get( 0 );
     assertEquals( 4, dragSourceEvent.x );
     assertEquals( 4, dragSourceEvent.y );
   }
@@ -185,7 +180,7 @@ public class DNDSupport_Test extends TestCase {
     fakeDropTargetEvent( "dragOver", 4 );
     Fixture.executeLifeCycleFromServerThread();
 
-    int[] expected = new int[]{ DRAG_LEAVE, DRAG_ENTER, DRAG_OVER };
+    int[] expected = new int[]{ DND.DragLeave, DND.DragEnter, DND.DragOver };
     assertTrue( Arrays.equals( expected, getEventOrder() ) );
   }
 
@@ -194,13 +189,13 @@ public class DNDSupport_Test extends TestCase {
     createDropTarget( DND.DROP_MOVE );
     addLogger( dragSource );
     addLogger( dropTarget );
-    addSetDataListener( dragSource, "text" );
+    addSetDragDataListener( dragSource, "text" );
 
     fakeDropTargetEvent( "dropAccept", 1 );
     fakeDragSourceEvent( "dragFinished", 2 );
     Fixture.readDataAndProcessAction( display );
 
-    int[] expected = new int[]{ DRAG_LEAVE, DROP_ACCEPT, DRAG_SET_DATA, DROP, DRAG_END };
+    int[] expected = new int[]{ DND.DragLeave, DND.DropAccept, DND.DragSetData, DND.Drop, DND.DragEnd };
     assertTrue( Arrays.equals( expected, getEventOrder() ) );
   }
 
@@ -209,7 +204,7 @@ public class DNDSupport_Test extends TestCase {
     createDropTarget( DND.DROP_MOVE );
     addLogger( dragSource );
     addLogger( dropTarget );
-    addSetDataListener( dragSource, "Hello World!" );
+    addSetDragDataListener( dragSource, "Hello World!" );
 
 
     createDropTargetEvent( "dropAccept", 0, 0, "move", getTextType(), 1 );
@@ -226,7 +221,7 @@ public class DNDSupport_Test extends TestCase {
     createDropTarget( DND.DROP_MOVE );
     addLogger( dragSource );
     addLogger( dropTarget );
-    addSetDataListener( dragSource, new Date() );
+    addSetDragDataListener( dragSource, new Date() );
 
     SWTException exception = null;
 
@@ -238,7 +233,7 @@ public class DNDSupport_Test extends TestCase {
       exception = e;
     }
 
-    int[] expected = new int[]{ DRAG_LEAVE, DROP_ACCEPT, DRAG_SET_DATA };
+    int[] expected = new int[]{ DND.DragLeave, DND.DropAccept, DND.DragSetData };
     assertTrue( Arrays.equals( expected, getEventOrder() ) );
     assertEquals( DND.ERROR_INVALID_DATA, exception.code );
   }
@@ -256,11 +251,11 @@ public class DNDSupport_Test extends TestCase {
       }
       @Override
       public void drop( DropTargetEvent event ) {
-        log.add( event );
+        events.add( event );
       }
     } );
     addLogger( dragSource );
-    addSetDataListener( dragSource, "data" );
+    addSetDragDataListener( dragSource, "data" );
 
 
     fakeDropTargetEvent( "dropAccept", 1 );
@@ -288,7 +283,7 @@ public class DNDSupport_Test extends TestCase {
     fakeDropTargetEvent( "dropAccept", 1 );
     Fixture.readDataAndProcessAction( display );
 
-    int[] expected = new int[]{ DRAG_LEAVE, DROP_ACCEPT };
+    int[] expected = new int[]{ DND.DragLeave, DND.DropAccept };
     assertTrue( Arrays.equals( expected, getEventOrder() ) );
   }
 
@@ -298,12 +293,14 @@ public class DNDSupport_Test extends TestCase {
     dropTarget.addDropListener( new DropTargetAdapter() {
       @Override
       public void dropAccept( DropTargetEvent event ) {
-        log.add( event );
+        events.add( event );
+        eventTypes.add( Integer.valueOf( DND.DropAccept ) );
         event.detail = DND.DROP_NONE;
       }
       @Override
       public void drop( DropTargetEvent event ) {
-        log.add( event );
+        events.add( event );
+        eventTypes.add( Integer.valueOf( DND.Drop ) );
       }
     } );
     addLogger( dragSource );
@@ -312,7 +309,7 @@ public class DNDSupport_Test extends TestCase {
     fakeDragSourceEvent( "dragFinished", 2 );
     Fixture.readDataAndProcessAction( display );
 
-    int[] expected = new int[]{ DROP_ACCEPT, DRAG_END };
+    int[] expected = new int[]{ DND.DropAccept, DND.DragEnd };
     assertTrue( Arrays.equals( expected, getEventOrder() ) );
     assertTrue( getDragSourceEvent( 1 ).doit ); // Actual SWT behavior
   }
@@ -326,9 +323,9 @@ public class DNDSupport_Test extends TestCase {
     fakeDragSourceEvent( "dragFinished", 1 );
     Fixture.readDataAndProcessAction( display );
 
-    assertEquals( 1, log.size() );
+    assertEquals( 1, events.size() );
     DragSourceEvent event = getDragSourceEvent( 0 );
-    assertEquals( DRAG_END, event.getID() );
+    assertEquals( DND.DragEnd, getEventType( 0 ) );
     assertTrue( event.doit ); // Actual SWT behavior
   }
 
@@ -336,16 +333,16 @@ public class DNDSupport_Test extends TestCase {
     createDragSource( DND.DROP_MOVE | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_COPY );
     addLogger( dragSource );
-    addSetDataListener( dragSource, "text Data" );
+    addSetDragDataListener( dragSource, "text Data" );
     dropTarget.addDropListener( new DropTargetAdapter() {
       @Override
       public void dropAccept( DropTargetEvent event ) {
-        log.add( event );
+        events.add( event );
         event.detail = DND.DROP_COPY;
       }
       @Override
       public void drop( DropTargetEvent event ) {
-        log.add( event );
+        events.add( event );
       }
     } );
 
@@ -396,7 +393,13 @@ public class DNDSupport_Test extends TestCase {
     fakeDragSourceEvent( "dragFinished", 2 );
     Fixture.readDataAndProcessAction( display );
 
-    int[] expected = new int[]{ DRAG_LEAVE, DROP_ACCEPT, DRAG_SET_DATA, DROP, DRAG_END };
+    int[] expected = new int[]{ 
+      DND.DragLeave, 
+      DND.DropAccept, 
+      DND.DragSetData, 
+      DND.Drop, 
+      DND.DragEnd 
+    };
     assertTrue( Arrays.equals( expected, getEventOrder() ) );
     // NOTE: This is not the behavior documented for SWT, but how SWT behaves in Windows (SWT bug?)
     assertNull( getDropTargetEvent( 3 ).data );
@@ -406,9 +409,9 @@ public class DNDSupport_Test extends TestCase {
   public void testDragSetDataDataType() {
     createDragSource( DND.DROP_MOVE );
     createDropTarget( DND.DROP_MOVE );
+    addSetDragDataListener( dragSource, "string" );
     addLogger( dropTarget );
     addLogger( dragSource );
-    addSetDataListener( dragSource, "string" );
 
     fakeDropTargetEvent( "dropAccept", 0 );
     Fixture.readDataAndProcessAction( display );
@@ -416,7 +419,7 @@ public class DNDSupport_Test extends TestCase {
     DragSourceEvent setDataEvent = getDragSourceEvent( 2 );
     DropTargetEvent dropEvent = getDropTargetEvent( 3 );
     assertNotNull( setDataEvent.dataType );
-    assertSame( setDataEvent.data, dropEvent.data );
+    assertEquals( setDataEvent.data, dropEvent.data );
     assertTrue( TransferData.sameType( setDataEvent.dataType, dropEvent.currentDataType ) );
   }
 
@@ -475,14 +478,14 @@ public class DNDSupport_Test extends TestCase {
   public void testDropAcceptWithDetailChangedOnEnter() {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
-    addSetDataListener( dragSource, "some data" );
-    addLogger( dropTarget );
+    addSetDragDataListener( dragSource, "some data" );
     dropTarget.addDropListener( new DropTargetAdapter() {
       @Override
       public void dragEnter( DropTargetEvent event ) {
         event.detail = DND.DROP_COPY;
       }
     } );
+    addLogger( dropTarget );
 
     Fixture.executeLifeCycleFromServerThread(); // clear pending message operations
     Fixture.fakeNewRequest( display );
@@ -679,10 +682,9 @@ public class DNDSupport_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     DropTargetEvent dragOperationChanged = getDropTargetEvent( 1 );
-    assertEquals( DropTargetEvent.DRAG_OPERATION_CHANGED, dragOperationChanged.getID() );
+    assertEquals( DND.DragOperationChanged, getEventType( 1 ) );
     assertTrue( ( dragOperationChanged.detail & DND.DROP_COPY ) != 0 );
-    DropTargetEvent dragOver = getDropTargetEvent( 2 );
-    assertEquals( DRAG_OVER, dragOver.getID() );
+    assertEquals( DND.DragOver, getEventType( 2 ) );
   }
 
   public void testOperationsField() {
@@ -702,7 +704,7 @@ public class DNDSupport_Test extends TestCase {
     fakeDropTargetEvent( "dropAccept", 8 );
     Fixture.readDataAndProcessAction( display );
 
-    assertEquals( 6, log.size() );
+    assertEquals( 6, events.size() );
     assertEquals( DND.DROP_MOVE | DND.DROP_LINK, getDropTargetEvent( 0 ).operations );
     assertEquals( DND.DROP_MOVE | DND.DROP_LINK, getDropTargetEvent( 1 ).operations );
     assertEquals( DND.DROP_MOVE | DND.DROP_LINK, getDropTargetEvent( 2 ).operations );
@@ -770,51 +772,33 @@ public class DNDSupport_Test extends TestCase {
   private void addLogger( DragSource dragSource ) {
     dragSource.addDragListener( new DragSourceListener() {
       public void dragStart( DragSourceEvent event ) {
-        log.add( event );
+        events.add( event );
+        eventTypes.add( Integer.valueOf( DND.DragStart ) );
       }
       public void dragSetData( DragSourceEvent event ) {
-        log.add( event );
+        events.add( event );
+        eventTypes.add( Integer.valueOf( DND.DragSetData ) );
       }
       public void dragFinished( DragSourceEvent event ) {
-        log.add( event );
+        events.add( event );
+        eventTypes.add( Integer.valueOf( DND.DragEnd ) );
       }
     } );
   }
 
   private void addLogger( DropTarget dropTarget ) {
-    dropTarget.addDropListener( new LogingDropTargetListener() );
-  }
-
-  private class LogingDropTargetListener implements DropTargetListener {
-    public void dragEnter( DropTargetEvent event ) {
-      log.add( event );
-    }
-    public void dragLeave( DropTargetEvent event ) {
-      log.add( event );
-    }
-    public void dragOperationChanged( DropTargetEvent event ) {
-      log.add( event );
-    }
-    public void dragOver( DropTargetEvent event ) {
-      log.add( event );
-    }
-    public void drop( DropTargetEvent event ) {
-      log.add( event );
-    }
-    public void dropAccept( DropTargetEvent event ) {
-      log.add( event );
-    }
+    dropTarget.addDropListener( new LoggingDropTargetListener() );
   }
 
   private int[] getEventOrder() {
-    int[] result = new int[ log.size() ];
+    int[] result = new int[ eventTypes.size() ];
     for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = log.get( i ).getID();
+      result[ i ] = eventTypes.get( i ).intValue();
     }
     return result;
   }
 
-  private void addSetDataListener( DragSource dragSource, final Object data ) {
+  private void addSetDragDataListener( DragSource dragSource, final Object data ) {
     dragSource.addDragListener( new DragSourceAdapter() {
       @Override
       public void dragSetData( DragSourceEvent event ) {
@@ -822,13 +806,44 @@ public class DNDSupport_Test extends TestCase {
       }
     } );
   }
-
-  private DropTargetEvent getDropTargetEvent( int i ) {
-    return ( DropTargetEvent )log.get( i );
+  
+  private int getEventType( int index ) {
+    return eventTypes.get( index ).intValue();
   }
 
-  private DragSourceEvent getDragSourceEvent( int i ) {
-    return ( DragSourceEvent )log.get( i );
+  private DropTargetEvent getDropTargetEvent( int index ) {
+    return ( DropTargetEvent )events.get( index );
+  }
+
+  private DragSourceEvent getDragSourceEvent( int index ) {
+    return ( DragSourceEvent )events.get( index );
+  }
+
+  private class LoggingDropTargetListener implements DropTargetListener {
+    public void dragEnter( DropTargetEvent event ) {
+      events.add( event );
+      eventTypes.add( Integer.valueOf( DND.DragEnter ) );
+    }
+    public void dragLeave( DropTargetEvent event ) {
+      events.add( event );
+      eventTypes.add( Integer.valueOf( DND.DragLeave ) );
+    }
+    public void dragOperationChanged( DropTargetEvent event ) {
+      events.add( event );
+      eventTypes.add( Integer.valueOf( DND.DragOperationChanged ) );
+    }
+    public void dragOver( DropTargetEvent event ) {
+      events.add( event );
+      eventTypes.add( Integer.valueOf( DND.DragOver ) );
+    }
+    public void drop( DropTargetEvent event ) {
+      events.add( event );
+      eventTypes.add( Integer.valueOf( DND.Drop ) );
+    }
+    public void dropAccept( DropTargetEvent event ) {
+      events.add( event );
+      eventTypes.add( Integer.valueOf( DND.DropAccept ) );
+    }
   }
 
 }

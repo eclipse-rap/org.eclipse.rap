@@ -21,7 +21,6 @@ import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TreeEvent;
@@ -31,7 +30,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
-import org.eclipse.swt.internal.events.SetDataEvent;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
@@ -742,9 +740,7 @@ public class Tree extends Composite {
           if( item.isDisposed() ) {
             SWT.error( SWT.ERROR_INVALID_ARGUMENT );
           }
-          this.selection = new TreeItem[]{
-            item
-          };
+          this.selection = new TreeItem[]{ item };
         }
       }
     } else {
@@ -1391,9 +1387,7 @@ public class Tree extends Composite {
         for( int i = 0; i < seen.length; i++ ) {
           if( oldOrder[ i ] != columnOrder[ i ] ) {
             TreeColumn column = getColumn( columnOrder[ i ] );
-            int controlMoved = ControlEvent.CONTROL_MOVED;
-            ControlEvent controlEvent = new ControlEvent( column, controlMoved );
-            controlEvent.processEvent();
+            column.notifyListeners( SWT.Move, new Event() );
           }
         }
       }
@@ -2137,8 +2131,10 @@ public class Tree extends Composite {
     boolean result = true;
     if( isVirtual() && !item.isCached() ) {
       item.markCached();
-      SetDataEvent event = new SetDataEvent( Tree.this, item, index );
-      event.processEvent();
+      Event event = new Event();
+      event.item = item;
+      event.index = index;
+      notifyListeners( SWT.SetData, event );
       // widget could be disposed at this point
       if( isDisposed() || item.isDisposed() ) {
         result = false;

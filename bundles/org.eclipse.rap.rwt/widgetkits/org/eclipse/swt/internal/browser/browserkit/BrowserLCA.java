@@ -19,9 +19,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
@@ -126,10 +124,8 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   private static void fireProgressEvent( Browser browser ) {
     if( WidgetLCAUtil.wasEventSent( browser, EVENT_PROGRESS_COMPLETED ) ) {
-      ProgressEvent changedEvent = new ProgressEvent( browser, ProgressEvent.CHANGED );
-      changedEvent.processEvent();
-      ProgressEvent completedEvent = new ProgressEvent( browser, ProgressEvent.COMPLETED );
-      completedEvent.processEvent();
+      IBrowserAdapter browserAdapter = browser.getAdapter( IBrowserAdapter.class );
+      browserAdapter.sendProgressCompletedEvent();
     }
   }
 

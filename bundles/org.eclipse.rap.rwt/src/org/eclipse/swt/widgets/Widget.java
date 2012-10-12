@@ -15,19 +15,23 @@ import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.events.EventAdapter;
 import org.eclipse.rap.rwt.internal.events.IEventAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.internal.SWTEventListener;
 import org.eclipse.swt.internal.SerializableCompatibility;
+import org.eclipse.swt.internal.events.EventList;
+import org.eclipse.swt.internal.events.EventTable;
+import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
-import org.eclipse.swt.internal.widgets.UntypedEventAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.WidgetGraphicsAdapter;
 
@@ -101,12 +105,11 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
   int state;
   Display display;
   private Object data;
+  private EventTable eventTable;
   private transient LifeCycleAdapterFactory lifeCycleAdapterFactory;
   private IWidgetAdapter widgetAdapter;
   private IEventAdapter eventAdapter;
-  private UntypedEventAdapter untypedAdapter;
   private IWidgetGraphicsAdapter widgetGraphicsAdapter;
-
 
   Widget() {
     // prevent instantiation from outside this package
@@ -147,7 +150,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     this.style = style;
-    display = parent.display;
+    this.display = parent.display;
     reskinWidget();
   }
 
@@ -166,12 +169,13 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     // good reason
     T result = null;
     if( adapter == IEventAdapter.class ) {
-      // Note: This is not implemented via the AdapterManager, since the manager's mapping mechanism
-      // prevents the component being released unless the session is invalidated.
       if( eventAdapter == null ) {
         eventAdapter = new EventAdapter();
       }
       result = ( T )eventAdapter;
+    } else if( adapter == EventTable.class ) {
+      ensureEventTable();
+      result = ( T )eventTable;
     } else if( adapter == IClientObjectAdapter.class || adapter == IWidgetAdapter.class ) {
       if( widgetAdapter == null ) {
         widgetAdapter = new WidgetAdapter();
@@ -192,9 +196,6 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     }
     return result;
   }
-
-  ///////////////////////////////////////////
-  // Methods to get/set single and keyed data
 
   /**
    * Returns the application defined widget data associated
@@ -384,6 +385,9 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     }
   }
 
+  ///////////////////////////////////////////
+  // Methods to get/set single and keyed data
+  
   /**
    * Returns the <code>Display</code> that is associated with
    * the receiver.
@@ -456,7 +460,11 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    */
   public void addDisposeListener( DisposeListener listener ) {
     checkWidget();
-    DisposeEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Dispose, typedListener );
   }
 
   /**
@@ -478,7 +486,12 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    */
   public void removeDisposeListener( DisposeListener listener ) {
     checkWidget();
-    DisposeEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( eventTable != null ) {
+      eventTable.unhook( SWT.Dispose, listener );
+    }
   }
 
   ////////////////////////////////////////
@@ -513,10 +526,8 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( untypedAdapter == null ) {
-      untypedAdapter = new UntypedEventAdapter();
-    }
-    untypedAdapter.addListener( this, eventType, listener );
+    ensureEventTable();
+    eventTable.hook( eventType, listener );
   }
 
   /**
@@ -547,11 +558,8 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( untypedAdapter != null ) {
-      untypedAdapter.removeListener( this, eventType, listener );
-      if( untypedAdapter.isEmpty() ) {
-        untypedAdapter = null;
-      }
+    if( eventTable != null ) {
+      eventTable.unhook( eventType, listener );
     }
   }
 
@@ -582,7 +590,10 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     newEvent.widget = this;
     newEvent.type = eventType;
     newEvent.display = display;
-    UntypedEventAdapter.notifyListeners( eventType, newEvent );
+    if( newEvent.time == 0 ) {
+      newEvent.time = EventUtil.getLastEventTime();
+    }
+    sendEvent( newEvent );
   }
 
   /**
@@ -604,14 +615,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    */
   public boolean isListening( int eventType ) {
     checkWidget();
-    boolean result = false;
-    if( untypedAdapter != null ) {
-      result = untypedAdapter.hasUntypedListener( eventType );
-    }
-    if( !result ) {
-      result = UntypedEventAdapter.hasTypedListener( this, eventType );
-    }
-    return result;
+    return eventTable == null ? false : eventTable.hooks( eventType );
   }
 
   /**
@@ -637,13 +641,72 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    */
   public Listener[] getListeners( int eventType ) {
     checkWidget();
-    Listener[] listeners;
-    if( untypedAdapter == null ) {
-      listeners = new Listener[ 0 ];
+    Listener[] result;
+    if( eventTable == null ) {
+      result = new Listener[ 0 ];
     } else {
-      listeners = untypedAdapter.getListeners( eventType );
+      result = eventTable.getListeners( eventType );
     }
-    return listeners;
+    return result;
+  }
+
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when an event of the given type occurs.
+   * <p>
+   * <b>IMPORTANT:</b> This method is <em>not</em> part of the SWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by SWT. It should never be
+   * referenced from application code.
+   * </p>
+   *
+   * @param eventType the type of event to listen for
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see Listener
+   * @see #addListener
+   * 
+   * @noreference This method is not intended to be referenced by clients.
+   */
+  protected void removeListener( int eventType, SWTEventListener listener ) {
+    checkWidget();
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( eventTable != null ) {
+      eventTable.unhook( eventType, listener );
+    }
+  }
+
+  private void sendEvent( Event event ) {
+    if( isEventProcessingPhase() ) {
+      event.display.filterEvent( event );
+      if( eventTable != null ) {
+        eventTable.sendEvent( event );
+      }
+    } else {
+      EventList.getInstance().add( event );
+    }
+  }
+
+  private static boolean isEventProcessingPhase() {
+    PhaseId currentPhase = CurrentPhase.get();
+    return PhaseId.PREPARE_UI_ROOT.equals( currentPhase )
+        || PhaseId.PROCESS_ACTION.equals( currentPhase );
+  }
+
+  private void ensureEventTable() {
+    if( eventTable == null ) {
+      eventTable = new EventTable();
+    }
   }
 
   ///////////////////
@@ -780,8 +843,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
       }
       if( ( state & DISPOSE_SENT ) == 0 ) {
         state |= DISPOSE_SENT;
-        DisposeEvent disposeEvent = new DisposeEvent( this );
-        disposeEvent.processEvent();
+        notifyListeners( SWT.Dispose, new Event() );
       }
       if( ( state & DISPOSED ) == 0 ) {
         releaseChildren();
@@ -825,7 +887,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
 
   void releaseWidget() {
     lifeCycleAdapterFactory = null;
-    untypedAdapter = null;
+    eventTable = null;
     state |= DISPOSED;
   }
 

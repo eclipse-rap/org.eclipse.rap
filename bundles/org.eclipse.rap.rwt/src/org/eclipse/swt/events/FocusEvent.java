@@ -11,10 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.widgets.EventUtil;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -34,11 +30,6 @@ public final class FocusEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int FOCUS_GAINED = SWT.FocusIn;
-  public static final int FOCUS_LOST = SWT.FocusOut;
-
-  private static final Class LISTENER = FocusListener.class;
-
   /**
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
@@ -49,75 +40,4 @@ public final class FocusEvent extends TypedEvent {
     super( event );
   }
 
-  /**
-   * Constructs a new instance of this class.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
-  public FocusEvent( Control source, int id ) {
-    super( source, id );
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case FOCUS_GAINED:
-        ( ( FocusListener )listener ).focusGained( this );
-      break;
-      case FOCUS_LOST:
-        ( ( FocusListener )listener ).focusLost( this );
-        break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
-  }
-
-  @Override
-  protected boolean allowProcessing() {
-    return EventUtil.isAccessible( widget );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, FocusListener listener ) {
-    addListener( adaptable, LISTENER, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, FocusListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
-  }
 }

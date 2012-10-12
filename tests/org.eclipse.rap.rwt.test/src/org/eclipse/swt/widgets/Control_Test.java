@@ -11,6 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -522,6 +527,37 @@ public class Control_Test extends TestCase {
     assertEquals( false, composite.isVisible() );
     assertEquals( true, control.getVisible() );
     assertEquals( false, control.isVisible() );
+  }
+  
+  public void testSetVisibleSendsShowEvent() {
+    Control control = new Button( shell, SWT.PUSH );
+    control.setVisible( false );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Show, listener );
+    
+    control.setVisible( true );
+    
+    verify( listener ).handleEvent( any( Event.class ) );
+  }
+
+  public void testSetVisibleOnVisibleControl() {
+    Control control = new Button( shell, SWT.PUSH );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Show, listener );
+    
+    control.setVisible( true );
+    
+    verify( listener, never() ).handleEvent( any( Event.class ) );
+  }
+  
+  public void testSetVisibleSendsHideEvent() {
+    Control control = new Button( shell, SWT.PUSH );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Hide, listener );
+    
+    control.setVisible( false );
+    
+    verify( listener ).handleEvent( any( Event.class ) );
   }
 
   public void testZOrder() {
@@ -1040,8 +1076,222 @@ public class Control_Test extends TestCase {
     IControlAdapter controlAdapter = shell.getAdapter( IControlAdapter.class );
     assertTrue( controlAdapter.isPacked() );
   }
+  
+  public void testAddControlListenerWithNullArgument() {
+    try {
+      shell.addControlListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testAddControlListener() {
+    shell.addControlListener( mock( ControlListener.class ) );
+    
+    assertTrue( shell.isListening( SWT.Move ) );
+    assertTrue( shell.isListening( SWT.Resize ) );
+  }
+
+  public void testRemoveControlListenerWithNullArgument() {
+    try {
+      shell.removeControlListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveControlListener() {
+    ControlListener listener = mock( ControlListener.class );
+    shell.addControlListener( listener );
+    
+    shell.removeControlListener( listener );
+    
+    assertFalse( shell.isListening( SWT.Move ) );
+    assertFalse( shell.isListening( SWT.Resize ) );
+  }
+
+  public void testAddFocusListener() {
+    shell.addFocusListener( mock( FocusListener.class ) );
+
+    assertTrue( shell.isListening( SWT.FocusIn ) );
+    assertTrue( shell.isListening( SWT.FocusOut ) );
+  }
+  
+  public void testAddFocusListenerWithNullArgument() {
+    try {
+      shell.addFocusListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveFocusListener() {
+    FocusListener listener = mock( FocusListener.class );
+    shell.addFocusListener( listener );
+    
+    shell.removeFocusListener( listener );
+
+    assertFalse( shell.isListening( SWT.FocusIn ) );
+    assertFalse( shell.isListening( SWT.FocusOut ) );
+  }
+  
+  public void testRemoveFocusListenerWithNullArgument() {
+    try {
+      shell.removeFocusListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testAddHelpListener() {
+    shell.addHelpListener( mock( HelpListener.class ) );
+
+    assertTrue( shell.isListening( SWT.Help ) );
+  }
+  
+  public void testAddHelpListenerWithNullArgument() {
+    try {
+      shell.addHelpListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveHelpListener() {
+    HelpListener listener = mock( HelpListener.class );
+    shell.addHelpListener( listener );
+    
+    shell.removeHelpListener( listener );
+
+    assertFalse( shell.isListening( SWT.Help ) );
+  }
+  
+  public void testRemoveHelpListenerWithNullArgument() {
+    try {
+      shell.removeHelpListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
 
   private static IControlThemeAdapter getThemeAdapter( Control control ) {
     return ( IControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
   }
+
+  public void testAddKeyListener() {
+    shell.addKeyListener( mock( KeyListener.class ) );
+
+    assertTrue( shell.isListening( SWT.KeyUp ) );
+    assertTrue( shell.isListening( SWT.KeyDown ) );
+  }
+  
+  public void testAddKeyListenerWithNullArgument() {
+    try {
+      shell.addKeyListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveKeyListener() {
+    KeyListener listener = mock( KeyListener.class );
+    shell.addKeyListener( listener );
+    
+    shell.removeKeyListener( listener );
+
+    assertFalse( shell.isListening( SWT.KeyUp ) );
+    assertFalse( shell.isListening( SWT.KeyDown ) );
+  }
+  
+  public void testRemoveKeyListenerWithNullArgument() {
+    try {
+      shell.removeKeyListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testAddMenuDetectListener() {
+    shell.addMenuDetectListener( mock( MenuDetectListener.class ) );
+    
+    assertTrue( shell.isListening( SWT.MenuDetect ) );
+  }
+  
+  public void testAddMenuDetectListenerWithNullArgument() {
+    try {
+      shell.addMenuDetectListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveMenuDetectListener() {
+    MenuDetectListener listener = mock( MenuDetectListener.class );
+    shell.addMenuDetectListener( listener );
+
+    shell.removeMenuDetectListener( listener );
+    
+    assertFalse( shell.isListening( SWT.MenuDetect ) );
+  }
+  
+  public void testRemoveMenuDetectListenerWithNullArgument() {
+    try {
+      shell.removeMenuDetectListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testAddMouseListener() {
+    shell.addMouseListener( mock( MouseListener.class ) );
+    
+    assertTrue( shell.isListening( SWT.MouseUp ) );
+    assertTrue( shell.isListening( SWT.MouseDown ) );
+    assertTrue( shell.isListening( SWT.MouseDoubleClick ) );
+  }
+  
+  public void testAddMouseListenerWithNullArgument() {
+    try {
+      shell.addMouseListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveMouseListener() {
+    MouseListener listener = mock( MouseListener.class );
+    shell.addMouseListener( listener );
+
+    shell.removeMouseListener( listener );
+    
+    assertFalse( shell.isListening( SWT.MouseUp ) );
+    assertFalse( shell.isListening( SWT.MouseDown ) );
+    assertFalse( shell.isListening( SWT.MouseDoubleClick ) );
+  }
+  
+  public void testRemoveMouseListenerWithNullArgument() {
+    try {
+      shell.removeMouseListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testAddTraverseListener() {
+    shell.addTraverseListener( mock( TraverseListener.class ) );
+    
+    assertTrue( shell.isListening( SWT.Traverse ) );
+  }
+  
+  public void testAddTraverseListenerWithNullArgument() {
+    try {
+      shell.addTraverseListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveTraverseListener() {
+    TraverseListener listener = mock( TraverseListener.class );
+    shell.addTraverseListener( listener );
+    
+    shell.removeTraverseListener( listener );
+
+    assertFalse( shell.isListening( SWT.Traverse ) );
+  }
+  
+  public void testRemoveTraverseListenerWithNullArgument() {
+    try {
+      shell.removeTraverseListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
 }

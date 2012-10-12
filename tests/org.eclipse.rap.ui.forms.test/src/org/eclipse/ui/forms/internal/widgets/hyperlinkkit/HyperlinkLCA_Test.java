@@ -250,24 +250,6 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   }
 
   @SuppressWarnings("serial")
-  public void testRenderRemoveSelectionListener() throws Exception {
-    Listener listener = new Listener() {
-      public void handleEvent( Event event ) {
-      }
-    };
-    hyperlink.addListener( SWT.DefaultSelection, listener );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( hyperlink );
-    Fixture.preserveWidgets();
-
-    hyperlink.removeListener( SWT.DefaultSelection, listener );
-    lca.renderChanges( hyperlink );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( hyperlink, "selection" ) );
-  }
-
-  @SuppressWarnings("serial")
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( hyperlink );

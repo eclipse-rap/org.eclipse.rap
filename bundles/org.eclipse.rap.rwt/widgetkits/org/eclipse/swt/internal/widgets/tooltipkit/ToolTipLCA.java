@@ -60,6 +60,7 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
   public void readData( Widget widget ) {
     ToolTip toolTip = ( ToolTip )widget;
     ControlLCAUtil.processSelection( toolTip, null, false );
+    ControlLCAUtil.processDefaultSelection( toolTip, null );
     readVisible( toolTip );
   }
 

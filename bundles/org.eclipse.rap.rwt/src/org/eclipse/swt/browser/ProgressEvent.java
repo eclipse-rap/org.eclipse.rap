@@ -12,7 +12,8 @@ package org.eclipse.swt.browser;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.internal.events.EventTypes;
+import org.eclipse.swt.widgets.Event;
 
 
 /**
@@ -32,10 +33,10 @@ public class ProgressEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int CHANGED = 5021;
-  public static final int COMPLETED = 5022;
+  public static final int CHANGED = EventTypes.PROGRESS_CHANGED;
+  public static final int COMPLETED = EventTypes.PROGRESS_COMPLETED;
 
-  private static final Class LISTENER = ProgressListener.class;
+  private static final int[] EVENT_TYPES = { CHANGED, COMPLETED };
 
   /** current value */
   public int current;
@@ -43,49 +44,8 @@ public class ProgressEvent extends TypedEvent {
   /** total value */
   public int total;
 
-  /**
-   * Constructs a new instance of this class.
-   *
-   * @param widget the widget that fired the event
-   */
-  public ProgressEvent( Widget widget ) {
-    super( widget );
-  }
-
-  /**
-   * Constructs a new instance of this class.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
-  public ProgressEvent( Widget source, int id ) {
-    super( source, id );
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case CHANGED:
-        ( ( ProgressListener )listener ).changed( this );
-      break;
-      case COMPLETED:
-        ( ( ProgressListener )listener ).completed( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
-  }
-
-  @Override
-  protected boolean allowProcessing() {
-    return true;
+  ProgressEvent( Event event ) {
+    super( event );
   }
 
   /**
@@ -94,7 +54,7 @@ public class ProgressEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -103,7 +63,7 @@ public class ProgressEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, ProgressListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -112,16 +72,7 @@ public class ProgressEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, ProgressListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**

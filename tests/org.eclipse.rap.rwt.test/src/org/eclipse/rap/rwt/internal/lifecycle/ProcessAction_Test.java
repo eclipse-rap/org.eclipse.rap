@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessAction;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.widgets.Display;
@@ -39,9 +40,10 @@ public class ProcessAction_Test extends TestCase {
         wasExecuted[ 0 ] = true;
       }
     } );
-    ShellEvent shellEvent = new ShellEvent( shell, ShellEvent.SHELL_CLOSED );
-    shellEvent.processEvent();
+    shell.notifyListeners( SWT.Close, null );
+    
     PhaseId phaseId = processAction.execute( display );
+    
     assertEquals( PhaseId.RENDER, phaseId );
     assertTrue( wasExecuted[ 0 ] );
   }

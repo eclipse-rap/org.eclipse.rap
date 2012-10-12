@@ -11,10 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Widget;
 
 
 /**
@@ -33,22 +30,6 @@ public final class DisposeEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int WIDGET_DISPOSED = SWT.Dispose;
-
-  private static final Class LISTENER = DisposeListener.class;
-
-  /**
-   * Constructs a new instance of this class.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
-  public DisposeEvent( Widget source ) {
-    super( source, WIDGET_DISPOSED );
-  }
-
   /**
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
@@ -59,54 +40,4 @@ public final class DisposeEvent extends TypedEvent {
     super( event );
   }
 
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    ( ( DisposeListener )listener ).widgetDisposed( this );
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
-  }
-
-  @Override
-  protected boolean allowProcessing() {
-    return true;
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, DisposeListener listener ) {
-    addListener( adaptable, LISTENER, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, DisposeListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
-  }
 }

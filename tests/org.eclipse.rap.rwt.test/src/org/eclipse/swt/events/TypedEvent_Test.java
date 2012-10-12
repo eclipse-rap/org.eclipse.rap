@@ -13,22 +13,27 @@ package org.eclipse.swt.events;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
+import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class TypedEvent_Test extends TestCase {
@@ -66,26 +71,18 @@ public class TypedEvent_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-
-  public void testCopyFieldsFromUntypedEvent() {
-    final List<HelpEvent> log = new ArrayList<HelpEvent>();
-    Button button = new Button( shell, SWT.PUSH );
-    button.addHelpListener( new HelpListener() {
-      public void helpRequested( HelpEvent event ) {
-        log.add( event );
-      }
-    } );
-    Object data = new Object();
+  
+  public void testUntypedEventConstructor() throws Exception {
     Event event = new Event();
-    event.data = data;
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    button.notifyListeners( SWT.Help, event );
-    TypedEvent typedEvent = log.get( 0 );
-    assertSame( button, typedEvent.getSource() );
-    assertSame( button, typedEvent.widget );
-    assertSame( display, typedEvent.display );
-    assertSame( data, typedEvent.data );
-    assertEquals( SWT.Help, typedEvent.getID() );
+    event.display = display;
+    event.widget = mock( Widget.class );
+    event.time = 9;
+    event.data = new Object();
+    
+    TestTypedEvent typedEvent = new TestTypedEvent( event );
+    
+    assertSame( event.widget, typedEvent.getSource() );
+    EventTestHelper.assertFieldsEqual( typedEvent, event );
   }
 
   public void testPhase() {
@@ -128,31 +125,6 @@ public class TypedEvent_Test extends TestCase {
     assertEquals( expected, log.toString() );
   }
 
-  public void testMultipleEventsInOneRequest() {
-    final java.util.List<TypedEvent> eventLog = new ArrayList<TypedEvent>();
-    Button button = new Button( shell, SWT.PUSH );
-    button.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        eventLog.add( event );
-      }
-    } );
-    ActivateEvent.addListener( button, new ActivateAdapter() {
-      @Override
-      public void activated( ActivateEvent event ) {
-        eventLog.add( event );
-      }
-    } );
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
-    fakeActivateRequestParam( button );
-
-    Fixture.executeLifeCycleFromServerThread( );
-
-    assertEquals( ActivateEvent.class, eventLog.get( 0 ).getClass() );
-    assertEquals( SelectionEvent.class, eventLog.get( 1 ).getClass() );
-  }
-
   public void testFireFocusEventBeforeMouseEvent() {
     final java.util.List<TypedEvent> eventLog = new ArrayList<TypedEvent>();
     Button button = new Button( shell, SWT.PUSH );
@@ -180,19 +152,10 @@ public class TypedEvent_Test extends TestCase {
 
   public void testSourceConstructor() {
     TypedEvent event = new TypedEvent( shell );
-    assertSame( shell, event.widget );
-    assertSame( shell.getDisplay(), event.display );
-  }
-
-  public void testEventConstructor() {
-    Event event = new Event();
-    event.widget = shell;
-    event.display = shell.getDisplay();
-    event.data = new Object();
-    TypedEvent typedEvent = new TypedEvent( event );
-    assertSame( event.widget, typedEvent.widget );
-    assertSame( event.display, typedEvent.display );
-    assertSame( event.data, typedEvent.data );
+    
+    assertSame( shell, event.getSource() );
+    assertNull( event.widget );
+    assertNull( event.display );
   }
 
   public void testEventConstructorWithNullWidget() {
@@ -212,14 +175,6 @@ public class TypedEvent_Test extends TestCase {
     }
   }
 
-  public void testSourceIdConstructorWithNullWidget() {
-    try {
-      new TypedEvent( null, SWT.Arm );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
-  }
-
   private static void fakeMouseDownRequest( Widget widget, int x, int y ) {
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put( ClientMessageConst.EVENT_PARAM_BUTTON, Integer.valueOf( 1 ) );
@@ -229,10 +184,12 @@ public class TypedEvent_Test extends TestCase {
     Fixture.fakeNotifyOperation( getId( widget ), ClientMessageConst.EVENT_MOUSE_DOWN, parameters );
   }
 
-  private void fakeActivateRequestParam( Control control ) {
-    Fixture.fakeNotifyOperation( getId( control ),
-                                 ClientMessageConst.EVENT_CONTROL_ACTIVATED,
-                                 null );
+  private static class TestTypedEvent extends TypedEvent {
+
+    public TestTypedEvent( Event event ) {
+      super( event );
+    }
+    
   }
 
 }

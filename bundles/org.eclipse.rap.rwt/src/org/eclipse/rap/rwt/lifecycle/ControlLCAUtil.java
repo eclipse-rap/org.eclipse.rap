@@ -11,21 +11,45 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
+
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_WIDGET_SELECTED;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
+
 import java.lang.reflect.Field;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.MenuDetectEvent;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.EventLCAUtil;
-import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.internal.widgets.ControlUtil;
+import org.eclipse.swt.internal.widgets.EventUtil;
+import org.eclipse.swt.internal.widgets.IControlAdapter;
+import org.eclipse.swt.internal.widgets.IControlHolderAdapter;
+import org.eclipse.swt.internal.widgets.IShellAdapter;
+import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Scrollable;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 
 
 /**
@@ -85,12 +109,13 @@ public class ControlLCAUtil {
    */
   public static void processMenuDetect( Control control ) {
     if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MENU_DETECT ) ) {
-      MenuDetectEvent event = new MenuDetectEvent( control );
+      Event event = new Event();
       Point point = readEventXYProperties( control, ClientMessageConst.EVENT_MENU_DETECT );
       point = control.getDisplay().map( control, null, point );
       event.x = point.x;
       event.y = point.y;
-      event.processEvent();
+      event.doit = true;
+      control.notifyListeners( SWT.MenuDetect, event );
     }
   }
 
@@ -113,26 +138,27 @@ public class ControlLCAUtil {
 
   private static void setActiveControl( Shell shell, Widget widget ) {
     if( EventUtil.isAccessible( widget ) ) {
-      Object adapter = shell.getAdapter( IShellAdapter.class );
-      IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+      IShellAdapter shellAdapter = shell.getAdapter( IShellAdapter.class );
       shellAdapter.setActiveControl( ( Control )widget );
     }
   }
 
   public static void processMouseEvents( Control control ) {
     if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MOUSE_DOWN ) ) {
-      createMouseEvent( control, ClientMessageConst.EVENT_MOUSE_DOWN, SWT.MouseDown );
+      sendMouseEvent( control, ClientMessageConst.EVENT_MOUSE_DOWN, SWT.MouseDown );
     }
     if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK ) ) {
-      createMouseEvent( control, ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK, SWT.MouseDoubleClick );
+      sendMouseEvent( control, ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK, SWT.MouseDoubleClick );
     }
     if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MOUSE_UP ) ) {
-      createMouseEvent( control, ClientMessageConst.EVENT_MOUSE_UP, SWT.MouseUp );
+      sendMouseEvent( control, ClientMessageConst.EVENT_MOUSE_UP, SWT.MouseUp );
     }
   }
 
-  private static void createMouseEvent( Control control, String eventName, int eventId ) {
-    MouseEvent event = new MouseEvent( control, eventId );
+  private static void sendMouseEvent( Control control, String eventName, int eventType ) {
+    Event event = new Event();
+    event.widget = control;
+    event.type = eventType;
     event.button = readEventIntProperty( control,
                                          eventName,
                                          ClientMessageConst.EVENT_PARAM_BUTTON );
@@ -144,6 +170,11 @@ public class ControlLCAUtil {
                                        ClientMessageConst.EVENT_PARAM_TIME );
     event.stateMask = EventLCAUtil.readStateMask( control, eventName )
                     | EventLCAUtil.translateButton( event.button );
+    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK ) ) {
+      event.count = 2;
+    } else {
+      event.count = 1;
+    }
     checkAndProcessMouseEvent( event );
   }
 
@@ -159,36 +190,33 @@ public class ControlLCAUtil {
       int traverseKey = getTraverseKey( keyCode, stateMask );
       Event event;
       if( traverseKey != SWT.TRAVERSE_NONE ) {
-        event = createEvent( control, TraverseEvent.KEY_TRAVERSED );
-        initializeKeyEvent( event, keyCode, charCode, stateMask );
+        event = createKeyEvent( keyCode, charCode, stateMask );
         event.detail = traverseKey;
-        TraverseEvent traverseEvent = new TraverseEvent( event );
-        traverseEvent.processEvent();
+        control.notifyListeners( SWT.Traverse, event );
       }
-      event = createEvent( control, KeyEvent.KEY_PRESSED );
-      initializeKeyEvent( event, keyCode, charCode, stateMask );
-      KeyEvent pressedEvent = new KeyEvent( event );
-      pressedEvent.processEvent();
-      event = createEvent( control, KeyEvent.KEY_RELEASED );
-      initializeKeyEvent( event, keyCode, charCode, stateMask );
-      KeyEvent releasedEvent = new KeyEvent( event );
-      releasedEvent.processEvent();
+      event = createKeyEvent( keyCode, charCode, stateMask );
+      control.notifyListeners( SWT.KeyDown, event );
+      event = createKeyEvent( keyCode, charCode, stateMask );
+      control.notifyListeners( SWT.KeyUp, event );
     }
   }
 
   public static void processSelection( Widget widget, Item item, boolean readBounds ) {
-    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_WIDGET_SELECTED ) ) {
-      SelectionEvent event
-        = createSelectionEvent( widget, item, readBounds, SelectionEvent.WIDGET_SELECTED );
-      event.processEvent();
-    }
-    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED ) ) {
-      SelectionEvent event
-        = createSelectionEvent( widget, item, readBounds, SelectionEvent.WIDGET_DEFAULT_SELECTED );
-      event.processEvent();
+    if( WidgetLCAUtil.wasEventSent( widget, EVENT_WIDGET_SELECTED ) ) {
+      Event event = createSelectionEvent( widget, readBounds, SWT.Selection );
+      event.item = item;
+      widget.notifyListeners( SWT.Selection, event );
     }
   }
 
+  public static void processDefaultSelection( Widget widget, Item item ) {
+    if( WidgetLCAUtil.wasEventSent( widget, EVENT_WIDGET_DEFAULT_SELECTED ) ) {
+      Event event = createSelectionEvent( widget, false, SWT.DefaultSelection );
+      event.item = item;
+      widget.notifyListeners( SWT.DefaultSelection, event );
+    }
+  }
+  
   /////////////////////////////////////////////
   // Methods to preserve common property values
 
@@ -239,21 +267,21 @@ public class ControlLCAUtil {
     adapter.preserve( PROP_CURSOR, control.getCursor() );
     WidgetLCAUtil.preserveListener( control,
                                     PROP_ACTIVATE_LISTENER,
-                                    ActivateEvent.hasListener( control ) );
+                                    hasActivateListener( control ) );
     WidgetLCAUtil.preserveListener( control,
                                     PROP_MOUSE_LISTENER,
                                     MouseEvent.hasListener( control ) );
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
       WidgetLCAUtil.preserveListener( control,
                                       PROP_FOCUS_LISTENER,
-                                      FocusEvent.hasListener( control ) );
+                                      hasFocusListener( control ) );
     }
     WidgetLCAUtil.preserveListener( control,
                                     PROP_KEY_LISTENER,
                                     KeyEvent.hasListener( control ) );
     WidgetLCAUtil.preserveListener( control,
                                     PROP_TRAVERSE_LISTENER,
-                                    TraverseEvent.hasListener( control ) );
+                                    control.isListening( SWT.Traverse ) );
     WidgetLCAUtil.preserveListener( control,
                                     PROP_MENU_DETECT_LISTENER,
                                     MenuDetectEvent.hasListener( control ) );
@@ -497,7 +525,7 @@ public class ControlLCAUtil {
 
   static void renderListenActivate( Control control ) {
     if( !control.isDisposed() ) {
-      boolean newValue = ActivateEvent.hasListener( control );
+      boolean newValue = hasActivateListener( control );
       WidgetLCAUtil.renderListener( control, PROP_ACTIVATE_LISTENER, newValue, false );
     }
   }
@@ -513,7 +541,7 @@ public class ControlLCAUtil {
    */
   static void renderListenFocus( Control control ) {
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
-      boolean newValue = FocusEvent.hasListener( control );
+      boolean newValue = hasFocusListener( control );
       WidgetLCAUtil.renderListener( control, PROP_FOCUS_LISTENER, newValue, false );
     }
   }
@@ -529,7 +557,7 @@ public class ControlLCAUtil {
   }
 
   static void renderListenTraverse( Control control ) {
-    boolean newValue = TraverseEvent.hasListener( control );
+    boolean newValue = control.isListening( SWT.Traverse );
     WidgetLCAUtil.renderListener( control, PROP_TRAVERSE_LISTENER, newValue, false );
   }
 
@@ -542,51 +570,47 @@ public class ControlLCAUtil {
   //////////////////////////
   // event processing helper
 
-  private static Event createEvent( Widget widget, int type ) {
+  private static Event createSelectionEvent( Widget widget, boolean readBounds, int type ) {
     Event result = new Event();
-    result.type = type;
-    result.display = widget.getDisplay();
-    result.widget = widget;
-    result.doit = true;
+    if( widget instanceof Control && readBounds ) {
+      Control control = ( Control )widget;
+      Rectangle bounds = WidgetLCAUtil.readBounds( control, control.getBounds() );
+      result.setBounds( bounds );
+    }
+    String eventName = type == SWT.Selection
+                     ? ClientMessageConst.EVENT_WIDGET_SELECTED
+                     : ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED;
+    result.stateMask = EventLCAUtil.readStateMask( widget, eventName );
+    String detail = readEventPropertyValue( widget, eventName, EVENT_PARAM_DETAIL );
+    if( "check".equals( detail ) ) {
+      result.detail = SWT.CHECK;
+    } else if( "search".equals( detail ) ) {
+      result.detail = SWT.ICON_SEARCH;
+    } else if( "cancel".equals( detail ) ) {
+      result.detail = SWT.ICON_CANCEL;
+    }
     return result;
   }
 
-  private static SelectionEvent createSelectionEvent( Widget widget,
-                                                      Item item,
-                                                      boolean readBounds,
-                                                      int type )
-  {
-    Rectangle bounds;
-    if( widget instanceof Control && readBounds ) {
-      Control control = ( Control )widget;
-      bounds = WidgetLCAUtil.readBounds( control, control.getBounds() );
-    } else {
-      bounds = new Rectangle( 0, 0, 0, 0 );
-    }
-    String eventName = type == SelectionEvent.WIDGET_SELECTED
-                     ? ClientMessageConst.EVENT_WIDGET_SELECTED
-                     : ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED;
-    int stateMask = EventLCAUtil.readStateMask( widget, eventName );
-    return new SelectionEvent( widget, item, type, bounds, stateMask, null, true, SWT.NONE );
-  }
-
-  private static void initializeKeyEvent( Event evt, int keyCode, int charCode, int stateMask ) {
-    evt.keyCode = translateKeyCode( keyCode );
+  private static Event createKeyEvent( int keyCode, int charCode, int stateMask ) {
+    Event result = new Event();
+    result.keyCode = translateKeyCode( keyCode );
     if( charCode == 0 ) {
-      if( ( evt.keyCode & SWT.KEYCODE_BIT ) == 0 ) {
-        evt.character = translateCharacter( evt.keyCode );
+      if( ( result.keyCode & SWT.KEYCODE_BIT ) == 0 ) {
+        result.character = translateCharacter( result.keyCode );
       }
     } else {
-      evt.character = translateCharacter( charCode );
+      result.character = translateCharacter( charCode );
       if( Character.isLetter( charCode ) ) {
         // NOTE : keycodes from browser are the upper-case character, in SWT it is the lower-case
-        evt.keyCode = Character.toLowerCase( charCode );
+        result.keyCode = Character.toLowerCase( charCode );
       }
     }
-    evt.stateMask = stateMask;
+    result.stateMask = stateMask;
+    return result;
   }
-
-  private static void checkAndProcessMouseEvent( MouseEvent event ) {
+  
+  private static void checkAndProcessMouseEvent( Event event ) {
     boolean pass = false;
     Control control = ( Control )event.widget;
     if( control instanceof Scrollable ) {
@@ -597,7 +621,7 @@ public class ControlLCAUtil {
       pass = event.x >= 0 && event.y >= 0;
     }
     if( pass ) {
-      event.processEvent();
+      event.widget.notifyListeners( event.type, event );
     }
   }
 
@@ -906,6 +930,14 @@ public class ControlLCAUtil {
       }
     }
     return result;
+  }
+
+  private static boolean hasActivateListener( Control control ) {
+    return control.isListening( SWT.Activate ) || control.isListening( SWT.Deactivate );
+  }
+
+  private static boolean hasFocusListener( Control control ) {
+    return control.isListening( SWT.FocusIn ) || control.isListening( SWT.FocusOut );
   }
 
 }

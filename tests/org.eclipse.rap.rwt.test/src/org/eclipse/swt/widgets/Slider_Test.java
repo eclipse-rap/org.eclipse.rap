@@ -11,18 +11,25 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 
 
 public class Slider_Test extends TestCase {
 
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
@@ -30,8 +37,6 @@ public class Slider_Test extends TestCase {
   }
 
   public void testInitialValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Slider slider = new Slider( shell, SWT.NONE );
     assertEquals( 0, slider.getMinimum() );
     assertEquals( 100, slider.getMaximum() );
@@ -42,8 +47,6 @@ public class Slider_Test extends TestCase {
   }
 
   public void testValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Slider slider = new Slider( shell, SWT.NONE );
 
     slider.setSelection( 34 );
@@ -101,8 +104,6 @@ public class Slider_Test extends TestCase {
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     // Test SWT.NONE
     Slider slider = new Slider( shell, SWT.NONE );
     assertTrue( ( slider.getStyle() & SWT.HORIZONTAL ) != 0 );
@@ -120,17 +121,12 @@ public class Slider_Test extends TestCase {
   }
 
   public void testDispose() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Slider slider = new Slider( shell, SWT.NONE );
     slider.dispose();
     assertTrue( slider.isDisposed() );
   }
 
   public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Slider slider = new Slider( shell, SWT.HORIZONTAL );
     Point expected = new Point( 170, 16 );
     assertEquals( expected, slider.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -144,13 +140,49 @@ public class Slider_Test extends TestCase {
   }
 
   public void testIsSerializable() throws Exception {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Slider slider = new Slider( shell, SWT.HORIZONTAL );
     slider.setSelection( 2 );
     
     Slider deserializedSlider = Fixture.serializeAndDeserialize( slider );
     
     assertEquals( slider.getSelection(), deserializedSlider.getSelection() );
+  }
+
+  public void testAddSelectionListener() {
+    Slider slider = new Slider( shell, SWT.NONE );
+
+    slider.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( slider.isListening( SWT.Selection ) );
+    assertTrue( slider.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    Slider slider = new Slider( shell, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    slider.addSelectionListener( listener );
+
+    slider.removeSelectionListener( listener );
+    
+    assertFalse( slider.isListening( SWT.Selection ) );
+    assertFalse( slider.isListening( SWT.DefaultSelection ) );
+  }
+
+  public void testAddSelectionListenerWithNullArgument() {
+    Slider slider = new Slider( shell, SWT.NONE );
+    
+    try {
+      slider.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveSelectionListenerWithNullArgument() {
+    Slider slider = new Slider( shell, SWT.NONE );
+    
+    try {
+      slider.removeSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 }

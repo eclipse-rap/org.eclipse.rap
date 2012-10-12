@@ -16,9 +16,31 @@ import org.eclipse.rap.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.accessibility.Accessible;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.events.ShowEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.DragDetectEvent;
+import org.eclipse.swt.events.DragDetectListener;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.GestureListener;
+import org.eclipse.swt.events.HelpEvent;
+import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.MenuDetectEvent;
+import org.eclipse.swt.events.MenuDetectListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.events.TouchListener;
+import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Drawable;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ControlHolder;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -249,8 +271,7 @@ public abstract class Control extends Widget implements Drawable {
     checkWidget();
     if( ( state & HIDDEN ) != 0 != !visible ) {
       if( visible ) {
-        ShowEvent event = new ShowEvent( this, ShowEvent.SHOWN );
-        event.processEvent();
+        notifyListeners( SWT.Show, null );
       }
       Control control = null;
       boolean fixFocus = false;
@@ -260,8 +281,7 @@ public abstract class Control extends Widget implements Drawable {
       }
       state = visible ? state & ~HIDDEN : state | HIDDEN;
       if( !visible ) {
-        ShowEvent event = new ShowEvent( this, ShowEvent.HIDDEN );
-        event.processEvent();
+        notifyListeners( SWT.Hide, null );
       }
       if( fixFocus ) {
         fixFocus( control );
@@ -1484,7 +1504,12 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void addControlListener( ControlListener listener ) {
     checkWidget();
-    ControlEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Move, typedListener );
+    addListener( SWT.Resize, typedListener );
   }
 
   /**
@@ -1506,7 +1531,11 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void removeControlListener( ControlListener listener ) {
     checkWidget();
-    ControlEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Move, listener );
+    removeListener( SWT.Resize, listener );
   }
 
   /**
@@ -1651,7 +1680,11 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void addTraverseListener( TraverseListener listener ) {
     checkWidget();
-    TraverseEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Traverse, typedListener );
   }
 
   /**
@@ -1675,7 +1708,10 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void removeTraverseListener( TraverseListener listener ) {
     checkWidget();
-    TraverseEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Traverse, listener );
   }
 
   /**
@@ -1699,7 +1735,12 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void addFocusListener( FocusListener listener ) {
     checkWidget();
-    FocusEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.FocusIn, typedListener );
+    addListener( SWT.FocusOut, typedListener );
   }
 
   /**
@@ -1721,7 +1762,11 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void removeFocusListener( FocusListener listener ) {
     checkWidget();
-    FocusEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.FocusIn, listener );
+    removeListener( SWT.FocusOut, listener );
   }
 
   /**
@@ -2331,13 +2376,13 @@ public abstract class Control extends Widget implements Drawable {
 
   void notifyResize( Point oldSize ) {
     if( !oldSize.equals( getSize() ) ) {
-      new ControlEvent( this, ControlEvent.CONTROL_RESIZED ).processEvent();
+      notifyListeners( SWT.Resize, new Event() );
     }
   }
 
   void notifyMove( Point oldLocation ) {
     if( !oldLocation.equals( getLocation() ) ) {
-      new ControlEvent( this, ControlEvent.CONTROL_MOVED ).processEvent();
+      notifyListeners( SWT.Move, new Event() );
     }
   }
 

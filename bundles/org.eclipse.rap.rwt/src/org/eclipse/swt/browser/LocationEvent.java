@@ -12,7 +12,10 @@
 package org.eclipse.swt.browser;
 
 import org.eclipse.rap.rwt.Adaptable;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TypedEvent;
+import org.eclipse.swt.internal.events.EventTypes;
+import org.eclipse.swt.widgets.Event;
 
 
 /**
@@ -35,10 +38,10 @@ public class LocationEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  public static final int CHANGING = 5011;
-  public static final int CHANGED = 5012;
+  public static final int CHANGING = EventTypes.LOCALTION_CHANGING;
+  public static final int CHANGED = EventTypes.LOCALTION_CHANGED;
 
-  private static final Class LISTENER = LocationListener.class;
+  private static final int[] EVENT_TYPES = { CHANGING, CHANGED };
 
   /** current location */
   public String location;
@@ -55,35 +58,11 @@ public class LocationEvent extends TypedEvent {
    */
   public boolean doit = true;
 
-  LocationEvent( Object source, int id, String location ) {
-    super( source, id );
-    this.location = location;
-  }
-
-  @Override
-  protected void dispatchToObserver( Object listener ) {
-    switch( getID() ) {
-      case CHANGING:
-        ( ( LocationListener )listener ).changing( this );
-      break;
-      case CHANGED:
-        ( ( LocationListener )listener ).changed( this );
-      break;
-      default:
-        throw new IllegalStateException( "Invalid event handler type." );
-    }
-  }
-
-  @Override
-  protected Class getListenerType() {
-    return LISTENER;
-  }
-
-  @Override
-  protected boolean allowProcessing() {
-    // It is safe to always allow to fire this event as it is only generated
-    // server-side
-    return true;
+  
+  LocationEvent( Event event ) {
+    super( event );
+    location = event.text;
+    top = event.detail == SWT.TOP;
   }
 
   /**
@@ -92,7 +71,7 @@ public class LocationEvent extends TypedEvent {
    */
   @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, LISTENER );
+    return hasListener( adaptable, EVENT_TYPES );
   }
 
   /**
@@ -101,7 +80,7 @@ public class LocationEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Adaptable adaptable, LocationListener listener ) {
-    addListener( adaptable, LISTENER, listener );
+    addListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**
@@ -110,15 +89,7 @@ public class LocationEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Adaptable adaptable, LocationListener listener ) {
-    removeListener( adaptable, LISTENER, listener );
+    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static Object[] getListeners( Adaptable adaptable ) {
-    return getListener( adaptable, LISTENER );
-  }
 }

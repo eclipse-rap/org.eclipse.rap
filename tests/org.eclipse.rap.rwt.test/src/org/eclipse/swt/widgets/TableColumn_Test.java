@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -20,7 +22,10 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 
@@ -241,7 +246,7 @@ public class TableColumn_Test extends TestCase {
   public void testResizeEvent() {
     final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
     Table table = new Table( shell, SWT.NONE );
-    final TableColumn column = new TableColumn( table, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
     column.addControlListener( new ControlListener() {
       public void controlMoved( ControlEvent event ) {
         fail( "unexpected event: controlMoved" );
@@ -345,6 +350,90 @@ public class TableColumn_Test extends TestCase {
     table.setColumnOrder( new int[]{ 1, 0, 2, 3, 4, 5, 6, 7, 8, 9 } );
     assertFalse( adapter.isFixedColumn( table.getColumn( 0 ) ) );
     assertTrue( adapter.isFixedColumn( table.getColumn( 1 ) ) );
+  }
+
+  public void testAddSelectionListener() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    column.addSelectionListener( mock( SelectionListener.class ) );
+    
+    assertTrue( column.isListening( SWT.Selection ) );
+    assertTrue( column.isListening( SWT.DefaultSelection ) );
+  }
+  
+  public void testRemoveSelectionListener() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    SelectionListener listener = mock( SelectionListener.class );
+    column.addSelectionListener( listener );
+
+    column.removeSelectionListener( listener );
+    
+    assertFalse( column.isListening( SWT.Selection ) );
+    assertFalse( column.isListening( SWT.DefaultSelection ) );
+  }
+
+  public void testAddSelectionListenerWithNullArgument() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    
+    try {
+      column.addSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveSelectionListenerWithNullArgument() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    
+    try {
+      column.removeSelectionListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testAddControlListenerWithNullArgument() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    
+    try {
+      column.addControlListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testAddControlListener() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    column.addControlListener( mock( ControlListener.class ) );
+    
+    assertTrue( column.isListening( SWT.Move ) );
+    assertTrue( column.isListening( SWT.Resize ) );
+  }
+
+  public void testRemoveControlListenerWithNullArgument() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    try {
+      column.removeControlListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveControlListener() {
+    ControlListener listener = mock( ControlListener.class );
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    column.addControlListener( listener );
+    
+    column.removeControlListener( listener );
+    
+    assertFalse( column.isListening( SWT.Move ) );
+    assertFalse( column.isListening( SWT.Resize ) );
   }
 
   protected void setUp() throws Exception {
