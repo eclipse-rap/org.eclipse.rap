@@ -84,6 +84,13 @@ public class TypedEvent_Test extends TestCase {
     assertSame( event.widget, typedEvent.getSource() );
     EventTestHelper.assertFieldsEqual( typedEvent, event );
   }
+  
+  public void testObjectConstructor() {
+    Object source = new Object();
+    TypedEvent typedEvent = new TypedEvent( source );
+    
+    assertSame( source, typedEvent.getSource() );
+  }
 
   public void testPhase() {
     final StringBuilder log = new StringBuilder();
