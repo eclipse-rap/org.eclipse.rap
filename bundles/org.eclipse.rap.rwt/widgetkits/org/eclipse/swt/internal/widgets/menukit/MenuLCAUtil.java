@@ -24,7 +24,6 @@ import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -88,7 +87,7 @@ final class MenuLCAUtil {
   // Helping methods
 
   private static boolean hasMenuListener( Menu menu ) {
-    boolean result = MenuEvent.hasListener( menu );
+    boolean result = menu.isListening( SWT.Show ) || menu.isListening( SWT.Hide );
     if( !result ) {
       MenuItem[] items = menu.getItems();
       for( int i = 0; !result && i < items.length && !result; i++ ) {

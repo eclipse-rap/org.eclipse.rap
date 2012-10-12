@@ -1203,6 +1203,35 @@ public class Control_Test extends TestCase {
     }
   }
 
+  public void testAddDragDetectDetectListener() {
+    shell.addDragDetectListener( mock( DragDetectListener.class ) );
+    
+    assertTrue( shell.isListening( SWT.DragDetect ) );
+  }
+  
+  public void testAddDragDetectListenerWithNullArgument() {
+    try {
+      shell.addDragDetectListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testRemoveDragDetectListener() {
+    DragDetectListener listener = mock( DragDetectListener.class );
+    shell.addDragDetectListener( listener );
+    
+    shell.removeDragDetectListener( listener );
+    
+    assertFalse( shell.isListening( SWT.MenuDetect ) );
+  }
+  
+  public void testRemoveDragDetectListenerWithNullArgument() {
+    try {
+      shell.removeDragDetectListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
   public void testAddMenuDetectListener() {
     shell.addMenuDetectListener( mock( MenuDetectListener.class ) );
     

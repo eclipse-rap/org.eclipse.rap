@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -27,8 +25,6 @@ public class DragDetectEvent extends MouseEvent {
 
   private static final long serialVersionUID = 1L;
 
-  private static final int[] EVENT_TYPES = { SWT.DragDetect };
-
   /**
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
@@ -37,25 +33,6 @@ public class DragDetectEvent extends MouseEvent {
    */
   public DragDetectEvent( Event event ) {
     super( event );
-    
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, DragDetectListener listener ) {
-    addListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, DragDetectListener listener ) {
-    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
 }

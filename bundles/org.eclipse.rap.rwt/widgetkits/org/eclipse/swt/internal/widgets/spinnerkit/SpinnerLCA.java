@@ -27,7 +27,7 @@ import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Widget;
@@ -73,7 +73,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     preserveProperty( spinner, PROP_PAGE_INCREMENT, spinner.getPageIncrement() );
     preserveProperty( spinner, PROP_TEXT_LIMIT, getTextLimit( spinner ) );
     preserveProperty( spinner, PROP_DECIMAL_SEPARATOR, getDecimalSeparator() );
-    preserveListener( spinner, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( spinner ) );
+    preserveListener( spinner, PROP_MODIFY_LISTENER, spinner.isListening( SWT.Modify ) );
     preserveListener( spinner, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( spinner ) );
   }
 
@@ -161,7 +161,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListenModify( Spinner spinner ) {
-    renderListener( spinner, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( spinner ), false );
+    renderListener( spinner, PROP_MODIFY_LISTENER, spinner.isListening( SWT.Modify ), false );
   }
 
   private static void renderListenSelection( Spinner spinner ) {

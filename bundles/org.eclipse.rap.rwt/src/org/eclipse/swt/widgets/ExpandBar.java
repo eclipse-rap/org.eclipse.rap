@@ -133,7 +133,12 @@ public class ExpandBar extends Composite {
    */
   public void addExpandListener( ExpandListener listener ) {
     checkWidget();
-    ExpandEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Expand, typedListener );
+    addListener( SWT.Collapse, typedListener );
   }
 
   /**
@@ -156,7 +161,11 @@ public class ExpandBar extends Composite {
    */
   public void removeExpandListener( ExpandListener listener ) {
     checkWidget();
-    ExpandEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Expand, listener );
+    removeListener( SWT.Collapse, listener );
   }
 
   public Point computeSize( int wHint, int hHint, boolean changed ) {

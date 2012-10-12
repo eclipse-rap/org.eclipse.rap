@@ -19,17 +19,12 @@ import org.eclipse.swt.accessibility.Accessible;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.DragDetectEvent;
 import org.eclipse.swt.events.DragDetectListener;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.GestureListener;
-import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.TouchListener;
@@ -1561,7 +1556,13 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void addMouseListener( MouseListener listener ) {
     checkWidget();
-    MouseEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.MouseDown, typedListener );
+    addListener( SWT.MouseUp, typedListener );
+    addListener( SWT.MouseDoubleClick, typedListener );
   }
 
   /**
@@ -1585,7 +1586,12 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void removeMouseListener( MouseListener listener ) {
     checkWidget();
-    MouseEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.MouseDown, listener );
+    removeListener( SWT.MouseUp, listener );
+    removeListener( SWT.MouseDoubleClick, listener );
   }
 
   /**
@@ -1630,7 +1636,12 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void addKeyListener( KeyListener listener ) {
     checkWidget();
-    KeyEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.KeyUp, typedListener );
+    addListener( SWT.KeyDown, typedListener );
   }
 
   /**
@@ -1654,7 +1665,11 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void removeKeyListener( KeyListener listener ) {
     checkWidget();
-    KeyEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.KeyUp, listener );
+    removeListener( SWT.KeyDown, listener );
   }
 
   /**
@@ -1791,7 +1806,11 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void addHelpListener( HelpListener listener ) {
     checkWidget();
-    HelpEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Help, typedListener );
   }
 
   /**
@@ -1814,7 +1833,10 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void removeHelpListener( HelpListener listener ) {
     checkWidget();
-    HelpEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Help, listener );
   }
 
   /**
@@ -1840,7 +1862,11 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void addDragDetectListener( DragDetectListener listener ) {
     checkWidget();
-    DragDetectEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.DragDetect, typedListener );
   }
 
   /**
@@ -1864,7 +1890,10 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void removeDragDetectListener( DragDetectListener listener ) {
     checkWidget();
-    DragDetectEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.DragDetect, listener );
   }
 
   /**
@@ -1891,7 +1920,11 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void addMenuDetectListener( MenuDetectListener listener ) {
     checkWidget();
-    MenuDetectEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.MenuDetect, typedListener );
   }
 
   /**
@@ -1916,7 +1949,10 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void removeMenuDetectListener( MenuDetectListener listener ) {
     checkWidget();
-    MenuDetectEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.MenuDetect, listener );
   }
 
   ////////////////

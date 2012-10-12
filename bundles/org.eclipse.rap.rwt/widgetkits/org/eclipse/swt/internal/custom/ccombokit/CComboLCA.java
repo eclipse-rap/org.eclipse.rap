@@ -21,6 +21,7 @@ import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
@@ -66,8 +67,8 @@ public final class CComboLCA extends AbstractWidgetLCA {
     preserveProperty( ccombo, PROP_LIST_VISIBLE, ccombo.getListVisible() );
     preserveProperty( ccombo, PROP_EDITABLE, Boolean.valueOf( ccombo.getEditable() ) );
     preserveListener( ccombo, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( ccombo ) );
-    preserveListener( ccombo, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( ccombo ) );
-    preserveListener( ccombo, PROP_VERIFY_LISTENER, VerifyEvent.hasListener( ccombo ) );
+    preserveListener( ccombo, PROP_MODIFY_LISTENER, ccombo.isListening( SWT.Modify ) );
+    preserveListener( ccombo, PROP_VERIFY_LISTENER, ccombo.isListening( SWT.Verify ) );
   }
 
   public void readData( Widget widget ) {
@@ -126,7 +127,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     final Point selection = readSelection( ccombo );
     final String txt = WidgetLCAUtil.readPropertyValue( ccombo, "text" );
     if( txt != null ) {
-      if( VerifyEvent.hasListener( ccombo ) ) {
+      if( ccombo.isListening( SWT.Verify ) ) {
         // setText needs to be executed in a ProcessAcction runnable as it may
         // fire a VerifyEvent whose fields (text and doit) need to be evaluated
         // before actually setting the new value
@@ -232,11 +233,11 @@ public final class CComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListenModify( CCombo ccombo ) {
-    renderListener( ccombo, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( ccombo ), false );
+    renderListener( ccombo, PROP_MODIFY_LISTENER, ccombo.isListening( SWT.Modify ), false );
   }
 
   private static void renderListenVerify( CCombo ccombo ) {
-    renderListener( ccombo, PROP_VERIFY_LISTENER, VerifyEvent.hasListener( ccombo ), false );
+    renderListener( ccombo, PROP_VERIFY_LISTENER, ccombo.isListening( SWT.Verify ), false );
   }
 
   //////////////////

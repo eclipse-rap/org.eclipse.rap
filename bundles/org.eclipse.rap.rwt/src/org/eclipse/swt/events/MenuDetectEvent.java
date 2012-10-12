@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -27,8 +25,6 @@ import org.eclipse.swt.widgets.Event;
 public final class MenuDetectEvent extends TypedEvent {
 
   private static final long serialVersionUID = -3061660596590828941L;
-
-  private static final int[] EVENT_TYPES = { SWT.MenuDetect };
 
   /**
 	 * the display-relative x coordinate of the pointer
@@ -76,33 +72,6 @@ public final class MenuDetectEvent extends TypedEvent {
   		+ " y=" + y
   		+ " doit=" + doit
   		+ "}";
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, MenuDetectListener listener ) {
-    addListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, MenuDetectListener listener ) {
-    removeListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, EVENT_TYPES );
   }
 
 }

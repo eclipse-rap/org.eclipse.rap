@@ -11,9 +11,6 @@
 package org.eclipse.swt.internal.events;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.LocationEvent;
-import org.eclipse.swt.browser.ProgressEvent;
-import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.dnd.DND;
 
 
@@ -37,8 +34,6 @@ public final class EventTypes {
   public static final int CTAB_FOLDER_RESTORE = 5034;
   public static final int CTAB_FOLDER_SHOW_LIST = 5035;
   
-  public static final int WIDGET_DESELECTED = 5051;
-  
   public static final int[] EVENT_ORDER = {
     SWT.Move,
     SWT.Resize,
@@ -60,11 +55,11 @@ public final class EventTypes {
     SWT.MouseDown,
     SWT.MouseDoubleClick,
     SWT.MenuDetect,
-    CTabFolderEvent.CLOSE,
-    CTabFolderEvent.MINIMIZE,
-    CTabFolderEvent.MAXIMIZE,
-    CTabFolderEvent.RESTORE,
-    CTabFolderEvent.SHOW_LIST,
+    EventTypes.CTAB_FOLDER_CLOSE,
+    EventTypes.CTAB_FOLDER_MINIMIZE,
+    EventTypes.CTAB_FOLDER_MAXIMIZE,
+    EventTypes.CTAB_FOLDER_RESTORE,
+    EventTypes.CTAB_FOLDER_SHOW_LIST,
     SWT.Selection,
     SWT.DefaultSelection,
     SWT.MouseUp,
@@ -80,10 +75,10 @@ public final class EventTypes {
     DND.DropAccept,
     DND.Drop,
     DND.DragOperationChanged,
-    LocationEvent.CHANGING,
-    LocationEvent.CHANGED,
-    ProgressEvent.CHANGED,
-    ProgressEvent.COMPLETED,
+    LOCALTION_CHANGING,
+    LOCALTION_CHANGED,
+    PROGRESS_CHANGED,
+    PROGRESS_COMPLETED,
     SWT.Arm,
     SWT.Paint
   };

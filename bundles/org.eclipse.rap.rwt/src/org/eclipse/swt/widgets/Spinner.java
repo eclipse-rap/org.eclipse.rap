@@ -544,7 +544,11 @@ public class Spinner extends Composite {
    */
   public void addModifyListener( ModifyListener listener ) {
     checkWidget();
-    ModifyEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Modify, typedListener );
   }
 
   /**
@@ -566,7 +570,10 @@ public class Spinner extends Composite {
    */
   public void removeModifyListener( ModifyListener listener ) {
     checkWidget();
-    ModifyEvent.removeListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Modify, listener );
   }
 
   /**

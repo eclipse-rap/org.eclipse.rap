@@ -962,7 +962,11 @@ public class Combo extends Composite {
    */
   public void addModifyListener( ModifyListener listener ) {
     checkWidget();
-    ModifyEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Modify, typedListener );
   }
 
   /**
@@ -984,7 +988,10 @@ public class Combo extends Composite {
    */
   public void removeModifyListener( ModifyListener listener ) {
     checkWidget();
-    ModifyEvent.removeListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Modify, listener );
   }
 
   /**
@@ -993,7 +1000,7 @@ public class Combo extends Composite {
    * it one of the messages defined in the <code>VerifyListener</code>
    * interface.
    *
-   * @param verifyListener the listener which should be notified
+   * @param listener the listener which should be notified
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
@@ -1006,16 +1013,20 @@ public class Combo extends Composite {
    * @see VerifyListener
    * @see #removeVerifyListener
    */
-  public void addVerifyListener( VerifyListener verifyListener ) {
+  public void addVerifyListener( VerifyListener listener ) {
     checkWidget();
-    VerifyEvent.addListener( this, verifyListener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Verify, typedListener );
   }
 
   /**
    * Removes the listener from the collection of listeners who will
    * be notified when the control is verified.
    *
-   * @param verifyListener the listener which should no longer be notified
+   * @param listener the listener which should no longer be notified
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
@@ -1028,9 +1039,12 @@ public class Combo extends Composite {
    * @see VerifyListener
    * @see #addVerifyListener
    */
-  public void removeVerifyListener( VerifyListener verifyListener ) {
+  public void removeVerifyListener( VerifyListener listener ) {
     checkWidget();
-    VerifyEvent.removeListener( this, verifyListener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Verify, listener );
   }
 
 

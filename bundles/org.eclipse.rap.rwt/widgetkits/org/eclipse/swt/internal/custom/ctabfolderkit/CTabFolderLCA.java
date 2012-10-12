@@ -29,7 +29,6 @@ import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -111,7 +110,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     preserveSelectionBgGradient( folder );
     preserveProperty( folder, PROP_BORDER_VISIBLE, folder.getBorderVisible() );
     preserveListener( folder, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( folder ) );
-    preserveListener( folder, PROP_FOLDER_LISTENER, CTabFolderEvent.hasListener( folder ) );
+    preserveListener( folder, PROP_FOLDER_LISTENER, hasCTabFolderListener( folder ) );
   }
 
   public void readData( Widget widget ) {
@@ -210,7 +209,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     renderSelectionBackgroundGradient( folder );
     renderProperty( folder, PROP_BORDER_VISIBLE, folder.getBorderVisible(), false );
     renderListener( folder, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( folder ), false );
-    renderListener( folder, PROP_FOLDER_LISTENER, CTabFolderEvent.hasListener( folder ), false );
+    renderListener( folder, PROP_FOLDER_LISTENER, hasCTabFolderListener( folder ), false );
   }
 
   @Override
@@ -334,4 +333,13 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   private static ICTabFolderAdapter getCTabFolderAdapter( CTabFolder folder ) {
     return folder.getAdapter( ICTabFolderAdapter.class );
   }
+
+  private boolean hasCTabFolderListener( CTabFolder folder ) {
+    return folder.isListening( EventTypes.CTAB_FOLDER_CLOSE )
+        || folder.isListening( EventTypes.CTAB_FOLDER_MAXIMIZE )
+        || folder.isListening( EventTypes.CTAB_FOLDER_MINIMIZE )
+        || folder.isListening( EventTypes.CTAB_FOLDER_RESTORE )
+        || folder.isListening( EventTypes.CTAB_FOLDER_SHOW_LIST );
+  }
+
 }

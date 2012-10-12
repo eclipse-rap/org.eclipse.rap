@@ -11,9 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.events.EventTable;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.TypedListener;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -137,8 +138,12 @@ public class SelectionEvent extends TypedEvent {
    * @deprecated not part of the API, do not use in application code
    */
   @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, EVENT_TYPES );
+  public static boolean hasListener( Widget adaptable ) {
+    boolean result = false;
+    for( int i = 0; !result && i < EVENT_TYPES.length; i++ ) {
+      result = adaptable.isListening( EVENT_TYPES[ i ] );
+    }
+    return result;
   }
 
   /**
@@ -147,7 +152,13 @@ public class SelectionEvent extends TypedEvent {
    */
   @Deprecated
   public static void addListener( Widget adaptable, SelectionListener listener ) {
-    addListener( adaptable, EVENT_TYPES, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    for( int eventType : EVENT_TYPES ) {
+      adaptable.addListener( eventType, typedListener );
+    }
   }
 
   /**
@@ -156,7 +167,13 @@ public class SelectionEvent extends TypedEvent {
    */
   @Deprecated
   public static void removeListener( Widget adaptable, SelectionListener listener ) {
-    removeListener( adaptable, EVENT_TYPES, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    EventTable eventTable = adaptable.getAdapter( EventTable.class );
+    for( int eventType : EVENT_TYPES ) {
+      eventTable.unhook( eventType, listener );
+    }
   }
 
   @Override

@@ -80,8 +80,8 @@ final class TextLCAUtil {
     preserveProperty( text, PROP_EDITABLE, text.getEditable() );
     preserveProperty( text, PROP_ECHO_CHAR, getEchoChar( text ) );
     preserveProperty( text, PROP_MESSAGE, text.getMessage() );
-    preserveListener( text, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( text ) );
-    preserveListener( text, PROP_VERIFY_LISTENER, VerifyEvent.hasListener( text ) );
+    preserveListener( text, PROP_MODIFY_LISTENER, text.isListening( SWT.Modify ) );
+    preserveListener( text, PROP_VERIFY_LISTENER, text.isListening( SWT.Verify ) );
     preserveListener( text, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( text ) );
   }
 
@@ -101,8 +101,8 @@ final class TextLCAUtil {
     renderProperty( text, PROP_TEXT_LIMIT, getTextLimit( text ), null );
     renderProperty( text, PROP_ECHO_CHAR, getEchoChar( text ), null );
     renderProperty( text, PROP_MESSAGE, text.getMessage(), "" );
-    renderListener( text, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( text ), false );
-    renderListener( text, PROP_VERIFY_LISTENER, VerifyEvent.hasListener( text ), false );
+    renderListener( text, PROP_MODIFY_LISTENER, text.isListening( SWT.Modify ), false );
+    renderListener( text, PROP_VERIFY_LISTENER, text.isListening( SWT.Verify ), false );
     renderListener( text, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( text ), false );
   }
 
@@ -110,7 +110,7 @@ final class TextLCAUtil {
     final Point selection = readSelection( text );
     final String txt = WidgetLCAUtil.readPropertyValue( text, "text" );
     if( txt != null ) {
-      if( VerifyEvent.hasListener( text ) ) {
+      if( text.isListening( SWT.Verify ) ) {
         // setText needs to be executed in a ProcessAction runnable as it may
         // fire a VerifyEvent whose fields (text and doit) need to be evaluated
         // before actually setting the new value

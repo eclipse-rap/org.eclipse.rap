@@ -13,11 +13,15 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ScrollBar;
+import org.eclipse.swt.widgets.Shell;
 
 
 public class ScrolledComposite_Test extends TestCase {
@@ -60,7 +64,7 @@ public class ScrolledComposite_Test extends TestCase {
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
     assertSame( content, sc.getContent() );
-    assertTrue( ControlEvent.hasListener( content ) );
+    assertTrue( content.isListening( SWT.Resize ) );
   }
   
   public void testOrigin() {

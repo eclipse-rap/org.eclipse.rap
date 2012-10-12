@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -28,10 +26,6 @@ public final class ArmEvent extends TypedEvent {
 
   private static final long serialVersionUID = 3258126964249212217L;
 
-  private static final int WIDGET_ARMED = SWT.Arm;
-
-  private static final int[] EVENT_TYPES = { WIDGET_ARMED };
-
   /**
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
@@ -40,15 +34,6 @@ public final class ArmEvent extends TypedEvent {
    */
   public ArmEvent( Event event ) {
     super( event );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, EVENT_TYPES );
   }
 
 }

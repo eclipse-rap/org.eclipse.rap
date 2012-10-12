@@ -71,8 +71,8 @@ public class ComboLCA extends AbstractWidgetLCA {
     preserveProperty( combo, PROP_LIST_VISIBLE, combo.getListVisible() );
     preserveProperty( combo, PROP_EDITABLE, Boolean.valueOf( isEditable( combo ) ) );
     preserveListener( combo, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( combo ) );
-    preserveListener( combo, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( combo ) );
-    preserveListener( combo, PROP_VERIFY_LISTENER, VerifyEvent.hasListener( combo ) );
+    preserveListener( combo, PROP_MODIFY_LISTENER, combo.isListening( SWT.Modify ) );
+    preserveListener( combo, PROP_VERIFY_LISTENER, combo.isListening( SWT.Verify ) );
   }
 
   public void readData( Widget widget ) {
@@ -130,7 +130,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     final Point selection = readSelection( combo );
     final String value = WidgetLCAUtil.readPropertyValue( combo, "text" );
     if( value != null ) {
-      if( VerifyEvent.hasListener( combo ) ) {
+      if( combo.isListening( SWT.Verify ) ) {
         // setText needs to be executed in a ProcessAcction runnable as it may
         // fire a VerifyEvent whose fields (text and doit) need to be evaluated
         // before actually setting the new value
@@ -238,11 +238,11 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListenModify( Combo combo ) {
-    renderListener( combo, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( combo ), false );
+    renderListener( combo, PROP_MODIFY_LISTENER, combo.isListening( SWT.Modify ), false );
   }
 
   private static void renderListenVerify( Combo combo ) {
-    renderListener( combo, PROP_VERIFY_LISTENER, VerifyEvent.hasListener( combo ), false );
+    renderListener( combo, PROP_VERIFY_LISTENER, combo.isListening( SWT.Verify ), false );
   }
 
   //////////////////

@@ -11,10 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.browser;
 
-import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TypedEvent;
-import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -26,22 +24,11 @@ import org.eclipse.swt.widgets.Event;
  * {@link Browser#setUrl(String)} or when the user activates a
  * hyperlink.
  *
- * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of
- * this class are <em>not</em> part of the RWT public API. They are marked
- * public only so that they can be shared within the packages provided by RWT.
- * They should never be accessed from application code.
- * </p>
- *
  * @since 1.0
  */
 public class LocationEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
-
-  public static final int CHANGING = EventTypes.LOCALTION_CHANGING;
-  public static final int CHANGED = EventTypes.LOCALTION_CHANGED;
-
-  private static final int[] EVENT_TYPES = { CHANGING, CHANGED };
 
   /** current location */
   public String location;
@@ -63,33 +50,6 @@ public class LocationEvent extends TypedEvent {
     super( event );
     location = event.text;
     top = event.detail == SWT.TOP;
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, EVENT_TYPES );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, LocationListener listener ) {
-    addListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, LocationListener listener ) {
-    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
 }

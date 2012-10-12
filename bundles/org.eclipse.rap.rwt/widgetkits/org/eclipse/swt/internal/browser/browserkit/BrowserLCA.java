@@ -41,7 +41,7 @@ import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
-import org.eclipse.swt.browser.ProgressEvent;
+import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Widget;
 
@@ -85,7 +85,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     Browser browser = ( Browser )widget;
     ControlLCAUtil.preserveValues( browser );
     WidgetLCAUtil.preserveCustomVariant( browser );
-    preserveListener( browser, PARAM_PROGRESS_LISTENER, ProgressEvent.hasListener( browser ) );
+    preserveListener( browser, PARAM_PROGRESS_LISTENER, hasProgressListener( browser ) );
   }
 
   public void readData( Widget widget ) {
@@ -114,7 +114,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     createBrowserFunctions( browser );
     renderEvaluate( browser );
     renderFunctionResult( browser );
-    renderListener( browser, PARAM_PROGRESS_LISTENER, ProgressEvent.hasListener( browser ), false );
+    renderListener( browser, PARAM_PROGRESS_LISTENER, hasProgressListener( browser ), false );
   }
 
   @Override
@@ -310,6 +310,11 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     IServiceStore serviceStore = ContextProvider.getServiceStore();
     String id = WidgetUtil.getId( browser );
     serviceStore.setAttribute( EXECUTED_FUNCTION_ERROR + id, error );
+  }
+
+  private boolean hasProgressListener( Browser browser ) {
+    return browser.isListening( EventTypes.PROGRESS_CHANGED ) 
+        || browser.isListening( EventTypes.PROGRESS_COMPLETED );
   }
 
 }

@@ -74,12 +74,6 @@ import org.eclipse.swt.widgets.Event;
  * doit flag to either enable or disable system traversal.
  * </p>
  *
- * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of
- * this class are <em>not</em> part of the RWT public API. They are marked
- * public only so that they can be shared within the packages provided by RWT.
- * They should never be accessed from application code.
- * </p>
- *
  * @see TraverseListener
  *
  * @since 1.2

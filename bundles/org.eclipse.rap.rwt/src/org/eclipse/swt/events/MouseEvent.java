@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -27,12 +25,6 @@ import org.eclipse.swt.widgets.Event;
  * as the <code>SWT</code> mask constants <code>BUTTONx</code>.
  * </p>
  *
- * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of
- * this class are <em>not</em> part of the RWT public API. They are marked
- * public only so that they can be shared within the packages provided by RWT.
- * They should never be accessed from application code.
- * </p>
- *
  * @see MouseListener
  * @see MouseMoveListener
  * @see MouseTrackListener
@@ -42,8 +34,6 @@ import org.eclipse.swt.widgets.Event;
 public class MouseEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
-
-  private static final int[] EVENT_TYPES = { SWT.MouseDown, SWT.MouseUp, SWT.MouseDoubleClick };
 
   /**
    * the button that was pressed or released; 1 for the
@@ -116,36 +106,9 @@ public class MouseEvent extends TypedEvent {
            + x
            + " y="
            + y
-//           + " count="
-//           + count
+           + " count="
+           + count
            + "}";
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, MouseListener listener ) {
-    addListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, MouseListener listener ) {
-    removeListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, EVENT_TYPES );
   }
 
 }

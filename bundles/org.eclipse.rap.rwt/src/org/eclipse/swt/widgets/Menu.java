@@ -677,7 +677,12 @@ public class Menu extends Widget {
    */
   public void addMenuListener( MenuListener listener ) {
     checkWidget();
-    MenuEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Show, typedListener );
+    addListener( SWT.Hide, typedListener );
   }
 
   /**
@@ -699,7 +704,11 @@ public class Menu extends Widget {
    */
   public void removeMenuListener( MenuListener listener ) {
     checkWidget();
-    MenuEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Show, listener );
+    removeListener( SWT.Hide, listener );
   }
 
   /**
@@ -724,7 +733,11 @@ public class Menu extends Widget {
    */
   public void addHelpListener( HelpListener listener ) {
     checkWidget();
-    HelpEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Help, typedListener );
   }
 
   /**
@@ -747,7 +760,10 @@ public class Menu extends Widget {
    */
   public void removeHelpListener( HelpListener listener ) {
     checkWidget();
-    HelpEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Help, listener );
   }
 
   //////////////////

@@ -11,9 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
-import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
-import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
 
@@ -21,25 +19,11 @@ import org.eclipse.swt.widgets.Widget;
 /**
  * This event is sent when an event is generated in the <code>CTabFolder</code>.
  *
- * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of
- * this class are <em>not</em> part of the RWT public API. They are marked
- * public only so that they can be shared within the packages provided by RWT.
- * They should never be accessed from application code.
- * </p>
- *
  * @since 1.0
  */
 public class CTabFolderEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
-
-  public static final int CLOSE = EventTypes.CTAB_FOLDER_CLOSE;
-  public static final int MINIMIZE = EventTypes.CTAB_FOLDER_MINIMIZE;
-  public static final int MAXIMIZE = EventTypes.CTAB_FOLDER_MAXIMIZE;
-  public static final int RESTORE = EventTypes.CTAB_FOLDER_RESTORE;
-  public static final int SHOW_LIST = EventTypes.CTAB_FOLDER_SHOW_LIST;
-
-  private static final int[] EVENT_TYPES = { CLOSE, MINIMIZE, MAXIMIZE, RESTORE, SHOW_LIST };
 
   /**
    * The tab item for the operation.
@@ -93,33 +77,6 @@ public class CTabFolderEvent extends TypedEvent {
     height = event.height;
     item = event.item;
     doit = event.doit;
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, EVENT_TYPES );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, CTabFolder2Listener listener ) {
-    addListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, CTabFolder2Listener listener ) {
-    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   @Override

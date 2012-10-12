@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -44,11 +42,6 @@ import org.eclipse.swt.widgets.Event;
 public class KeyEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
-
-  public static final int KEY_PRESSED = SWT.KeyDown;
-  public static final int KEY_RELEASED = SWT.KeyUp;
-
-  private static final int[] EVENT_TYPES = { KEY_PRESSED, KEY_RELEASED };
 
   /**
    * the character represented by the key that was typed. This is the final
@@ -122,30 +115,4 @@ public class KeyEvent extends TypedEvent {
            + "}";
   }
 
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, KeyListener listener ) {
-    addListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, KeyListener listener ) {
-    removeListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, EVENT_TYPES );
-  }
 }

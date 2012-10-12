@@ -21,7 +21,6 @@ import org.eclipse.rap.rwt.internal.protocol.StylesUtil;
 import org.eclipse.rap.rwt.internal.util.EncodingUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -307,7 +306,7 @@ public final class WidgetLCAUtil {
    * @since 1.3
    */
   public static void preserveHelpListener( Widget widget ) {
-    preserveListener( widget, PROP_HELP_LISTENER, HelpEvent.hasListener( widget ) );
+    preserveListener( widget, PROP_HELP_LISTENER, widget.isListening( SWT.Help ) );
   }
 
   /**
@@ -369,7 +368,7 @@ public final class WidgetLCAUtil {
    * @since 1.5
    */
   public static void renderListenHelp( Widget widget ) {
-    renderListener( widget, PROP_HELP_LISTENER, HelpEvent.hasListener( widget ), false );
+    renderListener( widget, PROP_HELP_LISTENER, widget.isListening( SWT.Help ), false );
   }
 
   /**

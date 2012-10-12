@@ -26,10 +26,6 @@ import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.MenuDetectEvent;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -270,7 +266,7 @@ public class ControlLCAUtil {
                                     hasActivateListener( control ) );
     WidgetLCAUtil.preserveListener( control,
                                     PROP_MOUSE_LISTENER,
-                                    MouseEvent.hasListener( control ) );
+                                    hasMouseListener( control ) );
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
       WidgetLCAUtil.preserveListener( control,
                                       PROP_FOCUS_LISTENER,
@@ -278,13 +274,13 @@ public class ControlLCAUtil {
     }
     WidgetLCAUtil.preserveListener( control,
                                     PROP_KEY_LISTENER,
-                                    KeyEvent.hasListener( control ) );
+                                    hasKeyListener( control ) );
     WidgetLCAUtil.preserveListener( control,
                                     PROP_TRAVERSE_LISTENER,
                                     control.isListening( SWT.Traverse ) );
     WidgetLCAUtil.preserveListener( control,
                                     PROP_MENU_DETECT_LISTENER,
-                                    MenuDetectEvent.hasListener( control ) );
+                                    control.isListening( SWT.MenuDetect ) );
     WidgetLCAUtil.preserveHelpListener( control );
     ActiveKeysUtil.preserveActiveKeys( control );
     ActiveKeysUtil.preserveCancelKeys( control );
@@ -547,12 +543,12 @@ public class ControlLCAUtil {
   }
 
   static void renderListenMouse( Control control ) {
-    boolean newValue = MouseEvent.hasListener( control );
+    boolean newValue = hasMouseListener( control );
     WidgetLCAUtil.renderListener( control, PROP_MOUSE_LISTENER, newValue, false );
   }
 
   static void renderListenKey( Control control ) {
-    boolean newValue = KeyEvent.hasListener( control );
+    boolean newValue = hasKeyListener( control );
     WidgetLCAUtil.renderListener( control, PROP_KEY_LISTENER, newValue, false );
   }
 
@@ -562,7 +558,7 @@ public class ControlLCAUtil {
   }
 
   static void renderListenMenuDetect( Control control ) {
-    boolean newValue = MenuDetectEvent.hasListener( control );
+    boolean newValue = control.isListening( SWT.MenuDetect );
     WidgetLCAUtil.renderListener( control, PROP_MENU_DETECT_LISTENER, newValue, false );
   }
 
@@ -665,7 +661,7 @@ public class ControlLCAUtil {
   }
 
   // [if] Fix for bug 263025, 297466, 223873 and more
-  // some qooxdoo widget with size (0,0) are not invisible
+  // some qooxdoo widgets with size (0,0) are not invisible
   private static boolean getVisible( Control control ) {
     Point size = control.getSize();
     return control.getVisible() && size.x > 0 && size.y > 0;
@@ -934,6 +930,16 @@ public class ControlLCAUtil {
 
   private static boolean hasActivateListener( Control control ) {
     return control.isListening( SWT.Activate ) || control.isListening( SWT.Deactivate );
+  }
+
+  private static boolean hasKeyListener( Control control ) {
+    return control.isListening( SWT.KeyUp ) || control.isListening( SWT.KeyDown );
+  }
+
+  private static boolean hasMouseListener( Control control ) {
+    return control.isListening( SWT.MouseUp ) 
+        || control.isListening( SWT.MouseDown ) 
+        || control.isListening( SWT.MouseDoubleClick );
   }
 
   private static boolean hasFocusListener( Control control ) {

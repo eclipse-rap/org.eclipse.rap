@@ -10,9 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.browser;
 
-import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
-import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -21,22 +19,11 @@ import org.eclipse.swt.widgets.Event;
  * {@link ProgressListener}'s when a progress is made during the loading of the
  * current URL or when the loading of the current URL has been completed.
  *
- * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of
- * this class are <em>not</em> part of the RWT public API. They are marked
- * public only so that they can be shared within the packages provided by RWT.
- * They should never be accessed from application code.
- * </p>
- *
  * @since 1.4
  */
 public class ProgressEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
-
-  public static final int CHANGED = EventTypes.PROGRESS_CHANGED;
-  public static final int COMPLETED = EventTypes.PROGRESS_COMPLETED;
-
-  private static final int[] EVENT_TYPES = { CHANGED, COMPLETED };
 
   /** current value */
   public int current;
@@ -46,33 +33,6 @@ public class ProgressEvent extends TypedEvent {
 
   ProgressEvent( Event event ) {
     super( event );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, EVENT_TYPES );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, ProgressListener listener ) {
-    addListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, ProgressListener listener ) {
-    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**

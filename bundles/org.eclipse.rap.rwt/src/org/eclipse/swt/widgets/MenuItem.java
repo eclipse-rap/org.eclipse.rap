@@ -16,7 +16,6 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ArmListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -457,7 +456,11 @@ public class MenuItem extends Item {
    */
   public void addHelpListener( HelpListener listener ) {
     checkWidget();
-    HelpEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Help, typedListener );
   }
 
   /**
@@ -480,7 +483,10 @@ public class MenuItem extends Item {
    */
   public void removeHelpListener( HelpListener listener ) {
     checkWidget();
-    HelpEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Help, listener );
   }
 
   /**

@@ -232,7 +232,7 @@ public class Menu_Test extends TestCase {
     }
   }
 
-  public void testRemoveHellpListenerWithNullArgument() {
+  public void testRemoveHelpListenerWithNullArgument() {
     Menu menu = new Menu( shell, SWT.POP_UP );
     
     try {

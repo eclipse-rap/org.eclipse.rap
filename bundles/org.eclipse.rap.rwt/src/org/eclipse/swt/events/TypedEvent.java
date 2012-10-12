@@ -11,20 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.SWTEventListener;
 import org.eclipse.swt.internal.SWTEventObject;
-import org.eclipse.swt.internal.events.EventTable;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.TypedListener;
 import org.eclipse.swt.widgets.Widget;
 
 
 /**
  * This is the super class for all typed event classes provided
- * by RWT. Typed events contain particular information which is
+ * by SWT. Typed events contain particular information which is
  * applicable to the event occurrence.
  *
  * @see org.eclipse.swt.widgets.Event
@@ -100,40 +95,4 @@ public class TypedEvent extends SWTEventObject {
     return result;
   }
 
-  protected static boolean hasListener( Adaptable adaptable, int[] eventTypes ) {
-    boolean result = false;
-    EventTable eventTable = adaptable.getAdapter( EventTable.class );
-    for( int i = 0; !result && i < eventTypes.length; i++ ) {
-      result = eventTable.hooks( eventTypes[ i ] );
-    }
-    return result;
-  }
-
-  protected static void addListener( Adaptable adaptable, 
-                                     int[] eventTypes, 
-                                     SWTEventListener listener ) 
-  {
-    if( listener == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
-    TypedListener typedListener = new TypedListener( listener );
-    EventTable eventTable = adaptable.getAdapter( EventTable.class );
-    for( int eventType : eventTypes ) {
-      eventTable.hook( eventType, typedListener );
-    }
-  }
-
-  protected static void removeListener( Adaptable adaptable, 
-                                        int[] eventTypes, 
-                                        SWTEventListener listener ) 
-  {
-    if( listener == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
-    EventTable eventTable = adaptable.getAdapter( EventTable.class );
-    for( int eventType : eventTypes ) {
-      eventTable.unhook( eventType, listener );
-    }
-  }
-  
 }
