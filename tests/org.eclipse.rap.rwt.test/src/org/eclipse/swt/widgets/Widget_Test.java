@@ -483,6 +483,18 @@ public class Widget_Test extends TestCase {
     assertEquals( predefinedTime, captor.getValue().time );
   }
   
+  // bug 286039
+  public void testRemoveUntypedListenerLeavesNeighbourListenerIntact() {
+    Listener listener = mock( Listener.class );
+    shell.addListener( SWT.Move, listener );
+    
+    shell.addListener( SWT.Resize, listener );
+    shell.removeListener( SWT.Resize, listener );
+    shell.notifyListeners( SWT.Move, new Event() );
+    
+    verify( listener ).handleEvent( any( Event.class ) );
+  }
+  
   public void testGetListeners() {
     Listener[] listeners = shell.getListeners( 0 );
     assertNotNull( listeners );
