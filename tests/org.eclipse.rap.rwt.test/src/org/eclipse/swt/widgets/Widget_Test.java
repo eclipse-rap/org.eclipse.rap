@@ -495,6 +495,18 @@ public class Widget_Test extends TestCase {
     verify( listener ).handleEvent( any( Event.class ) );
   }
   
+  // bug 332511
+  public void testRemoveTypedListenerWithUntypedRemoveListener() {
+    shell.addDisposeListener( mock( DisposeListener.class ) );
+    
+    Listener[] listeners = shell.getListeners( SWT.Dispose );
+    for( Listener listener : listeners ) {
+      shell.removeListener( SWT.Dispose, listener );
+    }
+    
+    assertFalse( shell.isListening( SWT.Dispose ) );
+  }
+  
   public void testGetListeners() {
     Listener[] listeners = shell.getListeners( 0 );
     assertNotNull( listeners );
