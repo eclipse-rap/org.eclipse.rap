@@ -22,7 +22,6 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.events.IEventAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -62,20 +61,6 @@ public class Widget_Test extends TestCase {
     shell.dispose();
     Object adapterOfDisposedWidget = shell.getAdapter( IWidgetAdapter.class );
     assertNotNull( adapterOfDisposedWidget );
-  }
-  
-  public void testGetEventAdapter() {
-    IEventAdapter eventAdapter = shell.getAdapter( IEventAdapter.class );
-    
-    assertNotNull( eventAdapter );
-  }
-
-  public void testGetEventAdapterReturnsSame() {
-    IEventAdapter eventAdapter1 = shell.getAdapter( IEventAdapter.class );
-    IEventAdapter eventAdapter2 = shell.getAdapter( IEventAdapter.class );
-    
-    assertNotNull( eventAdapter1 );
-    assertSame( eventAdapter1, eventAdapter2 );
   }
   
   public void testGetEventTableAdapter() {

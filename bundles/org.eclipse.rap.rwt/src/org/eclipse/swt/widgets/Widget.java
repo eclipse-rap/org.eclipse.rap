@@ -13,8 +13,6 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.events.EventAdapter;
-import org.eclipse.rap.rwt.internal.events.IEventAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
@@ -108,7 +106,6 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
   private EventTable eventTable;
   private transient LifeCycleAdapterFactory lifeCycleAdapterFactory;
   private IWidgetAdapter widgetAdapter;
-  private IEventAdapter eventAdapter;
   private IWidgetGraphicsAdapter widgetGraphicsAdapter;
 
   Widget() {
@@ -168,12 +165,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     // The adapters returned here are buffered for performance reasons. Don't change this without
     // good reason
     T result = null;
-    if( adapter == IEventAdapter.class ) {
-      if( eventAdapter == null ) {
-        eventAdapter = new EventAdapter();
-      }
-      result = ( T )eventAdapter;
-    } else if( adapter == EventTable.class ) {
+    if( adapter == EventTable.class ) {
       ensureEventTable();
       result = ( T )eventTable;
     } else if( adapter == IClientObjectAdapter.class || adapter == IWidgetAdapter.class ) {
