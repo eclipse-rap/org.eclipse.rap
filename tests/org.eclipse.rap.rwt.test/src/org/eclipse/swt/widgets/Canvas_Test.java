@@ -61,18 +61,6 @@ public class Canvas_Test extends TestCase {
     assertEquals( event.height, canvas.getClientArea().height );
   }
   
-  public void testRemovePaintListener() {
-    PaintListener listener = new PaintListener() {
-      public void paintControl( PaintEvent event ) {
-        paintEventLog.add( event );
-      }
-    };
-    canvas.addPaintListener( listener );
-    canvas.removePaintListener( listener );
-    canvas.redraw();
-    assertEquals( 0, paintEventLog.size() );
-  }
-  
   public void testResize() {
     canvas.addPaintListener( new PaintListener() {
       public void paintControl( PaintEvent event ) {
@@ -108,6 +96,15 @@ public class Canvas_Test extends TestCase {
     assertTrue( canvas.isListening( SWT.Paint ) );
   }
 
+  public void testRemovePaintListener() {
+    PaintListener listener = mock( PaintListener.class );
+    canvas.addPaintListener( listener );
+    
+    canvas.removePaintListener( listener );
+    
+    assertFalse( canvas.isListening( SWT.Paint ) );
+  }
+  
   public void testRemovePaintListenerUnregistersUntypedEvent() {
     PaintListener listener = mock( PaintListener.class );
     canvas.addPaintListener( listener );

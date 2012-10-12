@@ -13,7 +13,6 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -129,7 +128,11 @@ public class Canvas extends Composite {
    */
   public void addPaintListener( PaintListener listener ) {
     checkWidget();
-    PaintEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Paint, typedListener );
   }
 
   /**
@@ -152,7 +155,10 @@ public class Canvas extends Composite {
    */
   public void removePaintListener( PaintListener listener ) {
     checkWidget();
-    PaintEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Paint, listener );
   }
 
   /////////////

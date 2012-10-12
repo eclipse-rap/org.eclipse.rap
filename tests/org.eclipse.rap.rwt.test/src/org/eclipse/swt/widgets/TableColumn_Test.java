@@ -394,6 +394,48 @@ public class TableColumn_Test extends TestCase {
     }
   }
 
+  public void testAddControlListenerWithNullArgument() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    
+    try {
+      column.addControlListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testAddControlListener() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    column.addControlListener( mock( ControlListener.class ) );
+    
+    assertTrue( column.isListening( SWT.Move ) );
+    assertTrue( column.isListening( SWT.Resize ) );
+  }
+
+  public void testRemoveControlListenerWithNullArgument() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    try {
+      column.removeControlListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveControlListener() {
+    ControlListener listener = mock( ControlListener.class );
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    column.addControlListener( listener );
+    
+    column.removeControlListener( listener );
+    
+    assertFalse( column.isListening( SWT.Move ) );
+    assertFalse( column.isListening( SWT.Resize ) );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );

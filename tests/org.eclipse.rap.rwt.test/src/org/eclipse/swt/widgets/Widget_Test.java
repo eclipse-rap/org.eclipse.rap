@@ -289,10 +289,17 @@ public class Widget_Test extends TestCase {
   public void testRemoveListener() {
     // Ensure that removing a listener that was never added is ignored
     // silently see https://bugs.eclipse.org/251816
-    shell.removeListener( SWT.Activate, new Listener() {
-      public void handleEvent( Event event ) {
-      }
-    } );
+    shell.removeListener( SWT.Activate, mock( Listener.class ) );
+  }
+
+  // bug 328043
+  public void testUntypedDisposeListener() {
+    DisposeListener listener = mock( DisposeListener.class );
+    shell.addDisposeListener( listener );
+
+    shell.notifyListeners( SWT.Dispose, new Event() );
+
+    verify( listener ).widgetDisposed( any( DisposeEvent.class ) );
   }
 
   public void testNotifyListeners() {

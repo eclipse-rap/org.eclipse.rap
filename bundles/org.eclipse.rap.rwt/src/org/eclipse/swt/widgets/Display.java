@@ -212,17 +212,15 @@ public class Display extends Device implements Adaptable {
   private Collection<Control> redrawControls;
   private Control focusControl;
   private EventTable filterTable;
+  private EventTable eventTable;
   private transient Monitor monitor;
   private transient IDisplayAdapter displayAdapter;
   private WidgetAdapter widgetAdapter;
-  private Set<Listener> closeListeners;
-  private Set<Listener> disposeListeners;
   private Runnable[] disposeList;
   private Composite[] layoutDeferred;
   private int layoutDeferredCount;
   private Widget[] skinList;
   private int skinCount;
-  private Set<Listener> skinListeners;
   private boolean beep;
 
   /* Display Data */
@@ -575,22 +573,10 @@ public class Display extends Device implements Adaptable {
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( eventType == SWT.Close ) {
-      if( closeListeners == null ) {
-        closeListeners = new HashSet<Listener>();
-      }
-      closeListeners.add( listener );
-    } else if( eventType == SWT.Dispose ) {
-      if( disposeListeners == null ) {
-        disposeListeners = new HashSet<Listener>();
-      }
-      disposeListeners.add( listener );
-    } else if( eventType == SWT.Skin ) {
-      if( skinListeners == null ) {
-        skinListeners = new HashSet<Listener>();
-      }
-      skinListeners.add( listener );
+    if( eventTable == null ) {
+      eventTable = new EventTable();
     }
+    eventTable.hook( eventType, listener );
   }
 
   /**
@@ -620,21 +606,20 @@ public class Display extends Device implements Adaptable {
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( eventType == SWT.Close && closeListeners != null ) {
-      closeListeners.remove( listener );
-      if( closeListeners.size() == 0 ) {
-        closeListeners = null;
-      }
-    } else if ( eventType == SWT.Dispose && disposeListeners != null ) {
-      disposeListeners.remove( listener );
-      if( disposeListeners.size() == 0 ) {
-        disposeListeners = null;
-      }
-    } else if ( eventType == SWT.Skin && skinListeners != null ) {
-      skinListeners.remove( listener );
-      if( skinListeners.size() == 0 ) {
-        skinListeners = null;
-      }
+    if( eventTable != null ) {
+      eventTable.unhook( eventType, listener );
+    }
+  }
+
+  void sendEvent( int eventType, Event event ) {
+    event.display = this;
+    event.type = eventType;
+    if( event.time == 0 ) {
+      event.time = EventUtil.getLastEventTime();
+    }
+    filterEvent( event );
+    if( eventTable != null ) {
+      eventTable.sendEvent( event );
     }
   }
 
@@ -685,16 +670,7 @@ public class Display extends Device implements Adaptable {
   public void close() {
     checkDevice();
     Event event = new Event();
-    event.display = this;
-    event.type = SWT.Close;
-    notifyFilters( event );
-    if( closeListeners != null ) {
-      Listener[] listeners = new Listener[ closeListeners.size() ];
-      closeListeners.toArray( listeners );
-      for( int i = 0; i < listeners.length; i++ ) {
-        listeners[ i ].handleEvent( event );
-      }
-    }
+    sendEvent( SWT.Close, event );
     if( event.doit ) {
       dispose();
     }
@@ -710,6 +686,7 @@ public class Display extends Device implements Adaptable {
       scheduler.dispose();
     }
     filterTable = null;
+    eventTable = null;
   }
 
   @Override
@@ -718,22 +695,7 @@ public class Display extends Device implements Adaptable {
   }
 
   private void sendDisposeEvent() {
-    Event event = new Event();
-    event.display = this;
-    event.type = SWT.Dispose;
-    notifyFilters( event );
-    if( disposeListeners != null ) {
-      Listener[] listeners = new Listener[ disposeListeners.size() ];
-      disposeListeners.toArray( listeners );
-      for( int i = 0; i < listeners.length; i++ ) {
-        try {
-          listeners[ i ].handleEvent( event );
-        } catch( Throwable thr ) {
-          String msg = "Exception while executing dispose-listener.";
-          ServletLog.log( msg, thr );
-        }
-      }
-    }
+    sendEvent( SWT.Dispose, new Event() );
   }
 
   private void disposeShells() {
@@ -1856,16 +1818,7 @@ public class Display extends Device implements Adaptable {
   private void sendSkinEvent( Widget widget ) {
     Event event = new Event();
     event.widget = widget;
-    event.display = this;
-    event.type = SWT.Skin;
-    notifyFilters( event );
-    if( skinListeners != null ) {
-      Listener[] listeners = new Listener[ skinListeners.size() ];
-      skinListeners.toArray( listeners );
-      for( int i = 0; i < listeners.length; i++ ) {
-        listeners[ i ].handleEvent( event );
-      }
-    }
+    sendEvent( SWT.Skin, event );
   }
 
   ///////////////
@@ -2291,10 +2244,6 @@ public class Display extends Device implements Adaptable {
       result = new Rectangle( 0, 0, 1024, 768 );
     }
     return result;
-  }
-
-  private void notifyFilters( Event event ) {
-    filterEvent( event );
   }
 
   /////////////////

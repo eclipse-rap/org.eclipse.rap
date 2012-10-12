@@ -11,9 +11,9 @@
 package org.eclipse.swt.events;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -23,11 +23,15 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
-import org.mockito.ArgumentCaptor;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.swt.widgets.Widget;
+import org.mockito.InOrder;
 
 
 public class KeyEvent_Test extends TestCase {
@@ -50,99 +54,74 @@ public class KeyEvent_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testCopyFieldsFromUntypedEvent() {
-    Button button = new Button( shell, SWT.PUSH );
-    KeyListener listener = mock( KeyListener.class );
-    button.addKeyListener( listener );
-    Object data = new Object();
+  public void testUntypedEventConstructor() throws Exception {
     Event event = new Event();
+    event.display = display;
+    event.widget = mock( Widget.class );
+    event.time = 4325;
     event.stateMask = 23;
     event.keyCode = 42;
     event.character = 'f';
     event.doit = true;
-    event.data = data;
-
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    button.notifyListeners( SWT.KeyDown, event );
-
-    ArgumentCaptor<KeyEvent> captor = ArgumentCaptor.forClass( KeyEvent.class );
-    verify( listener, times( 1 ) ).keyPressed( captor.capture() );
-    KeyEvent keyEvent = captor.getValue();
-    assertSame( button, keyEvent.getSource() );
-    assertSame( button, keyEvent.widget );
-    assertSame( display, keyEvent.display );
-    assertSame( data, keyEvent.data );
-    assertEquals( 23, keyEvent.stateMask );
-    assertEquals( 42, keyEvent.keyCode );
-    assertEquals( 'f', keyEvent.character );
-    assertEquals( true, keyEvent.doit );
-    assertEquals( SWT.KeyDown, keyEvent.getID() );
+    event.data = new Object();
+    
+    KeyEvent keyEvent = new KeyEvent( event );
+    
+    EventTestHelper.assertFieldsEqual( keyEvent, event );
   }
 
   public void testKeySelectionEventsOrder() {
+    KeyListener keyListener = mock( KeyListener.class );
+    SelectionListener selectionListener = mock( SelectionListener.class );
     Tree tree = createTreeWithKeyListener();
-    tree.addSelectionListener( new SelectionListener() {
-      public void widgetSelected( SelectionEvent event ) {
-        events.add( event );
-      }
-      public void widgetDefaultSelected( SelectionEvent event ) {
-        events.add( event );
-      }
-    } );
     Fixture.fakeNewRequest( display );
     fakeKeyDownRequest( tree, 65, 65 );
     fakeSelectionRequest( tree, tree.getItem( 1 ) );
 
-    events.clear();
+    tree.addKeyListener( keyListener );
+    tree.addSelectionListener( selectionListener );
     Fixture.readDataAndProcessAction( display );
 
-    assertEquals( 3, events.size() );
-    assertEquals( SWT.KeyDown, ( ( TypedEvent )events.get( 0 ) ).getID() );
-    assertEquals( SWT.Selection, ( ( TypedEvent )events.get( 1 ) ).getID() );
-    assertEquals( SWT.KeyUp, ( ( TypedEvent )events.get( 2 ) ).getID() );
+    InOrder inOrder = inOrder( keyListener, selectionListener );
+    inOrder.verify( keyListener ).keyPressed( any( KeyEvent.class ) );
+    inOrder.verify( selectionListener ).widgetSelected( any( SelectionEvent.class ) );
+    inOrder.verify( keyListener ).keyReleased( any( KeyEvent.class ) );
   }
 
   public void testKeyTreeEventsOrder() {
+    KeyListener keyListener = mock( KeyListener.class );
+    TreeListener treeListener = mock( TreeListener.class );
     Tree tree = createTreeWithKeyListener();
-    tree.addTreeListener( new TreeListener() {
-      public void treeExpanded( TreeEvent event ) {
-        events.add( event );
-      }
-      public void treeCollapsed( TreeEvent event ) {
-        events.add( event );
-      }
-    } );
     Fixture.fakeNewRequest( display );
     fakeKeyDownRequest( tree, 65, 65 );
     fakeTreeRequest( tree.getItem( 1 ) );
 
-    events.clear();
+    tree.addKeyListener( keyListener );
+    tree.addTreeListener( treeListener );
     Fixture.readDataAndProcessAction( display );
 
-    assertEquals( 3, events.size() );
-    assertEquals( SWT.KeyDown, ( ( TypedEvent )events.get( 0 ) ).getID() );
-    assertEquals( SWT.Expand, ( ( TypedEvent )events.get( 1 ) ).getID() );
-    assertEquals( SWT.KeyUp, ( ( TypedEvent )events.get( 2 ) ).getID() );
+    InOrder inOrder = inOrder( keyListener, treeListener );
+    inOrder.verify( keyListener ).keyPressed( any( KeyEvent.class ) );
+    inOrder.verify( treeListener ).treeExpanded( any( TreeEvent.class ) );
+    inOrder.verify( keyListener ).keyReleased( any( KeyEvent.class ) );
   }
 
   public void testKeyHelpEventsOrder() {
+    KeyListener keyListener = mock( KeyListener.class );
+    HelpListener helpListener = mock( HelpListener.class );
     Tree tree = createTreeWithKeyListener();
-    tree.addHelpListener( new HelpListener() {
-      public void helpRequested( HelpEvent event ) {
-        events.add( event );
-      }
-    } );
     Fixture.fakeNewRequest( display );
     fakeKeyDownRequest( tree, 65, 65 );
     fakeHelpRequest( tree );
 
-    events.clear();
+    tree.addKeyListener( keyListener );
+    tree.addHelpListener( helpListener );
     Fixture.readDataAndProcessAction( display );
 
-    assertEquals( 3, events.size() );
-    assertEquals( SWT.KeyDown, ( ( TypedEvent )events.get( 0 ) ).getID() );
-    assertEquals( SWT.Help, ( ( TypedEvent )events.get( 1 ) ).getID() );
-    assertEquals( SWT.KeyUp, ( ( TypedEvent )events.get( 2 ) ).getID() );
+    InOrder inOrder = inOrder( keyListener, helpListener );
+    inOrder.verify( keyListener ).keyPressed( any( KeyEvent.class ) );
+    inOrder.verify( helpListener ).helpRequested( any( HelpEvent.class ) );
+    inOrder.verify( keyListener ).keyReleased( any( KeyEvent.class ) );
   }
 
   private Tree createTreeWithKeyListener() {

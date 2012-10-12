@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Event;
 
@@ -25,8 +23,6 @@ import org.eclipse.swt.widgets.Event;
  * @since 1.3
  */
 public final class PaintEvent extends TypedEvent {
-
-  private static final int[] EVENT_TYPES = { SWT.Paint };
 
   /**
    * the graphics context to use when painting that is configured to use the
@@ -75,33 +71,6 @@ public final class PaintEvent extends TypedEvent {
     width = event.width;
     height = event.height;
     count = event.count;
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, EVENT_TYPES );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, PaintListener listener ) {
-    addListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, PaintListener listener ) {
-    removeListener( adaptable, EVENT_TYPES, listener );
   }
 
   /**

@@ -22,6 +22,7 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 
@@ -313,6 +314,44 @@ public class TreeColumn_Test extends TestCase {
       column.removeSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
     }
+  }
+
+  public void testAddControlListenerWithNullArgument() {
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+    
+    try {
+      column.addControlListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testAddControlListener() {
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+
+    column.addControlListener( mock( ControlListener.class ) );
+    
+    assertTrue( column.isListening( SWT.Move ) );
+    assertTrue( column.isListening( SWT.Resize ) );
+  }
+
+  public void testRemoveControlListenerWithNullArgument() {
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+
+    try {
+      column.removeControlListener( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRemoveControlListener() {
+    ControlListener listener = mock( ControlListener.class );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+    column.addControlListener( listener );
+    
+    column.removeControlListener( listener );
+    
+    assertFalse( column.isListening( SWT.Move ) );
+    assertFalse( column.isListening( SWT.Resize ) );
   }
 
   //////////////////

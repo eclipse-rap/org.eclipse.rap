@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -32,8 +30,6 @@ public final class FocusEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
 
-  private static final int[] EVENT_TYPES = { SWT.FocusIn, SWT.FocusOut };
-
   /**
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
@@ -42,33 +38,6 @@ public final class FocusEvent extends TypedEvent {
    */
   public FocusEvent( Event event ) {
     super( event );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Adaptable adaptable, FocusListener listener ) {
-    addListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, FocusListener listener ) {
-    removeListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Adaptable adaptable ) {
-    return hasListener( adaptable, EVENT_TYPES );
   }
 
 }

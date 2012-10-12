@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,40 +13,29 @@ package org.eclipse.swt.events;
 import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class MenuDetectEvent_Test extends TestCase {
-
-  private Display display;
-
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display = new Display();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
+public class PaintEvent_Test extends TestCase {
 
   public void testUntypedEventConstructor() throws Exception {
     Event event = new Event();
-    event.display = display;
+    event.display = mock( Display.class );
     event.widget = mock( Widget.class );
-    event.time = 4325;
-    event.x = 10;
-    event.y = 20;
-    event.doit = true;
-    event.data = new Object();
+    event.time = 321;
+    event.gc = mock( GC.class );
+    event.x = 3;
+    event.y = 4;
+    event.width = 5;
+    event.height = 6;
+    event.count = 99;
+
+    PaintEvent paintEvent = new PaintEvent( event );
     
-    MenuDetectEvent menuDeteectEvent = new MenuDetectEvent( event );
-    
-    EventTestHelper.assertFieldsEqual( menuDeteectEvent, event );
+    EventTestHelper.assertFieldsEqual( paintEvent, event );
   }
 
 }

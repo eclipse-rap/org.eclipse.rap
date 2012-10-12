@@ -11,17 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.rap.rwt.internal.events.RWTEvent;
-import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.service.IServiceStore;
+import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.SWTEventListener;
+import org.eclipse.swt.internal.SWTEventObject;
+import org.eclipse.swt.internal.events.EventTable;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.TypedListener;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -32,13 +29,8 @@ import org.eclipse.swt.widgets.Widget;
  *
  * @see org.eclipse.swt.widgets.Event
  */
-public class TypedEvent extends RWTEvent {
+public class TypedEvent extends SWTEventObject {
   private static final long serialVersionUID = 1L;
-
-  private static final String ATTR_SCHEDULED_EVENT_LIST
-    = TypedEvent.class.getName() + "#scheduledEventList";
-
-  protected Event sourceEvent;
 
   /**
    * the display where the event occurred
@@ -69,21 +61,6 @@ public class TypedEvent extends RWTEvent {
   public Object data;
 
   /**
-   * Constructs a new instance of this class based on the
-   * information in the argument.
-   *
-   * @param event the low level event to initialize the receiver with
-   */
-  public TypedEvent( Event event ) {
-    super( event.widget, event.type );
-    display = event.display;
-    widget = event.widget;
-    data = event.data;
-    time = event.time;
-    sourceEvent = event;
-  }
-
-  /**
    * Constructs a new instance of this class.
    *
    * @param source the object that fired the event
@@ -91,79 +68,22 @@ public class TypedEvent extends RWTEvent {
    * @since 1.3
    */
   public TypedEvent( Object source ) {
-    this( source, SWT.None );
+    super( source );
   }
 
   /**
-   * Constructs a new instance of this class.
+   * Constructs a new instance of this class based on the
+   * information in the argument.
    *
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
+   * @param event the low level event to initialize the receiver with
    */
-  public TypedEvent( Object source, int id ) {
-    super( source, id );
-    widget = ( Widget )source;
-    display = widget.getDisplay();
+  public TypedEvent( Event event ) {
+    super( event.widget );
+    this.display = event.display;
+    this.widget = event.widget;
+    this.time = event.time;
+    this.data = event.data;
   }
-
-  @Override
-  public Object getSource() {
-    // [rh] introduced to get rid of discouraged access warning when
-    // application code accesses getSource() which is defined in
-    // org.eclipse.rwt.internal.events.Event
-    return super.getSource();
-  }
-
-  /**
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
-  public final void processEvent() {
-    // TODO: [fappel] In case of session invalidation there's no phase.
-    //                So no event processing should take place, this situation
-    //                may improve with the new readAndDispatch mechanism in
-    //                place.
-    PhaseId currentPhase = CurrentPhase.get();
-    if( currentPhase != null ) {
-      if(    PhaseId.PREPARE_UI_ROOT.equals( currentPhase )
-          || PhaseId.PROCESS_ACTION.equals( currentPhase ) )
-      {
-        // TODO [fappel]: changes of the event fields in the filter handler
-        //                methods should be forwarded to this event...
-        sourceEvent.widget.notifyListeners( sourceEvent.type, sourceEvent );
-      } else {
-        addToScheduledEvents( this );
-      }
-    }
-  }
-
-  ///////////////////////////////////////////////
-  // Methods to maintain list of scheduled events
-
-  private static void addToScheduledEvents( TypedEvent event ) {
-    getScheduledEventList().add( event );
-  }
-
-  @SuppressWarnings("unchecked")
-  private static List<TypedEvent> getScheduledEventList() {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
-    List<TypedEvent> result
-      = ( List<TypedEvent> )serviceStore.getAttribute( ATTR_SCHEDULED_EVENT_LIST );
-    if( result == null ) {
-      result = new ArrayList<TypedEvent>();
-      serviceStore.setAttribute( ATTR_SCHEDULED_EVENT_LIST, result );
-    }
-    return result;
-  }
-
-  ///////////////////////////////
-  // toString & getName from SWT
 
   // this implementation is extended by subclasses
   @Override
@@ -179,4 +99,41 @@ public class TypedEvent extends RWTEvent {
     }
     return result;
   }
+
+  protected static boolean hasListener( Adaptable adaptable, int[] eventTypes ) {
+    boolean result = false;
+    EventTable eventTable = adaptable.getAdapter( EventTable.class );
+    for( int i = 0; !result && i < eventTypes.length; i++ ) {
+      result = eventTable.hooks( eventTypes[ i ] );
+    }
+    return result;
+  }
+
+  protected static void addListener( Adaptable adaptable, 
+                                     int[] eventTypes, 
+                                     SWTEventListener listener ) 
+  {
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    EventTable eventTable = adaptable.getAdapter( EventTable.class );
+    for( int eventType : eventTypes ) {
+      eventTable.hook( eventType, typedListener );
+    }
+  }
+
+  protected static void removeListener( Adaptable adaptable, 
+                                        int[] eventTypes, 
+                                        SWTEventListener listener ) 
+  {
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    EventTable eventTable = adaptable.getAdapter( EventTable.class );
+    for( int eventType : eventTypes ) {
+      eventTable.unhook( eventType, listener );
+    }
+  }
+  
 }

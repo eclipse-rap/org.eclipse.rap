@@ -16,11 +16,14 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 @SuppressWarnings("deprecation")
 // TODO [rh] rename to ControlDecorator_Test
@@ -43,7 +46,8 @@ public class Decorator_Test extends TestCase {
     assertEquals( 0, decoration.getMarginWidth() );
     assertFalse( decoration.isVisible() );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), decoration.getBounds() );
-    assertFalse( FocusEvent.hasListener( control ) );
+    assertFalse( control.isListening( SWT.FocusIn ) );
+    assertFalse( control.isListening( SWT.FocusOut ) );
     assertEquals( 1, Decorator.getDecorators( control ).length );
 
     decoration = new ControlDecorator( control, SWT.LEFT, shell );
@@ -110,28 +114,41 @@ public class Decorator_Test extends TestCase {
     assertEquals( 5, decoration.getMarginWidth() );
   }
 
-  public void testShowOnlyOnFocus() {
+  public void testSetShowOnlyOnFocusToTrue() {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
-    assertFalse( decoration.getShowOnlyOnFocus() );
-    assertFalse( FocusEvent.hasListener( control ) );
+
     decoration.setShowOnlyOnFocus( true );
+    
     assertTrue( decoration.getShowOnlyOnFocus() );
-    assertTrue( FocusEvent.hasListener( control ) );
-    decoration.setShowOnlyOnFocus( false );
-    assertFalse( decoration.getShowOnlyOnFocus() );
-    assertFalse( FocusEvent.hasListener( control ) );
+    assertTrue( control.isListening( SWT.FocusIn ) );
+    assertTrue( control.isListening( SWT.FocusOut ) );
   }
 
-  public void testShowOnlyOnFocusCalledTwice() {
+  public void testSetShowOnlyOnFocusToFalse() {
+    Composite composite = new Composite( shell, SWT.NONE );
+    Control control = new Button( composite, SWT.PUSH );
+    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
+    decoration.setShowOnlyOnFocus( true );
+    
+    decoration.setShowOnlyOnFocus( false );
+
+    assertFalse( decoration.getShowOnlyOnFocus() );
+    assertFalse( control.isListening( SWT.FocusIn ) );
+    assertFalse( control.isListening( SWT.FocusOut ) );
+  }
+  
+  public void testSetShowOnlyOnFocusCalledTwice() {
     Control control = new Button( shell, SWT.PUSH );
     ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
     decoration.setShowOnlyOnFocus( true );
-    assertTrue( FocusEvent.hasListener( control ) );
+
     decoration.setShowOnlyOnFocus( true );
     decoration.setShowOnlyOnFocus( false );
-    assertFalse( FocusEvent.hasListener( control ) );
+
+    assertFalse( control.isListening( SWT.FocusIn ) );
+    assertFalse( control.isListening( SWT.FocusOut ) );
   }
 
   public void testShowHover() {

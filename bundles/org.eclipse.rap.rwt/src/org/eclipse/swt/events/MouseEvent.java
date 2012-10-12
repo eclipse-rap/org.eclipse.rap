@@ -72,14 +72,14 @@ public class MouseEvent extends TypedEvent {
    */
   public int y;
 
-//  /**
-//   * the number times the mouse has been clicked, as defined
-//   * by the operating system; 1 for the first click, 2 for the
-//   * second click and so on.
-//   *
-//   * @since 3.3
-//   */
-//  public int count;
+  /**
+   * the number times the mouse has been clicked, as defined
+   * by the operating system; 1 for the first click, 2 for the
+   * second click and so on.
+   *
+   * @since 2.0
+   */
+  public int count;
 
   /**
    * Constructs a new instance of this class based on the
@@ -95,6 +95,7 @@ public class MouseEvent extends TypedEvent {
     y = event.y;
     button = event.button;
     stateMask = event.stateMask;
+    count = event.count;
   }
 
   /**

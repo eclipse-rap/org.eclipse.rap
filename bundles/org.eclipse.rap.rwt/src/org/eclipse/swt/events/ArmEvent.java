@@ -47,24 +47,6 @@ public final class ArmEvent extends TypedEvent {
    * @deprecated not part of the API, do not use in application code
    */
   @Deprecated
-  public static void addListener( Adaptable adaptable, ArmListener listener ) {
-    addListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Adaptable adaptable, ArmListener listener ) {
-    removeListener( adaptable, EVENT_TYPES, listener );
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
   public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, EVENT_TYPES );
   }

@@ -16,6 +16,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -27,18 +28,39 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.*;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Device;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.layout.FillLayout;
+import org.mockito.ArgumentCaptor;
 
 
 public class Display_Test extends TestCase {
@@ -1014,28 +1036,6 @@ public class Display_Test extends TestCase {
     assertTrue( display.isDisposed() );
   }
 
-  public void testDisposeWithExceptionsInListeners() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    shell.addDisposeListener( new DisposeListener() {
-      public void widgetDisposed( DisposeEvent event ) {
-        throw new RuntimeException();
-      }
-    } );
-    display.addListener( SWT.Dispose, new Listener() {
-      public void handleEvent( Event event ) {
-        throw new RuntimeException();
-      }
-    } );
-    display.disposeExec( new Runnable() {
-      public void run() {
-        throw new RuntimeException();
-      }
-    } );
-    display.dispose();
-    assertTrue( display.isDisposed() );
-  }
-
   public void testSystemCursor() {
     Display display = new Display();
     Cursor arrow = display.getSystemCursor( SWT.CURSOR_ARROW );
@@ -1457,13 +1457,95 @@ public class Display_Test extends TestCase {
     
     verify( listener, never() ).handleEvent( any( Event.class ) );
   }
+  
+  public void testAddListenerWithNullArgument() {
+    Display display = new Display();
+    
+    try {
+      display.addListener( 123, null );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
 
+  public void testRemoveListenerWithNullArgument() {
+    Display display = new Display();
+    
+    try {
+      display.removeListener( 123, null );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testAddListener() {
+    Display display = new Display();
+    Listener listener = mock( Listener.class );
+    
+    display.addListener( 123, listener );
+    Event event = new Event();
+    display.sendEvent( 123, event );
+    
+    verify( listener ).handleEvent( event );
+  }
+  
+  public void testRemoveListener() {
+    Display display = new Display();
+    Listener listener = mock( Listener.class );
+    display.addListener( 123, listener );
+    
+    display.removeListener( 123, listener );
+    display.sendEvent( 123, new Event() );
+    
+    verifyZeroInteractions( listener );
+  }
+  
+  public void testSendEvent() {
+    Display display = new Display();
+    Listener listener = mock( Listener.class );
+    display.addListener( 123, listener );
+    
+    display.sendEvent( 123, new Event() );
+    
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( listener ).handleEvent( captor.capture() );
+    assertEquals( 123, captor.getValue().type );
+    assertEquals( display, captor.getValue().display );
+    assertTrue( captor.getValue().time > 0 );
+  }
+  
+  public void testSendEventWithPredefinedTime() {
+    Display display = new Display();
+    Listener listener = mock( Listener.class );
+    display.addListener( 123, listener );
+    
+    Event event = new Event();
+    event.time = 4;
+    display.sendEvent( 123, event );
+    
+    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
+    verify( listener ).handleEvent( captor.capture() );
+    assertEquals( 123, captor.getValue().type );
+    assertEquals( display, captor.getValue().display );
+    assertEquals( event.time, captor.getValue().time );
+  }
+  
+  public void testRemoveListenerWithoutAddingListener() {
+    Display display = new Display();
+    Listener listener = mock( Listener.class );
+    
+    display.removeListener( 123, listener );
+    display.sendEvent( 123, new Event() );
+    
+    verifyZeroInteractions( listener );
+  }
+  
   private static void setCursorLocation( Display display, int x, int y ) {
     IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
     adapter.setCursorLocation( x, y );
   }
 
-  public static final class EnsureIdEntryPoint implements IEntryPoint {
+  public static class EnsureIdEntryPoint implements IEntryPoint {
     public int createUI() {
       Display display = new Display();
       Shell shell = new Shell( display );

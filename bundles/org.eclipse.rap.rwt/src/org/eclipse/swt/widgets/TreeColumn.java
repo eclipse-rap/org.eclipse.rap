@@ -16,7 +16,6 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -161,7 +160,12 @@ public class TreeColumn extends Item {
    */
   public void addControlListener( ControlListener listener ) {
     checkWidget();
-    ControlEvent.addListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Move, typedListener );
+    addListener( SWT.Resize, typedListener );
   }
 
   /**
@@ -393,7 +397,11 @@ public class TreeColumn extends Item {
    */
   public void removeControlListener( ControlListener listener ) {
     checkWidget();
-    ControlEvent.removeListener( this, listener );
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Move, listener );
+    removeListener( SWT.Resize, listener );
   }
 
   /**

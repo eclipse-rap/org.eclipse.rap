@@ -26,7 +26,6 @@ import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MouseEvent;
@@ -146,17 +145,17 @@ public class ControlLCAUtil {
 
   public static void processMouseEvents( Control control ) {
     if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MOUSE_DOWN ) ) {
-      createMouseEvent( control, ClientMessageConst.EVENT_MOUSE_DOWN, SWT.MouseDown );
+      sendMouseEvent( control, ClientMessageConst.EVENT_MOUSE_DOWN, SWT.MouseDown );
     }
     if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK ) ) {
-      createMouseEvent( control, ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK, SWT.MouseDoubleClick );
+      sendMouseEvent( control, ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK, SWT.MouseDoubleClick );
     }
     if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MOUSE_UP ) ) {
-      createMouseEvent( control, ClientMessageConst.EVENT_MOUSE_UP, SWT.MouseUp );
+      sendMouseEvent( control, ClientMessageConst.EVENT_MOUSE_UP, SWT.MouseUp );
     }
   }
 
-  private static void createMouseEvent( Control control, String eventName, int eventType ) {
+  private static void sendMouseEvent( Control control, String eventName, int eventType ) {
     Event event = new Event();
     event.widget = control;
     event.type = eventType;
@@ -171,6 +170,11 @@ public class ControlLCAUtil {
                                        ClientMessageConst.EVENT_PARAM_TIME );
     event.stateMask = EventLCAUtil.readStateMask( control, eventName )
                     | EventLCAUtil.translateButton( event.button );
+    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK ) ) {
+      event.count = 2;
+    } else {
+      event.count = 1;
+    }
     checkAndProcessMouseEvent( event );
   }
 
@@ -270,14 +274,14 @@ public class ControlLCAUtil {
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
       WidgetLCAUtil.preserveListener( control,
                                       PROP_FOCUS_LISTENER,
-                                      FocusEvent.hasListener( control ) );
+                                      hasFocusListener( control ) );
     }
     WidgetLCAUtil.preserveListener( control,
                                     PROP_KEY_LISTENER,
                                     KeyEvent.hasListener( control ) );
     WidgetLCAUtil.preserveListener( control,
                                     PROP_TRAVERSE_LISTENER,
-                                    TraverseEvent.hasListener( control ) );
+                                    control.isListening( SWT.Traverse ) );
     WidgetLCAUtil.preserveListener( control,
                                     PROP_MENU_DETECT_LISTENER,
                                     MenuDetectEvent.hasListener( control ) );
@@ -537,7 +541,7 @@ public class ControlLCAUtil {
    */
   static void renderListenFocus( Control control ) {
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
-      boolean newValue = FocusEvent.hasListener( control );
+      boolean newValue = hasFocusListener( control );
       WidgetLCAUtil.renderListener( control, PROP_FOCUS_LISTENER, newValue, false );
     }
   }
@@ -553,7 +557,7 @@ public class ControlLCAUtil {
   }
 
   static void renderListenTraverse( Control control ) {
-    boolean newValue = TraverseEvent.hasListener( control );
+    boolean newValue = control.isListening( SWT.Traverse );
     WidgetLCAUtil.renderListener( control, PROP_TRAVERSE_LISTENER, newValue, false );
   }
 
@@ -930,6 +934,10 @@ public class ControlLCAUtil {
 
   private static boolean hasActivateListener( Control control ) {
     return control.isListening( SWT.Activate ) || control.isListening( SWT.Deactivate );
+  }
+
+  private static boolean hasFocusListener( Control control ) {
+    return control.isListening( SWT.FocusIn ) || control.isListening( SWT.FocusOut );
   }
 
 }

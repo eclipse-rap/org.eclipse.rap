@@ -46,6 +46,18 @@ public class ControlEvent_Test extends TestCase {
     Fixture.tearDown();
   }
 
+  public void testUntypedEventConstructor() throws Exception {
+    Event event = new Event();
+    event.display = display;
+    event.widget = mock( Widget.class );
+    event.time = 1;
+    event.data = new Object();
+    
+    ControlEvent controlEvent = new ControlEvent( event );
+    
+    EventTestHelper.assertFieldsEqual( controlEvent, event );
+  }
+
   public void testResized() {
     ControlListener listener = mock( ControlListener.class );
     control.addControlListener( listener );
