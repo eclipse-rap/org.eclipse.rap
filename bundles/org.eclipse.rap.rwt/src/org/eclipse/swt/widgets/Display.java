@@ -56,7 +56,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.events.EventList;
 import org.eclipse.swt.internal.events.EventTable;
-import org.eclipse.swt.internal.widgets.EventUtil;
+import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;

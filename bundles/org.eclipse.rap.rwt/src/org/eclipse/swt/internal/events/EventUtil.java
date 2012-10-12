@@ -9,12 +9,11 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.swt.internal.widgets;
+package org.eclipse.swt.internal.events;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;

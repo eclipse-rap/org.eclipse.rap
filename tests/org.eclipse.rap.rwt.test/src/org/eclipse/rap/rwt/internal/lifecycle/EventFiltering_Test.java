@@ -35,7 +35,7 @@ import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.internal.events.EventTypes;
-import org.eclipse.swt.internal.widgets.EventUtil;
+import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;

@@ -8,11 +8,12 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.internal.widgets;
+package org.eclipse.swt.internal.events;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.swt.internal.events.EventUtil;
 
 import junit.framework.TestCase;
 
