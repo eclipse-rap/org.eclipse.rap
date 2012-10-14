@@ -8,9 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.swt.dnd;
+package org.eclipse.swt.internal.dnd;
 
 
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.*;
 

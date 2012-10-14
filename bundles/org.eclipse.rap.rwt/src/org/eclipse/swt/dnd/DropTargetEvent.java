@@ -12,6 +12,7 @@
 package org.eclipse.swt.dnd;
 
 import org.eclipse.swt.events.TypedEvent;
+import org.eclipse.swt.internal.dnd.DNDEvent;
 import org.eclipse.swt.widgets.Widget;
 
 /**

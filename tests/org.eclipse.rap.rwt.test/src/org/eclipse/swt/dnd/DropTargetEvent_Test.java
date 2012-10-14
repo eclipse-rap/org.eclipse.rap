@@ -13,6 +13,7 @@ package org.eclipse.swt.dnd;
 import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
+import org.eclipse.swt.internal.dnd.DNDEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 

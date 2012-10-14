@@ -667,6 +667,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * @see #addListener
    * 
    * @noreference This method is not intended to be referenced by clients.
+   * @sine 2.0
    */
   protected void removeListener( int eventType, SWTEventListener listener ) {
     checkWidget();

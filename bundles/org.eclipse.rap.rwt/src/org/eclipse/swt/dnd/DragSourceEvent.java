@@ -13,6 +13,7 @@ package org.eclipse.swt.dnd;
 
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.dnd.DNDEvent;
 
 
 /**
