@@ -16,6 +16,7 @@ qx.Class.define( "rwt.widgets.List", {
     this.base( arguments, multiSelection );
     this._topIndex = 0;
     this._hasSelectionListener = false;
+    this._hasDefaultSelectionListener = false;
     // Listen to send event of request to report topIndex
     var req = rwt.remote.Server.getInstance();
     req.addEventListener( "send", this._onSendRequest, this );
@@ -80,6 +81,10 @@ qx.Class.define( "rwt.widgets.List", {
       this._hasSelectionListener = value;
     },
 
+    setHasDefaultSelectionListener : function( value ) {
+      this._hasDefaultSelectionListener = value;
+    },
+
     _onChangeLeadItem : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var wm = org.eclipse.swt.WidgetManager.getInstance();
@@ -128,7 +133,7 @@ qx.Class.define( "rwt.widgets.List", {
 
     _onDblClick : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        if( this._hasSelectionListener ) {
+        if( this._hasDefaultSelectionListener ) {
           var wm = org.eclipse.swt.WidgetManager.getInstance();
           var id = wm.findIdByWidget( this );
           var req = rwt.remote.Server.getInstance();

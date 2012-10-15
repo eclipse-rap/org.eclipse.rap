@@ -327,10 +327,31 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
       var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHasDefaultSelectionListenerByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.List",
+        "properties" : {
+          "style" : [ "MULTI" ],
+          "parent" : "w2"
+        }
+      } );
+      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w3" );
+      assertTrue( widget._hasDefaultSelectionListener );
       shell.destroy();
       widget.destroy();
     },
@@ -534,13 +555,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.setItems( [ "item0", "item1", "item2" ] );
       TestUtil.flush();
       var item = this._getItems( list )[ 1 ];
-      list.setHasSelectionListener( true );
+      list.setHasDefaultSelectionListener( true );
       org.eclipse.swt.WidgetManager.getInstance().add( list, "w3" );
 
       TestUtil.doubleClick( item );
 
-      assertEquals( 2, TestUtil.getRequestsSend() );
-      var msg = TestUtil.getMessageObject( 1 );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var msg = TestUtil.getLastMessage();
       assertNotNull( msg.findNotifyOperation( "w3", "DefaultSelection" ) );
       list.selectAll();
       list.destroy();

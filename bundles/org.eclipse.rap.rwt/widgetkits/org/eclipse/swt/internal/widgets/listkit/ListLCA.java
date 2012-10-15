@@ -24,11 +24,15 @@ import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.internal.widgets.IListAdapter;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class ListLCA extends AbstractWidgetLCA {
@@ -42,7 +46,8 @@ public class ListLCA extends AbstractWidgetLCA {
   private static final String PROP_FOCUS_INDEX = "focusIndex";
   private static final String PROP_SCROLLBARS_VISIBLE = "scrollBarsVisible";
   private static final String PROP_ITEM_DIMENSIONS = "itemDimensions";
-  private static final String PROP_SELECTION_LISTENER = "selection";
+  private static final String PROP_SELECTION_LISTENER = "Selection";
+  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
   private static final String PROP_MARKUP_ENABLED = "markupEnabled";
 
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
@@ -63,7 +68,10 @@ public class ListLCA extends AbstractWidgetLCA {
     preserveProperty( list, PROP_FOCUS_INDEX, list.getFocusIndex() );
     preserveProperty( list, PROP_SCROLLBARS_VISIBLE, getScrollBarsVisible( list ) );
     preserveProperty( list, PROP_ITEM_DIMENSIONS, getItemDimensions( list ) );
-    preserveListener( list, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( list ) );
+    preserveListener( list, PROP_SELECTION_LISTENER, list.isListening( SWT.Selection ) );
+    preserveListener( list,
+                      PROP_DEFAULT_SELECTION_LISTENER,
+                      list.isListening( SWT.DefaultSelection ) );
   }
 
   public void readData( Widget widget ) {
@@ -105,7 +113,11 @@ public class ListLCA extends AbstractWidgetLCA {
                     PROP_SCROLLBARS_VISIBLE,
                     getScrollBarsVisible( list ),
                     DEFAULT_SCROLLBARS_VISIBLE );
-    renderListener( list, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( list ), false );
+    renderListener( list, PROP_SELECTION_LISTENER, list.isListening( SWT.Selection ), false );
+    renderListener( list,
+                    PROP_DEFAULT_SELECTION_LISTENER,
+                    list.isListening( SWT.DefaultSelection ),
+                    false );
     renderProperty( list,
                     PROP_ITEM_DIMENSIONS,
                     getItemDimensions( list ),

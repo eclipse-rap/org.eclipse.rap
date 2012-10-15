@@ -26,17 +26,28 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IListAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.mockito.ArgumentCaptor;
@@ -485,25 +496,55 @@ public class ListLCA_Test extends TestCase {
     Fixture.markInitialized( list );
     Fixture.preserveWidgets();
 
-    list.addSelectionListener( new SelectionAdapter() { } );
+    list.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( list, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( list, "Selection" ) );
+    assertNull( message.findListenOperation( list, "DefaultSelection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    SelectionListener listener = new SelectionAdapter() { };
-    list.addSelectionListener( listener );
+    Listener listener = mock( Listener.class );
+    list.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( list );
     Fixture.preserveWidgets();
 
-    list.removeSelectionListener( listener );
+    list.removeListener( SWT.Selection, listener );
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( list, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( list, "Selection" ) );
+    assertNull( message.findListenOperation( list, "DefaultSelection" ) );
+  }
+
+  public void testRenderAddDefaultSelectionListener() throws Exception {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( list );
+    Fixture.preserveWidgets();
+
+    list.addListener( SWT.DefaultSelection, mock( Listener.class ) );
+    lca.renderChanges( list );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( list, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( list, "Selection" ) );
+  }
+
+  public void testRenderRemoveDefaultSelectionListener() throws Exception {
+    Listener listener = mock( Listener.class );
+    list.addListener( SWT.DefaultSelection, listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( list );
+    Fixture.preserveWidgets();
+
+    list.removeListener( SWT.DefaultSelection, listener );
+    lca.renderChanges( list );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( list, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( list, "Selection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
@@ -516,7 +557,8 @@ public class ListLCA_Test extends TestCase {
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( list, "selection" ) );
+    assertNull( message.findListenOperation( list, "Selection" ) );
+    assertNull( message.findListenOperation( list, "DefaultSelection" ) );
   }
 
   public void testRenderMarkupEnabled() throws IOException {
