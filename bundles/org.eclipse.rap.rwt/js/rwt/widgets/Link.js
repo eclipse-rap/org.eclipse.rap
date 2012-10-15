@@ -156,6 +156,8 @@ qx.Class.define( "rwt.widgets.Link", {
       }
     },
 
+    // TODO [tb] : This is way more complicated than it needs to be.
+    //             There is no need to work on DOM-level except when handling the event.
     _addEventListeners : function() {
       var hyperlinks = this._getHyperlinkElements();
       if( hyperlinks.length > 0 && !this._hyperlinksHaveListeners ) {
@@ -340,16 +342,8 @@ qx.Class.define( "rwt.widgets.Link", {
     },
 
     _sendChanges : function( index ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        var req = rwt.remote.Server.getInstance();
-        if( this._hasSelectionListener ) {
-          req.addEvent( "org.eclipse.swt.events.Selection", id );
-          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-          req.addEvent( "org.eclipse.swt.events.Selection.index", index );
-          req.send();
-        }
+      if( this._hasSelectionListener ) {
+        org.eclipse.swt.EventUtil.notifySelected( this, { "index" : index } );
       }
       this._readyToSendChanges = true;
     }

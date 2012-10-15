@@ -31,12 +31,23 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
-import org.eclipse.swt.widgets.*;
-import org.json.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.mockito.ArgumentCaptor;
 
 public class LinkLCA_Test extends TestCase {
@@ -256,25 +267,26 @@ public class LinkLCA_Test extends TestCase {
     Fixture.markInitialized( link );
     Fixture.preserveWidgets();
 
-    link.addSelectionListener( new SelectionAdapter() { } );
+    link.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( link );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( link, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( link, "Selection" ) );
+    assertNull( message.findListenOperation( link, "DefaultSelection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    SelectionListener listener = new SelectionAdapter() { };
-    link.addSelectionListener( listener );
+    Listener listener = mock( Listener.class );
+    link.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( link );
     Fixture.preserveWidgets();
 
-    link.removeSelectionListener( listener );
+    link.removeListener( SWT.Selection, listener );
     lca.renderChanges( link );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( link, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( link, "Selection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
@@ -287,7 +299,7 @@ public class LinkLCA_Test extends TestCase {
     lca.renderChanges( link );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( link, "selection" ) );
+    assertNull( message.findListenOperation( link, "Selection" ) );
   }
 
   private void fakeWidgetSelectedEvent() {

@@ -44,7 +44,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Link", {
   } ),
 
   listeners : rwt.protocol.AdapterUtil.extendControlListeners( [
-    "selection"
+    "Selection"
   ] ),
 
   listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),

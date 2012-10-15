@@ -134,12 +134,41 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
       var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
       widget.destroy();
+    },
+
+    testSendSelectionEvent : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Link",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "text" : [ [ "text1 ", null ], [ "link1", 0 ], [ " text2 ", null ], [ "link2", 1 ] ]
+        }
+      } );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
+      TestUtil.flush();
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w3" );
+
+      //TestUtil.clickDOM( widget._link.getElement().lastChild );
+      widget._sendChanges( 1 ); // Can not use fixture in this case
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getLastMessage();
+      console.log( message );
+      assertEquals( 1, message.findNotifyProperty( "w3", "Selection", "index" ) );
+      shell.destroy();
     }
 
   }

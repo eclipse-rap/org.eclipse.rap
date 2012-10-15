@@ -30,7 +30,6 @@ import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
@@ -44,7 +43,7 @@ public class LinkLCA extends AbstractWidgetLCA {
   private static final String[] ALLOWED_STYLES = new String[] { "BORDER" };
 
   static final String PROP_TEXT = "text";
-  static final String PROP_SELECTION_LISTENER = "selection";
+  static final String PROP_SELECTION_LISTENER = "Selection";
 
   @Override
   public void preserveValues( Widget widget ) {
@@ -52,7 +51,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     ControlLCAUtil.preserveValues( link );
     WidgetLCAUtil.preserveCustomVariant( link );
     preserveProperty( link, PROP_TEXT, link.getText() );
-    preserveListener( link, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( link ) );
+    preserveListener( link, PROP_SELECTION_LISTENER, link.isListening( SWT.Selection ) );
   }
 
   public void readData( Widget widget ) {
@@ -79,7 +78,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     ControlLCAUtil.renderChanges( link );
     WidgetLCAUtil.renderCustomVariant( link );
     renderText( link );
-    renderListener( link, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( link ), false );
+    renderListener( link, PROP_SELECTION_LISTENER, link.isListening( SWT.Selection ), false );
   }
 
   @Override

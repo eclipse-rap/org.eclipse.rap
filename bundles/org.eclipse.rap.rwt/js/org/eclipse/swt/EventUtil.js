@@ -64,16 +64,21 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       org.eclipse.swt.EventUtil.notifySelected( evt.getTarget(), left, top, width, height );
     },
 
-    notifySelected : function( target, left, top, width, height, detail) {
+    notifySelected : function( target, left, top, width, height, detail ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var server = rwt.remote.Server.getInstance();
-        var properties = {
-          "x" : left,
-          "y" : top,
-          "width" : width,
-          "height" : height,
-          "detail" : detail
-        };
+        var properties;
+        if( arguments.length === 2 ) {
+          properties = left;
+        } else {
+          properties = {
+              "x" : left,
+              "y" : top,
+              "width" : width,
+              "height" : height,
+              "detail" : detail
+          };
+        }
         org.eclipse.swt.EventUtil.addModifierToProperties( properties );
         server.getServerObject( target ).notify( "Selection", properties );
       }
