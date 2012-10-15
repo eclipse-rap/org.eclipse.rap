@@ -9,6 +9,11 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var MessageProcessor = rwt.protocol.MessageProcessor;
+
 qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
   extend : qx.core.Object,
@@ -17,7 +22,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     testCreateShell : function() {
       var shell = this._protocolCreateShell();
-      var doc = org.eclipse.rwt.test.fixture.TestUtil.getDocument();
+      var doc = TestUtil.getDocument();
       assertTrue( shell instanceof rwt.widgets.Shell );
       assertIdentical( doc, shell.getParent() );
       assertIdentical( doc, shell.getTopLevelWidget() );
@@ -41,7 +46,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       assertTrue( shell.getShowCaption() );
       assertTrue( shell._onTop );
       assertTrue( shell._appModal );
-      org.eclipse.rwt.test.fixture.TestUtil.flush();
+      TestUtil.flush();
       assertFalse( shell.isSeeable() );
       this._disposeShell();
     },
@@ -216,7 +221,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
     testSetParentShell : function() {
       var parent = this._protocolCreateShell( "wParent" );
       var shell = this._protocolCreateShell( "w3", "wParent" );
-      org.eclipse.rwt.test.fixture.TestUtil.flush();
+      TestUtil.flush();
       assertIdentical( parent, shell.getTopLevelShell() );
       this._disposeShell( "wParent" );
       this._disposeShell();
@@ -224,16 +229,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     // See Bug 354912 - New Shell opens in background, not visible
     testSetParentShellZIndex : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = this._protocolCreateShell( "wParent" );
       parent.setActive( true ); // otherwise it would not be automatically in front
       TestUtil.protocolSet( "wParent", { "visibility" : true } );
-      org.eclipse.rwt.test.fixture.TestUtil.flush();
+      TestUtil.flush();
 
       var shell = this._protocolCreateShell( "w3", "wParent" );
       TestUtil.protocolSet( "w3", { "visibility" : true } );
 
-      org.eclipse.rwt.test.fixture.TestUtil.flush();
+      TestUtil.flush();
       assertTrue( shell.getZIndex() > parent.getZIndex() );
       this._disposeShell( "wParent" );
       this._disposeShell();
@@ -378,7 +382,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
     },
 
     testSetThemingBackgroundGradientToNull : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.fakeAppearance( "window", {
         style : function( states ) {
           var result = {};
@@ -396,7 +399,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
     },
 
     testSetThemingBackgroundGradientToNullAndBack : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.fakeAppearance( "window", {
         style : function( states ) {
           var result = {};
@@ -515,6 +517,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       shell.__listeners = {}; // HACK : Remove all listeners for testing
       this._protocolListen( { "MouseDown" : true } );
       assertTrue( shell.hasEventListeners( "mousedown" ) );
+      assertFalse( shell.hasEventListeners( "mouseup" ) );
       this._disposeShell();
     },
 
@@ -523,6 +526,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       shell.__listeners = {}; // HACK : Remove all listeners for testing
       this._protocolListen( { "MouseDoubleClick" : true } );
       assertTrue( shell.hasEventListeners( "mousedown" ) );
+      assertTrue( shell.hasEventListeners( "mouseup" ) );
       this._disposeShell();
     },
 
@@ -530,7 +534,97 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       var shell = this._protocolCreateShell();
       shell.__listeners = {}; // HACK : Remove all listeners for testing
       this._protocolListen( { "MouseUp" : true } );
+      assertFalse( shell.hasEventListeners( "mousedown" ) );
       assertTrue( shell.hasEventListeners( "mouseup" ) );
+      this._disposeShell();
+    },
+
+    testNotifyMouseDown : function() {
+      org.eclipse.swt.EventUtil.setSuspended( true );
+      var shell = this._protocolCreateShell();
+      this._protocolListen( { "MouseDown" : true } );
+      this._protocolSet( { "visibility" : true } );
+      TestUtil.flush();
+      org.eclipse.swt.EventUtil.setSuspended( false );
+
+      TestUtil.click( shell, 10, 20 );
+
+      var message = TestUtil.getMessageObject();
+      assertEquals( 1, message.findNotifyProperty( "w3", "MouseDown", "button" ) );
+      assertEquals( 10, message.findNotifyProperty( "w3", "MouseDown", "x" ) );
+      assertEquals( 20, message.findNotifyProperty( "w3", "MouseDown", "y" ) );
+      assertNotNull( message.findNotifyProperty( "w3", "MouseDown", "time" ) );
+      assertFalse( message.findNotifyProperty( "w3", "MouseDown", "shiftKey" ) );
+      assertFalse( message.findNotifyProperty( "w3", "MouseDown", "ctrlKey" ) );
+      assertFalse( message.findNotifyProperty( "w3", "MouseDown", "altKey" ) );
+      this._disposeShell();
+    },
+
+    testNotifyMouseUp : function() {
+      org.eclipse.swt.EventUtil.setSuspended( true );
+      var shell = this._protocolCreateShell();
+      this._protocolListen( { "MouseUp" : true } );
+      this._protocolSet( { "visibility" : true } );
+      TestUtil.flush();
+      org.eclipse.swt.EventUtil.setSuspended( false );
+
+      TestUtil.ctrlClick( shell );
+
+      var message = TestUtil.getMessageObject();
+      assertEquals( 1, message.findNotifyProperty( "w3", "MouseUp", "button" ) );
+      assertEquals( 0, message.findNotifyProperty( "w3", "MouseUp", "x" ) );
+      assertEquals( 0, message.findNotifyProperty( "w3", "MouseUp", "y" ) );
+      assertNotNull( message.findNotifyProperty( "w3", "MouseUp", "time" ) );
+      assertFalse( message.findNotifyProperty( "w3", "MouseUp", "shiftKey" ) );
+      assertTrue( message.findNotifyProperty( "w3", "MouseUp", "ctrlKey" ) );
+      assertFalse( message.findNotifyProperty( "w3", "MouseUp", "altKey" ) );
+      this._disposeShell();
+    },
+
+    testNotifyMouseDoubleClick : function() {
+      org.eclipse.swt.EventUtil.setSuspended( true );
+      var shell = this._protocolCreateShell();
+      this._protocolListen( { "MouseDoubleClick" : true } );
+      this._protocolSet( { "visibility" : true } );
+      TestUtil.flush();
+      org.eclipse.swt.EventUtil.setSuspended( false );
+
+      TestUtil.doubleClick( shell );
+
+      var message = TestUtil.getMessageObject();
+      assertEquals( 1, message.findNotifyProperty( "w3", "MouseDoubleClick", "button" ) );
+      assertEquals( 0, message.findNotifyProperty( "w3", "MouseDoubleClick", "x" ) );
+      assertEquals( 0, message.findNotifyProperty( "w3", "MouseDoubleClick", "y" ) );
+      assertNotNull( message.findNotifyProperty( "w3", "MouseDoubleClick", "time" ) );
+      assertFalse( message.findNotifyProperty( "w3", "MouseDoubleClick", "shiftKey" ) );
+      assertFalse( message.findNotifyProperty( "w3", "MouseDoubleClick", "ctrlKey" ) );
+      assertFalse( message.findNotifyProperty( "w3", "MouseDoubleClick", "altKey" ) );
+      this._disposeShell();
+    },
+
+    testNotifyMouseDoubleClickWithAllListeners : function() {
+      org.eclipse.swt.EventUtil.setSuspended( true );
+      var shell = this._protocolCreateShell();
+      this._protocolListen( { "MouseDown" : true } );
+      this._protocolListen( { "MouseDoubleClick" : true } );
+      this._protocolListen( { "MouseUp" : true } );
+      this._protocolSet( { "visibility" : true } );
+      TestUtil.flush();
+      org.eclipse.swt.EventUtil.setSuspended( false );
+
+      TestUtil.doubleClick( shell );
+
+      assertEquals( 5, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject( 0 );
+      assertNotNull( message.findNotifyOperation( "w3", "MouseDown" ) );
+      message = TestUtil.getMessageObject( 1 );
+      assertNotNull( message.findNotifyOperation( "w3", "MouseUp" ) );
+      message = TestUtil.getMessageObject( 2 );
+      assertNotNull( message.findNotifyOperation( "w3", "MouseDown" ) );
+      message = TestUtil.getMessageObject( 3 );
+      assertNotNull( message.findNotifyOperation( "w3", "MouseDoubleClick" ) );
+      message = TestUtil.getMessageObject( 4 );
+      assertNotNull( message.findNotifyOperation( "w3", "MouseUp" ) );
       this._disposeShell();
     },
 
@@ -575,7 +669,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       } );
       assertFalse( shell.isDisposed() );
       assertFalse( shell.getVisibility() );
-      org.eclipse.rwt.test.fixture.TestUtil.flush();
+      TestUtil.flush();
       assertTrue( shell.isDisposed() );
     },
 
@@ -590,7 +684,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       } );
       assertFalse( shell.isDisposed() );
       assertEquals( [], shell._activateListenerWidgets );
-      org.eclipse.rwt.test.fixture.TestUtil.flush();
+      TestUtil.flush();
       assertTrue( shell.isDisposed() );
     },
 
@@ -598,7 +692,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
     // Helper
 
     _disposeShell : function( id ) {
-      org.eclipse.rwt.test.fixture.TestUtil.flush(); // appear to call _beforeDisappear later
+      TestUtil.flush(); // appear to call _beforeDisappear later
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var shell = widgetManager.findWidgetById( id ? id : "w3" );
       shell.getWindowManager().setActiveWindow( null ); // remove shell without setting another
@@ -655,3 +749,5 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
   }
 
 } );
+
+}());

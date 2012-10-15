@@ -166,9 +166,21 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         //this.setCapture( true );
         org.eclipse.swt.EventUtil._capturingWidget = this;
         // Collect request parameters and send
-        org.eclipse.swt.EventUtil._mouseDownParams( this, evt );
-        var req = rwt.remote.Server.getInstance();
-        req.send();
+        org.eclipse.swt.EventUtil._notifyMouseListeners( this, evt, "MouseDown" );
+      }
+    },
+
+    mouseUp : function( evt ) {
+      if(    !org.eclipse.swt.EventUtil.getSuspended()
+          && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) )
+      {
+        // disabled capturing as it interferes with Combo capturing
+        // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
+        //// release mouse event capturing
+        //this.setCapture( false );
+        org.eclipse.swt.EventUtil._capturingWidget = null;
+        // Add mouse-up request parameter
+        org.eclipse.swt.EventUtil._notifyMouseListeners( this, evt, "MouseUp" );
       }
     },
 
@@ -184,9 +196,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         // Add parameters for double-click event
         if( org.eclipse.swt.EventUtil._isDoubleClick( this, evt ) ) {
           org.eclipse.swt.EventUtil._clearLastMouseDown();
-          org.eclipse.swt.EventUtil._mouseDoubleClickParams( this, evt );
-          var req = rwt.remote.Server.getInstance();
-          req.send();
+          org.eclipse.swt.EventUtil._notifyMouseListeners( this, evt, "MouseDoubleClick" );
         } else {
           // Store relevant data of current event to detect double-clicks
           var lastMouseDown = org.eclipse.swt.EventUtil._lastMouseDown;
@@ -202,21 +212,12 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       }
     },
 
-    mouseUp : function( evt ) {
+    mouseUpCounter : function( evt ) {
       if(    !org.eclipse.swt.EventUtil.getSuspended()
           && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) )
       {
-        // disabled capturing as it interferes with Combo capturing
-        // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
-        //// release mouse event capturing
-        //this.setCapture( false );
-        org.eclipse.swt.EventUtil._capturingWidget = null;
         // increase number of mouse-up events since last stored mouse down
         org.eclipse.swt.EventUtil._lastMouseDown.mouseUpCount += 1;
-        // Add mouse-up request parameter
-        org.eclipse.swt.EventUtil._mouseUpParams( this, evt );
-        var req = rwt.remote.Server.getInstance();
-        req.send();
       }
     },
 
@@ -260,53 +261,18 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
              && lastMouseDown.button === evt.getButton();
     },
 
-    _mouseDownParams : function( widget, evt ) {
-      var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
-      var req = rwt.remote.Server.getInstance();
+    _notifyMouseListeners : function( widget, evt, eventType ) {
       var button = org.eclipse.swt.EventUtil._determineMouseButton( evt );
       var modifier = org.eclipse.swt.EventUtil._getKeyModifier();
-      req.addEvent( "org.eclipse.swt.events.mouseDown", id );
-      req.addParameter( "org.eclipse.swt.events.mouseDown.button", button );
-      req.addParameter( "org.eclipse.swt.events.mouseDown.x", evt.getPageX() );
-      req.addParameter( "org.eclipse.swt.events.mouseDown.y", evt.getPageY() );
-      req.addParameter( "org.eclipse.swt.events.mouseDown.time", this.eventTimestamp() );
-      if( modifier !== "" ) {
-        req.addParameter( "org.eclipse.swt.events.mouseDown.modifier", modifier );
-      }
-    },
-
-    _mouseUpParams : function( widget, evt ) {
-      var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
-      var req = rwt.remote.Server.getInstance();
-      var button = org.eclipse.swt.EventUtil._determineMouseButton( evt );
-      var modifier = org.eclipse.swt.EventUtil._getKeyModifier();
-      req.addEvent( "org.eclipse.swt.events.mouseUp", id );
-      req.addParameter( "org.eclipse.swt.events.mouseUp.button", button );
-      req.addParameter( "org.eclipse.swt.events.mouseUp.x", evt.getPageX() );
-      req.addParameter( "org.eclipse.swt.events.mouseUp.y", evt.getPageY() );
-      req.addParameter( "org.eclipse.swt.events.mouseUp.time", this.eventTimestamp() );
-      if( modifier !== "" ) {
-        req.addParameter( "org.eclipse.swt.events.mouseUp.modifier", modifier );
-      }
-    },
-
-    _mouseDoubleClickParams : function( widget, evt ) {
-      var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
-      var req = rwt.remote.Server.getInstance();
-      var modifier = org.eclipse.swt.EventUtil._getKeyModifier();
-      req.addEvent( "org.eclipse.swt.events.mouseDoubleClick", id );
-      req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.button",
-                        org.eclipse.swt.EventUtil._determineMouseButton( evt ) );
-      req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.x",
-                        evt.getPageX() );
-      req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.y",
-                        evt.getPageY() );
-      req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.time",
-                        this.eventTimestamp() );
-      if( modifier !== "" ) {
-        req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.modifier",
-                          modifier );
-      }
+      var serverObject = rwt.remote.Server.getInstance().getServerObject( widget );
+      var properties = {
+        "button" : button,
+        "x" : evt.getPageX(),
+        "y" : evt.getPageY(),
+        "time" : this.eventTimestamp()
+      };
+      org.eclipse.swt.EventUtil.addModifierToProperties( properties );
+      serverObject.notify( eventType, properties );
     },
 
     /**

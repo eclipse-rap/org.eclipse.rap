@@ -167,8 +167,8 @@ rwt.protocol.AdapterUtil = {
   _controlListeners : [
     "focus",
     "MouseDown",
-    "MouseDoubleClick",
     "MouseUp",
+    "MouseDoubleClick",
     "key",
     "traverse",
     "menuDetect",
@@ -204,15 +204,6 @@ rwt.protocol.AdapterUtil = {
         widget.removeEventListener( "mousedown", mouseDown, context );
       }
     },
-    "MouseDoubleClick" : function( widget, value ) {
-      var context;
-      var mouseDoubleClick = org.eclipse.swt.EventUtil.mouseDoubleClick;
-      if( value ) {
-        widget.addEventListener( "mousedown", mouseDoubleClick, context );
-      } else {
-        widget.removeEventListener( "mousedown", mouseDoubleClick, context );
-      }
-    },
     "MouseUp" : function( widget, value ) {
       var context;
       var mouseUp = org.eclipse.swt.EventUtil.mouseUp;
@@ -220,6 +211,18 @@ rwt.protocol.AdapterUtil = {
         widget.addEventListener( "mouseup", mouseUp, context );
       } else {
         widget.removeEventListener( "mouseup", mouseUp, context );
+      }
+    },
+    "MouseDoubleClick" : function( widget, value ) {
+      var context;
+      var mouseDoubleClick = org.eclipse.swt.EventUtil.mouseDoubleClick;
+      var mouseUpCounter = org.eclipse.swt.EventUtil.mouseUpCounter;
+      if( value ) {
+        widget.addEventListener( "mousedown", mouseDoubleClick, context );
+        widget.addEventListener( "mouseup", mouseUpCounter, context );
+      } else {
+        widget.removeEventListener( "mousedown", mouseDoubleClick, context );
+        widget.removeEventListener( "mouseup", mouseUpCounter, context );
       }
     },
     "menuDetect" : function( widget, value ) {
