@@ -47,6 +47,7 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -192,6 +193,18 @@ public class CComboLCA_Test extends TestCase {
     Fixture.readDataAndProcessAction( ccombo );
 
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
+  }
+
+  public void testFireDefaultSelectionEvent() {
+    SelectionListener listener = mock( SelectionListener.class );
+    ccombo.addSelectionListener( listener );
+
+    Fixture.fakeNotifyOperation( getId( ccombo ),
+                                 ClientMessageConst.EVENT_DEFAULT_SELECTION,
+                                 null );
+    Fixture.readDataAndProcessAction( ccombo );
+
+    verify( listener, times( 1 ) ).widgetDefaultSelected( any( SelectionEvent.class ) );
   }
 
   public void testReadData_Text() {
@@ -672,26 +685,52 @@ public class CComboLCA_Test extends TestCase {
     Fixture.markInitialized( ccombo );
     Fixture.preserveWidgets();
 
-    ccombo.addSelectionListener( new SelectionAdapter() { } );
+    ccombo.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findListenProperty( ccombo, "Selection" ) );
-    assertEquals( Boolean.TRUE, message.findListenProperty( ccombo, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( ccombo, "DefaultSelection" ) );
   }
 
-  public void testRenderRemoveSelectionListener() throws Exception {
-    SelectionListener listener = new SelectionAdapter() { };
-    ccombo.addSelectionListener( listener );
+  public void testRenderAddDefaultSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( ccombo );
     Fixture.preserveWidgets();
 
-    ccombo.removeSelectionListener( listener );
+    ccombo.addListener( SWT.DefaultSelection, mock( Listener.class ) );
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( ccombo, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( ccombo, "Selection" ) );
+  }
+
+  public void testRenderRemoveSelectionListener() throws Exception {
+    Listener selection = mock( Listener.class );
+    ccombo.addListener( SWT.Selection, selection );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+    Fixture.preserveWidgets();
+
+    ccombo.removeListener( SWT.Selection, selection );
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( ccombo, "Selection" ) );
+  }
+
+  public void testRenderRemoveDefaultSelectionListener() throws Exception {
+    Listener selection = mock( Listener.class );
+    ccombo.addListener( SWT.DefaultSelection, selection );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+    Fixture.preserveWidgets();
+
+    ccombo.removeListener( SWT.DefaultSelection, selection );
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( ccombo, "DefaultSelection" ) );
   }
 

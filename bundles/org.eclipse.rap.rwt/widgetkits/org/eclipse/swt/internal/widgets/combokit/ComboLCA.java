@@ -29,7 +29,6 @@ import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Widget;
@@ -77,8 +76,10 @@ public class ComboLCA extends AbstractWidgetLCA {
     preserveProperty( combo, PROP_TEXT, combo.getText() );
     preserveProperty( combo, PROP_LIST_VISIBLE, combo.getListVisible() );
     preserveProperty( combo, PROP_EDITABLE, Boolean.valueOf( isEditable( combo ) ) );
-    preserveListener( combo, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( combo ) );
-    preserveListener( combo, PROP_DEFAULT_SELECTION_LISTENER, SelectionEvent.hasListener( combo ) );
+    preserveListener( combo, PROP_SELECTION_LISTENER, combo.isListening( SWT.Selection ) );
+    preserveListener( combo,
+                      PROP_DEFAULT_SELECTION_LISTENER,
+                      combo.isListening( SWT.DefaultSelection ) );
     preserveListener( combo, PROP_MODIFY_LISTENER, combo.isListening( SWT.Modify ) );
     preserveListener( combo, PROP_VERIFY_LISTENER, combo.isListening( SWT.Verify ) );
   }

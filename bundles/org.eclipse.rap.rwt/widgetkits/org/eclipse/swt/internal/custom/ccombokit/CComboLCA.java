@@ -28,7 +28,6 @@ import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Widget;
 
@@ -72,7 +71,10 @@ public final class CComboLCA extends AbstractWidgetLCA {
     preserveProperty( ccombo, PROP_TEXT, ccombo.getText() );
     preserveProperty( ccombo, PROP_LIST_VISIBLE, ccombo.getListVisible() );
     preserveProperty( ccombo, PROP_EDITABLE, Boolean.valueOf( ccombo.getEditable() ) );
-    preserveListener( ccombo, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( ccombo ) );
+    preserveListener( ccombo, PROP_SELECTION_LISTENER, ccombo.isListening( SWT.Selection ) );
+    preserveListener( ccombo,
+                      PROP_DEFAULT_SELECTION_LISTENER,
+                      ccombo.isListening( SWT.DefaultSelection ) );
     preserveListener( ccombo, PROP_MODIFY_LISTENER, ccombo.isListening( SWT.Modify ) );
     preserveListener( ccombo, PROP_VERIFY_LISTENER, ccombo.isListening( SWT.Verify ) );
   }
@@ -89,6 +91,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     }
     readTextAndSelection( ccombo );
     ControlLCAUtil.processSelection( ccombo, null, true );
+    ControlLCAUtil.processDefaultSelection( ccombo, null );
     ControlLCAUtil.processEvents( ccombo );
     ControlLCAUtil.processKeyEvents( ccombo );
     ControlLCAUtil.processMenuDetect( ccombo );
@@ -236,11 +239,14 @@ public final class CComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListenSelection( CCombo ccombo ) {
-    renderListener( ccombo, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( ccombo ), false );
+    renderListener( ccombo, PROP_SELECTION_LISTENER, ccombo.isListening( SWT.Selection ), false );
   }
 
   private static void renderListenDefaultSelection( CCombo ccombo ) {
-    renderListener( ccombo, PROP_DEFAULT_SELECTION_LISTENER, SelectionEvent.hasListener( ccombo ), false );
+    renderListener( ccombo,
+                    PROP_DEFAULT_SELECTION_LISTENER,
+                    ccombo.isListening( SWT.DefaultSelection ),
+                    false );
   }
 
   private static void renderListenModify( CCombo ccombo ) {
