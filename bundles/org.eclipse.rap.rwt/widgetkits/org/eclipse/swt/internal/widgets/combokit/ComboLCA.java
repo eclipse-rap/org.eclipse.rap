@@ -29,9 +29,7 @@ import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Widget;
@@ -97,6 +95,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     }
     readTextAndSelection( combo );
     ControlLCAUtil.processSelection( combo, null, true );
+    ControlLCAUtil.processDefaultSelection( combo, null );
     ControlLCAUtil.processEvents( combo );
     ControlLCAUtil.processKeyEvents( combo );
     ControlLCAUtil.processMenuDetect( combo );
@@ -245,13 +244,13 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListenSelection( Combo combo ) {
-    renderListener( combo, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( combo ), false );
+    renderListener( combo, PROP_SELECTION_LISTENER, combo.isListening( SWT.Selection ), false );
   }
 
   private static void renderListenDefaultSelection( Combo combo ) {
     renderListener( combo,
                     PROP_DEFAULT_SELECTION_LISTENER,
-                    SelectionEvent.hasListener( combo ),
+                    combo.isListening( SWT.DefaultSelection ),
                     false );
   }
 

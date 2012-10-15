@@ -47,6 +47,7 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -193,6 +194,16 @@ public class ComboLCA_Test extends TestCase {
     Fixture.readDataAndProcessAction( combo );
 
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
+  }
+
+  public void testFireDefaultSelectionEvent() {
+    SelectionListener listener = mock( SelectionListener.class );
+    combo.addSelectionListener( listener );
+
+    Fixture.fakeNotifyOperation( getId( combo ), ClientMessageConst.EVENT_DEFAULT_SELECTION, null );
+    Fixture.readDataAndProcessAction( combo );
+
+    verify( listener, times( 1 ) ).widgetDefaultSelected( any( SelectionEvent.class ) );
   }
 
   public void testReadData_Text() {
@@ -636,31 +647,57 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( combo, "textLimit" ) );
   }
 
-  public void testRenderAddSelectionListener() throws Exception {
+  public void testListenSelection() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
     Fixture.preserveWidgets();
 
-    combo.addSelectionListener( new SelectionAdapter() { } );
+    combo.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( combo );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findListenProperty( combo, "Selection" ) );
-    assertEquals( Boolean.TRUE, message.findListenProperty( combo, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( combo, "DefaultSelection" ) );
   }
 
-  public void testRenderRemoveSelectionListener() throws Exception {
-    SelectionListener listener = new SelectionAdapter() { };
-    combo.addSelectionListener( listener );
+  public void testListenDefaultSelection() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );
     Fixture.preserveWidgets();
 
-    combo.removeSelectionListener( listener );
+    combo.addListener( SWT.DefaultSelection, mock( Listener.class ) );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( combo, "Selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( combo, "DefaultSelection" ) );
+  }
+
+  public void testRemoveListenSelection() throws Exception {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+    Listener listener = mock( Listener.class );
+    combo.addListener( SWT.Selection, listener );
+    Fixture.preserveWidgets();
+
+    combo.removeListener( SWT.Selection, listener );
     lca.renderChanges( combo );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( combo, "Selection" ) );
+  }
+
+  public void testRemoveListenDefaultSelection() throws Exception {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+    Listener listener = mock( Listener.class );
+    combo.addListener( SWT.DefaultSelection, listener );
+    Fixture.preserveWidgets();
+
+    combo.removeListener( SWT.DefaultSelection, listener );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( combo, "DefaultSelection" ) );
   }
 
