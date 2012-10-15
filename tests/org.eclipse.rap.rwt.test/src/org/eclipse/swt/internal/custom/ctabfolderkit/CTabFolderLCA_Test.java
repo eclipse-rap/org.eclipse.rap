@@ -62,6 +62,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -838,28 +839,58 @@ public class CTabFolderLCA_Test extends TestCase {
     Fixture.markInitialized( folder );
     Fixture.preserveWidgets();
 
-    folder.addSelectionListener( new SelectionAdapter() { } );
+    folder.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findListenProperty( folder, "Selection" ) );
-    assertEquals( Boolean.TRUE, message.findListenProperty( folder, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( folder, "DefaultSelection" ) );
   }
 
-  public void testRenderRemoveSelectionListener() throws Exception {
+  public void testRenderAddDefaultSelectionListener() throws Exception {
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-    SelectionListener listener = new SelectionAdapter() { };
-    folder.addSelectionListener( listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
     Fixture.preserveWidgets();
 
-    folder.removeSelectionListener( listener );
+    folder.addListener( SWT.DefaultSelection, mock( Listener.class ) );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( folder, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( folder, "Selection" ) );
+  }
+
+  public void testRenderRemoveSelectionListener() throws Exception {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Listener listener = mock( Listener.class );
+    folder.addListener( SWT.Selection, listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+    Fixture.preserveWidgets();
+
+    folder.removeListener( SWT.Selection, listener );
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( folder, "Selection" ) );
+    assertNull( message.findListenOperation( folder, "DefaultSelection" ) );
+  }
+
+  public void testRenderRemoveDefaultSelectionListener() throws Exception {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Listener listener = mock( Listener.class );
+    folder.addListener( SWT.DefaultSelection, listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+    Fixture.preserveWidgets();
+
+    folder.removeListener( SWT.DefaultSelection, listener );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( folder, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( folder, "Selection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
@@ -873,7 +904,7 @@ public class CTabFolderLCA_Test extends TestCase {
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( folder, "selection" ) );
+    assertNull( message.findListenOperation( folder, "Selection" ) );
   }
 
   public void testRenderAddFolderListener() throws Exception {

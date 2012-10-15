@@ -30,7 +30,6 @@ import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
@@ -110,7 +109,10 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                       getSelectionBackgroundImage( folder ) );
     preserveSelectionBgGradient( folder );
     preserveProperty( folder, PROP_BORDER_VISIBLE, folder.getBorderVisible() );
-    preserveListener( folder, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( folder ) );
+    preserveListener( folder, PROP_SELECTION_LISTENER, folder.isListening( SWT.Selection ) );
+    preserveListener( folder,
+                      PROP_DEFAULT_SELECTION_LISTENER,
+                      folder.isListening( SWT.DefaultSelection ) );
     preserveListener( folder, PROP_FOLDER_LISTENER, hasCTabFolderListener( folder ) );
   }
 
@@ -209,8 +211,10 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                     null);
     renderSelectionBackgroundGradient( folder );
     renderProperty( folder, PROP_BORDER_VISIBLE, folder.getBorderVisible(), false );
-    renderListener( folder, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( folder ), false );
-    renderListener( folder, PROP_DEFAULT_SELECTION_LISTENER, SelectionEvent.hasListener( folder ), false );
+    renderListener( folder, PROP_SELECTION_LISTENER, folder.isListening( SWT.Selection ), false );
+    renderListener( folder, PROP_DEFAULT_SELECTION_LISTENER,
+                    folder.isListening( SWT.DefaultSelection ),
+                    false );
     renderListener( folder, PROP_FOLDER_LISTENER, hasCTabFolderListener( folder ), false );
   }
 
