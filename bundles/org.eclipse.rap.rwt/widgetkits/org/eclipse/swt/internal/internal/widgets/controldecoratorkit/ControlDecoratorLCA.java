@@ -23,7 +23,7 @@ import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.ControlDecorator;
 import org.eclipse.swt.widgets.Widget;
 
@@ -50,8 +50,10 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
     preserveProperty( decorator, PROP_IMAGE, decorator.getImage() );
     preserveProperty( decorator, PROP_VISIBLE, decorator.isVisible() );
     preserveProperty( decorator, PROP_SHOW_HOVER, decorator.getShowHover() );
-    preserveListener( decorator, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( decorator ) );
-    preserveListener( decorator, PROP_DEFAULT_SELECTION_LISTENER, SelectionEvent.hasListener( decorator ) );
+    preserveListener( decorator, PROP_SELECTION_LISTENER, decorator.isListening( SWT.Selection ) );
+    preserveListener( decorator,
+                      PROP_DEFAULT_SELECTION_LISTENER,
+                      decorator.isListening( SWT.DefaultSelection ) );
   }
 
   public void readData( Widget widget ) {
@@ -78,11 +80,11 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
     renderProperty( decorator, PROP_SHOW_HOVER, decorator.getShowHover(), true );
     renderListener( decorator,
                     PROP_SELECTION_LISTENER,
-                    SelectionEvent.hasListener( decorator ),
+                    decorator.isListening( SWT.Selection ),
                     false );
     renderListener( decorator,
                     PROP_DEFAULT_SELECTION_LISTENER,
-                    SelectionEvent.hasListener( decorator ),
+                    decorator.isListening( SWT.DefaultSelection ),
                     false );
   }
 

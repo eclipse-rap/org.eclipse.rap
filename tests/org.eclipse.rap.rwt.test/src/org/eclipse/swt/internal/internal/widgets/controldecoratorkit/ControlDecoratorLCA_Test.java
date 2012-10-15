@@ -40,6 +40,7 @@ import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.ControlDecorator;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -366,6 +367,32 @@ public class ControlDecoratorLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( decorator, "Selection" ) );
     assertNull( message.findListenOperation( decorator, "DefaultSelection" ) );
+  }
+
+  public void testRenderSelectionListener() throws Exception {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( decorator );
+    Fixture.preserveWidgets();
+
+    decorator.addListener( SWT.Selection, mock( Listener.class ) );
+    lca.renderChanges( decorator );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( decorator, "Selection" ) );
+    assertNull( message.findListenOperation( decorator, "DefaultSelection" ) );
+  }
+
+  public void testRenderDefaultSelectionListener() throws Exception {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( decorator );
+    Fixture.preserveWidgets();
+
+    decorator.addListener( SWT.DefaultSelection, mock( Listener.class ) );
+    lca.renderChanges( decorator );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( decorator, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( decorator, "Selection" ) );
   }
 
   private static Rectangle getEventBounds( SelectionEvent event ) {
