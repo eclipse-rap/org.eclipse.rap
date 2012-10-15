@@ -86,9 +86,9 @@ public class TabFolderLCA extends AbstractWidgetLCA {
   }
 
   private static void processSelectionEvent( final TabFolder folder ) {
-    if( WidgetLCAUtil.wasEventSent( folder, ClientMessageConst.EVENT_WIDGET_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( folder, ClientMessageConst.EVENT_SELECTION ) ) {
       String itemId = readEventPropertyValue( folder,
-                                              ClientMessageConst.EVENT_WIDGET_SELECTED,
+                                              ClientMessageConst.EVENT_SELECTION,
                                               ClientMessageConst.EVENT_PARAM_ITEM );
       final TabItem item = ( TabItem )WidgetUtil.find( folder, itemId );
       if( item != null ) {

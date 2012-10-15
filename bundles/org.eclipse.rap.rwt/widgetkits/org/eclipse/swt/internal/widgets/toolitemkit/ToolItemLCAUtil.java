@@ -100,7 +100,7 @@ final class ToolItemLCAUtil {
   // Selection
 
   static void processSelection( ToolItem toolItem ) {
-    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
+    String eventName = ClientMessageConst.EVENT_SELECTION;
     if( WidgetLCAUtil.wasEventSent( toolItem, eventName ) ) {
       Event event = new Event();
       event.stateMask = EventLCAUtil.readStateMask( toolItem, eventName );

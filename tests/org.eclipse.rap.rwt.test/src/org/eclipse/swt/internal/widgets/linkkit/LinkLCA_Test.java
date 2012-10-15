@@ -294,7 +294,7 @@ public class LinkLCA_Test extends TestCase {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( ClientMessageConst.EVENT_PARAM_INDEX, Integer.valueOf( 0 ) );
     Fixture.fakeNotifyOperation( getId( link ),
-                                 ClientMessageConst.EVENT_WIDGET_SELECTED,
+                                 ClientMessageConst.EVENT_SELECTION,
                                  properties );
   }
 }

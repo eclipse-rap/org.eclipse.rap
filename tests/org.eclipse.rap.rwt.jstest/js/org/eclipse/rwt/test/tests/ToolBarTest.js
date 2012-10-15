@@ -351,13 +351,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.TestUtil.fakeMouseClick( item, 103, 103 );
       assertEquals( 1, this.TestUtil.getRequestsSend() );
       var message = this.TestUtil.getMessageObject();
-      assertNotNull( message.findNotifyOperation( "w1", "widgetSelected"   ) );
-      assertEquals( undefined, message.findNotifyProperty( "w1", "widgetSelected", "detail" ) );
+      assertNotNull( message.findNotifyOperation( "w1", "Selection"   ) );
+      assertEquals( undefined, message.findNotifyProperty( "w1", "Selection", "detail" ) );
       this.TestUtil.clearRequestLog();
       this.TestUtil.fakeMouseClick( item, 103 + parseInt( lineStyle.left, 10 ), 103 );
       assertEquals( 1, this.TestUtil.getRequestsSend() );
       var message = this.TestUtil.getMessageObject();
-      assertEquals( "arrow", message.findNotifyProperty( "w1", "widgetSelected", "detail" ) );
+      assertEquals( "arrow", message.findNotifyProperty( "w1", "Selection", "detail" ) );
       this.TestUtil.clearRequestLog();
       item.destroy();
       this.item = null;

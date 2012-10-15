@@ -63,7 +63,7 @@ import org.json.JSONObject;
 @SuppressWarnings("deprecation")
 public class ButtonLCA_Test extends TestCase {
 
-  private static final String PROP_SELECTION_LISTENER = "listener_selection";
+  private static final String PROP_SELECTION_LISTENER = "listener_Selection";
 
   private Display display;
   private Shell shell;
@@ -235,7 +235,7 @@ public class ButtonLCA_Test extends TestCase {
     button.addSelectionListener( listener );
     shell.getAdapter( IShellAdapter.class ).setActiveControl( label );
     Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     fakeActivateEvent( button );
 
     Fixture.readDataAndProcessAction( display );
@@ -249,7 +249,7 @@ public class ButtonLCA_Test extends TestCase {
     SelectionListener listener = mock( SelectionListener.class );
     button.addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( button );
 
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
@@ -261,7 +261,7 @@ public class ButtonLCA_Test extends TestCase {
     button.addSelectionListener( listener );
 
     Fixture.fakeSetParameter( getId( button ), "selection", Boolean.TRUE );
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( button );
 
     assertTrue( button.getSelection() );
@@ -276,7 +276,7 @@ public class ButtonLCA_Test extends TestCase {
     button.addSelectionListener( listener );
 
     Fixture.fakeSetParameter( getId( button ), "selection", Boolean.FALSE );
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( button );
 
     assertFalse( button.getSelection() );
@@ -299,8 +299,8 @@ public class ButtonLCA_Test extends TestCase {
 
     Fixture.fakeSetParameter( getId( button1 ), "selection", Boolean.TRUE );
     Fixture.fakeSetParameter( getId( button2 ), "selection", Boolean.FALSE );
-    Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
-    Fixture.fakeNotifyOperation( getId( button2 ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_SELECTION, null );
+    Fixture.fakeNotifyOperation( getId( button2 ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( display );
 
     assertTrue( Arrays.equals( new Widget[]{ button2, button1 }, log.toArray() ) );
@@ -321,8 +321,8 @@ public class ButtonLCA_Test extends TestCase {
 
     Fixture.fakeSetParameter( getId( button1 ), "selection", Boolean.TRUE );
     Fixture.fakeSetParameter( getId( button2 ), "selection", Boolean.FALSE );
-    Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
-    Fixture.fakeNotifyOperation( getId( button2 ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button1 ), ClientMessageConst.EVENT_SELECTION, null );
+    Fixture.fakeNotifyOperation( getId( button2 ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( display );
 
     assertTrue( Arrays.equals( new Widget[]{ button2, button1 }, log.toArray() ) );
@@ -487,7 +487,7 @@ public class ButtonLCA_Test extends TestCase {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( button, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( button, "Selection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
@@ -502,7 +502,7 @@ public class ButtonLCA_Test extends TestCase {
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( button, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( button, "Selection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {

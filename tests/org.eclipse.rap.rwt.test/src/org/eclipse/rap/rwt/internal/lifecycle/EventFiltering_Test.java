@@ -65,33 +65,33 @@ public class EventFiltering_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-  
+
   public void testAllowProcessingForActivateEventOnInvisibleControl() {
     Control control = new Button( shell, SWT.PUSH );
     control.setEnabled( false );
     Event event = createEvent( control, SWT.Activate );
-    
+
     boolean accessible = EventUtil.allowProcessing( event );
-    
+
     assertTrue( accessible );
   }
-  
+
   public void testAllowProcessingForDeactivateEventOnInvisibleControl() {
     Control control = new Button( shell, SWT.PUSH );
     control.setEnabled( false );
     Event event = createEvent( control, SWT.Deactivate );
-    
+
     boolean accessible = EventUtil.allowProcessing( event );
-    
+
     assertTrue( accessible );
   }
-  
+
   public void testAllowProcessingForProgressEventOnInvisibleBrowser() {
     Browser browser = new Browser( shell, SWT.NONE );
     Event event = createEvent( browser, EventTypes.PROGRESS_CHANGED );
-    
+
     boolean accessible = EventUtil.allowProcessing( event );
-    
+
     assertTrue( accessible );
   }
 
@@ -99,62 +99,62 @@ public class EventFiltering_Test extends TestCase {
     Control control = new Button( shell, SWT.PUSH );
     control.setEnabled( false );
     Event event = createEvent( control, SWT.Resize );
-    
+
     boolean accessible = EventUtil.allowProcessing( event );
-    
+
     assertTrue( accessible );
   }
-  
+
   public void testAllowProcessingForMoveEventOnDisabledControl() {
     Control control = new Button( shell, SWT.PUSH );
     control.setEnabled( false );
     Event event = createEvent( control, SWT.Move );
-    
+
     boolean accessible = EventUtil.allowProcessing( event );
-    
+
     assertTrue( accessible );
   }
-  
+
   public void testAllowProcessingForModifyEventOnDisabledText() {
     Text text = new Text( shell, SWT.PUSH );
     text.setEnabled( false );
     Event event = createEvent( text, SWT.Modify );
-    
+
     boolean accessible = EventUtil.allowProcessing( event );
-    
+
     assertTrue( accessible );
   }
-  
+
   public void testAllowProcessingForVerifyEventOnDisabledText() {
     Text text = new Text( shell, SWT.PUSH );
     text.setEnabled( false );
     Event event = createEvent( text, SWT.Verify );
-    
+
     boolean accessible = EventUtil.allowProcessing( event );
-    
+
     assertTrue( accessible );
   }
-  
+
   public void testAllowProcessingForPaintEventOnDisabledControl() {
     Control control = new Canvas( shell, SWT.PUSH );
     control.setEnabled( false );
     Event event = createEvent( control, SWT.Paint );
-    
+
     boolean accessible = EventUtil.allowProcessing( event );
-    
+
     assertTrue( accessible );
   }
-  
+
   public void testAllowProcessingForSetDataEventOnDisabledControl() {
     Control text = new Canvas( shell, SWT.PUSH );
     text.setEnabled( false );
     Event event = createEvent( text, SWT.SetData );
-    
+
     boolean accessible = EventUtil.allowProcessing( event );
-    
+
     assertTrue( accessible );
   }
-  
+
   public void testЕventNotFiredOnDisabledButton() {
     Button button = new Button( shell, SWT.PUSH );
     button.setEnabled( false );
@@ -162,7 +162,7 @@ public class EventFiltering_Test extends TestCase {
     button.addSelectionListener( listener );
     shell.open();
 
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( button );
 
     verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
@@ -175,7 +175,7 @@ public class EventFiltering_Test extends TestCase {
     button.addSelectionListener( listener );
     shell.open();
 
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( button );
 
     verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
@@ -189,7 +189,7 @@ public class EventFiltering_Test extends TestCase {
     button.dispose();
     shell.open();
 
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread();
 
     verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
@@ -204,7 +204,7 @@ public class EventFiltering_Test extends TestCase {
     dialog.setSize( 100, 100 );
     dialog.open();
 
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread();
 
     verify( listener, times( 0 ) ).widgetSelected( any( SelectionEvent.class ) );
@@ -231,7 +231,7 @@ public class EventFiltering_Test extends TestCase {
     // is sent. The focusList listener opens a modal shell, thus the event on
     // button must not be executed
     Fixture.fakeSetParameter( getId( display ), "focusControl", getId( button ) );
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread( );
 
     assertEquals( 1, events.size() );
@@ -266,7 +266,7 @@ public class EventFiltering_Test extends TestCase {
     button.addSelectionListener( selectionListener );
     childShell.open();
 
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread();
 
     verify( selectionListener ).widgetSelected( any( SelectionEvent.class ) );

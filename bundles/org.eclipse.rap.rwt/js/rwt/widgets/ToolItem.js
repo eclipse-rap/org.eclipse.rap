@@ -94,9 +94,9 @@ qx.Class.define( "rwt.widgets.ToolItem", {
         if( this._sendEvent ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( this );
-          req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+          req.addEvent( "org.eclipse.swt.events.Selection", id );
           org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-          req.addParameter( "org.eclipse.swt.events.widgetSelected.detail", "arrow" );
+          req.addParameter( "org.eclipse.swt.events.Selection.detail", "arrow" );
           req.send();
         }
       }

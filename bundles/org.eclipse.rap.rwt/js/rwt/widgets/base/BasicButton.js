@@ -179,17 +179,13 @@ qx.Class.define( "rwt.widgets.base.BasicButton", {
       }
     },
 
-    // Not using EventUtil since no event should be sent for radio
+    // Not using EventUtil for listener since no event should be sent for radio
     _sendChanges : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() && this._hasSelectionListener ) {
-        var req = rwt.remote.Server.getInstance();
-        if( this._sendEvent ) {
-          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-          var id = widgetManager.findIdByWidget( this );
-          req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
-          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-        }
-        req.send();
+      if(    !org.eclipse.swt.EventUtil.getSuspended()
+          && this._hasSelectionListener
+          && this._sendEvent )
+      {
+        org.eclipse.swt.EventUtil.notifySelected( this );
       }
     },
 

@@ -153,7 +153,7 @@ public class SashLCA_Test extends TestCase {
     properties.put( ClientMessageConst.EVENT_PARAM_HEIGHT, Integer.valueOf( 4 ) );
     properties.put( "altKey", "true" );
     Fixture.fakeNotifyOperation( getId( sash ),
-                                 ClientMessageConst.EVENT_WIDGET_SELECTED,
+                                 ClientMessageConst.EVENT_SELECTION,
                                  properties );
     Fixture.readDataAndProcessAction( sash );
 

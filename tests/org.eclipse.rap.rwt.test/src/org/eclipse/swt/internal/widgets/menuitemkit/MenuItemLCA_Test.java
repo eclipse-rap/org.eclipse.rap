@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_WIDGET_SELECTED;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -108,7 +108,7 @@ public class MenuItemLCA_Test extends TestCase {
     SelectionListener listener = mock( SelectionListener.class );
     menuItem.addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( menuItem ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( menuItem ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( menuItem );
 
     ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
@@ -143,7 +143,7 @@ public class MenuItemLCA_Test extends TestCase {
     item.addSelectionListener( listener );
 
     Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( item );
 
     assertTrue( item.getSelection() );
@@ -161,7 +161,7 @@ public class MenuItemLCA_Test extends TestCase {
     item.addSelectionListener( listener );
 
     Fixture.fakeSetParameter( getId( item ), "selection", Boolean.FALSE );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( item );
 
     assertFalse( item.getSelection() );
@@ -187,8 +187,8 @@ public class MenuItemLCA_Test extends TestCase {
 
     Fixture.fakeSetParameter( getId( radioItem1 ), "selection", Boolean.TRUE );
     Fixture.fakeSetParameter( getId( radioItem2 ), "selection", Boolean.FALSE );
-    Fixture.fakeNotifyOperation( getId( radioItem1 ), EVENT_WIDGET_SELECTED, null );
-    Fixture.fakeNotifyOperation( getId( radioItem2 ), EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( radioItem1 ), EVENT_SELECTION, null );
+    Fixture.fakeNotifyOperation( getId( radioItem2 ), EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( display );
 
     assertTrue( Arrays.equals( new Widget[]{ radioItem2, radioItem1 }, log.toArray() ) );
@@ -212,8 +212,8 @@ public class MenuItemLCA_Test extends TestCase {
 
     Fixture.fakeSetParameter( getId( radioItem1 ), "selection", Boolean.TRUE );
     Fixture.fakeSetParameter( getId( radioItem2 ), "selection", Boolean.FALSE );
-    Fixture.fakeNotifyOperation( getId( radioItem1 ), EVENT_WIDGET_SELECTED, null );
-    Fixture.fakeNotifyOperation( getId( radioItem2 ), EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( radioItem1 ), EVENT_SELECTION, null );
+    Fixture.fakeNotifyOperation( getId( radioItem2 ), EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( display );
 
     assertTrue( Arrays.equals( new Widget[]{ radioItem2, radioItem1 }, log.toArray() ) );

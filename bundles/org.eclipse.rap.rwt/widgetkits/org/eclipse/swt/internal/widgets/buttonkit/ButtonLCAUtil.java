@@ -11,17 +11,19 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.buttonkit;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Button;
-
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+
+import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 
 
 final class ButtonLCAUtil {
@@ -36,7 +38,7 @@ final class ButtonLCAUtil {
   static final String PROP_SELECTION = "selection";
   static final String PROP_GRAYED = "grayed";
   static final String PROP_ALIGNMENT = "alignment";
-  static final String PROP_SELECTION_LISTENERS = "selection";
+  static final String PROP_SELECTION_LISTENERS = "Selection";
 
   private static final String PARAM_SELECTION = "selection";
   private static final String DEFAULT_ALIGNMENT = "center";

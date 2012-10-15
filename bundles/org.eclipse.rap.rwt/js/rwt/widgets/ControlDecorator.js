@@ -45,9 +45,16 @@ qx.Class.define( "rwt.widgets.ControlDecorator", {
       var eventUtil = org.eclipse.swt.EventUtil;
       if( value ) {
         this.addEventListener( "mousedown", eventUtil.widgetSelected, this );
-        this.addEventListener( "dblclick", eventUtil.widgetDefaultSelected, this );
       } else {
         this.removeEventListener( "mousedown", eventUtil.widgetSelected, this );
+      }
+    },
+
+    setHasDefaultSelectionListener : function( value ) {
+      var eventUtil = org.eclipse.swt.EventUtil;
+      if( value ) {
+        this.addEventListener( "dblclick", eventUtil.widgetDefaultSelected, this );
+      } else {
         this.removeEventListener( "dblclick", eventUtil.widgetDefaultSelected, this );
       }
     }

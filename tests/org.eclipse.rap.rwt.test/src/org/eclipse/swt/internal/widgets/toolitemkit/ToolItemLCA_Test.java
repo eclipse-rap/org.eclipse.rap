@@ -91,7 +91,7 @@ public class ToolItemLCA_Test extends TestCase {
     Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
     Map<String,Object> params = new HashMap<String,Object>();
     params.put( "altKey", "true" );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_WIDGET_SELECTED, params );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, params );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( true, wasEventFired[ 0 ] );
@@ -117,17 +117,17 @@ public class ToolItemLCA_Test extends TestCase {
       }
     } );
     shell.open();
-    
+
     Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
     Map<String,Object> params = new HashMap<String,Object>();
     params.put( "altKey", "true" );
     params.put( ClientMessageConst.EVENT_PARAM_DETAIL, "arrow" );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_WIDGET_SELECTED, params );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, params );
     Fixture.readDataAndProcessAction( display );
-    
+
     assertEquals( true, wasEventFired[ 0 ] );
   }
-  
+
   public void testRadioItemSelected() {
     ToolItem item0 = new ToolItem( toolbar, SWT.RADIO );
     item0.setSelection( true );
@@ -145,14 +145,14 @@ public class ToolItemLCA_Test extends TestCase {
     ToolItem item = new ToolItem( toolbar, SWT.CHECK );
 
     Fixture.fakeSetParameter( getId( item ), "selection", Boolean.TRUE );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, null );
     WidgetUtil.getLCA( item ).readData( item );
 
     assertEquals( Boolean.TRUE, Boolean.valueOf( item.getSelection() ) );
 
     Fixture.fakeNewRequest( display );
     Fixture.fakeSetParameter( getId( item ), "selection", Boolean.FALSE );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, null );
     WidgetUtil.getLCA( item ).readData( item );
 
     assertEquals( Boolean.FALSE, Boolean.valueOf( item.getSelection() ) );

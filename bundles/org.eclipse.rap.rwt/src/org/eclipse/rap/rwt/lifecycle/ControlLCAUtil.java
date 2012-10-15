@@ -13,8 +13,6 @@ package org.eclipse.rap.rwt.lifecycle;
 
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED;
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_WIDGET_SELECTED;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 
 import java.lang.reflect.Field;
@@ -29,7 +27,6 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -202,7 +199,7 @@ public class ControlLCAUtil {
   }
 
   public static void processSelection( Widget widget, Item item, boolean readBounds ) {
-    if( WidgetLCAUtil.wasEventSent( widget, EVENT_WIDGET_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_SELECTION ) ) {
       Event event = createSelectionEvent( widget, readBounds, SWT.Selection );
       event.item = item;
       widget.notifyListeners( SWT.Selection, event );
@@ -210,13 +207,13 @@ public class ControlLCAUtil {
   }
 
   public static void processDefaultSelection( Widget widget, Item item ) {
-    if( WidgetLCAUtil.wasEventSent( widget, EVENT_WIDGET_DEFAULT_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_DEFAULT_SELECTION ) ) {
       Event event = createSelectionEvent( widget, false, SWT.DefaultSelection );
       event.item = item;
       widget.notifyListeners( SWT.DefaultSelection, event );
     }
   }
-  
+
   /////////////////////////////////////////////
   // Methods to preserve common property values
 
@@ -578,8 +575,8 @@ public class ControlLCAUtil {
       result.setBounds( bounds );
     }
     String eventName = type == SWT.Selection
-                     ? ClientMessageConst.EVENT_WIDGET_SELECTED
-                     : ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED;
+                     ? ClientMessageConst.EVENT_SELECTION
+                     : ClientMessageConst.EVENT_DEFAULT_SELECTION;
     result.stateMask = EventLCAUtil.readStateMask( widget, eventName );
     String detail = readEventPropertyValue( widget, eventName, EVENT_PARAM_DETAIL );
     if( "check".equals( detail ) ) {
@@ -609,7 +606,7 @@ public class ControlLCAUtil {
     result.stateMask = stateMask;
     return result;
   }
-  
+
   private static void checkAndProcessMouseEvent( Event event ) {
     boolean pass = false;
     Control control = ( Control )event.widget;

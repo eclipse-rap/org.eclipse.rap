@@ -52,7 +52,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         var properties = {};
         org.eclipse.swt.EventUtil.addModifierToProperties( properties );
         var serverObject = server.getServerObject( target ? target : evt.getTarget() );
-        serverObject.notify( "widgetDefaultSelected", properties );
+        serverObject.notify( "DefaultSelection", properties );
       }
     },
 
@@ -61,10 +61,10 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       var top = evt.getTarget().getTop();
       var width = evt.getTarget().getWidth();
       var height = evt.getTarget().getHeight();
-      org.eclipse.swt.EventUtil.sendWidgetSelected( evt.getTarget(), left, top, width, height );
+      org.eclipse.swt.EventUtil.notifySelected( evt.getTarget(), left, top, width, height );
     },
 
-    sendWidgetSelected : function( target, left, top, width, height, detail) {
+    notifySelected : function( target, left, top, width, height, detail) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var server = rwt.remote.Server.getInstance();
         var properties = {
@@ -75,7 +75,22 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
           "detail" : detail
         };
         org.eclipse.swt.EventUtil.addModifierToProperties( properties );
-        server.getServerObject( target ).notify( "widgetSelected", properties );
+        server.getServerObject( target ).notify( "Selection", properties );
+      }
+    },
+
+    notifyDefaultSelected : function( target, left, top, width, height, detail) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+        var server = rwt.remote.Server.getInstance();
+        var properties = {
+            "x" : left,
+            "y" : top,
+            "width" : width,
+            "height" : height,
+            "detail" : detail
+        };
+        org.eclipse.swt.EventUtil.addModifierToProperties( properties );
+        server.getServerObject( target ).notify( "DefaultSelection", properties );
       }
     },
 
@@ -87,9 +102,9 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         var ctrlKey = org.eclipse.swt.EventUtil._ctrlKey || commandKey;
         var altKey = org.eclipse.swt.EventUtil._altKey;
         var req = rwt.remote.Server.getInstance();
-        req.addParameter( "org.eclipse.swt.events.widgetSelected.shiftKey", shiftKey );
-        req.addParameter( "org.eclipse.swt.events.widgetSelected.ctrlKey", ctrlKey );
-        req.addParameter( "org.eclipse.swt.events.widgetSelected.altKey", altKey );
+        req.addParameter( "org.eclipse.swt.events.Selection.shiftKey", shiftKey );
+        req.addParameter( "org.eclipse.swt.events.Selection.ctrlKey", ctrlKey );
+        req.addParameter( "org.eclipse.swt.events.Selection.altKey", altKey );
       }
     },
 

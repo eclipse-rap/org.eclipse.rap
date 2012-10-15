@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.events;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_WIDGET_SELECTED;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -64,7 +64,7 @@ public class EventLCAUtil_Test extends TestCase {
     parameters.put( "altKey", Boolean.TRUE );
     parameters.put( "ctrlKey", Boolean.FALSE );
     parameters.put( "shiftKey", Boolean.FALSE );
-    Fixture.fakeNotifyOperation( getId( button ), EVENT_WIDGET_SELECTED, parameters );
+    Fixture.fakeNotifyOperation( getId( button ), EVENT_SELECTION, parameters );
     Fixture.readDataAndProcessAction( button );
 
     ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
