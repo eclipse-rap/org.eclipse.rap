@@ -850,23 +850,25 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderListenMouse( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "mouse" ) );
+    assertNull( message.findListenOperation( control, "MouseDown" ) );
+    assertNull( message.findListenOperation( control, "MouseDoubleClick" ) );
+    assertNull( message.findListenOperation( control, "MouseUp" ) );
   }
 
   public void testRenderListenMouse() {
-    MouseAdapter listener = new MouseAdapter() {
-    };
+    MouseAdapter listener = new MouseAdapter() {};
 
     control.addMouseListener( listener );
     ControlLCAUtil.renderListenMouse( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "mouse" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, "MouseDown" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, "MouseDoubleClick" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, "MouseUp" ) );
   }
 
   public void testRenderListenMouseUnchanged() {
-    MouseAdapter listener = new MouseAdapter() {
-    };
+    MouseAdapter listener = new MouseAdapter() {};
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.addMouseListener( listener );
@@ -875,7 +877,9 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderListenMouse( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "mouse" ) );
+    assertNull( message.findListenOperation( control, "MouseDown" ) );
+    assertNull( message.findListenOperation( control, "MouseDoubleClick" ) );
+    assertNull( message.findListenOperation( control, "MouseUp" ) );
   }
 
   public void testRenderListenMouseRemoved() {
@@ -890,7 +894,9 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderListenMouse( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "mouse" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, "MouseDown" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, "MouseDoubleClick" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, "MouseUp" ) );
   }
 
   public void testRenderInitialListenKey() {

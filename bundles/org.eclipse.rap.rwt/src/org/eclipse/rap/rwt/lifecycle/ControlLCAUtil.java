@@ -58,7 +58,9 @@ public class ControlLCAUtil {
   // Property names to preserve widget property values
   private static final String PROP_ACTIVATE_LISTENER = "activate";
   private static final String PROP_FOCUS_LISTENER = "focus";
-  private static final String PROP_MOUSE_LISTENER = "mouse";
+  private static final String PROP_MOUSE_DOWN_LISTENER = "MouseDown";
+  private static final String PROP_MOUSE_DOUBLE_CLICK_LISTENER = "MouseDoubleClick";
+  private static final String PROP_MOUSE_UP_LISTENER = "MouseUp";
   private static final String PROP_KEY_LISTENER = "key";
   private static final String PROP_TRAVERSE_LISTENER = "traverse";
   private static final String PROP_MENU_DETECT_LISTENER = "menuDetect";
@@ -262,9 +264,7 @@ public class ControlLCAUtil {
     WidgetLCAUtil.preserveListener( control,
                                     PROP_ACTIVATE_LISTENER,
                                     hasActivateListener( control ) );
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_MOUSE_LISTENER,
-                                    hasMouseListener( control ) );
+    preserveMouseListeners( control );
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
       WidgetLCAUtil.preserveListener( control,
                                       PROP_FOCUS_LISTENER,
@@ -541,8 +541,24 @@ public class ControlLCAUtil {
   }
 
   static void renderListenMouse( Control control ) {
-    boolean newValue = hasMouseListener( control );
-    WidgetLCAUtil.renderListener( control, PROP_MOUSE_LISTENER, newValue, false );
+    renderListenMouseDown( control );
+    renderListenMouseDoubleClick( control );
+    renderListenMouseUp( control );
+  }
+
+  private static void renderListenMouseDown( Control control ) {
+    boolean newValue = control.isListening( SWT.MouseDown );
+    WidgetLCAUtil.renderListener( control, PROP_MOUSE_DOWN_LISTENER, newValue, false );
+  }
+
+  private static void renderListenMouseDoubleClick( Control control ) {
+    boolean newValue = control.isListening( SWT.MouseDoubleClick );
+    WidgetLCAUtil.renderListener( control, PROP_MOUSE_DOUBLE_CLICK_LISTENER, newValue, false );
+  }
+
+  private static void renderListenMouseUp( Control control ) {
+    boolean newValue = control.isListening( SWT.MouseUp );
+    WidgetLCAUtil.renderListener( control, PROP_MOUSE_UP_LISTENER, newValue, false );
   }
 
   static void renderListenKey( Control control ) {
@@ -934,14 +950,20 @@ public class ControlLCAUtil {
     return control.isListening( SWT.KeyUp ) || control.isListening( SWT.KeyDown );
   }
 
-  private static boolean hasMouseListener( Control control ) {
-    return control.isListening( SWT.MouseUp ) 
-        || control.isListening( SWT.MouseDown ) 
-        || control.isListening( SWT.MouseDoubleClick );
-  }
-
   private static boolean hasFocusListener( Control control ) {
     return control.isListening( SWT.FocusIn ) || control.isListening( SWT.FocusOut );
+  }
+
+  private static void preserveMouseListeners( Control control ) {
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_MOUSE_DOWN_LISTENER,
+                                    control.isListening( SWT.MouseDown ) );
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_MOUSE_DOUBLE_CLICK_LISTENER,
+                                    control.isListening( SWT.MouseDoubleClick ) );
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_MOUSE_UP_LISTENER,
+                                    control.isListening( SWT.MouseUp ) );
   }
 
 }

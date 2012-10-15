@@ -160,10 +160,28 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         //// from now on, redirect mouse event to this widget
         //this.setCapture( true );
         org.eclipse.swt.EventUtil._capturingWidget = this;
+        // Collect request parameters and send
+        org.eclipse.swt.EventUtil._mouseDownParams( this, evt );
+        var req = rwt.remote.Server.getInstance();
+        req.send();
+      }
+    },
+
+    mouseDoubleClick : function( evt ) {
+      if(    !org.eclipse.swt.EventUtil.getSuspended()
+          && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) )
+      {
+        // disabled capturing as it interferes with Combo capturing
+        // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
+        //// from now on, redirect mouse event to this widget
+        //this.setCapture( true );
+        org.eclipse.swt.EventUtil._capturingWidget = this;
         // Add parameters for double-click event
         if( org.eclipse.swt.EventUtil._isDoubleClick( this, evt ) ) {
           org.eclipse.swt.EventUtil._clearLastMouseDown();
           org.eclipse.swt.EventUtil._mouseDoubleClickParams( this, evt );
+          var req = rwt.remote.Server.getInstance();
+          req.send();
         } else {
           // Store relevant data of current event to detect double-clicks
           var lastMouseDown = org.eclipse.swt.EventUtil._lastMouseDown;
@@ -176,10 +194,6 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
                                 this,
                                 org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME );
         }
-        // Collect request parameters and send
-        org.eclipse.swt.EventUtil._mouseDownParams( this, evt );
-        var req = rwt.remote.Server.getInstance();
-        req.send();
       }
     },
 

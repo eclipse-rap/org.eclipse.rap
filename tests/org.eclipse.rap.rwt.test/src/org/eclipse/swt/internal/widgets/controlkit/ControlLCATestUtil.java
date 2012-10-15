@@ -26,7 +26,6 @@ import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
-import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.widgets.Control;
@@ -54,9 +53,15 @@ public class ControlLCATestUtil {
   public static void testMouseListener( Control control ) throws IOException {
     Fixture.markInitialized( control.getDisplay() );
     Fixture.markInitialized( control );
-    testRenderAddMouseListener( control );
-    testRenderRemoveMouseListener( control );
-    testRenderMouseListenerUnchanged( control );
+    testRenderAddMouseListener( control, SWT.MouseDown );
+    testRenderRemoveMouseListener( control, SWT.MouseDown );
+    testRenderMouseListenerUnchanged( control, SWT.MouseDown );
+    testRenderAddMouseListener( control, SWT.MouseDoubleClick );
+    testRenderRemoveMouseListener( control, SWT.MouseDoubleClick );
+    testRenderMouseListenerUnchanged( control, SWT.MouseDoubleClick );
+    testRenderAddMouseListener( control, SWT.MouseUp );
+    testRenderRemoveMouseListener( control, SWT.MouseUp );
+    testRenderMouseListenerUnchanged( control, SWT.MouseUp );
   }
 
   public static void testKeyListener( Control control ) throws IOException {
@@ -101,7 +106,7 @@ public class ControlLCATestUtil {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findListenProperty( control, "activate" ) );
-    
+
     control.removeListener( SWT.Activate, listener );
   }
 
@@ -129,7 +134,7 @@ public class ControlLCATestUtil {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( control, "activate" ) );
-    
+
     control.removeListener( SWT.Activate, listener );
   }
 
@@ -175,46 +180,55 @@ public class ControlLCATestUtil {
     control.removeFocusListener( listener );
   }
 
-  private static void testRenderAddMouseListener( Control control ) throws IOException {
-    MouseAdapter listener = new MouseAdapter() {};
+  private static void testRenderAddMouseListener( Control control, int eventType )
+    throws IOException
+  {
+    Listener listener = mock( Listener.class );
     Fixture.fakeNewRequest( control.getDisplay() );
     Fixture.preserveWidgets();
 
-    control.addMouseListener( listener );
+    control.addListener( eventType, listener );
     WidgetUtil.getLCA( control ).renderChanges( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "mouse" ) );
+    String listenerName = getListenerName( eventType );
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, listenerName ) );
 
-    control.removeMouseListener( listener );
+    control.removeListener( eventType, listener );
   }
 
-  private static void testRenderRemoveMouseListener( Control control ) throws IOException {
-    MouseAdapter listener = new MouseAdapter() {};
-    control.addMouseListener( listener );
+  private static void testRenderRemoveMouseListener( Control control, int eventType )
+    throws IOException
+  {
+    Listener listener = mock( Listener.class );
+    control.addListener( eventType, listener );
     Fixture.fakeNewRequest( control.getDisplay() );
     Fixture.preserveWidgets();
 
-    control.removeMouseListener( listener );
+    control.removeListener( eventType, listener );
     WidgetUtil.getLCA( control ).renderChanges( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "mouse" ) );
+    String listenerName = getListenerName( eventType );
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, listenerName ) );
   }
 
-  private static void testRenderMouseListenerUnchanged( Control control ) throws IOException {
-    MouseAdapter listener = new MouseAdapter() {};
+  private static void testRenderMouseListenerUnchanged( Control control, int eventType )
+    throws IOException
+  {
+    Listener listener = mock( Listener.class );
     Fixture.fakeNewRequest( control.getDisplay() );
     Fixture.preserveWidgets();
 
-    control.addMouseListener( listener );
+    control.addListener( eventType, listener );
     Fixture.preserveWidgets();
     WidgetUtil.getLCA( control ).renderChanges( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "mouse" ) );
+    String listenerName = getListenerName( eventType );
+    assertNull( message.findListenOperation( control, listenerName ) );
 
-    control.removeMouseListener( listener );
+    control.removeListener( eventType, listener );
   }
 
   private static void testRenderAddKeyListener( Control control ) throws IOException {
@@ -410,5 +424,21 @@ public class ControlLCATestUtil {
     assertNull( message.findListenOperation( control, "help" ) );
 
     control.removeHelpListener( listener );
+  }
+
+  private static String getListenerName( int eventType ) {
+    String result = "None";
+    switch( eventType ) {
+      case SWT.MouseDown:
+        result = "MouseDown";
+      break;
+      case SWT.MouseDoubleClick:
+        result = "MouseDoubleClick";
+      break;
+      case SWT.MouseUp:
+        result = "MouseUp";
+      break;
+    }
+    return result;
   }
 }
