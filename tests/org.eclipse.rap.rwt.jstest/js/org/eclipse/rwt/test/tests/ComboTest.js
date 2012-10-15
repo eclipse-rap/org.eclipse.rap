@@ -326,9 +326,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHasDefaultSelectionListenerByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Combo",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+
+      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
+
+      var widget = ObjectManager.getObject( "w3" );
+      assertTrue( widget._hasDefaultSelectionListener );
       shell.destroy();
       widget.destroy();
     },
@@ -671,7 +691,35 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertEquals( 4, message.findSetProperty( "w3", "selectionIndex" ) );
-      assertNotNull( message.findNotifyOperation( "w3", "widgetSelected" ) );
+      assertNotNull( message.findNotifyOperation( "w3", "Selection" ) );
+      combo.destroy();
+      shell.destroy();
+    },
+
+    testSendDefaultSelectionEvent : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Combo",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      var combo = ObjectManager.getObject( "w3" );
+      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
+      combo.setHasDefaultSelectionListener( true );
+      TestUtil.flush();
+      combo.focus();
+      TestUtil.initRequestLog();
+
+      TestUtil.keyDown( combo._field.getElement(), "Enter" );
+      TestUtil.keyUp( combo._field.getElement(), "Enter" );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w3", "DefaultSelection" ) );
       combo.destroy();
       shell.destroy();
     },

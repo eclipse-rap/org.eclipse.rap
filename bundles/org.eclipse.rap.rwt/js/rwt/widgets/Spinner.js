@@ -174,7 +174,7 @@ qx.Class.define( "rwt.widgets.Spinner", {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
       var req = rwt.remote.Server.getInstance();
-      req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+      req.addEvent( "org.eclipse.swt.events.Selection", id );
       org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
       req.send();
     },
@@ -183,7 +183,7 @@ qx.Class.define( "rwt.widgets.Spinner", {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
       var req = rwt.remote.Server.getInstance();
-      req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+      req.addEvent( "org.eclipse.swt.events.DefaultSelection", id );
       org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
       req.send();
     },

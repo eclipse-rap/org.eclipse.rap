@@ -30,22 +30,42 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.*;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabFolder2Adapter;
+import org.eclipse.swt.custom.CTabFolder2Listener;
+import org.eclipse.swt.custom.CTabFolderEvent;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.custom.ctabitemkit.CTabItemLCA;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.mockito.ArgumentCaptor;
@@ -177,7 +197,7 @@ public class CTabFolderLCA_Test extends TestCase {
     // The actual test request: item1 is selected, the request selects item2
     folder.setSelection( item1 );
     Fixture.fakeSetParameter( getId( folder ), "selection", getId( item2 ) );
-    Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread();
 
     assertSame( item2, folder.getSelection() );
@@ -195,7 +215,7 @@ public class CTabFolderLCA_Test extends TestCase {
 
     Map<String, Object> parameters = new HashMap<String, Object>();
 //    parameters.put( "item", WidgetUtil.getId( item2 ) );
-    Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_WIDGET_SELECTED, parameters );
+    Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_SELECTION, parameters );
     Fixture.fakeSetParameter( getId( folder ),
                               CTabFolderLCA.PARAM_SELECTION,
                               getId( item2 ) );
@@ -822,7 +842,8 @@ public class CTabFolderLCA_Test extends TestCase {
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( folder, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( folder, "Selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( folder, "DefaultSelection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
@@ -837,7 +858,8 @@ public class CTabFolderLCA_Test extends TestCase {
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( folder, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( folder, "Selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( folder, "DefaultSelection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {

@@ -80,10 +80,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
       this.fakeDrag( widget, 5, 0 );
 
       var message = TestUtil.getLastMessage();
-      assertEquals( 15, message.findNotifyProperty( "w3", "widgetSelected", "x" ) );
-      assertEquals( 20, message.findNotifyProperty( "w3", "widgetSelected", "y" ) );
-      assertEquals( 10, message.findNotifyProperty( "w3", "widgetSelected", "width" ) );
-      assertEquals( 100, message.findNotifyProperty( "w3", "widgetSelected", "height" ) );
+      assertEquals( 15, message.findNotifyProperty( "w3", "Selection", "x" ) );
+      assertEquals( 20, message.findNotifyProperty( "w3", "Selection", "y" ) );
+      assertEquals( 10, message.findNotifyProperty( "w3", "Selection", "width" ) );
+      assertEquals( 100, message.findNotifyProperty( "w3", "Selection", "height" ) );
       shell.destroy();
     },
 

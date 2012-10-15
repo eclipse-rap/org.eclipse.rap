@@ -39,7 +39,8 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
   private static final String PROP_IMAGE = "image";
   private static final String PROP_VISIBLE = "visible";
   private static final String PROP_SHOW_HOVER = "showHover";
-  private static final String PROP_SELECTION_LISTENER = "selection";
+  private static final String PROP_SELECTION_LISTENER = "Selection";
+  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
 
   @Override
   public void preserveValues( Widget widget ) {
@@ -50,6 +51,7 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
     preserveProperty( decorator, PROP_VISIBLE, decorator.isVisible() );
     preserveProperty( decorator, PROP_SHOW_HOVER, decorator.getShowHover() );
     preserveListener( decorator, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( decorator ) );
+    preserveListener( decorator, PROP_DEFAULT_SELECTION_LISTENER, SelectionEvent.hasListener( decorator ) );
   }
 
   public void readData( Widget widget ) {
@@ -76,6 +78,10 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
     renderProperty( decorator, PROP_SHOW_HOVER, decorator.getShowHover(), true );
     renderListener( decorator,
                     PROP_SELECTION_LISTENER,
+                    SelectionEvent.hasListener( decorator ),
+                    false );
+    renderListener( decorator,
+                    PROP_DEFAULT_SELECTION_LISTENER,
                     SelectionEvent.hasListener( decorator ),
                     false );
   }

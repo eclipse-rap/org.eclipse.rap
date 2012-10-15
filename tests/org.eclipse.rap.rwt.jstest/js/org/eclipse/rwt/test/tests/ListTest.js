@@ -541,7 +541,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
       assertEquals( 2, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject( 1 );
-      assertNotNull( msg.findNotifyOperation( "w3", "widgetDefaultSelected" ) );
+      assertNotNull( msg.findNotifyOperation( "w3", "DefaultSelection" ) );
       list.selectAll();
       list.destroy();
     },

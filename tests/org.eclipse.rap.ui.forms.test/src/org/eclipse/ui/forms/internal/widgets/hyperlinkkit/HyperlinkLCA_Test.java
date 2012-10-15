@@ -64,7 +64,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
       }
     };
     hyperlink.addListener( SWT.DefaultSelection, listener );
-    Fixture.fakeNotifyOperation( getId( hyperlink ), ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( hyperlink ), ClientMessageConst.EVENT_DEFAULT_SELECTION, null );
     Fixture.readDataAndProcessAction( hyperlink );
     assertEquals( "widgetDefaultSelected", log.toString() );
   }

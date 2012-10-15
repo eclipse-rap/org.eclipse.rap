@@ -240,7 +240,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
 
   private static void readWidgetSelected( Table table ) {
-    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
+    String eventName = ClientMessageConst.EVENT_SELECTION;
     if( WidgetLCAUtil.wasEventSent( table, eventName ) ) {
       String value = readEventPropertyValue( table, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
       TableItem item = getItem( table, value );
@@ -253,7 +253,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
 
   private static void readWidgetDefaultSelected( Table table ) {
-    String eventName = ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED;
+    String eventName = ClientMessageConst.EVENT_DEFAULT_SELECTION;
     if( WidgetLCAUtil.wasEventSent( table, eventName ) ) {
       // A default-selected event can occur without a selection being present.
       // In this case the event.item field points to the focused item

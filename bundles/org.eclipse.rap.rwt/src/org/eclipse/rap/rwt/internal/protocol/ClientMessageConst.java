@@ -20,8 +20,8 @@ public final class ClientMessageConst {
   // Request parameter names
 
   // SWT keys used to identify which kind of SWT-Event is requested
-  public static final String EVENT_WIDGET_SELECTED = "widgetSelected";
-  public static final String EVENT_WIDGET_DEFAULT_SELECTED = "widgetDefaultSelected";
+  public static final String EVENT_SELECTION = "Selection";
+  public static final String EVENT_DEFAULT_SELECTION = "DefaultSelection";
   public static final String EVENT_WIDGET_RESIZED = "widgetResized";
   public static final String EVENT_WIDGET_MOVED = "widgetMoved";
   public static final String EVENT_CONTROL_ACTIVATED = "controlActivated";

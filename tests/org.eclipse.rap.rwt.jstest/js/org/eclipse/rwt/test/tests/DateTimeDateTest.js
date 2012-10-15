@@ -119,7 +119,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
       widget.destroy();

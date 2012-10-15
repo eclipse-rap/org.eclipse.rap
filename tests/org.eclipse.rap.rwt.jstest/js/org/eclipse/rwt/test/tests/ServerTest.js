@@ -67,19 +67,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
     },
 
     testSendEvent : function() {
-      server.addEvent( "org.eclipse.swt.events.widgetSelected", "w3" );
+      server.addEvent( "org.eclipse.swt.events.Selection", "w3" );
 
       server.send();
 
       var op = TestUtil.getMessageObject().getOperation( 0 );
       assertEquals( "notify", op.type );
       assertEquals( "w3", op.target );
-      assertEquals( "widgetSelected", op.eventType );
+      assertEquals( "Selection", op.eventType );
     },
 
     testSendEventWithParam : function() {
-      server.addEvent( "org.eclipse.swt.events.widgetSelected", "w3" );
-      server.addParameter( "org.eclipse.swt.events.widgetSelected.text", "foo" );
+      server.addEvent( "org.eclipse.swt.events.Selection", "w3" );
+      server.addParameter( "org.eclipse.swt.events.Selection.text", "foo" );
 
       server.send();
 
@@ -89,8 +89,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
     },
 
     testSendEventWithParamAndSet : function() {
-      server.addEvent( "org.eclipse.swt.events.widgetSelected", "w3" );
-      server.addParameter( "org.eclipse.swt.events.widgetSelected.text", "foo" );
+      server.addEvent( "org.eclipse.swt.events.Selection", "w3" );
+      server.addParameter( "org.eclipse.swt.events.Selection.text", "foo" );
       server.addParameter( "w3.myProp", 42 );
 
       server.send();
@@ -106,19 +106,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
     },
 
     testSendTwoEventsInOneRequest : function() {
-      server.addEvent( "org.eclipse.swt.events.widgetSelected", "w3" );
-      server.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", "w3" );
+      server.addEvent( "org.eclipse.swt.events.Selection", "w3" );
+      server.addEvent( "org.eclipse.swt.events.DefaultSelection", "w3" );
 
       server.send();
 
       var op1 = TestUtil.getMessageObject().getOperation( 0 );
       assertEquals( "notify", op1.type );
       assertEquals( "w3", op1.target );
-      assertEquals( "widgetSelected", op1.eventType );
+      assertEquals( "Selection", op1.eventType );
       var op2 = TestUtil.getMessageObject().getOperation( 1 );
       assertEquals( "notify", op2.type );
       assertEquals( "w3", op2.target );
-      assertEquals( "widgetDefaultSelected", op2.eventType );
+      assertEquals( "DefaultSelection", op2.eventType );
     },
 
     testGetServerObject : function() {

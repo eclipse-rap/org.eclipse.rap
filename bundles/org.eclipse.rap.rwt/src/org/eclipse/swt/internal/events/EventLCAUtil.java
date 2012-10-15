@@ -85,9 +85,9 @@ public final class EventLCAUtil {
       }
     }
   }
-  
+
   public static void processRadioSelection( Widget widget, boolean isWidgetSelected ) {
-    String eventName = ClientMessageConst.EVENT_WIDGET_SELECTED;
+    String eventName = ClientMessageConst.EVENT_SELECTION;
     if( WidgetLCAUtil.wasEventSent( widget, eventName ) ) {
       Event event = new Event();
       if( !isWidgetSelected ) {

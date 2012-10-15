@@ -1,14 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    EclipseSource - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.swt.internal.events;
+package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
@@ -23,8 +24,6 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -35,6 +34,8 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.events.TypedEvent;
+import org.eclipse.swt.internal.events.EventTypes;
+import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
@@ -46,7 +47,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class EventUtil_Test extends TestCase {
+public class EventFiltering_Test extends TestCase {
 
   private Display display;
   private Shell shell;
@@ -62,43 +63,7 @@ public class EventUtil_Test extends TestCase {
 
   @Override
   protected void tearDown() throws Exception {
-    if( !ContextProvider.hasContext() ) {
-      Fixture.createServiceContext();
-    }
     Fixture.tearDown();
-  }
-
-  public void testGetLastEventTimeInSameRequest() {
-    Fixture.fakePhase( PhaseId.READ_DATA );
-
-    int eventTime1 = EventUtil.getLastEventTime();
-    int eventTime2 = EventUtil.getLastEventTime();
-
-    assertEquals( eventTime1, eventTime2 - 1 );
-  }
-
-  public void testGetLastEventTimeInSubsequentRequests() throws InterruptedException {
-    Fixture.fakePhase( PhaseId.READ_DATA );
-    int eventTime1 = EventUtil.getLastEventTime();
-    simulateNewRequest();
-    Thread.sleep( 5 );
-    int eventTime2 = EventUtil.getLastEventTime();
-
-    assertTrue( eventTime1 < eventTime2 );
-  }
-
-  public void testGetLastEventTimeWithoutCurrentPhase() {
-    Fixture.fakePhase( null );
-    int eventTime = EventUtil.getLastEventTime();
-
-    assertTrue( eventTime > 0 );
-  }
-
-  public void testGetLastEventTimeOutsideRequest() {
-    ContextProvider.releaseContextHolder();
-    int eventTime = EventUtil.getLastEventTime();
-
-    assertTrue( eventTime > 0 );
   }
 
   public void testAllowProcessingForActivateEventOnInvisibleControl() {
@@ -312,12 +277,6 @@ public class EventUtil_Test extends TestCase {
     result.widget = widget;
     result.type = eventType;
     return result;
-  }
-
-  private void simulateNewRequest() {
-    ContextProvider.releaseContextHolder();
-    Fixture.createServiceContext();
-    Fixture.fakePhase( PhaseId.READ_DATA );
   }
 
 }

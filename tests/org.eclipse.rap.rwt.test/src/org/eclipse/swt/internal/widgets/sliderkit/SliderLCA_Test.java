@@ -86,7 +86,7 @@ public class SliderLCA_Test extends TestCase {
     SelectionListener listener = mock( SelectionListener.class );
     slider.addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( slider ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( slider ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( slider );
 
     ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );

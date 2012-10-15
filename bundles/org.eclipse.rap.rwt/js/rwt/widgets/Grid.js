@@ -1018,8 +1018,8 @@ qx.Class.define( "rwt.widgets.Grid", {
         var req = rwt.remote.Server.getInstance();
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var id = wm.findIdByWidget( this );
-        var eventName = "org.eclipse.swt.events.widget";
-        eventName += defaultSelected ? "DefaultSelected" : "Selected";
+        var eventName = "org.eclipse.swt.events.";
+        eventName += defaultSelected ? "DefaultSelection" : "Selection";
         var itemId = this._getItemId( item );
         req.addEvent( eventName, id );
         req.addParameter( eventName + ".item", itemId );

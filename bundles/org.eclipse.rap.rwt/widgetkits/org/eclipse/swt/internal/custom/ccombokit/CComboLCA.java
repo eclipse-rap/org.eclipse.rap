@@ -20,10 +20,15 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Widget;
 
@@ -43,7 +48,8 @@ public final class CComboLCA extends AbstractWidgetLCA {
   static final String PROP_EDITABLE = "editable";
   static final String PROP_VISIBLE_ITEM_COUNT = "visibleItemCount";
   static final String PROP_ITEM_HEIGHT = "itemHeight";
-  static final String PROP_SELECTION_LISTENER = "selection";
+  static final String PROP_SELECTION_LISTENER = "Selection";
+  static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
   static final String PROP_MODIFY_LISTENER = "modify";
   static final String PROP_VERIFY_LISTENER = "verify";
 
@@ -112,6 +118,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     renderSelection( ccombo );
     renderTextLimit( ccombo );
     renderListenSelection( ccombo );
+    renderListenDefaultSelection( ccombo );
     renderListenModify( ccombo );
     renderListenVerify( ccombo );
   }
@@ -230,6 +237,10 @@ public final class CComboLCA extends AbstractWidgetLCA {
 
   private static void renderListenSelection( CCombo ccombo ) {
     renderListener( ccombo, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( ccombo ), false );
+  }
+
+  private static void renderListenDefaultSelection( CCombo ccombo ) {
+    renderListener( ccombo, PROP_DEFAULT_SELECTION_LISTENER, SelectionEvent.hasListener( ccombo ), false );
   }
 
   private static void renderListenModify( CCombo ccombo ) {

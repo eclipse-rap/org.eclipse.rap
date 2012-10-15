@@ -71,24 +71,24 @@ public class TypedEvent_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-  
+
   public void testUntypedEventConstructor() throws Exception {
     Event event = new Event();
     event.display = display;
     event.widget = mock( Widget.class );
     event.time = 9;
     event.data = new Object();
-    
+
     TestTypedEvent typedEvent = new TestTypedEvent( event );
-    
+
     assertSame( event.widget, typedEvent.getSource() );
     EventTestHelper.assertFieldsEqual( typedEvent, event );
   }
-  
+
   public void testObjectConstructor() {
     Object source = new Object();
     TypedEvent typedEvent = new TypedEvent( source );
-    
+
     assertSame( source, typedEvent.getSource() );
   }
 
@@ -102,7 +102,7 @@ public class TypedEvent_Test extends TestCase {
       }
     } );
     Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -159,7 +159,7 @@ public class TypedEvent_Test extends TestCase {
 
   public void testSourceConstructor() {
     TypedEvent event = new TypedEvent( shell );
-    
+
     assertSame( shell, event.getSource() );
     assertNull( event.widget );
     assertNull( event.display );
@@ -196,7 +196,7 @@ public class TypedEvent_Test extends TestCase {
     public TestTypedEvent( Event event ) {
       super( event );
     }
-    
+
   }
 
 }

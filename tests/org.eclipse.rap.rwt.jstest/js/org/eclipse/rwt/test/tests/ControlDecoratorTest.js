@@ -76,9 +76,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
     testSetHasSelectionListenerByProtocol : function() {
       var widget = this._createControlDecoratorByProtocol( "w3", "w2", [ "LEFT", "CENTER" ] );
 
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
 
       assertTrue( widget.hasEventListeners( "mousedown" ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHasDefaultSelectionListenerByProtocol : function() {
+      var widget = this._createControlDecoratorByProtocol( "w3", "w2", [ "LEFT", "CENTER" ] );
+
+      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
+
       assertTrue( widget.hasEventListeners( "dblclick" ) );
       shell.destroy();
       widget.destroy();
@@ -86,17 +95,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
 
     testWidgetDefaultSelected : function() {
       var widget = this._createControlDecoratorByProtocol( "w3", "w2", [ "LEFT", "CENTER" ] );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
 
       TestUtil.doubleClick( widget );
 
       var message = TestUtil.getLastMessage();
-      assertNotNull( message.findNotifyOperation( "w3", "widgetDefaultSelected" ) );
+      assertNotNull( message.findNotifyOperation( "w3", "DefaultSelection" ) );
     },
 
     testWidgetDefaultSelectedModifier : function() {
       var widget = this._createControlDecoratorByProtocol( "w3", "w2", [ "LEFT", "CENTER" ] );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
 
       TestUtil.fakeMouseEventDOM(
           widget.getElement(),
@@ -108,9 +117,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
        );
 
       var message = TestUtil.getLastMessage();
-      assertTrue( message.findNotifyProperty( "w3", "widgetDefaultSelected", "shiftKey" ) );
-      assertFalse( message.findNotifyProperty( "w3", "widgetDefaultSelected", "ctrlKey" ) );
-      assertFalse( message.findNotifyProperty( "w3", "widgetDefaultSelected", "altKey" ) );
+      assertTrue( message.findNotifyProperty( "w3", "DefaultSelection", "shiftKey" ) );
+      assertFalse( message.findNotifyProperty( "w3", "DefaultSelection", "ctrlKey" ) );
+      assertFalse( message.findNotifyProperty( "w3", "DefaultSelection", "altKey" ) );
     },
 
     /////////

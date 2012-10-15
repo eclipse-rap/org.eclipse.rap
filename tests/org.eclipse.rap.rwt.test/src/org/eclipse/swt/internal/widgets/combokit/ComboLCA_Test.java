@@ -19,6 +19,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -188,7 +189,7 @@ public class ComboLCA_Test extends TestCase {
     SelectionListener listener = mock( SelectionListener.class );
     combo.addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( combo ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( combo ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( combo );
 
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
@@ -312,7 +313,7 @@ public class ComboLCA_Test extends TestCase {
     } );
 
     // Simulate button click that executes widgetSelected
-    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
@@ -644,7 +645,8 @@ public class ComboLCA_Test extends TestCase {
     lca.renderChanges( combo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( combo, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( combo, "Selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( combo, "DefaultSelection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
@@ -658,7 +660,8 @@ public class ComboLCA_Test extends TestCase {
     lca.renderChanges( combo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( combo, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( combo, "Selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( combo, "DefaultSelection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {

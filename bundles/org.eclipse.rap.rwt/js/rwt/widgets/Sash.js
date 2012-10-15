@@ -229,7 +229,7 @@ qx.Class.define( "rwt.widgets.Sash", {
         // TODO [rst] Clarify what the getOffsetLeft() does
         var leftOffset = this._slider.getLeft() + this._frameOffset;
         var topOffset = this._slider.getTop() + this._frameOffset;
-        org.eclipse.swt.EventUtil.sendWidgetSelected(
+        org.eclipse.swt.EventUtil.notifySelected(
             this,
             this.getLeft() + leftOffset,
             this.getTop() + topOffset,

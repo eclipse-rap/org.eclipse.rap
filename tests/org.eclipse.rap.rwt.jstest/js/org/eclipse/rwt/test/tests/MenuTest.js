@@ -706,7 +706,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.click( menuItem );
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertFalse( menuItem.hasState( "selected" ) );
-      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "widgetSelected" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Selection" ) );
       assertNull( TestUtil.getMessageObject().findSetOperation( "w3", "selection" ) );
       TestUtil.clearRequestLog();
       disposeMenu();
@@ -906,7 +906,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertFalse( subMenu.isSeeable() );
       assertFalse( menu.isSeeable() );
       assertEquals( 2, TestUtil.getRequestsSend() );
-      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "widgetSelected" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Selection" ) );
       assertNull( TestUtil.getMessageObject().findSetOperation( "w3", "selection" ) );
       TestUtil.clearRequestLog();
       disposeMenuBar();

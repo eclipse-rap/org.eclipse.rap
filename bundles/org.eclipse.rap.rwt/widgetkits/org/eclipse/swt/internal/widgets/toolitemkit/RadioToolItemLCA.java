@@ -45,4 +45,5 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
   void renderChanges( ToolItem toolItem ) throws IOException {
     ToolItemLCAUtil.renderChanges( toolItem );
   }
+
 }

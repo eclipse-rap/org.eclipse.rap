@@ -208,7 +208,7 @@ public class SpinnerLCA_Test extends TestCase {
     SelectionListener listener = mock( SelectionListener.class );
     spinner.addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( spinner ), ClientMessageConst.EVENT_WIDGET_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( spinner ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.readDataAndProcessAction( spinner );
 
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
@@ -218,7 +218,7 @@ public class SpinnerLCA_Test extends TestCase {
     SelectionListener listener = mock( SelectionListener.class );
     spinner.addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( spinner ), ClientMessageConst.EVENT_WIDGET_DEFAULT_SELECTED, null );
+    Fixture.fakeNotifyOperation( getId( spinner ), ClientMessageConst.EVENT_DEFAULT_SELECTION, null );
     Fixture.readDataAndProcessAction( spinner );
 
     verify( listener, times( 1 ) ).widgetDefaultSelected( any( SelectionEvent.class ) );
