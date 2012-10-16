@@ -166,7 +166,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getLastMessage();
-      console.log( message );
       assertEquals( 1, message.findNotifyProperty( "w3", "Selection", "index" ) );
       shell.destroy();
     }
