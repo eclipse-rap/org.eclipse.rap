@@ -748,7 +748,8 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderListenActivate( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "activate" ) );
+    assertNull( message.findListenOperation( control, "Activate" ) );
+    assertNull( message.findListenOperation( control, "Deactivate" ) );
   }
 
   public void testRenderListenActivate() {
@@ -757,19 +758,30 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderListenActivate( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "activate" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, "Activate" ) );
+  }
+
+  public void testRenderListenDeactivate() {
+    control.addListener( SWT.Deactivate, mock( Listener.class ) );
+
+    ControlLCAUtil.renderListenActivate( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, "Deactivate" ) );
   }
 
   public void testRenderListenActivateUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.addListener( SWT.Activate, mock( Listener.class ) );
+    control.addListener( SWT.Deactivate, mock( Listener.class ) );
 
     Fixture.preserveWidgets();
     ControlLCAUtil.renderListenActivate( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "activate" ) );
+    assertNull( message.findListenOperation( control, "Activate" ) );
+    assertNull( message.findListenOperation( control, "Deactivate" ) );
   }
 
   public void testRenderListenActivateRemoved() {
@@ -777,13 +789,16 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.markInitialized( control );
     Listener listener = mock( Listener.class );
     control.addListener( SWT.Activate, listener );
+    control.addListener( SWT.Deactivate, listener );
     Fixture.preserveWidgets();
 
     control.removeListener( SWT.Activate, listener );
+    control.removeListener( SWT.Deactivate, listener );
     ControlLCAUtil.renderListenActivate( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "activate" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, "Activate" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, "Deactivate" ) );
   }
 
   public void testRenderNoListenActivateOnDispose() {

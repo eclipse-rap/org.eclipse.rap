@@ -18,11 +18,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -76,9 +77,9 @@ public class ActivateEvent_Test extends TestCase {
     label.addListener( SWT.Activate, listener );
     label.addListener( SWT.Deactivate, listener );
 
-    fakeActivateEvent( label );
+    fakeActiveControl( label );
     Fixture.readDataAndProcessAction( display );
-    
+
     assertEquals( 1, activatedCount[ 0 ] );
     assertSame( label, activated[ 0 ] );
   }
@@ -116,9 +117,9 @@ public class ActivateEvent_Test extends TestCase {
     otherLabel.addListener( SWT.Activate, listener );
     otherLabel.addListener( SWT.Deactivate, listener );
 
-    fakeActivateEvent( label );
+    fakeActiveControl( label );
     Fixture.readDataAndProcessAction( display );
-    
+
     assertEquals( 2, activatedCount[ 0 ] );
     assertSame( label, activated[ 0 ] );
     assertSame( composite, activated[ 1 ] );
@@ -139,11 +140,11 @@ public class ActivateEvent_Test extends TestCase {
     labelToActivate.addListener( SWT.Deactivate, deactivateListener );
 
     labelToActivate.forceFocus();
-    
+
     verify( deactivateListener, never() ).handleEvent( any( Event.class ) );
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
     verify( activateListener ).handleEvent( captor.capture() );
-    
+
     assertEquals( labelToActivate, captor.getValue().widget );
   }
 
@@ -160,7 +161,7 @@ public class ActivateEvent_Test extends TestCase {
     control.addListener( SWT.Activate, listener );
     control.addListener( SWT.Deactivate, listener );
     // simulated request: activate control -> Activate event fired
-    fakeActivateEvent( control );
+    fakeActiveControl( control );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 1, log.size() );
     Event loggedEvent = log.get( 0 );
@@ -172,7 +173,7 @@ public class ActivateEvent_Test extends TestCase {
     log.clear();
     Control newControl = new Label( shell, SWT.NONE );
     newControl.addListener( SWT.Activate, listener );
-    fakeActivateEvent( newControl );
+    fakeActiveControl( newControl );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 2, log.size() );
     loggedEvent = log.get( 0 );
@@ -182,10 +183,10 @@ public class ActivateEvent_Test extends TestCase {
     assertEquals( SWT.Activate, loggedEvent.type );
   }
 
-  private void fakeActivateEvent( Control control ) {
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( control ),
-                                 ClientMessageConst.EVENT_CONTROL_ACTIVATED,
-                                 null );
+  private void fakeActiveControl( Control control ) {
+    Fixture.fakeNewRequest();
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "activeControl", getId( control ) );
+    Fixture.fakeSetOperation( getId( control.getShell() ), properties );
   }
 }

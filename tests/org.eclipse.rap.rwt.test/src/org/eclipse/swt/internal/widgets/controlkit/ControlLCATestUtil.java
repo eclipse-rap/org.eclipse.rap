@@ -36,9 +36,12 @@ public class ControlLCATestUtil {
   public static void testActivateListener( Control control ) throws IOException {
     Fixture.markInitialized( control.getDisplay() );
     Fixture.markInitialized( control );
-    testRenderAddActivateListener( control );
-    testRenderRemoveActivateListener( control );
-    testRenderActivateListenerUnchanged( control );
+    testRenderAddListener( control, SWT.Activate );
+    testRenderRemoveListener( control, SWT.Activate );
+    testRenderListenerUnchanged( control, SWT.Activate );
+    testRenderAddListener( control, SWT.Deactivate );
+    testRenderRemoveListener( control, SWT.Deactivate );
+    testRenderListenerUnchanged( control, SWT.Deactivate );
   }
 
   public static void testFocusListener( Control control ) throws IOException {
@@ -96,48 +99,6 @@ public class ControlLCATestUtil {
     testRenderAddHelpListener( control );
     testRenderRemoveHelpListener( control );
     testRenderHelpListenerUnchanged( control );
-  }
-
-  private static void testRenderAddActivateListener( Control control ) throws IOException {
-    Listener listener = mock( Listener.class );
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.addListener( SWT.Activate, listener );
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "activate" ) );
-
-    control.removeListener( SWT.Activate, listener );
-  }
-
-  private static void testRenderRemoveActivateListener( Control control ) throws IOException {
-    Listener listener = mock( Listener.class );
-    control.addListener( SWT.Activate, listener );
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.removeListener( SWT.Activate, listener );
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "activate" ) );
-  }
-
-  private static void testRenderActivateListenerUnchanged( Control control ) throws IOException {
-    Listener listener = mock( Listener.class );
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.addListener( SWT.Activate, listener );
-    Fixture.preserveWidgets();
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "activate" ) );
-
-    control.removeListener( SWT.Activate, listener );
   }
 
   private static void testRenderAddListener( Control control, int eventType )
@@ -391,19 +352,25 @@ public class ControlLCATestUtil {
     switch( eventType ) {
       case SWT.MouseDown:
         result = "MouseDown";
-      break;
+        break;
       case SWT.MouseDoubleClick:
         result = "MouseDoubleClick";
-      break;
+        break;
       case SWT.MouseUp:
         result = "MouseUp";
-      break;
+        break;
       case SWT.FocusIn:
         result = "FocusIn";
-      break;
+        break;
       case SWT.FocusOut:
         result = "FocusOut";
-      break;
+        break;
+      case SWT.Activate:
+        result = "Activate";
+        break;
+      case SWT.Deactivate:
+        result = "Deactivate";
+        break;
     }
     return result;
   }

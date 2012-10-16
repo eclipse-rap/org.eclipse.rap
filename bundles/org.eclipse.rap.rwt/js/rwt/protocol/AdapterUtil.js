@@ -14,11 +14,6 @@ namespace( "rwt.protocol" );
 rwt.protocol.AdapterUtil = {
 
   _controlDestructor : function( widget ) {
-    var shell = rwt.protocol.AdapterUtil.getShell( widget );
-    if( shell ) {
-      // remove from shells list of widgets listening for activate events (if present)
-      shell.removeActivateListenerWidget( widget );
-    }
     rwt.protocol.AdapterUtil._widgetDestructor( widget );
   },
 
@@ -174,7 +169,8 @@ rwt.protocol.AdapterUtil = {
     "traverse",
     "menuDetect",
     "help",
-    "activate"
+    "Activate",
+    "Deactivate"
   ],
 
   _controlListenerHandler : {
@@ -253,15 +249,11 @@ rwt.protocol.AdapterUtil = {
         widget.removeEventListener( "keydown", helpRequested, context );
       }
     },
-    "activate" : function( widget, value ) {
-      var shell = rwt.protocol.AdapterUtil.getShell( widget );
-      if( shell ) {
-        if( value ) {
-          shell.addActivateListenerWidget( widget );
-        } else {
-          shell.removeActivateListenerWidget( widget );
-        }
-      }
+    "Activate" : function( widget, value ) {
+      widget.setUserData( "activateListener", value ? true : null );
+    },
+    "Deactivate" : function( widget, value ) {
+      widget.setUserData( "deactivateListener", value ? true : null );
     }
   },
 

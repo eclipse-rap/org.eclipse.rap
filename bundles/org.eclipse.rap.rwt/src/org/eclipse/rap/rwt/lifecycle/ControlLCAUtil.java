@@ -30,11 +30,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.EventLCAUtil;
-import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IControlHolderAdapter;
-import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -56,7 +54,8 @@ import org.eclipse.swt.widgets.Widget;
 public class ControlLCAUtil {
 
   // Property names to preserve widget property values
-  private static final String PROP_ACTIVATE_LISTENER = "activate";
+  private static final String PROP_ACTIVATE_LISTENER = "Activate";
+  private static final String PROP_DEACTIVATE_LISTENER = "Deactivate";
   private static final String PROP_FOCUS_IN_LISTENER = "FocusIn";
   private static final String PROP_FOCUS_OUT_LISTENER = "FocusOut";
   private static final String PROP_MOUSE_DOWN_LISTENER = "MouseDown";
@@ -117,27 +116,7 @@ public class ControlLCAUtil {
   }
 
   public static void processEvents( Control control ) {
-    processActivateEvents( control );
     processMouseEvents( control );
-  }
-
-  public static void processActivateEvents( Control control ) {
-    Shell shell = control.getShell();
-    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_CONTROL_ACTIVATED ) ) {
-      setActiveControl( shell, control );
-    } else {
-      String activeControlId = WidgetLCAUtil.readPropertyValue( shell, "activeControl" );
-      if( WidgetUtil.getId( control ).equals( activeControlId ) ) {
-        setActiveControl( shell, control );
-      }
-    }
-  }
-
-  private static void setActiveControl( Shell shell, Widget widget ) {
-    if( EventUtil.isAccessible( widget ) ) {
-      IShellAdapter shellAdapter = shell.getAdapter( IShellAdapter.class );
-      shellAdapter.setActiveControl( ( Control )widget );
-    }
   }
 
   public static void processMouseEvents( Control control ) {
@@ -262,9 +241,7 @@ public class ControlLCAUtil {
     preserveBackgroundImage( control );
     WidgetLCAUtil.preserveFont( control, controlAdapter.getUserFont() );
     adapter.preserve( PROP_CURSOR, control.getCursor() );
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_ACTIVATE_LISTENER,
-                                    hasActivateListener( control ) );
+    preserveActivateListeners( control );
     preserveMouseListeners( control );
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
       preserveFocusListeners( control );
@@ -518,8 +495,8 @@ public class ControlLCAUtil {
 
   static void renderListenActivate( Control control ) {
     if( !control.isDisposed() ) {
-      boolean newValue = hasActivateListener( control );
-      WidgetLCAUtil.renderListener( control, PROP_ACTIVATE_LISTENER, newValue, false );
+      renderListen( control, SWT.Activate, PROP_ACTIVATE_LISTENER );
+      renderListen( control, SWT.Deactivate, PROP_DEACTIVATE_LISTENER );
     }
   }
 
@@ -930,10 +907,6 @@ public class ControlLCAUtil {
     return result;
   }
 
-  private static boolean hasActivateListener( Control control ) {
-    return control.isListening( SWT.Activate ) || control.isListening( SWT.Deactivate );
-  }
-
   private static boolean hasKeyListener( Control control ) {
     return control.isListening( SWT.KeyUp ) || control.isListening( SWT.KeyDown );
   }
@@ -957,6 +930,15 @@ public class ControlLCAUtil {
     WidgetLCAUtil.preserveListener( control,
                                     PROP_FOCUS_OUT_LISTENER,
                                     control.isListening( SWT.FocusOut ) );
+  }
+
+  private static void preserveActivateListeners( Control control ) {
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_ACTIVATE_LISTENER,
+                                    control.isListening( SWT.Activate ) );
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_DEACTIVATE_LISTENER,
+                                    control.isListening( SWT.Deactivate ) );
   }
 
 }
