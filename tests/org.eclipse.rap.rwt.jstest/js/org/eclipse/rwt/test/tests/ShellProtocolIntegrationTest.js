@@ -495,10 +495,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     testActivateListener : function() {
       var shell = this._protocolCreateShell();
-      this._protocolListen( { "activate" : true } );
-      assertEquals( [ shell ], shell._activateListenerWidgets );
-      this._protocolListen( { "activate" : false } );
-      assertEquals( [], shell._activateListenerWidgets );
+      this._protocolListen( { "Activate" : true } );
+      assertTrue( shell.getUserData( "activateListener" ) );
+      this._protocolListen( { "Activate" : false } );
+      assertNull( shell.getUserData( "activateListener" ) );
+      this._disposeShell();
+    },
+
+    testDeactivateListener : function() {
+      var shell = this._protocolCreateShell();
+      this._protocolListen( { "Deactivate" : true } );
+      assertTrue( shell.getUserData( "deactivateListener" ) );
+      this._protocolListen( { "Deactivate" : false } );
+      assertNull( shell.getUserData( "deactivateListener" ) );
       this._disposeShell();
     },
 
@@ -717,21 +726,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       } );
       assertFalse( shell.isDisposed() );
       assertFalse( shell.getVisibility() );
-      TestUtil.flush();
-      assertTrue( shell.isDisposed() );
-    },
-
-    testDisposeShellWithActivateListener : function() {
-      var shell = this._protocolCreateShell();
-      this._protocolListen( { "activate" : true } );
-      assertEquals( [ shell ], shell._activateListenerWidgets );
-      var processor = rwt.protocol.MessageProcessor;
-      processor.processOperation( {
-        "target" : "w3",
-        "action" : "destroy"
-      } );
-      assertFalse( shell.isDisposed() );
-      assertEquals( [], shell._activateListenerWidgets );
       TestUtil.flush();
       assertTrue( shell.isDisposed() );
     },

@@ -9,13 +9,18 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var MessageProcessor = rwt.protocol.MessageProcessor;
+var ObjectRegistry = rwt.protocol.ObjectRegistry;
+
 qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
   extend : qx.core.Object,
 
   members : {
 
     testDisplayOverlayBackground : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       // first check that the default theme for overlay has no background set
       var tv = new rwt.theme.ThemeValues( {} );
       var backgroundImage = tv.getCssImage( "Shell-DisplayOverlay",
@@ -50,7 +55,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     },
 
     testDisplayOverlayCopyStates : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.fakeResponse( true );
       var shell = new rwt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       shell.addState( "rwt_APPLICATION_MODAL" );
@@ -75,7 +79,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     },
 
     testDisplayOverlayAddStates : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.fakeResponse( true );
       var shell = new rwt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       shell.addState( "rwt_APPLICATION_MODAL" );
@@ -102,7 +105,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     },
 
     testDisplayOverlayMultipleShells : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var overlay = rwt.widgets.base.ClientDocument.getInstance()._getBlocker();
       var visibilityChanges = 0;
       overlay.addEventListener( "changeVisibility", function( event) {
@@ -201,9 +203,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     },
 
     testSendBounds : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      rwt.protocol.MessageProcessor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w2",
         "action" : "listen",
         "properties" : { "Move" : true, "Resize" : true }
@@ -223,9 +224,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     },
 
     testSendResize : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      rwt.protocol.MessageProcessor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w2",
         "action" : "listen",
         "properties" : { "Resize" : true }
@@ -248,9 +248,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     },
 
     testSendMove : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      rwt.protocol.MessageProcessor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w2",
         "action" : "listen",
         "properties" : { "Move" : true }
@@ -272,8 +271,109 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.destroy();
     },
 
+    testNotifyActivateDeactivate_WithListeners : function() {
+      var shell = this._createWidgetTree();
+      shell.setActiveChild( ObjectRegistry.getObject( "w8" ) );
+      TestUtil.protocolListen( "w7", { "Activate" : true } );
+      TestUtil.protocolListen( "w8", { "Deactivate" : true } );
+      TestUtil.clearRequestLog();
+
+      shell.setActiveChild( ObjectRegistry.getObject( "w7" ) );
+
+      var messages = TestUtil.getMessages();
+      assertEquals( 2, messages.length );
+      assertNull( messages[ 0 ].findSetOperation( "w3", "activeControl" ) );
+      assertNotNull( messages[ 0 ].findNotifyOperation( "w8", "Deactivate" ) );
+      assertEquals( "w7", messages[ 1 ].findSetProperty( "w3", "activeControl" ) );
+      assertNotNull( messages[ 1 ].findNotifyOperation( "w7", "Activate" ) );
+      shell.destroy();
+    },
+
+    testNotifyActivateDeactivate_WithoutListeners : function() {
+      var shell = this._createWidgetTree();
+      shell.setActiveChild( ObjectRegistry.getObject( "w8" ) );
+      TestUtil.clearRequestLog();
+
+      shell.setActiveChild( ObjectRegistry.getObject( "w7" ) );
+      rwt.remote.Server.getInstance().send();
+
+      var messages = TestUtil.getMessages();
+      assertEquals( 1, messages.length );
+      assertNull( messages[ 0 ].findNotifyOperation( "w8", "Deactivate" ) );
+      assertEquals( "w7", messages[ 0 ].findSetProperty( "w3", "activeControl" ) );
+      assertNull( messages[ 0 ].findNotifyOperation( "w7", "Activate" ) );
+      shell.destroy();
+    },
+
+    testNotifyActivateDeactivate_WithActivateListenerOnSameParent : function() {
+      var shell = this._createWidgetTree();
+      shell.setActiveChild( ObjectRegistry.getObject( "w8" ) );
+      TestUtil.protocolListen( "w6", { "Activate" : true } );
+      TestUtil.clearRequestLog();
+
+      shell.setActiveChild( ObjectRegistry.getObject( "w9" ) );
+      rwt.remote.Server.getInstance().send();
+
+      var messages = TestUtil.getMessages();
+      assertEquals( 1, messages.length );
+      assertNull( messages[ 0 ].findNotifyOperation( "w8", "Deactivate" ) );
+      assertEquals( "w9", messages[ 0 ].findSetProperty( "w3", "activeControl" ) );
+      assertNull( messages[ 0 ].findNotifyOperation( "w6", "Activate" ) );
+      shell.destroy();
+    },
+
+    testNotifyActivateDeactivate_WithDeactivateListenerOnSameParent : function() {
+      var shell = this._createWidgetTree();
+      shell.setActiveChild( ObjectRegistry.getObject( "w8" ) );
+      TestUtil.protocolListen( "w6", { "Deactivate" : true } );
+      TestUtil.clearRequestLog();
+
+      shell.setActiveChild( ObjectRegistry.getObject( "w9" ) );
+      rwt.remote.Server.getInstance().send();
+
+      var messages = TestUtil.getMessages();
+      assertEquals( 1, messages.length );
+      assertNull( messages[ 0 ].findNotifyOperation( "w8", "Deactivate" ) );
+      assertEquals( "w9", messages[ 0 ].findSetProperty( "w3", "activeControl" ) );
+      assertNull( messages[ 0 ].findNotifyOperation( "w6", "Deactivate" ) );
+      shell.destroy();
+    },
+
+    testNotifyActivateDeactivate_WithActivateListenerOnDifferentParent : function() {
+      var shell = this._createWidgetTree();
+      shell.setActiveChild( ObjectRegistry.getObject( "w7" ) );
+      TestUtil.protocolListen( "w6", { "Activate" : true } );
+      TestUtil.clearRequestLog();
+
+      shell.setActiveChild( ObjectRegistry.getObject( "w9" ) );
+
+      var messages = TestUtil.getMessages();
+      assertEquals( 1, messages.length );
+      assertEquals( "w9", messages[ 0 ].findSetProperty( "w3", "activeControl" ) );
+      assertNotNull( messages[ 0 ].findNotifyOperation( "w6", "Activate" ) );
+      shell.destroy();
+    },
+
+    testNotifyActivateDeactivate_WithDectivateListenerOnDifferentParent : function() {
+      var shell = this._createWidgetTree();
+      shell.setActiveChild( ObjectRegistry.getObject( "w7" ) );
+      TestUtil.protocolListen( "w5", { "Deactivate" : true } );
+      TestUtil.clearRequestLog();
+
+      shell.setActiveChild( ObjectRegistry.getObject( "w9" ) );
+      rwt.remote.Server.getInstance().send();
+
+      var messages = TestUtil.getMessages();
+      assertEquals( 2, messages.length );
+      assertNotNull( messages[ 0 ].findNotifyOperation( "w5", "Deactivate" ) );
+      assertEquals( "w9", messages[ 1 ].findSetProperty( "w3", "activeControl" ) );
+      shell.destroy();
+    },
+
+    /////////
+    // Helper
+
     _createDefaultShell : function( styles, noFlush ) {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.fakeResponse( true );
       var shell = new rwt.widgets.Shell( styles );
       shell.initialize();
@@ -283,11 +383,73 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.setVisibility( true );
       TestUtil.fakeResponse( false );
       if( !noFlush ) {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         TestUtil.flush();
       }
       return shell;
+    },
+
+    _createWidgetTree : function() {
+      var shell = TestUtil.createShellByProtocol( "w3" );
+      MessageProcessor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.Composite",
+        "properties" : {
+          "style" : [ "BORDER" ],
+          "parent" : "w3"
+        }
+      } );
+      MessageProcessor.processOperation( {
+        "target" : "w5",
+        "action" : "create",
+        "type" : "rwt.widgets.Composite",
+        "properties" : {
+          "style" : [ "BORDER" ],
+          "parent" : "w4"
+        }
+      } );
+      MessageProcessor.processOperation( {
+        "target" : "w7",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w5"
+        }
+      } );
+      MessageProcessor.processOperation( {
+        "target" : "w6",
+        "action" : "create",
+        "type" : "rwt.widgets.Composite",
+        "properties" : {
+          "style" : [ "BORDER" ],
+          "parent" : "w4"
+        }
+      } );
+      MessageProcessor.processOperation( {
+        "target" : "w8",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w6"
+        }
+      } );
+      MessageProcessor.processOperation( {
+        "target" : "w9",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w6"
+        }
+      } );
+      TestUtil.flush();
+      return shell;
     }
+
   }
 
 } );
+
+}());

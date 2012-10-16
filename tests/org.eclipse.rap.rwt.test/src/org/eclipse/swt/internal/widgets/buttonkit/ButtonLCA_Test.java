@@ -20,7 +20,9 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -236,7 +238,7 @@ public class ButtonLCA_Test extends TestCase {
     shell.getAdapter( IShellAdapter.class ).setActiveControl( label );
     Fixture.fakeNewRequest( display );
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
-    fakeActivateEvent( button );
+    fakeActiveControl( button );
 
     Fixture.readDataAndProcessAction( display );
 
@@ -635,9 +637,9 @@ public class ButtonLCA_Test extends TestCase {
     assertNull( message.findSetOperation( button, "grayed" ) );
   }
 
-  private void fakeActivateEvent( Control control ) {
-    Fixture.fakeNotifyOperation( getId( control ),
-                                 ClientMessageConst.EVENT_CONTROL_ACTIVATED,
-                                 null );
+  private void fakeActiveControl( Control control ) {
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "activeControl", getId( control ) );
+    Fixture.fakeSetOperation( getId( control.getShell() ), properties );
   }
 }

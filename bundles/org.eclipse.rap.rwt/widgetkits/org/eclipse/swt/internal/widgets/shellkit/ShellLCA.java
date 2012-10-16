@@ -32,6 +32,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
@@ -104,6 +105,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
       shell.close();
     }
     processActiveShell( shell );
+    readActiveControl( shell );
     ControlLCAUtil.processEvents( shell );
     ControlLCAUtil.processKeyEvents( shell );
     ControlLCAUtil.processMenuDetect( shell );
@@ -197,10 +199,17 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
+  private static void readActiveControl( Shell shell ) {
+    String activeControlId = WidgetLCAUtil.readPropertyValue( shell, PROP_ACTIVE_CONTROL );
+    Widget widget = WidgetUtil.find( shell, activeControlId );
+    if( widget != null ) {
+      setActiveControl( shell, widget );
+    }
+  }
+
   private static void renderActiveControl( Shell shell ) {
     final Control activeControl = getActiveControl( shell );
-    String prop = PROP_ACTIVE_CONTROL;
-    if( WidgetLCAUtil.hasChanged( shell, prop, activeControl, null ) ) {
+    if( WidgetLCAUtil.hasChanged( shell, PROP_ACTIVE_CONTROL, activeControl, null ) ) {
       String activeControlId = null;
       if( activeControl != null ) {
         activeControlId = WidgetUtil.getId( activeControl );
@@ -208,12 +217,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
       IClientObject clientObject = ClientObjectFactory.getClientObject( shell );
       clientObject.set( "activeControl", activeControlId );
     }
-  }
-
-  private static Control getActiveControl( Shell shell ) {
-    IShellAdapter shellAdapter = shell.getAdapter( IShellAdapter.class );
-    Control activeControl = shellAdapter.getActiveControl();
-    return activeControl;
   }
 
   private static void renderImage( Shell shell ) {
@@ -272,9 +275,19 @@ public final class ShellLCA extends AbstractWidgetLCA {
     renderListener( shell, PROP_SHELL_LISTENER, newValue, false );
   }
 
+  private static void setActiveControl( Shell shell, Widget widget ) {
+    if( EventUtil.isAccessible( widget ) ) {
+      shell.getAdapter( IShellAdapter.class ).setActiveControl( ( Control )widget );
+    }
+  }
+
+  private static Control getActiveControl( Shell shell ) {
+    return shell.getAdapter( IShellAdapter.class ).getActiveControl();
+  }
+
   private static boolean hasShellListener( Shell shell ) {
-    return shell.isListening( SWT.Close ) 
-        || shell.isListening( SWT.Activate ) 
+    return shell.isListening( SWT.Close )
+        || shell.isListening( SWT.Activate )
         || shell.isListening( SWT.Deactivate );
   }
 

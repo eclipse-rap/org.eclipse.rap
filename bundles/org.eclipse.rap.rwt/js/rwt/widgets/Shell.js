@@ -36,7 +36,6 @@ qx.Class.define( "rwt.widgets.Shell", {
     this._captionTitle.setMode( "html" );
     this._activeControl = null;
     this._focusControl = null;
-    this._activateListenerWidgets = [];
     this._parentShell = null;
     this._renderZIndex = true;
     this._hasShellListener = false;
@@ -176,7 +175,6 @@ qx.Class.define( "rwt.widgets.Shell", {
                                                      "mousedown",
                                                      this.__onwindowmousedown );
     }
-    this._activateListenerWidgets = null;
   },
 
   events : {
@@ -350,49 +348,59 @@ qx.Class.define( "rwt.widgets.Shell", {
       }
     },
 
-    /**
-     * Adds a widget that has a server-side ActivateListener. If this widget or
-     * any of its children are activated, an org.eclipse.swt.events.controlActivated
-     * is fired.
-     */
-    addActivateListenerWidget : function( widget ) {
-      this._activateListenerWidgets.push( widget );
-    },
-
-    removeActivateListenerWidget : function( widget ) {
-      rwt.util.Array.remove( this._activateListenerWidgets, widget );
-    },
-
-    _isRelevantActivateEvent : function( widget ) {
-      var result = false;
-      for( var i = 0; !result && i < this._activateListenerWidgets.length; i++ )
-      {
-        var listeningWidget = this._activateListenerWidgets[ i ];
-        if(    !listeningWidget.contains( this._activeControl )
-            && listeningWidget.contains( widget ) )
-        {
-          result = true;
-        }
-      }
-      return result;
-    },
-
     _onChangeActiveChild : function( evt ) {
       // Work around qooxdoo bug #254: the changeActiveChild is fired twice when
       // a widget was activated by keyboard (getData() is null in this case)
       var widget = this._getParentControl( evt.getValue() );
-      if( !org.eclipse.swt.EventUtil.getSuspended() && widget != null ) {
-        var widgetMgr = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetMgr.findIdByWidget( widget );
-        var shellId = widgetMgr.findIdByWidget( this );
-        var req = rwt.remote.Server.getInstance();
-        req.addParameter( shellId + ".activeControl", id );
-        if( this._isRelevantActivateEvent( widget ) ) {
-          this._activeControl = widget;
-          req.addEvent( "org.eclipse.swt.events.controlActivated", id );
-          req.send();
+      if(    !org.eclipse.swt.EventUtil.getSuspended() 
+          && widget != null 
+          && widget !== this._activeControl )
+      {
+        this._notifyDeactivate( this._activeControl, widget );
+        var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
+        var serverObject = rwt.remote.Server.getInstance().getServerObject( this );
+        serverObject.set( "activeControl", id );
+        this._notifyActivate( this._activeControl, widget );
+        this._activeControl = widget;
+      }
+    },
+
+    _notifyDeactivate : function( oldActive, newActive ) {
+      var target = oldActive;
+      while( target != null && !this._hasDeactivateListener( target ) ) {
+        if( target.getParent ) {
+          target = target.getParent();
+        } else {
+          target = null;
         }
       }
+      if( target != null && !target.contains( newActive ) ) {
+        var serverObject = rwt.remote.Server.getInstance().getServerObject( target );
+        serverObject.notify( "Deactivate" );
+      }
+    },
+
+    _notifyActivate : function( oldActive, newActive ) {
+      var target = newActive;
+      while( target != null && !this._hasActivateListener( target ) ) {
+        if( target.getParent ) {
+          target = target.getParent();
+        } else {
+          target = null;
+        }
+      }
+      if( target != null && !target.contains( oldActive ) ) {
+        var serverObject = rwt.remote.Server.getInstance().getServerObject( target );
+        serverObject.notify( "Activate" );
+      }
+    },
+
+    _hasDeactivateListener : function( widget ) {
+      return widget.getUserData( "deactivateListener" ) === true;
+    },
+
+    _hasActivateListener : function( widget ) {
+      return widget.getUserData( "activateListener" ) === true;
     },
 
     _onChangeFocusedChild : function( evt ) {
