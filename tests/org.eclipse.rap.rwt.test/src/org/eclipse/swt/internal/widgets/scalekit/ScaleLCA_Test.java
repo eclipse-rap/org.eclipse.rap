@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
@@ -29,10 +30,19 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Scale;
+import org.eclipse.swt.widgets.Shell;
 import org.mockito.ArgumentCaptor;
 
 public class ScaleLCA_Test extends TestCase {
@@ -327,25 +337,27 @@ public class ScaleLCA_Test extends TestCase {
     Fixture.markInitialized( scale );
     Fixture.preserveWidgets();
 
-    scale.addSelectionListener( new SelectionAdapter() { } );
+    scale.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( scale );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( scale, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( scale, "Selection" ) );
+    assertNull( message.findListenOperation( scale, "DefaultSelection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    SelectionListener listener = new SelectionAdapter() { };
-    scale.addSelectionListener( listener );
+    Listener listener = mock( Listener.class );
+    scale.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( scale );
     Fixture.preserveWidgets();
 
-    scale.removeSelectionListener( listener );
+    scale.removeListener( SWT.Selection, listener );
     lca.renderChanges( scale );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( scale, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( scale, "Selection" ) );
+    assertNull( message.findListenOperation( scale, "DefaultSelection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {

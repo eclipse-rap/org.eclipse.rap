@@ -21,9 +21,13 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Scale;
+import org.eclipse.swt.widgets.Widget;
 
 
 public final class ScaleLCA extends AbstractWidgetLCA {
@@ -39,7 +43,7 @@ public final class ScaleLCA extends AbstractWidgetLCA {
   static final String PROP_SELECTION = "selection";
   static final String PROP_INCREMENT = "increment";
   static final String PROP_PAGE_INCREMENT = "pageIncrement";
-  static final String PROP_SELECTION_LISTENER = "selection";
+  static final String PROP_SELECTION_LISTENER = "Selection";
 
   // Default values
   private  static final int DEFAULT_MINIMUM = 0;
@@ -57,7 +61,7 @@ public final class ScaleLCA extends AbstractWidgetLCA {
     preserveProperty( scale, PROP_SELECTION, scale.getSelection() );
     preserveProperty( scale, PROP_INCREMENT, scale.getIncrement() );
     preserveProperty( scale, PROP_PAGE_INCREMENT, scale.getPageIncrement() );
-    preserveListener( scale, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( scale ) );
+    preserveListener( scale, PROP_SELECTION_LISTENER, scale.isListening( SWT.Selection ) );
   }
 
   public void readData( Widget widget ) {
@@ -90,7 +94,7 @@ public final class ScaleLCA extends AbstractWidgetLCA {
     renderProperty( scale, PROP_SELECTION, scale.getSelection(), DEFAULT_SELECTION );
     renderProperty( scale, PROP_INCREMENT, scale.getIncrement(), DEFAULT_INCREMENT );
     renderProperty( scale, PROP_PAGE_INCREMENT, scale.getPageIncrement(), DEFAULT_PAGE_INCREMENT );
-    renderListener( scale, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( scale ), false );
+    renderListener( scale, PROP_SELECTION_LISTENER, scale.isListening( SWT.Selection ), false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
