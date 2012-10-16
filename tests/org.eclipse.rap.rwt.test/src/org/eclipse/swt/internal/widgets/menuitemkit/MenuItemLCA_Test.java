@@ -555,26 +555,28 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.markInitialized( item );
     Fixture.preserveWidgets();
 
-    item.addSelectionListener( new SelectionAdapter() { } );
+    item.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( item, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( item, "Selection" ) );
+    assertNull( message.findListenOperation( item, "DefaultSelection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
-    SelectionListener listener = new SelectionAdapter() { };
-    item.addSelectionListener( listener );
+    Listener listener = mock( Listener.class );
+    item.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
     Fixture.preserveWidgets();
 
-    item.removeSelectionListener( listener );
+    item.removeListener( SWT.Selection, listener );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( item, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( item, "Selection" ) );
+    assertNull( message.findListenOperation( item, "DefaultSelection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
@@ -588,7 +590,7 @@ public class MenuItemLCA_Test extends TestCase {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( item, "selection" ) );
+    assertNull( message.findListenOperation( item, "Selection" ) );
   }
 
   public void testRenderAddHelpListener() throws Exception {

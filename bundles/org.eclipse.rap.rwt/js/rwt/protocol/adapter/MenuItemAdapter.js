@@ -86,12 +86,12 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.MenuItem", {
   },
 
   listeners : [
-    "selection",
+    "Selection",
     "help"
   ],
 
   listenerHandler : {
-    "selection" : function( widget, value ) {
+    "Selection" : function( widget, value ) {
       if( !widget.hasState( "rwt_SEPARATOR" ) ) {
         widget.setHasSelectionListener( value );
       }

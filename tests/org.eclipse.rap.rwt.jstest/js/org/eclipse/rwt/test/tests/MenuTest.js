@@ -245,7 +245,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     testSetMenuItemSelectionListenerByProtocol : function() {
       var menu = createPopUpMenuByProtocol( "w3" );
       var widget = createMenuItemByProtocol( "w4", "w3", [ "CHECK" ] );
-      TestUtil.protocolListen( "w4", { "selection" : true } );
+      TestUtil.protocolListen( "w4", { "Selection" : true } );
       assertTrue( widget._hasSelectionListener );
       menu.destroy();
       widget.destroy();
