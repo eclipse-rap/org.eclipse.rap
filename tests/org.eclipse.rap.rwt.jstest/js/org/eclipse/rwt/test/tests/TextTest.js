@@ -285,7 +285,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( 30, text.getMaxLength() );
     },
 
-    testSetHasSelectionListenerByProtocol : function() {
+    testsetHasDefaultSelectionListenerByProtocol : function() {
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -295,12 +295,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
       text = ObjectManager.getObject( "w3" );
       assertTrue( text.hasSelectionListener() );
     },
 
-    testSetHasSelectionListenerOnMultiByProtocol : function() {
+    testsetHasDefaultSelectionListenerOnMultiByProtocol : function() {
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -310,12 +310,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
       text = ObjectManager.getObject( "w3" );
       assertFalse( text.hasSelectionListener() );
     },
 
-    testSetHasSelectionListenerWithDefaultButtonByProtocol : function() {
+    testsetHasDefaultSelectionListenerWithDefaultButtonByProtocol : function() {
       Processor.processOperation( {
         "target" : "w4",
         "action" : "create",
@@ -336,7 +336,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
       TestUtil.flush();
       text = ObjectManager.getObject( "w3" );
       assertFalse( text.hasSelectionListener() );
@@ -1268,7 +1268,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       TestUtil.flush();
       text = ObjectManager.getObject( "w3" );
-      text.setHasSelectionListener( true );
+      text.setHasDefaultSelectionListener( true );
       TestUtil.clickDOM( text._searchIconElement, 5, 5 );
 
       var message = TestUtil.getMessageObject();
@@ -1289,7 +1289,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       TestUtil.flush();
       text = ObjectManager.getObject( "w3" );
-      text.setHasSelectionListener( true );
+      text.setHasDefaultSelectionListener( true );
       TestUtil.clickDOM( text._cancelIconElement, 5, 5 );
 
       var message = TestUtil.getMessageObject();
