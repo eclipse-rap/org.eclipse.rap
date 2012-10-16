@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.treekit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -1327,26 +1328,58 @@ public class TreeLCA_Test extends TestCase {
     Fixture.markInitialized( tree );
     Fixture.preserveWidgets();
 
-    tree.addSelectionListener( new SelectionAdapter() { } );
+    tree.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( tree, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( tree, "Selection" ) );
+    assertNull( message.findListenOperation( tree, "DefaultSelection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
     Tree tree = new Tree( shell, SWT.NONE );
-    SelectionListener listener = new SelectionAdapter() { };
-    tree.addSelectionListener( listener );
+    Listener listener = mock( Listener.class );
+    tree.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
     Fixture.preserveWidgets();
 
-    tree.removeSelectionListener( listener );
+    tree.removeListener( SWT.Selection, listener );
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( tree, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( tree, "Selection" ) );
+    assertNull( message.findListenOperation( tree, "DefaultSelection" ) );
+  }
+
+  public void testRenderAddDefaultSelectionListener() throws Exception {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+    Fixture.preserveWidgets();
+
+    tree.addListener( SWT.DefaultSelection, mock( Listener.class ) );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( tree, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( tree, "Selection" ) );
+  }
+
+  public void testRenderRemoveDefaultSelectionListener() throws Exception {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Listener listener = mock( Listener.class );
+    tree.addListener( SWT.DefaultSelection, listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+    Fixture.preserveWidgets();
+
+    tree.removeListener( SWT.DefaultSelection, listener );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( tree, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( tree, "Selection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
@@ -1360,7 +1393,7 @@ public class TreeLCA_Test extends TestCase {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( tree, "selection" ) );
+    assertNull( message.findListenOperation( tree, "Selection" ) );
   }
 
   public void testRenderInitialEnableCellToolTip() throws IOException {

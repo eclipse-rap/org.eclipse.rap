@@ -284,10 +284,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testSetHasSelectionListenerByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       this._createDefaultTreeByProtocol( "w3", "w2", [] );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
       var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHasDefaultSelectionListenerByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w3" );
+      assertTrue( widget._hasDefaultSelectionListener );
       shell.destroy();
       widget.destroy();
     },
@@ -1777,7 +1788,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testSendDefaultSelectionEvent : function() {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
-      tree.setHasSelectionListener( true );
+      tree.setHasDefaultSelectionListener( true );
       tree.setItemCount( 1 );
       var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       wm.add( tree, "w11", true );
@@ -1787,14 +1798,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       TestUtil.doubleClick( tree._rowContainer._children[ 0 ] );
 
-      assertEquals( 2, TestUtil.getRequestsSend() );
-      var messages = TestUtil.getMessages();
-      assertEquals( "w2", messages[ 0 ].findNotifyProperty( "w11", "Selection", "item" ) );
-      assertEquals( [ "w2" ], messages[ 0 ].findSetProperty( "w11", "selection" ) );
-      assertNull( messages[ 0 ].findNotifyOperation( "w11", "DefaultSelection" ) );
-      assertEquals( "w2", messages[ 1 ].findNotifyProperty( "w11", "DefaultSelection", "item" ) );
-      assertNull( messages[ 1 ].findNotifyOperation( "w11", "Selection" ) );
-      assertNull( [ "w2" ], messages[ 1 ].findSetOperation( "w11", "selection" ) );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getLastMessage();
+      assertEquals( [ "w2" ], message.findSetProperty( "w11", "selection" ) );
+      assertEquals( "w2", message.findNotifyProperty( "w11", "DefaultSelection", "item" ) );
+      assertNull( message.findNotifyOperation( "w11", "Selection" ) );
       tree.destroy();
     },
 
@@ -1833,6 +1841,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setHasSelectionListener( true );
+      tree.setHasDefaultSelectionListener( true );
       var actions = [ "copy", "move", "alias" ];
       dndSupport.registerDragSource( tree, actions );
       dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
@@ -1860,6 +1869,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
       tree.setHasSelectionListener( true );
+      tree.setHasDefaultSelectionListener( true );
       tree.setItemCount( 1 );
       var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       wm.add( tree, "w11", true );
@@ -1882,7 +1892,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testSendDefaultSelectionEventByEnter : function() {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
-      tree.setHasSelectionListener( true );
+      tree.setHasDefaultSelectionListener( true );
       tree.setItemCount( 1 );
       var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       wm.add( tree, "w11", true );
@@ -1894,21 +1904,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.clickDOM( node );
       TestUtil.keyDown( node, "Enter" );
 
-      assertEquals( 2, TestUtil.getRequestsSend() );
-      var messages = TestUtil.getMessages();
-      assertEquals( "w2", messages[ 0 ].findNotifyProperty( "w11", "Selection", "item" ) );
-      assertEquals( [ "w2" ], messages[ 0 ].findSetProperty( "w11", "selection" ) );
-      assertNull( messages[ 0 ].findNotifyOperation( "w11", "DefaultSelection" ) );
-      assertEquals( "w2", messages[ 1 ].findNotifyProperty( "w11", "DefaultSelection", "item" ) );
-      assertNull( messages[ 1 ].findNotifyOperation( "w11", "Selection" ) );
-      assertNull( [ "w2" ], messages[ 1 ].findSetOperation( "w11", "selection" ) );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getLastMessage();
+      assertEquals( [ "w2" ], message.findSetProperty( "w11", "selection" ) );
+      assertEquals( "w2", message.findNotifyProperty( "w11", "DefaultSelection", "item" ) );
+      assertNull( message.findNotifyOperation( "w11", "Selection" ) );
       tree.destroy();
     },
 
     testSendDefaultSelectionEventByEnterChangedFocus : function() {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
-      tree.setHasSelectionListener( true );
+      tree.setHasDefaultSelectionListener( true );
       tree.setItemCount( 2 );
       var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       var child2 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
@@ -1932,6 +1939,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
       tree.setHasSelectionListener( true );
+      tree.setHasDefaultSelectionListener( true );
       tree.setItemCount( 2 );
       var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       var child2 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
@@ -1957,6 +1965,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setHasSelectionListener( true );
+      tree.setHasDefaultSelectionListener( true );
       tree.setItemCount( 3 );
       var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       var child2 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );

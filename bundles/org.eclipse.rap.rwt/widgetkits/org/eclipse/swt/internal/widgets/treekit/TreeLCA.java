@@ -78,7 +78,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static final String PROP_SORT_COLUMN = "sortColumn";
   private static final String PROP_SCROLLBARS_VISIBLE = "scrollBarsVisible";
   private static final String PROP_SCROLLBARS_SELECTION_LISTENER = "scrollBarsSelection";
-  private static final String PROP_SELECTION_LISTENER = "selection";
+  private static final String PROP_SELECTION_LISTENER = "Selection";
+  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
   private static final String PROP_ENABLE_CELL_TOOLTIP = "enableCellToolTip";
   private static final String PROP_CELL_TOOLTIP_TEXT = "cellToolTipText";
   private static final String PROP_MARKUP_ENABLED = "markupEnabled";
@@ -112,7 +113,10 @@ public final class TreeLCA extends AbstractWidgetLCA {
     preserveListener( tree,
                       PROP_SCROLLBARS_SELECTION_LISTENER,
                       hasScrollBarsSelectionListener( tree ) );
-    preserveListener( tree, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( tree ) );
+    preserveListener( tree, PROP_SELECTION_LISTENER, tree.isListening( SWT.Selection ) );
+    preserveListener( tree,
+                      PROP_DEFAULT_SELECTION_LISTENER,
+                      tree.isListening( SWT.DefaultSelection ) );
     preserveProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ) );
     preserveProperty( tree, PROP_CELL_TOOLTIP_TEXT, null );
   }
@@ -186,7 +190,11 @@ public final class TreeLCA extends AbstractWidgetLCA {
                     PROP_SCROLLBARS_SELECTION_LISTENER,
                     hasScrollBarsSelectionListener( tree ),
                     false );
-    renderListener( tree, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( tree ), false );
+    renderListener( tree, PROP_SELECTION_LISTENER, tree.isListening( SWT.Selection ), false );
+    renderListener( tree,
+                    PROP_DEFAULT_SELECTION_LISTENER,
+                    tree.isListening( SWT.DefaultSelection ),
+                    false );
     renderProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ), false );
     renderProperty( tree, PROP_CELL_TOOLTIP_TEXT, getCellToolTipText( tree ), null );
   }
