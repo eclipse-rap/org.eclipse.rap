@@ -181,14 +181,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
       var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
       widget.destroy();
     },
-    
+
     testFiresSelectionChangedEvent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var scale = new rwt.widgets.Scale();
@@ -202,35 +202,35 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
 
       assertEquals( 1, log );
     },
-    
+
     testFiresMinimumChangedEvent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var scale = new rwt.widgets.Scale();
       TestUtil.flush();
-      
+
       var log = 0;
       scale.addEventListener( "minimumChanged", function() {
         log++;
       } );
       scale.setMinimum( 5 );
-      
+
       assertEquals( 1, log );
     },
-    
+
     testFiresMaximumChangedEvent : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var scale = new rwt.widgets.Scale();
       TestUtil.flush();
-      
+
       var log = 0;
       scale.addEventListener( "maximumChanged", function() {
         log++;
       } );
       scale.setMaximum( 100 );
-      
+
       assertEquals( 1, log );
     }
 
   }
-  
+
 } );

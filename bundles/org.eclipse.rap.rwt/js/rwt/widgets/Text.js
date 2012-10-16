@@ -23,7 +23,7 @@ qx.Class.define( "rwt.widgets.Text", {
       this.setAllowStretchY( true );
       this.__oninput = rwt.util.Function.bindEvent( this._oninputDomTextarea, this );
     }
-    this._hasSelectionListener = false;
+    this._hasDefaultSelectionListener = false;
     this._hasModifyListener = false;
     this._hasVerifyListener = false;
     this._requestScheduled = false;
@@ -80,9 +80,9 @@ qx.Class.define( "rwt.widgets.Text", {
       }
     },
 
-    setHasSelectionListener : function( value ) {
+    setHasDefaultSelectionListener : function( value ) {
       if( !this.hasState( "rwt_MULTI" ) ) {
-        this._hasSelectionListener = value;
+        this._hasDefaultSelectionListener = value;
       }
     },
 
@@ -94,7 +94,7 @@ qx.Class.define( "rwt.widgets.Text", {
       // TODO [rst] On GTK, the SelectionListener is also off when the default
       //      button is invisible or disabled. Check with Windows and repair.
       var hasDefaultButton = defButton != null && defButton.isSeeable();
-      return !hasDefaultButton && this._hasSelectionListener;
+      return !hasDefaultButton && this._hasDefaultSelectionListener;
     },
 
     setHasModifyListener : function( value ) {

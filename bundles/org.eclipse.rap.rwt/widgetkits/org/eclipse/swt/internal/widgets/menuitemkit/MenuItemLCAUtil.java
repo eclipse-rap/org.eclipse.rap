@@ -22,7 +22,6 @@ import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
@@ -38,7 +37,7 @@ final class MenuItemLCAUtil {
   private static final String PROP_MENU = "menu";
   private static final String PROP_ENABLED = "enabled";
   private static final String PROP_SELECTION = "selection";
-  private static final String PROP_SELECTION_LISTENER = "selection";
+  private static final String PROP_SELECTION_LISTENER = "Selection";
 
   static void preserveValues( MenuItem item ) {
     WidgetLCAUtil.preserveCustomVariant( item );
@@ -46,7 +45,7 @@ final class MenuItemLCAUtil {
     preserveProperty( item, PROP_MENU, item.getMenu() );
     preserveProperty( item, PROP_ENABLED, item.getEnabled() );
     preserveProperty( item, PROP_SELECTION, item.getSelection() );
-    preserveListener( item, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( item ) );
+    preserveListener( item, PROP_SELECTION_LISTENER, item.isListening( SWT.Selection ) );
     WidgetLCAUtil.preserveHelpListener( item );
   }
 
@@ -65,7 +64,7 @@ final class MenuItemLCAUtil {
     WidgetLCAUtil.renderMenu( item, item.getMenu() );
     renderProperty( item, PROP_ENABLED, item.getEnabled(), true );
     renderProperty( item, PROP_SELECTION, item.getSelection(), false );
-    renderListener( item, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( item ), false );
+    renderListener( item, PROP_SELECTION_LISTENER, item.isListening( SWT.Selection ), false );
     WidgetLCAUtil.renderListenHelp( item );
   }
 

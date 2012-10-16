@@ -32,11 +32,23 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Text;
 import org.json.JSONObject;
 
 
@@ -517,25 +529,55 @@ public class SpinnerLCA_Test extends TestCase {
     Fixture.markInitialized( spinner );
     Fixture.preserveWidgets();
 
-    spinner.addSelectionListener( new SelectionAdapter() { } );
+    spinner.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( spinner );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( spinner, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( spinner, "Selection" ) );
+    assertNull( message.findListenOperation( spinner, "DefaultSelection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    SelectionListener listener = new SelectionAdapter() { };
-    spinner.addSelectionListener( listener );
+    Listener listener = mock( Listener.class );
+    spinner.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
     Fixture.preserveWidgets();
 
-    spinner.removeSelectionListener( listener );
+    spinner.removeListener( SWT.Selection, listener );
     lca.renderChanges( spinner );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( spinner, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( spinner, "Selection" ) );
+    assertNull( message.findListenOperation( spinner, "DefaultSelection" ) );
+  }
+
+  public void testRenderAddDefaultSelectionListener() throws Exception {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( spinner );
+    Fixture.preserveWidgets();
+
+    spinner.addListener( SWT.DefaultSelection, mock( Listener.class ) );
+    lca.renderChanges( spinner );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( spinner, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( spinner, "Selection" ) );
+  }
+
+  public void testRenderRemoveDefaultSelectionListener() throws Exception {
+    Listener listener = mock( Listener.class );
+    spinner.addListener( SWT.DefaultSelection, listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( spinner );
+    Fixture.preserveWidgets();
+
+    spinner.removeListener( SWT.DefaultSelection, listener );
+    lca.renderChanges( spinner );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( spinner, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( spinner, "Selection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {

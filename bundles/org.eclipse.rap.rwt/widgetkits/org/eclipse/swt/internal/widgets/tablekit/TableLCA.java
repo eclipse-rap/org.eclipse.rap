@@ -22,18 +22,29 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.EventLCAUtil;
-import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.internal.widgets.CellToolTipUtil;
+import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
+import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
+import org.eclipse.swt.internal.widgets.ITableAdapter;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.ScrollBar;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Widget;
 
 
 public final class TableLCA extends AbstractWidgetLCA {
@@ -68,7 +79,8 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final String PROP_SORT_COLUMN = "sortColumn";
   private static final String PROP_SCROLLBARS_VISIBLE = "scrollBarsVisible";
   private static final String PROP_SCROLLBARS_SELECTION_LISTENER = "scrollBarsSelection";
-  private static final String PROP_SELECTION_LISTENER = "selection";
+  private static final String PROP_SELECTION_LISTENER = "Selection";
+  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
   private static final String PROP_ALWAYS_HIDE_SELECTION = "alwaysHideSelection";
   private static final String PROP_ENABLE_CELL_TOOLTIP = "enableCellToolTip";
   private static final String PROP_CELL_TOOLTIP_TEXT = "cellToolTipText";
@@ -102,7 +114,10 @@ public final class TableLCA extends AbstractWidgetLCA {
     preserveListener( table,
                       PROP_SCROLLBARS_SELECTION_LISTENER,
                       hasScrollBarsSelectionListener( table ) );
-    preserveListener( table, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( table ) );
+    preserveListener( table, PROP_SELECTION_LISTENER, table.isListening( SWT.Selection ) );
+    preserveListener( table,
+                      PROP_DEFAULT_SELECTION_LISTENER,
+                      table.isListening( SWT.DefaultSelection ) );
     preserveProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ) );
     preserveProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ) );
     preserveProperty( table, PROP_CELL_TOOLTIP_TEXT, null );
@@ -171,7 +186,11 @@ public final class TableLCA extends AbstractWidgetLCA {
                     PROP_SCROLLBARS_SELECTION_LISTENER,
                     hasScrollBarsSelectionListener( table ),
                     false );
-    renderListener( table, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( table ), false );
+    renderListener( table, PROP_SELECTION_LISTENER, table.isListening( SWT.Selection ), false );
+    renderListener( table,
+                    PROP_DEFAULT_SELECTION_LISTENER,
+                    table.isListening( SWT.DefaultSelection ),
+                    false );
     renderProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ), false );
     renderProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ), false );
     renderProperty( table, PROP_CELL_TOOLTIP_TEXT, getCellToolTipText( table ), null );

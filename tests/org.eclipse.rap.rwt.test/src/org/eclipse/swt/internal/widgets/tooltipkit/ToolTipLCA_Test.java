@@ -431,7 +431,8 @@ public class ToolTipLCA_Test extends TestCase {
     lca.renderChanges( toolTip );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( toolTip, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( toolTip, "Selection" ) );
+    assertNull( message.findListenOperation( toolTip, "DefaultSelection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
@@ -444,7 +445,8 @@ public class ToolTipLCA_Test extends TestCase {
     lca.renderChanges( toolTip );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( toolTip, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( toolTip, "Selection" ) );
+    assertNull( message.findListenOperation( toolTip, "DefaultSelection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {

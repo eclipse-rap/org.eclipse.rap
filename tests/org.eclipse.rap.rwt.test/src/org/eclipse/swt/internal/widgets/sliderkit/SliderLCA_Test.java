@@ -30,11 +30,18 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Slider;
 import org.mockito.ArgumentCaptor;
 
 public class SliderLCA_Test extends TestCase {
@@ -351,25 +358,25 @@ public class SliderLCA_Test extends TestCase {
     Fixture.markInitialized( slider );
     Fixture.preserveWidgets();
 
-    slider.addSelectionListener( new SelectionAdapter() { } );
+    slider.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( slider );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( slider, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( slider, "Selection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    SelectionListener listener = new SelectionAdapter() { };
-    slider.addSelectionListener( listener );
+    Listener listener = mock( Listener.class );
+    slider.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( slider );
     Fixture.preserveWidgets();
 
-    slider.removeSelectionListener( listener );
+    slider.removeListener( SWT.Selection, listener );
     lca.renderChanges( slider );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( slider, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( slider, "Selection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {

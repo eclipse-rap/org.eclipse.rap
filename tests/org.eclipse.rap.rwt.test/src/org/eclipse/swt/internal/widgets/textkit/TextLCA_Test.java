@@ -30,17 +30,16 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
@@ -611,30 +610,32 @@ public class TextLCA_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( text, "textLimit" ) );
   }
 
-  public void testRenderAddSelectionListener() throws Exception {
+  public void testRenderAddDefaultSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
 
-    text.addSelectionListener( new SelectionAdapter() { } );
+    text.addListener( SWT.DefaultSelection, mock( Listener.class ) );
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( text, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( text, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( text, "Selection" ) );
   }
 
-  public void testRenderRemoveSelectionListener() throws Exception {
-    SelectionListener listener = new SelectionAdapter() { };
-    text.addSelectionListener( listener );
+  public void testRenderRemoveDefaultSelectionListener() throws Exception {
+    Listener listener = mock( Listener.class );
+    text.addListener( SWT.DefaultSelection, listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
 
-    text.removeSelectionListener( listener );
+    text.removeListener( SWT.DefaultSelection, listener );
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( text, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( text, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( text, "Selection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
@@ -647,7 +648,7 @@ public class TextLCA_Test extends TestCase {
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( text, "selection" ) );
+    assertNull( message.findListenOperation( text, "Selection" ) );
   }
 
   public void testRenderAddModifyListener() throws Exception {

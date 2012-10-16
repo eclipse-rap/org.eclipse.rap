@@ -20,12 +20,15 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Text;
 
 
 final class TextLCAUtil {
@@ -63,7 +66,7 @@ final class TextLCAUtil {
   static final String PROP_MESSAGE = "message";
   static final String PROP_MODIFY_LISTENER = "modify";
   static final String PROP_VERIFY_LISTENER = "verify";
-  static final String PROP_SELECTION_LISTENER = "selection";
+  static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
 
   private static final Point ZERO_SELECTION = new Point( 0, 0 );
 
@@ -82,7 +85,9 @@ final class TextLCAUtil {
     preserveProperty( text, PROP_MESSAGE, text.getMessage() );
     preserveListener( text, PROP_MODIFY_LISTENER, text.isListening( SWT.Modify ) );
     preserveListener( text, PROP_VERIFY_LISTENER, text.isListening( SWT.Verify ) );
-    preserveListener( text, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( text ) );
+    preserveListener( text,
+                      PROP_DEFAULT_SELECTION_LISTENER,
+                      text.isListening( SWT.DefaultSelection ) );
   }
 
   static void renderInitialization( Text text ) {
@@ -103,7 +108,10 @@ final class TextLCAUtil {
     renderProperty( text, PROP_MESSAGE, text.getMessage(), "" );
     renderListener( text, PROP_MODIFY_LISTENER, text.isListening( SWT.Modify ), false );
     renderListener( text, PROP_VERIFY_LISTENER, text.isListening( SWT.Verify ), false );
-    renderListener( text, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( text ), false );
+    renderListener( text,
+                    PROP_DEFAULT_SELECTION_LISTENER,
+                    text.isListening( SWT.DefaultSelection ),
+                    false );
   }
 
   static void readTextAndSelection( final Text text ) {

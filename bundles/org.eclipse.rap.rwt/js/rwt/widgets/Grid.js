@@ -22,6 +22,7 @@ qx.Class.define( "rwt.widgets.Grid", {
     this._hasMultiSelection = false;
     // Internal State:
     this._hasSelectionListener = false;
+    this._hasDefaultSelectionListener = false;
     this._leadItem = null;
     this._topItemIndex = 0;
     this._topItem = null;
@@ -345,6 +346,10 @@ qx.Class.define( "rwt.widgets.Grid", {
 
     setHasSelectionListener : function( value ) {
       this._hasSelectionListener = value;
+    },
+
+    setHasDefaultSelectionListener : function( value ) {
+      this._hasDefaultSelectionListener = value;
     },
 
     setAlignment : function( column, value ) {
@@ -1014,23 +1019,19 @@ qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _sendSelectionEvent : function( item, defaultSelected, detail, index ) {
-      if( this._hasSelectionListener ) {
-        var req = rwt.remote.Server.getInstance();
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
-        var id = wm.findIdByWidget( this );
-        var eventName = "org.eclipse.swt.events.";
-        eventName += defaultSelected ? "DefaultSelection" : "Selection";
-        var itemId = this._getItemId( item );
-        req.addEvent( eventName, id );
-        req.addParameter( eventName + ".item", itemId );
-        if( detail != null ) {
-          req.addParameter( eventName + ".detail", detail );
+      if(    ( this._hasSelectionListener && !defaultSelected )
+          || ( this._hasDefaultSelectionListener && defaultSelected ) )
+      {
+        var properties = {
+          "item" : this._getItemId( item ),
+          "detail" : detail,
+          "index" : !isNaN( index ) ? index : undefined
+        };
+        if( defaultSelected ) {
+          org.eclipse.swt.EventUtil.notifyDefaultSelected( this, properties );
+        } else {
+          org.eclipse.swt.EventUtil.notifySelected( this, properties );
         }
-        if( !isNaN( index ) ) {
-          req.addParameter( eventName + ".index", index );
-        }
-        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-        req.send();
       }
     },
 

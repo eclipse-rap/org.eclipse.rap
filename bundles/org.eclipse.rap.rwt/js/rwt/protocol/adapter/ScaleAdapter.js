@@ -33,7 +33,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Scale", {
   propertyHandler : rwt.protocol.AdapterUtil.extendControlPropertyHandler( {} ),
 
   listeners : rwt.protocol.AdapterUtil.extendControlListeners( [
-    "selection"
+    "Selection"
   ] ),
 
   listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),

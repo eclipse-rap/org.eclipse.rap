@@ -403,7 +403,7 @@ public class TableLCA_Test extends TestCase {
     Table table = new Table( shell, SWT.VIRTUAL );
     Listener setDataListener = mock( Listener.class );
     table.addListener( SWT.SetData, setDataListener );
-    
+
     Fixture.fakePhase( PhaseId.READ_DATA );
     table.setItemCount( 1 );
     ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
@@ -1461,26 +1461,58 @@ public class TableLCA_Test extends TestCase {
     Fixture.markInitialized( table );
     Fixture.preserveWidgets();
 
-    table.addSelectionListener( new SelectionAdapter() { } );
+    table.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( table, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( table, "Selection" ) );
+    assertNull( message.findListenOperation( table, "DefaultSelection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
     Table table = new Table( shell, SWT.NONE );
-    SelectionListener listener = new SelectionAdapter() { };
-    table.addSelectionListener( listener );
+    Listener listener = mock( Listener.class );
+    table.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
     Fixture.preserveWidgets();
 
-    table.removeSelectionListener( listener );
+    table.removeListener( SWT.Selection, listener );
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( table, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( table, "Selection" ) );
+    assertNull( message.findListenOperation( table, "DefaultSelection" ) );
+  }
+
+  public void testRenderAddDefaultSelectionListener() throws Exception {
+    Table table = new Table( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( table );
+    Fixture.preserveWidgets();
+
+    table.addListener( SWT.DefaultSelection, mock( Listener.class ) );
+    lca.renderChanges( table );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( table, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( table, "Selection" ) );
+  }
+
+  public void testRenderRemoveDefaultSelectionListener() throws Exception {
+    Table table = new Table( shell, SWT.NONE );
+    Listener listener = mock( Listener.class );
+    table.addListener( SWT.DefaultSelection, listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( table );
+    Fixture.preserveWidgets();
+
+    table.removeListener( SWT.DefaultSelection, listener );
+    lca.renderChanges( table );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( table, "DefaultSelection" ) );
+    assertNull( message.findListenOperation( table, "Selection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
@@ -1494,7 +1526,7 @@ public class TableLCA_Test extends TestCase {
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( table, "selection" ) );
+    assertNull( message.findListenOperation( table, "Selection" ) );
   }
 
   public void testRenderInitialAlwaysHideSelection() throws IOException {

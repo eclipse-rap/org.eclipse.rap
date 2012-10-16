@@ -21,9 +21,13 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Slider;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class SliderLCA extends AbstractWidgetLCA {
@@ -40,7 +44,7 @@ public class SliderLCA extends AbstractWidgetLCA {
   static final String PROP_INCREMENT = "increment";
   static final String PROP_PAGE_INCREMENT = "pageIncrement";
   static final String PROP_THUMB = "thumb";
-  static final String PROP_SELECTION_LISTENER = "selection";
+  static final String PROP_SELECTION_LISTENER = "Selection";
 
   // Default values
   private static final int DEFAULT_MINIMUM = 0;
@@ -60,7 +64,7 @@ public class SliderLCA extends AbstractWidgetLCA {
     preserveProperty( slider, PROP_INCREMENT, slider.getIncrement() );
     preserveProperty( slider, PROP_PAGE_INCREMENT, slider.getPageIncrement() );
     preserveProperty( slider, PROP_THUMB, slider.getThumb() );
-    preserveListener( slider, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( slider ) );
+    preserveListener( slider, PROP_SELECTION_LISTENER, slider.isListening( SWT.Selection ) );
   }
 
   public void readData( Widget widget ) {
@@ -93,7 +97,7 @@ public class SliderLCA extends AbstractWidgetLCA {
     renderProperty( slider, PROP_INCREMENT, slider.getIncrement(), DEFAULT_INCREMENT );
     renderProperty( slider, PROP_PAGE_INCREMENT, slider.getPageIncrement(), DEFAULT_PINCREMENT );
     renderProperty( slider, PROP_THUMB, slider.getThumb(), DEFAULT_THUMB );
-    renderListener( slider, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( slider ), false );
+    renderListener( slider, PROP_SELECTION_LISTENER, slider.isListening( SWT.Selection ), false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
