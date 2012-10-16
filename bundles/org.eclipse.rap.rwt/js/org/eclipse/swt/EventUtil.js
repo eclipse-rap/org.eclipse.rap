@@ -162,8 +162,8 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       {
         // disabled capturing as it interferes with Combo capturing
         // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
-        //// from now on, redirect mouse event to this widget
-        //this.setCapture( true );
+        // from now on, redirect mouse event to this widget
+        // this.setCapture( true );
         org.eclipse.swt.EventUtil._capturingWidget = this;
         // Collect request parameters and send
         org.eclipse.swt.EventUtil._notifyMouseListeners( this, evt, "MouseDown" );
@@ -176,8 +176,8 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       {
         // disabled capturing as it interferes with Combo capturing
         // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
-        //// release mouse event capturing
-        //this.setCapture( false );
+        // release mouse event capturing
+        // this.setCapture( false );
         org.eclipse.swt.EventUtil._capturingWidget = null;
         // Add mouse-up request parameter
         org.eclipse.swt.EventUtil._notifyMouseListeners( this, evt, "MouseUp" );
@@ -190,8 +190,8 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       {
         // disabled capturing as it interferes with Combo capturing
         // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
-        //// from now on, redirect mouse event to this widget
-        //this.setCapture( true );
+        // from now on, redirect mouse event to this widget
+        // this.setCapture( true );
         org.eclipse.swt.EventUtil._capturingWidget = this;
         // Add parameters for double-click event
         if( org.eclipse.swt.EventUtil._isDoubleClick( this, evt ) ) {
@@ -216,6 +216,11 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       if(    !org.eclipse.swt.EventUtil.getSuspended()
           && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) )
       {
+        // disabled capturing as it interferes with Combo capturing
+        // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
+        // release mouse event capturing
+        // this.setCapture( false );
+        org.eclipse.swt.EventUtil._capturingWidget = null;
         // increase number of mouse-up events since last stored mouse down
         org.eclipse.swt.EventUtil._lastMouseDown.mouseUpCount += 1;
       }
