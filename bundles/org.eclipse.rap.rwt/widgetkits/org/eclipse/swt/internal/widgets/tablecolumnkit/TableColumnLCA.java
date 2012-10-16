@@ -25,12 +25,18 @@ import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Widget;
 
 
 public final class TableColumnLCA extends AbstractWidgetLCA {
@@ -44,7 +50,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
   static final String PROP_MOVEABLE = "moveable";
   static final String PROP_ALIGNMENT = "alignment";
   static final String PROP_FIXED = "fixed";
-  static final String PROP_SELECTION_LISTENER = "selection";
+  static final String PROP_SELECTION_LISTENER = "Selection";
 
   private static final int ZERO = 0;
   private static final String DEFAULT_ALIGNMENT = "left";
@@ -61,7 +67,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     preserveProperty( column, PROP_MOVEABLE, column.getMoveable() );
     preserveProperty( column, PROP_ALIGNMENT, getAlignment( column ) );
     preserveProperty( column, PROP_FIXED, isFixed( column ) );
-    preserveListener( column, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( column ) );
+    preserveListener( column, PROP_SELECTION_LISTENER, column.isListening( SWT.Selection ) );
   }
 
   public void readData( Widget widget ) {
@@ -112,7 +118,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     renderProperty( column, PROP_MOVEABLE, column.getMoveable(), false );
     renderProperty( column, PROP_ALIGNMENT, getAlignment( column ), DEFAULT_ALIGNMENT );
     renderProperty( column, PROP_FIXED, isFixed( column ), false );
-    renderListener( column, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( column ), false );
+    renderListener( column, PROP_SELECTION_LISTENER, column.isListening( SWT.Selection ), false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {

@@ -42,6 +42,7 @@ import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -773,26 +774,26 @@ public class TableColumnLCA_Test extends TestCase {
     Fixture.markInitialized( column );
     Fixture.preserveWidgets();
 
-    column.addSelectionListener( new SelectionAdapter() { } );
+    column.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( column, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( column, "Selection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
     TableColumn column = new TableColumn( table, SWT.NONE );
-    SelectionListener listener = new SelectionAdapter() { };
-    column.addSelectionListener( listener );
+    Listener listener = mock( Listener.class );
+    column.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
     Fixture.preserveWidgets();
 
-    column.removeSelectionListener( listener );
+    column.removeListener( SWT.Selection, listener );
     lca.renderChanges( column );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( column, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( column, "Selection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
