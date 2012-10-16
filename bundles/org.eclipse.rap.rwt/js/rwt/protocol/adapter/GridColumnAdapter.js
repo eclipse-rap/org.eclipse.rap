@@ -55,7 +55,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridColumn", {
   },
 
   listeners : [
-    "selection"
+    "Selection"
   ],
 
   listenerHandler : {},
