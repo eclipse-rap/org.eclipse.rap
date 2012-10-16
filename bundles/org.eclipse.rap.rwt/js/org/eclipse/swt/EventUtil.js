@@ -139,15 +139,15 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
 
     focusGained : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        // [if] The focusControl parameter is added in the request in Shell.js
-        rwt.remote.Server.getInstance().send();
+        var serverObject = rwt.remote.Server.getInstance().getServerObject( evt.getTarget() );
+        serverObject.notify( "FocusIn" );
       }
     },
 
     focusLost : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        // [if] The focusControl parameter is added in the request in Shell.js
-        rwt.remote.Server.getInstance().send();
+        var serverObject = rwt.remote.Server.getInstance().getServerObject( evt.getTarget() );
+        serverObject.notify( "FocusOut" );
       }
     },
 

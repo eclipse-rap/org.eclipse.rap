@@ -522,6 +522,44 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       this._disposeShell();
     },
 
+    testNotifyFocusIn : function() {
+      org.eclipse.swt.EventUtil.setSuspended( true );
+      var shell = this._protocolCreateShell();
+      this._protocolListen( { "FocusIn" : true } );
+      shell.open();
+      var otherShell = this._protocolCreateShell( "w4" );
+      otherShell.open();
+      TestUtil.flush();
+      otherShell.setFocused( true );
+      org.eclipse.swt.EventUtil.setSuspended( false );
+
+      shell.setFocused( true );
+
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w3", "FocusIn" ) );
+      this._disposeShell();
+      this._disposeShell( "w4" );
+    },
+
+    testNotifyFocusOut : function() {
+      org.eclipse.swt.EventUtil.setSuspended( true );
+      var shell = this._protocolCreateShell();
+      this._protocolListen( { "FocusOut" : true } );
+      shell.open();
+      var otherShell = this._protocolCreateShell( "w4" );
+      otherShell.open();
+      TestUtil.flush();
+      shell.setFocused( true );
+      org.eclipse.swt.EventUtil.setSuspended( false );
+
+      otherShell.setFocused( true );
+
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w3", "FocusOut" ) );
+      this._disposeShell();
+      this._disposeShell( "w4" );
+    },
+
     testMouseDownListener : function() {
       var shell = this._protocolCreateShell();
       shell.__listeners = {}; // HACK : Remove all listeners for testing
