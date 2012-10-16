@@ -28,7 +28,6 @@ import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Widget;
 
@@ -50,7 +49,8 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   static final String PROP_TEXT_LIMIT = "textLimit";
   static final String PROP_DECIMAL_SEPARATOR = "decimalSeparator";
   static final String PROP_MODIFY_LISTENER = "modify";
-  static final String PROP_SELECTION_LISTENER = "selection";
+  static final String PROP_SELECTION_LISTENER = "Selection";
+  static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
 
   // Default values
   private static final int DEFAULT_MINIMUM = 0;
@@ -74,7 +74,10 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     preserveProperty( spinner, PROP_TEXT_LIMIT, getTextLimit( spinner ) );
     preserveProperty( spinner, PROP_DECIMAL_SEPARATOR, getDecimalSeparator() );
     preserveListener( spinner, PROP_MODIFY_LISTENER, spinner.isListening( SWT.Modify ) );
-    preserveListener( spinner, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( spinner ) );
+    preserveListener( spinner, PROP_SELECTION_LISTENER, spinner.isListening( SWT.Selection ) );
+    preserveListener( spinner,
+                      PROP_DEFAULT_SELECTION_LISTENER,
+                      spinner.isListening( SWT.DefaultSelection ) );
   }
 
   /* (intentionally non-JavaDoc'ed)
@@ -165,8 +168,11 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListenSelection( Spinner spinner ) {
-    String prop = PROP_SELECTION_LISTENER;
-    renderListener( spinner, prop, SelectionEvent.hasListener( spinner ), false );
+    renderListener( spinner, PROP_SELECTION_LISTENER, spinner.isListening( SWT.Selection ), false );
+    renderListener( spinner,
+                    PROP_DEFAULT_SELECTION_LISTENER,
+                    spinner.isListening( SWT.DefaultSelection ),
+                    false );
   }
 
   //////////////////

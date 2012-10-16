@@ -11,11 +11,11 @@
 
 qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
   extend : qx.core.Object,
-  
+
   construct : function() {
     org.eclipse.rwt.test.fixture.TestUtil.prepareTimerUse();
   },
-  
+
   members : {
 
     testCreateSpinnerByProtocol : function() {
@@ -275,7 +275,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
       var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
@@ -319,7 +319,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
       assertTrue( spinner.isSeeable() );
       spinner.destroy();
     },
-    
+
     testGetManager : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var spinner = new rwt.widgets.Spinner();
@@ -330,7 +330,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
       assertTrue( spinner.getManager() instanceof rwt.util.Range );
       spinner.destroy();
     },
-    
+
     testSetSeparator: function() {
       var w = new rwt.widgets.Spinner();
       w.addToDocument();
@@ -344,7 +344,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
       w.setDecimalSeparator( "," );
       w.destroy();
     },
-  
+
     testDispose : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var spinner = new rwt.widgets.Spinner();
@@ -355,7 +355,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
       TestUtil.flush();
       assertTrue( spinner.isDisposed() );
     }
-  
+
   }
 
 } );

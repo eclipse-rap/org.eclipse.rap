@@ -70,7 +70,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Spinner", {
 
   listeners : rwt.protocol.AdapterUtil.extendControlListeners( [
     "modify",
-    "selection"
+    "Selection",
+    "DefaultSelection"
   ] ),
 
   listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),

@@ -18,6 +18,7 @@ qx.Class.define( "rwt.widgets.Spinner", {
     this._isModified = false;
     this._hasModifyListener = false;
     this._hasSelectionListener = false;
+    this._hasDefaultSelectionListener = false;
     this.setWrap( false );
     // Hack to prevent the spinner text field to request the focus
     this._textfield.setFocused = function() {};
@@ -98,6 +99,10 @@ qx.Class.define( "rwt.widgets.Spinner", {
       this._hasSelectionListener = value;
     },
 
+    setHasDefaultSelectionListener : function( value ) {
+      this._hasDefaultSelectionListener = value;
+    },
+
     _visualizeFocus : function() {
       this._textfield._visualizeFocus();
       if( this._textfield.isCreated() ) {
@@ -149,7 +154,7 @@ qx.Class.define( "rwt.widgets.Spinner", {
             && !event.isAltPressed()
             && !event.isCtrlPressed()
             && !event.isMetaPressed()
-            && this._hasSelectionListener )
+            && this._hasDefaultSelectionListener )
         {
           event.stopPropagation();
           this._sendWidgetDefaultSelected();
