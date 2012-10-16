@@ -803,23 +803,23 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderListenFocus( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "focus" ) );
+    assertNull( message.findListenOperation( control, "FocusIn" ) );
+    assertNull( message.findListenOperation( control, "FocusIn" ) );
   }
 
   public void testRenderListenFocus() {
-    FocusAdapter listener = new FocusAdapter() {
-    };
+    FocusAdapter listener = new FocusAdapter() {};
 
     control.addFocusListener( listener );
     ControlLCAUtil.renderListenFocus( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "focus" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, "FocusIn" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, "FocusOut" ) );
   }
 
   public void testRenderListenFocusUnchanged() {
-    FocusAdapter listener = new FocusAdapter() {
-    };
+    FocusAdapter listener = new FocusAdapter() {};
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.addFocusListener( listener );
@@ -828,12 +828,12 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderListenFocus( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "focus" ) );
+    assertNull( message.findListenOperation( control, "FocusIn" ) );
+    assertNull( message.findListenOperation( control, "FocusIn" ) );
   }
 
   public void testRenderListenFocusRemoved() {
-    FocusAdapter listener = new FocusAdapter() {
-    };
+    FocusAdapter listener = new FocusAdapter() {};
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.addFocusListener( listener );
@@ -843,7 +843,8 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderListenFocus( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "focus" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, "FocusIn" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, "FocusOut" ) );
   }
 
   public void testRenderInitialListenMouse() {

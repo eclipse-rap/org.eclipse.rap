@@ -20,7 +20,6 @@ import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.KeyAdapter;
@@ -45,23 +44,26 @@ public class ControlLCATestUtil {
   public static void testFocusListener( Control control ) throws IOException {
     Fixture.markInitialized( control.getDisplay() );
     Fixture.markInitialized( control );
-    testRenderAddFocusListener( control );
-    testRenderRemoveFocusListener( control );
-    testRenderFocusListenerUnchanged( control );
+    testRenderAddListener( control, SWT.FocusIn );
+    testRenderRemoveListener( control, SWT.FocusIn );
+    testRenderListenerUnchanged( control, SWT.FocusIn );
+    testRenderAddListener( control, SWT.FocusOut );
+    testRenderRemoveListener( control, SWT.FocusOut );
+    testRenderListenerUnchanged( control, SWT.FocusOut );
   }
 
   public static void testMouseListener( Control control ) throws IOException {
     Fixture.markInitialized( control.getDisplay() );
     Fixture.markInitialized( control );
-    testRenderAddMouseListener( control, SWT.MouseDown );
-    testRenderRemoveMouseListener( control, SWT.MouseDown );
-    testRenderMouseListenerUnchanged( control, SWT.MouseDown );
-    testRenderAddMouseListener( control, SWT.MouseDoubleClick );
-    testRenderRemoveMouseListener( control, SWT.MouseDoubleClick );
-    testRenderMouseListenerUnchanged( control, SWT.MouseDoubleClick );
-    testRenderAddMouseListener( control, SWT.MouseUp );
-    testRenderRemoveMouseListener( control, SWT.MouseUp );
-    testRenderMouseListenerUnchanged( control, SWT.MouseUp );
+    testRenderAddListener( control, SWT.MouseDown );
+    testRenderRemoveListener( control, SWT.MouseDown );
+    testRenderListenerUnchanged( control, SWT.MouseDown );
+    testRenderAddListener( control, SWT.MouseDoubleClick );
+    testRenderRemoveListener( control, SWT.MouseDoubleClick );
+    testRenderListenerUnchanged( control, SWT.MouseDoubleClick );
+    testRenderAddListener( control, SWT.MouseUp );
+    testRenderRemoveListener( control, SWT.MouseUp );
+    testRenderListenerUnchanged( control, SWT.MouseUp );
   }
 
   public static void testKeyListener( Control control ) throws IOException {
@@ -138,49 +140,7 @@ public class ControlLCATestUtil {
     control.removeListener( SWT.Activate, listener );
   }
 
-  private static void testRenderAddFocusListener( Control control ) throws IOException {
-    FocusAdapter listener = new FocusAdapter() {};
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.addFocusListener( listener );
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "focus" ) );
-
-    control.removeFocusListener( listener );
-  }
-
-  private static void testRenderRemoveFocusListener( Control control ) throws IOException {
-    FocusAdapter listener = new FocusAdapter() {};
-    control.addFocusListener( listener );
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.removeFocusListener( listener );
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "focus" ) );
-  }
-
-  private static void testRenderFocusListenerUnchanged( Control control ) throws IOException {
-    FocusAdapter listener = new FocusAdapter() {};
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.addFocusListener( listener );
-    Fixture.preserveWidgets();
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "focus" ) );
-
-    control.removeFocusListener( listener );
-  }
-
-  private static void testRenderAddMouseListener( Control control, int eventType )
+  private static void testRenderAddListener( Control control, int eventType )
     throws IOException
   {
     Listener listener = mock( Listener.class );
@@ -197,7 +157,7 @@ public class ControlLCATestUtil {
     control.removeListener( eventType, listener );
   }
 
-  private static void testRenderRemoveMouseListener( Control control, int eventType )
+  private static void testRenderRemoveListener( Control control, int eventType )
     throws IOException
   {
     Listener listener = mock( Listener.class );
@@ -213,7 +173,7 @@ public class ControlLCATestUtil {
     assertEquals( Boolean.FALSE, message.findListenProperty( control, listenerName ) );
   }
 
-  private static void testRenderMouseListenerUnchanged( Control control, int eventType )
+  private static void testRenderListenerUnchanged( Control control, int eventType )
     throws IOException
   {
     Listener listener = mock( Listener.class );
@@ -437,6 +397,12 @@ public class ControlLCATestUtil {
       break;
       case SWT.MouseUp:
         result = "MouseUp";
+      break;
+      case SWT.FocusIn:
+        result = "FocusIn";
+      break;
+      case SWT.FocusOut:
+        result = "FocusOut";
       break;
     }
     return result;

@@ -502,12 +502,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       this._disposeShell();
     },
 
-    testFocusListener : function() {
+    testFocusInListener : function() {
       var shell = this._protocolCreateShell();
       assertFalse( shell.hasEventListeners( "focusin" ) );
       assertFalse( shell.hasEventListeners( "focusout" ) );
-      this._protocolListen( { "focus" : true } );
+      this._protocolListen( { "FocusIn" : true } );
       assertTrue( shell.hasEventListeners( "focusin" ) );
+      assertFalse( shell.hasEventListeners( "focusout" ) );
+      this._disposeShell();
+    },
+
+    testFocusOutListener : function() {
+      var shell = this._protocolCreateShell();
+      assertFalse( shell.hasEventListeners( "focusin" ) );
+      assertFalse( shell.hasEventListeners( "focusout" ) );
+      this._protocolListen( { "FocusOut" : true } );
+      assertFalse( shell.hasEventListeners( "focusin" ) );
       assertTrue( shell.hasEventListeners( "focusout" ) );
       this._disposeShell();
     },

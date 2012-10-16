@@ -165,7 +165,8 @@ rwt.protocol.AdapterUtil = {
   },
 
   _controlListeners : [
-    "focus",
+    "FocusIn",
+    "FocusOut",
     "MouseDown",
     "MouseUp",
     "MouseDoubleClick",
@@ -183,15 +184,21 @@ rwt.protocol.AdapterUtil = {
     "traverse" : function( widget, value ) {
       widget.setUserData( "traverseListener", value ? true : null );
     },
-    "focus" : function( widget, value ) {
+    "FocusIn" : function( widget, value ) {
       var context = org.eclipse.swt.EventUtil;
       var focusGained = org.eclipse.swt.EventUtil.focusGained;
-      var focusLost = org.eclipse.swt.EventUtil.focusLost;
       if( value ) {
         widget.addEventListener( "focusin", focusGained, context );
-        widget.addEventListener( "focusout", focusLost, context );
       } else {
         widget.removeEventListener( "focusin", focusGained, context );
+      }
+    },
+    "FocusOut" : function( widget, value ) {
+      var context = org.eclipse.swt.EventUtil;
+      var focusLost = org.eclipse.swt.EventUtil.focusLost;
+      if( value ) {
+        widget.addEventListener( "focusout", focusLost, context );
+      } else {
         widget.removeEventListener( "focusout", focusLost, context );
       }
     },
