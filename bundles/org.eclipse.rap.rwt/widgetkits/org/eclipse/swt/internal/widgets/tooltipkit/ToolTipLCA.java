@@ -20,8 +20,11 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IToolTipAdapter;
 import org.eclipse.swt.widgets.ToolTip;
@@ -40,7 +43,7 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
   private static final String PROP_MESSAGE = "message";
   private static final String PROP_LOCATION = "location";
   private static final String PROP_VISIBLE = "visible";
-  private static final String PROP_SELECTION_LISTENER = "selection";
+  private static final String PROP_SELECTION_LISTENER = "Selection";
 
   private static final Point DEFAULT_LOCATION = new Point( 0, 0 );
 
@@ -54,7 +57,7 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
     preserveProperty( toolTip, PROP_MESSAGE, toolTip.getMessage() );
     preserveProperty( toolTip, PROP_LOCATION, getLocation( toolTip ) );
     preserveProperty( toolTip, PROP_VISIBLE, toolTip.isVisible() );
-    preserveListener( toolTip, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( toolTip ) );
+    preserveListener( toolTip, PROP_SELECTION_LISTENER, toolTip.isListening( SWT.Selection ) );
   }
 
   public void readData( Widget widget ) {
@@ -82,10 +85,7 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
     renderProperty( toolTip, PROP_MESSAGE, toolTip.getMessage(), "" );
     renderProperty( toolTip, PROP_LOCATION, getLocation( toolTip ), DEFAULT_LOCATION );
     renderProperty( toolTip, PROP_VISIBLE, toolTip.isVisible(), false );
-    renderListener( toolTip,
-                    PROP_SELECTION_LISTENER,
-                    SelectionEvent.hasListener( toolTip ),
-                    false );
+    renderListener( toolTip, PROP_SELECTION_LISTENER, toolTip.isListening( SWT.Selection ), false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {

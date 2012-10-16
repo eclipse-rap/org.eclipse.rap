@@ -159,7 +159,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
-      TestUtil.protocolListen( "w3", { "selection" : true } );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
       widget.destroy();
@@ -182,5 +182,5 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     }
 
   }
-  
+
 } );
