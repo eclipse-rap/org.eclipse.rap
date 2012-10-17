@@ -702,9 +702,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
     testMenuDetectListener : function() {
       var shell = this._protocolCreateShell();
       shell.__listeners = {}; // HACK : Remove all listeners for testing
-      this._protocolListen( { "menuDetect" : true } );
+      this._protocolListen( { "MenuDetect" : true } );
       assertTrue( shell.hasEventListeners( "keydown" ) );
       assertTrue( shell.hasEventListeners( "mouseup" ) );
+      this._disposeShell();
+    },
+
+    testNotifyMenuDetect : function() {
+      org.eclipse.swt.EventUtil.setSuspended( true );
+      var shell = this._protocolCreateShell();
+      this._protocolListen( { "MenuDetect" : true } );
+      this._protocolSet( { "visibility" : true } );
+      TestUtil.flush();
+      org.eclipse.swt.EventUtil.setSuspended( false );
+
+      TestUtil.press( shell, "Apps", false, 0 );
+
+      var message = TestUtil.getMessageObject( 1 );
+      assertNotNull( message.findNotifyOperation( "w3", "MenuDetect" ) );
       this._disposeShell();
     },
 

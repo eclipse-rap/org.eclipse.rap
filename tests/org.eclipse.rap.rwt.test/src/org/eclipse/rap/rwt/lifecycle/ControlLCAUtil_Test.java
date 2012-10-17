@@ -1018,7 +1018,7 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderListenMenuDetect( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "menuDetect" ) );
+    assertNull( message.findListenOperation( control, "MenuDetect" ) );
   }
 
   public void testRenderListenMenuDetect() {
@@ -1030,7 +1030,7 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderListenMenuDetect( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "menuDetect" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, "MenuDetect" ) );
   }
 
   public void testRenderListenMenuDetectUnchanged() {
@@ -1046,7 +1046,7 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderListenMenuDetect( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "menuDetect" ) );
+    assertNull( message.findListenOperation( control, "MenuDetect" ) );
   }
 
   public void testRenderListenMenuDetectRemoved() {
@@ -1063,7 +1063,7 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderListenMenuDetect( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "menuDetect" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, "MenuDetect" ) );
   }
 
 

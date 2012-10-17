@@ -21,8 +21,6 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.MenuDetectEvent;
-import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.widgets.Control;
@@ -86,9 +84,9 @@ public class ControlLCATestUtil {
   public static void testMenuDetectListener( Control control ) throws IOException {
     Fixture.markInitialized( control.getDisplay() );
     Fixture.markInitialized( control );
-    testRenderAddMenuDetectListener( control );
-    testRenderRemoveMenuDetectListener( control );
-    testRenderMenuDetectListenerUnchanged( control );
+    testRenderAddListener( control, SWT.MenuDetect );
+    testRenderRemoveListener( control, SWT.MenuDetect );
+    testRenderListenerUnchanged( control, SWT.MenuDetect );
   }
 
   public static void testHelpListener( Control control ) throws IOException {
@@ -243,57 +241,6 @@ public class ControlLCATestUtil {
     control.removeTraverseListener( listener );
   }
 
-  private static void testRenderAddMenuDetectListener( Control control ) throws IOException {
-    MenuDetectListener listener = new MenuDetectListener() {
-      public void menuDetected( MenuDetectEvent e ) {
-      }
-    };
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.addMenuDetectListener( listener );
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "menuDetect" ) );
-
-    control.removeMenuDetectListener( listener );
-  }
-
-  private static void testRenderRemoveMenuDetectListener( Control control ) throws IOException {
-    MenuDetectListener listener = new MenuDetectListener() {
-      public void menuDetected( MenuDetectEvent e ) {
-      }
-    };
-    control.addMenuDetectListener( listener );
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.removeMenuDetectListener( listener );
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "menuDetect" ) );
-  }
-
-  private static void testRenderMenuDetectListenerUnchanged( Control control ) throws IOException {
-    MenuDetectListener listener = new MenuDetectListener() {
-      public void menuDetected( MenuDetectEvent e ) {
-      }
-    };
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.addMenuDetectListener( listener );
-    Fixture.preserveWidgets();
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "menuDetect" ) );
-
-    control.removeMenuDetectListener( listener );
-  }
-
   private static String getListenerName( int eventType ) {
     String result = "None";
     switch( eventType ) {
@@ -320,6 +267,9 @@ public class ControlLCATestUtil {
         break;
       case SWT.Help:
         result = "Help";
+        break;
+      case SWT.MenuDetect:
+        result = "MenuDetect";
         break;
     }
     return result;

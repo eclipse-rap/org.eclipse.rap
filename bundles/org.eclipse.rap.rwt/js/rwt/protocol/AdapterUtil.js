@@ -167,7 +167,7 @@ rwt.protocol.AdapterUtil = {
     "MouseDoubleClick",
     "key",
     "traverse",
-    "menuDetect",
+    "MenuDetect",
     "Help",
     "Activate",
     "Deactivate"
@@ -228,7 +228,7 @@ rwt.protocol.AdapterUtil = {
         widget.removeEventListener( "mouseup", mouseUpCounter, context );
       }
     },
-    "menuDetect" : function( widget, value ) {
+    "MenuDetect" : function( widget, value ) {
       var context;
       var detectByKey = org.eclipse.swt.EventUtil.menuDetectedByKey;
       var detectByMouse = org.eclipse.swt.EventUtil.menuDetectedByMouse;
