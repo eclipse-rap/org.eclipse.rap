@@ -35,7 +35,7 @@ public final class ClientMessageConst {
   public static final String EVENT_MOUSE_UP = "MouseUp";
   public static final String EVENT_MOUSE_DOUBLE_CLICK = "MouseDoubleClick";
   public static final String EVENT_KEY_DOWN = "keyDown";
-  public static final String EVENT_HELP = "help";
+  public static final String EVENT_HELP = "Help";
   public static final String EVENT_MENU_DETECT = "menuDetect";
 
   // CTabFolder specific events

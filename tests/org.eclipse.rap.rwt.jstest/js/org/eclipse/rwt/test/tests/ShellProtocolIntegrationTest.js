@@ -711,8 +711,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
     testHelpListener : function() {
       var shell = this._protocolCreateShell();
       shell.__listeners = {}; // HACK : Remove all listeners for testing
-      this._protocolListen( { "help" : true } );
+      this._protocolListen( { "Help" : true } );
       assertTrue( shell.hasEventListeners( "keydown" ) );
+      this._disposeShell();
+    },
+
+    testNotifyHelp : function() {
+      org.eclipse.swt.EventUtil.setSuspended( true );
+      var shell = this._protocolCreateShell();
+      this._protocolListen( { "Help" : true } );
+      this._protocolSet( { "visibility" : true } );
+      TestUtil.flush();
+      org.eclipse.swt.EventUtil.setSuspended( false );
+
+      TestUtil.press( shell, "F1", false, 0 );
+
+      var message = TestUtil.getMessageObject( 1 );
+      assertNotNull( message.findNotifyOperation( "w3", "Help" ) );
       this._disposeShell();
     },
 

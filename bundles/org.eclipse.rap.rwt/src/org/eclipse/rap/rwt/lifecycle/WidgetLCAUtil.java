@@ -61,7 +61,7 @@ public final class WidgetLCAUtil {
   private static final String PROP_ROUNDED_BORDER_RADIUS = "roundedBorderRadius";
   private static final String PROP_ENABLED = "enabled";
   private static final String PROP_VARIANT = "variant";
-  private static final String PROP_HELP_LISTENER = "help";
+  private static final String PROP_HELP_LISTENER = "Help";
 
   static final String LISTENER_PREFIX = "listener_";
 

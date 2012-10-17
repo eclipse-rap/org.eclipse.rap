@@ -606,7 +606,7 @@ public class MenuItemLCA_Test extends TestCase {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( item, "help" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( item, "Help" ) );
   }
 
   public void testRenderRemoveHelpListener() throws Exception {
@@ -624,7 +624,7 @@ public class MenuItemLCA_Test extends TestCase {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( item, "help" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( item, "Help" ) );
   }
 
   public void testRenderHelpListenerUnchanged() throws Exception {

@@ -323,9 +323,8 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
           id = widgetManager.findIdByWidget( widget );
         }
         if( id != null ) {
-          var req = rwt.remote.Server.getInstance();
-          req.addEvent( "org.eclipse.swt.events.help", id );
-          req.send();
+          var serverObject = rwt.remote.Server.getInstance().getServerObject( widget );
+          serverObject.notify( "Help" );
         }
       }
     },

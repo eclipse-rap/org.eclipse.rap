@@ -20,8 +20,6 @@ import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.HelpEvent;
-import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
@@ -96,9 +94,9 @@ public class ControlLCATestUtil {
   public static void testHelpListener( Control control ) throws IOException {
     Fixture.markInitialized( control.getDisplay() );
     Fixture.markInitialized( control );
-    testRenderAddHelpListener( control );
-    testRenderRemoveHelpListener( control );
-    testRenderHelpListenerUnchanged( control );
+    testRenderAddListener( control, SWT.Help );
+    testRenderRemoveListener( control, SWT.Help );
+    testRenderListenerUnchanged( control, SWT.Help );
   }
 
   private static void testRenderAddListener( Control control, int eventType )
@@ -296,57 +294,6 @@ public class ControlLCATestUtil {
     control.removeMenuDetectListener( listener );
   }
 
-  private static void testRenderAddHelpListener( Control control ) throws IOException {
-    HelpListener listener = new HelpListener() {
-      public void helpRequested( HelpEvent e ) {
-      }
-    };
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.addHelpListener( listener );
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "help" ) );
-
-    control.removeHelpListener( listener );
-  }
-
-  private static void testRenderRemoveHelpListener( Control control ) throws IOException {
-    HelpListener listener = new HelpListener() {
-      public void helpRequested( HelpEvent e ) {
-      }
-    };
-    control.addHelpListener( listener );
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.removeHelpListener( listener );
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "help" ) );
-  }
-
-  private static void testRenderHelpListenerUnchanged( Control control ) throws IOException {
-    HelpListener listener = new HelpListener() {
-      public void helpRequested( HelpEvent e ) {
-      }
-    };
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.addHelpListener( listener );
-    Fixture.preserveWidgets();
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "help" ) );
-
-    control.removeHelpListener( listener );
-  }
-
   private static String getListenerName( int eventType ) {
     String result = "None";
     switch( eventType ) {
@@ -370,6 +317,9 @@ public class ControlLCATestUtil {
         break;
       case SWT.Deactivate:
         result = "Deactivate";
+        break;
+      case SWT.Help:
+        result = "Help";
         break;
     }
     return result;

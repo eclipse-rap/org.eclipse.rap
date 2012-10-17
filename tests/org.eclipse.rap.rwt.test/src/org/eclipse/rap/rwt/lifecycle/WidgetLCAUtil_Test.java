@@ -340,7 +340,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.renderListenHelp( widget );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( widget, "help" ) );
+    assertNull( message.findListenOperation( widget, "Help" ) );
   }
 
   public void testRenderListenHelp() {
@@ -352,7 +352,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.renderListenHelp( widget );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( widget, "help" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( widget, "Help" ) );
   }
 
   public void testRenderListenHelpUnchanged() {
@@ -368,7 +368,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.renderListenHelp( widget );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( widget, "help" ) );
+    assertNull( message.findListenOperation( widget, "Help" ) );
   }
 
   public void testRenderListenHelpRemoved() {
@@ -385,7 +385,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.renderListenHelp( widget );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( widget, "help" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( widget, "Help" ) );
   }
 
   public void testRenderBackgroundGradient() throws JSONException {

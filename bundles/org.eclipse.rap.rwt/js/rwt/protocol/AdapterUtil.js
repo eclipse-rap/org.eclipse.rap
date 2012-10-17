@@ -168,7 +168,7 @@ rwt.protocol.AdapterUtil = {
     "key",
     "traverse",
     "menuDetect",
-    "help",
+    "Help",
     "Activate",
     "Deactivate"
   ],
@@ -240,7 +240,7 @@ rwt.protocol.AdapterUtil = {
         widget.removeEventListener( "mouseup", detectByMouse, context );
       }
     },
-    "help" : function( widget, value ) {
+    "Help" : function( widget, value ) {
       var context;
       var helpRequested = org.eclipse.swt.EventUtil.helpRequested;
       if( value ) {
