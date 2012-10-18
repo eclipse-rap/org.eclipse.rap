@@ -47,8 +47,6 @@ import org.eclipse.rap.rwt.service.SessionStoreListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -399,13 +397,12 @@ public class RWTLifeCycle_Test extends TestCase {
         return true;
       }
     };
-    SelectionAdapter listener = new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
+    Listener listener = new Listener() {
+      public void handleEvent( Event event ) {
         log.append( "eventExecuted" );
       }
     };
-    SelectionEvent.addListener( widget, listener );
+    widget.addListener( SWT.Selection, listener );
     // event is scheduled but not executed at this point as there is no life
     // cycle running
     widget.notifyListeners( SWT.Selection, new Event() );
@@ -426,13 +423,12 @@ public class RWTLifeCycle_Test extends TestCase {
         return true;
       }
     };
-    SelectionAdapter listener = new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
+    Listener listener = new Listener() {
+      public void handleEvent( Event event ) {
         display.readAndDispatch();
       }
     };
-    SelectionEvent.addListener( widget, listener );
+    widget.addListener( SWT.Selection, listener );
     Event event = new Event();
     widget.notifyListeners( SWT.Selection, event );
 

@@ -169,6 +169,31 @@ public class TreeColumn extends Item {
   }
 
   /**
+   * Removes the listener from the collection of listeners who will be notified
+   * when the control is moved or resized.
+   *
+   * @param listener the listener which should no longer be notified
+   * @exception IllegalArgumentException <ul>
+   *              <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   *              </ul>
+   * @exception SWTException <ul>
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *              thread that created the receiver</li>
+   *              </ul>
+   * @see ControlListener
+   * @see #addControlListener
+   */
+  public void removeControlListener( ControlListener listener ) {
+    checkWidget();
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Move, listener );
+    removeListener( SWT.Resize, listener );
+  }
+
+  /**
    * Adds the listener to the collection of listeners who will be notified when
    * the control is selected by the user, by sending it one of the messages
    * defined in the <code>SelectionListener</code> interface.
@@ -193,7 +218,37 @@ public class TreeColumn extends Item {
    */
   public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Selection, typedListener );
+    addListener( SWT.DefaultSelection, typedListener );
+  }
+
+  /**
+   * Removes the listener from the collection of listeners who will be notified
+   * when the control is selected by the user.
+   *
+   * @param listener the listener which should no longer be notified
+   * @exception IllegalArgumentException <ul>
+   *              <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   *              </ul>
+   * @exception SWTException <ul>
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *              thread that created the receiver</li>
+   *              </ul>
+   * @see SelectionListener
+   * @see #addSelectionListener
+   */
+  public void removeSelectionListener( SelectionListener listener ) {
+    checkWidget();
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Selection, listener );
+    removeListener( SWT.DefaultSelection, listener );
   }
 
   static Tree checkNull( Tree tree ) {
@@ -377,55 +432,6 @@ public class TreeColumn extends Item {
     }
     setWidth( newWidth );
     packed = true;
-  }
-
-  /**
-   * Removes the listener from the collection of listeners who will be notified
-   * when the control is moved or resized.
-   *
-   * @param listener the listener which should no longer be notified
-   * @exception IllegalArgumentException <ul>
-   *              <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
-   *              </ul>
-   * @exception SWTException <ul>
-   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
-   *              thread that created the receiver</li>
-   *              </ul>
-   * @see ControlListener
-   * @see #addControlListener
-   */
-  public void removeControlListener( ControlListener listener ) {
-    checkWidget();
-    if( listener == null ) {
-      error( SWT.ERROR_NULL_ARGUMENT );
-    }
-    removeListener( SWT.Move, listener );
-    removeListener( SWT.Resize, listener );
-  }
-
-  /**
-   * Removes the listener from the collection of listeners who will be notified
-   * when the control is selected by the user.
-   *
-   * @param listener the listener which should no longer be notified
-   * @exception IllegalArgumentException <ul>
-   *              <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
-   *              </ul>
-   * @exception SWTException <ul>
-   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
-   *              thread that created the receiver</li>
-   *              </ul>
-   * @see SelectionListener
-   * @see #addSelectionListener
-   */
-  public void removeSelectionListener( SelectionListener listener ) {
-    checkWidget();
-    if( listener == null ) {
-      error( SWT.ERROR_NULL_ARGUMENT );
-    }
-    SelectionEvent.removeListener( this, listener );
   }
 
   /**

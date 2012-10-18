@@ -148,7 +148,12 @@ public class Slider extends Control {
    */
   public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Selection, typedListener );
+    addListener( SWT.DefaultSelection, typedListener );
   }
 
   /**
@@ -170,13 +175,18 @@ public class Slider extends Control {
    */
   public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.removeListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Selection, listener );
+    removeListener( SWT.DefaultSelection, listener );
   }
 
   static int checkStyle( int style ) {
   	return checkBits( style, SWT.HORIZONTAL, SWT.VERTICAL, 0, 0, 0, 0 );
   }
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
   	checkWidget();
     int width, height;
@@ -199,6 +209,7 @@ public class Slider extends Control {
   	return new Point( width, height );
   }
 
+  @Override
   void createWidget() {
   	increment = 1;
   	pageIncrement = 10;
@@ -206,6 +217,7 @@ public class Slider extends Control {
   	thumb = 10;
   }
 
+  @Override
   public boolean getEnabled() {
   	checkWidget();
   	return( state & DISABLED ) == 0;
@@ -510,6 +522,7 @@ public class Slider extends Control {
   ///////////////////
   // Widget overrides
 
+  @Override
   boolean isTabGroup() {
     return true;
   }

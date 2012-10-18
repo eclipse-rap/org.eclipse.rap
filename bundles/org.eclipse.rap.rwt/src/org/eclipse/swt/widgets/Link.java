@@ -82,6 +82,7 @@ public class Link extends Control {
     displayText = "";
   }
 
+  @Override
   void initState() {
     state |= THEME_BACKGROUND;
   }
@@ -165,7 +166,12 @@ public class Link extends Control {
    */
   public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Selection, typedListener );
+    addListener( SWT.DefaultSelection, typedListener );
   }
 
   /**
@@ -187,9 +193,14 @@ public class Link extends Control {
    */
   public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.removeListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Selection, listener );
+    removeListener( SWT.DefaultSelection, listener );
   }
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
@@ -227,6 +238,7 @@ public class Link extends Control {
     return result.toString();
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -251,10 +263,12 @@ public class Link extends Control {
     return result;
   }
 
+  @Override
   boolean isTabGroup() {
     return true;
   }
 
+  @Override
   String getNameText() {
     return getText();
   }

@@ -100,6 +100,7 @@ public class Spinner extends Composite {
     textLimit = LIMIT;
   }
 
+  @Override
   void initState() {
     state &= ~( /* CANVAS | */ THEME_BACKGROUND );
   }
@@ -458,6 +459,7 @@ public class Spinner extends Composite {
   ///////////////////
   // Size calculation
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
@@ -505,6 +507,7 @@ public class Spinner extends Composite {
     return new Point( trim.width, trim.height );
   }
 
+  @Override
   public Rectangle computeTrim( int x, int y, int width, int height ) {
     checkWidget();
     Rectangle result = new Rectangle( x, y, width, height );
@@ -604,7 +607,12 @@ public class Spinner extends Composite {
    */
   public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Selection, typedListener );
+    addListener( SWT.DefaultSelection, typedListener );
   }
 
   /**
@@ -628,7 +636,11 @@ public class Spinner extends Composite {
    */
   public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.removeListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Selection, listener );
+    removeListener( SWT.DefaultSelection, listener );
   }
 
   //////////////////

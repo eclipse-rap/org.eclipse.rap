@@ -447,7 +447,12 @@ public class TableColumn extends Item {
    */
   public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Selection, typedListener );
+    addListener( SWT.DefaultSelection, typedListener );
   }
 
   /**
@@ -469,9 +474,14 @@ public class TableColumn extends Item {
    */
   public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.removeListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Selection, listener );
+    removeListener( SWT.DefaultSelection, listener );
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result = null;
@@ -520,11 +530,13 @@ public class TableColumn extends Item {
   ////////////////////////////
   // Widget and Item overrides
 
+  @Override
   void releaseParent() {
     super.releaseParent();
     parent.destroyColumn( this );
   }
 
+  @Override
   String getNameText() {
     return getText();
   }

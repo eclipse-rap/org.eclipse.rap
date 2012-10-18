@@ -34,7 +34,7 @@ import org.eclipse.swt.graphics.Point;
  * IMPORTANT: This class is intended to be subclassed <em>only</em>
  * within the SWT implementation.
  * </p>
- * 
+ *
  * @since 1.0
  */
 public class Sash extends Control {
@@ -78,10 +78,12 @@ public class Sash extends Control {
     super( parent, checkStyle( style ) );
   }
 
+  @Override
   void initState() {
     state |= THEME_BACKGROUND;
   }
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int border = getBorderWidth();
@@ -130,7 +132,12 @@ public class Sash extends Control {
    */
   public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Selection, typedListener );
+    addListener( SWT.DefaultSelection, typedListener );
   }
 
   /**
@@ -152,7 +159,11 @@ public class Sash extends Control {
    */
   public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.removeListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Selection, listener );
+    removeListener( SWT.DefaultSelection, listener );
   }
 
   //////////////////

@@ -12,9 +12,7 @@
 package org.eclipse.swt.events;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.events.EventTable;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.TypedListener;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -144,36 +142,6 @@ public class SelectionEvent extends TypedEvent {
       result = adaptable.isListening( EVENT_TYPES[ i ] );
     }
     return result;
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void addListener( Widget adaptable, SelectionListener listener ) {
-    if( listener == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
-    TypedListener typedListener = new TypedListener( listener );
-    for( int eventType : EVENT_TYPES ) {
-      adaptable.addListener( eventType, typedListener );
-    }
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static void removeListener( Widget adaptable, SelectionListener listener ) {
-    if( listener == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
-    EventTable eventTable = adaptable.getAdapter( EventTable.class );
-    for( int eventType : EVENT_TYPES ) {
-      eventTable.unhook( eventType, listener );
-    }
   }
 
   @Override

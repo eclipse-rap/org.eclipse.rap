@@ -40,15 +40,6 @@ import org.eclipse.swt.events.FocusListener;
 //import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-// RAP [if] MouseMoveListener/MouseTrackListener not supported
-//import org.eclipse.swt.events.MouseMoveListener;
-//import org.eclipse.swt.events.MouseTrackListener;
-// RAP [if] PaintListener not supported
-//import org.eclipse.swt.events.PaintEvent;
-//import org.eclipse.swt.events.PaintListener;
-// RAP [if] unnecessary
-//import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -57,12 +48,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Canvas;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Layout;
-import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.*;
 // RAP [if] Clipboard not supported - no internal menu needed
 //import org.eclipse.swt.widgets.Menu;
 //import org.eclipse.swt.widgets.MenuItem;
@@ -251,7 +237,8 @@ public class FormText extends Canvas {
 		/*
 		 * @see Layout#computeSize(Composite, int, int, boolean)
 		 */
-		public Point computeSize(Composite composite, int wHint, int hHint,
+		@Override
+    public Point computeSize(Composite composite, int wHint, int hHint,
 				boolean changed) {
 			long start = 0;
 
@@ -321,7 +308,8 @@ public class FormText extends Canvas {
 			return new Point(width, loc.y);
 		}
 
-		protected void layout(Composite composite, boolean flushCache) {
+		@Override
+    protected void layout(Composite composite, boolean flushCache) {
 		    // RAP [if] Workaround for the text size determination
 		    if( hasAverageFontWidthsChanged() ) {
 		      model.clearCache( null );
@@ -527,7 +515,8 @@ public class FormText extends Canvas {
 	}
 
 	// RAP [if] getAdapter implementation
-	public Object getAdapter( final Class adapter ) {
+	@Override
+  public Object getAdapter( final Class adapter ) {
 	  Object result;
 	  if( adapter == IFormTextAdapter.class ) {
 	    if( formTextAdapter == null ) {
@@ -720,7 +709,8 @@ public class FormText extends Canvas {
 	 * @param font
 	 *            the default font to use
 	 */
-	public void setFont(Font font) {
+	@Override
+  public void setFont(Font font) {
 		super.setFont(font);
 		model.clearCache(null);
 		Font boldFont = (Font) resourceTable.get(FormTextModel.BOLD_FONT_ID);
@@ -1086,13 +1076,12 @@ public class FormText extends Canvas {
 	 */
 	public void addSelectionListener(SelectionListener listener) {
 	    checkWidget();
-// RAP [if]
-//		if (listener == null) {
-//			SWT.error(SWT.ERROR_NULL_ARGUMENT);
-//		}
-//		TypedListener typedListener = new TypedListener(listener);
-//		addListener(SWT.Selection, typedListener);
-	    SelectionEvent.addListener( this, listener );
+	    checkWidget();
+	    if( listener == null ) {
+	      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+	    }
+	    TypedListener typedListener = new TypedListener( listener );
+	    addListener( SWT.Selection, typedListener );
 	}
 
 	/**
@@ -1116,12 +1105,11 @@ public class FormText extends Canvas {
 	 */
 	public void removeSelectionListener(SelectionListener listener) {
 	    checkWidget();
-// RAP [if]
-//		if (listener == null) {
-//			SWT.error(SWT.ERROR_NULL_ARGUMENT);
-//		}
-//		removeListener(SWT.Selection, listener);
-		SelectionEvent.removeListener( this, listener );
+	    checkWidget();
+	    if( listener == null ) {
+	      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+	    }
+	    removeListener( SWT.Selection, listener );
 	}
 
 // RAP [if] Selection not supported
@@ -1762,7 +1750,8 @@ public class FormText extends Canvas {
 	 *
 	 * @see org.eclipse.swt.widgets.Composite#computeSize(int, int, boolean)
 	 */
-	public Point computeSize(int wHint, int hHint, boolean changed) {
+	@Override
+  public Point computeSize(int wHint, int hHint, boolean changed) {
 		checkWidget();
 		Point size;
 		FormTextLayout layout = (FormTextLayout) getLayout();
@@ -1814,7 +1803,8 @@ public class FormText extends Canvas {
 	 *
 	 * @see org.eclipse.swt.widgets.Control#setEnabled(boolean)
 	 */
-	public void setEnabled(boolean enabled) {
+	@Override
+  public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
 		redraw();
 	}
@@ -1822,7 +1812,8 @@ public class FormText extends Canvas {
 	/* (non-Javadoc)
 	 * @see org.eclipse.swt.widgets.Control#setFocus()
 	 */
-	public boolean setFocus() {
+	@Override
+  public boolean setFocus() {
 		mouseFocus = true;
 		FormUtil.setFocusScrollingEnabled(this, false);
 		boolean result = super.setFocus();
