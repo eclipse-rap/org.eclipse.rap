@@ -20,7 +20,6 @@ import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.widgets.Control;
@@ -68,9 +67,12 @@ public class ControlLCATestUtil {
   public static void testKeyListener( Control control ) throws IOException {
     Fixture.markInitialized( control.getDisplay() );
     Fixture.markInitialized( control );
-    testRenderAddKeyListener( control );
-    testRenderRemoveKeyListener( control );
-    testRenderKeyListenerUnchanged( control );
+    testRenderAddListener( control, SWT.KeyDown );
+    testRenderRemoveListener( control, SWT.KeyDown );
+    testRenderListenerUnchanged( control, SWT.KeyDown );
+    testRenderAddListener( control, SWT.KeyUp );
+    testRenderRemoveListener( control, SWT.KeyUp );
+    testRenderListenerUnchanged( control, SWT.KeyUp );
   }
 
   public static void testTraverseListener( Control control ) throws IOException {
@@ -146,48 +148,6 @@ public class ControlLCATestUtil {
     assertNull( message.findListenOperation( control, listenerName ) );
 
     control.removeListener( eventType, listener );
-  }
-
-  private static void testRenderAddKeyListener( Control control ) throws IOException {
-    KeyAdapter listener = new KeyAdapter() {};
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.addKeyListener( listener );
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "key" ) );
-
-    control.removeKeyListener( listener );
-  }
-
-  private static void testRenderRemoveKeyListener( Control control ) throws IOException {
-    KeyAdapter listener = new KeyAdapter() {};
-    control.addKeyListener( listener );
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.removeKeyListener( listener );
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "key" ) );
-  }
-
-  private static void testRenderKeyListenerUnchanged( Control control ) throws IOException {
-    KeyAdapter listener = new KeyAdapter() {};
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.addKeyListener( listener );
-    Fixture.preserveWidgets();
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "key" ) );
-
-    control.removeKeyListener( listener );
   }
 
   private static void testRenderAddTraverseListener( Control control ) throws IOException {
@@ -270,6 +230,13 @@ public class ControlLCATestUtil {
         break;
       case SWT.MenuDetect:
         result = "MenuDetect";
+        break;
+      case SWT.KeyDown:
+        result = "KeyDown";
+        break;
+      case SWT.KeyUp:
+        // [if] Note: we are sending only KeyDown event from the client
+        result = "KeyDown";
         break;
     }
     return result;

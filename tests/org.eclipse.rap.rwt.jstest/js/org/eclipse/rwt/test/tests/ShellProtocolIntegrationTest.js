@@ -687,7 +687,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     testKeyListener : function() {
       var shell = this._protocolCreateShell();
-      this._protocolListen( { "key" : true } );
+      this._protocolListen( { "KeyDown" : true } );
       assertTrue( shell.getUserData( "keyListener" ) );
       this._disposeShell();
     },

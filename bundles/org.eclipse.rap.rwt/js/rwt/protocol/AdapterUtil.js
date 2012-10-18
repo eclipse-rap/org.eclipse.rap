@@ -165,7 +165,7 @@ rwt.protocol.AdapterUtil = {
     "MouseDown",
     "MouseUp",
     "MouseDoubleClick",
-    "key",
+    "KeyDown",
     "traverse",
     "MenuDetect",
     "Help",
@@ -174,7 +174,7 @@ rwt.protocol.AdapterUtil = {
   ],
 
   _controlListenerHandler : {
-    "key" : function( widget, value ) {
+    "KeyDown" : function( widget, value ) {
       widget.setUserData( "keyListener", value ? true : null );
     },
     "traverse" : function( widget, value ) {

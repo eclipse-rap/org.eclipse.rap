@@ -36,7 +36,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
-import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MenuDetectEvent;
@@ -919,37 +918,31 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderListenKey( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "key" ) );
+    assertNull( message.findListenOperation( control, "KeyDown" ) );
   }
 
   public void testRenderListenKey() {
-    KeyAdapter listener = new KeyAdapter() {
-    };
-
-    control.addKeyListener( listener );
+    control.addKeyListener( mock( KeyListener.class ) );
     ControlLCAUtil.renderListenKey( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "key" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, "KeyDown" ) );
   }
 
   public void testRenderListenKeyUnchanged() {
-    KeyAdapter listener = new KeyAdapter() {
-    };
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
-    control.addKeyListener( listener );
+    control.addKeyListener( mock( KeyListener.class ) );
 
     Fixture.preserveWidgets();
     ControlLCAUtil.renderListenKey( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "key" ) );
+    assertNull( message.findListenOperation( control, "KeyDown" ) );
   }
 
   public void testRenderListenKeyRemoved() {
-    KeyAdapter listener = new KeyAdapter() {
-    };
+    KeyListener listener = mock( KeyListener.class );
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.addKeyListener( listener );
@@ -959,7 +952,7 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderListenKey( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "key" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, "KeyDown" ) );
   }
 
   public void testRenderInitialListenTraverse() {

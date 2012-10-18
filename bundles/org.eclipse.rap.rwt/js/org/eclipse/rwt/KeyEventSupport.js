@@ -164,7 +164,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
         "charCode" : finalCharCode
       };
       org.eclipse.swt.EventUtil.addModifierToProperties( properties );
-      serverObject.notify( "keyDown", properties, true );
+      serverObject.notify( "KeyDown", properties, true );
     },
 
     ///////////////

@@ -64,8 +64,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
       var msg = TestUtil.getMessageObject();
 
-      assertEquals( 66, msg.findNotifyProperty( "w1", "keyDown", "keyCode" ) );
-      assertEquals( 98, msg.findNotifyProperty( "w1", "keyDown", "charCode" ) );
+      assertEquals( 66, msg.findNotifyProperty( "w1", "KeyDown", "keyCode" ) );
+      assertEquals( 98, msg.findNotifyProperty( "w1", "KeyDown", "charCode" ) );
       widget.destroy();
     },
 
@@ -82,8 +82,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();
-      assertEquals( 66, msg.findNotifyProperty( "w1", "keyDown", "keyCode" ) );
-      assertEquals( 66, msg.findNotifyProperty( "w1", "keyDown", "charCode" ) );
+      assertEquals( 66, msg.findNotifyProperty( "w1", "KeyDown", "keyCode" ) );
+      assertEquals( 66, msg.findNotifyProperty( "w1", "KeyDown", "charCode" ) );
       widget.destroy();
     },
 
@@ -99,8 +99,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();
-      assertEquals( 66, msg.findNotifyProperty( "w1", "keyDown", "keyCode" ) );
-      assertEquals( 98, msg.findNotifyProperty( "w1", "keyDown", "charCode" ) );
+      assertEquals( 66, msg.findNotifyProperty( "w1", "KeyDown", "keyCode" ) );
+      assertEquals( 98, msg.findNotifyProperty( "w1", "KeyDown", "charCode" ) );
       widget.destroy();
     },
 
@@ -118,10 +118,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       assertEquals( 2, TestUtil.getRequestsSend() );
       var msg1 = TestUtil.getMessageObject( 0 );
       var msg2 = TestUtil.getMessageObject( 1 );
-      assertEquals( 66, msg1.findNotifyProperty( "w1", "keyDown", "keyCode" ) );
-      assertEquals( 98, msg1.findNotifyProperty( "w1", "keyDown", "charCode" ) );
-      assertEquals( 66, msg2.findNotifyProperty( "w1", "keyDown", "keyCode" ) );
-      assertEquals( 98, msg2.findNotifyProperty( "w1", "keyDown", "charCode" ) );
+      assertEquals( 66, msg1.findNotifyProperty( "w1", "KeyDown", "keyCode" ) );
+      assertEquals( 98, msg1.findNotifyProperty( "w1", "KeyDown", "charCode" ) );
+      assertEquals( 66, msg2.findNotifyProperty( "w1", "KeyDown", "keyCode" ) );
+      assertEquals( 98, msg2.findNotifyProperty( "w1", "KeyDown", "charCode" ) );
       widget.destroy();
     },
 
@@ -140,10 +140,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       assertEquals( 2, TestUtil.getRequestsSend() );
       var msg1 = TestUtil.getMessageObject( 0 );
       var msg2 = TestUtil.getMessageObject( 1 );
-      assertEquals( 66, msg1.findNotifyProperty( "w1", "keyDown", "keyCode" ) );
-      assertEquals( 98, msg1.findNotifyProperty( "w1", "keyDown", "charCode" ) );
-      assertEquals( 66, msg2.findNotifyProperty( "w1", "keyDown", "keyCode" ) );
-      assertEquals( 98, msg2.findNotifyProperty( "w1", "keyDown", "charCode" ) );
+      assertEquals( 66, msg1.findNotifyProperty( "w1", "KeyDown", "keyCode" ) );
+      assertEquals( 98, msg1.findNotifyProperty( "w1", "KeyDown", "charCode" ) );
+      assertEquals( 66, msg2.findNotifyProperty( "w1", "KeyDown", "keyCode" ) );
+      assertEquals( 98, msg2.findNotifyProperty( "w1", "KeyDown", "charCode" ) );
       widget.destroy();
     },
 
@@ -158,7 +158,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();
-      assertEquals( 47, msg.findNotifyProperty( "w1", "keyDown", "charCode" ) );
+      assertEquals( 47, msg.findNotifyProperty( "w1", "KeyDown", "charCode" ) );
       widget.destroy();
     },
 
@@ -173,7 +173,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();
-      assertEquals( 46, msg.findNotifyProperty( "w1", "keyDown", "charCode" ) );
+      assertEquals( 46, msg.findNotifyProperty( "w1", "KeyDown", "charCode" ) );
       widget.destroy();
     },
 
@@ -298,8 +298,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();
-      assertEquals( 53, msg.findNotifyProperty( "w1", "keyDown", "keyCode" ) );
-      assertEquals( 53, msg.findNotifyProperty( "w1", "keyDown", "charCode" ) );
+      assertEquals( 53, msg.findNotifyProperty( "w1", "KeyDown", "keyCode" ) );
+      assertEquals( 53, msg.findNotifyProperty( "w1", "KeyDown", "charCode" ) );
       widget.destroy();
     },
 
@@ -422,11 +422,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
       assertEquals( 2, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject( 1 );
-      assertEquals( 89, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
-      assertEquals( 121, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
-      assertFalse( msg.findNotifyProperty( "w3", "keyDown", "ctrlKey" ) );
-      assertFalse( msg.findNotifyProperty( "w3", "keyDown", "shiftKey" ) );
-      assertFalse( msg.findNotifyProperty( "w3", "keyDown", "altKey" ) );
+      assertEquals( 89, msg.findNotifyProperty( "w3", "KeyDown", "keyCode" ) );
+      assertEquals( 121, msg.findNotifyProperty( "w3", "KeyDown", "charCode" ) );
+      assertFalse( msg.findNotifyProperty( "w3", "KeyDown", "ctrlKey" ) );
+      assertFalse( msg.findNotifyProperty( "w3", "KeyDown", "shiftKey" ) );
+      assertFalse( msg.findNotifyProperty( "w3", "KeyDown", "altKey" ) );
       req.addEventListener( "received", keyUtil._onRequestReceived, keyUtil );
       this._disposeTextWidget( text );
     },
@@ -448,8 +448,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       TestUtil.press( text, "a", 0 );
 
       var msg = TestUtil.getMessageObject();
-      assertEquals( 65, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
-      assertEquals( 97, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
+      assertEquals( 65, msg.findNotifyProperty( "w3", "KeyDown", "keyCode" ) );
+      assertEquals( 97, msg.findNotifyProperty( "w3", "KeyDown", "charCode" ) );
       this._disposeTextWidget( text );
     },
 
@@ -460,8 +460,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       TestUtil.press( text, "A", 0 );
 
       var msg = TestUtil.getMessageObject();
-      assertEquals( 65, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
-      assertEquals( 65, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
+      assertEquals( 65, msg.findNotifyProperty( "w3", "KeyDown", "keyCode" ) );
+      assertEquals( 65, msg.findNotifyProperty( "w3", "KeyDown", "charCode" ) );
       this._disposeTextWidget( text );
     },
 
@@ -474,8 +474,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       TestUtil.keyHold( text.getElement(), "Shift", shift );
 
       var msg = TestUtil.getMessageObject();
-      assertEquals( 16, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
-      assertEquals( 0, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
+      assertEquals( 16, msg.findNotifyProperty( "w3", "KeyDown", "keyCode" ) );
+      assertEquals( 0, msg.findNotifyProperty( "w3", "KeyDown", "charCode" ) );
       this._disposeTextWidget( text );
     },
 
@@ -525,8 +525,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();
-      assertEquals( 90, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
-      assertEquals( 122, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
+      assertEquals( 90, msg.findNotifyProperty( "w3", "KeyDown", "keyCode" ) );
+      assertEquals( 122, msg.findNotifyProperty( "w3", "KeyDown", "charCode" ) );
       this._disposeTextWidget( text );
     },
 
@@ -539,8 +539,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();
-      assertEquals( 90, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
-      assertEquals( 90, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
+      assertEquals( 90, msg.findNotifyProperty( "w3", "KeyDown", "keyCode" ) );
+      assertEquals( 90, msg.findNotifyProperty( "w3", "KeyDown", "charCode" ) );
       this._disposeTextWidget( text );
     },
 
@@ -554,8 +554,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();
-      assertEquals( 40, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
-      assertEquals( 0, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
+      assertEquals( 40, msg.findNotifyProperty( "w3", "KeyDown", "keyCode" ) );
+      assertEquals( 0, msg.findNotifyProperty( "w3", "KeyDown", "charCode" ) );
       this._disposeTextWidget( text );
     },
 
@@ -582,7 +582,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();
-      assertEquals( 47, msg.findNotifyProperty( "w3", "keyDown", "charCode" ) );
+      assertEquals( 47, msg.findNotifyProperty( "w3", "KeyDown", "charCode" ) );
       this._disposeTextWidget( text );
     },
 
@@ -601,7 +601,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();
-      assertEquals( 90, msg.findNotifyProperty( "w3", "keyDown", "keyCode" ) );
+      assertEquals( 90, msg.findNotifyProperty( "w3", "KeyDown", "keyCode" ) );
       this._disposeTextWidget( text );
     },
 
@@ -688,7 +688,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
         "target" : "w3",
         "action" : "listen",
         "properties" : {
-          "key" : true
+          "KeyDown" : true
         }
       } );
       var text = rwt.protocol.ObjectRegistry.getObject( "w3" );

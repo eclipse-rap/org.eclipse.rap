@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.Date;
 
 import junit.framework.TestCase;
@@ -22,7 +24,6 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.widgets.ControlUtil;
@@ -344,11 +345,7 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testRenderListenHelp() {
-    HelpListener listener = new HelpListener() {
-      public void helpRequested( HelpEvent e ) {
-      }
-    };
-    widget.addHelpListener( listener );
+    widget.addHelpListener( mock( HelpListener.class ) );
     WidgetLCAUtil.renderListenHelp( widget );
 
     Message message = Fixture.getProtocolMessage();
@@ -356,13 +353,9 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testRenderListenHelpUnchanged() {
-    HelpListener listener = new HelpListener() {
-      public void helpRequested( HelpEvent e ) {
-      }
-    };
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
-    widget.addHelpListener( listener );
+    widget.addHelpListener( mock( HelpListener.class ) );
 
     Fixture.preserveWidgets();
     WidgetLCAUtil.renderListenHelp( widget );
@@ -372,10 +365,7 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testRenderListenHelpRemoved() {
-    HelpListener listener = new HelpListener() {
-      public void helpRequested( HelpEvent e ) {
-      }
-    };
+    HelpListener listener = mock( HelpListener.class );
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
     widget.addHelpListener( listener );
