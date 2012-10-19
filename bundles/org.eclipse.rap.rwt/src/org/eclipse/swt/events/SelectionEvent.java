@@ -12,9 +12,7 @@
 package org.eclipse.swt.events;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.events.EventTable;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.TypedListener;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -131,19 +129,6 @@ public class SelectionEvent extends TypedEvent {
     stateMask = e.stateMask;
     text = e.text;
     doit = e.doit;
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
-  public static boolean hasListener( Widget adaptable ) {
-    boolean result = false;
-    for( int i = 0; !result && i < EVENT_TYPES.length; i++ ) {
-      result = adaptable.isListening( EVENT_TYPES[ i ] );
-    }
-    return result;
   }
 
   @Override
