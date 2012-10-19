@@ -22,7 +22,6 @@ import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.IToolItemAdapter;
@@ -44,7 +43,7 @@ final class ToolItemLCAUtil {
   private static final String PROP_HOT_IMAGE = "hotImage";
   private static final String PROP_CONTROL = "control";
   static final String PROP_SELECTION = "selection";
-  private static final String PROP_SELECTION_LISTENER = "selection";
+  private static final String PROP_SELECTION_LISTENER = "Selection";
 
   private ToolItemLCAUtil() {
     // prevent instantiation
@@ -61,7 +60,7 @@ final class ToolItemLCAUtil {
     preserveProperty( toolItem, PROP_HOT_IMAGE, toolItem.getHotImage() );
     preserveProperty( toolItem, PROP_CONTROL, toolItem.getControl() );
     preserveProperty( toolItem, PROP_SELECTION, toolItem.getSelection() );
-    preserveListener( toolItem, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( toolItem ) );
+    preserveListener( toolItem, PROP_SELECTION_LISTENER,toolItem.isListening( SWT.Selection ) );
   }
 
   static void renderInitialization( ToolItem toolItem ) {
@@ -92,7 +91,7 @@ final class ToolItemLCAUtil {
     renderProperty( toolItem, PROP_SELECTION, toolItem.getSelection(), false );
     renderListener( toolItem,
                     PROP_SELECTION_LISTENER,
-                    SelectionEvent.hasListener( toolItem ),
+                    toolItem.isListening( SWT.Selection ),
                     false );
   }
 

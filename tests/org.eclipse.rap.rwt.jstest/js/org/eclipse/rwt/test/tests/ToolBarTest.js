@@ -327,7 +327,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "RADIO" ] );
-      this._setListenerByProtocol( "w4", { "selection" : true } );
+      this._setListenerByProtocol( "w4", { "Selection" : true } );
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
       toolbar.destroy();

@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -31,12 +32,12 @@ import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -586,26 +587,26 @@ public class ToolItemLCA_Test extends TestCase {
     Fixture.markInitialized( toolitem );
     Fixture.preserveWidgets();
 
-    toolitem.addSelectionListener( new SelectionAdapter() { } );
+    toolitem.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( toolitem, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( toolitem, "Selection" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
-    SelectionListener listener = new SelectionAdapter() { };
-    toolitem.addSelectionListener( listener );
+    Listener listener = mock( Listener.class );
+    toolitem.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( toolitem );
     Fixture.preserveWidgets();
 
-    toolitem.removeSelectionListener( listener );
+    toolitem.removeListener( SWT.Selection, listener );
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( toolitem, "selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( toolitem, "Selection" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
@@ -619,6 +620,6 @@ public class ToolItemLCA_Test extends TestCase {
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( toolitem, "selection" ) );
+    assertNull( message.findListenOperation( toolitem, "Selection" ) );
   }
 }
