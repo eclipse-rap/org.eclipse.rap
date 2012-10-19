@@ -228,7 +228,7 @@ public class MenuItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_INVALID_ARGUMENT - if called with an negative-valued argument.</li>
    * </ul>
-   * 
+   *
    * @since 1.4
    */
   public void setID( int id ) {
@@ -246,7 +246,7 @@ public class MenuItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.4
    */
   public int getID() {
@@ -268,6 +268,7 @@ public class MenuItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
+  @Override
   public void setImage( Image image ) {
     checkWidget();
     if( ( style & SWT.SEPARATOR ) == 0 ) {
@@ -409,7 +410,12 @@ public class MenuItem extends Item {
    */
   public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Selection, typedListener );
+    addListener( SWT.DefaultSelection, typedListener );
   }
 
   /**
@@ -431,7 +437,11 @@ public class MenuItem extends Item {
    */
   public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.removeListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Selection, listener );
+    removeListener( SWT.DefaultSelection, listener );
   }
 
   /**
@@ -544,6 +554,7 @@ public class MenuItem extends Item {
   //////////////////
   // Item overrides
 
+  @Override
   final void releaseChildren() {
     if( menu != null ) {
       removeMenuDisposeListener();
@@ -552,11 +563,13 @@ public class MenuItem extends Item {
     }
   }
 
+  @Override
   final void releaseParent() {
     super.releaseParent();
     ItemHolder.getItemHolder( parent ).remove( this );
   }
 
+  @Override
   String getNameText() {
     String result;
     if( ( style & SWT.SEPARATOR ) != 0 ) {
@@ -606,6 +619,7 @@ public class MenuItem extends Item {
   ///////////////////
   // Skinning support
 
+  @Override
   void reskinChildren( int flags ) {
     if( menu != null ) {
       menu.reskin( flags );

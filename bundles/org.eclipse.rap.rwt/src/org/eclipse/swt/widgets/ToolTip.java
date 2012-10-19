@@ -43,7 +43,7 @@ import org.eclipse.swt.internal.widgets.IToolTipAdapter;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class ToolTip extends Widget {
-  
+
   private final Shell parent;
   private boolean autoHide;
   private boolean visible;
@@ -95,7 +95,8 @@ public class ToolTip extends Widget {
     this.y = cursorLocation.y;
     this.parent.createToolTip( this );
   }
-  
+
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -208,7 +209,7 @@ public class ToolTip extends Widget {
     checkWidget();
     return visible;
   }
-  
+
   /**
    * Marks the receiver as visible if the argument is <code>true</code>,
    * and marks it invisible otherwise.
@@ -383,7 +384,12 @@ public class ToolTip extends Widget {
    */
   public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Selection, typedListener );
+    addListener( SWT.DefaultSelection, typedListener );
   }
 
   /**
@@ -405,13 +411,19 @@ public class ToolTip extends Widget {
    */
   public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.removeListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Selection, listener );
+    removeListener( SWT.DefaultSelection, listener );
   }
-  
+
+  @Override
   String getNameText() {
     return text;
   }
-  
+
+  @Override
   void releaseParent() {
     super.releaseParent();
     parent.destroyToolTip( this );

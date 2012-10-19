@@ -38,9 +38,6 @@
     <!-- Runtime projects -->
     <module>../../bundles/org.eclipse.rap.rwt</module>
     <module>../../bundles/org.eclipse.rap.rwt.osgi</module>
-    <module>../../bundles/org.eclipse.rap.demo</module>
-    <module>../../bundles/org.eclipse.rap.demo.databinding</module>
-    <module>../../bundles/org.eclipse.rap.design.example</module>
     <module>../../bundles/org.eclipse.rap.jface</module>
     <module>../../bundles/org.eclipse.rap.jface.databinding</module>
     <module>../../bundles/org.eclipse.rap.junit</module>
@@ -50,6 +47,10 @@
     <module>../../bundles/org.eclipse.rap.ui.forms</module>
     <module>../../bundles/org.eclipse.rap.ui.views</module>
     <module>../../bundles/org.eclipse.rap.ui.workbench</module>
+    <!-- Examples projects -->
+    <module>../../examples/org.eclipse.rap.demo</module>
+    <module>../../examples/org.eclipse.rap.demo.databinding</module>
+    <module>../../examples/org.eclipse.rap.design.example</module>
     <!-- Test projects -->
     <module>../../tests/org.eclipse.rap.rwt.testfixture</module>
     <module>../../tests/org.eclipse.rap.rwt.cluster.testfixture</module>

@@ -91,10 +91,12 @@ public class TabFolder extends Composite {
     this.onBottom = ( super.getStyle() & SWT.BOTTOM ) != 0;
   }
 
+  @Override
   void initState() {
     state &= ~( /* CANVAS | */ THEME_BACKGROUND );
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -379,6 +381,7 @@ public class TabFolder extends Composite {
   ///////////////////////////////
   // Layout and size computations
 
+  @Override
   public void layout() {
     checkWidget();
     Control[] children = getChildren();
@@ -387,6 +390,7 @@ public class TabFolder extends Composite {
     }
   }
 
+  @Override
   public Rectangle getClientArea() {
     checkWidget();
     Rectangle bounds = getBounds();
@@ -401,6 +405,7 @@ public class TabFolder extends Composite {
                           height - ( tabBarHeight + border * 2 ) );
   }
 
+  @Override
   public Rectangle computeTrim( int x, int y, int width, int height ) {
     checkWidget();
     int border = getBorderWidth() + getContentContainerBorderWidth();
@@ -413,6 +418,7 @@ public class TabFolder extends Composite {
     return new Rectangle( trimX, trimY, trimWidth, trimHeight );
   }
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     Point itemsSize = new Point( 0, 0 );
@@ -479,7 +485,12 @@ public class TabFolder extends Composite {
    */
   public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Selection, typedListener );
+    addListener( SWT.DefaultSelection, typedListener );
   }
 
   /**
@@ -501,12 +512,17 @@ public class TabFolder extends Composite {
    */
   public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.removeListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Selection, listener );
+    removeListener( SWT.DefaultSelection, listener );
   }
 
   ///////////
   // Disposal
 
+  @Override
   void releaseChildren() {
     TabItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
@@ -528,6 +544,7 @@ public class TabFolder extends Composite {
   /////////
   // Resize
 
+  @Override
   void notifyResize( Point oldSize ) {
     super.notifyResize( oldSize );
     updateSelectedItemControl();
@@ -579,6 +596,7 @@ public class TabFolder extends Composite {
   ///////////////////
   // Skinning support
 
+  @Override
   void reskinChildren( int flags ) {
     TabItem[] items = getItems();
     if( items != null ) {

@@ -17,10 +17,12 @@ public class ApplicationContextActivator {
 
   // TODO [fappel]: this flag is used to skip resource registration. Think about
   //                a less intrusive solution.
-  static boolean skipResoureRegistration;
+  // [rst] made public to allow access from testfixture in OSGi (bug 391510)
+  public static boolean skipResoureRegistration;
   // TODO [fappel]: this flag is used to skip resource deletion. Think about
   //                a less intrusive solution.
-  static boolean skipResoureDeletion;
+  // [rst] made public to allow access from testfixture in OSGi (bug 391510)
+  public static boolean skipResoureDeletion;
 
   private final ApplicationContext applicationContext;
 

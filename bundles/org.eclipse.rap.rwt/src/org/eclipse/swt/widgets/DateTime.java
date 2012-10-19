@@ -231,7 +231,12 @@ public class DateTime extends Composite {
    */
   public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Selection, typedListener );
+    addListener( SWT.DefaultSelection, typedListener );
   }
 
   /**
@@ -254,7 +259,11 @@ public class DateTime extends Composite {
    */
   public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.removeListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Selection, listener );
+    removeListener( SWT.DefaultSelection, listener );
   }
 
   /**
@@ -562,6 +571,7 @@ public class DateTime extends Composite {
     }
   }
 
+  @Override
   public void setFont( Font font ) {
     if( font != getFont() ) {
       super.setFont( font );
@@ -569,6 +579,7 @@ public class DateTime extends Composite {
     computeSubWidgetsBounds();
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -583,6 +594,7 @@ public class DateTime extends Composite {
     return result;
   }
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0, height = 0;
@@ -606,6 +618,7 @@ public class DateTime extends Composite {
     return new Point( width, height );
   }
 
+  @Override
   public void setBounds( Rectangle bounds ) {
     super.setBounds( bounds );
     // [if] Recalculate the sub widgets bounds
@@ -952,6 +965,7 @@ public class DateTime extends Composite {
     return getDateTimeThemeAdapter().getFieldPadding( this );
   }
 
+  @Override
   String getNameText() {
     return "DateTime";
   }

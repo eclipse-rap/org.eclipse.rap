@@ -18,8 +18,8 @@
   <name>RAP examples demo build</name>
 
   <modules>
-    <module>../../bundles/org.eclipse.rap.examples</module>
-    <module>../../bundles/org.eclipse.rap.examples.pages</module>
+    <module>../../examples/org.eclipse.rap.examples</module>
+    <module>../../examples/org.eclipse.rap.examples.pages</module>
     <module>../../../org.eclipse.rap.incubator.clientscripting/bundles/org.eclipse.rap.demo.clientscripting</module>
     <module>../../../rap-ckeditor/com.eclipsesource.widgets.ckeditor</module>
     <module>../../../rap-ckeditor/org.eclipse.rap.demo.ckeditor</module>

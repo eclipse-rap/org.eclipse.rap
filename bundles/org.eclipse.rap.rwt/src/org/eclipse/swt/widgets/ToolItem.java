@@ -181,6 +181,7 @@ public class ToolItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
+  @Override
   public void setText( String text ) {
     checkWidget();
     if( text == null ) {
@@ -192,6 +193,7 @@ public class ToolItem extends Item {
     }
   }
 
+  @Override
   public void setImage( Image image ) {
     checkWidget();
     if( ( style & SWT.SEPARATOR ) == 0 ) {
@@ -722,7 +724,12 @@ public class ToolItem extends Item {
    */
   public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.addListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TypedListener typedListener = new TypedListener( listener );
+    addListener( SWT.Selection, typedListener );
+    addListener( SWT.DefaultSelection, typedListener );
   }
 
   /**
@@ -744,12 +751,17 @@ public class ToolItem extends Item {
    */
   public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.removeListener( this, listener );
+    if( listener == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    removeListener( SWT.Selection, listener );
+    removeListener( SWT.DefaultSelection, listener );
   }
 
   ///////////////////////////////////
   // Methods to dispose of the widget
 
+  @Override
   void releaseParent() {
     super.releaseParent();
     parent.destroyItem( this );
@@ -758,6 +770,7 @@ public class ToolItem extends Item {
   //////////////////
   // Helping methods
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
