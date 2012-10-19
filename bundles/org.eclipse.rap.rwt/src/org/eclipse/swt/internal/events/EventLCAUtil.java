@@ -70,6 +70,19 @@ public final class EventLCAUtil {
     return result;
   }
 
+  public static boolean hasScrollBarsSelectionListener( Scrollable scrollable ) {
+    boolean result = false;
+    ScrollBar horizontalBar = scrollable.getHorizontalBar();
+    if( horizontalBar != null ) {
+      result = result || horizontalBar.isListening( SWT.Selection );
+    }
+    ScrollBar verticalBar = scrollable.getVerticalBar();
+    if( verticalBar != null ) {
+      result = result || verticalBar.isListening( SWT.Selection );
+    }
+    return result;
+  }
+
   public static void processScrollBarSelection( Scrollable scrollable ) {
     String eventName = EventLCAUtil.EVENT_SCROLLBAR_SELECTED;
     if( WidgetLCAUtil.wasEventSent( scrollable, eventName ) ) {

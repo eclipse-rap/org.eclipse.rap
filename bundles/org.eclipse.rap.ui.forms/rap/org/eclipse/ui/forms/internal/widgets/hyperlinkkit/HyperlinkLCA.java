@@ -16,13 +16,14 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.internal.widgets.IHyperlinkAdapter;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
 
+@SuppressWarnings("restriction")
 public class HyperlinkLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "forms.widgets.Hyperlink"; //$NON-NLS-1$
@@ -33,7 +34,7 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
   private static final String PROP_UNDERLINE_MODE = "underlineMode"; //$NON-NLS-1$
   private static final String PROP_ACTIVE_FOREGROUND = "activeForeground"; //$NON-NLS-1$
   private static final String PROP_ACTIVE_BACKGROUND = "activeBackground"; //$NON-NLS-1$
-  private static final String PROP_SELECTION_LISTENER = "selection"; //$NON-NLS-1$
+  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection"; //$NON-NLS-1$
 
   private static final int DEFAULT_UNDERLINE_MODE = 0;
 
@@ -43,6 +44,7 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( widget );
   }
 
+  @Override
   public void preserveValues( Widget widget ) {
     Hyperlink hyperlink = ( Hyperlink )widget;
     ControlLCAUtil.preserveValues( hyperlink );
@@ -56,10 +58,11 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveProperty( hyperlink,
                                     PROP_ACTIVE_BACKGROUND,
                                     getActiveBackground( hyperlink ) );
-    boolean hasListener = SelectionEvent.hasListener( hyperlink );
-    WidgetLCAUtil.preserveListener( hyperlink, PROP_SELECTION_LISTENER, hasListener );
+    boolean hasListener = hyperlink.isListening( SWT.DefaultSelection );
+    WidgetLCAUtil.preserveListener( hyperlink, PROP_DEFAULT_SELECTION_LISTENER, hasListener );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Hyperlink hyperlink = ( Hyperlink )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( hyperlink );
@@ -68,6 +71,7 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
     clientObject.set( "style", WidgetLCAUtil.getStyles( hyperlink, ALLOWED_STYLES ) ); //$NON-NLS-1$
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     Hyperlink hyperlink = ( Hyperlink )widget;
     ControlLCAUtil.renderChanges( hyperlink );
@@ -86,10 +90,11 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
                                   PROP_ACTIVE_BACKGROUND,
                                   getActiveBackground( hyperlink ),
                                   null );
-    boolean hasListener = SelectionEvent.hasListener( hyperlink );
-    WidgetLCAUtil.renderListener( hyperlink, PROP_SELECTION_LISTENER, hasListener, false );
+    boolean hasListener = hyperlink.isListening( SWT.DefaultSelection );
+    WidgetLCAUtil.renderListener( hyperlink, PROP_DEFAULT_SELECTION_LISTENER, hasListener, false );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }

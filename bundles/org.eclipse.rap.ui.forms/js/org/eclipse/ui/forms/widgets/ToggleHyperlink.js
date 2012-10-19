@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@
 
 qx.Class.define( "org.eclipse.ui.forms.widgets.ToggleHyperlink", {
   extend : rwt.widgets.base.Image,
-  
+
   construct : function() {
     this.base( arguments );
     this.setCursor( qx.constant.Style.CURSOR_HAND );
@@ -25,12 +25,12 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.ToggleHyperlink", {
     this.addEventListener( "mousemove", this._onMouseMove, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
   },
-  
+
   destruct : function() {
     this.removeEventListener( "mousemove", this._onMouseMove, this );
     this.removeEventListener( "mouseout", this._onMouseOut, this );
   },
-    
+
   members : {
 
     setImages : function( collapseNormal, collapseHover, expandNormal, expandHover ) {
@@ -46,7 +46,7 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.ToggleHyperlink", {
       this._updateImage();
     },
 
-    setHasSelectionListener : function( value ) {
+    setHasDefaultSelectionListener : function( value ) {
       if( value ) {
         this.addEventListener( "click", org.eclipse.swt.EventUtil.widgetDefaultSelected, this );
       } else {
@@ -58,7 +58,7 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.ToggleHyperlink", {
       this._hover = true;
       this._updateImage();
     },
-      
+
     _onMouseOut : function( evt ) {
       this._hover = false;
       this._updateImage();
@@ -75,6 +75,6 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.ToggleHyperlink", {
     }
 
   }
-  
+
 } );
 

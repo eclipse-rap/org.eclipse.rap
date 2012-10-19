@@ -106,7 +106,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     lca.renderChanges( twistie );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( twistie, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( twistie, "DefaultSelection" ) );
   }
 
   @SuppressWarnings("serial")
@@ -124,7 +124,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     lca.renderChanges( twistie );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( twistie, "selection" ) );
+    assertNull( message.findListenOperation( twistie, "DefaultSelection" ) );
   }
 
   public void testRenderInitialExpanded() throws IOException {

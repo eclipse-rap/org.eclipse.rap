@@ -61,7 +61,7 @@ rwt.protocol.AdapterRegistry.add( "forms.widgets.Hyperlink", {
   } ),
 
   listeners : rwt.protocol.AdapterUtil.extendControlListeners( [
-    "selection"
+    "DefaultSelection"
   ] ),
 
   listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),

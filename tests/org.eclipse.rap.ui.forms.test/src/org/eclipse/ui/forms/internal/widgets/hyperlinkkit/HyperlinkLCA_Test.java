@@ -246,7 +246,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     lca.renderChanges( hyperlink );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( hyperlink, "selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( hyperlink, "DefaultSelection" ) );
   }
 
   @SuppressWarnings("serial")
@@ -263,7 +263,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     lca.renderChanges( hyperlink );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( hyperlink, "selection" ) );
+    assertNull( message.findListenOperation( hyperlink, "DefaultSelection" ) );
   }
 
   private IHyperlinkAdapter getAdapter( Hyperlink hyperlink ) {

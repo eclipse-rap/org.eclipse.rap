@@ -21,7 +21,6 @@ import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -167,29 +166,29 @@ public class FileUpload_Test extends TestCase {
   public void testAddRemoveSelectionListener() {
     FileUpload upload = new FileUpload( shell, SWT.NONE );
     SelectionListener listener = new SelectionAdapter() {};
-    assertFalse( SelectionEvent.hasListener( upload ) );
+    assertFalse( upload.isListening( SWT.Selection ) );
     upload.addSelectionListener( listener );
-    assertTrue( SelectionEvent.hasListener( upload ) );
+    assertTrue( upload.isListening( SWT.Selection ) );
     upload.removeSelectionListener( listener );
-    assertFalse( SelectionEvent.hasListener( upload ) );
+    assertFalse( upload.isListening( SWT.Selection ) );
   }
 
   public void testAddSelectionListenerRegistersUntypedListeners() {
     FileUpload upload = new FileUpload( shell, SWT.NONE );
 
     upload.addSelectionListener( mock( SelectionListener.class ) );
-    
+
     assertTrue( upload.isListening( SWT.Selection ) );
     assertTrue( upload.isListening( SWT.DefaultSelection ) );
   }
-  
+
   public void testRemoveSelectionListenerUnregistersUntypedListeners() {
     FileUpload upload = new FileUpload( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     upload.addSelectionListener( listener );
 
     upload.removeSelectionListener( listener );
-    
+
     assertFalse( upload.isListening( SWT.Selection ) );
     assertFalse( upload.isListening( SWT.DefaultSelection ) );
   }
@@ -253,6 +252,7 @@ public class FileUpload_Test extends TestCase {
     Fixture.tearDown();
   }
 
+  @SuppressWarnings( "resource" )
   private Image createImage( String name ) {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( name );

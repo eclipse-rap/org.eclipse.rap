@@ -22,7 +22,6 @@ import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 
 
@@ -55,7 +54,7 @@ final class ButtonLCAUtil {
     preserveProperty( button, PROP_SELECTION, Boolean.valueOf( button.getSelection() ) );
     preserveProperty( button, PROP_GRAYED, Boolean.valueOf( button.getGrayed() ) );
     preserveProperty( button, PROP_ALIGNMENT, getAlignment( button ) );
-    preserveListener( button, PROP_SELECTION_LISTENERS, SelectionEvent.hasListener( button ) );
+    preserveListener( button, PROP_SELECTION_LISTENERS, button.isListening( SWT.Selection ) );
   }
 
   static void renderInitialization( Button button ) {
@@ -73,7 +72,7 @@ final class ButtonLCAUtil {
     renderProperty( button, PROP_ALIGNMENT, getAlignment( button ), DEFAULT_ALIGNMENT );
     renderProperty( button, PROP_SELECTION, button.getSelection(), false );
     renderProperty( button, PROP_GRAYED, button.getGrayed(), false );
-    renderListener( button, PROP_SELECTION_LISTENERS, SelectionEvent.hasListener( button ), false );
+    renderListener( button, PROP_SELECTION_LISTENERS, button.isListening( SWT.Selection ), false );
   }
 
   static boolean readSelection( Button button ) {

@@ -32,7 +32,6 @@ import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
@@ -112,7 +111,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     preserveProperty( tree, PROP_SCROLLBARS_VISIBLE, getScrollBarsVisible( tree ) );
     preserveListener( tree,
                       PROP_SCROLLBARS_SELECTION_LISTENER,
-                      hasScrollBarsSelectionListener( tree ) );
+                      EventLCAUtil.hasScrollBarsSelectionListener( tree ) );
     preserveListener( tree, PROP_SELECTION_LISTENER, tree.isListening( SWT.Selection ) );
     preserveListener( tree,
                       PROP_DEFAULT_SELECTION_LISTENER,
@@ -188,7 +187,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
                     DEFAULT_SCROLLBARS_VISIBLE );
     renderListener( tree,
                     PROP_SCROLLBARS_SELECTION_LISTENER,
-                    hasScrollBarsSelectionListener( tree ),
+                    EventLCAUtil.hasScrollBarsSelectionListener( tree ),
                     false );
     renderListener( tree, PROP_SELECTION_LISTENER, tree.isListening( SWT.Selection ), false );
     renderListener( tree,
@@ -366,19 +365,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   private static boolean hasVScrollBar( Tree tree ) {
     return getTreeAdapter( tree ).hasVScrollBar();
-  }
-
-  private static boolean hasScrollBarsSelectionListener( Tree tree ) {
-    boolean result = false;
-    ScrollBar horizontalBar = tree.getHorizontalBar();
-    if( horizontalBar != null ) {
-      result = result || SelectionEvent.hasListener( horizontalBar );
-    }
-    ScrollBar verticalBar = tree.getVerticalBar();
-    if( verticalBar != null ) {
-      result = result || SelectionEvent.hasListener( verticalBar );
-    }
-    return result;
   }
 
   private static void processScrollBarSelection( ScrollBar scrollBar, int selection ) {

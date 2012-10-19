@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,7 +48,7 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
     UNDERLINE_HOVER : 2,
     UNDERLINE_ALWAYS : 3
   },
-    
+
   members : {
 
     setText : function( value ) {
@@ -73,12 +73,12 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
     setActiveTextColor : function( value ) {
       this._activeTextColor = value;      
     },
-    
+
     setUnderlineMode : function( value ) {
       this._underlineMode = value;      
     },
 
-    setHasSelectionListener : function( value ) {
+    setHasDefaultSelectionListener : function( value ) {
       if( value ) {
         this.addEventListener( "click", org.eclipse.swt.EventUtil.widgetDefaultSelected, this );
       } else {

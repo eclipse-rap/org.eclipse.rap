@@ -26,7 +26,6 @@ import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.widgets.ScrollBar;
@@ -64,7 +63,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     preserveProperty( composite, PROP_SCROLLBARS_VISIBLE, getScrollBarsVisible( composite ) );
     preserveListener( composite,
                       PROP_SCROLLBARS_SELECTION_LISTENER,
-                      hasScrollBarsSelectionListener( composite ) );
+                      EventLCAUtil.hasScrollBarsSelectionListener( composite ) );
   }
 
   public void readData( Widget widget ) {
@@ -114,7 +113,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
                     DEFAULT_SCROLLBARS_VISIBLE );
     renderListener( composite,
                     PROP_SCROLLBARS_SELECTION_LISTENER,
-                    hasScrollBarsSelectionListener( composite ),
+                    EventLCAUtil.hasScrollBarsSelectionListener( composite ),
                     false );
   }
 
@@ -153,16 +152,4 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     return verticalBar != null && verticalBar.getVisible();
   }
 
-  private static boolean hasScrollBarsSelectionListener( ScrolledComposite composite ) {
-    boolean result = false;
-    ScrollBar horizontalBar = composite.getHorizontalBar();
-    if( horizontalBar != null ) {
-      result = result || SelectionEvent.hasListener( horizontalBar );
-    }
-    ScrollBar verticalBar = composite.getVerticalBar();
-    if( verticalBar != null ) {
-      result = result || SelectionEvent.hasListener( verticalBar );
-    }
-    return result;
-  }
 }

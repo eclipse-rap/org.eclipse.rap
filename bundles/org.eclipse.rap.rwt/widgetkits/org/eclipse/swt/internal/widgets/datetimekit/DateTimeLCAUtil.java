@@ -21,7 +21,7 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
@@ -50,7 +50,7 @@ final class DateTimeLCAUtil {
   static void preserveValues( DateTime dateTime ) {
     ControlLCAUtil.preserveValues( dateTime );
     WidgetLCAUtil.preserveCustomVariant( dateTime );
-    preserveListener( dateTime, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( dateTime ) );
+    preserveListener( dateTime, PROP_SELECTION_LISTENER, dateTime.isListening( SWT.Selection ) );
   }
 
   static void renderInitialization( DateTime dateTime ) {
@@ -65,7 +65,7 @@ final class DateTimeLCAUtil {
     WidgetLCAUtil.renderCustomVariant( dateTime );
     renderListener( dateTime,
                     PROP_SELECTION_LISTENER,
-                    SelectionEvent.hasListener( dateTime ),
+                    dateTime.isListening( SWT.Selection ),
                     false );
   }
 
@@ -151,6 +151,7 @@ final class DateTimeLCAUtil {
       this.height = bounds.height;
     }
 
+    @Override
     public boolean equals( Object obj ) {
       boolean result;
       if( obj == this ) {
@@ -168,6 +169,7 @@ final class DateTimeLCAUtil {
       return result;
     }
 
+    @Override
     public int hashCode() {
       String msg = "SubWidgetBounds#hashCode() not implemented";
       throw new UnsupportedOperationException( msg );

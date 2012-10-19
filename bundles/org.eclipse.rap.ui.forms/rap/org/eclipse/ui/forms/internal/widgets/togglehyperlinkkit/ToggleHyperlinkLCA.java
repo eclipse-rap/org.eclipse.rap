@@ -17,7 +17,7 @@ import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.widgets.*;
@@ -27,13 +27,14 @@ import org.eclipse.ui.forms.widgets.*;
  * This class serves as the LCA for org.eclipse.ui.forms.widgets.TreeNode and
  * org.eclipse.ui.forms.widgets.Twistie.
  */
+@SuppressWarnings("restriction")
 public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "forms.widgets.ToggleHyperlink"; //$NON-NLS-1$
 
   private static final String PROP_IMAGES = "images"; //$NON-NLS-1$
   private static final String PROP_EXPANDED = "expanded"; //$NON-NLS-1$
-  private static final String PROP_SELECTION_LISTENER = "selection"; //$NON-NLS-1$
+  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection"; //$NON-NLS-1$
 
   private static final String PREFIX = "resource/widget/rap/hyperlink/"; //$NON-NLS-1$
   private static final String MINUS_GIF = PREFIX + "minus.gif"; //$NON-NLS-1$
@@ -48,13 +49,14 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
 
   private static final Image[] DEFAULT_IMAGES = new Image[] { null, null, null, null };
 
+  @Override
   public void preserveValues( Widget widget ) {
     ToggleHyperlink hyperlink = ( ToggleHyperlink )widget;
     ControlLCAUtil.preserveValues( hyperlink );
     WidgetLCAUtil.preserveCustomVariant( hyperlink );
     WidgetLCAUtil.preserveProperty( hyperlink, PROP_EXPANDED, hyperlink.isExpanded() );
-    boolean hasListener = SelectionEvent.hasListener( hyperlink );
-    WidgetLCAUtil.preserveListener( hyperlink, PROP_SELECTION_LISTENER, hasListener );
+    boolean hasListener = hyperlink.isListening( SWT.DefaultSelection );
+    WidgetLCAUtil.preserveListener( hyperlink, PROP_DEFAULT_SELECTION_LISTENER, hasListener );
   }
 
   public void readData( Widget widget ) {
@@ -64,6 +66,7 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processDefaultSelection( widget, null );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ToggleHyperlink hyperlink = ( ToggleHyperlink )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( hyperlink );
@@ -72,15 +75,17 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderProperty( hyperlink, PROP_IMAGES, getImages( hyperlink ), DEFAULT_IMAGES );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     ToggleHyperlink hyperlink = ( ToggleHyperlink )widget;
     ControlLCAUtil.renderChanges( hyperlink );
     WidgetLCAUtil.renderCustomVariant( hyperlink );
     WidgetLCAUtil.renderProperty( hyperlink, PROP_EXPANDED, hyperlink.isExpanded(), false );
-    boolean hasListener = SelectionEvent.hasListener( hyperlink );
-    WidgetLCAUtil.renderListener( hyperlink, PROP_SELECTION_LISTENER, hasListener, false );
+    boolean hasListener = hyperlink.isListening( SWT.DefaultSelection );
+    WidgetLCAUtil.renderListener( hyperlink, PROP_DEFAULT_SELECTION_LISTENER, hasListener, false );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }

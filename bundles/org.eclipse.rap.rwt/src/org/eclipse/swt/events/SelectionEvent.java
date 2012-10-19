@@ -138,19 +138,6 @@ public class SelectionEvent extends TypedEvent {
    * @deprecated not part of the API, do not use in application code
    */
   @Deprecated
-  public static boolean hasListener( Widget adaptable ) {
-    boolean result = false;
-    for( int i = 0; !result && i < EVENT_TYPES.length; i++ ) {
-      result = adaptable.isListening( EVENT_TYPES[ i ] );
-    }
-    return result;
-  }
-
-  /**
-   * @since 2.0
-   * @deprecated not part of the API, do not use in application code
-   */
-  @Deprecated
   public static void addListener( Widget adaptable, SelectionListener listener ) {
     if( listener == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
