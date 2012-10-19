@@ -325,12 +325,12 @@ public class TextLCA_Test extends TestCase {
 
   public void testWriteModifyListenerWhenReadOnly() throws IOException {
     Text text = new Text( shell, SWT.READ_ONLY );
-    text.addModifyListener( createModifyListener() );
+    text.addListener( SWT.Modify, mock( Listener.class ) );
 
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( text, "modify" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( text, "Modify" ) );
   }
 
   public void testRenderCreate() throws IOException {
@@ -656,31 +656,25 @@ public class TextLCA_Test extends TestCase {
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
 
-    text.addModifyListener( new ModifyListener() {
-      public void modifyText( ModifyEvent event ) {
-      }
-    } );
+    text.addListener( SWT.Modify, mock( Listener.class ) );
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( text, "modify" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( text, "Modify" ) );
   }
 
   public void testRenderRemoveModifyListener() throws Exception {
-    ModifyListener listener = new ModifyListener() {
-      public void modifyText( ModifyEvent event ) {
-      }
-    };
-    text.addModifyListener( listener );
+    Listener listener = mock( Listener.class );
+    text.addListener( SWT.Modify, listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
 
-    text.removeModifyListener( listener );
+    text.removeListener( SWT.Modify, listener );
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( text, "modify" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( text, "Modify" ) );
   }
 
   public void testRenderModifyListenerUnchanged() throws Exception {
@@ -688,15 +682,12 @@ public class TextLCA_Test extends TestCase {
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
 
-    text.addModifyListener( new ModifyListener() {
-      public void modifyText( ModifyEvent event ) {
-      }
-    } );
+    text.addListener( SWT.Modify, mock( Listener.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( text, "modify" ) );
+    assertNull( message.findListenOperation( text, "Modify" ) );
   }
 
   public void testRenderAddVerifyListener() throws Exception {

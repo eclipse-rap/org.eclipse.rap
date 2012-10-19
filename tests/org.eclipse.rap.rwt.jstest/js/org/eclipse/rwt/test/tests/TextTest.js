@@ -352,7 +352,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.protocolListen( "w3", { "modify" : true } );
+      TestUtil.protocolListen( "w3", { "Modify" : true } );
       text = ObjectManager.getObject( "w3" );
       assertTrue( text.hasModifyListener() );
     },

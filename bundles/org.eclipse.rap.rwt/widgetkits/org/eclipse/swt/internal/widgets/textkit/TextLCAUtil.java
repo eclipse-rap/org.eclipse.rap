@@ -64,7 +64,7 @@ final class TextLCAUtil {
   static final String PROP_EDITABLE = "editable";
   static final String PROP_ECHO_CHAR = "echoChar";
   static final String PROP_MESSAGE = "message";
-  static final String PROP_MODIFY_LISTENER = "modify";
+  static final String PROP_MODIFY_LISTENER = "Modify";
   static final String PROP_VERIFY_LISTENER = "verify";
   static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
 
