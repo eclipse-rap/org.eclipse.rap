@@ -1271,6 +1271,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertTrue( log > 0 );
       menu.destroy();
       subMenu.destroy();
+    },
+
+    testMenuHelpListener : function() {
+      var widget = createPopUpMenuByProtocol( "w3" );
+      TestUtil.protocolListen( "w3", { "Help" : true } );
+
+      assertTrue( widget.hasEventListeners( "keydown" ) );
+
+      widget.destroy();
+    },
+
+    testMenuItemHelpListener : function() {
+      var menu = createPopUpMenuByProtocol( "w3" );
+      var widget = createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
+      TestUtil.protocolListen( "w4", { "Help" : true } );
+
+      assertTrue( widget.hasEventListeners( "keydown" ) );
+
+      menu.destroy();
+      widget.destroy();
     }
 
   }
