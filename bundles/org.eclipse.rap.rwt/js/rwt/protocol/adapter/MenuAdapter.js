@@ -51,7 +51,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Menu", {
 
   listeners : [
     "menu",
-    "help"
+    "Help"
   ],
 
   listenerHandler : {
@@ -60,7 +60,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Menu", {
         widget.setHasMenuListener( value );
       }
     },
-    "help" : rwt.protocol.AdapterUtil.getControlListenerHandler( "help" )
+    "Help" : rwt.protocol.AdapterUtil.getControlListenerHandler( "Help" )
   },
 
   methods : [

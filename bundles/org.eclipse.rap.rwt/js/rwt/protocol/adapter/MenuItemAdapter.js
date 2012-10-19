@@ -87,7 +87,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.MenuItem", {
 
   listeners : [
     "Selection",
-    "help"
+    "Help"
   ],
 
   listenerHandler : {
@@ -96,7 +96,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.MenuItem", {
         widget.setHasSelectionListener( value );
       }
     },
-    "help" : rwt.protocol.AdapterUtil.getControlListenerHandler( "help" )
+    "Help" : rwt.protocol.AdapterUtil.getControlListenerHandler( "Help" )
   },
 
   methods : []
