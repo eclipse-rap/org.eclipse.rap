@@ -12,7 +12,8 @@ rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
   org.eclipse.rwt.KeyEventSupport.getInstance()._sendRequestAsync = function() {
     rwt.remote.Server.getInstance().sendImmediate( true );
   };
-  rwt.remote.Server.getInstance().send = function() {
+  var server = rwt.remote.Server.getInstance();
+  server.send = function() {
     if( !this._sendTimer.isEnabled() ) {
       this._sendTimer.start();
       if( this._requestCounter === -1 ) {
@@ -22,6 +23,12 @@ rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
       this.sendImmediate( true ); // omit timer
     }
   };
+  server._delayTimer = new rwt.client.Timer();
+  server._delayTimer.addEventListener( "interval", function() {
+    this._delayTimer.stop();
+    this.send();
+  }, server );
+
   rwt.protocol.MessageProcessor.processMessage( {
     "head": {},
     "operations": [

@@ -64,8 +64,7 @@ final class TextLCAUtil {
   static final String PROP_EDITABLE = "editable";
   static final String PROP_ECHO_CHAR = "echoChar";
   static final String PROP_MESSAGE = "message";
-  static final String PROP_MODIFY_LISTENER = "modify";
-  static final String PROP_VERIFY_LISTENER = "verify";
+  static final String PROP_MODIFY_LISTENER = "Modify";
   static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
 
   private static final Point ZERO_SELECTION = new Point( 0, 0 );
@@ -83,8 +82,7 @@ final class TextLCAUtil {
     preserveProperty( text, PROP_EDITABLE, text.getEditable() );
     preserveProperty( text, PROP_ECHO_CHAR, getEchoChar( text ) );
     preserveProperty( text, PROP_MESSAGE, text.getMessage() );
-    preserveListener( text, PROP_MODIFY_LISTENER, text.isListening( SWT.Modify ) );
-    preserveListener( text, PROP_VERIFY_LISTENER, text.isListening( SWT.Verify ) );
+    preserveListener( text, PROP_MODIFY_LISTENER, hasModifyListener( text ) );
     preserveListener( text,
                       PROP_DEFAULT_SELECTION_LISTENER,
                       text.isListening( SWT.DefaultSelection ) );
@@ -106,8 +104,7 @@ final class TextLCAUtil {
     renderProperty( text, PROP_TEXT_LIMIT, getTextLimit( text ), null );
     renderProperty( text, PROP_ECHO_CHAR, getEchoChar( text ), null );
     renderProperty( text, PROP_MESSAGE, text.getMessage(), "" );
-    renderListener( text, PROP_MODIFY_LISTENER, text.isListening( SWT.Modify ), false );
-    renderListener( text, PROP_VERIFY_LISTENER, text.isListening( SWT.Verify ), false );
+    renderListener( text, PROP_MODIFY_LISTENER, hasModifyListener( text ), false );
     renderListener( text,
                     PROP_DEFAULT_SELECTION_LISTENER,
                     text.isListening( SWT.DefaultSelection ),
@@ -196,4 +193,10 @@ final class TextLCAUtil {
   private static String getEchoChar( Text text ) {
     return text.getEchoChar() == 0 ? null : String.valueOf( text.getEchoChar() );
   }
+
+  private static boolean hasModifyListener( Text text ) {
+    // NOTE : Client does not support Verify, it is created server-side from Modify
+    return text.isListening( SWT.Modify ) || text.isListening( SWT.Verify );
+  }
+
 }

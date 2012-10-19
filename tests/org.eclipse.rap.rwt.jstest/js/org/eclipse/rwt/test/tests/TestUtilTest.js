@@ -754,6 +754,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       assertIdentical( requestTwo, TestUtil.getXMLHttpRequests()[ 1 ] );
     },
 
+    testLogger : function() {
+      var logger = TestUtil.getLogger();
+
+      logger.log( 1 );
+      logger.log( 2 );
+      logger.log( 3 );
+
+      assertEquals( [ 1, 2, 3 ], logger.getLog() );
+    },
+
     /////////
     // helper
 

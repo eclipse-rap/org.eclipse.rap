@@ -974,6 +974,19 @@ org.eclipse.rwt.test.fixture.TestUtil = {
 
   clearXMLHttpRequests : function() {
     org.eclipse.rwt.test.fixture.NativeRequestMock.history = [];
+  },
+
+  getLogger : function() {
+    var result = {
+      _log : [],
+      log : function( item ) {
+        this._log.push( item );
+      },
+      getLog : function() {
+        return this._log;
+      }
+    };
+    return result;
   }
 
 };
