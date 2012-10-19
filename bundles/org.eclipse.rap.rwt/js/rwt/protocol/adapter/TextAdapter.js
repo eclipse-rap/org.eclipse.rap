@@ -63,8 +63,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Text", {
 
   listeners : rwt.protocol.AdapterUtil.extendControlListeners( [
     "DefaultSelection",
-    "Modify",
-    "verify"
+    "Modify"
   ] ),
 
   listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),

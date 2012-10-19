@@ -27,7 +27,6 @@ qx.Class.define( "rwt.widgets.Text", {
     }
     this._hasDefaultSelectionListener = false;
     this._hasModifyListener = false;
-    this._hasVerifyListener = false;
     this._modifyScheduled = false;
     this._message = null;
     this._messageElement = null;
@@ -107,14 +106,6 @@ qx.Class.define( "rwt.widgets.Text", {
       return this._hasModifyListener;
     },
 
-    setHasVerifyListener : function( value ) {
-      this._hasVerifyListener = value;
-    },
-
-    hasVerifyListener : function() {
-      return this._hasVerifyListener;
-    },
-
     ////////////////
     // event handler
 
@@ -169,7 +160,7 @@ qx.Class.define( "rwt.widgets.Text", {
 
     _handleModification : function() {
       var server = rwt.remote.Server.getInstance();
-      if( !this._modifyScheduled && ( this.hasModifyListener() || this.hasVerifyListener() ) ) {
+      if( !this._modifyScheduled && this.hasModifyListener() ) {
         this._modifyScheduled = true;
         server.sendDelayed( 500 );
         server.onNextSend( this._onSend, this );

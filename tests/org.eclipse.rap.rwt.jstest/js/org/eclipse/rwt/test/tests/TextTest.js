@@ -357,21 +357,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertTrue( text.hasModifyListener() );
     },
 
-    testSetHasVerifyListenerByProtocol : function() {
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Text",
-        "properties" : {
-          "style" : [ "SINGLE" ],
-          "parent" : "w2"
-        }
-      } );
-      TestUtil.protocolListen( "w3", { "verify" : true } );
-      text = ObjectManager.getObject( "w3" );
-      assertTrue( text.hasVerifyListener() );
-    },
-
     testSetTextByProtocol : function() {
       Processor.processOperation( {
         "target" : "w3",
@@ -799,16 +784,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     testSendTextModifyEventWithModifyListener : function() {
       createText();
       text.setHasModifyListener( true );
-
-      text.setValue( "foobar" );
-      TestUtil.forceInterval( Server.getInstance()._delayTimer );
-
-      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Modify" ) );
-    },
-
-    testSendTextModifyEventWithVerifyListener : function() {
-      createText();
-      text.setHasVerifyListener( true );
 
       text.setValue( "foobar" );
       TestUtil.forceInterval( Server.getInstance()._delayTimer );

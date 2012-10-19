@@ -695,31 +695,25 @@ public class TextLCA_Test extends TestCase {
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
 
-    text.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-      }
-    } );
+    text.addListener( SWT.Verify, mock( Listener.class ) );
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( text, "verify" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( text, "Modify" ) );
   }
 
-  public void testRenderRemoveVerifyListener() throws Exception {
-    VerifyListener listener = new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-      }
-    };
-    text.addVerifyListener( listener );
+  public void testRenderVerifyModifyListener() throws Exception {
+    Listener listener = mock( Listener.class );
+    text.addListener( SWT.Verify, listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
 
-    text.removeVerifyListener( listener );
+    text.removeListener( SWT.Verify, listener );
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( text, "verify" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( text, "Modify" ) );
   }
 
   public void testRenderVerifyListenerUnchanged() throws Exception {
@@ -727,15 +721,12 @@ public class TextLCA_Test extends TestCase {
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
 
-    text.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-      }
-    } );
+    text.addListener( SWT.Verify, mock( Listener.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( text, "verify" ) );
+    assertNull( message.findListenOperation( text, "Modify" ) );
   }
 
   public void testRenderInitialText() throws IOException {
