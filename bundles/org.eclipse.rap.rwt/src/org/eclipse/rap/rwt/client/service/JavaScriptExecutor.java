@@ -11,6 +11,9 @@
 package org.eclipse.rap.rwt.client.service;
 
 
+/**
+ * @since 2.0
+ */
 public interface JavaScriptExecutor extends ClientService {
 
   /**
@@ -20,7 +23,6 @@ public interface JavaScriptExecutor extends ClientService {
    * Accessing internals of the web client is strongly discouraged.
    *
    * @param code the JavaScript code to evaluate
-   * @since 2.0
    */
   public void execute( String code );
 
