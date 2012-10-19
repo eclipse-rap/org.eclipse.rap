@@ -35,9 +35,15 @@ qx.Class.define( "rwt.remote.Server", {
     this._sendTimer.addEventListener( "interval", function() {
       this.sendImmediate( true );
      }, this );
+    this._delayTimer = new Timer();
+    this._delayTimer.addEventListener( "interval", function() {
+      this._delayTimer.stop();
+      this.send();
+    }, this );
     this._waitHintTimer = new Timer( 500 );
     this._waitHintTimer.addEventListener( "interval", this._showWaitHint, this );
     this._retryHandler = null;
+    this._sendListeners = [];
   },
 
   destruct : function() {
@@ -106,6 +112,11 @@ qx.Class.define( "rwt.remote.Server", {
         this._event = null;
       }
     },
+    
+    sendDelayed : function( time ) {
+      this._delayTimer.setInterval( time );
+      this._delayTimer.start();
+    },
 
     /**
      * Sends an asynchronous request within 60 milliseconds
@@ -140,6 +151,7 @@ qx.Class.define( "rwt.remote.Server", {
         this._writer = null;
         this._waitHintTimer.start();
         request.send();
+        this._removeSendListeners();
       }
     },
 
@@ -152,6 +164,19 @@ qx.Class.define( "rwt.remote.Server", {
 
     getServerObject : function( target ) {
       return rwt.protocol.ServerObjectFactory.getServerObject( target );
+    },
+
+    onNextSend : function( func, context ) {
+      this._sendListeners.push( [ func, context ] );
+      this.addEventListener( "send", func, context );
+    },
+
+    _removeSendListeners : function() {
+      for( var i = 0; i < this._sendListeners.length; i++ ) {
+        var item = this._sendListeners[ i ];
+        this.removeEventListener( "send", item[ 0 ], item[ 1 ] );
+      }
+      this._sendListeners = [];
     },
 
     ////////////

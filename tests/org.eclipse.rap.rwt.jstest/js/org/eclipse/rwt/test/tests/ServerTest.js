@@ -142,6 +142,61 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ServerTest", {
       TestUtil.forceInterval( fakeServer._timer );
       assertEquals( 1, TestUtil.getRequestsSend() );
       org.eclipse.rwt.test.fixture.FakeServer.getInstance().setUseAsync( false );
+    },
+
+    testOnNextSend : function() {
+      var logger = TestUtil.getLogger();
+      server.onNextSend( logger.log, logger );
+
+      server.send();
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
+    testOnNextSendAttachTwice : function() {
+      var logger = TestUtil.getLogger();
+      server.onNextSend( logger.log, logger );
+      server.onNextSend( logger.log, logger );
+
+      server.send();
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
+    testOnNextSendSendTwice : function() {
+      var logger = TestUtil.getLogger();
+      server.onNextSend( logger.log, logger );
+
+      server.send();
+      server.send();
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
+    testDelayedSend : function() {
+      var logger = TestUtil.getLogger();
+      server.addEventListener( "send", logger.log, logger );
+      server.sendDelayed( 500 );
+
+      assertEquals( 500, server._delayTimer.getInterval() );
+      TestUtil.forceInterval( server._delayTimer );
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
+    testDelayedSendAborted : function() {
+      var logger = TestUtil.getLogger();
+      server.addEventListener( "send", logger.log, logger );
+
+      server.sendDelayed( 500 );
+      server.send();
+      try {
+        TestUtil.forceInterval( server._delayTimer );
+      } catch( ex ) {
+        // expected
+      }
+
+      assertEquals( 1, logger.getLog().length );
     }
 
   }

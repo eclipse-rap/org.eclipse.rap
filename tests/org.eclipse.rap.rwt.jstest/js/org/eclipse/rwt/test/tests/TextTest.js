@@ -801,9 +801,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setHasModifyListener( true );
 
       text.setValue( "foobar" );
-      TestUtil.forceTimerOnce();
+      TestUtil.forceInterval( Server.getInstance()._delayTimer );
 
-      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "modifyText" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Modify" ) );
     },
 
     testSendTextModifyEventWithVerifyListener : function() {
@@ -811,20 +811,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setHasVerifyListener( true );
 
       text.setValue( "foobar" );
-      TestUtil.forceTimerOnce();
+      TestUtil.forceInterval( Server.getInstance()._delayTimer );
 
-      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "modifyText" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Modify" ) );
     },
 
     testSendNoModifyEvent : function() {
       createText();
 
       text.setValue( "foobar" );
-      TestUtil.forceTimerOnce();
+      try {
+        TestUtil.forceInterval( Server.getInstance()._delayTimer );
+      } catch( ex ) {
+        // expected
+      }
 
       assertEquals( 0, TestUtil.getRequestsSend() );
       Server.getInstance().send();
-      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "modifyText" ) );
+      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Modify" ) );
     },
 
     testDontSendTextModifyEventTwice : function() {
@@ -833,10 +837,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       text.setValue( "foobar" );
       text.setValue( "barfoo" );
-      TestUtil.forceTimerOnce();
+      TestUtil.forceInterval( Server.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "modifyText" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Modify" ) );
       assertEquals( "barfoo", TestUtil.getMessageObject().findSetProperty( "w3", "text" ) );
     },
 

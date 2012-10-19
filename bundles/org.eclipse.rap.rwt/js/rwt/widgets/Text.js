@@ -9,6 +9,8 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
 qx.Class.define( "rwt.widgets.Text", {
 
   extend : rwt.widgets.base.BasicText,
@@ -26,7 +28,7 @@ qx.Class.define( "rwt.widgets.Text", {
     this._hasDefaultSelectionListener = false;
     this._hasModifyListener = false;
     this._hasVerifyListener = false;
-    this._requestScheduled = false;
+    this._modifyScheduled = false;
     this._message = null;
     this._messageElement = null;
     this._searchIconElement = null;
@@ -166,34 +168,21 @@ qx.Class.define( "rwt.widgets.Text", {
     },
 
     _handleModification : function() {
-      if( !this._requestScheduled ) {
-        this._requestScheduled = true;
-        var req = rwt.remote.Server.getInstance();
-        req.addEventListener( "send", this._onSend, this );
-        if( this.hasModifyListener() || this.hasVerifyListener() ) {
-          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-          var id = widgetManager.findIdByWidget( this );
-          req.addEvent( "org.eclipse.swt.events.modifyText", id );
-          rwt.client.Timer.once( this._delayedSend, this, 500 );
-        }
+      var server = rwt.remote.Server.getInstance();
+      if( !this._modifyScheduled && ( this.hasModifyListener() || this.hasVerifyListener() ) ) {
+        this._modifyScheduled = true;
+        server.sendDelayed( 500 );
+        server.onNextSend( this._onSend, this );
       }
-    },
-
-    _delayedSend : function( event ) {
-      if( this._requestScheduled ) {
-        var req = rwt.remote.Server.getInstance();
-        req.send();
-      }
-    },
-
-    _onSend : function( event ) {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( this );
-      var req = rwt.remote.Server.getInstance();
-      req.addParameter( id + ".text", this.getComputedValue() );
+      server.getServerObject( this ).set( "text", this.getComputedValue() );
       this._detectSelectionChange();
-      req.removeEventListener( "send", this._onSend, this );
-      this._requestScheduled = false;
+    },
+
+    _onSend : function() {
+      if( this._modifyScheduled ) {
+        rwt.remote.Server.getInstance().getServerObject( this ).notify( "Modify", null, true );
+        this._modifyScheduled = false;
+      }
     },
 
     /*
@@ -571,3 +560,6 @@ qx.Class.define( "rwt.widgets.Text", {
   }
 
 } );
+
+}());
+
