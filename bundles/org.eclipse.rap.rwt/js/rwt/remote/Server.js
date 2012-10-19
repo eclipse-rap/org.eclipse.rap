@@ -130,6 +130,7 @@ qx.Class.define( "rwt.remote.Server", {
      * since the last request will be sent.
      */
     sendImmediate : function( async ) {
+      this._delayTimer.stop();
       if( this._requestCounter === -1 ) {
         // NOTE: Delay sending the request until requestCounter is set
         // TOOD [tb] : This would not work with synchronous requests - bug?
