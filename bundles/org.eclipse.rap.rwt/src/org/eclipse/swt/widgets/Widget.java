@@ -147,7 +147,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     this.style = style;
-    this.display = parent.display;
+    display = parent.display;
     reskinWidget();
   }
 
@@ -379,7 +379,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
 
   ///////////////////////////////////////////
   // Methods to get/set single and keyed data
-  
+
   /**
    * Returns the <code>Display</code> that is associated with
    * the receiver.
@@ -665,9 +665,9 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    *
    * @see Listener
    * @see #addListener
-   * 
+   *
    * @noreference This method is not intended to be referenced by clients.
-   * @sine 2.0
+   * @since 2.0
    */
   protected void removeListener( int eventType, SWTEventListener listener ) {
     checkWidget();
