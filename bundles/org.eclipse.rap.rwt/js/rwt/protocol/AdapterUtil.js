@@ -166,7 +166,7 @@ rwt.protocol.AdapterUtil = {
     "MouseUp",
     "MouseDoubleClick",
     "KeyDown",
-    "traverse",
+    "Traverse",
     "MenuDetect",
     "Help",
     "Activate",
@@ -177,7 +177,7 @@ rwt.protocol.AdapterUtil = {
     "KeyDown" : function( widget, value ) {
       widget.setUserData( "keyListener", value ? true : null );
     },
-    "traverse" : function( widget, value ) {
+    "Traverse" : function( widget, value ) {
       widget.setUserData( "traverseListener", value ? true : null );
     },
     "FocusIn" : function( widget, value ) {

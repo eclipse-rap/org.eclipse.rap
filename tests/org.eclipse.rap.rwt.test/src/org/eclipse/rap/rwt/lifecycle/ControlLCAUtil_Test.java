@@ -43,7 +43,6 @@ import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -959,42 +958,31 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderListenTraverse( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "traverse" ) );
+    assertNull( message.findListenOperation( control, "Traverse" ) );
   }
 
   public void testRenderListenTraverse() {
-    TraverseListener listener = new TraverseListener() {
-      public void keyTraversed( TraverseEvent e ) {
-      }
-    };
-    control.addTraverseListener( listener );
+    control.addTraverseListener( mock( TraverseListener.class ) );
     ControlLCAUtil.renderListenTraverse( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "traverse" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, "Traverse" ) );
   }
 
   public void testRenderListenTraverseUnchanged() {
-    TraverseListener listener = new TraverseListener() {
-      public void keyTraversed( TraverseEvent e ) {
-      }
-    };
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
-    control.addTraverseListener( listener );
+    control.addTraverseListener( mock( TraverseListener.class ) );
 
     Fixture.preserveWidgets();
     ControlLCAUtil.renderListenTraverse( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "traverse" ) );
+    assertNull( message.findListenOperation( control, "Traverse" ) );
   }
 
   public void testRenderListenTraverseRemoved() {
-    TraverseListener listener = new TraverseListener() {
-      public void keyTraversed( TraverseEvent e ) {
-      }
-    };
+    TraverseListener listener = mock( TraverseListener.class );
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.addTraverseListener( listener );
@@ -1004,7 +992,7 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderListenTraverse( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "traverse" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, "Traverse" ) );
   }
 
   public void testRenderInitialListenMenuDetect() {

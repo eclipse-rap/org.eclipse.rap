@@ -20,8 +20,6 @@ import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.TraverseEvent;
-import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Listener;
 
@@ -78,9 +76,9 @@ public class ControlLCATestUtil {
   public static void testTraverseListener( Control control ) throws IOException {
     Fixture.markInitialized( control.getDisplay() );
     Fixture.markInitialized( control );
-    testRenderAddTraverseListener( control );
-    testRenderRemoveTraverseListener( control );
-    testRenderTraverseListenerUnchanged( control );
+    testRenderAddListener( control, SWT.Traverse );
+    testRenderRemoveListener( control, SWT.Traverse );
+    testRenderListenerUnchanged( control, SWT.Traverse );
   }
 
   public static void testMenuDetectListener( Control control ) throws IOException {
@@ -150,57 +148,6 @@ public class ControlLCATestUtil {
     control.removeListener( eventType, listener );
   }
 
-  private static void testRenderAddTraverseListener( Control control ) throws IOException {
-    TraverseListener listener = new TraverseListener() {
-      public void keyTraversed( TraverseEvent e ) {
-      }
-    };
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.addTraverseListener( listener );
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( control, "traverse" ) );
-
-    control.removeTraverseListener( listener );
-  }
-
-  private static void testRenderRemoveTraverseListener( Control control ) throws IOException {
-    TraverseListener listener = new TraverseListener() {
-      public void keyTraversed( TraverseEvent e ) {
-      }
-    };
-    control.addTraverseListener( listener );
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.removeTraverseListener( listener );
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( control, "traverse" ) );
-  }
-
-  private static void testRenderTraverseListenerUnchanged( Control control ) throws IOException {
-    TraverseListener listener = new TraverseListener() {
-      public void keyTraversed( TraverseEvent e ) {
-      }
-    };
-    Fixture.fakeNewRequest( control.getDisplay() );
-    Fixture.preserveWidgets();
-
-    control.addTraverseListener( listener );
-    Fixture.preserveWidgets();
-    WidgetUtil.getLCA( control ).renderChanges( control );
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "traverse" ) );
-
-    control.removeTraverseListener( listener );
-  }
-
   private static String getListenerName( int eventType ) {
     String result = "None";
     switch( eventType ) {
@@ -237,6 +184,9 @@ public class ControlLCATestUtil {
       case SWT.KeyUp:
         // [if] Note: we are sending only KeyDown event from the client
         result = "KeyDown";
+        break;
+      case SWT.Traverse:
+        result = "Traverse";
         break;
     }
     return result;

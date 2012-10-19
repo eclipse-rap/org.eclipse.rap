@@ -694,7 +694,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     testTraverseListener : function() {
       var shell = this._protocolCreateShell();
-      this._protocolListen( { "traverse" : true } );
+      this._protocolListen( { "Traverse" : true } );
       assertTrue( shell.getUserData( "traverseListener" ) );
       this._disposeShell();
     },

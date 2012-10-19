@@ -62,7 +62,7 @@ public class ControlLCAUtil {
   private static final String PROP_MOUSE_DOUBLE_CLICK_LISTENER = "MouseDoubleClick";
   private static final String PROP_MOUSE_UP_LISTENER = "MouseUp";
   private static final String PROP_KEY_LISTENER = "KeyDown";
-  private static final String PROP_TRAVERSE_LISTENER = "traverse";
+  private static final String PROP_TRAVERSE_LISTENER = "Traverse";
   private static final String PROP_MENU_DETECT_LISTENER = "MenuDetect";
   private static final String PROP_TAB_INDEX = "tabIndex";
   private static final String PROP_CURSOR = "cursor";
