@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
 
@@ -34,8 +33,6 @@ import org.eclipse.swt.widgets.Widget;
 public class SelectionEvent extends TypedEvent {
 
   private static final long serialVersionUID = 1L;
-
-  private static final int[] EVENT_TYPES = { SWT.Selection, SWT.DefaultSelection };
 
   /**
    * The x location of the selected area.
