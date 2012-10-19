@@ -76,20 +76,28 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
     _shouldSend : function( eventType, keyCode, charCode, domEvent, control ) {
       var result = false;
       if( this._isRelevant( keyCode, eventType, domEvent ) ) {
-        if( this._hasTraverseListener( control ) && this._isTraverseKey( keyCode ) ) {
+        result =    this._shouldSendTraverse( keyCode, charCode, domEvent, control )
+                 || this._shouldSendKeyDown( keyCode, charCode, domEvent, control );
+      }
+      return result;
+    },
+
+    _shouldSendTraverse : function( keyCode, charCode, domEvent, control ) {
+      return this._hasTraverseListener( control ) && this._isTraverseKey( keyCode );
+    },
+
+    _shouldSendKeyDown : function( keyCode, charCode, domEvent, control ) {
+      var result = false;
+      if( this._hasKeyListener( control ) ) {
+        var activeKeys = control.getUserData( "activeKeys" );
+        if( activeKeys ) {
+          result = this._isActive( activeKeys, domEvent, keyCode, charCode );
+        } else {
           result = true;
         }
-        if( !result && this._hasKeyListener( control ) ) {
-          var activeKeys = control.getUserData( "activeKeys" );
-          if( activeKeys ) {
-            result = this._isActive( activeKeys, domEvent, keyCode, charCode );
-          } else {
-            result = true;
-          }
-        }
-        if( !result ) {
-          result = this._isActive( this._keyBindings, domEvent, keyCode, charCode );
-        }
+      }
+      if( !result ) {
+        result = this._isActive( this._keyBindings, domEvent, keyCode, charCode );
       }
       return result;
     },
@@ -164,7 +172,12 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
         "charCode" : finalCharCode
       };
       org.eclipse.swt.EventUtil.addModifierToProperties( properties );
-      serverObject.notify( "KeyDown", properties, true );
+      if( this._shouldSendTraverse( keyCode, charCode, domEvent, widget ) ) {
+        serverObject.notify( "Traverse", properties, true );
+      }
+      if( this._shouldSendKeyDown( keyCode, charCode, domEvent, widget ) ) {
+        serverObject.notify( "KeyDown", properties, true );
+      }
     },
 
     ///////////////

@@ -293,7 +293,7 @@ public class ControlLCAUtil_Test extends TestCase {
     shell.addListener( SWT.KeyDown, listener );
     shell.addListener( SWT.KeyUp, listener );
 
-    fakeKeyDown( getId( shell ), 27, 0, "" );
+    fakeTraverse( getId( shell ), 27, 0, "" );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 3, eventLog.size() );
@@ -1047,13 +1047,21 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( control, "MenuDetect" ) );
   }
 
-
   private void fakeKeyDown( String target, int keyCode, int charCode, String modifier ) {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( ClientMessageConst.EVENT_PARAM_KEY_CODE, Integer.valueOf( keyCode ) );
     properties.put( ClientMessageConst.EVENT_PARAM_CHAR_CODE, Integer.valueOf( charCode ) );
     properties.put( ClientMessageConst.EVENT_PARAM_MODIFIER, modifier );
     Fixture.fakeNotifyOperation( target, ClientMessageConst.EVENT_KEY_DOWN, properties  );
+  }
+
+  private void fakeTraverse( String target, int keyCode, int charCode, String modifier ) {
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( ClientMessageConst.EVENT_PARAM_KEY_CODE, Integer.valueOf( keyCode ) );
+    properties.put( ClientMessageConst.EVENT_PARAM_CHAR_CODE, Integer.valueOf( charCode ) );
+    properties.put( ClientMessageConst.EVENT_PARAM_MODIFIER, modifier );
+    Fixture.fakeNotifyOperation( target, ClientMessageConst.EVENT_KEY_DOWN, properties  );
+    Fixture.fakeNotifyOperation( target, ClientMessageConst.EVENT_TRAVERSE, properties  );
   }
 
   private static void fakeSelectionEvent( Control control, String key, String value ) {

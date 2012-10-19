@@ -35,6 +35,7 @@ public final class ClientMessageConst {
   public static final String EVENT_MOUSE_UP = "MouseUp";
   public static final String EVENT_MOUSE_DOUBLE_CLICK = "MouseDoubleClick";
   public static final String EVENT_KEY_DOWN = "KeyDown";
+  public static final String EVENT_TRAVERSE = "Traverse";
   public static final String EVENT_HELP = "Help";
   public static final String EVENT_MENU_DETECT = "MenuDetect";
 

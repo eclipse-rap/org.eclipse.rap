@@ -155,6 +155,21 @@ public class ControlLCAUtil {
   }
 
   public static void processKeyEvents( Control control ) {
+    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_TRAVERSE ) ) {
+      int keyCode = readEventIntProperty( control,
+                                          ClientMessageConst.EVENT_TRAVERSE,
+                                          ClientMessageConst.EVENT_PARAM_KEY_CODE );
+      int charCode = readEventIntProperty( control,
+                                           ClientMessageConst.EVENT_TRAVERSE,
+                                           ClientMessageConst.EVENT_PARAM_CHAR_CODE );
+      int stateMask = EventLCAUtil.readStateMask( control, ClientMessageConst.EVENT_TRAVERSE );
+      int traverseKey = getTraverseKey( keyCode, stateMask );
+      if( traverseKey != SWT.TRAVERSE_NONE ) {
+        Event event = createKeyEvent( keyCode, charCode, stateMask );
+        event.detail = traverseKey;
+        control.notifyListeners( SWT.Traverse, event );
+      }
+    }
     if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_KEY_DOWN ) ) {
       int keyCode = readEventIntProperty( control,
                                           ClientMessageConst.EVENT_KEY_DOWN,
@@ -163,14 +178,7 @@ public class ControlLCAUtil {
                                            ClientMessageConst.EVENT_KEY_DOWN,
                                            ClientMessageConst.EVENT_PARAM_CHAR_CODE );
       int stateMask = EventLCAUtil.readStateMask( control, ClientMessageConst.EVENT_KEY_DOWN );
-      int traverseKey = getTraverseKey( keyCode, stateMask );
-      Event event;
-      if( traverseKey != SWT.TRAVERSE_NONE ) {
-        event = createKeyEvent( keyCode, charCode, stateMask );
-        event.detail = traverseKey;
-        control.notifyListeners( SWT.Traverse, event );
-      }
-      event = createKeyEvent( keyCode, charCode, stateMask );
+      Event event = createKeyEvent( keyCode, charCode, stateMask );
       control.notifyListeners( SWT.KeyDown, event );
       event = createKeyEvent( keyCode, charCode, stateMask );
       control.notifyListeners( SWT.KeyUp, event );

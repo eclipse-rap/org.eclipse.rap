@@ -441,6 +441,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       this._disposeTextWidget( text );
     },
 
+    testNotifyTraverse : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var text = this._createTextWidget();
+
+      TestUtil.press( text, 9, false );
+
+      var msg = TestUtil.getMessageObject();
+      assertEquals( 9, msg.findNotifyProperty( "w3", "Traverse", "keyCode" ) );
+      assertEquals( 0, msg.findNotifyProperty( "w3", "Traverse", "charCode" ) );
+      this._disposeTextWidget( text );
+    },
+
     testKeyCodeLowerCase : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
@@ -688,7 +700,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
         "target" : "w3",
         "action" : "listen",
         "properties" : {
-          "KeyDown" : true
+          "KeyDown" : true,
+          "Traverse" : true
         }
       } );
       var text = rwt.protocol.ObjectRegistry.getObject( "w3" );
