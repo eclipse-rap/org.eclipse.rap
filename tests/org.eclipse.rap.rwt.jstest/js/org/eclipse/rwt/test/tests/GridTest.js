@@ -303,6 +303,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       widget.destroy();
     },
 
+    testSetHasExpandListenerByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      TestUtil.protocolListen( "w3", { "Expand" : true } );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w3" );
+      assertTrue( widget._hasExpandListener );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHasCollapseListenerByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      TestUtil.protocolListen( "w3", { "Collapse" : true } );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w3" );
+      assertTrue( widget._hasCollapseListener );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testSetAlwaysHideSelectionByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
@@ -1715,6 +1737,47 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertFalse( message.findSetProperty( "wtest", "expanded" ) );
+      wm.remove( child1 );
+      tree.destroy();
+    },
+
+    testSendExpandEvent : function() {
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      TestUtil.initRequestLog();
+      var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
+      var child1 = this._createItem( tree.getRootItem() );
+      this._createItem( child1 );
+      wm.add( tree, "w3", true );
+      wm.add( child1, "wtest", false );
+      tree.setHasExpandListener( true );
+
+      child1.setExpanded( true );
+
+      //assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "wtest", message.findNotifyProperty( "w3", "Expand", "item" ) );
+      wm.remove( child1 );
+      tree.destroy();
+    },
+
+    testSendCollapseEvent : function() {
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      TestUtil.initRequestLog();
+      var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
+      var child1 = this._createItem( tree.getRootItem() );
+      this._createItem( child1 );
+      wm.add( tree, "w3", true );
+      wm.add( child1, "wtest", false );
+      TestUtil.fakeResponse( true );
+      child1.setExpanded( true );
+      tree.setHasCollapseListener( true );
+      TestUtil.fakeResponse( false );
+
+      child1.setExpanded( false );
+
+      //assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "wtest", message.findNotifyProperty( "w3", "Collapse", "item" ) );
       wm.remove( child1 );
       tree.destroy();
     },

@@ -39,6 +39,7 @@ import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Tree;
@@ -79,6 +80,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static final String PROP_SCROLLBARS_SELECTION_LISTENER = "scrollBarsSelection";
   private static final String PROP_SELECTION_LISTENER = "Selection";
   private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
+  private static final String PROP_EXPAND_LISTENER = "Expand";
+  private static final String PROP_COLLAPSE_LISTENER = "Collapse";
   private static final String PROP_ENABLE_CELL_TOOLTIP = "enableCellToolTip";
   private static final String PROP_CELL_TOOLTIP_TEXT = "cellToolTipText";
   private static final String PROP_MARKUP_ENABLED = "markupEnabled";
@@ -116,6 +119,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
     preserveListener( tree,
                       PROP_DEFAULT_SELECTION_LISTENER,
                       tree.isListening( SWT.DefaultSelection ) );
+    preserveListener( tree, PROP_EXPAND_LISTENER, tree.isListening( SWT.Expand ) );
+    preserveListener( tree, PROP_COLLAPSE_LISTENER, tree.isListening( SWT.Collapse ) );
     preserveProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ) );
     preserveProperty( tree, PROP_CELL_TOOLTIP_TEXT, null );
   }
@@ -127,6 +132,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
     readTopItemIndex( tree );
     processWidgetSelectedEvent( tree );
     processWidgetDefaultSelectedEvent( tree );
+    processTreeEvent( tree, SWT.Expand, "Expand" );
+    processTreeEvent( tree, SWT.Collapse, "Collapse" );
     readCellToolTipTextRequested( tree );
     ControlLCAUtil.processEvents( tree );
     ControlLCAUtil.processKeyEvents( tree );
@@ -194,6 +201,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
                     PROP_DEFAULT_SELECTION_LISTENER,
                     tree.isListening( SWT.DefaultSelection ),
                     false );
+    renderListener( tree, PROP_EXPAND_LISTENER, tree.isListening( SWT.Expand ), false );
+    renderListener( tree, PROP_COLLAPSE_LISTENER, tree.isListening( SWT.Collapse ), false );
     renderProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ), false );
     renderProperty( tree, PROP_CELL_TOOLTIP_TEXT, getCellToolTipText( tree ), null );
   }
@@ -224,6 +233,18 @@ public final class TreeLCA extends AbstractWidgetLCA {
       String value = readEventPropertyValue( tree, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
       Item treeItem = getItem( tree, value );
       ControlLCAUtil.processDefaultSelection( tree, treeItem );
+    }
+  }
+
+  /////////////////////////////////
+  // Process expand/collapse events
+
+  private static void processTreeEvent( Tree tree, int eventType, String eventName ) {
+    if( WidgetLCAUtil.wasEventSent( tree, eventName ) ) {
+      String value = readEventPropertyValue( tree, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
+      Event event = new Event();
+      event.item = getItem( tree, value );
+      tree.notifyListeners( eventType, event );
     }
   }
 

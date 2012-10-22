@@ -145,8 +145,10 @@ public class KeyEvent_Test extends TestCase {
                                  parameters  );
   }
 
-  private static void fakeTreeRequest( Widget item ) {
-    Fixture.fakeSetParameter( getId( item ), "expanded", Boolean.TRUE  );
+  private static void fakeTreeRequest( TreeItem item ) {
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
+    Fixture.fakeNotifyOperation( getId( item.getParent() ), "Expand", parameters );
   }
 
   private static void fakeHelpRequest( Widget widget ) {

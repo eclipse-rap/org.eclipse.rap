@@ -104,6 +104,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
   listeners : rwt.protocol.AdapterUtil.extendControlListeners( [
     "Selection",
     "DefaultSelection",
+    "Expand",
+    "Collapse",
     "scrollBarsSelection"
   ] ),
 
