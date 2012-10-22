@@ -26,8 +26,8 @@ public final class ClientMessageConst {
   public static final String EVENT_WIDGET_MOVED = "widgetMoved";
   public static final String EVENT_CONTROL_ACTIVATED = "controlActivated";
   public static final String EVENT_SHELL_ACTIVATED = "shellActivated";
-  public static final String EVENT_TREE_EXPANDED = "treeExpanded";
-  public static final String EVENT_TREE_COLLAPSED = "treeCollapsed";
+  public static final String EVENT_EXPAND = "Expand";
+  public static final String EVENT_COLLAPSE = "Collapse";
   public static final String EVENT_MODIFY_TEXT = "modifyText";
   public static final String EVENT_MENU_SHOWN = "menuShown";
   public static final String EVENT_MENU_HIDDEN = "menuHidden";
