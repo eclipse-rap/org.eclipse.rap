@@ -9,10 +9,16 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
+var register = function( widget ) {
+  rwt.protocol.ObjectRegistry.add( "w" + widget.toHashCode(), widget );
+};
+
 qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
 
   extend : qx.core.Object,
-  
+
   // NOTE : Many of these tests use the Tree as an intermediate layer for tests.
   //        This is for historical reasons and should be adapted step by step.
   members : {
@@ -103,10 +109,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
       var root = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      register( root );
       root.setItemCount( 10 );
       for( var i = 0; i < 10; i++ ) {
         var item = new rwt.widgets.GridItem( root, i );
         item.setTexts( [ "item" + i ] );
+        register( item );
       }
       root.setExpanded( true );
       TestUtil.flush();
@@ -130,21 +138,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
         style : function( states ) {
           return {
             "itemBackground" : states.selected ? "red" : "blue",
-            "itemBackgroundGradient" : states.selected ?  grad1 : grad2, 
+            "itemBackgroundGradient" : states.selected ?  grad1 : grad2,
             "itemBackgroundImage" : states.selected ? "foo.jpg" : "bar.jpg",
             "itemForeground" : "undefined",
             "overlayBackground" : states.selected ? "red" : "blue",
-            "overlayBackgroundGradient" : states.selected ?  grad1 : grad2, 
+            "overlayBackgroundGradient" : states.selected ?  grad1 : grad2,
             "overlayBackgroundImage" : states.selected ? "foo.jpg" : "bar.jpg",
             "overlayForeground" : "undefined",
             "backgroundImage" : null
           };
         }
-      } ); 
+      } );
       tree.setItemCount( 1 );
       var root = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      register( root );
       root.setItemCount( 1 );
       var item = new rwt.widgets.GridItem( root, 0 );
+      register( item );
       root.setExpanded( true );
       tree.selectItem( item );
       TestUtil.flush();
@@ -219,7 +229,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       tree.setLinesVisible( true );
       TestUtil.flush();
       var border = tree._rowContainer._getHorizontalGridBorder();
-      assertIdentical( border, row.getBorder() );      
+      assertIdentical( border, row.getBorder() );
       tree.destroy();
     },
 
@@ -228,7 +238,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       var tree = this._createDefaultTree( true );
       tree.setHeight( 0 );
       tree.setLinesVisible( true );
-      tree.setHeight( 100 );      
+      tree.setHeight( 100 );
       TestUtil.flush();
       var border = tree._rowContainer._getHorizontalGridBorder();
       var row = tree._rowContainer._children[ 0 ];
@@ -269,8 +279,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     // TODO [tb] : refactor to create TreeRowContainer
     _createDefaultTree : function( noflush ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      this._fakeAppearance(); 
-      var tree = new rwt.widgets.Grid( { 
+      this._fakeAppearance();
+      var tree = new rwt.widgets.Grid( {
         "appearance": "tree",
         "fullSelection": true,
         "selectionPadding" : [ 2, 4 ],
@@ -308,7 +318,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
             "backgroundImage" : null
           }
         }
-      }; 
+      };
       TestUtil.fakeAppearance( "tree-indent", empty );
       TestUtil.fakeAppearance( "tree-row", empty );
     },
@@ -322,3 +332,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
   }
 
 } );
+
+}());
+

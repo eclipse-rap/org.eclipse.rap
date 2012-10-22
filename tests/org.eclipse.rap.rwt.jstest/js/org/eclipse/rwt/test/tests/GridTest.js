@@ -406,7 +406,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     testSetItemMetrics : function() {
       var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
-      var item = new rwt.widgets.GridItem();
+      var item = this._createItem();
       item.setTexts( [ "Test", "Test2" ] );
       tree.setItemMetrics( 0, 0, 0, 0, 0, 0, 0 );
       tree.setItemMetrics( 1, 50, 40, 52, 13, 65, 25 );
@@ -560,7 +560,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setItemCount( 10 );
       var item;
       for( var i = 0; i < 10; i++ ) {
-        item = new rwt.widgets.GridItem( tree.getRootItem(), i );
+        item = this._createItem( tree.getRootItem(), i );
         item.setTexts( [ "Test" + i ] );
       }
       TestUtil.flush();
@@ -581,7 +581,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var item = tree._rootItem.getLastChild();
       TestUtil.flush();
       item.dispose();
-      item = new rwt.widgets.GridItem( tree.getRootItem(), 9 );
+      item = this._createItem( tree.getRootItem(), 9 );
       item.setTexts( [ "newItem" ] );
       TestUtil.flush();
       var sample = tree._rowContainer._getTargetNode().childNodes[ 9 ];
@@ -630,10 +630,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       tree.setItemCount( 10 );
       for( var i = 0; i < 10; i++ ) {
-        var item = new rwt.widgets.GridItem( tree.getRootItem(), i );
+        var item = this._createItem( tree.getRootItem(), i );
         item.setTexts( [ "Test" + i ] );
         item.setItemCount( 1 );
-        var subitem = new rwt.widgets.GridItem( item, 0 );
+        var subitem = this._createItem( item, 0 );
         subitem.setTexts( [ "Test" + i + "sub" ] );
       }
       var items = tree.getRootItem()._children;
@@ -650,10 +650,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       tree.setItemCount( 10 );
       for( var i = 0; i < 10; i++ ) {
-        var item = new rwt.widgets.GridItem( tree.getRootItem(), i );
+        var item = this._createItem( tree.getRootItem(), i );
         item.setTexts( [ "Test" + i ] );
         item.setItemCount( 1 );
-        var subitem = new rwt.widgets.GridItem( item, 0 );
+        var subitem = this._createItem( item, 0 );
         subitem.setTexts( [ "Test" + i + "sub" ] );
       }
       var items = tree.getRootItem()._children;
@@ -682,13 +682,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         }
       } );
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       item.setTexts( [ "foo" ] );
       TestUtil.flush();
       var node = tree._rowContainer._children[ 0 ]._getTargetNode();
       assertTrue( node.innerHTML.indexOf( "empty.gif" ) != -1 );
       item.setItemCount( 1 );
-      var item2 = new rwt.widgets.GridItem( item, 0 );
+      var item2 = this._createItem( item, 0 );
       TestUtil.flush();
       assertTrue( node.innerHTML.indexOf( "children.gif" ) != -1 );
       item2.dispose();
@@ -810,7 +810,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fillTree( tree, 100 );
       var topItem = tree._rootItem.getChild( 55 );
       topItem.setItemCount( 1 );
-      var child = new rwt.widgets.GridItem( topItem, 0 );
+      var child = this._createItem( topItem, 0 );
       child.setTexts( [ "subitem" ] );
       org.eclipse.swt.EventUtil.setSuspended( true );
       tree.setTopItemIndex( 55 );
@@ -952,7 +952,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fillTree( tree, 100 );
       var lastItem = tree._rootItem.getChild( 99 );
       lastItem.setItemCount( 1 );
-      new rwt.widgets.GridItem( lastItem, 0 );
+      this._createItem( lastItem, 0 );
       TestUtil.flush();
       assertEquals( 2000, tree._vertScrollBar.getMaximum() );
       lastItem.setExpanded( true );
@@ -1090,7 +1090,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testDestroy : function() {
       var tree = this._createDefaultTree( false, false, "virtual" );
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       tree._onShowResizeLine( { "position" : 0 } );
       tree.setHeaderHeight( 20 );
       tree.setHeaderVisible( true );
@@ -1150,7 +1150,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testSetCheckBoxMetrics : function() {
       var tree = this._createDefaultTree( false, false, "check", [ 5, 20 ] );
       tree.setItemCount( 1 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 0 );
       assertEquals( 5, tree._config.checkBoxLeft );
       assertEquals( 20, tree._config.checkBoxWidth );
       tree.destroy();
@@ -1166,7 +1166,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree( false, false, "check", [ 5, 20 ]  );
       this._fakeCheckBoxAppearance();
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.add( tree, "w11", true );
       wm.add( item, "w2", false );
@@ -1193,7 +1193,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setCellCheck( 0, true );
       this._fakeCheckBoxAppearance();
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.add( tree, "w11", true );
       wm.add( item, "w2", false );
@@ -1211,7 +1211,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setCellCheck( 0, true );
       this._fakeCheckBoxAppearance();
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.add( tree, "w11", true );
       wm.add( item, "w2", false );
@@ -1230,7 +1230,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.initRequestLog();
       this._fakeCheckBoxAppearance();
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.add( tree, "w11", true );
       wm.add( item, "w2", false );
@@ -1252,7 +1252,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fakeCheckBoxAppearance();
       tree.setItemCount( 1 );
       tree.setHasSelectionListener( true );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.add( tree, "w11", true );
       wm.add( item, "w2", false );
@@ -1274,7 +1274,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fakeCheckBoxAppearance();
       tree.setItemCount( 1 );
       tree.setColumnCount( 4 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.add( tree, "w11", true );
       wm.add( item, "w2", false );
@@ -1314,7 +1314,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testSelectionClick : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       TestUtil.flush();
       assertFalse( tree.isItemSelected( item ) );
       TestUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
@@ -1325,8 +1325,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testDeselect : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 2 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      var item1 = this._createItem( tree.getRootItem(), 0 );
+      var item2 = this._createItem( tree.getRootItem(), 1 );
       TestUtil.flush();
       var node1 = tree._rowContainer._getTargetNode().childNodes[ 0 ];
       var node2 = tree._rowContainer._getTargetNode().childNodes[ 1 ];
@@ -1373,9 +1373,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       TestUtil.initRequestLog();
       tree.setItemCount( 3 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      this._createItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 1 );
+      var item2 = this._createItem( tree.getRootItem(), 2 );
       wm.add( tree, "w11" );
       wm.add( item2, "w2" );
       TestUtil.flush();
@@ -1392,9 +1392,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var req = rwt.remote.Server.getInstance();
       var tree = this._createDefaultTree();
       tree.setItemCount( 3 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      this._createItem( tree.getRootItem(), 0 );
+      var item1 = this._createItem( tree.getRootItem(), 1 );
+      var item2 = this._createItem( tree.getRootItem(), 2 );
       wm.add( tree, "w11" );
       wm.add( item2, "w2" );
       var rows = tree._rowContainer._children;
@@ -1416,8 +1416,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.initRequestLog();
       tree.setItemCount( 3 );
       wm.add( tree, "w11" );
-      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      this._createItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       TestUtil.clickDOM( tree._rowContainer._children[ 1 ]._getTargetNode() );
       TestUtil.flush();
@@ -1430,9 +1430,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testNoMultiSelection : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      var item1 = this._createItem( tree.getRootItem(), 1 );
+      var item2 = this._createItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       var node0 = tree._rowContainer._getTargetNode().childNodes[ 0 ];
       var node2 = tree._rowContainer._getTargetNode().childNodes[ 2 ];
@@ -1449,9 +1449,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testCtrlMultiSelection : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      var item1 = this._createItem( tree.getRootItem(), 1 );
+      var item2 = this._createItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       TestUtil.ctrlClick( tree._rowContainer._children[ 2 ] );
@@ -1464,9 +1464,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testCtrlMultiSelectionDeselection : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      var item1 = this._createItem( tree.getRootItem(), 1 );
+      var item2 = this._createItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       TestUtil.ctrlClick( tree._rowContainer._children[ 2 ] );
@@ -1481,9 +1481,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testCtrlMultiSelectionSingleSelection : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      var item1 = this._createItem( tree.getRootItem(), 1 );
+      var item2 = this._createItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       TestUtil.ctrlClick( tree._rowContainer._children[ 2 ] );
@@ -1497,9 +1497,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testShiftMultiSelection : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      var item1 = this._createItem( tree.getRootItem(), 1 );
+      var item2 = this._createItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       TestUtil.ctrlClick( tree._rowContainer._children[ 0 ] );
@@ -1513,9 +1513,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testShiftMultiSelectionWithoutFocusItem : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      var item1 = this._createItem( tree.getRootItem(), 1 );
+      var item2 = this._createItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       TestUtil.shiftClick( tree._rowContainer._children[ 1 ] );
       assertFalse( tree.isItemSelected( item0 ) );
@@ -1527,9 +1527,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testShiftMultiSelectionChangedFocus : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      var item1 = this._createItem( tree.getRootItem(), 1 );
+      var item2 = this._createItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       tree.setFocusItem( item2 );
       TestUtil.shiftClick( tree._rowContainer._children[ 1 ] );
@@ -1542,9 +1542,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testShiftMultiSelectionModify : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      var item1 = this._createItem( tree.getRootItem(), 1 );
+      var item2 = this._createItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       TestUtil.shiftClick( tree._rowContainer._children[ 2 ] );
@@ -1558,9 +1558,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testShiftMultiSelectionTwice : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      var item1 = this._createItem( tree.getRootItem(), 1 );
+      var item2 = this._createItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       TestUtil.shiftClick( tree._rowContainer._children[ 2 ] );
@@ -1576,9 +1576,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testShiftMultiSelectionBackwards : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      var item1 = this._createItem( tree.getRootItem(), 1 );
+      var item2 = this._createItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       TestUtil.click( tree._rowContainer._children[ 2 ] );
       TestUtil.shiftClick( tree._rowContainer._children[ 0 ] );
@@ -1591,11 +1591,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testShiftMultiSelectionDeselect : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 5 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
-      var item3 = new rwt.widgets.GridItem( tree.getRootItem(), 3 );
-      var item4 = new rwt.widgets.GridItem( tree.getRootItem(), 4 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      var item1 = this._createItem( tree.getRootItem(), 1 );
+      var item2 = this._createItem( tree.getRootItem(), 2 );
+      var item3 = this._createItem( tree.getRootItem(), 3 );
+      var item4 = this._createItem( tree.getRootItem(), 4 );
       TestUtil.flush();
       TestUtil.ctrlClick( tree._rowContainer._children[ 2 ] );
       TestUtil.shiftClick( tree._rowContainer._children[ 4 ] );
@@ -1610,11 +1610,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testMultiSelectionCombination : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 5 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
-      var item3 = new rwt.widgets.GridItem( tree.getRootItem(), 3 );
-      var item4 = new rwt.widgets.GridItem( tree.getRootItem(), 4 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      var item1 = this._createItem( tree.getRootItem(), 1 );
+      var item2 = this._createItem( tree.getRootItem(), 2 );
+      var item3 = this._createItem( tree.getRootItem(), 3 );
+      var item4 = this._createItem( tree.getRootItem(), 4 );
       TestUtil.flush();
       var node0 = tree._rowContainer._getTargetNode().childNodes[ 0 ];
       var node2 = tree._rowContainer._getTargetNode().childNodes[ 2 ];
@@ -1634,9 +1634,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testMultiSelectionRightClick : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      var item1 = this._createItem( tree.getRootItem(), 1 );
+      var item2 = this._createItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       TestUtil.ctrlClick( tree._rowContainer._children[ 0 ] );
@@ -1663,7 +1663,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testSetColumnCount : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       item.setTexts( [ "Test1", "Test2", "Test3" ] );
       TestUtil.flush();
       var nodes = tree._rowContainer._children[ 0 ]._getTargetNode().childNodes;
@@ -1684,28 +1684,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
        tree.destroy();
     },
 
-    testSendExpandEvent : function() {
+    testSendExpandTrue : function() {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       TestUtil.initRequestLog();
       var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem() );
-      new rwt.widgets.GridItem( child1 );
+      var child1 = this._createItem( tree.getRootItem() );
+      this._createItem( child1 );
       wm.add( child1, "wtest", false );
 
       child1.setExpanded( true );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      assertNotNull( message.findNotifyOperation( "wtest", "treeExpanded" ) );
+      assertTrue( message.findSetProperty( "wtest", "expanded" ) );
       wm.remove( child1 );
       tree.destroy();
     },
 
-    testSendCollapseEvent : function() {
+    testSendExpandFalse : function() {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem() );
-      new rwt.widgets.GridItem( child1 );
+      var child1 = this._createItem( tree.getRootItem() );
+      this._createItem( child1 );
       wm.add( child1, "wtest", false );
       child1.setExpanded( true );
       TestUtil.initRequestLog();
@@ -1714,7 +1714,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      assertNotNull( message.findNotifyOperation( "wtest", "treeCollapsed" ) );
+      assertFalse( message.findSetProperty( "wtest", "expanded" ) );
       wm.remove( child1 );
       tree.destroy();
     },
@@ -1724,9 +1724,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.initRequestLog();
       var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
       tree.setItemCount( 1 );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var child1 = this._createItem( tree.getRootItem(), 0 );
       child1.setItemCount( 1 );
-      new rwt.widgets.GridItem( child1, 0 );
+      this._createItem( child1, 0 );
       wm.add( child1, "wtest", false );
 
       org.eclipse.swt.EventUtil.setSuspended( true );
@@ -1743,8 +1743,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 2 );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var child2 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      var child1 = this._createItem( tree.getRootItem(), 0 );
+      var child2 = this._createItem( tree.getRootItem(), 1 );
       wm.add( tree, "w11", true );
       wm.add( child1, "w2", false );
       wm.add( child2, "w3", false );
@@ -1767,8 +1767,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setHasSelectionListener( true );
       tree.setItemCount( 2 );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      var child1 = this._createItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 1 );
       wm.add( tree, "w11", true );
       wm.add( child1, "w2", false );
       TestUtil.flush();
@@ -1790,7 +1790,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       tree.setHasDefaultSelectionListener( true );
       tree.setItemCount( 1 );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var child1 = this._createItem( tree.getRootItem(), 0 );
       wm.add( tree, "w11", true );
       wm.add( child1, "w2", false );
       TestUtil.flush();
@@ -1810,12 +1810,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 2 );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0, false );
+      var child1 = this._createItem( tree.getRootItem(), 0, false );
       child1.setItemCount( 1 );
-      var child1_1 = new rwt.widgets.GridItem( child1, 0, false );
+      var child1_1 = this._createItem( child1, 0, false );
       child1_1.setItemCount( 1 );
-      new rwt.widgets.GridItem( child1_1, 0, true );
-      new rwt.widgets.GridItem( tree.getRootItem(), 1, true );
+      this._createItem( child1_1, 0, true );
+      this._createItem( tree.getRootItem(), 1, true );
       child1.setExpanded( true );
       child1_1.setExpanded( true );
       wm.add( tree, "w11", true );
@@ -1846,8 +1846,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       dndSupport.registerDragSource( tree, actions );
       dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
       tree.setItemCount( 2 );
-      var child0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      var child0 = this._createItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 1 );
       wm.add( tree, "w11", true );
       wm.add( child0, "w2", false );
       TestUtil.flush();
@@ -1871,7 +1871,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHasSelectionListener( true );
       tree.setHasDefaultSelectionListener( true );
       tree.setItemCount( 1 );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var child1 = this._createItem( tree.getRootItem(), 0 );
       wm.add( tree, "w11", true );
       wm.add( child1, "w2", false );
       TestUtil.flush();
@@ -1894,7 +1894,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       tree.setHasDefaultSelectionListener( true );
       tree.setItemCount( 1 );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var child1 = this._createItem( tree.getRootItem(), 0 );
       wm.add( tree, "w11", true );
       wm.add( child1, "w2", false );
       TestUtil.flush();
@@ -1917,8 +1917,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       tree.setHasDefaultSelectionListener( true );
       tree.setItemCount( 2 );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var child2 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      var child1 = this._createItem( tree.getRootItem(), 0 );
+      var child2 = this._createItem( tree.getRootItem(), 1 );
       wm.add( tree, "w11", true );
       wm.add( child1, "w2", false );
       wm.add( child2, "w3", false );
@@ -1941,8 +1941,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHasSelectionListener( true );
       tree.setHasDefaultSelectionListener( true );
       tree.setItemCount( 2 );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var child2 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      var child1 = this._createItem( tree.getRootItem(), 0 );
+      var child2 = this._createItem( tree.getRootItem(), 1 );
       wm.add( tree, "w11", true );
       wm.add( child1, "w2", false );
       wm.add( child2, "w3", false );
@@ -1967,9 +1967,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHasSelectionListener( true );
       tree.setHasDefaultSelectionListener( true );
       tree.setItemCount( 3 );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var child2 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var child3 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      var child1 = this._createItem( tree.getRootItem(), 0 );
+      var child2 = this._createItem( tree.getRootItem(), 1 );
+      var child3 = this._createItem( tree.getRootItem(), 2 );
       wm.add( tree, "w11", true );
       wm.add( child1, "w2", false );
       wm.add( child2, "w3", false );
@@ -1994,7 +1994,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testRenderOnFocus : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 0 );
       tree.focus();
       TestUtil.flush();
       assertFalse( tree._rowContainer._children[ 0 ].hasState( "parent_unfocused" ) );
@@ -2014,7 +2014,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testIsHoverItem : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       TestUtil.flush();
       TestUtil.mouseOver( tree._rowContainer._children[ 0 ] );
       assertTrue( tree._rowContainer.getHoverItem() === item );
@@ -2024,7 +2024,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testIsHoverElement : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       item.setTexts( [ "bla" ] );
       item.setImages( [ "bla.jpg" ] );
       assertNull( tree._rowContainer._hoverElement );
@@ -2051,7 +2051,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         }
       } );
       tree.setItemCount( 1 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 0 );
       TestUtil.flush();
       var style = tree._rowContainer._children[ 0 ]._getTargetNode().style;
       assertEquals( "green", style.backgroundColor );
@@ -2079,7 +2079,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         }
       } );
       tree.setItemCount( 1 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 0 );
       TestUtil.flush();
       var timer = tree._rowContainer._asyncTimer;
       TestUtil.mouseOver( tree._rowContainer._children[ 0 ] );
@@ -2101,7 +2101,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         }
       } );
       tree.setItemCount( 1 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 0 );
       TestUtil.flush();
       var row = tree._rowContainer._children[ 0 ];
       var rowNode = row._getTargetNode();
@@ -2132,8 +2132,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         }
       } );
       tree.setItemCount( 2 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      this._createItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 1 );
       TestUtil.flush();
       var rowNode1 = tree._rowContainer._children[ 0 ]._getTargetNode();
       var rowNode2 = tree._rowContainer._children[ 1 ]._getTargetNode();
@@ -2166,7 +2166,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         }
       } );
       tree.setItemCount( 1 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 0 );
       TestUtil.flush();
       var rowNode = tree._rowContainer._children[ 0 ]._getTargetNode();
       TestUtil.hoverFromTo( document.body, rowNode );
@@ -2581,7 +2581,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       tree.setTextColor( "red" );
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       item.setTexts( [ "Test1" ] );
       TestUtil.flush();
       var row = tree._rowContainer._children[ 0 ];
@@ -2597,7 +2597,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       tree.setFont( new qx.ui.core.Font( 12, [ "monospace" ] ) );
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       item.setTexts( [ "Test1" ] );
       TestUtil.flush();
       var row = tree._rowContainer._children[ 0 ];
@@ -2627,7 +2627,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       tree.setTreeColumn( 1 );
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       item.setTexts( [ "Test1" ] );
       TestUtil.flush();
       tree.setItemMetrics( 0, 0, 500, 0, 0, 30, 500 );
@@ -2643,7 +2643,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHeaderVisible( true );
       var column = new rwt.widgets.GridColumn( tree );
       tree.setItemCount( 1 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 0 );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.add( column, "w11", false );
       column.setLeft( 100 );
@@ -2669,7 +2669,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHeaderVisible( true );
       var column = new rwt.widgets.GridColumn( tree );
       tree.setItemCount( 1 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 0 );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.add( column, "w11", false );
       column.setLeft( 100 );
@@ -2725,7 +2725,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setAlignment( 0, "right" );
       tree.setTreeColumn( 1 );
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       item.setTexts( [ "Test1" ] );
       TestUtil.flush();
       var row = tree._rowContainer._children[ 0 ];
@@ -2745,7 +2745,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       wm.add( tree, "w11", false );
       tree.setTreeColumn( 1 );
       tree.setItemCount( 1 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 0 );
       TestUtil.initRequestLog();
       TestUtil.flush();
 
@@ -2904,7 +2904,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         }
       } );
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       TestUtil.flush();
       var node = tree._rowContainer._children[ 0 ]._getTargetNode().firstChild;
       var normal = TestUtil.getCssBackgroundImage( node );
@@ -3065,9 +3065,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         }
       } );
       tree.setItemCount( 3 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      this._createItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 1 );
+      this._createItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       var rows = tree._rowContainer._children;
       TestUtil.click( rows[ 0 ] );
@@ -3105,7 +3105,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
       wm.add( tree, "w11", false );
       tree.setItemCount( 1 );
-      new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 0 );
       TestUtil.initRequestLog();
       TestUtil.flush();
 
@@ -3123,7 +3123,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.prepareTimerUse();
       var tree = this._createDefaultTree( false, false, "virtual" );
       tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
-      new rwt.widgets.GridItem( tree.getRootItem() );
+      this._createItem( tree.getRootItem() );
       TestUtil.initRequestLog();
       TestUtil.flush();
       tree._horzScrollBar.setValue( 160 );
@@ -3160,10 +3160,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testKeyboardNavigationUpDown : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 2 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
       item0.setItemCount( 1 );
-      var item1 = new rwt.widgets.GridItem( item0, 0 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      var item1 = this._createItem( item0, 0 );
+      var item2 = this._createItem( tree.getRootItem(), 1 );
       item0.setExpanded( true );
       TestUtil.flush();
       TestUtil.clickDOM( tree._rowContainer._children[ 2 ]._getTargetNode() );
@@ -3186,9 +3186,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testKeyboardNavigationCtrlUpDown : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var item1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      var item1 = this._createItem( tree.getRootItem(), 1 );
+      var item2 = this._createItem( tree.getRootItem(), 2 );
       TestUtil.flush();
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       TestUtil.pressOnce( tree, "Down", qx.event.type.DomEvent.CTRL_MASK );
@@ -3201,11 +3201,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testKeyboardNavigationRight : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 2 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
       item0.setItemCount( 2 );
-      var item1 = new rwt.widgets.GridItem( item0, 0 );
+      var item1 = this._createItem( item0, 0 );
       item1.setItemCount( 2 );
-      var item2 = new rwt.widgets.GridItem( item1, 0 );
+      var item2 = this._createItem( item1, 0 );
       TestUtil.flush();
       TestUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
       assertTrue( tree.isItemSelected( item0 ) );
@@ -3237,11 +3237,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testKeyboardNavigationLeft : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
       item0.setItemCount( 1 );
-      var item1 = new rwt.widgets.GridItem( item0, 0 );
+      var item1 = this._createItem( item0, 0 );
       item1.setItemCount( 1 );
-      var item2 = new rwt.widgets.GridItem( item1, 0 );
+      var item2 = this._createItem( item1, 0 );
       item0.setExpanded( true );
       item1.setExpanded( true );
       TestUtil.flush();
@@ -3274,7 +3274,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testKeyboardNavigationOnlyOneItem : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
       TestUtil.flush();
       TestUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
       assertTrue( tree.isItemSelected( item0 ) );
@@ -3438,11 +3438,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testKeyboardNavigationShiftSelect : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
       item0.setItemCount( 1 );
-      var item1 = new rwt.widgets.GridItem( item0, 0 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item3 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      var item1 = this._createItem( item0, 0 );
+      var item2 = this._createItem( tree.getRootItem(), 1 );
+      var item3 = this._createItem( tree.getRootItem(), 2 );
       item0.setExpanded( true );
       TestUtil.flush();
       TestUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
@@ -3463,11 +3463,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testKeyboardNavigationCtrlOnlyMovesFocus : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 3 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
       item0.setItemCount( 1 );
-      var item1 = new rwt.widgets.GridItem( item0, 0 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
-      var item3 = new rwt.widgets.GridItem( tree.getRootItem(), 2 );
+      var item1 = this._createItem( item0, 0 );
+      var item2 = this._createItem( tree.getRootItem(), 1 );
+      var item3 = this._createItem( tree.getRootItem(), 2 );
       item0.setExpanded( true );
       TestUtil.flush();
       TestUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
@@ -3488,9 +3488,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testKeyboardNavigationCtrlAndSpaceSelects : function() {
       var tree = this._createDefaultTree( false, false );
       tree.setItemCount( 1 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
       item0.setItemCount( 1 );
-      new rwt.widgets.GridItem( item0, 0 );
+      this._createItem( item0, 0 );
       item0.setExpanded( true );
       TestUtil.flush();
       TestUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
@@ -3509,9 +3509,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testKeyboardNavigationCtrlAndSpaceMultiSelects : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 1 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem() ,0 );
+      var item0 = this._createItem( tree.getRootItem() ,0 );
       item0.setItemCount( 1 );
-      var item1 = new rwt.widgets.GridItem( item0, 0 );
+      var item1 = this._createItem( item0, 0 );
       item0.setExpanded( true );
       TestUtil.flush();
       TestUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
@@ -3533,7 +3533,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree( false, false );
       this._fakeCheckBoxAppearance();
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       TestUtil.flush();
       TestUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
       assertTrue( tree.isItemSelected( item ) );
@@ -3551,7 +3551,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree( false, false, "check", [ 5, 20 ]  );
       this._fakeCheckBoxAppearance();
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       TestUtil.flush();
       TestUtil.initRequestLog();
       TestUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
@@ -3568,9 +3568,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testKeyboardNavigationNoShiftSelectForLeftRight : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 1 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
       item0.setItemCount( 1 );
-      var item1 = new rwt.widgets.GridItem( item0, 0 );
+      var item1 = this._createItem( item0, 0 );
       item0.setExpanded( true );
       TestUtil.flush();
       TestUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
@@ -3631,10 +3631,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         }
       } );
       tree.setItemCount( 2 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
       item0.setItemCount( 1 );
-      var item1 = new rwt.widgets.GridItem( item0, 0 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      var item1 = this._createItem( item0, 0 );
+      var item2 = this._createItem( tree.getRootItem(), 1 );
       item0.setExpanded( true );
       tree.selectItem( item0 );
       tree.selectItem( item1 );
@@ -3656,10 +3656,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         }
       } );
       tree.setItemCount( 2 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
       item0.setItemCount( 1 );
-      var item1 = new rwt.widgets.GridItem( item0, 0 );
-      var item2 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      var item1 = this._createItem( item0, 0 );
+      var item2 = this._createItem( tree.getRootItem(), 1 );
       item0.setExpanded( true );
       tree.selectItem( item0 );
       tree.selectItem( item1 );
@@ -3686,9 +3686,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 //        }
 //      } );
 //      tree.setHasMultiSelection( true );
-//      var item0 = new rwt.widgets.GridItem( tree.getRootItem() );
-//      var item1 = new rwt.widgets.GridItem( item0 );
-//      var item2 = new rwt.widgets.GridItem( tree.getRootItem() );
+//      var item0 = this._createItem( tree.getRootItem() );
+//      var item1 = this._createItem( item0 );
+//      var item2 = this._createItem( tree.getRootItem() );
 //      item0.setExpanded( true );
 //      tree.selectItem( item0 );
 //      tree.selectItem( item1 );
@@ -3705,9 +3705,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testMoveFocusOnCollapse : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
-      var item0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
       item0.setItemCount( 1 );
-      var item1 = new rwt.widgets.GridItem( item0, 0 );
+      var item1 = this._createItem( item0, 0 );
       item0.setExpanded( true );
       tree.setFocusItem( item1 );
       TestUtil.flush();
@@ -3721,8 +3721,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       tree.setHasSelectionListener( true );
       tree.setItemCount( 2 );
-      var child0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      var child0 = this._createItem( tree.getRootItem(), 0 );
+      var child1 = this._createItem( tree.getRootItem(), 1 );
       wm.add( tree, "w11", true );
       wm.add( child0, "w2", false );
       wm.add( child1, "w3", false );
@@ -3745,8 +3745,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       tree.setHasSelectionListener( true );
       tree.setItemCount( 2 );
-      var child0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      var child0 = this._createItem( tree.getRootItem(), 0 );
+      var child1 = this._createItem( tree.getRootItem(), 1 );
       wm.add( tree, "w11", true );
       wm.add( child0, "w2", false );
       wm.add( child1, "w3", false );
@@ -3769,7 +3769,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       tree.setHasSelectionListener( true );
       tree.setItemCount( 1 );
-      var child0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var child0 = this._createItem( tree.getRootItem(), 0 );
       tree.setFocusItem( child0 );
       wm.add( tree, "w11", true );
       wm.add( child0, "w2", false );
@@ -3792,7 +3792,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testKeyEventBeforeFlush : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
-      var child0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var child0 = this._createItem( tree.getRootItem(), 0 );
       tree.setFocusItem( child0 );
       TestUtil.ctrlPress( tree, "Space" );
       // succeeds by not crashing
@@ -3802,11 +3802,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testRemoveDisposedItemFromState : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setItemCount( 2 );
-      var child0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var child0 = this._createItem( tree.getRootItem(), 0 );
       child0.setTexts( [ "C0" ] );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      var child1 = this._createItem( tree.getRootItem(), 1 );
       child1.setTexts( [ "C1" ] );
-      var child2 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      var child2 = this._createItem( tree.getRootItem(), 1 );
       child2.setTexts( [ "C2" ] );
       tree.setFocusItem( child0 );
       tree.setTopItemIndex( 0 );
@@ -3833,9 +3833,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHeight( 15 );
       tree.setItemHeight( 20 );
       tree.setItemCount( 1 );
-      var child0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var child0 = this._createItem( tree.getRootItem(), 0 );
       child0.setItemCount( 1 );
-      var child1 = new rwt.widgets.GridItem( child0, 0 );
+      var child1 = this._createItem( child0, 0 );
       child1.setTexts( [ "C1" ] );
       child0.setExpanded( true );
       tree.setTopItemIndex( 1 );
@@ -3849,9 +3849,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( child1, tree._leadItem );
       child0.dispose(); // Order is important for this test
       child1.dispose();
-      var child0new = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var child0new = this._createItem( tree.getRootItem(), 0 );
       child0new.setItemCount( 1 );
-      var child1new = new rwt.widgets.GridItem( child0new, 0 );
+      var child1new = this._createItem( child0new, 0 );
       child1new.setTexts( [ "C1new" ] );
       child0new.setExpanded( true );
       TestUtil.flush();
@@ -3865,9 +3865,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testDisposeAndCollapseParentItem : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
-      var child0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var child0 = this._createItem( tree.getRootItem(), 0 );
       child0.setItemCount( 1 );
-      var child1 = new rwt.widgets.GridItem( child0, 0 );
+      var child1 = this._createItem( child0, 0 );
       child1.setTexts( [ "C1" ] );
       child0.setExpanded( true );
       tree.setFocusItem( child1 );
@@ -3885,8 +3885,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       dndSupport.registerDragSource( tree, actions );
       dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
       tree.setItemCount( 2 );
-      var child0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      var child0 = this._createItem( tree.getRootItem(), 0 );
+      var child1 = this._createItem( tree.getRootItem(), 1 );
       TestUtil.flush();
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       TestUtil.ctrlClick( tree._rowContainer._children[ 1 ] );
@@ -3910,8 +3910,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       dndSupport.registerDragSource( tree, actions );
       dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
       tree.setItemCount( 2 );
-      var child0 = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
-      var child1 = new rwt.widgets.GridItem( tree.getRootItem(), 1 );
+      var child0 = this._createItem( tree.getRootItem(), 0 );
+      var child1 = this._createItem( tree.getRootItem(), 1 );
       TestUtil.flush();
       TestUtil.click( tree._rowContainer._children[ 0 ] );
       TestUtil.ctrlClick( tree._rowContainer._children[ 1 ] );
@@ -3957,7 +3957,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setItemMetrics( 4, 35, 350, 0, 0, 0, 50 );
       tree.setItemMetrics( 5, 400, 100, 405, 10, 430, 50 );
       tree.setItemCount( 1 );
-      var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
+      var item = this._createItem( tree.getRootItem(), 0 );
       widgetManager.add( item, "w45", true );
       TestUtil.flush();
       TestUtil.prepareTimerUse();
@@ -4094,12 +4094,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var i = 0;
       var itemNr = 0;
       while( i < count ) {
-        var item = new rwt.widgets.GridItem( tree.getRootItem(), itemNr );
+        var item = this._createItem( tree.getRootItem(), itemNr );
         itemNr++;
         item.setTexts( [ "Test" + i ] );
         if( subItems ) {
           item.setItemCount( 1 );
-          var subitem = new rwt.widgets.GridItem( item, 0 );
+          var subitem = this._createItem( item, 0 );
           if( flatCount ) {
             item.setExpanded( true );
             i++;
@@ -4146,6 +4146,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     _getColumnLabel : function( grid, column, footer ) {
       var header = footer ? grid.getFooter() : grid.getTableHeader();
       return header._getLabelByColumn( column );
+    },
+
+    _createItem : function( parent, index, placeholder ) {
+      var result = new rwt.widgets.GridItem( parent, index, placeholder );
+      rwt.protocol.ObjectRegistry.add( "w" + result.toHashCode(), result );
+      return result;
     }
 
   }

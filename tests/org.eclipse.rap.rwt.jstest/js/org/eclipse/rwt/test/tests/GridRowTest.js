@@ -2323,6 +2323,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       if( hasNext ) {
         new rwt.widgets.GridItem( parentItem, count );
       }
+      rwt.protocol.ObjectRegistry.add( "w" + item.toHashCode(), item );
       return item;
     },
 

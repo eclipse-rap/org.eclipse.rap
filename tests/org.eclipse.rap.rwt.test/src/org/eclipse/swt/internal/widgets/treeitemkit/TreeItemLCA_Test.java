@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -217,7 +216,7 @@ public class TreeItemLCA_Test extends TestCase {
     };
     tree.addTreeListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( treeItem ), ClientMessageConst.EVENT_TREE_EXPANDED, null );
+    Fixture.fakeSetParameter( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, Boolean.TRUE  );
     Fixture.readDataAndProcessAction( treeItem );
 
     assertEquals( "expanded", log.toString() );
@@ -225,7 +224,7 @@ public class TreeItemLCA_Test extends TestCase {
     log.setLength( 0 );
 
     Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( treeItem ), ClientMessageConst.EVENT_TREE_COLLAPSED, null );
+    Fixture.fakeSetParameter( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, Boolean.FALSE  );
     Fixture.readDataAndProcessAction( treeItem );
 
     assertEquals( "collapsed", log.toString() );
@@ -236,13 +235,13 @@ public class TreeItemLCA_Test extends TestCase {
     new TreeItem( treeItem, SWT.NONE );
     treeItem.setExpanded( false );
 
-    Fixture.fakeNotifyOperation( getId( treeItem ), ClientMessageConst.EVENT_TREE_EXPANDED, null );
+    Fixture.fakeSetParameter( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, Boolean.TRUE  );
     Fixture.readDataAndProcessAction( treeItem );
 
     assertEquals( true, treeItem.getExpanded() );
 
     Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( treeItem ), ClientMessageConst.EVENT_TREE_COLLAPSED, null );
+    Fixture.fakeSetParameter( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, Boolean.FALSE  );
     Fixture.readDataAndProcessAction( treeItem );
 
     assertEquals( false, treeItem.getExpanded() );

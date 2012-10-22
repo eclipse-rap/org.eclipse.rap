@@ -998,14 +998,10 @@ qx.Class.define( "rwt.widgets.Grid", {
 
     _sendItemUpdate : function( item, event ) {
       if( !this._inServerResponse() ) {
-        switch( event.msg ) {
-          case "expanded":
-            this._sendItemEvent( item, "org.eclipse.swt.events.treeExpanded" );
-          break;
-          case "collapsed":
-            this._sendItemEvent( item, "org.eclipse.swt.events.treeCollapsed" );
-          break;
-          default:
+        if( event.msg === "expanded" || event.msg === "collapsed" ) {
+          var expanded = event.msg === "expanded";
+          rwt.remote.Server.getInstance().getServerObject( item ).set( "expanded", expanded );
+          rwt.remote.Server.getInstance().send();
         }
       }
     },

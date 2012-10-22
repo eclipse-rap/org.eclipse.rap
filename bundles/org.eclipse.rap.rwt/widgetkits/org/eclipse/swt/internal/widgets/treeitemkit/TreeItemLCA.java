@@ -16,7 +16,6 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
@@ -78,24 +77,21 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
 
   public void readData( Widget widget ) {
     final TreeItem item = ( TreeItem )widget;
-    String value = WidgetLCAUtil.readPropertyValue( widget, "checked" );
-    if( value != null ) {
-      item.setChecked( Boolean.valueOf( value ).booleanValue() );
+    String checkedValue = WidgetLCAUtil.readPropertyValue( widget, PROP_CHECKED );
+    if( checkedValue != null ) {
+      item.setChecked( Boolean.valueOf( checkedValue ).booleanValue() );
     }
-    if( WidgetLCAUtil.wasEventSent( item, ClientMessageConst.EVENT_TREE_EXPANDED ) ) {
-      // The event is fired before the setter is called. Order like in SWT.
-      processTreeExpandedEvent( item );
+    final String expandedValue = WidgetLCAUtil.readPropertyValue( widget, PROP_EXPANDED );
+    if( expandedValue != null ) {
+      final boolean expanded = Boolean.valueOf( expandedValue ).booleanValue();
+      if( expanded ) {
+        processTreeExpandedEvent( item );
+      } else {
+        processTreeCollapsedEvent( item );
+      }
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          item.setExpanded( true );
-        }
-      } );
-    }
-    if( WidgetLCAUtil.wasEventSent( item, ClientMessageConst.EVENT_TREE_COLLAPSED ) ) {
-      processTreeCollapsedEvent( item );
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          item.setExpanded( false );
+          item.setExpanded( expanded );
         }
       } );
     }
