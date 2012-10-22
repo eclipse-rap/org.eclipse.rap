@@ -181,7 +181,6 @@ public class TreeItemLCA_Test extends TestCase {
     assertFalse( adapter.isCached( treeItem ) );
   }
 
-
   public void testExpandCollapse() {
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     new TreeItem( treeItem, SWT.NONE );
@@ -197,6 +196,19 @@ public class TreeItemLCA_Test extends TestCase {
     Fixture.readDataAndProcessAction( treeItem );
 
     assertEquals( false, treeItem.getExpanded() );
+  }
+
+  public void testExpandedPropertyNotRenderedBack() {
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( treeItem );
+    new TreeItem( treeItem, SWT.NONE );
+    treeItem.setExpanded( false );
+
+    Fixture.fakeSetParameter( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, Boolean.TRUE  );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( treeItem, TreeItemLCA.PROP_EXPANDED ) );
   }
 
   public void testChecked() {

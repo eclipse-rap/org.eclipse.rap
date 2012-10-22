@@ -84,6 +84,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           item.setExpanded( Boolean.valueOf( expanded ).booleanValue() );
+          preserveProperty( item, PROP_EXPANDED, item.getExpanded() );
         }
       } );
     }
