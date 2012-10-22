@@ -132,8 +132,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
     readTopItemIndex( tree );
     processWidgetSelectedEvent( tree );
     processWidgetDefaultSelectedEvent( tree );
-    processTreeEvent( tree, SWT.Expand, "Expand" );
-    processTreeEvent( tree, SWT.Collapse, "Collapse" );
+    processTreeEvent( tree, SWT.Expand, ClientMessageConst.EVENT_EXPAND );
+    processTreeEvent( tree, SWT.Collapse, ClientMessageConst.EVENT_COLLAPSE );
     readCellToolTipTextRequested( tree );
     ControlLCAUtil.processEvents( tree );
     ControlLCAUtil.processKeyEvents( tree );
