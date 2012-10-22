@@ -40,6 +40,7 @@ public class ExpandBarLCA_Test extends TestCase {
   private ExpandBar expandBar;
   private ExpandBarLCA lca;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -49,6 +50,7 @@ public class ExpandBarLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -257,5 +259,19 @@ public class ExpandBarLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( expandBar, "vScrollBarMax" ) );
+  }
+
+  public void testRenderAddExpandListener() throws Exception {
+    lca.renderChanges( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( expandBar, "Expand" ) );
+  }
+
+  public void testRenderAddCollapseListener() throws Exception {
+    lca.renderChanges( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( expandBar, "Collapse" ) );
   }
 }

@@ -22,6 +22,8 @@ qx.Class.define( "rwt.widgets.ExpandBar", {
     this._bottomSpacing = new rwt.widgets.base.Parent();
     org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._bottomSpacing );
     this._clientArea.add( this._bottomSpacing );
+    this._hasExpandListener = false;
+    this._hasCollapseListener = false;
   },
 
   destruct : function() {
@@ -50,6 +52,14 @@ qx.Class.define( "rwt.widgets.ExpandBar", {
 
     setVScrollBarMax : function( value ) {
       this._vertScrollBar.setMaximum( value );
+    },
+
+    setHasExpandListener : function( value ) {
+      this._hasExpandListener = value;
+    },
+
+    setHasCollapseListener : function( value ) {
+      this._hasCollapseListener = value;
     }
 
   }

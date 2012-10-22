@@ -18,6 +18,7 @@ qx.Class.define( "rwt.widgets.ExpandItem", {
     if( parent.classname != "rwt.widgets.ExpandBar" ) {
       throw new Error( "illegal parent, must be a ExpandBar" );
     }
+    this._expandBar = parent;
     this.setAppearance( "expand-item" );
     this._headerHeight = 24; // Chevron size with top/bottom insets
     this._expanded = false;
@@ -87,6 +88,10 @@ qx.Class.define( "rwt.widgets.ExpandItem", {
       }
     },
 
+    getExpanded : function( expanded ) {
+      return this._expanded;
+    },
+
     setImage : function( image ) {
       this._image = image;
       this._header.setIcon( image );
@@ -105,15 +110,17 @@ qx.Class.define( "rwt.widgets.ExpandItem", {
 
     _onClick : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var req = rwt.remote.Server.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        if( this._expanded ) {
-          req.addEvent( "org.eclipse.swt.events.expandItemCollapsed", id );
-        } else {
-          req.addEvent( "org.eclipse.swt.events.expandItemExpanded", id );
+        this.setExpanded( !this._expanded );
+        var serverObject = rwt.remote.Server.getInstance().getServerObject( this );
+        serverObject.set( "expanded", this._expanded );
+        if(    ( this._expandBar._hasExpandListener && this._expanded )
+            || ( this._expandBar._hasCollapseListener && !this._expanded ) )
+        {
+          var serverBar = rwt.remote.Server.getInstance().getServerObject( this._expandBar );
+          var itemId = rwt.protocol.ObjectRegistry.getId( this );
+          var eventName = this._expanded ? "Expand" : "Collapse";
+          serverBar.notify( eventName, { "item" : itemId } );
         }
-        req.send();
       }
     },
 

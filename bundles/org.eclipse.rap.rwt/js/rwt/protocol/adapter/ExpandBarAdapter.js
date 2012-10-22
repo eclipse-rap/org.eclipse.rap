@@ -33,7 +33,10 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ExpandBar", {
     }
   } ),
 
-  listeners : rwt.protocol.AdapterUtil.extendControlListeners( [] ),
+  listeners : rwt.protocol.AdapterUtil.extendControlListeners( [
+    "Expand",
+    "Collapse"
+  ] ),
 
   listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
 

@@ -17,11 +17,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -74,7 +78,8 @@ public class ExpandItemLCA_Test extends TestCase {
     ExpandListener listener = mock( ExpandListener.class );
     expandBar.addExpandListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( expandItem ), ExpandItemLCA.EVENT_ITEM_EXPANDED, null );
+    Fixture.fakeSetParameter( WidgetUtil.getId( expandItem ), "expanded", Boolean.TRUE );
+    fakeExpandEvent( expandItem, "Expand" );
     Fixture.readDataAndProcessAction( display );
 
     ArgumentCaptor<ExpandEvent> captor = ArgumentCaptor.forClass( ExpandEvent.class );
@@ -91,12 +96,31 @@ public class ExpandItemLCA_Test extends TestCase {
     assertTrue( expandItem.getExpanded() );
   }
 
+  public void testExpandPropertyInsideExpandEvent() {
+    final AtomicBoolean log = new AtomicBoolean();
+    ExpandListener listener = new ExpandListener() {
+      public void itemExpanded( ExpandEvent event ) {
+        log.set( ( ( ExpandItem )( event.item ) ).getExpanded() );
+      }
+      public void itemCollapsed( ExpandEvent event ) {
+      }
+    };
+    expandBar.addExpandListener( listener );
+
+    Fixture.fakeSetParameter( WidgetUtil.getId( expandItem ), "expanded", Boolean.TRUE );
+    fakeExpandEvent( expandItem, "Expand" );
+    Fixture.readDataAndProcessAction( display );
+
+    assertTrue( log.get() );
+  }
+
   public void testCollapseItem() {
     ExpandListener listener = mock( ExpandListener.class );
     expandBar.addExpandListener( listener );
     expandItem.setExpanded( true );
 
-    Fixture.fakeNotifyOperation( getId( expandItem ), ExpandItemLCA.EVENT_ITEM_COLLAPSED, null );
+    Fixture.fakeSetParameter( WidgetUtil.getId( expandItem ), "expanded", Boolean.FALSE );
+    fakeExpandEvent( expandItem, "Collapse" );
     Fixture.readDataAndProcessAction( display );
 
     ArgumentCaptor<ExpandEvent> captor = ArgumentCaptor.forClass( ExpandEvent.class );
@@ -111,6 +135,25 @@ public class ExpandItemLCA_Test extends TestCase {
     assertEquals( 0, event.height );
     assertEquals( true, event.doit );
     assertFalse( expandItem.getExpanded() );
+  }
+
+  public void testExpandPropertyInsideCollapseEvent() {
+    final AtomicBoolean log = new AtomicBoolean( true );
+    ExpandListener listener = new ExpandListener() {
+      public void itemExpanded( ExpandEvent event ) {
+      }
+      public void itemCollapsed( ExpandEvent event ) {
+        log.set( ( ( ExpandItem )( event.item ) ).getExpanded() );
+      }
+    };
+    expandItem.setExpanded( true );
+    expandBar.addExpandListener( listener );
+
+    Fixture.fakeSetParameter( WidgetUtil.getId( expandItem ), "expanded", Boolean.FALSE );
+    fakeExpandEvent( expandItem, "Collapse" );
+    Fixture.readDataAndProcessAction( display );
+
+    assertFalse( log.get() );
   }
 
   public void testRenderCreate() throws IOException {
@@ -302,5 +345,11 @@ public class ExpandItemLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( expandItem, "headerHeight" ) );
+  }
+
+  private static void fakeExpandEvent( ExpandItem item, String eventName ) {
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
+    Fixture.fakeNotifyOperation( getId( item.getParent() ), eventName, parameters );
   }
 }

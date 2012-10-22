@@ -39,6 +39,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
       widget.destroy();
     },
 
+    testSetListenExpandByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var widget = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
+
+      TestUtil.protocolListen( "w3", { "Expand" : true } );
+
+      assertTrue( widget._hasExpandListener );
+      shell.destroy();
+    },
+
+    testSetListenCollapseByProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var widget = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
+
+      TestUtil.protocolListen( "w3", { "Collapse" : true } );
+
+      assertTrue( widget._hasCollapseListener );
+      shell.destroy();
+    },
+
     testSetVScrollBarVisibleByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
@@ -146,6 +168,70 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
       item.destroy();
     },
 
+    testSendExpandEvent : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
+      var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
+      TestUtil.flush();
+      TestUtil.protocolListen( "w3", { "Expand" : true } );
+
+      TestUtil.click( item._header );
+
+      var message = TestUtil.getLastMessage();
+      assertEquals( "w4", message.findNotifyProperty( "w3", "Expand", "item" ) );
+      shell.destroy();
+    },
+
+    testSendCollapseEvent : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
+      var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
+      item.setExpanded( true );
+      TestUtil.flush();
+      TestUtil.protocolListen( "w3", { "Collapse" : true } );
+
+      TestUtil.click( item._header );
+
+      var message = TestUtil.getLastMessage();
+      assertEquals( "w4", message.findNotifyProperty( "w3", "Collapse", "item" ) );
+      shell.destroy();
+    },
+
+    testSendExpandedTrue : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
+      var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
+      TestUtil.flush();
+
+      TestUtil.click( item._header );
+      rwt.remote.Server.getInstance().send();
+
+      var message = TestUtil.getLastMessage();
+      assertTrue( message.findSetProperty( "w4", "expanded" ) );
+      assertTrue( item.getExpanded() );
+      shell.destroy();
+    },
+
+    testSendExpandedFalse : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
+      var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
+      item.setExpanded( true );
+      TestUtil.flush();
+
+      TestUtil.click( item._header );
+      rwt.remote.Server.getInstance().send();
+
+      var message = TestUtil.getLastMessage();
+      assertFalse( message.findSetProperty( "w4", "expanded" ) );
+      assertFalse( item.getExpanded() );
+      shell.destroy();
+    },
+
     /////////
     // Helper
 
@@ -176,5 +262,5 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
     }
 
   }
-  
+
 } );

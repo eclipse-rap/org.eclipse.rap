@@ -22,11 +22,9 @@ import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IExpandBarAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Widget;
 
@@ -34,10 +32,6 @@ import org.eclipse.swt.widgets.Widget;
 public final class ExpandItemLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ExpandItem";
-
-  // Request parameters that denote ExpandEvents
-  public static final String EVENT_ITEM_EXPANDED = "expandItemExpanded";
-  public static final String EVENT_ITEM_COLLAPSED = "expandItemCollapsed";
 
   public static final String PROP_EXPANDED = "expanded";
   public static final String PROP_HEADER_HEIGHT = "headerHeight";
@@ -56,19 +50,12 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
 
   public void readData( Widget widget ) {
     final ExpandItem item = ( ExpandItem )widget;
-    if( WidgetLCAUtil.wasEventSent( item, EVENT_ITEM_EXPANDED ) ) {
+    final String expanded = WidgetLCAUtil.readPropertyValue( widget, PROP_EXPANDED );
+    if( expanded != null ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          item.setExpanded( true );
-          sendEvent( item, SWT.Expand );
-        }
-      } );
-    }
-    if( WidgetLCAUtil.wasEventSent( item, EVENT_ITEM_COLLAPSED ) ) {
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          item.setExpanded( false );
-          sendEvent( item, SWT.Collapse );
+          item.setExpanded( Boolean.valueOf( expanded ).booleanValue() );
+          preserveProperty( item, PROP_EXPANDED, item.getExpanded() );
         }
       } );
     }
@@ -95,15 +82,6 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
   @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
-  }
-
-  ////////////////
-  // Event helper
-
-  private static void sendEvent( ExpandItem item, int eventType ) {
-    Event event = new Event();
-    event.item = item;
-    item.getParent().notifyListeners( eventType, event );
   }
 
   //////////////////

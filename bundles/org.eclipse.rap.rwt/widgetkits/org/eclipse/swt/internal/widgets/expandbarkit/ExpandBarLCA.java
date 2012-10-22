@@ -11,11 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.expandbarkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -33,7 +37,10 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
   private static final String PROP_BOTTOM_SPACING_BOUNDS = "bottomSpacingBounds";
   private static final String PROP_VSCROLLBAR_VISIBLE = "vScrollBarVisible";
   private static final String PROP_VSCROLLBAR_MAX = "vScrollBarMax";
+  private static final String PROP_EXPAND_LISTENER = "Expand";
+  private static final String PROP_COLLAPSE_LISTENER = "Collapse";
 
+  @Override
   public void preserveValues( Widget widget ) {
     ExpandBar expandBar = ( ExpandBar )widget;
     ControlLCAUtil.preserveValues( expandBar );
@@ -41,14 +48,20 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
     preserveProperty( expandBar, PROP_BOTTOM_SPACING_BOUNDS, getBottomSpacingBounds( expandBar ) );
     preserveProperty( expandBar, PROP_VSCROLLBAR_VISIBLE, isVScrollBarVisible( expandBar ) );
     preserveProperty( expandBar, PROP_VSCROLLBAR_MAX, getVScrollBarMax( expandBar ) );
+    preserveListener( expandBar, PROP_EXPAND_LISTENER, hasExpandListener( expandBar ) );
+    preserveListener( expandBar, PROP_COLLAPSE_LISTENER, hasCollapseListener( expandBar ) );
   }
 
   public void readData( Widget widget ) {
-    ControlLCAUtil.processKeyEvents( ( Control )widget );
-    ControlLCAUtil.processMenuDetect( ( Control )widget );
-    WidgetLCAUtil.processHelp( widget );
+    ExpandBar expandBar = ( ExpandBar )widget;
+    ControlLCAUtil.processKeyEvents( expandBar );
+    ControlLCAUtil.processMenuDetect( expandBar );
+    WidgetLCAUtil.processHelp( expandBar );
+    processExpandEvent( expandBar, SWT.Expand, "Expand" );
+    processExpandEvent( expandBar, SWT.Collapse, "Collapse" );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ExpandBar expandBar = ( ExpandBar )widget;
     IClientObject clientObject = ClientObjectFactory.getClientObject( expandBar );
@@ -57,6 +70,7 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
     clientObject.set( "style", WidgetLCAUtil.getStyles( expandBar, ALLOWED_STYLES ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     ExpandBar expandBar = ( ExpandBar )widget;
     ControlLCAUtil.renderChanges( expandBar );
@@ -67,8 +81,11 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
                     null );
     renderProperty( expandBar, PROP_VSCROLLBAR_VISIBLE, isVScrollBarVisible( expandBar ), false );
     renderProperty( expandBar, PROP_VSCROLLBAR_MAX, getVScrollBarMax( expandBar ), 0 );
+    renderListener( expandBar, PROP_EXPAND_LISTENER, hasExpandListener( expandBar ), false );
+    renderListener( expandBar, PROP_COLLAPSE_LISTENER, hasCollapseListener( expandBar ), false );
   }
 
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getClientObject( widget ).destroy();
   }
@@ -97,7 +114,35 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
     return result;
   }
 
+  private static boolean hasExpandListener( ExpandBar bar ) {
+    // Always render listen for Expand and Collapse, currently required for item's control
+    // visibility and bounds update.
+    return true;
+  }
+
+  private static boolean hasCollapseListener( ExpandBar bar ) {
+    // Always render listen for Expand and Collapse, currently required for item's control
+    // visibility and bounds update.
+    return true;
+  }
+
   public static IExpandBarAdapter getExpandBarAdapter( ExpandBar bar ) {
     return bar.getAdapter( IExpandBarAdapter.class );
+  }
+
+  /////////////////////////////////
+  // Process expand/collapse events
+
+  private static void processExpandEvent( ExpandBar bar, int eventType, String eventName ) {
+    if( WidgetLCAUtil.wasEventSent( bar, eventName ) ) {
+      String value = readEventPropertyValue( bar, eventName, ClientMessageConst.EVENT_PARAM_ITEM );
+      Event event = new Event();
+      event.item = getItem( bar, value );
+      bar.notifyListeners( eventType, event );
+    }
+  }
+
+  private static ExpandItem getItem( ExpandBar bar, String itemId ) {
+    return ( ExpandItem )WidgetUtil.find( bar, itemId );
   }
 }
