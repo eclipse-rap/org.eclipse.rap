@@ -27,7 +27,6 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.internal.SWTEventListener;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.events.EventList;
-import org.eclipse.swt.internal.events.EventTable;
 import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
@@ -165,10 +164,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     // The adapters returned here are buffered for performance reasons. Don't change this without
     // good reason
     T result = null;
-    if( adapter == EventTable.class ) {
-      ensureEventTable();
-      result = ( T )eventTable;
-    } else if( adapter == IClientObjectAdapter.class || adapter == IWidgetAdapter.class ) {
+    if( adapter == IClientObjectAdapter.class || adapter == IWidgetAdapter.class ) {
       if( widgetAdapter == null ) {
         widgetAdapter = new WidgetAdapter();
       }

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.swt.internal.events;
+package org.eclipse.swt.widgets;
 
 
 import org.eclipse.swt.SWT;
@@ -24,8 +24,8 @@ import org.eclipse.swt.widgets.TypedListener;
  * to a listener.  Multiple listeners for the
  * same event type are supported.
  */
-// copied from SWT (note the different package there: org.eclipse.swt.widgets) 
-public class EventTable implements SerializableCompatibility {
+// copied from SWT
+class EventTable implements SerializableCompatibility {
 	int [] types;
 	Listener [] listeners;
 	int level;

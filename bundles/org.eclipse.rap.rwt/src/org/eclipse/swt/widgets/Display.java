@@ -55,7 +55,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.events.EventList;
-import org.eclipse.swt.internal.events.EventTable;
 import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
@@ -1148,7 +1147,7 @@ public class Display extends Device implements Adaptable {
     }
     return result;
   }
-  
+
   /**
    * Causes the user-interface thread to <em>sleep</em> (that is,
    * to be put in a state where it does not consume CPU cycles)
@@ -1739,7 +1738,7 @@ public class Display extends Device implements Adaptable {
       filterTable = null;
     }
   }
-  
+
   boolean filters( int eventType ) {
     return filterTable != null ? filterTable.hooks( eventType ) : false;
   }
@@ -2264,7 +2263,7 @@ public class Display extends Device implements Adaptable {
     ControlFinder( Display display, Point location ) {
       this.display = display;
       this.location = new Point( location.x, location.y );
-      this.foundComponentInParent = new HashSet<Control>();
+      foundComponentInParent = new HashSet<Control>();
       find();
     }
 
@@ -2321,8 +2320,8 @@ public class Display extends Device implements Adaptable {
     }
 
     public void setCursorLocation( int x, int y ) {
-      Display.this.cursorLocation.x = x;
-      Display.this.cursorLocation.y = y;
+      cursorLocation.x = x;
+      cursorLocation.y = y;
     }
 
     public void setActiveShell( Shell activeShell ) {
@@ -2343,13 +2342,13 @@ public class Display extends Device implements Adaptable {
     }
 
     public Shell[] getShells() {
-      Shell[] result = new Shell[ Display.this.shells.size() ];
-      Display.this.shells.toArray( result );
+      Shell[] result = new Shell[ shells.size() ];
+      shells.toArray( result );
       return result;
     }
 
     public ISessionStore getSessionStore() {
-      return Display.this.sessionStore;
+      return sessionStore;
     }
 
     public void attachThread() {
@@ -2365,11 +2364,11 @@ public class Display extends Device implements Adaptable {
     }
 
     public boolean isBeepCalled() {
-      return Display.this.beep;
+      return beep;
     }
 
     public void resetBeep() {
-      Display.this.beep = false;
+      beep = false;
     }
   }
 
