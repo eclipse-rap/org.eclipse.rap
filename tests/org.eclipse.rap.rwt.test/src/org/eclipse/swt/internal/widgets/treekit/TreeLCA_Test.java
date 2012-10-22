@@ -39,6 +39,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.TreeEvent;
+import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -69,6 +71,7 @@ public class TreeLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private Tree tree;
   private TreeLCA lca;
 
   @Override
@@ -76,6 +79,7 @@ public class TreeLCA_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
+    tree = new Tree( shell, SWT.NONE );
     lca = new TreeLCA();
     Fixture.fakeNewRequest( display );
   }
@@ -86,7 +90,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testControlListeners() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( tree );
     ControlLCATestUtil.testFocusListener( tree );
     ControlLCATestUtil.testMouseListener( tree );
@@ -101,7 +104,6 @@ public class TreeLCA_Test extends TestCase {
     Image image2 = Graphics.getImage( Fixture.IMAGE_50x100 );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
-    Tree tree = new Tree( shell, SWT.NONE );
     tree.setHeaderVisible( true );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     column.setText( "column1" );
@@ -129,7 +131,6 @@ public class TreeLCA_Test extends TestCase {
     Image image2 = Graphics.getImage( Fixture.IMAGE_50x100 );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
-    Tree tree = new Tree( shell, SWT.NONE );
     tree.setHeaderVisible( true );
     TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
     column1.setText( "column1" );
@@ -156,7 +157,6 @@ public class TreeLCA_Test extends TestCase {
   public void testGetItemMetricsCellLeft() {
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
-    Tree tree = new Tree( shell, SWT.NONE );
     tree.setHeaderVisible( true );
     TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
     column1.setText( "column1" );
@@ -176,7 +176,6 @@ public class TreeLCA_Test extends TestCase {
   public void testGetItemMetricsCellWidth() {
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
-    Tree tree = new Tree( shell, SWT.NONE );
     tree.setHeaderVisible( true );
     TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
     column1.setText( "column1" );
@@ -197,7 +196,6 @@ public class TreeLCA_Test extends TestCase {
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
-    Tree tree = new Tree( shell, SWT.NONE );
     tree.setHeaderVisible( true );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     column.setText( "column1" );
@@ -247,7 +245,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
     TreeColumn child1 = new TreeColumn( tree, SWT.NONE, 0 );
     child1.setText( "child1" );
@@ -331,7 +328,6 @@ public class TreeLCA_Test extends TestCase {
 
   public void testSelectionEvent() {
     java.util.List<SelectionEvent> events = new LinkedList<SelectionEvent>();
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     tree.addSelectionListener( new LoggingSelectionListener( events ) );
@@ -403,7 +399,6 @@ public class TreeLCA_Test extends TestCase {
 
   public void testDefaultSelectionEvent() {
     List<SelectionEvent> events = new LinkedList<SelectionEvent>();
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     tree.addSelectionListener( new LoggingSelectionListener( events ) );
@@ -429,7 +424,6 @@ public class TreeLCA_Test extends TestCase {
 
   public void testDefaultSelectionEventUntyped() {
     final List<Event> events = new LinkedList<Event>();
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     tree.addListener( SWT.DefaultSelection, new Listener() {
@@ -457,8 +451,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testInvalidScrollValues() {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     Fixture.fakeSetParameter( getId( tree ), "scrollLeft", "undefined" );
     Fixture.fakeSetParameter( getId( tree ), "topItemIndex", "80" );
     Fixture.readDataAndProcessAction( tree );
@@ -470,7 +462,6 @@ public class TreeLCA_Test extends TestCase {
 
   public void testScrollbarsSelectionEvent() {
     List<SelectionEvent> events = new ArrayList<SelectionEvent>();
-    Tree tree = new Tree( shell, SWT.NONE );
     SelectionListener listener = new LoggingSelectionListener( events );
     tree.getHorizontalBar().addSelectionListener( listener );
 
@@ -501,7 +492,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testCellTooltipRequestForMissingCells() {
-    Tree tree = new Tree( shell, SWT.NONE );
     createTreeItems( tree, 3 );
     final StringBuilder log = new StringBuilder();
     final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
@@ -685,8 +675,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderCreate() throws IOException, JSONException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     lca.renderInitialization( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -701,7 +689,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderCreateWithFixedColumns() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     tree.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
 
     lca.renderInitialization( tree );
@@ -712,8 +699,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     lca.renderInitialization( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -760,8 +745,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialItemCount() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -770,8 +753,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderItemCount() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     tree.setItemCount( 10 );
     lca.renderChanges( tree );
 
@@ -780,7 +761,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderItemCountUnchanged() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
 
@@ -793,8 +773,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialItemHeight() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -803,7 +781,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderItemHeight() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     Font font = Graphics.getFont( "Arial", 26, SWT.NONE );
 
     tree.setFont( font );
@@ -814,7 +791,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderItemHeightUnchanged() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     Font font = Graphics.getFont( "Arial", 26, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
@@ -828,8 +804,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialItemMetrics() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -838,7 +812,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderItemMetrics() throws IOException, JSONException {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( "foo" );
 
@@ -850,7 +823,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderItemMetricsUnchanged() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( "foo" );
     Fixture.markInitialized( display );
@@ -864,8 +836,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialColumnCount() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -874,8 +844,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderColumnCount() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     new TreeColumn( tree, SWT.NONE );
     lca.renderChanges( tree );
 
@@ -884,7 +852,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderColumnCountUnchanged() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
 
@@ -897,8 +864,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialFixedColumns() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -907,7 +872,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderFixedColumns() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
 
     tree.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
@@ -918,7 +882,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderFixedColumnsUnchanged() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
@@ -932,7 +895,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialTreeColumn() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
 
@@ -944,7 +906,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderTreeColumn() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
 
@@ -956,7 +917,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderTreeColumnUnchanged() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
     Fixture.markInitialized( display );
@@ -971,8 +931,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialHeaderHeight() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -981,8 +939,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderHeaderHeight() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     tree.setHeaderVisible( true );
     lca.renderChanges( tree );
 
@@ -991,7 +947,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderHeaderHeightUnchanged() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
 
@@ -1004,8 +959,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialHeaderVisible() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -1014,8 +967,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderHeaderVisible() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     tree.setHeaderVisible( true );
     lca.renderChanges( tree );
 
@@ -1024,7 +975,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderHeaderVisibleUnchanged() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
 
@@ -1037,8 +987,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialLinesVisible() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -1047,8 +995,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderLinesVisible() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     tree.setLinesVisible( true );
     lca.renderChanges( tree );
 
@@ -1057,7 +1003,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderLinesVisibleUnchanged() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
 
@@ -1070,8 +1015,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialTopItemIndex() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -1080,7 +1023,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderTopItemIndex() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -1093,7 +1035,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderTopItemIndexUnchanged() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -1109,8 +1050,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialScrollLeft() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -1119,8 +1058,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderScrollLeft() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     setScrollLeft( tree, 10 );
     lca.renderChanges( tree );
 
@@ -1129,7 +1066,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderScrollLeftUnchanged() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
 
@@ -1142,8 +1078,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelection() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -1323,7 +1257,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderAddSelectionListener() throws Exception {
-    Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
     Fixture.preserveWidgets();
@@ -1337,7 +1270,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    Tree tree = new Tree( shell, SWT.NONE );
     Listener listener = mock( Listener.class );
     tree.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
@@ -1353,7 +1285,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderAddDefaultSelectionListener() throws Exception {
-    Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
     Fixture.preserveWidgets();
@@ -1367,7 +1298,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveDefaultSelectionListener() throws Exception {
-    Tree tree = new Tree( shell, SWT.NONE );
     Listener listener = mock( Listener.class );
     tree.addListener( SWT.DefaultSelection, listener );
     Fixture.markInitialized( display );
@@ -1383,7 +1313,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
-    Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
     Fixture.preserveWidgets();
@@ -1396,9 +1325,21 @@ public class TreeLCA_Test extends TestCase {
     assertNull( message.findListenOperation( tree, "Selection" ) );
   }
 
-  public void testRenderInitialEnableCellToolTip() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
+  public void testRenderAddExpandListener() throws Exception {
+    lca.renderChanges( tree );
 
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( tree, "Expand" ) );
+  }
+
+  public void testRenderAddCollapseListener() throws Exception {
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( tree, "Collapse" ) );
+  }
+
+  public void testRenderInitialEnableCellToolTip() throws IOException {
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -1407,8 +1348,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderEnableCellToolTip() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     tree.setData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
     lca.renderChanges( tree );
 
@@ -1417,7 +1356,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderEnableCellToolTipUnchanged() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
 
@@ -1430,7 +1368,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderCellToolTipText() {
-    Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
     createTreeItems( tree, 5 );
@@ -1456,7 +1393,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderCellToolTipTextNull() {
-    Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
     createTreeItems( tree, 5 );
@@ -1475,8 +1411,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSortDirection() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -1485,7 +1419,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderSortDirection() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
 
     tree.setSortColumn( column );
@@ -1497,7 +1430,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderSortDirectionUnchanged() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
@@ -1512,8 +1444,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSortColumn() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -1522,7 +1452,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderSortColumn() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
 
     tree.setSortColumn( column );
@@ -1533,7 +1462,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderSortColumnUnchanged() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
@@ -1547,8 +1475,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderInitialFocusItem() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -1557,7 +1483,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderFocusItem() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -1570,7 +1495,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderFocusItemUnchanged() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -1586,7 +1510,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderFocusItemOnEmptySelection() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -1603,13 +1526,58 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderMarkupEnabled() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
     tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
 
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findCreateProperty( tree, "markupEnabled" ) );
+  }
+
+  public void testTreeEvent() {
+    tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
+    final TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+    new TreeItem( treeItem, SWT.NONE );
+    final StringBuilder log = new StringBuilder();
+    TreeListener listener = new TreeListener() {
+      public void treeCollapsed( TreeEvent event ) {
+        assertEquals( tree, event.getSource() );
+        assertEquals( treeItem, event.item );
+        assertEquals( SWT.NONE, event.detail );
+        assertEquals( 0, event.x );
+        assertEquals( 0, event.y );
+        assertEquals( 0, event.width );
+        assertEquals( 0, event.height );
+        assertEquals( true, event.doit );
+        log.append( "collapsed" );
+      }
+
+      public void treeExpanded( TreeEvent event ) {
+        assertEquals( tree, event.getSource() );
+        assertEquals( treeItem, event.item );
+        assertEquals( SWT.NONE, event.detail );
+        assertEquals( 0, event.x );
+        assertEquals( 0, event.y );
+        assertEquals( 0, event.width );
+        assertEquals( 0, event.height );
+        assertEquals( true, event.doit );
+        log.append( "expanded" );
+      }
+    };
+    tree.addTreeListener( listener );
+
+    fakeTreeEvent( treeItem, "Expand" );
+    Fixture.readDataAndProcessAction( tree );
+
+    assertEquals( "expanded", log.toString() );
+
+    log.setLength( 0 );
+
+    Fixture.fakeNewRequest( display );
+    fakeTreeEvent( treeItem, "Collapse" );
+    Fixture.readDataAndProcessAction( tree );
+
+    assertEquals( "collapsed", log.toString() );
   }
 
   private static void setScrollLeft( Tree tree, int scrollLeft ) {
@@ -1620,5 +1588,11 @@ public class TreeLCA_Test extends TestCase {
   private static ITreeAdapter getTreeAdapter( Tree tree ) {
     Object adapter = tree.getAdapter( ITreeAdapter.class );
     return ( ITreeAdapter )adapter;
+  }
+
+  private static void fakeTreeEvent( TreeItem item, String eventName ) {
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
+    Fixture.fakeNotifyOperation( getId( item.getParent() ), eventName, parameters );
   }
 }

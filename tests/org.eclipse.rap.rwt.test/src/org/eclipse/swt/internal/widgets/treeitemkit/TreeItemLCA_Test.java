@@ -15,12 +15,10 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 import java.util.Arrays;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -29,8 +27,6 @@ import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.TreeEvent;
-import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -185,64 +181,19 @@ public class TreeItemLCA_Test extends TestCase {
     assertFalse( adapter.isCached( treeItem ) );
   }
 
-  public void testTreeEvent() {
-    tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
-    final TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    new TreeItem( treeItem, SWT.NONE );
-    final StringBuilder log = new StringBuilder();
-    TreeListener listener = new TreeListener() {
-      public void treeCollapsed( TreeEvent event ) {
-        assertEquals( tree, event.getSource() );
-        assertEquals( treeItem, event.item );
-        assertEquals( SWT.NONE, event.detail );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertEquals( true, event.doit );
-        log.append( "collapsed" );
-      }
-
-      public void treeExpanded( TreeEvent event ) {
-        assertEquals( tree, event.getSource() );
-        assertEquals( treeItem, event.item );
-        assertEquals( SWT.NONE, event.detail );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertEquals( true, event.doit );
-        log.append( "expanded" );
-      }
-    };
-    tree.addTreeListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( treeItem ), ClientMessageConst.EVENT_TREE_EXPANDED, null );
-    Fixture.readDataAndProcessAction( treeItem );
-
-    assertEquals( "expanded", log.toString() );
-
-    log.setLength( 0 );
-
-    Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( treeItem ), ClientMessageConst.EVENT_TREE_COLLAPSED, null );
-    Fixture.readDataAndProcessAction( treeItem );
-
-    assertEquals( "collapsed", log.toString() );
-  }
 
   public void testExpandCollapse() {
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     new TreeItem( treeItem, SWT.NONE );
     treeItem.setExpanded( false );
 
-    Fixture.fakeNotifyOperation( getId( treeItem ), ClientMessageConst.EVENT_TREE_EXPANDED, null );
+    Fixture.fakeSetParameter( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, Boolean.TRUE  );
     Fixture.readDataAndProcessAction( treeItem );
 
     assertEquals( true, treeItem.getExpanded() );
 
     Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( treeItem ), ClientMessageConst.EVENT_TREE_COLLAPSED, null );
+    Fixture.fakeSetParameter( getId( treeItem ), TreeItemLCA.PROP_EXPANDED, Boolean.FALSE  );
     Fixture.readDataAndProcessAction( treeItem );
 
     assertEquals( false, treeItem.getExpanded() );
@@ -845,4 +796,5 @@ public class TreeItemLCA_Test extends TestCase {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     return adapter.getPreserved( property );
   }
+
 }

@@ -16,14 +16,12 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -31,7 +29,6 @@ import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ITreeItemAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
@@ -78,24 +75,15 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
 
   public void readData( Widget widget ) {
     final TreeItem item = ( TreeItem )widget;
-    String value = WidgetLCAUtil.readPropertyValue( widget, "checked" );
-    if( value != null ) {
-      item.setChecked( Boolean.valueOf( value ).booleanValue() );
+    String checked = WidgetLCAUtil.readPropertyValue( widget, PROP_CHECKED );
+    if( checked != null ) {
+      item.setChecked( Boolean.valueOf( checked ).booleanValue() );
     }
-    if( WidgetLCAUtil.wasEventSent( item, ClientMessageConst.EVENT_TREE_EXPANDED ) ) {
-      // The event is fired before the setter is called. Order like in SWT.
-      processTreeExpandedEvent( item );
+    final String expanded = WidgetLCAUtil.readPropertyValue( widget, PROP_EXPANDED );
+    if( expanded != null ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          item.setExpanded( true );
-        }
-      } );
-    }
-    if( WidgetLCAUtil.wasEventSent( item, ClientMessageConst.EVENT_TREE_COLLAPSED ) ) {
-      processTreeCollapsedEvent( item );
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          item.setExpanded( false );
+          item.setExpanded( Boolean.valueOf( expanded ).booleanValue() );
         }
       } );
     }
@@ -227,18 +215,4 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     return Math.max( 1, item.getParent().getColumnCount() );
   }
 
-  /////////////////////////////////
-  // Process expand/collapse events
-
-  private static void processTreeExpandedEvent( TreeItem item ) {
-    Event event = new Event();
-    event.item = item;
-    item.getParent().notifyListeners( SWT.Expand, event );
-  }
-
-  private static void processTreeCollapsedEvent( TreeItem item ) {
-    Event event = new Event();
-    event.item = item;
-    item.getParent().notifyListeners( SWT.Collapse, event );
-  }
 }

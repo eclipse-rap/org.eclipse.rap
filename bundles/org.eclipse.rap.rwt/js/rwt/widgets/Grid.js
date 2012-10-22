@@ -36,6 +36,8 @@ qx.Class.define( "rwt.widgets.Grid", {
     this._sortDirection = null;
     this._sortColumn = null;
     this._hasFixedColumns = false;
+    this._hasExpandListener = false;
+    this._hasCollapseListener = false;
     // Layout:
     this._headerHeight = 0;
     this._footerHeight = 0;
@@ -350,6 +352,14 @@ qx.Class.define( "rwt.widgets.Grid", {
 
     setHasDefaultSelectionListener : function( value ) {
       this._hasDefaultSelectionListener = value;
+    },
+
+    setHasExpandListener : function( value ) {
+      this._hasExpandListener = value;
+    },
+
+    setHasCollapseListener : function( value ) {
+      this._hasCollapseListener = value;
     },
 
     setAlignment : function( column, value ) {
@@ -998,24 +1008,20 @@ qx.Class.define( "rwt.widgets.Grid", {
 
     _sendItemUpdate : function( item, event ) {
       if( !this._inServerResponse() ) {
-        switch( event.msg ) {
-          case "expanded":
-            this._sendItemEvent( item, "org.eclipse.swt.events.treeExpanded" );
-          break;
-          case "collapsed":
-            this._sendItemEvent( item, "org.eclipse.swt.events.treeCollapsed" );
-          break;
-          default:
+        if( event.msg === "expanded" || event.msg === "collapsed" ) {
+          var expanded = event.msg === "expanded";
+          rwt.remote.Server.getInstance().getServerObject( item ).set( "expanded", expanded );
+          if( expanded && this._hasExpandListener ) {
+            rwt.remote.Server.getInstance().getServerObject( this ).notify( "Expand", {
+              "item" : rwt.protocol.ObjectRegistry.getId( item )
+            } );
+          } else if( !expanded && this._hasCollapseListener ) {
+            rwt.remote.Server.getInstance().getServerObject( this ).notify( "Collapse", {
+              "item" : rwt.protocol.ObjectRegistry.getId( item )
+            } );
+          }
         }
       }
-    },
-
-    _sendItemEvent : function( item, type ) { // TODO [tb] : item events should be send by item
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var treeItemId = wm.findIdByWidget( item );
-      var req = rwt.remote.Server.getInstance();
-      req.addEvent( type, treeItemId );
-      req.send();
     },
 
     _sendSelectionEvent : function( item, defaultSelected, detail, index ) {

@@ -64,9 +64,9 @@ public class KeyEvent_Test extends TestCase {
     event.character = 'f';
     event.doit = true;
     event.data = new Object();
-    
+
     KeyEvent keyEvent = new KeyEvent( event );
-    
+
     EventTestHelper.assertFieldsEqual( keyEvent, event );
   }
 
@@ -145,8 +145,10 @@ public class KeyEvent_Test extends TestCase {
                                  parameters  );
   }
 
-  private static void fakeTreeRequest( Widget item ) {
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_TREE_EXPANDED, null  );
+  private static void fakeTreeRequest( TreeItem item ) {
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
+    Fixture.fakeNotifyOperation( getId( item.getParent() ), "Expand", parameters );
   }
 
   private static void fakeHelpRequest( Widget widget ) {
