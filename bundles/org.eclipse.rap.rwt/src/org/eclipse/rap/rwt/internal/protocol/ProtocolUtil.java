@@ -64,7 +64,8 @@ public final class ProtocolUtil {
         BufferedReader reader = new BufferedReader( inputStreamReader );
         String line = reader.readLine();
         while( line != null ) {
-          json.append( line + "\n" );
+          json.append( line );
+          json.append( '\n' );
           line = reader.readLine();
         }
         reader.close();

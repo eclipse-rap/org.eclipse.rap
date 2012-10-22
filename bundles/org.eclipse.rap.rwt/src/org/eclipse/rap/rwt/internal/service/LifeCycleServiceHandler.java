@@ -61,14 +61,14 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   }
 
   void synchronizedService() throws IOException {
-    if( HTTP.METHOD_GET.equals( ContextProvider.getRequest().getMethod() ) ) {
-      handleGetRequest();
-    } else {
+    if( HTTP.METHOD_POST.equals( ContextProvider.getRequest().getMethod() ) ) {
       try {
         handlePostRequest();
       } finally {
         markSessionStarted();
       }
+    } else {
+      handleGetRequest();
     }
   }
 

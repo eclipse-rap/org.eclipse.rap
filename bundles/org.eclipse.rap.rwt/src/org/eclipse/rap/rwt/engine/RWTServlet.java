@@ -68,19 +68,27 @@ import org.eclipse.rap.rwt.internal.service.ServiceStore;
  */
 public class RWTServlet extends HttpServlet {
 
-  ////////////////////
-  // Servlet overrides
+  @Override
+  public String getServletInfo() {
+    return "RWT Servlet";
+  }
 
   @Override
   public void doGet( HttpServletRequest request, HttpServletResponse response )
     throws ServletException, IOException
   {
-    doPost( request, response );
+    handleRequest( request, response );
   }
 
   @Override
   public void doPost( HttpServletRequest request, HttpServletResponse response )
     throws ServletException, IOException
+  {
+    handleRequest( request, response );
+  }
+
+  private void handleRequest( HttpServletRequest request, HttpServletResponse response )
+    throws IOException, ServletException
   {
     if( request.getPathInfo() == null ) {
       handleValidRequest( request, response );
@@ -88,14 +96,6 @@ public class RWTServlet extends HttpServlet {
       handleInvalidRequest( request, response );
     }
   }
-
-  @Override
-  public String getServletInfo() {
-    return "RWT Servlet";
-  }
-
-  //////////////////
-  // Helping methods
 
   private void handleValidRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException, ServletException
@@ -164,4 +164,5 @@ public class RWTServlet extends HttpServlet {
     }
     return result;
   }
+
 }

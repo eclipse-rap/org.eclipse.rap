@@ -228,6 +228,17 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     assertEquals( "text/html; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }
 
+  public void testContentTypeForHeadRequest() throws IOException {
+    Fixture.fakeNewRequest();
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setMethod( "HEAD" );
+
+    new LifeCycleServiceHandler( getLifeCycleFactory(), RWTFactory.getStartupPage() ).service();
+
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    assertEquals( "text/html; charset=UTF-8", response.getHeader( "Content-Type" ) );
+  }
+
   public void testHandleInvalidRequestCounter() throws IOException {
     LifeCycleServiceHandler.markSessionStarted();
     simulateUiRequestWithIllegalCounter();
