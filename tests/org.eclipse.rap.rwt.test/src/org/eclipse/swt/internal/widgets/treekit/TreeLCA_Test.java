@@ -1566,7 +1566,7 @@ public class TreeLCA_Test extends TestCase {
     };
     tree.addTreeListener( listener );
 
-    fakeTreeEvent( treeItem, "Expand" );
+    fakeTreeEvent( treeItem, ClientMessageConst.EVENT_EXPAND );
     Fixture.readDataAndProcessAction( tree );
 
     assertEquals( "expanded", log.toString() );
@@ -1574,7 +1574,7 @@ public class TreeLCA_Test extends TestCase {
     log.setLength( 0 );
 
     Fixture.fakeNewRequest( display );
-    fakeTreeEvent( treeItem, "Collapse" );
+    fakeTreeEvent( treeItem, ClientMessageConst.EVENT_COLLAPSE );
     Fixture.readDataAndProcessAction( tree );
 
     assertEquals( "collapsed", log.toString() );
