@@ -1020,17 +1020,8 @@ qx.Class.define( "rwt.widgets.Grid", {
               "item" : rwt.protocol.ObjectRegistry.getId( item )
             } );
           }
-          rwt.remote.Server.getInstance().send();
         }
       }
-    },
-
-    _sendItemEvent : function( item, type ) { // TODO [tb] : item events should be send by item
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var treeItemId = wm.findIdByWidget( item );
-      var req = rwt.remote.Server.getInstance();
-      req.addEvent( type, treeItemId );
-      req.send();
     },
 
     _sendSelectionEvent : function( item, defaultSelected, detail, index ) {

@@ -1715,6 +1715,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       wm.add( child1, "wtest", false );
 
       child1.setExpanded( true );
+      rwt.remote.Server.getInstance().send();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
@@ -1733,6 +1734,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.initRequestLog();
 
       child1.setExpanded( false );
+      rwt.remote.Server.getInstance().send();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
@@ -1753,7 +1755,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       child1.setExpanded( true );
 
-      //assertEquals( 1, TestUtil.getRequestsSend() );
+      assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertEquals( "wtest", message.findNotifyProperty( "w3", "Expand", "item" ) );
       wm.remove( child1 );
@@ -1775,7 +1777,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       child1.setExpanded( false );
 
-      //assertEquals( 1, TestUtil.getRequestsSend() );
+      assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertEquals( "wtest", message.findNotifyProperty( "w3", "Collapse", "item" ) );
       wm.remove( child1 );

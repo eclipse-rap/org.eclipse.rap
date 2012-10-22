@@ -1326,55 +1326,17 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testRenderAddExpandListener() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( tree );
-    Fixture.preserveWidgets();
-
-    tree.addListener( SWT.Expand, mock( Listener.class ) );
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findListenProperty( tree, "Expand" ) );
   }
 
-  public void testRenderRemoveExpandListener() throws Exception {
-    Listener listener = mock( Listener.class );
-    tree.addListener( SWT.Expand, listener );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( tree );
-    Fixture.preserveWidgets();
-
-    tree.removeListener( SWT.Expand, listener );
-    lca.renderChanges( tree );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( tree, "Expand" ) );
-  }
-
   public void testRenderAddCollapseListener() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( tree );
-    Fixture.preserveWidgets();
-
-    tree.addListener( SWT.Collapse, mock( Listener.class ) );
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findListenProperty( tree, "Collapse" ) );
-  }
-
-  public void testRenderRemoveCollapseListener() throws Exception {
-    Listener listener = mock( Listener.class );
-    tree.addListener( SWT.Collapse, listener );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( tree );
-    Fixture.preserveWidgets();
-
-    tree.removeListener( SWT.Collapse, listener );
-    lca.renderChanges( tree );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( tree, "Collapse" ) );
   }
 
   public void testRenderInitialEnableCellToolTip() throws IOException {

@@ -119,8 +119,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
     preserveListener( tree,
                       PROP_DEFAULT_SELECTION_LISTENER,
                       tree.isListening( SWT.DefaultSelection ) );
-    preserveListener( tree, PROP_EXPAND_LISTENER, tree.isListening( SWT.Expand ) );
-    preserveListener( tree, PROP_COLLAPSE_LISTENER, tree.isListening( SWT.Collapse ) );
+    preserveListener( tree, PROP_EXPAND_LISTENER, hasExpandListener( tree ) );
+    preserveListener( tree, PROP_COLLAPSE_LISTENER, hasCollapseListener( tree ) );
     preserveProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ) );
     preserveProperty( tree, PROP_CELL_TOOLTIP_TEXT, null );
   }
@@ -164,7 +164,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
       clientObject.set( "selectionPadding", selectionPadding );
     }
     clientObject.set( "indentionWidth", adapter.getIndentionWidth() );
-    clientObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( tree ) );  }
+    clientObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( tree ) );
+  }
 
   @Override
   public void renderChanges( Widget widget ) throws IOException {
@@ -201,8 +202,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
                     PROP_DEFAULT_SELECTION_LISTENER,
                     tree.isListening( SWT.DefaultSelection ),
                     false );
-    renderListener( tree, PROP_EXPAND_LISTENER, tree.isListening( SWT.Expand ), false );
-    renderListener( tree, PROP_COLLAPSE_LISTENER, tree.isListening( SWT.Collapse ), false );
+    renderListener( tree, PROP_EXPAND_LISTENER, hasExpandListener( tree ), false );
+    renderListener( tree, PROP_COLLAPSE_LISTENER, hasCollapseListener( tree ), false );
     renderProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ), false );
     renderProperty( tree, PROP_CELL_TOOLTIP_TEXT, getCellToolTipText( tree ), null );
   }
@@ -392,6 +393,18 @@ public final class TreeLCA extends AbstractWidgetLCA {
     if( scrollBar != null ) {
       scrollBar.setSelection( selection );
     }
+  }
+
+  private static boolean hasExpandListener( Tree tree ) {
+    // Always render listen for Expand and Collapse, currently required for scrollbar
+    // visibility update and setData events.
+    return true;
+  }
+
+  private static boolean hasCollapseListener( Tree tree ) {
+    // Always render listen for Expand and Collapse, currently required for scrollbar
+    // visibility update and setData events.
+    return true;
   }
 
   private static TreeItem getItem( Tree tree, String itemId ) {
