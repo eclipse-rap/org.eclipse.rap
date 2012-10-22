@@ -104,20 +104,6 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       }
     },
 
-    addWidgetSelectedModifier : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var commandKey
-        = rwt.client.Client.getPlatform() === "mac" && org.eclipse.swt.EventUtil._metaKey;
-        var shiftKey = org.eclipse.swt.EventUtil._shiftKey;
-        var ctrlKey = org.eclipse.swt.EventUtil._ctrlKey || commandKey;
-        var altKey = org.eclipse.swt.EventUtil._altKey;
-        var req = rwt.remote.Server.getInstance();
-        req.addParameter( "org.eclipse.swt.events.Selection.shiftKey", shiftKey );
-        req.addParameter( "org.eclipse.swt.events.Selection.ctrlKey", ctrlKey );
-        req.addParameter( "org.eclipse.swt.events.Selection.altKey", altKey );
-      }
-    },
-
     addModifierToProperties : function( properties ) {
       var commandKey
         = rwt.client.Client.getPlatform() === "mac" && org.eclipse.swt.EventUtil._metaKey;

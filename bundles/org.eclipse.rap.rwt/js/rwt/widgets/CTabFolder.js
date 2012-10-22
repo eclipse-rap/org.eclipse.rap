@@ -524,9 +524,7 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
           var id = widgetManager.findIdByWidget( this );
           var itemId = widgetManager.findIdByWidget( item );
           req.addParameter( id + ".selection", itemId );
-          req.addEvent( "org.eclipse.swt.events.Selection", id );
-          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-          req.send();
+          org.eclipse.swt.EventUtil.notifySelected( this );
         }
       }
     },

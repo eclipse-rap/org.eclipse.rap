@@ -174,7 +174,6 @@ qx.Class.define( "rwt.widgets.base.BasicButton", {
           var id = widgetManager.findIdByWidget( this );
           var req = rwt.remote.Server.getInstance();
           req.addParameter( id + ".selection", this._selected );
-          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         }
       }
     },

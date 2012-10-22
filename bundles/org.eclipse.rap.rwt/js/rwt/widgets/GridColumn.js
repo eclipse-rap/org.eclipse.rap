@@ -236,17 +236,12 @@ qx.Class.define( "rwt.widgets.GridColumn", {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var isTreeEvent = this._isGroup && event.chevron;
         if( this._hasSelectionListener || isTreeEvent ) {
-          var id = rwt.protocol.ObjectRegistry.getId( this );
-          var req = rwt.remote.Server.getInstance();
           if( isTreeEvent ) {
-            var eventStr = "org.eclipse.swt.events.";
-            eventStr += this._expanded ? "treeCollapsed" : "treeExpanded";
-            req.addEvent( eventStr, id );
+            var serverObject = rwt.remote.Server.getInstance().getServerObject( this );
+            serverObject.notify( this._expanded ? "treeCollapsed" : "treeExpanded" );
           } else {
-            req.addEvent( "org.eclipse.swt.events.Selection", id );
+            org.eclipse.swt.EventUtil.notifySelected( this );
           }
-          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-          req.send();
         }
       }
     },

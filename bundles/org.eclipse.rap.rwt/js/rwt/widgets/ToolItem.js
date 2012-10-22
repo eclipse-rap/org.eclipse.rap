@@ -89,16 +89,11 @@ qx.Class.define( "rwt.widgets.ToolItem", {
     },
 
     _onDropDownClick : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() && this._hasSelectionListener ) {
-        var req = rwt.remote.Server.getInstance();
-        if( this._sendEvent ) {
-          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-          var id = widgetManager.findIdByWidget( this );
-          req.addEvent( "org.eclipse.swt.events.Selection", id );
-          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-          req.addParameter( "org.eclipse.swt.events.Selection.detail", "arrow" );
-          req.send();
-        }
+      if(    !org.eclipse.swt.EventUtil.getSuspended()
+          && this._hasSelectionListener
+          && this._sendEvent )
+      {
+        org.eclipse.swt.EventUtil.notifySelected( this, 0, 0, 0, 0, "arrow" );
       }
       this.dispatchSimpleEvent( "dropDownClicked" );
     },

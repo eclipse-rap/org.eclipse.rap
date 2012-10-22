@@ -180,25 +180,7 @@ qx.Class.define( "rwt.widgets.Text", {
      * Sends a widget default selected event to the server.
      */
     _sendWidgetDefaultSelected : function( detail ) {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( this );
-      var req = rwt.remote.Server.getInstance();
-      // TODO [tb] : clean up after final switch to protocol
-      if( detail ) {
-        req.addEvent( "org.eclipse.swt.events.DefaultSelection", id );
-        req._event = null; // dont add previous event
-        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-        req.addEvent( "org.eclipse.swt.events.Selection.detail", detail );
-        req._event = null;
-        req.getServerObject( this ).notify( "DefaultSelection", {
-          "detail" : detail,
-          "modifier" : org.eclipse.swt.EventUtil._getKeyModifier()
-        } );
-      } else {
-        req.addEvent( "org.eclipse.swt.events.DefaultSelection", id );
-        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-        req.send();
-      }
+      org.eclipse.swt.EventUtil.notifyDefaultSelected( this, 0, 0, 0, 0, detail );
     },
 
     ///////////////////

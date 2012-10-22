@@ -379,12 +379,7 @@ qx.Class.define( "rwt.widgets.DateTimeTime", {
 
     _onInterval : function() {
       this._requestTimer.stop();
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( this );
-      var req = rwt.remote.Server.getInstance();
-      req.addEvent( "org.eclipse.swt.events.Selection", id );
-      org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-      req.send();
+      org.eclipse.swt.EventUtil.notifySelected( this );
     },
 
     setHours : function( value ) {

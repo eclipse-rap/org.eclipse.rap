@@ -241,22 +241,17 @@ qx.Class.define("rwt.widgets.MenuItem",  {
           var id = widgetManager.findIdByWidget( this );
           var req = rwt.remote.Server.getInstance();
           req.addParameter( id + ".selection", this._selected );
-          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         }
       }
     },
 
     // Not using EventUtil since no event should be sent (for radio at least)
     _sendChanges : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() && this._hasSelectionListener ) {
-        var req = rwt.remote.Server.getInstance();
-        if( this._sendEvent ) {
-          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-          var id = widgetManager.findIdByWidget( this );
-          req.addEvent( "org.eclipse.swt.events.Selection", id );
-          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-        }
-        req.send();
+      if(    !org.eclipse.swt.EventUtil.getSuspended()
+          && this._hasSelectionListener
+          && this._sendEvent )
+      {
+        org.eclipse.swt.EventUtil.notifySelected( this );
       }
     },
 

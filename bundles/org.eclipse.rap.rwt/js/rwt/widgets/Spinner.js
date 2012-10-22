@@ -176,21 +176,11 @@ qx.Class.define( "rwt.widgets.Spinner", {
     },
 
     _sendWidgetSelected : function() {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( this );
-      var req = rwt.remote.Server.getInstance();
-      req.addEvent( "org.eclipse.swt.events.Selection", id );
-      org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-      req.send();
+      org.eclipse.swt.EventUtil.notifySelected( this );
     },
 
     _sendWidgetDefaultSelected : function() {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( this );
-      var req = rwt.remote.Server.getInstance();
-      req.addEvent( "org.eclipse.swt.events.DefaultSelection", id );
-      org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-      req.send();
+      org.eclipse.swt.EventUtil.notifyDefaultSelected( this );
     },
 
     _onSend : function( evt ) {

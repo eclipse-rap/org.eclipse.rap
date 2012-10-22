@@ -97,14 +97,9 @@ qx.Class.define( "rwt.widgets.List", {
 
     _onSelectionChange : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
-        var id = wm.findIdByWidget( this );
-        var req = rwt.remote.Server.getInstance();
         this._sendSelectionChange();
         if( this._hasSelectionListener ) {
-          req.addEvent( "org.eclipse.swt.events.Selection", id );
-          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-          req.send();
+          org.eclipse.swt.EventUtil.notifySelected( this );
         }
       }
       this._updateSelectedItemState();
@@ -132,15 +127,8 @@ qx.Class.define( "rwt.widgets.List", {
     },
 
     _onDblClick : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        if( this._hasDefaultSelectionListener ) {
-          var wm = org.eclipse.swt.WidgetManager.getInstance();
-          var id = wm.findIdByWidget( this );
-          var req = rwt.remote.Server.getInstance();
-          req.addEvent( "org.eclipse.swt.events.DefaultSelection", id );
-          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-          req.send();
-        }
+      if( !org.eclipse.swt.EventUtil.getSuspended() && this._hasDefaultSelectionListener ) {
+        org.eclipse.swt.EventUtil.notifyDefaultSelected( this );
       }
     },
 

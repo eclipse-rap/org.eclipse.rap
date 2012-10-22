@@ -318,9 +318,7 @@ qx.Class.define( "rwt.widgets.Scale", {
         var id = widgetManager.findIdByWidget( this );
         req.addParameter( id + ".selection", this._selection );
         if( this._hasSelectionListener ) {
-          req.addEvent( "org.eclipse.swt.events.Selection", id );
-          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-          req.send();
+          org.eclipse.swt.EventUtil.notifySelected( this );
         }
         this._readyToSendChanges = true;
       }
