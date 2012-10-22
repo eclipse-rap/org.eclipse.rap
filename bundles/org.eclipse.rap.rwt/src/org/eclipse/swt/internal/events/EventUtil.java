@@ -28,20 +28,20 @@ public final class EventUtil {
   private static final String ATTR_LAST_EVENT_TIME = EventUtil.class.getName() + "#lastEventTime";
 
   public static int getLastEventTime() {
-    Integer eventTime;
+    Long eventTime;
     if( ContextProvider.hasContext() ) {
       IServiceStore serviceStore = ContextProvider.getContext().getServiceStore();
-      eventTime = ( Integer )serviceStore.getAttribute( ATTR_LAST_EVENT_TIME );
+      eventTime = ( Long )serviceStore.getAttribute( ATTR_LAST_EVENT_TIME );
       if( eventTime == null ) {
-        eventTime = Integer.valueOf( ( int )System.currentTimeMillis() );
+        eventTime = Long.valueOf( System.currentTimeMillis() );
       } else {
-        eventTime = Integer.valueOf( eventTime.intValue() + 1 );
+        eventTime = Long.valueOf( eventTime.longValue() + 1 );
       }
       serviceStore.setAttribute( ATTR_LAST_EVENT_TIME, eventTime );
     } else {
-      eventTime = Integer.valueOf( ( int )System.currentTimeMillis() );
+      eventTime = Long.valueOf( System.currentTimeMillis() );
     }
-    return eventTime.intValue();
+    return ( int )( eventTime.longValue() % Integer.MAX_VALUE );
   }
 
   public static boolean allowProcessing( Event event ) {
