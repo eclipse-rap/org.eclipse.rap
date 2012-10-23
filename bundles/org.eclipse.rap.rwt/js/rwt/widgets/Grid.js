@@ -44,7 +44,6 @@ qx.Class.define( "rwt.widgets.Grid", {
     this._itemHeight = 16;
     // Timer & Border
     this._mergeEventsTimer = new rwt.client.Timer( 50 );
-    this._scrollBarChangesTimer = null;
     // Subwidgets
     this._rowContainer = org.eclipse.rwt.GridUtil.createTreeRowContainer( argsMap );
     this._columns = {};
@@ -71,10 +70,6 @@ qx.Class.define( "rwt.widgets.Grid", {
     this._rootItem.removeEventListener( "update", this._onItemUpdate, this );
     this._rootItem.dispose();
     this._rootItem = null;
-    if( this._scrollBarChangesTimer != null ) {
-      this._scrollBarChangesTimer.dispose();
-      this._scrollBarChangesTimer = null;
-    }
     this._mergeEventsTimer.dispose();
     this._mergeEventsTimer = null;
     this._rowContainer = null;
@@ -184,16 +179,6 @@ qx.Class.define( "rwt.widgets.Grid", {
       this._hasFixedColumns = map.splitContainer;
       this._rowContainer.setBaseAppearance( map.appearance );
       this.setAppearance( map.appearance );
-    },
-
-    _getScrollBarChangesTimer : function() {
-      if( this._scrollBarChangesTimer === null ) {
-        var timer = new rwt.client.Timer( 400 );
-        var req = rwt.remote.Server.getInstance();
-        timer.addEventListener( "interval", req.send, req );
-        this._scrollBarChangesTimer = timer;
-      }
-      return this._scrollBarChangesTimer;
     },
 
     ///////////////////////////
@@ -1015,11 +1000,13 @@ qx.Class.define( "rwt.widgets.Grid", {
     _sendVerticalScrolled : function() {
       var server = rwt.remote.Server.getInstance();
       server.getServerObject( this ).notify( "scrollBarSelected", { "vertical" : true } );
+      server.getServerObject( this._vertScrollBar ).notify( "Selection" );
     },
 
     _sendHorizontalScrolled : function() {
       var server = rwt.remote.Server.getInstance();
       server.getServerObject( this ).notify( "scrollBarSelected", { "horizontal" : true } );
+      server.getServerObject( this._horzScrollBar ).notify( "Selection" );
     },
 
     _sendItemUpdate : function( item, event ) {
