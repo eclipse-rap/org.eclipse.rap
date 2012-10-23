@@ -28,6 +28,8 @@ qx.Class.define( "rwt.widgets.GridColumn", {
     this._visibility = true;
     this._expanded = true;
     this._hasSelectionListener = false;
+    this._hasExpandListener = false;
+    this._hasCollapseListener = false;
     this._width = 0;
     this._toolTip = null;
     this._customVariant = null;
@@ -232,13 +234,38 @@ qx.Class.define( "rwt.widgets.GridColumn", {
       this._hasSelectionListener = value;
     },
 
+    getHasSelectionListener : function() {
+      return this._hasSelectionListener;
+    },
+
+    setHasExpandListener : function( value ) {
+      this._hasExpandListener = value;
+    },
+
+    getHasExpandListener : function() {
+      return this._hasExpandListener;
+    },
+
+    setHasCollapseListener : function( value ) {
+      this._hasCollapseListener = value;
+    },
+
+    getHasCollapseListener : function() {
+      return this._hasCollapseListener;
+    },
+
     handleSelectionEvent : function( event ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var isTreeEvent = this._isGroup && event.chevron;
         if( this._hasSelectionListener || isTreeEvent ) {
           if( isTreeEvent ) {
             var serverObject = rwt.remote.Server.getInstance().getServerObject( this );
-            serverObject.notify( this._expanded ? "treeCollapsed" : "treeExpanded" );
+            serverObject.set( "expanded", !this._expanded );
+            if(    ( this._hasCollapseListener && this._expanded )
+                || ( this._hasExpandListener && !this._expanded )  )
+            {
+              serverObject.notify( this._expanded ? "Collapse" : "Expand" );
+            }
           } else {
             org.eclipse.swt.EventUtil.notifySelected( this );
           }
@@ -284,11 +311,6 @@ qx.Class.define( "rwt.widgets.GridColumn", {
 
     _sendResize : function( width ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-//        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-//        var id = widgetManager.findIdByWidget( this );
-//        var req = rwt.remote.Server.getInstance();
-//        req.addParameter( id + ".width", width );
-//        req.send();
         var serverColumn = rwt.remote.Server.getInstance().getServerObject( this );
         serverColumn.call( "resize", {
           "width" : width
@@ -298,11 +320,6 @@ qx.Class.define( "rwt.widgets.GridColumn", {
 
     _sendMove : function( left ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-//        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-//        var id = widgetManager.findIdByWidget( this );
-//        var req = rwt.remote.Server.getInstance();
-//        req.addParameter( id + ".left", left );
-//        req.send();
         var serverColumn = rwt.remote.Server.getInstance().getServerObject( this );
         serverColumn.call( "move", {
           "left" : left

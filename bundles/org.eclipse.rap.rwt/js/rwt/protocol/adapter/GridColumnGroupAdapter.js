@@ -38,7 +38,8 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.GridColumnGroup", {
   propertyHandler : {},
 
   listeners : [
-    "selection"
+    "Expand",
+    "Collapse"
   ],
 
   listenerHandler : {},

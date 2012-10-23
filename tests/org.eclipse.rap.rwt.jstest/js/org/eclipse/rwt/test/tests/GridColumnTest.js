@@ -86,6 +86,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.destroy();
     },
 
+    testSetHasExpandListenerByProtocol : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolListen( "w4", { "Expand" : true } );
+
+      assertTrue( column.getHasExpandListener() );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSetHasCollapseListenerByProtocol : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolListen( "w4", { "Collapse" : true } );
+
+      assertTrue( column.getHasCollapseListener() );
+      column.dispose();
+      tree.destroy();
+    },
+
     testRenderText : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
@@ -1330,7 +1352,48 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.destroy();
     },
 
-    testSendGroupCollapsed : function() {
+    testSendGroupCollapse : function() {
+      this._fakeChevronAppearance();
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      TestUtil.initRequestLog();
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 10, "width": 40, "height" : 23 } );
+      TestUtil.protocolListen( "w4", { "Collapse" : true } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      TestUtil.clickDOM( label.getCellNode( 2  ) );
+      TestUtil.flush();
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w4", "Collapse" ) );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSendGroupExpand : function() {
+      this._fakeChevronAppearance();
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      tree.setHeaderHeight( 50 );
+      TestUtil.initRequestLog();
+      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
+      TestUtil.protocolSet( "w4", { "left" : 10, "width": 40, "height" : 23, "expanded" : false } );
+      TestUtil.protocolListen( "w4", { "Expand" : true } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      TestUtil.clickDOM( label.getCellNode( 2  ) );
+      TestUtil.flush();
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w4", "Expand" ) );
+      assertEquals( "loading", label._chevron );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSendExpandedFalse : function() {
       this._fakeChevronAppearance();
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       tree.setHeaderHeight( 50 );
@@ -1342,15 +1405,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var label = this._getColumnLabel( tree, column );
       TestUtil.clickDOM( label.getCellNode( 2  ) );
       TestUtil.flush();
+      rwt.remote.Server.getInstance().send();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w4", "treeCollapsed" ) );
-
+      assertFalse( TestUtil.getMessageObject().findSetProperty( "w4", "expanded" ) );
       column.dispose();
       tree.destroy();
     },
 
-    testSendGroupExpanded : function() {
+    testSendExpandedTrue : function() {
       this._fakeChevronAppearance();
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       tree.setHeaderHeight( 50 );
@@ -1362,13 +1425,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var label = this._getColumnLabel( tree, column );
       TestUtil.clickDOM( label.getCellNode( 2  ) );
       TestUtil.flush();
+      rwt.remote.Server.getInstance().send();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w4", "treeExpanded" ) );
-      assertEquals( "loading", label._chevron );
+      assertTrue( TestUtil.getMessageObject().findSetProperty( "w4", "expanded" ) );
       column.dispose();
       tree.destroy();
     },
+
 
     testRenderDragFeedbackAfterGroupedColumnDrag : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
