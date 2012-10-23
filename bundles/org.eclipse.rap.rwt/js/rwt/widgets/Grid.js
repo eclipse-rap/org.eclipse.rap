@@ -978,10 +978,12 @@ qx.Class.define( "rwt.widgets.Grid", {
       // TODO [tb] : There should be a check for _inServerResponse,
       // but currently this is needed to sync the value with the
       // server when the scrollbars are hidden by the server.
-      var req = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Server.getInstance();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( this );
-      req.addParameter( id + ".scrollLeft", this._horzScrollBar.getValue() );
+      server.addParameter( id + ".scrollLeft", this._horzScrollBar.getValue() );
+      var serverObject = server.getServerObject( this._horzScrollBar );
+      serverObject.set( "selection", this._horzScrollBar.getValue() );
       if( this._isVirtual || this._horzScrollBar.getHasSelectionListener() ) {
         this._startScrollBarChangesTimer( true );
       }
