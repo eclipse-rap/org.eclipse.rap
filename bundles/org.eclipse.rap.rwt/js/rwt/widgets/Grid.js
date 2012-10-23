@@ -346,6 +346,22 @@ qx.Class.define( "rwt.widgets.Grid", {
       this._layoutY();
     },
 
+    getVerticalBar : function() {
+      return this._vertScrollBar;
+    },
+
+    getHorizontalBar : function() {
+      return this._horzScrollBar;
+    },
+
+    isVerticalBarVisible : function() {
+      return this._vertScrollBar.getVisibility();
+    },
+
+    isHorizontalBarVisible : function() {
+      return this._horzScrollBar.getVisibility();
+    },
+
     setHasSelectionListener : function( value ) {
       this._hasSelectionListener = value;
     },

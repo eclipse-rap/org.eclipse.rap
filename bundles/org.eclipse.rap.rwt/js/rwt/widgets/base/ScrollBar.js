@@ -118,6 +118,10 @@ qx.Class.define( "rwt.widgets.base.ScrollBar", {
       }
     },
 
+    isHorizontal : function() {
+      return this._horizontal;
+    },
+
     //////////////
     // Overwritten
 
