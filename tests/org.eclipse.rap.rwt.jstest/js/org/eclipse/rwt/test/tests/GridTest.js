@@ -1149,7 +1149,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertNull( tree._leadItem );
       assertNull( tree._mergeEventsTimer );
       assertNull( tree._scrollBarChangesTimer );
-      assertNull( tree._scrollChanges );
       assertNull( tree._rowContainer );
       assertNull( tree._horzScrollBar );
       assertNull( tree._vertScrollBar );
@@ -3145,7 +3144,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree._vertScrollBar.setValue( 50 );
       tree._vertScrollBar.setValue( 160 );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      TestUtil.forceInterval( tree._scrollBarChangesTimer );
+      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertEquals( 8, TestUtil.getMessageObject().findSetProperty( "w11", "topItemIndex" ) );
@@ -3166,7 +3165,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree._horzScrollBar.setValue( 50 );
       tree._horzScrollBar.setValue( 160 );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      TestUtil.forceInterval( tree._scrollBarChangesTimer );
+      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertEquals( 160, TestUtil.getMessageObject().findSetProperty( "w11", "scrollLeft" ) );
@@ -3183,7 +3182,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree._horzScrollBar.setValue( 160 );
       assertEquals( 0, TestUtil.getRequestsSend() );
       rwt.remote.Server.getInstance().send();
-      assertFalse( tree._scrollBarChangesTimer.getEnabled() );
+      assertFalse( rwt.remote.Server.getInstance()._delayTimer.getEnabled() );
       assertEquals( 1, TestUtil.getRequestsSend() );
       tree.destroy();
     },
@@ -4042,7 +4041,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
 
       tree.setScrollLeft( 30 );
-      TestUtil.forceInterval( tree._scrollBarChangesTimer );
+      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();
@@ -4061,7 +4060,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
 
       tree.setTopItemIndex( 3 );
-      TestUtil.forceInterval( tree._scrollBarChangesTimer );
+      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();

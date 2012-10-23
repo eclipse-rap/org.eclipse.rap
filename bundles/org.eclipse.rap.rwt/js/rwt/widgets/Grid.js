@@ -50,7 +50,6 @@ qx.Class.define( "rwt.widgets.Grid", {
     this._columns = {};
     this._horzScrollBar = new rwt.widgets.base.ScrollBar( true );
     this._vertScrollBar = new rwt.widgets.base.ScrollBar( false );
-    this._scrollChanges = {};
     this._header = null;
     this._footer = null;
     this.add( this._rowContainer );
@@ -87,7 +86,6 @@ qx.Class.define( "rwt.widgets.Grid", {
     this._focusItem = null;
     this._sortColumn = null;
     this._resizeLine = null;
-    this._scrollChanges = null;
     if( this._cellToolTip ) {
       this._cellToolTip.destroy();
       this._cellToolTip = null;
@@ -987,8 +985,7 @@ qx.Class.define( "rwt.widgets.Grid", {
       var id = wm.findIdByWidget( this );
       req.addParameter( id + ".topItemIndex", this._topItemIndex );
       if( this._isVirtual || this._vertScrollBar.getHasSelectionListener() ) {
-        this._scrollChanges[ "vertical" ] = true;
-        this._startScrollBarChangesTimer();
+        this._startScrollBarChangesTimer( false );
       }
     },
 
@@ -1001,25 +998,28 @@ qx.Class.define( "rwt.widgets.Grid", {
       var id = wm.findIdByWidget( this );
       req.addParameter( id + ".scrollLeft", this._horzScrollBar.getValue() );
       if( this._isVirtual || this._horzScrollBar.getHasSelectionListener() ) {
-        this._scrollChanges[ "horizontal" ] = true;
-        this._startScrollBarChangesTimer();
+        this._startScrollBarChangesTimer( true );
       }
     },
 
-    _startScrollBarChangesTimer : function() {
-      if( !this._getScrollBarChangesTimer().isEnabled() ) {
-        this._getScrollBarChangesTimer().start();
-        var server = rwt.remote.Server.getInstance();
-        server.addEventListener( "send", this._onSend, this );
-      }
-    },
-
-    _onSend : function() {
+    _startScrollBarChangesTimer : function( horizontal ) {
       var server = rwt.remote.Server.getInstance();
-      server.getServerObject( this ).notify( "scrollBarSelected", this._scrollChanges );
-      this._scrollChanges = {};
-      this._getScrollBarChangesTimer().stop();
-      server.removeEventListener( "send", this._onSend, this );
+      if( horizontal ) {
+        server.onNextSend( this._sendHorizontalScrolled, this );
+      } else {
+        server.onNextSend( this._sendVerticalScrolled, this );
+      }
+      server.sendDelayed( 400 );
+    },
+
+    _sendVerticalScrolled : function() {
+      var server = rwt.remote.Server.getInstance();
+      server.getServerObject( this ).notify( "scrollBarSelected", { "vertical" : true } );
+    },
+
+    _sendHorizontalScrolled : function() {
+      var server = rwt.remote.Server.getInstance();
+      server.getServerObject( this ).notify( "scrollBarSelected", { "horizontal" : true } );
     },
 
     _sendItemUpdate : function( item, event ) {
