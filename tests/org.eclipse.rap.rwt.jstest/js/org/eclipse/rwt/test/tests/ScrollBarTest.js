@@ -578,6 +578,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       shell.destroy();
     },
 
+    testDestroyScrollBarWidthControlInProtocol : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = rwt.protocol.MessageProcessor;
+      var scrollable = this._createScrollable();
+      processor.processOperation( {
+        "target" : "w5",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrollBar",
+        "properties" : {
+          "parent" : "w3",
+          "style" : []
+        }
+      } );
+
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "destroy"
+      } );
+
+      assertTrue( rwt.protocol.ObjectRegistry.getEntry( "w5" ) == null );
+      shell.destroy();
+    },
+
     /////////
     // Helper
 

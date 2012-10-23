@@ -18,6 +18,7 @@ rwt.protocol.AdapterUtil = {
   },
 
   _widgetDestructor : function( widget ) {
+    // TODO [tb] : first two lines should be useless, check and remove
     widget.setToolTip( null );
     widget.setUserData( "toolTipText", null );
     widget.destroy();
