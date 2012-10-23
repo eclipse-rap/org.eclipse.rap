@@ -270,17 +270,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       widget.destroy();
     },
 
-    testSetHasScrollBarsSelectionListenerByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      this._createDefaultTreeByProtocol( "w3", "w2", [] );
-      TestUtil.protocolListen( "w3", { "scrollBarsSelection" : true } );
-      var ObjectManager = rwt.protocol.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget._hasScrollBarsSelectionListener );
-      shell.destroy();
-      widget.destroy();
-    },
-
     testSetHasSelectionListenerByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       this._createDefaultTreeByProtocol( "w3", "w2", [] );

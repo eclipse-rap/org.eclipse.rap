@@ -68,7 +68,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
     "focusItem",
     "sortDirection",
     "sortColumn",
-    "scrollBarsVisible",
+    "scrollBarsVisible", // TODO [tb] : remove
     "alwaysHideSelection",
     "enableCellToolTip",
     "cellToolTipText"
@@ -118,7 +118,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
     "DefaultSelection",
     "Expand",
     "Collapse",
-    "scrollBarsSelection"
+    "scrollBarsSelection"  // TODO [tb] : remove
   ] ),
 
   listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {

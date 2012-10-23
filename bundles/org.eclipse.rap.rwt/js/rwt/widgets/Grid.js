@@ -50,7 +50,6 @@ qx.Class.define( "rwt.widgets.Grid", {
     this._columns = {};
     this._horzScrollBar = new rwt.widgets.base.ScrollBar( true );
     this._vertScrollBar = new rwt.widgets.base.ScrollBar( false );
-    this._hasScrollBarsSelectionListener = false;
     this._scrollChanges = {};
     this._header = null;
     this._footer = null;
@@ -936,7 +935,8 @@ qx.Class.define( "rwt.widgets.Grid", {
     },
 
     setHasScrollBarsSelectionListener : function( value ) {
-      this._hasScrollBarsSelectionListener = value;
+      this._vertScrollBar.setHasSelectionListener( true );
+      this._horzScrollBar.setHasSelectionListener( true );
     },
 
     //////////////
@@ -986,7 +986,7 @@ qx.Class.define( "rwt.widgets.Grid", {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( this );
       req.addParameter( id + ".topItemIndex", this._topItemIndex );
-      if( this._isVirtual || this._hasScrollBarsSelectionListener ) {
+      if( this._isVirtual || this._vertScrollBar.getHasSelectionListener() ) {
         this._scrollChanges[ "vertical" ] = true;
         this._startScrollBarChangesTimer();
       }
@@ -1000,7 +1000,7 @@ qx.Class.define( "rwt.widgets.Grid", {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( this );
       req.addParameter( id + ".scrollLeft", this._horzScrollBar.getValue() );
-      if( this._isVirtual || this._hasScrollBarsSelectionListener ) {
+      if( this._isVirtual || this._horzScrollBar.getHasSelectionListener() ) {
         this._scrollChanges[ "horizontal" ] = true;
         this._startScrollBarChangesTimer();
       }

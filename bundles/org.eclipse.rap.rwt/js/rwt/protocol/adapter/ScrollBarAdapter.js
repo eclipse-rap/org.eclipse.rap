@@ -47,11 +47,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ScrollBar", {
     "Selection"
   ] ),
 
-  listenerHandler : {
-    "Selection" : function( widget, value ) {
-      widget.setHasScrollBarsSelectionListener( value );
-    }
-  },
+  listenerHandler : {},
 
   methods : []
 

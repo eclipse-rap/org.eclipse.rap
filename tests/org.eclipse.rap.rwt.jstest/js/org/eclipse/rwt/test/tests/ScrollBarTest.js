@@ -602,6 +602,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       shell.destroy();
     },
 
+    testScrollBarListenSelection: function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = rwt.protocol.MessageProcessor;
+      var scrollable = this._createScrollable();
+      processor.processOperation( {
+        "target" : "w5",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrollBar",
+        "properties" : {
+          "parent" : "w3",
+          "style" : []
+        }
+      } );
+
+      TestUtil.protocolListen( "w5", { "Selection" : true } );
+
+      var scrollbar = rwt.protocol.ObjectRegistry.getObject( "w5" );
+      assertTrue( scrollbar.getHasSelectionListener() );
+      shell.destroy();
+    },
+
     /////////
     // Helper
 
