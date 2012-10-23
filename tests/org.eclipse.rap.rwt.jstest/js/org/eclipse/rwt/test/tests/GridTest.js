@@ -215,8 +215,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       widget.setItemCount( 10 );
       widget.setItemHeight( 20 );
       TestUtil.flush();
-      TestUtil.protocolSet( "w3", { "topItemIndex" : 3 } );
+      TestUtil.protocolSet( "w3_vscroll", { "selection" : 60 } );
       assertEquals( 60, widget._vertScrollBar.getValue() );
+      assertEquals( 3, widget.getTopItemIndex() );
       shell.destroy();
       widget.destroy();
     },
@@ -238,7 +239,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       widget.setItemCount( 1 );
       widget.setItemMetrics( 0, 0, 150, 0, 0, 0, 0 );
       TestUtil.flush();
-      TestUtil.protocolSet( "w3", { "scrollLeft" : 10 } );
+      //TestUtil.protocolSet( "w3", { "scrollLeft" : 10 } );
+
+      TestUtil.protocolSet( "w3_hscroll", { "selection" : 10 } );
+
       assertEquals( 10, widget._horzScrollBar.getValue() );
       shell.destroy();
       widget.destroy();

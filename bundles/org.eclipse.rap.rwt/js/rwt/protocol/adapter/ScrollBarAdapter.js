@@ -26,9 +26,10 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ScrollBar", {
 
   destructor : function() {},
 
-  properties : rwt.protocol.AdapterUtil.extendControlProperties( [
-    "visibility"
-  ] ),
+  properties : [
+    "visibility",
+    "selection"
+  ],
 
   propertyHandler : {
     "visibility" : function( widget, value ) {
@@ -40,6 +41,9 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ScrollBar", {
       } else {
         parent.setScrollBarsVisible( parent.isHorizontalBarVisible(), value );
       }
+    },
+    "selection" : function( widget, value ) {
+      widget.setValue( value );
     }
   },
 
