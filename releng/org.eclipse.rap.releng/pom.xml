@@ -50,7 +50,10 @@
     <!-- Examples projects -->
     <module>../../examples/org.eclipse.rap.demo</module>
     <module>../../examples/org.eclipse.rap.demo.databinding</module>
+    <module>../../examples/org.eclipse.rap.demo.controls</module>
     <module>../../examples/org.eclipse.rap.design.example</module>
+    <module>../../examples/org.eclipse.rap.examples</module>
+    <module>../../examples/org.eclipse.rap.examples.pages</module>
     <!-- Test projects -->
     <module>../../tests/org.eclipse.rap.rwt.testfixture</module>
     <module>../../tests/org.eclipse.rap.rwt.cluster.testfixture</module>
