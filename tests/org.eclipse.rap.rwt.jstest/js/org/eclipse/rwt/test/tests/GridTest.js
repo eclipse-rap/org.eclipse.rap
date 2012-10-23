@@ -2237,7 +2237,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testSendTopItemIndex : function() {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
-      wm.add( tree, "w11", false );
       this._fillTree( tree, 100 );
       TestUtil.initRequestLog();
       TestUtil.flush();
@@ -2246,7 +2245,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( 0, TestUtil.getRequestsSend() );
       rwt.remote.Server.getInstance().send();
 
-      assertEquals( 8, TestUtil.getMessageObject().findSetProperty( "w11", "topItemIndex" ) );
+      var message = TestUtil.getMessageObject();
+      assertEquals( 160, message.findSetProperty( "w3_vscroll", "selection" ) );
       tree.destroy();
     },
 
@@ -3133,7 +3133,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.prepareTimerUse();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "virtual" );
-      wm.add( tree, "w11", false );
       this._fillTree( tree, 100 );
       TestUtil.initRequestLog();
       TestUtil.flush();
@@ -3144,7 +3143,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
-      assertEquals( 8, TestUtil.getMessageObject().findSetProperty( "w11", "topItemIndex" ) );
+      var message = TestUtil.getMessageObject();
+      assertEquals( 160, message.findSetProperty( "w3_vscroll", "selection" ) );
       tree.destroy();
     },
 
@@ -4061,8 +4061,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var msg = TestUtil.getMessageObject();
-      assertEquals( 3, msg.findSetProperty( "w3", "topItemIndex" ) );
-      //assertEquals( 60, message.findSetProperty( "w3_vscroll", "selection" ) );
+      assertEquals( 60, msg.findSetProperty( "w3_vscroll", "selection" ) );
       assertNotNull( msg.findNotifyOperation( "w3_vscroll", "Selection" ) );
       tree.destroy();
     },

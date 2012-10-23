@@ -965,10 +965,12 @@ qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _sendTopItemIndexChange : function() {
-      var req = rwt.remote.Server.getInstance();
+      var server = rwt.remote.Server.getInstance();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( this );
-      req.addParameter( id + ".topItemIndex", this._topItemIndex );
+      server.addParameter( id + ".topItemIndex", this._topItemIndex );
+      var serverObject = server.getServerObject( this._vertScrollBar );
+      serverObject.set( "selection", this._vertScrollBar.getValue() );
       if( this._isVirtual || this._vertScrollBar.getHasSelectionListener() ) {
         this._startScrollBarChangesTimer( false );
       }
