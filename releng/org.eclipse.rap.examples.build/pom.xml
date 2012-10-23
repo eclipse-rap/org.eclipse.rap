@@ -7,17 +7,18 @@
 
   <parent>
     <groupId>org.eclipse.rap</groupId>
-    <artifactId>org.eclipse.rap.demo.examples.parent</artifactId>
-    <version>1.5.0-SNAPSHOT</version>
+    <artifactId>org.eclipse.rap.examples.parent</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
     <relativePath>parent</relativePath>
   </parent>
 
-  <artifactId>org.eclipse.rap.demo.examples.build</artifactId>
+  <artifactId>org.eclipse.rap.examples.build</artifactId>
   <packaging>pom</packaging>
 
-  <name>RAP examples demo build</name>
+  <name>RAP demo examples build</name>
 
   <modules>
+  <!-- 
     <module>../../examples/org.eclipse.rap.examples</module>
     <module>../../examples/org.eclipse.rap.examples.pages</module>
     <module>../../../org.eclipse.rap.incubator.clientscripting/bundles/org.eclipse.rap.demo.clientscripting</module>
@@ -26,8 +27,13 @@
     <module>../../../rap-gmap/com.eclipsesource.widgets.gmaps</module>
     <module>../../../rap-gmap/org.eclipse.rap.demo.gmaps</module>
     <module>../../../rap-demo-additions/org.eclipse.rap.demo.enrondata</module>
-    <module>feature</module>
-    <module>product</module>
+   -->
+    <!-- workbenchdemo -->
+    <module>workbenchdemo/feature</module>
+    <module>workbenchdemo/product</module>
+    <!-- rapdemo -->
+    <module>rapdemo/feature</module>
+    <module>rapdemo/product</module>
   </modules>
 
 </project>

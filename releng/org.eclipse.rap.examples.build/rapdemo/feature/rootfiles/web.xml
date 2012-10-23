@@ -9,7 +9,7 @@
 
     <init-param>
       <param-name>commandline</param-name>
-      <param-value> -registryMultiLanguage -console 10001 <!-- -consoleLog --></param-value>
+      <param-value> -registryMultiLanguage <!-- -console 10001 -consoleLog --></param-value>
     </init-param>
 
     <init-param>
