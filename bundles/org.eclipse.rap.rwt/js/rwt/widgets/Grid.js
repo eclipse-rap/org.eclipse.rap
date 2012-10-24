@@ -966,9 +966,6 @@ qx.Class.define( "rwt.widgets.Grid", {
 
     _sendTopItemIndexChange : function() {
       var server = rwt.remote.Server.getInstance();
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var id = wm.findIdByWidget( this );
-      server.addParameter( id + ".topItemIndex", this._topItemIndex );
       var serverObject = server.getServerObject( this._vertScrollBar );
       serverObject.set( "selection", this._vertScrollBar.getValue() );
       if( this._isVirtual || this._vertScrollBar.getHasSelectionListener() ) {
@@ -981,9 +978,6 @@ qx.Class.define( "rwt.widgets.Grid", {
       // but currently this is needed to sync the value with the
       // server when the scrollbars are hidden by the server.
       var server = rwt.remote.Server.getInstance();
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var id = wm.findIdByWidget( this );
-      server.addParameter( id + ".scrollLeft", this._horzScrollBar.getValue() );
       var serverObject = server.getServerObject( this._horzScrollBar );
       serverObject.set( "selection", this._horzScrollBar.getValue() );
       if( this._isVirtual || this._horzScrollBar.getHasSelectionListener() ) {
@@ -1003,13 +997,11 @@ qx.Class.define( "rwt.widgets.Grid", {
 
     _sendVerticalScrolled : function() {
       var server = rwt.remote.Server.getInstance();
-      server.getServerObject( this ).notify( "scrollBarSelected", { "vertical" : true } );
       server.getServerObject( this._vertScrollBar ).notify( "Selection" );
     },
 
     _sendHorizontalScrolled : function() {
       var server = rwt.remote.Server.getInstance();
-      server.getServerObject( this ).notify( "scrollBarSelected", { "horizontal" : true } );
       server.getServerObject( this._horzScrollBar ).notify( "Selection" );
     },
 
