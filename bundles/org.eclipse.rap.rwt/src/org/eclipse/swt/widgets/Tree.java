@@ -2390,14 +2390,6 @@ public class Tree extends Composite {
       return item.isCached();
     }
 
-    public boolean hasHScrollBar() {
-      return Tree.this.hasHScrollBar();
-    }
-
-    public boolean hasVScrollBar() {
-      return Tree.this.hasVScrollBar();
-    }
-
     public Point getItemImageSize( int index ) {
       return Tree.this.getItemImageSize( index );
     }

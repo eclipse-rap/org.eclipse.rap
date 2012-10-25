@@ -186,6 +186,7 @@ public final class ClientResources {
     "rwt/protocol/adapter/DragSourceAdapter.js",
     "rwt/theme/ThemeValues.js",
     "rwt/widgets/Grid.js",
+    "rwt/protocol/adapter/ScrollBarAdapter.js",
     "rwt/protocol/adapter/GridAdapter.js",
     "rwt/widgets/GridItem.js",
     "rwt/protocol/adapter/GridItemAdapter.js",

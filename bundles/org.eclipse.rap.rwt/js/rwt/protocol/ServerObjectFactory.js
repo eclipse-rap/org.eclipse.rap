@@ -13,7 +13,7 @@
 
 var ObjectManager = rwt.protocol.ObjectRegistry;
 
-rwt.protocol.ServerObjectFactory = { // TODO [tb] : merge with Server.js? (not a factory)
+rwt.protocol.ServerObjectFactory = { // TODO [tb] : merge with Server.js or ServerObject.js?
 
   _db : {},
 

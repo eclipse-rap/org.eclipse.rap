@@ -35,7 +35,19 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
     return result;
   },
 
-  destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
+  destructor : function( widget ) {
+    // TODO [tb] : find a more general solution for this, see
+    // Bug 373357 - [Protocol] Consider to omit destroy operations for children of destroyed widget
+    var vBarId = rwt.protocol.ObjectRegistry.getId( widget.getVerticalBar() );
+    var hBarId = rwt.protocol.ObjectRegistry.getId( widget.getHorizontalBar() );
+    if( vBarId ) {
+      rwt.protocol.MessageProcessor.processOperationArray( [ "destroy", vBarId ] );
+    }
+    if( hBarId ) {
+      rwt.protocol.MessageProcessor.processOperationArray( [ "destroy", hBarId ] );
+    }
+    rwt.protocol.AdapterUtil.getControlDestructor()( widget );
+  },
 
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
     "itemCount",
@@ -50,13 +62,10 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
     "footerHeight",
     "footerVisible",
     "linesVisible",
-    "topItemIndex",
-    "scrollLeft",
     "selection",
     "focusItem",
     "sortDirection",
     "sortColumn",
-    "scrollBarsVisible",
     "alwaysHideSelection",
     "enableCellToolTip",
     "cellToolTipText"
@@ -105,8 +114,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Grid", {
     "Selection",
     "DefaultSelection",
     "Expand",
-    "Collapse",
-    "scrollBarsSelection"
+    "Collapse"
   ] ),
 
   listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {

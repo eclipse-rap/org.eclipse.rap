@@ -109,7 +109,7 @@ rwt.protocol.MessageProcessor = {
   },
 
   _processSetImpl : function( targetObject, adapter, properties ) {
-    if( properties && adapter.properties  instanceof Array ) {
+    if( properties && adapter.properties instanceof Array ) {
       for( var i = 0; i < adapter.properties.length; i++ ) {
         var property = adapter.properties [ i ];
         var value = properties[ property ];
