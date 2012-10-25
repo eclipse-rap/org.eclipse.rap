@@ -170,7 +170,7 @@ qx.Class.define( "rwt.widgets.base.ScrollBar", {
           if( size < this._minThumbSize ) {
             var idealLength = this._getSliderSize();
             var newLength = this._minThumbSize * this._maximum / this._getLineSize();
-            this._setThumb( newLength );    
+            this._setThumb( newLength );
             if( this._maximum === idealLength ) {
               this._selectionFactor = 1;
             } else {

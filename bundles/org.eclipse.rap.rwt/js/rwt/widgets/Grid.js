@@ -279,8 +279,17 @@ qx.Class.define( "rwt.widgets.Grid", {
       return this._topItemIndex;
     },
 
+    // TODO [tb] : remove after fixing tests
     setScrollLeft: function( value ) {
       this._horzScrollBar.setValue( value );
+    },
+
+    setHBarSelection : function( value ) {
+      this._horzScrollBar.setValue( value );
+    },
+
+    setVBarSelection : function( value ) {
+      this._vertScrollBar.setValue( value );
     },
 
     selectItem : function( item ) {
