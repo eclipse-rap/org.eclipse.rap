@@ -372,6 +372,7 @@ rwt.protocol.AdapterUtil = {
     }
   },
 
+  // TODO [tb] : move to Object Registry
   callWithTarget : function( id, fun ) {
     if( id == null ) {
       fun( null );

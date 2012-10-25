@@ -1531,7 +1531,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
         }
       } );
       var tree = new rwt.widgets.Grid( argsMap );
-      org.eclipse.swt.WidgetManager.getInstance().add( tree, "w2" );
+      rwt.protocol.ObjectRegistry.add( "w2", tree );
+      rwt.protocol.ObjectRegistry.add( "w2_vscroll", tree.getVerticalBar() );
+      rwt.protocol.ObjectRegistry.add( "w2_hscroll", tree.getHorizontalBar() );
       tree.setUserData( "isControl", true );
       tree.setSpace( 13, 364, 27, 30 );
       tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500 );
