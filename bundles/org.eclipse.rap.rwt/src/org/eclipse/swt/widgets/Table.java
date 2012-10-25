@@ -221,14 +221,6 @@ public class Table extends Composite {
       return Table.this.getCreatedItems();
     }
 
-    public boolean hasHScrollBar() {
-      return Table.this.hasHScrollBar();
-    }
-
-    public boolean hasVScrollBar() {
-      return Table.this.hasVScrollBar();
-    }
-
     public TableItem getMeasureItem() {
       return Table.this.getMeasureItem();
     }
