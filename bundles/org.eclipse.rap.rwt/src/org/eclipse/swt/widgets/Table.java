@@ -2253,6 +2253,7 @@ public class Table extends Composite {
       tableColumns[ i ].dispose();
       columnHolder.remove( tableColumns[ i ] );
     }
+    super.releaseChildren();
   }
 
   ///////////////////////////////////

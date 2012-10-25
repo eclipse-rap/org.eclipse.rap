@@ -1859,9 +1859,9 @@ public class Tree_Test extends TestCase {
 
   public void testAddTreeListener() {
     Tree tree = new Tree( composite, SWT.NONE );
-    
+
     tree.addTreeListener( mock( TreeListener.class ) );
-    
+
     assertTrue( tree.isListening( SWT.Expand ) );
     assertTrue( tree.isListening( SWT.Collapse ) );
   }
@@ -1870,16 +1870,16 @@ public class Tree_Test extends TestCase {
     Tree tree = new Tree( composite, SWT.NONE );
     TreeListener listener = mock( TreeListener.class );
     tree.addTreeListener( listener );
-    
+
     tree.removeTreeListener( listener );
-    
+
     assertFalse( tree.isListening( SWT.Expand ) );
     assertFalse( tree.isListening( SWT.Collapse ) );
   }
-  
+
   public void testAddTreeListenerWithNullArgument() {
     Tree tree = new Tree( composite, SWT.NONE );
-    
+
     try {
       tree.addTreeListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -1888,7 +1888,7 @@ public class Tree_Test extends TestCase {
 
   public void testRemoveTreeListenerWithNullArgument() {
     Tree tree = new Tree( composite, SWT.NONE );
-    
+
     try {
       tree.removeTreeListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -1899,25 +1899,25 @@ public class Tree_Test extends TestCase {
     Tree tree = new Tree( composite, SWT.NONE );
 
     tree.addSelectionListener( mock( SelectionListener.class ) );
-    
+
     assertTrue( tree.isListening( SWT.Selection ) );
     assertTrue( tree.isListening( SWT.DefaultSelection ) );
   }
-  
+
   public void testRemoveSelectionListener() {
     Tree tree = new Tree( composite, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     tree.addSelectionListener( listener );
 
     tree.removeSelectionListener( listener );
-    
+
     assertFalse( tree.isListening( SWT.Selection ) );
     assertFalse( tree.isListening( SWT.DefaultSelection ) );
   }
 
   public void testAddSelectionListenerWithNullArgument() {
     Tree tree = new Tree( composite, SWT.NONE );
-    
+
     try {
       tree.addSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -1926,11 +1926,20 @@ public class Tree_Test extends TestCase {
 
   public void testRemoveSelectionListenerWithNullArgument() {
     Tree tree = new Tree( composite, SWT.NONE );
-    
+
     try {
       tree.removeSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
     }
+  }
+
+  public void testDisposeCellEditor() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    Text cellEditor = new Text( tree, SWT.NONE );
+
+    tree.dispose();
+
+    assertTrue( cellEditor.isDisposed() );
   }
 
   /////////

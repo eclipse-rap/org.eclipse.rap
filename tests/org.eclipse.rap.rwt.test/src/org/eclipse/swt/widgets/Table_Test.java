@@ -2466,25 +2466,25 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
 
     table.addSelectionListener( mock( SelectionListener.class ) );
-    
+
     assertTrue( table.isListening( SWT.Selection ) );
     assertTrue( table.isListening( SWT.DefaultSelection ) );
   }
-  
+
   public void testRemoveSelectionListener() {
     Table table = new Table( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     table.addSelectionListener( listener );
 
     table.removeSelectionListener( listener );
-    
+
     assertFalse( table.isListening( SWT.Selection ) );
     assertFalse( table.isListening( SWT.DefaultSelection ) );
   }
 
   public void testAddSelectionListenerWithNullArgument() {
     Table table = new Table( shell, SWT.NONE );
-    
+
     try {
       table.addSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -2493,11 +2493,20 @@ public class Table_Test extends TestCase {
 
   public void testRemoveSelectionListenerWithNullArgument() {
     Table table = new Table( shell, SWT.NONE );
-    
+
     try {
       table.removeSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
     }
+  }
+
+  public void testDisposeCellEditor() {
+    Table table = new Table( shell, SWT.NONE );
+    Text cellEditor = new Text( table, SWT.NONE );
+
+    table.dispose();
+
+    assertTrue( cellEditor.isDisposed() );
   }
 
   private Image createImage50x100() throws IOException {
