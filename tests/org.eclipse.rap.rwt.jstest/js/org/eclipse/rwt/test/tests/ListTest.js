@@ -237,9 +237,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "style" : [ "MULTI" ],
           "parent" : "w2",
           "items" : [ "a", "b", "c" ],
-          "topIndex" : 2
+          "itemDimensions" : [ 100, 10 ]
         }
       } );
+      this._createProtocolScrollBars( "w3" );
+
+      TestUtil.protocolSet( "w3_vscroll", { "selection" : 20 } );
+
       var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 2, widget._topIndex );
@@ -270,6 +274,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       widget.destroy();
     },
 
+    testSetScrollBarsNotVisibleByDefault : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = rwt.protocol.MessageProcessor;
+
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.List",
+        "properties" : {
+          "style" : [ "MULTI" ],
+          "parent" : "w2"
+        }
+      } );
+
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w3" );
+      assertFalse( widget._horzScrollBar.getDisplay() );
+      assertFalse( widget._vertScrollBar.getDisplay() );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testSetScrollBarsVisibleByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
@@ -280,14 +307,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
         "type" : "rwt.widgets.List",
         "properties" : {
           "style" : [ "MULTI" ],
-          "parent" : "w2",
-          "scrollBarsVisible" : [ false, false ]
+          "parent" : "w2"
         }
       } );
+      this._createProtocolScrollBars( "w3" );
+
+      TestUtil.protocolSet( "w3_vscroll", { "visibility" : true } );
+      TestUtil.protocolSet( "w3_hscroll", { "visibility" : true } );
+
       var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
-      assertFalse( widget._horzScrollBar.getDisplay() );
-      assertFalse( widget._vertScrollBar.getDisplay() );
+      assertTrue( widget._horzScrollBar.getDisplay() );
+      assertTrue( widget._vertScrollBar.getDisplay() );
       shell.destroy();
       widget.destroy();
     },
@@ -502,14 +533,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.destroy();
     },
 
-    testSetTopIndex : function() {
+    testSendVerticalScrollPosition : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
       this._addItems( list, 300 );
       TestUtil.flush();
-      list.setTopIndex( 40 );
-      assertEquals( 40, this._getTopItemIndex( list ) );
-      list.selectAll();
+      list.getVerticalBar().setHasSelectionListener( true );
+
+      list.getVerticalBar().setValue( 40 );
+      rwt.remote.Server.getInstance().send();
+
+      var message = TestUtil.getLastMessage();
+      assertEquals( 40, message.findSetProperty( "w3_vscroll", "selection" ) );
       list.destroy();
     },
 
@@ -661,10 +696,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.setItemDimensions( 500, 20 );
       this._addItems( list, 70 );
       TestUtil.flush();
+
       list.hide();
       list.setHBarSelection( 10 );
       list.setVBarSelection( 20 );
       list.show();
+
       var position = this._getScrollPosition( list );
       assertEquals( [ 10, 20 ], position );
       list.destroy();
@@ -781,9 +818,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.addToDocument();
       list.setSpace( 5, 238, 5, 436 );
       rwt.protocol.ObjectRegistry.add( "w3", list );
+      this._createProtocolScrollBars( "w3" );
       if( noflush !== true ) {
         TestUtil.flush();
       }
+
       return list;
     },
 
@@ -851,6 +890,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           result.backgroundImage = null;
           result.backgroundGradient = null;
           return result;
+        }
+      } );
+    },
+
+    _createProtocolScrollBars : function( id ) {
+      rwt.protocol.MessageProcessor.processOperation( {
+        "target" : id + "_vscroll",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrollBar",
+        "properties" : {
+          "parent" : id,
+          "style" : [ "VERTICAL" ],
+          "visibility" : true
+        }
+      } );
+      rwt.protocol.MessageProcessor.processOperation( {
+        "target" : id + "_hscroll",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrollBar",
+        "properties" : {
+          "parent" : id,
+          "style" : [ "HORIZONTAL" ],
+          "visibility" : true
         }
       } );
     }

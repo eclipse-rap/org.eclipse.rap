@@ -14,12 +14,12 @@ qx.Class.define( "rwt.widgets.List", {
 
   construct : function( multiSelection ) {
     this.base( arguments, multiSelection );
+    this.setScrollBarsVisible( false, false );
     this._topIndex = 0;
     this._hasSelectionListener = false;
     this._hasDefaultSelectionListener = false;
     // Listen to send event of request to report topIndex
     var req = rwt.remote.Server.getInstance();
-    req.addEventListener( "send", this._onSendRequest, this );
     var selMgr = this.getManager();
     selMgr.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
     selMgr.addEventListener( "changeSelection", this._onSelectionChange, this );
@@ -27,11 +27,11 @@ qx.Class.define( "rwt.widgets.List", {
     this.addEventListener( "blur", this._onFocusOut, this );
     this.addEventListener( "dblclick", this._onDblClick, this );
     this.addEventListener( "appear", this._onAppear, this );
+    this.addEventListener( "userScroll", this._onUserScroll );
   },
 
   destruct : function() {
     var req = rwt.remote.Server.getInstance();
-    req.removeEventListener( "send", this._onSendRequest, this );
     var selMgr = this.getManager();
     selMgr.removeEventListener( "changeLeadItem", this._onChangeLeadItem, this );
     selMgr.removeEventListener( "changeSelection", this._onSelectionChange, this );
@@ -43,6 +43,11 @@ qx.Class.define( "rwt.widgets.List", {
 
   members : {
 
+    setVBarSelection : function( value ) {
+      this.base( arguments, value );
+      this.setTopIndex( value / this._itemHeight );
+    },
+
     setTopIndex : function( value ) {
       this._topIndex = value;
       this._applyTopIndex( value );
@@ -53,7 +58,7 @@ qx.Class.define( "rwt.widgets.List", {
       if( items.length > 0 && items[ 0 ].isCreated() ) {
         var itemHeight = this.getManager().getItemHeight( items[ 0 ] );
         if( itemHeight > 0 ) {
-          this._clientArea.setScrollTop( newIndex * itemHeight );
+          this._vertScrollBar.setValue( newIndex * itemHeight );
         }
       }
     },
@@ -115,15 +120,11 @@ qx.Class.define( "rwt.widgets.List", {
       rwt.remote.Server.getInstance().getServerObject( this ).set( "selection", selection );
     },
 
-    _onSendRequest : function( evt ) {
-      var topIndex = this._isCreated ? this._getTopIndex() : 0;
-      if( this._topIndex != topIndex ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        var req = rwt.remote.Server.getInstance();
-        req.addParameter( id + ".topIndex", topIndex );
-        this._topIndex = topIndex;
-      }
+    _onUserScroll : function( horizontal ) {
+      var server = rwt.remote.Server.getInstance();
+      var scrollbar = horizontal ? this._horzScrollBar : this._vertScrollBar;
+      var serverObject = server.getServerObject( scrollbar );
+      serverObject.set( "selection", scrollbar.getValue() );
     },
 
     _onDblClick : function( evt ) {

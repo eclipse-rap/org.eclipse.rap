@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.listkit;
 
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
@@ -31,6 +32,7 @@ import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IListAdapter;
+import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Widget;
 
@@ -44,7 +46,6 @@ public class ListLCA extends AbstractWidgetLCA {
   private static final String PROP_SELECTION_INDICES = "selectionIndices";
   private static final String PROP_TOP_INDEX = "topIndex";
   private static final String PROP_FOCUS_INDEX = "focusIndex";
-  private static final String PROP_SCROLLBARS_VISIBLE = "scrollBarsVisible";
   private static final String PROP_ITEM_DIMENSIONS = "itemDimensions";
   private static final String PROP_SELECTION_LISTENER = "Selection";
   private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
@@ -52,9 +53,8 @@ public class ListLCA extends AbstractWidgetLCA {
 
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
   private static final int[] DEFAUT_SELECTION_INDICES = new int[ 0 ];
-  private static final int DEFAULT_TOP_INDEX = 0;
+  private static final Integer DEFAULT_TOP_INDEX = Integer.valueOf( 0 );
   private static final int DEFAULT_FOCUS_INDEX = -1;
-  private static final boolean[] DEFAULT_SCROLLBARS_VISIBLE = new boolean[] { true, true };
   private static final Point DEFAULT_ITEM_DIMENSIONS = new Point( 0, 0 );
 
   @Override
@@ -66,12 +66,12 @@ public class ListLCA extends AbstractWidgetLCA {
     preserveProperty( list, PROP_SELECTION_INDICES, list.getSelectionIndices() );
     preserveProperty( list, PROP_TOP_INDEX, list.getTopIndex() );
     preserveProperty( list, PROP_FOCUS_INDEX, list.getFocusIndex() );
-    preserveProperty( list, PROP_SCROLLBARS_VISIBLE, getScrollBarsVisible( list ) );
     preserveProperty( list, PROP_ITEM_DIMENSIONS, getItemDimensions( list ) );
     preserveListener( list, PROP_SELECTION_LISTENER, list.isListening( SWT.Selection ) );
     preserveListener( list,
                       PROP_DEFAULT_SELECTION_LISTENER,
                       list.isListening( SWT.DefaultSelection ) );
+    ScrollBarLCAUtil.preserveValues( list );
   }
 
   public void readData( Widget widget ) {
@@ -85,6 +85,7 @@ public class ListLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processKeyEvents( list );
     ControlLCAUtil.processMenuDetect( list );
     WidgetLCAUtil.processHelp( list );
+    ScrollBarLCAUtil.processSelectionEvent( list );
   }
 
   @Override
@@ -95,6 +96,7 @@ public class ListLCA extends AbstractWidgetLCA {
     clientObject.set( "parent", WidgetUtil.getId( list.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( list, ALLOWED_STYLES ) );
     clientObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( list ) );
+    ScrollBarLCAUtil.renderInitialization( list );
   }
 
   @Override
@@ -107,12 +109,8 @@ public class ListLCA extends AbstractWidgetLCA {
                     PROP_SELECTION_INDICES,
                     list.getSelectionIndices(),
                     DEFAUT_SELECTION_INDICES );
-    renderProperty( list, PROP_TOP_INDEX, list.getTopIndex(), DEFAULT_TOP_INDEX );
+    renderTopIndex( list );
     renderProperty( list, PROP_FOCUS_INDEX, list.getFocusIndex(), DEFAULT_FOCUS_INDEX );
-    renderProperty( list,
-                    PROP_SCROLLBARS_VISIBLE,
-                    getScrollBarsVisible( list ),
-                    DEFAULT_SCROLLBARS_VISIBLE );
     renderListener( list, PROP_SELECTION_LISTENER, list.isListening( SWT.Selection ), false );
     renderListener( list,
                     PROP_DEFAULT_SELECTION_LISTENER,
@@ -122,6 +120,7 @@ public class ListLCA extends AbstractWidgetLCA {
                     PROP_ITEM_DIMENSIONS,
                     getItemDimensions( list ),
                     DEFAULT_ITEM_DIMENSIONS );
+    ScrollBarLCAUtil.renderChanges( list );
   }
 
   @Override
@@ -140,9 +139,10 @@ public class ListLCA extends AbstractWidgetLCA {
   }
 
   private static void readTopIndex( List list ) {
-    String value = WidgetLCAUtil.readPropertyValue( list, PROP_TOP_INDEX );
-    if( value != null ) {
-      list.setTopIndex( NumberFormatUtil.parseInt( value ) );
+    Integer scrollTop = ScrollBarLCAUtil.readSelection( list.getVerticalBar() );
+    if( scrollTop != null ) {
+      int topIndex = scrollTop.intValue() / list.getItemHeight();
+      list.setTopIndex( topIndex );
     }
   }
 
@@ -154,23 +154,18 @@ public class ListLCA extends AbstractWidgetLCA {
     }
   }
 
+  private static void renderTopIndex( List list ) {
+    int newValue = list.getTopIndex();
+    if( hasChanged( list, PROP_TOP_INDEX, Integer.valueOf( newValue ), DEFAULT_TOP_INDEX ) ) {
+      ScrollBarLCAUtil.renderSelection( list.getVerticalBar(), newValue * list.getItemHeight() );
+    }
+  }
+
   //////////////////
   // Helping methods
 
   private static boolean isMarkupEnabled( List list ) {
     return Boolean.TRUE.equals( list.getData( RWT.MARKUP_ENABLED ) );
-  }
-
-  private static boolean[] getScrollBarsVisible( List list ) {
-    return new boolean[] { hasHScrollBar( list ), hasVScrollBar( list ) };
-  }
-
-  private static boolean hasHScrollBar( List list ) {
-    return getAdapter( list ).hasHScrollBar();
-  }
-
-  private static boolean hasVScrollBar( List list ) {
-    return getAdapter( list ).hasVScrollBar();
   }
 
   private static Point getItemDimensions( List list ) {

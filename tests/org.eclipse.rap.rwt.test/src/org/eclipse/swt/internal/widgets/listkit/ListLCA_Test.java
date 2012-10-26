@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,13 +59,17 @@ public class ListLCA_Test extends TestCase {
   private Shell shell;
   private ListLCA lca;
   private List list;
+  private ScrollBar hScroll;
+  private ScrollBar vScroll;
 
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
-    list = new List( shell, SWT.NONE );
+    list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    hScroll = list.getHorizontalBar();
+    vScroll = list.getVerticalBar();
     lca = new ListLCA();
     Fixture.fakeNewRequest( display );
   }
@@ -352,8 +357,7 @@ public class ListLCA_Test extends TestCase {
     lca.render( list );
 
     Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( list );
-    assertTrue( operation.getPropertyNames().indexOf( "topIndex" ) == -1 );
+    assertNull( message.findSetOperation( vScroll, "selection" ) );
   }
 
   public void testRenderTopIndex() throws IOException {
@@ -363,20 +367,23 @@ public class ListLCA_Test extends TestCase {
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( list, "topIndex" ) );
+    Integer expected = Integer.valueOf( 2 * list.getItemHeight() );
+    assertEquals( expected, message.findSetProperty( vScroll, "selection" ) );
   }
 
   public void testRenderTopIndexUnchanged() throws IOException {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     Fixture.markInitialized( display );
     Fixture.markInitialized( list );
+    Fixture.markInitialized( hScroll );
+    Fixture.markInitialized( vScroll );
 
     list.setTopIndex( 2 );
     Fixture.preserveWidgets();
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( list, "topIndex" ) );
+    assertNull( message.findSetOperation( vScroll, "selection" ) );
   }
 
   public void testRenderInitialFocusIndex() throws IOException {
@@ -410,54 +417,52 @@ public class ListLCA_Test extends TestCase {
     assertNull( message.findSetOperation( list, "focusIndex" ) );
   }
 
-  public void testRenderInitialScrollBarsVisible() throws IOException, JSONException {
-    List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-
+  public void testRenderInitialScrollBarsVisible() throws IOException {
     lca.render( list );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findCreateProperty( list, "scrollBarsVisible" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ false, false ]", actual ) );
+    assertNull( message.findSetOperation( hScroll, "visibility" ) );
+    assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
 
-  public void testRenderScrollBarsVisible_Horizontal() throws IOException, JSONException {
+  public void testRenderScrollBarsVisible_Horizontal() throws IOException {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.setSize( 20, 100 );
 
     list.add( "Item 1" );
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( list, "scrollBarsVisible" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ true, false ]", actual ) );
+    assertEquals( Boolean.TRUE, message.findSetProperty( hScroll, "visibility" ) );
+    assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
 
-  public void testRenderScrollBarsVisible_Vertical() throws IOException, JSONException {
-    List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+  public void testRenderScrollBarsVisible_Vertical() throws IOException {
     list.setSize( 100, 20 );
 
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    JSONArray actual = ( JSONArray )message.findSetProperty( list, "scrollBarsVisible" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ false, true ]", actual ) );
+    assertNull( message.findSetOperation( hScroll, "visibility" ) );
+    assertEquals( Boolean.TRUE, message.findSetProperty( vScroll, "visibility" ) );
   }
 
   public void testRenderScrollBarsVisibleUnchanged() throws IOException {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.setSize( 20, 20 );
     Fixture.markInitialized( display );
     Fixture.markInitialized( list );
+    Fixture.markInitialized( hScroll );
+    Fixture.markInitialized( vScroll );
 
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     Fixture.preserveWidgets();
     lca.renderChanges( list );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( list, "scrollBarsVisible" ) );
+    assertNull( message.findSetOperation( hScroll, "visibility" ) );
+    assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
 
   public void testRenderInitialItemDimensions() throws IOException {
@@ -466,8 +471,7 @@ public class ListLCA_Test extends TestCase {
     lca.render( list );
 
     Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( list );
-    assertTrue( operation.getPropertyNames().contains( "itemDimensions" ) );
+    assertNotNull( message.findSetOperation( list, "itemDimensions" ) );
   }
 
   public void testRenderItemDimensions() throws IOException, JSONException {
@@ -592,6 +596,7 @@ public class ListLCA_Test extends TestCase {
 
   private void fakeTopIndex( int value ) {
     Fixture.fakeNewRequest( display );
-    Fixture.fakeSetParameter( getId( list ), "topIndex", Integer.valueOf( value ) );
+    Integer selection = Integer.valueOf( value * list.getItemHeight() );
+    Fixture.fakeSetParameter( getId( list.getVerticalBar() ), "selection", selection );
   }
 }

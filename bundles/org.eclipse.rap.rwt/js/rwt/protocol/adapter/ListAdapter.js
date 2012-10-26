@@ -27,9 +27,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.List", {
     // order of items, selection, focus is crucial
     "items",
     "selectionIndices",
-    "topIndex",
     "focusIndex",
-    "scrollBarsVisible",
     "itemDimensions"
   ] ),
 

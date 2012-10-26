@@ -115,14 +115,6 @@ public class List extends Scrollable {
             List.this.setFocusIndex( focusIndex );
           }
 
-          public boolean hasHScrollBar() {
-            return List.this.hasHScrollBar();
-          }
-
-          public boolean hasVScrollBar() {
-            return List.this.hasVScrollBar();
-          }
-
           public Point getItemDimensions() {
             return List.this.getItemDimensions();
           }
@@ -1281,6 +1273,14 @@ public class List extends Scrollable {
     if( needsVScrollBar() ) {
       hasVScrollBar = true;
       hasHScrollBar = needsHScrollBar();
+    }
+    ScrollBar hScroll = getHorizontalBar();
+    if( hScroll != null ) {
+      hScroll.setVisible( hasHScrollBar );
+    }
+    ScrollBar vScroll = getVerticalBar();
+    if( vScroll != null ) {
+      vScroll.setVisible( hasVScrollBar );
     }
   }
 }
