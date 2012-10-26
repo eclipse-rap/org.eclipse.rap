@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -52,16 +52,13 @@ public class ExpandBar extends Composite {
       return ExpandBar.this.getItem( index ).getBounds();
     }
 
-    public boolean isVScrollbarVisible() {
-      return ExpandBar.this.isVScrollbarVisible();
-    }
-
     public Rectangle getBottomSpacingBounds() {
       return ExpandBar.this.getBottomSpacingBounds();
     }
   }
 
   private final class ResizeListener extends ControlAdapter {
+    @Override
     public void controlResized( ControlEvent event ) {
       layoutItems( 0, true );
     }
@@ -168,6 +165,7 @@ public class ExpandBar extends Composite {
     removeListener( SWT.Collapse, listener );
   }
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int height = 0, width = 0;
@@ -240,6 +238,7 @@ public class ExpandBar extends Composite {
     }
   }
 
+  @Override
   Control findBackgroundControl() {
     Control control = super.findBackgroundControl();
     if( !isAppThemed() ) {
@@ -385,13 +384,14 @@ public class ExpandBar extends Composite {
       ExpandItem lastItem = getItem( itemCount - 1 );
       allItemsHeight = lastItem.y + lastItem.getBounds().height;
     }
+    updateScrollBars();
     // Set items width based on scrollbar visibility
     Rectangle bounds = getBounds();
     int border = getBorderWidth();
     int scrollBarWidth = getVScrollBarWidth();
     for( int i = 0; i < itemCount; i++ ) {
       ExpandItem item = getItem( i );
-      if( isVScrollbarVisible() ) {
+      if( isVScrollBarVisible() ) {
         int width = bounds.width - scrollBarWidth - 2 * border - 2 * spacing;
         item.setBounds( 0, 0, width, item.height, false, true );
       } else {
@@ -416,6 +416,7 @@ public class ExpandBar extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *                </ul>
    */
+  @Override
   public void setFont( Font font ) {
     if( font != getFont() ) {
       super.setFont( font );
@@ -453,6 +454,7 @@ public class ExpandBar extends Composite {
     layoutItems( index + 1, true );
   }
 
+  @Override
   protected void checkSubclass() {
     if( !isValidSubclass() ) {
       error( SWT.ERROR_INVALID_SUBCLASS );
@@ -468,16 +470,23 @@ public class ExpandBar extends Composite {
     return false;
   }
 
-  boolean isVScrollbarVisible() {
-    int border = getBorderWidth();
-    return    ( getStyle() & SWT.V_SCROLL ) != 0
-           && ( allItemsHeight > getBounds().height - 2 * border - spacing );
+  private void updateScrollBars() {
+    ScrollBar vScroll = getVerticalBar();
+    if( vScroll != null ) {
+      vScroll.setVisible( allItemsHeight > getBounds().height - 2 * getBorderWidth() - spacing );
+    }
+  }
+
+  private boolean isVScrollBarVisible() {
+    ScrollBar vScroll = getVerticalBar();
+    return vScroll != null && vScroll.getVisible();
   }
 
   Rectangle getBottomSpacingBounds() {
     return new Rectangle( spacing, allItemsHeight, 10, spacing );
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -497,6 +506,7 @@ public class ExpandBar extends Composite {
   /////////////////////
   // Destroy expand bar
 
+  @Override
   void releaseWidget() {
     if( resizeListener != null ) {
       removeControlListener( resizeListener );
@@ -504,6 +514,7 @@ public class ExpandBar extends Composite {
     super.releaseWidget();
   }
 
+  @Override
   void releaseChildren() {
     Item[] expandItems = new ExpandItem[ getItemCount() ];
     System.arraycopy( getItems(), 0, expandItems, 0, getItems().length );
@@ -517,6 +528,7 @@ public class ExpandBar extends Composite {
   ////////////////////////////
   // Helping methods - various
 
+  @Override
   int getVScrollBarWidth() {
     int result = 0;
     if( ( style & SWT.V_SCROLL ) != 0 ) {
@@ -528,6 +540,7 @@ public class ExpandBar extends Composite {
   ///////////////////
   // Skinning support
 
+  @Override
   void reskinChildren( int flags ) {
     ExpandItem[] items = getItems();
     if( items != null ) {
