@@ -27,7 +27,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
         "target" : "rwt.client.BrowserHistory",
         "action" : "listen",
         "properties" : {
-          "navigation" : true
+          "Navigation" : true
         }
       } );
       assertTrue( browserHistory._hasNavigationListener );
@@ -64,7 +64,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
           "target" : "rwt.client.BrowserHistory",
           "action" : "listen",
           "properties" : {
-            "navigation" : true
+            "Navigation" : true
           }
         } );
         org.eclipse.rwt.test.fixture.TestUtil.store( browserHistory );
@@ -76,7 +76,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserHistoryTest", {
 
         var message = org.eclipse.rwt.test.fixture.TestUtil.getMessageObject();
         var actual = message.findNotifyProperty( "rwt.client.BrowserHistory",
-                                                 "historyNavigated",
+                                                 "Navigation",
                                                  "entryId" );
         assertEquals( "id1", actual );
       }

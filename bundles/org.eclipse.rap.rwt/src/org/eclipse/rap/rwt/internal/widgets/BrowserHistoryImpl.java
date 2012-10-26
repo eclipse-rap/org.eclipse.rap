@@ -45,10 +45,9 @@ public final class BrowserHistoryImpl
 {
 
   private final static String TYPE = "rwt.client.BrowserHistory";
-  private final static String PROP_NAVIGATION_LISTENER = "navigation";
+  private final static String PROP_NAVIGATION_LISTENER = "Navigation";
   private final static String PROP_ENTRIES = "entries";
   private final static String METHOD_ADD = "add";
-  private static final String EVENT_HISTORY_NAVIGATED = "historyNavigated";
   private static final String EVENT_HISTORY_NAVIGATED_ENTRY_ID = "entryId";
 
   private final Display display;
@@ -136,9 +135,9 @@ public final class BrowserHistoryImpl
   }
 
   private void processNavigationEvent() {
-    if( ProtocolUtil.wasEventSent( TYPE, EVENT_HISTORY_NAVIGATED ) ) {
+    if( ProtocolUtil.wasEventSent( TYPE, PROP_NAVIGATION_LISTENER ) ) {
       String entryId = readEventPropertyValueAsString( TYPE,
-                                                       EVENT_HISTORY_NAVIGATED,
+                                                       PROP_NAVIGATION_LISTENER,
                                                        EVENT_HISTORY_NAVIGATED_ENTRY_ID );
       BrowserHistoryEvent event = new BrowserHistoryEvent( this, entryId );
       BrowserHistoryListener[] listener = getListeners();

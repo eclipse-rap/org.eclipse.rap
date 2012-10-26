@@ -379,7 +379,7 @@ qx.Class.define("rwt.client.History",
     _historyNavigated : function( event ) {
       var entryId = event.getData();
       var server = rwt.remote.Server.getInstance();
-      server.getServerObject( this ).notify( "historyNavigated", {
+      server.getServerObject( this ).notify( "Navigation", {
         "entryId" : entryId
       } );
     }

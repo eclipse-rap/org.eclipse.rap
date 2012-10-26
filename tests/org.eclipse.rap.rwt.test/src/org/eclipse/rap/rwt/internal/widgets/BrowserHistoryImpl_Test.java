@@ -27,7 +27,7 @@ import org.mockito.ArgumentCaptor;
 public class BrowserHistoryImpl_Test extends TestCase {
 
   private static final String TYPE = "rwt.client.BrowserHistory";
-  
+
   private Display display;
   private BrowserHistoryImpl history;
 
@@ -46,20 +46,20 @@ public class BrowserHistoryImpl_Test extends TestCase {
 
   public void testCreateEntry() {
     history.createEntry( "id", "text" );
-    
+
     assertEquals( 1, history.getEntries().length );
     assertEquals( "id", history.getEntries()[ 0 ].id );
     assertEquals( "text", history.getEntries()[ 0 ].text );
   }
-  
+
   public void testCreateEntryWithNullText() {
     history.createEntry( "id", null );
-    
+
     assertEquals( 1, history.getEntries().length );
     assertEquals( "id", history.getEntries()[ 0 ].id );
     assertNull( history.getEntries()[ 0 ].text );
   }
-  
+
   public void testCreateEntryWithEmptyId() {
     try {
       history.createEntry( "", "name" );
@@ -67,7 +67,7 @@ public class BrowserHistoryImpl_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
   public void testCreateEntryWithNullId() {
     try {
       history.createEntry( null, "name" );
@@ -100,7 +100,7 @@ public class BrowserHistoryImpl_Test extends TestCase {
 
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put( "entryId", "foo" );
-    Fixture.fakeNotifyOperation( TYPE, "historyNavigated", parameters  );
+    Fixture.fakeNotifyOperation( TYPE, "Navigation", parameters  );
     Fixture.executeLifeCycleFromServerThread();
 
     ArgumentCaptor<BrowserHistoryEvent> captor
@@ -124,7 +124,7 @@ public class BrowserHistoryImpl_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( TYPE, "navigation" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( TYPE, "Navigation" ) );
   }
 
   public void testRenderRemoveNavigationListener() {
@@ -143,7 +143,7 @@ public class BrowserHistoryImpl_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( TYPE, "navigation" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( TYPE, "Navigation" ) );
   }
 
   public void testRenderNavigationListenerUnchanged() {
