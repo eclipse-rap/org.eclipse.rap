@@ -25,6 +25,9 @@ public interface ITreeAdapter {
   void setTopItemIndex( int topItemIndex );
   int getTopItemIndex();
 
+  boolean hasHScrollBar();
+  boolean hasVScrollBar();
+
   boolean isCached( TreeItem item );
   Point getItemImageSize( int index );
   int getCellLeft( int index );

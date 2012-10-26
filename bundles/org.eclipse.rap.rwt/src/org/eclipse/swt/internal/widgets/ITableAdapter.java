@@ -39,6 +39,9 @@ public interface ITableAdapter {
   TableItem[] getCachedItems();
   TableItem[] getCreatedItems();
 
+  boolean hasHScrollBar();
+  boolean hasVScrollBar();
+
   TableItem getMeasureItem();
 
   int getFixedColumns();

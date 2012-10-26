@@ -22,8 +22,10 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ScrolledComposite", {
   destructor : rwt.protocol.AdapterUtil.getControlDestructor(),
 
   properties : rwt.protocol.AdapterUtil.extendControlProperties( [
+    "origin",
     "content",
-    "showFocusedControl"
+    "showFocusedControl",
+    "scrollBarsVisible"
   ] ),
 
   propertyHandler : rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
@@ -48,7 +50,9 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.ScrolledComposite", {
     }
   } ),
 
-  listeners : rwt.protocol.AdapterUtil.extendControlListeners( [] ),
+  listeners : rwt.protocol.AdapterUtil.extendControlListeners( [
+    "scrollBarsSelection"
+  ] ),
 
   listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {
     "scrollBarsSelection" : function( widget, value ) {

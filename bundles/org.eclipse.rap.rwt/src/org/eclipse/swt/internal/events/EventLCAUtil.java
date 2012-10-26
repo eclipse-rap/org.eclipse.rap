@@ -11,6 +11,7 @@
 package org.eclipse.swt.internal.events;
 
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventPropertyValueAsString;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -23,6 +24,8 @@ import org.eclipse.swt.widgets.Widget;
 
 
 public final class EventLCAUtil {
+
+  private static final String EVENT_SCROLLBAR_SELECTED = "scrollBarSelected";
 
   public static int readStateMask( Widget widget, String eventName ) {
     String altKey = readEventPropertyValueAsString( getId( widget ), eventName, "altKey" );
@@ -78,6 +81,22 @@ public final class EventLCAUtil {
       result = result || verticalBar.isListening( SWT.Selection );
     }
     return result;
+  }
+
+  public static void processScrollBarSelection( Scrollable scrollable ) {
+    String eventName = EventLCAUtil.EVENT_SCROLLBAR_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( scrollable, eventName ) ) {
+      String horizontal = readEventPropertyValue( scrollable, eventName, "horizontal" );
+      String vertical = readEventPropertyValue( scrollable, eventName, "vertical" );
+      ScrollBar hScroll = scrollable.getHorizontalBar();
+      if( hScroll != null && "true".equals( horizontal ) ) {
+        hScroll.notifyListeners( SWT.Selection, new Event() );
+      }
+      ScrollBar vScroll = scrollable.getVerticalBar();
+      if( vScroll != null && "true".equals( vertical ) ) {
+        vScroll.notifyListeners( SWT.Selection, new Event() );
+      }
+    }
   }
 
   public static void processRadioSelection( Widget widget, boolean isWidgetSelected ) {

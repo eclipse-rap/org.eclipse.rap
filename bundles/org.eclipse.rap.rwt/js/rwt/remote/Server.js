@@ -112,7 +112,7 @@ qx.Class.define( "rwt.remote.Server", {
         this._event = null;
       }
     },
-
+    
     sendDelayed : function( time ) {
       this._delayTimer.setInterval( time );
       this._delayTimer.start();

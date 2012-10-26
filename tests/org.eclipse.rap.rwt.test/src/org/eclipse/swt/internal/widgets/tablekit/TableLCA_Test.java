@@ -62,7 +62,6 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -77,7 +76,6 @@ public class TableLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
-  private Table table;
   private TableLCA lca;
 
   @Override
@@ -85,7 +83,6 @@ public class TableLCA_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
-    table = new Table( shell, SWT.NONE );
     lca = new TableLCA();
     Fixture.fakeNewRequest( display );
   }
@@ -96,6 +93,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testControlListeners() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( table );
     ControlLCATestUtil.testFocusListener( table );
     ControlLCATestUtil.testMouseListener( table );
@@ -106,6 +104,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
+    Table table = new Table( shell, SWT.BORDER );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( table );
@@ -174,7 +173,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testFireWidgetSelectedWithCheck() {
-    table = new Table( shell, SWT.CHECK );
+    Table table = new Table( shell, SWT.CHECK );
     TableItem item = new TableItem( table, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     table.addSelectionListener( listener );
@@ -190,7 +189,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testFireWidgetDefaultSelected() {
-    table = new Table( shell, SWT.MULTI );
+    Table table = new Table( shell, SWT.MULTI );
     TableItem item = new TableItem( table, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     table.addSelectionListener( listener );
@@ -205,7 +204,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testFireWidgetDefaultSelected_WithoutFocusedItem() {
-    table = new Table( shell, SWT.MULTI );
+    Table table = new Table( shell, SWT.MULTI );
     new TableItem( table, SWT.NONE );
     TableItem disposedItem = new TableItem( table, SWT.NONE );
     disposedItem.dispose();
@@ -222,7 +221,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testFireWidgetDefaultSelected_WithFocusedItem() {
-    table = new Table( shell, SWT.MULTI );
+    Table table = new Table( shell, SWT.MULTI );
     TableItem item = new TableItem( table, SWT.NONE );
     TableItem disposedItem = new TableItem( table, SWT.NONE );
     disposedItem.dispose();
@@ -240,17 +239,18 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRedraw() {
+    final Table[] table = { null };
     shell.setSize( 100, 100 );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
-        table = new Table( shell, SWT.VIRTUAL );
-        table.setItemCount( 500 );
-        table.setSize( 90, 90 );
-        assertFalse( isItemVirtual( table, 0 ) );
-        table.clearAll();
-        table.redraw();
+        table[ 0 ] = new Table( shell, SWT.VIRTUAL );
+        table[ 0 ].setItemCount( 500 );
+        table[ 0 ].setSize( 90, 90 );
+        assertFalse( isItemVirtual( table[ 0 ], 0 ) );
+        table[ 0 ].clearAll();
+        table[ 0 ].redraw();
       }
     } );
     shell.open();
@@ -258,12 +258,12 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread();
 
-    assertFalse( isItemVirtual( table, 0  ) );
+    assertFalse( isItemVirtual( table[ 0 ], 0  ) );
   }
 
   public void testNoUnwantedResolveItems() {
     shell.setSize( 100, 100 );
-    table = new Table( shell, SWT.VIRTUAL );
+    final Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 90, 90 );
     table.setItemCount( 1000 );
     shell.open();
@@ -280,7 +280,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setSize( 100, 100 );
     shell.setLayout( new FillLayout() );
-    table = new Table( shell, SWT.VIRTUAL );
+    final Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 100 );
     shell.layout();
     shell.open();
@@ -317,7 +317,7 @@ public class TableLCA_Test extends TestCase {
 
   public void testSetDataEvent() {
     shell.setSize( 100, 100 );
-    table = new Table( shell, SWT.VIRTUAL );
+    Table table = new Table( shell, SWT.VIRTUAL );
     Listener listener = new Listener() {
       public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
@@ -344,7 +344,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testReadSelection() {
-    table = new Table( shell, SWT.MULTI );
+    Table table = new Table( shell, SWT.MULTI );
     TableItem item1 = new TableItem( table, SWT.NONE );
     TableItem item2 = new TableItem( table, SWT.NONE );
 
@@ -358,7 +358,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testReadSelection_UnresolvedItem() {
-    table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
+    Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
     table.setItemCount( 3 );
     TableItem item = table.getItem( 0 );
     item.setText( "Item 1" );
@@ -376,7 +376,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testReadSelectionDisposedItem() {
-    table = new Table( shell, SWT.MULTI );
+    Table table = new Table( shell, SWT.MULTI );
     TableItem item = new TableItem( table, SWT.NONE );
     new TableItem( table, SWT.NONE );
     item.dispose();
@@ -400,7 +400,7 @@ public class TableLCA_Test extends TestCase {
   public void testReduceItemCountInSetData() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setSize( 100, 100 );
-    table = new Table( shell, SWT.VIRTUAL );
+    Table table = new Table( shell, SWT.VIRTUAL );
     Listener setDataListener = mock( Listener.class );
     table.addListener( SWT.SetData, setDataListener );
 
@@ -420,6 +420,7 @@ public class TableLCA_Test extends TestCase {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
+    Table table = new Table( shell, SWT.NONE );
     table.setHeaderVisible( true );
     TableColumn column = new TableColumn( table, SWT.NONE );
     column.setText( "column1" );
@@ -470,7 +471,7 @@ public class TableLCA_Test extends TestCase {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     shell.setBounds( 0, 0, 200, 200 );
     shell.setLayout( new FillLayout() );
-    table = new Table( shell, SWT.CHECK );
+    Table table = new Table( shell, SWT.CHECK );
     table.setHeaderVisible( true );
     TableColumn column = new TableColumn( table, SWT.NONE );
     column.setText( "column1" );
@@ -496,6 +497,7 @@ public class TableLCA_Test extends TestCase {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     shell.setBounds( 0, 0, 200, 200 );
     shell.setLayout( new FillLayout() );
+    Table table = new Table( shell, SWT.NONE );
     table.setHeaderVisible( true );
     TableColumn column = new TableColumn( table, SWT.NONE );
     column.setText( "column1" );
@@ -521,6 +523,7 @@ public class TableLCA_Test extends TestCase {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
+    Table table = new Table( shell, SWT.NONE );
     table.setHeaderVisible( true );
     TableItem item1 = new TableItem( table, SWT.NONE );
     item1.setText( "item1" );
@@ -559,6 +562,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testGetItemMetricsWithEmptyTable() {
+    Table table = new Table( shell, SWT.NONE );
     table.setHeaderVisible( true );
     for( int i = 0; i < 3; i++ ) {
       TableColumn column = new TableColumn( table, SWT.NONE );
@@ -574,7 +578,7 @@ public class TableLCA_Test extends TestCase {
 
   public void testReadFocusItem() {
     // ensure that reading selection parameter does not override focusIndex
-    table = new Table( shell, SWT.MULTI );
+    Table table = new Table( shell, SWT.MULTI );
     for( int i = 0; i < 5; i++ ) {
       new TableItem( table, SWT.NONE );
     }
@@ -590,7 +594,7 @@ public class TableLCA_Test extends TestCase {
 
   public void testReadUnresolvedFocusItem() {
     // ensure that reading selection parameter does not override focusIndex
-    table = new Table( shell, SWT.MULTI );
+    Table table = new Table( shell, SWT.MULTI );
     createTableItems( table, 5 );
 
     Fixture.fakeSetParameter( getId( table ), "focusItem", getId( table ) + "#4" );
@@ -604,7 +608,7 @@ public class TableLCA_Test extends TestCase {
 
   public void testReadDisposedFocusItem() {
     // ensure that reading selection parameter does not override focusIndex
-    table = new Table( shell, SWT.MULTI );
+    Table table = new Table( shell, SWT.MULTI );
     createTableItems( table, 5 );
 
     String[] items = indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } );
@@ -618,7 +622,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testReadTopIndex() {
-    table = new Table( shell, SWT.MULTI );
+    Table table = new Table( shell, SWT.MULTI );
     table.setSize( 485, 485 );
     createTableItems( table, 115 );
 
@@ -630,7 +634,7 @@ public class TableLCA_Test extends TestCase {
     };
     String[] items = indicesToIds( table, indices );
     Fixture.fakeSetParameter( getId( table ), "selection", items );
-    fakeSetTopItemIndex( table, 0 );
+    Fixture.fakeSetParameter( getId( table ), "topItemIndex", Integer.valueOf( 0 ) );
     TableLCA tableLCA = new TableLCA();
     tableLCA.readData( table );
 
@@ -638,6 +642,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testCellTooltipRequestForMissingCells() {
+    Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 3 );
     final StringBuilder log = new StringBuilder();
     ICellToolTipAdapter tableAdapter = table.getAdapter( ICellToolTipAdapter.class );
@@ -682,29 +687,35 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testHorizontalScrollbarsSelectionEvent() {
+    Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 20 );
     SelectionListener listener = mock( SelectionListener.class );
     table.getHorizontalBar().addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( table.getHorizontalBar() ), "Selection", null );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( "horizontal", Boolean.TRUE );
+    Fixture.fakeNotifyOperation( getId( table ), "scrollBarSelected", parameters );
     Fixture.readDataAndProcessAction( table );
 
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   public void testVerticalScrollbarsSelectionEvent() {
+    Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 20 );
     SelectionListener listener = mock( SelectionListener.class );
     table.getVerticalBar().addSelectionListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( table.getVerticalBar() ), "Selection", null );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( "vertical", Boolean.TRUE );
+    Fixture.fakeNotifyOperation( getId( table ), "scrollBarSelected", parameters );
     Fixture.readDataAndProcessAction( table );
 
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   public void testSelectionEvent_UnresolvedItem() {
-    table = new Table( shell, SWT.VIRTUAL );
+    Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 3 );
     SelectionListener listener = mock( SelectionListener.class );
     table.addSelectionListener( listener );
@@ -718,6 +729,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderNonNegativeImageWidth() {
+    Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     Image image = Graphics.getImage( Fixture.IMAGE1 );
@@ -730,7 +742,7 @@ public class TableLCA_Test extends TestCase {
 
   // bug 360152
   public void testReadItemToolTipDoesNotResolveVirtualItems() {
-    table = new Table( shell, SWT.VIRTUAL );
+    Table table = new Table( shell, SWT.VIRTUAL );
     table.setData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
     ICellToolTipAdapter toolTipAdapter = CellToolTipUtil.getAdapter( table );
     ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
@@ -747,6 +759,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderCreate() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.renderInitialization( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -760,6 +774,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderCreateWithFixedColumns() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     table.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
 
     lca.renderInitialization( table );
@@ -770,6 +785,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.renderInitialization( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -778,7 +795,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderCreateWithVirtualNoScrollMulti() throws IOException {
-    table = new Table( shell, SWT.VIRTUAL | SWT.NO_SCROLL | SWT.MULTI );
+    Table table = new Table( shell, SWT.VIRTUAL | SWT.NO_SCROLL | SWT.MULTI );
 
     lca.renderInitialization( table );
 
@@ -791,7 +808,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderCreateWithHideSelection() throws IOException {
-    table = new Table( shell, SWT.HIDE_SELECTION );
+    Table table = new Table( shell, SWT.HIDE_SELECTION );
 
     lca.renderInitialization( table );
 
@@ -802,7 +819,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderCreateWithCheck() throws IOException, JSONException {
-    table = new Table( shell, SWT.CHECK );
+    Table table = new Table( shell, SWT.CHECK );
 
     lca.renderInitialization( table );
 
@@ -815,6 +832,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderInitialItemCount() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -823,6 +842,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderItemCount() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     table.setItemCount( 10 );
     lca.renderChanges( table );
 
@@ -831,6 +852,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderItemCountUnchanged() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
 
@@ -843,13 +865,17 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderInitialItemHeight() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertNotNull( message.findSetOperation( table, "itemHeight" ) );
+    CreateOperation operation = message.findCreateOperation( table );
+    assertTrue( operation.getPropertyNames().contains( "itemHeight" ) );
   }
 
   public void testRenderItemHeight() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     Font font = Graphics.getFont( "Arial", 26, SWT.NONE );
 
     table.setFont( font );
@@ -860,6 +886,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderItemHeightUnchanged() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     Font font = Graphics.getFont( "Arial", 26, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
@@ -873,13 +900,17 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderInitialItemMetrics() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertNotNull( message.findSetOperation( table, "itemMetrics" ) );
+    CreateOperation operation = message.findCreateOperation( table );
+    assertTrue( operation.getPropertyNames().contains( "itemMetrics" ) );
   }
 
   public void testRenderItemMetrics() throws IOException, JSONException {
+    Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( "foo" );
 
@@ -891,6 +922,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderItemMetricsUnchanged() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( "foo" );
     Fixture.markInitialized( display );
@@ -904,6 +936,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderInitialColumnCount() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -912,6 +946,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderColumnCount() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     new TableColumn( table, SWT.NONE );
     lca.renderChanges( table );
 
@@ -920,6 +956,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderColumnCountUnchanged() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
 
@@ -932,6 +969,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderInitialFixedColumns() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -940,6 +979,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderFixedColumns() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
 
     table.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 1 ) );
@@ -950,6 +990,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderFixedColumnsUnchanged() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
@@ -963,6 +1004,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderInitialHeaderHeight() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -971,6 +1014,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderHeaderHeight() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     table.setHeaderVisible( true );
     lca.renderChanges( table );
 
@@ -979,6 +1024,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderHeaderHeightUnchanged() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
 
@@ -991,6 +1037,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderInitialHeaderVisible() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -999,6 +1047,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderHeaderVisible() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     table.setHeaderVisible( true );
     lca.renderChanges( table );
 
@@ -1007,6 +1057,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderHeaderVisibleUnchanged() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
 
@@ -1019,6 +1070,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderInitialLinesVisible() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -1027,6 +1080,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderLinesVisible() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     table.setLinesVisible( true );
     lca.renderChanges( table );
 
@@ -1035,6 +1090,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderLinesVisibleUnchanged() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
 
@@ -1047,24 +1103,28 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderInitialTopItemIndex() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( table.getVerticalBar(), "selection" ) );
+    CreateOperation operation = message.findCreateOperation( table );
+    assertTrue( operation.getPropertyNames().indexOf( "topItemIndex" ) == -1 );
   }
 
   public void testRenderTopItemIndex() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 3 );
 
     table.setTopIndex( 2 );
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    Integer expected = Integer.valueOf( 2 * table.getItemHeight() );
-    assertEquals( expected, message.findSetProperty( table.getVerticalBar(), "selection" ) );
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( table, "topItemIndex" ) );
   }
 
   public void testRenderTopItemIndexUnchanged() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 3 );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
@@ -1074,10 +1134,12 @@ public class TableLCA_Test extends TestCase {
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( table.getVerticalBar(), "selection" ) );
+    assertNull( message.findSetOperation( table, "topItemIndex" ) );
   }
 
   public void testRenderInitialFocusItem() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -1086,6 +1148,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderFocusItem() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 2 );
     TableItem item = new TableItem( table, SWT.NONE );
 
@@ -1097,6 +1160,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderFocusItemUnchanged() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 3 );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
@@ -1110,22 +1174,27 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderInitialScrollLeft() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( table.getHorizontalBar(), "selection" ) );
+    CreateOperation operation = message.findCreateOperation( table );
+    assertTrue( operation.getPropertyNames().indexOf( "scrollLeft" ) == -1 );
   }
 
   public void testRenderScrollLeft() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     table.getAdapter( ITableAdapter.class ).setLeftOffset( 10 );
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    Integer expected = Integer.valueOf( 10 );
-    assertEquals( expected, message.findSetProperty( table.getHorizontalBar(), "selection" ) );
+    assertEquals( Integer.valueOf( 10 ), message.findSetProperty( table, "scrollLeft" ) );
   }
 
   public void testRenderScrollLeftUnchanged() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
 
@@ -1134,10 +1203,12 @@ public class TableLCA_Test extends TestCase {
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( table.getHorizontalBar(), "selection" ) );
+    assertNull( message.findSetOperation( table, "scrollLeft" ) );
   }
 
   public void testRenderInitialSelection() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -1146,7 +1217,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderSelection() throws IOException, JSONException {
-    table = new Table( shell, SWT.MULTI );
+    Table table = new Table( shell, SWT.MULTI );
     createTableItems( table, 3 );
 
     table.setSelection( new int[] { 0, 2 } );
@@ -1164,7 +1235,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionUnchanged() throws IOException {
-    table = new Table( shell, SWT.MULTI );
+    Table table = new Table( shell, SWT.MULTI );
     createTableItems( table, 3 );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
@@ -1178,6 +1249,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSortDirection() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -1186,6 +1259,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderSortDirection() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
 
     table.setSortColumn( column );
@@ -1197,6 +1271,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderSortDirectionUnchanged() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
@@ -1211,6 +1286,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSortColumn() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -1219,6 +1296,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderSortColumn() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
 
     table.setSortColumn( column );
@@ -1229,6 +1307,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderSortColumnUnchanged() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
@@ -1242,131 +1321,130 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderAddScrollBarsSelectionListener_Horizontal() throws Exception {
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    ScrollBar hScroll = table.getHorizontalBar();
-    lca.renderInitialization( table );
+    Table table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( table );
     Fixture.preserveWidgets();
 
-    hScroll.addSelectionListener( new SelectionAdapter() { } );
+    table.getHorizontalBar().addSelectionListener( new SelectionAdapter() { } );
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( hScroll, "Selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( table, "scrollBarsSelection" ) );
   }
 
   public void testRenderRemoveScrollBarsSelectionListener_Horizontal() throws Exception {
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    ScrollBar hScroll = table.getHorizontalBar();
+    Table table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     SelectionListener listener = new SelectionAdapter() { };
-    hScroll.addSelectionListener( listener );
-    lca.render( table );
+    table.getHorizontalBar().addSelectionListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( table );
     Fixture.preserveWidgets();
 
-    hScroll.removeSelectionListener( listener );
+    table.getHorizontalBar().removeSelectionListener( listener );
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( hScroll, "Selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( table, "scrollBarsSelection" ) );
   }
 
   public void testRenderScrollBarsSelectionListenerUnchanged_Horizontal() throws Exception {
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    ScrollBar hScroll = table.getHorizontalBar();
+    Table table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     Fixture.markInitialized( display );
-    lca.render( table );
+    Fixture.markInitialized( table );
+    Fixture.preserveWidgets();
 
-    hScroll.addSelectionListener( new SelectionAdapter() { } );
+    table.getHorizontalBar().addSelectionListener( new SelectionAdapter() { } );
     Fixture.preserveWidgets();
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( hScroll, "Selection" ) );
+    assertNull( message.findListenOperation( table, "scrollBarsSelection" ) );
   }
 
   public void testRenderAddScrollBarsSelectionListener_Vertical() throws Exception {
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    ScrollBar vScroll = table.getVerticalBar();
-    lca.renderInitialization( table );
+    Table table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( table );
     Fixture.preserveWidgets();
 
-    vScroll.addSelectionListener( new SelectionAdapter() { } );
+    table.getVerticalBar().addSelectionListener( new SelectionAdapter() { } );
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( vScroll, "Selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( table, "scrollBarsSelection" ) );
   }
 
   public void testRenderRemoveScrollBarsSelectionListener_Vertical() throws Exception {
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    ScrollBar vScroll = table.getVerticalBar();
+    Table table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     SelectionListener listener = new SelectionAdapter() { };
-    vScroll.addSelectionListener( listener );
-    lca.render( table );
+    table.getVerticalBar().addSelectionListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( table );
     Fixture.preserveWidgets();
 
-    vScroll.removeSelectionListener( listener );
+    table.getVerticalBar().removeSelectionListener( listener );
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( vScroll, "Selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( table, "scrollBarsSelection" ) );
   }
 
   public void testRenderScrollBarsSelectionListenerUnchanged_Vertical() throws Exception {
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    ScrollBar vScroll = table.getVerticalBar();
+    Table table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     Fixture.markInitialized( display );
-    lca.render( table );
+    Fixture.markInitialized( table );
+    Fixture.preserveWidgets();
 
-    vScroll.addSelectionListener( new SelectionAdapter() { } );
+    table.getVerticalBar().addSelectionListener( new SelectionAdapter() { } );
     Fixture.preserveWidgets();
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( vScroll, "Selection" ) );
+    assertNull( message.findListenOperation( table, "scrollBarsSelection" ) );
   }
 
   public void testRenderInitialScrollBarsVisible() throws IOException {
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    Table table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
 
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( table.getHorizontalBar(), "visibility" ) );
-    assertNull( message.findSetOperation( table.getVerticalBar(), "visibility" ) );
+    CreateOperation operation = message.findCreateOperation( table );
+    assertTrue( operation.getPropertyNames().indexOf( "scrollBarsVisible" ) == -1 );
   }
 
-  public void testRenderScrollBarsVisible_Horizontal() throws IOException {
+  public void testRenderScrollBarsVisible_Horizontal() throws IOException, JSONException {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    Table table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     TableColumn column = new TableColumn( table, SWT.NONE );
 
     column.setWidth( 25 );
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( table.getHorizontalBar(), "visibility" ) );
-    assertNull( message.findSetOperation( table.getVerticalBar(), "visibility" ) );
+    JSONArray actual = ( JSONArray )message.findSetProperty( table, "scrollBarsVisible" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ true, false ]", actual ) );
   }
 
-  public void testRenderScrollBarsVisible_Vertical() throws IOException {
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+  public void testRenderScrollBarsVisible_Vertical() throws IOException, JSONException {
+    Table table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     new TableColumn( table, SWT.NONE );
 
     table.setHeaderVisible( true );
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( table.getHorizontalBar(), "visibility" ) );
-    assertEquals( Boolean.TRUE, message.findSetProperty( table.getVerticalBar(), "visibility" ) );
+    JSONArray actual = ( JSONArray )message.findSetProperty( table, "scrollBarsVisible" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ false, true ]", actual ) );
   }
 
   public void testRenderScrollBarsVisibleUnchanged() throws IOException {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    Table table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
-    lca.render( table );
-    Fixture.fakeNewRequest();
+    Fixture.markInitialized( table );
 
     column.setWidth( 25 );
     table.setHeaderVisible( true );
@@ -1374,11 +1452,11 @@ public class TableLCA_Test extends TestCase {
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( table.getHorizontalBar(), "visibility" ) );
-    assertNull( message.findSetOperation( table.getVerticalBar(), "visibility" ) );
+    assertNull( message.findSetOperation( table, "scrollBarsVisible" ) );
   }
 
   public void testRenderAddSelectionListener() throws Exception {
+    Table table = new Table( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
     Fixture.preserveWidgets();
@@ -1392,6 +1470,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
+    Table table = new Table( shell, SWT.NONE );
     Listener listener = mock( Listener.class );
     table.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
@@ -1407,6 +1486,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderAddDefaultSelectionListener() throws Exception {
+    Table table = new Table( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
     Fixture.preserveWidgets();
@@ -1420,6 +1500,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveDefaultSelectionListener() throws Exception {
+    Table table = new Table( shell, SWT.NONE );
     Listener listener = mock( Listener.class );
     table.addListener( SWT.DefaultSelection, listener );
     Fixture.markInitialized( display );
@@ -1435,6 +1516,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
+    Table table = new Table( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
     Fixture.preserveWidgets();
@@ -1448,6 +1530,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderInitialAlwaysHideSelection() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -1456,6 +1540,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderAlwaysHideSelection() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     table.setData( Table.ALWAYS_HIDE_SELECTION, Boolean.TRUE );
     lca.renderChanges( table );
 
@@ -1464,6 +1550,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderAlwaysHideSelectionUnchanged() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
 
@@ -1476,6 +1563,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderInitialEnableCellToolTip() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -1484,6 +1573,8 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderEnableCellToolTip() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+
     table.setData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
     lca.renderChanges( table );
 
@@ -1492,6 +1583,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderEnableCellToolTipUnchanged() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
 
@@ -1504,6 +1596,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderCellToolTipText() {
+    Table table = new Table( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
     createTableItems( table, 5 );
@@ -1530,6 +1623,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderCellToolTipTextNull() {
+    Table table = new Table( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
     createTableItems( table, 5 );
@@ -1549,6 +1643,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testRenderMarkupEnabled() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
     table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
 
     lca.render( table );
@@ -1618,8 +1713,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   private void fakeSetTopItemIndex( Table table, int index ) {
-    Integer selection = Integer.valueOf( index * table.getItemHeight() );
-    Fixture.fakeSetParameter( getId( table.getVerticalBar() ), "selection", selection );
+    Fixture.fakeSetParameter( getId( table ), "topItemIndex", Integer.valueOf( index ) );
   }
 
 }

@@ -59,7 +59,6 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -453,7 +452,7 @@ public class TreeLCA_Test extends TestCase {
 
   public void testInvalidScrollValues() {
     Fixture.fakeSetParameter( getId( tree ), "scrollLeft", "undefined" );
-    fakeSetTopItemIndex( tree, 80 );
+    Fixture.fakeSetParameter( getId( tree ), "topItemIndex", "80" );
     Fixture.readDataAndProcessAction( tree );
 
     ITreeAdapter adapter = tree.getAdapter( ITreeAdapter.class );
@@ -464,28 +463,32 @@ public class TreeLCA_Test extends TestCase {
   public void testScrollbarsSelectionEvent() {
     List<SelectionEvent> events = new ArrayList<SelectionEvent>();
     SelectionListener listener = new LoggingSelectionListener( events );
-    ScrollBar hScroll = tree.getHorizontalBar();
-    hScroll.addSelectionListener( listener );
+    tree.getHorizontalBar().addSelectionListener( listener );
 
     Fixture.fakeNewRequest( display );
-    Fixture.fakeSetParameter( getId( hScroll ), "selection", Integer.valueOf( 10 ) );
-    Fixture.fakeNotifyOperation( getId( hScroll ), "Selection", null );
+    Fixture.fakeSetParameter( getId( tree ), "scrollLeft", Integer.valueOf( 10 ) );
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( "horizontal", Boolean.TRUE );
+    Fixture.fakeNotifyOperation( getId( tree ), "scrollBarSelected", parameters );
     Fixture.readDataAndProcessAction( tree );
 
     assertEquals( 1, events.size() );
-    assertEquals( 10, hScroll.getSelection() );
+    assertEquals( 10, tree.getHorizontalBar().getSelection() );
 
     events.clear();
-    ScrollBar vScroll = tree.getVerticalBar();
-    vScroll.addSelectionListener( listener );
+    tree.getVerticalBar().addSelectionListener( listener );
 
     Fixture.fakeNewRequest( display );
-    Fixture.fakeSetParameter( getId( vScroll ), "selection", Integer.valueOf( 10 ) );
-    Fixture.fakeNotifyOperation( getId( vScroll ), "Selection", null );
+    Fixture.fakeSetParameter( getId( tree ), "scrollLeft", Integer.valueOf( 10 ) );
+    Fixture.fakeSetParameter( getId( tree ), "topItemIndex", Integer.valueOf( 10 ) );
+    parameters = new HashMap<String, Object>();
+    parameters.put( "horizontal", Boolean.TRUE );
+    parameters.put( "vertical", Boolean.TRUE );
+    Fixture.fakeNotifyOperation( getId( tree ), "scrollBarSelected", parameters );
     Fixture.readDataAndProcessAction( tree );
 
-    assertEquals( 1, events.size() );
-    assertEquals( 10, vScroll.getSelection());
+    assertEquals( 2, events.size() );
+    assertEquals( 10 * tree.getItemHeight(), tree.getVerticalBar().getSelection());
   }
 
   public void testCellTooltipRequestForMissingCells() {
@@ -773,7 +776,8 @@ public class TreeLCA_Test extends TestCase {
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertNotNull( message.findSetOperation( getId( tree ), "itemHeight" ) );
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().contains( "itemHeight" ) );
   }
 
   public void testRenderItemHeight() throws IOException {
@@ -803,7 +807,8 @@ public class TreeLCA_Test extends TestCase {
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertNotNull( message.findSetOperation( getId( tree ), "itemMetrics" ) );
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().contains( "itemMetrics" ) );
   }
 
   public void testRenderItemMetrics() throws IOException, JSONException {
@@ -1013,7 +1018,8 @@ public class TreeLCA_Test extends TestCase {
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( tree.getVerticalBar(), "selection" ) );
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "topItemIndex" ) == -1 );
   }
 
   public void testRenderTopItemIndex() throws IOException {
@@ -1025,8 +1031,7 @@ public class TreeLCA_Test extends TestCase {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    Integer expected = Integer.valueOf( 2 * tree.getItemHeight() );
-    assertEquals( expected, message.findSetProperty( tree.getVerticalBar(), "selection" ) );
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( tree, "topItemIndex" ) );
   }
 
   public void testRenderTopItemIndexUnchanged() throws IOException {
@@ -1041,14 +1046,15 @@ public class TreeLCA_Test extends TestCase {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( tree.getVerticalBar(), "selection" ) );
+    assertNull( message.findSetOperation( tree, "topItemIndex" ) );
   }
 
   public void testRenderInitialScrollLeft() throws IOException {
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( tree.getHorizontalBar(), "selection" ) );
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "scrollLeft" ) == -1 );
   }
 
   public void testRenderScrollLeft() throws IOException {
@@ -1056,8 +1062,7 @@ public class TreeLCA_Test extends TestCase {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    Integer expected = Integer.valueOf( 10 );
-    assertEquals( expected, message.findSetProperty( tree.getHorizontalBar(), "selection" ) );
+    assertEquals( Integer.valueOf( 10 ), message.findSetProperty( tree, "scrollLeft" ) );
   }
 
   public void testRenderScrollLeftUnchanged() throws IOException {
@@ -1069,7 +1074,7 @@ public class TreeLCA_Test extends TestCase {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( tree.getHorizontalBar(), "selection" ) );
+    assertNull( message.findSetOperation( tree, "scrollLeft" ) );
   }
 
   public void testRenderInitialSelection() throws IOException {
@@ -1118,94 +1123,86 @@ public class TreeLCA_Test extends TestCase {
 
   public void testRenderAddScrollBarsSelectionListener_Horizontal() throws Exception {
     Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    ScrollBar hScroll = tree.getHorizontalBar();
     Fixture.markInitialized( display );
-    lca.render( tree );
+    Fixture.markInitialized( tree );
     Fixture.preserveWidgets();
 
-    hScroll.addSelectionListener( new SelectionAdapter() { } );
+    tree.getHorizontalBar().addSelectionListener( new SelectionAdapter() { } );
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( hScroll, "Selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( tree, "scrollBarsSelection" ) );
   }
 
   public void testRenderRemoveScrollBarsSelectionListener_Horizontal() throws Exception {
     Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    ScrollBar hScroll = tree.getHorizontalBar();
     SelectionListener listener = new SelectionAdapter() { };
-    hScroll.addSelectionListener( listener );
+    tree.getHorizontalBar().addSelectionListener( listener );
     Fixture.markInitialized( display );
-    lca.render( tree );
-    Fixture.fakeNewRequest();
+    Fixture.markInitialized( tree );
     Fixture.preserveWidgets();
 
-    hScroll.removeSelectionListener( listener );
+    tree.getHorizontalBar().removeSelectionListener( listener );
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( hScroll, "Selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( tree, "scrollBarsSelection" ) );
   }
 
   public void testRenderScrollBarsSelectionListenerUnchanged_Horizontal() throws Exception {
     Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    ScrollBar hScroll = tree.getHorizontalBar();
     Fixture.markInitialized( display );
-    lca.render( tree );
+    Fixture.markInitialized( tree );
     Fixture.preserveWidgets();
 
-    hScroll.addSelectionListener( new SelectionAdapter() { } );
+    tree.getHorizontalBar().addSelectionListener( new SelectionAdapter() { } );
     Fixture.preserveWidgets();
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( hScroll, "Selection" ) );
+    assertNull( message.findListenOperation( tree, "scrollBarsSelection" ) );
   }
 
   public void testRenderAddScrollBarsSelectionListener_Vertical() throws Exception {
     Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    ScrollBar vScroll = tree.getVerticalBar();
     Fixture.markInitialized( display );
-    lca.render( tree );
+    Fixture.markInitialized( tree );
     Fixture.preserveWidgets();
 
-    vScroll.addSelectionListener( new SelectionAdapter() { } );
+    tree.getVerticalBar().addSelectionListener( new SelectionAdapter() { } );
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( vScroll, "Selection" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( tree, "scrollBarsSelection" ) );
   }
 
   public void testRenderRemoveScrollBarsSelectionListener_Vertical() throws Exception {
     Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    ScrollBar vScroll = tree.getVerticalBar();
     SelectionListener listener = new SelectionAdapter() { };
-    vScroll.addSelectionListener( listener );
+    tree.getVerticalBar().addSelectionListener( listener );
     Fixture.markInitialized( display );
-    lca.render( tree );
-    Fixture.fakeNewRequest();
+    Fixture.markInitialized( tree );
     Fixture.preserveWidgets();
 
-    vScroll.removeSelectionListener( listener );
+    tree.getVerticalBar().removeSelectionListener( listener );
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( vScroll, "Selection" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( tree, "scrollBarsSelection" ) );
   }
 
   public void testRenderScrollBarsSelectionListenerUnchanged_Vertical() throws Exception {
     Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    ScrollBar vScroll = tree.getVerticalBar();
     Fixture.markInitialized( display );
-    lca.render( tree );
+    Fixture.markInitialized( tree );
     Fixture.preserveWidgets();
 
-    vScroll.addSelectionListener( new SelectionAdapter() { } );
+    tree.getVerticalBar().addSelectionListener( new SelectionAdapter() { } );
     Fixture.preserveWidgets();
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( vScroll, "Selection" ) );
+    assertNull( message.findListenOperation( tree, "scrollBarsSelection" ) );
   }
 
   public void testRenderInitialScrollBarsVisible() throws IOException {
@@ -1214,11 +1211,11 @@ public class TreeLCA_Test extends TestCase {
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( tree.getHorizontalBar(), "visibility" ) );
-    assertNull( message.findSetOperation( tree.getVerticalBar(), "visibility" ) );
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "scrollBarsVisible" ) == -1 );
   }
 
-  public void testRenderScrollBarsVisible_Horizontal() throws IOException {
+  public void testRenderScrollBarsVisible_Horizontal() throws IOException, JSONException {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
@@ -1227,11 +1224,11 @@ public class TreeLCA_Test extends TestCase {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( tree.getHorizontalBar(), "visibility" ) );
-    assertNull( message.findSetOperation( tree.getVerticalBar(), "visibility" ) );
+    JSONArray actual = ( JSONArray )message.findSetProperty( tree, "scrollBarsVisible" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ true, false ]", actual ) );
   }
 
-  public void testRenderScrollBarsVisible_Vertical() throws IOException {
+  public void testRenderScrollBarsVisible_Vertical() throws IOException, JSONException {
     Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     new TreeColumn( tree, SWT.NONE );
 
@@ -1239,8 +1236,8 @@ public class TreeLCA_Test extends TestCase {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( tree.getHorizontalBar(), "visibility" ) );
-    assertEquals( Boolean.TRUE, message.findSetProperty( tree.getVerticalBar(), "visibility" ) );
+    JSONArray actual = ( JSONArray )message.findSetProperty( tree, "scrollBarsVisible" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ false, true ]", actual ) );
   }
 
   public void testRenderScrollBarsVisibleUnchanged() throws IOException {
@@ -1248,8 +1245,7 @@ public class TreeLCA_Test extends TestCase {
     Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     Fixture.markInitialized( display );
-    lca.render( tree );
-    Fixture.fakeNewRequest();
+    Fixture.markInitialized( tree );
 
     column.setWidth( 25 );
     tree.setHeaderVisible( true );
@@ -1257,8 +1253,7 @@ public class TreeLCA_Test extends TestCase {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( tree.getHorizontalBar(), "visibility" ) );
-    assertNull( message.findSetOperation( tree.getVerticalBar(), "visibility" ) );
+    assertNull( message.findSetOperation( tree, "scrollBarsVisible" ) );
   }
 
   public void testRenderAddSelectionListener() throws Exception {
@@ -1599,10 +1594,5 @@ public class TreeLCA_Test extends TestCase {
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, getId( item ) );
     Fixture.fakeNotifyOperation( getId( item.getParent() ), eventName, parameters );
-  }
-
-  private void fakeSetTopItemIndex( Tree tree, int index ) {
-    Integer selection = Integer.valueOf( index * tree.getItemHeight() );
-    Fixture.fakeSetParameter( getId( tree.getVerticalBar() ), "selection", selection );
   }
 }

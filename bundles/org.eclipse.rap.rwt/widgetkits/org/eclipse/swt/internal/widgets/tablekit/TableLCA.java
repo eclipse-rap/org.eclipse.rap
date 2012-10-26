@@ -12,7 +12,6 @@
 package org.eclipse.swt.internal.widgets.tablekit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readCallPropertyValueAsString;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
@@ -34,12 +33,13 @@ import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
-import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -76,6 +76,8 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_SORT_DIRECTION = "sortDirection";
   private static final String PROP_SORT_COLUMN = "sortColumn";
+  private static final String PROP_SCROLLBARS_VISIBLE = "scrollBarsVisible";
+  private static final String PROP_SCROLLBARS_SELECTION_LISTENER = "scrollBarsSelection";
   private static final String PROP_SELECTION_LISTENER = "Selection";
   private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
   private static final String PROP_ALWAYS_HIDE_SELECTION = "alwaysHideSelection";
@@ -85,6 +87,7 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   private static final int ZERO = 0 ;
   private static final String[] DEFAULT_SELECTION = new String[ 0 ];
+  private static final boolean[] DEFAULT_SCROLLBARS_VISIBLE = new boolean[] { false, false };
   private static final String DEFAULT_SORT_DIRECTION = "none";
 
   @Override
@@ -106,6 +109,10 @@ public final class TableLCA extends AbstractWidgetLCA {
     preserveProperty( table, PROP_SELECTION, getSelection( table ) );
     preserveProperty( table, PROP_SORT_DIRECTION, getSortDirection( table ) );
     preserveProperty( table, PROP_SORT_COLUMN, table.getSortColumn() );
+    preserveProperty( table, PROP_SCROLLBARS_VISIBLE, getScrollBarsVisible( table ) );
+    preserveListener( table,
+                      PROP_SCROLLBARS_SELECTION_LISTENER,
+                      EventLCAUtil.hasScrollBarsSelectionListener( table ) );
     preserveListener( table, PROP_SELECTION_LISTENER, table.isListening( SWT.Selection ) );
     preserveListener( table,
                       PROP_DEFAULT_SELECTION_LISTENER,
@@ -113,7 +120,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     preserveProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ) );
     preserveProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ) );
     preserveProperty( table, PROP_CELL_TOOLTIP_TEXT, null );
-    ScrollBarLCAUtil.preserveValues( table );
   }
 
   public void readData( Widget widget ) {
@@ -128,7 +134,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processEvents( table );
     ControlLCAUtil.processKeyEvents( table );
     ControlLCAUtil.processMenuDetect( table );
-    ScrollBarLCAUtil.processSelectionEvent( table );
+    EventLCAUtil.processScrollBarSelection( table );
   }
 
   @Override
@@ -139,7 +145,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     clientObject.set( "parent", WidgetUtil.getId( table.getParent() ) );
     clientObject.set( "style", WidgetLCAUtil.getStyles( table, ALLOWED_STYLES ) );
     clientObject.set( "appearance", "table" );
-    ITableAdapter adapter = getTableAdapter( table );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     if( ( table.getStyle() & SWT.CHECK ) != 0 ) {
       int[] checkMetrics = new int[] { adapter.getCheckLeft(), adapter.getCheckWidth() };
       clientObject.set( "checkBoxMetrics", checkMetrics );
@@ -150,7 +156,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     clientObject.set( "indentionWidth", 0 );
     clientObject.set( PROP_TREE_COLUMN, -1 );
     clientObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( table ) );
-    ScrollBarLCAUtil.renderInitialization( table );
   }
 
   @Override
@@ -166,12 +171,20 @@ public final class TableLCA extends AbstractWidgetLCA {
     renderProperty( table, PROP_HEADER_HEIGHT, table.getHeaderHeight(), ZERO );
     renderProperty( table, PROP_HEADER_VISIBLE, table.getHeaderVisible(), false );
     renderProperty( table, PROP_LINES_VISIBLE, table.getLinesVisible(), false );
-    renderTopItemIndex( table );
+    renderProperty( table, PROP_TOP_ITEM_INDEX, table.getTopIndex(), ZERO );
     renderProperty( table, PROP_FOCUS_ITEM, getFocusItem( table ), null );
-    renderScrollLeft( table );
+    renderProperty( table, PROP_SCROLL_LEFT, getScrollLeft( table ), ZERO );
     renderProperty( table, PROP_SELECTION, getSelection( table ), DEFAULT_SELECTION );
     renderProperty( table, PROP_SORT_DIRECTION, getSortDirection( table ), DEFAULT_SORT_DIRECTION );
     renderProperty( table, PROP_SORT_COLUMN, table.getSortColumn(), null );
+    renderProperty( table,
+                    PROP_SCROLLBARS_VISIBLE,
+                    getScrollBarsVisible( table ),
+                    DEFAULT_SCROLLBARS_VISIBLE );
+    renderListener( table,
+                    PROP_SCROLLBARS_SELECTION_LISTENER,
+                    EventLCAUtil.hasScrollBarsSelectionListener( table ),
+                    false );
     renderListener( table, PROP_SELECTION_LISTENER, table.isListening( SWT.Selection ), false );
     renderListener( table,
                     PROP_DEFAULT_SELECTION_LISTENER,
@@ -180,8 +193,8 @@ public final class TableLCA extends AbstractWidgetLCA {
     renderProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ), false );
     renderProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ), false );
     renderProperty( table, PROP_CELL_TOOLTIP_TEXT, getCellToolTipText( table ), null );
-    ScrollBarLCAUtil.renderChanges( table );
   }
+
 
   @Override
   public void renderDispose( Widget widget ) throws IOException {
@@ -191,7 +204,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   @Override
   public void doRedrawFake( Control control ) {
     Table table = ( Table )control;
-    getTableAdapter( table ).checkData();
+    table.getAdapter( ITableAdapter.class ).checkData();
   }
 
   ////////////////////////////////////////////////////
@@ -216,18 +229,12 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
 
   private static void readTopItemIndex( Table table ) {
-    Integer scrollTop = ScrollBarLCAUtil.readSelection( table.getVerticalBar() );
-    if( scrollTop != null ) {
-      int topIndex = scrollTop.intValue() / table.getItemHeight();
+    String value = WidgetLCAUtil.readPropertyValue( table, "topItemIndex" );
+    if( value != null ) {
+      int topIndex = NumberFormatUtil.parseInt( value );
+      int topOffset = topIndex * table.getItemHeight();
       table.setTopIndex( topIndex );
-    }
-  }
-
-  private static void renderTopItemIndex( Table table ) {
-    int newValue = table.getTopIndex();
-    String prop = PROP_TOP_ITEM_INDEX;
-    if( hasChanged( table, prop, Integer.valueOf( newValue ), Integer.valueOf( ZERO ) ) ) {
-      ScrollBarLCAUtil.renderSelection( table.getVerticalBar(), newValue * table.getItemHeight() );
+      processScrollBarSelection( table.getVerticalBar(), topOffset );
     }
   }
 
@@ -236,23 +243,17 @@ public final class TableLCA extends AbstractWidgetLCA {
     if( value != null ) {
       TableItem item = getItem( table, value );
       if( item != null ) {
-        getTableAdapter( table ).setFocusIndex( table.indexOf( item ) );
+        table.getAdapter( ITableAdapter.class ).setFocusIndex( table.indexOf( item ) );
       }
     }
   }
 
   private static void readScrollLeft( Table table ) {
-    Integer scrollLeft = ScrollBarLCAUtil.readSelection( table.getHorizontalBar() );
-    if( scrollLeft != null ) {
-      getTableAdapter( table ).setLeftOffset( scrollLeft.intValue() );
-    }
-  }
-
-  private static void renderScrollLeft( Table table ) {
-    int newValue = getScrollLeft( table );
-    String prop = PROP_SCROLL_LEFT;
-    if( hasChanged( table, prop, Integer.valueOf( newValue ), Integer.valueOf( ZERO ) ) ) {
-      ScrollBarLCAUtil.renderSelection( table.getHorizontalBar(), newValue );
+    String value = WidgetLCAUtil.readPropertyValue( table, "scrollLeft" );
+    if( value != null ) {
+      int leftOffset = NumberFormatUtil.parseInt( value );
+      table.getAdapter( ITableAdapter.class ).setLeftOffset( leftOffset );
+      processScrollBarSelection( table.getHorizontalBar(), leftOffset );
     }
   }
 
@@ -326,16 +327,18 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
 
   private int getFixedColumns( Table table ) {
-    return getTableAdapter( table ).getFixedColumns();
+    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
+    return tableAdapter.getFixedColumns();
   }
 
   private static int getScrollLeft( Table table ) {
-    return getTableAdapter( table ).getLeftOffset();
+    return table.getAdapter( ITableAdapter.class ).getLeftOffset();
   }
 
   private static TableItem getFocusItem( Table table ) {
     TableItem result = null;
-    int focusIndex = getTableAdapter( table ).getFocusIndex();
+    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
+    int focusIndex = tableAdapter.getFocusIndex();
     if( focusIndex != -1 ) {
       // TODO [rh] do something about when index points to unresolved item!
       result = table.getItem( focusIndex );
@@ -353,6 +356,24 @@ public final class TableLCA extends AbstractWidgetLCA {
     return result;
   }
 
+  private static boolean[] getScrollBarsVisible( Table table ) {
+    return new boolean[] { hasHScrollBar( table ), hasVScrollBar( table ) };
+  }
+
+  private static boolean hasHScrollBar( Table table ) {
+    return table.getAdapter( ITableAdapter.class ).hasHScrollBar();
+  }
+
+  private static boolean hasVScrollBar( Table table ) {
+    return table.getAdapter( ITableAdapter.class ).hasVScrollBar();
+  }
+
+  private static void processScrollBarSelection( ScrollBar scrollBar, int selection ) {
+    if( scrollBar != null ) {
+      scrollBar.setSelection( selection );
+    }
+  }
+
   static boolean hasAlwaysHideSelection( Table table ) {
     Object data = table.getData( Table.ALWAYS_HIDE_SELECTION );
     return Boolean.TRUE.equals( data );
@@ -368,10 +389,6 @@ public final class TableLCA extends AbstractWidgetLCA {
       item = ( TableItem )WidgetUtil.find( table, itemId );
     }
     return item;
-  }
-
-  private static ITableAdapter getTableAdapter( Table table ) {
-    return table.getAdapter( ITableAdapter.class );
   }
 
   /////////////////
@@ -403,7 +420,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     for( int i = 0; i < columnCount; i++ ) {
       result[ i ] = new ItemMetrics();
     }
-    ITableAdapter tableAdapter = getTableAdapter( table );
+    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
     TableItem measureItem = tableAdapter.getMeasureItem();
     if( measureItem != null ) {
       for( int i = 0; i < columnCount; i++ ) {

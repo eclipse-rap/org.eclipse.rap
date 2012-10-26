@@ -15,7 +15,6 @@ qx.Class.define( "rwt.widgets.ScrolledComposite", {
 
   construct : function() {
     this.base( arguments, new rwt.widgets.base.Parent() );
-    this.setScrollBarsVisible( false, false );
     this._clientArea.addEventListener( "mousewheel", this._onMouseWheel, this );
     this._clientArea.addEventListener( "keypress", this._onKeyPress, this );
     if( rwt.client.Client.supportsTouch() ) {
@@ -23,6 +22,7 @@ qx.Class.define( "rwt.widgets.ScrolledComposite", {
     }
     this.addEventListener( "userScroll", this._onUserScroll );
     this._content = null;
+    this._hasSelectionListener = false;
     this._requestTimerRunning = false;
     this._showFocusedControl = false;
     this._focusRoot = null;
@@ -37,6 +37,10 @@ qx.Class.define( "rwt.widgets.ScrolledComposite", {
 
     setShowFocusedControl : function( value ) {
       this._showFocusedControl = value;
+    },
+
+    setHasSelectionListener : function( value ) {
+      this._hasSelectionListener = value;
     },
 
     setContent : function( widget ) {
@@ -113,34 +117,37 @@ qx.Class.define( "rwt.widgets.ScrolledComposite", {
       }
     },
 
-    _onUserScroll : function( horizontal ) {
-      var server = rwt.remote.Server.getInstance();
-      var scrollbar = horizontal ? this._horzScrollBar : this._vertScrollBar;
-      var serverObject = server.getServerObject( scrollbar );
-      serverObject.set( "selection", scrollbar.getValue() );
-      if( scrollbar.getHasSelectionListener() ) {
-        if( horizontal ) {
-          server.onNextSend( this._sendHorizontalScrolled, this );
-        } else {
-          server.onNextSend( this._sendVerticalScrolled, this );
-        }
-        server.sendDelayed( 500 );
+    _onUserScroll : function() {
+      if( !this._requestTimerRunning ) {
+        this._requestTimerRunning = true;
+        rwt.client.Timer.once( this._sendChanges, this, 500 );
       }
-    },
-
-    _sendVerticalScrolled : function() {
-      var server = rwt.remote.Server.getInstance();
-      server.getServerObject( this._vertScrollBar ).notify( "Selection" );
-    },
-
-    _sendHorizontalScrolled : function() {
-      var server = rwt.remote.Server.getInstance();
-      server.getServerObject( this._horzScrollBar ).notify( "Selection" );
     },
 
     _onChangeFocusedChild : function( evt ) {
       var focusedChild = evt.getValue();
       this.setBlockScrolling( !this._showFocusedControl && focusedChild !== this );
+    },
+
+    _sendChanges : function() {
+      if( !org.eclipse.swt.EventUtil.getSuspended() && this.isCreated() ) {
+        var wm = org.eclipse.swt.WidgetManager.getInstance();
+        var server = rwt.remote.Server.getInstance();
+        var id = wm.findIdByWidget( this );
+        var scrollX = this._clientArea.getScrollLeft();
+        server.addParameter( id + ".horizontalBar.selection", scrollX );
+        var scrollY = this._clientArea.getScrollTop();
+        server.addParameter( id + ".verticalBar.selection", scrollY );
+        if( this._hasSelectionListener ) {
+          // Note : This is consistent with previous behavior of always firing events
+          // on both scrollbars in ScrolledCompositeLCA.java
+          server.getServerObject( this ).notify( "scrollBarSelected", {
+            "vertical" : true,
+            "horizontal" : true
+          } );
+        }
+        this._requestTimerRunning = false;
+      }
     }
 
   }
