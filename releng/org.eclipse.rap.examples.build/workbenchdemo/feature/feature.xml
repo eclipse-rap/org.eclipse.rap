@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.rap.examples.workbench.feature"
+      id="org.eclipse.rap.examples.workbenchdemo.feature"
       label="RAP Examples Workbench Demo Feature"
       version="2.0.0.qualifier">
 
@@ -236,6 +236,13 @@
 
    <plugin
          id="org.eclipse.rap.demo"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.rap.design.example"
          download-size="0"
          install-size="0"
          version="0.0.0"

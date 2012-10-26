@@ -12,11 +12,11 @@
     <relativePath>../../parent/parent</relativePath>
   </parent>
 
-  <artifactId>org.eclipse.rap.examples.controls.product</artifactId>
+  <artifactId>org.eclipse.rap.examples.controlsdemo.product</artifactId>
   <packaging>eclipse-repository</packaging>
 
   <properties>
-    <war-filename>controls</war-filename>
+    <war-filename>controlsdemo</war-filename>
   </properties>
 
   <build>

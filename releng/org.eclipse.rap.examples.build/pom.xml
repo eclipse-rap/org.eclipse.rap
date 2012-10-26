@@ -33,8 +33,8 @@
     <module>workbenchdemo/feature</module>
     <module>workbenchdemo/product</module>
     <!-- controls -->
-    <module>controls/feature</module>
-    <module>controls/product</module>
+    <module>controlsdemo/feature</module>
+    <module>controlsdemo/product</module>
   </modules>
 
 </project>

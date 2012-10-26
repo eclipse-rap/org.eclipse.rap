@@ -12,7 +12,7 @@
     <relativePath>../../parent/parent</relativePath>
   </parent>
 
-  <artifactId>org.eclipse.rap.examples.controls.feature</artifactId>
+  <artifactId>org.eclipse.rap.examples.controlsdemo.feature</artifactId>
   <packaging>eclipse-feature</packaging>
 
 </project>
