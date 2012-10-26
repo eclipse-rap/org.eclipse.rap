@@ -12,9 +12,7 @@ package org.eclipse.swt.internal.events;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -26,12 +24,10 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Scrollable;
 import org.eclipse.swt.widgets.Shell;
 import org.mockito.ArgumentCaptor;
 
@@ -147,57 +143,5 @@ public class EventLCAUtil_Test extends TestCase {
     assertEquals( 0, button & SWT.BUTTON3 );
     assertEquals( 0, button & SWT.BUTTON4 );
     assertTrue( ( button & SWT.BUTTON5 ) != 0 );
-  }
-  
-  public void testProcessVerticalScrollBarSelection() {
-    SelectionListener listener = mock( SelectionListener.class );
-    Scrollable scrollable = createScrollable( listener );
-    
-    simulateScrollbarSelected( scrollable, "vertical", Boolean.TRUE );
-    EventLCAUtil.processScrollBarSelection( scrollable );
-    
-    verify( listener ).widgetSelected( any( SelectionEvent.class ) );
-    verify( listener, never() ).widgetDefaultSelected( any( SelectionEvent.class ) );
-  }
-
-  public void testProcessHorizontalScrollBarSelection() {
-    SelectionListener listener = mock( SelectionListener.class );
-    Scrollable scrollable = createScrollable( listener );
-    
-    simulateScrollbarSelected( scrollable, "horizontal", Boolean.TRUE );
-    EventLCAUtil.processScrollBarSelection( scrollable );
-    
-    verify( listener ).widgetSelected( any( SelectionEvent.class ) );
-    verify( listener, never() ).widgetDefaultSelected( any( SelectionEvent.class ) );
-  }
-  
-  public void testProcessVerticalAndHorizontalScrollBarSelection() {
-    SelectionListener listener = mock( SelectionListener.class );
-    Scrollable scrollable = createScrollable( listener );
-    
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( "vertical", Boolean.TRUE );
-    parameters.put( "horizontal", Boolean.TRUE );
-    Fixture.fakeNotifyOperation( getId( scrollable ), "scrollBarSelected", parameters );
-    EventLCAUtil.processScrollBarSelection( scrollable );
-    
-    verify( listener, times( 2 ) ).widgetSelected( any( SelectionEvent.class ) );
-    verify( listener, never() ).widgetDefaultSelected( any( SelectionEvent.class ) );
-  }
-  
-  private Scrollable createScrollable( SelectionListener listener ) {
-    Scrollable result = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    result.getVerticalBar().addSelectionListener( listener );
-    result.getHorizontalBar().addSelectionListener( listener );
-    return result;
-  }
-
-  private static void simulateScrollbarSelected( Scrollable scrollable, 
-                                                 String paramKey, 
-                                                 Object paramValue ) 
-  {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put( paramKey, paramValue );
-    Fixture.fakeNotifyOperation( getId( scrollable ), "scrollBarSelected", parameters );
   }
 }
