@@ -31,12 +31,14 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
+import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.IWidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.graphics.Point;
@@ -56,7 +58,7 @@ import org.eclipse.swt.widgets.Widget;
 
 public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
-  static final String PROP_REQUEST_COUNTER = "requestCounter";
+  private static final String PROP_REQUEST_COUNTER = "requestCounter";
   static final String PROP_FOCUS_CONTROL = "focusControl";
   static final String PROP_CURRENT_THEME = "currentTheme";
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
@@ -100,6 +102,10 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       }
     }
   }
+
+  public static final String ATTR_NEEDS_UICALLBACK
+    = UICallBackServiceHandler.class.getName() + ".needsUICallback";
+  public final static String PROP_ACTIVE = "active";
 
   ////////////////////////////////////////////////////////
   // interface implementation of IDisplayLifeCycleAdapter
@@ -182,6 +188,29 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         }
       } );
     }
+  }
+
+  private static void renderUICallBackActivation( ProtocolMessageWriter writer ) {
+    boolean actual = UICallBackManager.getInstance().needsActivation();
+    boolean preserved = getPreservedUICallBackActivation();
+    if( preserved != actual ) {
+      if( !actual && UICallBackManager.getInstance().hasRunnables() ) {
+        actual = true;
+      }
+      writer.appendSet( UICallBackServiceHandler.UI_CALLBACK_ID, PROP_ACTIVE, actual );
+      preserveUICallBackActivation( actual );
+    }
+  }
+
+  private static void preserveUICallBackActivation( boolean actual ) {
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
+    sessionStore.setAttribute( ATTR_NEEDS_UICALLBACK, Boolean.valueOf( actual ) );
+  }
+
+  private static boolean getPreservedUICallBackActivation() {
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
+    Boolean preserved = ( Boolean )sessionStore.getAttribute( ATTR_NEEDS_UICALLBACK );
+    return preserved != null ? preserved.booleanValue() : false;
   }
 
   private static void renderShells( Display display ) throws IOException {
@@ -307,7 +336,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static void writeUICallBackActivation( Display display ) {
     ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-    UICallBackServiceHandler.writeUICallBackActivation( protocolWriter );
+    renderUICallBackActivation( protocolWriter );
   }
 
   private static void markInitialized( Display display ) {

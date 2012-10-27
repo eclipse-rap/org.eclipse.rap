@@ -35,7 +35,6 @@ import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
@@ -197,6 +196,18 @@ public class UICallBackManager_Test extends TestCase {
     assertEquals( "", log );
   }
 
+  public void testCallBackRequestNotBlockedWhenRunnablesExist() throws Throwable {
+    ServiceContext context = ContextProvider.getContext();
+    display.asyncExec( mock( Runnable.class ) );
+    CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator( context );
+    callBackRequestSimulator.sendRequest();
+
+    callBackRequestSimulator.waitForRequest();
+
+    assertFalse( manager.isCallBackRequestBlocked() );
+    assertFalse( callBackRequestSimulator.isRequestRunning() );
+  }
+
   public void testCallBackRequestIsReleasedOnSessionInvalidate() throws Exception {
     ServiceContext context = ContextProvider.getContext();
     CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator( context );
@@ -205,9 +216,6 @@ public class UICallBackManager_Test extends TestCase {
     context.getSessionStore().getHttpSession().invalidate();
     callBackRequestSimulator.waitForRequest();
 
-    TestResponse response = ( TestResponse )context.getResponse();
-    Message message = new Message( response.getContent().trim() );
-    assertEquals( 0, message.getOperationCount() );
     assertFalse( manager.isCallBackRequestBlocked() );
     assertFalse( callBackRequestSimulator.isRequestRunning() );
     assertFalse( callBackRequestSimulator.exceptionOccured() );
@@ -221,9 +229,9 @@ public class UICallBackManager_Test extends TestCase {
     manager.setRequestCheckInterval( 10 );
 
     manager.activateUICallBacksFor( "id" );
-    boolean success = manager.processRequest( ContextProvider.getResponse() );
 
-    assertFalse( success );
+    // must not block
+    manager.processRequest( ContextProvider.getResponse() );
   }
 
   public void testMultipleCallBackRequests() throws Exception {
@@ -237,9 +245,6 @@ public class UICallBackManager_Test extends TestCase {
     callBackRequestSimulator2.sendRequest();
     callBackRequestSimulator1.waitForRequest();
 
-    TestResponse response = ( TestResponse )context1.getResponse();
-    Message message = new Message( response.getContent().trim() );
-    assertEquals( 0, message.getOperationCount() );
     assertTrue( manager.isCallBackRequestBlocked() );
     assertFalse( callBackRequestSimulator1.exceptionOccured() );
     assertFalse( callBackRequestSimulator2.exceptionOccured() );
@@ -346,6 +351,7 @@ public class UICallBackManager_Test extends TestCase {
   }
 
   public void testDispatchingTimerExecRunnableDeactivatesUICallback() throws Exception {
+    // TODO fails occasionally
     Runnable runnable = mock( Runnable.class );
     display.timerExec( TIMER_EXEC_DELAY, runnable );
 

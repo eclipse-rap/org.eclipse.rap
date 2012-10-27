@@ -14,14 +14,13 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
@@ -32,6 +31,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
@@ -57,14 +57,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
+import org.mockito.InOrder;
 
 
 public class DisplayLCA_Test extends TestCase {
 
-  private static final List<Widget> log = new ArrayList<Widget>();
-  private static final List<Widget> renderInitLog = new ArrayList<Widget>();
-  private static final List<Widget> renderChangesLog = new ArrayList<Widget>();
-  private static final List<Widget> renderDisposeLog = new ArrayList<Widget>();
+  private final static String UI_CALLBACK_ID = "rwt.client.UICallBack";
 
   private Display display;
   private String displayId;
@@ -72,7 +70,6 @@ public class DisplayLCA_Test extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    clearLogs();
     Fixture.setUp();
     display = new Display();
     displayId = DisplayUtil.getId( display );
@@ -83,7 +80,6 @@ public class DisplayLCA_Test extends TestCase {
   @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
-    clearLogs();
     setEnableUiTests( false );
   }
 
@@ -105,19 +101,19 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRender() throws IOException {
-    LoggingWidgetLCA loggingWidgetLCA = new LoggingWidgetLCA();
-    Shell shell1 = new CustomLCAShell( display, loggingWidgetLCA );
-    Widget button1 = new CustomLCAWidget( shell1, loggingWidgetLCA );
-    Shell shell2 = new CustomLCAShell( display, loggingWidgetLCA );
-    Widget button2 = new CustomLCAWidget( shell2, loggingWidgetLCA );
+    AbstractWidgetLCA lca = mock( AbstractWidgetLCA.class );
+    Shell shell1 = new CustomLCAShell( display, lca );
+    Widget button1 = new CustomLCAWidget( shell1, lca );
+    Shell shell2 = new CustomLCAShell( display, lca );
+    Widget button2 = new CustomLCAWidget( shell2, lca );
 
     displayLCA.render( display );
 
-    assertEquals( 4, log.size() );
-    assertSame( shell1, log.get( 0 ) );
-    assertSame( button1, log.get( 1 ) );
-    assertSame( shell2, log.get( 2 ) );
-    assertSame( button2, log.get( 3 ) );
+    InOrder inOrder = inOrder( lca );
+    inOrder.verify( lca ).render( shell1 );
+    inOrder.verify( lca ).render( button1 );
+    inOrder.verify( lca ).render( shell2 );
+    inOrder.verify( lca ).render( button2 );
   }
 
   public void testRenderWithIOException() {
@@ -137,17 +133,18 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testReadData() {
-    LoggingWidgetLCA loggingWidgetLCA = new LoggingWidgetLCA();
-    Composite shell = new CustomLCAShell( display, loggingWidgetLCA );
-    Widget button = new CustomLCAWidget( shell, loggingWidgetLCA );
-    Widget text = new CustomLCAWidget( shell, loggingWidgetLCA );
+    AbstractWidgetLCA lca = mock( AbstractWidgetLCA.class );
+    Composite shell = new CustomLCAShell( display, lca );
+    Widget button = new CustomLCAWidget( shell, lca );
+    Widget text = new CustomLCAWidget( shell, lca );
 
     displayLCA.readData( display );
 
-    assertEquals( 3, log.size() );
-    assertSame( shell, log.get( 0 ) );
-    assertSame( button, log.get( 1 ) );
-    assertSame( text, log.get( 2 ) );
+    InOrder inOrder = inOrder( lca );
+    inOrder.verify( lca ).readData( shell );
+    inOrder.verify( lca ).readData( button );
+    inOrder.verify( lca ).readData( text );
+    verifyNoMoreInteractions( lca );
   }
 
   public void testReadDisplayBounds() {
@@ -160,7 +157,8 @@ public class DisplayLCA_Test extends TestCase {
 
   public void testRenderWithChangedAndDisposedWidget() throws IOException {
     Shell shell = new Shell( display, SWT.NONE );
-    Composite composite = new CustomLCAWidget( shell, new LoggingWidgetLCA() );
+    AbstractWidgetLCA lca = mock( AbstractWidgetLCA.class );
+    Composite composite = new CustomLCAWidget( shell, lca );
     Fixture.markInitialized( composite );
     Fixture.preserveWidgets();
     composite.setBounds( 1, 2, 3, 4 );
@@ -168,9 +166,8 @@ public class DisplayLCA_Test extends TestCase {
 
     displayLCA.render( display );
 
-    assertEquals( 0, renderInitLog.size() );
-    assertFalse( renderChangesLog.contains( composite ) );
-    assertTrue( renderDisposeLog.contains( composite ) );
+    verify( lca ).renderDispose( composite );
+    verifyNoMoreInteractions( lca );
   }
 
   public void testIsInitializedState() throws IOException {
@@ -302,7 +299,7 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( new Point( 1, 2 ), display.getCursorLocation() );
   }
 
-  public void testUICallBackUpdated() throws IOException {
+  public void testUICallBackActivated() throws IOException {
     Fixture.preserveWidgets();
 
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
@@ -310,6 +307,46 @@ public class DisplayLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findSetProperty( "rwt.client.UICallBack", "active" ) );
+  }
+
+  public void testUICallBackActivationIsPreserved() throws IOException {
+    Fixture.preserveWidgets();
+    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    displayLCA.render( display );
+
+    Fixture.fakeNewRequest();
+    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( "rwt.client.UICallBack", "active" ) );
+  }
+
+  public void testUICallBackDeactivated() throws IOException {
+    Fixture.preserveWidgets();
+    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    displayLCA.render( display );
+
+    Fixture.fakeNewRequest();
+    UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findSetProperty( "rwt.client.UICallBack", "active" ) );
+  }
+
+  public void testUICallBackDeactivatedWithPendingRunnables() throws IOException {
+    Fixture.preserveWidgets();
+    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    displayLCA.render( display );
+    display.asyncExec( mock( Runnable.class ) );
+
+    Fixture.fakeNewRequest();
+    UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( "rwt.client.UICallBack", "active" ) );
   }
 
   public void testRenderCurrentTheme() throws IOException {
@@ -375,11 +412,24 @@ public class DisplayLCA_Test extends TestCase {
     assertNotNull( message.findCreateOperation( "myShell" ) );
   }
 
-  private void clearLogs() {
-    log.clear();
-    renderInitLog.clear();
-    renderChangesLog.clear();
-    renderDisposeLog.clear();
+  public void testDoNotCreateUICallBackClientObject() throws Exception {
+    // UICallBack object is created by the client
+    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    ProtocolMessageWriter protocolWriter = new ProtocolMessageWriter();
+
+    new DisplayLCA().render( display );
+
+    Message message = new Message( protocolWriter.createMessage() );
+    assertNull( message.findCreateOperation( UI_CALLBACK_ID ) );
+  }
+
+  public void testNoUICallBackByDefault() throws Exception {
+    ProtocolMessageWriter protocolWriter = new ProtocolMessageWriter();
+
+    new DisplayLCA().render( display );
+
+    Message message = new Message( protocolWriter.createMessage() );
+    assertEquals( 0, message.getOperationCount() );
   }
 
   private static void setEnableUiTests( boolean value ) {
@@ -407,33 +457,6 @@ public class DisplayLCA_Test extends TestCase {
     }
     @Override
     public void renderDispose( Widget widget ) throws IOException {
-    }
-  }
-
-  private static class LoggingWidgetLCA extends AbstractWidgetLCA {
-
-    @Override
-    public void preserveValues( Widget widget ) {
-    }
-
-    public void readData( Widget widget ) {
-      log.add( widget );
-    }
-
-    @Override
-    public void renderInitialization( Widget widget ) throws IOException {
-      renderInitLog.add( widget );
-    }
-
-    @Override
-    public void renderChanges( Widget widget ) throws IOException {
-      log.add( widget );
-      renderChangesLog.add( widget );
-    }
-
-    @Override
-    public void renderDispose( Widget widget ) throws IOException {
-      renderDisposeLog.add( widget );
     }
   }
 

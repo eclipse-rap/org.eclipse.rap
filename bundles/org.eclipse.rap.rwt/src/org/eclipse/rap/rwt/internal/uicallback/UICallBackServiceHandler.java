@@ -20,66 +20,23 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.IServiceHandler;
-import org.eclipse.rap.rwt.service.ISessionStore;
 
 
 public class UICallBackServiceHandler implements IServiceHandler {
 
-  private final static String UI_CALLBACK_ID = "rwt.client.UICallBack";
-  private final static String PROP_ACTIVE = "active";
+  public final static String UI_CALLBACK_ID = "rwt.client.UICallBack";
   private final static String METHOD_SEND_UI_REQUEST = "sendUIRequest";
 
   public final static String HANDLER_ID = "org.eclipse.rap.uicallback";
 
-  private static final String ATTR_NEEDS_UICALLBACK
-    = UICallBackServiceHandler.class.getName() + ".needsUICallback";
-
   public void service() throws IOException {
     HttpServletResponse response = ContextProvider.getResponse();
     configureResponseHeaders( response );
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
     ProtocolMessageWriter writer = new ProtocolMessageWriter();
-    boolean success = UICallBackManager.getInstance().processRequest( response );
-    if( success && sessionStore.isBound() ) {
-      writeUICallBackDeactivation( writer );
-      writeUIRequestNeeded( writer );
-    }
+    UICallBackManager.getInstance().processRequest( response );
+    writeUIRequestNeeded( writer );
     String message = writer.createMessage();
     response.getWriter().write( message );
-  }
-
-  public static void writeUICallBackActivation( ProtocolMessageWriter writer ) {
-    boolean actual = UICallBackManager.getInstance().needsActivation();
-    boolean preserved = getPreservedUICallBackActivation();
-    if( preserved != actual && actual ) {
-      writeUICallBackActivation( writer, actual );
-      ISessionStore sessionStore = ContextProvider.getSessionStore();
-      sessionStore.setAttribute( ATTR_NEEDS_UICALLBACK, Boolean.valueOf( actual ) );
-    }
-  }
-
-  public static void writeUICallBackDeactivation( ProtocolMessageWriter writer ) {
-    boolean actual = UICallBackManager.getInstance().needsActivation();
-    boolean preserved = getPreservedUICallBackActivation();
-    if( preserved != actual && !actual ) {
-      writeUICallBackActivation( writer, actual );
-      ISessionStore sessionStore = ContextProvider.getSessionStore();
-      sessionStore.setAttribute( ATTR_NEEDS_UICALLBACK, Boolean.valueOf( actual ) );
-    }
-  }
-
-  private static void writeUICallBackActivation( ProtocolMessageWriter writer, boolean value ) {
-    writer.appendSet( UI_CALLBACK_ID, PROP_ACTIVE, value );
-  }
-
-  private static boolean getPreservedUICallBackActivation() {
-    boolean result = false;
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    Boolean preserved = ( Boolean )sessionStore.getAttribute( ATTR_NEEDS_UICALLBACK );
-    if( preserved != null ) {
-      result = preserved.booleanValue();
-    }
-    return result;
   }
 
   private static void configureResponseHeaders( ServletResponse response ) {
@@ -88,9 +45,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
   }
 
   private static void writeUIRequestNeeded( ProtocolMessageWriter writer ) {
-    if( UICallBackManager.getInstance().hasRunnables() ) {
-      writer.appendCall( UI_CALLBACK_ID, METHOD_SEND_UI_REQUEST, null );
-    }
+    writer.appendCall( UI_CALLBACK_ID, METHOD_SEND_UI_REQUEST, null );
   }
 
 }
