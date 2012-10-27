@@ -20,14 +20,14 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.IServiceHandler;
+import org.eclipse.swt.internal.widgets.displaykit.UICallBackRenderer;
 
 
 public class UICallBackServiceHandler implements IServiceHandler {
 
-  public final static String UI_CALLBACK_ID = "rwt.client.UICallBack";
-  private final static String METHOD_SEND_UI_REQUEST = "sendUIRequest";
-
   public final static String HANDLER_ID = "org.eclipse.rap.uicallback";
+
+  private final static String METHOD_SEND_UI_REQUEST = "sendUIRequest";
 
   public void service() throws IOException {
     HttpServletResponse response = ContextProvider.getResponse();
@@ -45,7 +45,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
   }
 
   private static void writeUIRequestNeeded( ProtocolMessageWriter writer ) {
-    writer.appendCall( UI_CALLBACK_ID, METHOD_SEND_UI_REQUEST, null );
+    writer.appendCall( UICallBackRenderer.UI_CALLBACK_ID, METHOD_SEND_UI_REQUEST, null );
   }
 
 }

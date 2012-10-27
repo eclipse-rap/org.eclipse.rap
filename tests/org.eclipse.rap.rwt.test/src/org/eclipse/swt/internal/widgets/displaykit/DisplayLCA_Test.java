@@ -21,6 +21,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
@@ -31,7 +32,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
@@ -61,8 +61,6 @@ import org.mockito.InOrder;
 
 
 public class DisplayLCA_Test extends TestCase {
-
-  private final static String UI_CALLBACK_ID = "rwt.client.UICallBack";
 
   private Display display;
   private String displayId;
@@ -299,54 +297,13 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( new Point( 1, 2 ), display.getCursorLocation() );
   }
 
-  public void testUICallBackActivated() throws IOException {
-    Fixture.preserveWidgets();
-
+  public void testUICallBackRendered() throws IOException {
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+
     displayLCA.render( display );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( "rwt.client.UICallBack", "active" ) );
-  }
-
-  public void testUICallBackActivationIsPreserved() throws IOException {
-    Fixture.preserveWidgets();
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    displayLCA.render( display );
-
-    Fixture.fakeNewRequest();
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    displayLCA.render( display );
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( "rwt.client.UICallBack", "active" ) );
-  }
-
-  public void testUICallBackDeactivated() throws IOException {
-    Fixture.preserveWidgets();
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    displayLCA.render( display );
-
-    Fixture.fakeNewRequest();
-    UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
-    displayLCA.render( display );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findSetProperty( "rwt.client.UICallBack", "active" ) );
-  }
-
-  public void testUICallBackDeactivatedWithPendingRunnables() throws IOException {
-    Fixture.preserveWidgets();
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    displayLCA.render( display );
-    display.asyncExec( mock( Runnable.class ) );
-
-    Fixture.fakeNewRequest();
-    UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
-    displayLCA.render( display );
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( "rwt.client.UICallBack", "active" ) );
+    assertNotNull( message.findSetProperty( UICallBackRenderer.UI_CALLBACK_ID, "active" ) );
   }
 
   public void testRenderCurrentTheme() throws IOException {
@@ -410,26 +367,6 @@ public class DisplayLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNotNull( message.findCreateOperation( "myShell" ) );
-  }
-
-  public void testDoNotCreateUICallBackClientObject() throws Exception {
-    // UICallBack object is created by the client
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    ProtocolMessageWriter protocolWriter = new ProtocolMessageWriter();
-
-    new DisplayLCA().render( display );
-
-    Message message = new Message( protocolWriter.createMessage() );
-    assertNull( message.findCreateOperation( UI_CALLBACK_ID ) );
-  }
-
-  public void testNoUICallBackByDefault() throws Exception {
-    ProtocolMessageWriter protocolWriter = new ProtocolMessageWriter();
-
-    new DisplayLCA().render( display );
-
-    Message message = new Message( protocolWriter.createMessage() );
-    assertEquals( 0, message.getOperationCount() );
   }
 
   private static void setEnableUiTests( boolean value ) {

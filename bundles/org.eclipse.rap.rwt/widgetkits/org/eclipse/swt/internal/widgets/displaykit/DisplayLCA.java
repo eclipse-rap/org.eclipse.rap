@@ -31,14 +31,11 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
-import org.eclipse.rap.rwt.internal.uicallback.UICallBackServiceHandler;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.IWidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.graphics.Point;
@@ -63,49 +60,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   static final String PROP_CURRENT_THEME = "currentTheme";
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
   private static final String METHOD_BEEP = "beep";
-
-  private static final class RenderVisitor extends AllWidgetTreeVisitor {
-
-    private IOException ioProblem;
-
-    @Override
-    public boolean doVisit( Widget widget ) {
-      ioProblem = null;
-      boolean result = true;
-      try {
-        render( widget );
-        runRenderRunnable( widget );
-      } catch( IOException ioe ) {
-        ioProblem = ioe;
-        result = false;
-      }
-      return result;
-    }
-
-    private void reThrowProblem() throws IOException {
-      if( ioProblem != null ) {
-        throw ioProblem;
-      }
-    }
-
-    private static void render( Widget widget ) throws IOException {
-      WidgetUtil.getLCA( widget ).render( widget );
-    }
-
-    private static void runRenderRunnable( Widget widget )
-      throws IOException
-    {
-      WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
-      if( adapter.getRenderRunnable() != null ) {
-        adapter.getRenderRunnable().afterRender();
-        adapter.clearRenderRunnable();
-      }
-    }
-  }
-
-  public static final String ATTR_NEEDS_UICALLBACK
-    = UICallBackServiceHandler.class.getName() + ".needsUICallback";
-  public final static String PROP_ACTIVE = "active";
 
   ////////////////////////////////////////////////////////
   // interface implementation of IDisplayLifeCycleAdapter
@@ -168,7 +122,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     renderShells( display );
     renderFocus( display );
     renderBeep( display );
-    writeUICallBackActivation( display );
+    renderUICallBack( display );
     markInitialized( display );
     ActiveKeysUtil.renderActiveKeys( display );
     ActiveKeysUtil.renderCancelKeys( display );
@@ -188,29 +142,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         }
       } );
     }
-  }
-
-  private static void renderUICallBackActivation( ProtocolMessageWriter writer ) {
-    boolean actual = UICallBackManager.getInstance().needsActivation();
-    boolean preserved = getPreservedUICallBackActivation();
-    if( preserved != actual ) {
-      if( !actual && UICallBackManager.getInstance().hasRunnables() ) {
-        actual = true;
-      }
-      writer.appendSet( UICallBackServiceHandler.UI_CALLBACK_ID, PROP_ACTIVE, actual );
-      preserveUICallBackActivation( actual );
-    }
-  }
-
-  private static void preserveUICallBackActivation( boolean actual ) {
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    sessionStore.setAttribute( ATTR_NEEDS_UICALLBACK, Boolean.valueOf( actual ) );
-  }
-
-  private static boolean getPreservedUICallBackActivation() {
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    Boolean preserved = ( Boolean )sessionStore.getAttribute( ATTR_NEEDS_UICALLBACK );
-    return preserved != null ? preserved.booleanValue() : false;
   }
 
   private static void renderShells( Display display ) throws IOException {
@@ -324,6 +255,10 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
+  private static void renderUICallBack( Display display ) {
+    new UICallBackRenderer().render();
+  }
+
   private static void renderEnableUiTests( Display display ) {
     if( UITestUtil.isEnabled() ) {
       WidgetAdapter adapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
@@ -332,11 +267,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         clientObject.set( "enableUiTests", true );
       }
     }
-  }
-
-  private static void writeUICallBackActivation( Display display ) {
-    ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-    renderUICallBackActivation( protocolWriter );
   }
 
   private static void markInitialized( Display display ) {
@@ -397,4 +327,44 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   private static Shell[] getShells( Display display ) {
     return getDisplayAdapter( display ).getShells();
   }
+
+  private static final class RenderVisitor extends AllWidgetTreeVisitor {
+
+    private IOException ioProblem;
+
+    @Override
+    public boolean doVisit( Widget widget ) {
+      ioProblem = null;
+      boolean result = true;
+      try {
+        render( widget );
+        runRenderRunnable( widget );
+      } catch( IOException ioe ) {
+        ioProblem = ioe;
+        result = false;
+      }
+      return result;
+    }
+
+    private void reThrowProblem() throws IOException {
+      if( ioProblem != null ) {
+        throw ioProblem;
+      }
+    }
+
+    private static void render( Widget widget ) throws IOException {
+      WidgetUtil.getLCA( widget ).render( widget );
+    }
+
+    private static void runRenderRunnable( Widget widget )
+      throws IOException
+    {
+      WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
+      if( adapter.getRenderRunnable() != null ) {
+        adapter.getRenderRunnable().afterRender();
+        adapter.clearRenderRunnable();
+      }
+    }
+  }
+
 }

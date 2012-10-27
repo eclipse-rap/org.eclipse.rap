@@ -351,9 +351,7 @@ public class UICallBackManager_Test extends TestCase {
   }
 
   public void testDispatchingTimerExecRunnableDeactivatesUICallback() throws Exception {
-    // TODO fails occasionally
-    Runnable runnable = mock( Runnable.class );
-    display.timerExec( TIMER_EXEC_DELAY, runnable );
+    display.timerExec( TIMER_EXEC_DELAY, mock( Runnable.class ) );
 
     Thread.sleep( TIMER_EXEC_DELAY + 50 );
 
