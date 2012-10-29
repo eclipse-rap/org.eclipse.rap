@@ -605,7 +605,7 @@ public class SpinnerLCA_Test extends TestCase {
     lca.renderChanges( spinner );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( spinner, "modify" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( spinner, "Modify" ) );
   }
 
   public void testRenderRemoveModifyListener() throws Exception {
@@ -622,7 +622,7 @@ public class SpinnerLCA_Test extends TestCase {
     lca.renderChanges( spinner );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( spinner, "modify" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( spinner, "Modify" ) );
   }
 
   public void testRenderModifyListenerUnchanged() throws Exception {
@@ -638,6 +638,6 @@ public class SpinnerLCA_Test extends TestCase {
     lca.renderChanges( spinner );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( spinner, "modify" ) );
+    assertNull( message.findListenOperation( spinner, "Modify" ) );
   }
 }

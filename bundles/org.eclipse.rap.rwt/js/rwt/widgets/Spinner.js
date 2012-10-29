@@ -169,10 +169,8 @@ qx.Class.define( "rwt.widgets.Spinner", {
     },
 
     _addModifyTextEvent : function() {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( this );
-      var req = rwt.remote.Server.getInstance();
-      req.addEvent( "org.eclipse.swt.events.modifyText", id );
+      var server = rwt.remote.Server.getInstance();
+      server.getServerObject( this ).notify( "Modify" );
     },
 
     _sendWidgetSelected : function() {

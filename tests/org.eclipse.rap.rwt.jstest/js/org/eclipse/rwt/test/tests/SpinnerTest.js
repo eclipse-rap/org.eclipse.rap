@@ -296,7 +296,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.protocolListen( "w3", { "modify" : true } );
+      TestUtil.protocolListen( "w3", { "Modify" : true } );
       var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasModifyListener );
