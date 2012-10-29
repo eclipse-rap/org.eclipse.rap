@@ -37,7 +37,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Browser", {
   } ),
 
   listeners : rwt.protocol.AdapterUtil.extendControlListeners( [
-    "progress"
+    "Progress"
   ] ),
 
   listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),

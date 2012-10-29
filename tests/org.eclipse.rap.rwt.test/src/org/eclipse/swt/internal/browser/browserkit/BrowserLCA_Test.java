@@ -50,6 +50,7 @@ public class BrowserLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private Browser browser;
   private BrowserLCA lca;
 
   @Override
@@ -57,6 +58,7 @@ public class BrowserLCA_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
+    browser = new Browser( shell, SWT.NONE );
     lca = new BrowserLCA();
     Fixture.fakeNewRequest( display );
   }
@@ -67,7 +69,6 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   public void testControlListeners() throws IOException {
-    Browser browser = new Browser( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( browser );
     ControlLCATestUtil.testFocusListener( browser );
     ControlLCATestUtil.testMouseListener( browser );
@@ -79,7 +80,6 @@ public class BrowserLCA_Test extends TestCase {
 
   public void testTextChanged() throws IOException {
     Fixture.markInitialized( display );
-    Browser browser = new Browser( shell, SWT.NONE );
 
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     String expected = String.valueOf( BrowserLCA.BLANK_HTML.hashCode() );
@@ -116,7 +116,6 @@ public class BrowserLCA_Test extends TestCase {
 
   public void testUrlChanged() throws IOException {
     Fixture.markInitialized( display );
-    Browser browser = new Browser( shell, SWT.NONE );
 
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     String expected = String.valueOf( BrowserLCA.BLANK_HTML.hashCode() );
@@ -144,7 +143,6 @@ public class BrowserLCA_Test extends TestCase {
 
   public void testResetUrlChanged_NotInitialized() throws IOException {
     Fixture.markInitialized( display );
-    Browser browser = new Browser( shell, SWT.NONE );
     browser.setUrl( "http://eclipse.org/rap" );
     Fixture.fakeResponseWriter();
 
@@ -156,7 +154,6 @@ public class BrowserLCA_Test extends TestCase {
 
   public void testResetUrlChanged_Initialized() throws IOException {
     Fixture.markInitialized( display );
-    Browser browser = new Browser( shell, SWT.NONE );
     Fixture.markInitialized( browser );
     browser.setUrl( "http://eclipse.org/rap" );
     Fixture.fakeResponseWriter();
@@ -170,7 +167,6 @@ public class BrowserLCA_Test extends TestCase {
   public void testExecuteFunction() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final List<Object> log = new ArrayList<Object>();
-    Browser browser = new Browser( shell, SWT.NONE );
     new BrowserFunction( browser, "func" ) {
       @Override
       public Object function( Object[] arguments ) {
@@ -192,7 +188,6 @@ public class BrowserLCA_Test extends TestCase {
   public void testProgressEvent() {
     final ArrayList<String> log = new ArrayList<String>();
     Fixture.markInitialized( display );
-    Browser browser = new Browser( shell, SWT.NONE );
     browser.addProgressListener( new ProgressListener() {
       public void changed( ProgressEvent event ) {
         log.add( "changed" );
@@ -202,7 +197,7 @@ public class BrowserLCA_Test extends TestCase {
       }
     } );
 
-    Fixture.fakeNotifyOperation( getId( browser ), BrowserLCA.EVENT_PROGRESS_COMPLETED, null );
+    Fixture.fakeNotifyOperation( getId( browser ), BrowserLCA.EVENT_PROGRESS, null );
     Fixture.readDataAndProcessAction( browser );
 
     assertEquals( 2, log.size() );
@@ -212,12 +207,11 @@ public class BrowserLCA_Test extends TestCase {
 
   public void testProgressEvent_InvisibleBrowser() {
     Fixture.markInitialized( display );
-    Browser browser = new Browser( shell, SWT.NONE );
     browser.setVisible( false );
     ProgressListener listener = mock( ProgressListener.class );
     browser.addProgressListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( browser ), BrowserLCA.EVENT_PROGRESS_COMPLETED, null );
+    Fixture.fakeNotifyOperation( getId( browser ), BrowserLCA.EVENT_PROGRESS, null );
     Fixture.readDataAndProcessAction( browser );
 
     verify( listener ).changed( any( ProgressEvent.class ) );
@@ -226,13 +220,12 @@ public class BrowserLCA_Test extends TestCase {
 
   public void testProgressEvent_DisabledBrowser() {
     Fixture.markInitialized( display );
-    Browser browser = new Browser( shell, SWT.NONE );
     browser.setEnabled( false );
     browser.setVisible( false );
     ProgressListener listener = mock( ProgressListener.class );
     browser.addProgressListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( browser ), BrowserLCA.EVENT_PROGRESS_COMPLETED, null );
+    Fixture.fakeNotifyOperation( getId( browser ), BrowserLCA.EVENT_PROGRESS, null );
     Fixture.readDataAndProcessAction( browser );
 
     verify( listener ).changed( any( ProgressEvent.class ) );
@@ -240,8 +233,6 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   public void testRenderCreate() throws IOException {
-    Browser browser = new Browser( shell, SWT.NONE );
-
     lca.renderInitialization( browser );
 
     Message message = Fixture.getProtocolMessage();
@@ -250,8 +241,6 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    Browser browser = new Browser( shell, SWT.NONE );
-
     lca.renderInitialization( browser );
 
     Message message = Fixture.getProtocolMessage();
@@ -260,31 +249,19 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   public void testRenderAddSelectionListener() throws Exception {
-    Browser browser = new Browser( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
     Fixture.preserveWidgets();
 
-    browser.addProgressListener( new ProgressListener(){
-      public void changed( ProgressEvent event ) {
-      }
-      public void completed( ProgressEvent event ) {
-      }
-    } );
+    browser.addProgressListener( mock( ProgressListener.class ) );
     lca.renderChanges( browser );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( browser, "progress" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( browser, "Progress" ) );
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    Browser browser = new Browser( shell, SWT.NONE );
-    ProgressListener listener = new ProgressListener(){
-      public void changed( ProgressEvent event ) {
-      }
-      public void completed( ProgressEvent event ) {
-      }
-    };
+    ProgressListener listener = mock( ProgressListener.class );
     browser.addProgressListener( listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
@@ -294,11 +271,10 @@ public class BrowserLCA_Test extends TestCase {
     lca.renderChanges( browser );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( browser, "progress" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( browser, "Progress" ) );
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
-    Browser browser = new Browser( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
     Fixture.preserveWidgets();
@@ -317,8 +293,6 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   public void testRenderInitialUrl() throws IOException {
-    Browser browser = new Browser( shell, SWT.NONE );
-
     lca.render( browser );
 
     Message message = Fixture.getProtocolMessage();
@@ -327,8 +301,6 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   public void testRenderUrl() throws IOException {
-    Browser browser = new Browser( shell, SWT.NONE );
-
     browser.setUrl( "http://eclipse.org/rap" );
     lca.renderChanges( browser );
 
@@ -337,7 +309,6 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   public void testRenderUrlUnchanged() throws IOException {
-    Browser browser = new Browser( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
 
@@ -351,7 +322,6 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   public void testCallEvaluate() {
-    Browser browser = new Browser( shell, SWT.NONE );
     BrowserCallback browserCallback = new BrowserCallback() {
       public void evaluationSucceeded( Object result ) {
       }
@@ -370,7 +340,6 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   public void testEvaluateResponse() {
-    Browser browser = new Browser( shell, SWT.NONE );
     BrowserCallback browserCallback = mock( BrowserCallback.class );
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
@@ -387,7 +356,6 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   public void testCallCreateFunctions() throws JSONException, IOException {
-    Browser browser = new Browser( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
 
@@ -402,7 +370,6 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   public void testCallDestroyFunctions() throws JSONException, IOException {
-    Browser browser = new Browser( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
 
@@ -417,7 +384,6 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   public void testRenderFunctionResult() throws JSONException {
-    Browser browser = new Browser( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
     new BrowserFunction( browser, "func" ) {

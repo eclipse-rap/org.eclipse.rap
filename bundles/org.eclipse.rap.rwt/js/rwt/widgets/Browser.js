@@ -122,11 +122,7 @@ qx.Class.define( "rwt.widgets.Browser", {
 
     _sendProgressEvent : function() {
       if( this._hasProgressListener ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var req = rwt.remote.Server.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        req.addParameter( id + ".org.eclipse.swt.events.progressCompleted", "true" );
-        req.getServerObject( this ).notify( "progressCompleted" );
+        rwt.remote.Server.getInstance().getServerObject( this ).notify( "Progress" );
       }
     },
 

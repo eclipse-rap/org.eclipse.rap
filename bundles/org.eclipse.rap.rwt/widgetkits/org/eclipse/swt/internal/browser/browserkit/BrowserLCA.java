@@ -53,14 +53,13 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   static final String BLANK_HTML = "<html><script></script></html>";
 
-  // Request parameters that denote ProgressEvents
-  public static final String EVENT_PROGRESS_COMPLETED = "progressCompleted";
+  public static final String EVENT_PROGRESS = "Progress";
 
   private static final String PARAM_EXECUTE_RESULT = "executeResult";
   private static final String PARAM_EVALUATE_RESULT = "evaluateResult";
   static final String PARAM_EXECUTE_FUNCTION = "executeFunction";
   static final String PARAM_EXECUTE_ARGUMENTS = "executeArguments";
-  private static final String PARAM_PROGRESS_LISTENER = "progress";
+  private static final String PARAM_PROGRESS_LISTENER = "Progress";
   private static final String PARAM_SCRIPT = "script";
   private static final String METHOD_EVALUATE = "evaluate";
   private static final String PARAM_FUNCTIONS = "functions";
@@ -123,7 +122,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   }
 
   private static void fireProgressEvent( Browser browser ) {
-    if( WidgetLCAUtil.wasEventSent( browser, EVENT_PROGRESS_COMPLETED ) ) {
+    if( WidgetLCAUtil.wasEventSent( browser, EVENT_PROGRESS ) ) {
       IBrowserAdapter browserAdapter = browser.getAdapter( IBrowserAdapter.class );
       browserAdapter.sendProgressCompletedEvent();
     }
@@ -313,7 +312,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   }
 
   private boolean hasProgressListener( Browser browser ) {
-    return browser.isListening( EventTypes.PROGRESS_CHANGED ) 
+    return browser.isListening( EventTypes.PROGRESS_CHANGED )
         || browser.isListening( EventTypes.PROGRESS_COMPLETED );
   }
 
