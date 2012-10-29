@@ -22,10 +22,10 @@ public final class ClientMessageConst {
   // SWT keys used to identify which kind of SWT-Event is requested
   public static final String EVENT_SELECTION = "Selection";
   public static final String EVENT_DEFAULT_SELECTION = "DefaultSelection";
-  public static final String EVENT_WIDGET_RESIZED = "widgetResized";
-  public static final String EVENT_WIDGET_MOVED = "widgetMoved";
+  public static final String EVENT_RESIZE = "Resize";
+  public static final String EVENT_MOVE = "Move";
   public static final String EVENT_CONTROL_ACTIVATED = "controlActivated";
-  public static final String EVENT_SHELL_ACTIVATED = "shellActivated";
+  public static final String EVENT_ACTIVATE = "Activate";
   public static final String EVENT_EXPAND = "Expand";
   public static final String EVENT_COLLAPSE = "Collapse";
   public static final String EVENT_MODIFY_TEXT = "modifyText";
@@ -46,7 +46,7 @@ public final class ClientMessageConst {
   public static final String EVENT_SHOW_LIST = "ctabFolderShowList";
 
   // Indicates that a shell was closed on the client side.
-  public static final String EVENT_SHELL_CLOSED = "shellClosed";
+  public static final String EVENT_CLOSE = "Close";
 
   public static final String EVENT_PARAM_DETAIL = "detail";
   public static final String EVENT_PARAM_ITEM = "item";

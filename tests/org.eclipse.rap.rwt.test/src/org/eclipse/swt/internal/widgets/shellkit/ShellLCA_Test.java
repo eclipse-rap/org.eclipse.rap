@@ -12,7 +12,7 @@
 package org.eclipse.swt.internal.widgets.shellkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SHELL_ACTIVATED;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_ACTIVATE;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -85,7 +85,6 @@ public class ShellLCA_Test extends TestCase {
 
   public void testControlListeners() throws IOException {
     Shell shell = new Shell( display, SWT.NONE );
-    ControlLCATestUtil.testActivateListener( shell );
     ControlLCATestUtil.testFocusListener( shell );
     ControlLCATestUtil.testMouseListener( shell );
     ControlLCATestUtil.testKeyListener( shell );
@@ -197,7 +196,7 @@ public class ShellLCA_Test extends TestCase {
     ShellListener listener = mock( ShellListener.class );
     shell.addShellListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_CLOSED, null );
+    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_CLOSE, null );
     Fixture.readDataAndProcessAction( shell );
 
     verify( listener ).shellClosed( any( ShellEvent.class ) );
@@ -278,7 +277,7 @@ public class ShellLCA_Test extends TestCase {
     Listener listener = mock( Listener.class );
     shell.addListener( SWT.Activate, listener );
 
-    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_ACTIVATED, null );
+    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_ACTIVATE, null );
     Fixture.readDataAndProcessAction( display );
 
     verify( listener ).handleEvent( any( Event.class ) );
@@ -292,7 +291,7 @@ public class ShellLCA_Test extends TestCase {
     shell.addShellListener( listener );
 
     Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_ACTIVATED, null );
+    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_ACTIVATE, null );
     Fixture.readDataAndProcessAction( display );
 
     verify( listener, times( 1 ) ).shellActivated( any( ShellEvent.class ) );
@@ -315,7 +314,7 @@ public class ShellLCA_Test extends TestCase {
     activeShell.open();
     activeShell.setActive();
 
-    Fixture.fakeNotifyOperation( getId( shellToActivate ), ClientMessageConst.EVENT_SHELL_ACTIVATED, null );
+    Fixture.fakeNotifyOperation( getId( shellToActivate ), ClientMessageConst.EVENT_ACTIVATE, null );
     Fixture.executeLifeCycleFromServerThread();
 
     assertSame( shellToActivate, display.getActiveShell() );
@@ -363,7 +362,7 @@ public class ShellLCA_Test extends TestCase {
     Fixture.markInitialized( activeShell );
     Fixture.markInitialized( shellToActivate );
 
-    Fixture.fakeNotifyOperation( getId( shellToActivate ), EVENT_SHELL_ACTIVATED, null );
+    Fixture.fakeNotifyOperation( getId( shellToActivate ), EVENT_ACTIVATE, null );
     Fixture.executeLifeCycleFromServerThread();
 
     assertSame( shellToActivate, display.getActiveShell() );
@@ -381,7 +380,7 @@ public class ShellLCA_Test extends TestCase {
     Shell shell2 = new Shell( display );
     shell2.setVisible( true );
 
-    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_ACTIVATED, null );
+    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_ACTIVATE, null );
     Fixture.readDataAndProcessAction( display );
 
     assertSame( shell, display.getActiveShell() );
@@ -390,7 +389,7 @@ public class ShellLCA_Test extends TestCase {
   public void testDisposeSingleShell() {
     shell.open();
 
-    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_CLOSED, null );
+    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_CLOSE, null );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 0, display.getShells().length );
@@ -614,20 +613,6 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( shell, "text" ) );
   }
 
-  public void testRenderShellListener() throws Exception {
-    Shell shell = new Shell( display , SWT.SHELL_TRIM );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    Fixture.preserveWidgets();
-    ShellLCA lca = new ShellLCA();
-
-    shell.addShellListener( new ShellAdapter(){ } );
-    lca.renderChanges( shell );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( shell, "shell" ) );
-  }
-
   // NOTE: Resize and Move are currently always set to listen after creation. This is to keep
   //       the previous behavior where updates for bounds were always sent immediately.
   public void testRenderControlListener() throws Exception {
@@ -643,34 +628,28 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, message.findListenProperty( shell, "Move" ) );
   }
 
-  public void testRenderShellListenerUnchanged() throws Exception {
-    Shell shell = new Shell( display , SWT.SHELL_TRIM );
+  public void testRenderActivateListener() throws Exception {
+    Shell shell = new Shell( display , SWT.NO_TRIM );
     Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    shell.addShellListener( new ShellAdapter(){ } );
+    Fixture.preserveWidgets();
     ShellLCA lca = new ShellLCA();
 
-    Fixture.preserveWidgets();
-    lca.renderChanges( shell );
+    lca.render( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( shell, "shell" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( shell, "Activate" ) );
   }
 
-  public void testRenderRemoveShellListener() throws Exception {
-    Shell shell = new Shell( display , SWT.SHELL_TRIM );
-    ShellLCA lca = new ShellLCA();
+  public void testRenderCloseListener() throws Exception {
+    Shell shell = new Shell( display , SWT.NO_TRIM );
     Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    ShellListener listener = new ShellAdapter(){};
-    shell.addShellListener( listener );
-
     Fixture.preserveWidgets();
-    shell.removeShellListener( listener );
-    lca.renderChanges( shell );
+    ShellLCA lca = new ShellLCA();
+
+    lca.render( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( shell, "shell" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( shell, "Close" ) );
   }
 
   public void testRenderActive() throws Exception {

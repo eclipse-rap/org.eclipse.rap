@@ -502,7 +502,8 @@ public class ControlLCAUtil {
   // render listener
 
   static void renderListenActivate( Control control ) {
-    if( !control.isDisposed() ) {
+    // Note: Shell "Activate" event is handled by ShellLCA
+    if( !control.isDisposed() && !( control instanceof Shell ) ) {
       renderListen( control, SWT.Activate, PROP_ACTIVATE_LISTENER );
       renderListen( control, SWT.Deactivate, PROP_DEACTIVATE_LISTENER );
     }
@@ -941,12 +942,15 @@ public class ControlLCAUtil {
   }
 
   private static void preserveActivateListeners( Control control ) {
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_ACTIVATE_LISTENER,
-                                    control.isListening( SWT.Activate ) );
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_DEACTIVATE_LISTENER,
-                                    control.isListening( SWT.Deactivate ) );
+    // Note: Shell "Activate" event is handled by ShellLCA
+    if( !( control instanceof Shell ) ) {
+      WidgetLCAUtil.preserveListener( control,
+                                      PROP_ACTIVATE_LISTENER,
+                                      control.isListening( SWT.Activate ) );
+      WidgetLCAUtil.preserveListener( control,
+                                      PROP_DEACTIVATE_LISTENER,
+                                      control.isListening( SWT.Deactivate ) );
+    }
   }
 
 }

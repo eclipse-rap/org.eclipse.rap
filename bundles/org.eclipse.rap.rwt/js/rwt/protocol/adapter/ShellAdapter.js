@@ -101,7 +101,10 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
   } ),
 
   listeners : rwt.protocol.AdapterUtil.extendControlListeners( [
-    "shell", "Resize", "Move"
+    "Activate",
+    "Close",
+    "Resize",
+    "Move"
   ] ),
 
   listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),

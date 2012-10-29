@@ -112,6 +112,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       } );
       TestUtil.fakeResponse( true );
       var shell = new rwt.widgets.Shell( [ "APPLICATION_MODAL" ] );
+      rwt.protocol.ObjectRegistry.add( "w222", shell );
       shell.addState( "rwt_APPLICATION_MODAL" );
       shell.initialize();
       shell.open();
@@ -367,6 +368,36 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       assertEquals( 2, messages.length );
       assertNotNull( messages[ 0 ].findNotifyOperation( "w5", "Deactivate" ) );
       assertEquals( "w9", messages[ 1 ].findSetProperty( "w3", "activeControl" ) );
+      shell.destroy();
+    },
+
+    testNotifyShellActivate : function() {
+      org.eclipse.swt.EventUtil.setSuspended( true );
+      var shell = new rwt.widgets.Shell( {} );
+      rwt.protocol.ObjectRegistry.add( "w222", shell );
+      shell.initialize();
+      shell.open();
+      org.eclipse.swt.EventUtil.setSuspended( false );
+
+      shell.setActive( true );
+
+      var messages = TestUtil.getMessages();
+      assertNotNull( messages[ 0 ].findNotifyOperation( "w222", "Activate" ) );
+      shell.destroy();
+    },
+
+    testNotifyShellClose : function() {
+      org.eclipse.swt.EventUtil.setSuspended( true );
+      var shell = new rwt.widgets.Shell( {} );
+      rwt.protocol.ObjectRegistry.add( "w222", shell );
+      shell.initialize();
+      shell.open();
+      org.eclipse.swt.EventUtil.setSuspended( false );
+
+      shell.close();
+
+      var messages = TestUtil.getMessages();
+      assertNotNull( messages[ 0 ].findNotifyOperation( "w222", "Close" ) );
       shell.destroy();
     },
 

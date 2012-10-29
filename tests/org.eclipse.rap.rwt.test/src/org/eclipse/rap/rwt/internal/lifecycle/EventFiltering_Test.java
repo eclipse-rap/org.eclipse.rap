@@ -249,7 +249,7 @@ public class EventFiltering_Test extends TestCase {
     shell.open();
     shell.dispose();
 
-    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_SHELL_CLOSED, null );
+    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_CLOSE, null );
     Fixture.executeLifeCycleFromServerThread( );
 
     verify( listener, never() ).shellClosed( any( ShellEvent.class ) );
