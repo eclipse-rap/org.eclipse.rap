@@ -364,29 +364,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.protocolListen( "w3", { "modify" : true } );
+      TestUtil.protocolListen( "w3", { "Modify" : true } );
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasModifyListener );
-      assertTrue( widget._hasVerifyModifyListener() );
-      shell.destroy();
-      widget.destroy();
-    },
-
-    testSetHasVerifyListenerByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Combo",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2"
-        }
-      } );
-      TestUtil.protocolListen( "w3", { "verify" : true } );
-      var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget._hasVerifyListener );
-      assertTrue( widget._hasVerifyModifyListener() );
       shell.destroy();
       widget.destroy();
     },

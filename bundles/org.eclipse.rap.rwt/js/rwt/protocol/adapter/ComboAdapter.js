@@ -47,8 +47,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Combo", {
   listeners : rwt.protocol.AdapterUtil.extendControlListeners( [
     "Selection",
     "DefaultSelection",
-    "modify",
-    "verify"
+    "Modify"
   ] ),
 
   listenerHandler : rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),

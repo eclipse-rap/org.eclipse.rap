@@ -23,7 +23,6 @@ qx.Class.define( "rwt.widgets.Combo", {
     this._hasSelectionListener = false;
     this._hasDefaultSelectionListener = false;
     this._hasModifyListener = false;
-    this._hasVerifyListener = false;
     this._isModified = false;
     // Default values
     this._selected = null;
@@ -665,7 +664,7 @@ qx.Class.define( "rwt.widgets.Combo", {
         if( !org.eclipse.swt.EventUtil.getSuspended() ) {
           var req = rwt.remote.Server.getInstance();
           req.addEventListener( "send", this._onSend, this );
-          if( this._hasVerifyModifyListener() ) {
+          if( this._hasModifyListener ) {
             rwt.client.Timer.once( this._sendModifyText, this, 500 );
           }
         }
@@ -706,7 +705,7 @@ qx.Class.define( "rwt.widgets.Combo", {
         var list = this._list;
         var listItem = this._list.getSelectedItem();
         req.addParameter( id + ".selectionIndex", list.getItemIndex( listItem ) );
-        if( this._hasSelectionListener || this._hasVerifyModifyListener() ) {
+        if( this._hasSelectionListener || this._hasModifyListener ) {
           org.eclipse.swt.EventUtil.notifySelected( this );
         }
       }
@@ -825,14 +824,6 @@ qx.Class.define( "rwt.widgets.Combo", {
 
     setHasModifyListener : function( value ) {
       this._hasModifyListener = value;
-    },
-
-    setHasVerifyListener : function( value ) {
-      this._hasVerifyListener = value;
-    },
-
-    _hasVerifyModifyListener : function() {
-      return this._hasModifyListener || this._hasVerifyListener;
     },
 
     ////////////////////////////
