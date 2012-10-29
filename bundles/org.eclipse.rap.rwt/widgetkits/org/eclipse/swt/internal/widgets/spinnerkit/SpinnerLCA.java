@@ -48,7 +48,6 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   static final String PROP_PAGE_INCREMENT = "pageIncrement";
   static final String PROP_TEXT_LIMIT = "textLimit";
   static final String PROP_DECIMAL_SEPARATOR = "decimalSeparator";
-  static final String PROP_MODIFY_LISTENER = "Modify";
   static final String PROP_SELECTION_LISTENER = "Selection";
   static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
 
