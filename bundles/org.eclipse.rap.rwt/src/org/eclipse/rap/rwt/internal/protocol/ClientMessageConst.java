@@ -24,7 +24,6 @@ public final class ClientMessageConst {
   public static final String EVENT_DEFAULT_SELECTION = "DefaultSelection";
   public static final String EVENT_RESIZE = "Resize";
   public static final String EVENT_MOVE = "Move";
-  public static final String EVENT_CONTROL_ACTIVATED = "controlActivated";
   public static final String EVENT_ACTIVATE = "Activate";
   public static final String EVENT_EXPAND = "Expand";
   public static final String EVENT_COLLAPSE = "Collapse";
