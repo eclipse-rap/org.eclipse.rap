@@ -73,8 +73,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     preserveProperty( spinner, PROP_PAGE_INCREMENT, spinner.getPageIncrement() );
     preserveProperty( spinner, PROP_TEXT_LIMIT, getTextLimit( spinner ) );
     preserveProperty( spinner, PROP_DECIMAL_SEPARATOR, getDecimalSeparator() );
-    preserveListener( spinner, PROP_MODIFY_LISTENER, spinner.isListening( SWT.Modify ) );
-    preserveListener( spinner, PROP_SELECTION_LISTENER, spinner.isListening( SWT.Selection ) );
+    preserveListener( spinner, PROP_SELECTION_LISTENER, hasSelectionListener( spinner ) );
     preserveListener( spinner,
                       PROP_DEFAULT_SELECTION_LISTENER,
                       spinner.isListening( SWT.DefaultSelection ) );
@@ -118,7 +117,6 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     renderPageIncrement( spinner );
     renderTextLimit( spinner );
     renderDecimalSeparator( spinner );
-    renderListenModify( spinner );
     renderListenSelection( spinner );
   }
 
@@ -163,12 +161,8 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     renderProperty( spinner, PROP_DECIMAL_SEPARATOR, getDecimalSeparator(), defValue );
   }
 
-  private static void renderListenModify( Spinner spinner ) {
-    renderListener( spinner, PROP_MODIFY_LISTENER, spinner.isListening( SWT.Modify ), false );
-  }
-
   private static void renderListenSelection( Spinner spinner ) {
-    renderListener( spinner, PROP_SELECTION_LISTENER, spinner.isListening( SWT.Selection ), false );
+    renderListener( spinner, PROP_SELECTION_LISTENER, hasSelectionListener( spinner ), false );
     renderListener( spinner,
                     PROP_DEFAULT_SELECTION_LISTENER,
                     spinner.isListening( SWT.DefaultSelection ),
@@ -191,4 +185,9 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     DecimalFormatSymbols symbols = new DecimalFormatSymbols( RWT.getLocale() );
     return String.valueOf( symbols.getDecimalSeparator() );
   }
+
+  private static boolean hasSelectionListener( Spinner spinner ) {
+    return spinner.isListening( SWT.Selection ) || spinner.isListening( SWT.Modify );
+  }
+
 }

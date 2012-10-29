@@ -16,7 +16,7 @@ qx.Class.define( "rwt.widgets.Spinner", {
   construct : function() {
     this.base( arguments );
     this._isModified = false;
-    this._hasModifyListener = false;
+    //this._hasModifyListener = false;
     this._hasSelectionListener = false;
     this._hasDefaultSelectionListener = false;
     this.setWrap( false );
@@ -91,9 +91,9 @@ qx.Class.define( "rwt.widgets.Spinner", {
       }
     },
 
-    setHasModifyListener : function( value ) {
-      this._hasModifyListener = value;
-    },
+//    setHasModifyListener : function( value ) {
+//      this._hasModifyListener = value;
+//    },
 
     setHasSelectionListener : function( value ) {
       this._hasSelectionListener = value;
@@ -131,11 +131,7 @@ qx.Class.define( "rwt.widgets.Spinner", {
         var req = rwt.remote.Server.getInstance();
         req.addEventListener( "send", this._onSend, this );
         if( this._hasSelectionListener ) {
-          this._addModifyTextEvent();
           this._sendWidgetSelected();
-        } else if( this._hasModifyListener ) {
-          this._addModifyTextEvent();
-          rwt.client.Timer.once( this._sendModifyText, this, 500 );
         }
       }
     },
