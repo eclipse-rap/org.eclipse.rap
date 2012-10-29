@@ -28,7 +28,7 @@ public final class ClientMessageConst {
   public static final String EVENT_ACTIVATE = "Activate";
   public static final String EVENT_EXPAND = "Expand";
   public static final String EVENT_COLLAPSE = "Collapse";
-  public static final String EVENT_MODIFY_TEXT = "modifyText";
+  public static final String EVENT_MODIFY = "Modify";
   public static final String EVENT_SHOW = "Show";
   public static final String EVENT_HIDE = "Hide";
   public static final String EVENT_MOUSE_DOWN = "MouseDown";

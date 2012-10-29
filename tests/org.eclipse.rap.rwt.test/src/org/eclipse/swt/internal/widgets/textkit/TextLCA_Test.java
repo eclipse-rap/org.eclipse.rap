@@ -129,7 +129,7 @@ public class TextLCA_Test extends TestCase {
     text.addModifyListener( listener );
 
     Fixture.fakeSetParameter( getId( text ), "text", "new text" );
-    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY_TEXT, null );
+    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY, null );
     Fixture.readDataAndProcessAction( text );
 
     verify( listener, times( 1 ) ).modifyText( any( ModifyEvent.class ) );
@@ -140,7 +140,7 @@ public class TextLCA_Test extends TestCase {
     text.addVerifyListener( listener );
 
     Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
-    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY_TEXT, null );
+    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY, null );
     Fixture.readDataAndProcessAction( display );
 
     verify( listener, times( 1 ) ).verifyText( any( VerifyEvent.class ) );
@@ -157,7 +157,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
     Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
     Fixture.fakeSetParameter( getId( text ), "selectionLength", Integer.valueOf( 0 ) );
-    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY_TEXT, null );
+    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY, null );
 
     Fixture.executeLifeCycleFromServerThread();
 
@@ -182,7 +182,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
     Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
     Fixture.fakeSetParameter( getId( text ), "selectionLength", Integer.valueOf( 0 ) );
-    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY_TEXT, null );
+    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY, null );
 
     Fixture.executeLifeCycleFromServerThread( );
 
@@ -201,7 +201,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
     Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
     Fixture.fakeSetParameter( getId( text ), "selectionLength", Integer.valueOf( 0 ) );
-    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY_TEXT, null );
+    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY, null );
 
     Fixture.executeLifeCycleFromServerThread( );
 
@@ -243,7 +243,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeSetParameter( getId( text ), "text", "verify me" );
     Fixture.fakeSetParameter( getId( text ), "selectionStart", Integer.valueOf( 1 ) );
     Fixture.fakeSetParameter( getId( text ), "selectionLength", Integer.valueOf( 0 ) );
-    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY_TEXT, null );
+    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_MODIFY, null );
     Fixture.readDataAndProcessAction( text );
 
     assertEquals( 2, log.size() );
