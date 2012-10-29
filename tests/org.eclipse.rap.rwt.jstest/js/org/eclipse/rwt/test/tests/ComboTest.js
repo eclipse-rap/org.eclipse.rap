@@ -672,6 +672,44 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       var message = TestUtil.getMessageObject();
       assertEquals( 4, message.findSetProperty( "w3", "selectionIndex" ) );
       assertNotNull( message.findNotifyOperation( "w3", "Selection" ) );
+      assertNull( message.findNotifyOperation( "w3", "Modify" ) );
+      combo.destroy();
+      shell.destroy();
+    },
+
+    testHoldArrowKeysSendModifyEventOnce : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Combo",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      var combo = ObjectManager.getObject( "w3" );
+      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
+      combo.setVisibleItemCount( 5 );
+      combo.setListVisible( true );
+      combo.select( 3 );
+      combo.setHasModifyListener( true );
+      TestUtil.flush();
+      combo.focus();
+      TestUtil.initRequestLog();
+
+      TestUtil.keyDown( combo._field.getElement(), "Down" );
+      TestUtil.keyHold( combo._field.getElement(), "Down" );
+      TestUtil.keyHold( combo._field.getElement(), "Down" );
+      TestUtil.keyHold( combo._field.getElement(), "Down" );
+      TestUtil.keyUp( combo._field.getElement(), "Down" );
+
+      assertEquals( "Simula", combo._list.getSelectedItems()[ 0 ].getLabel() );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( 4, message.findSetProperty( "w3", "selectionIndex" ) );
+      assertNotNull( message.findNotifyOperation( "w3", "Modify" ) );
+      assertNull( message.findNotifyOperation( "w3", "Selection" ) );
       combo.destroy();
       shell.destroy();
     },

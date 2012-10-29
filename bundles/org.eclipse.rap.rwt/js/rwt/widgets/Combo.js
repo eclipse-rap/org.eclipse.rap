@@ -705,8 +705,11 @@ qx.Class.define( "rwt.widgets.Combo", {
         var list = this._list;
         var listItem = this._list.getSelectedItem();
         req.addParameter( id + ".selectionIndex", list.getItemIndex( listItem ) );
-        if( this._hasSelectionListener || this._hasModifyListener ) {
+        if( this._hasSelectionListener ) {
           org.eclipse.swt.EventUtil.notifySelected( this );
+        }
+        if( this._hasModifyListener ) {
+          this._sendModifyText();
         }
       }
     },
