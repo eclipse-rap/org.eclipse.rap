@@ -759,7 +759,7 @@ public class CComboLCA_Test extends TestCase {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( ccombo, "modify" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( ccombo, "Modify" ) );
   }
 
   public void testRenderRemoveModifyListener() throws Exception {
@@ -776,7 +776,7 @@ public class CComboLCA_Test extends TestCase {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( ccombo, "modify" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( ccombo, "Modify" ) );
   }
 
   public void testRenderModifyListenerUnchanged() throws Exception {
@@ -807,7 +807,7 @@ public class CComboLCA_Test extends TestCase {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( ccombo, "verify" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( ccombo, "Modify" ) );
   }
 
   public void testRenderRemoveVerifyListener() throws Exception {
@@ -824,7 +824,7 @@ public class CComboLCA_Test extends TestCase {
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( ccombo, "verify" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( ccombo, "Modify" ) );
   }
 
   public void testRenderVerifyListenerUnchanged() throws Exception {

@@ -49,8 +49,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
   static final String PROP_ITEM_HEIGHT = "itemHeight";
   static final String PROP_SELECTION_LISTENER = "Selection";
   static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
-  static final String PROP_MODIFY_LISTENER = "modify";
-  static final String PROP_VERIFY_LISTENER = "verify";
+  static final String PROP_MODIFY_LISTENER = "Modify";
 
   // Default values
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
@@ -75,8 +74,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     preserveListener( ccombo,
                       PROP_DEFAULT_SELECTION_LISTENER,
                       ccombo.isListening( SWT.DefaultSelection ) );
-    preserveListener( ccombo, PROP_MODIFY_LISTENER, ccombo.isListening( SWT.Modify ) );
-    preserveListener( ccombo, PROP_VERIFY_LISTENER, ccombo.isListening( SWT.Verify ) );
+    preserveListener( ccombo, PROP_MODIFY_LISTENER, hasModifyListener( ccombo ) );
   }
 
   public void readData( Widget widget ) {
@@ -123,7 +121,6 @@ public final class CComboLCA extends AbstractWidgetLCA {
     renderListenSelection( ccombo );
     renderListenDefaultSelection( ccombo );
     renderListenModify( ccombo );
-    renderListenVerify( ccombo );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
@@ -250,11 +247,11 @@ public final class CComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListenModify( CCombo ccombo ) {
-    renderListener( ccombo, PROP_MODIFY_LISTENER, ccombo.isListening( SWT.Modify ), false );
+    renderListener( ccombo, PROP_MODIFY_LISTENER, hasModifyListener( ccombo ), false );
   }
 
-  private static void renderListenVerify( CCombo ccombo ) {
-    renderListener( ccombo, PROP_VERIFY_LISTENER, ccombo.isListening( SWT.Verify ), false );
+  private static boolean hasModifyListener( CCombo combo ) {
+    return combo.isListening( SWT.Modify ) || combo.isListening( SWT.Verify );
   }
 
   //////////////////
