@@ -282,21 +282,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
       widget.destroy();
     },
 
-    testCreate : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var spinner = new rwt.widgets.Spinner();
-      spinner.addToDocument();
-      spinner.addState( "rwt_BORDER" );
-      spinner.setEditable( true );
-      spinner.setSpace( 59, 60, 5, 20 );
-      spinner.setZIndex( 299 );
-      spinner.setTabIndex( 58 );
-      spinner.setMinMaxSelection( 0, 20, 4 );
-      TestUtil.flush();
-      assertTrue( spinner.isSeeable() );
-      spinner.destroy();
-    },
-
     testGetManager : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var spinner = new rwt.widgets.Spinner();
@@ -306,19 +291,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
       spinner.setTabIndex( 58 );
       assertTrue( spinner.getManager() instanceof rwt.util.Range );
       spinner.destroy();
-    },
-
-    testSetSeparator: function() {
-      var w = new rwt.widgets.Spinner();
-      w.addToDocument();
-      w.addState( "rwt_BORDER" );
-      w.setEditable( true );
-      w.setSpace( 59, 60, 5, 20 );
-      w.setZIndex( 299 );
-      w.setTabIndex( 58 );
-      w.setMinMaxSelection( 0, 20, 4 );
-      w.setDecimalSeparator( "," );
-      w.destroy();
     },
 
     testDispose : function() {
@@ -350,10 +322,40 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
       var widget = ObjectManager.getObject( "w3" );
 
       widget.setValue( 10 );
+      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var messages = TestUtil.getMessages();
       assertEquals( 10, messages[ 0 ].findSetProperty( "w3", "selection" ) );
+      assertNotNull( messages[ 0 ].findNotifyOperation( "w3", "Selection" ) );
+      shell.destroy();
+    },
+
+    testMergeSendSelectionEvent : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var processor = rwt.protocol.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Spinner",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var widget = ObjectManager.getObject( "w3" );
+
+      widget.setValue( 10 );
+      widget.setValue( 20 );
+      widget.setValue( 30 );
+      TestUtil.forceInterval( rwt.remote.Server.getInstance()._delayTimer );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var messages = TestUtil.getMessages();
+      assertEquals( 30, messages[ 0 ].findSetProperty( "w3", "selection" ) );
       assertNotNull( messages[ 0 ].findNotifyOperation( "w3", "Selection" ) );
       shell.destroy();
     }

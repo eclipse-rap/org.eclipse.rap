@@ -15,7 +15,6 @@ qx.Class.define( "rwt.widgets.Spinner", {
 
   construct : function() {
     this.base( arguments );
-    this._isModified = false;
     //this._hasModifyListener = false;
     this._hasSelectionListener = false;
     this._hasDefaultSelectionListener = false;
@@ -91,10 +90,6 @@ qx.Class.define( "rwt.widgets.Spinner", {
       }
     },
 
-//    setHasModifyListener : function( value ) {
-//      this._hasModifyListener = value;
-//    },
-
     setHasSelectionListener : function( value ) {
       this._hasSelectionListener = value;
     },
@@ -126,12 +121,12 @@ qx.Class.define( "rwt.widgets.Spinner", {
     },
 
     _onChangeValue : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() && !this._isModified ) {
-        this._isModified = true;
-        var req = rwt.remote.Server.getInstance();
-        req.addEventListener( "send", this._onSend, this );
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+        var server = rwt.remote.Server.getInstance();
+        server.getServerObject( this ).set( "selection", this.getManager().getValue() );
         if( this._hasSelectionListener ) {
-          this._sendWidgetSelected();
+          server.onNextSend( this._sendWidgetSelected, this );
+          server.sendDelayed( 500 );
         }
       }
     },
@@ -164,33 +159,12 @@ qx.Class.define( "rwt.widgets.Spinner", {
       }
     },
 
-    _addModifyTextEvent : function() {
-      var server = rwt.remote.Server.getInstance();
-      server.getServerObject( this ).notify( "Modify" );
-    },
-
     _sendWidgetSelected : function() {
       org.eclipse.swt.EventUtil.notifySelected( this );
     },
 
     _sendWidgetDefaultSelected : function() {
       org.eclipse.swt.EventUtil.notifyDefaultSelected( this );
-    },
-
-    _onSend : function( evt ) {
-      this._isModified = false;
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( this );
-      var req = rwt.remote.Server.getInstance();
-      req.addParameter( id + ".selection", this.getManager().getValue() );
-      req.removeEventListener( "send", this._onSend, this );
-    },
-
-    _sendModifyText : function( evt ) {
-      if( this._isModified ) {
-        rwt.remote.Server.getInstance().send();
-        this._isModified = false;
-      }
     },
 
     /////////////////
