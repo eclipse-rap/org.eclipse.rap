@@ -692,8 +692,8 @@ qx.Class.define( "rwt.widgets.Combo", {
     },
 
     _sendModifyText : function() {
-      var req = rwt.remote.Server.getInstance();
-      req.send();
+      var server = rwt.remote.Server.getInstance();
+      server.getServerObject( this ).notify( "Modify" );
       this._isModified = false;
     },
 

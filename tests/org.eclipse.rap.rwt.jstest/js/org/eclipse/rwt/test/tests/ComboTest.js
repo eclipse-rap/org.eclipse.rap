@@ -704,6 +704,69 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       shell.destroy();
     },
 
+    testSendText : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Combo",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      var combo = ObjectManager.getObject( "w3" );
+      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
+      combo.setVisibleItemCount( 5 );
+      combo.setListVisible( true );
+      combo.select( 3 );
+      TestUtil.flush();
+      combo.focus();
+      TestUtil.initRequestLog();
+
+      combo._field.setValue( "a" );
+      combo._field._oninput();
+      rwt.remote.Server.getInstance().send();
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "a", message.findSetProperty( "w3", "text" ) );
+      shell.destroy();
+    },
+
+    testSendModify : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Combo",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      TestUtil.protocolListen( "w3", { "Modify" : true } );
+      var combo = ObjectManager.getObject( "w3" );
+      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
+      combo.setVisibleItemCount( 5 );
+      combo.setListVisible( true );
+      combo.select( 3 );
+      TestUtil.flush();
+      combo.focus();
+      TestUtil.initRequestLog();
+
+      combo._field.setValue( "a" );
+      combo._field._oninput();
+      TestUtil.forceTimerOnce();
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "a", message.findSetProperty( "w3", "text" ) );
+      assertNotNull( message.findNotifyOperation( "w3", "Modify" ) );
+      shell.destroy();
+    },
+
+
     testPageUpOnNotCreatedList : function() {
       var combo = this._createDefaultCombo();
       combo.setEditable( true );
