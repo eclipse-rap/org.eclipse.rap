@@ -50,16 +50,12 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Menu", {
   },
 
   listeners : [
-    "menu",
+    "Show",
+    "Hide",
     "Help"
   ],
 
   listenerHandler : {
-    "menu" : function( widget, value ) {
-      if( !widget.hasState( "rwt_BAR" ) ) {
-        widget.setHasMenuListener( value );
-      }
-    },
     "Help" : rwt.protocol.AdapterUtil.getControlListenerHandler( "Help" )
   },
 

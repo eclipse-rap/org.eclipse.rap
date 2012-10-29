@@ -234,7 +234,7 @@ public class MenuItemLCA_Test extends TestCase {
     checkItem.addArmListener( checkArmListener );
 
     Fixture.fakeNewRequest( display );
-    Fixture.fakeNotifyOperation( getId( menu ), ClientMessageConst.EVENT_MENU_SHOWN, null );
+    Fixture.fakeNotifyOperation( getId( menu ), ClientMessageConst.EVENT_SHOW, null );
     Fixture.readDataAndProcessAction( display );
 
     verify( pushArmListener, times( 1 ) ).widgetArmed( any( ArmEvent.class ) );

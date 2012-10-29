@@ -37,13 +37,15 @@ final class MenuLCAUtil {
   };
 
   private static final String PROP_ENABLED = "enabled";
-  private static final String PROP_MENU_LISTENER = "menu";
+  private static final String PROP_SHOW_LISTENER = "Show";
+  private static final String PROP_HIDE_LISTENER = "Hide";
   private static final String METHOD_UNHIDE_ITEMS = "unhideItems";
 
   static void preserveValues( Menu menu ) {
     WidgetLCAUtil.preserveCustomVariant( menu );
     preserveProperty( menu, PROP_ENABLED, menu.getEnabled() );
-    preserveListener( menu, PROP_MENU_LISTENER, hasMenuListener( menu) );
+    preserveListener( menu, PROP_SHOW_LISTENER, hasShowListener( menu ) );
+    preserveListener( menu, PROP_HIDE_LISTENER, menu.isListening( SWT.Hide ) );
     WidgetLCAUtil.preserveHelpListener( menu );
   }
 
@@ -56,15 +58,16 @@ final class MenuLCAUtil {
   static void renderChanges( Menu menu ) {
     WidgetLCAUtil.renderCustomVariant( menu );
     renderProperty( menu, PROP_ENABLED, menu.getEnabled(), true );
-    renderListener( menu, PROP_MENU_LISTENER, hasMenuListener( menu ), false );
+    renderListener( menu, PROP_SHOW_LISTENER, hasShowListener( menu ), false );
+    renderListener( menu, PROP_HIDE_LISTENER, menu.isListening( SWT.Hide ), false );
     WidgetLCAUtil.renderListenHelp( menu );
   }
 
   public static void readMenuEvent( Menu menu ) {
-    if( WidgetLCAUtil.wasEventSent( menu, ClientMessageConst.EVENT_MENU_SHOWN ) ) {
+    if( WidgetLCAUtil.wasEventSent( menu, ClientMessageConst.EVENT_SHOW ) ) {
       menu.notifyListeners( SWT.Show, new Event() );
     }
-    if( WidgetLCAUtil.wasEventSent( menu, ClientMessageConst.EVENT_MENU_HIDDEN ) ) {
+    if( WidgetLCAUtil.wasEventSent( menu, ClientMessageConst.EVENT_HIDE ) ) {
       menu.notifyListeners( SWT.Hide, new Event() );
     }
   }
@@ -74,7 +77,7 @@ final class MenuLCAUtil {
    * preliminary menu is displayed).
    */
   static void renderUnhideItems( Menu menu ) {
-    if( WidgetLCAUtil.wasEventSent( menu, ClientMessageConst.EVENT_MENU_SHOWN ) ) {
+    if( WidgetLCAUtil.wasEventSent( menu, ClientMessageConst.EVENT_SHOW ) ) {
       Boolean reveal = Boolean.valueOf( menu.getItemCount() > 0 );
       IClientObject clientObject = ClientObjectFactory.getClientObject( menu );
       Map<String, Object> args = new HashMap<String, Object>();
@@ -86,8 +89,8 @@ final class MenuLCAUtil {
   //////////////////
   // Helping methods
 
-  private static boolean hasMenuListener( Menu menu ) {
-    boolean result = menu.isListening( SWT.Show ) || menu.isListening( SWT.Hide );
+  private static boolean hasShowListener( Menu menu ) {
+    boolean result = menu.isListening( SWT.Show );
     if( !result ) {
       MenuItem[] items = menu.getItems();
       for( int i = 0; !result && i < items.length && !result; i++ ) {

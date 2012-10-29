@@ -12,6 +12,10 @@
 package org.eclipse.swt.internal.widgets.menukit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -28,13 +32,13 @@ import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ArmEvent;
 import org.eclipse.swt.events.ArmListener;
-import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -340,7 +344,8 @@ public class MenuLCA_Test extends TestCase {
     lca.renderChanges( menu );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( menu, "menu" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( menu, "Show" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( menu, "Hide" ) );
   }
 
   public void testRenderAddMenuListener_ArmListener() throws Exception {
@@ -350,14 +355,11 @@ public class MenuLCA_Test extends TestCase {
     Fixture.markInitialized( menu );
     Fixture.preserveWidgets();
 
-    item.addArmListener( new ArmListener() {
-      public void widgetArmed( ArmEvent e ) {
-      }
-    } );
+    item.addArmListener( mock( ArmListener.class ) );
     lca.renderChanges( menu );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( menu, "menu" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( menu, "Show" ) );
   }
 
   public void testRenderRemoveMenuListener() throws Exception {
@@ -372,7 +374,8 @@ public class MenuLCA_Test extends TestCase {
     lca.renderChanges( menu );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( menu, "menu" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( menu, "Show" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( menu, "Hide" ) );
   }
 
   public void testRenderMenuListenerUnchanged() throws Exception {
@@ -386,7 +389,8 @@ public class MenuLCA_Test extends TestCase {
     lca.renderChanges( menu );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( menu, "menu" ) );
+    assertNull( message.findListenOperation( menu, "Show" ) );
+    assertNull( message.findListenOperation( menu, "Hide" ) );
   }
 
   public void testRenderAddHelpListener() throws Exception {
@@ -395,10 +399,7 @@ public class MenuLCA_Test extends TestCase {
     Fixture.markInitialized( menu );
     Fixture.preserveWidgets();
 
-    menu.addHelpListener( new HelpListener() {
-      public void helpRequested( HelpEvent e ) {
-      }
-    } );
+    menu.addHelpListener( mock ( HelpListener.class ) );
     lca.renderChanges( menu );
 
     Message message = Fixture.getProtocolMessage();
@@ -407,10 +408,7 @@ public class MenuLCA_Test extends TestCase {
 
   public void testRenderRemoveHelpListener() throws Exception {
     Menu menu = new Menu( shell, SWT.BAR );
-    HelpListener listener = new HelpListener() {
-      public void helpRequested( HelpEvent e ) {
-      }
-    };
+    HelpListener listener = mock ( HelpListener.class );
     menu.addHelpListener( listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( menu );
@@ -429,10 +427,7 @@ public class MenuLCA_Test extends TestCase {
     Fixture.markInitialized( menu );
     Fixture.preserveWidgets();
 
-    menu.addHelpListener( new HelpListener() {
-      public void helpRequested( HelpEvent e ) {
-      }
-    } );
+    menu.addHelpListener( mock ( HelpListener.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( menu );
 
@@ -463,11 +458,45 @@ public class MenuLCA_Test extends TestCase {
     Fixture.markInitialized( menu );
     Fixture.preserveWidgets();
 
-    Fixture.fakeNotifyOperation( getId( menu ), ClientMessageConst.EVENT_MENU_SHOWN, null );
+    Fixture.fakeNotifyOperation( getId( menu ), ClientMessageConst.EVENT_SHOW, null );
     lca.renderChanges( menu );
 
     Message message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( menu, "unhideItems" );
     assertEquals( Boolean.TRUE, operation.getProperty( "reveal" ) );
+  }
+
+  public void testFireShowEvent() {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    Listener listener = mock( Listener.class );
+    menu.addListener( SWT.Show, listener );
+
+    Fixture.fakeNotifyOperation( getId( menu ), ClientMessageConst.EVENT_SHOW, null );
+    Fixture.readDataAndProcessAction( menu );
+
+    verify( listener, times( 1 ) ).handleEvent( any( Event.class ) );
+  }
+
+  public void testFireHideEvent() {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    Listener listener = mock( Listener.class );
+    menu.addListener( SWT.Hide, listener );
+
+    Fixture.fakeNotifyOperation( getId( menu ), ClientMessageConst.EVENT_HIDE, null );
+    Fixture.readDataAndProcessAction( menu );
+
+    verify( listener, times( 1 ) ).handleEvent( any( Event.class ) );
+  }
+
+  public void testFireArmEvent() {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+    Listener listener = mock( Listener.class );
+    item.addListener( SWT.Arm, listener );
+
+    Fixture.fakeNotifyOperation( getId( menu ), ClientMessageConst.EVENT_SHOW, null );
+    Fixture.readDataAndProcessAction( item );
+
+    verify( listener, times( 1 ) ).handleEvent( any( Event.class ) );
   }
 }

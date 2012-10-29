@@ -70,7 +70,7 @@ final class MenuItemLCAUtil {
 
   static void processArmEvent( MenuItem item ) {
     Menu menu = item.getParent();
-    if( WidgetLCAUtil.wasEventSent( menu, ClientMessageConst.EVENT_MENU_SHOWN ) ) {
+    if( WidgetLCAUtil.wasEventSent( menu, ClientMessageConst.EVENT_SHOW ) ) {
       item.notifyListeners( SWT.Arm, new Event() );
     }
   }
