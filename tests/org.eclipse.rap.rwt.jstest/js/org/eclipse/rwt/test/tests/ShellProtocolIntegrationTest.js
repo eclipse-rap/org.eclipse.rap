@@ -110,13 +110,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       this._disposeShell();
     },
 
-    testListenClose : function() {
-      var shell = this._protocolCreateShell();
-      this._protocolListen( { "shell" : true } );
-      assertTrue( shell._hasShellListener );
-      this._disposeShell();
-    },
-
     testSetMinimumSize : function() {
       // one property
       var shell = this._protocolCreateShell();

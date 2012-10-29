@@ -114,14 +114,17 @@ public final class UICallBackManager implements SerializableCompatibility {
     }
   }
 
-  boolean hasRunnables() {
+  public boolean hasRunnables() {
     synchronized( lock ) {
       return hasRunnables;
     }
   }
 
-  boolean processRequest( HttpServletResponse response ) {
-    boolean result = true;
+  public boolean needsActivation() {
+    return isUICallBackActive() || forceUICallBackForPendingRunnables();
+  }
+
+  void processRequest( HttpServletResponse response ) {
     synchronized( lock ) {
       if( isCallBackRequestBlocked() ) {
         releaseBlockedRequest();
@@ -136,12 +139,7 @@ public final class UICallBackManager implements SerializableCompatibility {
             lock.wait( requestCheckInterval );
             canRelease = canReleaseBlockedRequest( response, requestStartTime );
           }
-          result = callBackRequestTracker.isActive( Thread.currentThread() );
-          if( isSessionExpired( requestStartTime ) ) {
-            result = false;
-          }
         } catch( InterruptedException ie ) {
-          result = false;
           Thread.interrupted(); // Reset interrupted state, see bug 300254
         } finally {
           listener.detach();
@@ -149,7 +147,6 @@ public final class UICallBackManager implements SerializableCompatibility {
         }
       }
     }
-    return result;
   }
 
   private boolean canReleaseBlockedRequest( HttpServletResponse response, long requestStartTime ) {
@@ -172,10 +169,6 @@ public final class UICallBackManager implements SerializableCompatibility {
 
   boolean isUICallBackActive() {
     return callBackActivationTracker.isActive();
-  }
-
-  boolean needsActivation() {
-    return isUICallBackActive() || forceUICallBackForPendingRunnables();
   }
 
   private Object readResolve() {

@@ -38,7 +38,6 @@ qx.Class.define( "rwt.widgets.Shell", {
     this._focusControl = null;
     this._parentShell = null;
     this._renderZIndex = true;
-    this._hasShellListener = false;
     this._hasResizeListener = false;
     this._hasMoveListener = false;
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
@@ -75,15 +74,6 @@ qx.Class.define( "rwt.widgets.Shell", {
     _onParentClose : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         this.doClose();
-      }
-    },
-
-    _appendCloseRequestParam : function( shell ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( shell );
-        var req = rwt.remote.Server.getInstance();
-        req.addEvent( "shellClosed", id );
       }
     },
 
@@ -238,8 +228,12 @@ qx.Class.define( "rwt.widgets.Shell", {
       return this._disableResize ? true : false;
     },
 
-    setHasShellListener : function( hasListener ) {
-      this._hasShellListener = hasListener;
+    setHasActivateListener : function( hasListener ) {
+      // [if] Do nothing. Shell "Activate" event is always sent by the client
+    },
+
+    setHasCloseListener : function( hasListener ) {
+      // [if] Do nothing. Shell "Close" event is always sent by the client
     },
 
     setHasResizeListener : function( hasListener ) {
@@ -321,12 +315,7 @@ qx.Class.define( "rwt.widgets.Shell", {
      */
     close : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        rwt.widgets.Shell._appendCloseRequestParam( this );
-        if( this._hasShellListener ) {
-          rwt.remote.Server.getInstance().send();
-        } else {
-          this.doClose();
-        }
+        rwt.remote.Server.getInstance().getServerObject( this ).notify( "Close" );
       }
     },
 
@@ -418,11 +407,7 @@ qx.Class.define( "rwt.widgets.Shell", {
       }
       // end of workaround
       if( !org.eclipse.swt.EventUtil.getSuspended() && this.getActive() ) {
-        var widgetMgr = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetMgr.findIdByWidget( this );
-        var req = rwt.remote.Server.getInstance();
-        req.addEvent( "org.eclipse.swt.events.shellActivated", id );
-        req.send();
+        rwt.remote.Server.getInstance().getServerObject( this ).notify( "Activate" );
       }
       var active = evt.getValue();
       if( active ) {

@@ -707,8 +707,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
 
     testProtocolListen : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      TestUtil.protocolListen( "w2", { "shell" : true } );
-      assertTrue( shell._hasShellListener );
+      TestUtil.protocolListen( "w2", { "Move" : true } );
+      assertTrue( shell._hasMoveListener );
       shell.destroy();
     },
 

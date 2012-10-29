@@ -232,7 +232,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertFalse( createUIExited );
     // send a request that closes the main shell
     request = newPostRequest( false );
-    Fixture.fakeNotifyOperation( getId( testShell ), ClientMessageConst.EVENT_SHELL_CLOSED, null );
+    Fixture.fakeNotifyOperation( getId( testShell ), ClientMessageConst.EVENT_CLOSE, null );
     runRWTDelegate( request );
     assertTrue( createUIExited );
     // send a request after the createUI has been exited

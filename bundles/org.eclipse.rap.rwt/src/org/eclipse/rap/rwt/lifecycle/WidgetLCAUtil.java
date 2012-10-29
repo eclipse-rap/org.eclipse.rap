@@ -1006,8 +1006,8 @@ public final class WidgetLCAUtil {
                                      boolean defaultValue )
   {
     String property = LISTENER_PREFIX + listener;
-    Boolean newValueObject = new Boolean( newValue );
-    Boolean defaultValueObject = new Boolean( defaultValue );
+    Boolean newValueObject = Boolean.valueOf( newValue );
+    Boolean defaultValueObject = Boolean.valueOf( defaultValue );
     if( WidgetLCAUtil.hasChanged( widget, property, newValueObject, defaultValueObject ) ) {
       IClientObject clientObject = ClientObjectFactory.getClientObject( widget );
       clientObject.listen( listener, newValue );

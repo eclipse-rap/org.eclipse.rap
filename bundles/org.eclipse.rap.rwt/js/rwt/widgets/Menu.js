@@ -17,7 +17,8 @@ qx.Class.define( "rwt.widgets.Menu", {
     this.base( arguments );
     this._layout = null;
     this._preItem = null;
-    this._hasListener = false;
+    this._hasShowListener = false;
+    this._hasHideListener = false;
     this._maxCellWidths = null;
     this._menuLayoutScheduled = false;
     this._opener = null;
@@ -523,13 +524,21 @@ qx.Class.define( "rwt.widgets.Menu", {
    ////////////////
    // Client-Server
 
-    setHasMenuListener : function( value ) {
-      this._hasListener = value;
+    setHasShowListener : function( value ) {
+      if( !this.hasState( "rwt_BAR" ) ) {
+        this._hasShowListener = value;
+      }
+    },
+
+    setHasHideListener : function( value ) {
+      if( !this.hasState( "rwt_BAR" ) ) {
+        this._hasHideListener = value;
+      }
     },
 
    _menuShown : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        if( this._hasListener ) {
+        if( this._hasShowListener ) {
           // create preliminary item
           if( this._preItem == null ) {
             this._preItem = new rwt.widgets.MenuItem( "push" );
@@ -550,11 +559,7 @@ qx.Class.define( "rwt.widgets.Menu", {
           }
           //this.setDisplay( true ); //wouldn't be called if display was false
           // send event
-          var wm = org.eclipse.swt.WidgetManager.getInstance();
-          var id = wm.findIdByWidget( this );
-          var req = rwt.remote.Server.getInstance();
-          req.addEvent( "org.eclipse.swt.events.menuShown", id );
-          req.send();
+          rwt.remote.Server.getInstance().getServerObject( this ).notify( "Show" );
         } else {
           var display = this._layout.getChildren().length !== 0;
           //no items and no listener to add some:
@@ -570,12 +575,8 @@ qx.Class.define( "rwt.widgets.Menu", {
 
     _menuHidden : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        if( this._hasListener ) {
-          var wm = org.eclipse.swt.WidgetManager.getInstance();
-          var id = wm.findIdByWidget( this );
-          var req = rwt.remote.Server.getInstance();
-          req.addEvent( "org.eclipse.swt.events.menuHidden", id );
-          req.send();
+        if( this._hasHideListener ) {
+          rwt.remote.Server.getInstance().getServerObject( this ).notify( "Hide" );
         }
       }
     },

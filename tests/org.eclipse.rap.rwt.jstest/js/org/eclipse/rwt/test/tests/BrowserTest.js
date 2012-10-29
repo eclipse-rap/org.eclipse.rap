@@ -59,7 +59,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.protocolListen( "w3", { "progress" : true } );
+      TestUtil.protocolListen( "w3", { "Progress" : true } );
       var ObjectManager = rwt.protocol.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget._hasProgressListener );
@@ -718,7 +718,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
         assertEquals( 1, TestUtil.getRequestsSend() );
-        assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w6", "progressCompleted" ) );
+        assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w6", "Progress" ) );
         browser.destroy();
       }
     ],
