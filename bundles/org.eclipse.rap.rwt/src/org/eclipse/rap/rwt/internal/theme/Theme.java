@@ -20,7 +20,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.css.CssElementHolder;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.resources.IResourceManager;
-import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
 
 
 public class Theme {
@@ -130,7 +129,7 @@ public class Theme {
     storeWriter.addTheme( this, id == ThemeManager.FALLBACK_THEME_ID );
     String name = "rap-" + jsId + ".js";
     String code = storeWriter.createJs();
-    registeredLocation = registerUtf8Resource( resourceManager, name, code );
+    registeredLocation = registerResource( resourceManager, name, code );
   }
 
   private static void registerResource( IResourceManager resourceManager, ThemeResource value )
@@ -150,9 +149,9 @@ public class Theme {
     }
   }
 
-  private static String registerUtf8Resource( IResourceManager resourceManager,
-                                              String name,
-                                              String content )
+  private static String registerResource( IResourceManager resourceManager,
+                                          String name,
+                                          String content )
   {
     byte[] buffer;
     try {
@@ -160,9 +159,8 @@ public class Theme {
     } catch( UnsupportedEncodingException shouldNotHappen ) {
       throw new RuntimeException( shouldNotHappen );
     }
-    ByteArrayInputStream inputStream = new ByteArrayInputStream( buffer );
-    RegisterOptions options = RegisterOptions.VERSION_AND_COMPRESS;
-    resourceManager.register( name, inputStream, "UTF-8", options );
+    InputStream inputStream = new ByteArrayInputStream( buffer );
+    resourceManager.register( name, inputStream );
     return resourceManager.getLocation( name );
   }
 

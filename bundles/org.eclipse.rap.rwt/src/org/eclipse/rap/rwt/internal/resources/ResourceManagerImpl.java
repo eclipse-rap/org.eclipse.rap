@@ -17,9 +17,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -45,7 +42,6 @@ public class ResourceManagerImpl implements IResourceManager {
 
   private final ResourceDirectory resourceDirectory;
   private final Map<String,Resource> resources;
-  private final ThreadLocal<ClassLoader> contextLoader;
 
   private static final class Resource {
     private final String charset;
@@ -67,13 +63,12 @@ public class ResourceManagerImpl implements IResourceManager {
 
   public ResourceManagerImpl( ResourceDirectory resourceDirectory ) {
     this.resourceDirectory = resourceDirectory;
-    resources = new Hashtable<String,Resource>();
-    contextLoader = new ThreadLocal<ClassLoader>();
+    this.resources = new Hashtable<String,Resource>();
   }
 
   /**
    * Returns the version number for the previously
-   * {@link #register(String, String, RegisterOptions) registered} resource.
+   * {@link #register(String, InputStream) registered} resource.
    *
    * @param name the name of the resource for which the version number should be
    *          obtained. Must not be <code>null</code>.
@@ -94,28 +89,11 @@ public class ResourceManagerImpl implements IResourceManager {
   /////////////////////////////
   // interface IResourceManager
 
-  public void register( String name ) {
-    ParamCheck.notNull( name, "name" );
-    internalRegister( name, null, RegisterOptions.NONE );
-  }
-
-  public void register( String name, String charset ) {
-    ParamCheck.notNull( name, "name" );
-    ParamCheck.notNull( charset, "charset" );
-    internalRegister( name, charset, RegisterOptions.NONE );
-  }
-
-  public void register( String name, String charset, RegisterOptions options ) {
-    ParamCheck.notNull( name, "name" );
-    ParamCheck.notNull( charset, "charset" );
-    ParamCheck.notNull( options, "options" );
-    internalRegister( name, charset, options );
-  }
-
-  public void register( String name, InputStream is ) {
-    ParamCheck.notNull( name, "name" );
-    ParamCheck.notNull( is, "is" );
-    internalRegister( name, is, null, RegisterOptions.NONE );
+  public void register( String path, InputStream inputStream ) {
+    ParamCheck.notNull( path, "name" );
+    ParamCheck.notNull( inputStream, "inputStream" );
+    checkPath( path );
+    internalRegister( path, inputStream, null, RegisterOptions.NONE );
   }
 
   public void register( String name, InputStream is, String charset, RegisterOptions options ) {
@@ -158,37 +136,6 @@ public class ResourceManagerImpl implements IResourceManager {
     return createRequestURL( name, findVersion( name ) );
   }
 
-  public URL getResource( String name ) {
-    return getLoader().getResource( name );
-  }
-
-  public InputStream getResourceAsStream( String name ) {
-    URL resource = getLoader().getResource( name );
-    InputStream result = null;
-    if( resource != null ) {
-      try {
-        URLConnection connection = resource.openConnection();
-        connection.setUseCaches( false );
-        result = connection.getInputStream();
-      } catch( IOException ignore ) {
-        // ignore
-      }
-    }
-    return result;
-  }
-
-  public Enumeration getResources( String name ) throws IOException {
-    return getLoader().getResources( name );
-  }
-
-  public void setContextLoader( ClassLoader classLoader ) {
-    contextLoader.set( classLoader );
-  }
-
-  public ClassLoader getContextLoader() {
-    return contextLoader.get();
-  }
-
   public InputStream getRegisteredContent( String name ) {
     ParamCheck.notNull( name, "name" );
     InputStream result = null;
@@ -206,16 +153,6 @@ public class ResourceManagerImpl implements IResourceManager {
 
   //////////////////
   // helping methods
-
-  private ClassLoader getLoader() {
-    ClassLoader result;
-    if( getContextLoader() != null ) {
-      result = getContextLoader();
-    } else {
-      result = getClass().getClassLoader();
-    }
-    return result;
-  }
 
   private String createRequestURL( String fileName, Integer version ) {
     String newFileName = fileName.replace( '\\', '/' );
@@ -237,20 +174,7 @@ public class ResourceManagerImpl implements IResourceManager {
       byte[] content = ResourceUtil.read( is, charset, compress );
       registerContent( name, charset, options, content );
     } catch ( IOException ioe ) {
-      throw new ResourceRegistrationException( "Failed to register resource: " + name, ioe ) ;
-    }
-  }
-
-  private void internalRegister( String name, String charset, RegisterOptions options ) {
-    // TODO [rh] should throw exception if contains key but has different charset or options
-    if( !resources.containsKey( name ) ) {
-      boolean compress = shouldCompress( options );
-      try {
-        byte[] content = ResourceUtil.read( name, charset, compress, this );
-        registerContent( name, charset, options, content );
-      } catch ( IOException ioe ) {
-        throw new ResourceRegistrationException( "Failed to register resource: " + name, ioe ) ;
-      }
+      throw new RuntimeException( "Failed to register resource: " + name, ioe ) ;
     }
   }
 
@@ -328,6 +252,18 @@ public class ResourceManagerImpl implements IResourceManager {
     File resourcesDir = resourceDirectory.getDirectory();
     String fileName = versionedResourceName( escapeFilename( name ), version );
     return new File( resourcesDir, fileName );
+  }
+
+  //////////////////
+  // helping methods
+  
+  private static void checkPath( String path ) {
+    if( path.length() == 0 ) {
+      throw new IllegalArgumentException( "Path must not be empty" );
+    }
+    if( path.endsWith( "/"  ) || path.endsWith( "\\" ) ) {
+      throw new IllegalArgumentException( "Path must not end with path separator" );
+    }
   }
 
   private static String escapeFilename( String name ) {

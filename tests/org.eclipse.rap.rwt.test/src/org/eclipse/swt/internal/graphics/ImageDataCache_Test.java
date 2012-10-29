@@ -12,19 +12,19 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.ImageData;
 
 
 public class ImageDataCache_Test extends TestCase {
 
-  public void testSmallImageIsCached() {
+  public void testSmallImageIsCached() throws IOException {
     ImageDataCache cache = new ImageDataCache();
     ImageData imageData = getImageData( Fixture.IMAGE1 ); // 129 bytes
     InternalImage internalImage
@@ -33,7 +33,7 @@ public class ImageDataCache_Test extends TestCase {
     assertEqualsImageData( imageData, cache.getImageData( internalImage ) );
   }
 
-  public void testBigImageIsNotCached() {
+  public void testBigImageIsNotCached() throws IOException {
     ImageDataCache cache = new ImageDataCache();
     ImageData imageData = getImageData( Fixture.IMAGE_100x50 ); // 1281 bytes
     InternalImage internalImage
@@ -42,7 +42,7 @@ public class ImageDataCache_Test extends TestCase {
     assertNull( cache.getImageData( internalImage ) );
   }
 
-  public void testSafeCopiesReturned() {
+  public void testSafeCopiesReturned() throws IOException {
     ImageDataCache cache = new ImageDataCache();
     ImageData originalData = getImageData( Fixture.IMAGE1 );
     InternalImage internalImage
@@ -53,7 +53,7 @@ public class ImageDataCache_Test extends TestCase {
     assertEqualsImageData( originalData, copyData );
   }
 
-  public void testSafeCopiesStored() {
+  public void testSafeCopiesStored() throws IOException {
     ImageDataCache cache = new ImageDataCache();
     ImageData originalData = getImageData( Fixture.IMAGE1 );
     InternalImage internalImage
@@ -76,10 +76,13 @@ public class ImageDataCache_Test extends TestCase {
     Fixture.disposeOfApplicationContext();
   }
 
-  @SuppressWarnings("deprecation")
-  private static ImageData getImageData( String resource ) {
-    InputStream inputStream = RWT.getResourceManager().getResourceAsStream( resource );
-    return new ImageData( inputStream );
+  private ImageData getImageData( String resource ) throws IOException {
+    InputStream inputStream = getClass().getClassLoader().getResourceAsStream( resource );
+    try {
+      return new ImageData( inputStream );
+    } finally {
+      inputStream.close();
+    }
   }
 
   private static void assertEqualsImageData( ImageData imageData1, ImageData imageData2 ) {

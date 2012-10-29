@@ -11,21 +11,21 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture.internal;
 
-import java.io.*;
-import java.net.URL;
-import java.util.*;
+import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
-import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
 
 
-public class TestResourceManager implements IResourceManager {
+public class TestResourceManager extends ResourceManagerImpl {
 
-  private ClassLoader loader = Thread.currentThread().getContextClassLoader();
   private final Set<String> registeredResources;
 
   public TestResourceManager() {
+    super( null );
     registeredResources = new HashSet<String>();
   }
 
@@ -33,45 +33,12 @@ public class TestResourceManager implements IResourceManager {
     return null;
   }
 
-  public ClassLoader getContextLoader() {
-    return loader;
-  }
-
   public String getLocation( String name ) {
     return ResourceDirectory.DIRNAME + "/" + name;
   }
 
-  public URL getResource( String name ) {
-    URL result = null;
-    if( loader != null ) {
-      result = loader.getResource( name );
-    }
-    return result;
-  }
-
-  public InputStream getResourceAsStream( String name ) {
-    InputStream result = null;
-    if( loader != null ) {
-      result = loader.getResourceAsStream( name );
-    }
-    return result;
-  }
-
-  public Enumeration getResources( String name ) throws IOException {
-    Enumeration result = null;
-    if( loader != null ) {
-      result = loader.getResources( name );
-    }
-    return result;
-  }
-
   public boolean isRegistered( String name ) {
     return registeredResources.contains( name );
-  }
-
-  public void register( String name ) {
-    createResourcesDirectory();
-    registeredResources.add( name );
   }
 
   public void register( String name, InputStream is ) {
@@ -79,27 +46,8 @@ public class TestResourceManager implements IResourceManager {
     registeredResources.add( name );
   }
 
-  public void register( String name, String charset ) {
-    createResourcesDirectory();
-    registeredResources.add( name );
-  }
-
-  public void register( String name, String charset, RegisterOptions options ) {
-    createResourcesDirectory();
-    registeredResources.add( name );
-  }
-
-  public void register( String name, InputStream is, String charset, RegisterOptions options ) {
-    createResourcesDirectory();
-    registeredResources.add( name );
-  }
-
   public boolean unregister( String name ) {
     return registeredResources.remove( name );
-  }
-
-  public void setContextLoader( ClassLoader contextLoader ) {
-    loader = contextLoader;
   }
 
   public InputStream getRegisteredContent( String name ) {

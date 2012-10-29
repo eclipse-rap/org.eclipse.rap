@@ -11,32 +11,22 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.resources;
 
-import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.util.HTTP;
-import org.eclipse.rap.rwt.resources.IResourceManager;
 
 
 public final class ResourceUtil {
-
-  // TODO [rh] avoid passing around the same set of arguments again and again
-  static byte[] read( String name,
-                      String charset,
-                      boolean compress,
-                      IResourceManager resourceManager )
-    throws IOException
-  {
-    byte[] result;
-    if( charset != null ) {
-      result = readText( name, charset, compress, resourceManager );
-    } else {
-      result = readBinary( name, resourceManager );
-    }
-    return result;
-  }
 
   static byte[] read( InputStream is, String charset, boolean compress ) throws IOException {
     byte[] result;
@@ -67,23 +57,6 @@ public final class ResourceUtil {
     }
   }
 
-  private static byte[] readText( String name,
-                                  String charset,
-                                  boolean compress,
-                                  IResourceManager resourceManager )
-    throws IOException
-  {
-    // read resource
-    InputStream is = openStream( name, resourceManager );
-    byte[] result;
-    try {
-      result = readText( is, charset, compress );
-    } finally {
-      is.close();
-    }
-    return result;
-  }
-
   static byte[] readText( InputStream is, String charset, boolean compress ) throws IOException {
     StringBuilder text = new StringBuilder();
     InputStreamReader reader = new InputStreamReader( is, charset );
@@ -104,19 +77,6 @@ public final class ResourceUtil {
     return text.toString().getBytes( HTTP.CHARSET_UTF_8 );
   }
 
-  private static byte[] readBinary( String name, IResourceManager resourceManager )
-    throws IOException
-  {
-    byte[] result;
-    InputStream is = openStream( name, resourceManager );
-    try {
-      result = readBinary( is );
-    } finally {
-      is.close();
-    }
-    return result;
-  }
-
   // TODO [rh] move to utility class (as is also used by Image)
   public static byte[] readBinary( InputStream stream ) throws IOException {
     ByteArrayOutputStream bufferedResult = new ByteArrayOutputStream();
@@ -132,22 +92,6 @@ public final class ResourceUtil {
       bufferedStream.close();
     }
     return bufferedResult.toByteArray();
-  }
-
-  private static InputStream openStream( String name, IResourceManager resourceManager )
-    throws IOException
-  {
-    ClassLoader loader = ResourceManagerImpl.class.getClassLoader();
-    URL resource = loader.getResource( name );
-    if( resource == null ) {
-      resource = ResourceUtil.class.getClassLoader().getResource( name );
-    }
-    if( resource == null ) {
-      throw new IOException( "Resource to read not found: " + name );
-    }
-    URLConnection con = resource.openConnection();
-    con.setUseCaches( false );
-    return con.getInputStream();
   }
 
   static void compress( StringBuilder javaScript ) throws IOException {

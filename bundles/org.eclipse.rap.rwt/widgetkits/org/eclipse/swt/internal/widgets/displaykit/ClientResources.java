@@ -21,6 +21,7 @@ import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.resources.ContentBuffer;
 import org.eclipse.rap.rwt.internal.resources.JSFile;
+import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rap.rwt.internal.theme.QxAppearanceWriter;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
@@ -309,11 +310,11 @@ public final class ClientResources {
     "resource/widget/rap/scale/v_line.gif"
   };
 
-  private final IResourceManager resourceManager;
+  private final ResourceManagerImpl resourceManager;
   private final ThemeManager themeManager;
 
   public ClientResources( IResourceManager resourceManager, ThemeManager themeManager ) {
-    this.resourceManager = resourceManager;
+    this.resourceManager = ( ResourceManagerImpl )resourceManager;
     this.themeManager = themeManager;
   }
 
@@ -403,7 +404,7 @@ public final class ClientResources {
   private void registerTextResource( String name ) throws IOException {
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream( name );
     try {
-      resourceManager.register( name, inputStream, HTTP.CHARSET_UTF_8, RegisterOptions.NONE );
+      resourceManager.register( name, inputStream );
     } finally {
       inputStream.close();
     }
@@ -414,12 +415,12 @@ public final class ClientResources {
   {
     InputStream inputStream = buffer.getContentAsStream();
     try {
-      resourceManager.register( name, inputStream, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
-      String location = resourceManager.getLocation( name );
-      RWTFactory.getStartupPage().addJsLibrary( location );
+      resourceManager.register( name, inputStream );
     } finally {
       inputStream.close();
     }
+    String location = resourceManager.getLocation( name );
+    RWTFactory.getStartupPage().addJsLibrary( location );
   }
 
   private static String compress( String code ) throws IOException {

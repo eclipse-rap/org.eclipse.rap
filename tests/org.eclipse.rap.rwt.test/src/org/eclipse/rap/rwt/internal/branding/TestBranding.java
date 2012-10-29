@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.branding;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
@@ -86,11 +87,10 @@ public class TestBranding extends AbstractBranding {
   }
 
   @Override
-  @SuppressWarnings("deprecation")
   public void registerResources() throws IOException {
     registerResourcesCallCount++;
     if( favIcon != null && !"".equals( favIcon ) ) {
-      RWT.getResourceManager().register( favIcon );
+      RWT.getResourceManager().register( favIcon, new ByteArrayInputStream( new byte[0 ] ) );
     }
  }
 }

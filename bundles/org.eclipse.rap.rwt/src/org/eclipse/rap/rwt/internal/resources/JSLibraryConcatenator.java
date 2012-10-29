@@ -14,9 +14,7 @@ package org.eclipse.rap.rwt.internal.resources;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.resources.IResourceManager;
-import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
 
 
 public class JSLibraryConcatenator {
@@ -72,7 +70,7 @@ public class JSLibraryConcatenator {
 
   private String register( byte[] content, String name ) {
     InputStream inputStream = new ByteArrayInputStream( content );
-    resourceManager.register( name, inputStream, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
+    resourceManager.register( name, inputStream );
     return resourceManager.getLocation( name );
   }
 
