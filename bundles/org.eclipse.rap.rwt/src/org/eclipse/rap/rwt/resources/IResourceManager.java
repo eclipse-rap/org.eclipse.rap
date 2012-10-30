@@ -139,17 +139,6 @@ public interface IResourceManager {
   boolean unregister( String name );
 
   /**
-   * Returns the charset of a registered resource as it was specified in the
-   * call to <code>register(String,String)</code> or
-   * <code>register(String,String,ResourceOption)</code>.
-   *
-   * @param name - the name of the resource to obtain the charset from. Must not
-   *          be <code>null</code>.
-   * @return the charset name or <code>null</code> if none was specified.
-   */
-  String getCharset( String name );
-
-  /**
    * Returns whether the resource with the given name has already been
    * registered with this IResourceManager instance.
    *

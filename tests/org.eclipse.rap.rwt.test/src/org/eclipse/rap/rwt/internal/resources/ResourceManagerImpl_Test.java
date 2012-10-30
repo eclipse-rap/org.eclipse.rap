@@ -93,26 +93,6 @@ public class ResourceManagerImpl_Test extends TestCase {
     assertFalse( getResourceCopyFile( path ).exists() );
   }
 
-  public void testVersionedResourceName() {
-    String name;
-    Integer version = new Integer( 1 );
-    name = ResourceManagerImpl.versionedResourceName( "path/to/name.ext", version );
-    assertEquals( "path/to/name-1.ext", name );
-    name = ResourceManagerImpl.versionedResourceName( "name.ext", version );
-    assertEquals( "name-1.ext", name );
-    name = ResourceManagerImpl.versionedResourceName( ".ext", version );
-    assertEquals( "-1.ext", name );
-    name = ResourceManagerImpl.versionedResourceName( ".", version );
-    assertEquals( "-1.", name );
-    name = ResourceManagerImpl.versionedResourceName( "", version );
-    assertEquals( "-1", name );
-    name = ResourceManagerImpl.versionedResourceName( "name", version );
-    assertEquals( "name-1", name );
-    String resource = "path.width.dot/andnamew/osuffix";
-    name = ResourceManagerImpl.versionedResourceName( resource, version );
-    assertEquals( "path.width.dot/andnamew/osuffix-1", name );
-  }
-
   public void testGetLocation() {
     String path = "path/to/resource";
     resourceManager.register( path, createInputStream() );
