@@ -135,7 +135,7 @@ public class ResourceManagerImpl implements IResourceManager {
         writeResource( inputStream, location );
       }
     } catch ( IOException ioe ) {
-      throw new RuntimeException( "Failed to register resource: " + name, ioe ) ;
+      throw new RuntimeException( "Failed to register resource: " + name, ioe );
     }
     resources.add( name );
   }

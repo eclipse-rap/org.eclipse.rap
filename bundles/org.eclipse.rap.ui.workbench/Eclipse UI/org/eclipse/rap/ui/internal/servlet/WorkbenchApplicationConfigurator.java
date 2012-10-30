@@ -440,8 +440,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     public final String id;
     public final List<String> dependencies;
 
-    public DependentResource( IResource resource, String id, List<String> dependencies )
-    {
+    public DependentResource( IResource resource, String id, List<String> dependencies ) {
       this.resource = resource;
       this.id = id;
       this.dependencies = dependencies;

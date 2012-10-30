@@ -41,12 +41,10 @@ public class JSLibraryConcatenator {
   }
 
   public void activate() {
-    synchronized( JSLibraryConcatenator.class ) {
-      if( location == null ) {
-        byte[] content = readContent();
-        if( content.length > 0 ) {
-          location = register( content, "resources.js" );
-        }
+    if( location == null ) {
+      byte[] content = readContent();
+      if( content.length > 0 ) {
+        location = register( content, "resources.js" );
       }
     }
   }
