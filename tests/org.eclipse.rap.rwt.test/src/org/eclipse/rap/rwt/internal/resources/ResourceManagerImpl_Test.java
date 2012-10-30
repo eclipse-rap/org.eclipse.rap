@@ -31,79 +31,66 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 
 public class ResourceManagerImpl_Test extends TestCase {
 
+  private IResourceManager resourceManager;
+
   public void testRegistration() throws Exception {
-    IResourceManager manager = getResourceManager();
     String resource = "path/to/resource";
     byte[] bytes = new byte[] { 1, 2, 3 };
-    manager.register( resource, new ByteArrayInputStream( bytes ) );
+    resourceManager.register( resource, new ByteArrayInputStream( bytes ) );
 
     File jarFile = getResourceCopyFile( resource );
-    assertTrue( "Resource not registered",  manager.isRegistered( resource ) );
+    assertTrue( "Resource not registered",  resourceManager.isRegistered( resource ) );
     assertTrue( "Resource was not written to disk", jarFile.exists() );
     assertEquals( bytes, read( jarFile ) );
   }
 
   public void testRegisterOverridesPreviousVersion() {
-    IResourceManager manager = getResourceManager();
     String resource = "path/to/resource";
     InputStream inputStream = new ByteArrayInputStream( new byte[ 0 ] );
-    manager.register( resource, inputStream );
+    resourceManager.register( resource, inputStream );
     File file = getResourceCopyFile( resource );
     Fixture.delete( file );
 
-    manager.register( resource, inputStream );
+    resourceManager.register( resource, inputStream );
 
     assertTrue( file.exists() );
   }
 
   public void testRegistrationWithNullParams() {
-    ResourceManagerImpl manager = new ResourceManagerImpl( mock( ResourceDirectory.class ) );
     try {
-      manager.register( "path", null );
+      resourceManager.register( "path", null );
       fail( "Expected NullPointerException" );
     } catch( NullPointerException expected ) {
     }
     try {
-      manager.register( null, mock( InputStream.class ) );
+      resourceManager.register( null, mock( InputStream.class ) );
       fail( "Expected NullPointerException" );
     } catch( NullPointerException expected ) {
     }
   }
 
   public void testUnregisterNonExistingResource() {
-    IResourceManager manager = getResourceManager();
-
-    boolean unregistered = manager.unregister( "foo" );
+    boolean unregistered = resourceManager.unregister( "foo" );
 
     assertFalse( unregistered );
   }
 
   public void testUnregisterWithIllegalArgument() {
-    IResourceManager manager = getResourceManager();
     try {
-      manager.unregister( null );
+      resourceManager.unregister( null );
       fail( "Unregister must not allow null-argument" );
     } catch( NullPointerException expected ) {
     }
   }
 
   public void testUnregister() {
-    IResourceManager manager = getResourceManager();
     String path = "path/to/resource";
-    manager.register( path, createInputStream() );
+    resourceManager.register( path, createInputStream() );
 
-    boolean unregistered = manager.unregister( path );
+    boolean unregistered = resourceManager.unregister( path );
 
     assertTrue( unregistered );
     assertFalse( getResourceCopyFile( path ).exists() );
-  }
-
-  public void testGetLocation() {
-    IResourceManager manager = getResourceManager();
-    String path = "path/to/resource";
-    manager.register( path, createInputStream() );
-    String location = manager.getLocation( path );
-    assertEquals( "rwt-resources/" + path, location );
   }
 
   public void testVersionedResourceName() {
@@ -126,37 +113,45 @@ public class ResourceManagerImpl_Test extends TestCase {
     assertEquals( "path.width.dot/andnamew/osuffix-1", name );
   }
 
+  public void testGetLocation() {
+    String path = "path/to/resource";
+    resourceManager.register( path, createInputStream() );
+    String location = resourceManager.getLocation( path );
+    assertEquals( "rwt-resources/" + path, location );
+  }
+
   public void testGetLocationWithWrongParams() {
-    IResourceManager manager = getResourceManager();
     try {
-      manager.getLocation( "trallala" );
+      resourceManager.getLocation( "trallala" );
       fail( "should not accept a not existing key." );
     } catch( RuntimeException expected ) {
     }
-
+  }
+  
+  public void testGetLocationWithNullArgument() {
     try {
-      manager.getLocation( null );
+      resourceManager.getLocation( null );
       fail( "Expected NullPointerException" );
     } catch( NullPointerException expected ) {
     }
   }
 
   public void testGetRegisteredContent() throws IOException {
-    IResourceManager manager = getResourceManager();
     InputStream inputStream = createInputStream();
-    manager.register( "myfile", inputStream );
+    resourceManager.register( "myfile", inputStream );
     inputStream.close();
 
-    InputStream content = manager.getRegisteredContent( "myfile" );
+    InputStream content = resourceManager.getRegisteredContent( "myfile" );
     content.close();
 
     assertNotNull( content );
   }
   
+  @SuppressWarnings( "resource" )
   public void testGetRegisteredContentForNonExistingResource() {
-    IResourceManager manager = getResourceManager();
+    InputStream content = resourceManager.getRegisteredContent( "not-there" );
     
-    assertNull( manager.getRegisteredContent( "not-there" ) );
+    assertNull( content );
   }
 
   /*
@@ -164,42 +159,35 @@ public class ResourceManagerImpl_Test extends TestCase {
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=280582
    */
   public void testRegisterWithInvalidPath() throws Exception {
-    IResourceManager manager = getResourceManager();
     InputStream inputStream = mock( InputStream.class );
     String path = "http://host:port/path$1";
-    manager.register( path, inputStream );
+    resourceManager.register( path, inputStream );
     inputStream.close();
 
-    String location = manager.getLocation( path );
+    String location = resourceManager.getLocation( path );
 
     assertEquals( "rwt-resources/http$1//host$1port/path$$1", location );
   }
   
   public void testRegisterWithEmptyPath() {
-    IResourceManager manager = getResourceManager();
-
     try {
-      manager.register( "", mock( InputStream.class ) );
+      resourceManager.register( "", mock( InputStream.class ) );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testRegisterWithTrailingSlash() {
-    IResourceManager manager = getResourceManager();
-    
     try {
-      manager.register( "/", createInputStream() );
+      resourceManager.register( "/", createInputStream() );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testRegisterWithTrailingBackslash() {
-    IResourceManager manager = getResourceManager();
-    
     try {
-      manager.register( "\\", createInputStream() );
+      resourceManager.register( "\\", createInputStream() );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -207,10 +195,9 @@ public class ResourceManagerImpl_Test extends TestCase {
   
   @SuppressWarnings( "resource" )
   public void testRegisterWithInputStreamClosesStream() throws IOException {
-    IResourceManager manager = getResourceManager();
     InputStream inputStream = mock( InputStream.class );
 
-    manager.register( "resource-name", inputStream );
+    resourceManager.register( "resource-name", inputStream );
 
     verify( inputStream ).close();
   }
@@ -218,6 +205,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
+    resourceManager = getResourceManager();
   }
 
   @Override
@@ -246,7 +234,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     }
   }
 
-  private ByteArrayInputStream createInputStream() {
+  private InputStream createInputStream() {
     return new ByteArrayInputStream( new byte[] { 1, 2, 3 } );
   }
 
