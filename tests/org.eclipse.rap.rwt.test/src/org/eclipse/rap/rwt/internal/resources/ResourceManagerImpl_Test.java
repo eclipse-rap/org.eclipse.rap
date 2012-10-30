@@ -12,388 +12,197 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.resources;
 
-import java.io.*;
-import java.util.Arrays;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
-import org.eclipse.rap.rwt.internal.resources.ResourceRegistrationException;
-import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.resources.IResourceManager;
-import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
-@SuppressWarnings("deprecation")
 public class ResourceManagerImpl_Test extends TestCase {
 
-  private final static String TEST_RESOURCE_1_JAR
-    = "resources/js/resourcetest.js";
-  private final static String TEST_RESOURCE_1
-    = "org/eclipse/rap/rwt/internal/resources/resourcetest1.js";
-  private final static String TEST_RESOURCE_1_VERSIONED
-    = "org/eclipse/rap/rwt/internal/resources/resourcetest1-70fc4c0e.js";
-  private final static String TEST_RESOURCE_2
-    = "org/eclipse/rap/rwt/internal/resources/resourcetest2.gif";
-  private final static String TEST_RESOURCE_3
-    = "org/eclipse/rap/rwt/internal/resources/resourcetest3.gif";
-  private final static String ISO_RESOURCE
-    = "org/eclipse/rap/rwt/internal/resources/iso-resource.js";
-  private final static String UTF_8_RESOURCE
-    = "org/eclipse/rap/rwt/internal/resources/utf-8-resource.js";
-  private static final String TEST_LOCATION_DISK
-    = "rwt-resources/"
-    + TEST_RESOURCE_1;
-  private static final String TEST_LOCATION_VERSIONED_DISK
-    = "rwt-resources/"
-    + TEST_RESOURCE_1_VERSIONED;
-
-  private static class CloseableInputStream extends ByteArrayInputStream {
-
-    boolean closed;
-
-    public CloseableInputStream() {
-      super( new byte[ 1 ] );
-    }
-
-    @Override
-    public void close() throws IOException {
-      closed = true;
-      super.close();
-    }
-
-    boolean isClosed() {
-      return closed;
-    }
-  }
-
-  public void testInstanceCreation() {
-    IResourceManager manager = getResourceManager();
-
-    assertNotNull( "ResourceManager instance was not created", manager );
-  }
-
-  public void testRegistrationWithNotExistingResource() {
-    IResourceManager manager = getResourceManager( );
-    String doesNotExist = "doesNotExist";
-
-    try {
-      manager.register( doesNotExist );
-      fail();
-    } catch( ResourceRegistrationException expected ) {
-    }
-    assertFalse( manager.isRegistered( doesNotExist ) );
-  }
+  private IResourceManager resourceManager;
 
   public void testRegistration() throws Exception {
-    IResourceManager manager = getResourceManager( );
-    String resource = TEST_RESOURCE_1_JAR;
-
-    manager.register( resource );
+    String resource = "path/to/resource";
+    byte[] bytes = new byte[] { 1, 2, 3 };
+    resourceManager.register( resource, new ByteArrayInputStream( bytes ) );
 
     File jarFile = getResourceCopyFile( resource );
-    assertTrue( "Resource not registered",  manager.isRegistered( resource ) );
+    assertTrue( "Resource not registered",  resourceManager.isRegistered( resource ) );
     assertTrue( "Resource was not written to disk", jarFile.exists() );
-    assertEquals( read( openStream( resource ) ), read( jarFile ) );
+    assertEquals( bytes, read( jarFile ) );
   }
 
-  public void testRegistrationIsIdempotent() {
-    IResourceManager manager = getResourceManager( );
-    String resource = TEST_RESOURCE_1_JAR;
-    manager.register( resource );
-    clearTempFile();
-    File jarFile = getResourceCopyFile( resource );
+  public void testRegisterOverridesPreviousVersion() {
+    String resource = "path/to/resource";
+    InputStream inputStream = new ByteArrayInputStream( new byte[ 0 ] );
+    resourceManager.register( resource, inputStream );
+    File file = getResourceCopyFile( resource );
+    Fixture.delete( file );
 
-    manager.register( resource );
+    resourceManager.register( resource, inputStream );
 
-    assertFalse( "Resource must not be written twice", jarFile.exists() );
+    assertTrue( file.exists() );
   }
 
   public void testRegistrationWithNullParams() {
-    IResourceManager manager = getResourceManager( );
     try {
-      manager.register( null );
+      resourceManager.register( "path", null );
       fail( "Expected NullPointerException" );
-    } catch( NullPointerException e ) {
-      // expected
+    } catch( NullPointerException expected ) {
     }
     try {
-      String notAssigned = null;
-      manager.register( "some-resource", notAssigned );
+      resourceManager.register( null, mock( InputStream.class ) );
       fail( "Expected NullPointerException" );
-    } catch( NullPointerException e ) {
-      // expected
+    } catch( NullPointerException expected ) {
     }
-    try {
-      manager.register( null, "UTF-8" );
-      fail( "Expected NullPointerException" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
-    try {
-      manager.register( "some-resource", "UTF-8", null );
-      fail( "Expected NullPointerException" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
-  }
-
-  public void testVersionedRegistrationWithNotExistingResource() {
-    System.setProperty( RWTProperties.USE_VERSIONED_JAVA_SCRIPT, "true" );
-    IResourceManager manager = getResourceManager( );
-    String doesNotExist = "doesNotExist";
-
-    try {
-      manager.register( doesNotExist, HTTP.CHARSET_UTF_8, RegisterOptions.NONE );
-      fail();
-    } catch( ResourceRegistrationException expected ) {
-    }
-    assertFalse( manager.isRegistered( doesNotExist ) );
-  }
-
-  public void testVersionedRegistration() throws Exception {
-    System.setProperty( RWTProperties.USE_VERSIONED_JAVA_SCRIPT, "true" );
-    ResourceManagerImpl manager = getResourceManager( );
-    String resource = TEST_RESOURCE_1;
-
-    manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
-
-    File resourceFile = getResourceCopyFile( TEST_RESOURCE_1_VERSIONED );
-    assertTrue( "Resource not registered", manager.isRegistered( resource ) );
-    assertNotNull( "Versioned resource must have version number",
-                   manager.findVersion( resource ) );
-    assertTrue( "Resource was not written to disk", resourceFile.exists() );
-    assertEquals( read( openStream( resource ) ), read( resourceFile ) );
-  }
-
-  public void testVersionedRegistrationIsIdempotent() {
-    System.setProperty( RWTProperties.USE_VERSIONED_JAVA_SCRIPT, "true" );
-    IResourceManager manager = getResourceManager( );
-    String resource = TEST_RESOURCE_1;
-    manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
-    clearTempFile();
-
-    manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
-
-    File resourceFile = getResourceCopyFile( TEST_RESOURCE_1_VERSIONED );
-    assertFalse( "Resource must not be written twice", resourceFile.exists() );
-  }
-
-  public void testCompressedRegistration() throws Exception {
-    System.setProperty( RWTProperties.USE_VERSIONED_JAVA_SCRIPT, "false" );
-    IResourceManager manager = getResourceManager( );
-    String resource = TEST_RESOURCE_1;
-
-    manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.COMPRESS );
-
-    File resourceFile = getResourceCopyFile( resource );
-    byte[] origin = read( openStream( resource ) );
-    byte[] copy = read( resourceFile );
-    assertTrue( "Resource not registered", manager.isRegistered( resource ) );
-    assertTrue( "Resource was not written to disk", resourceFile.exists() );
-    assertTrue( "Compressed resource too big", origin.length > copy.length );
-  }
-
-  public void testCompressedRegistrationIsIdempotent() {
-    System.setProperty( RWTProperties.USE_VERSIONED_JAVA_SCRIPT, "false" );
-    IResourceManager manager = getResourceManager( );
-    String resource = TEST_RESOURCE_1;
-    manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.COMPRESS );
-    clearTempFile();
-
-    manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.COMPRESS );
-
-    File resourceFile = getResourceCopyFile( resource );
-    assertFalse( "file must not be written twice", resourceFile.exists() );
-  }
-
-  public void testNotCompressedInDevelopmentMode() throws Exception {
-    System.setProperty( RWTProperties.CLIENT_LIBRARY_VARIANT,
-                        RWTProperties.DEBUG_CLIENT_LIBRARY_VARIANT );
-    IResourceManager manager = getResourceManager( );
-    String resource = TEST_RESOURCE_1;
-
-    manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.COMPRESS );
-
-    File resourceFile = getResourceCopyFile( resource );
-    byte[] origin = read( openStream( resource ) );
-    byte[] copy = read( resourceFile );
-    assertTrue( "Resource not registered", manager.isRegistered( resource ) );
-    assertTrue( "Resource was not written to disk", resourceFile.exists() );
-    assertEquals( "Resource was compressed in development mode", origin.length, copy.length );
   }
 
   public void testUnregisterNonExistingResource() {
-    IResourceManager manager = getResourceManager( );
-
-    boolean unregistered = manager.unregister( "foo" );
+    boolean unregistered = resourceManager.unregister( "foo" );
 
     assertFalse( unregistered );
   }
 
   public void testUnregisterWithIllegalArgument() {
-    IResourceManager manager = getResourceManager( );
     try {
-      manager.unregister( null );
+      resourceManager.unregister( null );
       fail( "Unregister must not allow null-argument" );
     } catch( NullPointerException expected ) {
     }
   }
 
   public void testUnregister() {
-    IResourceManager manager = getResourceManager( );
-    manager.register( TEST_RESOURCE_1_JAR );
+    String path = "path/to/resource";
+    resourceManager.register( path, createInputStream() );
 
-    boolean unregistered = manager.unregister( TEST_RESOURCE_1_JAR );
+    boolean unregistered = resourceManager.unregister( path );
 
     assertTrue( unregistered );
-    assertFalse( getResourceCopyFile( TEST_RESOURCE_1_JAR ).exists() );
+    assertFalse( getResourceCopyFile( path ).exists() );
   }
 
-  public void testUnregisterVersionedResource() {
-    System.setProperty( RWTProperties.USE_VERSIONED_JAVA_SCRIPT, "true" );
-    ResourceManagerImpl manager = getResourceManager( );
-    String testResource = TEST_RESOURCE_1_VERSIONED;
-    Integer version = manager.findVersion( testResource );
-    String versionedResourceName
-      = ResourceManagerImpl.versionedResourceName( testResource, version );
-    manager.register( TEST_RESOURCE_1, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
-
-    boolean unregistered = manager.unregister( TEST_RESOURCE_1 );
-
-    File resourceFile = getResourceCopyFile( versionedResourceName );
-    assertTrue( unregistered );
-    assertFalse( resourceFile.exists() );
-  }
-
-  public void testLocationRetrieval() {
-    IResourceManager manager = getResourceManager( );
-    manager.register( TEST_RESOURCE_1 );
-    String location = manager.getLocation( TEST_RESOURCE_1 );
-    assertEquals( "Different locations", TEST_LOCATION_DISK, location );
-  }
-
-  public void testVersionedLocationRetrieval() {
-    System.setProperty( RWTProperties.USE_VERSIONED_JAVA_SCRIPT, "true" );
-    IResourceManager manager = getResourceManager( );
-    manager = getResourceManager( );
-
-    manager.register( TEST_RESOURCE_1, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
-
-    String loc = manager.getLocation( TEST_RESOURCE_1 );
-    assertEquals( "Different locations", TEST_LOCATION_VERSIONED_DISK, loc );
-  }
-
-  public void testRegisterWithCharset() throws Exception {
-    IResourceManager manager = getResourceManager( );
-    String charset = "ISO-8859-1";
-
-    manager.register( ISO_RESOURCE, charset );
-
-    byte[] expected = read( openStream( UTF_8_RESOURCE ) );
-    File copiedFile = getResourceCopyFile( ISO_RESOURCE );
-    byte[] actual = read( copiedFile );
-    assertEquals( charset, manager.getCharset( ISO_RESOURCE ) );
-    assertEquals( expected.length, actual.length );
-    assertTrue( Arrays.equals( actual, expected ) );
-  }
-
-  public void testVersionedResourceName() {
-    String name;
-    Integer version = new Integer( 1 );
-    name = ResourceManagerImpl.versionedResourceName( "path/to/name.ext", version );
-    assertEquals( "path/to/name-1.ext", name );
-    name = ResourceManagerImpl.versionedResourceName( "name.ext", version );
-    assertEquals( "name-1.ext", name );
-    name = ResourceManagerImpl.versionedResourceName( ".ext", version );
-    assertEquals( "-1.ext", name );
-    name = ResourceManagerImpl.versionedResourceName( ".", version );
-    assertEquals( "-1.", name );
-    name = ResourceManagerImpl.versionedResourceName( "", version );
-    assertEquals( "-1", name );
-    name = ResourceManagerImpl.versionedResourceName( "name", version );
-    assertEquals( "name-1", name );
-    String resource = "path.width.dot/andnamew/osuffix";
-    name = ResourceManagerImpl.versionedResourceName( resource, version );
-    assertEquals( "path.width.dot/andnamew/osuffix-1", name );
+  public void testGetLocation() {
+    String path = "path/to/resource";
+    resourceManager.register( path, createInputStream() );
+    String location = resourceManager.getLocation( path );
+    assertEquals( "rwt-resources/" + path, location );
   }
 
   public void testGetLocationWithWrongParams() {
-    IResourceManager manager = getResourceManager( );
     try {
-      manager.getLocation( "trallala" );
+      resourceManager.getLocation( "trallala" );
       fail( "should not accept a not existing key." );
     } catch( RuntimeException expected ) {
     }
-
+  }
+  
+  public void testGetLocationWithNullArgument() {
     try {
-      manager.getLocation( null );
+      resourceManager.getLocation( null );
       fail( "Expected NullPointerException" );
     } catch( NullPointerException expected ) {
     }
   }
 
-  public void testGetRegisteredContent() throws Exception {
-    IResourceManager manager = getResourceManager( );
-    InputStream inputStream = openStream( TEST_RESOURCE_2 );
-    String resourcename = "myfile";
-    manager.register( resourcename, inputStream );
+  public void testGetRegisteredContent() throws IOException {
+    InputStream inputStream = createInputStream();
+    resourceManager.register( "myfile", inputStream );
     inputStream.close();
 
-    InputStream content = manager.getRegisteredContent( resourcename );
+    InputStream content = resourceManager.getRegisteredContent( "myfile" );
+    content.close();
 
     assertNotNull( content );
-    content.close();
-    assertNull( manager.getRegisteredContent( "not-there" ) );
+  }
+  
+  @SuppressWarnings( "resource" )
+  public void testGetRegisteredContentForNonExistingResource() {
+    InputStream content = resourceManager.getRegisteredContent( "not-there" );
+    
+    assertNull( content );
   }
 
   /*
    * 280582: resource registration fails when using ImageDescriptor.createFromURL
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=280582
    */
-  public void testRegisterWithInvalidFilename() throws Exception {
-    IResourceManager manager = getResourceManager();
-    InputStream inputStream = openStream( TEST_RESOURCE_2 );
-    String name = "http://host:port/path$1";
-    manager.register( name, inputStream );
+  public void testRegisterWithInvalidPath() throws Exception {
+    InputStream inputStream = mock( InputStream.class );
+    String path = "http://host:port/path$1";
+    resourceManager.register( path, inputStream );
     inputStream.close();
 
-    String location = manager.getLocation( name );
+    String location = resourceManager.getLocation( path );
 
     assertEquals( "rwt-resources/http$1//host$1port/path$$1", location );
   }
-
-  public void testRegisterWithInputStreamClosesStream() {
-    IResourceManager manager = getResourceManager();
-    CloseableInputStream inputStream = new CloseableInputStream();
-
-    manager.register( "resource-name", inputStream );
-
-    assertTrue( inputStream.isClosed() );
+  
+  public void testRegisterWithEmptyPath() {
+    try {
+      resourceManager.register( "", mock( InputStream.class ) );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 
-  public void testRegisterWithAlreadyRegisteredInputStreamClosesStream() {
-    IResourceManager manager = getResourceManager();
-    manager.register( "resource-name", new CloseableInputStream() );
+  public void testRegisterWithTrailingSlash() {
+    try {
+      resourceManager.register( "/", createInputStream() );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
 
-    CloseableInputStream inputStream = new CloseableInputStream();
-    manager.register( "resource-name", inputStream );
+  public void testRegisterWithTrailingBackslash() {
+    try {
+      resourceManager.register( "\\", createInputStream() );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  @SuppressWarnings( "resource" )
+  public void testRegisterWithInputStreamClosesStream() throws IOException {
+    InputStream inputStream = mock( InputStream.class );
 
-    assertTrue( inputStream.isClosed() );
+    resourceManager.register( "resource-name", inputStream );
+
+    verify( inputStream ).close();
+  }
+
+  public void testConcatenation() throws IOException {
+    JSLibraryConcatenator jsConcatenator = RWTFactory.getJSLibraryConcatenator();
+
+    jsConcatenator.startJSConcatenation();
+    resourceManager.register( "foo.js", new ByteArrayInputStream( "foo".getBytes( "UTF-8" ) ) );
+    resourceManager.register( "bar.js", new ByteArrayInputStream( "bar".getBytes( "UTF-8" ) ) );
+
+    byte[] result = jsConcatenator.readContent();
+    assertEquals( "foo\nbar\n", new String( result ) );
   }
 
   @Override
   protected void setUp() throws Exception {
-    clearTempFile();
     Fixture.setUp();
+    resourceManager = getResourceManager();
   }
 
   @Override
   protected void tearDown() throws Exception {
-    clearTempFile();
+    File path = new File( getWebContextDirectory(), ResourceDirectory.DIRNAME );
+    Fixture.delete( path );
     Fixture.tearDown();
   }
 
@@ -408,7 +217,16 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   private static byte[] read( File file ) throws IOException {
-    return read( new FileInputStream( file ) );
+    FileInputStream inputStream = new FileInputStream( file );
+    try {
+      return read( inputStream );
+    } finally {
+      inputStream.close();
+    }
+  }
+
+  private InputStream createInputStream() {
+    return new ByteArrayInputStream( new byte[] { 1, 2, 3 } );
   }
 
   private static byte[] read( InputStream input ) throws IOException {
@@ -425,33 +243,12 @@ public class ResourceManagerImpl_Test extends TestCase {
     return result;
   }
 
-  private static void clearTempFile() {
-    Fixture.delete( getResourceCopyFile( TEST_RESOURCE_1_JAR ) );
-    Fixture.delete( getResourceCopyFile( TEST_RESOURCE_1 ) );
-    Fixture.delete( getResourceCopyFile( TEST_RESOURCE_1_VERSIONED ) );
-    Fixture.delete( getResourceCopyFile( TEST_RESOURCE_2 ) );
-    Fixture.delete( getResourceCopyFile( TEST_RESOURCE_3 ) );
-    Fixture.delete( getResourceCopyInTempFile( TEST_RESOURCE_1_JAR ) );
-    Fixture.delete( getResourceCopyInTempFile( TEST_RESOURCE_1 ) );
-    Fixture.delete( getResourceCopyInTempFile( TEST_RESOURCE_1_VERSIONED ) );
-    Fixture.delete( getResourceCopyInTempFile( TEST_RESOURCE_2 ) );
-    Fixture.delete( getResourceCopyInTempFile( TEST_RESOURCE_3 ) );
-  }
-
   private static File getResourceCopyFile( String resourceName ) {
     String path =   getWebContextDirectory()
                   + File.separator
                   + ResourceDirectory.DIRNAME
                   + File.separator
                   + resourceName;
-    return new File( path );
-  }
-
-  private static File getResourceCopyInTempFile( String resourceName ) {
-    String tempDir = System.getProperty( "java.io.tmpdir" );
-    String user = System.getProperty( "user.name" );
-    String sep = File.separator;
-    String path = tempDir + sep + user + sep + "w4toolkit" + sep + resourceName;
     return new File( path );
   }
 
@@ -463,13 +260,4 @@ public class ResourceManagerImpl_Test extends TestCase {
     return Fixture.WEB_CONTEXT_DIR.getPath();
   }
 
-  private static InputStream openStream( String name ) {
-    ClassLoader loader = ResourceManagerImpl_Test.class.getClassLoader();
-    InputStream result = loader.getResourceAsStream( name );
-    if( result == null ) {
-      String encodedName = name.replace( '\\', '/' );
-      result = loader.getResourceAsStream( encodedName );
-    }
-    return result;
-  }
 }

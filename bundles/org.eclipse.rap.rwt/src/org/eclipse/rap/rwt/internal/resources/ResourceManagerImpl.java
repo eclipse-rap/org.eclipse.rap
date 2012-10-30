@@ -12,18 +12,20 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.resources;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Map;
+import java.io.OutputStream;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.eclipse.rap.rwt.internal.RWTProperties;
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.resources.IResourceManager;
 
@@ -44,78 +46,21 @@ import org.eclipse.rap.rwt.resources.IResourceManager;
 public class ResourceManagerImpl implements IResourceManager {
 
   private final ResourceDirectory resourceDirectory;
-  private final Map<String,Resource> resources;
-  private final ThreadLocal<ClassLoader> contextLoader;
-
-  private static final class Resource {
-    private final String charset;
-    private final Integer version;
-
-    public Resource( String charset, Integer version ) {
-      this.charset = charset;
-      this.version = version;
-    }
-
-    public String getCharset() {
-      return charset;
-    }
-
-    public Integer getVersion() {
-      return version;
-    }
-  }
+  private final Set<String> resources;
 
   public ResourceManagerImpl( ResourceDirectory resourceDirectory ) {
     this.resourceDirectory = resourceDirectory;
-    resources = new Hashtable<String,Resource>();
-    contextLoader = new ThreadLocal<ClassLoader>();
-  }
-
-  /**
-   * Returns the version number for the previously
-   * {@link #register(String, String, RegisterOptions) registered} resource.
-   *
-   * @param name the name of the resource for which the version number should be
-   *          obtained. Must not be <code>null</code>.
-   * @return the version number or <code>null</code> if either no such resource
-   *         was registered or the resource does not have a version number.
-   * @throws NullPointerException when <<code>name</code> is <code>null</code>.
-   */
-  public Integer findVersion( String name ) {
-    ParamCheck.notNull( name, "name" );
-    Integer result = null;
-    Resource resource = resources.get( name );
-    if( resource != null ) {
-      result = resource.getVersion();
-    }
-    return result;
+    this.resources = Collections.synchronizedSet( new HashSet<String>() );
   }
 
   /////////////////////////////
   // interface IResourceManager
 
-  public void register( String name ) {
-    ParamCheck.notNull( name, "name" );
-    internalRegister( name, null, RegisterOptions.NONE );
-  }
-
-  public void register( String name, String charset ) {
-    ParamCheck.notNull( name, "name" );
-    ParamCheck.notNull( charset, "charset" );
-    internalRegister( name, charset, RegisterOptions.NONE );
-  }
-
-  public void register( String name, String charset, RegisterOptions options ) {
-    ParamCheck.notNull( name, "name" );
-    ParamCheck.notNull( charset, "charset" );
-    ParamCheck.notNull( options, "options" );
-    internalRegister( name, charset, options );
-  }
-
-  public void register( String name, InputStream is ) {
-    ParamCheck.notNull( name, "name" );
-    ParamCheck.notNull( is, "is" );
-    internalRegister( name, is, null, RegisterOptions.NONE );
+  public void register( String path, InputStream inputStream ) {
+    ParamCheck.notNull( path, "name" );
+    ParamCheck.notNull( inputStream, "inputStream" );
+    checkPath( path );
+    internalRegister( path, inputStream );
   }
 
   public void register( String name, InputStream is, String charset, RegisterOptions options ) {
@@ -123,78 +68,38 @@ public class ResourceManagerImpl implements IResourceManager {
     ParamCheck.notNull( is, "is" );
     ParamCheck.notNull( charset, "charset" );
     ParamCheck.notNull( options, "options" );
-    internalRegister( name, is, charset, options );
+    internalRegister( name, is );
   }
 
   public boolean unregister( String name ) {
     ParamCheck.notNull( name, "name" );
     boolean result = false;
-    Resource resource = resources.remove( name );
-    if( resource != null ) {
+    if( resources.remove( name ) ) {
       result = true;
-      Integer version = resource.getVersion();
-      File file = getDiskLocation( name, version );
+      File file = getDiskLocation( name );
       file.delete();
     }
     return result;
   }
 
-  public String getCharset( String name ) {
-    ParamCheck.notNull( name, "name" );
-    Resource resource = resources.get( name );
-    return resource.getCharset();
-  }
-
   public boolean isRegistered( String name ) {
     ParamCheck.notNull( name, "name" );
-    return resources.containsKey( name );
+    return resources.contains( name );
   }
 
   public String getLocation( String name ) {
     ParamCheck.notNull( name, "name" );
-    if( !resources.containsKey( name ) ) {
+    if( !resources.contains( name ) ) {
       throw new IllegalArgumentException( "Resource does not exist: " + name );
     }
-    return createRequestURL( name, findVersion( name ) );
-  }
-
-  public URL getResource( String name ) {
-    return getLoader().getResource( name );
-  }
-
-  public InputStream getResourceAsStream( String name ) {
-    URL resource = getLoader().getResource( name );
-    InputStream result = null;
-    if( resource != null ) {
-      try {
-        URLConnection connection = resource.openConnection();
-        connection.setUseCaches( false );
-        result = connection.getInputStream();
-      } catch( IOException ignore ) {
-        // ignore
-      }
-    }
-    return result;
-  }
-
-  public Enumeration getResources( String name ) throws IOException {
-    return getLoader().getResources( name );
-  }
-
-  public void setContextLoader( ClassLoader classLoader ) {
-    contextLoader.set( classLoader );
-  }
-
-  public ClassLoader getContextLoader() {
-    return contextLoader.get();
+    return createRequestUrl( name );
   }
 
   public InputStream getRegisteredContent( String name ) {
     ParamCheck.notNull( name, "name" );
     InputStream result = null;
-    if( resources.containsKey( name ) ) {
-      // TODO [rst] Works only for non-versioned content for now
-      File file = getDiskLocation( name, null );
+    if( resources.contains( name ) ) {
+      File file = getDiskLocation( name );
       try {
         result = new FileInputStream( file );
       } catch( FileNotFoundException fnfe ) {
@@ -203,134 +108,90 @@ public class ResourceManagerImpl implements IResourceManager {
     }
     return result;
   }
-
+  
   //////////////////
   // helping methods
 
-  private ClassLoader getLoader() {
-    ClassLoader result;
-    if( getContextLoader() != null ) {
-      result = getContextLoader();
-    } else {
-      result = getClass().getClassLoader();
-    }
-    return result;
-  }
-
-  private String createRequestURL( String fileName, Integer version ) {
-    String newFileName = fileName.replace( '\\', '/' );
+  private String createRequestUrl( String resourceName ) {
+    String newFileName = resourceName.replace( '\\', '/' );
     StringBuilder url = new StringBuilder();
     url.append( ResourceDirectory.DIRNAME );
     url.append( "/" );
-    String escapedFilename = escapeFilename( newFileName );
-    url.append( versionedResourceName( escapedFilename, version ) );
+    String escapedResourceNamea = escapeResourceName( newFileName );
+    url.append( escapedResourceNamea );
     return url.toString();
   }
 
-  private void internalRegister( String name,
-                                 InputStream is,
-                                 String charset,
-                                 RegisterOptions options )
-  {
-    boolean compress = shouldCompress( options );
+  private void internalRegister( String name, InputStream inputStream ) {
+    File location = getDiskLocation( name );
     try {
-      byte[] content = ResourceUtil.read( is, charset, compress );
-      registerContent( name, charset, options, content );
-    } catch ( IOException ioe ) {
-      throw new ResourceRegistrationException( "Failed to register resource: " + name, ioe ) ;
-    }
-  }
-
-  private void internalRegister( String name, String charset, RegisterOptions options ) {
-    // TODO [rh] should throw exception if contains key but has different charset or options
-    if( !resources.containsKey( name ) ) {
-      boolean compress = shouldCompress( options );
-      try {
-        byte[] content = ResourceUtil.read( name, charset, compress, this );
-        registerContent( name, charset, options, content );
-      } catch ( IOException ioe ) {
-        throw new ResourceRegistrationException( "Failed to register resource: " + name, ioe ) ;
+      createDirectories( location );
+      // TODO [rst] Explicitly register internal JavaScript files
+      if( isJavascriptResource( name ) ) {
+        byte[] content = ResourceUtil.readBinary( inputStream );
+        ResourceUtil.write( location, content );
+        RWTFactory.getJSLibraryConcatenator().appendJSLibrary( content );
+      } else {
+        writeResource( inputStream, location );
       }
+    } catch ( IOException ioe ) {
+      throw new RuntimeException( "Failed to register resource: " + name, ioe ) ;
     }
+    resources.add( name );
   }
 
-  private void registerContent( String name,
-                                String charset,
-                                RegisterOptions options,
-                                byte[] content )
+  private static void writeResource( InputStream inputStream, File location )
     throws IOException
   {
-    Integer version = computeVersion( content, options );
-    File location = getDiskLocation( name, version );
-    createFile( location );
-    ResourceUtil.write( location, content );
-    resources.put( name, new Resource( charset, version ) );
+    BufferedInputStream bufferedStream = new BufferedInputStream( inputStream );
+    try {
+      OutputStream outputStream = new BufferedOutputStream( new FileOutputStream( location ) );
+      try {
+        byte[] buffer = new byte[ 256 ];
+        int read = bufferedStream.read( buffer );
+        while( read != -1 ) {
+          outputStream.write( buffer, 0, read );
+          read = bufferedStream.read( buffer );
+        }
+      } finally {
+        outputStream.close();
+      }
+    } finally {
+      bufferedStream.close();
+    }
   }
 
-  private static void createFile( File fileToWrite ) throws IOException {
-    File dir = new File( fileToWrite.getParent() );
+  private static boolean isJavascriptResource( String resourceName ) {
+    return resourceName.endsWith( ".js" ) && !resourceName.startsWith( "rap-" );
+  }
+
+  private static void createDirectories( File file ) throws IOException {
+    File dir = new File( file.getParent() );
     if( !dir.mkdirs() ) {
       if( !dir.exists() ) {
         throw new IOException( "Could not create directory structure: " + dir.getAbsolutePath() );
       }
     }
-    if( !fileToWrite.exists() ) {
-      fileToWrite.createNewFile();
+  }
+
+  private File getDiskLocation( String resourceName ) {
+    String escapedResourceName = escapeResourceName( resourceName );
+    return new File( resourceDirectory.getDirectory(), escapedResourceName );
+  }
+
+  //////////////////
+  // helping methods
+  
+  private static void checkPath( String path ) {
+    if( path.length() == 0 ) {
+      throw new IllegalArgumentException( "Path must not be empty" );
+    }
+    if( path.endsWith( "/"  ) || path.endsWith( "\\" ) ) {
+      throw new IllegalArgumentException( "Path must not end with path separator" );
     }
   }
 
-  private static Integer computeVersion( byte[] content, RegisterOptions options ) {
-    Integer result = null;
-    if( content != null && shouldVersion( options ) ) {
-      int version = 0;
-      for( int i = 0; i < content.length; i++ ) {
-        version = version * 31 + content[ i ];
-      }
-      result = new Integer( version );
-    }
-    return result;
-  }
-
-  static String versionedResourceName( String name, Integer version ) {
-    String result = name;
-    if( version != null ) {
-      String versionString = Integer.toHexString( version.intValue() );
-      int dotPos = name.lastIndexOf( '.' );
-      // ensure that the dot was found in name part (not path)
-      if( name.replace( '\\', '/' ).lastIndexOf( "/" ) > dotPos  ) {
-        dotPos = -1;
-      }
-      if( dotPos == -1 ) {
-        // append version number if not suffix
-        result = name + '-' + versionString;
-      } else {
-        // insert version number between name and suffix
-        result = name.substring( 0, dotPos ) + '-' + versionString + name.substring( dotPos );
-      }
-    }
-    return result;
-  }
-
-  private static boolean shouldVersion( RegisterOptions options ) {
-    return    (    options == RegisterOptions.VERSION
-                || options == RegisterOptions.VERSION_AND_COMPRESS )
-           && RWTProperties.useVersionedJavaScript();
-  }
-
-  private static boolean shouldCompress( RegisterOptions options ) {
-    return    (    options == RegisterOptions.COMPRESS
-                || options == RegisterOptions.VERSION_AND_COMPRESS )
-           && RWTProperties.useCompressedJavaScript()
-           && !RWTProperties.isDevelopmentMode();
-  }
-
-  private File getDiskLocation( String name, Integer version ) {
-    File resourcesDir = resourceDirectory.getDirectory();
-    String fileName = versionedResourceName( escapeFilename( name ), version );
-    return new File( resourcesDir, fileName );
-  }
-
-  private static String escapeFilename( String name ) {
+  private static String escapeResourceName( String name ) {
     String result = name;
     result = name.replaceAll( "\\$", "\\$\\$" );
     result = result.replaceAll( ":", "\\$1" );

@@ -40,6 +40,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
 
+@SuppressWarnings( "deprecation" )
 public final class BrowserHistoryImpl
   implements IBrowserHistory, PhaseListener, SessionStoreListener
 {

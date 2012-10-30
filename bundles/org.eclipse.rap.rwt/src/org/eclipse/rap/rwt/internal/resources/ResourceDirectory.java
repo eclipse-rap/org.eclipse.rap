@@ -21,6 +21,7 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 public class ResourceDirectory {
 
   public static final String DIRNAME = "rwt-resources";
+  
   private File resourcesDir;
 
   public void configure( String contextDirectory ) {

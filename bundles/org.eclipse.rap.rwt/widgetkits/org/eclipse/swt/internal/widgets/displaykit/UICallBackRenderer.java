@@ -18,8 +18,8 @@ import org.eclipse.rap.rwt.service.ISessionStore;
 
 public class UICallBackRenderer {
 
-  public final static String UI_CALLBACK_ID = "rwt.client.UICallBack";
-  private final static String PROP_ACTIVE = "active";
+  public static final String UI_CALLBACK_ID = "rwt.client.UICallBack";
+  private static final String PROP_ACTIVE = "active";
   private static final String ATTR_PRESERVED_ACTIVATION
     = UICallBackRenderer.class.getName() + ".preservedActivation";
 

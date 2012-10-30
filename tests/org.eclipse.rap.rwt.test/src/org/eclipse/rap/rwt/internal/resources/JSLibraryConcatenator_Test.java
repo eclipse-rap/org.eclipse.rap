@@ -77,6 +77,15 @@ public class JSLibraryConcatenator_Test extends TestCase {
     assertFalse( resourceManager.isRegistered( "resources.js" ) );
   }
 
+  public void testReadContentWhenEmpty() {
+    jsConcatenator.startJSConcatenation();
+
+    byte[] content = jsConcatenator.readContent();
+
+    assertEquals( 0, content.length );
+  }
+
+
   public void testIgnoreAppendJSLibraryAfterFinishJSConcatenation() {
     jsConcatenator.startJSConcatenation();
     jsConcatenator.activate();
