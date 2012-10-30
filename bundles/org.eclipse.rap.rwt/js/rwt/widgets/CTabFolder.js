@@ -447,11 +447,8 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
     _onChevronExecute : function( evt ) {
       if( this._chevronMenu == null || !this._chevronMenu.isSeeable() ) {
         if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-          var wm = org.eclipse.swt.WidgetManager.getInstance();
-          var id = wm.findIdByWidget( this );
-          var req = rwt.remote.Server.getInstance();
-          req.addEvent( "org.eclipse.swt.events.ctabFolderShowList", id );
-          req.send();
+          var server = rwt.remote.Server.getInstance();
+          server.getServerObject( this ).notify( "ctabFolderShowList" );
         }
       }
     },
@@ -463,28 +460,27 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
           // Minimize button was pressed
           if( this._minMaxState == "min" ) {
             this.setMinMaxState( "normal" );
-            event = "org.eclipse.swt.events.ctabFolderRestored";
+            event = "ctabFolderRestored";
           } else {
             this.setMinMaxState( "min" );
-            event = "org.eclipse.swt.events.ctabFolderMinimized";
+            event = "ctabFolderMinimized";
           }
         } else {
           // Maximize button was pressed
           if( this._minMaxState == "normal" || this._minMaxState == "min" ) {
             this.setMinMaxState( "max" );
-            event = "org.eclipse.swt.events.ctabFolderMaximized";
+            event = "ctabFolderMaximized";
           } else {
             this.setMinMaxState( "normal" );
-            event = "org.eclipse.swt.events.ctabFolderRestored";
+            event = "ctabFolderRestored";
           }
         }
         var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( this );
-        var req = rwt.remote.Server.getInstance();
-        req.addParameter( id + ".minimized", this._minMaxState == "min" );
-        req.addParameter( id + ".maximized", this._minMaxState == "max" );
+        var server = rwt.remote.Server.getInstance();
+        server.addParameter( id + ".minimized", this._minMaxState == "min" );
+        server.addParameter( id + ".maximized", this._minMaxState == "max" );
         if( this._hasFolderListener ) {
-          req.addEvent( event, id );
-          req.send();
+          server.getServerObject( this ).notify( event );
         }
       }
     },
