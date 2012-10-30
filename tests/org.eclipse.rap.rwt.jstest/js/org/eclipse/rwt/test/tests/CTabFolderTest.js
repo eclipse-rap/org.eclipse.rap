@@ -261,7 +261,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       widget.destroy();
     },
 
-    testSetHasSelectionListenerByProtocol : function() {
+    testSetHasDefaultSelectionListenerByProtocol : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createCTabFolderByProtocol( "w3", "w2" );
@@ -554,6 +554,116 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       assertFalse( message.findNotifyProperty( "w3", "DefaultSelection", "shiftKey" ) );
       assertTrue( message.findNotifyProperty( "w3", "DefaultSelection", "ctrlKey" ) );
       assertFalse( message.findNotifyProperty( "w3", "DefaultSelection", "altKey" ) );
+      shell.destroy();
+    },
+
+    testSendMaximize : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      TestUtil.protocolSet( "w3", { "maximizeVisible" : true } );
+      TestUtil.protocolListen( "w3", { "folder" : true } );
+      TestUtil.flush();
+
+      TestUtil.click( folder._maxButton );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w3", "ctabFolderMaximized" ) );
+      shell.destroy();
+    },
+
+    testSendMinimize : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      TestUtil.protocolSet( "w3", { "minimizeVisible" : true } );
+      TestUtil.protocolListen( "w3", { "folder" : true } );
+      TestUtil.flush();
+
+      TestUtil.click( folder._minButton );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w3", "ctabFolderMinimized" ) );
+      shell.destroy();
+    },
+
+    testSendRestoreFromMinimize : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      TestUtil.protocolSet( "w3", {
+        "minimizeVisible" : true,
+        "minMaxState" : "min"
+      } );
+      TestUtil.protocolListen( "w3", { "folder" : true } );
+      TestUtil.flush();
+
+      TestUtil.click( folder._minButton );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w3", "ctabFolderRestored" ) );
+      shell.destroy();
+    },
+
+    testSendRestoreFromMaximize : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      TestUtil.protocolSet( "w3", {
+        "maximizeVisible" : true,
+        "minMaxState" : "max"
+      } );
+      TestUtil.protocolListen( "w3", { "folder" : true } );
+      TestUtil.flush();
+
+      TestUtil.click( folder._maxButton );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w3", "ctabFolderRestored" ) );
+      shell.destroy();
+    },
+
+    testSendShowList : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      TestUtil.protocolSet( "w3", { "chevronVisible" : true } );
+      TestUtil.protocolListen( "w3", { "folder" : true } );
+      TestUtil.flush();
+
+      TestUtil.click( folder._chevron );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w3", "ctabFolderShowList" ) );
+      shell.destroy();
+    },
+
+    testSendClose : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var ObjectManager = rwt.protocol.ObjectRegistry;
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      var item = this._createCTabItemByProtocol( "w4", "w3" );
+      TestUtil.protocolSet( "w4", { "showClose" : true } );
+      TestUtil.protocolSet( "w3", { "selection" : "w4" } );
+      TestUtil.protocolListen( "w3", { "folder" : true } );
+      TestUtil.flush();
+
+      TestUtil.click( item._closeButton );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w4", "ctabItemClosed" ) );
       shell.destroy();
     },
 
