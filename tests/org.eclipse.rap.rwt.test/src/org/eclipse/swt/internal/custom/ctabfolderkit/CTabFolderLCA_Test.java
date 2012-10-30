@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import junit.framework.TestCase;
 
@@ -77,6 +78,7 @@ public class CTabFolderLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private CTabFolder folder;
   private CTabFolderLCA lca;
 
   @Override
@@ -84,6 +86,7 @@ public class CTabFolderLCA_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
+    folder = new CTabFolder( shell, SWT.NONE );
     lca = new CTabFolderLCA();
     Fixture.fakeNewRequest( display );
   }
@@ -94,7 +97,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testControlListeners() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     ControlLCATestUtil.testActivateListener( folder );
     ControlLCATestUtil.testFocusListener( folder );
     ControlLCATestUtil.testMouseListener( folder );
@@ -105,7 +107,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testLCA() {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
     assertSame( CTabFolderLCA.class,
@@ -115,7 +116,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Label label = new Label( folder, SWT.NONE );
     folder.setTopRight( label, SWT.FILL );
     Fixture.markInitialized( display );
@@ -185,7 +185,7 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testChangeSelection() {
-    CTabFolder folder = new CTabFolder( shell, SWT.MULTI );
+    folder = new CTabFolder( shell, SWT.MULTI );
     folder.setSize( 100, 100 );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
     CTabItemControl item1Control = new CTabItemControl( folder, SWT.NONE );
@@ -207,7 +207,7 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testSelectionEvent() {
-    CTabFolder folder = new CTabFolder( shell, SWT.MULTI );
+    folder = new CTabFolder( shell, SWT.MULTI );
     SelectionListener listener = mock( SelectionListener.class );
     folder.addSelectionListener( listener );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
@@ -227,8 +227,68 @@ public class CTabFolderLCA_Test extends TestCase {
     verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
+  public void testMinimizeEvent() {
+    CTabFolder2Listener listener = mock( CTabFolder2Listener.class );
+    folder.addCTabFolder2Listener( listener  );
+
+    fakeFolderEvent( folder, ClientMessageConst.EVENT_FOLDER_DETAIL_MINIMIZE, null );
+    Fixture.readDataAndProcessAction( folder );
+
+    verify( listener, times( 1 ) ).minimize( any( CTabFolderEvent.class ) );
+  }
+
+  public void testMaximizeEvent() {
+    CTabFolder2Listener listener = mock( CTabFolder2Listener.class );
+    folder.addCTabFolder2Listener( listener  );
+
+    fakeFolderEvent( folder, ClientMessageConst.EVENT_FOLDER_DETAIL_MAXIMIZE, null );
+    Fixture.readDataAndProcessAction( folder );
+
+    verify( listener, times( 1 ) ).maximize( any( CTabFolderEvent.class ) );
+  }
+
+  public void testRestoreEvent() {
+    CTabFolder2Listener listener = mock( CTabFolder2Listener.class );
+    folder.addCTabFolder2Listener( listener  );
+
+    fakeFolderEvent( folder, ClientMessageConst.EVENT_FOLDER_DETAIL_RESTORE, null );
+    Fixture.readDataAndProcessAction( folder );
+
+    verify( listener, times( 1 ) ).restore( any( CTabFolderEvent.class ) );
+  }
+
+  public void testCloseEvent_WithVeto() {
+    final AtomicBoolean log = new AtomicBoolean( false );
+    CTabItem item = new CTabItem( folder, SWT.NONE );
+    folder.addCTabFolder2Listener( new CTabFolder2Adapter() {
+      @Override
+      public void close( CTabFolderEvent event ){
+        log.set( true );
+        event.doit = false;
+      }
+    } );
+
+    fakeFolderEvent( folder, ClientMessageConst.EVENT_FOLDER_DETAIL_CLOSE, getId( item ) );
+    Fixture.readDataAndProcessAction( folder );
+
+    assertTrue( log.get() );
+    assertFalse( item.isDisposed() );
+  }
+
+  public void testCloseEvent_WithoutVeto() {
+    CTabItem item = new CTabItem( folder, SWT.NONE );
+    CTabFolder2Listener listener = mock( CTabFolder2Listener.class );
+    folder.addCTabFolder2Listener( listener  );
+
+    fakeFolderEvent( folder, ClientMessageConst.EVENT_FOLDER_DETAIL_CLOSE, getId( item ) );
+    Fixture.readDataAndProcessAction( folder );
+
+    verify( listener, times( 1 ) ).close( any( CTabFolderEvent.class ) );
+    assertTrue( item.isDisposed() );
+  }
+
   public void testShowListEvent_WithVeto() {
-    final CTabFolder folder = new CTabFolder( shell, SWT.SINGLE );
+    folder = new CTabFolder( shell, SWT.SINGLE );
     folder.setSize( 30, 130 );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
     new CTabItem( folder, SWT.NONE );
@@ -242,7 +302,7 @@ public class CTabFolderLCA_Test extends TestCase {
       }
     } );
 
-    Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_SHOW_LIST, null );
+    fakeFolderEvent( folder, ClientMessageConst.EVENT_FOLDER_DETAIL_SHOW_LIST, null );
     Fixture.readDataAndProcessAction( folder );
 
     CTabFolderEvent event = log.get( 0 );
@@ -254,7 +314,7 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testShowListEvent_WithoutVeto() {
-    final CTabFolder folder = new CTabFolder( shell, SWT.SINGLE );
+    folder = new CTabFolder( shell, SWT.SINGLE );
     folder.setSize( 30, 130 );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
     new CTabItem( folder, SWT.NONE );
@@ -262,7 +322,7 @@ public class CTabFolderLCA_Test extends TestCase {
     folder.addCTabFolder2Listener( listener );
     folder.setSelection( item1 );
 
-    Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_SHOW_LIST, null );
+    fakeFolderEvent( folder, ClientMessageConst.EVENT_FOLDER_DETAIL_SHOW_LIST, null );
     Fixture.readDataAndProcessAction( folder );
 
     ArgumentCaptor<CTabFolderEvent> captor = ArgumentCaptor.forClass( CTabFolderEvent.class );
@@ -272,8 +332,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderCreate() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     lca.renderInitialization( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -285,7 +343,7 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderCreateOnBottom() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.BOTTOM );
+    folder = new CTabFolder( shell, SWT.BOTTOM );
 
     lca.render( folder );
 
@@ -299,7 +357,7 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderSingleFlatAndClose() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.SINGLE | SWT.FLAT | SWT.CLOSE );
+    folder = new CTabFolder( shell, SWT.SINGLE | SWT.FLAT | SWT.CLOSE );
 
     lca.renderInitialization( folder );
 
@@ -312,8 +370,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     lca.renderInitialization( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -322,8 +378,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderToolTipTexts() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     lca.renderInitialization( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -332,8 +386,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderDispose() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     lca.renderDispose( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -343,8 +395,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialTabPosition() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     lca.render( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -353,8 +403,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderTabPosition() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     folder.setTabPosition( SWT.BOTTOM );
     lca.renderChanges( folder );
 
@@ -363,7 +411,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderTabPositionUnchanged() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
 
@@ -376,8 +423,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialTabHeight() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     lca.render( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -386,8 +431,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderTabHeight() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     folder.setTabHeight( 20 );
     lca.renderChanges( folder );
 
@@ -396,7 +439,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderTabHeightUnchanged() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
 
@@ -409,8 +451,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialMinMaxState() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     lca.render( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -419,8 +459,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderMinMaxState_Max() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     folder.setMaximized( true );
     lca.renderChanges( folder );
 
@@ -429,8 +467,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderMinMaxState_Min() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     folder.setMinimized( true );
     lca.renderChanges( folder );
 
@@ -439,7 +475,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderMinMaxStateUnchanged() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
 
@@ -452,7 +487,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialMinimizeBoundsAndVisible() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     folder.setSize( 150, 150 );
 
     lca.render( folder );
@@ -464,7 +498,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderMinimizeBoundsAndVisible() throws IOException, JSONException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     folder.setSize( 150, 150 );
 
     folder.setMinimizeVisible( true );
@@ -477,7 +510,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderMinimizeBoundsAndVisibleUnchanged() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     folder.setSize( 150, 150 );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -492,7 +524,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialMaximizeBoundsAndVisible() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     folder.setSize( 150, 150 );
 
     lca.render( folder );
@@ -504,7 +535,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderMaximizeBoundsAndVisible() throws IOException, JSONException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     folder.setSize( 150, 150 );
 
     folder.setMaximizeVisible( true );
@@ -517,7 +547,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderMaximizeBoundsAndVisibleUnchanged() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     folder.setSize( 150, 150 );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -532,7 +561,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialChevronBoundsAndVisible() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     folder.setSize( 150, 150 );
 
     lca.render( folder );
@@ -544,7 +572,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderChevronBoundsAndVisible() throws IOException, JSONException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     CTabItem item = new CTabItem( folder, SWT.NONE );
     new CTabItem( folder, SWT.NONE );
     folder.setSize( 150, 150 );
@@ -559,7 +586,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderChevronBoundsAndVisibleUnchanged() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     CTabItem item = new CTabItem( folder, SWT.NONE );
     new CTabItem( folder, SWT.NONE );
     folder.setSize( 150, 150 );
@@ -576,8 +602,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialUnselectedCloseVisible() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     lca.render( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -586,8 +610,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderUnselectedCloseVisible() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     folder.setUnselectedCloseVisible( false );
     lca.renderChanges( folder );
 
@@ -596,7 +618,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderUnselectedCloseVisibleUnchanged() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
 
@@ -609,8 +630,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelection() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     lca.render( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -619,7 +638,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderSelection() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
     folder.setSelection( item );
@@ -630,7 +648,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionUnchanged() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     CTabItem item = new CTabItem( folder, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -644,8 +661,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelectionBackground() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     lca.render( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -654,8 +669,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionBackground() throws IOException, JSONException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     folder.setSelectionBackground( display.getSystemColor( SWT.COLOR_BLUE ) );
     lca.renderChanges( folder );
 
@@ -665,7 +678,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionBackgroundUnchanged() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
 
@@ -678,8 +690,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelectionForeground() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     lca.render( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -688,8 +698,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionForeground() throws IOException, JSONException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     folder.setSelectionForeground( display.getSystemColor( SWT.COLOR_BLUE ) );
     lca.renderChanges( folder );
 
@@ -699,7 +707,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionForegroundUnchanged() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
 
@@ -712,8 +719,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelectionBackgroundImage() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     lca.render( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -722,7 +727,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionBackgroundImage() throws IOException, JSONException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 
     folder.setSelectionBackground( image );
@@ -736,7 +740,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionBackgroundImageUnchanged() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
@@ -750,8 +753,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelectionBackgroundGradient() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     lca.render( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -760,8 +761,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionBackgroundGradient() throws IOException, JSONException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     Color[] gradientColors = new Color[] {
       display.getSystemColor( SWT.COLOR_RED ),
       display.getSystemColor( SWT.COLOR_GREEN )
@@ -783,7 +782,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionBackgroundGradientUnchanged() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
 
@@ -801,8 +799,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderInitialBorderVisible() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     lca.render( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -811,8 +807,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderBorderVisible() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-
     folder.setBorderVisible( true );
     lca.renderChanges( folder );
 
@@ -821,7 +815,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderBorderVisibleUnchanged() throws IOException {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
 
@@ -834,7 +827,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderAddSelectionListener() throws Exception {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
     Fixture.preserveWidgets();
@@ -848,7 +840,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderAddDefaultSelectionListener() throws Exception {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
     Fixture.preserveWidgets();
@@ -862,7 +853,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Listener listener = mock( Listener.class );
     folder.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
@@ -878,7 +868,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveDefaultSelectionListener() throws Exception {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Listener listener = mock( Listener.class );
     folder.addListener( SWT.DefaultSelection, listener );
     Fixture.markInitialized( display );
@@ -894,7 +883,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
     Fixture.preserveWidgets();
@@ -908,7 +896,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testRenderAddFolderListener() throws Exception {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
     Fixture.preserveWidgets();
@@ -917,11 +904,10 @@ public class CTabFolderLCA_Test extends TestCase {
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findListenProperty( folder, "folder" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( folder, "Folder" ) );
   }
 
   public void testRenderRemoveFolderListener() throws Exception {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     CTabFolder2Adapter listener = new CTabFolder2Adapter() { };
     folder.addCTabFolder2Listener( listener );
     Fixture.markInitialized( display );
@@ -932,11 +918,10 @@ public class CTabFolderLCA_Test extends TestCase {
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.FALSE, message.findListenProperty( folder, "folder" ) );
+    assertEquals( Boolean.FALSE, message.findListenProperty( folder, "Folder" ) );
   }
 
   public void testRenderFolderListenerUnchanged() throws Exception {
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
     Fixture.preserveWidgets();
@@ -946,7 +931,7 @@ public class CTabFolderLCA_Test extends TestCase {
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( folder, "folder" ) );
+    assertNull( message.findListenOperation( folder, "Folder" ) );
   }
 
   private static Menu getShowListMenu( CTabFolder folder ) {
@@ -1008,5 +993,14 @@ public class CTabFolderLCA_Test extends TestCase {
       }
       return ( T )result;
     }
+  }
+
+  private static void fakeFolderEvent( CTabFolder folder, String detail, String itemId ) {
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put( ClientMessageConst.EVENT_PARAM_DETAIL, detail );
+    if( itemId != null ) {
+      parameters.put( ClientMessageConst.EVENT_PARAM_ITEM, itemId );
+    }
+    Fixture.fakeNotifyOperation( getId( folder ), ClientMessageConst.EVENT_FOLDER, parameters );
   }
 }

@@ -19,7 +19,6 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.custom.CTabFolder;
@@ -27,9 +26,7 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
-import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -37,8 +34,6 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.CTabItem";
   private static final String[] ALLOWED_STYLES = new String[] { "CLOSE" };
-
-  public static final String EVENT_ITEM_CLOSED = "ctabItemClosed";
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
@@ -59,17 +54,6 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   }
 
   public void readData( Widget widget ) {
-    final CTabItem item = ( CTabItem )widget;
-    if( WidgetLCAUtil.wasEventSent( item, EVENT_ITEM_CLOSED ) ) {
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          boolean doit = sendCloseEvent( item );
-          if( doit ) {
-            item.dispose();
-          }
-        }
-      } );
-    }
   }
 
   @Override
@@ -118,16 +102,5 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
 
   private static ICTabFolderAdapter getCTabFolderAdapter( CTabItem item ) {
     return item.getParent().getAdapter( ICTabFolderAdapter.class );
-  }
-
-  ///////////////
-  // Event helper
-
-  private static boolean sendCloseEvent( CTabItem item ) {
-    Event event = new Event();
-    event.item = item;
-    event.doit = true;
-    item.getParent().notifyListeners( EventTypes.CTAB_FOLDER_CLOSE, event );
-    return event.doit;
   }
 }

@@ -448,31 +448,31 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
       if( this._chevronMenu == null || !this._chevronMenu.isSeeable() ) {
         if( !org.eclipse.swt.EventUtil.getSuspended() ) {
           var server = rwt.remote.Server.getInstance();
-          server.getServerObject( this ).notify( "ctabFolderShowList" );
+          server.getServerObject( this ).notify( "Folder", { "detail" : "showList" } );
         }
       }
     },
 
     _onMinMaxExecute : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var event;
+        var detail;
         if ( evt.getTarget() == this._minButton ) {
           // Minimize button was pressed
           if( this._minMaxState == "min" ) {
             this.setMinMaxState( "normal" );
-            event = "ctabFolderRestored";
+            detail = "restore";
           } else {
             this.setMinMaxState( "min" );
-            event = "ctabFolderMinimized";
+            detail = "minimize";
           }
         } else {
           // Maximize button was pressed
           if( this._minMaxState == "normal" || this._minMaxState == "min" ) {
             this.setMinMaxState( "max" );
-            event = "ctabFolderMaximized";
+            detail = "maximize";
           } else {
             this.setMinMaxState( "normal" );
-            event = "ctabFolderRestored";
+            detail = "restore";
           }
         }
         var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( this );
@@ -480,7 +480,7 @@ qx.Class.define( "rwt.widgets.CTabFolder", {
         server.addParameter( id + ".minimized", this._minMaxState == "min" );
         server.addParameter( id + ".maximized", this._minMaxState == "max" );
         if( this._hasFolderListener ) {
-          server.getServerObject( this ).notify( event );
+          server.getServerObject( this ).notify( "Folder", { "detail" : detail } );
         }
       }
     },

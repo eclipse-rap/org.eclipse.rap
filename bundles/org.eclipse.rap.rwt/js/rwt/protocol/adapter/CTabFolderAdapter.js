@@ -111,7 +111,7 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.CTabFolder", {
   } ),
 
   listeners : rwt.protocol.AdapterUtil.extendControlListeners( [
-    "folder",
+    "Folder",
     "Selection",
     "DefaultSelection"
   ] ),

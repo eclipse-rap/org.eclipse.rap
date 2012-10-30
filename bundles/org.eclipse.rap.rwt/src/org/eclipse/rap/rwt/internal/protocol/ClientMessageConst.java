@@ -39,10 +39,12 @@ public final class ClientMessageConst {
   public static final String EVENT_MENU_DETECT = "MenuDetect";
 
   // CTabFolder specific events
-  public static final String EVENT_FOLDER_MINIMIZED = "ctabFolderMinimized";
-  public static final String EVENT_FOLDER_MAXIMIZED = "ctabFolderMaximized";
-  public static final String EVENT_FOLDER_RESTORED = "ctabFolderRestored";
-  public static final String EVENT_SHOW_LIST = "ctabFolderShowList";
+  public static final String EVENT_FOLDER = "Folder";
+  public static final String EVENT_FOLDER_DETAIL_MINIMIZE = "minimize";
+  public static final String EVENT_FOLDER_DETAIL_MAXIMIZE = "maximize";
+  public static final String EVENT_FOLDER_DETAIL_RESTORE = "restore";
+  public static final String EVENT_FOLDER_DETAIL_CLOSE = "close";
+  public static final String EVENT_FOLDER_DETAIL_SHOW_LIST = "showList";
 
   // Indicates that a shell was closed on the client side.
   public static final String EVENT_CLOSE = "Close";

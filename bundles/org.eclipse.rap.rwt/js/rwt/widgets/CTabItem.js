@@ -217,7 +217,10 @@ qx.Class.define( "rwt.widgets.CTabItem", {
     _onClose : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var server = rwt.remote.Server.getInstance();
-        server.getServerObject( this ).notify( "ctabItemClosed" );
+        server.getServerObject( this.getParent() ).notify( "Folder", {
+          "detail" : "close",
+          "item" : rwt.protocol.ObjectRegistry.getId( this )
+        } );
       }
     },
 

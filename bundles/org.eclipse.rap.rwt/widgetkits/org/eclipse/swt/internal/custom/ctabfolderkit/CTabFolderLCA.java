@@ -11,10 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_ITEM;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
 
 import java.io.IOException;
 
@@ -77,7 +81,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   private static final String PROP_SELECTION_BG_GRADIENT_VERTICAL
     = "selectionBgGradientVertical";
   private static final String PROP_BORDER_VISIBLE = "borderVisible";
-  private static final String PROP_FOLDER_LISTENER = "folder";
+  private static final String PROP_FOLDER_LISTENER = "Folder";
   private static final String PROP_SELECTION_LISTENER = "Selection";
   private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
 
@@ -113,7 +117,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     preserveListener( folder,
                       PROP_DEFAULT_SELECTION_LISTENER,
                       folder.isListening( SWT.DefaultSelection ) );
-    preserveListener( folder, PROP_FOLDER_LISTENER, hasCTabFolderListener( folder ) );
+    preserveListener( folder, PROP_FOLDER_LISTENER, hasFolderListener( folder ) );
   }
 
   public void readData( Widget widget ) {
@@ -126,18 +130,10 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     if( value != null ) {
       folder.setMaximized( Boolean.valueOf( value ).booleanValue() );
     }
-    if( WidgetLCAUtil.wasEventSent( folder, ClientMessageConst.EVENT_FOLDER_MINIMIZED ) ) {
-      folder.notifyListeners( EventTypes.CTAB_FOLDER_MINIMIZE, new Event() );
-    }
-    if( WidgetLCAUtil.wasEventSent( folder, ClientMessageConst.EVENT_FOLDER_MAXIMIZED ) ) {
-      folder.notifyListeners( EventTypes.CTAB_FOLDER_MAXIMIZE, new Event() );
-    }
-    if( WidgetLCAUtil.wasEventSent( folder, ClientMessageConst.EVENT_FOLDER_RESTORED ) ) {
-      folder.notifyListeners( EventTypes.CTAB_FOLDER_RESTORE, new Event() );
-    }
+    processFolderEvent( folder );
     // TODO [rh] it's a hack: necessary because folder.setSelection changes
     //      the visibility of tabItem.control; but preserveValues stores
-    //      the already changed visibility and thus no JavaScript is rendered
+    //      the already changed visibility and thus no visibility property is rendered
     String selectedItemId = WidgetLCAUtil.readPropertyValue( folder, PARAM_SELECTION );
     if( selectedItemId != null ) {
       final CTabItem item = ( CTabItem )WidgetUtil.find( folder, selectedItemId );
@@ -147,17 +143,6 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
           preserveProperty( folder, PROP_SELECTION, folder.getSelection() );
           ControlLCAUtil.processSelection( folder, item, false );
           ControlLCAUtil.processDefaultSelection( folder, item );
-        }
-      } );
-    }
-    if( WidgetLCAUtil.wasEventSent( folder, ClientMessageConst.EVENT_SHOW_LIST ) ) {
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          boolean doit = sendShowListEvent( folder );
-          if( doit ) {
-            ICTabFolderAdapter adapter = getCTabFolderAdapter( folder );
-            adapter.showListMenu();
-          }
         }
       } );
     }
@@ -215,7 +200,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     renderListener( folder, PROP_DEFAULT_SELECTION_LISTENER,
                     folder.isListening( SWT.DefaultSelection ),
                     false );
-    renderListener( folder, PROP_FOLDER_LISTENER, hasCTabFolderListener( folder ), false );
+    renderListener( folder, PROP_FOLDER_LISTENER, hasFolderListener( folder ), false );
   }
 
   @Override
@@ -279,6 +264,57 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   ///////////////
   // Event helper
 
+  private static void processFolderEvent( CTabFolder folder ) {
+    String eventName = ClientMessageConst.EVENT_FOLDER;
+    if( wasEventSent( folder, eventName ) ) {
+      String detail = readEventPropertyValue( folder, eventName, EVENT_PARAM_DETAIL );
+      if( ClientMessageConst.EVENT_FOLDER_DETAIL_MINIMIZE.equals( detail ) ) {
+        folder.notifyListeners( EventTypes.CTAB_FOLDER_MINIMIZE, new Event() );
+      } else if( ClientMessageConst.EVENT_FOLDER_DETAIL_MAXIMIZE.equals( detail ) ) {
+        folder.notifyListeners( EventTypes.CTAB_FOLDER_MAXIMIZE, new Event() );
+      } else if( ClientMessageConst.EVENT_FOLDER_DETAIL_RESTORE.equals( detail ) ) {
+        folder.notifyListeners( EventTypes.CTAB_FOLDER_RESTORE, new Event() );
+      } else if( ClientMessageConst.EVENT_FOLDER_DETAIL_CLOSE.equals( detail ) ) {
+        String itemId = readEventPropertyValue( folder, eventName, EVENT_PARAM_ITEM );
+        CTabItem item = ( CTabItem )WidgetUtil.find( folder, itemId );
+        notifyCloseListeners( item );
+      } else if( ClientMessageConst.EVENT_FOLDER_DETAIL_SHOW_LIST.equals( detail ) ) {
+        notifyShowListListeners( folder );
+      }
+    }
+  }
+
+  private static void notifyCloseListeners( final CTabItem item ) {
+    ProcessActionRunner.add( new Runnable() {
+      public void run() {
+        boolean doit = sendCloseEvent( item );
+        if( doit ) {
+          item.dispose();
+        }
+      }
+    } );
+  }
+
+  private static void notifyShowListListeners( final CTabFolder folder ) {
+    ProcessActionRunner.add( new Runnable() {
+      public void run() {
+        boolean doit = sendShowListEvent( folder );
+        if( doit ) {
+          ICTabFolderAdapter adapter = getCTabFolderAdapter( folder );
+          adapter.showListMenu();
+        }
+      }
+    } );
+  }
+
+  private static boolean sendCloseEvent( CTabItem item ) {
+    Event event = new Event();
+    event.item = item;
+    event.doit = true;
+    item.getParent().notifyListeners( EventTypes.CTAB_FOLDER_CLOSE, event );
+    return event.doit;
+  }
+
   private static boolean sendShowListEvent( CTabFolder folder ) {
     Event event = new Event();
     Rectangle chevronRect = getChevronBounds( folder );
@@ -340,7 +376,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     return folder.getAdapter( ICTabFolderAdapter.class );
   }
 
-  private boolean hasCTabFolderListener( CTabFolder folder ) {
+  private boolean hasFolderListener( CTabFolder folder ) {
     return folder.isListening( EventTypes.CTAB_FOLDER_CLOSE )
         || folder.isListening( EventTypes.CTAB_FOLDER_MAXIMIZE )
         || folder.isListening( EventTypes.CTAB_FOLDER_MINIMIZE )
