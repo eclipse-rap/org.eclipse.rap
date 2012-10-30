@@ -816,13 +816,6 @@ public class TextLCA_Test extends TestCase {
     return adapter.getPreserved( property );
   }
 
-  private static ModifyListener createModifyListener() {
-    return new ModifyListener() {
-      public void modifyText( ModifyEvent event ) {
-      }
-    };
-  }
-
   //////////////////
   // Helping classes
 

@@ -73,7 +73,6 @@ public class RWTLifeCycle2_Test extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    Fixture.setSystemProperties();
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
 
@@ -90,7 +89,6 @@ public class RWTLifeCycle2_Test extends TestCase {
     session = null;
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
-    Fixture.unsetSystemProperties();
   }
 
   public void testSessionRestartAfterExceptionInUIThread() throws Exception {

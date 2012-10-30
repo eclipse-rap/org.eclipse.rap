@@ -12,16 +12,20 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.resources;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.rap.rwt.internal.RWTProperties;
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.resources.IResourceManager;
 
@@ -56,7 +60,7 @@ public class ResourceManagerImpl implements IResourceManager {
     ParamCheck.notNull( path, "name" );
     ParamCheck.notNull( inputStream, "inputStream" );
     checkPath( path );
-    internalRegister( path, inputStream, null, RegisterOptions.NONE );
+    internalRegister( path, inputStream );
   }
 
   public void register( String name, InputStream is, String charset, RegisterOptions options ) {
@@ -64,7 +68,7 @@ public class ResourceManagerImpl implements IResourceManager {
     ParamCheck.notNull( is, "is" );
     ParamCheck.notNull( charset, "charset" );
     ParamCheck.notNull( options, "options" );
-    internalRegister( name, is, charset, options );
+    internalRegister( name, is );
   }
 
   public boolean unregister( String name ) {
@@ -104,7 +108,7 @@ public class ResourceManagerImpl implements IResourceManager {
     }
     return result;
   }
-
+  
   //////////////////
   // helping methods
 
@@ -118,49 +122,56 @@ public class ResourceManagerImpl implements IResourceManager {
     return url.toString();
   }
 
-  private void internalRegister( String name,
-                                 InputStream is,
-                                 String charset,
-                                 RegisterOptions options )
-  {
-    boolean compress = shouldCompress( options );
+  private void internalRegister( String name, InputStream inputStream ) {
+    File location = getDiskLocation( name );
     try {
-      byte[] content = ResourceUtil.read( is, charset, compress );
-      registerContent( name, charset, options, content );
+      createDirectories( location );
+      // TODO [rst] Explicitly register internal JavaScript files
+      if( isJavascriptResource( name ) ) {
+        byte[] content = ResourceUtil.readBinary( inputStream );
+        ResourceUtil.write( location, content );
+        RWTFactory.getJSLibraryConcatenator().appendJSLibrary( content );
+      } else {
+        writeResource( inputStream, location );
+      }
     } catch ( IOException ioe ) {
       throw new RuntimeException( "Failed to register resource: " + name, ioe ) ;
     }
-  }
-
-  private void registerContent( String name,
-                                String charset,
-                                RegisterOptions options,
-                                byte[] content )
-    throws IOException
-  {
-    File location = getDiskLocation( name );
-    createFile( location );
-    ResourceUtil.write( location, content );
     resources.add( name );
   }
 
-  private static void createFile( File fileToWrite ) throws IOException {
-    File dir = new File( fileToWrite.getParent() );
+  private static void writeResource( InputStream inputStream, File location )
+    throws IOException
+  {
+    BufferedInputStream bufferedStream = new BufferedInputStream( inputStream );
+    try {
+      OutputStream outputStream = new BufferedOutputStream( new FileOutputStream( location ) );
+      try {
+        byte[] buffer = new byte[ 256 ];
+        int read = bufferedStream.read( buffer );
+        while( read != -1 ) {
+          outputStream.write( buffer, 0, read );
+          read = bufferedStream.read( buffer );
+        }
+      } finally {
+        outputStream.close();
+      }
+    } finally {
+      bufferedStream.close();
+    }
+  }
+
+  private static boolean isJavascriptResource( String resourceName ) {
+    return resourceName.endsWith( ".js" ) && !resourceName.startsWith( "rap-" );
+  }
+
+  private static void createDirectories( File file ) throws IOException {
+    File dir = new File( file.getParent() );
     if( !dir.mkdirs() ) {
       if( !dir.exists() ) {
         throw new IOException( "Could not create directory structure: " + dir.getAbsolutePath() );
       }
     }
-    if( !fileToWrite.exists() ) {
-      fileToWrite.createNewFile();
-    }
-  }
-
-  private static boolean shouldCompress( RegisterOptions options ) {
-    return    (    options == RegisterOptions.COMPRESS
-                || options == RegisterOptions.VERSION_AND_COMPRESS )
-           && RWTProperties.useCompressedJavaScript()
-           && !RWTProperties.isDevelopmentMode();
   }
 
   private File getDiskLocation( String resourceName ) {

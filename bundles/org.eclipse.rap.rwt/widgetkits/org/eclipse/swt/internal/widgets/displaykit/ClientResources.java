@@ -335,8 +335,8 @@ public final class ClientResources {
     String appearanceCode = getQxAppearanceThemeCode();
     String json2Code = readResourceContent( JSON_JS );
     if( RWTProperties.isDevelopmentMode() ) {
-      for( int i = 0; i < JAVASCRIPT_FILES.length; i++ ) {
-        append( contentBuffer, JAVASCRIPT_FILES[ i ] );
+      for( String javascriptFile : JAVASCRIPT_FILES ) {
+        append( contentBuffer, javascriptFile );
       }
     } else {
       append( contentBuffer, CLIENT_JS );

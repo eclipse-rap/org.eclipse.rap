@@ -35,10 +35,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.application.Application;
-import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.engine.RWTServletContextListener;
-import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextHelper;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
@@ -227,7 +226,6 @@ public final class Fixture {
 
   public static void setUp() {
     useTestResourceManager();
-    setSystemProperties();
     createApplicationContext();
     createServiceContext();
   }
@@ -244,7 +242,6 @@ public final class Fixture {
     disposeOfServiceContext();
     disposeOfApplicationContext();
     disposeOfServletContext();
-    unsetSystemProperties();
     useDefaultResourceManager();
   }
 
@@ -522,16 +519,6 @@ public final class Fixture {
     } finally {
       bis.close();
     }
-  }
-
-  public static void unsetSystemProperties() {
-    System.getProperties().remove( RWTProperties.USE_VERSIONED_JAVA_SCRIPT );
-    System.getProperties().remove( RWTProperties.CLIENT_LIBRARY_VARIANT );
-  }
-
-  public static void setSystemProperties() {
-    // disable js-versioning by default to make comparison easier
-    System.setProperty( RWTProperties.USE_VERSIONED_JAVA_SCRIPT, "false" );
   }
 
   public static void runInThread( final Runnable runnable ) throws Throwable {

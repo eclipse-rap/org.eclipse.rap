@@ -63,6 +63,7 @@ public class ClassUtil_Test extends TestCase {
     }
   }
   
+  @SuppressWarnings( "unchecked" )
   public void testNewInstanceWithNullClass() {
     try {
       ClassUtil.newInstance( ( Class )null );

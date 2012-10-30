@@ -102,9 +102,9 @@ public interface IResourceManager {
    *
    * @param name filename that represents the download path relative to the
    *          applications context root.
-   * @param is the content of the resource to register.
+   * @param inputStream the content of the resource to register.
    */
-  void register( String name, InputStream is );
+  void register( String name, InputStream inputStream );
 
   /**
    * Registers a text resource that is encoded with the given

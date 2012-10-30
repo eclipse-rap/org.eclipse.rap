@@ -182,6 +182,17 @@ public class ResourceManagerImpl_Test extends TestCase {
     verify( inputStream ).close();
   }
 
+  public void testConcatenation() throws IOException {
+    JSLibraryConcatenator jsConcatenator = RWTFactory.getJSLibraryConcatenator();
+
+    jsConcatenator.startJSConcatenation();
+    resourceManager.register( "foo.js", new ByteArrayInputStream( "foo".getBytes( "UTF-8" ) ) );
+    resourceManager.register( "bar.js", new ByteArrayInputStream( "bar".getBytes( "UTF-8" ) ) );
+
+    byte[] result = jsConcatenator.readContent();
+    assertEquals( "foo\nbar\n", new String( result ) );
+  }
+
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();

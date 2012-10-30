@@ -60,8 +60,9 @@ public class ClientResources_Test extends TestCase {
   }
 
   public void testRegisteredContent() throws IOException {
+    System.getProperties().remove( RWTProperties.CLIENT_LIBRARY_VARIANT );
     clientResources.registerResources();
-    String clientJs = getRegisteredContent( "rap-client.js", "UTF-8" );
+    String clientJs = getRegisteredContent( "rap-client.js" );
 
     assertTrue( clientJs.contains( "qx.Class.define(\"rwt.runtime.System\"" ) );
     assertTrue( clientJs.contains( "AppearanceManager.getInstance().setCurrentTheme({" ) );
@@ -74,7 +75,7 @@ public class ClientResources_Test extends TestCase {
     System.setProperty( RWTProperties.CLIENT_LIBRARY_VARIANT,
                         RWTProperties.DEBUG_CLIENT_LIBRARY_VARIANT );
     clientResources.registerResources();
-    String clientJs = getRegisteredContent( "rap-client.js", "UTF-8" );
+    String clientJs = getRegisteredContent( "rap-client.js" );
 
     assertTrue( clientJs.contains( "qx.Class.define( \"rwt.runtime.System\"" ) );
     assertTrue( clientJs.contains( "AppearanceManager.getInstance().setCurrentTheme( {" ) );
@@ -83,15 +84,13 @@ public class ClientResources_Test extends TestCase {
     assertTrue( clientJs.contains( "this.JSON = {};" ) );
   }
 
-  private String getRegisteredContent( String name, String encoding ) throws IOException {
+  private String getRegisteredContent( String name ) throws IOException {
     InputStream inputStream = resourceManager.getRegisteredContent( name );
-    String result;
     try {
-      result = TestUtil.readContent( inputStream, encoding );
+      return TestUtil.readContent( inputStream, "UTF-8" );
     } finally {
       inputStream.close();
     }
-    return result;
   }
 
 }
