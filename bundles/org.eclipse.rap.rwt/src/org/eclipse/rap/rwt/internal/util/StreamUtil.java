@@ -29,7 +29,7 @@ public class StreamUtil {
     try {
       inputStream.close();
     } catch( IOException ioe ) {
-      throw new RuntimeException( "Failed to close input stream.", ioe );
+      throw new RuntimeException( "Failed to close input stream", ioe );
     }
   }
 }

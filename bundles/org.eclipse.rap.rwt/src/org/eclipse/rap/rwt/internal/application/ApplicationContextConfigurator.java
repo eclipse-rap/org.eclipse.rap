@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.application;
 
 import javax.servlet.ServletContext;
 
+import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.service.ApplicationStoreImpl;
 import org.eclipse.rap.rwt.internal.service.ServiceManager;
@@ -46,7 +47,8 @@ class ApplicationContextConfigurator {
   }
 
   private void configureCustomSettings( ApplicationContext applicationContext ) {
-    configuration.configure( createApplication( applicationContext ) );
+    Application application = new ApplicationImpl( applicationContext, configuration );
+    configuration.configure( application );
   }
 
   private void configureInternalSettings( ApplicationContext applicationContext ) {
@@ -102,10 +104,6 @@ class ApplicationContextConfigurator {
 
   private void createDefaultTheme( ApplicationContext applicationContext ) {
     applicationContext.getThemeManager().initialize();
-  }
-
-  private ApplicationImpl createApplication( ApplicationContext applicationContext ) {
-    return new ApplicationImpl( applicationContext, configuration );
   }
 
 }

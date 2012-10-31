@@ -30,7 +30,6 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.resources.IResource;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.rap.rwt.service.IServiceHandler;
 import org.eclipse.rap.rwt.service.ISettingStoreFactory;
@@ -41,19 +40,6 @@ public class ApplicationImpl implements Application, Adaptable {
 
   private final ApplicationContext applicationContext;
   private final ApplicationConfiguration configuration;
-
-  static class ResourceLoaderImpl implements ResourceLoader {
-
-    private final ClassLoader loader;
-
-    private ResourceLoaderImpl( ClassLoader loader ) {
-      this.loader = loader;
-    }
-
-    public InputStream getResourceAsStream( String resourceName ) throws IOException {
-      return loader.getResourceAsStream( resourceName );
-    }
-  }
 
   public ApplicationImpl( ApplicationContext applicationContext,
                           ApplicationConfiguration configuration )
@@ -132,10 +118,11 @@ public class ApplicationImpl implements Application, Adaptable {
     applicationContext.getEntryPointManager().registerByName( parameter, entryPointFactory );
   }
 
-  public void addResource( IResource resource ) {
-    ParamCheck.notNull( resource, "resource" );
-
-    applicationContext.getResourceRegistry().add( resource );
+  public void addResource( String resourceName, ResourceLoader resourceLoader ) {
+    ParamCheck.notNull( resourceName, "resourceName" );
+    ParamCheck.notNull( resourceLoader, "resourceLoader" );
+    
+    applicationContext.getResourceRegistry().add( resourceName, resourceLoader );
   }
 
   public void addServiceHandler( String serviceHandlerId, IServiceHandler serviceHandler ) {
@@ -210,6 +197,19 @@ public class ApplicationImpl implements Application, Adaptable {
       result = ( T )configuration;
     }
     return result;
+  }
+
+  static class ResourceLoaderImpl implements ResourceLoader {
+
+    private final ClassLoader loader;
+
+    private ResourceLoaderImpl( ClassLoader loader ) {
+      this.loader = loader;
+    }
+
+    public InputStream getResourceAsStream( String resourceName ) throws IOException {
+      return loader.getResourceAsStream( resourceName );
+    }
   }
 
 }

@@ -23,7 +23,6 @@ import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rap.rwt.internal.service.ServiceManager;
 import org.eclipse.rap.rwt.internal.service.StartupPage;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
-import org.eclipse.rap.rwt.resources.IResource;
 import org.eclipse.rap.rwt.resources.IResourceManager;
 
 
@@ -93,7 +92,6 @@ public class ApplicationContextActivator_Test extends TestCase {
     when( applicationContext.getClientSelector() ).thenReturn( clientSelector );
 
     ResourceRegistry resourceRegistry = mock( ResourceRegistry.class );
-    when( resourceRegistry.get() ).thenReturn( new IResource[ 0 ] );
     when( applicationContext.getResourceRegistry() ).thenReturn( resourceRegistry );
   }
 

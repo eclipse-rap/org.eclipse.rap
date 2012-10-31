@@ -14,17 +14,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.Application;
-import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.resources.IResource;
-import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
+import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -40,33 +39,24 @@ public class ExampleApplication implements ApplicationConfiguration {
     application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     application.addEntryPoint( "/examples", MainUi.class, properties );
     application.addStyleSheet( RWT.DEFAULT_THEME_ID, "theme/theme.css" );
-    application.addResource( createResource( "icons/favicon.png" ) );
-    application.addResource( createResource( "icons/loading.gif" ) );
-    loadClientScriptingResources( application );
-  }
-
-  private void loadClientScriptingResources( Application application ) {
-    IResource[] resources = getClientScriptingResources();
-    for( IResource resource : resources ) {
-      application.addResource( resource );
-    }
+    application.addResource( "icons/favicon.png", createResourceLoader( "icons/favicon.png" ) );
+    application.addResource( "icons/loading.gif", createResourceLoader( "icons/loading.gif" ) );
+    registerClientScriptingResources( application );
   }
 
   // TODO [rst] Replace this hack with a proper resource loading mechanism (see bug 369957)
-  private IResource[] getClientScriptingResources() {
-    IResource[] resources = new IResource[ 0 ];
+  private void registerClientScriptingResources( Application application ) {
     Bundle clientScriptingBundle = findBundle( "org.eclipse.rap.clientscripting" );
     if( clientScriptingBundle != null ) {
-      String className = "org.eclipse.rap.clientscripting.internal.resources.ClientScriptingResource";
+      String className = "org.eclipse.rap.clientscripting.internal.resources.ClientScriptingResources";
       try {
         Class<?> resourceClass = clientScriptingBundle.loadClass( className );
-        Field field = resourceClass.getField( "ALL_RESOURCES" );
-        resources = ( IResource[] )field.get( null );
+        Method registerMethod = resourceClass.getMethod( "register", Application.class );
+        registerMethod.invoke( null, application );
       } catch( Exception exception ) {
         throw new RuntimeException( exception );
       }
     }
-    return resources;
   }
 
   private Bundle findBundle( String symbolicId ) {
@@ -80,31 +70,10 @@ public class ExampleApplication implements ApplicationConfiguration {
     return result;
   }
 
-  private static IResource createResource( final String resourceName ) {
-    return new IResource() {
-
-      public boolean isJSLibrary() {
-        return false;
-      }
-
-      public boolean isExternal() {
-        return false;
-      }
-
-      public RegisterOptions getOptions() {
-        return RegisterOptions.NONE;
-      }
-
-      public String getLocation() {
-        return resourceName;
-      }
-
-      public ClassLoader getLoader() {
-        return ExampleApplication.class.getClassLoader();
-      }
-
-      public String getCharset() {
-        return null;
+  private static ResourceLoader createResourceLoader( final String resourceName ) {
+    return new ResourceLoader() {
+      public InputStream getResourceAsStream( String resourceName ) throws IOException {
+        return getClass().getClassLoader().getResourceAsStream( resourceName );
       }
     };
   }

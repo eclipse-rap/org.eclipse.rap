@@ -31,7 +31,6 @@ import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
-import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rap.rwt.internal.service.StartupPageTemplateHolder.Variable;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rap.rwt.internal.theme.JsonValue;
@@ -40,7 +39,6 @@ import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.resources.IResource;
 
 
 final class StartupPageConfigurer {
@@ -52,13 +50,11 @@ final class StartupPageConfigurer {
   private static final String DISPLAY_TYPE = "rwt.widgets.Display";
   private static final String PROPERTY_URL = "url";
 
-  private final ResourceRegistry resourceRegistry;
   private final List<String> jsLibraries;
   private final List<String> themeDefinitions;
   private StartupPageTemplateHolder template;
 
-  StartupPageConfigurer( ResourceRegistry resourceRegistry ) {
-    this.resourceRegistry = resourceRegistry;
+  StartupPageConfigurer() {
     jsLibraries = new ArrayList<String>();
     themeDefinitions = new ArrayList<String>();
   }
@@ -209,12 +205,6 @@ final class StartupPageConfigurer {
     for( String location : themeDefinitions ) {
       writeScriptTag( buffer, location );
     }
-    IResource[] resources = resourceRegistry.get();
-    for( IResource resource : resources ) {
-      if( resource.isJSLibrary() && resource.isExternal() ) {
-        writeScriptTag( buffer, resource.getLocation() );
-      }
-    }
     String location = RWTFactory.getJSLibraryConcatenator().getLocation();
     writeScriptTag( buffer, location );
     return buffer.toString();
@@ -230,7 +220,7 @@ final class StartupPageConfigurer {
 
   private static void writeScriptTag( StringBuilder buffer, String library ) {
     if( library != null ) {
-      buffer.append( "<script type=\"text/javascript\" src=\"" );
+      buffer.append( "    <script type=\"text/javascript\" src=\"" );
       buffer.append( library );
       buffer.append( "\" charset=\"" );
       buffer.append( HTTP.CHARSET_UTF_8 );

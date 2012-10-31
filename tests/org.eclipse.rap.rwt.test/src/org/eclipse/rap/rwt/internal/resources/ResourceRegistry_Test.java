@@ -10,52 +10,73 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.resources;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.io.InputStream;
+
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
-import org.eclipse.rap.rwt.resources.IResource;
-import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
+import org.eclipse.rap.rwt.internal.resources.ResourceRegistry.ResourceRegistration;
+import org.eclipse.rap.rwt.resources.IResourceManager;
+import org.eclipse.rap.rwt.resources.ResourceLoader;
 
 
 public class ResourceRegistry_Test extends TestCase {
 
+  private IResourceManager resourceManager;
   private ResourceRegistry resourceRegistry;
 
-  private static class TestResource implements IResource {
-    public String getCharset() {
-      return null;
-    }
-    public ClassLoader getLoader() {
-      return null;
-    }
-    public String getLocation() {
-      return null;
-    }
-    public RegisterOptions getOptions() {
-      return null;
-    }
-    public boolean isExternal() {
-      return false;
-    }
-    public boolean isJSLibrary() {
-      return false;
-    }
-  }
-
   public void testAdd() {
-    IResource resource = new TestResource();
-    resourceRegistry.add( resource );
-    assertEquals( resource, resourceRegistry.get()[ 0 ] );
+    String resourceName = "name";
+    ResourceLoader resourceLoader = mock( ResourceLoader.class );
+    resourceRegistry.add( resourceName, resourceLoader );
+    
+    ResourceRegistration resourceRegistration = resourceRegistry.getResourceRegistrations()[ 0 ];
+    
+    assertEquals( resourceName, resourceRegistration.getResourceName() );
+    assertEquals( resourceLoader, resourceRegistration.getResourceLoader() );
   }
   
   public void testClear() {
-    IResource resource = new TestResource();
-    resourceRegistry.add( resource );
+    resourceRegistry.add( "name", mock( ResourceLoader.class ) );
+
     resourceRegistry.clear();
-    assertEquals( 0, resourceRegistry.get().length );
+    
+    assertEquals( 0, resourceRegistry.getResourceRegistrations().length );
+  }
+  
+  @SuppressWarnings( "resource" )
+  public void testRegisterResources() throws IOException {
+    String resourceName = "name";
+    InputStream inputStream = mock( InputStream.class );
+    ResourceLoader resourceLoader = mock( ResourceLoader.class );
+    when( resourceLoader.getResourceAsStream( resourceName ) ).thenReturn( inputStream );
+    resourceRegistry.add( resourceName, resourceLoader );
+
+    resourceRegistry.registerResources();
+    
+    verify( resourceManager ).register( resourceName, inputStream );
+    assertEquals( 0, resourceRegistry.getResourceRegistrations().length );
+  }
+  
+  public void testRegisterResourcesWithCorruptResourceLoader() {
+    String resourceName = "resource-name";
+    ResourceLoader resourceLoader = mock( ResourceLoader.class );
+    resourceRegistry.add( resourceName, resourceLoader );
+
+    try {
+      resourceRegistry.registerResources();
+      fail();
+    } catch( IllegalStateException expected ) {
+      assertTrue( expected.getMessage().contains( resourceName ) );
+    }
   }
 
   protected void setUp() throws Exception {
-    resourceRegistry = new ResourceRegistry();
+    resourceManager = mock( IResourceManager.class );
+    resourceRegistry = new ResourceRegistry( resourceManager );
   }
 }

@@ -21,7 +21,6 @@ import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.internal.widgets.BrowserHistoryImpl;
 import org.eclipse.rap.rwt.internal.widgets.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
-import org.eclipse.rap.rwt.resources.IResource;
 
 
 /**
@@ -98,7 +97,7 @@ public class WebClient implements Client {
    * must be registered to be available.
    * </p>
    *
-   * @see Application#addResource(IResource)
+   * @see Application#addResource(String,org.eclipse.rap.rwt.resources.ResourceLoader)
    * @see Application#addEntryPoint(String, Class, Map)
    * @see Application#addEntryPoint(String, IEntryPointFactory, Map)
    */

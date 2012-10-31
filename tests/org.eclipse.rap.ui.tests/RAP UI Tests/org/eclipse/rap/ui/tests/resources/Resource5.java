@@ -1,7 +1,7 @@
 package org.eclipse.rap.ui.tests.resources;
 
-import org.eclipse.rap.rwt.resources.IResource;
-import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
+import org.eclipse.rap.ui.resources.IResource;
+import org.eclipse.rap.ui.resources.RegisterOptions;
 
 
 public final class Resource5 implements IResource {
@@ -15,7 +15,7 @@ public final class Resource5 implements IResource {
   }
 
   public String getLocation() {
-    return "org/eclipse/rap/ui/tests/resources/Resource.js"; //$NON-NLS-1$
+    return "org/eclipse/rap/ui/tests/resources/Resource5.js"; //$NON-NLS-1$
   }
 
   public RegisterOptions getOptions() {

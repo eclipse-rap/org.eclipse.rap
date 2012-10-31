@@ -22,11 +22,6 @@ import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.branding.TestBranding;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
-import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.StartupPage;
-import org.eclipse.rap.rwt.internal.service.StartupPageConfigurer;
-import org.eclipse.rap.rwt.internal.service.StartupPageTemplateHolder;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -66,7 +61,7 @@ public class StartupPageConfigurer_Test extends TestCase {
   // bug 373156
   public void testRenderJsLibraries_NullSource() throws IOException {
     RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, null );
-    StartupPage page = new StartupPage( new ResourceRegistry() );
+    StartupPage page = new StartupPage();
 
     page.send();
 
@@ -81,7 +76,7 @@ public class StartupPageConfigurer_Test extends TestCase {
     properties.put( WebClient.THEME_ID, "foo.theme" );
     RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, properties );
 
-    new StartupPageConfigurer( new ResourceRegistry() ).getTemplate();
+    new StartupPageConfigurer( ).getTemplate();
 
     assertEquals( "foo.theme", ThemeUtil.getCurrentThemeId() );
   }
@@ -91,7 +86,7 @@ public class StartupPageConfigurer_Test extends TestCase {
     properties.put( WebClient.HEAD_HTML, "<meta test>" );
     RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, properties );
 
-    String page = getContent( new StartupPageConfigurer( new ResourceRegistry() ).getTemplate() );
+    String page = getContent( new StartupPageConfigurer( ).getTemplate() );
 
     assertTrue( page.contains( "<meta test>" ) );
     assertTrue( page.indexOf( "<head" ) < page.indexOf( "<meta test>" ) );
@@ -103,7 +98,7 @@ public class StartupPageConfigurer_Test extends TestCase {
     properties.put( WebClient.BODY_HTML, "<b>custom stuff</b>" );
     RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, properties );
 
-    String page = getContent( new StartupPageConfigurer( new ResourceRegistry() ).getTemplate() );
+    String page = getContent( new StartupPageConfigurer().getTemplate() );
 
     assertTrue( page.contains( "<b>custom stuff</b>" ) );
     assertTrue( page.indexOf( "<body" ) < page.indexOf( "<b>custom stuff</b>" ) );
@@ -115,7 +110,7 @@ public class StartupPageConfigurer_Test extends TestCase {
     properties.put( WebClient.PAGE_TITLE, "custom title" );
     RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, properties );
 
-    String page = getContent( new StartupPageConfigurer( new ResourceRegistry() ).getTemplate() );
+    String page = getContent( new StartupPageConfigurer().getTemplate() );
 
     assertTrue( page.contains( "<title>custom title</title>" ) );
   }
@@ -125,7 +120,7 @@ public class StartupPageConfigurer_Test extends TestCase {
     properties.put( WebClient.FAVICON, "images/site-icon.png" );
     RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, properties );
 
-    String page = getContent( new StartupPageConfigurer( new ResourceRegistry() ).getTemplate() );
+    String page = getContent( new StartupPageConfigurer().getTemplate() );
 
     assertTrue( page.contains( "<link rel=\"shortcut icon\" type=\"image/x-icon\""
                                + " href=\"rwt-resources/images/site-icon.png\" />" ) );
@@ -138,7 +133,7 @@ public class StartupPageConfigurer_Test extends TestCase {
     branding.setFavIcon( "site-icon.png" );
     RWTFactory.getBrandingManager().register( branding );
 
-    String page = getContent( new StartupPageConfigurer( new ResourceRegistry() ).getTemplate() );
+    String page = getContent( new StartupPageConfigurer().getTemplate() );
 
     assertTrue( page.contains( "<link rel=\"shortcut icon\" type=\"image/x-icon\""
                                + " href=\"rwt-resources/site-icon.png\" />" ) );

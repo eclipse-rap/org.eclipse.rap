@@ -63,14 +63,6 @@ public class ResourceManagerImpl implements IResourceManager {
     internalRegister( path, inputStream );
   }
 
-  public void register( String name, InputStream is, String charset, RegisterOptions options ) {
-    ParamCheck.notNull( name, "name" );
-    ParamCheck.notNull( is, "is" );
-    ParamCheck.notNull( charset, "charset" );
-    ParamCheck.notNull( options, "options" );
-    internalRegister( name, is );
-  }
-
   public boolean unregister( String name ) {
     ParamCheck.notNull( name, "name" );
     boolean result = false;

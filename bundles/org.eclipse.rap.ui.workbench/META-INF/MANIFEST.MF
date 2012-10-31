@@ -11,6 +11,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.eclipse.rap.ui.branding;version="1.5.100",
+ org.eclipse.rap.ui.resources;version="1.5.100",
  org.eclipse.rap.ui.interactiondesign;version="1.5.100",
  org.eclipse.rap.ui.interactiondesign.internal;version="1.5.100";x-friends:="org.eclipse.rap.ui.tests",
  org.eclipse.rap.ui.interactiondesign.layout;version="1.5.100",

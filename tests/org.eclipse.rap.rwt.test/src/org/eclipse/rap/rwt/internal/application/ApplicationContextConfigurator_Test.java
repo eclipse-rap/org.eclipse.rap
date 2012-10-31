@@ -11,8 +11,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.application;
 
+import static org.mockito.Mockito.mock;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -31,8 +34,7 @@ import org.eclipse.rap.rwt.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.resources.IResource;
-import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
+import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.rap.rwt.service.IServiceHandler;
 import org.eclipse.rap.rwt.service.ISettingStore;
 import org.eclipse.rap.rwt.service.ISettingStoreFactory;
@@ -44,7 +46,8 @@ import org.eclipse.swt.widgets.Composite;
 
 
 public class ApplicationContextConfigurator_Test extends TestCase {
-
+  
+  private static final String TEST_RESOURCE = "test-resource";
   private static final Object ATTRIBUTE_VALUE = new Object();
   private static final String ATTRIBUTE_NAME = "name";
   private static final String THEME_ID = "TestTheme";
@@ -53,22 +56,27 @@ public class ApplicationContextConfigurator_Test extends TestCase {
 
   private TestPhaseListener testPhaseListener;
   private TestSettingStoreFactory testSettingStoreFactory;
-  private TestResource testResource;
   private TestServiceHandler testServiceHandler;
   private String testServiceHandlerId;
   private ApplicationContext applicationContext;
+  private File tempDirectory;
 
   @Override
-  protected void setUp() {
+  protected void setUp() throws IOException {
+    tempDirectory = createTempDirectory();
     testPhaseListener = new TestPhaseListener();
     testSettingStoreFactory = new TestSettingStoreFactory();
-    testResource = new TestResource();
     testServiceHandler = new TestServiceHandler();
     testServiceHandlerId = "testServiceHandlerId";
   }
+  
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.delete( tempDirectory );
+  }
 
   public void testConfigure() {
-    activateApplicationContext( createConfigurator() );
+    activateApplicationContext( createConfiguration() );
 
     checkContextDirectoryHasBeenSet();
     checkPhaseListenersHaveBeenAdded();
@@ -83,11 +91,9 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   public void testConfigureWithDifferentResourceLocation() {
-    File contextDirectory = createTmpFile();
+    activateApplicationContext( createConfiguration(), tempDirectory );
 
-    activateApplicationContext( createConfigurator(), contextDirectory );
-
-    checkContextDirectoryHasBeenSet( contextDirectory );
+    checkContextDirectoryHasBeenSet( tempDirectory );
   }
 
   public void testConfigureWithDefaultSettingStoreFactory() {
@@ -101,7 +107,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   public void testReset() {
-    activateApplicationContext( createConfigurator() );
+    activateApplicationContext( createConfiguration() );
 
     applicationContext.deactivate();
 
@@ -138,12 +144,11 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     }
   }
 
-  private File createTmpFile() {
-    try {
-      return File.createTempFile( "applicationContextConfigurationTest", "tmp" );
-    } catch( IOException shouldNotHappen ) {
-      throw new IllegalStateException( shouldNotHappen );
-    }
+  private File createTempDirectory() throws IOException {
+    File result = File.createTempFile( "applicationContextConfigurationTest", ".tmp" );
+    result.delete();
+    result.mkdir();
+    return result;
   }
 
   private void createDisplay() {
@@ -152,13 +157,13 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     Fixture.disposeOfServletContext();
   }
 
-  private ApplicationConfiguration createConfigurator() {
+  private ApplicationConfiguration createConfiguration() {
     return new ApplicationConfiguration() {
       public void configure( Application configuration ) {
         configuration.addEntryPoint( "/entryPoint", TestEntryPoint.class, null );
         DefaultEntryPointFactory factory = new DefaultEntryPointFactory( TestEntryPoint.class );
         configuration.addEntryPoint( "/entryPointViaFactory", factory, null );
-        configuration.addResource( testResource );
+        configuration.addResource( TEST_RESOURCE, new TestResourceLoader() );
         configuration.addPhaseListener( testPhaseListener );
         configuration.setSettingStoreFactory( testSettingStoreFactory );
         configuration.addServiceHandler( testServiceHandlerId, testServiceHandler );
@@ -195,8 +200,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   private void checkResourceHasBeenAdded() {
-    assertEquals( 1, applicationContext.getResourceRegistry().get().length );
-    assertSame( testResource, applicationContext.getResourceRegistry().get()[ 0 ] );
+    assertTrue( applicationContext.getResourceManager().isRegistered( TEST_RESOURCE ) );
   }
 
   private void checkEntryPointsHaveBeenAdded() {
@@ -236,7 +240,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   private void checkResourceHasBeenRemoved() {
-    assertEquals( 0, applicationContext.getResourceRegistry().get().length );
+    assertEquals( 0, applicationContext.getResourceRegistry().getResourceRegistrations().length );
   }
 
   private void checkConfigurationHasBeenReset() {
@@ -295,33 +299,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     }
   }
 
-  private class TestResource implements IResource {
-
-    public ClassLoader getLoader() {
-      return null;
-    }
-
-    public String getLocation() {
-      return null;
-    }
-
-    public String getCharset() {
-      return null;
-    }
-
-    public RegisterOptions getOptions() {
-      return null;
-    }
-
-    public boolean isJSLibrary() {
-      return false;
-    }
-
-    public boolean isExternal() {
-      return true;
-    }
-  }
-
   private static class TestServiceHandler implements IServiceHandler {
     public void service() throws IOException, ServletException {
     }
@@ -332,4 +309,11 @@ public class ApplicationContextConfigurator_Test extends TestCase {
       super( parent, SWT.NONE );
     }
   }
+
+  private static class TestResourceLoader implements ResourceLoader {
+    public InputStream getResourceAsStream( String resourceName ) throws IOException {
+      return mock( InputStream.class );
+    }
+  }
+
 }

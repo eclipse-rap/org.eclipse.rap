@@ -21,16 +21,11 @@ import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
 
 
 public class TestResourceManager extends ResourceManagerImpl {
-
   private final Set<String> registeredResources;
 
   public TestResourceManager() {
     super( null );
     registeredResources = new HashSet<String>();
-  }
-
-  public String getCharset( String name ) {
-    return null;
   }
 
   public String getLocation( String name ) {

@@ -18,7 +18,6 @@ import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.resources.IResource;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.rap.rwt.service.IApplicationStore;
 import org.eclipse.rap.rwt.service.IServiceHandler;
@@ -222,13 +221,5 @@ public interface Application {
    */
   void addServiceHandler( String serviceHandlerId, IServiceHandler serviceHandler );
 
-  /**
-   * Add a resource to the application, e.g. a JavaScript file or an image. For
-   * every resource to add, an implementation of the IResource interface must be
-   * provided.
-   *
-   * @param resource the resource to add
-   * @see IResource
-   */
-  void addResource( IResource resource );
+  void addResource( String resourceName, ResourceLoader resourceLoader );
 }

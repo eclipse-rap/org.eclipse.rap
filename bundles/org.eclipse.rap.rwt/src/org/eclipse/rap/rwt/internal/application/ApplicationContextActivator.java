@@ -47,6 +47,7 @@ public class ApplicationContextActivator {
       new ClientResources( applicationContext.getResourceManager(),
                            applicationContext.getThemeManager() ).registerResources();
     }
+    applicationContext.getResourceRegistry().registerResources();
     applicationContext.getJSLibraryConcatenator().activate();
     applicationContext.getClientSelector().activate();
   }

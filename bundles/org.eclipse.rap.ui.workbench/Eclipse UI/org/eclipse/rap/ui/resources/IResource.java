@@ -9,9 +9,8 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rap.rwt.resources;
+package org.eclipse.rap.ui.resources;
 
-import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
 
 
 /**
@@ -66,7 +65,7 @@ public interface IResource {
    *
    * @return an instance of <code>RegisterOptions</code>
    *
-   * @see IResourceManager.RegisterOptions
+   * @see RegisterOptions
    */
   RegisterOptions getOptions();
 
@@ -77,7 +76,7 @@ public interface IResource {
    *
    * @return whether this resource is a javascript library
    *
-   * @see IResourceManager.RegisterOptions
+   * @see RegisterOptions
    * @see IResource#isExternal()
    * @see IResource#getOptions()
    */

@@ -33,19 +33,20 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.rap.rwt.application.Application;
-import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationImpl;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.resources.IResource;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.rap.rwt.service.IServiceHandler;
 import org.eclipse.rap.rwt.service.ISettingStoreFactory;
 import org.eclipse.rap.ui.internal.application.EntryPointApplicationWrapper;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
+import org.eclipse.rap.ui.resources.IResource;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.framework.Bundle;
@@ -81,7 +82,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   }
 
   public void configure( Application application ) {
-	application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
+	  application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     registerPhaseListener( application );
     registerSettingStoreFactory( application );
     registerWorkbenchEntryPoints( ( ApplicationImpl )application );
@@ -291,7 +292,6 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
 
   private static ResourceLoader createThemeResourceLoader( final Bundle bundle ) {
     ResourceLoader result = new ResourceLoader() {
-
       public InputStream getResourceAsStream( final String resourceName )
         throws IOException
       {
@@ -313,7 +313,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     IConfigurationElement[] elements = point.getConfigurationElements();
     DependentResource[] resources = loadResources( elements );
     resources = sortResources( resources );
-    registerResources( resources, application );
+    registerResources( application, resources );
   }
 
   private static DependentResource[] loadResources( IConfigurationElement[] elements ) {
@@ -377,11 +377,21 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     return result;
   }
 
-  private static void registerResources( DependentResource[] resources, Application application ) {
-    for( int i = 0; i < resources.length; i++ ) {
-      if( resources[ i ] != null ) {
-        application.addResource( resources[ i ].resource );
+  private static void registerResources( Application application, DependentResource[] resources ) {
+    for( DependentResource dependentResource : resources ) {
+      if( dependentResource != null ) {
+        registerResource( application, dependentResource.resource );
       }
+    }
+  }
+
+  private static void registerResource( Application application, final IResource resource ) {
+    ApplicationContext applicationContext = getApplicationContext( application );
+    if( resource.isExternal() ) {
+      applicationContext.getStartupPage().addJsLibrary( resource.getLocation() );
+    } else {
+      String location = resource.getLocation();
+      application.addResource( location, new WorkbenchResourceLoader( resource ) );
     }
   }
 
@@ -425,6 +435,12 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     return extensionPoint.getExtensions();
   }
 
+  private static ApplicationContext getApplicationContext( Application application ) {
+    ApplicationImpl applicationImpl = ( ApplicationImpl )application;
+    ApplicationContext applicationContext = applicationImpl.getAdapter( ApplicationContext.class );
+    return applicationContext;
+  }
+
   private static void logProblem( String text,
                                   Object[] textParams,
                                   Throwable problem,
@@ -433,6 +449,18 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     String msg = MessageFormat.format( text, textParams );
     Status status = new Status( IStatus.ERROR, bundleId, IStatus.OK, msg, problem );
     WorkbenchPlugin.getDefault().getLog().log( status );
+  }
+
+  private static class WorkbenchResourceLoader implements ResourceLoader {
+    private final IResource resource;
+
+    private WorkbenchResourceLoader( IResource resource ) {
+      this.resource = resource;
+    }
+
+    public InputStream getResourceAsStream( String resourceName ) {
+      return resource.getLoader().getResourceAsStream( resource.getLocation() );
+    }
   }
 
   private static final class DependentResource {

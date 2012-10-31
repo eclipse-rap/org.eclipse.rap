@@ -14,7 +14,6 @@ package org.eclipse.rap.rwt.engine;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -25,7 +24,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
-import org.eclipse.rap.rwt.engine.RWTServletContextListener;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
@@ -33,8 +31,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.resources.IResource;
-import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
 
@@ -95,7 +91,6 @@ public class RWTServletContextListener_Test extends TestCase {
 
     assertEntryPointIsRegistered();
     assertPhaseListenersAreRegistered();
-    assertResourceIsRegistered();
   }
 
   @SuppressWarnings( "unchecked" )
@@ -109,17 +104,14 @@ public class RWTServletContextListener_Test extends TestCase {
     ClassLoader contextClassLoader = mock( ClassLoader.class );
     when( contextClassLoader.loadClass( anyString() ) ).thenReturn( configuratorClass );
 
+    Thread.currentThread().setContextClassLoader( contextClassLoader );
     try {
-      Thread.currentThread().setContextClassLoader( contextClassLoader );
       rwtServletContextListener.contextInitialized( contextInitializedEvent );
     } finally {
       Thread.currentThread().setContextClassLoader( previousContextClassLoader );
     }
 
-    verify( contextClassLoader, times( 1 ) ).loadClass( anyString() );
-    assertEntryPointIsRegistered();
-    assertPhaseListenersAreRegistered();
-    assertResourceIsRegistered();
+    verify( contextClassLoader ).loadClass( "not.Existing" );
   }
 
   private void assertResourceManagerIsRegistered() {
@@ -138,13 +130,6 @@ public class RWTServletContextListener_Test extends TestCase {
     assertEquals( 2, applicationContext.getPhaseListenerRegistry().getAll().length );
   }
 
-  private void assertResourceIsRegistered() {
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-    IResource[] resources = applicationContext.getResourceRegistry().get();
-    assertEquals( 1, resources.length );
-    assertEquals( TestResource.class, resources[ 0 ].getClass() );
-  }
-
   public static class TestPhaseListener implements PhaseListener {
 
     private static final long serialVersionUID = 1L;
@@ -160,38 +145,10 @@ public class RWTServletContextListener_Test extends TestCase {
     }
   }
 
-  public static class TestResource implements IResource {
-
-    public String getCharset() {
-      return null;
-    }
-
-    public ClassLoader getLoader() {
-      return null;
-    }
-
-    public String getLocation() {
-      return null;
-    }
-
-    public RegisterOptions getOptions() {
-      return null;
-    }
-
-    public boolean isExternal() {
-      return true;
-    }
-
-    public boolean isJSLibrary() {
-      return false;
-    }
-  }
-
   private static class TestConfigurator implements ApplicationConfiguration {
     public void configure( Application configuration ) {
       configuration.addEntryPoint( "/test", TestEntryPoint.class, null );
       configuration.addPhaseListener( mock( PhaseListener.class ) );
-      configuration.addResource( new TestResource() );
     }
   }
 }

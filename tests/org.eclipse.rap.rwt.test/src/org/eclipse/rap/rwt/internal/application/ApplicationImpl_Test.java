@@ -17,15 +17,14 @@ import javax.servlet.Servlet;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
+import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.engine.RWTServlet;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
-import org.eclipse.rap.rwt.internal.application.ApplicationImpl;
 import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
+import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
 
 
@@ -100,7 +99,34 @@ public class ApplicationImpl_Test extends TestCase {
     } catch( IllegalStateException expected ) {
     }
   }
+  
+  public void testAddResource() {
+    String resourceName = "resource-name";
+    ResourceLoader resourceLoader = mock( ResourceLoader.class );
+    
+    application.addResource( resourceName, resourceLoader );
+    
+    assertEquals( 1, applicationContext.getResourceRegistry().getResourceRegistrations().length );
+  }
 
+  public void testAddResourceWithNullResourceName() {
+    ResourceLoader resourceLoader = mock( ResourceLoader.class );
+    
+    try {
+      application.addResource( null, resourceLoader );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+  
+  public void testAddResourceWithNullResourceLoader() {
+    try {
+      application.addResource( "resource-name", null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+  
   public void testGetContextViaAdapter() throws Exception {
     ApplicationContext context = application.getAdapter( ApplicationContext.class );
 

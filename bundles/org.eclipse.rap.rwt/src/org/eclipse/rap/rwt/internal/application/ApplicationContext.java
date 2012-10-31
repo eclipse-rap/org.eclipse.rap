@@ -46,6 +46,7 @@ public class ApplicationContext {
   // TODO [fappel]: this allows to set a fake double of the resource manager for testing purpose.
   //                Think about a less intrusive solution.
   static IResourceManager testResourceManager;
+  
   // TODO [fappel]: themeManager isn't final for performance reasons of the testsuite.
   //                TestServletContext#setAttribute(String,Object) will replace the runtime
   //                implementation with an optimized version for testing purpose. Think about
@@ -96,8 +97,8 @@ public class ApplicationContext {
     fontDataFactory = new FontDataFactory();
     lifeCycleAdapterFactory = new LifeCycleAdapterFactory();
     settingStoreManager = new SettingStoreManager();
-    resourceRegistry = new ResourceRegistry();
-    startupPage = new StartupPage( resourceRegistry );
+    resourceRegistry = new ResourceRegistry( getResourceManager() );
+    startupPage = new StartupPage();
     serviceManager = createServiceManager();
     displaysHolder = new DisplaysHolder();
     jsLibraryConcatenator = new JSLibraryConcatenator( resourceManager );

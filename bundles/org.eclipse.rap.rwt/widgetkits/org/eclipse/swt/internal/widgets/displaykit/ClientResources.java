@@ -20,14 +20,11 @@ import java.util.List;
 import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.resources.ContentBuffer;
-import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rap.rwt.internal.theme.QxAppearanceWriter;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.util.HTTP;
-import org.eclipse.rap.rwt.resources.IResource;
 import org.eclipse.rap.rwt.resources.IResourceManager;
-import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
 
 
 public final class ClientResources {
@@ -309,11 +306,11 @@ public final class ClientResources {
     "resource/widget/rap/scale/v_line.gif"
   };
 
-  private final ResourceManagerImpl resourceManager;
+  private final IResourceManager resourceManager;
   private final ThemeManager themeManager;
 
   public ClientResources( IResourceManager resourceManager, ThemeManager themeManager ) {
-    this.resourceManager = ( ResourceManagerImpl )resourceManager;
+    this.resourceManager = resourceManager;
     this.themeManager = themeManager;
   }
 
@@ -323,7 +320,6 @@ public final class ClientResources {
       registerJavascriptFiles();
       registerThemeResources();
       registerWidgetImages();
-      registerContributions();
     } catch( IOException ioe ) {
       throw new RuntimeException( "Failed to register resources", ioe );
     }
@@ -372,27 +368,6 @@ public final class ClientResources {
       InputStream inputStream = openResourceStream( resourcePath );
       resourceManager.register( resourcePath, inputStream );
       inputStream.close();
-    }
-  }
-
-  private void registerContributions() throws IOException {
-    IResource[] resources = RWTFactory.getResourceRegistry().get();
-    for( IResource resource : resources ) {
-      if( !resource.isExternal() ) {
-        String charset = resource.getCharset();
-        RegisterOptions options = resource.getOptions();
-        if( options == null ) {
-          options = RegisterOptions.NONE;
-        }
-        String location = resource.getLocation();
-        InputStream inputStream = resource.getLoader().getResourceAsStream( location );
-        if( charset == null ) {
-          resourceManager.register( location, inputStream );
-        } else {
-          resourceManager.register( location, inputStream, charset, options );
-        }
-        inputStream.close();
-      }
     }
   }
 
