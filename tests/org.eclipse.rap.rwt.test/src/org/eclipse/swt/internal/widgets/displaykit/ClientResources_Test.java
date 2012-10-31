@@ -65,7 +65,7 @@ public class ClientResources_Test extends TestCase {
     String clientJs = getRegisteredContent( "rap-client.js" );
 
     assertTrue( clientJs.contains( "qx.Class.define(\"rwt.runtime.System\"" ) );
-    assertTrue( clientJs.contains( "AppearanceManager.getInstance().setCurrentTheme({" ) );
+    assertTrue( clientJs.contains( "AppearanceManager.getInstance().setCurrentTheme( {" ) );
     assertFalse( clientJs.contains( "/****" ) );
     assertFalse( clientJs.contains( "Copyright" ) );
     assertTrue( clientJs.contains( "{this.JSON={}}" ) );
@@ -81,7 +81,7 @@ public class ClientResources_Test extends TestCase {
     assertTrue( clientJs.contains( "AppearanceManager.getInstance().setCurrentTheme( {" ) );
     assertTrue( clientJs.contains( "/****" ) );
     assertTrue( clientJs.contains( "Copyright" ) );
-    assertTrue( clientJs.contains( "this.JSON = {};" ) );
+    assertTrue( clientJs.contains( "this.JSON={}" ) );
   }
 
   private String getRegisteredContent( String name ) throws IOException {

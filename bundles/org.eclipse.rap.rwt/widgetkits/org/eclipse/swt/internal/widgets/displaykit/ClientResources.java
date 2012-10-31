@@ -20,7 +20,6 @@ import java.util.List;
 import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.resources.ContentBuffer;
-import org.eclipse.rap.rwt.internal.resources.JSFile;
 import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rap.rwt.internal.theme.QxAppearanceWriter;
 import org.eclipse.rap.rwt.internal.theme.Theme;
@@ -34,7 +33,7 @@ import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
 public final class ClientResources {
 
   private static final String CLIENT_JS = "client.js";
-  private static final String JSON_JS = "json2.js";
+  private static final String JSON_MIN_JS = "json2.min.js";
 
   private static final String[] JAVASCRIPT_FILES = new String[] {
     "debug-settings.js",
@@ -326,23 +325,21 @@ public final class ClientResources {
       registerWidgetImages();
       registerContributions();
     } catch( IOException ioe ) {
-      throw new RuntimeException( "Failed to register resources.", ioe );
+      throw new RuntimeException( "Failed to register resources", ioe );
     }
   }
 
   private void registerJavascriptFiles() throws IOException {
     ContentBuffer contentBuffer = new ContentBuffer();
     String appearanceCode = getQxAppearanceThemeCode();
-    String json2Code = readResourceContent( JSON_JS );
     if( RWTProperties.isDevelopmentMode() ) {
       for( String javascriptFile : JAVASCRIPT_FILES ) {
         append( contentBuffer, javascriptFile );
       }
     } else {
       append( contentBuffer, CLIENT_JS );
-      json2Code = compress( json2Code );
-      appearanceCode = compress( appearanceCode );
     }
+    String json2Code = readResourceContent( JSON_MIN_JS );
     contentBuffer.append( json2Code.getBytes( HTTP.CHARSET_UTF_8 ) );
     contentBuffer.append( appearanceCode.getBytes( HTTP.CHARSET_UTF_8 ) );
     registerJavascriptResource( contentBuffer, "rap-client.js" );
@@ -371,8 +368,7 @@ public final class ClientResources {
   }
 
   private void registerWidgetImages() throws IOException {
-    for( int i = 0; i < WIDGET_IMAGES.length; i++ ) {
-      String resourcePath = WIDGET_IMAGES[ i ];
+    for( String resourcePath : WIDGET_IMAGES ) {
       InputStream inputStream = openResourceStream( resourcePath );
       resourceManager.register( resourcePath, inputStream );
       inputStream.close();
@@ -381,8 +377,7 @@ public final class ClientResources {
 
   private void registerContributions() throws IOException {
     IResource[] resources = RWTFactory.getResourceRegistry().get();
-    for( int i = 0; i < resources.length; i++ ) {
-      IResource resource = resources[ i ];
+    for( IResource resource : resources ) {
       if( !resource.isExternal() ) {
         String charset = resource.getCharset();
         RegisterOptions options = resource.getOptions();
@@ -402,7 +397,7 @@ public final class ClientResources {
   }
 
   private void registerTextResource( String name ) throws IOException {
-    InputStream inputStream = getClass().getClassLoader().getResourceAsStream( name );
+    InputStream inputStream = openResourceStream( name );
     try {
       resourceManager.register( name, inputStream );
     } finally {
@@ -423,12 +418,7 @@ public final class ClientResources {
     RWTFactory.getStartupPage().addJsLibrary( location );
   }
 
-  private static String compress( String code ) throws IOException {
-    JSFile jsFile = new JSFile( code );
-    return jsFile.compress();
-  }
-
-  private static String readResourceContent( String location ) throws IOException {
+  private String readResourceContent( String location ) throws IOException {
     byte[] buffer = new byte[ 40960 ];
     InputStream inputStream = openResourceStream( location );
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -444,11 +434,7 @@ public final class ClientResources {
     return outputStream.toString( HTTP.CHARSET_UTF_8 );
   }
 
-  private static InputStream openResourceStream( String name ) {
-    InputStream result = ClientResources.class.getClassLoader().getResourceAsStream( name );
-    if( result == null ) {
-      throw new IllegalArgumentException( "Resource not found: " + name );
-    }
-    return result;
+  private InputStream openResourceStream( String name ) {
+    return getClass().getClassLoader().getResourceAsStream( name );
   }
 }
