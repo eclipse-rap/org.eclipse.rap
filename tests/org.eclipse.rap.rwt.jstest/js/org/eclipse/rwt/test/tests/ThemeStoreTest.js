@@ -26,6 +26,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ThemeStoreTest", {
 
     testLoadSendsRequest : function() {
       scheduleResponse();
+
       loadActiveTheme( "rwt-resource/myTheme" );
 
       assertNotNull( getRequestArguments( "send" ) );
@@ -33,12 +34,45 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ThemeStoreTest", {
 
     testRequestOpenParams : function() {
       scheduleResponse();
+
       loadActiveTheme( "rwt-resource/myTheme" );
 
       var open = getRequestArguments( "open" );
       assertEquals( "GET", open[ 0 ] );
       assertEquals( "rwt-resource/myTheme", open[ 1 ] );
       assertFalse( open[ 2 ] );
+    },
+
+    testLoadActiveTheme : function() {
+      scheduleResponse( {
+        "values" : { "colors" :  { "abc" : "#00ff00" } },
+        "theme" : {
+          "mywidget" : {
+            "background-color" : [ [ [], "abc" ] ]
+          }
+        }
+      } );
+
+      loadActiveTheme( "rwt-resource/myTheme" );
+
+      assertEquals( "rwt-resource/myTheme", themeStore.getCurrentTheme() );
+      assertEquals( "#00ff00", themeStore.getColor( "mywidget", {}, "background-color" ) );
+    },
+
+    testLoadFallbackTheme : function() {
+      scheduleResponse( {
+        "values" : { "colors" :  { "xyz" : "#00ff00" } },
+        "theme" : {
+          "mywidget" : {
+            "background-color" : [ [ [], "xyz" ] ]
+          }
+        }
+      } );
+
+      loadFallbackTheme( "rwt-resource/myFallbackTheme" );
+
+      assertEquals( "rwt-resource/myFallbackTheme", themeStore.getFallbackTheme() );
+      assertEquals( "#00ff00", themeStore.getColor( "mywidget", {}, "background-color" ) );
     },
 
     setUp : function() {
@@ -49,6 +83,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ThemeStoreTest", {
     tearDown : function() {
       themeStore.setCurrentTheme( originalTheme );
       themeStore.setFallbackTheme( originalFallback );
+      themeStore._fillNamedColors( originalFallback );
     }
 
   }
@@ -59,9 +94,17 @@ function loadActiveTheme( url ) {
   TestUtil.protocolCall( "rwt.theme.ThemeStore", "loadActiveTheme", { "url" : url } );
 }
 
-function scheduleResponse() {
+function loadFallbackTheme( url ) {
+  TestUtil.protocolCall( "rwt.theme.ThemeStore", "loadFallbackTheme", { "url" : url } );
+}
+
+function scheduleResponse( obj ) {
+  var response = "{ \"values\" : {}, \"theme\" : {} }";
+  if( obj ) {
+    response = JSON.stringify( obj );
+  }
   org.eclipse.rwt.test.fixture.FakeServer.getInstance().setRequestHandler( function() {
-    return "{ \"values\" : {}, \"theme\" : {} }";
+    return response;
   } );
 }
 

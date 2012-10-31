@@ -863,6 +863,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       result.setBorder( null );
       result.setShadow( null );
       result.open();
+      rwt.protocol.ObjectRegistry.add( "w2", result );
       TestUtil.flush();
       TestUtil.fakeResponse( false );
       return result;

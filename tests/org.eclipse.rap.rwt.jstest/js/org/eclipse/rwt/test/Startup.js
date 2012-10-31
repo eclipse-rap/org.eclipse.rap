@@ -9,6 +9,28 @@
  ******************************************************************************/
 
 rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
+  rwt.protocol.MessageProcessor.processMessage( {
+    "head": {},
+    "operations": [
+      [
+        "call",
+        "rwt.theme.ThemeStore",
+        "loadFallbackTheme", {
+          "url" : "insert url here"
+        }
+      ],
+      [
+        "call",
+        "rwt.theme.ThemeStore",
+        "loadActiveTheme", {
+          "url" : "insert url here"
+        }
+      ]
+    ]
+  } );
+  rwt.remote.Request.createXHR = function() {
+    return new org.eclipse.rwt.test.fixture.NativeRequestMock();
+  };
   org.eclipse.rwt.KeyEventSupport.getInstance()._sendRequestAsync = function() {
     rwt.remote.Server.getInstance().sendImmediate( true );
   };

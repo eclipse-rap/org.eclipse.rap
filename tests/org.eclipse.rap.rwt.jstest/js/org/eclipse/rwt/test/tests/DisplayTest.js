@@ -55,6 +55,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       assertTrue( shell.getActive() );
       var message = TestUtil.getLastMessage();
       assertEquals( "btn1", message.findSetProperty( "w1", "focusControl" ) );
+      shell.setActive( false );
       shell.destroy();
     },
 

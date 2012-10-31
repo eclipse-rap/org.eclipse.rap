@@ -22,13 +22,30 @@ rwt.protocol.AdapterRegistry.add( "rwt.theme.ThemeStore", {
   propertyHandler : {},
 
   methods : [
-    "loadActiveTheme"
+    "loadActiveTheme",
+    "loadFallbackTheme"
   ],
 
   methodHandler : {
     "loadActiveTheme" : function( object, params ) {
       var request = new rwt.remote.Request( params.url, "GET", "application/json" );
       request.setAsynchronous( false );
+      request.setSuccessHandler( function( event ) {
+        var result = JSON.parse( event.responseText );
+        object.defineValues( result.values );
+        object.setThemeCssValues( params.url, result.theme, false );
+        object.setCurrentTheme( params.url );
+      } );
+      request.send();
+    },
+    "loadFallbackTheme" : function( object, params ) {
+      var request = new rwt.remote.Request( params.url, "GET", "application/json" );
+      request.setAsynchronous( false );
+      request.setSuccessHandler( function( event ) {
+        var result = JSON.parse( event.responseText );
+        object.defineValues( result.values );
+        object.setThemeCssValues( params.url, result.theme, true );
+      } );
       request.send();
     }
   }

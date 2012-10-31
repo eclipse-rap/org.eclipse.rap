@@ -124,9 +124,7 @@ qx.Class.define( "rwt.theme.ThemeStore", {
     },
 
     setThemeCssValues : function( theme, values, isFallback ) {
-      if( this._cssValues[ theme ] === undefined ) {
-        this._cssValues[ theme ] = values;
-      }
+      this._cssValues[ theme ] = values;
       if( isFallback ) {
         this.fallbackTheme = theme;
       }
