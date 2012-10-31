@@ -174,6 +174,7 @@ public final class ClientResources {
     "org/eclipse/rwt/SVG.js",
     "org/eclipse/swt/WidgetUtil.js",
     "rwt/theme/ThemeStore.js",
+    "rwt/protocol/adapter/ThemeStoreAdapter.js",
     "rwt/widgets/base/MultiCellWidget.js",
     "rwt/widgets/ListItem.js",
     "org/eclipse/rwt/DomEventPatch.js",

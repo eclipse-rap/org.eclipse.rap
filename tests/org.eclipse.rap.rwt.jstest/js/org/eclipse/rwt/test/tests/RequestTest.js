@@ -35,7 +35,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.RequestTest", {
 
       var open = findNativeCall( "open" );
       assertEquals( "POST", open[ 0 ] );
-      assertTrue( open[ 1 ].indexOf( URL + "?nocache=" ) === 0 );
+      assertTrue( open[ 1 ].indexOf( URL + "?nocache=" ) === -1 );
       assertTrue( open[ 2 ] ); // async
     },
 
@@ -55,8 +55,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.RequestTest", {
         assertNotNull( findNativeCall( "setRequestHeader", [ "Referer", window.location.href ] ) );
       }
       assertNotNull( findNativeCall( "setRequestHeader", [ "Content-Type", contentType ] ) );
-      assertNotNull( findNativeCall( "setRequestHeader", [ "Pragma", "no-cache" ] ) );
-      assertNotNull( findNativeCall( "setRequestHeader", [ "Cache-Control", "no-cache" ] ) );
+      assertNull( findNativeCall( "setRequestHeader", [ "Pragma", "no-cache" ] ) );
+      assertNull( findNativeCall( "setRequestHeader", [ "Cache-Control", "no-cache" ] ) );
     },
 
     testCompleted : function() {

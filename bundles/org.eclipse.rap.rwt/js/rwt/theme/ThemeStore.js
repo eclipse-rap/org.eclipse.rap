@@ -96,6 +96,18 @@ qx.Class.define( "rwt.theme.ThemeStore", {
       this._currentTheme = themeId;
     },
 
+    getCurrentTheme : function() {
+      return this._currentTheme;
+    },
+
+    setFallbackTheme : function( themeId ) {
+      this.fallbackTheme = themeId;
+    },
+
+    getFallbackTheme : function() {
+      return this.fallbackTheme;
+    },
+
     /////////////
     // Server API
 

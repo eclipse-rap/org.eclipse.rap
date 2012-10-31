@@ -38,6 +38,7 @@ rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
   rwt.runtime.ErrorHandler.processJavaScriptErrorInResponse
     = function( script, error, currentRequest ) { throw error; };
   rwt.remote.Server.getInstance().setRequestCounter( 0 );
+  org.eclipse.rwt.test.fixture.TestUtil.clearXMLHttpRequests();
   org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();
   org.eclipse.rwt.test.Asserts.createShortcuts();
   org.eclipse.rwt.test.TestRunner.getInstance().run();
