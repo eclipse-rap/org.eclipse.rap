@@ -22,6 +22,7 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.rap.rwt.service.IServiceStore;
@@ -60,7 +61,8 @@ public final class ProtocolUtil {
       HttpServletRequest request = ContextProvider.getRequest();
       StringBuilder json = new StringBuilder();
       try {
-        InputStreamReader inputStreamReader = new InputStreamReader( request.getInputStream() );
+        InputStreamReader inputStreamReader
+          = new InputStreamReader( request.getInputStream(), HTTP.CHARSET_UTF_8 );
         BufferedReader reader = new BufferedReader( inputStreamReader );
         String line = reader.readLine();
         while( line != null ) {
