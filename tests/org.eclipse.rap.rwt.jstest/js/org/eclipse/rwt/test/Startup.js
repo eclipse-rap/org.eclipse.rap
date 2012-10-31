@@ -9,6 +9,28 @@
  ******************************************************************************/
 
 rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
+  rwt.protocol.MessageProcessor.processMessage( {
+    "head": {},
+    "operations": [
+      [
+        "call",
+        "rwt.theme.ThemeStore",
+        "loadFallbackTheme", {
+          "url" : "insert url here"
+        }
+      ],
+      [
+        "call",
+        "rwt.theme.ThemeStore",
+        "loadActiveTheme", {
+          "url" : "insert url here"
+        }
+      ]
+    ]
+  } );
+  rwt.remote.Request.createXHR = function() {
+    return new org.eclipse.rwt.test.fixture.NativeRequestMock();
+  };
   org.eclipse.rwt.KeyEventSupport.getInstance()._sendRequestAsync = function() {
     rwt.remote.Server.getInstance().sendImmediate( true );
   };
@@ -28,7 +50,7 @@ rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
     this._delayTimer.stop();
     this.send();
   }, server );
-
+  org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();
   rwt.protocol.MessageProcessor.processMessage( {
     "head": {},
     "operations": [
@@ -38,6 +60,7 @@ rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
   rwt.runtime.ErrorHandler.processJavaScriptErrorInResponse
     = function( script, error, currentRequest ) { throw error; };
   rwt.remote.Server.getInstance().setRequestCounter( 0 );
+  org.eclipse.rwt.test.fixture.TestUtil.clearXMLHttpRequests();
   org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();
   org.eclipse.rwt.test.Asserts.createShortcuts();
   org.eclipse.rwt.test.TestRunner.getInstance().run();

@@ -80,14 +80,10 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.FakeServer", {
     },
 
     handleMessage : function( message ) {
-      this._requestCounter++;
       var response = "";
       if( this.getRequestHandler() ) {
         response += this.getRequestHandler()( message );
       }
-      response =   "{ \"head\" : { \"requestCounter\" : "
-                 + this._requestCounter
-                 + " }, \"operations\" : [] }";
       return response;
     },
 

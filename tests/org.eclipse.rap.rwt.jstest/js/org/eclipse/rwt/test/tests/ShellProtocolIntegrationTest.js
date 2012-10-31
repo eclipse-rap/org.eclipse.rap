@@ -734,6 +734,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
       TestUtil.press( shell, "F1", false, 0 );
 
+      assertEquals( 2, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject( 1 );
       assertNotNull( message.findNotifyOperation( "w3", "Help" ) );
       this._disposeShell();

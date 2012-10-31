@@ -240,7 +240,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
 
     _cleanUp : function() {
       if( this._pause === null ) {
-        org.eclipse.rwt.test.fixture.TestUtil.clearRequestLog();
+        org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();
         org.eclipse.rwt.test.fixture.TestUtil.clearTimerOnceLog();
         org.eclipse.rwt.test.fixture.TestUtil.restoreAppearance();
         org.eclipse.rwt.test.fixture.TestUtil.emptyDragCache();

@@ -45,12 +45,15 @@ rwt.remote.Request.prototype = {
     },
 
     send : function() {
-      var urlpar = "nocache=" + ( new Date() ).valueOf();
+      var urlpar = null;
       var post = this._method === "POST";
-      if( !post ) {
-        urlpar += "&" + this._data;
+      if( !post && this._data ) {
+        urlpar = "&" + this._data;
       }
-      var url = this._url + ( this._url.indexOf( "?" ) >= 0 ? "&" : "?" ) + urlpar;
+      var url = this._url;
+      if( urlpar ) {
+        url += ( url.indexOf( "?" ) >= 0 ? "&" : "?" ) + urlpar;
+      }
       this._request.open( this._method, url, this._async );
       this._configRequest();
       this._request.send( post ? this._data : undefined );
@@ -89,8 +92,6 @@ rwt.remote.Request.prototype = {
       }
       var contentType = "application/json; charset=UTF-8";
       this._request.setRequestHeader( "Content-Type", contentType );
-      this._request.setRequestHeader( "Pragma", "no-cache" );
-      this._request.setRequestHeader( "Cache-Control", "no-cache" );
       this._request.onreadystatechange = rwt.util.Function.bind( this._onReadyStateChange, this );
     },
 

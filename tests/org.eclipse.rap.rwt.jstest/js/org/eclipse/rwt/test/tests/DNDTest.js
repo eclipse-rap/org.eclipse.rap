@@ -799,6 +799,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       // ( no need to simulate )
       // mousdown
       TestUtil.clearTimerOnceLog();
+      rwt.remote.Server.getInstance().send();
       TestUtil.clearRequestLog();
       TestUtil.fakeMouseEventDOM( targetNode, "mousedown", leftButton, 32, 16 );
       // mouseup
@@ -1156,8 +1157,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton );
       TestUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
       // drop
+      rwt.remote.Server.getInstance().send();
       TestUtil.initRequestLog();
-      TestUtil.clearTimerOnceLog();
       TestUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton );
       TestUtil.forceTimerOnce();
       // TODO [tb] : drop and dragEnd may be sent in two different requests?
@@ -1233,6 +1234,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       // over next item
       TestUtil.fakeMouseEventDOM( itemNode1, "mouseover", leftButton );
       TestUtil.fakeMouseEventDOM( itemNode1, "mousemove", leftButton );
+      rwt.remote.Server.getInstance().send();
       TestUtil.initRequestLog();
       TestUtil.clearTimerOnceLog();
       // over itself

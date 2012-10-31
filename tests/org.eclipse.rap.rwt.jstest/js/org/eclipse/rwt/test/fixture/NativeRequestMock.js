@@ -57,7 +57,3 @@ org.eclipse.rwt.test.fixture.NativeRequestMock.prototype = {
   }
 
 };
-
-rwt.remote.Request.createXHR = function() {
-  return new org.eclipse.rwt.test.fixture.NativeRequestMock();
-};
