@@ -668,6 +668,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   // client-server
 
   _requestLog : [],
+  _requestCounter : 1,
   _response : null,
   _errorPage : null,
 
@@ -676,12 +677,16 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     org.eclipse.rwt.test.fixture.TestUtil.clearRequestLog();
     server.setRequestHandler( function( message ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      TestUtil._requestCounter++;
       TestUtil._requestLog.push( message );
       if( TestUtil._response !== null ) {
         TestUtil._response();
         TestUtil._response = null;
       }
-      return "";
+      var response =    "{ \"head\" : { \"requestCounter\" : "
+                      + TestUtil._requestCounter
+                      + " }, \"operations\" : [] }";
+      return response;
     } );
   },
 
@@ -694,7 +699,10 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   clearRequestLog : function() {
-    rwt.remote.Server.getInstance().send();
+    var server = rwt.remote.Server.getInstance();
+    if( server.getMessageWriter() && server.getMessageWriter().hasOperations() ) {
+      server.send();
+    }
     this._requestLog = [];
   },
 

@@ -28,7 +28,7 @@ rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
     this._delayTimer.stop();
     this.send();
   }, server );
-
+  org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();
   rwt.protocol.MessageProcessor.processMessage( {
     "head": {},
     "operations": [

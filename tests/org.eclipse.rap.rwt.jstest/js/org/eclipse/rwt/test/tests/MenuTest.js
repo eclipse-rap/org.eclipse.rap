@@ -908,6 +908,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertTrue( subMenuItem.hasState( "over" ) );
       org.eclipse.swt.WidgetManager.getInstance().add( subMenuItem, "w3" );
       subMenuItem.setHasSelectionListener( true );
+      rwt.remote.Server.getInstance().send();
       TestUtil.clearRequestLog();
       TestUtil.press( subMenu, "Enter", true );
       TestUtil.flush();
