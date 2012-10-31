@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,7 @@ import org.eclipse.rap.rwt.internal.service.ServletLog;
 
 public final class RWTMessages {
 
-  private static final String BUNDLE_NAME
-    = "org.eclipse.rap.rwt.internal.RWTMessages";
+  private static final String BUNDLE_NAME = "org.eclipse.rap.rwt.internal.RWTMessages";
 
   private RWTMessages() {
     // prevent instantiation
@@ -41,7 +40,7 @@ public final class RWTMessages {
     if( bundle != null ) {
       try {
         result = bundle.getString( key );
-      } catch( MissingResourceException ex2 ) {
+      } catch( MissingResourceException mre ) {
       }
     }
     return result;
@@ -53,9 +52,7 @@ public final class RWTMessages {
       ClassLoader loader = RWTMessages.class.getClassLoader();
       result = ResourceBundle.getBundle( baseName, RWT.getLocale(), loader );
     } catch( RuntimeException re ) {
-      String msg = "Warning: could not retrieve resource bundle "
-                 + "- loading system default";
-      ServletLog.log( msg, re );
+      ServletLog.log( "Warning: could not retrieve resource bundle, loading system default", re );
       result = ResourceBundle.getBundle( baseName );
     }
     return result;

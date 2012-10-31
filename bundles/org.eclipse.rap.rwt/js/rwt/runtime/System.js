@@ -33,8 +33,6 @@ qx.Class.define( "rwt.runtime.System", {
       var eventHandler = org.eclipse.rwt.EventHandler;
       eventHandler.setAllowContextMenu( rwt.widgets.Menu.getAllowContextMenu );
       eventHandler.setMenuManager( org.eclipse.rwt.MenuManager.getInstance() );
-    } else {
-      this._handleUnsupported();
     }
   },
 
@@ -62,7 +60,7 @@ qx.Class.define( "rwt.runtime.System", {
     },
 
     isSupported : function() {
-      return this._isBrowserSupported() && this._isModeSupported();
+      return this._isBrowserSupported() && this._isModeSupported() && this._isXHRSupported();
     },
 
     _applyPatches : function() {
@@ -151,16 +149,8 @@ qx.Class.define( "rwt.runtime.System", {
       return result;
     },
 
-    _handleUnsupported : function() {
-      document.write( "<big style='background-color:white;color:black;'>" );
-      if( !this._isModeSupported() ) {
-        document.write( "Unsupported Browser mode: Your Browser is only supported when " );
-        document.write( "running in standard mode, but is running in quirksmode." );
-      } else {
-        document.write( "Unsupported Browser: You're using an " );
-        document.write( "outdated browser version that is not supported anymore." );
-      }
-      document.write( "</big>" );
+    _isXHRSupported : function() {
+      return typeof window.XMLHttpRequest !== "undefined";
     }
 
   },

@@ -58,27 +58,7 @@ ${libraries}
 
     <!-- validation and retrievment of startup conditions -->
     <script type="text/javascript">
-      function discoverAjax() {
-        var result;
-        if( window.ActiveXObject ) {
-          result = false;
-          var requestObject = null;
-          try {
-            requestObject = new ActiveXObject( "Msxml2.XMLHTTP" );
-          } catch ( e ) {
-            try {
-              requestObject = new ActiveXObject( "Microsoft.XMLHTTP" );
-            } catch( e ) {
-            }
-          }
-          result = requestObject != null;
-        } else if( window.XMLHttpRequest ) {
-          result = true;
-        }
-        return result;
-      }
-
-      if( discoverAjax() ) {
+      if( rwt.runtime.System.getInstance().isSupported() ) {
         // rap runtime application
         ${appScript}
         // end rap runtime application
