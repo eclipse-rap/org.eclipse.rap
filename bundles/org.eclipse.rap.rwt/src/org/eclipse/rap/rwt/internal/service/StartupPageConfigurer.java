@@ -103,10 +103,9 @@ final class StartupPageConfigurer {
 
   private static String getAppScript() {
     StringBuilder code = new StringBuilder();
-    code.append( "if( rwt.runtime.System.getInstance().isSupported() ) {" );
     code.append( "rwt.protocol.MessageProcessor.processMessage( " );
     code.append( StartupJson.get() );
-    code.append( ");/*EOM*/ }" );
+    code.append( ");/*EOM*/" );
     return code.toString();
   }
 
