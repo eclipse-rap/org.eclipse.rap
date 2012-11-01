@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.branding.AbstractBranding;
 import org.eclipse.rap.rwt.branding.Header;
@@ -30,10 +28,7 @@ import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.StartupPageTemplateHolder.Variable;
-import org.eclipse.rap.rwt.internal.textsize.MeasurementUtil;
-import org.eclipse.rap.rwt.internal.theme.JsonValue;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
@@ -46,9 +41,6 @@ final class StartupPageConfigurer {
   private static final String PACKAGE_NAME = StartupPageConfigurer.class.getPackage().getName();
   private final static String FOLDER = PACKAGE_NAME.replace( '.', '/' );
   private final static String INDEX_TEMPLATE = FOLDER + "/rwt-index.html";
-
-  private static final String DISPLAY_TYPE = "rwt.widgets.Display";
-  private static final String PROPERTY_URL = "url";
 
   private final List<String> jsLibraries;
   private final List<String> themeDefinitions;
@@ -118,27 +110,9 @@ final class StartupPageConfigurer {
     StringBuilder code = new StringBuilder();
     code.append( "if( rwt.runtime.System.getInstance().isSupported() ) {" );
     code.append( "rwt.protocol.MessageProcessor.processMessage( " );
-    code.append( getStartupProtocolMessage( "w1" ) );
+    code.append( StartupJson.get() );
     code.append( ");/*EOM*/ }" );
     return code.toString();
-  }
-
-  private static String getStartupProtocolMessage( String id ) {
-    ProtocolMessageWriter writer = new ProtocolMessageWriter();
-    appendCreateDisplay( id, writer );
-    MeasurementUtil.appendStartupTextSizeProbe( writer );
-    return writer.createMessage();
-  }
-
-  private static void appendCreateDisplay( String id, ProtocolMessageWriter writer ) {
-    writer.appendCreate( id, DISPLAY_TYPE );
-    writer.appendHead( PROPERTY_URL, JsonValue.valueOf( getUrl() ) );
-  }
-
-  private static String getUrl() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String url = request.getServletPath().substring( 1 );
-    return ContextProvider.getResponse().encodeURL( url );
   }
 
   //////////////////////////

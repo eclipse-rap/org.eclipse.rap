@@ -21,7 +21,8 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 
 public class ClientSelector {
 
-  private static final String SELECTED_CLIENT = ClientSelector.class.getName() + ".selected";
+  // TODO: [if] This constant is made public only to fake different clients in tests
+  public static final String SELECTED_CLIENT = ClientSelector.class.getName() + ".selected";
   private final List<ClientProvider> clients = new ArrayList<ClientProvider>();
   private boolean activated = false;
 

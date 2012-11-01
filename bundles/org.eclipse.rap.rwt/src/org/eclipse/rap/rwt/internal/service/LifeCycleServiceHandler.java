@@ -18,7 +18,9 @@ import java.util.Map;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.branding.AbstractBranding;
+import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
@@ -75,7 +77,11 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   private void handleGetRequest() throws IOException {
     Map<String, String[]> parameters = ContextProvider.getRequest().getParameterMap();
     RequestParameterBuffer.store( parameters );
-    startupPage.send();
+    if( RWT.getClient() instanceof WebClient ) {
+      startupPage.send();
+    } else {
+      StartupJson.send();
+    }
   }
 
   private void handlePostRequest() throws IOException {

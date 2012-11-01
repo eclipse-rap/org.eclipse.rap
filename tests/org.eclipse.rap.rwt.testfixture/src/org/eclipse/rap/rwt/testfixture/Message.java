@@ -51,27 +51,15 @@ public final class Message {
   }
 
   public int getRequestCounter() {
-    try {
-      return message.getJSONObject( "head" ).getInt( "requestCounter" );
-    } catch( JSONException e ) {
-      throw new RuntimeException( "Getting requestCounter failed" );
-    }
+    return ( ( Integer )findHeadProperty( "requestCounter" ) ).intValue();
   }
 
   public String getError() {
-    try {
-      return message.getJSONObject( "head" ).getString( "error" );
-    } catch( JSONException e ) {
-      throw new RuntimeException( "Getting error failed" );
-    }
+    return findHeadProperty( "error" ).toString();
   }
 
   public String getErrorMessage() {
-    try {
-      return message.getJSONObject( "head" ).getString( "message" );
-    } catch( JSONException e ) {
-      throw new RuntimeException( "Getting error message failed" );
-    }
+    return findHeadProperty( "message" ).toString();
   }
 
   public int getOperationCount() {
@@ -96,6 +84,14 @@ public final class Message {
       throw new IllegalArgumentException( "Unknown operation action: " + action );
     }
     return result;
+  }
+
+  public Object findHeadProperty( String property ) {
+    try {
+      return message.getJSONObject( "head" ).get( property );
+    } catch( JSONException e ) {
+      throw new RuntimeException( "Head property does not exist for key: " + property );
+    }
   }
 
   public Object findSetProperty( Widget widget, String property ) {

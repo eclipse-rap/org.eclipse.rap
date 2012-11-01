@@ -37,10 +37,12 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.engine.RWTServletContextListener;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextHelper;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
@@ -313,6 +315,10 @@ public final class Fixture {
         throw new IllegalStateException( "Failed to get response writer", exception );
       }
     }
+  }
+
+  public static void fakeClient( Client client ) {
+    ContextProvider.getSessionStore().setAttribute( ClientSelector.SELECTED_CLIENT, client );
   }
 
   public static void fakeNewRequest( Display display ) {

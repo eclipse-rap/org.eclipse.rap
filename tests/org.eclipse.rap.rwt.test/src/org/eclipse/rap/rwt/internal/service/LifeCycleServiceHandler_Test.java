@@ -24,6 +24,8 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.client.Client;
+import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
@@ -217,8 +219,21 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }
 
+  public void testContentTypeForStartupJson() throws IOException {
+    Fixture.fakeNewRequest();
+    Fixture.fakeClient( mock( Client.class ) );
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setMethod( HTTP.METHOD_GET );
+
+    new LifeCycleServiceHandler( getLifeCycleFactory(), RWTFactory.getStartupPage() ).service();
+
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
+  }
+
   public void testContentTypeForStartupPage() throws IOException {
     Fixture.fakeNewRequest();
+    Fixture.fakeClient( mock( WebClient.class ) );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setMethod( HTTP.METHOD_GET );
 
@@ -230,6 +245,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
   public void testContentTypeForHeadRequest() throws IOException {
     Fixture.fakeNewRequest();
+    Fixture.fakeClient( mock( WebClient.class ) );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setMethod( "HEAD" );
 
