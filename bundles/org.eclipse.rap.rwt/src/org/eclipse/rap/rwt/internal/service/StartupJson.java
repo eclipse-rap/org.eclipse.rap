@@ -12,20 +12,29 @@ package org.eclipse.rap.rwt.internal.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rap.rwt.internal.theme.JsonValue;
+import org.eclipse.rap.rwt.internal.theme.Theme;
+import org.eclipse.rap.rwt.internal.theme.ThemeManager;
+import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 
 
 public class StartupJson {
 
-  private static final String DISPLAY_TYPE = "rwt.widgets.Display";
-  private static final String PROPERTY_URL = "url";
+  static final String PROPERTY_URL = "url";
+  static final String DISPLAY_TYPE = "rwt.widgets.Display";
+  static final String THEME_STORE_TYPE = "rwt.theme.ThemeStore";
+  static final String METHOD_LOAD_FALLBACK_THEME = "loadFallbackTheme";
+  static final String METHOD_LOAD_ACTIVE_THEME = "loadActiveTheme";
 
   private StartupJson() {
     // prevent instantiation
@@ -40,6 +49,7 @@ public class StartupJson {
 
   static String get() {
     ProtocolMessageWriter writer = new ProtocolMessageWriter();
+    appendLoadThemeDefinitions( writer );
     appendCreateDisplay( "w1", writer );
     MeasurementUtil.appendStartupTextSizeProbe( writer );
     return writer.createMessage();
@@ -54,6 +64,19 @@ public class StartupJson {
   private static void appendCreateDisplay( String id, ProtocolMessageWriter writer ) {
     writer.appendCreate( id, DISPLAY_TYPE );
     writer.appendHead( PROPERTY_URL, JsonValue.valueOf( getUrl() ) );
+  }
+
+  private static void appendLoadThemeDefinitions( ProtocolMessageWriter writer ) {
+    ThemeManager themeManager = RWTFactory.getThemeManager();
+    Theme fallbackTheme = themeManager.getTheme( ThemeManager.FALLBACK_THEME_ID );
+    appendLoadTheme( writer, METHOD_LOAD_FALLBACK_THEME, fallbackTheme );
+    appendLoadTheme( writer, METHOD_LOAD_ACTIVE_THEME, ThemeUtil.getCurrentTheme() );
+  }
+
+  private static void appendLoadTheme( ProtocolMessageWriter writer, String method, Theme theme ) {
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "url", theme.getRegisteredLocation() );
+    writer.appendCall( THEME_STORE_TYPE, method, properties );
   }
 
   private static String getUrl() {

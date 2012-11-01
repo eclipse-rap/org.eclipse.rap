@@ -125,10 +125,9 @@ public class Theme {
   }
 
   private void registerThemeStoreFile( IResourceManager resourceManager ) {
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-    storeWriter.addTheme( this, id == ThemeManager.FALLBACK_THEME_ID );
-    String name = "rap-" + jsId + ".js";
-    String code = storeWriter.createJs();
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( this, elements );
+    String name = "rap-" + jsId + ".json";
+    String code = storeWriter.createJson();
     registeredLocation = registerResource( resourceManager, name, code );
   }
 

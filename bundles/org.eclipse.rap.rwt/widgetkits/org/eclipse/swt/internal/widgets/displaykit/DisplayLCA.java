@@ -17,7 +17,6 @@ import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyVal
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.branding.AbstractBranding;
-import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
@@ -29,8 +28,6 @@ import org.eclipse.rap.rwt.internal.protocol.IClientObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.theme.Theme;
-import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
@@ -57,7 +54,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static final String PROP_REQUEST_COUNTER = "requestCounter";
   static final String PROP_FOCUS_CONTROL = "focusControl";
-  static final String PROP_CURRENT_THEME = "currentTheme";
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
   private static final String METHOD_BEEP = "beep";
 
@@ -94,7 +90,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   public void preserveValues( Display display ) {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_FOCUS_CONTROL, display.getFocusControl() );
-    adapter.preserve( PROP_CURRENT_THEME, ThemeUtil.getCurrentThemeId() );
     adapter.preserve( PROP_EXIT_CONFIRMATION, getExitConfirmation() );
     ActiveKeysUtil.preserveActiveKeys( display );
     ActiveKeysUtil.preserveCancelKeys( display );
@@ -116,7 +111,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   public void render( Display display ) throws IOException {
     disposeWidgets();
     renderRequestCounter();
-    renderTheme( display );
     renderExitConfirmation( display );
     renderEnableUiTests( display );
     renderShells( display );
@@ -157,17 +151,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
     Integer requestId = RWTRequestVersionControl.getInstance().nextRequestId();
     protocolWriter.appendHead( PROP_REQUEST_COUNTER, requestId.intValue() );
-  }
-
-  private static void renderTheme( Display display ) {
-    String currThemeId = ThemeUtil.getCurrentThemeId();
-    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
-    Object oldThemeId = adapter.getPreserved( PROP_CURRENT_THEME );
-    if( !currThemeId.equals( oldThemeId ) ) {
-      Theme theme = RWTFactory.getThemeManager().getTheme( currThemeId );
-      IClientObject clientObject = ClientObjectFactory.getClientObject( display );
-      clientObject.set( PROP_CURRENT_THEME, theme.getJsId() );
-    }
   }
 
   private static void renderExitConfirmation( Display display ) {

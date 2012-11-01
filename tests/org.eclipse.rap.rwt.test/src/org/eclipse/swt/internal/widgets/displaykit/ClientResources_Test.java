@@ -28,6 +28,7 @@ public class ClientResources_Test extends TestCase {
   private ClientResources clientResources;
   private IResourceManager resourceManager;
 
+  @Override
   protected void setUp() {
     Fixture.setUp();
     Fixture.useDefaultResourceManager();
@@ -35,6 +36,7 @@ public class ClientResources_Test extends TestCase {
     clientResources = new ClientResources( resourceManager, RWTFactory.getThemeManager() );
   }
 
+  @Override
   protected void tearDown() {
     Fixture.tearDown();
   }
@@ -45,7 +47,7 @@ public class ClientResources_Test extends TestCase {
     assertFalse( resourceManager.isRegistered( "qx/lang/Core.js" ) );
     assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
     Theme defaultTheme = RWTFactory.getThemeManager().getTheme( RWT.DEFAULT_THEME_ID );
-    assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".js" ) );
+    assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".json" ) );
   }
 
   public void testRegisterResourcesDebug() {
@@ -56,7 +58,7 @@ public class ClientResources_Test extends TestCase {
     assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
     assertFalse( resourceManager.isRegistered( "rwt/runtime/System.js" ) );
     Theme defaultTheme = RWTFactory.getThemeManager().getTheme( RWT.DEFAULT_THEME_ID );
-    assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".js" ) );
+    assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".json" ) );
   }
 
   public void testRegisteredContent() throws IOException {

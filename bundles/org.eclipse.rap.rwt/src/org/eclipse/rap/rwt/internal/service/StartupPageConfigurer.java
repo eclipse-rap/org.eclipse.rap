@@ -29,8 +29,6 @@ import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rap.rwt.internal.service.StartupPageTemplateHolder.Variable;
-import org.eclipse.rap.rwt.internal.theme.Theme;
-import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
@@ -43,12 +41,10 @@ final class StartupPageConfigurer {
   private final static String INDEX_TEMPLATE = FOLDER + "/rwt-index.html";
 
   private final List<String> jsLibraries;
-  private final List<String> themeDefinitions;
   private StartupPageTemplateHolder template;
 
   StartupPageConfigurer() {
     jsLibraries = new ArrayList<String>();
-    themeDefinitions = new ArrayList<String>();
   }
 
   ////////////////////////////////////////////////////
@@ -60,7 +56,6 @@ final class StartupPageConfigurer {
     applyBranding();
     applyEntryPointProperties();
     applyLocalizeableMessages();
-    addThemeDefinitions();
     template.replace( StartupPageTemplateHolder.VAR_LIBRARIES, getJsLibraries() );
     template.replace( StartupPageTemplateHolder.VAR_APPSCRIPT, getAppScript() );
     return template;
@@ -162,21 +157,9 @@ final class StartupPageConfigurer {
     replacePlaceholder( template, StartupPageTemplateHolder.VAR_NO_SCRIPT_MESSAGE, noScriptWarning );
   }
 
-  private void addThemeDefinitions() {
-    themeDefinitions.clear();
-    ThemeManager themeManager = RWTFactory.getThemeManager();
-    Theme fallbackTheme = themeManager.getTheme( ThemeManager.FALLBACK_THEME_ID );
-    themeDefinitions.add( fallbackTheme.getRegisteredLocation() );
-    Theme theme = ThemeUtil.getCurrentTheme();
-    themeDefinitions.add( theme.getRegisteredLocation() );
-  }
-
   private String getJsLibraries() {
     StringBuilder buffer = new StringBuilder();
     for( String location : jsLibraries ) {
-      writeScriptTag( buffer, location );
-    }
-    for( String location : themeDefinitions ) {
       writeScriptTag( buffer, location );
     }
     String location = RWTFactory.getJSLibraryConcatenator().getLocation();

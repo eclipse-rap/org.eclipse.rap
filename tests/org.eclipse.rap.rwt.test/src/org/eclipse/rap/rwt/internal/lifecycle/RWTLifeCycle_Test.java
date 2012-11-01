@@ -253,7 +253,7 @@ public class RWTLifeCycle_Test extends TestCase {
     lifeCycle.execute();
 
     Message message = Fixture.getProtocolMessage();
-    assertTrue( message.getOperationCount() > 0 );
+    assertEquals( 0, message.getRequestCounter() );
   }
 
   public void testPhaseListenerRegistration() throws IOException {

@@ -37,13 +37,13 @@ public class ThemeStoreWriter_Test extends TestCase {
   private static Map<String,Theme> themes;
 
   public void testSetCurrentThemeId() throws Exception {
-    ThemeCssElement element1 = new ThemeCssElement( "Button" );
-    element1.addProperty( "color" );
-    element1.addProperty( "background-image" );
-    IThemeCssElement[] elements = new IThemeCssElement[] { element1 };
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-    storeWriter.addTheme( getTheme( THEME_SET_CURRENT_THEME_ID ), true );
-    String output = storeWriter.createJs();
+    ThemeCssElement element = new ThemeCssElement( "Button" );
+    element.addProperty( "color" );
+    element.addProperty( "background-image" );
+    Theme theme = getTheme( THEME_SET_CURRENT_THEME_ID );
+    IThemeCssElement[] elements = new IThemeCssElement[] { element };
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
+    String output = storeWriter.createJson();
     // register colors
     assertTrue( output.contains( "\"#000000\"" ) );
     assertTrue( output.contains( "\"#ff0000\"" ) );
@@ -62,12 +62,12 @@ public class ThemeStoreWriter_Test extends TestCase {
   }
 
   public void testWriteAnimations() throws Exception {
-    ThemeCssElement element1 = new ThemeCssElement( "Menu" );
-    element1.addProperty( "animation" );
-    IThemeCssElement[] elements = new IThemeCssElement[] { element1 };
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-    storeWriter.addTheme( getTheme( THEME_ANIMATIONS ), true );
-    String output = storeWriter.createJs();
+    ThemeCssElement element = new ThemeCssElement( "Menu" );
+    element.addProperty( "animation" );
+    Theme theme = getTheme( THEME_ANIMATIONS );
+    IThemeCssElement[] elements = new IThemeCssElement[] { element };
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
+    String output = storeWriter.createJson();
     String expected =   "\"animations\": {\n"
                       + "\"46ab28c4\": {\n"
                       + "\"slideIn\": [ 2000, \"easeIn\" ],\n"
@@ -84,10 +84,10 @@ public class ThemeStoreWriter_Test extends TestCase {
   public void testWriteVerticalGradient() throws Exception {
     ThemeCssElement element = new ThemeCssElement( "Button" );
     element.addProperty( "background-image" );
+    Theme theme = getTheme( THEME_WRITE_VERTICAL_GRADIENT );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-    storeWriter.addTheme( getTheme( THEME_WRITE_VERTICAL_GRADIENT ), true );
-    String output = storeWriter.createJs();
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
+    String output = storeWriter.createJson();
     String expected =   "\"gradients\": {\n"
                       + "\"2eb911d6\": {\n"
                       + "\"percents\": [ 0.0, 48.0, 52.0, 100.0 ],\n"
@@ -105,10 +105,10 @@ public class ThemeStoreWriter_Test extends TestCase {
   public void testWriteHorizontalGradient() throws Exception {
     ThemeCssElement element = new ThemeCssElement( "Button" );
     element.addProperty( "background-image" );
+    Theme theme = getTheme( THEME_WRITE_HORIZONTAL_GRADIENT );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-    storeWriter.addTheme( getTheme( THEME_WRITE_HORIZONTAL_GRADIENT ), true );
-    String output = storeWriter.createJs();
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
+    String output = storeWriter.createJson();
     String expected =   "\"gradients\": {\n"
                       + "\"2762759\": {\n"
                       + "\"percents\": [ 0.0, 48.0, 52.0, 100.0 ],\n"
@@ -126,10 +126,10 @@ public class ThemeStoreWriter_Test extends TestCase {
   public void testWriteShadow() throws Exception {
     ThemeCssElement element = new ThemeCssElement( "Shell" );
     element.addProperty( "box-shadow" );
+    Theme theme = getTheme( THEME_WRITE_SHADOW );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-    storeWriter.addTheme( getTheme( THEME_WRITE_SHADOW ), true );
-    String output = storeWriter.createJs();
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
+    String output = storeWriter.createJson();
     String expected =   "\"shadows\": {\n"
                       + "\"2aedfabd\": [ false, 10, 10, 3, 0, \"#000000\", 0.5 ]\n"
                       + "}\n";
@@ -144,10 +144,10 @@ public class ThemeStoreWriter_Test extends TestCase {
     ThemeCssElement element = new ThemeCssElement( "Button" );
     element.addProperty( "color" );
     element.addProperty( "background-color" );
+    Theme theme = getTheme( THEME_WRITE_COLORS );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-    storeWriter.addTheme( getTheme( THEME_WRITE_COLORS ), true );
-    String output = storeWriter.createJs();
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
+    String output = storeWriter.createJson();
     String expected =   "\"colors\": {\n"
                       + "\"ffffffff\": \"undefined\",\n"
                       + "\"400339c0\": \"#ff0000\",\n"
@@ -164,10 +164,10 @@ public class ThemeStoreWriter_Test extends TestCase {
   public void testWriteImages() throws Exception {
     ThemeCssElement element = new ThemeCssElement( "Button" );
     element.addProperty( "background-image" );
+    Theme theme = getTheme( THEME_WRITE_IMAGES );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
-    ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-    storeWriter.addTheme( getTheme( THEME_WRITE_IMAGES ), true );
-    String output = storeWriter.createJs();
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( theme, elements );
+    String output = storeWriter.createJson();
     String expectedImages =   "\"images\": {\n"
                             + "\"c84ae54c\": [ 100, 50 ]\n"
                             + "}";

@@ -20,7 +20,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.widgets.Display", {
   properties : [
     "exitConfirmation",
     "focusControl",
-    "currentTheme",
     "enableUiTests",
     "activeKeys",
     "cancelKeys"

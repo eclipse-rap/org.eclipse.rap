@@ -20,41 +20,23 @@ import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
 public final class ThemeStoreWriter {
 
   private final IThemeCssElement[] allThemeableWidgetElements;
-  private final Collection<ThemeEntry> themes;
+  private final Theme theme;
 
-  public ThemeStoreWriter( IThemeCssElement[] elements ) {
+  public ThemeStoreWriter( Theme theme, IThemeCssElement[] elements ) {
+    this.theme = theme;
     allThemeableWidgetElements = elements;
-    themes = new ArrayList<ThemeEntry>();
   }
 
-  public void addTheme( Theme theme, boolean isFallback ) {
-    themes.add( new ThemeEntry( theme, isFallback ) );
-  }
-
-  public String createJs() {
-    QxType[] allValues = getValuesFromAllThemes();
+  public String createJson() {
+    QxType[] allValues = theme.getValuesMap().getAllValues();
     Map valuesMap = createValuesMap( allValues );
-    StringBuilder jsCode = new StringBuilder();
-    jsCode.append( "( function( ts ) {\n" );
-    jsCode.append( "ts.defineValues( " );
-    jsCode.append( createJsonFromValuesMap( valuesMap ) );
-    jsCode.append( " );\n" );
-    Iterator iterator = themes.iterator();
-    while( iterator.hasNext() ) {
-      ThemeEntry themeEntry = ( ThemeEntry )iterator.next();
-      jsCode.append( "ts.setThemeCssValues( " );
-      jsCode.append( JsonValue.valueOf( themeEntry.theme.getJsId() ) );
-      jsCode.append( ", " );
-      jsCode.append( createThemeJson( themeEntry.theme ) );
-      jsCode.append( ", " );
-      jsCode.append( themeEntry.isFallback );
-      jsCode.append( " );\n" );
-    }
-    jsCode.append( "} )( rwt.theme.ThemeStore.getInstance() );\n" );
-    return jsCode.toString();
+    JsonObject json = new JsonObject();
+    json.append( "values", createJsonFromValuesMap( valuesMap ) );
+    json.append( "theme", createThemeJson() );
+    return json.toString();
   }
 
-  private JsonObject createThemeJson( Theme theme ) {
+  private JsonObject createThemeJson() {
     JsonObject result = new JsonObject();
     ThemeCssValuesMap valuesMap = theme.getValuesMap();
     for( int i = 0; i < allThemeableWidgetElements.length; i++ ) {
@@ -90,21 +72,6 @@ public final class ThemeStoreWriter {
       result.append( propertyName, valuesArray );
     }
     return result;
-  }
-
-  private QxType[] getValuesFromAllThemes() {
-    Set<QxType> valueSet = new LinkedHashSet<QxType>();
-    Iterator iterator = themes.iterator();
-    while( iterator.hasNext() ) {
-      ThemeEntry themeEntry = ( ThemeEntry )iterator.next();
-      Theme theme = themeEntry.theme;
-      ThemeCssValuesMap valuesMap = theme.getValuesMap();
-      QxType[] values = valuesMap.getAllValues();
-      for( int i = 0; i < values.length; i++ ) {
-        valueSet.add( values[ i ] );
-      }
-    }
-    return valueSet.toArray( new QxType[ valueSet.size() ] );
   }
 
   private static Map createValuesMap( QxType[] values ) {
@@ -153,14 +120,4 @@ public final class ThemeStoreWriter {
     return result;
   }
 
-  private static final class ThemeEntry {
-
-    final Theme theme;
-    final boolean isFallback;
-
-    ThemeEntry( Theme theme, boolean isFallback ) {
-      this.theme = theme;
-      this.isFallback = isFallback;
-    }
-  }
 }

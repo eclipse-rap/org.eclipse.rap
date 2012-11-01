@@ -59,17 +59,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       shell.destroy();
     },
 
-    testSetCurrentThemeByProtocol : function() {
-      MessageProcessor.processOperation( {
-        "target" : "w1",
-        "action" : "set",
-        "properties" : {
-          "currentTheme" : "myTheme"
-        }
-      } );
-      assertEquals( "myTheme", rwt.theme.ThemeStore.getInstance()._currentTheme );
-    },
-
     testSetEnableUiTests : function() {
       display.setEnableUiTests( true );
 

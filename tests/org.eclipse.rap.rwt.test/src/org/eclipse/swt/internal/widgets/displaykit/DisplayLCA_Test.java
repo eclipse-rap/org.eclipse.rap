@@ -32,7 +32,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
-import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
@@ -92,8 +91,6 @@ public class DisplayLCA_Test extends TestCase {
 
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     assertEquals( shell, adapter.getPreserved( DisplayLCA.PROP_FOCUS_CONTROL ) );
-    Object currentTheme = adapter.getPreserved( DisplayLCA.PROP_CURRENT_THEME );
-    assertEquals( ThemeUtil.getCurrentThemeId(), currentTheme );
     Object exitConfirmation = adapter.getPreserved( DisplayLCA.PROP_EXIT_CONFIRMATION );
     assertNull( exitConfirmation );
   }
@@ -304,14 +301,6 @@ public class DisplayLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNotNull( message.findSetProperty( UICallBackRenderer.UI_CALLBACK_ID, "active" ) );
-  }
-
-  public void testRenderCurrentTheme() throws IOException {
-    displayLCA.render( display );
-
-    Message message = Fixture.getProtocolMessage();
-    String expected = "rwt.theme.Default";
-    assertEquals( expected, message.findSetProperty( displayId, "currentTheme" ) );
   }
 
   public void testRenderBeep() throws IOException {

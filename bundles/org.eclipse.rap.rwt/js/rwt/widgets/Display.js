@@ -72,10 +72,6 @@ rwt.widgets.Display.prototype = {
     org.eclipse.swt.WidgetManager.getInstance().focus( widgetId );
   },
 
-  setCurrentTheme : function( themeId ) {
-    rwt.theme.ThemeStore.getInstance().setCurrentTheme( themeId );
-  },
-
   setEnableUiTests : function( value ) {
     rwt.widgets.base.Widget._renderHtmlIds = value;
   },
