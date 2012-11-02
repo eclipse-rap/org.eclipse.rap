@@ -22,7 +22,7 @@ package org.eclipse.rap.ui.resources;
  *      be versioned and compressed.</li>
  * </ul>
  *
- * @since 1.0
+ * @since 2.0
  */
 public final class RegisterOptions {
 

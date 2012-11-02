@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.rap.ui">
+<schema targetNamespace="org.eclipse.rap.ui" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
          <meta.schema plugin="org.eclipse.rap.ui" id="resources" name="Resources"/>
@@ -11,6 +11,11 @@
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
          <sequence>
             <element ref="resource" minOccurs="1" maxOccurs="unbounded"/>
@@ -62,10 +67,10 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  An implementation of &lt;code&gt;org.eclipse.rwt.resources.IResource&lt;/code&gt; to define location, options and other aspects for this resource.
+                  An implementation of &lt;code&gt;org.eclipse.rap.ui.resources.IResource&lt;/code&gt; to define location, options and other aspects for this resource.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.eclipse.rwt.resources.IResource"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.rap.ui.resources.IResource"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -120,14 +125,6 @@
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="implementation"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
    <annotation>
       <appInfo>
