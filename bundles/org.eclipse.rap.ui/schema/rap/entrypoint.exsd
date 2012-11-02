@@ -13,7 +13,6 @@ An application can register several entrypoints, each at a different URL path. T
 &lt;p&gt;
 As an alternative to registering an entrypoint, Eclipse applications can also use the interface &lt;code&gt;IApplication&lt;/code&gt;.
 &lt;/p&gt;
-
       </documentation>
    </annotation>
 
@@ -92,6 +91,16 @@ As an alternative to registering an entrypoint, Eclipse applications can also us
                </documentation>
                <appInfo>
                   <meta.attribute deprecated="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="branding" type="string">
+            <annotation>
+               <documentation>
+                  Specify the (optional) branding that should be used if this entry point is started.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.rap.ui.branding/branding/@id"/>
                </appInfo>
             </annotation>
          </attribute>

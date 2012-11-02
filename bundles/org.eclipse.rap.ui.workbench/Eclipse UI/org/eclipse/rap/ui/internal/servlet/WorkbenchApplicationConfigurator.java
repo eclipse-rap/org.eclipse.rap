@@ -194,21 +194,21 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
       String applicationId = extension.getUniqueIdentifier();
       // [if] Use full qualified applicationParameter, see bug 321360
       String applicationParameter = extension.getUniqueIdentifier();
+      String servletPath = extension.getLabel();
       String isVisible = configElement.getAttribute( PT_APP_VISIBLE );
       try {
-        // ignore invisible applications
         if( isVisible == null || Boolean.valueOf( isVisible ).booleanValue() ) {
           Bundle bundle = Platform.getBundle( contributorName );
           Class<? extends IApplication> applicationClass
             = (Class<? extends IApplication>)bundle.loadClass( className );
           IEntryPointFactory factory = createApplicationEntryPointFactory( applicationClass );
-          application.addEntryPointByParameter( applicationParameter, factory );
+          application.addEntryPoint( "/" + servletPath, factory, null );
           EntryPointParameters.register( applicationId, applicationParameter );
         }
       } catch( ClassNotFoundException exception ) {
         String text =   "Could not register application ''{0}'' " //$NON-NLS-1$
-                      + "with request startup parameter ''{1}''."; //$NON-NLS-1$
-        Object[] params = new Object[]{ className, applicationParameter };
+                      + "with servlet path ''{1}''."; //$NON-NLS-1$
+        Object[] params = new Object[]{ className, servletPath };
         logProblem( text, params, exception, contributorName );
       }
     }
@@ -218,7 +218,6 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     createApplicationEntryPointFactory( final Class<? extends IApplication> applicationClass )
   {
     return new IEntryPointFactory() {
-
       public IEntryPoint create() {
         return new EntryPointApplicationWrapper( applicationClass );
       }

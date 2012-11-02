@@ -59,13 +59,13 @@ public final class BrandingExtension {
   private static final String ELEM_SERVICE_SELECTOR = "httpServiceFilter"; //$NON-NLS-1$
   private static final String ATT_CLASS = "class"; //$NON-NLS-1$
 
-  private final Application configuration;
+  private final Application application;
   private final ServiceReference<HttpService> httpServiceReference;
 
   public BrandingExtension( Application configuration,
                             ServiceReference<HttpService> httpServiceReference )
   {
-    this.configuration = configuration;
+    this.application = configuration;
     this.httpServiceReference = httpServiceReference;
   }
 
@@ -215,7 +215,7 @@ public final class BrandingExtension {
 
   private void register( AbstractBranding branding ) {
     // TODO [rst] Find a better way to obtain the branding manager
-    ApplicationContext context = ((Adaptable) configuration).getAdapter( ApplicationContext.class );
+    ApplicationContext context = ((Adaptable) application).getAdapter( ApplicationContext.class );
     context.getBrandingManager().register( branding );
   }
 
