@@ -4,8 +4,7 @@ Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.rwt
 Bundle-Version: 2.0.0.qualifier
 Bundle-ClassPath: patch.jar,
- .,
- rhino/
+ .
 Eclipse-ExtensibleAPI: true
 Bundle-Localization: plugin
 Bundle-Vendor: %Bundle-Vendor
