@@ -20,13 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.branding.AbstractBranding;
-import org.eclipse.rap.rwt.branding.Header;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rap.rwt.internal.service.StartupPageTemplateHolder.Variable;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
@@ -53,7 +49,6 @@ final class StartupPageConfigurer {
   public StartupPageTemplateHolder getTemplate() throws IOException {
     readContent();
     template.reset();
-    applyBranding();
     applyEntryPointProperties();
     applyLocalizeableMessages();
     template.replace( StartupPageTemplateHolder.VAR_LIBRARIES, getJsLibraries() );
@@ -109,23 +104,6 @@ final class StartupPageConfigurer {
     return code.toString();
   }
 
-  //////////////////////////
-  // Branding helper methods
-
-  private void applyBranding() throws IOException {
-    AbstractBranding branding = BrandingUtil.determineBranding();
-    BrandingUtil.registerResources( branding );
-    if( branding.getThemeId() != null ) {
-      ThemeUtil.setCurrentThemeId( branding.getThemeId() );
-    } else {
-      ThemeUtil.setCurrentThemeId( RWT.DEFAULT_THEME_ID );
-    }
-    replacePlaceholder( template, StartupPageTemplateHolder.VAR_BODY, branding.getBody() );
-    replacePlaceholder( template, StartupPageTemplateHolder.VAR_TITLE, branding.getTitle() );
-    String headers = BrandingUtil.headerMarkup( branding );
-    replacePlaceholder( template, StartupPageTemplateHolder.VAR_HEADERS, headers );
-  }
-
   private void applyEntryPointProperties() {
     Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
     if( !properties.isEmpty() ) {
@@ -140,8 +118,8 @@ final class StartupPageConfigurer {
       String headerMarkup = "";
       String favIcon = properties.get( WebClient.FAVICON );
       if( favIcon != null && favIcon.length() > 0 ) {
-        Header header = BrandingUtil.createHeaderForFavIcon( favIcon );
-        headerMarkup += BrandingUtil.createMarkupForHeaders( header );
+        String pattern = "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"%1$s\" />";
+        headerMarkup += String.format( pattern, RWTFactory.getResourceManager().getLocation( favIcon ) );
       }
       String headHtml = properties.get( WebClient.HEAD_HTML );
       if( headHtml != null ) {

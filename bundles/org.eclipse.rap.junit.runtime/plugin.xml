@@ -6,7 +6,7 @@
          point="org.eclipse.rap.ui.entrypoint">
       <entrypoint
             class="org.eclipse.rap.internal.junit.runtime.Application"
-            parameter="rapjunit"
+            path="rapjunit"
             id="org.eclipse.rap.junitruntime.Application">
       </entrypoint>
    </extension>

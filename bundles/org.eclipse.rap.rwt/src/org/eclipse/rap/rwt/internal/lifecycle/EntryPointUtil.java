@@ -14,9 +14,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rap.rwt.branding.AbstractBranding;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
@@ -47,10 +45,7 @@ public class EntryPointUtil {
     if( result == null ) {
       result = findByServletPath();
       if( result == null ) {
-        result = findByBranding();
-        if( result == null ) {
-          result = getEntryPointByName( DEFAULT );
-        }
+        result = getEntryPointByName( DEFAULT );
       }
     }
     return result;
@@ -73,16 +68,6 @@ public class EntryPointUtil {
     if( path != null && path.length() > 0 ) {
       EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
       result = entryPointManager.getRegistrationByPath( path );
-    }
-    return result;
-  }
-
-  private static EntryPointRegistration findByBranding() {
-    EntryPointRegistration result = null;
-    AbstractBranding branding = BrandingUtil.determineBranding();
-    String name = branding.getDefaultEntryPoint();
-    if( name != null && name.length() > 0 ) {
-      result = getEntryPointByName( name );
     }
     return result;
   }

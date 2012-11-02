@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.application;
 
-import org.eclipse.rap.rwt.internal.branding.BrandingManager;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
@@ -42,10 +41,6 @@ public class RWTFactory {
 
   public static LifeCycleFactory getLifeCycleFactory() {
     return ApplicationContextUtil.getInstance().getLifeCycleFactory();
-  }
-
-  public static BrandingManager getBrandingManager() {
-    return ApplicationContextUtil.getInstance().getBrandingManager();
   }
 
   public static EntryPointManager getEntryPointManager() {

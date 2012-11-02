@@ -21,9 +21,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.branding.AbstractBranding;
-import org.eclipse.rap.rwt.branding.Header;
-import org.eclipse.rap.ui.branding.IExitConfirmation;
 import org.eclipse.rap.ui.internal.servlet.EntryPointParameters;
 import org.osgi.framework.Bundle;
 
@@ -41,7 +38,6 @@ public final class Branding extends AbstractBranding {
   private String favIcon;
   private List<Header> headers;
   private String body;
-  private IExitConfirmation exitConfirmation;
   private String themeId;
   private String brandingId;
 
@@ -85,10 +81,6 @@ public final class Branding extends AbstractBranding {
     }
     Header header = new Header( tagName, attributes );
     headers.add( header );
-  }
-
-  public void setExitConfirmation( final IExitConfirmation exitConfirmation ) {
-    this.exitConfirmation = exitConfirmation;
   }
 
   public void setThemeId( final String themeId ) {
@@ -152,24 +144,6 @@ public final class Branding extends AbstractBranding {
   @Override
   public String getBody() {
     return body;
-  }
-
-  @Override
-  public boolean showExitConfirmation() {
-    boolean result = false;
-    if( exitConfirmation != null ) {
-      result = exitConfirmation.showExitConfirmation();
-    }
-    return result;
-  }
-
-  @Override
-  public String getExitConfirmationText() {
-    String result = null;
-    if( exitConfirmation != null ) {
-      result  = exitConfirmation.getExitConfirmationText();
-    }
-    return result;
   }
 
   @Override

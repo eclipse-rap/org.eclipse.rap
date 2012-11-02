@@ -77,21 +77,11 @@ As an alternative to registering an entrypoint, Eclipse applications can also us
                </appInfo>
             </annotation>
          </attribute>
-         <attribute name="path" type="string">
+         <attribute name="path" type="string" use="required">
             <annotation>
                <documentation>
-                  The URL path to register the entry point at.
+                  The URL path to register the entry point at. Must start with a slash.
                </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="parameter" type="string">
-            <annotation>
-               <documentation>
-                  A URL parameter name to access the entry point. Deprecated, use the path attribute instead.
-               </documentation>
-               <appInfo>
-                  <meta.attribute deprecated="true"/>
-               </appInfo>
             </annotation>
          </attribute>
          <attribute name="branding" type="string">

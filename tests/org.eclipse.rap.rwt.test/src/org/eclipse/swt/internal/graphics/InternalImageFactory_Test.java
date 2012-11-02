@@ -34,10 +34,12 @@ public class InternalImageFactory_Test extends TestCase {
 
   private InternalImageFactory internalImageFactory;
 
-  public void testRegisterResource() {
+  public void testRegisterResource() throws IOException {
     InputStream inputStream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
     String name = "testName";
     RWT.getResourceManager().register( name, inputStream );
+    inputStream.close();
+    
     assertTrue( RWT.getResourceManager().isRegistered( name ) );
   }
 
@@ -135,10 +137,11 @@ public class InternalImageFactory_Test extends TestCase {
     assertNotSame( internalImage1, internalImage2 );
   }
 
-  public void testFindInternalImageWithPath() {
-    InputStream stream1 = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
+  public void testFindInternalImageWithPath() throws IOException {
+    InputStream stream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
     String key = "testkey";
-    InternalImage internalImage1 = internalImageFactory.findInternalImage( key, stream1 );
+    InternalImage internalImage1 = internalImageFactory.findInternalImage( key, stream );
+    stream.close();
     assertNotNull( internalImage1 );
     // second stream is not read
     InputStream stream2 = new ByteArrayInputStream( new byte[ 0 ] );

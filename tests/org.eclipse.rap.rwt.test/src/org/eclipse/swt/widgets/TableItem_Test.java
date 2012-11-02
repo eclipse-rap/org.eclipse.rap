@@ -550,7 +550,7 @@ public class TableItem_Test extends TestCase {
     }
   }
 
-  public void testSetImage() {
+  public void testSetImage() throws IOException {
     Table table = new Table( shell, SWT.CHECK );
     TableItem tableItem = new TableItem( table, 0 );
     Image[] images = new Image[]{
@@ -595,6 +595,7 @@ public class TableItem_Test extends TestCase {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Image image = new Image( display, stream );
+    stream.close();
     image.dispose();
     Image[] images2 = new Image[]{
       Graphics.getImage( Fixture.IMAGE1 ),

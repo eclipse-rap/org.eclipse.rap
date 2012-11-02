@@ -46,8 +46,7 @@ public class ContentBuffer {
   }
 
   public InputStream getContentAsStream() {
-    byte[] byteArray = bufferOutputStream.toByteArray();
-    return new ByteArrayInputStream( byteArray );
+    return new ByteArrayInputStream( bufferOutputStream.toByteArray() );
   }
 
   public byte[] getContent() {

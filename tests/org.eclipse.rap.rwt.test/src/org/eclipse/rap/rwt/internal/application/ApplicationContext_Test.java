@@ -32,9 +32,6 @@ public class ApplicationContext_Test extends TestCase {
     assertNotNull( context.getThemeManager() );
     assertSame( context.getThemeManager(), context.getThemeManager() );
 
-    assertNotNull( context.getBrandingManager() );
-    assertSame( context.getBrandingManager(), context.getBrandingManager() );
-
     assertNotNull( context.getPhaseListenerRegistry() );
     assertSame( context.getPhaseListenerRegistry(), context.getPhaseListenerRegistry() );
 

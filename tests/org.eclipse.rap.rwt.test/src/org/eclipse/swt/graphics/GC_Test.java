@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.NotSerializableException;
 
@@ -538,7 +539,7 @@ public class GC_Test extends TestCase {
     }
   }
 
-  public void testDrawImageWithDisposedImage() {
+  public void testDrawImageWithDisposedImage() throws IOException {
     Image disposedImage = createImage();
     disposedImage.dispose();
     try {
@@ -716,10 +717,12 @@ public class GC_Test extends TestCase {
     assertSame( color, gc.getForeground() );
   }
 
-  private Image createImage() {
+  private Image createImage() throws IOException {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    return new Image( display, stream );
+    Image result = new Image( display, stream );
+    stream.close();
+    return result;
   }
 
   private Color createColor() {

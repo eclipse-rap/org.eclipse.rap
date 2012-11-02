@@ -17,8 +17,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
@@ -35,6 +37,7 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationImpl;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
@@ -44,7 +47,10 @@ import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.rap.rwt.service.IServiceHandler;
 import org.eclipse.rap.rwt.service.ISettingStoreFactory;
 import org.eclipse.rap.ui.internal.application.EntryPointApplicationWrapper;
+import org.eclipse.rap.ui.internal.branding.AbstractBranding;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
+import org.eclipse.rap.ui.internal.branding.BrandingManager;
+import org.eclipse.rap.ui.internal.branding.BrandingUtil;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rap.ui.resources.IResource;
 import org.eclipse.swt.widgets.Widget;
@@ -85,14 +91,14 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
 	  application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     registerPhaseListener( application );
     registerSettingStoreFactory( application );
-    registerWorkbenchEntryPoints( ( ApplicationImpl )application );
-    registerApplicationEntryPoints( ( ApplicationImpl )application );
     registerThemeableWidgets( application );
     registerThemes( application );
     registerThemeContributions( application );
     registerResources( application );
     registerServiceHandlers( application );
-    registerBrandings( application );
+    registerBrandings( application ); // [rh] brandings must be red before apps/entry points
+    registerWorkbenchEntryPoints( ( ApplicationImpl )application );
+    registerApplicationEntryPoints( ( ApplicationImpl )application );
   }
 
   private void registerPhaseListener( Application application ) {
@@ -153,33 +159,26 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   }
 
   private static String getOSGiProperty( String name ) {
-	Bundle systemBundle = Platform.getBundle( Constants.SYSTEM_BUNDLE_SYMBOLICNAME );
-	return systemBundle.getBundleContext().getProperty( name );
+	  Bundle systemBundle = Platform.getBundle( Constants.SYSTEM_BUNDLE_SYMBOLICNAME );
+	  return systemBundle.getBundleContext().getProperty( name );
   }
 
   @SuppressWarnings( "unchecked" )
   private void registerWorkbenchEntryPoints( ApplicationImpl application ) {
     for( IConfigurationElement element : getEntryPointExtensions() ) {
-      String contributorName = element.getContributor().getName();
       String className = element.getAttribute( "class" );
-      String parameter = element.getAttribute( "parameter" );
       String path = element.getAttribute( "path" );
       String id = element.getAttribute( "id" );
+      String brandingId = element.getAttribute( "branding" );
       try {
-        Bundle bundle = Platform.getBundle( contributorName );
-        Class<? extends IEntryPoint> entryPointClass
-          = (Class<? extends IEntryPoint>)bundle.loadClass( className );
-        if( parameter != null ) {
-          application.addEntryPointByParameter( parameter, entryPointClass );
-          EntryPointParameters.register( id, parameter );
-        }
-        if( path != null ) {
-          application.addEntryPoint( path, entryPointClass, null );
-        }
+        Class<? extends IEntryPoint> entryPointClass = loadClass( className, element );
+        Map<String, String> properties = getBrandingProperties( brandingId );
+        properties.put( BrandingUtil.ENTRY_POINT_BRANDING, brandingId );
+        application.addEntryPoint( path, entryPointClass, properties );
       } catch( final Throwable thr ) {
         String text = "Could not register entry point ''{0}'' with id ''{1}''.";
         Object[] param = new Object[] { className, id };
-        logProblem( text, param, thr, contributorName );
+        logProblem( text, param, thr, element.getContributor().getName() );
       }
     }
   }
@@ -188,7 +187,6 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   private void registerApplicationEntryPoints( ApplicationImpl application ) {
     for( IExtension extension : getApplicationExtensions() ) {
       IConfigurationElement configElement = extension.getConfigurationElements()[ 0 ];
-      String contributorName = configElement.getContributor().getName();
       IConfigurationElement[] runElement = configElement.getChildren( RUN );
       String className = runElement[ 0 ].getAttribute( "class" ); //$NON-NLS-1$
       String applicationId = extension.getUniqueIdentifier();
@@ -196,20 +194,27 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
       String applicationParameter = extension.getUniqueIdentifier();
       String servletPath = extension.getLabel();
       String isVisible = configElement.getAttribute( PT_APP_VISIBLE );
+      String brandingId = null;
+      IConfigurationElement[] paramElements = runElement[ 0 ].getChildren( "parameter" );
+      for( IConfigurationElement paramElement : paramElements ) {
+        if( "branding".equals( paramElement.getAttribute( "name" ) ) ) {
+          brandingId = paramElement.getAttribute( "value" );
+        }
+      }
       try {
         if( isVisible == null || Boolean.valueOf( isVisible ).booleanValue() ) {
-          Bundle bundle = Platform.getBundle( contributorName );
-          Class<? extends IApplication> applicationClass
-            = (Class<? extends IApplication>)bundle.loadClass( className );
+          Class<? extends IApplication> applicationClass = loadClass( className, configElement );
           IEntryPointFactory factory = createApplicationEntryPointFactory( applicationClass );
-          application.addEntryPoint( "/" + servletPath, factory, null );
+          Map<String, String> properties = getBrandingProperties( brandingId );
+          properties.put( BrandingUtil.ENTRY_POINT_BRANDING, brandingId );
+          application.addEntryPoint( "/" + servletPath, factory, properties );
           EntryPointParameters.register( applicationId, applicationParameter );
         }
       } catch( ClassNotFoundException exception ) {
         String text =   "Could not register application ''{0}'' " //$NON-NLS-1$
                       + "with servlet path ''{1}''."; //$NON-NLS-1$
         Object[] params = new Object[]{ className, servletPath };
-        logProblem( text, params, exception, contributorName );
+        logProblem( text, params, exception, configElement.getContributor().getName() );
       }
     }
   }
@@ -291,9 +296,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
 
   private static ResourceLoader createThemeResourceLoader( final Bundle bundle ) {
     ResourceLoader result = new ResourceLoader() {
-      public InputStream getResourceAsStream( final String resourceName )
-        throws IOException
-      {
+      public InputStream getResourceAsStream( final String resourceName ) throws IOException {
         InputStream result = null;
         IPath path = new Path( resourceName );
         URL url = FileLocator.find( bundle, path, null );
@@ -419,7 +422,31 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
       throw new RuntimeException( "Unable to read branding extension", ioe );
     }
   }
+  
+  private static AbstractBranding findBrandingById( String id ) {
+    AbstractBranding result = null;
+    AbstractBranding[] brandings = BrandingManager.getInstance().getAll();
+    for( AbstractBranding branding : brandings ) {
+      if( branding.getId() != null && branding.getId().equals( id ) ) {
+        result = branding;
+      }
+    }
+    return result;
+  }
 
+  private Map<String, String> getBrandingProperties( String brandingId ) {
+    AbstractBranding branding = findBrandingById( brandingId );
+    Map<String,String> result = new HashMap<String,String>();
+    if( branding != null ) {
+      result.put( WebClient.THEME_ID, branding.getThemeId() );
+      result.put( WebClient.BODY_HTML, branding.getBody() );
+      result.put( WebClient.PAGE_TITLE, branding.getTitle() );
+      result.put( WebClient.FAVICON, branding.getFavIcon() );
+      result.put( WebClient.HEAD_HTML, BrandingUtil.headerMarkup( branding ) );
+    }
+    return result;
+  }
+  
   private static IConfigurationElement[] getEntryPointExtensions() {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint extensionPoint = registry.getExtensionPoint( ID_ENTRY_POINT );
@@ -436,8 +463,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
 
   private static ApplicationContext getApplicationContext( Application application ) {
     ApplicationImpl applicationImpl = ( ApplicationImpl )application;
-    ApplicationContext applicationContext = applicationImpl.getAdapter( ApplicationContext.class );
-    return applicationContext;
+    return applicationImpl.getAdapter( ApplicationContext.class );
   }
 
   private static void logProblem( String text,
@@ -448,6 +474,14 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     String msg = MessageFormat.format( text, textParams );
     Status status = new Status( IStatus.ERROR, bundleId, IStatus.OK, msg, problem );
     WorkbenchPlugin.getDefault().getLog().log( status );
+  }
+
+
+  private static <T> T loadClass( String className, IConfigurationElement element ) 
+    throws ClassNotFoundException 
+  {
+    Bundle bundle = Platform.getBundle( element.getContributor().getName() );
+    return ( T )bundle.loadClass( className );
   }
 
   private static class WorkbenchResourceLoader implements ResourceLoader {

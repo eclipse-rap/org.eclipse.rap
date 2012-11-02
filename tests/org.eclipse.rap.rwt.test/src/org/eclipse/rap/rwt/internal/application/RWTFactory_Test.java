@@ -32,9 +32,6 @@ public class RWTFactory_Test extends TestCase {
     assertNotNull( RWTFactory.getThemeManager() );
     assertSame( RWTFactory.getThemeManager(), RWTFactory.getThemeManager() );
 
-    assertNotNull( RWTFactory.getBrandingManager() );
-    assertSame( RWTFactory.getBrandingManager(), RWTFactory.getBrandingManager() );
-
     assertNotNull( RWTFactory.getPhaseListenerRegistry() );
     assertSame( RWTFactory.getPhaseListenerRegistry(), RWTFactory.getPhaseListenerRegistry() );
 

@@ -16,9 +16,8 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.rap.rwt.branding.AbstractBranding;
-import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rap.ui.interactiondesign.ConfigurableStack;
+import org.eclipse.rap.ui.internal.branding.BrandingUtil;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -151,9 +150,8 @@ public class ConfigurableStackProxy extends StackPresentation {
   
   private IConfigurationElement getBrandingElement() {
     if( brandingElement == null ) {
-      AbstractBranding branding = BrandingUtil.determineBranding();
-      if( branding != null ) {
-        String brandingId = branding.getId();
+      String brandingId = BrandingUtil.getCurrentBrandingId();
+      if( brandingId != null ) {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         String id = "org.eclipse.rap.ui.branding";
         IExtensionPoint brandingPoint = registry.getExtensionPoint( id );

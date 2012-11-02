@@ -9,7 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rap.rwt.branding;
+package org.eclipse.rap.ui.internal.branding;
 
 import java.util.Map;
 

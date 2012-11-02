@@ -22,8 +22,6 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.branding.TestBranding;
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
@@ -76,32 +74,6 @@ public class EntryPointUtil_Test extends TestCase {
 
     verify( entryPointFactory ).create();
     assertSame( entryPoint, result );
-  }
-
-  public void testGetCurrentEntryPoint_withBranding() {
-    RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
-    // register a branding with the default servlet name ("rap")
-    RWTFactory.getBrandingManager().register( new TestBranding( "rap", null, "foo" ) );
-
-    IEntryPoint result = EntryPointUtil.getCurrentEntryPoint();
-
-    verify( entryPointFactory ).create();
-    assertSame( entryPoint, result );
-  }
-
-  public void testGetCurrentEntryPoint_servletPathOverridesBranding() {
-    RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
-    RWTFactory.getBrandingManager().register( new TestBranding( "rap", null, "foo" ) );
-    IEntryPoint entryPointByPath = mockEntryPoint();
-    IEntryPointFactory entryPointFactoryByPath = mockEntryPointFactory( entryPointByPath );
-    RWTFactory.getEntryPointManager().registerByPath( "/rap", entryPointFactoryByPath, null );
-
-    IEntryPoint result = EntryPointUtil.getCurrentEntryPoint();
-
-    // Servlet path takes precedence over branding
-    verify( entryPointFactory, times( 0 ) ).create();
-    verify( entryPointFactoryByPath ).create();
-    assertSame( entryPointByPath, result );
   }
 
   public void testGetCurrentEntryPoint_parameterOverridesServletPath() {

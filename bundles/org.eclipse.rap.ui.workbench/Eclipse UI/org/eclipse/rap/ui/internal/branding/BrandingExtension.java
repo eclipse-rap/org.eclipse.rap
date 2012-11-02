@@ -14,21 +14,18 @@ package org.eclipse.rap.ui.internal.branding;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.application.Application;
-import org.eclipse.rap.rwt.branding.AbstractBranding;
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
-import org.eclipse.rap.rwt.internal.branding.BrandingManager;
-import org.eclipse.rap.ui.branding.IExitConfirmation;
+import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
@@ -39,15 +36,11 @@ public final class BrandingExtension {
 
   private static final String EP_BRANDING = "org.eclipse.rap.ui.branding"; //$NON-NLS-1$
   private static final String ATT_ID = "id"; //$NON-NLS-1$
-  private static final String ATT_DEFAULT_ENTRYPOINT_ID = "defaultEntrypointId"; //$NON-NLS-1$
-  private static final String ATT_EXIT_CONFIRMATION_CLASS = "exitConfirmationClass"; //$NON-NLS-$
   private static final String ATT_THEME_ID = "themeId"; //$NON-NLS-1$
   private static final String ATT_FAVICON = "favicon"; //$NON-NLS-1$
-  private static final String ATT_SERVLET_NAME = "servletName"; //$NON-NLS-1$
   private static final String ATT_TITLE = "title"; //$NON-NLS-1$
   private static final String ATT_BODY = "body"; //$NON-NLS-1$
   private static final String ELEM_ADITIONAL_HEADERS = "additionalHeaders"; //$NON-NLS-1$
-  private static final String ELEM_ENTRYPOINTS = "associatedEntrypoints"; //$NON-NLS-1$
   private static final String TAG_META = "meta"; //$NON-NLS-1$
   private static final String TAG_LINK = "link"; //$NON-NLS-1$
   private static final String ELEM_ATTRIBUTE = "attribute"; //$NON-NLS-1$
@@ -77,7 +70,6 @@ public final class BrandingExtension {
       IConfigurationElement configElement = brandings[ i ];
       readBranding( configElement );
     }
-    registerDefaultServletName();
   }
 
   //////////////////
@@ -85,40 +77,26 @@ public final class BrandingExtension {
 
   private void readBranding( IConfigurationElement element ) throws IOException {
     String contributor = element.getContributor().getName();
-    String defEntryPointId = element.getAttribute( ATT_DEFAULT_ENTRYPOINT_ID );
     String id = element.getAttribute( ATT_ID );
     String body = element.getAttribute( ATT_BODY );
     String title = element.getAttribute( ATT_TITLE );
-    String servletName = element.getAttribute( ATT_SERVLET_NAME );
     String favIcon = element.getAttribute( ATT_FAVICON );
     String themeId = element.getAttribute( ATT_THEME_ID );
-    IExitConfirmation exitConfirmation = findExitConfirmationImpl( element );
     Branding branding = new Branding( contributor );
     branding.setId( id );
     branding.setBody( readBody( contributor, body ) );
     branding.setTitle( title );
     branding.setThemeId( themeId );
     branding.setFavIcon( favIcon );
-    branding.setServletName( servletName );
-    branding.setExitConfirmation( exitConfirmation );
-    branding.setDefaultEntryPointId( defEntryPointId );
     // loop through all additional headers
     IConfigurationElement[] additionalHeaders = element.getChildren( ELEM_ADITIONAL_HEADERS );
     if( additionalHeaders.length > 0 ) {
       IConfigurationElement additionalHeader = additionalHeaders[ 0 ];
       readAdditionalHeader( branding, additionalHeader );
     }
-    // loop through all whitelisted entrypoints
-    IConfigurationElement[] entryPoints = element.getChildren( ELEM_ENTRYPOINTS );
-    if( entryPoints.length > 0 ) {
-      entryPoints = entryPoints[ 0 ].getChildren();
-      for( int i = 0; i < entryPoints.length; i++ ) {
-        String entryPointId = entryPoints[ i ].getAttribute( ATT_ID );
-        branding.addEntryPointId( entryPointId );
-      }
-    }
     if( !isFiltered( element ) ) {
       register( branding );
+      registerFavIcon( element, favIcon );
     }
   }
 
@@ -151,72 +129,19 @@ public final class BrandingExtension {
     return result;
   }
 
-  @SuppressWarnings( "unchecked" )
-  private IExitConfirmation findExitConfirmationImpl( IConfigurationElement element ) {
-    IExitConfirmation result = null;
-    String className = element.getAttribute( ATT_EXIT_CONFIRMATION_CLASS );
-    if( className != null ) {
-      try {
-        String contributorName = element.getContributor().getName();
-        Bundle bundle = Platform.getBundle( contributorName );
-        Class<? extends IExitConfirmation> clazz
-          = (Class<? extends IExitConfirmation>)bundle.loadClass( className );
-        if( !IExitConfirmation.class.isAssignableFrom( clazz ) ) {
-          String text = "The argument ''{0}'' must implement {1}.";
-          Object[] args = new Object[] {
-            ATT_EXIT_CONFIRMATION_CLASS,
-            IExitConfirmation.class.getName()
-          };
-          String msg = MessageFormat.format( text, args );
-          throw new IllegalArgumentException( msg );
-        }
-        try {
-          result = clazz.newInstance();
-        } catch( Exception e ) {
-          String pattern = "Can not instantiate class {0}.";
-          Object[] args = new Object[] { clazz.getName() };
-          String msg = MessageFormat.format( pattern, args );
-          throw new IllegalArgumentException( msg );
-        }
-      } catch( ClassNotFoundException e ) {
-        String pattern = "Class ''{0}'' not found.";
-        Object[] args = new Object[] { className };
-        String msg = MessageFormat.format( pattern, args );
-        throw new IllegalArgumentException( msg );
-      }
-    }
-    return result;
+  private void register( AbstractBranding branding ) {
+    BrandingManager.getInstance().register( branding );
   }
 
-  private void registerDefaultServletName() {
-    boolean found = false;
-    IExtensionRegistry registry = Platform.getExtensionRegistry();
-    IExtensionPoint ep = registry.getExtensionPoint( EP_BRANDING );
-    IConfigurationElement[] brandings = ep.getConfigurationElements();
-    for( int i = 0; !found && i < brandings.length; i++ ) {
-      String servletName = brandings[ i ].getAttribute( ATT_SERVLET_NAME );
-      if( BrandingManager.DEFAULT_SERVLET_NAME.equals( servletName ) ) {
-        found = true;
-      }
-    }
-    if( !found ) {
-      register( new AbstractBranding() {
-        @Override
-        public String getServletName() {
-          return BrandingManager.DEFAULT_SERVLET_NAME;
-        }
-        @Override
-        public String getTitle() {
-          return "RAP Application";
+  private void registerFavIcon( IConfigurationElement element, final String favIcon ) {
+    if( favIcon != null ) {
+      final Bundle bundle = Platform.getBundle( element.getContributor().getName() );
+      application.addResource( favIcon, new ResourceLoader() {
+        public InputStream getResourceAsStream( String resourceName ) throws IOException {
+          return FileLocator.openStream( bundle, new Path( favIcon ), false );
         }
       } );
     }
-  }
-
-  private void register( AbstractBranding branding ) {
-    // TODO [rst] Find a better way to obtain the branding manager
-    ApplicationContext context = ((Adaptable) application).getAdapter( ApplicationContext.class );
-    context.getBrandingManager().register( branding );
   }
 
   private void readAdditionalHeader( Branding branding, IConfigurationElement elem ) {

@@ -9,7 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rap.rwt.branding;
+package org.eclipse.rap.ui.internal.branding;
 
 import java.io.IOException;
 
@@ -149,42 +149,6 @@ public abstract class AbstractBranding {
    */
   public String getBody() {
     return null;
-  }
-
-  /**
-   * Indicates whether an exit confirmation should be shown.
-   * <p>
-   * The exit confirmation is shown whenever the user tries to close the
-   * browser window or tab or to navigate to another URL. Usually, browsers
-   * pop up a dialog that allows the user to cancel the operation.
-   * </p>
-   * <p>
-   * Note that this is a <em>hint</em> that some browsers do not support at all and others only
-   * partly (i.e. showing a generic message instead of the one provided by
-   * <code>getExitConfirmationText()</code>).
-   * </p>
-   *
-   * @return <code>true</code> if an exit confirmation should be shown
-   * @see #getExitConfirmationText()
-   * @since 1.1.1
-   */
-  // keep Javadoc in sync with IExitConfirmation
-  public boolean showExitConfirmation() {
-    return false;
-  }
-
-  /**
-   * Returns the message to display in the exit confirmation. Note that
-   * <code>showExitConfirmation()</code> must return <code>true</code> to enable
-   * this message.
-   *
-   * @return the message to be displayed in the exit confirmation
-   * @see #showExitConfirmation()
-   * @since 1.1.1
-   */
-  // keep Javadoc in sync with IExitConfirmation
-  public String getExitConfirmationText() {
-    return "";
   }
 
   /**

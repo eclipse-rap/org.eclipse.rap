@@ -74,7 +74,6 @@ class ApplicationContextConfigurator {
   }
 
   private void resetSubSystems( ApplicationContext applicationContext ) {
-    applicationContext.getBrandingManager().deregisterAll();
     applicationContext.getEntryPointManager().deregisterAll();
     applicationContext.getPhaseListenerRegistry().removeAll();
     applicationContext.getResourceRegistry().clear();

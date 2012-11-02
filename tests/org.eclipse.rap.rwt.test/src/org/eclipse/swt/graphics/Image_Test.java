@@ -12,7 +12,10 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
 
@@ -50,19 +53,18 @@ public class Image_Test extends TestCase {
     }
   }
 
-  public void testStreamConstructorUsesDefaultDisplay() {
+  public void testStreamConstructorUsesDefaultDisplay() throws IOException {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Image image = new Image( null, stream );
+    stream.close();
     assertSame( Display.getCurrent(), image.getDevice() );
   }
 
   public void testStreamConstructor() throws IOException {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Image image = new Image( device, stream );
+    Image image = createImage(Fixture.IMAGE1);
+
     assertEquals( new Rectangle( 0, 0, 58, 12 ), image.getBounds() );
-    stream.close();
   }
 
   public void testStreamConstructorWithIllegalImage() {
@@ -134,22 +136,18 @@ public class Image_Test extends TestCase {
     }
   }
 
-  public void testImageConstructorWithIllegalFlag() {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Image image = new Image( device, stream );
+  public void testImageConstructorWithIllegalFlag() throws IOException {
+    Image image = createImage( Fixture.IMAGE1 );
+
     try {
       new Image( device, image, SWT.PUSH );
       fail( "Must not allow invalid flag" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
-  public void testImageConstructor() {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Image image = new Image( device, stream );
+  public void testImageConstructor() throws IOException {
+    Image image = createImage( Fixture.IMAGE1 );
     Image copiedImage = new Image( device, image, SWT.IMAGE_COPY );
     assertEquals( image.getBounds(), copiedImage.getBounds() );
     assertSame( image.internalImage, copiedImage.internalImage );
@@ -160,20 +158,20 @@ public class Image_Test extends TestCase {
   ////////////////////////
   // ImageData constructor
   
-  public void testImageDataConstructor() {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+  public void testImageDataConstructor() throws IOException {
+    InputStream stream = Fixture.class.getClassLoader().getResourceAsStream( Fixture.IMAGE_100x50 );
     ImageData imageData = new ImageData( stream );
+    stream.close();
     Image image = new Image( device, imageData );
     assertEquals( 100, image.getBounds().width );
     assertEquals( 50, image.getBounds().height );
   }
 
-  public void testImageDataConstructorWithNullDevice() {
+  public void testImageDataConstructorWithNullDevice() throws IOException {
     device.dispose();
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
+    InputStream stream = Fixture.class.getClassLoader().getResourceAsStream( Fixture.IMAGE1 );
     ImageData imageData = new ImageData( stream );
+    stream.close();
     try {
       new Image( null, imageData );
       fail( "Must provide device for constructor" );
@@ -231,44 +229,40 @@ public class Image_Test extends TestCase {
   ////////////////
   // Image methods
 
-  public void testGetBounds() {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream1 = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    Image image1 = new Image( device, stream1 );
+  public void testGetBounds() throws IOException {
+    Image image1 = createImage( Fixture.IMAGE_100x50 );
     assertEquals( new Rectangle( 0, 0, 100, 50 ), image1.getBounds() );
-    InputStream stream2 = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    Image image2 = new Image( device, stream2 );
+
+    Image image2 = createImage( Fixture.IMAGE_100x50 );
     assertEquals( new Rectangle( 0, 0, 100, 50 ), image2.getBounds() );
   }
 
-  public void testGetBoundsWhenDisposed() {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Image image = new Image( device, stream );
+  public void testGetBoundsWhenDisposed() throws IOException {
+    Image image = createImage( Fixture.IMAGE1 );
     image.dispose();
+    
     try {
       image.getBounds();
       fail();
-    } catch( SWTException e ) {
-      assertEquals( SWT.ERROR_GRAPHIC_DISPOSED, e.code );
+    } catch( SWTException expected ) {
+      assertEquals( SWT.ERROR_GRAPHIC_DISPOSED, expected.code );
     }
   }
 
-  public void testGetImageData() {
+  public void testGetImageData() throws IOException {
     Fixture.useDefaultResourceManager();
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
     ImageData imageData = new ImageData( stream );
+    stream.close();
     Image image = new Image( device, imageData );
     ImageData imageDataFromImage = image.getImageData();
     assertEquals( 100, imageDataFromImage.width );
     assertEquals( 50, imageDataFromImage.height );
   }
 
-  public void testGetImageDataWhenDisposed() {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Image image = new Image( device, stream );
+  public void testGetImageDataWhenDisposed() throws IOException {
+    Image image = createImage(Fixture.IMAGE1);
     image.dispose();
     try {
       image.getImageData();
@@ -278,10 +272,11 @@ public class Image_Test extends TestCase {
     }
   }
 
-  public void testSetBackgroundWhenDisposed() {
+  public void testSetBackgroundWhenDisposed() throws IOException {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
     Image image = new Image( device, stream );
+    stream.close();
     image.dispose();
     try {
       image.setBackground( new Color( device, 0, 0, 0 ) );
@@ -290,10 +285,8 @@ public class Image_Test extends TestCase {
     }
   }
 
-  public void testSetBackgroundWithDisposedColor() {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    Image image = new Image( device, stream );
+  public void testSetBackgroundWithDisposedColor() throws IOException {
+    Image image = createImage( Fixture.IMAGE_100x50 );
     Color disposedColor = new Color( device, 0, 0, 0 );
     disposedColor.dispose();
     try {
@@ -303,10 +296,8 @@ public class Image_Test extends TestCase {
     }
   }
 
-  public void testSetBackgroundWithNullColor() {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    Image image = new Image( device, stream );
+  public void testSetBackgroundWithNullColor() throws IOException {
+    Image image = createImage( Fixture.IMAGE_100x50 );
     try {
       image.setBackground( null );
       fail( "setBackground must not accept null-color" );
@@ -314,18 +305,16 @@ public class Image_Test extends TestCase {
     }
   }
 
-  public void testGetBackground() {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    Image image = new Image( device, stream );
+  public void testGetBackground() throws IOException {
+    Image image = createImage( Fixture.IMAGE_100x50 );
+
     assertNull( image.getBackground() );
   }
 
-  public void testGetBackgroundWhenDisposed() {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    Image image = new Image( device, stream );
+  public void testGetBackgroundWhenDisposed() throws IOException {
+    Image image = createImage( Fixture.IMAGE_100x50 );
     image.dispose();
+    
     try {
       image.getBackground();
       fail( "setBackground cannot be called on disposed image" );
@@ -334,17 +323,11 @@ public class Image_Test extends TestCase {
     }
   }
 
-  public void testDispose() {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Image image = new Image( device, stream );
+  public void testDispose() throws IOException {
+    Image image = createImage( Fixture.IMAGE_100x50 );
     image.dispose();
+
     assertTrue( image.isDisposed() );
-    try {
-      stream.close();
-    } catch( IOException e ) {
-      fail( "Unable to close input stream." );
-    }
   }
 
   public void testDisposeFactoryCreated() {
@@ -357,32 +340,27 @@ public class Image_Test extends TestCase {
     }
   }
 
-  public void testEquality() {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream;
+  public void testEquality() throws IOException {
     Image image1 = Graphics.getImage( Fixture.IMAGE1 );
     Image image2 = Graphics.getImage( Fixture.IMAGE1 );
     Image anotherImage = Graphics.getImage( Fixture.IMAGE2 );
     assertTrue( image1.equals( image2 ) );
     assertFalse( image1.equals( anotherImage ) );
-    stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    image1 = new Image( device, stream );
-    stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    image2 = new Image( device, stream );
+
+    image1 = createImage( Fixture.IMAGE1 );
+    image2 = createImage( Fixture.IMAGE1 );
     assertFalse( image1.equals( image2 ) );
-    stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    image1 = new Image( device, stream );
+
+    image1 = createImage( Fixture.IMAGE1 );
     image2 = Graphics.getImage( Fixture.IMAGE1 );
     assertFalse( image1.equals( image2 ) );
   }
 
-  public void testIdentity() {
+  public void testIdentity() throws IOException {
     Image image1 = Graphics.getImage( Fixture.IMAGE1 );
     Image image2 = Graphics.getImage( Fixture.IMAGE1 );
     assertSame( image1, image2 );
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    image1 = new Image( device, stream );
+    image1 = createImage( Fixture.IMAGE1 );
     image2 = Graphics.getImage( Fixture.IMAGE1 );
     assertNotSame( image1, image2 );
   }
@@ -397,4 +375,12 @@ public class Image_Test extends TestCase {
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
   }
+
+  private Image createImage( String resourceName ) throws IOException {
+    InputStream stream = Fixture.class.getClassLoader().getResourceAsStream( resourceName );
+    Image result = new Image( device, stream );
+    stream.close();
+    return result;
+  }
+
 }

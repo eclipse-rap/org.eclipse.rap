@@ -16,8 +16,6 @@ import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyVal
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.branding.AbstractBranding;
-import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
@@ -167,15 +165,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static String getExitConfirmation() {
-    AbstractBranding branding = BrandingUtil.determineBranding();
-    String result = null; // does not display exit dialog
-    if( branding.showExitConfirmation() ) {
-      result = branding.getExitConfirmationText();
-      if( result == null ) {
-        result = ""; // displays an exit dialog with empty message
-      }
-    }
-    return result;
+    // TODO [rh] read exit confirmation from API introduced with bug 374478
+    return null;
   }
 
   /////////////////////////////

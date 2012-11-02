@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.branding.TestBranding;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
@@ -124,19 +123,6 @@ public class StartupPageConfigurer_Test extends TestCase {
 
     assertTrue( page.contains( "<link rel=\"shortcut icon\" type=\"image/x-icon\""
                                + " href=\"rwt-resources/images/site-icon.png\" />" ) );
-  }
-
-  public void testFavIconFromBranding() throws IOException {
-    Map<String, String> properties = new HashMap<String, String>();
-    RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, properties );
-    TestBranding branding = new TestBranding( "rap", null, null );
-    branding.setFavIcon( "site-icon.png" );
-    RWTFactory.getBrandingManager().register( branding );
-
-    String page = getContent( new StartupPageConfigurer().getTemplate() );
-
-    assertTrue( page.contains( "<link rel=\"shortcut icon\" type=\"image/x-icon\""
-                               + " href=\"rwt-resources/site-icon.png\" />" ) );
   }
 
   private static String getContent( StartupPageTemplateHolder template ) {

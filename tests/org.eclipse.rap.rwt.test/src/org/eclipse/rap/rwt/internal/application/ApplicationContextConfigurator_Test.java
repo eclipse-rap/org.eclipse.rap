@@ -111,7 +111,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
 
     applicationContext.deactivate();
 
-    checkBrandingHasBeenRemoved();
     checkEntryPointsHaveBeenRemoved();
     checkPhaseListenerHasBeenRemoved();
     checkResourceHasBeenRemoved();
@@ -225,10 +224,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   private void checkContextDirectoryHasBeenSet( File contextDirectory ) {
     ResourceDirectory resourceDirectory = applicationContext.getResourceDirectory();
     assertEquals( contextDirectory, resourceDirectory.getDirectory().getParentFile() );
-  }
-
-  private void checkBrandingHasBeenRemoved() {
-    assertEquals( 0, applicationContext.getBrandingManager().getAll().length );
   }
 
   private void checkEntryPointsHaveBeenRemoved() {

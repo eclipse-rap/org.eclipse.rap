@@ -59,30 +59,12 @@ Brandings can reside in a separate bundle, i.e. it is possible to brand applicat
       <complexType>
          <sequence>
             <element ref="additionalHeaders" minOccurs="0" maxOccurs="1"/>
-            <element ref="associatedEntrypoints" minOccurs="0" maxOccurs="1"/>
             <element ref="presentationFactory" minOccurs="0" maxOccurs="1"/>
          </sequence>
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
                   The identifier of the branding.
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="servletName" type="string" use="required">
-            <annotation>
-               <documentation>
-                  The servlet name part of the URL under which the application should be available. As an example, setting this attribute to &amp;quot;foo&amp;quot; will make your application available at &lt;code&gt;http://&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/foo&lt;/code&gt;.
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="defaultEntrypointId" type="string">
-            <annotation>
-               <documentation>
-                  A default entrypoint for this branding. This entrypoint is started when the application is accessed without a startup parameter like this: &lt;code&gt;http://&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/&amp;lt;servletName&amp;gt;&lt;/code&gt;.
-&lt;p&gt;
-The value can be either the extension id of an application extension or the id of a registered entrypoint.
-&lt;/p&gt;
                </documentation>
             </annotation>
          </attribute>
@@ -129,23 +111,6 @@ The icon should be in the .ico format for compatibility with all browsers.
                </documentation>
                <appInfo>
                   <meta.attribute kind="resource"/>
-               </appInfo>
-            </annotation>
-         </attribute>
-         <attribute name="exitConfirmationClass" type="string">
-            <annotation>
-               <documentation>
-                  A class that defines the exit confirmation behavior of this application. This can be used to display a dialog that prevent users from unintentionally leaving the RAP application, losing all  their application state.
-&lt;p&gt;
-The argument must be a class that implements the interface &lt;code&gt;IExitConfirmation&lt;/code&gt;.
-&lt;/p&gt;
-&lt;p&gt;
-&lt;b&gt;NOTE:&lt;/b&gt;
-Exit confirmations are not supported by some browsers.
-&lt;/p&gt;
-               </documentation>
-               <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.rap.ui.branding.IExitConfirmation"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -243,19 +208,6 @@ Exit confirmations are not supported by some browsers.
                </documentation>
             </annotation>
          </attribute>
-      </complexType>
-   </element>
-
-   <element name="associatedEntrypoints">
-      <annotation>
-         <documentation>
-            Defines all entrypoints which are allowed to be started with this branding (or servletName). If there are no entrypoints defined in this branding, any entrypoint is allowed to be started.
-         </documentation>
-      </annotation>
-      <complexType>
-         <sequence minOccurs="1" maxOccurs="unbounded">
-            <element ref="entrypoint"/>
-         </sequence>
       </complexType>
    </element>
 

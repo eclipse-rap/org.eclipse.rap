@@ -30,8 +30,7 @@ import org.eclipse.jface.internal.provisional.action.ICoolBarManager2;
 import org.eclipse.jface.internal.provisional.action.IToolBarContributionItem;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.TextProcessor;
-import org.eclipse.rap.rwt.branding.AbstractBranding;
-import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
+import org.eclipse.rap.ui.internal.branding.BrandingUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetListener;
@@ -617,9 +616,8 @@ public final class WorkbenchWindowConfigurer implements
     // RAP [hs] method introduced for interactiondesign API
     private String getBrandingPresentationFactoryId() {
       String result = null;
-      AbstractBranding branding = BrandingUtil.determineBranding();
-      if( branding != null ) {
-        String brandingId = branding.getId();
+      String brandingId = BrandingUtil.getCurrentBrandingId();
+      if( brandingId != null ) {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         final String id = "org.eclipse.rap.ui.branding";
         IExtensionPoint brandingPoint = registry.getExtensionPoint( id );
@@ -640,12 +638,9 @@ public final class WorkbenchWindowConfigurer implements
     }
 
     // RAP [hs] method introduced for interactiondesign API
-    private String loadBrandingPresentationFactoryId( 
-      final IConfigurationElement element )
-    {
+    private String loadBrandingPresentationFactoryId( final IConfigurationElement element ) {
       String result = null;
-      IConfigurationElement[] factory 
-        = element.getChildren( "presentationFactory" );
+      IConfigurationElement[] factory = element.getChildren( "presentationFactory" );
       if( factory.length > 0 ) {
         result = factory[ 0 ].getAttribute( "id" );
       }

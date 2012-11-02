@@ -18,9 +18,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.rap.rwt.branding.AbstractBranding;
-import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rap.ui.interactiondesign.internal.ConfigurableStackProxy;
+import org.eclipse.rap.ui.internal.branding.BrandingUtil;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.internal.LayoutPart;
 import org.eclipse.ui.internal.WorkbenchWindow;
@@ -83,9 +82,8 @@ public abstract class ConfigurationAction extends Action {
    */
   public static boolean allActionsVisible() {
     boolean result = false;
-    AbstractBranding branding = BrandingUtil.determineBranding();
-    if( branding != null ) {
-      String brandingId = branding.getId();
+    String brandingId = BrandingUtil.getCurrentBrandingId();
+    if( brandingId != null ) {
       IExtensionRegistry registry = Platform.getExtensionRegistry();
       final String id = "org.eclipse.rap.ui.branding";
       IExtensionPoint brandingPoint = registry.getExtensionPoint( id );

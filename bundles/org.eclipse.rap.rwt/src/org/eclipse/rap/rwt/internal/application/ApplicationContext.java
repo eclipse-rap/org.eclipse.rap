@@ -14,7 +14,6 @@ package org.eclipse.rap.rwt.internal.application;
 import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
-import org.eclipse.rap.rwt.internal.branding.BrandingManager;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
@@ -54,7 +53,6 @@ public class ApplicationContext {
   private ThemeManager themeManager;
   private final ResourceDirectory resourceDirectory;
   private final ResourceManagerImpl resourceManager;
-  private final BrandingManager brandingManager;
   private final PhaseListenerRegistry phaseListenerRegistry;
   private final LifeCycleFactory lifeCycleFactory;
   private final EntryPointManager entryPointManager;
@@ -89,7 +87,6 @@ public class ApplicationContext {
     entryPointManager = new EntryPointManager();
     lifeCycleFactory = new LifeCycleFactory( phaseListenerRegistry );
     themeManager = new ThemeManager();
-    brandingManager = new BrandingManager();
     resourceFactory = new ResourceFactory();
     imageFactory = new ImageFactory();
     internalImageFactory = new InternalImageFactory();
@@ -149,10 +146,6 @@ public class ApplicationContext {
 
   public EntryPointManager getEntryPointManager() {
     return entryPointManager;
-  }
-
-  public BrandingManager getBrandingManager() {
-    return brandingManager;
   }
 
   public SettingStoreManager getSettingStoreManager() {

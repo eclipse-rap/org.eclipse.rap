@@ -18,7 +18,6 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
-import org.eclipse.rap.rwt.branding.AbstractBranding;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
@@ -107,10 +106,6 @@ public class ApplicationRunner {
     Set<String> result = new HashSet<String>();
     Collection<String> servletPaths = applicationContext.getEntryPointManager().getServletPaths();
     result.addAll( servletPaths );
-    AbstractBranding[] brandings = applicationContext.getBrandingManager().getAll();
-    for( AbstractBranding branding : brandings ) {
-      result.add( "/" + branding.getServletName() );
-    }
     return Collections.unmodifiableCollection( result );
   }
 

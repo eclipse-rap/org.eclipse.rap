@@ -12,7 +12,6 @@
 package org.eclipse.rap.rwt.application;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -25,21 +24,14 @@ import javax.servlet.ServletContext;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.application.Application;
-import org.eclipse.rap.rwt.application.ApplicationConfiguration;
-import org.eclipse.rap.rwt.application.ApplicationRunner;
-import org.eclipse.rap.rwt.branding.AbstractBranding;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
-import org.eclipse.rap.rwt.internal.branding.BrandingManager;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.mockito.ArgumentCaptor;
 
 
 public class ApplicationRunner_Test extends TestCase {
 
   private static final String SERVLET_PATH = "/foo";
-  private static final String SERVLET_NAME = "bar";
 
   private ServletContext servletContext;
   private ApplicationConfiguration configuration;
@@ -86,6 +78,7 @@ public class ApplicationRunner_Test extends TestCase {
     checkApplicationContextGetsDeregisteredAnyway();
   }
 
+  @SuppressWarnings( "deprecation" )
   public void testGetDefaultServletNames() {
     applicationRunner.start();
 
@@ -94,18 +87,8 @@ public class ApplicationRunner_Test extends TestCase {
     assertTrue( servletPaths.isEmpty() );
   }
 
-  public void testGetServletNames_withEntryPointAndBranding() {
-    startWithEntryPointConfiguration();
-    fakeBranding();
-
-    Collection<String> servletPaths = applicationRunner.getServletPaths();
-
-    assertEquals( 2, servletPaths.size() );
-    assertTrue( servletPaths.contains( SERVLET_PATH ) );
-    assertTrue( servletPaths.contains( "/" + SERVLET_NAME ) );
-  }
-
-  public void testGetServletNames_withEntryPoint() {
+  @SuppressWarnings( "deprecation" )
+  public void testGetServletNames() {
     startWithEntryPointConfiguration();
 
     Collection<String> servletPaths = applicationRunner.getServletPaths();
@@ -140,21 +123,6 @@ public class ApplicationRunner_Test extends TestCase {
 
   private void checkApplicationContextHasBeenDeregistered() {
     verify( servletContext ).removeAttribute( any( String.class ) );
-  }
-
-  private void fakeBranding() {
-    // TODO [rst] Remove when brandings are not supported anymore
-    AbstractBranding branding = new AbstractBranding() {
-      @Override
-      public String getServletName() {
-        return SERVLET_NAME;
-      }
-    };
-    ArgumentCaptor<ApplicationContext> argument = ArgumentCaptor.forClass( ApplicationContext.class );
-    verify( servletContext ).setAttribute( anyString(), argument.capture() );
-    ApplicationContext applicationContext = argument.getValue();
-    BrandingManager brandingManager = applicationContext.getBrandingManager();
-    brandingManager.register( branding );
   }
 
   private void startWithEntryPointConfiguration() {

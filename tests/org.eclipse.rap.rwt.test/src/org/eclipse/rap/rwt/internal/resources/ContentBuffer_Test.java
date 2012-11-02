@@ -34,6 +34,7 @@ public class ContentBuffer_Test extends TestCase {
     assertEquals( 0, content.length );
   }
 
+  @SuppressWarnings( "resource" )
   public void testGetContentAsStreamWhenEmpty() throws IOException {
     InputStream inputStream = contentBuffer.getContentAsStream();
 
@@ -79,6 +80,7 @@ public class ContentBuffer_Test extends TestCase {
     assertEquals( "foo\nbar\n", new String( content, "UTF-8" ) );
   }
 
+  @SuppressWarnings( "resource" )
   public void testGetContentAsStream() throws IOException {
     contentBuffer.append( "foo".getBytes( "UTF-8" ) );
 

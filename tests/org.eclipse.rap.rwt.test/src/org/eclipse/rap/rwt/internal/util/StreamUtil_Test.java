@@ -48,6 +48,7 @@ public class StreamUtil_Test extends TestCase {
   }
   
   
+  @SuppressWarnings( "resource" )
   public void testClose() throws IOException {
     InputStream inputStream = mock( InputStream.class );
     
@@ -56,6 +57,7 @@ public class StreamUtil_Test extends TestCase {
     verify( inputStream ).close();
   }
   
+  @SuppressWarnings( "resource" )
   public void testCloseWithException() throws IOException {
     InputStream inputStream = mock( InputStream.class );
     doThrow( new IOException() ).when( inputStream ).close();

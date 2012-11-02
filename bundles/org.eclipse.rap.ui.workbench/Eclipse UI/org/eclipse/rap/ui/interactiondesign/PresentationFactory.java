@@ -11,6 +11,7 @@ package org.eclipse.rap.ui.interactiondesign;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -25,10 +26,10 @@ import org.eclipse.jface.internal.provisional.action.IToolBarManager2;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.rap.rwt.branding.AbstractBranding;
-import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rap.ui.interactiondesign.internal.ConfigurableStackProxy;
 import org.eclipse.rap.ui.interactiondesign.layout.LayoutRegistry;
+import org.eclipse.rap.ui.internal.branding.BrandingUtil;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbench;
@@ -287,9 +288,7 @@ public abstract class PresentationFactory extends AbstractPresentationFactory
     return result;
   }
 
-  private String loadBrandingDefaultLayoutId( 
-    final IConfigurationElement element )
-  {
+  private String loadBrandingDefaultLayoutId( final IConfigurationElement element ) {
     String result = null;
     IConfigurationElement[] factory 
       = element.getChildren( "presentationFactory" );
@@ -301,15 +300,12 @@ public abstract class PresentationFactory extends AbstractPresentationFactory
   
   private String loadBrandingLayoutId() {
     String result = null;
-    AbstractBranding branding = BrandingUtil.determineBranding();
-    if( branding != null ) {
-      String brandingId = branding.getId();
+    String brandingId = BrandingUtil.getCurrentBrandingId();
+    if( brandingId != null ) {
       IExtensionRegistry registry = Platform.getExtensionRegistry();
-      String id = "org.eclipse.rap.ui.branding";
-      IExtensionPoint brandingPoint = registry.getExtensionPoint( id );
+      IExtensionPoint brandingPoint = registry.getExtensionPoint( "org.eclipse.rap.ui.branding" );
       if( brandingPoint != null ) {
-        IConfigurationElement[] elements 
-          = brandingPoint.getConfigurationElements();
+        IConfigurationElement[] elements = brandingPoint.getConfigurationElements();
         boolean found = false;
         for( int i = 0; i < elements.length && !found; i++ ) {
           String tempId = elements[ i ].getAttribute( "id" );

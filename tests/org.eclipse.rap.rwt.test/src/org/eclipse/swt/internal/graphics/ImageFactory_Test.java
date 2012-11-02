@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import junit.framework.TestCase;
@@ -49,31 +50,35 @@ public class ImageFactory_Test extends TestCase {
     assertSame( image2, image2a );
   }
 
-  public void testCreateImage() {
-    InputStream stream1 = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
-    Image image = imageFactory.createImage( display, TEST_PATH, stream1 );
+  public void testCreateImage() throws IOException {
+    InputStream stream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
+    Image image = imageFactory.createImage( display, TEST_PATH, stream );
+    stream.close();
     assertNotNull( image );
     assertNotNull( image.internalImage );
   }
   
-  public void testCreateImageReturnsDistinctInstancesForSameStream() {
+  public void testCreateImageReturnsDistinctInstancesForSameStream() throws IOException {
     InputStream stream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
     Image image1 = imageFactory.createImage( display, TEST_PATH, stream );
     Image image2 = imageFactory.createImage( display, TEST_PATH, stream );
+    stream.close();
     assertNotSame( image1, image2 );
     assertSame( image1.internalImage, image2.internalImage );
   }
   
-  public void testCreateImageReturnsDisposableImage() {
+  public void testCreateImageReturnsDisposableImage() throws IOException {
     InputStream stream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
     Image image1 = imageFactory.createImage( display, TEST_PATH, stream );
+    stream.close();
     // image must be disposable, i.e. dispose must not throw an ISE
     image1.dispose();
   }
 
-  public void testGetImagePath() {
+  public void testGetImagePath() throws IOException {
     InputStream stream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
     Image image = imageFactory.createImage( display, TEST_PATH, stream );
+    stream.close();
     String imagePath = ImageFactory.getImagePath( image );
     assertNotNull( imagePath );
     assertTrue( imagePath.length() > 0 );

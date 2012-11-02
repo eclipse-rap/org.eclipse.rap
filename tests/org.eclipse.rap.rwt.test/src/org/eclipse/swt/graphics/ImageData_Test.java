@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import junit.framework.TestCase;
@@ -22,11 +23,12 @@ import org.eclipse.swt.SWT;
 
 public class ImageData_Test extends TestCase {
   
-  public void testImageData() {
+  public void testImageData() throws IOException {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream inputStream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
     assertNotNull( inputStream );
     ImageData[] datas = ImageDataLoader.load( inputStream );
+    inputStream.close();
     assertNotNull( datas );
     assertEquals( 1, datas.length );
     ImageData data = datas[ 0 ];
@@ -35,4 +37,5 @@ public class ImageData_Test extends TestCase {
     assertEquals( 50, data.height );
     assertEquals( SWT.IMAGE_PNG, data.type );
   }
+  
 }

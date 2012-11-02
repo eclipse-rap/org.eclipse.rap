@@ -19,13 +19,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.branding.AbstractBranding;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rap.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTRequestVersionControl;
@@ -33,7 +31,6 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.theme.JsonValue;
-import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.IServiceHandler;
 import org.eclipse.rap.rwt.service.ISessionStore;
@@ -151,10 +148,6 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     }
     ApplicationContextUtil.set( sessionStore, applicationContext );
     applicationContext.getClientSelector().selectClient( ContextProvider.getRequest() );
-    AbstractBranding branding = BrandingUtil.determineBranding();
-    if( branding.getThemeId() != null ) {
-      ThemeUtil.setCurrentThemeId( branding.getThemeId() );
-    }
   }
 
   private static void clearSessionStore() {

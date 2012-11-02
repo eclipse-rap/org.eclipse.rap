@@ -10,11 +10,13 @@
           id="org.eclipse.rap.demo.workbench.default"
           path="/workbench"/>
     <entrypoint
+          branding="org.eclipse.rap.design.example.business.branding"
           class="org.eclipse.rap.demo.DemoWorkbench"
           id="org.eclipse.rap.demo.workbench.business"
           path="/business">
     </entrypoint>
     <entrypoint
+          branding="org.eclipse.rap.design.example.fancy.branding"
           class="org.eclipse.rap.demo.DemoWorkbench"
           id="org.eclipse.rap.demo.workbench.fancy"
           path="/fancy">
@@ -22,7 +24,7 @@
   </extension>
   <extension
         id="org.eclipse.rap.demo.applicationEntryPoint"
-        name="app"
+        name="tea"
         point="org.eclipse.core.runtime.applications">
      <application
            cardinality="singleton-global"
@@ -30,8 +32,21 @@
            visible="true">
         <run
               class="org.eclipse.rap.demo.DemoApplication">
+           <parameter
+                 name="branding"
+                 value="org.eclipse.rap.demo.teaBranding">
+           </parameter>
         </run>
      </application>
+  </extension>
+  <extension
+        point="org.eclipse.rap.ui.branding">
+     <branding
+           body="body.html"
+           favicon="icons/favicon2.ico"
+           id="org.eclipse.rap.demo.teaBranding"
+           title="It&apos;s tea-time">
+     </branding>
   </extension>
 
   <extension
@@ -207,18 +222,6 @@
     </decorator>
   </extension>
 
-  <extension
-        point="org.eclipse.rap.ui.branding">
-     <branding
-           body="body.html"
-           defaultEntrypointId="org.eclipse.rap.demo.entrypoint1"
-           exitConfirmationClass="org.eclipse.rap.demo.DemoExitConfirmation"
-           favicon="icons/favicon2.ico"
-           id="org.eclipse.rap.demo.branding1"
-           servletName="tea"
-           title="It&apos;s tea-time">
-     </branding>
-  </extension>
 
   <extension
         point="org.eclipse.ui.presentationFactories">
