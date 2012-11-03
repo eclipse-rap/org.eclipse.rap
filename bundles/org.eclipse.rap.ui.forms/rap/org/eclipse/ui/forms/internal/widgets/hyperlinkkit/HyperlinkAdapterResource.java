@@ -8,19 +8,12 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
 
 import org.eclipse.rap.ui.resources.IResource;
-import org.eclipse.rap.ui.resources.RegisterOptions;
-
 
 
 public final class HyperlinkAdapterResource implements IResource {
-
-  public String getCharset() {
-    return "UTF-8"; //$NON-NLS-1$
-  }
 
   public ClassLoader getLoader() {
     return HyperlinkAdapterResource.class.getClassLoader();
@@ -30,10 +23,6 @@ public final class HyperlinkAdapterResource implements IResource {
     return "org/eclipse/ui/forms/widgets/HyperlinkAdapter.js"; //$NON-NLS-1$
   }
 
-  public RegisterOptions getOptions() {
-    return RegisterOptions.VERSION_AND_COMPRESS;
-  }
-
   public boolean isExternal() {
     return false;
   }
@@ -41,4 +30,5 @@ public final class HyperlinkAdapterResource implements IResource {
   public boolean isJSLibrary() {
     return true;
   }
+
 }

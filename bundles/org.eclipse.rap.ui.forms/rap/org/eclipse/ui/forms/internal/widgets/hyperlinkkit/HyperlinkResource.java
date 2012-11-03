@@ -1,26 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
 
 import org.eclipse.rap.ui.resources.IResource;
-import org.eclipse.rap.ui.resources.RegisterOptions;
-
 
 
 public final class HyperlinkResource implements IResource {
-
-  public String getCharset() {
-    return "UTF-8"; //$NON-NLS-1$
-  }
 
   public ClassLoader getLoader() {
     return HyperlinkResource.class.getClassLoader();
@@ -30,10 +24,6 @@ public final class HyperlinkResource implements IResource {
     return "org/eclipse/ui/forms/widgets/Hyperlink.js"; //$NON-NLS-1$
   }
 
-  public RegisterOptions getOptions() {
-    return RegisterOptions.VERSION_AND_COMPRESS;
-  }
-
   public boolean isExternal() {
     return false;
   }
@@ -41,4 +31,5 @@ public final class HyperlinkResource implements IResource {
   public boolean isJSLibrary() {
     return true;
   }
+
 }

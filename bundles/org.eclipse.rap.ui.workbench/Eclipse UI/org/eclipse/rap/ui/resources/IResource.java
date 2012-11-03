@@ -12,9 +12,8 @@
 package org.eclipse.rap.ui.resources;
 
 
-
 /**
- * Implementations of this interface represent an existing resource - local
+ * Implementations of this interface represent an existing resource to be registered, either local
  * or external.
  *
  * @since 2.0
@@ -22,74 +21,45 @@ package org.eclipse.rap.ui.resources;
 public interface IResource {
 
   /**
-   * Specifies the classloader that has access to the resource
-   * that should be loaded. If there is no special classloader you
-   * want to use just return the one of your implementation:
+   * Specifies the classloader that should be used to load the local resource. If there is no need
+   * for a particular classloader, implementations should simply return their own classloader:
    *
-   * <pre><code>
+   * <pre>
    * ClassLoader getLoader() {
-   *    return this.getClass().getClassLoader();
+   *   return this.getClass().getClassLoader();
    * }
-   * </code></pre>
+   * </pre>
    *
-   * @return the classloader to use
+   * @return the classloader to use, or <code>null</code> for external resources
    */
   ClassLoader getLoader();
 
   /**
-   * Returns the location of the resource. This can be a path to a file
-   * within the bundles classpath or a URI for an external resource.
+   * Returns the location of the resource. For external resources, this is the URL to load the
+   * resource from. For local resources, this is the path that the classloader can read the resource
+   * from.
    *
    * @return the location of the resource
-   *
    * @see IResource#isExternal()
    */
   String getLocation();
 
   /**
-   * Specifies the charset to use for this resource.
-   *
-   * @return the charset to use
-   */
-  String getCharset();
-
-  /**
-   * Specifies in which way the resource is delivered. This is interesting
-   * for javascript libraries to compress and version them before sending
-   * them to the client. If this resource is not an javascript library use
-   * <code>RegisterOptions#NONE</code>. If you want RAP to compress the file
-   * use <code>RegisterOptions#COMPRESS</code> and to version it use
-   * <code>RegisterOptions#VERSION</code>.
-   * If you want to combine versioning and compression you can return
-   * <code>RegisterOptions#VERSION_AND_COMPRESS</code> as value.
-   *
-   * @return an instance of <code>RegisterOptions</code>
-   *
-   * @see RegisterOptions
-   */
-  RegisterOptions getOptions();
-
-  /**
-   * Decides whether the resource is a javascript library and thus handled
-   * a bit different than other resources. This is also needed if you plan to
-   * have external, compressed and versioned javascript libraries.
+   * Indicates whether the resource is a javascript library that should be loaded by the client.
+   * Applies for both, external and local resources.
    *
    * @return whether this resource is a javascript library
-   *
-   * @see RegisterOptions
    * @see IResource#isExternal()
-   * @see IResource#getOptions()
    */
   boolean isJSLibrary();
 
   /**
-   * Decides whether the resource is external or not. If the resource
-   * is a javascript library and not external it will be transmitted
-   * immediately with all the other resources. In the case of an external
-   * javascript library it will be included in the generated page with
-   * a &lt;script&gt; tag.
+   * Indicates whether the resource is external, i.e. loaded from an external URL. In the case of an
+   * external javascript library it will be included in the generated page with a &lt;script&gt;
+   * tag.
    *
    * @return whether the resource is located externally
    */
   boolean isExternal();
+
 }

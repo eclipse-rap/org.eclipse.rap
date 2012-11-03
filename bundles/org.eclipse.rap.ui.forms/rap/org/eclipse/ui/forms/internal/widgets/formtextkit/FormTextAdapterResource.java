@@ -11,15 +11,9 @@
 package org.eclipse.ui.forms.internal.widgets.formtextkit;
 
 import org.eclipse.rap.ui.resources.IResource;
-import org.eclipse.rap.ui.resources.RegisterOptions;
-
 
 
 public final class FormTextAdapterResource implements IResource {
-
-  public String getCharset() {
-    return "UTF-8"; //$NON-NLS-1$
-  }
 
   public ClassLoader getLoader() {
     return FormTextAdapterResource.class.getClassLoader();
@@ -29,10 +23,6 @@ public final class FormTextAdapterResource implements IResource {
     return "org/eclipse/ui/forms/widgets/FormTextAdapter.js"; //$NON-NLS-1$
   }
 
-  public RegisterOptions getOptions() {
-    return RegisterOptions.VERSION_AND_COMPRESS;
-  }
-
   public boolean isExternal() {
     return false;
   }
@@ -40,4 +30,5 @@ public final class FormTextAdapterResource implements IResource {
   public boolean isJSLibrary() {
     return true;
   }
+
 }
