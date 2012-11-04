@@ -24,8 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
+import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.swt.widgets.Widget;
@@ -39,6 +41,7 @@ public class ThemeManager {
 
   public static final String FALLBACK_THEME_ID = "org.eclipse.rap.rwt.theme.Fallback";
   private static final String FALLBACK_THEME_NAME = "RAP Fallback Theme";
+  private static final String DEFAULT_THEME_NAME = "RAP Default Theme";
 
   // TODO [ApplicationContext]: made field public to replace with a performance
   //      optimized solution for tests. Think about a less intrusive solution.
@@ -104,7 +107,11 @@ public class ThemeManager {
   }
 
   public void initialize() {
-    ThemeUtil.initializeDefaultTheme( this );
+    if( !hasTheme( RWT.DEFAULT_THEME_ID ) ) {
+      StyleSheet defaultStyleSheet = ThemeUtil.readDefaultThemeStyleSheet();
+      Theme defaultTheme = new Theme( RWT.DEFAULT_THEME_ID, DEFAULT_THEME_NAME, defaultStyleSheet );
+      registerTheme( defaultTheme );
+    }
   }
 
   public void activate() {

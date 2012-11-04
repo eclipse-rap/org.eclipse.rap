@@ -95,17 +95,17 @@ public class ApplicationContext {
     lifeCycleAdapterFactory = new LifeCycleAdapterFactory();
     settingStoreManager = new SettingStoreManager();
     resourceRegistry = new ResourceRegistry( getResourceManager() );
-    startupPage = new StartupPage();
+    startupPage = new StartupPage( this );
     serviceManager = createServiceManager();
     displaysHolder = new DisplaysHolder();
     jsLibraryConcatenator = new JSLibraryConcatenator( resourceManager );
     textSizeStorage = new TextSizeStorage();
     probeStore = new ProbeStore( textSizeStorage );
-    this.servletContext = servletContext;
     contextConfigurator = new ApplicationContextConfigurator( applicationConfiguration,
                                                               servletContext );
     contextActivator = new ApplicationContextActivator( this );
     clientSelector = new ClientSelector();
+    this.servletContext = servletContext;
   }
 
   public boolean isActive() {

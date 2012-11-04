@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class ThemeUtil {
 
-  private static final String DEFAULT_THEME_NAME = "RAP Default Theme";
   private static final String DEFAULT_THEME_CSS = "resource/theme/default.css";
 
   private static final String CURR_THEME_ATTR = "org.eclipse.rap.theme.current";
@@ -75,32 +74,19 @@ public final class ThemeUtil {
     return RWTFactory.getThemeManager().getTheme( getCurrentThemeId() );
   }
 
-  public static Theme getDefaultTheme() {
-    ThemeManager themeManager = RWTFactory.getThemeManager();
-    return themeManager.getTheme( RWT.DEFAULT_THEME_ID );
-  }
-
   private static Theme getFallbackTheme() {
     ThemeManager themeManager = RWTFactory.getThemeManager();
     return themeManager.getTheme( ThemeManager.FALLBACK_THEME_ID );
   }
 
-  public static void initializeDefaultTheme( ThemeManager themeManager ) {
-    if( !themeManager.hasTheme( RWT.DEFAULT_THEME_ID ) ) {
-      StyleSheet defaultStyleSheet = readDefaultThemeStyleSheet();
-      Theme defaultTheme = new Theme( RWT.DEFAULT_THEME_ID, DEFAULT_THEME_NAME, defaultStyleSheet );
-      themeManager.registerTheme( defaultTheme );
-    }
-  }
-
-  private static StyleSheet readDefaultThemeStyleSheet() {
+  static StyleSheet readDefaultThemeStyleSheet() {
     StyleSheet result;
     try {
       ResourceLoader resLoader = ThemeManager.STANDARD_RESOURCE_LOADER;
       result = CssFileReader.readStyleSheet( DEFAULT_THEME_CSS, resLoader );
-    } catch( IOException e ) {
+    } catch( IOException ioe ) {
       String msg = "Failed to load default theme: " + DEFAULT_THEME_CSS;
-      throw new ThemeManagerException( msg, e );
+      throw new ThemeManagerException( msg, ioe );
     }
     return result;
   }

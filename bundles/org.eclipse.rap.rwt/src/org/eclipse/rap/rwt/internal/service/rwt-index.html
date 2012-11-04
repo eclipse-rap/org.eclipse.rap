@@ -41,7 +41,6 @@
   </head>
 
   <body background="${backgroundImage}">
-
     <noscript>
       <p style = "z-index:100000;background-color:white">
         ${noScriptMessage}
@@ -49,7 +48,7 @@
     </noscript>
 
     <!-- body of branding -->
-    ${body}
+${body}
     <!-- end body of branding --> 
 
     <!-- rap runtime javascript libraries -->
@@ -59,11 +58,8 @@ ${libraries}
     <!-- validation and retrievment of startup conditions -->
     <script type="text/javascript">
       if( rwt.runtime.System.getInstance().isSupported() ) {
-        // rap runtime application
         ${appScript}
-        // end rap runtime application
       } else {
-        // write unsupported browser or security message
         var msg
           = "<p style=\"z-index:100000;background-color:white\">"
           + "${noScriptMessage}"

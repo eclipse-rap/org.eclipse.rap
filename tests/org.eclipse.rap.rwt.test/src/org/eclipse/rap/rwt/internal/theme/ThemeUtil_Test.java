@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
@@ -35,17 +36,13 @@ public class ThemeUtil_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testDefaultTheme() throws Exception {
-    assertNotNull( ThemeUtil.getDefaultTheme() );
-    assertSame( ThemeUtil.getDefaultTheme(), ThemeUtil.getCurrentTheme() );
-  }
-
   public void testRegisterThemeDoesNotChangeCurrentTheme() throws Exception {
     Theme theme = createTheme( CUSTOM_THEME_ID );
     ThemeTestUtil.registerTheme( theme );
 
-    assertNotNull( ThemeUtil.getDefaultTheme() );
-    assertSame( ThemeUtil.getDefaultTheme(), ThemeUtil.getCurrentTheme() );
+    Theme defaultTheme = RWTFactory.getThemeManager().getTheme( RWT.DEFAULT_THEME_ID );
+    assertNotNull( defaultTheme );
+    assertSame( defaultTheme, ThemeUtil.getCurrentTheme() );
   }
 
   public void testSetCurrentTheme() throws Exception {

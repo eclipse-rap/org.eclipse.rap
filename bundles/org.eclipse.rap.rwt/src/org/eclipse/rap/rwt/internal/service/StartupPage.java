@@ -14,38 +14,50 @@ package org.eclipse.rap.rwt.internal.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.theme.*;
-import org.eclipse.rap.rwt.internal.util.*;
+import org.eclipse.rap.rwt.client.WebClient;
+import org.eclipse.rap.rwt.internal.RWTMessages;
+import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.RWTFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
+import org.eclipse.rap.rwt.internal.service.StartupPageTemplate.VariableWriter;
+import org.eclipse.rap.rwt.internal.theme.QxImage;
+import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
+import org.eclipse.rap.rwt.internal.theme.Theme;
+import org.eclipse.rap.rwt.internal.theme.ThemeManager;
+import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
+import org.eclipse.rap.rwt.internal.util.HTTP;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
-/**
- * A helping class that delivers the initial HTML page in order to bootstrap the client side.
- */
 public class StartupPage {
+  private final ApplicationContext applicationContext;
+  private final List<String> jsLibraries;
+  private StartupPageTemplate startupPageTemplate;
 
-  private final StartupPageConfigurer configurer;
-
-  public StartupPage() {
-    configurer = new StartupPageConfigurer();
+  public StartupPage( ApplicationContext applicationContext ) {
+    this.applicationContext = applicationContext;
+    this.jsLibraries = new ArrayList<String>();
   }
 
   public void addJsLibrary( String location ) {
-    configurer.addJsLibrary( location );
+    ParamCheck.notNull( location, "location" );
+    jsLibraries.add( location );
   }
 
-  void send() throws IOException {
-    HttpServletResponse response = ContextProvider.getResponse();
+  void send( HttpServletResponse response ) throws IOException {
     setResponseHeaders( response );
-    StartupPageTemplateHolder template = configurer.getTemplate();
-    processTemplate( template );
-    writeTemplate( response, template );
+    setCurrentTheme();
+    getStartupPageTemplate().writePage( response.getWriter(), new StartupPageValueProvider() );
   }
 
-  private static void setResponseHeaders( HttpServletResponse response ) {
+  static void setResponseHeaders( HttpServletResponse response ) {
     response.setContentType( HTTP.CONTENT_TYPE_HTML );
     response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
     // TODO [rh] this is a preliminary fix for a behavior that was easily
@@ -57,11 +69,84 @@ public class StartupPage {
     response.addHeader( "Cache-Control", "max-age=0, no-cache, must-revalidate, no-store" );
   }
 
-  private static void processTemplate( StartupPageTemplateHolder template ) {
-    template.replace( StartupPageTemplateHolder.VAR_BACKGROUND_IMAGE, getBgImage() );
+  protected StartupPageTemplate getStartupPageTemplate() throws IOException {
+    synchronized( this ) {
+      if( startupPageTemplate == null ) {
+        startupPageTemplate = new StartupPageTemplate();
+      }
+    }
+    return startupPageTemplate;
   }
 
-  private static String getBgImage() {
+  protected void writeTitle( PrintWriter printWriter ) {
+    writeEntryPointproperty( printWriter, WebClient.PAGE_TITLE );
+  }
+
+  protected void writeBody( PrintWriter printWriter ) {
+    writeEntryPointproperty( printWriter, WebClient.BODY_HTML );
+  }
+
+  protected void writeHead( PrintWriter printWriter ) {
+    Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
+    String favIcon = properties.get( WebClient.FAVICON );
+    if( favIcon != null && favIcon.length() > 0 ) {
+      String pattern = "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"%1$s\" />";
+      String favIocnMarkup = String.format( pattern, getResourceLocation( favIcon ) );
+      printWriter.write( favIocnMarkup );
+    }
+    writeEntryPointproperty( printWriter, WebClient.HEAD_HTML );
+  }
+
+  protected void writeLibraries( PrintWriter printWriter ) {
+    for( String location : jsLibraries ) {
+      writeScriptTag( printWriter, location );
+    }
+    writeScriptTag( printWriter, ThemeManager.FALLBACK_THEME_ID );
+    writeScriptTag( printWriter, getCurrentThemeLocation() );
+    writeScriptTag( printWriter, RWTFactory.getJSLibraryConcatenator().getLocation() );
+  }
+
+  protected void writeScriptTag( PrintWriter printWriter, String libraryLocation ) {
+    if( libraryLocation != null ) {
+      printWriter.write( "    <script type=\"text/javascript\" src=\"" );
+      printWriter.write( libraryLocation );
+      printWriter.write( "\" charset=\"" );
+      printWriter.write( HTTP.CHARSET_UTF_8 );
+      printWriter.write( "\"></script>\n" );
+    }
+  }
+
+  protected void writeBackgroundImage( PrintWriter printWriter ) {
+    printWriter.write( getBackgroundImage() );
+  }
+
+  protected void writeNoScriptMessage( PrintWriter printWriter ) {
+    String message = RWTMessages.getMessage( "RWT_NoScriptWarning" );
+    printWriter.write( message );
+  }
+
+  protected void writeAppScript( PrintWriter printWriter ) {
+    StringBuilder code = new StringBuilder();
+    code.append( "rwt.protocol.MessageProcessor.processMessage( " );
+    code.append( StartupJson.get() );
+    code.append( ");/*EOM*/" );
+    printWriter.write( code.toString() );
+  }
+
+  private void setCurrentTheme() {
+    Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
+    String themeId = properties.get( WebClient.THEME_ID );
+    if( themeId != null && themeId.length() > 0 ) {
+      ThemeUtil.setCurrentThemeId( themeId );
+    }
+  }
+
+  private String getCurrentThemeLocation() {
+    Theme theme = applicationContext.getThemeManager().getTheme( ThemeUtil.getCurrentThemeId() );
+    return theme.getRegisteredLocation();
+  }
+
+  private String getBackgroundImage() {
     String result = "";
     QxType value = ThemeUtil.getCssValue( "Display", "background-image", SimpleSelector.DEFAULT );
     if( value instanceof QxImage ) {
@@ -69,21 +154,46 @@ public class StartupPage {
       // path is null if non-existing image was specified in css file
       String resourceName = image.getResourcePath();
       if( resourceName != null ) {
-        result = RWT.getResourceManager().getLocation( resourceName );
+        result = getResourceLocation( resourceName );
       }
     }
     return result;
   }
 
-  private static void writeTemplate( HttpServletResponse response,
-                                     StartupPageTemplateHolder template ) throws IOException
-  {
-    PrintWriter writer = response.getWriter();
-    for( String token : template.getTokens() ) {
-      if( token != null ) {
-        writer.write( token );
+  private String getResourceLocation( String resourceName ) {
+    return applicationContext.getResourceManager().getLocation( resourceName );
+  }
+
+  private static void writeEntryPointproperty( PrintWriter printWriter, String property ) {
+    Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
+    String title = properties.get( property );
+    if( title != null ) {
+      printWriter.write( title );
+    }
+  }
+
+  private class StartupPageValueProvider implements VariableWriter {
+    
+    public void writeVariable( PrintWriter printWriter, String variableName ) {
+      if( variableName.equals( StartupPageTemplate.TOKEN_LIBRARIES ) ) {
+        writeLibraries( printWriter );
+      } else if( variableName.equals( StartupPageTemplate.TOKEN_TITLE ) ) {
+        writeTitle( printWriter );
+      } else if( variableName.equals( StartupPageTemplate.TOKEN_BODY ) ) {
+        writeBody( printWriter );
+      } else if( variableName.equals( StartupPageTemplate.TOKEN_HEADERS ) ) {
+        writeHead( printWriter );
+      } else if( variableName.equals( StartupPageTemplate.TOKEN_BACKGROUND_IMAGE ) ) {
+        writeBackgroundImage( printWriter );
+      } else if( variableName.equals( StartupPageTemplate.TOKEN_NO_SCRIPT_MESSAGE ) ) {
+        writeNoScriptMessage( printWriter );
+      } else if( variableName.equals( StartupPageTemplate.TOKEN_APP_SCRIPT ) ) {
+        writeAppScript( printWriter );
+      } else {
+        throw new IllegalArgumentException( "Unsupported variable: " + variableName );
       }
     }
+    
   }
 
 }

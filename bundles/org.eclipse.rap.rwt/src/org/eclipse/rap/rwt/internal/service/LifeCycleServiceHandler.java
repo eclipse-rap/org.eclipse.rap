@@ -75,7 +75,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     Map<String, String[]> parameters = ContextProvider.getRequest().getParameterMap();
     RequestParameterBuffer.store( parameters );
     if( RWT.getClient() instanceof WebClient ) {
-      startupPage.send();
+      startupPage.send( ContextProvider.getResponse() );
     } else {
       StartupJson.send();
     }
