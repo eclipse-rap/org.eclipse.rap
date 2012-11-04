@@ -146,7 +146,7 @@ public class StartupPage {
     return theme.getRegisteredLocation();
   }
 
-  private String getBackgroundImage() {
+  protected String getBackgroundImage() {
     String result = "";
     QxType value = ThemeUtil.getCssValue( "Display", "background-image", SimpleSelector.DEFAULT );
     if( value instanceof QxImage ) {

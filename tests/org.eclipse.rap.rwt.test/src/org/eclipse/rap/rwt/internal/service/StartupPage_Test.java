@@ -34,6 +34,8 @@ import org.eclipse.rap.rwt.testfixture.TestResponse;
 
 public class StartupPage_Test extends TestCase {
 
+  private static final String CUSTOM_THEME_ID = "custom-theme-id";
+  
   private StartupPage startupPage;
   private TestResponse response;
 
@@ -190,12 +192,21 @@ public class StartupPage_Test extends TestCase {
   }
   
   public void testSendSetsCurrentTheme() throws IOException {
-    ThemeTestUtil.registerTheme( "foo.theme", "", null );
-    registerEntryPoint( WebClient.THEME_ID, "foo.theme" );
+    ThemeTestUtil.registerTheme( CUSTOM_THEME_ID, "", null );
+    registerEntryPoint( WebClient.THEME_ID, CUSTOM_THEME_ID );
     
     startupPage.send( response );
     
-    assertEquals( "foo.theme", ThemeUtil.getCurrentThemeId() );
+    assertEquals( CUSTOM_THEME_ID, ThemeUtil.getCurrentThemeId() );
+  }
+  
+  public void testGetBackgroundImageWithNoBackgroundImage() throws IOException {
+    ThemeTestUtil.registerTheme( CUSTOM_THEME_ID, "Display { background-image: none }", null );
+    ThemeUtil.setCurrentThemeId( CUSTOM_THEME_ID );
+    
+    String backgroundImage = startupPage.getBackgroundImage();
+    
+    assertEquals( "", backgroundImage );
   }
   
   public void testWriteScriptTag() throws IOException {
