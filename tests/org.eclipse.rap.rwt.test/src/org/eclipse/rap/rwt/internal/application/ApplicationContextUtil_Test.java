@@ -60,15 +60,6 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertSame( applicationContext, ApplicationContextUtil.get( sessionStore ) );
   }
 
-  public void testRemoveFromSessionStore() {
-    SessionStoreImpl sessionStore = new SessionStoreImpl( new TestSession() );
-    ApplicationContextUtil.set( sessionStore, applicationContext );
-
-    ApplicationContextUtil.remove( sessionStore );
-
-    assertNull( ApplicationContextUtil.get( sessionStore ) );
-  }
-
   public void testRunWith() {
     final ApplicationContext[] found = new ApplicationContext[ 1 ];
     Runnable runnable = new Runnable() {

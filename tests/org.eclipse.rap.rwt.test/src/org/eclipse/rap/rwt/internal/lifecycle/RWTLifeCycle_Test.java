@@ -22,15 +22,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.IPhase;
-import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rap.rwt.internal.lifecycle.UIThread;
 import org.eclipse.rap.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
@@ -46,6 +39,7 @@ import org.eclipse.rap.rwt.service.SessionStoreEvent;
 import org.eclipse.rap.rwt.service.SessionStoreListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -57,13 +51,14 @@ import org.eclipse.swt.widgets.Widget;
 public class RWTLifeCycle_Test extends TestCase {
 
   private static final String ERR_MSG = "TEST_ERROR";
-  private static final String MY_ENTRY_POINT = "myEntryPoint";
+  private static final String MY_ENTRY_POINT = "/myEntryPoint";
   private static final String BEFORE = "before ";
   private static final String AFTER = "after ";
   private static final String DISPLAY_CREATED = "display created";
   private static final String EXCEPTION_IN_RENDER = "Exception in render";
 
-  private static StringBuilder log = new StringBuilder();
+  private static StringBuffer log = new StringBuffer();
+  private EntryPointManager entryPointManager;
 
   @Override
   protected void setUp() throws Exception {
@@ -71,6 +66,7 @@ public class RWTLifeCycle_Test extends TestCase {
     Fixture.setUp();
     Fixture.fakeNewRequest();
     Fixture.fakeResponseWriter();
+    entryPointManager = RWTFactory.getEntryPointManager();
   }
 
   @Override
@@ -89,9 +85,10 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testDefaultEntryPoint() throws IOException {
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, 
+                                      TestEntryPointWithLog.class, 
+                                      null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
-                                                TestEntryPointWithLog.class );
 
     lifeCycle.execute();
 
@@ -99,9 +96,9 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testParamOfExistingEntryPoint() throws IOException {
-    Fixture.fakeRequestParam( RequestParams.STARTUP, MY_ENTRY_POINT );
+    fakeServletPath( MY_ENTRY_POINT );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    RWTFactory.getEntryPointManager().registerByName( MY_ENTRY_POINT, TestEntryPointWithLog.class );
+    entryPointManager.registerByPath( MY_ENTRY_POINT, TestEntryPointWithLog.class, null );
 
     lifeCycle.execute();
 
@@ -110,7 +107,7 @@ public class RWTLifeCycle_Test extends TestCase {
 
   public void testParamOfNonExistingEntryPoint() throws IOException {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    Fixture.fakeRequestParam( RequestParams.STARTUP, "notRegistered" );
+    fakeServletPath( "/not-registered" );
     try {
       lifeCycle.execute();
       fail( "Executing lifecycle with unknown entry point must fail." );
@@ -119,8 +116,9 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testPhases() throws IOException {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
-                                                      TestPhasesEntryPoint.class );
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH,
+                                      TestPhasesEntryPoint.class,
+                                      null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     PhaseListener listener = new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -211,22 +209,24 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testErrorInLifeCycle() throws IOException {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
-                                                TestErrorInLifeCycleEntryPoint.class );
+    Class<TestErrorInLifeCycleEntryPoint> type = TestErrorInLifeCycleEntryPoint.class;
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, type, null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     LifeCycleUtil.setSessionDisplay( null );
     try {
       lifeCycle.execute();
       fail();
     } catch( RuntimeException e ) {
-      String msg = TestErrorInLifeCycleEntryPoint.class.getName();
+      String msg = type.getName();
       assertEquals( msg, e.getMessage() );
       assertTrue( RWTLifeCycle.getUIThreadHolder().getThread().isAlive() );
     }
   }
 
   public void testExceptionInPhaseListener() throws IOException {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, TestEntryPoint.class );
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, 
+                                      TestEntryPoint.class, 
+                                      null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new ExceptionListenerTest() );
     lifeCycle.addPhaseListener( new ExceptionListenerTest() );
@@ -247,7 +247,7 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testRender() throws IOException {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, TestEntryPoint.class );
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, TestEntryPoint.class, null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
 
     lifeCycle.execute();
@@ -257,7 +257,7 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testPhaseListenerRegistration() throws IOException {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, TestEntryPoint.class );
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, TestEntryPoint.class, null );
     final PhaseListener[] callbackHandler = new PhaseListener[ 1 ];
     PhaseListener listener = new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -341,7 +341,7 @@ public class RWTLifeCycle_Test extends TestCase {
     int returnValue = lifeCycle.createUI();
     assertEquals( -1, returnValue );
 
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, MainStartup.class );
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, MainStartup.class, null );
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IInterruptible() {
         public PhaseId execute(Display display) throws IOException {
@@ -539,7 +539,7 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testUIRunnable() throws InterruptedException {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, MainStartup.class );
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, MainStartup.class, null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IInterruptible() {
@@ -696,7 +696,7 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testErrorHandlingInCreateUI() throws IOException {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, ErrorStartup.class );
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, ErrorStartup.class, null );
     try {
       ( ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle() ).execute();
       fail();
@@ -719,7 +719,7 @@ public class RWTLifeCycle_Test extends TestCase {
     } );
     // Register and 'run' entry point with readAndDispatch/sleep loop
     Class<? extends IEntryPoint> entryPointClass = SessionInvalidateWithEventLoopEntryPoint.class;
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, entryPointClass );
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, entryPointClass, null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
     // Store some values for later comparison
@@ -737,9 +737,10 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testExceptionInRender() throws Exception {
-    Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointUtil.DEFAULT );
-    Class<? extends IEntryPoint> entryPointClass = ExceptionInRenderEntryPoint.class;
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, entryPointClass );
+    fakeServletPath( EntryPointUtil.DEFAULT_PATH );
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, 
+                                      ExceptionInRenderEntryPoint.class, 
+                                      null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     try {
       lifeCycle.execute();
@@ -764,7 +765,7 @@ public class RWTLifeCycle_Test extends TestCase {
     } );
     // Register and 'run' entry point with readAndDispatch/sleep loop
     Class<? extends IEntryPoint> entryPoint = SessionInvalidateWithoutEventLoopEntryPoint.class;
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, entryPoint );
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, entryPoint, null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -788,9 +789,10 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testDisposeDisplayOnSessionTimeout() throws Throwable {
-    final ISessionStore session = ContextProvider.getSessionStore();
+    ISessionStore session = ContextProvider.getSessionStore();
+    ContextProvider.getContext().getApplicationContext();
     Class<? extends IEntryPoint> clazz = DisposeDisplayOnSessionTimeoutEntryPoint.class;
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, clazz );
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, clazz, null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
     invalidateSession( session );
@@ -798,9 +800,9 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testOrderOfDisplayDisposeAndSessionUnbound() throws Throwable {
-    final ISessionStore session = ContextProvider.getSessionStore();
+    ISessionStore session = ContextProvider.getSessionStore();
     Class<? extends IEntryPoint> clazz = TestOrderOfDisplayDisposeAndSessionUnboundEntryPoint.class;
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, clazz );
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, clazz, null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
     invalidateSession( session );
@@ -838,7 +840,7 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testGetUIThreadWhileLifeCycleInExecute() throws IOException {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, TestEntryPoint.class );
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, TestEntryPoint.class, null );
     RWTLifeCycle lifeCycle = new RWTLifeCycle();
     final Thread[] currentThread = { null };
     final Thread[] uiThread = { null };
@@ -861,7 +863,7 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testGetUIThreadAfterLifeCycleExecuted() throws IOException {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, TestEntryPoint.class );
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, TestEntryPoint.class, null );
     RWTLifeCycle lifeCycle = new RWTLifeCycle();
     lifeCycle.execute();
 
@@ -895,6 +897,11 @@ public class RWTLifeCycle_Test extends TestCase {
   private static UIThread getUIThread() {
     ISessionStore session = ContextProvider.getSessionStore();
     return ( UIThread )LifeCycleUtil.getUIThread( session );
+  }
+
+  private static void fakeServletPath( String myEntryPoint ) {
+    TestRequest request = ( TestRequest )RWT.getRequest();
+    request.setServletPath( myEntryPoint );
   }
 
   private static class LoggingPhaseListener implements PhaseListener {
@@ -976,8 +983,7 @@ public class RWTLifeCycle_Test extends TestCase {
     }
   }
 
-  public static class DisposeDisplayOnSessionTimeoutEntryPoint
-    implements IEntryPoint
+  public static class DisposeDisplayOnSessionTimeoutEntryPoint implements IEntryPoint
   {
     public int createUI() {
       Display display = new Display();

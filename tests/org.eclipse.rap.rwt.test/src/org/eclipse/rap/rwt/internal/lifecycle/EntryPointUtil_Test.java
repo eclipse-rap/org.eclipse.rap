@@ -12,7 +12,6 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -23,7 +22,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -47,26 +45,7 @@ public class EntryPointUtil_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testGetCurrentEntryPoint_withDefaultEntryPoint() {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, entryPointFactory );
-
-    IEntryPoint result = EntryPointUtil.getCurrentEntryPoint();
-
-    verify( entryPointFactory ).create();
-    assertSame( entryPoint, result );
-  }
-
-  public void testGetCurrentEntryPoint_withStartupParameter() {
-    RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
-    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
-
-    IEntryPoint result = EntryPointUtil.getCurrentEntryPoint();
-
-    verify( entryPointFactory ).create();
-    assertSame( entryPoint, result );
-  }
-
-  public void testGetCurrentEntryPoint_withServletPath() {
+  public void testGetCurrentEntryPoint() {
     RWTFactory.getEntryPointManager().registerByPath( "/foo", entryPointFactory, null );
     fakeServletPath( "/foo" );
 
@@ -76,60 +55,7 @@ public class EntryPointUtil_Test extends TestCase {
     assertSame( entryPoint, result );
   }
 
-  public void testGetCurrentEntryPoint_parameterOverridesServletPath() {
-    RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
-    IEntryPoint entryPointByPath = mockEntryPoint();
-    IEntryPointFactory entryPointFactoryByPath = mockEntryPointFactory( entryPointByPath );
-    RWTFactory.getEntryPointManager().registerByPath( "/bar", entryPointFactoryByPath, null );
-    fakeServletPath( "/bar" );
-    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
-
-    IEntryPoint result = EntryPointUtil.getCurrentEntryPoint();
-
-    // Request parameter takes precedence over servlet path
-    verify( entryPointFactoryByPath, times( 0 ) ).create();
-    verify( entryPointFactory ).create();
-    assertSame( entryPoint, result );
-  }
-
-  public void testGetCurrentEntryPoint_withNonExistingEntryPointName() {
-    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
-
-    try {
-      EntryPointUtil.getCurrentEntryPoint();
-      fail();
-    } catch( IllegalArgumentException expected ) {
-      assertEquals( "Entry point not found: foo", expected.getMessage() );
-    }
-  }
-
-  public void testGetCurrentEntryPoint_withNonExistingDefaultEntryPoint() {
-    try {
-      EntryPointUtil.getCurrentEntryPoint();
-      fail();
-    } catch( IllegalArgumentException expected ) {
-      assertEquals( "Entry point not found: default", expected.getMessage() );
-    }
-  }
-
-  public void testGetCurrentEntryPointProperties_withDefaultEntryPoint() {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, entryPointFactory );
-
-    Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
-
-    assertTrue( properties.isEmpty() );
-  }
-
-  public void testGetCurrentEntryPointParameter_withStartupParameter() {
-    RWTFactory.getEntryPointManager().registerByName( "foo", entryPointFactory );
-    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
-
-    Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
-
-    assertTrue( properties.isEmpty() );
-  }
-
-  public void testGetCurrentEntryPointProperties_withServletPath() {
+  public void testGetCurrentEntryPointProperties() {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put( "test", "true" );
     RWTFactory.getEntryPointManager().registerByPath( "/foo", entryPointFactory, parameters );

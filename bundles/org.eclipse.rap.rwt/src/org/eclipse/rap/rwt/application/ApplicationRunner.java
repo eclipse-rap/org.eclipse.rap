@@ -88,7 +88,7 @@ public class ApplicationRunner {
    */
   public void stop() {
     try {
-      if( applicationContext.isActivated() ) {
+      if( applicationContext.isActive() ) {
         applicationContext.deactivate();
       }
     } finally {

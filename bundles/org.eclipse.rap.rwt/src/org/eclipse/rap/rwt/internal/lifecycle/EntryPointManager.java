@@ -26,11 +26,9 @@ import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 public class EntryPointManager {
 
   private final Map<String, EntryPointRegistration> entryPointsByPath;
-  private final Map<String, IEntryPointFactory> entryPointsByName;
 
   public EntryPointManager() {
     entryPointsByPath = new HashMap<String, EntryPointRegistration>();
-    entryPointsByName = new HashMap<String, IEntryPointFactory>();
   }
 
   public void registerByPath( String path,
@@ -53,23 +51,9 @@ public class EntryPointManager {
     doRegisterByPath( path, entryPointFactory, properties );
   }
 
-  public void registerByName( String name, Class<? extends IEntryPoint> type ) {
-    ParamCheck.notNull( name, "name" );
-    doRegisterByName( name, new DefaultEntryPointFactory( type ) );
-  }
-
-  public void registerByName( String name, IEntryPointFactory entryPointFactory ) {
-    ParamCheck.notNull( name, "name" );
-    ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
-    doRegisterByName( name, entryPointFactory );
-  }
-
   public void deregisterAll() {
     synchronized( entryPointsByPath ) {
       entryPointsByPath.clear();
-    }
-    synchronized( entryPointsByName ) {
-      entryPointsByName.clear();
     }
   }
 
@@ -77,14 +61,6 @@ public class EntryPointManager {
     synchronized( entryPointsByPath ) {
       return entryPointsByPath.get( path );
     }
-  }
-
-  public IEntryPointFactory getFactoryByName( String name ) {
-    IEntryPointFactory result;
-    synchronized( entryPointsByName ) {
-      result = entryPointsByName.get( name );
-    }
-    return result;
   }
 
   public Collection<String> getServletPaths() {
@@ -105,13 +81,6 @@ public class EntryPointManager {
     }
   }
 
-  private void doRegisterByName( String key, IEntryPointFactory entryPointFactory ) {
-    synchronized( entryPointsByName ) {
-      checkNameAvailable( key );
-      entryPointsByName.put( key, entryPointFactory );
-    }
-  }
-
   private void checkValidPath( String path ) {
     if( !path.startsWith( "/" ) ) {
       throw new IllegalArgumentException( "Path must start with '/': " + path );
@@ -124,17 +93,10 @@ public class EntryPointManager {
     }
   }
 
-  private void checkPathAvailable( String key ) {
-    if( entryPointsByPath.containsKey( key ) ) {
-      String message = "Entry point already registered for path " + key;
-      throw new IllegalArgumentException( message );
+  private void checkPathAvailable( String path ) {
+    if( entryPointsByPath.containsKey( path ) ) {
+      throw new IllegalArgumentException( "Entry point already registered for path " + path );
     }
   }
 
-  private void checkNameAvailable( String key ) {
-    if( entryPointsByName.containsKey( key ) ) {
-      String message = "Entry point already registered for name: " + key;
-      throw new IllegalArgumentException( message );
-    }
-  }
 }

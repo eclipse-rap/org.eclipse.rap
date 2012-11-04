@@ -16,14 +16,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 
 
 public class EntryPointUtil {
 
-  public static final String DEFAULT = "default";
+  public static final String DEFAULT_PATH = "/rap";
 
   private EntryPointUtil() {
     // prevent instantiation
@@ -40,28 +38,6 @@ public class EntryPointUtil {
   }
 
   private static EntryPointRegistration findCurrentEntryPointRegistration() {
-    EntryPointRegistration result;
-    result = findByStartupParameter();
-    if( result == null ) {
-      result = findByServletPath();
-      if( result == null ) {
-        result = getEntryPointByName( DEFAULT );
-      }
-    }
-    return result;
-  }
-
-  private static EntryPointRegistration findByStartupParameter() {
-    EntryPointRegistration result = null;
-    HttpServletRequest request = ContextProvider.getRequest();
-    String name = request.getParameter( RequestParams.STARTUP );
-    if( name != null && name.length() > 0 ) {
-      result = getEntryPointByName( name );
-    }
-    return result;
-  }
-
-  private static EntryPointRegistration findByServletPath() {
     EntryPointRegistration result = null;
     HttpServletRequest request = ContextProvider.getRequest();
     String path = request.getServletPath();
@@ -69,16 +45,10 @@ public class EntryPointUtil {
       EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
       result = entryPointManager.getRegistrationByPath( path );
     }
-    return result;
-  }
-
-  private static EntryPointRegistration getEntryPointByName( String name ) {
-    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
-    IEntryPointFactory factory = entryPointManager.getFactoryByName( name );
-    if( factory == null ) {
-      throw new IllegalArgumentException( "Entry point not found: " + name );
+    if( result == null ) {
+      throw new IllegalArgumentException( "Entry point not found: " + path );
     }
-    return new EntryPointRegistration( factory, null );
+    return result;
   }
 
 }

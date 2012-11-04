@@ -11,15 +11,19 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.mockito.Mockito.mock;
+
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.ServiceContext;
-import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.service.ISessionStore;
-import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
+import org.eclipse.rap.rwt.testfixture.TestResponse;
 
 
 public class ContextProvider_Test extends TestCase {
@@ -115,9 +119,20 @@ public class ContextProvider_Test extends TestCase {
     assertSame( session2, sessionStore2.getHttpSession() );
   }
   
+  public void testApplicationContextIsAttachedToSessionStore() {
+    ServletContext servletContext = Fixture.createServletContext();
+    Fixture.createServiceContext();
+    ApplicationContextUtil.set( servletContext, mock( ApplicationContext.class ) );
+
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
+    
+    assertNotNull( ApplicationContextUtil.get( sessionStore ) );
+  }
+  
   protected void tearDown() throws Exception {
     if( ContextProvider.hasContext() ) {
       Fixture.disposeOfServiceContext();
     }
+    Fixture.disposeOfServletContext();
   }
 }

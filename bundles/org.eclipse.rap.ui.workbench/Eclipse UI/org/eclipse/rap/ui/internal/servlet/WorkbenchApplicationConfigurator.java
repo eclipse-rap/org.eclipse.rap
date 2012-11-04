@@ -462,6 +462,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   }
 
   private static ApplicationContext getApplicationContext( Application application ) {
+    // TODO [rh] remove ApplicationImpl#getAdapter(), this is the only caller
     ApplicationImpl applicationImpl = ( ApplicationImpl )application;
     return applicationImpl.getAdapter( ApplicationContext.class );
   }

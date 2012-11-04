@@ -75,7 +75,7 @@ public class ApplicationContext {
   private final ApplicationContextConfigurator contextConfigurator;
   private final ApplicationContextActivator contextActivator;
   private final ClientSelector clientSelector;
-  private boolean activated;
+  private boolean active;
 
   public ApplicationContext( ApplicationConfiguration applicationConfiguration,
                              ServletContext servletContext )
@@ -108,17 +108,17 @@ public class ApplicationContext {
     clientSelector = new ClientSelector();
   }
 
-  public boolean isActivated() {
-    return activated;
+  public boolean isActive() {
+    return active;
   }
 
   public void activate() {
     checkIsActivated();
-    activated = true;
+    active = true;
     try {
       doActivate();
     } catch( RuntimeException rte ) {
-      activated = false;
+      active = false;
       throw rte;
     }
   }
@@ -128,7 +128,7 @@ public class ApplicationContext {
     try {
       doDeactivate();
     } finally {
-      activated = false;
+      active = false;
     }
   }
 
@@ -233,13 +233,13 @@ public class ApplicationContext {
   }
 
   private void checkIsNotActivated() {
-    if( !activated ) {
+    if( !active ) {
       throw new IllegalStateException( "The ApplicationContext has not been activated." );
     }
   }
 
   private void checkIsActivated() {
-    if( activated ) {
+    if( active ) {
       throw new IllegalStateException( "The ApplicationContext has already been activated." );
     }
   }

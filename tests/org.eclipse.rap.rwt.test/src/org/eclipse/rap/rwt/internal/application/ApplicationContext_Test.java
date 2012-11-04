@@ -91,7 +91,7 @@ public class ApplicationContext_Test extends TestCase {
   }
 
   public void testStateAfterCreation() {
-    assertFalse( context.isActivated() );
+    assertFalse( context.isActive() );
     checkUnallowedMethodAccessIfNotActivated();
   }
 

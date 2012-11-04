@@ -106,7 +106,7 @@ public class SimpleLifeCycle extends LifeCycle {
 
     private boolean isApplicationContextActive() {
       ApplicationContext applicationContext = ApplicationContextUtil.get( sessionStore );
-      return applicationContext != null && applicationContext.isActivated();
+      return applicationContext != null && applicationContext.isActive();
     }
   }
 

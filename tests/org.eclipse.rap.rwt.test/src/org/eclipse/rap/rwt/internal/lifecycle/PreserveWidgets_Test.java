@@ -188,8 +188,9 @@ public class PreserveWidgets_Test extends TestCase {
   }
 
   public void testStartup() throws Exception {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
-                                                      TestEntryPointWithShell.class );
+    RWTFactory.getEntryPointManager().registerByPath( EntryPointUtil.DEFAULT_PATH,
+                                                      TestEntryPointWithShell.class,
+                                                      null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
     Message message = Fixture.getProtocolMessage();

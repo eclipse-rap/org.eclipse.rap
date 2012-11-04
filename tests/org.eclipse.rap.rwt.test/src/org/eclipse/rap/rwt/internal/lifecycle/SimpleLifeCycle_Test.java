@@ -19,19 +19,17 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.service.SessionStoreEvent;
 import org.eclipse.rap.rwt.service.SessionStoreListener;
-import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener.PhaseEventInfo;
 import org.eclipse.swt.widgets.Display;
@@ -118,7 +116,9 @@ public class SimpleLifeCycle_Test extends TestCase {
 
   public void testThreadIsDetachedInSubsequentRequest() throws IOException {
     registerEntryPoint( TestEntryPoint.class );
-    Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointUtil.DEFAULT );
+    TestRequest request = ( TestRequest )RWT.getRequest();
+    request.setServerName( "/rap" );
+    
     lifeCycle.execute();
     Fixture.fakeNewRequest();
     lifeCycle.execute();
@@ -279,7 +279,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
 
   private static void registerEntryPoint( Class<? extends IEntryPoint> type ) {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, type );
+    RWTFactory.getEntryPointManager().registerByPath( "/rap", type, null );
   }
 
   private static void newSession() {

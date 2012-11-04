@@ -14,9 +14,12 @@ package org.eclipse.rap.rwt.internal.service;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.*;
 
 import org.eclipse.rap.rwt.internal.SingletonManager;
+import org.eclipse.rap.rwt.internal.application.ApplicationContext;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.IServiceStore;
@@ -138,6 +141,9 @@ public class ContextProvider {
         result = new SessionStoreImpl( httpSession );
         SessionStoreImpl.attachInstanceToSession( httpSession, result );
         SingletonManager.install( result );
+        ServletContext servletContext = httpSession.getServletContext();
+        ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+        ApplicationContextUtil.set( result, applicationContext );
       }
       result.attachHttpSession( httpSession );
       getContext().setSessionStore( result );

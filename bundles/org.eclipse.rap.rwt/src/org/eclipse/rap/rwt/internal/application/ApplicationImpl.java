@@ -96,28 +96,6 @@ public class ApplicationImpl implements Application, Adaptable {
     applicationContext.getEntryPointManager().registerByPath( path, entryPointFactory, properties );
   }
 
-  /*
-   * Only for backward compatibility with the extension point "org.eclipse.rap.ui.entrypoint"
-   * attribute "parameter"
-   */
-  public void addEntryPointByParameter( String parameter, Class<? extends IEntryPoint> type ) {
-    ParamCheck.notNull( parameter, "parameter" );
-    ParamCheck.notNull( type, "type" );
-
-    applicationContext.getEntryPointManager().registerByName( parameter, type );
-  }
-
-  /*
-   * Only for backward compatibility with the extension point "org.eclipse.rap.ui.entrypoint"
-   * attribute "parameter"
-   */
-  public void addEntryPointByParameter( String parameter, IEntryPointFactory entryPointFactory ) {
-    ParamCheck.notNull( parameter, "parameter" );
-    ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
-
-    applicationContext.getEntryPointManager().registerByName( parameter, entryPointFactory );
-  }
-
   public void addResource( String resourceName, ResourceLoader resourceLoader ) {
     ParamCheck.notNull( resourceName, "resourceName" );
     ParamCheck.notNull( resourceLoader, "resourceLoader" );

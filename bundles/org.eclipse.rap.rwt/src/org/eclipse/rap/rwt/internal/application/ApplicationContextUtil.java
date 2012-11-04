@@ -66,10 +66,6 @@ public class ApplicationContextUtil {
     return result;
   }
 
-  public static void remove( ISessionStore sessionStore ) {
-    sessionStore.removeAttribute( ATTR_APPLICATION_CONTEXT );
-  }
-
   public static ApplicationContext getInstance() {
     ApplicationContext result = CONTEXT_HOLDER.get();
     if( result == null  ) {

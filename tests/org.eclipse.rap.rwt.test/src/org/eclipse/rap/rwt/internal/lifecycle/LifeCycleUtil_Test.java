@@ -13,10 +13,7 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.rap.rwt.service.ISessionStore;
@@ -109,8 +106,6 @@ public class LifeCycleUtil_Test extends TestCase {
   }
 
   public void testIsStartup_withStartupParameter() {
-    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
-
     assertTrue( LifeCycleUtil.isStartup() );
   }
 

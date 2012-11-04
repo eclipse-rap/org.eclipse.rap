@@ -190,7 +190,7 @@ public final class ServiceContext {
   private void getApplicationContextFromSession() {
     if( sessionStore != null ) {
       ApplicationContext fromSession = ApplicationContextUtil.get( sessionStore );
-      if( fromSession != null && fromSession.isActivated() ) {
+      if( fromSession != null && fromSession.isActive() ) {
         applicationContext = fromSession;
       }
     }

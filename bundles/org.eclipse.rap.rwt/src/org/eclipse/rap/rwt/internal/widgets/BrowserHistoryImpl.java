@@ -141,9 +141,9 @@ public final class BrowserHistoryImpl
                                                        PROP_NAVIGATION_LISTENER,
                                                        EVENT_HISTORY_NAVIGATED_ENTRY_ID );
       BrowserHistoryEvent event = new BrowserHistoryEvent( this, entryId );
-      BrowserHistoryListener[] listener = getListeners();
-      for( int i = 0; i < listener.length; i++ ) {
-        listener[ i ].navigated( event );
+      BrowserHistoryListener[] listeners = getListeners();
+      for( BrowserHistoryListener listener : listeners ) {
+        listener.navigated( event );
       }
     }
   }

@@ -15,10 +15,6 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.IPhase;
-import org.eclipse.rap.rwt.internal.lifecycle.PrepareUIRoot;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -53,18 +49,9 @@ public class PrepareUIRoot_Test extends TestCase {
     assertEquals( PhaseId.READ_DATA, phaseId );
   }
 
-  public void testExecuteInFirstRequestsWithNoStartupParameter() throws IOException {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, TestEntryPoint.class );
-
-    PhaseId phaseId = phase.execute( null );
-
-    assertEquals( PhaseId.RENDER, phaseId );
-    assertTrue( TestEntryPoint.wasInvoked );
-  }
-
-  public void testExecuteInFirstRequestsWithStartupParameter() throws IOException {
-    RWTFactory.getEntryPointManager().registerByName( "myEntryPoint", TestEntryPoint.class );
-    Fixture.fakeRequestParam( RequestParams.STARTUP, "myEntryPoint" );
+  public void testExecuteInFirstRequests() throws IOException {
+    EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
+    entryPointManager.registerByPath( EntryPointUtil.DEFAULT_PATH, TestEntryPoint.class, null );
 
     PhaseId phaseId = phase.execute( null );
 

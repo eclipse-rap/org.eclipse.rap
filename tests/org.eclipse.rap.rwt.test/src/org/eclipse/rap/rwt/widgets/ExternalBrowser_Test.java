@@ -85,8 +85,9 @@ public class ExternalBrowser_Test extends TestCase {
    * matches the order of the ExternalBrowser#open/close calls
    */
   public void testExecutionOrder() throws IOException {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
-                                                      TestExecutionOrderEntryPoint.class );
+    RWTFactory.getEntryPointManager().registerByPath( EntryPointUtil.DEFAULT_PATH,
+                                                      TestExecutionOrderEntryPoint.class,
+                                                      null );
     Fixture.fakeNewRequest();
 
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();

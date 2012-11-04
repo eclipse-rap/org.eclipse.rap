@@ -17,7 +17,7 @@ import java.util.Map;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 
 
-class EntryPointRegistration {
+public class EntryPointRegistration {
   private final IEntryPointFactory factory;
   private final Map<String, String> properties;
 

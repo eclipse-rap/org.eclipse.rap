@@ -15,8 +15,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -76,11 +76,11 @@ public class Application implements IEntryPoint, ITestHarness {
 
   private IEntryPoint getEntryPoint( String entryPointName ) {
     EntryPointManager entryPointManager = RWTFactory.getEntryPointManager();
-    IEntryPointFactory factory = entryPointManager.getFactoryByName( entryPointName );
-    if( factory == null ) {
+    EntryPointRegistration registration = entryPointManager.getRegistrationByPath( entryPointName );
+    if( registration == null ) {
       throw new IllegalArgumentException( entryPointName );
     }
-    return factory.create();
+    return registration.getFactory().create();
   }
 
   public void runTests() {

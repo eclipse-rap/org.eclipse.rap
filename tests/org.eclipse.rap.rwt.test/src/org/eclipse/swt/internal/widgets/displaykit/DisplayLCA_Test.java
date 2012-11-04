@@ -189,8 +189,9 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderInitiallyDisposed() throws Exception {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
-                                                      TestRenderInitiallyDisposedEntryPoint.class );
+    RWTFactory.getEntryPointManager().registerByPath( EntryPointUtil.DEFAULT_PATH,
+                                                      TestRenderInitiallyDisposedEntryPoint.class,
+                                                      null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     LifeCycleUtil.setSessionDisplay( null );
     // ensure that life cycle execution succeeds with disposed display
@@ -202,8 +203,9 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderDisposed() throws Exception {
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
-                                                      TestRenderDisposedEntryPoint.class );
+    RWTFactory.getEntryPointManager().registerByPath( EntryPointUtil.DEFAULT_PATH,
+                                                      TestRenderDisposedEntryPoint.class,
+                                                      null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     LifeCycleUtil.setSessionDisplay( null );
     lifeCycle.execute();

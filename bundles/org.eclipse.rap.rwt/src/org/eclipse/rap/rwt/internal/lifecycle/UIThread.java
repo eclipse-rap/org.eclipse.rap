@@ -174,7 +174,7 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
 
   private boolean isApplicationContextActive() {
     ApplicationContext applicationContext = ApplicationContextUtil.get( sessionStore );
-    return applicationContext != null && applicationContext.isActivated();
+    return applicationContext != null && applicationContext.isActive();
   }
 
 }

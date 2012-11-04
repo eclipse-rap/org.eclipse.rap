@@ -48,8 +48,9 @@ public class ReadDispose_Test extends TestCase {
   public void testWidgetDisposal() throws Exception {
     // Run requests to initialize the 'system'
     Fixture.fakeNewRequest();
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT,
-                                                      WidgetDisposalEntryPoint.class );
+    RWTFactory.getEntryPointManager().registerByPath( EntryPointUtil.DEFAULT_PATH,
+                                                      WidgetDisposalEntryPoint.class,
+                                                      null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
     Fixture.fakeNewRequest();

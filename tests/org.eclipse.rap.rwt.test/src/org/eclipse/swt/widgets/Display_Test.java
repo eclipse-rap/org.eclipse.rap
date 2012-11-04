@@ -29,7 +29,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
@@ -891,7 +890,7 @@ public class Display_Test extends TestCase {
 
   public void testEnsureIdIsW1() throws IOException {
     Class<EnsureIdEntryPoint> entryPointClass = EnsureIdEntryPoint.class;
-    RWTFactory.getEntryPointManager().registerByName( EntryPointUtil.DEFAULT, entryPointClass );
+    RWTFactory.getEntryPointManager().registerByPath( "/rap", entryPointClass, null );
     Fixture.fakeNewRequest();
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();

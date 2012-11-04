@@ -18,6 +18,8 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
+
 
 /**
  * <p>
@@ -29,7 +31,6 @@ import javax.servlet.http.*;
 public final class TestRequest implements HttpServletRequest {
 
   private static final String DEFAULT_SCHEME = "http";
-  public static final String DEFAULT_SERVLET_PATH = "/rap";
   public static final String DEFAULT_REQUEST_URI = "/fooapp/rap";
   public static final String DEFAULT_CONTEX_PATH = "/fooapp";
   public static final String DEFAULT_SERVER_NAME = "fooserver";
@@ -58,7 +59,7 @@ public final class TestRequest implements HttpServletRequest {
     serverName = DEFAULT_SERVER_NAME;
     contextPath = DEFAULT_CONTEX_PATH;
     requestURI = DEFAULT_REQUEST_URI;
-    servletPath = DEFAULT_SERVLET_PATH;
+    servletPath = EntryPointUtil.DEFAULT_PATH;
     parameters = new HashMap<String,String[]>();
     headers = new HashMap<String, String>();
     attributes = new HashMap<String,Object>();

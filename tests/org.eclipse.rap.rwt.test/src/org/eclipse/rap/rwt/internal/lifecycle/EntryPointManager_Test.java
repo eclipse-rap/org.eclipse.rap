@@ -19,7 +19,6 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
@@ -28,7 +27,6 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 
 public class EntryPointManager_Test extends TestCase {
 
-  private static final String NAME = "entryPointName";
   private static final String PATH = "/entrypoint";
   private static final Integer RETURN_VALUE = Integer.valueOf( 123 );
 
@@ -194,77 +192,12 @@ public class EntryPointManager_Test extends TestCase {
     assertTrue( entryPointManager.getServletPaths().contains( "/bar" ) );
   }
 
-  public void testRegisterEntryPointByName_nullName() {
-    try {
-      entryPointManager.registerByName( null, TestEntryPoint.class );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  public void testRegisterEntryPointByName_nullClass() {
-    try {
-      entryPointManager.registerByName( NAME, ( Class<? extends IEntryPoint> )null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  public void testRegisterEntryPointByName_duplicate() {
-    entryPointManager.registerByName( NAME, TestEntryPoint.class );
-    try {
-      entryPointManager.registerByName( NAME, TestEntryPoint.class );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
-  }
-
-  public void testRegisterEntryPointByName() {
-    entryPointManager.registerByName( NAME, TestEntryPoint.class );
-
-    IEntryPointFactory factory = entryPointManager.getFactoryByName( NAME );
-
-    assertEquals( DefaultEntryPointFactory.class, factory.getClass() );
-    assertEquals( TestEntryPoint.class, factory.create().getClass() );
-  }
-
-  public void testRegisterFactoryByName_nullPath() {
-    try {
-      entryPointManager.registerByName( null, entryPointFactory );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  public void testRegisterFactoryByName_nullFactory() {
-    try {
-      entryPointManager.registerByName( NAME, ( IEntryPointFactory )null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  public void testRegisterFactoryByName() {
-    entryPointManager.registerByName( NAME, entryPointFactory );
-
-    IEntryPointFactory factory = entryPointManager.getFactoryByName( NAME );
-
-    assertSame( entryPointFactory, factory );
-  }
-
-  public void testGetFactoryByName_nonExisting() {
-    assertNull( entryPointManager.getFactoryByName( NAME ) );
-  }
-
   public void testDeregisterAll() {
     entryPointManager.registerByPath( PATH, entryPointFactory, null );
-    entryPointManager.registerByName( NAME, TestEntryPoint.class );
 
     entryPointManager.deregisterAll();
 
     assertTrue( entryPointManager.getServletPaths().isEmpty() );
-    assertNull( entryPointManager.getRegistrationByPath( NAME ) );
-    assertNull( entryPointManager.getFactoryByName( NAME ) );
   }
 
   private void assertRegisterByPathFails( String path, Class<? extends IEntryPoint> type ) {
