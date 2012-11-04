@@ -1,7 +1,6 @@
 package org.eclipse.rap.ui.tests.resources;
 
 import org.eclipse.rap.ui.resources.IResource;
-import org.eclipse.rap.ui.resources.RegisterOptions;
 
 
 public final class Resource4 implements IResource {
@@ -16,10 +15,6 @@ public final class Resource4 implements IResource {
 
   public String getLocation() {
     return "org/eclipse/rap/ui/tests/resources/Resource4.js"; //$NON-NLS-1$
-  }
-
-  public RegisterOptions getOptions() {
-    return RegisterOptions.VERSION_AND_COMPRESS;
   }
 
   public boolean isExternal() {
