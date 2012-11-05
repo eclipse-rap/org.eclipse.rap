@@ -38,7 +38,7 @@ public final class StartupPageTemplate {
   
   private final Token[] tokens;
   
-  public StartupPageTemplate() throws IOException {
+  public StartupPageTemplate() {
     this( loadStatupPageTemplate() );
   }
   
@@ -57,20 +57,24 @@ public final class StartupPageTemplate {
     printWriter.flush();
   }
 
-  private static String loadStatupPageTemplate() throws IOException {
+  private static String loadStatupPageTemplate() {
     StringBuilder buffer = new StringBuilder();
-    InputStream stream = StartupPageTemplate.class.getResourceAsStream( "rwt-index.html" );
-    InputStreamReader streamReader = new InputStreamReader( stream, HTTP.CHARSET_UTF_8 );
-    BufferedReader reader = new BufferedReader( streamReader );
     try {
-      String line = reader.readLine();
-      while( line != null ) {
-        buffer.append( line );
-        buffer.append( '\n' );
-        line = reader.readLine();
+      InputStream stream = StartupPageTemplate.class.getResourceAsStream( "rwt-index.html" );
+      InputStreamReader streamReader = new InputStreamReader( stream, HTTP.CHARSET_UTF_8 );
+      BufferedReader reader = new BufferedReader( streamReader );
+      try {
+        String line = reader.readLine();
+        while( line != null ) {
+          buffer.append( line );
+          buffer.append( '\n' );
+          line = reader.readLine();
+        }
+      } finally {
+        reader.close();
       }
-    } finally {
-      reader.close();
+    } catch( IOException ioe ) {
+      throw new RuntimeException( "Failed to read startup page template", ioe );
     }
     return buffer.toString();
   }

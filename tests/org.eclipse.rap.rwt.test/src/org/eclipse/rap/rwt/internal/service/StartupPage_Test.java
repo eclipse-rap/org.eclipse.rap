@@ -40,9 +40,26 @@ public class StartupPage_Test extends TestCase {
   
   private StartupPage startupPage;
   private TestResponse response;
+  
+  public void testActivate() {
+    startupPage.activate();
+    
+    verify( startupPage ).createStartupPageTemplate();
+  }
 
+  public void testDeactivate() throws IOException {
+    startupPage.activate();
+    startupPage.deactivate();
+    
+    try {
+      startupPage.send( response );
+      fail();
+    } catch( RuntimeException expected ) {
+    }
+  }
+  
   public void testSetResponseHeaders() {
-    TestResponse response = new TestResponse();
+    startupPage.activate();
   
     StartupPage.setResponseHeaders( response );
   
@@ -51,6 +68,7 @@ public class StartupPage_Test extends TestCase {
   }
 
   public void testSend() throws IOException {
+    startupPage.activate();
     registerEntryPoint( null, null );
 
     startupPage.send( response );
@@ -62,7 +80,7 @@ public class StartupPage_Test extends TestCase {
   
   public void testSuccessiveMarkup() throws IOException {
     registerEntryPoint( null, null );
-    mockTemplate( "<some html>" );
+    activateStartupPage( "<some html>" );
     startupPage.send( response );
   
     TestResponse subsequentResponse = new TestResponse();
@@ -72,7 +90,7 @@ public class StartupPage_Test extends TestCase {
   }
   
   public void testSendWithUnknownToken() throws IOException {
-    mockTemplate( variableFrom( "unknown" ) );
+    activateStartupPage( variableFrom( "unknown" ) );
     
     try {
       startupPage.send( response );
@@ -83,7 +101,7 @@ public class StartupPage_Test extends TestCase {
 
   public void testSendReplacesTitleToken() throws IOException {
     registerEntryPoint( WebClient.PAGE_TITLE, "title" );
-    mockTemplate( variableFrom( StartupPageTemplate.TOKEN_TITLE ) );
+    activateStartupPage( variableFrom( StartupPageTemplate.TOKEN_TITLE ) );
     
     startupPage.send( response );
     
@@ -92,7 +110,7 @@ public class StartupPage_Test extends TestCase {
 
   public void testSendReplacesTitleTokenWithoutTitleProperty() throws IOException {
     registerEntryPoint( WebClient.PAGE_TITLE, null );
-    mockTemplate( variableFrom( StartupPageTemplate.TOKEN_TITLE ) );
+    activateStartupPage( variableFrom( StartupPageTemplate.TOKEN_TITLE ) );
     
     startupPage.send( response );
     
@@ -102,7 +120,7 @@ public class StartupPage_Test extends TestCase {
   
   public void testSendReplacesHeaderTokenWithHeadHtml() throws IOException {
     registerEntryPoint( WebClient.HEAD_HTML, "<head />" );
-    mockTemplate( variableFrom( StartupPageTemplate.TOKEN_HEADERS ) );
+    activateStartupPage( variableFrom( StartupPageTemplate.TOKEN_HEADERS ) );
     
     startupPage.send( response );
     
@@ -112,7 +130,7 @@ public class StartupPage_Test extends TestCase {
   public void testSendReplacesHeaderTokenWithFavIcon() throws IOException {
     String favIcon = "icon.png";
     registerEntryPoint( WebClient.FAVICON, favIcon );
-    mockTemplate( variableFrom( StartupPageTemplate.TOKEN_HEADERS ) );
+    activateStartupPage( variableFrom( StartupPageTemplate.TOKEN_HEADERS ) );
     
     startupPage.send( response );
     
@@ -126,7 +144,7 @@ public class StartupPage_Test extends TestCase {
     properties.put( WebClient.HEAD_HTML, head );
     properties.put( WebClient.FAVICON, favIcon );
     RWTFactory.getEntryPointManager().registerByPath( "/rap", TestEntryPoint.class, properties );    
-    mockTemplate( variableFrom( StartupPageTemplate.TOKEN_HEADERS ) );
+    activateStartupPage( variableFrom( StartupPageTemplate.TOKEN_HEADERS ) );
     
     startupPage.send( response );
     
@@ -138,7 +156,7 @@ public class StartupPage_Test extends TestCase {
   
   public void testSendReplacesBodyToken() throws IOException {
     registerEntryPoint( WebClient.BODY_HTML, "<body />" );
-    mockTemplate( variableFrom( StartupPageTemplate.TOKEN_BODY ) );
+    activateStartupPage( variableFrom( StartupPageTemplate.TOKEN_BODY ) );
     
     startupPage.send( response );
     
@@ -147,7 +165,7 @@ public class StartupPage_Test extends TestCase {
 
   public void testSendReplacesBodyTokenWithoutBodyProperty() throws IOException {
     registerEntryPoint( WebClient.BODY_HTML, null );
-    mockTemplate( variableFrom( StartupPageTemplate.TOKEN_BODY ) );
+    activateStartupPage( variableFrom( StartupPageTemplate.TOKEN_BODY ) );
     
     startupPage.send( response );
     
@@ -158,7 +176,7 @@ public class StartupPage_Test extends TestCase {
   public void testSendReplacesLibraryToken() throws IOException {
     registerEntryPoint( null, null );
     startupPage.addJsLibrary( "library.js" );
-    mockTemplate( variableFrom( StartupPageTemplate.TOKEN_LIBRARIES ) );
+    activateStartupPage( variableFrom( StartupPageTemplate.TOKEN_LIBRARIES ) );
     
     startupPage.send( response );
 
@@ -168,7 +186,7 @@ public class StartupPage_Test extends TestCase {
   
   public void testSendReplacesBackgroundImageToken() throws IOException {
     registerEntryPoint( null, null );
-    mockTemplate( variableFrom( StartupPageTemplate.TOKEN_BACKGROUND_IMAGE ) );
+    activateStartupPage( variableFrom( StartupPageTemplate.TOKEN_BACKGROUND_IMAGE ) );
     
     startupPage.send( response );
     
@@ -177,7 +195,7 @@ public class StartupPage_Test extends TestCase {
   
   public void testSendReplacesNoScriptMessageToken() throws IOException {
     registerEntryPoint( null, null );
-    mockTemplate( variableFrom( StartupPageTemplate.TOKEN_NO_SCRIPT_MESSAGE ) );
+    activateStartupPage( variableFrom( StartupPageTemplate.TOKEN_NO_SCRIPT_MESSAGE ) );
     
     startupPage.send( response );
     
@@ -186,7 +204,7 @@ public class StartupPage_Test extends TestCase {
 
   public void testSendReplacesAppScriptToken() throws IOException {
     registerEntryPoint( null, null );
-    mockTemplate( variableFrom( StartupPageTemplate.TOKEN_APP_SCRIPT ) );
+    activateStartupPage( variableFrom( StartupPageTemplate.TOKEN_APP_SCRIPT ) );
     
     startupPage.send( response );
     
@@ -194,6 +212,7 @@ public class StartupPage_Test extends TestCase {
   }
   
   public void testSendSetsCurrentTheme() throws IOException {
+    startupPage.activate();
     ThemeTestUtil.registerTheme( CUSTOM_THEME_ID, "", null );
     registerEntryPoint( WebClient.THEME_ID, CUSTOM_THEME_ID );
     
@@ -247,8 +266,9 @@ public class StartupPage_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  private void mockTemplate( String template ) throws IOException {
-    doReturn( new StartupPageTemplate( template ) ).when( startupPage ).getStartupPageTemplate();
+  private void activateStartupPage( String template ) {
+    doReturn( new StartupPageTemplate( template ) ).when( startupPage ).createStartupPageTemplate();
+    startupPage.activate();
   }
 
   private static String variableFrom( String variableName ) {
