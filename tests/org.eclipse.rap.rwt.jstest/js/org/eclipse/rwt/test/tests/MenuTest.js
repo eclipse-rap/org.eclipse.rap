@@ -460,23 +460,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     },
 
     testContextMenuOpenOnControl : function() {
-      TestUtil.fakeResponse( true );
-      var menu1 = new rwt.widgets.Menu();
-      menu1.setHasShowListener( true );
       var parent = createControl();
       parent.addToDocument();
-      parent.setContextMenu( menu1 );
-      addContextMenuListener( parent );
-      var widget = new rwt.widgets.base.Atom( "bla" );
+      var widget = new rwt.widgets.base.Atom( "foo" );
       widget.setParent( parent );
+      var menu = new rwt.widgets.Menu();
+      menu.addToDocument();
+      var menuItem = new MenuItem( "PUSH" );
+      menu.addMenuItemAt( menuItem, 0 );
+      parent.setContextMenu( menu );
+      addContextMenuListener( parent );
       TestUtil.flush();
-      assertFalse( menu1.isSeeable() );
+
       TestUtil.rightClick( widget );
-      assertTrue( menu1.isSeeable() );
-      menu1.destroy();
-      widget.destroy();
+      TestUtil.flush();
+
+      assertTrue( menu.isSeeable() );
+      assertIdentical( parent, menu.getOpener() ); // important for getting focusRoot on key events
+      menu.destroy();
       parent.destroy();
-      TestUtil.fakeResponse( false );
     },
 
     testContextMenuOpenOnText : function() {

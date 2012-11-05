@@ -84,6 +84,7 @@ qx.Class.define( "rwt.widgets.Menu", {
         var pageX = qx.event.type.MouseEvent.getPageX();
         var pageY = qx.event.type.MouseEvent.getPageY();
         contextMenu.setLocation( pageX, pageY );
+        contextMenu.setOpener( control );
         contextMenu.show();
       }
     },
