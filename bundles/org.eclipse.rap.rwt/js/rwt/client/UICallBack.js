@@ -61,17 +61,8 @@ rwt.client.UICallBack.prototype = {
 
   _handleSuccess : function( event ) {
     this._running = false;
-    var text = event.responseText;
-    try {
-      var messageObject = JSON.parse( text );
-      rwt.protocol.MessageProcessor.processMessage( messageObject );
-      this.sendUIRequest();
-    } catch( ex ) {
-      var escapedText = rwt.protocol.EncodingUtil.escapeText( text, true );
-      var msg = "Could not process UICallBack response: [" + escapedText + "]: " + ex;
-      rwt.runtime.ErrorHandler.showErrorPage( msg );
-    }
     this._retryInterval = 0;
+    this.sendUIRequest();
   },
 
   _handleError : function( event ) {
