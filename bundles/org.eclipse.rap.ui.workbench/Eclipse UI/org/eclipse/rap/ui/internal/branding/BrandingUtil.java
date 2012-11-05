@@ -18,7 +18,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
 
 public final class BrandingUtil {
 
-  public static final String ENTRY_POINT_BRANDING = "branding";
+  public static final String ENTRY_POINT_BRANDING = "org.eclipse.rap.ui.branding";
 
   public static String getCurrentBrandingId() {
     Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
