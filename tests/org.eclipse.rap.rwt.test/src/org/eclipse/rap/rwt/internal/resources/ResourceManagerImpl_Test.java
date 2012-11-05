@@ -158,6 +158,17 @@ public class ResourceManagerImpl_Test extends TestCase {
     }
   }
 
+  public void testRegisterWithAbsolutePath() throws Exception {
+    InputStream inputStream = createInputStream();
+    String path = "/absolute/path/to/resource.txt";
+    resourceManager.register( path, inputStream );
+    inputStream.close();
+
+    String location = resourceManager.getLocation( path );
+
+    assertEquals( "rwt-resources//absolute/path/to/resource.txt", location );
+  }
+  
   public void testRegisterWithTrailingSlash() {
     try {
       resourceManager.register( "/", createInputStream() );
