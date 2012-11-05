@@ -30,7 +30,7 @@ public class RWTContribution implements TestContribution {
   private static final String APPEARANCE_NAME = "appearance.js";
   private static final String THEME_NAME = "default-theme.js";
   private static final String TEST_SETTINGS_RESOURCE = "/resource/TestSettings.js";
-  private static final String JSON_PARSER_RESOURCE = "json2.js";
+  private static final String JSON_PARSER_RESOURCE = "json2.min.js";
 
   public String getName() {
     return "rwt";
