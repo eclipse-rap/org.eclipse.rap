@@ -88,10 +88,10 @@ public class StartupJson_Test extends TestCase {
 
   public void testSendStartupJson() throws IOException {
     Fixture.fakeNewGetRequest();
-
-    StartupJson.send();
-
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
+
+    StartupJson.send( response );
+
     assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
     assertTrue( response.getContent().indexOf( DISPLAY_TYPE ) != -1 );
   }

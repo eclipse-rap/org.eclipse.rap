@@ -74,10 +74,11 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   private void handleGetRequest() throws IOException {
     Map<String, String[]> parameters = ContextProvider.getRequest().getParameterMap();
     RequestParameterBuffer.store( parameters );
+    HttpServletResponse response = ContextProvider.getResponse();
     if( RWT.getClient() instanceof WebClient ) {
-      startupPage.send( ContextProvider.getResponse() );
+      startupPage.send( response );
     } else {
-      StartupJson.send();
+      StartupJson.send( response );
     }
   }
 

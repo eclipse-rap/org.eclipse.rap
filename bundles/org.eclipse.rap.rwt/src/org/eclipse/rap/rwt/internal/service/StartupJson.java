@@ -40,8 +40,7 @@ public class StartupJson {
     // prevent instantiation
   }
 
-  static void send() throws IOException {
-    HttpServletResponse response = ContextProvider.getResponse();
+  static void send( HttpServletResponse response ) throws IOException {
     setResponseHeaders( response );
     PrintWriter writer = response.getWriter();
     writer.write( get() );
