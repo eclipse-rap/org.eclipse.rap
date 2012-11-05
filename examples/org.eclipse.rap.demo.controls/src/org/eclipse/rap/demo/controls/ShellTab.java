@@ -75,6 +75,7 @@ public class ShellTab extends ExampleTab {
     createStyleButton( "SHELL_TRIM", SWT.SHELL_TRIM, true );
     createStyleButton( "DIALOG_TRIM", SWT.DIALOG_TRIM );
     createStyleButton( "APPLICATION_MODAL", SWT.APPLICATION_MODAL );
+    createStyleButton( "PRIMARY_MODAL", SWT.PRIMARY_MODAL );
     createStyleButton( "TITLE", SWT.TITLE );
     createStyleButton( "MIN", SWT.MIN );
     createStyleButton( "MAX", SWT.MAX );
