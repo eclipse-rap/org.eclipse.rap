@@ -13,6 +13,7 @@
 package org.eclipse.rap.rwt.internal.service;
 
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -26,6 +27,7 @@ import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
+import org.eclipse.rap.rwt.internal.theme.QxImage;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -200,11 +202,28 @@ public class StartupPage_Test extends TestCase {
     assertEquals( CUSTOM_THEME_ID, ThemeUtil.getCurrentThemeId() );
   }
   
-  public void testGetBackgroundImageWithNoBackgroundImage() throws IOException {
-    ThemeTestUtil.registerTheme( CUSTOM_THEME_ID, "Display { background-image: none }", null );
-    ThemeUtil.setCurrentThemeId( CUSTOM_THEME_ID );
+  public void testGetBackgroundImageLocationWithNoneBackgroundImage() {
+    doReturn( QxImage.NONE ).when( startupPage ).getBrackgroundImage();
     
-    String backgroundImage = startupPage.getBackgroundImage();
+    String backgroundImage = startupPage.getBackgroundImageLocation();
+    
+    assertEquals( "", backgroundImage );
+  }
+  
+  public void testGetBackgroundImageLocationWithExistingBackgroundImage() {
+    QxImage qxImage = mock( QxImage.class );
+    doReturn( "image-location" ).when( qxImage ).getResourcePath();
+    doReturn( qxImage ).when( startupPage ).getBrackgroundImage();
+    
+    String backgroundImage = startupPage.getBackgroundImageLocation();
+    
+    assertEquals( "rwt-resources/image-location", backgroundImage );
+  }
+  
+  public void testGetBackgroundImageLocationWithNonExistingBackgroundImage() {
+    doReturn( mock( QxImage.class ) ).when( startupPage ).getBrackgroundImage();
+    
+    String backgroundImage = startupPage.getBackgroundImageLocation();
     
     assertEquals( "", backgroundImage );
   }

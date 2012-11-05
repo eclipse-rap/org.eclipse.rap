@@ -27,7 +27,6 @@ import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointUtil;
 import org.eclipse.rap.rwt.internal.service.StartupPageTemplate.VariableWriter;
 import org.eclipse.rap.rwt.internal.theme.QxImage;
-import org.eclipse.rap.rwt.internal.theme.QxType;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
@@ -113,7 +112,7 @@ public class StartupPage {
   }
 
   protected void writeBackgroundImage( PrintWriter printWriter ) {
-    printWriter.write( getBackgroundImage() );
+    printWriter.write( getBackgroundImageLocation() );
   }
 
   protected void writeNoScriptMessage( PrintWriter printWriter ) {
@@ -137,18 +136,19 @@ public class StartupPage {
     }
   }
 
-  protected String getBackgroundImage() {
+  protected String getBackgroundImageLocation() {
     String result = "";
-    QxType value = ThemeUtil.getCssValue( "Display", "background-image", SimpleSelector.DEFAULT );
-    if( value instanceof QxImage ) {
-      QxImage image = ( QxImage )value;
-      // path is null if non-existing image was specified in css file
-      String resourceName = image.getResourcePath();
-      if( resourceName != null ) {
-        result = getResourceLocation( resourceName );
-      }
+    QxImage image = getBrackgroundImage();
+    String resourceName = image.getResourcePath();
+    if( resourceName != null ) {
+      result = getResourceLocation( resourceName );
     }
     return result;
+  }
+
+  protected QxImage getBrackgroundImage() {
+    SimpleSelector defaultSelector = SimpleSelector.DEFAULT;
+    return ( QxImage )ThemeUtil.getCssValue( "Display", "background-image", defaultSelector );
   }
 
   private String getResourceLocation( String resourceName ) {

@@ -133,13 +133,6 @@ public class ApplicationImpl_Test extends TestCase {
     assertSame( applicationContext, context );
   }
 
-  public void testGetConfiguratorViaAdapter() throws Exception {
-    ApplicationConfiguration configuration
-      = application.getAdapter( ApplicationConfiguration.class );
-
-    assertSame( applicationConfiguration, configuration );
-  }
-
   @Override
   protected void setUp() throws Exception {
     applicationConfiguration = mock( ApplicationConfiguration.class );

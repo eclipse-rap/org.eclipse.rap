@@ -23,7 +23,7 @@ import org.eclipse.rap.rwt.resources.ResourceLoader;
 import org.eclipse.swt.graphics.*;
 
 
-public final class QxImage implements QxType, ThemeResource {
+public class QxImage implements QxType, ThemeResource {
 
   private static final String IMAGE_DEST_PATH = "themes/images";
 

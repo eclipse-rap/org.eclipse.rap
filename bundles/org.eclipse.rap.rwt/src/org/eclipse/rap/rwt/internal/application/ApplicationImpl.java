@@ -171,8 +171,6 @@ public class ApplicationImpl implements Application, Adaptable {
     T result = null;
     if( adapter == ApplicationContext.class ) {
       result = ( T )applicationContext;
-    } else if( adapter == ApplicationConfiguration.class ) {
-      result = ( T )configuration;
     }
     return result;
   }
