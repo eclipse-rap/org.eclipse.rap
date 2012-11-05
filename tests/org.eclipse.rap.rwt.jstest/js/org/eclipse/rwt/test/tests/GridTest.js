@@ -221,6 +221,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       widget.destroy();
     },
 
+    testSetTopItemIndexToZeroOnEmptyGrid  : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      widget.setItemCount( 10 );
+      widget.setItemHeight( 20 );
+      TestUtil.flush();
+      TestUtil.protocolSet( "w3", { "topItemIndex" : 3 } );
+
+      widget.setItemCount( 0 );
+      TestUtil.protocolSet( "w3", { "topItemIndex" : 0 } );
+      TestUtil.flush();
+
+      assertEquals( 0, widget._vertScrollBar.getValue() );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testSetFocusItemByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );

@@ -286,7 +286,11 @@ qx.Class.define( "rwt.widgets.Grid", {
 
     setTopItemIndex : function( index ) {
       this._updateScrollHeight();
-      var offset = this._rootItem.findItemByFlatIndex( index ).getOffset();
+      var offset = 0;
+      var item = this._rootItem.findItemByFlatIndex( index );
+      if( item != null ) {
+        offset = item.getOffset();
+      }
       this._vertScrollBar.setValue( offset );
       if( !this._inServerResponse() ) {
         rwt.widgets.base.Widget.flushGlobalQueues();
