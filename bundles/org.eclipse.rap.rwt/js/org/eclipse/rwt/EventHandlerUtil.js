@@ -305,6 +305,19 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       }
     } ),
 
+
+    mustRestoreKeyup  : function( keyCode, pseudoTypes  ) {
+      // For these keys it is assumed to be more likely that a keyup event was missed
+      // than the key being hold down while another key is pressed.
+      var result = [];
+      if( pseudoTypes[ 0 ] === "keydown" ) {
+        if( !this._isFirstKeyDown( 93 ) && keyCode !== 93 ) {
+          result.push( 93 );
+        }
+      }
+      return result;
+    },
+
     mustRestoreKeypress  : rwt.util.Variant.select( "qx.client", {
       "default" : function( event, pseudoTypes ) {
         var result = false;
@@ -324,6 +337,10 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
         this._lastUpDownType[ keyCode ] = event.type;
         this._lastKeyCode = keyCode;
       }
+    },
+
+    clearStuckKey : function( keyCode ) {
+      this._lastUpDownType[ keyCode ] = "keyup";
     },
 
     keyCodeToIdentifier : function( keyCode ) {
