@@ -29,8 +29,6 @@ import org.eclipse.rap.rwt.internal.service.StartupPageTemplate.VariableWriter;
 import org.eclipse.rap.rwt.internal.theme.QxImage;
 import org.eclipse.rap.rwt.internal.theme.QxType;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
-import org.eclipse.rap.rwt.internal.theme.Theme;
-import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
@@ -101,8 +99,6 @@ public class StartupPage {
     for( String location : jsLibraries ) {
       writeScriptTag( printWriter, location );
     }
-    writeScriptTag( printWriter, ThemeManager.FALLBACK_THEME_ID );
-    writeScriptTag( printWriter, getCurrentThemeLocation() );
     writeScriptTag( printWriter, RWTFactory.getJSLibraryConcatenator().getLocation() );
   }
 
@@ -141,11 +137,6 @@ public class StartupPage {
     }
   }
 
-  private String getCurrentThemeLocation() {
-    Theme theme = applicationContext.getThemeManager().getTheme( ThemeUtil.getCurrentThemeId() );
-    return theme.getRegisteredLocation();
-  }
-
   protected String getBackgroundImage() {
     String result = "";
     QxType value = ThemeUtil.getCssValue( "Display", "background-image", SimpleSelector.DEFAULT );
@@ -173,7 +164,7 @@ public class StartupPage {
   }
 
   private class StartupPageValueProvider implements VariableWriter {
-    
+
     public void writeVariable( PrintWriter printWriter, String variableName ) {
       if( variableName.equals( StartupPageTemplate.TOKEN_LIBRARIES ) ) {
         writeLibraries( printWriter );
@@ -193,7 +184,7 @@ public class StartupPage {
         throw new IllegalArgumentException( "Unsupported variable: " + variableName );
       }
     }
-    
+
   }
 
 }
