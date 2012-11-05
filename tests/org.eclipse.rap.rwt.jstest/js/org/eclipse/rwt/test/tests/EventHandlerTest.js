@@ -576,6 +576,44 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       text.destroy();
     },
 
+    testStoreMouseEvent : function(){
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var text = new rwt.widgets.Text( false );
+      text.addToDocument();
+      text.setSpace( 0, 50, 0, 21 );
+      TestUtil.flush();
+      text.focus();
+      var log = [];
+      var left = qx.event.type.MouseEvent.buttons.left;
+      var right = qx.event.type.MouseEvent.buttons.right;
+
+      TestUtil.fakeMouseEventDOM( text.getElement(), "mousemove", left, 10, 20 );
+      //TestUtil.fakeMouseEventDOM( text._inputElement, "contextmenu", right );
+
+      assertEquals( 10, qx.event.type.MouseEvent.getPageX() );
+      assertEquals( 20, qx.event.type.MouseEvent.getPageY() );
+      text.destroy();
+    },
+
+    testStoreMouseEventNotContextMenu : function(){
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var text = new rwt.widgets.Text( false );
+      text.addToDocument();
+      text.setSpace( 0, 50, 0, 21 );
+      TestUtil.flush();
+      text.focus();
+      var log = [];
+      var left = qx.event.type.MouseEvent.buttons.left;
+      var right = qx.event.type.MouseEvent.buttons.right;
+
+      TestUtil.fakeMouseEventDOM( text.getElement(), "mousemove", left, 10, 20 );
+      TestUtil.fakeMouseEventDOM( text._inputElement, "contextmenu", right, 0, 0 );
+
+      assertEquals( 10, qx.event.type.MouseEvent.getPageX() );
+      assertEquals( 20, qx.event.type.MouseEvent.getPageY() );
+      text.destroy();
+    },
+
     /////////
     // Helper
 

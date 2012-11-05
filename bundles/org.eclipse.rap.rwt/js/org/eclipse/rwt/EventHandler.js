@@ -388,7 +388,9 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
                                                        vOriginalTarget,
                                                        vRelatedTarget );
       // Store last Event in MouseEvent Constructor. Needed for Tooltips, ...
-      qx.event.type.MouseEvent.storeEventState( vEventObject );
+      if( vType !== "contextmenu" ) {
+        qx.event.type.MouseEvent.storeEventState( vEventObject );
+      }
       if( vDispatchTarget.getEnabled() && !eventConsumed ) {
         vDispatchTarget.dispatchEvent( vEventObject );
         this._onmouseevent_special_post( vType,
