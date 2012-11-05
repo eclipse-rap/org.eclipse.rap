@@ -84,7 +84,7 @@ As an alternative to registering an entrypoint, Eclipse applications can also us
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="branding" type="string">
+         <attribute name="brandingId" type="string">
             <annotation>
                <documentation>
                   Specify the (optional) branding that should be used if this entry point is started.

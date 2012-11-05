@@ -169,7 +169,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
       String className = element.getAttribute( "class" );
       String path = element.getAttribute( "path" );
       String id = element.getAttribute( "id" );
-      String brandingId = element.getAttribute( "branding" );
+      String brandingId = element.getAttribute( "brandingId" );
       try {
         Class<? extends IEntryPoint> entryPointClass = loadClass( className, element );
         Map<String, String> properties = getBrandingProperties( brandingId );
@@ -192,22 +192,17 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
       String applicationId = extension.getUniqueIdentifier();
       // [if] Use full qualified applicationParameter, see bug 321360
       String applicationParameter = extension.getUniqueIdentifier();
-      String servletPath = extension.getLabel();
       String isVisible = configElement.getAttribute( PT_APP_VISIBLE );
-      String brandingId = null;
       IConfigurationElement[] paramElements = runElement[ 0 ].getChildren( "parameter" );
-      for( IConfigurationElement paramElement : paramElements ) {
-        if( "branding".equals( paramElement.getAttribute( "name" ) ) ) {
-          brandingId = paramElement.getAttribute( "value" );
-        }
-      }
+      String brandingId = findParameter( paramElements, "brandingId" );
+      String servletPath = findParameter( paramElements, "path" );
       try {
         if( isVisible == null || Boolean.valueOf( isVisible ).booleanValue() ) {
           Class<? extends IApplication> applicationClass = loadClass( className, configElement );
           IEntryPointFactory factory = createApplicationEntryPointFactory( applicationClass );
           Map<String, String> properties = getBrandingProperties( brandingId );
           properties.put( BrandingUtil.ENTRY_POINT_BRANDING, brandingId );
-          application.addEntryPoint( "/" + servletPath, factory, properties );
+          application.addEntryPoint( servletPath, factory, properties );
           EntryPointParameters.register( applicationId, applicationParameter );
         }
       } catch( ClassNotFoundException exception ) {
@@ -217,16 +212,6 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         logProblem( text, params, exception, configElement.getContributor().getName() );
       }
     }
-  }
-
-  private static IEntryPointFactory
-    createApplicationEntryPointFactory( final Class<? extends IApplication> applicationClass )
-  {
-    return new IEntryPointFactory() {
-      public IEntryPoint create() {
-        return new EntryPointApplicationWrapper( applicationClass );
-      }
-    };
   }
 
   @SuppressWarnings( "unchecked" )
@@ -316,6 +301,26 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
     DependentResource[] resources = loadResources( elements );
     resources = sortResources( resources );
     registerResources( application, resources );
+  }
+
+  private static String findParameter( IConfigurationElement[] paramElements, String parameterName ) {
+    String result = null;
+    for( IConfigurationElement paramElement : paramElements ) {
+      if( parameterName.equals( paramElement.getAttribute( "name" ) ) ) {
+        result = paramElement.getAttribute( "value" );
+      }
+    }
+    return result;
+  }
+
+  private static IEntryPointFactory
+    createApplicationEntryPointFactory( final Class<? extends IApplication> applicationClass )
+  {
+    return new IEntryPointFactory() {
+      public IEntryPoint create() {
+        return new EntryPointApplicationWrapper( applicationClass );
+      }
+    };
   }
 
   private static DependentResource[] loadResources( IConfigurationElement[] elements ) {

@@ -24,7 +24,6 @@
   </extension>
   <extension
         id="org.eclipse.rap.demo.applicationEntryPoint"
-        name="tea"
         point="org.eclipse.core.runtime.applications">
      <application
            cardinality="singleton-global"
@@ -33,7 +32,11 @@
         <run
               class="org.eclipse.rap.demo.DemoApplication">
            <parameter
-                 name="branding"
+                 name="path"
+                 value="/tea">
+           </parameter>
+           <parameter
+                 name="brandingId"
                  value="org.eclipse.rap.demo.teaBranding">
            </parameter>
         </run>
