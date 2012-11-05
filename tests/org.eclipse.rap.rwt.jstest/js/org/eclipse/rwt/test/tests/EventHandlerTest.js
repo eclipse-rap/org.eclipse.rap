@@ -328,6 +328,45 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.destroy();
     },
 
+    testKeyDownAndHoldApps : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new rwt.widgets.base.Terminator();
+      widget.addToDocument();
+      TestUtil.flush();
+      widget.focus();
+      var log = this._addKeyLogger( widget, true, false, false );
+      TestUtil.keyDown( widget._getTargetNode(), "Apps" );
+      TestUtil.keyDown( widget._getTargetNode(), "Apps" );
+      var expected = [ "keydown", "keypress", "keypress" ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },
+
+    testAppsKeyLoosingKeyUp : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new rwt.widgets.base.Terminator();
+      widget.addToDocument();
+      TestUtil.flush();
+      widget.focus();
+      var log = this._addKeyLogger( widget, true, true, false );
+      TestUtil.keyDown( widget._getTargetNode(), "Apps" );
+      TestUtil.keyDown( widget._getTargetNode(), "X" );
+      TestUtil.keyUp( widget._getTargetNode(), "X" );
+      TestUtil.keyDown( widget._getTargetNode(), "Apps" );
+      var expected = [
+        "keydown", "Apps",
+        "keypress", "Apps",
+        "keyup", "Apps",
+        "keydown", "X",
+        "keypress", "X",
+        "keyup", "X",
+        "keydown", "Apps",
+        "keypress", "Apps"
+      ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },
+
     testKeyHoldNonPrintable : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new rwt.widgets.base.Terminator();

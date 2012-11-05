@@ -504,6 +504,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       widget.destroy();
     },
 
+    testPressAppsKey : function() {
+      var widget = new rwt.widgets.base.Terminator();
+      widget.addToDocument();
+      TestUtil.flush();
+      var log = this._addKeyLogger( widget, true, true, false );
+      widget.focus();
+      TestUtil.press( widget, "Apps" );
+      var expected = [ "keydown", "Apps", "keypress", "Apps", "keyup", "Apps" ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },
+
     testPressEnter : function() {
       var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
