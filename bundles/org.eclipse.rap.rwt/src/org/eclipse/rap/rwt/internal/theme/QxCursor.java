@@ -102,7 +102,7 @@ public class QxCursor implements QxType, ThemeResource {
     String result = null;
     if( isCustomCursor() ) {
       ThemePropertyAdapterRegistry registry = ThemePropertyAdapterRegistry.getInstance();
-      ThemePropertyAdapter adapter = registry.getPropertyAdapter( QxImage.class );
+      ThemePropertyAdapter adapter = registry.getPropertyAdapter( QxCursor.class );
       String cssKey = adapter.getKey( this );
       result = CURSOR_DEST_PATH + "/" + cssKey;
     }
@@ -117,6 +117,7 @@ public class QxCursor implements QxType, ThemeResource {
     return inputStream;
   }
 
+  @Override
   public boolean equals( Object object ) {
     boolean result = false;
     if( object == this ) {
@@ -133,6 +134,7 @@ public class QxCursor implements QxType, ThemeResource {
     return result;
   }
 
+  @Override
   public int hashCode() {
     return value.hashCode();
   }
@@ -143,6 +145,7 @@ public class QxCursor implements QxType, ThemeResource {
     return isCustomCursor() ? "" : value;
   }
 
+  @Override
   public String toString() {
     return "QxCursor{ " + value + " }";
   }

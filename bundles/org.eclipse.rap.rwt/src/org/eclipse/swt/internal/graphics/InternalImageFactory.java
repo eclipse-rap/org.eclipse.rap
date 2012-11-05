@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -149,7 +149,31 @@ public class InternalImageFactory {
   }
 
   private static String createGeneratedImagePath( ImageData data ) {
-    String hash = getHash( data );
+    int outputFormat = getOutputFormat( data );
+    String extension;
+    switch( outputFormat ) {
+      case SWT.IMAGE_BMP:
+      case SWT.IMAGE_BMP_RLE:
+        extension = ".bmp";
+        break;
+      case SWT.IMAGE_GIF:
+        extension = ".gif";
+        break;
+      case SWT.IMAGE_JPEG:
+        extension = ".jpg";
+        break;
+      case SWT.IMAGE_TIFF:
+        extension = ".tif";
+        break;
+      case SWT.IMAGE_ICO:
+        extension = ".ico";
+        break;
+      case SWT.IMAGE_PNG:
+      default:
+        extension = ".png";
+        break;
+    }
+    String hash = getHash( data ) + extension;
     return "generated/" + hash;
   }
 

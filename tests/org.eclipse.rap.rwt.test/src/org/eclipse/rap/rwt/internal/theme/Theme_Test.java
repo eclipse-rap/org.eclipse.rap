@@ -134,8 +134,8 @@ public class Theme_Test extends TestCase {
       IResourceManager resourceManager = RWTFactory.getResourceManager();
       defaultTheme.registerResources( resourceManager );
 
-      assertTrue( resourceManager.isRegistered( "themes/images/9e78c44e" ) );
-      assertTrue( resourceManager.isRegistered( "themes/cursors/ccb7e1a" ) );
+      assertTrue( resourceManager.isRegistered( "themes/images/9e78c44e.gif" ) );
+      assertTrue( resourceManager.isRegistered( "themes/cursors/ccb7e1a.gif" ) );
     } finally {
       Fixture.tearDown();
     }

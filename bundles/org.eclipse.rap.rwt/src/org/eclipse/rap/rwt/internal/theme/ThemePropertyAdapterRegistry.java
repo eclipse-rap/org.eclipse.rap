@@ -115,7 +115,7 @@ public final class ThemePropertyAdapterRegistry {
   public static class ImagePropertyAdapter implements ThemePropertyAdapter {
 
     public String getKey( QxType value ) {
-      return Integer.toHexString( value.hashCode() );
+      return computeKey( value );
     }
 
     public String getSlot( QxType value ) {
@@ -146,6 +146,18 @@ public final class ThemePropertyAdapterRegistry {
         imageArray.append( image.width );
         imageArray.append( image.height );
         result = imageArray;
+      }
+      return result;
+    }
+
+    private String computeKey( QxType value ) {
+      String result = Integer.toHexString( value.hashCode() );
+      QxImage image = ( QxImage )value;
+      if( image.path != null ) {
+        int index = image.path.lastIndexOf( '.' );
+        if( index >= 0 ) {
+          result = result + image.path.substring( index );
+        }
       }
       return result;
     }
@@ -196,7 +208,7 @@ public final class ThemePropertyAdapterRegistry {
   public static class CursorPropertyAdapter implements ThemePropertyAdapter {
 
     public String getKey( QxType value ) {
-      return Integer.toHexString( value.hashCode() );
+      return computeKey( value );
     }
 
     public String getSlot( QxType value ) {
@@ -210,6 +222,18 @@ public final class ThemePropertyAdapterRegistry {
         result = JsonValue.NULL;
       } else {
         result = JsonValue.valueOf( cursor.value );
+      }
+      return result;
+    }
+
+    private String computeKey( QxType value ) {
+      String result = Integer.toHexString( value.hashCode() );
+      QxCursor cursor = ( QxCursor )value;
+      if( cursor.isCustomCursor() ) {
+        int index = cursor.value.lastIndexOf( '.' );
+        if( index >= 0 ) {
+          result = result + cursor.value.substring( index );
+        }
       }
       return result;
     }
