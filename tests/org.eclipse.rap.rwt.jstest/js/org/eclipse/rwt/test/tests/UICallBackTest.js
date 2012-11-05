@@ -41,14 +41,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.UICallBackTest", {
 
     testSendUIRequestByProtocol : function() {
       TestUtil.initRequestLog();
-      this._createUICallBack();
-      rwt.protocol.MessageProcessor.processOperation( {
-        "target" : "rwt.client.UICallBack",
-        "action" : "call",
-        "method" : "sendUIRequest",
-        "properties" : null
-      } );
-      assertEquals( 1, TestUtil.getRequestsSend() );
+      var uiCallBack = this._createUICallBack();
+      uiCallBack.setActive( true );
+
+      uiCallBack.sendUICallBackRequest();
+      TestUtil.forceInterval( uiCallBack._requestTimer );
+
+      assertEquals( 2, TestUtil.getRequestsSend() );
     },
 
     _createUICallBack : function() {

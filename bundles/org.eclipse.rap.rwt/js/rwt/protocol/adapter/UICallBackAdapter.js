@@ -27,8 +27,6 @@ rwt.protocol.AdapterRegistry.add( "rwt.client.UICallBack", {
 
   listenerHandler : {},
 
-  methods : [
-    "sendUIRequest"
-  ]
+  methods : []
 
 } );
