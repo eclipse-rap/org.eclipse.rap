@@ -174,7 +174,7 @@ public class QxImage_Test extends TestCase {
     QxImage image = QxImage.NONE;
     assertNull( image.getResourcePath() );
     image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
-    assertEquals( "themes/images/ba873d77", image.getResourcePath() );
+    assertEquals( "themes/images/ba873d77.png", image.getResourcePath() );
   }
 
   public void testCreateSWTImageFromNone() throws IOException {

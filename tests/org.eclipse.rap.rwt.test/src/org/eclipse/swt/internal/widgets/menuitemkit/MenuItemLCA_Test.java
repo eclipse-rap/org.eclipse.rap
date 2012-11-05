@@ -531,7 +531,7 @@ public class MenuItemLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     JSONArray actual = ( JSONArray )message.findSetProperty( item, "image" );
-    String expected = "[\"rwt-resources/generated/90fb0bfe\",58,12]";
+    String expected = "[\"rwt-resources/generated/90fb0bfe.gif\",58,12]";
     assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 

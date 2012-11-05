@@ -77,8 +77,7 @@ public class QxCursor_Test extends TestCase {
   }
 
   public void testCustomCursor() {
-    QxCursor cursor = QxCursor.valueOf( Fixture.IMAGE_50x100,
-                                        RESOURCE_LOADER );
+    QxCursor cursor = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     assertEquals( Fixture.IMAGE_50x100, cursor.value );
     assertEquals( RESOURCE_LOADER, cursor.loader );
     assertTrue( cursor.isCustomCursor() );
@@ -87,8 +86,7 @@ public class QxCursor_Test extends TestCase {
   public void testDefaultString() {
     QxCursor cursor = QxCursor.valueOf( "crosshair" );
     assertEquals( "crosshair", cursor.toDefaultString() );
-    cursor = QxCursor.valueOf( Fixture.IMAGE_50x100,
-                               RESOURCE_LOADER );
+    cursor = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     assertEquals( "", cursor.toDefaultString() );
   }
 
@@ -98,10 +96,8 @@ public class QxCursor_Test extends TestCase {
     assertEquals( cursor1, cursor2 );
     assertEquals( cursor1.hashCode(), cursor2.hashCode() );
 
-    cursor1 = QxCursor.valueOf( Fixture.IMAGE_50x100,
-                                RESOURCE_LOADER );
-    cursor2 = QxCursor.valueOf( Fixture.IMAGE_50x100,
-                                RESOURCE_LOADER );
+    cursor1 = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    cursor2 = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     assertEquals( cursor1, cursor2 );
     assertEquals( cursor1.hashCode(), cursor2.hashCode() );
   }

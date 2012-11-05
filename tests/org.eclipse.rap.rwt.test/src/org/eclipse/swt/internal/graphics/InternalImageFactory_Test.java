@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,41 +34,50 @@ public class InternalImageFactory_Test extends TestCase {
 
   private InternalImageFactory internalImageFactory;
 
+  @Override
+  protected void setUp() {
+    Fixture.createApplicationContext();
+    Fixture.createServiceContext();
+    internalImageFactory = new InternalImageFactory();
+  }
+
+  @Override
+  protected void tearDown() {
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfApplicationContext();
+  }
+
   public void testRegisterResource() throws IOException {
     InputStream inputStream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
     String name = "testName";
     RWT.getResourceManager().register( name, inputStream );
     inputStream.close();
-    
+
     assertTrue( RWT.getResourceManager().isRegistered( name ) );
   }
 
-  public void testReadImageData() {
+  public void testReadImageData() throws IOException {
     InputStream inputStream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
     ImageData data = InternalImageFactory.readImageData( new BufferedInputStream( inputStream ) );
+    inputStream.close();
+
     assertEquals( 100, data.width );
     assertEquals( 50, data.height );
   }
 
   public void testImageWithUndefinedType() {
-    PaletteData paletteData = new PaletteData( new RGB[]{
-      new RGB( 255, 0, 0 ), new RGB( 0, 255, 0 )
-    } );
-    ImageData imageData = new ImageData( 48, 48, 1, paletteData );
-    for( int x = 11; x < 35; x++ ) {
-      for( int y = 11; y < 35; y++ ) {
-        imageData.setPixel( x, y, 1 );
-      }
-    }
     // imageData without type field should not throw SWT exception
-    assertNotNull( InternalImageFactory.createInputStream( imageData ) );
+    assertNotNull( InternalImageFactory.createInputStream( createImageDataWithoutType() ) );
   }
 
-  public void testInternalImagesFromInputStreamAreCached() {
+  public void testInternalImagesFromInputStreamAreCached() throws IOException {
     InputStream stream1 = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
     InternalImage internalImage1 = internalImageFactory.findInternalImage( stream1 );
+    stream1.close();
     InputStream stream2 = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
     InternalImage internalImage2 = internalImageFactory.findInternalImage( stream2 );
+    stream2.close();
+
     assertNotNull( internalImage1 );
     assertSame( internalImage1, internalImage2 );
   }
@@ -118,21 +127,27 @@ public class InternalImageFactory_Test extends TestCase {
   }
 
   // Regression test for bug 326888
-  public void testInternalImagesDifferForSimilarImageData() {
+  public void testInternalImagesDifferForSimilarImageData() throws IOException {
     InputStream stream1 = CLASS_LOADER.getResourceAsStream( IMAGE_SAMPLE1 );
     InternalImage internalImage1 = internalImageFactory.findInternalImage( stream1 );
+    stream1.close();
     InputStream stream2 = CLASS_LOADER.getResourceAsStream( IMAGE_SAMPLE2 );
     InternalImage internalImage2 = internalImageFactory.findInternalImage( stream2 );
+    stream2.close();
+
     assertNotNull( internalImage1 );
     assertNotSame( internalImage1, internalImage2 );
   }
 
   // Regression test for bug 326888
-  public void testInternalImagesDifferForDifferentColor() {
+  public void testInternalImagesDifferForDifferentColor() throws IOException {
     InputStream stream1 = CLASS_LOADER.getResourceAsStream( IMAGE_OK );
     InternalImage internalImage1 = internalImageFactory.findInternalImage( stream1 );
+    stream1.close();
     InputStream stream2 = CLASS_LOADER.getResourceAsStream( IMAGE_OK_BLACK );
     InternalImage internalImage2 = internalImageFactory.findInternalImage( stream2 );
+    stream2.close();
+
     assertNotNull( internalImage1 );
     assertNotSame( internalImage1, internalImage2 );
   }
@@ -149,14 +164,42 @@ public class InternalImageFactory_Test extends TestCase {
     assertSame( internalImage1, internalImage2 );
   }
 
-  protected void setUp() {
-    Fixture.createApplicationContext();
-    Fixture.createServiceContext();
-    internalImageFactory = new InternalImageFactory();
+  public void testImageExtension_PNG() throws IOException {
+    InputStream stream = CLASS_LOADER.getResourceAsStream( IMAGE_OK );
+    InternalImage internalImage = internalImageFactory.findInternalImage( stream );
+    stream.close();
+
+    assertTrue( internalImage.getResourceName().endsWith( ".png" ) );
   }
 
-  protected void tearDown() {
-    Fixture.disposeOfServiceContext();
-    Fixture.disposeOfApplicationContext();
+  public void testImageExtension_GIF() throws IOException {
+    InputStream stream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
+    InternalImage internalImage = internalImageFactory.findInternalImage( stream );
+    stream.close();
+
+    assertTrue( internalImage.getResourceName().endsWith( ".gif" ) );
   }
+
+  public void testImageExtension_UndefinedType() throws IOException {
+    InputStream stream = InternalImageFactory.createInputStream( createImageDataWithoutType() );
+
+    InternalImage internalImage = internalImageFactory.findInternalImage( stream );
+    stream.close();
+
+    assertTrue( internalImage.getResourceName().endsWith( ".png" ) );
+  }
+
+  private ImageData createImageDataWithoutType() {
+    PaletteData paletteData = new PaletteData( new RGB[]{
+      new RGB( 255, 0, 0 ), new RGB( 0, 255, 0 )
+    } );
+    ImageData result = new ImageData( 48, 48, 1, paletteData );
+    for( int x = 11; x < 35; x++ ) {
+      for( int y = 11; y < 35; y++ ) {
+        result.setPixel( x, y, 1 );
+      }
+    }
+    return result;
+  }
+
 }
