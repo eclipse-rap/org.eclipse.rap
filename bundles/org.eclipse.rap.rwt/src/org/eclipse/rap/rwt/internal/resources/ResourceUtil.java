@@ -40,15 +40,11 @@ public final class ResourceUtil {
   public static byte[] readBinary( InputStream stream ) throws IOException {
     ByteArrayOutputStream bufferedResult = new ByteArrayOutputStream();
     BufferedInputStream bufferedStream = new BufferedInputStream( stream );
-    try {
-      byte[] buffer = new byte[ 256 ];
-      int read = bufferedStream.read( buffer );
-      while( read != -1 ) {
-        bufferedResult.write( buffer, 0, read );
-        read = bufferedStream.read( buffer );
-      }
-    } finally {
-      bufferedStream.close();
+    byte[] buffer = new byte[ 256 ];
+    int read = bufferedStream.read( buffer );
+    while( read != -1 ) {
+      bufferedResult.write( buffer, 0, read );
+      read = bufferedStream.read( buffer );
     }
     return bufferedResult.toByteArray();
   }

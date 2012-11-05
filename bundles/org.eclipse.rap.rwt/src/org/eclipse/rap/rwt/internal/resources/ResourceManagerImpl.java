@@ -136,20 +136,16 @@ public class ResourceManagerImpl implements IResourceManager {
     throws IOException
   {
     BufferedInputStream bufferedStream = new BufferedInputStream( inputStream );
+    OutputStream outputStream = new BufferedOutputStream( new FileOutputStream( location ) );
     try {
-      OutputStream outputStream = new BufferedOutputStream( new FileOutputStream( location ) );
-      try {
-        byte[] buffer = new byte[ 256 ];
-        int read = bufferedStream.read( buffer );
-        while( read != -1 ) {
-          outputStream.write( buffer, 0, read );
-          read = bufferedStream.read( buffer );
-        }
-      } finally {
-        outputStream.close();
+      byte[] buffer = new byte[ 256 ];
+      int read = bufferedStream.read( buffer );
+      while( read != -1 ) {
+        outputStream.write( buffer, 0, read );
+        read = bufferedStream.read( buffer );
       }
     } finally {
-      bufferedStream.close();
+      outputStream.close();
     }
   }
 

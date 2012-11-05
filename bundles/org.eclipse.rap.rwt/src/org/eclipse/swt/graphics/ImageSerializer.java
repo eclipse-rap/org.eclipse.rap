@@ -15,6 +15,7 @@ import java.io.*;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.engine.*;
 import org.eclipse.rap.rwt.internal.resources.ResourceUtil;
+import org.eclipse.rap.rwt.internal.util.StreamUtil;
 import org.eclipse.rap.rwt.resources.IResourceManager;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -73,6 +74,8 @@ class ImageSerializer {
       return ResourceUtil.readBinary( inputStream );
     } catch( IOException ioe ) {
       throw new RuntimeException( ioe );
+    } finally {
+      StreamUtil.close( inputStream );
     }
   }
 

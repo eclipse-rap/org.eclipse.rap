@@ -13,6 +13,7 @@
 package org.eclipse.rap.rwt.internal.resources;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.io.BufferedInputStream;
@@ -174,14 +175,23 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
   
   @SuppressWarnings( "resource" )
-  public void testRegisterWithInputStreamClosesStream() throws IOException {
+  public void testRegisterDoesNotCloseStream() throws IOException {
     InputStream inputStream = mock( InputStream.class );
 
     resourceManager.register( "resource-name", inputStream );
 
-    verify( inputStream ).close();
+    verify( inputStream, never() ).close();
   }
 
+  @SuppressWarnings( "resource" )
+  public void testRegisterJavascriptDoesNotCloseStream() throws IOException {
+    InputStream inputStream = mock( InputStream.class );
+    
+    resourceManager.register( "lib.js", inputStream );
+    
+    verify( inputStream, never() ).close();
+  }
+  
   public void testConcatenation() throws IOException {
     JSLibraryConcatenator jsConcatenator = RWTFactory.getJSLibraryConcatenator();
 
