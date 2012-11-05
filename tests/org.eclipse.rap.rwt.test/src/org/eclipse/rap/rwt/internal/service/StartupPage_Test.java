@@ -28,16 +28,12 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.internal.theme.QxImage;
-import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
-import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 
 
 public class StartupPage_Test extends TestCase {
 
-  private static final String CUSTOM_THEME_ID = "custom-theme-id";
-  
   private StartupPage startupPage;
   private TestResponse response;
   
@@ -209,16 +205,6 @@ public class StartupPage_Test extends TestCase {
     startupPage.send( response );
     
     verify( startupPage ).writeAppScript( response.getWriter() );
-  }
-  
-  public void testSendSetsCurrentTheme() throws IOException {
-    startupPage.activate();
-    ThemeTestUtil.registerTheme( CUSTOM_THEME_ID, "", null );
-    registerEntryPoint( WebClient.THEME_ID, CUSTOM_THEME_ID );
-    
-    startupPage.send( response );
-    
-    assertEquals( CUSTOM_THEME_ID, ThemeUtil.getCurrentThemeId() );
   }
   
   public void testGetBackgroundImageLocationWithNoneBackgroundImage() {

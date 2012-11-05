@@ -23,6 +23,7 @@ import org.eclipse.rap.rwt.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
 
 
 public class EntryPointManager_Test extends TestCase {
@@ -199,7 +200,31 @@ public class EntryPointManager_Test extends TestCase {
 
     assertTrue( entryPointManager.getServletPaths().isEmpty() );
   }
+  
+  public void testGetEntryPointRegistration() {
+    HashMap<String, String> properties = new HashMap<String, String>();
+    properties.put( "prop", "value" );
+    entryPointManager.registerByPath( PATH, entryPointFactory, properties );
+    TestRequest request = new TestRequest();
+    request.setServletPath( PATH );
+    
+    EntryPointRegistration registration = entryPointManager.getEntryPointRegistration( request );
+    
+    assertNotNull( registration );
+    assertEquals( "value", registration.getProperties().get( "prop" ) );
+  }
 
+  public void testGetEntryPointRegistrationForUnregisteredEntryPoint() {
+    TestRequest request = new TestRequest();
+    request.setServletPath( PATH );
+    
+    try {
+      entryPointManager.getEntryPointRegistration( request );
+      fail();
+    } catch( Exception expected ) {
+    }
+  }
+  
   private void assertRegisterByPathFails( String path, Class<? extends IEntryPoint> type ) {
     try {
       entryPointManager.registerByPath( path, type, null );

@@ -15,9 +15,10 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -135,15 +136,14 @@ public class ContextProvider {
   public static ISessionStore getSessionStore() {
     SessionStoreImpl result = ( SessionStoreImpl )getContext().getSessionStore();
     if( result == null ) {
-      HttpSession httpSession = getRequest().getSession( true );
+      HttpServletRequest request = getRequest();
+      HttpSession httpSession = request.getSession( true );
       result = SessionStoreImpl.getInstanceFromSession( httpSession );
       if( result == null ) {
-        result = new SessionStoreImpl( httpSession );
-        SessionStoreImpl.attachInstanceToSession( httpSession, result );
-        SingletonManager.install( result );
         ServletContext servletContext = httpSession.getServletContext();
         ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-        ApplicationContextUtil.set( result, applicationContext );
+        SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
+        result = ( SessionStoreImpl )builder.buildSessionStore();
       }
       result.attachHttpSession( httpSession );
       getContext().setSessionStore( result );

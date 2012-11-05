@@ -58,7 +58,6 @@ public class StartupPage {
 
   void send( HttpServletResponse response ) throws IOException {
     setResponseHeaders( response );
-    setCurrentTheme();
     startupPageTemplate.writePage( response.getWriter(), new StartupPageValueProvider() );
   }
 
@@ -129,14 +128,6 @@ public class StartupPage {
     code.append( StartupJson.get() );
     code.append( ");/*EOM*/" );
     printWriter.write( code.toString() );
-  }
-
-  private void setCurrentTheme() {
-    Map<String, String> properties = EntryPointUtil.getCurrentEntryPointProperties();
-    String themeId = properties.get( WebClient.THEME_ID );
-    if( themeId != null && themeId.length() > 0 ) {
-      ThemeUtil.setCurrentThemeId( themeId );
-    }
   }
 
   protected String getBackgroundImageLocation() {

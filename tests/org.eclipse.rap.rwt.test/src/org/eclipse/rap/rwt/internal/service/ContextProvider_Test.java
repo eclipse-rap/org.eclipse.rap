@@ -11,14 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import static org.mockito.Mockito.mock;
-
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.service.ISessionStore;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -120,19 +116,23 @@ public class ContextProvider_Test extends TestCase {
   }
   
   public void testApplicationContextIsAttachedToSessionStore() {
-    ServletContext servletContext = Fixture.createServletContext();
     Fixture.createServiceContext();
-    ApplicationContextUtil.set( servletContext, mock( ApplicationContext.class ) );
 
     ISessionStore sessionStore = ContextProvider.getSessionStore();
     
     assertNotNull( ApplicationContextUtil.get( sessionStore ) );
   }
   
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.createApplicationContext();
+  }
+  
   protected void tearDown() throws Exception {
     if( ContextProvider.hasContext() ) {
       Fixture.disposeOfServiceContext();
     }
+    Fixture.disposeOfApplicationContext();
     Fixture.disposeOfServletContext();
   }
 }

@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
-import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
@@ -266,7 +265,7 @@ public class Button_Test extends TestCase {
   public void testComputeSizeWithCustomTheme() throws IOException {
     String css = "Button {\nspacing: 10px;\n}";
     ThemeTestUtil.registerTheme( "custom", css, null );
-    ThemeUtil.setCurrentThemeId( "custom" );
+    ThemeTestUtil.setCurrentThemeId( "custom" );
 
     // Text and image to use
     String text = "Click me!";

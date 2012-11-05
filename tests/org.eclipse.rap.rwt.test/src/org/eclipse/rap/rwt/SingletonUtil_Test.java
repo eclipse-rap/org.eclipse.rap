@@ -27,6 +27,7 @@ public class SingletonUtil_Test extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
+    Fixture.createApplicationContext();
     Fixture.createServiceContext();
     createSessionStore();
     SingletonManager.install( ContextProvider.getSessionStore() );
@@ -37,6 +38,7 @@ public class SingletonUtil_Test extends TestCase {
     if( ContextProvider.hasContext() ) {
       Fixture.disposeOfServiceContext();
     }
+    Fixture.disposeOfApplicationContext();
   }
 
   public void testGetSessionInstance_failsWithNullArgument() {

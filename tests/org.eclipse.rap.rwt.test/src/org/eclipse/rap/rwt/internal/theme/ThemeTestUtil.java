@@ -11,12 +11,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.theme.Theme;
-import org.eclipse.rap.rwt.internal.theme.ThemeManager;
-import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.resources.ResourceLoader;
@@ -76,7 +76,7 @@ public final class ThemeTestUtil {
 
   public static void setCustomTheme( String css ) throws IOException {
     registerTheme( "customTestTheme", css, null );
-    ThemeUtil.setCurrentThemeId( "customTestTheme" );
+    ThemeUtil.setCurrentThemeId( ContextProvider.getSessionStore(), "customTestTheme" );
   }
 
   public static void registerTheme( String themeId, String cssCode, ResourceLoader loader )
@@ -101,5 +101,9 @@ public final class ThemeTestUtil {
     ByteArrayInputStream inStream = new ByteArrayInputStream( buf );
     StyleSheet styleSheet = CssFileReader.readStyleSheet( inStream, cssFileName, loader );
     return new Theme( themeId, "Custom Theme", styleSheet );
+  }
+
+  public static void setCurrentThemeId( String themeId ) {
+    ThemeUtil.setCurrentThemeId( ContextProvider.getSessionStore(), themeId );
   }
 }

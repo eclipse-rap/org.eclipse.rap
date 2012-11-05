@@ -17,8 +17,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.theme.Theme;
-import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
@@ -48,7 +47,7 @@ public class ThemeUtil_Test extends TestCase {
   public void testSetCurrentTheme() throws Exception {
     Theme theme = createTheme( CUSTOM_THEME_ID );
     ThemeTestUtil.registerTheme( theme );
-    ThemeUtil.setCurrentThemeId( CUSTOM_THEME_ID );
+    ThemeUtil.setCurrentThemeId( ContextProvider.getSessionStore(), CUSTOM_THEME_ID );
 
     assertEquals( CUSTOM_THEME_ID, ThemeUtil.getCurrentThemeId() );
     assertSame( RWTFactory.getThemeManager().getTheme( CUSTOM_THEME_ID ),
@@ -56,11 +55,9 @@ public class ThemeUtil_Test extends TestCase {
   }
 
   public void testSetCurrentThemeToUnknownId() throws Exception {
-    try {
-      ThemeUtil.setCurrentThemeId( "unknown.theme" );
-      fail( "should throw IAE for invalid theme ids" );
-    } catch( IllegalArgumentException expected ) {
-    }
+    ThemeUtil.setCurrentThemeId( ContextProvider.getSessionStore(), "unknown.theme" );
+
+    assertEquals( "unknown.theme", ThemeUtil.getCurrentThemeId() );
   }
 
   private static Theme createTheme( String themeId ) throws IOException {

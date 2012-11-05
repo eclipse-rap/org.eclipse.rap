@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -29,15 +30,11 @@ import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.client.ClientSelector;
-import org.eclipse.rap.rwt.internal.lifecycle.*;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.RWTRequestVersionControl;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.LifeCycleServiceHandler;
-import org.eclipse.rap.rwt.internal.service.RequestParams;
-import org.eclipse.rap.rwt.internal.service.ServiceContext;
-import org.eclipse.rap.rwt.internal.service.StartupPage;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
@@ -144,6 +141,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
     new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ).service();
 
+    sessionStore = ContextProvider.getSessionStore();
     assertSame( applicationContext, ApplicationContextUtil.get( sessionStore ) );
   }
 
@@ -313,16 +311,11 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     return mock( StartupPage.class );
   }
 
-  private static ApplicationContext mockApplicationContext() {
-    ApplicationContext applicationContext = mock( ApplicationContext.class );
-    ClientSelector clientSelector = mock( ClientSelector.class );
-    when( applicationContext.getClientSelector() ).thenReturn( clientSelector );
-    return applicationContext;
-  }
-
   private void initializeSessionStore() {
     ISessionStore sessionStore = ContextProvider.getSessionStore();
-    ApplicationContextUtil.set( sessionStore, mockApplicationContext() );
+    ServletContext servletContext = Fixture.getServletContext();
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    ApplicationContextUtil.set( sessionStore, applicationContext );
   }
 
   private class TestHandler extends LifeCycleServiceHandler {

@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
@@ -67,6 +69,18 @@ public class EntryPointManager {
     Collection<String> result;
     synchronized( entryPointsByPath ) {
       result = new ArrayList<String>( entryPointsByPath.keySet() );
+    }
+    return result;
+  }
+
+  public EntryPointRegistration getEntryPointRegistration( HttpServletRequest request ) {
+    EntryPointRegistration result = null;
+    String path = request.getServletPath();
+    if( path != null && path.length() > 0 ) {
+      result = getRegistrationByPath( path );
+    }
+    if( result == null ) {
+      throw new IllegalArgumentException( "Entry point not found: " + path );
     }
     return result;
   }

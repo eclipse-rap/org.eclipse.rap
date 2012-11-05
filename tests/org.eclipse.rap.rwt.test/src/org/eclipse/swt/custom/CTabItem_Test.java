@@ -17,14 +17,16 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
-import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.graphics.FontUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 
 
 public class CTabItem_Test extends TestCase {
@@ -252,7 +254,7 @@ public class CTabItem_Test extends TestCase {
     String css = "CTabItem { font: 22px Verdana, sans-serif; }"
                + "CTabItem:selected { font: 24px Verdana, sans-serif; }";
     ThemeTestUtil.registerTheme( "custom", css, null );
-    ThemeUtil.setCurrentThemeId( "custom" );
+    ThemeTestUtil.setCurrentThemeId( "custom" );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     CTabItem item = new CTabItem( folder, SWT.NONE );
     Font font = item.getFont();
