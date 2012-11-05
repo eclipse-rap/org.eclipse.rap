@@ -253,7 +253,9 @@ qx.Class.define( "rwt.widgets.Shell", {
       this.setShowCaption( this.hasState( "rwt_TITLE" ) );
       this._onTop = ( this._parentShell != null && this._parentShell._onTop )
                     || this.hasState( "rwt_ON_TOP" );
-      this._appModal = this.hasState( "rwt_APPLICATION_MODAL" );
+      this._appModal =    this.hasState( "rwt_APPLICATION_MODAL" )
+                       || this.hasState( "rwt_PRIMARY_MODAL" )
+                       || this.hasState( "rwt_SYSTEM_MODAL" );
     },
 
     // TODO [rst] Find a generic solution for state inheritance
@@ -341,8 +343,8 @@ qx.Class.define( "rwt.widgets.Shell", {
       // Work around qooxdoo bug #254: the changeActiveChild is fired twice when
       // a widget was activated by keyboard (getData() is null in this case)
       var widget = this._getParentControl( evt.getValue() );
-      if(    !org.eclipse.swt.EventUtil.getSuspended() 
-          && widget != null 
+      if(    !org.eclipse.swt.EventUtil.getSuspended()
+          && widget != null
           && widget !== this._activeControl )
       {
         this._notifyDeactivate( this._activeControl, widget );
