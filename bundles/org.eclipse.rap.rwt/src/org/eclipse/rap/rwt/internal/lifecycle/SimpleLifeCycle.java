@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.SessionStoreImpl;
@@ -25,6 +24,80 @@ import org.eclipse.swt.widgets.Display;
 
 
 public class SimpleLifeCycle extends LifeCycle {
+
+  private final ApplicationContext applicationContext;
+  private final PhaseListenerManager phaseListenerManager;
+  private final IPhase[] phases;
+
+  public SimpleLifeCycle( ApplicationContext applicationContext ) {
+    super( applicationContext );
+    this.applicationContext = applicationContext;
+    this.phaseListenerManager = new PhaseListenerManager( this );
+    this.phases = new IPhase[] {
+      new PrepareUIRoot( applicationContext ),
+      new ReadData(),
+      new ProcessAction(),
+      new Render()
+    };
+  }
+
+  @Override
+  public void execute() throws IOException {
+    installSessionShutdownAdapter();
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
+    attachThread( LifeCycleUtil.getSessionDisplay(), sessionStore );
+    try {
+      PhaseExecutor phaseExecutor = new SessionDisplayPhaseExecutor( phaseListenerManager, phases );
+      phaseExecutor.execute( PhaseId.PREPARE_UI_ROOT );
+    } finally {
+      detachThread( LifeCycleUtil.getSessionDisplay(), sessionStore );
+    }
+  }
+
+  @Override
+  public void requestThreadExec( Runnable runnable ) {
+    runnable.run();
+  }
+
+  @Override
+  public void addPhaseListener( PhaseListener phaseListener ) {
+    phaseListenerManager.addPhaseListener( phaseListener );
+  }
+
+  @Override
+  public void removePhaseListener( PhaseListener phaseListener ) {
+    phaseListenerManager.removePhaseListener( phaseListener );
+  }
+
+  @Override
+  public void sleep() {
+    String msg = "Display#sleep() not supported in current operation mode.";
+    throw new UnsupportedOperationException( msg );
+  }
+
+  private void installSessionShutdownAdapter() {
+    SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSessionStore();
+    if( sessionStore.getShutdownAdapter() == null ) {
+      sessionStore.setShutdownAdapter( new SimpleSessionShutdownAdapter( applicationContext ) );
+    }
+  }
+
+  private static void attachThread( Display display, ISessionStore sessionStore ) {
+    if( display != null ) {
+      IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
+      displayAdapter.attachThread();
+    }
+    IUIThreadHolder uiThreadHolder = new SimpleUIThreadHolder( Thread.currentThread() );
+    LifeCycleUtil.setUIThread( sessionStore, uiThreadHolder );
+  }
+
+  private static void detachThread( Display display, ISessionStore sessionStore ) {
+    if( display != null ) {
+      IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
+      displayAdapter.detachThread();
+    }
+    LifeCycleUtil.setUIThread( sessionStore, null );
+  }
 
   private static class SessionDisplayPhaseExecutor extends PhaseExecutor {
 
@@ -71,8 +144,13 @@ public class SimpleLifeCycle extends LifeCycle {
   }
 
   private static class SimpleSessionShutdownAdapter implements ISessionShutdownAdapter {
+    private final ApplicationContext applicationContext;
     private Runnable shutdownCallback;
     private ISessionStore sessionStore;
+    
+    SimpleSessionShutdownAdapter( ApplicationContext applicationContext ) {
+      this.applicationContext = applicationContext;
+    }
 
     public void setShutdownCallback( Runnable shutdownCallback ) {
       this.shutdownCallback = shutdownCallback;
@@ -105,80 +183,8 @@ public class SimpleLifeCycle extends LifeCycle {
     }
 
     private boolean isApplicationContextActive() {
-      ApplicationContext applicationContext = ApplicationContextUtil.get( sessionStore );
       return applicationContext != null && applicationContext.isActive();
     }
   }
 
-  private final PhaseListenerManager phaseListenerManager;
-  private final IPhase[] phases;
-
-  public SimpleLifeCycle( ApplicationContext applicationContext ) {
-    super( applicationContext );
-    this.phaseListenerManager = new PhaseListenerManager( this );
-    this.phases = new IPhase[] {
-      new PrepareUIRoot( applicationContext ),
-      new ReadData(),
-      new ProcessAction(),
-      new Render()
-    };
-  }
-
-  @Override
-  public void execute() throws IOException {
-    installSessionShutdownAdapter();
-    ISessionStore sessionStore = ContextProvider.getSessionStore();
-    attachThread( LifeCycleUtil.getSessionDisplay(), sessionStore );
-    try {
-      PhaseExecutor phaseExecutor = new SessionDisplayPhaseExecutor( phaseListenerManager, phases );
-      phaseExecutor.execute( PhaseId.PREPARE_UI_ROOT );
-    } finally {
-      detachThread( LifeCycleUtil.getSessionDisplay(), sessionStore );
-    }
-  }
-
-  @Override
-  public void requestThreadExec( Runnable runnable ) {
-    runnable.run();
-  }
-
-  @Override
-  public void addPhaseListener( PhaseListener phaseListener ) {
-    phaseListenerManager.addPhaseListener( phaseListener );
-  }
-
-  @Override
-  public void removePhaseListener( PhaseListener phaseListener ) {
-    phaseListenerManager.removePhaseListener( phaseListener );
-  }
-
-  @Override
-  public void sleep() {
-    String msg = "Display#sleep() not supported in current operation mode.";
-    throw new UnsupportedOperationException( msg );
-  }
-
-  private static void installSessionShutdownAdapter() {
-    SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSessionStore();
-    if( sessionStore.getShutdownAdapter() == null ) {
-      sessionStore.setShutdownAdapter( new SimpleSessionShutdownAdapter() );
-    }
-  }
-
-  private static void attachThread( Display display, ISessionStore sessionStore ) {
-    if( display != null ) {
-      IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
-      displayAdapter.attachThread();
-    }
-    IUIThreadHolder uiThreadHolder = new SimpleUIThreadHolder( Thread.currentThread() );
-    LifeCycleUtil.setUIThread( sessionStore, uiThreadHolder );
-  }
-
-  private static void detachThread( Display display, ISessionStore sessionStore ) {
-    if( display != null ) {
-      IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
-      displayAdapter.detachThread();
-    }
-    LifeCycleUtil.setUIThread( sessionStore, null );
-  }
 }
