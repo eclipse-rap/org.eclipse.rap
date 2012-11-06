@@ -151,7 +151,6 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     if( bufferedParameters != null ) {
       RequestParameterBuffer.store( bufferedParameters );
     }
-    applicationContext.getClientSelector().selectClient( request );
   }
 
   private static void reinitializeServiceStore() {

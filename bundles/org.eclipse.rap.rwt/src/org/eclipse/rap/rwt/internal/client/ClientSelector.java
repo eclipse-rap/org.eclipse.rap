@@ -16,7 +16,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.client.Client;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.service.ISessionStore;
 
 
 public class ClientSelector {
@@ -31,13 +31,13 @@ public class ClientSelector {
     clients.add( clientProvider );
   }
 
-  public void selectClient( HttpServletRequest request ) {
+  public void selectClient( HttpServletRequest request, ISessionStore sessionStore ) {
     ClientProvider provider = findClientProvider( request );
-    bufferClient( provider.getClient() );
+    sessionStore.setAttribute( SELECTED_CLIENT, provider.getClient() );
   }
 
-  public Client getSelectedClient() {
-    return getBufferedClient();
+  public Client getSelectedClient( ISessionStore sessionStore ) {
+    return ( Client )sessionStore.getAttribute( SELECTED_CLIENT );
   }
 
   public void activate() {
@@ -59,14 +59,6 @@ public class ClientSelector {
       }
     }
     throw new IllegalStateException( "No client provider found for request" );
-  }
-
-  private void bufferClient( Client client ) {
-    ContextProvider.getSessionStore().setAttribute( SELECTED_CLIENT, client );
-  }
-
-  private Client getBufferedClient() {
-    return ( Client )ContextProvider.getSessionStore().getAttribute( SELECTED_CLIENT );
   }
 
 }

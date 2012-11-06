@@ -20,9 +20,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rap.rwt.internal.application.RWTFactory;
-import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
@@ -104,7 +102,6 @@ public class RWTServlet extends HttpServlet {
     ContextProvider.setContext( context );
     try {
       createSessionStore();
-      determineClient( request );
       RWTFactory.getServiceManager().getHandler().service();
     } finally {
       ContextProvider.disposeContext();
@@ -124,11 +121,6 @@ public class RWTServlet extends HttpServlet {
     synchronized( RWTServlet.class ) {
       ContextProvider.getSessionStore();
     }
-  }
-
-  private void determineClient( HttpServletRequest request ) {
-    ClientSelector clientSelector = ApplicationContextUtil.getInstance().getClientSelector();
-    clientSelector.selectClient( request );
   }
 
   static void handleInvalidRequest( HttpServletRequest request, HttpServletResponse response )

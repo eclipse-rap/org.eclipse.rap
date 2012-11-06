@@ -28,7 +28,7 @@ import org.eclipse.rap.rwt.service.ISessionStore;
 
 
 public class SessionStoreBuilder {
-  
+
   private final ApplicationContext applicationContext;
   private final HttpServletRequest request;
   private final HttpSession session;
@@ -37,18 +37,19 @@ public class SessionStoreBuilder {
   public SessionStoreBuilder( ApplicationContext applicationContext, HttpServletRequest request ) {
     this.applicationContext = applicationContext;
     this.request = request;
-    this.session = request.getSession( true );
-    this.sessionStore = new SessionStoreImpl( session );
+    session = request.getSession( true );
+    sessionStore = new SessionStoreImpl( session );
   }
-  
+
   public ISessionStore buildSessionStore() {
     SessionStoreImpl.attachInstanceToSession( session, sessionStore );
     ApplicationContextUtil.set( sessionStore, applicationContext );
     SingletonManager.install( sessionStore );
     setCurrentTheme();
+    selectClient();
     return sessionStore;
   }
-  
+
   private void setCurrentTheme() {
     Map<String, String> properties = getEntryPointProperties();
     String themeId = properties.get( WebClient.THEME_ID );
@@ -58,6 +59,10 @@ public class SessionStoreBuilder {
     } else {
       ThemeUtil.setCurrentThemeId( sessionStore, RWT.DEFAULT_THEME_ID );
     }
+  }
+
+  private void selectClient() {
+    applicationContext.getClientSelector().selectClient( request, sessionStore );
   }
 
   private void verifyThemeId( String themeId ) {

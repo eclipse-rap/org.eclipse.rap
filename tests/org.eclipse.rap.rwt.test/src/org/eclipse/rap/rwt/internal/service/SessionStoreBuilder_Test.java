@@ -27,6 +27,7 @@ import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContext;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextUtil;
+import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
@@ -37,47 +38,71 @@ import org.eclipse.rap.rwt.testfixture.TestSession;
 
 
 public class SessionStoreBuilder_Test extends TestCase {
-  
+
   private static final String CUSTOM_THEME_ID = "custom.theme.id";
-  
+
   private ServletContext servletContext;
   private HttpSession httpSession;
   private TestRequest request;
   private ApplicationConfiguration configuration;
   private ApplicationContext applicationContext;
 
-  public void testBuild() {
+  public void testSessionStoreReferencesApplicationContext() {
     registerEntryPoint( null );
-    
+
     SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
     ISessionStore sessionStore = builder.buildSessionStore();
-    
+
+    assertEquals( applicationContext, ApplicationContextUtil.get( sessionStore ) );
+  }
+
+  public void testSessionStoreIsAttachedToHttpSession() {
+    registerEntryPoint( null );
+
+    SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
+    ISessionStore sessionStore = builder.buildSessionStore();
+
     assertSame( httpSession, sessionStore.getHttpSession() );
     assertEquals( sessionStore, httpSession.getAttribute( SessionStoreImpl.ATTR_SESSION_STORE ) );
-    assertEquals( applicationContext, ApplicationContextUtil.get( sessionStore ) );
+  }
+
+  public void testSingletonManagerIsInstalled() {
+    registerEntryPoint( null );
+
+    SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
+    ISessionStore sessionStore = builder.buildSessionStore();
+
     assertSingletonManagerIsInstalled( sessionStore );
+  }
+
+  public void testDefaultThemeIsSelected() {
+    registerEntryPoint( null );
+
+    SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
+    ISessionStore sessionStore = builder.buildSessionStore();
+
     assertEquals( RWT.DEFAULT_THEME_ID, sessionStore.getAttribute( ThemeUtil.CURR_THEME_ATTR ) );
   }
 
-  public void testBuildWithExistingThemeId() {
+  public void testCustomThemeIsSelected() {
     Theme theme = mock( Theme.class );
     when( theme.getId() ).thenReturn( CUSTOM_THEME_ID );
     applicationContext.getThemeManager().registerTheme( theme );
     HashMap<String, String> properties = new HashMap<String,String>();
     properties.put( WebClient.THEME_ID, CUSTOM_THEME_ID );
     registerEntryPoint( properties );
-    
+
     SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
     ISessionStore sessionStore = builder.buildSessionStore();
-    
+
     assertEquals( CUSTOM_THEME_ID, sessionStore.getAttribute( ThemeUtil.CURR_THEME_ATTR ) );
   }
-  
-  public void testBuildWithNonExistingThemeId() {
+
+  public void testFailsWithNonExistingThemeId() {
     HashMap<String, String> properties = new HashMap<String,String>();
     properties.put( WebClient.THEME_ID, "does.not.exist" );
     registerEntryPoint( properties );
-    
+
     SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
     try {
       builder.buildSessionStore();
@@ -85,7 +110,17 @@ public class SessionStoreBuilder_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
+  public void testClientIsSelected() {
+    registerEntryPoint( null );
+
+    SessionStoreBuilder builder = new SessionStoreBuilder( applicationContext, request );
+    ISessionStore sessionStore = builder.buildSessionStore();
+
+    ClientSelector clientSelector = applicationContext.getClientSelector();
+    assertNotNull( clientSelector.getSelectedClient( sessionStore ) );
+  }
+
   @Override
   protected void setUp() throws Exception {
     httpSession = new TestSession();
@@ -94,6 +129,7 @@ public class SessionStoreBuilder_Test extends TestCase {
     servletContext = httpSession.getServletContext();
     configuration = mock( ApplicationConfiguration.class );
     applicationContext = new ApplicationContext( configuration, servletContext );
+    applicationContext.getClientSelector().activate();
   }
 
   private void registerEntryPoint( HashMap<String, String> properties ) {
