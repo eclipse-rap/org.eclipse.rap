@@ -36,6 +36,7 @@ public class RWTServletContextListener implements ServletContextListener {
   /*
    * This parameter has been used prior to RAP 1.5 to register entrypoints.
    * It is considered obsolete but still supported in 1.5.
+   * It is still used by the RWTLauncher.
    */
   static final String ENTRY_POINTS_PARAM = "org.eclipse.rwt.entryPoints";
 
